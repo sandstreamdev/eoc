@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-export default class TodoService {
+/* TODO 
+ *  Change API endpoints from TODO - both on front and backend
+ */
+
+export default class EOCService {
 	all(callback) {
 		axios.get('http://localhost:6200/todo')
 		.then((response) => {
