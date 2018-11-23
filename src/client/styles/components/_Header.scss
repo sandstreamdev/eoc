@@ -1,24 +1,38 @@
 .app-header {
-  padding: 40px 0 20px;
+  padding: 30px 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  &__logo {
-    display: inline-block;
-    text-shadow: 1px 1px 2px $gray5;
-    position: relative;
-    font-weight: 700;
+  &__link {
     color: $green;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    height: 28px;
+  }
+
+  &__text {
+    font-size: 38px;
+    line-height: 1.2;
+    color: $gray1;
+    display: block;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px $gray5;
+    color: $green;
+    margin-right: 8px;
   }
 
   &__subheader {
-    text-shadow: 1px 1px 2px $gray5;
+    display: block;
+    font-size: 10px;
+    line-height: 1.2;
     font-weight: 400;
-    color: rgba($green, 0.75);
-  }
-
-  &__link {
-    color: $green;
+    white-space: nowrap;
   }
 }
