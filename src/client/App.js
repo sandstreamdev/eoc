@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import './app.css';
 import ReactImage from './react.png';
 import Header from './components/Header';
 

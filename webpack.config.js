@@ -20,8 +20,12 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        test: /\.s?css$/,
+        use: [
+          'style-loader', // creates style nodes from JS strings
+          'css-loader', // translates CSS into CommonJS
+          'sass-loader' // compiles Sass to CSS, using Node Sass by default
+        ]
       },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)$/,
@@ -32,10 +36,15 @@ module.exports = {
   devServer: {
     port: 3000,
     open: true,
+    inline: true,
+    hot: true,
     disableHostCheck: true,
     host: '0.0.0.0',
     proxy: {
-      '/api': 'http://server:8080'
+      '/api': 'http://localhost:8080'
+    },
+    watchOptions: {
+      ignored: /node_modules/
     }
   },
   plugins: [

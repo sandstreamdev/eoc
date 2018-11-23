@@ -1,14 +1,5 @@
 const express = require('express');
 const os = require('os');
-const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://mongo');
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  console.log('Connectedto the db');
-});
 
 const app = express();
 
@@ -23,5 +14,3 @@ app.get('/api/getUsername', (req, res) =>
 );
 
 app.listen(8080, () => console.log('Listening on port 8080!'));
-
-   
