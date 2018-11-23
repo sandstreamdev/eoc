@@ -1,8 +1,19 @@
-h1 {
-  font-size: 96px;
-}
+/*
+ * Table of content
+ * 1. Global
+ * 2. Colors
+ * 3. Containers
+ * 4. Components
+ */
 
-body {
-  margin: 0 auto;
-  text-align: center;
-}
+// 1. Global
+@import './global/reset';
+
+// 2. Colors
+@import './variables/colors';
+
+// 3. Containers
+@import './containers/app.scss';
+
+// 4. Components
+@import './components/Header.scss';
