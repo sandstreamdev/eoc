@@ -21,7 +21,7 @@
     "import/no-named-default": "error",
     "key-spacing": "error",
     "keyword-spacing": ["error", { "before": true, "after": true }],
-    "no-console": "error",
+    "no-console": "off",
     "no-else-return": "error",
     "no-debugger": ["warn"],
     "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
@@ -64,7 +64,8 @@
         "newlines-between": "always"
       }
     ],
-    "import/no-useless-path-segments": "error"
+    "import/no-useless-path-segments": "error",
+    "react/jsx-filename-extension": false
   },
   "globals": {
     "_": false,
