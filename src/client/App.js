@@ -1,12 +1,15 @@
 import React from 'react';
 
 import Header from './components/Header';
+import SearchBar from './components/SearchBar';
+import ProductsList from './components/ProductsList';
 
 function App() {
   return (
     <div className="app-wrapper">
       <Header />
-      <h1>Hello, world</h1>
+      <SearchBar />
+      <ProductsList />
     </div>
   );
 }

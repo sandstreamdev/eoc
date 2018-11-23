@@ -41,6 +41,9 @@
     "quotes": ["error", "single", { "avoidEscape": true }],
     "semi": ["warn", "always"],
     "space-before-blocks": "error",
+    "jsx-a11y/label-has-associated-control": 0,
+    "jsx-a11y/label-has-for": 0,
+
     "space-before-function-paren": [
       "error",
       {

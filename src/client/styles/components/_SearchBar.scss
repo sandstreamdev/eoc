@@ -1,0 +1,21 @@
+.search-bar {
+  padding: 20px 0;
+
+  &__input {
+    border: 1px solid $gray2;
+    padding: 10px 15px;
+    border-radius: 3px;
+    font-size: 16px;
+    width: 100%;
+    color: $gray1;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: $gray5;
+    }
+  }
+
+  &__submit {
+    display: none;
+  }
+}
