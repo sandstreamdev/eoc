@@ -1,5 +1,6 @@
 {
   "extends": ["airbnb", "plugin:prettier/recommended"],
+  "plugins": ["dependencies"],
   "rules": {
     "array-bracket-spacing": ["error", "never"],
     "arrow-parens": ["error", "as-needed"],
@@ -64,5 +65,11 @@
       }
     ],
     "import/no-useless-path-segments": "error"
+  },
+  "globals": {
+    "_": false,
+    "window": false,
+    "fetch": false,
+    "document": false
   }
 }
