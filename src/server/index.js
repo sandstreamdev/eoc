@@ -9,7 +9,7 @@ app.use(express.static('dist'));
 app.get('/', (req, resp) => resp.send('Hello World'));
 
 // Example endpoint
-app.get('/api/getUsername', (req, res) =>
+app.get('/api/get-username', (req, res) =>
   res.send({ username: os.userInfo().username })
 );
 
