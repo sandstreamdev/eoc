@@ -1,0 +1,15 @@
+.footer {
+  margin: 20px 0 40px;
+  background-color: $gray3;
+  box-shadow: 0 1px 3px rgba($black, 0.15);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+
+  &__text {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: $gray1;
+  }
+}

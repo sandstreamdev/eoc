@@ -1,11 +1,14 @@
 .app-header {
-  padding: 30px 0 20px;
+  padding: 20px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   &__link {
-    color: $green;
+    color: $purple;
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: 400;
   }
 
   &__logo {
@@ -14,25 +17,16 @@
   }
 
   &__icon {
-    height: 28px;
+    height: 20px;
   }
 
   &__text {
-    font-size: 38px;
+    font-size: 28px;
     line-height: 1.2;
-    color: $gray1;
     display: block;
     font-weight: 700;
     text-shadow: 1px 1px 2px $gray5;
-    color: $green;
+    color: $purple;
     margin-right: 8px;
-  }
-
-  &__subheader {
-    display: block;
-    font-size: 10px;
-    line-height: 1.2;
-    font-weight: 400;
-    white-space: nowrap;
   }
 }

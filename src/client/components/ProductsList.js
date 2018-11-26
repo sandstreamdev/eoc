@@ -1,97 +1,71 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-function ProductsList() {
-  return (
-    <div className="products">
-      <h2 className="products__heading">Lista produktów</h2>
+class ProductsList extends Component {
+  constructor(props) {
+    super(props);
 
-      <ul className="products-list">
-        <li className="products-list__item">
-          <input
-            className="product-list__input"
-            id="option1"
-            name="option1"
-            type="checkbox"
+    this.state = {
+      limit: 3
+    };
+  }
+
+  showMore = () => {
+    const { limit } = this.state;
+    this.setState({ limit: limit + 3 });
+  };
+
+  render() {
+    const { products, isArchive } = this.props;
+    const { limit } = this.state;
+    return (
+      <React.Fragment>
+        <ul className="products-list">
+          {products.slice(0, limit).map(item => (
+            <li
+              key={item.name}
+              className={`products-list__item ${
+                isArchive
+                  ? 'products-list__item--red'
+                  : 'products-list__item--green'
+              }`}
+            >
+              <input
+                className="product-list__input"
+                id={`option${item.id}`}
+                name={`option${item.id}`}
+                type="checkbox"
+              />
+              <label
+                className="products-list__label"
+                id={`option${item.id}`}
+                htmlFor={`option${item.id}`}
+              >
+                <img
+                  src={item.image}
+                  alt="Product icon"
+                  className="products-list__icon"
+                />
+                {item.name}
+              </label>
+            </li>
+          ))}
+        </ul>
+        {isArchive && limit < products.length && (
+          <button
+            className="products__show-more"
+            type="button"
+            onClick={this.showMore}
           />
-          <label
-            className="products-list__label"
-            id="option1"
-            htmlFor="option1"
-          >
-            <img
-              src="https://via.placeholder.com/50"
-              alt="Product icon"
-              className="products-list__icon"
-            />
-            Papier toaletowy rumiankowy
-          </label>
-        </li>
-
-        <li className="products-list__item">
-          <input
-            className="product-list__input"
-            id="option2"
-            name="option2"
-            type="checkbox"
-          />
-          <label
-            className="products-list__label"
-            id="option2"
-            htmlFor="option2"
-          >
-            <img
-              src="https://via.placeholder.com/50"
-              alt="Product icon"
-              className="products-list__icon"
-            />
-            Kawa Tchibo
-          </label>
-        </li>
-
-        <li className="products-list__item">
-          <input
-            className="product-list__input"
-            id="option3"
-            name="option3"
-            type="checkbox"
-          />
-          <label
-            className="products-list__label"
-            id="option3"
-            htmlFor="option3"
-          >
-            <img
-              src="https://via.placeholder.com/50"
-              alt="Product icon"
-              className="products-list__icon"
-            />
-            Kawa mielona
-          </label>
-        </li>
-
-        <li className="products-list__item">
-          <input
-            className="product-list__input"
-            id="option4"
-            name="option4"
-            type="checkbox"
-          />
-          <label
-            className="products-list__label"
-            id="option4"
-            htmlFor="option4"
-          >
-            <img
-              src="https://via.placeholder.com/50"
-              alt="Product icon"
-              className="products-list__icon"
-            />
-            Ogórek zielony
-          </label>
-        </li>
-      </ul>
-    </div>
-  );
+        )}
+      </React.Fragment>
+    );
+  }
 }
+
+ProductsList.propTypes = {
+  products: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isArchive: PropTypes.bool.isRequired
+};
 
 export default ProductsList;

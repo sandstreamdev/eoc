@@ -13,6 +13,10 @@
     &::placeholder {
       color: $gray5;
     }
+
+    &:hover {
+      box-shadow: 0 3px 4px rgba($black, 0.15);
+    }
   }
 
   &__submit {
