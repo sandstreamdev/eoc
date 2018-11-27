@@ -13,34 +13,34 @@ class App extends Component {
       shoopingList: [
         {
           id: 1,
-          name: 'Kawa tchibo',
+          name: 'Tchibo coffee',
           image: 'https://via.placeholder.com/50'
         },
         {
           id: 2,
-          name: 'Ogórek zielony',
+          name: 'Green cucumber',
           image: 'https://via.placeholder.com/50'
         },
         {
           id: 3,
-          name: 'Papier toaletowy Regina',
+          name: 'Toilet paper Regina',
           image: 'https://via.placeholder.com/50'
         }
       ],
       archiveList: [
         {
           id: 4,
-          name: 'Płyn do szyb',
+          name: 'Window cleaner',
           image: 'https://via.placeholder.com/50'
         },
         {
           id: 5,
-          name: 'Długopisy',
+          name: 'Pencils',
           image: 'https://via.placeholder.com/50'
         },
         {
           id: 6,
-          name: 'Zeszyty format A5',
+          name: 'Paper sheets A5 format',
           image: 'https://via.placeholder.com/50'
         },
         {
