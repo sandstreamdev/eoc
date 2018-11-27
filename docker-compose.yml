@@ -2,28 +2,22 @@ version: '3'
 services:
   client:
     restart: always
-    build: 
+    build:
       context: .
       dockerfile: src/client/Dockerfile
     ports:
-    - "3000:3000"
+      - '3000:3000'
     links:
-    - server
+      - server
   server:
     restart: always
-    build: 
+    build:
       context: .
       dockerfile: src/server/Dockerfile
     ports:
-    - "8080:8080"
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: example
+      - '8080:8080'
   mongo:
     image: mongo
     restart: always
     ports:
-    - "27017:27017"
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: example
+      - '27017:27017'
