@@ -1,11 +1,25 @@
 const express = require('express');
-const os = require('os');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const item = require('./routes/item.route');
+const items = require('./routes/items.route');
 
 const app = express();
 
-app.use(express.static('dist'));
+// Set up mongodb connection
+const dbUrl = 'mongodb://localhost:27017';
+mongoose.connect(dbUrl);
 
-// Index endpoint
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Endpoint for all operations related with /item
+app.use('/item', item);
+
+// Endpoint for all operations with /items
+app.use('/items', items);
+// Root endpoint
 app.get('/', (req, resp) => resp.send('Hello World'));
 
 app.listen(8080, () => console.log('Listening on port 8080!'));
