@@ -1,7 +1,7 @@
 {
-  "name": "react-full-stack",
-  "version": "1.0.0",
-  "description": "React, Node.js, Express, MongoDB and Webpack.",
+  "name": "eoc-app",
+  "version": "0.0.1",
+  "description": "EOC APP. End of Coffee app to track office inventory that is running out.",
   "main": "src/server/index.js",
   "scripts": {
     "build": "webpack --mode production",
