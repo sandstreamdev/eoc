@@ -6,7 +6,7 @@ const SearchBar = () => (
       <input
         className="search-bar__input"
         type="text"
-        placeholder="Czego brakuje?"
+        placeholder="What is missing?"
       />
       <input className="search-bar__submit" type="submit" />
     </form>

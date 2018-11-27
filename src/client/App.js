@@ -86,12 +86,12 @@ class App extends Component {
         <ProductsContainer
           products={shoopingList}
           isArchive={false}
-          title="Lista produktów"
+          title="Products list"
         />
         <ProductsContainer
           products={archiveList}
           isArchive
-          title="Historia zamówień"
+          title="Orders history"
         />
         <Footer />
       </div>

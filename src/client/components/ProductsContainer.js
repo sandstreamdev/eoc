@@ -22,7 +22,7 @@ class ProductsContainer extends Component {
         <header className="products__header">
           <h2 className="products__heading">{title}</h2>
           <span className="products__info">
-            {isArchive ? 'Usuń z listy' : 'Oznacz zamówione'}
+            {isArchive ? 'Remove item' : 'Mark as ordered'}
           </span>
         </header>
 
