@@ -13,10 +13,10 @@
 @import './variables/colors';
 
 // 3. Containers
-@import './containers/app.scss';
+@import './containers/app';
 
 // 4. Components
-@import './components/Header.scss';
+@import './components/Header';
 @import './components/SearchBar';
 @import './components/ProductsContainer';
 @import './components/Footer';

@@ -1,25 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 class ProductsList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      limit: 3
-    };
-  }
+  state = {
+    limit: 3
+  };
 
   showMore = () => {
-    const { limit } = this.state;
-    this.setState({ limit: limit + 3 });
+    this.setState(({ limit }) => ({ limit: limit + 3 }));
   };
 
   render() {
     const { products, isArchive } = this.props;
     const { limit } = this.state;
     return (
-      <React.Fragment>
+      <Fragment>
         <ul className="products-list">
           {products.slice(0, limit).map(item => (
             <li
@@ -42,7 +37,7 @@ class ProductsList extends Component {
                 htmlFor={`option${item.id}`}
               >
                 <img
-                  src={item.image}
+                  src="src/client/assets/images/placeholder.png"
                   alt="Product icon"
                   className="products-list__icon"
                 />
@@ -58,14 +53,14 @@ class ProductsList extends Component {
             onClick={this.showMore}
           />
         )}
-      </React.Fragment>
+      </Fragment>
     );
   }
 }
 
 ProductsList.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isArchive: PropTypes.bool.isRequired
+  isArchive: PropTypes.bool.isRequired,
+  products: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default ProductsList;

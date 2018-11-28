@@ -6,76 +6,72 @@ import ProductsContainer from './components/ProductsContainer';
 import Footer from './components/Footer';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      shoopingList: [
-        {
-          id: 1,
-          name: 'Tchibo coffee',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 2,
-          name: 'Green cucumber',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 3,
-          name: 'Toilet paper Regina',
-          image: 'https://via.placeholder.com/50'
-        }
-      ],
-      archiveList: [
-        {
-          id: 4,
-          name: 'Window cleaner',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 5,
-          name: 'Pencils',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 6,
-          name: 'Paper sheets A5 format',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 7,
-          name: 'Lorem ipsum',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 8,
-          name: 'Lorem ipsumm',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 9,
-          name: 'Lorem ipsums',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 10,
-          name: 'Lorem ipsuma',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 11,
-          name: 'Lorem ipsumsa',
-          image: 'https://via.placeholder.com/50'
-        },
-        {
-          id: 12,
-          name: 'Lorem ipsumasa',
-          image: 'https://via.placeholder.com/50'
-        }
-      ]
-    };
-  }
+  state = {
+    shoopingList: [
+      {
+        id: 1,
+        name: 'Tchibo coffee',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 2,
+        name: 'Green cucumber',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 3,
+        name: 'Toilet paper Regina',
+        image: 'src/client/assets/images/placeholder.png'
+      }
+    ],
+    archiveList: [
+      {
+        id: 4,
+        name: 'Window cleaner',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 5,
+        name: 'Pencils',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 6,
+        name: 'Paper sheets A5 format',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 7,
+        name: 'Lorem ipsum',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 8,
+        name: 'Lorem ipsumm',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 9,
+        name: 'Lorem ipsums',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 10,
+        name: 'Lorem ipsuma',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 11,
+        name: 'Lorem ipsumsa',
+        image: 'src/client/assets/images/placeholder.png'
+      },
+      {
+        id: 12,
+        name: 'Lorem ipsumasa',
+        image: 'src/client/assets/images/placeholder.png'
+      }
+    ]
+  };
 
   render() {
     const { shoopingList, archiveList } = this.state;
@@ -83,14 +79,10 @@ class App extends Component {
       <div className="app-wrapper">
         <Header />
         <SearchBar />
+        <ProductsContainer products={shoopingList} title="Products list" />
         <ProductsContainer
-          products={shoopingList}
-          isArchive={false}
-          title="Products list"
-        />
-        <ProductsContainer
-          products={archiveList}
           isArchive
+          products={archiveList}
           title="Orders history"
         />
         <Footer />

@@ -1,10 +1,12 @@
 import React from 'react';
 
+import { sandstreamUrl, projectName } from '../common/variables';
+
 function Header(props) {
   return (
     <div className="app-header">
       <div className="app-header__logo">
-        <span className="app-header__text">EOC</span>
+        <span className="app-header__text">{projectName}</span>
 
         <img
           className="app-header__icon"
@@ -13,8 +15,8 @@ function Header(props) {
         />
       </div>
 
-      <a href="https://sandstream.pl/" className="app-header__link">
-        www.sandstream.pl
+      <a href={sandstreamUrl} className="app-header__link">
+        Sandstream Development
       </a>
     </div>
   );

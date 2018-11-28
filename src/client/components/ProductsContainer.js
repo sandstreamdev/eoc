@@ -9,9 +9,9 @@ class ProductsContainer extends Component {
 
     const { title, products, isArchive } = this.props;
     this.state = {
-      title,
+      isArchive,
       products,
-      isArchive
+      title
     };
   }
 
@@ -26,16 +26,20 @@ class ProductsContainer extends Component {
           </span>
         </header>
 
-        <ProductsList products={products} isArchive={isArchive} />
+        <ProductsList isArchive={isArchive} products={products} />
       </div>
     );
   }
 }
 
+ProductsContainer.defaultProps = {
+  isArchive: false
+};
+
 ProductsContainer.propTypes = {
-  title: PropTypes.string.isRequired,
+  isArchive: PropTypes.bool,
   products: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isArchive: PropTypes.bool.isRequired
+  title: PropTypes.string.isRequired
 };
 
 export default ProductsContainer;
