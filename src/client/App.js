@@ -10,7 +10,7 @@ class App extends Component {
     shoopingList: [
       {
         id: 1,
-        name: 'Tchibo coffee',
+        name: 'Super coffee',
         image: 'src/client/assets/images/placeholder.png'
       },
       {
@@ -20,7 +20,7 @@ class App extends Component {
       },
       {
         id: 3,
-        name: 'Toilet paper Regina',
+        name: 'Toilet paper',
         image: 'src/client/assets/images/placeholder.png'
       }
     ],
@@ -79,12 +79,8 @@ class App extends Component {
       <div className="app-wrapper">
         <Header />
         <SearchBar />
-        <ProductsContainer products={shoopingList} title="Products list" />
-        <ProductsContainer
-          isArchive
-          products={archiveList}
-          title="Orders history"
-        />
+        <ProductsContainer products={shoopingList} />
+        <ProductsContainer isArchive products={archiveList} />
         <Footer />
       </div>
     );
