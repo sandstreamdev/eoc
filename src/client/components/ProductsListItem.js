@@ -18,10 +18,10 @@ const ProductListItem = ({ id, image, isArchive, name }) => (
     />
     <label
       className="products-list__label"
-      id={`option${id}`}
       htmlFor={`option${id}`}
+      id={`option${id}`}
     >
-      <img src={image} alt="Product icon" className="products-list__icon" />
+      <img alt="Product icon" className="products-list__icon" src={image} />
       {name}
     </label>
   </li>

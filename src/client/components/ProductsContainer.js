@@ -13,7 +13,6 @@ const ProductsContainer = ({ products, isArchive }) => (
         {isArchive ? 'Remove item' : 'Mark as ordered'}
       </span>
     </header>
-
     <ProductsList isArchive={isArchive} products={products} />
   </div>
 );

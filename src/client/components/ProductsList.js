@@ -29,12 +29,11 @@ class ProductsList extends Component {
             />
           ))}
         </ul>
-
         {isArchive && limit < products.length && (
           <button
             className="products__show-more"
-            type="button"
             onClick={this.showMore}
+            type="button"
           />
         )}
       </Fragment>
