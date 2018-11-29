@@ -7,7 +7,7 @@
     "build": "webpack --mode production",
     "docker:build:client": "docker build src/client",
     "docker:build:server": "docker build src/server",
-    "start": "npm run build && sudo node src/server/index.js",
+    "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
@@ -20,10 +20,10 @@
   "dependencies": {
     "babel-polyfill": "6.26.0",
     "body-parser": "1.18.3",
+    "classnames": "2.2.6",
     "express": "4.16.3",
     "mongodb": "3.1.10",
     "mongoose": "5.3.13",
-    "classnames": "2.2.6",
     "prop-types": "15.6.2",
     "react": "16.5.2",
     "react-dom": "16.5.2"

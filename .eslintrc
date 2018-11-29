@@ -28,6 +28,7 @@
     "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     "no-multi-spaces": ["error", { "ignoreEOLComments": false }],
     "no-multiple-empty-lines": ["error", { "max": 1 }],
+    "no-unused-expressions": "off",
     "no-unused-vars": [
       "warn",
       { "vars": "local", "args": "none", "ignoreRestSiblings": true }
@@ -44,6 +45,7 @@
     "space-before-blocks": "error",
     "jsx-a11y/label-has-associated-control": 0,
     "jsx-a11y/label-has-for": 0,
+    "func-names": ["error", "never"],
 
     "space-before-function-paren": [
       "error",
