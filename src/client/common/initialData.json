@@ -1,0 +1,56 @@
+{
+  "shoopingList": [
+    {
+      "id": 1,
+      "name": "Super coffee",
+      "image": "src/client/assets/images/placeholder.png"
+    },
+    {
+      "id": 2,
+      "name": "Lorem ipsum",
+      "image": "src/client/assets/images/placeholder.png"
+    },
+    {
+      "id": 3,
+      "name": "Dolor sit",
+      "image": "src/client/assets/images/placeholder.png"
+    }
+  ],
+  "archiveList": [
+    {
+      "id": 4,
+      "name": "Smolestie aliquam",
+      "image": "src/client/assets/images/placeholder.png"
+    },
+    {
+      "id": 5,
+      "name": "Mauris alique",
+      "image": "src/client/assets/images/placeholder.png"
+    },
+    {
+      "id": 6,
+      "name": "Proin sapien ",
+      "image": "src/client/assets/images/placeholder.png"
+    },
+    {
+      "id": 7,
+      "name": "Phasellus ut lacu",
+      "image": "src/client/assets/images/placeholder.png"
+    },
+    {
+      "id": 8,
+      "name": "Quisque et mas",
+      "image": "src/client/assets/images/placeholder.png"
+    },
+    {
+      "id": 9,
+      "name": "Siam finibu",
+      "image": "src/client/assets/images/placeholder.png"
+    },
+    {
+      "id": 10,
+      "name": "Quisque et massa",
+      "image": "src/client/assets/images/placeholder.png"
+    }
+  ]
+}

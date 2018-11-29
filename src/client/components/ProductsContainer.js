@@ -1,41 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import ProductsList from './ProductsList';
 
-class ProductsContainer extends Component {
-  constructor(props) {
-    super(props);
-
-    const { title, products, isArchive } = this.props;
-    this.state = {
-      title,
-      products,
-      isArchive
-    };
-  }
-
-  render() {
-    const { title, products, isArchive } = this.state;
-    return (
-      <div className="products">
-        <header className="products__header">
-          <h2 className="products__heading">{title}</h2>
-          <span className="products__info">
-            {isArchive ? 'Remove item' : 'Mark as ordered'}
-          </span>
-        </header>
-
-        <ProductsList products={products} isArchive={isArchive} />
-      </div>
-    );
-  }
-}
+const ProductsContainer = ({ isArchive, products }) => (
+  <div className="products">
+    <header className="products__header">
+      <h2 className="products__heading">
+        {isArchive ? 'Orders history' : 'Products list'}
+      </h2>
+      <span className="products__info">
+        {isArchive ? 'Remove item' : 'Mark as ordered'}
+      </span>
+    </header>
+    <ProductsList isArchive={isArchive} products={products} />
+  </div>
+);
 
 ProductsContainer.propTypes = {
-  title: PropTypes.string.isRequired,
-  products: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isArchive: PropTypes.bool.isRequired
+  isArchive: PropTypes.bool,
+  products: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default ProductsContainer;
