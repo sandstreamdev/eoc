@@ -70,6 +70,16 @@ npm start
 
 ## Documentation
 
+### Run MongoDB locally
+
+To run MongoDB locally you need to clone all the files from this repository and then in the root directory run in terminal: `sudo mongod`
+By default MongoDB server will run at `localhost:27017`.
+There might be others mongodb proccesses runnig at this port. To stop all runing mongodb services type in your terminal: `sudo service mongodb stop`. Than simply rerun `sudo mongod`.
+
+### Testing backend endpoints - POSTMAN
+
+To test existing app endpoints you can use [Postman](https://www.getpostman.com/).
+
 ### Folder Structure
 
 All the source code will be inside **src** directory. Inside src, there is client and server directory. All the frontend code (react, scss, js and any other assets) will be in client directory. Backend Node.js/Express code will be in the server directory.
