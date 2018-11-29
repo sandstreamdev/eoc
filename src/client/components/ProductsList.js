@@ -13,7 +13,7 @@ class ProductsList extends Component {
   };
 
   render() {
-    const { products, isArchive } = this.props;
+    const { isArchive, products } = this.props;
     const { limit } = this.state;
 
     return (
@@ -42,7 +42,7 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  isArchive: PropTypes.bool.isRequired,
+  isArchive: PropTypes.bool,
   products: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 

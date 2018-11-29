@@ -30,7 +30,7 @@ const ProductListItem = ({ id, image, isArchive, name }) => (
 ProductListItem.propTypes = {
   id: PropTypes.number.isRequired,
   image: PropTypes.string.isRequired,
-  isArchive: PropTypes.bool.isRequired,
+  isArchive: PropTypes.bool,
   name: PropTypes.string.isRequired
 };
 

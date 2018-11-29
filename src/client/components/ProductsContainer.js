@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import ProductsList from './ProductsList';
 
-const ProductsContainer = ({ products, isArchive }) => (
+const ProductsContainer = ({ isArchive, products }) => (
   <div className="products">
     <header className="products__header">
       <h2 className="products__heading">
@@ -16,10 +16,6 @@ const ProductsContainer = ({ products, isArchive }) => (
     <ProductsList isArchive={isArchive} products={products} />
   </div>
 );
-
-ProductsContainer.defaultProps = {
-  isArchive: false
-};
 
 ProductsContainer.propTypes = {
   isArchive: PropTypes.bool,

@@ -1,11 +1,11 @@
 import React from 'react';
 
-import {
-  SANDSTREAM_URL,
-  PROJECT_NAME,
-  COMPANY_NAME
-} from '../common/variables';
 import AppIcon from '../assets/images/coffee-solid.svg';
+import {
+  COMPANY_NAME,
+  COMPANY_PAGE_URL,
+  PROJECT_NAME
+} from '../common/variables';
 
 function Header(props) {
   return (
@@ -14,7 +14,12 @@ function Header(props) {
         <span className="app-header__text">{PROJECT_NAME}</span>
         <img className="app-header__icon" src={AppIcon} alt="Coffee icon" />
       </div>
-      <a href={SANDSTREAM_URL} className="app-header__link">
+      <a
+        className="app-header__link"
+        href={COMPANY_PAGE_URL}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         {COMPANY_NAME}
       </a>
     </div>
