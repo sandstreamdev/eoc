@@ -7,7 +7,7 @@
     "build": "webpack --mode production",
     "docker:build:client": "docker build src/client",
     "docker:build:server": "docker build src/server",
-    "start": "npm run build && node src/server/index.js",
+    "start": "npm run build && sudo node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",

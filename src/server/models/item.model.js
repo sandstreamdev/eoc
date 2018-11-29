@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const ItemSchema = new Schema({
-  name: String,
-  isOrdered: Boolean
+  name: { type: String, required: true },
+  isOrdered: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('Item', ItemSchema);

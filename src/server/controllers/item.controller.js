@@ -8,29 +8,29 @@ const itemCreate = function(req, resp) {
   });
 
   item.save(err => {
-    if (err) return console.error(err);
-    return resp.send('Product created successfuly!');
+    if (err) return resp.status(400).send(err.message);
+    return resp.status(200).send('Product created successfuly!');
   });
 };
 
 // Get item by given id
 const getItemById = function(req, resp) {
   Item.findById(req.params.id, (err, product) => {
-    if (err) return console.error(err);
-    return resp.send(product);
+    if (err) return resp.status(400).send(err.message);
+    return resp.status(200).json(product);
   });
 };
 
 // Delete item by given id
 const deleteItemById = function(req, resp) {
-  Item.findOneAndRemove(req.params.id, (err, product) => {
-    if (err) return console.error(err);
-    return resp.send(`${product.name} deleted succesfully!`);
+  Item.find({ _id: req.params.id }).deleteOne((err, product) => {
+    if (err) return resp.status(400).send(err.message);
+    return resp.status(200).send(`${product.n} item/s deleted!`);
   });
 };
 
 module.exports = {
-  itemCreate,
+  deleteItemById,
   getItemById,
-  deleteItemById
+  itemCreate
 };

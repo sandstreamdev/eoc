@@ -72,9 +72,9 @@ npm start
 
 ### Run MongoDB locally
 
-To run MongoDB locally you need to clone all the files from this repository and then in the root directory run in terminal: `sudo mongod`
+To run MongoDB locally you need to clone all the files from this repository and then in the root directory run in terminal: <br/> `sudo mongod`
 By default MongoDB server will run at `localhost:27017`.
-There might be others mongodb proccesses runnig at this port. To stop all runing mongodb services type in your terminal: `sudo service mongodb stop`. Than simply rerun `sudo mongod`.
+There might be others mongodb proccesses runnig at this port. To stop all runing mongodb services type in your terminal: <br/> `sudo service mongodb stop`. Than simply rerun `sudo mongod`.
 
 ### Testing backend endpoints - POSTMAN
 
