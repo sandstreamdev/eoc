@@ -1,9 +1,9 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
-const item = require('./routes/item.route');
 const items = require('./routes/items.route');
+const item = require('./routes/item.route');
 
 const app = express();
 
@@ -12,7 +12,7 @@ const dbUrl = 'mongodb://localhost:27017';
 mongoose.connect(dbUrl);
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
 
 // Endpoint for all operations related with /item
 app.use('/item', item);
