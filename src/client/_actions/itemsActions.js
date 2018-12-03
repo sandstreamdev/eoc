@@ -9,7 +9,7 @@ export function recieveItems(json) {
 export function fetchItems() {
   console.log('Items actions /_ACTIONS/itemsActions.js: FetchItems');
   return dispatch =>
-    fetch('http://localhost:8080/items')
+    fetch('http://localhost:8080/items', { credentials: 'same-origin' })
       .then(resp => resp.json())
       .then(json => dispatch(recieveItems(json)));
 }
