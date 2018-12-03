@@ -1,15 +1,9 @@
 import { FETCH_ITEMS } from './actionTypes';
+import { ENDPOINT_URL } from '../common/variables';
 
-// Action creator
-export function recieveItems(json) {
-  console.log('Items actions /_ACTIONS/itemsActions.js: recieveItems');
-  return { type: FETCH_ITEMS, items: json };
-}
+export const recieveItems = json => ({ type: FETCH_ITEMS, items: json });
 
-export function fetchItems() {
-  console.log('Items actions /_ACTIONS/itemsActions.js: FetchItems');
-  return dispatch =>
-    fetch('http://localhost:8080/items', { credentials: 'same-origin' })
-      .then(resp => resp.json())
-      .then(json => dispatch(recieveItems(json)));
-}
+export const fetchItems = () => dispatch =>
+  fetch(`${ENDPOINT_URL}/items`, { credentials: 'same-origin' })
+    .then(resp => resp.json())
+    .then(json => dispatch(recieveItems(json)));

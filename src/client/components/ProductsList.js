@@ -15,7 +15,7 @@ class ProductsList extends Component {
   render() {
     const { isArchive, products } = this.props;
     const { limit } = this.state;
-    console.log(products);
+
     return (
       <Fragment>
         <ul className="products-list">

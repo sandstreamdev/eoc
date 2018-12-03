@@ -14,5 +14,3 @@ export default function items(state = initialState, action) {
       return state;
   }
 }
-
-console.log('Reducing items: /_REDUCERS/itemsReducer.js');
