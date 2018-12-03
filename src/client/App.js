@@ -8,26 +8,22 @@ import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import ProductsContainer from './components/ProductsContainer';
 import Footer from './components/Footer';
-import initialData from './common/initialData.json';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = initialData;
-  }
-
-  componentWillMount() {
-    this.props.itemsActions.fetchItems();
+  componentDidMount() {
+    const {
+      itemsActions: { fetchItems }
+    } = this.props;
+    fetchItems();
   }
 
   render() {
-    const { shoopingList, archiveList } = this.state;
+    const { archiveList, shoppingList } = this.props;
     return (
       <div className="app-wrapper">
         <Header />
         <SearchBar />
-        <ProductsContainer products={shoopingList} />
+        <ProductsContainer products={shoppingList} />
         <ProductsContainer isArchive products={archiveList} />
         <Footer />
       </div>
@@ -36,11 +32,14 @@ class App extends Component {
 }
 
 App.propTypes = {
-  itemsActions: PropTypes.shape({ fetchItems: PropTypes.func })
+  itemsActions: PropTypes.shape({ fetchItems: PropTypes.func }),
+  archiveList: PropTypes.arrayOf(PropTypes.object),
+  shoppingList: PropTypes.arrayOf(PropTypes.object)
 };
 
 const mapStateToProps = state => ({
-  items: state.items
+  shoppingList: state.items.shoppingList,
+  archiveList: state.items.archiveList
 });
 
 const mapDispatchToProps = dispatch => ({

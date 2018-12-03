@@ -1,4 +1,5 @@
 $green: #08ab6b;
+$light-green: #e1f5c4;
 $purple: #5562eb;
 $red: #fa0202;
 $red-light: #e0a5a5;
@@ -12,6 +13,7 @@ $white: #fff;
 // Colour by roles
 $app-bg: #e7ecff;
 $success: $green;
+$success-bg: $light-green;
 $danger: $red;
 $danger-light: $red-light;
 $text-normal: $gray1;
@@ -21,3 +23,4 @@ $border-color: $gray2;
 $shadow-color: $black;
 $bg-color: $white;
 $brand-color: $purple;
+$restore-color: $app-bg;

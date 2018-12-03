@@ -10,16 +10,21 @@ const ProductsContainer = ({ isArchive, products }) => (
         {isArchive ? 'Orders history' : 'Products list'}
       </h2>
       <span className="products__info">
-        {isArchive ? 'Remove item' : 'Mark as ordered'}
+        {isArchive ? 'Restore item' : 'Mark as ordered'}
       </span>
     </header>
+    {!products.length && (
+      <div className="products__message">
+        <p>There are no items!</p>
+      </div>
+    )}
     <ProductsList isArchive={isArchive} products={products} />
   </div>
 );
 
 ProductsContainer.propTypes = {
   isArchive: PropTypes.bool,
-  products: PropTypes.arrayOf(PropTypes.object).isRequired
+  products: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default ProductsContainer;

@@ -130,3 +130,7 @@ src/server/index.js is the entry point to the server application.
 ### ESLint + Prettier + Husky
 
 [ESLint](https://eslint.org/) takes care of the code-quality. [Prettier](https://prettier.io/) takes care of all the formatting. [Husky](https://github.com/typicode/husky) takes care of running linting rules before we commit or push the code.
+
+### FontAwesome
+
+This project uses FontAwesome Free. Check [license]('https://fontawesome.com/license').

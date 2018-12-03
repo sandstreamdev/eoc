@@ -21,7 +21,7 @@ class ProductsList extends Component {
         <ul className="products-list">
           {products.slice(0, limit).map(item => (
             <ProductsListItem
-              id={item.id}
+              id={item._id}
               image={item.image}
               isArchive={isArchive}
               key={item.name}
@@ -43,7 +43,7 @@ class ProductsList extends Component {
 
 ProductsList.propTypes = {
   isArchive: PropTypes.bool,
-  products: PropTypes.arrayOf(PropTypes.object).isRequired
+  products: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default ProductsList;

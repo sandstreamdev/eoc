@@ -2,11 +2,13 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-const ProductListItem = ({ id, image, isArchive, name }) => (
+import { PLACEHOLDER_URL } from '../common/variables';
+
+const ProductListItem = ({ id, image = PLACEHOLDER_URL, isArchive, name }) => (
   <li
     className={classNames({
       'products-list__item': true,
-      'products-list__item--red': isArchive,
+      'products-list__item--blue': isArchive,
       'products-list__item--green': !isArchive
     })}
   >
@@ -28,8 +30,8 @@ const ProductListItem = ({ id, image, isArchive, name }) => (
 );
 
 ProductListItem.propTypes = {
-  id: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  image: PropTypes.string,
   isArchive: PropTypes.bool,
   name: PropTypes.string.isRequired
 };

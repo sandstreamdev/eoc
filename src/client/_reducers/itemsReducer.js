@@ -6,7 +6,10 @@ export default function items(state = initialState, action) {
 
   switch (action.type) {
     case FETCH_ITEMS:
-      return action.items;
+      return Object.assign({}, state, {
+        shoppingList: action.items.filter(item => !item.isOrdered),
+        archiveList: action.items.filter(item => item.isOrdered)
+      });
     default:
       return state;
   }
