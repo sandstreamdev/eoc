@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
-import * as itemsActions from './_actions/itemsActions';
+import * as itemsActions from './components/ProductsList/actions';
 import Header from './components/Header';
-import SearchBar from './components/SearchBar';
+import { SearchBar } from './components/SearchBar/index';
 import ProductsContainer from './components/ProductsContainer';
 import Footer from './components/Footer';
 

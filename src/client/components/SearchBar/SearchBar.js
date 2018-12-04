@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 
-import addItem from '../_dispatchers/addItem';
+import { dispatchNewItem } from './actions';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -20,15 +20,15 @@ class SearchBar extends Component {
   };
 
   handleFormSubmit = e => {
-    console.log('Test');
     e.preventDefault();
+    const { inputValue } = this.state;
     const newItem = {
-      name: this.state.inputValue,
+      name: inputValue,
       isOrdered: false
     };
 
-    const { addItem: add } = this.props;
-    add(newItem);
+    const { dispatchNewItem: addNewItem } = this.props;
+    addNewItem(newItem);
   };
 
   render() {
@@ -50,7 +50,11 @@ class SearchBar extends Component {
   }
 }
 
+SearchBar.propTypes = {
+  dispatchNewItem: PropTypes.func
+};
+
 export default connect(
   null,
-  { addItem }
+  { dispatchNewItem }
 )(SearchBar);

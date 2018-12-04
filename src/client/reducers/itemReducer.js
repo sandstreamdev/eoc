@@ -1,4 +1,4 @@
-import { ADD_ITEM } from '../_actions/actionTypes';
+import { ADD_ITEM } from '../components/SearchBar/actions';
 
 export default function addItem(state = {}, action) {
   switch (action.type) {

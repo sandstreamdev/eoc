@@ -1,9 +1,7 @@
 import initialState from './initalState';
-import { FETCH_ITEMS } from '../_actions/actionTypes';
+import { FETCH_ITEMS } from '../components/ProductsList/actions';
 
 export default function items(state = initialState, action) {
-  if (action.type === 'undefined') return state;
-
   switch (action.type) {
     case FETCH_ITEMS:
       return Object.assign({}, state, {
