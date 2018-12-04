@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { dispatchNewItem } from './actions';
+import { addItem } from './actions';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -27,8 +27,8 @@ class SearchBar extends Component {
       isOrdered: false
     };
 
-    const { dispatchNewItem: addNewItem } = this.props;
-    addNewItem(newItem);
+    const { addItem } = this.props;
+    addItem(newItem);
   };
 
   render() {
@@ -51,10 +51,10 @@ class SearchBar extends Component {
 }
 
 SearchBar.propTypes = {
-  dispatchNewItem: PropTypes.func
+  addItem: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { dispatchNewItem }
+  { addItem }
 )(SearchBar);

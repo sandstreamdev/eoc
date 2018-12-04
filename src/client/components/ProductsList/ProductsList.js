@@ -24,12 +24,12 @@ class ProductsList extends Component {
               id={item._id}
               image={item.image}
               isArchive={isArchive}
-              key={item.name}
+              key={item._id}
               name={item.name}
             />
           ))}
         </ul>
-        {isArchive && limit < products.length && (
+        {limit < products.length && (
           <button
             className="products__show-more"
             onClick={this.showMore}

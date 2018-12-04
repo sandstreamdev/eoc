@@ -21,6 +21,7 @@
     "babel-polyfill": "6.26.0",
     "body-parser": "1.18.3",
     "classnames": "2.2.6",
+    "cors": "2.8.5",
     "express": "4.16.3",
     "mongodb": "3.1.10",
     "mongoose": "5.3.13",

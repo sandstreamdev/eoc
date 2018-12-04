@@ -1,7 +1,7 @@
 import initialState from './initalState';
 import { FETCH_ITEMS } from '../components/ProductsList/actions';
 
-export default function items(state = initialState, action) {
+const items = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_ITEMS:
       return Object.assign({}, state, {
@@ -11,4 +11,6 @@ export default function items(state = initialState, action) {
     default:
       return state;
   }
-}
+};
+
+export default items;

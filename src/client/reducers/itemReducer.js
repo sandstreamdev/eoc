@@ -1,6 +1,6 @@
 import { ADD_ITEM } from '../components/SearchBar/actions';
 
-export default function addItem(state = {}, action) {
+const addItem = (state = {}, action) => {
   switch (action.type) {
     case ADD_ITEM:
       return Object.assign({}, state, {
@@ -10,4 +10,6 @@ export default function addItem(state = {}, action) {
     default:
       return state;
   }
-}
+};
+
+export default addItem;
