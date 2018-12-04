@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const item = require('./routes/item.route');
-const items = require('./routes/items.route');
+const item = require('./routes/item');
+const items = require('./routes/items');
 
 const app = express();
 
@@ -23,4 +23,4 @@ app.use('/items', items);
 // Root endpoint
 app.get('/', (req, resp) => resp.send('Hello World'));
 
-app.listen(8080, () => console.log('Listening on port 8080!'));
+app.listen(8080, () => console.info('Listening on ort 8080!'));

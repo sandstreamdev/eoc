@@ -2,15 +2,19 @@ const Item = require('../models/item.model');
 
 // Create new item
 const itemCreate = function(req, resp) {
+  const { name, isOrdered } = req.body;
   const item = new Item({
-    name: req.body.name,
-    isOrdered: req.body.isOrdered
+    name,
+    isOrdered
   });
 
-  item.save(err => {
+  item.save((err, doc) => {
     err
       ? resp.status(400).send(err.message)
-      : resp.status(200).send('Product created successfuly!');
+      : resp
+          .status(201)
+          .location(`/item/${doc._id}`)
+          .send(`Product created successfuly! ${JSON.stringify(doc)}`);
   });
 };
 
@@ -23,10 +27,11 @@ const getItemById = function(req, resp) {
 
 // Delete item by given id
 const deleteItemById = function(req, resp) {
-  Item.find({ _id: req.params.id }).deleteOne((err, product) => {
-    err
+  Item.findOneAndDelete({ _id: req.params.id }, (err, doc) => {
+    if (!doc) return resp.status(404).send('No item of given id');
+    return err
       ? resp.status(400).send(err.message)
-      : resp.status(200).send(`${product.n} item(s) deleted!`);
+      : resp.status(204).send('Item was deleted!');
   });
 };
 
