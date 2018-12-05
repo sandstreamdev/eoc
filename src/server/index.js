@@ -4,11 +4,12 @@ const mongoose = require('mongoose');
 
 const item = require('./routes/item');
 const items = require('./routes/items');
+const DB_URL = require('./common/variables');
 
 const app = express();
 
 // Set up mongodb connection
-const dbUrl = 'mongodb://localhost:27017';
+const dbUrl = DB_URL;
 mongoose.connect(dbUrl);
 
 app.use(bodyParser.json());
