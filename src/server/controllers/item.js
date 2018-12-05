@@ -1,7 +1,8 @@
 const Item = require('../models/item.model');
+const filter = require('../common/utilities');
 
 // Create new item
-const itemCreate = function(req, resp) {
+const itemCreate = (req, resp) => {
   const { name, isOrdered } = req.body;
   const item = new Item({
     name,
@@ -19,14 +20,14 @@ const itemCreate = function(req, resp) {
 };
 
 // Get item by given id
-const getItemById = function(req, resp) {
+const getItemById = (req, resp) => {
   Item.findById(req.params.id, (err, product) => {
     err ? resp.status(400).send(err.message) : resp.status(200).json(product);
   });
 };
 
 // Delete item by given id
-const deleteItemById = function(req, resp) {
+const deleteItemById = (req, resp) => {
   Item.findOneAndDelete({ _id: req.params.id }, (err, doc) => {
     if (!doc) return resp.status(404).send('No item of given id');
     return err
@@ -35,8 +36,23 @@ const deleteItemById = function(req, resp) {
   });
 };
 
+// Update item by given id
+const updateItem = (req, resp) => {
+  const { name, isOrdered } = req.body;
+
+  const newData = filter(x => x !== undefined)({ name, isOrdered });
+
+  Item.findOneAndUpdate({ _id: req.params.id }, newData, (err, doc) => {
+    if (!doc) return resp.status(404).send('No item of given id');
+    return err
+      ? resp.status(400).send(err.message)
+      : resp.status(200).send(`Item with _ID: ${req.params.id} updated!`);
+  });
+};
+
 module.exports = {
   deleteItemById,
   getItemById,
-  itemCreate
+  itemCreate,
+  updateItem
 };
