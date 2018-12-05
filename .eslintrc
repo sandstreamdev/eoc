@@ -16,6 +16,7 @@
     "dependencies/require-json-ext": "error",
     "eqeqeq": ["error", "smart"],
     "func-call-spacing": ["error", "never"],
+    "func-names": ["error", "never"],
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
@@ -46,8 +47,6 @@
     "space-before-blocks": "error",
     "jsx-a11y/label-has-associated-control": 0,
     "jsx-a11y/label-has-for": 0,
-    "func-names": ["error", "never"],
-
     "space-before-function-paren": [
       "error",
       {

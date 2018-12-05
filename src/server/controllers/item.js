@@ -12,8 +12,8 @@ const itemCreate = function(req, resp) {
     err
       ? resp.status(400).send(err.message)
       : resp
-          .status(201)
           .location(`/item/${doc._id}`)
+          .status(201)
           .send(`Product created successfuly! ${JSON.stringify(doc)}`);
   });
 };
@@ -31,7 +31,7 @@ const deleteItemById = function(req, resp) {
     if (!doc) return resp.status(404).send('No item of given id');
     return err
       ? resp.status(400).send(err.message)
-      : resp.status(204).send('Item was deleted!');
+      : resp.status(204).send(`Item with _ID: ${req.params.id} deleted!`);
   });
 };
 

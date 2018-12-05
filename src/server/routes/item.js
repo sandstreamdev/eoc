@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 
 const {
+  deleteItemById,
   itemCreate,
-  getItemById,
-  deleteItemById
+  getItemById
 } = require('../controllers/item');
 
 // Add new product
