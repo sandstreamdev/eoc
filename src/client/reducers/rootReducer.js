@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux';
 
 import items from './itemsReducer';
-import addItem from './itemReducer';
+import addItem, { addItemSuccess } from './itemReducer';
 
 const rootReducer = combineReducers({
-  items,
-  addItem
+  addItem,
+  addItemSuccess,
+  items
 });
 
 export default rootReducer;

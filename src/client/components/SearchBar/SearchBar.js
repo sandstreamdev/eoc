@@ -29,6 +29,10 @@ class SearchBar extends Component {
 
     const { addItem } = this.props;
     addItem(newItem);
+
+    this.setState({
+      inputValue: ''
+    });
   };
 
   render() {
@@ -38,8 +42,8 @@ class SearchBar extends Component {
         <form className="search-bar__form" onSubmit={this.handleFormSubmit}>
           <input
             className="search-bar__input"
-            placeholder="What is missing?"
             onChange={this.handleInputChange}
+            placeholder="What is missing?"
             type="text"
             value={inputValue}
           />

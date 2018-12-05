@@ -1,4 +1,4 @@
 export default {
-  shoppingList: [],
-  archiveList: []
+  archiveList: [],
+  shoppingList: []
 };

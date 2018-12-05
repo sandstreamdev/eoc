@@ -5,8 +5,8 @@ const items = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_ITEMS:
       return Object.assign({}, state, {
-        shoppingList: action.items.filter(item => !item.isOrdered),
-        archiveList: action.items.filter(item => item.isOrdered)
+        archiveList: action.items.filter(item => item.isOrdered),
+        shoppingList: action.items.filter(item => !item.isOrdered).reverse()
       });
     default:
       return state;

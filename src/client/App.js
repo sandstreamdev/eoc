@@ -11,11 +11,22 @@ import Footer from './components/Footer';
 
 class App extends Component {
   componentDidMount() {
+    this.fetchItems();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { addItemSuccess } = this.props;
+    if (prevProps.addItemSuccess !== addItemSuccess) {
+      this.fetchItems();
+    }
+  }
+
+  fetchItems = () => {
     const {
       itemsActions: { fetchItems }
     } = this.props;
     fetchItems();
-  }
+  };
 
   render() {
     const { archiveList, shoppingList } = this.props;
@@ -32,14 +43,16 @@ class App extends Component {
 }
 
 App.propTypes = {
-  itemsActions: PropTypes.shape({ fetchItems: PropTypes.func }),
+  addItemSuccess: PropTypes.bool,
   archiveList: PropTypes.arrayOf(PropTypes.object),
+  itemsActions: PropTypes.shape({ fetchItems: PropTypes.func }),
   shoppingList: PropTypes.arrayOf(PropTypes.object)
 };
 
 const mapStateToProps = state => ({
-  shoppingList: state.items.shoppingList,
-  archiveList: state.items.archiveList
+  addItemSuccess: state.addItemSuccess,
+  archiveList: state.items.archiveList,
+  shoppingList: state.items.shoppingList
 });
 
 const mapDispatchToProps = dispatch => ({
