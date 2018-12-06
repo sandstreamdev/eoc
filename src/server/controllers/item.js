@@ -15,7 +15,7 @@ const itemCreate = (req, resp) => {
       : resp
           .location(`/item/${doc._id}`)
           .status(201)
-          .send(`Product created successfuly! ${JSON.stringify(doc)}`);
+          .send(doc);
   });
 };
 
