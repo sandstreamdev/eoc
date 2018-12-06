@@ -1,10 +1,9 @@
 // Action types
-export const ADD_ITEM = 'ADD_ITEM';
 export const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS';
+export const ADD_ITEM = 'ADD_ITEM';
 
 // Action creators
 const addItemSuccess = item => ({ type: ADD_ITEM_SUCCESS, item });
-const addItemToDb = item => ({ type: ADD_ITEM, item });
 
 // Dispatchers
 export const addItem = item => dispatch =>
@@ -15,8 +14,9 @@ export const addItem = item => dispatch =>
     },
     method: 'POST'
   })
-    .then(() => {
-      dispatch(addItemToDb(item));
+    .then(resp => {
       dispatch(addItemSuccess(item));
+      return resp.json();
     })
+    .then(json => console.log(json))
     .catch(err => console.error(err.message));

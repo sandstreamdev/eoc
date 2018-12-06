@@ -7,10 +7,8 @@ const itemCreate = function(req, resp) {
     isOrdered: req.body.isOrdered
   });
 
-  item.save(err => {
-    err
-      ? resp.status(400).send(err.message)
-      : resp.status(200).send('Product created successfuly!');
+  item.save((err, doc) => {
+    err ? resp.status(400).send(err.message) : resp.status(200).send(doc);
   });
 };
 
