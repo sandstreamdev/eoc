@@ -5,13 +5,10 @@ import PropTypes from 'prop-types';
 import { addItem } from './actions';
 
 class SearchBar extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      inputValue: ''
-    };
-  }
+  state = {
+    inputValue: '',
+    itemAddError: false
+  };
 
   handleInputChange = e => {
     this.setState({
@@ -21,18 +18,25 @@ class SearchBar extends Component {
 
   handleFormSubmit = e => {
     e.preventDefault();
-    const { inputValue } = this.state;
+    const { inputValue, itemAddError } = this.state;
+    const { addItem } = this.props;
     const newItem = {
       name: inputValue,
       isOrdered: false
     };
 
-    const { addItem } = this.props;
-    addItem(newItem);
-
-    this.setState({
-      inputValue: ''
+    addItem(newItem).catch(err => {
+      this.setState({
+        itemAddError: true
+      });
+      console.error(err.message);
     });
+
+    if (!itemAddError) {
+      this.setState({
+        inputValue: ''
+      });
+    }
   };
 
   render() {

@@ -15,5 +15,4 @@ export const addItem = item => dispatch =>
     method: 'POST'
   })
     .then(resp => resp.json())
-    .then(json => dispatch(addItemSuccess(json)))
-    .catch(err => console.error(err.message));
+    .then(json => dispatch(addItemSuccess(json)));

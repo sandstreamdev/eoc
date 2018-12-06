@@ -14,13 +14,6 @@ class App extends Component {
     this.fetchItems();
   }
 
-  componentDidUpdate(prevProps) {
-    const { addItemSuccess } = this.props;
-    if (prevProps.addItemSuccess !== addItemSuccess) {
-      this.fetchItems();
-    }
-  }
-
   fetchItems = () => {
     const {
       itemsActions: { fetchItems }
@@ -43,7 +36,6 @@ class App extends Component {
 }
 
 App.propTypes = {
-  addItemSuccess: PropTypes.bool,
   archiveList: PropTypes.arrayOf(PropTypes.object),
   itemsActions: PropTypes.shape({ fetchItems: PropTypes.func }),
   shoppingList: PropTypes.arrayOf(PropTypes.object)

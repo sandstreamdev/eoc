@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ProductsList } from './ProductsList/index';
+import { ProductsList } from './ProductsList';
 
 const ProductsContainer = ({ isArchive, products }) => (
   <div className="products">
@@ -13,11 +13,6 @@ const ProductsContainer = ({ isArchive, products }) => (
         {isArchive ? 'Restore item' : 'Mark as ordered'}
       </span>
     </header>
-    {!products.length && (
-      <div className="products__message">
-        <p>There are no items!</p>
-      </div>
-    )}
     <ProductsList isArchive={isArchive} products={products} />
   </div>
 );

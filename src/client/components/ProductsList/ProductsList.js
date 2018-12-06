@@ -18,17 +18,23 @@ class ProductsList extends Component {
 
     return (
       <Fragment>
-        <ul className="products-list">
-          {products.slice(0, limit).map(item => (
-            <ProductsListItem
-              id={item._id}
-              image={item.image}
-              isArchive={isArchive}
-              key={item._id}
-              name={item.name}
-            />
-          ))}
-        </ul>
+        {!products.length ? (
+          <div className="products__message">
+            <p>There are no items!</p>
+          </div>
+        ) : (
+          <ul className="products-list">
+            {products.slice(0, limit).map(item => (
+              <ProductsListItem
+                id={item._id}
+                image={item.image}
+                isArchive={isArchive}
+                key={item._id}
+                name={item.name}
+              />
+            ))}
+          </ul>
+        )}
         {limit < products.length && (
           <button
             className="products__show-more"
