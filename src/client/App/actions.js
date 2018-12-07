@@ -6,6 +6,7 @@ export const FETCH_ITEMS = 'FETCH_ITEMS';
 // Action creators
 export const recieveItems = json => ({ type: FETCH_ITEMS, items: json });
 
+// Dispatchers
 export const fetchItems = () => dispatch =>
   fetch(`${ENDPOINT_URL}/items`, { credentials: 'same-origin' })
     .then(resp => resp.json())

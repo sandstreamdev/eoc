@@ -6,8 +6,7 @@ import { addItem } from './actions';
 
 class SearchBar extends Component {
   state = {
-    inputValue: '',
-    itemAddError: false
+    inputValue: ''
   };
 
   handleInputChange = e => {
@@ -18,17 +17,14 @@ class SearchBar extends Component {
 
   handleFormSubmit = e => {
     e.preventDefault();
-    const { inputValue, itemAddError } = this.state;
     const { addItem } = this.props;
+    const { inputValue, itemAddError } = this.state;
     const newItem = {
       name: inputValue,
       isOrdered: false
     };
 
     addItem(newItem).catch(err => {
-      this.setState({
-        itemAddError: true
-      });
       console.error(err.message);
     });
 

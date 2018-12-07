@@ -1,3 +1,5 @@
+import { ENDPOINT_URL } from '../../common/variables';
+
 // Action types
 export const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS';
 export const ADD_ITEM = 'ADD_ITEM';
@@ -7,7 +9,7 @@ const addItemSuccess = item => ({ type: ADD_ITEM_SUCCESS, item });
 
 // Dispatchers
 export const addItem = item => dispatch =>
-  fetch('http://localhost:8080/item/create', {
+  fetch(`${ENDPOINT_URL}/item/create`, {
     body: JSON.stringify(item),
     headers: {
       'Content-Type': 'application/json'
@@ -16,3 +18,4 @@ export const addItem = item => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json)));
+// Error handler in SearchBar component

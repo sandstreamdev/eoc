@@ -1,9 +1,11 @@
+import { ENDPOINT_URL } from '../../common/variables';
+
 export const TOGGLE_ITEM = 'TOGGLE_ITEM';
 
 const toggleItem = item => ({ type: TOGGLE_ITEM, item });
 
 const dispatchToggleItem = (id, isOrdered) => dispatch => {
-  fetch(`http://localhost:8080/item/${id}/update`, {
+  fetch(`${ENDPOINT_URL}/item/${id}/update`, {
     body: JSON.stringify({ _id: id, isOrdered: !isOrdered }),
     headers: {
       'Content-Type': 'application/json'
@@ -11,7 +13,7 @@ const dispatchToggleItem = (id, isOrdered) => dispatch => {
     method: 'PATCH'
   })
     .then(resp => resp.json())
-    .then(item => dispatch(toggleItem(item)))
+    .then(item => setTimeout(() => dispatch(toggleItem(item)), 500))
     .catch(err => console.error(err));
 };
 

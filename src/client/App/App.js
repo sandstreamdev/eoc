@@ -5,16 +5,12 @@ import PropTypes from 'prop-types';
 
 import * as itemsActions from './actions';
 import Header from '../components/Header';
-import { SearchBar } from '../components/SearchBar/index';
+import SearchBar from '../components/SearchBar/index';
 import ProductsContainer from '../components/ProductsContainer';
 import Footer from '../components/Footer';
 
 class App extends Component {
-  state = {
-    items: []
-  };
-
-  componentWillMount() {
+  componentDidMount() {
     this.fetchItems();
   }
 
@@ -27,15 +23,15 @@ class App extends Component {
 
   render() {
     const { items } = this.props;
-    console.log(items);
-    // const archiveList = items.filter(item => item.isOrdered);
-    // const shoppingList = items.filter(item => !item.isOrdered).reverse();
+    const archiveList = items.filter(item => item.isOrdered).reverse();
+    const shoppingList = items.filter(item => !item.isOrdered).reverse();
+
     return (
       <div className="app-wrapper">
         <Header />
         <SearchBar />
-        <ProductsContainer products={[1, 2]} />
-        <ProductsContainer isArchive products={[1, 2]} />
+        <ProductsContainer products={shoppingList} />
+        <ProductsContainer isArchive products={archiveList} />
         <Footer />
       </div>
     );
@@ -43,7 +39,8 @@ class App extends Component {
 }
 
 App.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.object)
+  items: PropTypes.arrayOf(PropTypes.object),
+  itemsActions: PropTypes.objectOf(PropTypes.func)
 };
 
 const mapStateToProps = state => ({

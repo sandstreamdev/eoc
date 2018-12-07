@@ -15,7 +15,6 @@ class ProductsList extends Component {
   };
 
   toggleItem = (id, isOrdered) => {
-    console.log('Toggling item with _ID: ', id);
     const { dispatchToggleItem } = this.props;
     dispatchToggleItem(id, isOrdered);
   };
@@ -57,6 +56,7 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
+  dispatchToggleItem: PropTypes.func,
   isArchive: PropTypes.bool,
   products: PropTypes.arrayOf(PropTypes.object)
 };

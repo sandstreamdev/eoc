@@ -1,7 +1,7 @@
 const Item = require('../models/item.model');
 
 // Get all the items
-const getAllItems = function(req, resp) {
+const getAllItems = (req, resp) => {
   let findConditions;
   switch (req.params.type) {
     case 'ordered':

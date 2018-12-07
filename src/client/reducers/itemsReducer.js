@@ -1,28 +1,21 @@
-import initialState from './initalState';
+import { items as itemsInitialState } from './initalState';
 import { FETCH_ITEMS } from '../App/actions';
 import { TOGGLE_ITEM } from '../components/ProductsList/actions';
 import { ADD_ITEM_SUCCESS } from '../components/SearchBar/actions';
 
-const items = (state = initialState, action) => {
+const items = (state = itemsInitialState, action) => {
   switch (action.type) {
     case ADD_ITEM_SUCCESS:
-      return Object.assign({}, state, {
-        shoppingList: state.shoppingList.concat([action.item]).reverse()
-      });
+      return state.concat([action.item]);
     case FETCH_ITEMS:
-      console.log(action);
       return action.items;
-    case TOGGLE_ITEM:
-      console.log(state, action);
-      //   console.log(action);
-      //   // return Object.assign({}, state, {
-      //   //   // shoppingList: state.shoppingList.map(item => {
-      //   //   //   if (item._id === action.id) {
-      //   //   //     item.isOrdered = !item.isOrdered;
-      //   //   //   }
-      //   //   // })
-      //   });
-      break;
+    case TOGGLE_ITEM: {
+      const index = state.findIndex(item => item._id === action.item._id);
+      return state
+        .slice(0, index)
+        .concat(state.slice(index + 1))
+        .concat([action.item]);
+    }
     default:
       return state;
   }

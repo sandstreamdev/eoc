@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ProductsList } from './ProductsList';
+import ProductsList from './ProductsList';
 
 const ProductsContainer = ({ isArchive, products }) => (
   <div className="products">
