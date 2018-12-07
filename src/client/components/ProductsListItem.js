@@ -4,7 +4,13 @@ import PropTypes from 'prop-types';
 
 import { PLACEHOLDER_URL } from '../common/variables';
 
-const ProductListItem = ({ id, image = PLACEHOLDER_URL, isArchive, name }) => (
+const ProductListItem = ({
+  id,
+  image = PLACEHOLDER_URL,
+  isArchive,
+  name,
+  toggleItem
+}) => (
   <li
     className={classNames({
       'products-list__item': true,
@@ -22,6 +28,7 @@ const ProductListItem = ({ id, image = PLACEHOLDER_URL, isArchive, name }) => (
       className="products-list__label"
       htmlFor={`option${id}`}
       id={`option${id}`}
+      onClick={() => toggleItem(id, isArchive)}
     >
       <img alt="Product icon" className="products-list__icon" src={image} />
       {name}
@@ -33,7 +40,8 @@ ProductListItem.propTypes = {
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
   isArchive: PropTypes.bool,
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  toggleItem: PropTypes.func
 };
 
 export default ProductListItem;

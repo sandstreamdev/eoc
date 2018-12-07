@@ -1,13 +1,18 @@
-import { ENDPOINT_URL } from '../../common/variables';
+export const TOGGLE_ITEM = 'TOGGLE_ITEM';
 
-// Action types
-export const FETCH_ITEMS = 'FETCH_ITEMS';
+const toggleItem = item => ({ type: TOGGLE_ITEM, item });
 
-// Action creators
-export const recieveItems = json => ({ type: FETCH_ITEMS, items: json });
-
-export const fetchItems = () => dispatch =>
-  fetch(`${ENDPOINT_URL}/items`, { credentials: 'same-origin' })
+const dispatchToggleItem = (id, isOrdered) => dispatch => {
+  fetch(`http://localhost:8080/item/${id}/update`, {
+    body: JSON.stringify({ _id: id, isOrdered: !isOrdered }),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: 'PATCH'
+  })
     .then(resp => resp.json())
-    .then(json => dispatch(recieveItems(json)))
-    .catch(err => console.error(err.message));
+    .then(item => dispatch(toggleItem(item)))
+    .catch(err => console.error(err));
+};
+
+export default dispatchToggleItem;

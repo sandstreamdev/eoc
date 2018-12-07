@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
+import dispatchToggleItem from './actions';
 
 class ProductsList extends Component {
   state = {
@@ -10,6 +12,12 @@ class ProductsList extends Component {
 
   showMore = () => {
     this.setState(({ limit }) => ({ limit: limit + 3 }));
+  };
+
+  toggleItem = (id, isOrdered) => {
+    console.log('Toggling item with _ID: ', id);
+    const { dispatchToggleItem } = this.props;
+    dispatchToggleItem(id, isOrdered);
   };
 
   render() {
@@ -31,6 +39,7 @@ class ProductsList extends Component {
                 isArchive={isArchive}
                 key={item._id}
                 name={item.name}
+                toggleItem={this.toggleItem}
               />
             ))}
           </ul>
@@ -52,4 +61,7 @@ ProductsList.propTypes = {
   products: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default ProductsList;
+export default connect(
+  null,
+  { dispatchToggleItem }
+)(ProductsList);

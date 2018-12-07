@@ -1,5 +1,6 @@
 import initialState from './initalState';
-import { FETCH_ITEMS } from '../components/ProductsList/actions';
+import { FETCH_ITEMS } from '../App/actions';
+import { TOGGLE_ITEM } from '../components/ProductsList/actions';
 import { ADD_ITEM_SUCCESS } from '../components/SearchBar/actions';
 
 const items = (state = initialState, action) => {
@@ -9,10 +10,19 @@ const items = (state = initialState, action) => {
         shoppingList: state.shoppingList.concat([action.item]).reverse()
       });
     case FETCH_ITEMS:
-      return Object.assign({}, state, {
-        archiveList: action.items.filter(item => item.isOrdered),
-        shoppingList: action.items.filter(item => !item.isOrdered).reverse()
-      });
+      console.log(action);
+      return action.items;
+    case TOGGLE_ITEM:
+      console.log(state, action);
+      //   console.log(action);
+      //   // return Object.assign({}, state, {
+      //   //   // shoppingList: state.shoppingList.map(item => {
+      //   //   //   if (item._id === action.id) {
+      //   //   //     item.isOrdered = !item.isOrdered;
+      //   //   //   }
+      //   //   // })
+      //   });
+      break;
     default:
       return state;
   }

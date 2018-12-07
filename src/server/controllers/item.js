@@ -42,12 +42,17 @@ const updateItem = (req, resp) => {
 
   const newData = filter(x => x !== undefined)({ name, isOrdered });
 
-  Item.findOneAndUpdate({ _id: req.params.id }, newData, (err, doc) => {
-    if (!doc) return resp.status(404).send('No item of given id');
-    return err
-      ? resp.status(400).send(err.message)
-      : resp.status(200).send(`Item with _ID: ${req.params.id} updated!`);
-  });
+  Item.findOneAndUpdate(
+    { _id: req.params.id },
+    newData,
+    { new: true },
+    (err, doc) => {
+      if (!doc) return resp.status(404).send('No item of given id');
+      return err
+        ? resp.status(400).send(err.message)
+        : resp.status(200).send(doc);
+    }
+  );
 };
 
 module.exports = {
