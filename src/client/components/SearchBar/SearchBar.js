@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { addItem } from './actions';
+import MessageBox from '../MessageBox';
 
 class SearchBar extends Component {
   state = {
@@ -32,9 +33,7 @@ class SearchBar extends Component {
       name: itemName
     };
 
-    addItem(newItem).catch(err => {
-      console.error(err.message);
-    });
+    addItem(newItem);
 
     this.setState({
       itemAuthor: '',
@@ -44,37 +43,51 @@ class SearchBar extends Component {
 
   render() {
     const { itemAuthor, itemName } = this.state;
+    const { newItemStatus } = this.props;
     return (
-      <div className="search-bar">
-        <form className="search-bar__form" onSubmit={this.handleFormSubmit}>
-          <input
-            className="search-bar__input"
-            onChange={this.handleNameChange}
-            placeholder="What is missing?"
-            required
-            type="text"
-            value={itemName}
+      <Fragment>
+        {newItemStatus === 'error' && (
+          <MessageBox
+            message="There was an error while adding new item. Try again later"
+            type="error"
           />
-          <input
-            className="search-bar__input"
-            onChange={this.handleAuthorChange}
-            placeholder="Your name"
-            required
-            type="text"
-            value={itemAuthor}
-          />
-          <input className="search-bar__submit" type="submit" />
-        </form>
-      </div>
+        )}
+        <div className="search-bar">
+          <form className="search-bar__form" onSubmit={this.handleFormSubmit}>
+            <input
+              className="search-bar__input"
+              onChange={this.handleNameChange}
+              placeholder="What is missing?"
+              required
+              type="text"
+              value={itemName}
+            />
+            <input
+              className="search-bar__input"
+              onChange={this.handleAuthorChange}
+              placeholder="Your name"
+              required
+              type="text"
+              value={itemAuthor}
+            />
+            <input className="search-bar__submit" type="submit" />
+          </form>
+        </div>
+      </Fragment>
     );
   }
 }
 
 SearchBar.propTypes = {
-  addItem: PropTypes.func.isRequired
+  addItem: PropTypes.func.isRequired,
+  newItemStatus: PropTypes.string
 };
 
+const mapStateToProps = state => ({
+  newItemStatus: state.uiStatus.newItemStatus
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   { addItem }
 )(SearchBar);

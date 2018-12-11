@@ -1,9 +1,31 @@
+html {
+  height: 100%;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   background-color: $app-bg;
+  height: 100%;
 }
 
 .app-wrapper {
   max-width: 560px;
   margin: 0 auto;
+  position: relative;
+}
+
+.overlay {
+  &::before {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: block;
+    content: '';
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba($bg-color, 0.75);
+    z-index: 3;
+  }
 }

@@ -1,11 +1,13 @@
 import { ENDPOINT_URL } from '../../common/variables';
 
 // Action types
+export const ADD_ITEM_ERROR = 'ADD_ITEM_ERROR';
 export const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS';
 export const ADD_ITEM = 'ADD_ITEM';
 
 // Action creators
 const addItemSuccess = item => ({ type: ADD_ITEM_SUCCESS, item });
+const addItemError = err => ({ type: ADD_ITEM_ERROR, err });
 
 // Dispatchers
 export const addItem = item => dispatch =>
@@ -17,5 +19,8 @@ export const addItem = item => dispatch =>
     method: 'POST'
   })
     .then(resp => resp.json())
-    .then(json => dispatch(addItemSuccess(json)));
-// Error handler in SearchBar component
+    .then(json => dispatch(addItemSuccess(json)))
+    .catch(err => {
+      dispatch(addItemError(err));
+      console.error(err);
+    });

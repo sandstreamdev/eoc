@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux';
 
-import items from './itemsReducer';
+import items, { uiStatus } from './itemsReducer';
 
 const rootReducer = combineReducers({
-  items
+  items,
+  uiStatus
 });
 
 export default rootReducer;

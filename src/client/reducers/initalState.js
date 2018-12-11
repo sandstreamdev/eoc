@@ -1,5 +1,7 @@
-export const items = [];
-
-export default {
-  items
+const items = [];
+const status = {
+  fetchStatus: 'true',
+  newItemStatus: 'false'
 };
+
+export { items, status };

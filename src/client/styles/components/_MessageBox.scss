@@ -1,0 +1,35 @@
+.message-box {
+  box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+  box-sizing: border-box;
+  padding: 20px 30px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  color: $text-normal;
+  z-index: 2;
+  transition: color 200ms ease-in;
+  overflow: hidden;
+  background: $bg-color;
+  margin-bottom: 20px;
+
+  &--red {
+    color: $text-white;
+    background: $message-bg-red;
+  }
+
+  &--gray {
+    color: $text-white;
+    background: $message-bg-gray;
+  }
+
+  &--green {
+    color: $text-white;
+    background: $message-bg-green;
+  }
+
+  &__img {
+    height: 14px;
+    margin-right: 16px;
+  }
+}
