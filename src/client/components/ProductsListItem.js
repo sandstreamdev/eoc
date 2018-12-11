@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { PLACEHOLDER_URL } from '../common/variables';
 
 const ProductListItem = ({
+  author,
   id,
   image = PLACEHOLDER_URL,
   isArchive,
@@ -31,12 +32,19 @@ const ProductListItem = ({
       onClick={() => toggleItem(id, isArchive)}
     >
       <img alt="Product icon" className="products-list__icon" src={image} />
-      {name}
+      <span className="products-list__data">
+        <span>{name}</span>
+        <span className="products-list__author">
+          Ordered by:&nbsp;
+          {author}
+        </span>
+      </span>
     </label>
   </li>
 );
 
 ProductListItem.propTypes = {
+  author: PropTypes.string,
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
   isArchive: PropTypes.bool,

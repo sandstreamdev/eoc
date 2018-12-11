@@ -3,10 +3,11 @@ const filter = require('../common/utilities');
 
 // Create new item
 const itemCreate = (req, resp) => {
-  const { name, isOrdered } = req.body;
+  const { author, isOrdered, name } = req.body;
   const item = new Item({
-    name,
-    isOrdered
+    author,
+    isOrdered,
+    name
   });
 
   item.save((err, doc) => {

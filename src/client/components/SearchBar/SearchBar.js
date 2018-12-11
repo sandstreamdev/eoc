@@ -6,46 +6,62 @@ import { addItem } from './actions';
 
 class SearchBar extends Component {
   state = {
-    inputValue: ''
+    itemAuthor: '',
+    itemName: ''
   };
 
-  handleInputChange = e => {
+  handleNameChange = e => {
     this.setState({
-      inputValue: e.target.value
+      itemName: e.target.value
+    });
+  };
+
+  handleAuthorChange = e => {
+    this.setState({
+      itemAuthor: e.target.value
     });
   };
 
   handleFormSubmit = e => {
     e.preventDefault();
     const { addItem } = this.props;
-    const { inputValue, itemAddError } = this.state;
+    const { itemName, itemAuthor } = this.state;
     const newItem = {
-      name: inputValue,
-      isOrdered: false
+      author: itemAuthor,
+      isOrdered: false,
+      name: itemName
     };
 
     addItem(newItem).catch(err => {
       console.error(err.message);
     });
 
-    if (!itemAddError) {
-      this.setState({
-        inputValue: ''
-      });
-    }
+    this.setState({
+      itemAuthor: '',
+      itemName: ''
+    });
   };
 
   render() {
-    const { inputValue } = this.state;
+    const { itemAuthor, itemName } = this.state;
     return (
       <div className="search-bar">
         <form className="search-bar__form" onSubmit={this.handleFormSubmit}>
           <input
             className="search-bar__input"
-            onChange={this.handleInputChange}
+            onChange={this.handleNameChange}
             placeholder="What is missing?"
+            required
             type="text"
-            value={inputValue}
+            value={itemName}
+          />
+          <input
+            className="search-bar__input"
+            onChange={this.handleAuthorChange}
+            placeholder="Your name"
+            required
+            type="text"
+            value={itemAuthor}
           />
           <input className="search-bar__submit" type="submit" />
         </form>

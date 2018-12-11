@@ -33,6 +33,7 @@ class ProductsList extends Component {
           <ul className="products-list">
             {products.slice(0, limit).map(item => (
               <ProductsListItem
+                author={item.author}
                 id={item._id}
                 image={item.image}
                 isArchive={isArchive}
