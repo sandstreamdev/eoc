@@ -1,12 +1,12 @@
 import { ENDPOINT_URL } from '../common/variables';
 
 // Action types
-export const FETCH_ITEMS = 'FETCH_ITEMS';
 export const FETCH_FAILED = 'FETCH_FAILED';
+export const FETCH_ITEMS = 'FETCH_ITEMS';
 
 // Action creators
-export const recieveItems = json => ({ type: FETCH_ITEMS, items: json });
 export const fetchItemsError = err => ({ type: FETCH_FAILED, err });
+export const recieveItems = json => ({ type: FETCH_ITEMS, items: json });
 
 // Dispatchers
 export const fetchItems = () => dispatch =>

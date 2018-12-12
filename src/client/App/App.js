@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import * as itemsActions from './actions';
-import Header from '../components/Header';
-import SearchBar from '../components/SearchBar/index';
-import ProductsContainer from '../components/ProductsContainer';
 import Footer from '../components/Footer';
-import Preloader from '../components/Preloader';
+import Header from '../components/Header';
 import MessageBox from '../components/MessageBox';
+import ProductsContainer from '../components/ProductsContainer';
+import Preloader from '../components/Preloader';
+import InputBar from '../components/InputBar/index';
 
 class App extends Component {
   componentDidMount() {
@@ -21,11 +21,12 @@ class App extends Component {
     const {
       itemsActions: { fetchItems }
     } = this.props;
+
     fetchItems();
   };
 
   render() {
-    const { items, fetchStatus } = this.props;
+    const { fetchStatus, items } = this.props;
     const archiveList = items.filter(item => item.isOrdered).reverse();
     const shoppingList = items.filter(item => !item.isOrdered).reverse();
 
@@ -43,7 +44,7 @@ class App extends Component {
           />
         )}
 
-        <SearchBar />
+        <InputBar />
         <ProductsContainer products={shoppingList} />
         <ProductsContainer isArchive products={archiveList} />
         <Footer />
@@ -60,8 +61,8 @@ App.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  items: state.items,
-  fetchStatus: state.uiStatus.fetchStatus
+  fetchStatus: state.uiStatus.fetchStatus,
+  items: state.items
 });
 
 const mapDispatchToProps = dispatch => ({

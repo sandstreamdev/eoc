@@ -26,7 +26,7 @@ class SearchBar extends Component {
   handleFormSubmit = e => {
     e.preventDefault();
     const { addItem } = this.props;
-    const { itemName, itemAuthor } = this.state;
+    const { itemAuthor, itemName } = this.state;
     const newItem = {
       author: itemAuthor,
       isOrdered: false,

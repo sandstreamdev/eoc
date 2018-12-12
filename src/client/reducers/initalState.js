@@ -1,7 +1,7 @@
 const items = [];
 const status = {
   fetchStatus: 'true',
-  newItemStatus: 'false'
+  newItemStatus: 'true'
 };
 
 export { items, status };

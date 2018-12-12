@@ -1,10 +1,10 @@
 import { items as itemsInitialState, status } from './initalState';
-import { FETCH_ITEMS, FETCH_FAILED } from '../App/actions';
+import { FETCH_FAILED, FETCH_ITEMS } from '../App/actions';
 import { TOGGLE_ITEM } from '../components/ProductsList/actions';
 import {
-  ADD_ITEM_SUCCESS,
-  ADD_ITEM_ERROR
-} from '../components/SearchBar/actions';
+  ADD_ITEM_ERROR,
+  ADD_ITEM_SUCCESS
+} from '../components/InputBar/actions';
 
 const items = (state = itemsInitialState, action) => {
   switch (action.type) {
@@ -24,6 +24,11 @@ const items = (state = itemsInitialState, action) => {
   }
 };
 
+/**
+ * Use string instead of booleans to indicate status of fetching
+ * items or adding a new item status. Eg. For pending state: "true",
+ * for resolved state: "false", for error: "error".
+ */
 const uiStatus = (state = status, action) => {
   switch (action.type) {
     case FETCH_FAILED:
@@ -34,13 +39,13 @@ const uiStatus = (state = status, action) => {
       return Object.assign({}, state, {
         fetchStatus: 'false'
       });
-    case ADD_ITEM_SUCCESS:
-      return Object.assign({}, state, {
-        newItemStatus: 'false'
-      });
     case ADD_ITEM_ERROR:
       return Object.assign({}, state, {
         newItemStatus: 'error'
+      });
+    case ADD_ITEM_SUCCESS:
+      return Object.assign({}, state, {
+        newItemStatus: 'false'
       });
     default:
       return state;
