@@ -42,7 +42,6 @@ App.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  addItemSuccess: state.addItemSuccess,
   archiveList: state.items.archiveList,
   shoppingList: state.items.shoppingList
 });
