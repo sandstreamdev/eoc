@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import * as itemsActions from './actions';
+import { fetchItems } from './actions';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import MessageBox from '../components/MessageBox';
@@ -18,9 +17,7 @@ class App extends Component {
   }
 
   fetchItems = () => {
-    const {
-      itemsActions: { fetchItems }
-    } = this.props;
+    const { fetchItems } = this.props;
 
     fetchItems();
   };
@@ -57,7 +54,7 @@ class App extends Component {
 App.propTypes = {
   fetchStatus: PropTypes.string,
   items: PropTypes.arrayOf(PropTypes.object),
-  itemsActions: PropTypes.objectOf(PropTypes.func)
+  fetchItems: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -65,11 +62,7 @@ const mapStateToProps = state => ({
   items: state.items
 });
 
-const mapDispatchToProps = dispatch => ({
-  itemsActions: bindActionCreators(itemsActions, dispatch)
-});
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  { fetchItems }
 )(App);
