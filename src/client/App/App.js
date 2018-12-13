@@ -36,8 +36,8 @@ class App extends Component {
           overlay: fetchStatus === 'true'
         })}
       >
-        <a href="localhost:8080/auth/google">Sign In with Google</a>
-        <a href="localhost:8080/logout">Logout</a>
+        <a href="http://localhost:8080/auth/google">Sign In with Google</a>
+        <a href="http://localhost:8080/logout">Logout</a>
         <Header />
         {fetchStatus === 'error' && (
           <MessageBox

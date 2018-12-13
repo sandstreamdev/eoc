@@ -40,14 +40,15 @@ app.get('/', (req, resp) => resp.status(200).send('Hello World'));
 app.get('/auth/google', authenticate);
 
 app.get('/auth/google/callback', authenticateCallback, (req, res) => {
-  console.log('REQ.USER', req.user);
-  res.redirect('/');
+  res.redirect('http://localhost:3000/');
 });
 
 app.get('/logout', (req, res) => {
-  console.log('Logging out!');
-  req.logout();
-  res.redirect('/');
+  req.session.destroy(() => {
+    console.log('Logging out!');
+    req.logout();
+    res.redirect('http://localhost:3000/');
+  });
 });
 
 app.listen(8080, () => console.info('Listening on port 8080!'));
