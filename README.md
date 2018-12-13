@@ -70,6 +70,11 @@ npm start
 
 ## Documentation
 
+### Docker
+
+To run project within Docker containers simply clone this repo, install Docker on your machine and the in the root foolder of this app run
+`docker-compose up`. There will be three containers running, one for the client, second for the server, third for the database. The app will be available under `localhost:3000` .
+
 ### Run MongoDB locally
 
 To run MongoDB locally you need to clone all the files from this repository and then in the root directory run in terminal: <br/> `sudo mongod`
