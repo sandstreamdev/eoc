@@ -28,7 +28,7 @@ class App extends Component {
         <Header />
         <SearchBar />
         <ProductsContainer products={shoppingList} />
-        <ProductsContainer isArchive products={archiveList} />
+        <ProductsContainer archived products={archiveList} />
         <Footer />
       </div>
     );

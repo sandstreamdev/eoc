@@ -3,22 +3,22 @@ import PropTypes from 'prop-types';
 
 import { ProductsList } from './ProductsList';
 
-const ProductsContainer = ({ isArchive, products }) => (
+const ProductsContainer = ({ archived, products }) => (
   <div className="products">
     <header className="products__header">
       <h2 className="products__heading">
-        {isArchive ? 'Orders history' : 'Products list'}
+        {archived ? 'Orders history' : 'Products list'}
       </h2>
       <span className="products__info">
-        {isArchive ? 'Restore item' : 'Mark as ordered'}
+        {archived ? 'Restore item' : 'Mark as ordered'}
       </span>
     </header>
-    <ProductsList isArchive={isArchive} products={products} />
+    <ProductsList archived={archived} products={products} />
   </div>
 );
 
 ProductsContainer.propTypes = {
-  isArchive: PropTypes.bool,
+  archived: PropTypes.bool,
   products: PropTypes.arrayOf(PropTypes.object)
 };
 

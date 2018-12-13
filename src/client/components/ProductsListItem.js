@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 
 import { PLACEHOLDER_URL } from '../common/variables';
 
-const ProductListItem = ({ id, image = PLACEHOLDER_URL, isArchive, name }) => (
+const ProductListItem = ({ id, image = PLACEHOLDER_URL, archived, name }) => (
   <li
     className={classNames({
       'products-list__item': true,
-      'products-list__item--blue': isArchive,
-      'products-list__item--green': !isArchive
+      'products-list__item--blue': archived,
+      'products-list__item--green': !archived
     })}
   >
     <input
@@ -32,7 +32,7 @@ const ProductListItem = ({ id, image = PLACEHOLDER_URL, isArchive, name }) => (
 ProductListItem.propTypes = {
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
-  isArchive: PropTypes.bool,
+  archived: PropTypes.bool,
   name: PropTypes.string.isRequired
 };
 
