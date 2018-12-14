@@ -5,12 +5,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import * as itemsActions from './actions';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
-import MessageBox from '../components/MessageBox';
-import ProductsContainer from '../components/ProductsContainer';
-import Preloader from '../components/Preloader';
-import InputBar from '../components/InputBar/index';
+import Footer from '../Footer';
+import Header from '../Header';
+import MessageBox from '../MessageBox';
+import ProductsContainer from '../ProductsContainer';
+import Preloader from '../Preloader';
+import UserBar from '../UserBar';
+import InputBar from '../InputBar/index';
 
 class App extends Component {
   componentDidMount() {
@@ -36,8 +37,7 @@ class App extends Component {
           overlay: fetchStatus === 'true'
         })}
       >
-        <a href="http://localhost:8080/auth/google">Sign In with Google</a>
-        <a href="http://localhost:8080/logout">Logout</a>
+        <UserBar />
         <Header />
         {fetchStatus === 'error' && (
           <MessageBox
@@ -45,7 +45,6 @@ class App extends Component {
             type="error"
           />
         )}
-
         <InputBar />
         <ProductsContainer products={shoppingList} />
         <ProductsContainer isArchive products={archiveList} />

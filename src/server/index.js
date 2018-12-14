@@ -18,7 +18,7 @@ const dbUrl = DB_URL;
 mongoose.connect(dbUrl);
 
 app.use(cookieParser());
-app.use(session({ secret: 'keyboard cat' }));
+app.use(session({ secret: 'keyboard cat', unset: 'destroy' }));
 app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
 app.use(bodyParser.json());
 app.use(cors());
@@ -40,6 +40,15 @@ app.get('/', (req, resp) => resp.status(200).send('Hello World'));
 app.get('/auth/google', authenticate);
 
 app.get('/auth/google/callback', authenticateCallback, (req, res) => {
+  console.log('Logged in', req.session.passport.user);
+  req.session.token = req.user.token;
+  // res.cookie(
+  //   'user',
+  //   JSON.stringify({ id: req.user.id, displayName: req.user.displayName })
+  // );
+  res.cookie('user_name', req.user.displayName);
+  res.cookie('user_id', req.user.id);
+  console.log({ user: req.user });
   res.redirect('http://localhost:3000/');
 });
 
@@ -47,6 +56,10 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     console.log('Logging out!');
     req.logout();
+
+    res.clearCookie('connect.sid');
+    res.clearCookie('user_name');
+    res.clearCookie('user_id');
     res.redirect('http://localhost:3000/');
   });
 });

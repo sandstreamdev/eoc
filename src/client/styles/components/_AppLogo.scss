@@ -1,0 +1,18 @@
+.app-logo {
+  display: flex;
+  align-items: center;
+
+  &__icon {
+    height: 20px;
+  }
+
+  &__text {
+    font-size: 28px;
+    line-height: 1.2;
+    display: block;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px $text-light;
+    color: $brand-color;
+    margin-right: 8px;
+  }
+}

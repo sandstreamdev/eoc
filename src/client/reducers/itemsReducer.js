@@ -1,5 +1,5 @@
 import { items as itemsInitialState, status } from './initalState';
-import { FETCH_FAILED, FETCH_ITEMS } from '../App/actions';
+import { FETCH_FAILED, FETCH_ITEMS } from '../components/App/actions';
 import { TOGGLE_ITEM } from '../components/ProductsList/actions';
 import {
   ADD_ITEM_ERROR,

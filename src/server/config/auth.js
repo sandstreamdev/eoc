@@ -14,6 +14,8 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       /* TODO check if user exist and than safe in database */
+      // console.log(`AccesToken: ${accessToken}, refreshToken: ${refreshToken}`);
+      console.log({ profile });
       User.create(
         { googleId: profile.id, displayName: profile.displayName },
         (err, user) => done(err, user)
