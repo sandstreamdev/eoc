@@ -36,25 +36,25 @@ app.use('/items', items);
 // Root endpoint
 app.get('/', (req, resp) => resp.status(200).send('Hello World'));
 
-// Authentication routes
+app.listen(8080, () => console.info('Listening on port 8080!'));
+
+/**
+ * Authentication routes
+ */
 app.get('/auth/google', authenticate);
 
 app.get('/auth/google/callback', authenticateCallback, (req, res) => {
-  console.log('Logged in', req.session.passport.user);
   req.session.token = req.user.token;
-  // res.cookie(
-  //   'user',
-  //   JSON.stringify({ id: req.user.id, displayName: req.user.displayName })
-  // );
+
+  // Set user cookies
   res.cookie('user_name', req.user.displayName);
   res.cookie('user_id', req.user.id);
-  console.log({ user: req.user });
+
   res.redirect('http://localhost:3000/');
 });
 
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
-    console.log('Logging out!');
     req.logout();
 
     res.clearCookie('connect.sid');
@@ -63,5 +63,3 @@ app.get('/logout', (req, res) => {
     res.redirect('http://localhost:3000/');
   });
 });
-
-app.listen(8080, () => console.info('Listening on port 8080!'));

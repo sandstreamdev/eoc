@@ -1,9 +1,9 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const User = require('../models/user.model');
 const { ENDPOINT_URL } = require('../common/variables');
 
+// Use GoogleStrategy to authenicate user
 passport.use(
   new GoogleStrategy(
     {
@@ -13,25 +13,17 @@ passport.use(
       callbackURL: `${ENDPOINT_URL}/auth/google/callback`
     },
     (accessToken, refreshToken, profile, done) => {
-      /* TODO check if user exist and than safe in database */
-      // console.log(`AccesToken: ${accessToken}, refreshToken: ${refreshToken}`);
-      console.log({ profile });
-      User.create(
-        { googleId: profile.id, displayName: profile.displayName },
-        (err, user) => done(err, user)
-      );
+      done(null, profile);
     }
   )
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });
 
 const authenticate = passport.authenticate('google', {
@@ -39,7 +31,7 @@ const authenticate = passport.authenticate('google', {
 });
 
 const authenticateCallback = passport.authenticate('google', {
-  failureRedirect: '/login'
+  failureRedirect: '/'
 });
 
 module.exports = { authenticate, authenticateCallback };
