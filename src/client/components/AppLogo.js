@@ -6,7 +6,7 @@ import { PROJECT_NAME } from '../common/variables';
 const AppLogo = () => (
   <div className="app-logo">
     <span className="app-logo__text">{PROJECT_NAME}</span>
-    <img className="app-logo__icon" src={AppIcon} alt="Coffee icon" />
+    <img alt="Coffee icon" className="app-logo__icon" src={AppIcon} />
   </div>
 );
 

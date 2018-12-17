@@ -25,20 +25,13 @@ const items = (state = itemsInitialState, action) => {
 };
 
 /**
+ * Information for uiStatus reducer.
  * Use string instead of booleans to indicate status of fetching
  * items or adding a new item status. Eg. For pending state: "true",
  * for resolved state: "false", for error: "error".
  */
 const uiStatus = (state = status, action) => {
   switch (action.type) {
-    case FETCH_FAILED:
-      return Object.assign({}, state, {
-        fetchStatus: 'error'
-      });
-    case FETCH_ITEMS:
-      return Object.assign({}, state, {
-        fetchStatus: 'false'
-      });
     case ADD_ITEM_ERROR:
       return Object.assign({}, state, {
         newItemStatus: 'error'
@@ -46,6 +39,14 @@ const uiStatus = (state = status, action) => {
     case ADD_ITEM_SUCCESS:
       return Object.assign({}, state, {
         newItemStatus: 'false'
+      });
+    case FETCH_FAILED:
+      return Object.assign({}, state, {
+        fetchStatus: 'error'
+      });
+    case FETCH_ITEMS:
+      return Object.assign({}, state, {
+        fetchStatus: 'false'
       });
     default:
       return state;

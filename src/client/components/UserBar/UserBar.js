@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { PLACEHOLDER_URL, ENDPOINT_URL } from '../../common/variables';
+import { ENDPOINT_URL, PLACEHOLDER_URL } from '../../common/variables';
 import { logoutCurrentUser } from './actions';
 
 class UserBar extends Component {
@@ -27,7 +27,10 @@ class UserBar extends Component {
             src={PLACEHOLDER_URL}
           />
 
-          <span className="user-bar__user-data">{currentUser}</span>
+          <div className="user-bar__logged">
+            <span className="user-bar__user-data">Logged as:</span>
+            <span className="user-bar__user-data">{currentUser}</span>
+          </div>
 
           <a
             className="user-bar__logout"
@@ -47,8 +50,8 @@ class UserBar extends Component {
 }
 
 UserBar.propTypes = {
-  logoutCurrentUser: PropTypes.func,
-  currentUser: PropTypes.string
+  currentUser: PropTypes.string,
+  logoutCurrentUser: PropTypes.func
 };
 
 const mapStateToProps = state => ({

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 import * as itemsActions from './actions';
 import Footer from '../Footer';
 import Header from '../Header';
+import InputBar from '../InputBar/index';
 import MessageBox from '../MessageBox';
 import ProductsContainer from '../ProductsContainer';
 import Preloader from '../Preloader';
 import UserBar from '../UserBar';
-import InputBar from '../InputBar/index';
 
 class App extends Component {
   componentDidMount() {
