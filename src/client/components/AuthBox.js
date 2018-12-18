@@ -10,7 +10,8 @@ const AuthBox = () => (
       <span className="authbox__subheading">When the fridge is empty...</span>
     </div>
 
-    <div className="autbox__buttons">
+    <div className="authbox__buttons">
+      <h1 className="authbox__heading">Sign in:</h1>
       <a className="google-button" href={`${ENDPOINT_URL}/auth/google`}>
         <img
           alt="Google Icon"

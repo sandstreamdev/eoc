@@ -10,6 +10,7 @@ const item = require('./routes/item');
 const items = require('./routes/items');
 const { DB_URL } = require('./common/variables');
 const { authenticate, authenticateCallback } = require('./config/auth');
+const { logout, setUserAndSession } = require('./controllers/userAuth');
 
 const app = express();
 
@@ -43,23 +44,6 @@ app.listen(8080, () => console.info('Listening on port 8080!'));
  */
 app.get('/auth/google', authenticate);
 
-app.get('/auth/google/callback', authenticateCallback, (req, res) => {
-  req.session.token = req.user.token;
+app.get('/auth/google/callback', authenticateCallback, setUserAndSession);
 
-  // Set user cookies
-  res.cookie('user_name', req.user.displayName);
-  res.cookie('user_id', req.user.id);
-
-  res.redirect('http://localhost:3000/');
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    req.logout();
-
-    res.clearCookie('connect.sid');
-    res.clearCookie('user_name');
-    res.clearCookie('user_id');
-    res.redirect('http://localhost:3000/');
-  });
-});
+app.get('/logout', logout);
