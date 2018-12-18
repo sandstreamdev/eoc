@@ -5,9 +5,8 @@ import PropTypes from 'prop-types';
 import { addItem } from './actions';
 import MessageBox from '../MessageBox';
 
-class SearchBar extends Component {
+class InputBar extends Component {
   state = {
-    itemAuthor: '',
     itemName: ''
   };
 
@@ -17,18 +16,12 @@ class SearchBar extends Component {
     });
   };
 
-  handleAuthorChange = e => {
-    this.setState({
-      itemAuthor: e.target.value
-    });
-  };
-
   handleFormSubmit = e => {
     e.preventDefault();
-    const { addItem } = this.props;
-    const { itemAuthor, itemName } = this.state;
+    const { addItem, currentUser } = this.props;
+    const { itemName } = this.state;
     const newItem = {
-      author: itemAuthor,
+      author: currentUser,
       isOrdered: false,
       name: itemName
     };
@@ -36,13 +29,12 @@ class SearchBar extends Component {
     addItem(newItem);
 
     this.setState({
-      itemAuthor: '',
       itemName: ''
     });
   };
 
   render() {
-    const { itemAuthor, itemName } = this.state;
+    const { itemName } = this.state;
     const { newItemStatus } = this.props;
     return (
       <Fragment>
@@ -52,25 +44,17 @@ class SearchBar extends Component {
             type="error"
           />
         )}
-        <div className="search-bar">
-          <form className="search-bar__form" onSubmit={this.handleFormSubmit}>
+        <div className="input-bar">
+          <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
             <input
-              className="search-bar__input"
+              className="input-bar__input"
               onChange={this.handleNameChange}
               placeholder="What is missing?"
               required
               type="text"
               value={itemName}
             />
-            <input
-              className="search-bar__input"
-              onChange={this.handleAuthorChange}
-              placeholder="Your name"
-              required
-              type="text"
-              value={itemAuthor}
-            />
-            <input className="search-bar__submit" type="submit" />
+            <input className="input-bar__submit" type="submit" />
           </form>
         </div>
       </Fragment>
@@ -78,16 +62,18 @@ class SearchBar extends Component {
   }
 }
 
-SearchBar.propTypes = {
+InputBar.propTypes = {
   addItem: PropTypes.func.isRequired,
+  currentUser: PropTypes.string,
   newItemStatus: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-  newItemStatus: state.uiStatus.newItemStatus
+  newItemStatus: state.uiStatus.newItemStatus,
+  currentUser: state.currentUser
 });
 
 export default connect(
   mapStateToProps,
   { addItem }
-)(SearchBar);
+)(InputBar);
