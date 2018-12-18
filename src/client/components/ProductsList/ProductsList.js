@@ -3,20 +3,22 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
-import dispatchToggleItem from './actions';
+import toggle from './actions';
+
+const DISPLAY_LIMIT = 3;
 
 class ProductsList extends Component {
   state = {
-    limit: 3
+    limit: DISPLAY_LIMIT
   };
 
   showMore = () => {
-    this.setState(({ limit }) => ({ limit: limit + 3 }));
+    this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
   toggleItem = (id, isOrdered) => {
-    const { dispatchToggleItem } = this.props;
-    dispatchToggleItem(id, isOrdered);
+    const { toggle } = this.props;
+    toggle(id, isOrdered);
   };
 
   render() {
@@ -57,12 +59,12 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  dispatchToggleItem: PropTypes.func,
+  toggle: PropTypes.func,
   isArchive: PropTypes.bool,
   products: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default connect(
   null,
-  { dispatchToggleItem }
+  { toggle }
 )(ProductsList);

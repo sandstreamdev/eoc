@@ -13,8 +13,7 @@ const ProductListItem = ({
   toggleItem
 }) => (
   <li
-    className={classNames({
-      'products-list__item': true,
+    className={classNames('products-list__item', {
       'products-list__item--blue': isArchive,
       'products-list__item--green': !isArchive
     })}
@@ -34,10 +33,7 @@ const ProductListItem = ({
       <img alt="Product icon" className="products-list__icon" src={image} />
       <span className="products-list__data">
         <span>{name}</span>
-        <span className="products-list__author">
-          Ordered by:&nbsp;
-          {author}
-        </span>
+        <span className="products-list__author">{`Ordered by: ${author}`}</span>
       </span>
     </label>
   </li>

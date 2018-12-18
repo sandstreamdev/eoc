@@ -2,19 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { messageType } from '../common/enums';
+
 const MessageBox = ({ message, type }) => (
   <div
-    className={classNames({
-      'message-box': true,
-      'message-box--green': type === 'success',
-      'message-box--red': type === 'error',
-      'message-box--gray': type === 'info'
+    className={classNames('message-box', {
+      'message-box--green': type === messageType.SUCCESS,
+      'message-box--red': type === messageType.ERROR,
+      'message-box--gray': type === messageType.INFO
     })}
   >
     <img
-      src="src/client/assets/images/info-solid.svg"
       alt="Info icon"
       className="message-box__img"
+      src="src/client/assets/images/info-solid.svg"
     />
     <p className="message-box__content">{message}</p>
   </div>
@@ -22,7 +23,7 @@ const MessageBox = ({ message, type }) => (
 
 MessageBox.propTypes = {
   message: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.oneOf(['success', 'error', 'info'])
 };
 
 export default MessageBox;

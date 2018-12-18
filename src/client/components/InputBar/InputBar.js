@@ -33,12 +33,14 @@ class SearchBar extends Component {
       name: itemName
     };
 
-    addItem(newItem);
-
-    this.setState({
-      itemAuthor: '',
-      itemName: ''
-    });
+    addItem(newItem)
+      .then(() => {
+        this.setState({
+          itemAuthor: '',
+          itemName: ''
+        });
+      })
+      .catch(err => console.error(err.message));
   };
 
   render() {

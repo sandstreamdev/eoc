@@ -2,7 +2,7 @@ import { items as itemsInitialState, status } from './initalState';
 import { FETCH_FAILED, FETCH_ITEMS } from '../App/actions';
 import { TOGGLE_ITEM } from '../components/ProductsList/actions';
 import {
-  ADD_ITEM_ERROR,
+  ADD_ITEM_FAILURE,
   ADD_ITEM_SUCCESS
 } from '../components/InputBar/actions';
 
@@ -39,7 +39,7 @@ const uiStatus = (state = status, action) => {
       return Object.assign({}, state, {
         fetchStatus: 'false'
       });
-    case ADD_ITEM_ERROR:
+    case ADD_ITEM_FAILURE:
       return Object.assign({}, state, {
         newItemStatus: 'error'
       });

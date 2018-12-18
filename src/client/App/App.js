@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { fetchItems } from './actions';
+import { getItems } from '../selectors';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import MessageBox from '../components/MessageBox';
@@ -24,8 +25,9 @@ class App extends Component {
 
   render() {
     const { fetchStatus, items } = this.props;
-    const archiveList = items.filter(item => item.isOrdered).reverse();
-    const shoppingList = items.filter(item => !item.isOrdered).reverse();
+    const reversedItem = items.reverse();
+    const archiveList = reversedItem.filter(item => item.isOrdered);
+    const shoppingList = reversedItem.filter(item => !item.isOrdered);
 
     return (
       <div
@@ -40,7 +42,6 @@ class App extends Component {
             type="error"
           />
         )}
-
         <InputBar />
         <ProductsContainer products={shoppingList} />
         <ProductsContainer isArchive products={archiveList} />
@@ -54,12 +55,13 @@ class App extends Component {
 App.propTypes = {
   fetchStatus: PropTypes.string,
   items: PropTypes.arrayOf(PropTypes.object),
+
   fetchItems: PropTypes.func
 };
 
 const mapStateToProps = state => ({
   fetchStatus: state.uiStatus.fetchStatus,
-  items: state.items
+  items: getItems(state)
 });
 
 export default connect(

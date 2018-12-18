@@ -2,12 +2,12 @@ import { ENDPOINT_URL } from '../../common/variables';
 
 // Action types
 export const ADD_ITEM = 'ADD_ITEM';
-export const ADD_ITEM_ERROR = 'ADD_ITEM_ERROR';
+export const ADD_ITEM_FAILURE = 'ADD_ITEM_FAILURE';
 export const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS';
 
 // Action creators
-const addItemError = err => ({ type: ADD_ITEM_ERROR, err });
-const addItemSuccess = item => ({ type: ADD_ITEM_SUCCESS, item });
+export const addItemError = err => ({ type: ADD_ITEM_FAILURE, err });
+export const addItemSuccess = item => ({ type: ADD_ITEM_SUCCESS, item });
 
 // Dispatchers
 export const addItem = item => dispatch =>
@@ -19,5 +19,10 @@ export const addItem = item => dispatch =>
     method: 'POST'
   })
     .then(resp => resp.json())
-    .then(json => dispatch(addItemSuccess(json)))
-    .catch(err => dispatch(addItemError(err)));
+    .then(json => {
+      dispatch(addItemSuccess(json));
+    })
+    .catch(err => {
+      dispatch(addItemError(err));
+      throw new Error('There was an error while adding new item.');
+    });
