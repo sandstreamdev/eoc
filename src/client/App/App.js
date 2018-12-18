@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { fetchItems } from './actions';
-import { getItems } from '../selectors';
+import { getItems, getFetchStatus } from '../selectors';
+import { statusType } from '../common/enums';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import MessageBox from '../components/MessageBox';
@@ -32,11 +33,11 @@ class App extends Component {
     return (
       <div
         className={classNames('app-wrapper', {
-          overlay: fetchStatus === 'true'
+          overlay: fetchStatus === statusType.PENDING
         })}
       >
         <Header />
-        {fetchStatus === 'error' && (
+        {fetchStatus === statusType.ERROR && (
           <MessageBox
             message="Fetching failed. Try to refresh the page."
             type="error"
@@ -46,7 +47,9 @@ class App extends Component {
         <ProductsContainer products={shoppingList} />
         <ProductsContainer isArchive products={archiveList} />
         <Footer />
-        {fetchStatus === 'true' && <Preloader message="Fetching data..." />}
+        {fetchStatus === statusType.PENDING && (
+          <Preloader message="Fetching data..." />
+        )}
       </div>
     );
   }
@@ -60,7 +63,7 @@ App.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.uiStatus.fetchStatus,
+  fetchStatus: getFetchStatus(state),
   items: getItems(state)
 });
 

@@ -5,6 +5,7 @@ import {
   ADD_ITEM_FAILURE,
   ADD_ITEM_SUCCESS
 } from '../components/InputBar/actions';
+import { statusType } from '../common/enums';
 
 const items = (state = itemsInitialState, action) => {
   switch (action.type) {
@@ -33,19 +34,19 @@ const uiStatus = (state = status, action) => {
   switch (action.type) {
     case FETCH_FAILED:
       return Object.assign({}, state, {
-        fetchStatus: 'error'
+        fetchStatus: statusType.ERROR
       });
     case FETCH_ITEMS:
       return Object.assign({}, state, {
-        fetchStatus: 'false'
+        fetchStatus: statusType.RESOLVED
       });
     case ADD_ITEM_FAILURE:
       return Object.assign({}, state, {
-        newItemStatus: 'error'
+        newItemStatus: statusType.ERROR
       });
     case ADD_ITEM_SUCCESS:
       return Object.assign({}, state, {
-        newItemStatus: 'false'
+        newItemStatus: statusType.RESOLVED
       });
     default:
       return state;

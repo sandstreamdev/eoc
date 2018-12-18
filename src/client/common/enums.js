@@ -4,4 +4,10 @@ const messageType = Object.freeze({
   SUCCESS: 'success'
 });
 
-export { messageType };
+const statusType = Object.freeze({
+  PENDING: 'pending',
+  RESOLVED: 'resolved',
+  ERROR: 'error'
+});
+
+export { messageType, statusType };
