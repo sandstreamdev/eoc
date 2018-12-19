@@ -16,7 +16,7 @@ const toggle = (id, isOrdered) => dispatch => {
     method: 'PATCH'
   })
     .then(resp => resp.json())
-    .then(item => setTimeout(() => dispatch(toggleItem(item)), 500))
+    .then(item => dispatch(toggleItem(item)))
     .catch(err => console.error(err));
 };
 

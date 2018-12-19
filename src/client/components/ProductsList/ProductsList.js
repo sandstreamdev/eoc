@@ -59,9 +59,10 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  toggle: PropTypes.func,
   isArchive: PropTypes.bool,
-  products: PropTypes.arrayOf(PropTypes.object)
+  products: PropTypes.arrayOf(PropTypes.object),
+
+  toggle: PropTypes.func
 };
 
 export default connect(

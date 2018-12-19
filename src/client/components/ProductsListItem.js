@@ -45,6 +45,7 @@ ProductListItem.propTypes = {
   image: PropTypes.string,
   isArchive: PropTypes.bool,
   name: PropTypes.string.isRequired,
+
   toggleItem: PropTypes.func
 };
 

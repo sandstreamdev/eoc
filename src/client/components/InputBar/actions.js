@@ -11,7 +11,7 @@ export const addItemSuccess = item => ({ type: ADD_ITEM_SUCCESS, item });
 
 // Dispatchers
 export const addItem = item => dispatch =>
-  fetch(`${ENDPOINT_URL}/item/create`, {
+  fetch(`${ENDPOINT_URL}/item/createe`, {
     body: JSON.stringify(item),
     headers: {
       'Content-Type': 'application/json'
@@ -19,9 +19,7 @@ export const addItem = item => dispatch =>
     method: 'POST'
   })
     .then(resp => resp.json())
-    .then(json => {
-      dispatch(addItemSuccess(json));
-    })
+    .then(json => dispatch(addItemSuccess(json)))
     .catch(err => {
       dispatch(addItemError(err));
       throw new Error('There was an error while adding new item.');

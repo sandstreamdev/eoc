@@ -1,4 +1,5 @@
 const getItems = state => state.items;
 const getFetchStatus = state => state.uiStatus.fetchStatus;
+const getNewItemStatus = state => state.uiStatus.newItemStatus;
 
-export { getItems, getFetchStatus };
+export { getItems, getFetchStatus, getNewItemStatus };

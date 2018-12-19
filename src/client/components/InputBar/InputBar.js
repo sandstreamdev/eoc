@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { addItem } from './actions';
 import MessageBox from '../MessageBox';
+import { getNewItemStatus } from '../../selectors';
 
 class SearchBar extends Component {
   state = {
@@ -81,12 +82,13 @@ class SearchBar extends Component {
 }
 
 SearchBar.propTypes = {
-  addItem: PropTypes.func.isRequired,
-  newItemStatus: PropTypes.string
+  newItemStatus: PropTypes.string,
+
+  addItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  newItemStatus: state.uiStatus.newItemStatus
+  newItemStatus: getNewItemStatus(state)
 });
 
 export default connect(
