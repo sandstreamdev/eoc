@@ -22,9 +22,8 @@ class ProductsList extends Component {
   };
 
   render() {
-    const { isArchive, products } = this.props;
+    const { archived, products } = this.props;
     const { limit } = this.state;
-
     return (
       <Fragment>
         {!products.length ? (
@@ -38,7 +37,7 @@ class ProductsList extends Component {
                 author={item.author}
                 id={item._id}
                 image={item.image}
-                isArchive={isArchive}
+                archived={archived}
                 key={item._id}
                 name={item.name}
                 toggleItem={this.toggleItem}
@@ -59,7 +58,7 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  isArchive: PropTypes.bool,
+  archived: PropTypes.bool,
   products: PropTypes.arrayOf(PropTypes.object),
 
   toggle: PropTypes.func

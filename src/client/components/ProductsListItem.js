@@ -8,14 +8,14 @@ const ProductListItem = ({
   author,
   id,
   image = PLACEHOLDER_URL,
-  isArchive,
+  archived,
   name,
   toggleItem
 }) => (
   <li
     className={classNames('products-list__item', {
-      'products-list__item--blue': isArchive,
-      'products-list__item--green': !isArchive
+      'products-list__item--blue': archived,
+      'products-list__item--green': !archived
     })}
   >
     <input
@@ -28,7 +28,7 @@ const ProductListItem = ({
       className="products-list__label"
       htmlFor={`option${id}`}
       id={`option${id}`}
-      onClick={() => toggleItem(id, isArchive)}
+      onClick={() => toggleItem(id, archived)}
     >
       <img alt="Product icon" className="products-list__icon" src={image} />
       <span className="products-list__data">
@@ -43,7 +43,7 @@ ProductListItem.propTypes = {
   author: PropTypes.string,
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
-  isArchive: PropTypes.bool,
+  archived: PropTypes.bool,
   name: PropTypes.string.isRequired,
 
   toggleItem: PropTypes.func
