@@ -11,7 +11,7 @@ export const addItemSuccess = item => ({ type: ADD_ITEM_SUCCESS, item });
 
 // Dispatchers
 export const addItem = item => dispatch =>
-  fetch(`${ENDPOINT_URL}/item/createe`, {
+  fetch(`${ENDPOINT_URL}/item/create`, {
     body: JSON.stringify(item),
     headers: {
       'Content-Type': 'application/json'
