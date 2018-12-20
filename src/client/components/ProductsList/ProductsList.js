@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
 import dispatchToggleItem from './actions';
+import { getCurrentUser } from '../../selectors';
 
 class ProductsList extends Component {
   state = {
@@ -14,9 +15,22 @@ class ProductsList extends Component {
     this.setState(({ limit }) => ({ limit: limit + 3 }));
   };
 
-  toggleItem = (id, isOrdered) => {
+  toggleItem = (author, id, isOrdered) => {
     const { dispatchToggleItem } = this.props;
-    dispatchToggleItem(id, isOrdered);
+    const {
+      currentUser: { name }
+    } = this.props;
+
+    /**
+     * If an item was ordered, check item author
+     * and update author if neccessary to point
+     * who is ordering this time.
+     */
+    !isOrdered
+      ? dispatchToggleItem(id, isOrdered)
+      : author !== name
+      ? dispatchToggleItem(id, isOrdered, name)
+      : dispatchToggleItem(id, isOrdered);
   };
 
   render() {
@@ -57,12 +71,18 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  dispatchToggleItem: PropTypes.func,
+  currentUser: PropTypes.objectOf(PropTypes.string),
   isArchive: PropTypes.bool,
-  products: PropTypes.arrayOf(PropTypes.object)
+  products: PropTypes.arrayOf(PropTypes.object),
+
+  dispatchToggleItem: PropTypes.func
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   { dispatchToggleItem }
 )(ProductsList);

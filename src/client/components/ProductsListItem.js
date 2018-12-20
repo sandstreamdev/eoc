@@ -29,7 +29,7 @@ const ProductListItem = ({
       className="products-list__label"
       htmlFor={`option${id}`}
       id={`option${id}`}
-      onClick={() => toggleItem(id, isArchive)}
+      onClick={() => toggleItem(author, id, isArchive)}
     >
       <img alt="Product icon" className="products-list__icon" src={image} />
       <span className="products-list__data">

@@ -4,9 +4,14 @@ export const TOGGLE_ITEM = 'TOGGLE_ITEM';
 
 const toggleItem = item => ({ type: TOGGLE_ITEM, item });
 
-const dispatchToggleItem = (id, isOrdered) => dispatch => {
+const dispatchToggleItem = (id, isOrdered, updatedAuthor) => dispatch => {
+  console.log('updatedAuthor: ', updatedAuthor);
   fetch(`${ENDPOINT_URL}/item/${id}/update`, {
-    body: JSON.stringify({ _id: id, isOrdered: !isOrdered }),
+    body: JSON.stringify({
+      _id: id,
+      isOrdered: !isOrdered,
+      author: updatedAuthor
+    }),
     headers: {
       'Content-Type': 'application/json'
     },
