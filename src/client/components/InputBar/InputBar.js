@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { addItem } from './actions';
 import MessageBox from '../MessageBox';
+import { getNewItemStatus, getCurrentUser } from '../../selectors';
 
 class InputBar extends Component {
   state = {
@@ -21,7 +22,7 @@ class InputBar extends Component {
     const { addItem, currentUser } = this.props;
     const { itemName } = this.state;
     const newItem = {
-      author: currentUser,
+      author: currentUser.name,
       isOrdered: false,
       name: itemName
     };
@@ -63,14 +64,15 @@ class InputBar extends Component {
 }
 
 InputBar.propTypes = {
-  addItem: PropTypes.func.isRequired,
-  currentUser: PropTypes.string,
-  newItemStatus: PropTypes.string
+  currentUser: PropTypes.objectOf(PropTypes.string),
+  newItemStatus: PropTypes.string,
+
+  addItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  newItemStatus: state.uiStatus.newItemStatus,
-  currentUser: state.currentUser
+  newItemStatus: getNewItemStatus(state),
+  currentUser: getCurrentUser(state)
 });
 
 export default connect(

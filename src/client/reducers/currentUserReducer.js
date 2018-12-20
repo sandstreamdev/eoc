@@ -5,7 +5,7 @@ import { LOGOUT_USER } from '../components/UserBar/actions';
 const user = (state = currentUser, action) => {
   switch (action.type) {
     case FETCH_CURRENT_USER: {
-      return action.payload ? action.payload : null;
+      return Object.assign({}, state, action.payload);
     }
     case LOGOUT_USER:
       return null;

@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { ENDPOINT_URL, PLACEHOLDER_URL } from '../../common/variables';
+import { ENDPOINT_URL } from '../../common/variables';
 import { logoutCurrentUser } from './actions';
+import { getCurrentUser } from '../../selectors';
 
 class UserBar extends Component {
   handleLogOut = () => {
@@ -17,19 +18,17 @@ class UserBar extends Component {
   };
 
   render() {
-    const { currentUser } = this.props;
+    const {
+      currentUser: { avatar, name }
+    } = this.props;
     return (
       <div className="user-bar">
         <div className="user-bar__wrapper">
-          <img
-            alt="User avatar"
-            className="user-bar__avatar"
-            src={PLACEHOLDER_URL}
-          />
+          <img alt="User avatar" className="user-bar__avatar" src={avatar} />
 
           <div className="user-bar__logged">
             <span className="user-bar__user-data">Logged as:</span>
-            <span className="user-bar__user-data">{currentUser}</span>
+            <span className="user-bar__user-data">{name}</span>
           </div>
 
           <a
@@ -50,12 +49,12 @@ class UserBar extends Component {
 }
 
 UserBar.propTypes = {
-  currentUser: PropTypes.string,
+  currentUser: PropTypes.objectOf(PropTypes.string),
   logoutCurrentUser: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser
+  currentUser: getCurrentUser(state)
 });
 
 export default connect(

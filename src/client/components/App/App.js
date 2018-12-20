@@ -12,6 +12,7 @@ import MessageBox from '../MessageBox';
 import ProductsContainer from '../ProductsContainer';
 import Preloader from '../Preloader';
 import UserBar from '../UserBar';
+import { getFetchStatus, getItems } from '../../selectors';
 
 class App extends Component {
   componentDidMount() {
@@ -62,8 +63,8 @@ App.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.uiStatus.fetchStatus,
-  items: state.items
+  fetchStatus: getFetchStatus(state),
+  items: getItems(state)
 });
 
 const mapDispatchToProps = dispatch => ({

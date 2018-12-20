@@ -6,6 +6,7 @@ import AuthBox from '../AuthBox';
 import App from '../App';
 import { getCookie } from '../../common/utilites';
 import { fetchCurrentUser } from './actions';
+import { getCurrentUser } from '../../selectors';
 
 class Main extends Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class Main extends Component {
 
   componentDidMount() {
     this.setState({
-      isLogged: !!getCookie('user_name')
+      isLogged: !!getCookie('user')
     });
   }
 
@@ -42,7 +43,7 @@ Main.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser
+  currentUser: getCurrentUser(state)
 });
 
 export default connect(

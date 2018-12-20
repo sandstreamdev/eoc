@@ -11,7 +11,7 @@ export const getCurrentUser = user => ({
 
 // Dispatcher
 export const fetchCurrentUser = () => dispatch => {
-  const user = decodeURIComponent(getCookie('user_name'));
+  const user = JSON.parse(decodeURIComponent(getCookie('user')));
 
   dispatch(getCurrentUser(user));
 };

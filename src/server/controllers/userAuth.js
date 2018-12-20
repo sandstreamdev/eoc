@@ -2,8 +2,14 @@ const setUserAndSession = (req, res) => {
   req.session.token = req.user.token;
 
   // Set user cookies
-  res.cookie('user_name', req.user.displayName);
-  res.cookie('user_id', req.user.id);
+  res.cookie(
+    'user',
+    JSON.stringify({
+      name: req.user.displayName,
+      id: req.user.id,
+      avatar: req.user.photos[0].value
+    })
+  );
 
   res.redirect('http://localhost:3000/');
 };
@@ -13,8 +19,7 @@ const logout = (req, res) => {
     req.logout();
 
     res.clearCookie('connect.sid');
-    res.clearCookie('user_name');
-    res.clearCookie('user_id');
+    res.clearCookie('user');
     res.redirect('http://localhost:3000/');
   });
 };
