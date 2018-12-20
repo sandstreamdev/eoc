@@ -25,7 +25,6 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(express.static('../../dist'));
 
 // Endpoint for all operations related with /item
