@@ -12,6 +12,7 @@ import MessageBox from '../components/MessageBox';
 import ProductsContainer from '../components/ProductsContainer';
 import Preloader from '../components/Preloader';
 import InputBar from '../components/InputBar';
+import { StatusPropType } from '../common/propTypes';
 
 class App extends Component {
   componentDidMount() {
@@ -56,7 +57,7 @@ class App extends Component {
 }
 
 App.propTypes = {
-  fetchStatus: PropTypes.oneOf(['pending', 'error', 'resolved']),
+  fetchStatus: StatusPropType.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
 
   fetchItems: PropTypes.func
