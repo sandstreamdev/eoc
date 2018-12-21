@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 import { PLACEHOLDER_URL } from '../common/variables';
 
 const ProductListItem = ({
+  archived,
   author,
   id,
   image = PLACEHOLDER_URL,
-  archived,
   name,
   toggleItem
 }) => (
@@ -40,10 +40,10 @@ const ProductListItem = ({
 );
 
 ProductListItem.propTypes = {
+  archived: PropTypes.bool,
   author: PropTypes.string,
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
-  archived: PropTypes.bool,
   name: PropTypes.string.isRequired,
 
   toggleItem: PropTypes.func

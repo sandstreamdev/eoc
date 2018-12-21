@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import { fetchItems } from './actions';
 import { getItems, getFetchStatus } from '../selectors';
-import { StatusType } from '../common/enums';
+import { StatusType, MessageType } from '../common/enums';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import MessageBox from '../components/MessageBox';
@@ -41,7 +41,7 @@ class App extends Component {
         {fetchStatus === StatusType.ERROR && (
           <MessageBox
             message="Fetching failed. Try to refresh the page."
-            type="error"
+            type={MessageType.ERROR}
           />
         )}
         <InputBar />

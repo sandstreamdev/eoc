@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { addItem } from './actions';
 import MessageBox from '../MessageBox';
 import { getNewItemStatus } from '../../selectors';
-import { StatusType } from '../../common/enums';
+import { StatusType, MessageType } from '../../common/enums';
 import { StatusPropType } from '../../common/propTypes';
 
 class InputBar extends Component {
@@ -54,7 +54,7 @@ class InputBar extends Component {
         {newItemStatus === StatusType.ERROR && (
           <MessageBox
             message="There was an error while adding new item. Try again later"
-            type="error"
+            type={MessageType.ERROR}
           />
         )}
         <div className="search-bar">
