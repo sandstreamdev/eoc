@@ -5,8 +5,10 @@ import PropTypes from 'prop-types';
 import { addItem } from './actions';
 import MessageBox from '../MessageBox';
 import { getNewItemStatus } from '../../selectors';
+import { StatusType } from '../../common/enums';
+import { StatusPropType } from '../../common/propTypes';
 
-class SearchBar extends Component {
+class InputBar extends Component {
   state = {
     itemAuthor: '',
     itemName: ''
@@ -49,7 +51,7 @@ class SearchBar extends Component {
     const { newItemStatus } = this.props;
     return (
       <Fragment>
-        {newItemStatus === 'error' && (
+        {newItemStatus === StatusType.ERROR && (
           <MessageBox
             message="There was an error while adding new item. Try again later"
             type="error"
@@ -81,8 +83,8 @@ class SearchBar extends Component {
   }
 }
 
-SearchBar.propTypes = {
-  newItemStatus: PropTypes.string,
+InputBar.propTypes = {
+  newItemStatus: StatusPropType.isRequired,
 
   addItem: PropTypes.func.isRequired
 };
@@ -94,4 +96,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { addItem }
-)(SearchBar);
+)(InputBar);

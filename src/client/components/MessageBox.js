@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { MessageType } from '../common/enums';
+import { MessagePropType } from '../common/propTypes';
 
 const MessageBox = ({ message, type }) => (
   <div
@@ -23,7 +24,7 @@ const MessageBox = ({ message, type }) => (
 
 MessageBox.propTypes = {
   message: PropTypes.string,
-  type: PropTypes.oneOf(['success', 'error', 'info'])
+  type: MessagePropType.isRequired
 };
 
 export default MessageBox;
