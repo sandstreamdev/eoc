@@ -4,10 +4,16 @@ import PropTypes from 'prop-types';
 
 import { PLACEHOLDER_URL } from '../common/variables';
 
-const ProductListItem = ({ id, image = PLACEHOLDER_URL, archived, name }) => (
+const ProductListItem = ({
+  archived,
+  author,
+  id,
+  image = PLACEHOLDER_URL,
+  name,
+  toggleItem
+}) => (
   <li
-    className={classNames({
-      'products-list__item': true,
+    className={classNames('products-list__item', {
       'products-list__item--blue': archived,
       'products-list__item--green': !archived
     })}
@@ -22,18 +28,25 @@ const ProductListItem = ({ id, image = PLACEHOLDER_URL, archived, name }) => (
       className="products-list__label"
       htmlFor={`option${id}`}
       id={`option${id}`}
+      onClick={() => toggleItem(id, archived)}
     >
       <img alt="Product icon" className="products-list__icon" src={image} />
-      {name}
+      <span className="products-list__data">
+        <span>{name}</span>
+        <span className="products-list__author">{`Ordered by: ${author}`}</span>
+      </span>
     </label>
   </li>
 );
 
 ProductListItem.propTypes = {
+  archived: PropTypes.bool,
+  author: PropTypes.string,
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
-  archived: PropTypes.bool,
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+
+  toggleItem: PropTypes.func
 };
 
 export default ProductListItem;

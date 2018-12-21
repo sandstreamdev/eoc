@@ -1,5 +1,5 @@
 .search-bar {
-  padding: 20px 0;
+  padding: 0 0 20px;
 
   &__input {
     border: 1px solid $border-color;
@@ -17,9 +17,24 @@
     &:hover {
       box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
     }
+
+    &:nth-child(1) {
+      flex: 66%;
+      margin-right: 8px;
+    }
+
+    &:nth-child(2) {
+      flex: 33%;
+    }
   }
 
   &__submit {
     display: none;
+  }
+
+  &__form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }

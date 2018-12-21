@@ -1,4 +1,4 @@
-/*
+/**
  * Table of content
  * 1. Global
  * 2. Colors
@@ -16,7 +16,10 @@
 @import './containers/app';
 
 // 4. Components
-@import './components/Header';
-@import './components/SearchBar';
-@import './components/ProductsContainer';
 @import './components/Footer';
+@import './components/Header';
+@import './components/MessageBox';
+@import './components/Preloader';
+@import './components/ProductsContainer';
+@import './components/ProductsList';
+@import './components/SearchBar';
