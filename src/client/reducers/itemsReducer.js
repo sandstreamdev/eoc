@@ -8,17 +8,18 @@ import {
 import { statusType } from '../common/enums';
 
 const items = (state = itemsInitialState, action) => {
-  switch (action.type) {
+  const { type } = action;
+  switch (type) {
     case ADD_ITEM_SUCCESS:
-      return state.concat([action.item]);
+      return [...state, action.item];
     case FETCH_ITEMS:
       return action.items;
     case TOGGLE_ITEM: {
-      const index = state.findIndex(item => item._id === action.item._id);
-      return state
-        .slice(0, index)
-        .concat(state.slice(index + 1))
-        .concat([action.item]);
+      return state.map(item =>
+        item._id === action.item._id
+          ? { ...item, isOrdered: !item.isOrdered }
+          : item
+      );
     }
     default:
       return state;
@@ -33,21 +34,25 @@ const items = (state = itemsInitialState, action) => {
 const uiStatus = (state = status, action) => {
   switch (action.type) {
     case FETCH_FAILED:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         fetchStatus: statusType.ERROR
-      });
+      };
     case FETCH_ITEMS:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         fetchStatus: statusType.RESOLVED
-      });
+      };
     case ADD_ITEM_FAILURE:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         newItemStatus: statusType.ERROR
-      });
+      };
     case ADD_ITEM_SUCCESS:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         newItemStatus: statusType.RESOLVED
-      });
+      };
     default:
       return state;
   }
