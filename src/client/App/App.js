@@ -5,13 +5,13 @@ import classNames from 'classnames';
 
 import { fetchItems } from './actions';
 import { getItems, getFetchStatus } from '../selectors';
-import { statusType } from '../common/enums';
+import { StatusType } from '../common/enums';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import MessageBox from '../components/MessageBox';
 import ProductsContainer from '../components/ProductsContainer';
 import Preloader from '../components/Preloader';
-import InputBar from '../components/InputBar/index';
+import InputBar from '../components/InputBar';
 
 class App extends Component {
   componentDidMount() {
@@ -33,11 +33,11 @@ class App extends Component {
     return (
       <div
         className={classNames('app-wrapper', {
-          overlay: fetchStatus === statusType.PENDING
+          overlay: fetchStatus === StatusType.PENDING
         })}
       >
         <Header />
-        {fetchStatus === statusType.ERROR && (
+        {fetchStatus === StatusType.ERROR && (
           <MessageBox
             message="Fetching failed. Try to refresh the page."
             type="error"
@@ -47,7 +47,7 @@ class App extends Component {
         <ProductsContainer products={shoppingList} />
         <ProductsContainer archived products={archiveList} />
         <Footer />
-        {fetchStatus === statusType.PENDING && (
+        {fetchStatus === StatusType.PENDING && (
           <Preloader message="Fetching data..." />
         )}
       </div>
@@ -56,7 +56,7 @@ class App extends Component {
 }
 
 App.propTypes = {
-  fetchStatus: PropTypes.string,
+  fetchStatus: PropTypes.oneOf(['pending', 'error', 'resolved']),
   items: PropTypes.arrayOf(PropTypes.object),
 
   fetchItems: PropTypes.func

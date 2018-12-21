@@ -1,13 +1,13 @@
-const messageType = Object.freeze({
+const MessageType = Object.freeze({
   ERROR: 'error',
   INFO: 'info',
   SUCCESS: 'success'
 });
 
-const statusType = Object.freeze({
+const StatusType = Object.freeze({
   PENDING: 'pending',
   RESOLVED: 'resolved',
   ERROR: 'error'
 });
 
-export { messageType, statusType };
+export { MessageType, StatusType };

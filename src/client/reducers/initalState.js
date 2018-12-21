@@ -1,9 +1,9 @@
-import { statusType } from '../common/enums';
+import { StatusType } from '../common/enums';
 
 const items = [];
-const status = {
-  fetchStatus: statusType.PENDING,
-  newItemStatus: statusType.RESOLVED
+const initialStatus = {
+  fetchStatus: StatusType.PENDING,
+  newItemStatus: StatusType.RESOLVED
 };
 
-export { items, status };
+export { items, initialStatus };

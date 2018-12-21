@@ -1,11 +1,11 @@
-import { items as itemsInitialState, status } from './initalState';
+import { items as itemsInitialState, initialStatus } from './initalState';
 import { FETCH_FAILED, FETCH_ITEMS } from '../App/actions';
 import { TOGGLE_ITEM } from '../components/ProductsList/actions';
 import {
   ADD_ITEM_FAILURE,
   ADD_ITEM_SUCCESS
 } from '../components/InputBar/actions';
-import { statusType } from '../common/enums';
+import { StatusType } from '../common/enums';
 
 const items = (state = itemsInitialState, action) => {
   const { type } = action;
@@ -31,27 +31,27 @@ const items = (state = itemsInitialState, action) => {
  * items or adding a new item status. Eg. For pending state: "true",
  * for resolved state: "false", for error: "error".
  */
-const uiStatus = (state = status, action) => {
+const uiStatus = (state = initialStatus, action) => {
   switch (action.type) {
     case FETCH_FAILED:
       return {
         ...state,
-        fetchStatus: statusType.ERROR
+        fetchStatus: StatusType.ERROR
       };
     case FETCH_ITEMS:
       return {
         ...state,
-        fetchStatus: statusType.RESOLVED
+        fetchStatus: StatusType.RESOLVED
       };
     case ADD_ITEM_FAILURE:
       return {
         ...state,
-        newItemStatus: statusType.ERROR
+        newItemStatus: StatusType.ERROR
       };
     case ADD_ITEM_SUCCESS:
       return {
         ...state,
-        newItemStatus: statusType.RESOLVED
+        newItemStatus: StatusType.RESOLVED
       };
     default:
       return state;

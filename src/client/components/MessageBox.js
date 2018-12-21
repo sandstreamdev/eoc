@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { messageType } from '../common/enums';
+import { MessageType } from '../common/enums';
 
 const MessageBox = ({ message, type }) => (
   <div
     className={classNames('message-box', {
-      'message-box--green': type === messageType.SUCCESS,
-      'message-box--red': type === messageType.ERROR,
-      'message-box--gray': type === messageType.INFO
+      'message-box--green': type === MessageType.SUCCESS,
+      'message-box--red': type === MessageType.ERROR,
+      'message-box--gray': type === MessageType.INFO
     })}
   >
     <img
