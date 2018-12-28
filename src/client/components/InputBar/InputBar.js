@@ -57,10 +57,10 @@ class InputBar extends Component {
             type={MessageType.ERROR}
           />
         )}
-        <div className="search-bar">
-          <form className="search-bar__form" onSubmit={this.handleFormSubmit}>
+        <div className="input-bar">
+          <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
             <input
-              className="search-bar__input"
+              className="input-bar__input"
               onChange={this.handleNameChange}
               placeholder="What is missing?"
               required
@@ -68,14 +68,14 @@ class InputBar extends Component {
               value={itemName}
             />
             <input
-              className="search-bar__input"
+              className="input-bar__input"
               onChange={this.handleAuthorChange}
               placeholder="Your name"
               required
               type="text"
               value={itemAuthor}
             />
-            <input className="search-bar__submit" type="submit" />
+            <input className="input-bar__submit" type="submit" />
           </form>
         </div>
       </Fragment>
