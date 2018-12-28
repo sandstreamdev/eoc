@@ -1,0 +1,39 @@
+.input-bar {
+  padding: 0 0 20px;
+
+  &__input {
+    border: 1px solid $border-color;
+    padding: 10px 15px;
+    border-radius: 3px;
+    font-size: 16px;
+    width: 100%;
+    color: $text-normal;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: $text-light;
+    }
+
+    &:hover {
+      box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+    }
+
+    &:nth-child(1) {
+      flex: 66%;
+    }
+
+    &:nth-child(2) {
+      flex: 33%;
+    }
+  }
+
+  &__submit {
+    display: none;
+  }
+
+  &__form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
