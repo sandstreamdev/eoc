@@ -1,10 +1,13 @@
 import { ENDPOINT_URL } from '../../common/variables';
 
+// Action types
 export const TOGGLE_ITEM = 'TOGGLE_ITEM';
 
+// Action creators
 const toggleItem = item => ({ type: TOGGLE_ITEM, item });
 
-const dispatchToggleItem = (id, isOrdered) => dispatch => {
+// Dispatchers
+const toggle = (id, isOrdered) => dispatch => {
   fetch(`${ENDPOINT_URL}/item/${id}/update`, {
     body: JSON.stringify({ _id: id, isOrdered: !isOrdered }),
     headers: {
@@ -17,4 +20,4 @@ const dispatchToggleItem = (id, isOrdered) => dispatch => {
     .catch(err => console.error(err));
 };
 
-export default dispatchToggleItem;
+export default toggle;

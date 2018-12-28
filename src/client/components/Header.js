@@ -11,7 +11,7 @@ const Header = props => (
   <div className="app-header">
     <div className="app-header__logo">
       <span className="app-header__text">{PROJECT_NAME}</span>
-      <img className="app-header__icon" src={AppIcon} alt="Coffee icon" />
+      <img alt="Coffee icon" className="app-header__icon" src={AppIcon} />
     </div>
     <a
       className="app-header__link"

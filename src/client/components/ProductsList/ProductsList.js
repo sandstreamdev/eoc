@@ -3,26 +3,27 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
-import dispatchToggleItem from './actions';
+import toggle from './actions';
+
+const DISPLAY_LIMIT = 3;
 
 class ProductsList extends Component {
   state = {
-    limit: 3
+    limit: DISPLAY_LIMIT
   };
 
   showMore = () => {
-    this.setState(({ limit }) => ({ limit: limit + 3 }));
+    this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
   toggleItem = (id, isOrdered) => {
-    const { dispatchToggleItem } = this.props;
-    dispatchToggleItem(id, isOrdered);
+    const { toggle } = this.props;
+    toggle(id, isOrdered);
   };
 
   render() {
-    const { isArchive, products } = this.props;
+    const { archived, products } = this.props;
     const { limit } = this.state;
-
     return (
       <Fragment>
         {!products.length ? (
@@ -33,10 +34,10 @@ class ProductsList extends Component {
           <ul className="products-list">
             {products.slice(0, limit).map(item => (
               <ProductsListItem
+                archived={archived}
                 author={item.author}
                 id={item._id}
                 image={item.image}
-                isArchive={isArchive}
                 key={item._id}
                 name={item.name}
                 toggleItem={this.toggleItem}
@@ -57,12 +58,13 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  dispatchToggleItem: PropTypes.func,
-  isArchive: PropTypes.bool,
-  products: PropTypes.arrayOf(PropTypes.object)
+  archived: PropTypes.bool,
+  products: PropTypes.arrayOf(PropTypes.object),
+
+  toggle: PropTypes.func
 };
 
 export default connect(
   null,
-  { dispatchToggleItem }
+  { toggle }
 )(ProductsList);
