@@ -1,6 +1,5 @@
-const getCurrentUser = state => state.currentUser;
-const getNewItemStatus = state => state.uiStatus.newItemStatus;
-const getFetchStatus = state => state.uiStatus.fetchStatus;
 const getItems = state => state.items;
+const getFetchStatus = state => state.uiStatus.fetchStatus;
+const getNewItemStatus = state => state.uiStatus.newItemStatus;
 
-export { getCurrentUser, getFetchStatus, getNewItemStatus, getItems };
+export { getItems, getFetchStatus, getNewItemStatus };
