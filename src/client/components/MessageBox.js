@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { MessageType } from '../common/enums';
+import { MessagePropType } from '../common/propTypes';
+
 const MessageBox = ({ message, type }) => (
   <div
-    className={classNames({
-      'message-box': true,
-      'message-box--green': type === 'success',
-      'message-box--red': type === 'error',
-      'message-box--gray': type === 'info'
+    className={classNames('message-box', {
+      'message-box--green': type === MessageType.SUCCESS,
+      'message-box--red': type === MessageType.ERROR,
+      'message-box--gray': type === MessageType.INFO
     })}
   >
     <img
@@ -22,7 +24,7 @@ const MessageBox = ({ message, type }) => (
 
 MessageBox.propTypes = {
   message: PropTypes.string,
-  type: PropTypes.string
+  type: MessagePropType.isRequired
 };
 
 export default MessageBox;

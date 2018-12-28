@@ -3,20 +3,22 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
-import dispatchToggleItem from './actions';
 import { getCurrentUser } from '../../selectors';
+import toggle from './actions';
+
+const DISPLAY_LIMIT = 3;
 
 class ProductsList extends Component {
   state = {
-    limit: 3
+    limit: DISPLAY_LIMIT
   };
 
   showMore = () => {
-    this.setState(({ limit }) => ({ limit: limit + 3 }));
+    this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
   toggleItem = (author, id, isOrdered) => {
-    const { dispatchToggleItem } = this.props;
+    const { toggle } = this.props;
     const {
       currentUser: { name }
     } = this.props;
@@ -27,16 +29,15 @@ class ProductsList extends Component {
      * who is ordering this time.
      */
     !isOrdered
-      ? dispatchToggleItem(id, isOrdered)
+      ? toggle(id, isOrdered)
       : author !== name
-      ? dispatchToggleItem(id, isOrdered, name)
-      : dispatchToggleItem(id, isOrdered);
+      ? toggle(id, isOrdered, name)
+      : toggle(id, isOrdered);
   };
 
   render() {
-    const { isArchive, products } = this.props;
+    const { archived, products } = this.props;
     const { limit } = this.state;
-
     return (
       <Fragment>
         {!products.length ? (
@@ -47,10 +48,10 @@ class ProductsList extends Component {
           <ul className="products-list">
             {products.slice(0, limit).map(item => (
               <ProductsListItem
+                archived={archived}
                 author={item.author}
                 id={item._id}
                 image={item.image}
-                isArchive={isArchive}
                 key={item._id}
                 name={item.name}
                 toggleItem={this.toggleItem}
@@ -71,11 +72,11 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
+  archived: PropTypes.bool,
   currentUser: PropTypes.objectOf(PropTypes.string),
-  isArchive: PropTypes.bool,
   products: PropTypes.arrayOf(PropTypes.object),
 
-  dispatchToggleItem: PropTypes.func
+  toggle: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -84,5 +85,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { dispatchToggleItem }
+  { toggle }
 )(ProductsList);

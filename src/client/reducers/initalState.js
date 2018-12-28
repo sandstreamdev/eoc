@@ -1,8 +1,10 @@
+import { StatusType } from '../common/enums';
+
 const currentUser = null;
 const items = [];
-const status = {
-  fetchStatus: 'true',
-  newItemStatus: 'true'
+const initialStatus = {
+  fetchStatus: StatusType.PENDING,
+  newItemStatus: StatusType.RESOLVED
 };
 
-export { currentUser, items, status };
+export { currentUser, items, initialStatus };

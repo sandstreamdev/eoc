@@ -4,13 +4,10 @@ import PropTypes from 'prop-types';
 
 import { addItem } from './actions';
 import MessageBox from '../MessageBox';
-import { getNewItemStatus } from '../../selectors';
-import { StatusType, MessageType } from '../../common/enums';
-import { StatusPropType } from '../../common/propTypes';
+import { getNewItemStatus, getCurrentUser } from '../../selectors';
 
 class InputBar extends Component {
   state = {
-    itemAuthor: '',
     itemName: ''
   };
 
@@ -20,62 +17,45 @@ class InputBar extends Component {
     });
   };
 
-  handleAuthorChange = e => {
-    this.setState({
-      itemAuthor: e.target.value
-    });
-  };
-
   handleFormSubmit = e => {
     e.preventDefault();
-    const { addItem } = this.props;
-    const { itemAuthor, itemName } = this.state;
+    const { addItem, currentUser } = this.props;
+    const { itemName } = this.state;
     const newItem = {
-      author: itemAuthor,
+      author: currentUser.name,
       isOrdered: false,
       name: itemName
     };
 
-    addItem(newItem)
-      .then(() => {
-        this.setState({
-          itemAuthor: '',
-          itemName: ''
-        });
-      })
-      .catch(err => console.error(err.message));
+    addItem(newItem);
+
+    this.setState({
+      itemName: ''
+    });
   };
 
   render() {
-    const { itemAuthor, itemName } = this.state;
+    const { itemName } = this.state;
     const { newItemStatus } = this.props;
     return (
       <Fragment>
-        {newItemStatus === StatusType.ERROR && (
+        {newItemStatus === 'error' && (
           <MessageBox
             message="There was an error while adding new item. Try again later"
-            type={MessageType.ERROR}
+            type="error"
           />
         )}
-        <div className="search-bar">
-          <form className="search-bar__form" onSubmit={this.handleFormSubmit}>
+        <div className="input-bar">
+          <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
             <input
-              className="search-bar__input"
+              className="input-bar__input"
               onChange={this.handleNameChange}
               placeholder="What is missing?"
               required
               type="text"
               value={itemName}
             />
-            <input
-              className="search-bar__input"
-              onChange={this.handleAuthorChange}
-              placeholder="Your name"
-              required
-              type="text"
-              value={itemAuthor}
-            />
-            <input className="search-bar__submit" type="submit" />
+            <input className="input-bar__submit" type="submit" />
           </form>
         </div>
       </Fragment>
@@ -84,13 +64,15 @@ class InputBar extends Component {
 }
 
 InputBar.propTypes = {
-  newItemStatus: StatusPropType.isRequired,
+  currentUser: PropTypes.objectOf(PropTypes.string),
+  newItemStatus: PropTypes.string,
 
   addItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  newItemStatus: getNewItemStatus(state)
+  newItemStatus: getNewItemStatus(state),
+  currentUser: getCurrentUser(state)
 });
 
 export default connect(
