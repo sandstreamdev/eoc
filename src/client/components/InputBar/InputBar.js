@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { addItem } from './actions';
 import MessageBox from '../MessageBox';
 import { getNewItemStatus, getCurrentUser } from '../../selectors';
+import { StatusType, MessageType } from '../../common/enums';
+import { StatusPropType } from '../../common/propTypes';
 
 class InputBar extends Component {
   state = {
@@ -39,10 +41,10 @@ class InputBar extends Component {
     const { newItemStatus } = this.props;
     return (
       <Fragment>
-        {newItemStatus === 'error' && (
+        {newItemStatus === StatusType.ERROR && (
           <MessageBox
             message="There was an error while adding new item. Try again later"
-            type="error"
+            type={MessageType.ERROR}
           />
         )}
         <div className="input-bar">
@@ -65,7 +67,7 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: PropTypes.objectOf(PropTypes.string),
-  newItemStatus: PropTypes.string,
+  newItemStatus: StatusPropType.isRequired,
 
   addItem: PropTypes.func.isRequired
 };

@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import * as itemsActions from './actions';
 import Footer from '../Footer';
 import Header from '../Header';
 import InputBar from '../InputBar/index';
@@ -15,6 +13,7 @@ import UserBar from '../UserBar';
 import { getFetchStatus, getItems } from '../../selectors';
 import { StatusType, MessageType } from '../../common/enums';
 import { StatusPropType } from '../../common/propTypes';
+import { fetchItems } from './actions';
 
 class App extends Component {
   componentDidMount() {
@@ -22,17 +21,15 @@ class App extends Component {
   }
 
   fetchItems = () => {
-    const {
-      itemsActions: { fetchItems }
-    } = this.props;
-
+    const { fetchItems } = this.props;
     fetchItems();
   };
 
   render() {
     const { fetchStatus, items } = this.props;
-    const archiveList = items.filter(item => item.isOrdered).reverse();
-    const shoppingList = items.filter(item => !item.isOrdered).reverse();
+    const reversedItem = items.reverse();
+    const archiveList = reversedItem.filter(item => item.isOrdered);
+    const shoppingList = reversedItem.filter(item => !item.isOrdered);
 
     return (
       <div
@@ -50,7 +47,7 @@ class App extends Component {
         )}
         <InputBar />
         <ProductsContainer products={shoppingList} />
-        <ProductsContainer isArchive products={archiveList} />
+        <ProductsContainer archived products={archiveList} />
         <Footer />
         {fetchStatus === StatusType.PENDING && (
           <Preloader message="Fetching data..." />
@@ -63,7 +60,8 @@ class App extends Component {
 App.propTypes = {
   fetchStatus: StatusPropType.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
-  itemsActions: PropTypes.objectOf(PropTypes.func)
+
+  fetchItems: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -71,11 +69,7 @@ const mapStateToProps = state => ({
   items: getItems(state)
 });
 
-const mapDispatchToProps = dispatch => ({
-  itemsActions: bindActionCreators(itemsActions, dispatch)
-});
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  { fetchItems }
 )(App);
