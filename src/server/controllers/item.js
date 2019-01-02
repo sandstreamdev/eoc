@@ -40,7 +40,6 @@ const deleteItemById = (req, resp) => {
 // Update item by given id
 const updateItem = (req, resp) => {
   const { name, isOrdered, author } = req.body;
-
   const newData = filter(x => x !== undefined)({ name, isOrdered, author });
 
   Item.findOneAndUpdate(

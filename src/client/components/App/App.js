@@ -13,6 +13,8 @@ import ProductsContainer from '../ProductsContainer';
 import Preloader from '../Preloader';
 import UserBar from '../UserBar';
 import { getFetchStatus, getItems } from '../../selectors';
+import { StatusType, MessageType } from '../../common/enums';
+import { StatusPropType } from '../../common/propTypes';
 
 class App extends Component {
   componentDidMount() {
@@ -35,29 +37,31 @@ class App extends Component {
     return (
       <div
         className={classNames('app-wrapper', {
-          overlay: fetchStatus === 'true'
+          overlay: fetchStatus === StatusType.PENDING
         })}
       >
         <UserBar />
         <Header />
-        {fetchStatus === 'error' && (
+        {fetchStatus === StatusType.ERROR && (
           <MessageBox
             message="Fetching failed. Try to refresh the page."
-            type="error"
+            type={MessageType.ERROR}
           />
         )}
         <InputBar />
         <ProductsContainer products={shoppingList} />
         <ProductsContainer isArchive products={archiveList} />
         <Footer />
-        {fetchStatus === 'true' && <Preloader message="Fetching data..." />}
+        {fetchStatus === StatusType.PENDING && (
+          <Preloader message="Fetching data..." />
+        )}
       </div>
     );
   }
 }
 
 App.propTypes = {
-  fetchStatus: PropTypes.string,
+  fetchStatus: StatusPropType.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
   itemsActions: PropTypes.objectOf(PropTypes.func)
 };

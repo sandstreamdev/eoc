@@ -36,7 +36,7 @@ class ProductsList extends Component {
   };
 
   render() {
-    const { archived, products } = this.props;
+    const { products } = this.props;
     const { limit } = this.state;
     return (
       <Fragment>
@@ -48,7 +48,7 @@ class ProductsList extends Component {
           <ul className="products-list">
             {products.slice(0, limit).map(item => (
               <ProductsListItem
-                archived={archived}
+                archived={item.isOrdered}
                 author={item.author}
                 id={item._id}
                 image={item.image}
@@ -72,7 +72,6 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  archived: PropTypes.bool,
   currentUser: PropTypes.objectOf(PropTypes.string),
   products: PropTypes.arrayOf(PropTypes.object),
 
