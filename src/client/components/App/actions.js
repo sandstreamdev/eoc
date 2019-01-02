@@ -12,7 +12,5 @@ export const recieveItems = json => ({ type: FETCH_ITEMS, items: json });
 export const fetchItems = () => dispatch =>
   fetch(`${ENDPOINT_URL}/items`, { credentials: 'same-origin' })
     .then(resp => resp.json())
-    .then(json => {
-      setTimeout(() => dispatch(recieveItems(json)), 1500);
-    })
-    .catch(err => setTimeout(() => dispatch(fetchItemsError(err)), 1500));
+    .then(json => dispatch(recieveItems(json)))
+    .catch(err => dispatch(fetchItemsError(err)));

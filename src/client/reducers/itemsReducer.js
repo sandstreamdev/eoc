@@ -26,19 +26,14 @@ const items = (state = itemsInitialState, action) => {
   }
 };
 
-/**
- * Information for uiStatus reducer.
- * Use string instead of booleans to indicate status of fetching
- * items or adding a new item status. Eg. For pending state: "true",
- * for resolved state: "false", for error: "error".
- */
 const uiStatus = (state = initialStatus, action) => {
   switch (action.type) {
-    case FETCH_FAILED:
+    case FETCH_FAILED: {
       return {
         ...state,
         fetchStatus: StatusType.ERROR
       };
+    }
     case FETCH_ITEMS:
       return {
         ...state,
