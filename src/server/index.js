@@ -17,6 +17,8 @@ app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use(express.static('../../dist'));
+
 // Endpoint for all operations related with /item
 app.use('/item', item);
 

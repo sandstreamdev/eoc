@@ -10,6 +10,7 @@
     "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon src/server/index.js",
+    "server-prod": "node src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "lint": "eslint -c .eslintrc \"src/**/*.js\" --fix",
     "prettier": "prettier --config .prettierrc --write src/**/*.js && prettier --config .prettierrc --write src/**/*.scss"
