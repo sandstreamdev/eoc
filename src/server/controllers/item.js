@@ -7,7 +7,8 @@ const itemCreate = (req, resp) => {
   const item = new Item({
     author,
     isOrdered,
-    name
+    name,
+    createdAt: Date.now()
   });
 
   item.save((err, doc) => {
@@ -40,7 +41,12 @@ const deleteItemById = (req, resp) => {
 // Update item by given id
 const updateItem = (req, resp) => {
   const { name, isOrdered, author } = req.body;
-  const newData = filter(x => x !== undefined)({ name, isOrdered, author });
+  const newData = filter(x => x !== undefined)({
+    name,
+    isOrdered,
+    author,
+    createdAt: Date.now()
+  });
 
   Item.findOneAndUpdate(
     { _id: req.params.id },
