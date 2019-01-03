@@ -6,7 +6,7 @@ import { addItem } from './actions';
 import MessageBox from '../MessageBox';
 import { getNewItemStatus, getCurrentUser } from '../../selectors';
 import { StatusType, MessageType } from '../../common/enums';
-import { StatusPropType } from '../../common/propTypes';
+import { StatusPropType, CurrentUserPropType } from '../../common/propTypes';
 
 class InputBar extends Component {
   state = {
@@ -66,15 +66,15 @@ class InputBar extends Component {
 }
 
 InputBar.propTypes = {
-  currentUser: PropTypes.objectOf(PropTypes.string),
+  currentUser: CurrentUserPropType,
   newItemStatus: StatusPropType.isRequired,
 
   addItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  newItemStatus: getNewItemStatus(state),
-  currentUser: getCurrentUser(state)
+  currentUser: getCurrentUser(state),
+  newItemStatus: getNewItemStatus(state)
 });
 
 export default connect(

@@ -17,7 +17,7 @@ const items = (state = itemsInitialState, action) => {
     case TOGGLE_ITEM: {
       return state.map(item =>
         item._id === action.item._id
-          ? { ...item, isOrdered: !item.isOrdered }
+          ? { ...item, isOrdered: !item.isOrdered, author: action.item.author }
           : item
       );
     }

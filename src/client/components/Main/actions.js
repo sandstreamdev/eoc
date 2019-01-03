@@ -1,4 +1,4 @@
-import { getCookie } from '../../common/utilites';
+import { getCookie } from '../../utils/cookie';
 
 // Action types
 export const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';

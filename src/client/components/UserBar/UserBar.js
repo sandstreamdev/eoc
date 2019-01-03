@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { ENDPOINT_URL } from '../../common/variables';
 import { logoutCurrentUser } from './actions';
 import { getCurrentUser } from '../../selectors';
+import { CurrentUserPropType } from '../../common/propTypes';
 
 class UserBar extends Component {
   handleLogOut = () => {
@@ -25,12 +26,10 @@ class UserBar extends Component {
       <div className="user-bar">
         <div className="user-bar__wrapper">
           <img alt="User avatar" className="user-bar__avatar" src={avatar} />
-
           <div className="user-bar__logged">
             <span className="user-bar__user-data">Logged as:</span>
             <span className="user-bar__user-data">{name}</span>
           </div>
-
           <a
             className="user-bar__logout"
             href={`${ENDPOINT_URL}/logout`}
@@ -49,7 +48,7 @@ class UserBar extends Component {
 }
 
 UserBar.propTypes = {
-  currentUser: PropTypes.objectOf(PropTypes.string),
+  currentUser: CurrentUserPropType,
   logoutCurrentUser: PropTypes.func
 };
 
