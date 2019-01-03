@@ -14,6 +14,7 @@ import { getFetchStatus, getItems } from '../../selectors';
 import { StatusType, MessageType } from '../../common/enums';
 import { StatusPropType } from '../../common/propTypes';
 import { fetchItems } from './actions';
+import SortBox from '../SortBox';
 
 class App extends Component {
   componentDidMount() {
@@ -49,6 +50,7 @@ class App extends Component {
         <ProductsContainer products={shoppingList} />
         <ProductsContainer archived products={archiveList} />
         <Footer />
+        <SortBox />
         {fetchStatus === StatusType.PENDING && (
           <Preloader message="Fetching data..." />
         )}

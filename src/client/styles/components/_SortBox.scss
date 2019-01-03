@@ -1,0 +1,21 @@
+.sort-box {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid $border-color;
+  &__desc {
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: 400;
+    color: $text-light;
+    text-transform: uppercase;
+    margin-right: 8px;
+  }
+
+  &__select {
+    background-color: $bg-color;
+    padding: 6px;
+    border: 0;
+    border-radius: 30px;
+  }
+}
