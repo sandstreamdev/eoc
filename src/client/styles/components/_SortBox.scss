@@ -2,7 +2,6 @@
   display: inline-flex;
   align-items: center;
   padding: 6px;
-  border: 1px solid $border-color;
   &__desc {
     font-size: 10px;
     line-height: 1.2;
@@ -13,9 +12,27 @@
   }
 
   &__select {
+    font-size: 12px;
+    color: $text-light;
     background-color: $bg-color;
     padding: 6px;
     border: 0;
     border-radius: 30px;
+    background-image: url('../assets/images/chevron-down-solid.svg');
+    background-position: center right 8px;
+    background-repeat: no-repeat;
+    background-size: 10px;
+    margin-right: 8px;
+    box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+  }
+
+  &__button {
+    height: auto;
+    width: auto;
+  }
+
+  &__arrow-1 {
+    height: 10px;
+    width: 10px;
   }
 }

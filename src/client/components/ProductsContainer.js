@@ -2,16 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ProductsList from './ProductsList';
+import SortBox from './SortBox';
 
-const ProductsContainer = ({ archived, products }) => (
+const ProductsContainer = ({ archived, handleSort, products }) => (
   <div className="products">
     <header className="products__header">
       <h2 className="products__heading">
         {archived ? 'Orders history' : 'Products list'}
       </h2>
-      <span className="products__info">
-        {archived ? 'Restore item' : 'Mark as ordered'}
-      </span>
+      <SortBox handleSort={handleSort} />
     </header>
     <ProductsList archived={archived} products={products} />
   </div>

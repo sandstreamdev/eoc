@@ -4,10 +4,15 @@ const MessageType = Object.freeze({
   SUCCESS: 'success'
 });
 
+const SortType = Object.freeze({
+  ASCENDING: 'ascending',
+  DESCENDING: 'descending'
+});
+
 const StatusType = Object.freeze({
   PENDING: 'pending',
   RESOLVED: 'resolved',
   ERROR: 'error'
 });
 
-export { MessageType, StatusType };
+export { MessageType, SortType, StatusType };

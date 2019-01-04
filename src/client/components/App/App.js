@@ -14,9 +14,13 @@ import { getFetchStatus, getItems } from '../../selectors';
 import { StatusType, MessageType } from '../../common/enums';
 import { StatusPropType } from '../../common/propTypes';
 import { fetchItems } from './actions';
-import SortBox from '../SortBox';
 
 class App extends Component {
+  state = {
+    ordersHistoryOrder: false,
+    productsListOrder: false
+  };
+
   componentDidMount() {
     this.fetchItems();
   }
@@ -26,11 +30,15 @@ class App extends Component {
     fetchItems();
   };
 
+  handleSort = (order, selectedOption) => {
+    console.log(order, selectedOption);
+  };
+
   render() {
     const { fetchStatus, items } = this.props;
-    const reversedItem = items.reverse();
-    const archiveList = reversedItem.filter(item => item.isOrdered);
-    const shoppingList = reversedItem.filter(item => !item.isOrdered);
+    const reversedItems = items.reverse();
+    const archiveList = reversedItems.filter(item => item.isOrdered);
+    const shoppingList = reversedItems.filter(item => !item.isOrdered);
 
     return (
       <div
@@ -47,10 +55,16 @@ class App extends Component {
           />
         )}
         <InputBar />
-        <ProductsContainer products={shoppingList} />
-        <ProductsContainer archived products={archiveList} />
+        <ProductsContainer
+          handleSort={this.handleSort}
+          products={shoppingList}
+        />
+        <ProductsContainer
+          handleSort={this.handleSort}
+          archived
+          products={archiveList}
+        />
         <Footer />
-        <SortBox />
         {fetchStatus === StatusType.PENDING && (
           <Preloader message="Fetching data..." />
         )}
