@@ -5,11 +5,9 @@ class SortBox extends Component {
     super(props);
 
     this.selectField = React.createRef();
-    console.log(this.selectField.current);
-
     this.state = {
       selectedOption: '',
-      order: false
+      order: true
     };
   }
 

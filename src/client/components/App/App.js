@@ -16,14 +16,30 @@ import { StatusPropType } from '../../common/propTypes';
 import { fetchItems } from './actions';
 
 class App extends Component {
-  state = {
-    ordersHistoryOrder: false,
-    productsListOrder: false
-  };
+  constructor(props) {
+    super(props);
 
-  componentDidMount() {
+    this.state = {
+      ordersHistoryOrder: false,
+      productsListOrder: false,
+      items: this.props.items
+    };
+  }
+
+  componentWillMount() {
     this.fetchItems();
   }
+
+  // componentDidUpdate(prevProps) {
+  //   const { items } = this.props;
+  //   const reversedItems = items.reverse();
+
+  //   if (items !== prevProps.items) {
+  //     this.setState({
+  //       items: reversedItems
+  //     });
+  //   }
+  // }
 
   fetchItems = () => {
     const { fetchItems } = this.props;
@@ -31,7 +47,35 @@ class App extends Component {
   };
 
   handleSort = (order, selectedOption) => {
-    console.log(order, selectedOption);
+    if (order) {
+      switch (selectedOption) {
+        case 'author':
+          console.log('ascending by author');
+          break;
+        case 'date':
+          console.log('ascending by date');
+          break;
+        case 'name':
+          console.log('ascending by name');
+          break;
+        default:
+          console.log('ascending by default');
+      }
+    } else {
+      switch (selectedOption) {
+        case 'author':
+          console.log('descending by author');
+          break;
+        case 'date':
+          console.log('descending by date');
+          break;
+        case 'name':
+          console.log('descending by name');
+          break;
+        default:
+          console.log('descending by default');
+      }
+    }
   };
 
   render() {
