@@ -1,11 +1,10 @@
-import { currentUser } from './initalState';
 import { FETCH_CURRENT_USER } from '../components/Main/actions';
 import { LOGOUT_USER } from '../components/UserBar/actions';
 
-const user = (state = currentUser, action) => {
+const user = (state = null, action) => {
   switch (action.type) {
     case FETCH_CURRENT_USER:
-      return Object.assign({}, state, action.payload);
+      return action.payload;
     case LOGOUT_USER:
       return null;
     default:

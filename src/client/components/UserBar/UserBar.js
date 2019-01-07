@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { ENDPOINT_URL } from '../../common/variables';
 import { logoutCurrentUser } from './actions';
 import { getCurrentUser } from '../../selectors';
-import { CurrentUserPropType } from '../../common/propTypes';
+import { UserPropType } from '../../common/propTypes';
 
 class UserBar extends Component {
   handleLogOut = () => {
@@ -48,8 +48,9 @@ class UserBar extends Component {
 }
 
 UserBar.propTypes = {
-  currentUser: CurrentUserPropType,
-  logoutCurrentUser: PropTypes.func
+  currentUser: UserPropType.isRequired,
+
+  logoutCurrentUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

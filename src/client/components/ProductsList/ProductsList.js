@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import ProductsListItem from '../ProductsListItem';
 import { getCurrentUser } from '../../selectors';
 import toggle from './actions';
-import { CurrentUserPropType } from '../../common/propTypes';
+import { UserPropType } from '../../common/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
@@ -25,21 +25,11 @@ class ProductsList extends Component {
     } = this.props;
     const isSameAuthor = author === name;
 
-    // Version 1
     if (isOrdered) {
       isSameAuthor ? toggle(id, isOrdered) : toggle(id, isOrdered, name);
     } else {
       toggle(id, isOrdered);
     }
-
-    // Version 2
-    // if (isOrdered && isSameAuthor) {
-    //   toggle(id, isOrdered);
-    // } else if (isOrdered && !isSameAuthor) {
-    //   toggle(id, isOrdered, name);
-    // } else {
-    //   toggle(id, isOrdered);
-    // }
   };
 
   render() {
@@ -79,7 +69,7 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  currentUser: CurrentUserPropType,
+  currentUser: UserPropType.isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
   toggle: PropTypes.func

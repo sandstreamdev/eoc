@@ -28,12 +28,11 @@ const items = (state = itemsInitialState, action) => {
 
 const uiStatus = (state = initialStatus, action) => {
   switch (action.type) {
-    case FETCH_FAILED: {
+    case FETCH_FAILED:
       return {
         ...state,
         fetchStatus: StatusType.ERROR
       };
-    }
     case FETCH_ITEMS:
       return {
         ...state,

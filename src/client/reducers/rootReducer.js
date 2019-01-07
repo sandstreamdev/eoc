@@ -4,9 +4,9 @@ import items, { uiStatus } from './itemsReducer';
 import currentUser from './currentUserReducer';
 
 const rootReducer = combineReducers({
+  currentUser,
   items,
-  uiStatus,
-  currentUser
+  uiStatus
 });
 
 export default rootReducer;
