@@ -63,5 +63,6 @@ typings/staticFiles
 #vscode
 .vscode/
 
-#dist
+#others
 dist
+.DS_Store

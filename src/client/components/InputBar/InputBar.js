@@ -66,7 +66,7 @@ class InputBar extends Component {
 }
 
 InputBar.propTypes = {
-  currentUser: UserPropType,
+  currentUser: UserPropType.isRequired,
   newItemStatus: StatusPropType.isRequired,
 
   addItem: PropTypes.func.isRequired
