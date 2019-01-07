@@ -11,78 +11,59 @@ import ProductsContainer from '../ProductsContainer';
 import Preloader from '../Preloader';
 import UserBar from '../UserBar';
 import { getFetchStatus, getItems } from '../../selectors';
-import { StatusType, MessageType } from '../../common/enums';
+import { ListType, StatusType, MessageType } from '../../common/enums';
 import { StatusPropType } from '../../common/propTypes';
 import { fetchItems } from './actions';
+import { sortList } from '../../utils/sortLists';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      ordersHistoryOrder: false,
-      productsListOrder: false,
-      items: this.props.items
+      archiveList: [],
+      shoppingList: []
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchItems();
   }
 
-  // componentDidUpdate(prevProps) {
-  //   const { items } = this.props;
-  //   const reversedItems = items.reverse();
+  componentDidUpdate(prevProps) {
+    const { items } = this.props;
+    const reversedItems = items.reverse();
 
-  //   if (items !== prevProps.items) {
-  //     this.setState({
-  //       items: reversedItems
-  //     });
-  //   }
-  // }
+    if (items !== prevProps.items) {
+      this.setState({
+        archiveList: reversedItems.filter(item => item.isOrdered),
+        shoppingList: reversedItems.filter(item => !item.isOrdered)
+      });
+    }
+  }
 
   fetchItems = () => {
     const { fetchItems } = this.props;
     fetchItems();
   };
 
-  handleSort = (order, selectedOption) => {
-    if (order) {
-      switch (selectedOption) {
-        case 'author':
-          console.log('ascending by author');
-          break;
-        case 'date':
-          console.log('ascending by date');
-          break;
-        case 'name':
-          console.log('ascending by name');
-          break;
-        default:
-          console.log('ascending by default');
-      }
-    } else {
-      switch (selectedOption) {
-        case 'author':
-          console.log('descending by author');
-          break;
-        case 'date':
-          console.log('descending by date');
-          break;
-        case 'name':
-          console.log('descending by name');
-          break;
-        default:
-          console.log('descending by default');
-      }
+  handleSort = (order, criteria, listType) => {
+    const { archiveList, shoppingList } = this.state;
+
+    if (listType === ListType.ARCHIVED) {
+      this.setState({
+        archiveList: sortList(archiveList, criteria, order)
+      });
+    } else if (listType === ListType.SHOPPING) {
+      this.setState({
+        shoppingList: sortList(shoppingList, criteria, order)
+      });
     }
   };
 
   render() {
-    const { fetchStatus, items } = this.props;
-    const reversedItems = items.reverse();
-    const archiveList = reversedItems.filter(item => item.isOrdered);
-    const shoppingList = reversedItems.filter(item => !item.isOrdered);
+    const { fetchStatus } = this.props;
+    const { archiveList, shoppingList } = this.state;
 
     return (
       <div
@@ -104,8 +85,8 @@ class App extends Component {
           products={shoppingList}
         />
         <ProductsContainer
-          handleSort={this.handleSort}
           archived
+          handleSort={this.handleSort}
           products={archiveList}
         />
         <Footer />

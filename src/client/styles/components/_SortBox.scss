@@ -27,12 +27,22 @@
   }
 
   &__button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: auto;
     width: auto;
   }
 
-  &__arrow-1 {
+  &__arrow {
     height: 10px;
     width: 10px;
+  }
+
+  &__arrow--highlighted {
+    path {
+      fill: $chevron-active;
+    }
   }
 }

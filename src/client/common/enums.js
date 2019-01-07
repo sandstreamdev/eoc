@@ -1,3 +1,8 @@
+const ListType = Object.freeze({
+  ARCHIVED: true,
+  SHOPPING: false
+});
+
 const MessageType = Object.freeze({
   ERROR: 'error',
   INFO: 'info',
@@ -15,4 +20,4 @@ const StatusType = Object.freeze({
   ERROR: 'error'
 });
 
-export { MessageType, SortType, StatusType };
+export { ListType, MessageType, SortType, StatusType };
