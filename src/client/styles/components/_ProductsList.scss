@@ -51,8 +51,8 @@
     input:checked ~ label {
       color: $text-normal;
       &:after {
-        background-color: $brand-color;
-        border-color: $brand-color;
+        background-color: $restore-blue;
+        border-color: $restore-blue;
       }
     }
 
