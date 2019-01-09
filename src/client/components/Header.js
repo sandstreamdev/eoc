@@ -1,8 +1,7 @@
 import React from 'react';
 
 import AppLogo from './AppLogo';
-import { COMPANY_PAGE_URL } from '../common/variables';
-import SandstreamLogo from '../assets/images/sandstream_logo.png';
+import { COMPANY_NAME, COMPANY_PAGE_URL } from '../common/variables';
 
 const Header = props => (
   <div className="app-header">
@@ -13,11 +12,7 @@ const Header = props => (
       rel="noopener noreferrer"
       target="_blank"
     >
-      <img
-        alt="Sandstream logo"
-        className="app-header__logo"
-        src={SandstreamLogo}
-      />
+      {COMPANY_NAME}
     </a>
   </div>
 );
