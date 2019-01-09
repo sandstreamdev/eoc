@@ -1,20 +1,17 @@
 import * as moment from 'moment';
-import 'moment/locale/pl';
-/**
- * FIXME: Get rid of console warning related with moment.js
- */
-
 /**
  *
  * @param {*} criteria - Criteria argument has to match databse object property. eg. const user = { name: 'Fred'} -> criteria = 'name'
  */
+const dateFormat = 'YYYY-MM-DDTHH:mm:ss.SSSSZ';
+
 export const sortList = (listName, criteria, order) =>
   order
     ? [...listName].sort((a, b) => {
         // sort by date
-        if (moment(a[criteria])._isValid) {
-          return moment(new Date(a[criteria])).isBefore(
-            moment(new Date(b[criteria]))
+        if (moment(a[criteria], dateFormat)._isValid) {
+          return moment(a[criteria], dateFormat).isBefore(
+            moment(b[criteria], dateFormat)
           )
             ? 1
             : -1;
@@ -31,9 +28,9 @@ export const sortList = (listName, criteria, order) =>
       })
     : [...listName].sort((a, b) => {
         // sort by date
-        if (moment(new Date(a[criteria]))._isValid) {
-          return moment(new Date(a[criteria])).isAfter(
-            moment(new Date(b[criteria]))
+        if (moment(a[criteria], dateFormat)._isValid) {
+          return moment(a[criteria], dateFormat).isAfter(
+            moment(b[criteria], dateFormat)
           )
             ? 1
             : -1;

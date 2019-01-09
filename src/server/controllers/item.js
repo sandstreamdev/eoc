@@ -8,7 +8,7 @@ const itemCreate = (req, resp) => {
     author,
     isOrdered,
     name,
-    createdAt: new Date(Date.now()).toString()
+    createdAt: new Date(Date.now()).toISOString()
   });
 
   item.save((err, doc) => {
@@ -45,7 +45,7 @@ const updateItem = (req, resp) => {
     name,
     isOrdered,
     author,
-    createdAt: new Date(Date.now()).toString()
+    createdAt: new Date(Date.now()).toISOString()
   });
 
   Item.findOneAndUpdate(
