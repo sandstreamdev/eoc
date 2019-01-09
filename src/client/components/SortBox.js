@@ -105,7 +105,6 @@ class SortBox extends Component {
                     direction === SortType.DESCENDING
                 }
               )}
-              // className="svg-inline--fa fa-chevron-down fa-w-14 sort-box__arrow"
               data-prefix="fas"
               data-icon="chevron-down"
               role="img"
