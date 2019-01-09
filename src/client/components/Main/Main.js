@@ -6,7 +6,6 @@ import AuthBox from '../AuthBox';
 import App from '../App';
 import { getCookie } from '../../utils/cookie';
 import { fetchCurrentUser } from './actions';
-import { getCurrentUser } from '../../selectors';
 
 class Main extends Component {
   constructor(props) {
@@ -42,11 +41,7 @@ Main.propTypes = {
   fetchCurrentUser: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-  currentUser: getCurrentUser(state)
-});
-
 export default connect(
-  mapStateToProps,
+  null,
   { fetchCurrentUser }
 )(Main);
