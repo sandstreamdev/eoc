@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { MessageType } from '../common/enums';
-import { MessagePropType } from '../common/propTypes';
+import { MessageType } from 'common/enums';
+import { MessagePropType } from 'common/propTypes';
 
 const MessageBox = ({ message, type }) => (
   <div
