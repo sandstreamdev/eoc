@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -9,7 +9,7 @@ import { CurrentUserPropType } from '../../common/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
-class ProductsList extends PureComponent {
+class ProductsList extends Component {
   state = {
     limit: DISPLAY_LIMIT
   };
