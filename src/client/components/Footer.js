@@ -1,10 +1,6 @@
 import React from 'react';
 
-import {
-  COMPANY_NAME,
-  COMPANY_PAGE_URL,
-  PROJECT_NAME
-} from '../common/variables';
+import { COMPANY_NAME, COMPANY_PAGE_URL, PROJECT_NAME } from 'common/variables';
 
 const Footer = () => (
   <div className="footer">

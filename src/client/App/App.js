@@ -3,16 +3,16 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { getItems, getFetchStatus } from 'selectors';
 import { fetchItems } from './actions';
-import { getItems, getFetchStatus } from '../selectors';
-import { StatusType, MessageType } from '../common/enums';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
-import MessageBox from '../components/MessageBox';
-import ProductsContainer from '../components/ProductsContainer';
-import Preloader from '../components/Preloader';
-import InputBar from '../components/InputBar';
-import { StatusPropType } from '../common/propTypes';
+import { StatusType, MessageType } from 'common/enums';
+import Footer from 'components/Footer';
+import Header from 'components/Header';
+import MessageBox from 'components/MessageBox';
+import ProductsContainer from 'components/ProductsContainer';
+import Preloader from 'components/Preloader';
+import InputBar from 'components/InputBar';
+import { StatusPropType } from 'common/propTypes';
 
 class App extends Component {
   componentDidMount() {
