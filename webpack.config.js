@@ -11,7 +11,7 @@ module.exports = {
     filename: 'bundle.js'
   },
   resolve: {
-    modules: [path.resolve(__dirname, './src/client'), './node_modules']
+    modules: [path.resolve(__dirname, 'src', 'client'), 'node_modules']
   },
   module: {
     rules: [
