@@ -30,7 +30,6 @@ class SortBox extends Component {
         <span className="sort-box__desc">{label}</span>
         <select
           className="sort-box__select"
-          onBlur={this.handleSelect}
           onChange={e =>
             this.setState(
               { selectedOption: e.target.value },
