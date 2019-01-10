@@ -1,17 +1,13 @@
-const ListType = Object.freeze({
-  ARCHIVED: true,
-  SHOPPING: false
-});
-
 const MessageType = Object.freeze({
   ERROR: 'error',
   INFO: 'info',
   SUCCESS: 'success'
 });
 
-const SortType = Object.freeze({
-  ASCENDING: 'ascending',
-  DESCENDING: 'descending'
+const OptionType = Object.freeze({
+  NAME: 'name',
+  DATE: 'createdAt',
+  AUTHOR: 'author'
 });
 
 const StatusType = Object.freeze({
@@ -20,4 +16,4 @@ const StatusType = Object.freeze({
   ERROR: 'error'
 });
 
-export { ListType, MessageType, SortType, StatusType };
+export { MessageType, OptionType, StatusType };

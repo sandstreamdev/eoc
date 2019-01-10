@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { SortType } from '../common/enums';
-import ArrowIcon from '../assets/images/arrow-up-solid';
+import ArrowIcon from '../assets/images/arrow-up-solid.svg';
 
 class SortBox extends Component {
   constructor(props) {
@@ -24,34 +23,34 @@ class SortBox extends Component {
 
   handleOrder = () => {
     const { order, selectedOption } = this.state;
-    const { handleSort } = this.props;
+    const { sort } = this.props;
 
     this.setState(
       {
         order: !order
       },
-      handleSort(selectedOption, order)
+      sort(selectedOption, order)
     );
   };
 
   handleSelect = e => {
-    const { handleSort } = this.props;
     const { order, selectedOption } = this.state;
+    const { sort } = this.props;
 
     this.setState(
       {
         selectedOption: e.target.value
       },
-      handleSort(selectedOption, order)
+      sort(selectedOption, order)
     );
   };
 
   render() {
     const { selectedOption, order } = this.state;
-
+    const { label, options } = this.props;
     return (
       <div className="sort-box">
-        <span className="sort-box__desc">Sort by:</span>
+        <span className="sort-box__desc">{label}</span>
         <select
           className="sort-box__select"
           onBlur={this.handleSelect}
@@ -59,10 +58,11 @@ class SortBox extends Component {
           ref={this.selectField}
           value={selectedOption}
         >
-          {/* All the option values should match the database model properties */}
-          <option value="author">Author</option>
-          <option value="createdAt">Date</option>
-          <option value="name">Name</option>
+          {options.map(option => (
+            <option key={option.label} value={option.id}>
+              {option.label}
+            </option>
+          ))}
         </select>
         <div className="sort-box__controllers">
           <button
@@ -72,7 +72,7 @@ class SortBox extends Component {
             onClick={this.handleOrder}
             type="button"
           >
-            <ArrowIcon />
+            <img alt="Arrow icon" src={ArrowIcon} />
           </button>
         </div>
       </div>
@@ -81,7 +81,9 @@ class SortBox extends Component {
 }
 
 SortBox.propTypes = {
-  handleSort: PropTypes.func.isRequired
+  label: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.object),
+  sort: PropTypes.func.isRequired
 };
 
 export default SortBox;

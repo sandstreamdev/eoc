@@ -11,55 +11,19 @@ import ProductsContainer from '../ProductsContainer';
 import Preloader from '../Preloader';
 import UserBar from '../UserBar';
 import { getFetchStatus, getItems } from '../../selectors';
-import { ListType, StatusType, MessageType } from '../../common/enums';
+import { StatusType, MessageType } from '../../common/enums';
 import { StatusPropType } from '../../common/propTypes';
 import { fetchItems } from './actions';
-import { sortList } from '../../utils/sortLists';
 
 class App extends Component {
-  // constructor(props) {
-  //   super(props);
-
-  //   this.state = {
-  //     archiveList: [],
-  //     shoppingList: []
-  //   };
-  // }
-
   componentDidMount() {
     this.fetchItems();
   }
-
-  // componentDidUpdate(prevProps) {
-  //   const { items } = this.props;
-  //   const reversedItems = items.reverse();
-
-  //   if (items !== prevProps.items) {
-  //     this.setState({
-  //       archiveList: reversedItems.filter(item => item.isOrdered),
-  //       shoppingList: reversedItems.filter(item => !item.isOrdered)
-  //     });
-  //   }
-  // }
 
   fetchItems = () => {
     const { fetchItems } = this.props;
     fetchItems();
   };
-
-  // handleSort = (order, criteria, listType) => {
-  //   const { archiveList, shoppingList } = this.state;
-
-  //   if (listType === ListType.ARCHIVED) {
-  //     this.setState({
-  //       archiveList: sortList(archiveList, criteria, order)
-  //     });
-  //   } else if (listType === ListType.SHOPPING) {
-  //     this.setState({
-  //       shoppingList: sortList(shoppingList, criteria, order)
-  //     });
-  //   }
-  // };
 
   render() {
     const { fetchStatus, items } = this.props;

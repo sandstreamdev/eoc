@@ -24,6 +24,7 @@
     background-size: 10px;
     margin-right: 8px;
     box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+    text-transform: capitalize;
     -webkit-appearance: none;
     &::-ms-expand {
       display: none;
@@ -40,8 +41,8 @@
     height: auto;
     width: auto;
 
-    svg {
-      height: 12px;
+    img {
+      width: 12px;
     }
 
     &--obverse {

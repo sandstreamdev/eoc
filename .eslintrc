@@ -75,7 +75,6 @@
     ],
     "import/no-useless-path-segments": "error",
     "react/jsx-filename-extension": false,
-    "react/no-did-update-set-state": false,
     "react/require-default-props": false
   },
   "globals": {
