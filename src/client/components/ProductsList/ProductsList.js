@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -9,7 +9,7 @@ import { CurrentUserPropType } from '../../common/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
-class ProductsList extends Component {
+class ProductsList extends PureComponent {
   state = {
     limit: DISPLAY_LIMIT
   };
@@ -25,26 +25,17 @@ class ProductsList extends Component {
     } = this.props;
     const isSameAuthor = author === name;
 
-    // Version 1
     if (isOrdered) {
       isSameAuthor ? toggle(id, isOrdered) : toggle(id, isOrdered, name);
     } else {
       toggle(id, isOrdered);
     }
-
-    // Version 2
-    // if (isOrdered && isSameAuthor) {
-    //   toggle(id, isOrdered);
-    // } else if (isOrdered && !isSameAuthor) {
-    //   toggle(id, isOrdered, name);
-    // } else {
-    //   toggle(id, isOrdered);
-    // }
   };
 
   render() {
     const { products } = this.props;
     const { limit } = this.state;
+    console.log(products);
     return (
       <Fragment>
         {!products.length ? (

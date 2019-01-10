@@ -27,7 +27,6 @@
     "express": "4.16.3",
     "express-session": "1.15.6",
     "lodash": "4.17.11",
-    "moment": "2.23.0",
     "mongodb": "3.1.10",
     "mongoose": "5.3.13",
     "passport": "0.4.0",

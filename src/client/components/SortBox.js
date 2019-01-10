@@ -11,7 +11,7 @@ class SortBox extends Component {
     this.selectField = React.createRef();
     this.state = {
       selectedOption: '',
-      order: true
+      order: false
     };
   }
 
@@ -21,40 +21,22 @@ class SortBox extends Component {
     });
   }
 
-  handleOrder = () => {
-    const { order, selectedOption } = this.state;
-    const { sort } = this.props;
-
-    this.setState(
-      {
-        order: !order
-      },
-      sort(selectedOption, order)
-    );
-  };
-
-  handleSelect = e => {
-    const { order, selectedOption } = this.state;
-    const { sort } = this.props;
-
-    this.setState(
-      {
-        selectedOption: e.target.value
-      },
-      sort(selectedOption, order)
-    );
-  };
-
   render() {
-    const { selectedOption, order } = this.state;
-    const { label, options } = this.props;
+    const { label, onChange, options } = this.props;
+    const { order, selectedOption } = this.state;
+
     return (
       <div className="sort-box">
         <span className="sort-box__desc">{label}</span>
         <select
           className="sort-box__select"
           onBlur={this.handleSelect}
-          onChange={this.handleSelect}
+          onChange={e =>
+            this.setState(
+              { selectedOption: e.target.value },
+              onChange(selectedOption, order)
+            )
+          }
           ref={this.selectField}
           value={selectedOption}
         >
@@ -69,7 +51,9 @@ class SortBox extends Component {
             className={classNames('sort-box__button', {
               'sort-box__button--obverse': order
             })}
-            onClick={this.handleOrder}
+            onClick={() =>
+              this.setState({ order: !order }, onChange(selectedOption, order))
+            }
             type="button"
           >
             <img alt="Arrow icon" src={ArrowIcon} />
@@ -83,7 +67,8 @@ class SortBox extends Component {
 SortBox.propTypes = {
   label: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.object),
-  sort: PropTypes.func.isRequired
+
+  onChange: PropTypes.func.isRequired
 };
 
 export default SortBox;
