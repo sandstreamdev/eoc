@@ -35,7 +35,7 @@ class ProductsList extends PureComponent {
   render() {
     const { products } = this.props;
     const { limit } = this.state;
-    console.log(products);
+
     return (
       <Fragment>
         {!products.length ? (
