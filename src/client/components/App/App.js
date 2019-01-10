@@ -17,53 +17,55 @@ import { fetchItems } from './actions';
 import { sortList } from '../../utils/sortLists';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  // constructor(props) {
+  //   super(props);
 
-    this.state = {
-      archiveList: [],
-      shoppingList: []
-    };
-  }
+  //   this.state = {
+  //     archiveList: [],
+  //     shoppingList: []
+  //   };
+  // }
 
   componentDidMount() {
     this.fetchItems();
   }
 
-  componentDidUpdate(prevProps) {
-    const { items } = this.props;
-    const reversedItems = items.reverse();
+  // componentDidUpdate(prevProps) {
+  //   const { items } = this.props;
+  //   const reversedItems = items.reverse();
 
-    if (items !== prevProps.items) {
-      this.setState({
-        archiveList: reversedItems.filter(item => item.isOrdered),
-        shoppingList: reversedItems.filter(item => !item.isOrdered)
-      });
-    }
-  }
+  //   if (items !== prevProps.items) {
+  //     this.setState({
+  //       archiveList: reversedItems.filter(item => item.isOrdered),
+  //       shoppingList: reversedItems.filter(item => !item.isOrdered)
+  //     });
+  //   }
+  // }
 
   fetchItems = () => {
     const { fetchItems } = this.props;
     fetchItems();
   };
 
-  handleSort = (order, criteria, listType) => {
-    const { archiveList, shoppingList } = this.state;
+  // handleSort = (order, criteria, listType) => {
+  //   const { archiveList, shoppingList } = this.state;
 
-    if (listType === ListType.ARCHIVED) {
-      this.setState({
-        archiveList: sortList(archiveList, criteria, order)
-      });
-    } else if (listType === ListType.SHOPPING) {
-      this.setState({
-        shoppingList: sortList(shoppingList, criteria, order)
-      });
-    }
-  };
+  //   if (listType === ListType.ARCHIVED) {
+  //     this.setState({
+  //       archiveList: sortList(archiveList, criteria, order)
+  //     });
+  //   } else if (listType === ListType.SHOPPING) {
+  //     this.setState({
+  //       shoppingList: sortList(shoppingList, criteria, order)
+  //     });
+  //   }
+  // };
 
   render() {
-    const { fetchStatus } = this.props;
-    const { archiveList, shoppingList } = this.state;
+    const { fetchStatus, items } = this.props;
+    const reversedItems = items.reverse();
+    const archiveList = reversedItems.filter(item => item.isOrdered);
+    const shoppingList = reversedItems.filter(item => !item.isOrdered);
 
     return (
       <div

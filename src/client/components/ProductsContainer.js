@@ -1,20 +1,33 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ProductsList from './ProductsList';
 import SortBox from './SortBox';
+import { sortList } from '../utils/sortLists';
 
-const ProductsContainer = ({ archived = false, handleSort, products }) => (
-  <div className="products">
-    <header className="products__header">
-      <h2 className="products__heading">
-        {archived ? 'Orders history' : 'Products list'}
-      </h2>
-      <SortBox handleSort={handleSort} archived={archived} />
-    </header>
-    <ProductsList archived={archived} products={products} />
-  </div>
-);
+class ProductsContainer extends Component {
+  handleSort = (key, order) => {
+    const direction = order ? 'ascending' : 'descending';
+    const { products } = this.props;
+    console.log(sortList(products, key, order));
+  };
+
+  render() {
+    const { archived = false, handleSort, products } = this.props;
+
+    return (
+      <div className="products">
+        <header className="products__header">
+          <h2 className="products__heading">
+            {archived ? 'Orders history' : 'Products list'}
+          </h2>
+          <SortBox handleSort={this.handleSort} />
+        </header>
+        <ProductsList archived={archived} products={products} />
+      </div>
+    );
+  }
+}
 
 ProductsContainer.propTypes = {
   archived: PropTypes.bool,

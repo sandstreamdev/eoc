@@ -39,16 +39,13 @@
     align-items: center;
     height: auto;
     width: auto;
-  }
 
-  &__arrow {
-    height: 10px;
-    width: 10px;
-  }
+    svg {
+      height: 12px;
+    }
 
-  &__arrow--highlighted {
-    path {
-      fill: $chevron-active;
+    &--obverse {
+      transform: rotate(180deg);
     }
   }
 }
