@@ -24,12 +24,7 @@ class ProductsContainer extends Component {
     sortOrder: SortOrderType.ASCENDING
   };
 
-  onSortChange = (sortBy, sortOrder) => {
-    this.setState({
-      sortBy,
-      sortOrder
-    });
-  };
+  onSortChange = (sortBy, sortOrder) => this.setState({ sortBy, sortOrder });
 
   sortProducts = (products, sortBy, sortOrder) => {
     let result = [...products];
@@ -54,6 +49,7 @@ class ProductsContainer extends Component {
       default:
         break;
     }
+
     return sortOrder === SortOrderType.ASCENDING ? result : result.reverse();
   };
 
