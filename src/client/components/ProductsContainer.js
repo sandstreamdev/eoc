@@ -4,43 +4,47 @@ import _sortBy from 'lodash/sortBy';
 
 import ProductsList from './ProductsList';
 import SortBox from './SortBox';
-import { OptionType } from '../common/enums';
+import { SortOrderType } from '../common/enums';
 
-// FIXME: Where to place options in project stucture?
-const options = [
-  { id: OptionType.AUTHOR, label: 'author' },
-  { id: OptionType.DATE, label: 'date' },
-  { id: OptionType.NAME, label: 'name' }
+const SortOptionType = Object.freeze({
+  NAME: 'name',
+  DATE: 'createdAt',
+  AUTHOR: 'author'
+});
+
+const sortOptions = [
+  { id: SortOptionType.AUTHOR, label: 'author' },
+  { id: SortOptionType.DATE, label: 'date' },
+  { id: SortOptionType.NAME, label: 'name' }
 ];
 
 class ProductsContainer extends Component {
   state = {
-    sortBy: '',
-    order: false
+    sortBy: SortOptionType.NAME,
+    sortOrder: SortOrderType.ASCENDING
   };
 
-  onSortChange = (sortBy, order) => {
+  onSortChange = (sortBy, sortOrder) => {
     this.setState({
       sortBy,
-      order
+      sortOrder
     });
   };
 
-  sortProducts = (products, sortBy, order) => {
+  sortProducts = (products, sortBy, sortOrder) => {
     let result = [...products];
 
     switch (sortBy) {
-      case OptionType.NAME:
+      case SortOptionType.NAME:
         result = _sortBy(result, item => item.name.toLowerCase());
         break;
-      case OptionType.AUTHOR:
+      case SortOptionType.AUTHOR:
         result = _sortBy(result, [
           item => item.author.toLowerCase(),
           item => item.name.toLowerCase()
         ]);
         break;
-
-      case OptionType.DATE:
+      case SortOptionType.DATE:
         result.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
@@ -50,14 +54,13 @@ class ProductsContainer extends Component {
       default:
         break;
     }
-
-    return order ? result : result.reverse();
+    return sortOrder === SortOrderType.ASCENDING ? result : result.reverse();
   };
 
   render() {
     const { archived, products } = this.props;
-    const { sortBy, order } = this.state;
-    const sortedList = this.sortProducts(products, sortBy, order);
+    const { sortBy, sortOrder } = this.state;
+    const sortedList = this.sortProducts(products, sortBy, sortOrder);
 
     return (
       <div className="products">
@@ -68,7 +71,9 @@ class ProductsContainer extends Component {
           <SortBox
             label="Sort by:"
             onChange={this.onSortChange}
-            options={options}
+            options={sortOptions}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
           />
         </header>
         <ProductsList archived={archived} products={sortedList} />

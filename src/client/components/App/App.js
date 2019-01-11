@@ -46,15 +46,8 @@ class App extends Component {
           />
         )}
         <InputBar />
-        <ProductsContainer
-          handleSort={this.handleSort}
-          products={shoppingList}
-        />
-        <ProductsContainer
-          archived
-          handleSort={this.handleSort}
-          products={archiveList}
-        />
+        <ProductsContainer products={shoppingList} />
+        <ProductsContainer archived products={archiveList} />
         <Footer />
         {fetchStatus === StatusType.PENDING && (
           <Preloader message="Fetching data..." />

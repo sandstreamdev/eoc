@@ -3,41 +3,42 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import ArrowIcon from '../assets/images/arrow-up-solid.svg';
+import { SortOrderPropType } from '../common/propTypes';
+import { SortOrderType } from '../common/enums';
 
 class SortBox extends Component {
-  constructor(props) {
-    super(props);
+  handleSortByChange = event => {
+    const { onChange, sortOrder } = this.props;
+    const sortBy = event.target.value;
 
-    this.selectField = React.createRef();
-    this.state = {
-      selectedOption: '',
-      order: false
-    };
-  }
+    onChange(sortBy, sortOrder);
+  };
 
-  componentDidMount() {
-    this.setState({
-      selectedOption: this.selectField.current.value
-    });
-  }
+  handleSortOrderChange = () => {
+    const { onChange, sortOrder, sortBy } = this.props;
+
+    onChange(
+      sortBy,
+      sortOrder === SortOrderType.ASCENDING
+        ? SortOrderType.DESCENDING
+        : SortOrderType.ASCENDING
+    );
+  };
 
   render() {
-    const { label, onChange, options } = this.props;
-    const { order, selectedOption } = this.state;
+    const { label, options, sortBy, sortOrder } = this.props;
+
+    const orderButtonClass = classNames('sort-box__button', {
+      'sort-box__button--obverse': sortOrder === SortOrderType.ASCENDING
+    });
 
     return (
       <div className="sort-box">
         <span className="sort-box__desc">{label}</span>
         <select
           className="sort-box__select"
-          onChange={e =>
-            this.setState(
-              { selectedOption: e.target.value },
-              onChange(selectedOption, order)
-            )
-          }
-          ref={this.selectField}
-          value={selectedOption}
+          onChange={this.handleSortByChange}
+          value={sortBy}
         >
           {options.map(option => (
             <option key={option.label} value={option.id}>
@@ -47,12 +48,8 @@ class SortBox extends Component {
         </select>
         <div className="sort-box__controllers">
           <button
-            className={classNames('sort-box__button', {
-              'sort-box__button--obverse': order
-            })}
-            onClick={() =>
-              this.setState({ order: !order }, onChange(selectedOption, order))
-            }
+            className={orderButtonClass}
+            onClick={this.handleSortOrderChange}
             type="button"
           >
             <img alt="Arrow icon" src={ArrowIcon} />
@@ -66,6 +63,8 @@ class SortBox extends Component {
 SortBox.propTypes = {
   label: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.object),
+  sortBy: PropTypes.string.isRequired,
+  sortOrder: SortOrderPropType.isRequired,
 
   onChange: PropTypes.func.isRequired
 };
