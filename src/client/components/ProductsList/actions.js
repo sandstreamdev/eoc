@@ -22,22 +22,11 @@ const updateItem = (id, payload, onUpdateSucceed) => {
 };
 
 export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
-  fetch(`${ENDPOINT_URL}/item/${id}/update`, {
-    body: JSON.stringify({
-      _id: id,
-      isOrdered: !isOrdered,
-      author: updatedAuthor
-    }),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    method: 'PATCH'
-  })
-    .then(resp => resp.json())
-    .then(item =>
-      setTimeout(() => dispatch(toggleItem(item)), dispatchingDelay)
-    )
-    .catch(err => console.error(err));
+  const payload = { _id: id, isOrdered: !isOrdered, author: updatedAuthor };
+  const onUpdateSucceed = item => {
+    setTimeout(() => dispatch(toggleItem(item)), dispatchingDelay);
+  };
+  updateItem(id, payload, onUpdateSucceed);
 };
 
 export const vote = (id, votes) => dispatch => {

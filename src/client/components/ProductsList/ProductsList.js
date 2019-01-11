@@ -33,6 +33,18 @@ class ProductsList extends Component {
     }
   };
 
+  voteForItem = (itemId, votes) => {
+    const {
+      vote,
+      currentUser: { id }
+    } = this.props;
+    if (votes.includes(id)) {
+      vote(itemId, votes.filter(voterId => voterId !== id));
+    } else {
+      vote(itemId, votes.concat(id));
+    }
+  };
+
   render() {
     const { products } = this.props;
     const { limit } = this.state;
@@ -45,15 +57,24 @@ class ProductsList extends Component {
         ) : (
           <ul className="products-list">
             {products.slice(0, limit).map(item => (
-              <ProductsListItem
-                archived={item.isOrdered}
-                author={item.author}
-                id={item._id}
-                image={item.image}
-                key={item._id}
-                name={item.name}
-                toggleItem={this.toggleItem}
-              />
+              <li key={item._id}>
+                {!item.isOrdered && (
+                  <VotingBox
+                    id={item._id}
+                    votes={item.votes}
+                    votesNumber={item.votes.length}
+                    voteForItem={this.voteForItem}
+                  />
+                )}
+                <ProductsListItem
+                  archived={item.isOrdered}
+                  author={item.author}
+                  id={item._id}
+                  image={item.image}
+                  name={item.name}
+                  toggleItem={this.toggleItem}
+                />
+              </li>
             ))}
           </ul>
         )}
@@ -73,7 +94,8 @@ ProductsList.propTypes = {
   currentUser: UserPropType.isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
-  toggle: PropTypes.func
+  toggle: PropTypes.func,
+  vote: PropTypes.func
 };
 
 const mapStateToProps = state => ({

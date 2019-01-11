@@ -12,7 +12,7 @@ const ProductListItem = ({
   name,
   toggleItem
 }) => (
-  <li
+  <div
     className={classNames('products-list__item', {
       'products-list__item--blue': archived,
       'products-list__item--green': !archived
@@ -36,7 +36,7 @@ const ProductListItem = ({
         <span className="products-list__author">{`Ordered by: ${author}`}</span>
       </span>
     </label>
-  </li>
+  </div>
 );
 
 ProductListItem.propTypes = {
