@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import { PLACEHOLDER_URL } from '../common/variables';
+import { PLACEHOLDER_URL } from 'common/variables';
 
 const ProductListItem = ({
   archived,

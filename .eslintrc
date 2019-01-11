@@ -2,6 +2,13 @@
   "extends": ["airbnb", "plugin:prettier/recommended"],
   "plugins": ["dependencies"],
   "parser": "babel-eslint",
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "webpack.config.js"
+      }
+    }
+  },
   "rules": {
     "array-bracket-spacing": ["error", "never"],
     "arrow-parens": ["error", "as-needed"],
