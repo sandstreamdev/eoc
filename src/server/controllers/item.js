@@ -3,11 +3,12 @@ const filter = require('../common/utilities');
 
 // Create new item
 const itemCreate = (req, resp) => {
-  const { author, isOrdered, name } = req.body;
+  const { author, isOrdered, name, votes } = req.body;
   const item = new Item({
     author,
     isOrdered,
-    name
+    name,
+    votes
   });
 
   item.save((err, doc) => {
@@ -39,8 +40,13 @@ const deleteItemById = (req, resp) => {
 
 // Update item by given id
 const updateItem = (req, resp) => {
-  const { name, isOrdered, author } = req.body;
-  const newData = filter(x => x !== undefined)({ name, isOrdered, author });
+  const { name, isOrdered, author, votes } = req.body;
+  const newData = filter(x => x !== undefined)({
+    name,
+    isOrdered,
+    author,
+    votes
+  });
 
   Item.findOneAndUpdate(
     { _id: req.params.id },

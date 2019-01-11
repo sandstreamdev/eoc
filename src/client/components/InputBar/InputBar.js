@@ -26,7 +26,8 @@ class InputBar extends Component {
     const newItem = {
       author: currentUser.name,
       isOrdered: false,
-      name: itemName
+      name: itemName,
+      notifierId: currentUser.id
     };
 
     addItem(newItem);

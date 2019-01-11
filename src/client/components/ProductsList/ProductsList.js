@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
+import VotingBox from '../VotingBox';
 import { getCurrentUser } from '../../selectors';
-import toggle from './actions';
+import { toggle, vote } from './actions';
 import { UserPropType } from '../../common/propTypes';
 
 const DISPLAY_LIMIT = 3;
@@ -81,5 +82,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { toggle }
+  { toggle, vote }
 )(ProductsList);
