@@ -17,6 +17,7 @@ const setUserAndSession = (req, res) => {
 };
 
 const logout = (req, res) => {
+  console.log('logout');
   req.session.destroy(() => {
     req.logout();
 
