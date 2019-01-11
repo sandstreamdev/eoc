@@ -1,11 +1,11 @@
 import { items as itemsInitialState, initialStatus } from './initalState';
-import { FETCH_FAILED, FETCH_ITEMS } from '../App/actions';
-import { TOGGLE_ITEM } from '../components/ProductsList/actions';
+import { FETCH_FAILED, FETCH_ITEMS } from 'App/actions';
+import { TOGGLE_ITEM } from 'components/ProductsList/actions';
 import {
   ADD_ITEM_FAILURE,
   ADD_ITEM_SUCCESS
-} from '../components/InputBar/actions';
-import { StatusType } from '../common/enums';
+} from 'components/InputBar/actions';
+import { StatusType } from 'common/enums';
 
 const items = (state = itemsInitialState, action) => {
   const { type } = action;
