@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { getItems, getFetchStatus } from 'selectors';
-import { fetchItems } from './actions';
 import { StatusType, MessageType } from 'common/enums';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
@@ -13,6 +12,7 @@ import ProductsContainer from 'components/ProductsContainer';
 import Preloader from 'components/Preloader';
 import InputBar from 'components/InputBar';
 import { StatusPropType } from 'common/propTypes';
+import { fetchItems } from './actions';
 
 class App extends Component {
   componentDidMount() {

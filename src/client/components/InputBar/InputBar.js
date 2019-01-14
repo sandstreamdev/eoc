@@ -2,11 +2,11 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { addItem } from './actions';
-import MessageBox from '../MessageBox';
 import { getNewItemStatus } from 'selectors';
 import { StatusType, MessageType } from 'common/enums';
 import { StatusPropType } from 'common/propTypes';
+import MessageBox from '../MessageBox';
+import { addItem } from './actions';
 
 class InputBar extends Component {
   state = {
