@@ -11,9 +11,7 @@ class UserBar extends Component {
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
 
-    logoutCurrentUser().then(() => {
-      window.location.replace(FRONTED_URL);
-    });
+    logoutCurrentUser().then(() => window.location.replace(FRONTED_URL));
   };
 
   render() {

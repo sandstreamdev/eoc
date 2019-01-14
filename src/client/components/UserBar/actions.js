@@ -13,9 +13,7 @@ export const logoutCurrentUser = () => dispatch =>
     mode: 'no-cors',
     credentials: 'include'
   })
-    .then(() => {
-      dispatch(unmountCurrentUser());
-    })
+    .then(() => dispatch(unmountCurrentUser()))
     .catch(err => {
       throw new Error(err.message);
     });
