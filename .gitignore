@@ -65,3 +65,4 @@ typings/staticFiles
 
 #dist
 dist
+.DS_Store
