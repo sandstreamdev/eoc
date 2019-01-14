@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { FRONTED_URL } from '../../common/variables';
 import { logoutCurrentUser } from './actions';
 import { getCurrentUser } from '../../selectors';
 import { UserPropType } from '../../common/propTypes';
@@ -11,7 +10,7 @@ class UserBar extends Component {
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
 
-    logoutCurrentUser().then(() => window.location.replace(FRONTED_URL));
+    logoutCurrentUser();
   };
 
   render() {

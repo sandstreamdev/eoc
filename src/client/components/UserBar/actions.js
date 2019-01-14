@@ -1,19 +1,17 @@
-import { ENDPOINT_URL } from '../../common/variables';
+import { ENDPOINT_URL, FRONTED_URL } from '../../common/variables';
 
 // Action types
-export const LOGOUT_USER = 'LOGOUT_USER';
 
-// Action creator
-export const unmountCurrentUser = () => ({ type: LOGOUT_USER });
+// Action creators
 
 // Dispatchers
-export const logoutCurrentUser = () => dispatch =>
+export const logoutCurrentUser = () =>
   fetch(`${ENDPOINT_URL}/logout`, {
     method: 'POST',
     mode: 'no-cors',
     credentials: 'include'
   })
-    .then(() => dispatch(unmountCurrentUser()))
+    .then(() => window.location.replace(FRONTED_URL))
     .catch(err => {
       throw new Error(err.message);
     });
