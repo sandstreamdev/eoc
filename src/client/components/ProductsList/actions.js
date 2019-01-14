@@ -10,16 +10,14 @@ const voteForItem = item => ({ type: VOTE_FOR_ITEM, item });
 
 const dispatchingDelay = 600;
 
-const updateItem = (id, payload, onUpdateSucceed) => {
+const updateItem = (id, payload) =>
   fetch(`${ENDPOINT_URL}/item/${id}/update`, {
     body: JSON.stringify(payload),
     headers: { 'Content-Type': 'application/json' },
     method: 'PATCH'
   })
     .then(resp => resp.json())
-    .then(item => onUpdateSucceed(item))
     .catch(err => console.error(err));
-};
 
 export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
   const payload = {
@@ -28,16 +26,16 @@ export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
     author: updatedAuthor,
     votes: []
   };
-  const onUpdateSucceed = item => {
-    setTimeout(() => dispatch(toggleItem(item)), dispatchingDelay);
-  };
-  updateItem(id, payload, onUpdateSucceed);
+  updateItem(id, payload)
+    .then(item =>
+      setTimeout(() => dispatch(toggleItem(item)), dispatchingDelay)
+    )
+    .catch(err => console.error(err));
 };
 
 export const vote = (id, votes) => dispatch => {
   const payload = { _id: id, votes };
-  const onUpdateSucceed = item => {
-    setTimeout(() => dispatch(voteForItem(item)), dispatchingDelay);
-  };
-  updateItem(id, payload, onUpdateSucceed);
+  updateItem(id, payload)
+    .then(item => dispatch(voteForItem(item)))
+    .catch(err => console.error(err));
 };

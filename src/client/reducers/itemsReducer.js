@@ -8,9 +8,11 @@ import {
 import { StatusType } from '../common/enums';
 
 const updateItem = (state, itemId, updatedProperties) =>
-  state.map(item =>
-    item._id === itemId ? { ...item, ...updatedProperties } : item
-  );
+  state
+    .map(item =>
+      item._id === itemId ? { ...item, ...updatedProperties } : item
+    )
+    .reverse();
 
 const items = (state = itemsInitialState, action) => {
   const { type } = action;
