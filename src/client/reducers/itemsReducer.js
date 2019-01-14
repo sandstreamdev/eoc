@@ -23,9 +23,7 @@ const items = (state = itemsInitialState, action) => {
     }
     case VOTE_FOR_ITEM: {
       const { _id, votes } = action.item;
-      return state
-        .map(item => (item._id === _id ? { ...item, votes } : item))
-        .reverse();
+      return state.map(item => (item._id === _id ? { ...item, votes } : item));
     }
     default:
       return state;
