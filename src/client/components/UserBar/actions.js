@@ -6,6 +6,5 @@ export const unmountCurrentUser = () => ({ type: LOGOUT_USER });
 
 // Dispatchers
 export const logoutCurrentUser = () => dispatch => {
-  console.log('Logout current user action');
   dispatch(unmountCurrentUser());
 };
