@@ -22,7 +22,7 @@ mongoose.connect(dbUrl);
 app.use(cookieParser());
 app.use(
   session({
-    secret: 'keyboard cat',
+    secret: process.env.EXPRESS_SESSION_KEY,
     unset: 'destroy',
     saveUninitialized: true,
     resave: true

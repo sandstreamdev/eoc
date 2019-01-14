@@ -28,7 +28,7 @@ Tools:
 
 ### Google Client ID and Client Secret Key
 
-Before runing the app remember to add the Google client id key and Client secret key to .env file.
+Before runing the app remember to add the Google client id key, Client secret key and Express session key to .env file.
 
 ### Webpack Development mode
 
