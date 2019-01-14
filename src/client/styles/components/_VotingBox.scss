@@ -1,0 +1,30 @@
+.voting-box {
+  position: absolute;
+  right: 0px;
+  margin-right: 100px;
+  z-index: 3;
+  height: 40px;
+  padding: 0 10px;
+  background-color: $bg-color;
+  outline: none;
+  border: 2px solid lighten($gray4, 20%);
+  border-radius: 10px;
+  color: lighten($gray4, 20%);
+  font-size: 1.2em;
+
+  &__icon {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  &__voted {
+    transition: all 0.1s;
+    border: 2px solid $success;
+    color: $text-white;
+    background-color: $success;
+  }
+
+  &:hover {
+    box-shadow: 0 0 3px rgba($shadow-color, 0.3);
+  }
+}
