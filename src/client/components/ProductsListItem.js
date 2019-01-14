@@ -41,8 +41,8 @@ const ProductListItem = ({
       </span>
       {!archived && (
         <VotingBox
-          votesNumber={votesNumber}
           voteForItem={voteForItem}
+          votesNumber={votesNumber}
           whetherUserVoted={whetherUserVoted}
         />
       )}

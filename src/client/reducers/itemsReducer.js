@@ -7,13 +7,6 @@ import {
 } from '../components/InputBar/actions';
 import { StatusType } from '../common/enums';
 
-const updateItem = (state, itemId, updatedProperties) =>
-  state
-    .map(item =>
-      item._id === itemId ? { ...item, ...updatedProperties } : item
-    )
-    .reverse();
-
 const items = (state = itemsInitialState, action) => {
   const { type } = action;
   switch (type) {
@@ -22,12 +15,17 @@ const items = (state = itemsInitialState, action) => {
     case FETCH_ITEMS:
       return action.items;
     case TOGGLE_ITEM: {
-      const { _id, isOrdered, author, votes } = action.item;
-      return updateItem(state, _id, { isOrdered, author, votes });
+      return state.map(item =>
+        item._id === action.item._id
+          ? { ...item, isOrdered: !item.isOrdered }
+          : item
+      );
     }
     case VOTE_FOR_ITEM: {
       const { _id, votes } = action.item;
-      return updateItem(state, _id, { votes });
+      return state
+        .map(item => (item._id === _id ? { ...item, votes } : item))
+        .reverse();
     }
     default:
       return state;
