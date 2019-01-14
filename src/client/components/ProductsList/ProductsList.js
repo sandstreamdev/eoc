@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
-import VotingBox from '../VotingBox';
 import { getCurrentUser } from '../../selectors';
 import { toggle, vote } from './actions';
 import { UserPropType } from '../../common/propTypes';
@@ -48,6 +47,9 @@ class ProductsList extends Component {
   render() {
     const { products } = this.props;
     const { limit } = this.state;
+    const {
+      currentUser: { id: userId }
+    } = this.props;
     return (
       <Fragment>
         {!products.length ? (
@@ -57,24 +59,20 @@ class ProductsList extends Component {
         ) : (
           <ul className="products-list">
             {products.slice(0, limit).map(item => (
-              <li key={item._id}>
-                {!item.isOrdered && (
-                  <VotingBox
-                    id={item._id}
-                    votes={item.votes}
-                    votesNumber={item.votes.length}
-                    voteForItem={this.voteForItem}
-                  />
-                )}
-                <ProductsListItem
-                  archived={item.isOrdered}
-                  author={item.author}
-                  id={item._id}
-                  image={item.image}
-                  name={item.name}
-                  toggleItem={this.toggleItem}
-                />
-              </li>
+              <ProductsListItem
+                archived={item.isOrdered}
+                author={item.author}
+                id={item._id}
+                image={item.image}
+                key={item._id}
+                name={item.name}
+                toggleItem={this.toggleItem}
+                voteForItem={() => {
+                  this.voteForItem(item._id, item.votes);
+                }}
+                votesNumber={item.votes.length}
+                whetherUserVoted={item.votes.includes(userId)}
+              />
             ))}
           </ul>
         )}

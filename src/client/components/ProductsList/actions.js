@@ -22,7 +22,12 @@ const updateItem = (id, payload, onUpdateSucceed) => {
 };
 
 export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
-  const payload = { _id: id, isOrdered: !isOrdered, author: updatedAuthor };
+  const payload = {
+    _id: id,
+    isOrdered: !isOrdered,
+    author: updatedAuthor,
+    votes: []
+  };
   const onUpdateSucceed = item => {
     setTimeout(() => dispatch(toggleItem(item)), dispatchingDelay);
   };

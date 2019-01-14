@@ -1,16 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-const VotingBox = ({ id, voteForItem, votes, votesNumber }) => (
-  <button type="button" onClick={() => voteForItem(id, votes)}>
+const VotingBox = ({ voteForItem, votesNumber, whetherUserVoted }) => (
+  <button
+    aria-label="Vote for item"
+    className={classNames('voting-box', {
+      'voting-box__voted': whetherUserVoted
+    })}
+    type="button"
+    onClick={e => {
+      e.stopPropagation();
+      voteForItem();
+    }}
+  >
+    <i className="fas fa-thumbs-up voting-box__icon" />
     {votesNumber}
   </button>
 );
 
 VotingBox.propTypes = {
-  id: PropTypes.string.isRequired,
   votesNumber: PropTypes.number.isRequired,
-  votes: PropTypes.arrayOf(PropTypes.string),
+  whetherUserVoted: PropTypes.bool.isRequired,
 
   voteForItem: PropTypes.func.isRequired
 };

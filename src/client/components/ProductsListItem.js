@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
+import VotingBox from './VotingBox';
 import { PLACEHOLDER_URL } from '../common/variables';
 
 const ProductListItem = ({
@@ -10,9 +11,12 @@ const ProductListItem = ({
   id,
   image = PLACEHOLDER_URL,
   name,
-  toggleItem
+  toggleItem,
+  voteForItem,
+  votesNumber,
+  whetherUserVoted
 }) => (
-  <div
+  <li
     className={classNames('products-list__item', {
       'products-list__item--blue': archived,
       'products-list__item--green': !archived
@@ -35,8 +39,15 @@ const ProductListItem = ({
         <span>{name}</span>
         <span className="products-list__author">{`Ordered by: ${author}`}</span>
       </span>
+      {!archived && (
+        <VotingBox
+          votesNumber={votesNumber}
+          voteForItem={voteForItem}
+          whetherUserVoted={whetherUserVoted}
+        />
+      )}
     </label>
-  </div>
+  </li>
 );
 
 ProductListItem.propTypes = {
@@ -45,8 +56,11 @@ ProductListItem.propTypes = {
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
   name: PropTypes.string.isRequired,
+  votesNumber: PropTypes.number.isRequired,
+  whetherUserVoted: PropTypes.bool.isRequired,
 
-  toggleItem: PropTypes.func
+  toggleItem: PropTypes.func,
+  voteForItem: PropTypes.func
 };
 
 export default ProductListItem;
