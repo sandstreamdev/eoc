@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { ENDPOINT_URL, FRONTED_URL } from '../../common/variables';
+import { FRONTED_URL } from '../../common/variables';
 import { logoutCurrentUser } from './actions';
 import { getCurrentUser } from '../../selectors';
 import { UserPropType } from '../../common/propTypes';
@@ -11,19 +11,9 @@ class UserBar extends Component {
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
 
-    fetch(`${ENDPOINT_URL}/logout`, {
-      method: 'POST',
-      mode: 'no-cors',
-      credentials: 'include'
-    })
-      .then(() => {
-        window.location.replace(FRONTED_URL);
-
-        logoutCurrentUser();
-      })
-      .catch(err => {
-        throw new Error(err.message);
-      });
+    logoutCurrentUser().then(() => {
+      window.location.replace(FRONTED_URL);
+    });
   };
 
   render() {
