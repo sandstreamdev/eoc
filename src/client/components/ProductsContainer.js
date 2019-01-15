@@ -5,6 +5,7 @@ import _sortBy from 'lodash/sortBy';
 import ProductsList from './ProductsList';
 import SortBox from './SortBox';
 import { SortOrderType } from '../common/enums';
+import FilterBox from './FilterBox';
 
 const SortOptionType = Object.freeze({
   NAME: 'name',
@@ -64,6 +65,7 @@ class ProductsContainer extends Component {
           <h2 className="products__heading">
             {archived ? 'Orders history' : 'Products list'}
           </h2>
+          <FilterBox />
           <SortBox
             label="Sort by:"
             onChange={this.onSortChange}
