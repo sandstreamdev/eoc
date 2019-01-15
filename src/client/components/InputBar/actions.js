@@ -1,4 +1,4 @@
-import { ENDPOINT_URL } from '../../common/variables';
+import { ENDPOINT_URL } from 'common/variables';
 
 // Action types
 export const ADD_ITEM = 'ADD_ITEM';

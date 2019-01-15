@@ -3,7 +3,7 @@ import _values from 'lodash/values';
 
 import { SortOrderType, StatusType, MessageType } from './enums';
 
-export const CurrentUserPropType = PropTypes.shape({
+export const UserPropType = PropTypes.shape({
   avatar: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired

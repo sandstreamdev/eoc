@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -19,7 +20,14 @@ const dbUrl = DB_URL;
 mongoose.connect(dbUrl);
 
 app.use(cookieParser());
-app.use(session({ secret: 'keyboard cat', unset: 'destroy' }));
+app.use(
+  session({
+    secret: process.env.EXPRESS_SESSION_KEY,
+    unset: 'destroy',
+    saveUninitialized: true,
+    resave: true
+  })
+);
 app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
 app.use(bodyParser.json());
 app.use(cors());
@@ -45,4 +53,4 @@ app.get('/auth/google', authenticate);
 
 app.get('/auth/google/callback', authenticateCallback, setUserAndSession);
 
-app.get('/logout', logout);
+app.post('/logout', logout);

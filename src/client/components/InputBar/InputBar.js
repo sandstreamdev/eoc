@@ -2,11 +2,11 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { addItem } from './actions';
+import { getNewItemStatus, getCurrentUser } from 'selectors';
+import { StatusType, MessageType } from 'common/enums';
+import { StatusPropType, UserPropType } from 'common/propTypes';
 import MessageBox from '../MessageBox';
-import { getNewItemStatus, getCurrentUser } from '../../selectors';
-import { StatusType, MessageType } from '../../common/enums';
-import { StatusPropType, CurrentUserPropType } from '../../common/propTypes';
+import { addItem } from './actions';
 
 class InputBar extends Component {
   state = {
@@ -66,7 +66,7 @@ class InputBar extends Component {
 }
 
 InputBar.propTypes = {
-  currentUser: CurrentUserPropType,
+  currentUser: UserPropType.isRequired,
   newItemStatus: StatusPropType.isRequired,
 
   addItem: PropTypes.func.isRequired

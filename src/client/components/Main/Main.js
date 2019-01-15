@@ -4,49 +4,38 @@ import { connect } from 'react-redux';
 
 import AuthBox from '../AuthBox';
 import App from '../App';
-import { getCookie } from '../../utils/cookie';
-import { fetchCurrentUser } from './actions';
-import { getCurrentUser } from '../../selectors';
+import { setCurrentUser } from './actions';
+import { UserPropType } from '../../common/propTypes';
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isLogged: null
-    };
-
-    this.checkIfAuthenticated();
-  }
-
   componentDidMount() {
-    this.setState({
-      isLogged: !!getCookie('user')
-    });
+    this.setAuthenticationState();
   }
 
-  checkIfAuthenticated = () => {
-    const { fetchCurrentUser } = this.props;
+  setAuthenticationState = () => {
+    const { setCurrentUser } = this.props;
 
-    fetchCurrentUser();
+    setCurrentUser();
   };
 
   render() {
-    const { isLogged } = this.state;
+    const { currentUser } = this.props;
 
-    return isLogged ? <App /> : <AuthBox />;
+    return currentUser ? <App /> : <AuthBox />;
   }
 }
 
 Main.propTypes = {
-  fetchCurrentUser: PropTypes.func.isRequired
+  currentUser: UserPropType,
+
+  setCurrentUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  currentUser: getCurrentUser(state)
+  currentUser: state.currentUser
 });
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser }
+  { setCurrentUser }
 )(Main);

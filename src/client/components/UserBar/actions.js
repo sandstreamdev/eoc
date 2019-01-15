@@ -1,10 +1,17 @@
-// Action types
-export const LOGOUT_USER = 'LOGOUT_USER';
+import { ENDPOINT_URL, FRONTED_URL } from '../../common/variables';
 
-// Action creator
-export const unmountCurrentUser = () => ({ type: LOGOUT_USER });
+// Action types
+
+// Action creators
 
 // Dispatchers
-export const logoutCurrentUser = () => dispatch => {
-  dispatch(unmountCurrentUser());
-};
+export const logoutCurrentUser = () =>
+  fetch(`${ENDPOINT_URL}/logout`, {
+    method: 'POST',
+    mode: 'no-cors',
+    credentials: 'include'
+  })
+    .then(() => window.location.replace(FRONTED_URL))
+    .catch(err => {
+      throw new Error(err.message);
+    });

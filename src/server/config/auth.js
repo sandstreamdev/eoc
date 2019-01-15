@@ -7,9 +7,8 @@ const { ENDPOINT_URL } = require('../common/variables');
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        '535360565912-hvhhi6g8j4ot9l7maikebnkv8v1h8rgb.apps.googleusercontent.com',
-      clientSecret: 'fjZ8GsHM5y1fOkPXtXaUUDMy',
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: `${ENDPOINT_URL}/auth/google/callback`
     },
     (accessToken, refreshToken, profile, done) => {

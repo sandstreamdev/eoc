@@ -1,7 +1,8 @@
 import React from 'react';
 
 import AppLogo from './AppLogo';
-import { COMPANY_NAME, COMPANY_PAGE_URL } from '../common/variables';
+import { COMPANY_PAGE_URL } from '../common/variables';
+import CompanyLogo from '../assets/images/company_logo.png';
 
 const Header = props => (
   <div className="app-header">
@@ -12,7 +13,7 @@ const Header = props => (
       rel="noopener noreferrer"
       target="_blank"
     >
-      {COMPANY_NAME}
+      <img alt="Company logo" className="app-header__logo" src={CompanyLogo} />
     </a>
   </div>
 );

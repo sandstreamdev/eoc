@@ -2,26 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { ENDPOINT_URL } from '../../common/variables';
 import { logoutCurrentUser } from './actions';
 import { getCurrentUser } from '../../selectors';
-import { CurrentUserPropType } from '../../common/propTypes';
+import { UserPropType } from '../../common/propTypes';
 
 class UserBar extends Component {
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
 
-    /**
-     *  Wait 300ms for backend service to
-     *  logout, than execute logout on front.
-     */
-    setTimeout(() => logoutCurrentUser(), 300);
+    logoutCurrentUser();
   };
 
   render() {
     const {
       currentUser: { avatar, name }
     } = this.props;
+
     return (
       <div className="user-bar">
         <div className="user-bar__wrapper">
@@ -30,17 +26,17 @@ class UserBar extends Component {
             <span className="user-bar__user-data">Logged as:</span>
             <span className="user-bar__user-data">{name}</span>
           </div>
-          <a
+          <button
             className="user-bar__logout"
-            href={`${ENDPOINT_URL}/logout`}
             onClick={this.handleLogOut}
+            type="button"
           >
             <img
               alt="Log out"
               className="user-bar__icon"
               src="src/client/assets/images/sign-out.svg"
             />
-          </a>
+          </button>
         </div>
       </div>
     );
@@ -48,8 +44,9 @@ class UserBar extends Component {
 }
 
 UserBar.propTypes = {
-  currentUser: CurrentUserPropType,
-  logoutCurrentUser: PropTypes.func
+  currentUser: UserPropType.isRequired,
+
+  logoutCurrentUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

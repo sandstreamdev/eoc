@@ -1,3 +1,5 @@
+const { FRONTEND_URL } = require('../common/variables');
+
 const setUserAndSession = (req, res) => {
   req.session.token = req.user.token;
 
@@ -11,7 +13,7 @@ const setUserAndSession = (req, res) => {
     })
   );
 
-  res.redirect('http://localhost:3000/');
+  res.redirect(FRONTEND_URL);
 };
 
 const logout = (req, res) => {
@@ -20,7 +22,7 @@ const logout = (req, res) => {
 
     res.clearCookie('connect.sid');
     res.clearCookie('user');
-    res.redirect('http://localhost:3000/');
+    res.redirect(FRONTEND_URL);
   });
 };
 

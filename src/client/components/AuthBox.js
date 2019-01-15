@@ -9,7 +9,6 @@ const AuthBox = () => (
       <AppLogo />
       <span className="authbox__subheading">When the fridge is empty...</span>
     </div>
-
     <div className="authbox__buttons">
       <h1 className="authbox__heading">Sign in:</h1>
       <a className="google-button" href={`${ENDPOINT_URL}/auth/google`}>
