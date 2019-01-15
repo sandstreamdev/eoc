@@ -1,13 +1,16 @@
-const MessageType = Object.freeze({
+export const MessageType = Object.freeze({
   ERROR: 'error',
   INFO: 'info',
   SUCCESS: 'success'
 });
 
-const StatusType = Object.freeze({
+export const SortOrderType = Object.freeze({
+  ASCENDING: 'ascending',
+  DESCENDING: 'descending'
+});
+
+export const StatusType = Object.freeze({
   PENDING: 'pending',
   RESOLVED: 'resolved',
   ERROR: 'error'
 });
-
-export { MessageType, StatusType };

@@ -27,9 +27,9 @@ class App extends Component {
 
   render() {
     const { fetchStatus, items } = this.props;
-    const reversedItem = items.reverse();
-    const archiveList = reversedItem.filter(item => item.isOrdered);
-    const shoppingList = reversedItem.filter(item => !item.isOrdered);
+    const reversedItems = items.reverse();
+    const archiveList = reversedItems.filter(item => item.isOrdered);
+    const shoppingList = reversedItems.filter(item => !item.isOrdered);
 
     return (
       <div

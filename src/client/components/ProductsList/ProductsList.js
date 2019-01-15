@@ -35,6 +35,7 @@ class ProductsList extends Component {
   render() {
     const { products } = this.props;
     const { limit } = this.state;
+
     return (
       <Fragment>
         {!products.length ? (
