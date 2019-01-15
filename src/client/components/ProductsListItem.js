@@ -13,7 +13,7 @@ const ProductListItem = ({
   name,
   toggleItem,
   voteForItem,
-  votesNumber,
+  votesCount,
   whetherUserVoted
 }) => (
   <li
@@ -42,7 +42,7 @@ const ProductListItem = ({
       {!archived && (
         <VotingBox
           voteForItem={voteForItem}
-          votesNumber={votesNumber}
+          votesCount={votesCount}
           whetherUserVoted={whetherUserVoted}
         />
       )}
@@ -56,7 +56,7 @@ ProductListItem.propTypes = {
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
   name: PropTypes.string.isRequired,
-  votesNumber: PropTypes.number.isRequired,
+  votesCount: PropTypes.number.isRequired,
   whetherUserVoted: PropTypes.bool.isRequired,
 
   toggleItem: PropTypes.func,

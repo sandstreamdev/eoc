@@ -2,25 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-const VotingBox = ({ voteForItem, votesNumber, whetherUserVoted }) => (
+import ThumbIcon from '../assets/images/thumbs-up-solid.svg';
+
+const VotingBox = ({ voteForItem, votesCount, whetherUserVoted }) => (
   <button
-    aria-label="Vote for item"
     className={classNames('voting-box', {
       'voting-box__voted': whetherUserVoted
     })}
-    type="button"
     onClick={e => {
       e.stopPropagation();
       voteForItem();
     }}
+    type="button"
   >
-    <i className="fas fa-thumbs-up voting-box__icon" />
-    {votesNumber}
+    <img alt="Thumb icon" className="voting-box__icon" src={ThumbIcon} />
+    {votesCount}
   </button>
 );
 
 VotingBox.propTypes = {
-  votesNumber: PropTypes.number.isRequired,
+  votesCount: PropTypes.number.isRequired,
   whetherUserVoted: PropTypes.bool.isRequired,
 
   voteForItem: PropTypes.func.isRequired

@@ -38,19 +38,17 @@ class ProductsList extends Component {
       vote,
       currentUser: { id }
     } = this.props;
-    if (votes.includes(id)) {
-      vote(_id, votes.filter(voterId => voterId !== id));
-    } else {
-      vote(_id, votes.concat(id));
-    }
+    votes.includes(id)
+      ? vote(_id, votes.filter(voterId => voterId !== id))
+      : vote(_id, votes.concat(id));
   };
 
   render() {
-    const { products } = this.props;
-    const { limit } = this.state;
     const {
+      products,
       currentUser: { id: userId }
     } = this.props;
+    const { limit } = this.state;
     return (
       <Fragment>
         {!products.length ? (
@@ -69,7 +67,7 @@ class ProductsList extends Component {
                 name={item.name}
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
-                votesNumber={item.votes.length}
+                votesCount={item.votes.length}
                 whetherUserVoted={item.votes.includes(userId)}
               />
             ))}

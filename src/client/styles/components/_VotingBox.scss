@@ -7,21 +7,20 @@
   padding: 0 10px;
   background-color: $bg-color;
   outline: none;
-  border: 2px solid lighten($gray4, 20%);
+  border: 1px solid $gray4;
   border-radius: 10px;
-  color: lighten($gray4, 20%);
-  font-size: 1.2em;
+  color: $gray4;
+  font-size: 14px;
 
   &__icon {
     display: inline-block;
     margin-right: 10px;
+    height: 14px;
   }
 
   &__voted {
     transition: all 0.1s;
     border: 2px solid $success;
-    color: $text-white;
-    background-color: $success;
   }
 
   &:hover {
