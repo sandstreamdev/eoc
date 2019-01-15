@@ -13,16 +13,28 @@ const SortOptionType = Object.freeze({
   AUTHOR: 'author'
 });
 
+export const FilterOptionType = Object.freeze({
+  MY_PRODUCTS: 'my products',
+  ALL_PRODUCTS: 'all products'
+});
+
 const sortOptions = [
   { id: SortOptionType.AUTHOR, label: 'author' },
   { id: SortOptionType.DATE, label: 'date' },
   { id: SortOptionType.NAME, label: 'name' }
 ];
 
+const filterOptions = [
+  { id: FilterOptionType.ALL_PRODUCTS, label: 'all products' },
+  { id: FilterOptionType.MY_PRODUCTS, label: 'my products' }
+];
+
 class ProductsContainer extends Component {
   state = {
     sortBy: SortOptionType.NAME,
-    sortOrder: SortOrderType.ASCENDING
+    sortOrder: SortOrderType.ASCENDING,
+
+    filterBy: FilterOptionType.ALL_PRODUCTS
   };
 
   onSortChange = (sortBy, sortOrder) => this.setState({ sortBy, sortOrder });
@@ -54,9 +66,15 @@ class ProductsContainer extends Component {
     return sortOrder === SortOrderType.ASCENDING ? result : result.reverse();
   };
 
+  onFilterChange = filterBy => this.setState({ filterBy });
+
+  filterProducts = (products, filterBy) => {
+    console.log('Filtering products');
+  };
+
   render() {
     const { archived, products } = this.props;
-    const { sortBy, sortOrder } = this.state;
+    const { filterBy, sortBy, sortOrder } = this.state;
     const sortedList = this.sortProducts(products, sortBy, sortOrder);
 
     return (
@@ -65,7 +83,12 @@ class ProductsContainer extends Component {
           <h2 className="products__heading">
             {archived ? 'Orders history' : 'Products list'}
           </h2>
-          <FilterBox />
+          <FilterBox
+            filterBy={filterBy}
+            label="Filter by:"
+            onChange={this.onFilterChange}
+            options={filterOptions}
+          />
           <SortBox
             label="Sort by:"
             onChange={this.onSortChange}
