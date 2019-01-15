@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
 import { getCurrentUser } from '../../selectors';
-import toggle from './actions';
+import { toggle, vote } from './actions';
 import { UserPropType } from '../../common/propTypes';
 
 const DISPLAY_LIMIT = 3;
@@ -32,8 +32,22 @@ class ProductsList extends Component {
     }
   };
 
+  voteForItem = item => () => {
+    const { _id, votes } = item;
+    const {
+      vote,
+      currentUser: { id }
+    } = this.props;
+    votes.includes(id)
+      ? vote(_id, votes.filter(voterId => voterId !== id))
+      : vote(_id, votes.concat(id));
+  };
+
   render() {
-    const { products } = this.props;
+    const {
+      products,
+      currentUser: { id: userId }
+    } = this.props;
     const { limit } = this.state;
 
     return (
@@ -53,6 +67,9 @@ class ProductsList extends Component {
                 key={item._id}
                 name={item.name}
                 toggleItem={this.toggleItem}
+                voteForItem={this.voteForItem(item)}
+                votesCount={item.votes.length}
+                whetherUserVoted={item.votes.includes(userId)}
               />
             ))}
           </ul>
@@ -73,7 +90,8 @@ ProductsList.propTypes = {
   currentUser: UserPropType.isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
-  toggle: PropTypes.func
+  toggle: PropTypes.func,
+  vote: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -82,5 +100,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { toggle }
+  { toggle, vote }
 )(ProductsList);

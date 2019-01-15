@@ -1,6 +1,6 @@
 import { items as itemsInitialState, initialStatus } from './initalState';
 import { FETCH_FAILED, FETCH_ITEMS } from '../components/App/actions';
-import { TOGGLE_ITEM } from '../components/ProductsList/actions';
+import { TOGGLE_ITEM, VOTE_FOR_ITEM } from '../components/ProductsList/actions';
 import {
   ADD_ITEM_FAILURE,
   ADD_ITEM_SUCCESS
@@ -17,9 +17,13 @@ const items = (state = itemsInitialState, action) => {
     case TOGGLE_ITEM: {
       return state.map(item =>
         item._id === action.item._id
-          ? { ...item, isOrdered: !item.isOrdered, author: action.item.author }
+          ? { ...item, isOrdered: !item.isOrdered }
           : item
       );
+    }
+    case VOTE_FOR_ITEM: {
+      const { _id, votes } = action.item;
+      return state.map(item => (item._id === _id ? { ...item, votes } : item));
     }
     default:
       return state;

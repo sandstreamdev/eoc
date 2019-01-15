@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import { PLACEHOLDER_URL } from 'common/variables';
+import VotingBox from './VotingBox';
 
 const ProductListItem = ({
   archived,
@@ -10,7 +11,10 @@ const ProductListItem = ({
   id,
   image = PLACEHOLDER_URL,
   name,
-  toggleItem
+  toggleItem,
+  voteForItem,
+  votesCount,
+  whetherUserVoted
 }) => (
   <li
     className={classNames('products-list__item', {
@@ -35,6 +39,13 @@ const ProductListItem = ({
         <span>{name}</span>
         <span className="products-list__author">{`Ordered by: ${author}`}</span>
       </span>
+      {!archived && (
+        <VotingBox
+          voteForItem={voteForItem}
+          votesCount={votesCount}
+          whetherUserVoted={whetherUserVoted}
+        />
+      )}
     </label>
   </li>
 );
@@ -45,8 +56,11 @@ ProductListItem.propTypes = {
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
   name: PropTypes.string.isRequired,
+  votesCount: PropTypes.number.isRequired,
+  whetherUserVoted: PropTypes.bool.isRequired,
 
-  toggleItem: PropTypes.func
+  toggleItem: PropTypes.func,
+  voteForItem: PropTypes.func
 };
 
 export default ProductListItem;
