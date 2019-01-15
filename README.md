@@ -26,6 +26,10 @@ Tools:
 - Husky (pre-commits hooks).
 - Docker
 
+### Google Client ID and Client Secret Key
+
+Before runing the app remember to add the Google client id key, Client secret key and Express session key to .env file.
+
 ### Webpack Development mode
 
 In the development mode, we will have 2 servers running. The front end code will be served by the [webpack dev server](https://webpack.js.org/configuration/dev-server/) which helps with hot and live reloading. The server side Express code will be served by a node server using [nodemon](https://nodemon.io/) which helps in automatically restarting the server whenever server side code changes.
@@ -136,6 +140,9 @@ src/server/index.js is the entry point to the server application.
 
 [ESLint](https://eslint.org/) takes care of the code-quality. [Prettier](https://prettier.io/) takes care of all the formatting. [Husky](https://github.com/typicode/husky) takes care of running linting rules before we commit or push the code.
 
-### FontAwesome
+### License and trademarks info
 
-This project uses FontAwesome Free. Check [license]('https://fontawesome.com/license').
+This project uses:
+
+- FontAwesome Free. Check [license]('https://fontawesome.com/license').,
+- Google [Trademark Logo]('https://www.google.com/permissions/logos-trademarks/') : ©2018 Google LLC All rights reserved. Google and the Google logo are registered trademarks of Google LLC.

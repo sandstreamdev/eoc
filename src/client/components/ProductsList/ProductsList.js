@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsListItem from '../ProductsListItem';
+import { getCurrentUser } from '../../selectors';
 import toggle from './actions';
+import { UserPropType } from '../../common/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
@@ -16,13 +18,22 @@ class ProductsList extends Component {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
-  toggleItem = (id, isOrdered) => {
+  toggleItem = (author, id, isOrdered) => {
     const { toggle } = this.props;
-    toggle(id, isOrdered);
+    const {
+      currentUser: { name }
+    } = this.props;
+    const isSameAuthor = author === name;
+
+    if (isOrdered) {
+      isSameAuthor ? toggle(id, isOrdered) : toggle(id, isOrdered, name);
+    } else {
+      toggle(id, isOrdered);
+    }
   };
 
   render() {
-    const { archived, products } = this.props;
+    const { products } = this.props;
     const { limit } = this.state;
     return (
       <Fragment>
@@ -34,7 +45,7 @@ class ProductsList extends Component {
           <ul className="products-list">
             {products.slice(0, limit).map(item => (
               <ProductsListItem
-                archived={archived}
+                archived={item.isOrdered}
                 author={item.author}
                 id={item._id}
                 image={item.image}
@@ -58,13 +69,17 @@ class ProductsList extends Component {
 }
 
 ProductsList.propTypes = {
-  archived: PropTypes.bool,
+  currentUser: UserPropType.isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
   toggle: PropTypes.func
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   { toggle }
 )(ProductsList);

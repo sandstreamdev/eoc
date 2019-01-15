@@ -1,5 +1,5 @@
 import { items as itemsInitialState, initialStatus } from './initalState';
-import { FETCH_FAILED, FETCH_ITEMS } from '../App/actions';
+import { FETCH_FAILED, FETCH_ITEMS } from '../components/App/actions';
 import { TOGGLE_ITEM } from '../components/ProductsList/actions';
 import {
   ADD_ITEM_FAILURE,
@@ -17,7 +17,7 @@ const items = (state = itemsInitialState, action) => {
     case TOGGLE_ITEM: {
       return state.map(item =>
         item._id === action.item._id
-          ? { ...item, isOrdered: !item.isOrdered }
+          ? { ...item, isOrdered: !item.isOrdered, author: action.item.author }
           : item
       );
     }
@@ -26,11 +26,6 @@ const items = (state = itemsInitialState, action) => {
   }
 };
 
-/**
- * Use string instead of booleans to indicate status of fetching
- * items or adding a new item status. Eg. For pending state: "true",
- * for resolved state: "false", for error: "error".
- */
 const uiStatus = (state = initialStatus, action) => {
   switch (action.type) {
     case FETCH_FAILED:

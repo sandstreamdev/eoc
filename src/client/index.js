@@ -4,13 +4,13 @@ import { Provider } from 'react-redux';
 import './styles/index.scss';
 
 import configureStore from './store/configureStore';
-import App from './App/index';
+import Main from './components/Main';
 
 const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Main />
   </Provider>,
   document.getElementById('root')
 );

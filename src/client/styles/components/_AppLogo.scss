@@ -1,21 +1,6 @@
-.app-header {
-  padding: 20px 0 20px;
+.app-logo {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-
-  &__link {
-    color: $brand-color;
-    font-size: 14px;
-    line-height: 1.2;
-    font-weight: 400;
-  }
-
-  &__logo {
-    display: flex;
-    align-items: center;
-    height: 42px;
-  }
 
   &__icon {
     height: 20px;

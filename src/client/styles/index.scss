@@ -16,10 +16,14 @@
 @import './containers/app';
 
 // 4. Components
+@import './components/AppLogo';
+@import './components/Authbox';
 @import './components/Footer';
+@import './components/googleButton';
 @import './components/Header';
 @import './components/MessageBox';
 @import './components/Preloader';
 @import './components/ProductsContainer';
 @import './components/ProductsList';
 @import './components/InputBar';
+@import './components/UserBar';

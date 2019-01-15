@@ -1,0 +1,38 @@
+.authbox {
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $container-bg;
+  box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+  padding: 36px;
+  margin-bottom: 20px;
+  text-align: center;
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 36px;
+  }
+
+  &__subheading {
+    color: $text-normal;
+    font-size: 12px;
+  }
+
+  &__buttons {
+    border: 1px solid $border-color;
+    border-radius: 2px;
+    padding: 16px;
+  }
+
+  &__heading {
+    color: $text-normal;
+    font-size: 12px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+}

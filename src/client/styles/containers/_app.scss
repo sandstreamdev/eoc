@@ -6,12 +6,19 @@ body {
   font-family: 'Roboto', sans-serif;
   background-color: $app-bg;
   height: 100%;
+  position: relative;
+}
+
+#root {
+  height: 100%;
+  position: relative;
 }
 
 .app-wrapper {
   max-width: 560px;
   margin: 0 auto;
   position: relative;
+  height: 100%;
 }
 
 .overlay {

@@ -2,15 +2,14 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getNewItemStatus } from 'selectors';
+import { getNewItemStatus, getCurrentUser } from 'selectors';
 import { StatusType, MessageType } from 'common/enums';
-import { StatusPropType } from 'common/propTypes';
+import { StatusPropType, UserPropType } from 'common/propTypes';
 import MessageBox from '../MessageBox';
 import { addItem } from './actions';
 
 class InputBar extends Component {
   state = {
-    itemAuthor: '',
     itemName: ''
   };
 
@@ -20,34 +19,25 @@ class InputBar extends Component {
     });
   };
 
-  handleAuthorChange = e => {
-    this.setState({
-      itemAuthor: e.target.value
-    });
-  };
-
   handleFormSubmit = e => {
     e.preventDefault();
-    const { addItem } = this.props;
-    const { itemAuthor, itemName } = this.state;
+    const { addItem, currentUser } = this.props;
+    const { itemName } = this.state;
     const newItem = {
-      author: itemAuthor,
+      author: currentUser.name,
       isOrdered: false,
       name: itemName
     };
 
-    addItem(newItem)
-      .then(() => {
-        this.setState({
-          itemAuthor: '',
-          itemName: ''
-        });
-      })
-      .catch(err => console.error(err.message));
+    addItem(newItem);
+
+    this.setState({
+      itemName: ''
+    });
   };
 
   render() {
-    const { itemAuthor, itemName } = this.state;
+    const { itemName } = this.state;
     const { newItemStatus } = this.props;
     return (
       <Fragment>
@@ -67,14 +57,6 @@ class InputBar extends Component {
               type="text"
               value={itemName}
             />
-            <input
-              className="input-bar__input"
-              onChange={this.handleAuthorChange}
-              placeholder="Your name"
-              required
-              type="text"
-              value={itemAuthor}
-            />
             <input className="input-bar__submit" type="submit" />
           </form>
         </div>
@@ -84,12 +66,14 @@ class InputBar extends Component {
 }
 
 InputBar.propTypes = {
+  currentUser: UserPropType.isRequired,
   newItemStatus: StatusPropType.isRequired,
 
   addItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state),
   newItemStatus: getNewItemStatus(state)
 });
 
