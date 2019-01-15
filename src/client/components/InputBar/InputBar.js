@@ -25,6 +25,7 @@ class InputBar extends Component {
     const { itemName } = this.state;
     const newItem = {
       author: currentUser.name,
+      authorId: currentUser.id,
       isOrdered: false,
       name: itemName
     };

@@ -70,11 +70,27 @@ class ProductsContainer extends Component {
 
   filterProducts = (products, filterBy) => {
     console.log('Filtering products');
+    let result = [...products];
+
+    switch (filterBy) {
+      case FilterOptionType.MY_PRODUCTS:
+        // filter my products
+        // get current user id from redux and filter products with authorID only
+        break;
+      case FilterOptionType.ALL_PRODUCTS:
+        result = products;
+        break;
+      default:
+        break;
+    }
+
+    return result;
   };
 
   render() {
     const { archived, products } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
+    const filteredList = this.filterProducts(products, filterBy);
     const sortedList = this.sortProducts(products, sortBy, sortOrder);
 
     return (
