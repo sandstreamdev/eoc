@@ -7,6 +7,7 @@ import ProductsList from './ProductsList';
 import SortBox from './SortBox';
 import { SortOrderType } from '../common/enums';
 import FilterBox from './FilterBox';
+import { getCurrentUser } from '../selectors';
 
 const SortOptionType = Object.freeze({
   NAME: 'name',
@@ -34,7 +35,6 @@ class ProductsContainer extends Component {
   state = {
     sortBy: SortOptionType.NAME,
     sortOrder: SortOrderType.ASCENDING,
-
     filterBy: FilterOptionType.ALL_PRODUCTS
   };
 
@@ -70,21 +70,14 @@ class ProductsContainer extends Component {
   onFilterChange = filterBy => this.setState({ filterBy });
 
   filterProducts = (products, filterBy) => {
-    let result = [...products];
-    const { currentUserId } = this.props;
+    const {
+      currentUser: { id }
+    } = this.props;
 
-    switch (filterBy) {
-      case FilterOptionType.MY_PRODUCTS:
-        result = result.filter(item => item.authorId === currentUserId);
-        break;
-      case FilterOptionType.ALL_PRODUCTS:
-        result = products;
-        break;
-      default:
-        break;
+    if (filterBy === FilterOptionType.MY_PRODUCTS) {
+      return products.filter(item => item.authorId === id);
     }
-
-    return result;
+    return products;
   };
 
   render() {
@@ -121,15 +114,12 @@ class ProductsContainer extends Component {
 
 ProductsContainer.propTypes = {
   archived: PropTypes.bool,
-  currentUserId: PropTypes.string.isRequired,
+  currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
   products: PropTypes.arrayOf(PropTypes.object)
 };
 
 const mapStateToProps = state => ({
-  currentUserId: state.currentUser.id
+  currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(ProductsContainer);
+export default connect(mapStateToProps)(ProductsContainer);
