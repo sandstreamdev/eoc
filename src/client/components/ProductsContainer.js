@@ -74,10 +74,9 @@ class ProductsContainer extends Component {
       currentUser: { id }
     } = this.props;
 
-    if (filterBy === FilterOptionType.MY_PRODUCTS) {
-      return products.filter(item => item.authorId === id);
-    }
-    return products;
+    return filterBy === FilterOptionType.MY_PRODUCTS
+      ? products.filter(item => item.authorId === id)
+      : products;
   };
 
   render() {
