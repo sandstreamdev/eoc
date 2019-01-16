@@ -3,9 +3,9 @@ const filter = require('../common/utilities');
 
 // Create new item
 const itemCreate = (req, resp) => {
-  const { author, authorId, isOrdered, name } = req.body;
+  const { authorName, authorId, isOrdered, name } = req.body;
   const item = new Item({
-    author,
+    authorName,
     authorId,
     isOrdered,
     name,

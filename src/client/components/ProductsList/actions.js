@@ -11,7 +11,7 @@ const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
     body: JSON.stringify({
       _id: id,
       isOrdered: !isOrdered,
-      author: updatedAuthor
+      authorName: updatedAuthor
     }),
     headers: {
       'Content-Type': 'application/json'

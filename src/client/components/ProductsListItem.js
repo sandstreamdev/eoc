@@ -6,7 +6,7 @@ import { PLACEHOLDER_URL } from 'common/variables';
 
 const ProductListItem = ({
   archived,
-  author,
+  authorName,
   id,
   image = PLACEHOLDER_URL,
   name,
@@ -28,12 +28,12 @@ const ProductListItem = ({
       className="products-list__label"
       htmlFor={`option${id}`}
       id={`option${id}`}
-      onClick={() => toggleItem(author, id, archived)}
+      onClick={() => toggleItem(authorName, id, archived)}
     >
       <img alt="Product icon" className="products-list__icon" src={image} />
       <span className="products-list__data">
         <span>{name}</span>
-        <span className="products-list__author">{`Ordered by: ${author}`}</span>
+        <span className="products-list__author">{`Ordered by: ${authorName}`}</span>
       </span>
     </label>
   </li>
@@ -41,7 +41,7 @@ const ProductListItem = ({
 
 ProductListItem.propTypes = {
   archived: PropTypes.bool,
-  author: PropTypes.string,
+  authorName: PropTypes.string,
   id: PropTypes.string.isRequired,
   image: PropTypes.string,
   name: PropTypes.string.isRequired,
