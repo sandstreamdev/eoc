@@ -34,7 +34,7 @@ class UserBar extends Component {
             <img
               alt="Log out"
               className="user-bar__icon"
-              src="src/client/assets/images/sign-out.svg"
+              src="client/assets/images/sign-out.svg"
             />
           </button>
         </div>

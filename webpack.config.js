@@ -5,13 +5,13 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const outputDirectory = 'dist';
 
 module.exports = {
-  entry: ['babel-polyfill', './src/client/app/index.jsx'],
+  entry: ['babel-polyfill', './client/app/index.jsx'],
   output: {
     path: path.join(__dirname, outputDirectory),
     filename: 'bundle.js'
   },
   resolve: {
-    modules: [path.resolve(__dirname, 'src', 'client'), 'node_modules']
+    modules: [path.resolve(__dirname, './client'), 'node_modules']
   },
   module: {
     rules: [
@@ -54,7 +54,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin([outputDirectory]),
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: './client/public/index.html'
     })
   ]
 };

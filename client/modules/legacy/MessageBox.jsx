@@ -16,7 +16,7 @@ const MessageBox = ({ message, type }) => (
     <img
       alt="Info icon"
       className="message-box__img"
-      src="src/client/assets/images/info-solid.svg"
+      src="client/assets/images/info-solid.svg"
     />
     <p className="message-box__content">{message}</p>
   </div>

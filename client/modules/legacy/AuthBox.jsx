@@ -15,7 +15,7 @@ const AuthBox = () => (
         <img
           alt="Google Icon"
           className="google-button__img"
-          src="src/client/assets/images/google-btn.png"
+          src="client/assets/images/google-btn.png"
         />
       </a>
     </div>
