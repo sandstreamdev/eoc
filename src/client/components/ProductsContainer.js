@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _sortBy from 'lodash/sortBy';
 
@@ -14,8 +15,8 @@ const SortOptionType = Object.freeze({
 });
 
 export const FilterOptionType = Object.freeze({
-  MY_PRODUCTS: 'my products',
-  ALL_PRODUCTS: 'all products'
+  MY_PRODUCTS: 'my_products',
+  ALL_PRODUCTS: 'all_products'
 });
 
 const sortOptions = [
@@ -69,13 +70,12 @@ class ProductsContainer extends Component {
   onFilterChange = filterBy => this.setState({ filterBy });
 
   filterProducts = (products, filterBy) => {
-    console.log('Filtering products');
     let result = [...products];
+    const { currentUserId } = this.props;
 
     switch (filterBy) {
       case FilterOptionType.MY_PRODUCTS:
-        // filter my products
-        // get current user id from redux and filter products with authorID only
+        result = result.filter(item => item.authorId === currentUserId);
         break;
       case FilterOptionType.ALL_PRODUCTS:
         result = products;
@@ -91,7 +91,7 @@ class ProductsContainer extends Component {
     const { archived, products } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterProducts(products, filterBy);
-    const sortedList = this.sortProducts(products, sortBy, sortOrder);
+    const sortedList = this.sortProducts(filteredList, sortBy, sortOrder);
 
     return (
       <div className="products">
@@ -121,7 +121,15 @@ class ProductsContainer extends Component {
 
 ProductsContainer.propTypes = {
   archived: PropTypes.bool,
+  currentUserId: PropTypes.string.isRequired,
   products: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default ProductsContainer;
+const mapStateToProps = state => ({
+  currentUserId: state.currentUser.id
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(ProductsContainer);
