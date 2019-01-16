@@ -49,7 +49,7 @@ class ProductsContainer extends Component {
         break;
       case SortOptionType.AUTHOR:
         result = _sortBy(result, [
-          item => item.author.toLowerCase(),
+          item => item.authorName.toLowerCase(),
           item => item.name.toLowerCase()
         ]);
         break;
