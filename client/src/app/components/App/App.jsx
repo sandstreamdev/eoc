@@ -3,20 +3,23 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
+import AuthBox from 'modules/auth-box';
 import Footer from 'app/components/Footer/Footer';
 import MessageBox from 'common/components/MessageBox';
 import ProductsContainer from 'modules/shopping-list/ProductsContainer';
 import Preloader from 'common/components/Preloader';
 import { StatusType, MessageType } from 'common/constants/enums';
-import { getItems, getFetchStatus } from 'common/selectors';
+import { getItems, getFetchStatus, getCurrentUser } from 'common/selectors';
 import InputBar from 'modules/shopping-list/InputBar';
-import { StatusPropType } from 'common/constants/propTypes';
+import { StatusPropType, UserPropType } from 'common/constants/propTypes';
 import { fetchItems } from 'modules/legacy/appActions';
 import Toolbar from '../Toolbar/Toolbar';
+import { setCurrentUser } from 'modules/legacy/mainActions';
 
 class App extends Component {
   componentDidMount() {
     this.fetchItems();
+    this.setAuthenticationState();
   }
 
   fetchItems = () => {
@@ -24,13 +27,19 @@ class App extends Component {
     fetchItems();
   };
 
+  setAuthenticationState = () => {
+    const { setCurrentUser } = this.props;
+
+    setCurrentUser();
+  };
+
   render() {
-    const { fetchStatus, items } = this.props;
+    const { currentUser, fetchStatus, items } = this.props;
     const reversedItem = [...items].reverse();
     const archiveList = reversedItem.filter(item => item.isOrdered);
     const shoppingList = reversedItem.filter(item => !item.isOrdered);
 
-    return (
+    return currentUser ? (
       <Fragment>
         <Toolbar />
         <div
@@ -53,23 +62,28 @@ class App extends Component {
           )}
         </div>
       </Fragment>
+    ) : (
+      <AuthBox />
     );
   }
 }
 
 App.propTypes = {
+  currentUser: UserPropType,
   fetchStatus: StatusPropType.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
 
-  fetchItems: PropTypes.func
+  fetchItems: PropTypes.func,
+  setCurrentUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state),
   fetchStatus: getFetchStatus(state),
   items: getItems(state)
 });
 
 export default connect(
   mapStateToProps,
-  { fetchItems }
+  { fetchItems, setCurrentUser }
 )(App);
