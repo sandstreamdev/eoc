@@ -5,7 +5,7 @@ const Cohort = ({
   match: {
     params: { id }
   }
-}) => <div>{`Cohort of id: ${id}`}</div>;
+}) => <div style={{ padding: '100px' }}>{`Cohort of id: ${id}`}</div>;
 
 export default Cohort;
 

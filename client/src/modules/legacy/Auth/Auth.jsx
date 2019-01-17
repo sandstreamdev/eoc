@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import AuthBox from 'modules/legacy/AuthBox';
-import App from 'modules/legacy/App';
-import { setCurrentUser } from 'modules/legacy/mainActions';
+import AuthBox from '../AuthBox';
+import App from '../App';
+import { setCurrentUser } from '../mainActions';
 import { UserPropType } from 'common/constants/propTypes';
 
 class Auth extends Component {

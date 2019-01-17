@@ -5,7 +5,7 @@ const Main = ({
   match: {
     params: { id }
   }
-}) => <div>Main aplication page</div>;
+}) => <div style={{ padding: '100px' }}>Main aplication page</div>;
 
 export default Main;
 

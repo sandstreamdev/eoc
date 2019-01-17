@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Auth from 'app/components/Auth';
+import Auth from 'modules/legacy/Auth';
 
 const ShoppingList = ({
   match: {
@@ -9,7 +9,7 @@ const ShoppingList = ({
   }
 }) => (
   <div>
-    <div>{`Cohort of id: ${id}`}</div>
+    <div style={{ padding: '100px' }}>{`Cohort of id: ${id}`}</div>
     <Auth />
   </div>
 );
