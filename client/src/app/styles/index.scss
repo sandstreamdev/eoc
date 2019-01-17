@@ -1,0 +1,34 @@
+/**
+ * Table of content
+ * 1. Global
+ * 2. Partials
+ * 3. Containers
+ * 4. Components
+ */
+
+// 1. Global
+@import './reset';
+
+// 2. Partials
+@import './colors';
+@import './variables';
+@import './mixins';
+
+// 3. Containers
+@import '../../modules/legacy/styles/containers/app';
+
+// 4. Components
+@import '../../modules/legacy/styles/components/AppLogo';
+@import '../../modules/legacy/styles/components/Footer';
+@import '../../modules/legacy/styles/components/Authbox';
+@import '../../modules/legacy/styles/components/googleButton';
+@import '../../modules/legacy/styles/components/Header';
+@import '../../modules/legacy/styles/components/MessageBox';
+@import '../../modules/legacy/styles/components/Preloader';
+@import '../../modules/legacy/styles/components/ProductsContainer';
+@import '../../modules/legacy/styles/components/ProductsList';
+@import '../../modules/legacy/styles/components/InputBar';
+@import '../../modules/legacy/styles/components/UserBar';
+@import '../../modules/legacy/styles/components/SortBox';
+@import '../../modules/legacy/styles/components/VotingBox';
+@import '../../modules/legacy/styles/components/FilterBox';
