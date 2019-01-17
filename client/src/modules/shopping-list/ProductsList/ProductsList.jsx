@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsListItem from 'modules/shopping-list/ProductsListItem';
-import { getCurrentUser } from 'modules/legacy/selectors';
+import { getCurrentUser } from 'common/selectors';
 import { toggle, vote } from './actions';
 import { UserPropType } from 'common/constants/propTypes';
 
