@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ProductsListItem from '../ProductsListItem';
+import ProductsListItem from 'modules/shopping-list/ProductsListItem';
 import { getCurrentUser } from 'modules/legacy/selectors';
 import { toggle, vote } from './actions';
 import { UserPropType } from 'common/constants/propTypes';
