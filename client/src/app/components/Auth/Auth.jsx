@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import AuthBox from 'modules/legacy/AuthBox';
-import App from '../App';
+import App from 'modules/legacy/App';
 import { setCurrentUser } from 'modules/legacy/mainActions';
 import { UserPropType } from 'common/constants/propTypes';
 
-class Main extends Component {
+class Auth extends Component {
   componentDidMount() {
     this.setAuthenticationState();
   }
@@ -25,7 +25,7 @@ class Main extends Component {
   }
 }
 
-Main.propTypes = {
+Auth.propTypes = {
   currentUser: UserPropType,
 
   setCurrentUser: PropTypes.func.isRequired
@@ -38,4 +38,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { setCurrentUser }
-)(Main);
+)(Auth);
