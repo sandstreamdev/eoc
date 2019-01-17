@@ -1,43 +1,85 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 import { logoutCurrentUser } from './actions';
-import { getCurrentUser } from 'modules/legacy/selectors';
-import { UserPropType } from 'common/constants/propTypes';
+import { getCurrentUser } from '../selectors';
+import { UserPropType } from '../../../common/constants/propTypes';
+import SettingsIcon from '../../../assets/images/cog-solid.svg';
+import UserIcon from '../../../assets/images/user-solid.svg';
+import LogoutIcon from '../../../assets/images/sign-out.svg';
 
 class UserBar extends Component {
+  state = {
+    hideMenu: true
+  };
+
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
 
     logoutCurrentUser();
   };
 
+  handleShowMenu = () => {
+    const { hideMenu } = this.state;
+    this.setState({ hideMenu: !hideMenu });
+  };
+
   render() {
     const {
       currentUser: { avatar, name }
     } = this.props;
+    const { hideMenu } = this.state;
 
     return (
       <div className="user-bar">
-        <div className="user-bar__wrapper">
+        <a
+          className="user-bar__wrapper"
+          onClick={this.handleShowMenu}
+          href="#!"
+        >
+          Profile:
           <img alt="User avatar" className="user-bar__avatar" src={avatar} />
-          <div className="user-bar__logged">
-            <span className="user-bar__user-data">Logged as:</span>
-            <span className="user-bar__user-data">{name}</span>
-          </div>
-          <button
-            className="user-bar__logout"
-            onClick={this.handleLogOut}
-            type="button"
+          <div
+            className={classNames('user-bar__menu-wrapper', {
+              hidden: hideMenu
+            })}
           >
-            <img
-              alt="Log out"
-              className="user-bar__icon"
-              src="client/src/assets/images/sign-out.svg"
-            />
-          </button>
-        </div>
+            <ul className="user-bar__menu">
+              <li className="user-bar__menu-item">
+                {`Loged as:  ${name}`}
+                <img
+                  alt="User Icon"
+                  className="user-bar__menu-icon"
+                  src={UserIcon}
+                />
+              </li>
+              <li className="user-bar__menu-item">
+                Profile settings
+                <img
+                  alt="Settings icon"
+                  className="user-bar__menu-icon"
+                  src={SettingsIcon}
+                />
+              </li>
+              <li className="user-bar__menu-item">
+                <button
+                  className="user-bar__menu-logout"
+                  onClick={this.handleLogOut}
+                  type="button"
+                >
+                  Logout
+                  <img
+                    alt="Log out"
+                    className="user-bar__menu-icon"
+                    src={LogoutIcon}
+                  />
+                </button>
+              </li>
+            </ul>
+          </div>
+        </a>
       </div>
     );
   }

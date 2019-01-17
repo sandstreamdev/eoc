@@ -1,25 +1,39 @@
 .user-bar {
   display: flex;
   justify-content: flex-end;
-  padding: 20px 0 0;
 
   &__wrapper {
+    padding: 5px 8px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    position: relative;
+    cursor: pointer;
+    background: rgba($shadow-color, 0.1);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 5px;
-
-    width: 185px;
-    border: 1px solid $bg-color;
-    border-radius: 30px;
-    background-color: $bg-color;
-    box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+    border-radius: 3px;
+    position: relative;
+    color: $text-white;
+    font-size: 12px;
+    line-height: 1.2;
+    text-decoration: none;
   }
 
   &__avatar {
-    height: 36px;
+    margin-left: 8px;
+    height: 28px;
     border-radius: 100%;
-    margin-right: 8px;
+  }
+
+  &__menu-button {
+    background: transparent;
+    border: 0;
+  }
+
+  &__menu-icon {
+    height: 16px;
   }
 
   &__user-data {
@@ -38,20 +52,6 @@
     }
   }
 
-  &__logout {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid $border-color;
-    border-radius: 100%;
-    height: 36px;
-    width: 36px;
-
-    &:hover {
-      box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
-    }
-  }
-
   &__icon {
     height: 20px;
   }
@@ -59,5 +59,80 @@
   &__logged {
     display: flex;
     flex-direction: column;
+  }
+
+  &__menu-wrapper {
+    width: 180px;
+    border-radius: 3px;
+    padding: 16px;
+    background: $bg-color;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+
+    &::before {
+      right: 7px;
+      top: -10px;
+      position: absolute;
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid $bg-color;
+    }
+  }
+
+  &__menu-item {
+    cursor: initial;
+    padding: 8px 0;
+    color: $text-normal;
+    font-size: 12px;
+    line-height: 1.2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $border-color;
+
+    &:first-child {
+      padding-top: 0;
+      color: $text-light;
+    }
+
+    &:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    span {
+      margin-left: 4px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a:active,
+    a:link,
+    a:visited,
+    a:hover {
+      color: $text-normal;
+    }
+  }
+
+  &__menu-logout {
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: $text-normal;
+    font-size: 12px;
+    line-height: 1.2;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }

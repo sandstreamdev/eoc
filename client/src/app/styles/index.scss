@@ -13,6 +13,7 @@
 @import './colors';
 @import './variables';
 @import './mixins';
+@import './utils';
 
 // 3. Containers
 @import '../../modules/legacy/styles/containers/app';
@@ -32,3 +33,4 @@
 @import '../../modules/legacy/styles/components/SortBox';
 @import '../../modules/legacy/styles/components/VotingBox';
 @import '../../modules/legacy/styles/components/FilterBox';
+@import '../components/Toolbar/Toolbar';

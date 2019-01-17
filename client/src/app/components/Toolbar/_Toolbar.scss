@@ -1,0 +1,49 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: $toolbar-bg;
+  padding: 8px 16px;
+  box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+
+  &__company-logo {
+    height: 32px;
+  }
+
+  &__company-link {
+    display: block;
+    margin-right: 16px;
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+  }
+
+  &__right {
+  }
+
+  &__icon-wrapper {
+    height: 38px;
+    width: 38px;
+    display: block;
+    margin-right: 8px;
+    background: rgba($shadow-color, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    position: relative;
+  }
+
+  &__icon {
+    height: 16px;
+  }
+
+  &__icon-plus {
+    height: 8px;
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+  }
+}

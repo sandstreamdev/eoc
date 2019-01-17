@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -14,6 +14,7 @@ import InputBar from 'modules/legacy/InputBar';
 import UserBar from 'modules/legacy/UserBar';
 import { StatusPropType } from 'common/constants/propTypes';
 import { fetchItems } from 'modules/legacy/appActions';
+import Toolbar from '../Toolbar/Toolbar';
 
 class App extends Component {
   componentDidMount() {
@@ -33,27 +34,29 @@ class App extends Component {
     const shoppingList = reversedItem.filter(item => !item.isOrdered);
 
     return (
-      <div
-        className={classNames('app-wrapper', {
-          overlay: fetchStatus === StatusType.PENDING
-        })}
-      >
-        <UserBar />
-        <Header />
-        {fetchStatus === StatusType.ERROR && (
-          <MessageBox
-            message="Fetching failed. Try to refresh the page."
-            type={MessageType.ERROR}
-          />
-        )}
-        <InputBar />
-        <ProductsContainer products={shoppingList} />
-        <ProductsContainer archived products={archiveList} />
-        <Footer />
-        {fetchStatus === StatusType.PENDING && (
-          <Preloader message="Fetching data..." />
-        )}
-      </div>
+      <Fragment>
+        <Toolbar />
+        <div
+          className={classNames('app-wrapper', {
+            overlay: fetchStatus === StatusType.PENDING
+          })}
+        >
+          <Header />
+          {fetchStatus === StatusType.ERROR && (
+            <MessageBox
+              message="Fetching failed. Try to refresh the page."
+              type={MessageType.ERROR}
+            />
+          )}
+          <InputBar />
+          <ProductsContainer products={shoppingList} />
+          <ProductsContainer archived products={archiveList} />
+          <Footer />
+          {fetchStatus === StatusType.PENDING && (
+            <Preloader message="Fetching data..." />
+          )}
+        </div>
+      </Fragment>
     );
   }
 }
