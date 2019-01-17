@@ -11,7 +11,6 @@ import Preloader from 'modules/legacy/Preloader';
 import { StatusType, MessageType } from 'common/constants/enums';
 import { getItems, getFetchStatus } from 'modules/legacy/selectors';
 import InputBar from 'modules/legacy/InputBar';
-import UserBar from 'modules/legacy/UserBar';
 import { StatusPropType } from 'common/constants/propTypes';
 import { fetchItems } from 'modules/legacy/appActions';
 import Toolbar from '../Toolbar/Toolbar';
