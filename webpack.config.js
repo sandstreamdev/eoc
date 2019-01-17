@@ -5,18 +5,19 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const outputDirectory = 'dist';
 
 module.exports = {
-  entry: ['babel-polyfill', './src/client/index.js'],
+  entry: ['babel-polyfill', './client/src/app/index.jsx'],
   output: {
     path: path.join(__dirname, outputDirectory),
     filename: 'bundle.js'
   },
   resolve: {
-    modules: [path.resolve(__dirname, 'src', 'client'), 'node_modules']
+    modules: [path.resolve(__dirname, 'client', 'src'), 'node_modules'],
+    extensions: ['.js', '.jsx']
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(jsx?)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
@@ -53,7 +54,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin([outputDirectory]),
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: './client/public/index.html'
     })
   ]
 };
