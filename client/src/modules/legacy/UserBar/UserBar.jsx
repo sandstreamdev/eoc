@@ -5,10 +5,10 @@ import classNames from 'classnames';
 
 import { logoutCurrentUser } from './actions';
 import { getCurrentUser } from '../selectors';
-import { UserPropType } from '../../../common/constants/propTypes';
-import SettingsIcon from '../../../assets/images/cog-solid.svg';
-import UserIcon from '../../../assets/images/user-solid.svg';
-import LogoutIcon from '../../../assets/images/sign-out.svg';
+import { UserPropType } from 'common/constants/propTypes';
+import SettingsIcon from 'assets/images/cog-solid.svg';
+import UserIcon from 'assets/images/user-solid.svg';
+import LogoutIcon from 'assets/images/sign-out.svg';
 
 class UserBar extends Component {
   state = {
@@ -17,7 +17,6 @@ class UserBar extends Component {
 
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
-
     logoutCurrentUser();
   };
 

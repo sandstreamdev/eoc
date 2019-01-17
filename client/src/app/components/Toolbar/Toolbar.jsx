@@ -47,7 +47,6 @@ const Toolbar = () => (
         <img alt="Plus Icon" className="toolbar__icon-plus" src={PlusIcon} />
       </a>
     </div>
-
     <div className="toolbar__right">
       <UserBar />
     </div>
