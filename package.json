@@ -12,8 +12,10 @@
     "server": "nodemon server/index.js",
     "server-prod": "node server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "lint": "eslint -c .eslintrc \"src/**/*.js\" --fix",
-    "prettier": "prettier --config .prettierrc --write src/**/*.js && prettier --config .prettierrc --write src/**/*.scss"
+    "lint": "npm run lint:client && npm run lint:server",
+    "lint:client": "eslint -c .eslintrc --ext \".jsx,.js\" \"client/\" --fix",
+    "lint:server": "eslint -c .eslintrc --ext \".js\" \"server/\" --fix",
+    "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js"
   },
   "author": "Sandstream Development",
   "license": "MIT",

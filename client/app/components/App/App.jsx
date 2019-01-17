@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import { getItems, getFetchStatus } from 'modules/legacy/selectors';
-import { StatusType, MessageType } from 'common/constants/enums';
 import Footer from 'modules/legacy/Footer';
 import Header from 'modules/legacy/Header';
 import MessageBox from 'modules/legacy/MessageBox';
 import ProductsContainer from 'modules/legacy/ProductsContainer';
 import Preloader from 'modules/legacy/Preloader';
+import { StatusType, MessageType } from 'common/constants/enums';
+import { getItems, getFetchStatus } from 'modules/legacy/selectors';
 import InputBar from 'modules/legacy/InputBar';
 import UserBar from 'modules/legacy/UserBar';
 import { StatusPropType } from 'common/constants/propTypes';
