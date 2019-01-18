@@ -9,10 +9,10 @@ import {
 } from 'react-router-dom';
 
 import configureStore from './model/store';
-import Dashboard from 'modules/dashboard/components/Dashboard';
-import Main from 'modules/main/components/Main';
-import Cohort from 'modules/cohort/components/Cohort';
-import ShoppingList from 'modules/shopping-list/components/ShoppingList';
+import Dashboard from 'modules/dashboard';
+import Main from 'modules/main/';
+import Cohort from 'modules/cohort/';
+import ShoppingList from 'modules/shopping-list/';
 
 import './styles/index.scss';
 
