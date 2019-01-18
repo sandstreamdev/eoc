@@ -1,12 +1,11 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect,
-  NavLink
+  Redirect
 } from 'react-router-dom';
 
 import configureStore from './model/store';
@@ -22,21 +21,13 @@ const eoc = (
   <Provider store={store}>
     <Router>
       <div>
-        <nav>
-          <NavLink to="/">Main</NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/cohort/12">Cohort</NavLink>
-          <NavLink to="/list/1">List</NavLink>
-        </nav>
-        <main>
-          <Switch>
-            <Route exact path="/" component={Main} />
-            <Route path="/dashboard" component={Dashboard} />
-            <Route path="/cohort/:id" component={Cohort} />
-            <Route path="/list/:id" component={ShoppingList} />
-            <Redirect to="/" />
-          </Switch>
-        </main>
+        <Switch>
+          <Route exact path="/" component={Main} />
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/cohort/:id(\w+)" component={Cohort} />
+          <Route path="/list/:id(\w+)" component={ShoppingList} />
+          <Redirect to="/" />
+        </Switch>
       </div>
     </Router>
   </Provider>
