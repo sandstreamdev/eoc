@@ -9,7 +9,7 @@ const Main = ({
   }
 }) => (
   <div>
-    <div style={{ padding: '100px' }}>Main aplication page</div>
+    <div>Main aplication page</div>
     <Auth />
   </div>
 );

@@ -20,15 +20,13 @@ const store = configureStore();
 const eoc = (
   <Provider store={store}>
     <Router>
-      <div>
-        <Switch>
-          <Route exact path="/" component={Main} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/cohort/:id(\w+)" component={Cohort} />
-          <Route path="/list/:id(\w+)" component={ShoppingList} />
-          <Redirect to="/" />
-        </Switch>
-      </div>
+      <Switch>
+        <Route exact path="/" component={Main} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/cohort/:id(\w+)" component={Cohort} />
+        <Route path="/list/:id(\w+)" component={ShoppingList} />
+        <Redirect to="/" />
+      </Switch>
     </Router>
   </Provider>
 );

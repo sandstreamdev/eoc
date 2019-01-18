@@ -1,5 +1,5 @@
 import React from 'react';
 
-const Dashboard = () => <div style={{ padding: '100px' }}>Dashboard</div>;
+const Dashboard = () => <div>Dashboard</div>;
 
 export default Dashboard;

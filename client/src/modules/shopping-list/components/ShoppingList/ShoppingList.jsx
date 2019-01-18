@@ -5,7 +5,7 @@ const ShoppingList = ({
   match: {
     params: { id }
   }
-}) => <div style={{ padding: '100px' }}>{`Cohort of id: ${id}`}</div>;
+}) => <div>{`Cohort of id: ${id}`}</div>;
 
 export default ShoppingList;
 
