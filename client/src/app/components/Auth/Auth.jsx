@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
+// import App from '../App';
 import AuthBox from 'modules/legacy/AuthBox';
-import App from '../App';
 import { setCurrentUser } from 'modules/legacy/mainActions';
 import { UserPropType } from 'common/constants/propTypes';
+import AppLogo from 'modules/legacy/AppLogo';
+import { ENDPOINT_URL } from 'common/constants/variables';
 
-class Main extends Component {
+class Auth extends Component {
   componentDidMount() {
     this.setAuthenticationState();
   }
@@ -21,12 +24,16 @@ class Main extends Component {
   render() {
     const { currentUser } = this.props;
 
-    return currentUser ? <App /> : <AuthBox />;
+    if (currentUser) {
+      return <Redirect to="/dashboard" />;
+    }
+
+    return <AuthBox />;
   }
 }
 
-Main.propTypes = {
-  currentUser: UserPropType,
+Auth.propTypes = {
+  currentUser: UserPropType.isRequired,
 
   setCurrentUser: PropTypes.func.isRequired
 };
@@ -38,4 +45,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { setCurrentUser }
-)(Main);
+)(Auth);
