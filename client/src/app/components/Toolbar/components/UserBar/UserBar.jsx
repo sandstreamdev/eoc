@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { logoutCurrentUser } from './actions';
-import { getCurrentUser } from '../selectors';
+import { getCurrentUser } from 'common/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import SettingsIcon from 'assets/images/cog-solid.svg';
 import UserIcon from 'assets/images/user-solid.svg';

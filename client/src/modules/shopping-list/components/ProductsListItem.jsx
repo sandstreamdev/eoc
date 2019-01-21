@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import { PLACEHOLDER_URL } from 'common/constants/variables';
-import VotingBox from './VotingBox';
+import VotingBox from 'modules/shopping-list/components/VotingBox';
 
 const ProductListItem = ({
   archived,

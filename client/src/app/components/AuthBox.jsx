@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AppLogo from './AppLogo';
+import AppLogo from 'common/components/AppLogo';
 import { ENDPOINT_URL } from 'common/constants/variables';
 
 const AuthBox = () => (

@@ -6,7 +6,8 @@ import HomeIcon from 'assets/images/home-solid.svg';
 import UsersIcon from 'assets/images/users-solid.svg';
 import ListIcon from 'assets/images/clipboard-list-solid.svg';
 import PlusIcon from 'assets/images/plus-solid.svg';
-import UserBar from 'modules/legacy/UserBar';
+import UserBar from 'app/components/Toolbar/components/UserBar';
+import AppLogo from 'common/components/AppLogo';
 
 const Toolbar = () => (
   <div className="toolbar">
@@ -47,6 +48,10 @@ const Toolbar = () => (
         <img alt="Plus Icon" className="toolbar__icon-plus" src={PlusIcon} />
       </a>
     </div>
+    <div className="toolbar__logo">
+      <AppLogo />
+    </div>
+
     <div className="toolbar__right">
       <UserBar />
     </div>

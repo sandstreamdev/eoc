@@ -1,5 +1,5 @@
-import { SET_CURRENT_USER } from 'modules/legacy/mainActions';
-import { LOGOUT_USER } from 'modules/legacy/UserBar/actions';
+import { LOGOUT_USER } from 'app/components/Toolbar/components/UserBar/actions';
+import { SET_CURRENT_USER } from 'app/components/Toolbar/actions';
 
 const user = (state = null, action) => {
   switch (action.type) {

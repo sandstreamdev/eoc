@@ -2,10 +2,10 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getNewItemStatus, getCurrentUser } from 'modules/legacy/selectors';
+import { getNewItemStatus, getCurrentUser } from 'common/selectors';
 import { StatusType, MessageType } from 'common/constants/enums';
 import { StatusPropType, UserPropType } from 'common/constants/propTypes';
-import MessageBox from '../MessageBox';
+import MessageBox from 'common/components/MessageBox';
 import { addItem } from './actions';
 
 class InputBar extends Component {

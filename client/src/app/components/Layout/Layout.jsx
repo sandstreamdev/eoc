@@ -6,11 +6,12 @@ import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import ShoppingList from 'modules/shopping-list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
-import AuthBox from 'modules/legacy/AuthBox';
+import AuthBox from 'app/components/AuthBox';
 import Toolbar from '../Toolbar/Toolbar';
-import { setCurrentUser } from 'modules/legacy/mainActions';
+import { setCurrentUser } from 'app/components/Toolbar/actions';
 import { UserPropType } from 'common/constants/propTypes';
-import { getCurrentUser } from 'modules/legacy/selectors';
+import { getCurrentUser } from 'common/selectors';
+import Footer from '../Footer';
 
 class Layout extends Component {
   componentDidMount() {
@@ -52,6 +53,7 @@ class Layout extends Component {
           <Route component={ShoppingList} path="/list/:id(\w+)" />
           <Route component={Dashboard} />
         </Switch>
+        <Footer />
       </Fragment>
     );
   }
