@@ -1,10 +1,13 @@
-import { ENDPOINT_URL, FRONTED_URL } from 'common/constants/variables';
+import { ENDPOINT_URL } from 'common/constants/variables';
 
 // Action types
 export const LOGOUT_USER = 'LOGOUT_USER';
 
 // Action creators
-const logoutUser = user => ({ type: LOGOUT_USER, payload: user });
+const logoutUser = user => ({
+  type: LOGOUT_USER,
+  payload: user
+});
 
 // Dispatchers
 export const logoutCurrentUser = () => dispatch =>
@@ -15,7 +18,6 @@ export const logoutCurrentUser = () => dispatch =>
   })
     .then(() => {
       dispatch(logoutUser(null));
-      window.location.replace(FRONTED_URL);
     })
     .catch(err => {
       throw new Error(err.message);
