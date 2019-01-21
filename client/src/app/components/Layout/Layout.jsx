@@ -8,7 +8,7 @@ import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import AuthBox from 'modules/authorization/AuthBox';
 import Toolbar from '../Toolbar/Toolbar';
-import { setCurrentUser } from 'app/components/Toolbar/model/actions';
+import { setCurrentUser } from 'modules/authorization/model/actions';
 import { UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
