@@ -23,6 +23,7 @@ class Layout extends Component {
       currentUser: prevCurrentUser,
       location: { pathname }
     } = prevProps;
+
     if (!prevCurrentUser && currentUser) {
       const newPath = pathname === '/' ? '/dashboard' : pathname;
       history.push(newPath);
@@ -36,6 +37,7 @@ class Layout extends Component {
 
   render() {
     const { currentUser } = this.props;
+
     return !currentUser ? (
       <Switch>
         <Route component={AuthBox} exact path="/" />

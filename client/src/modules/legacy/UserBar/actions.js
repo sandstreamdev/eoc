@@ -4,9 +4,8 @@ import { ENDPOINT_URL } from 'common/constants/variables';
 export const LOGOUT_USER = 'LOGOUT_USER';
 
 // Action creators
-const logoutUser = user => ({
-  type: LOGOUT_USER,
-  payload: user
+const logoutUser = () => ({
+  type: LOGOUT_USER
 });
 
 // Dispatchers
@@ -16,9 +15,7 @@ export const logoutCurrentUser = () => dispatch =>
     mode: 'no-cors',
     credentials: 'include'
   })
-    .then(() => {
-      dispatch(logoutUser(null));
-    })
+    .then(() => dispatch(logoutUser()))
     .catch(err => {
       throw new Error(err.message);
     });
