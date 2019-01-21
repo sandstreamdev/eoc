@@ -20,9 +20,10 @@ class Layout extends Component {
   componentDidUpdate(prevProps) {
     const { currentUser, history } = this.props;
     const {
+      currentUser: prevCurrentUser,
       location: { pathname }
     } = prevProps;
-    if (!prevProps.currentUser && currentUser) {
+    if (!prevCurrentUser && currentUser) {
       const newPath = pathname === '/' ? '/dashboard' : pathname;
       history.push(newPath);
     }
