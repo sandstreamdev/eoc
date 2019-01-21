@@ -51,7 +51,6 @@ const Toolbar = () => (
     <div className="toolbar__logo">
       <AppLogo />
     </div>
-
     <div className="toolbar__right">
       <UserBar />
     </div>
