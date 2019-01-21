@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import './styles/index.scss';
-import Eoc from './components/Eoc';
+import Layout from './components/Layout';
 import configureStore from './model/store';
 
 const store = configureStore();
@@ -12,7 +12,7 @@ const store = configureStore();
 ReactDOM.render(
   <Provider store={store}>
     <Router>
-      <Eoc />
+      <Layout />
     </Router>
   </Provider>,
   document.getElementById('root')
