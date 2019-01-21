@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect, Route, NavLink, Switch, withRouter } from 'react-router-dom';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import ShoppingList from 'modules/shopping-list';
 import Dashboard from 'modules/dashboard';
@@ -10,6 +10,7 @@ import AuthBox from 'modules/legacy/AuthBox';
 import Toolbar from '../Toolbar/Toolbar';
 import { setCurrentUser } from 'modules/legacy/mainActions';
 import { UserPropType } from 'common/constants/propTypes';
+import { getCurrentUser } from 'modules/legacy/selectors';
 
 class Layout extends Component {
   componentDidMount() {
@@ -34,23 +35,22 @@ class Layout extends Component {
 
   render() {
     const { currentUser } = this.props;
-    const routes = !currentUser ? (
+    return !currentUser ? (
       <Switch>
-        <Route exact path="/" component={AuthBox} />
+        <Route component={AuthBox} exact path="/" />
         <Redirect to="/" />
       </Switch>
     ) : (
       <Fragment>
         <Toolbar />
         <Switch>
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/cohort/:id(\w+)" component={Cohort} />
-          <Route path="/list/:id(\w+)" component={ShoppingList} />
+          <Route component={Dashboard} path="/dashboard" />
+          <Route component={Cohort} path="/cohort/:id(\w+)" />
+          <Route component={ShoppingList} path="/list/:id(\w+)" />
           <Route component={Dashboard} />
         </Switch>
       </Fragment>
     );
-    return routes;
   }
 }
 
@@ -64,7 +64,7 @@ Layout.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser
+  currentUser: getCurrentUser(state)
 });
 
 export default withRouter(
