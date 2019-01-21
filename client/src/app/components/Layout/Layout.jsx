@@ -42,11 +42,6 @@ class Layout extends Component {
     ) : (
       <Fragment>
         <Toolbar />
-        <div>
-          <NavLink to="/dashboard">Dashboard </NavLink>
-          <NavLink to="/cohort/fghdfhg567">Cohort </NavLink>
-          <NavLink to="/list/asd224">List </NavLink>
-        </div>
         <Switch>
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/cohort/:id(\w+)" component={Cohort} />
