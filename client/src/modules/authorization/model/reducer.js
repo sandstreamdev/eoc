@@ -1,5 +1,5 @@
-import { LOGOUT_USER } from 'app/components/Toolbar/components/UserBar/actions';
-import { SET_CURRENT_USER } from 'app/components/Toolbar/actions';
+import { LOGOUT_USER } from 'app/components/Toolbar/components/UserBar/model/actions';
+import { SET_CURRENT_USER } from 'app/components/Toolbar/model/actions';
 
 const user = (state = null, action) => {
   switch (action.type) {

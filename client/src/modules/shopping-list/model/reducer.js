@@ -1,5 +1,5 @@
-import { items as itemsInitialState, initialStatus } from './initalState';
-import { FETCH_FAILED, FETCH_ITEMS } from 'modules/shopping-list/actions';
+import { items as itemsInitialState, initialStatus } from './initialState';
+import { FETCH_FAILED, FETCH_ITEMS } from 'modules/shopping-list/model/actions';
 import {
   TOGGLE_ITEM,
   VOTE_FOR_ITEM

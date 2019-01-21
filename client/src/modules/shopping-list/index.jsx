@@ -7,10 +7,13 @@ import MessageBox from 'common/components/MessageBox';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
 import Preloader from 'common/components/Preloader';
 import { StatusType, MessageType } from 'common/constants/enums';
-import { getItems, getFetchStatus } from 'common/selectors';
+import {
+  getFetchStatus,
+  getItems
+} from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import { StatusPropType } from 'common/constants/propTypes';
-import { fetchItems } from 'modules/shopping-list/actions';
+import { fetchItems } from 'modules/shopping-list/model/actions';
 
 class ShoppingList extends Component {
   componentDidMount() {

@@ -7,7 +7,7 @@ import ProductsList from 'modules/shopping-list/components/ProductsList';
 import SortBox from 'common/components/SortBox';
 import { SortOrderType } from 'common/constants/enums';
 import FilterBox from 'modules/shopping-list/components/FilterBox';
-import { getCurrentUser } from 'common/selectors';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 const SortOptionType = Object.freeze({
   NAME: 'name',

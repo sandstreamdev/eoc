@@ -6,11 +6,11 @@ import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import ShoppingList from 'modules/shopping-list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
-import AuthBox from 'app/components/AuthBox';
+import AuthBox from 'modules/authorization/AuthBox';
 import Toolbar from '../Toolbar/Toolbar';
-import { setCurrentUser } from 'app/components/Toolbar/actions';
+import { setCurrentUser } from 'app/components/Toolbar/model/actions';
 import { UserPropType } from 'common/constants/propTypes';
-import { getCurrentUser } from 'common/selectors';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
 
 class Layout extends Component {

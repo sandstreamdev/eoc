@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import { logoutCurrentUser } from './actions';
-import { getCurrentUser } from 'common/selectors';
+import { logoutCurrentUser } from './model/actions';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import SettingsIcon from 'assets/images/cog-solid.svg';
 import UserIcon from 'assets/images/user-solid.svg';
