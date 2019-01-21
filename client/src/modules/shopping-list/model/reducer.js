@@ -1,13 +1,13 @@
-import { items as itemsInitialState, initialStatus } from './initalState';
-import { FETCH_FAILED, FETCH_ITEMS } from 'modules/legacy/appActions';
+import { items as itemsInitialState, initialStatus } from './initialState';
+import { FETCH_FAILED, FETCH_ITEMS } from 'modules/shopping-list/model/actions';
 import {
   TOGGLE_ITEM,
   VOTE_FOR_ITEM
-} from 'modules/legacy/ProductsList/actions';
+} from 'modules/shopping-list/components/ProductsList/actions';
 import {
   ADD_ITEM_FAILURE,
   ADD_ITEM_SUCCESS
-} from 'modules/legacy/InputBar/actions';
+} from 'modules/shopping-list/components/InputBar/actions';
 import { StatusType } from 'common/constants/enums';
 
 const items = (state = itemsInitialState, action) => {

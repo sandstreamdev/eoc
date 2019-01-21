@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import CompanyLogo from 'assets/images/company_logo.png';
@@ -6,7 +7,8 @@ import HomeIcon from 'assets/images/home-solid.svg';
 import UsersIcon from 'assets/images/users-solid.svg';
 import ListIcon from 'assets/images/clipboard-list-solid.svg';
 import PlusIcon from 'assets/images/plus-solid.svg';
-import UserBar from 'modules/legacy/UserBar';
+import UserBar from './components/UserBar';
+import AppLogo from 'common/components/AppLogo';
 
 const Toolbar = () => (
   <div className="toolbar">
@@ -23,13 +25,13 @@ const Toolbar = () => (
           src={CompanyLogo}
         />
       </a>
-      <a className="toolbar__icon-wrapper" href="#!">
+      <Link className="toolbar__icon-wrapper" to="/dashboard">
         <img
           alt="Home icon"
           className="toolbar__icon-home toolbar__icon"
           src={HomeIcon}
         />
-      </a>
+      </Link>
       <a className="toolbar__icon-wrapper" href="#!">
         <img
           alt="Home icon"
@@ -46,6 +48,9 @@ const Toolbar = () => (
         />
         <img alt="Plus Icon" className="toolbar__icon-plus" src={PlusIcon} />
       </a>
+    </div>
+    <div className="toolbar__logo">
+      <AppLogo />
     </div>
     <div className="toolbar__right">
       <UserBar />

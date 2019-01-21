@@ -1,11 +1,10 @@
-import { SET_CURRENT_USER } from 'modules/legacy/mainActions';
-import { LOGOUT_USER } from 'modules/legacy/UserBar/actions';
+import { AuthorizationActionTypes } from './actions';
 
 const user = (state = null, action) => {
   switch (action.type) {
-    case SET_CURRENT_USER:
+    case AuthorizationActionTypes.SET_CURRENT_USER:
       return action.payload;
-    case LOGOUT_USER:
+    case AuthorizationActionTypes.LOGOUT_USER:
       return null;
     default:
       return state;

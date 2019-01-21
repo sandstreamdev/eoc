@@ -16,21 +16,19 @@
 @import './utils';
 
 // 3. Containers
-@import '../../modules/legacy/styles/containers/app';
+@import '../../app/components/Layout/Layout.scss';
 
 // 4. Components
-@import '../../modules/legacy/styles/components/AppLogo';
-@import '../../modules/legacy/styles/components/Footer';
-@import '../../modules/legacy/styles/components/Authbox';
-@import '../../modules/legacy/styles/components/googleButton';
-@import '../../modules/legacy/styles/components/Header';
-@import '../../modules/legacy/styles/components/MessageBox';
-@import '../../modules/legacy/styles/components/Preloader';
-@import '../../modules/legacy/styles/components/ProductsContainer';
-@import '../../modules/legacy/styles/components/ProductsList';
-@import '../../modules/legacy/styles/components/InputBar';
-@import '../../modules/legacy/styles/components/UserBar';
-@import '../../modules/legacy/styles/components/SortBox';
-@import '../../modules/legacy/styles/components/VotingBox';
-@import '../../modules/legacy/styles/components/FilterBox';
-@import '../components/Toolbar/Toolbar';
+@import '../../common/components/AppLogo.scss';
+@import '../../app/components/Footer.scss';
+@import '../../modules/authorization/Authbox.scss';
+@import '../../common/components/MessageBox.scss';
+@import '../../common/components/Preloader.scss';
+@import '../../modules/shopping-list/components/ProductsContainer';
+@import '../../modules/shopping-list/components/ProductsList.scss';
+@import '../../modules/shopping-list/components/InputBar/InputBar.scss';
+@import '../../app/components/Toolbar/components/UserBar/UserBar.scss';
+@import '../../common/components/SortBox.scss';
+@import '../../modules/shopping-list/components/VotingBox';
+@import '../../modules/shopping-list/components/FilterBox.scss';
+@import '../components/Toolbar/Toolbar.scss';

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import AppIcon from 'assets/images/coffee-solid.svg';
-import { PROJECT_NAME } from 'common/constants/variables';
+import { PROJECT_NAME } from '../constants/variables';
 
 const AppLogo = () => (
   <div className="app-logo">

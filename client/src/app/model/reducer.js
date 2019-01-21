@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import items, { uiStatus } from 'modules/legacy/reducers/itemsReducer';
-import currentUser from 'modules/legacy/reducers/currentUserReducer';
+import items, { uiStatus } from 'modules/shopping-list/model/reducer';
+import currentUser from 'modules/authorization/model/reducer';
 
 const rootReducer = combineReducers({
   currentUser,

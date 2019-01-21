@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import ArrowIcon from 'assets/images/arrow-up-solid.svg';
-import { SortOrderPropType } from 'common/constants/propTypes';
-import { SortOrderType } from 'common/constants/enums';
+import { SortOrderPropType } from '../constants/propTypes';
+import { SortOrderType } from '../constants/enums';
 
 class SortBox extends Component {
   handleSortByChange = event => {
