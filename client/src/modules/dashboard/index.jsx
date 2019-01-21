@@ -7,8 +7,6 @@ const Dashboard = ({
   }
 }) => <div>Dashboard</div>;
 
-export default Dashboard;
-
 Dashboard.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -16,3 +14,5 @@ Dashboard.propTypes = {
     })
   }).isRequired
 };
+
+export default Dashboard;

@@ -7,8 +7,6 @@ const Cohort = ({
   }
 }) => <div>{`Cohort of id: ${id}`}</div>;
 
-export default Cohort;
-
 Cohort.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -16,3 +14,5 @@ Cohort.propTypes = {
     })
   }).isRequired
 };
+
+export default Cohort;

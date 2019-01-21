@@ -7,8 +7,6 @@ const ShoppingList = ({
   }
 }) => <div>{`Shopping list of id: ${id}`}</div>;
 
-export default ShoppingList;
-
 ShoppingList.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -16,3 +14,5 @@ ShoppingList.propTypes = {
     })
   }).isRequired
 };
+
+export default ShoppingList;
