@@ -8,7 +8,8 @@ module.exports = {
   entry: ['babel-polyfill', './client/src/app/index.jsx'],
   output: {
     path: path.join(__dirname, outputDirectory),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/'
   },
   resolve: {
     modules: [path.resolve(__dirname, 'client', 'src'), 'node_modules'],
@@ -49,7 +50,8 @@ module.exports = {
     },
     watchOptions: {
       ignored: /node_modules/
-    }
+    },
+    historyApiFallback: true
   },
   plugins: [
     new CleanWebpackPlugin([outputDirectory]),
