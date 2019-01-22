@@ -28,9 +28,8 @@ class ShoppingList extends Component {
   render() {
     const { fetchStatus, items } = this.props;
 
-    const reversedItem = [...items].reverse();
-    const archiveList = reversedItem.filter(item => item.isOrdered);
-    const shoppingList = reversedItem.filter(item => !item.isOrdered);
+    const archiveList = items.filter(item => item.isOrdered);
+    const shoppingList = items.filter(item => !item.isOrdered);
 
     return (
       <Fragment>

@@ -14,7 +14,7 @@ const items = (state = itemsInitialState, action) => {
   const { type } = action;
   switch (type) {
     case ADD_ITEM_SUCCESS:
-      return [...state, action.item];
+      return [action.item, ...state];
     case FETCH_ITEMS:
       return action.items;
     case TOGGLE_ITEM: {
