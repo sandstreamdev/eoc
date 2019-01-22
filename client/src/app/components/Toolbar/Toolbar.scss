@@ -1,11 +1,13 @@
 .toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background: $toolbar-bg;
-  padding: 8px 16px;
   box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
-  position: relative;
+  &__wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px;
+    position: relative;
+  }
 
   &__left {
     display: flex;
@@ -32,6 +34,10 @@
     align-items: center;
     border-radius: 3px;
     position: relative;
+
+    svg {
+      height: 16px;
+    }
   }
 
   &__icon {

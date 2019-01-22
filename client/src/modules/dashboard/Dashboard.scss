@@ -1,0 +1,56 @@
+.dashboard {
+  margin-top: 36px;
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    color: $text-normal;
+    clear: both;
+
+    svg {
+      height: 18px;
+      margin-right: 16px;
+
+      path {
+        fill: $text-normal;
+      }
+    }
+  }
+
+  &__list {
+    margin: 0 -10px 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 200px);
+    grid-gap: 20px 10px;
+  }
+
+  &__list-item {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.card-item {
+  box-sizing: border-box;
+  display: block;
+  height: 96px;
+  width: 180px;
+  background: url('../../assets/images/card-placeholder.png') center;
+  border-radius: 8px;
+  box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+  padding: 16px;
+  text-decoration: none;
+  color: $text-normal;
+
+  &__heading {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  &:hover {
+    box-shadow: 0 3px 4px rgba($shadow-color, 0.35);
+  }
+}
