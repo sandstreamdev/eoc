@@ -1,0 +1,21 @@
+.card-item {
+  box-sizing: border-box;
+  display: block;
+  height: 96px;
+  width: 180px;
+  background: url('../../assets/images/card-placeholder.png') center;
+  border-radius: 8px;
+  box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+  padding: 16px;
+  text-decoration: none;
+  color: $text-normal;
+
+  &__heading {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  &:hover {
+    box-shadow: 0 3px 4px rgba($shadow-color, 0.35);
+  }
+}

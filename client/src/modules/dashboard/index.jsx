@@ -6,6 +6,7 @@ import ShoppingListIcon from 'assets/images/clipboard-list-solid';
 import CohortIcon from 'assets/images/users-solid';
 import { fetchAllLists } from './model/actions';
 import { getCohorts, getShoppingLists } from './model/selectors';
+import CardItem from './CardItem';
 
 class Dashboard extends Component {
   componentDidMount() {
@@ -27,9 +28,7 @@ class Dashboard extends Component {
           <ul className="dashboard__list">
             {shoppingLists.map(list => (
               <li className="dashboard__list-item" key={list.id}>
-                <a className="card-item" href="#!">
-                  <h3 className="card-item__heading">{list.name}</h3>
-                </a>
+                <CardItem name={list.name} />
               </li>
             ))}
           </ul>
@@ -40,9 +39,7 @@ class Dashboard extends Component {
           <ul className="dashboard__list">
             {cohortsList.map(cohort => (
               <li className="dashboard__list-item" key={cohort.id}>
-                <a className="card-item" href="#!">
-                  <h3 className="card-item__heading">{cohort.name}</h3>
-                </a>
+                <CardItem name={cohort.name} />
               </li>
             ))}
           </ul>
@@ -53,15 +50,15 @@ class Dashboard extends Component {
 }
 
 Dashboard.propTypes = {
-  shoppingLists: PropTypes.arrayOf(PropTypes.object),
   cohortsList: PropTypes.arrayOf(PropTypes.object),
+  shoppingLists: PropTypes.arrayOf(PropTypes.object),
 
   fetchAllLists: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  shoppingLists: getShoppingLists(state),
-  cohortsList: getCohorts(state)
+  cohortsList: getCohorts(state),
+  shoppingLists: getShoppingLists(state)
 });
 
 export default connect(
