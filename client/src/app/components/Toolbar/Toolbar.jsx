@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import CompanyLogo from 'assets/images/company_logo.png';
-import HomeIcon from 'assets/images/home-solid';
-import UsersIcon from 'assets/images/users-solid';
-import ListIcon from 'assets/images/clipboard-list-solid';
+import {
+  ClipboardSolid as ShoppingListIcon,
+  HomeSolid as HomeIcon,
+  UsersSolid as CohortIcon
+} from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
@@ -30,11 +32,11 @@ const Toolbar = () => (
           <HomeIcon />
         </Link>
         <a className="toolbar__icon-wrapper" href="#!">
-          <UsersIcon />
+          <CohortIcon />
           <img alt="Plus icon" className="toolbar__icon-plus" src={PlusIcon} />
         </a>
         <a className="toolbar__icon-wrapper" href="#!">
-          <ListIcon />
+          <ShoppingListIcon />
           <img alt="Plus Icon" className="toolbar__icon-plus" src={PlusIcon} />
         </a>
       </div>

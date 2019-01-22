@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import ShoppingListIcon from 'assets/images/clipboard-list-solid';
-import CohortIcon from 'assets/images/users-solid';
+import {
+  ClipboardSolid as ShoppingListIcon,
+  UsersSolid as CohortIcon
+} from 'assets/images/icons';
 import { fetchAllLists } from './model/actions';
 import { getCohorts, getShoppingLists } from './model/selectors';
 import CardItem from './CardItem';
