@@ -24,8 +24,8 @@ app.use(
   session({
     secret: process.env.EXPRESS_SESSION_KEY,
     unset: 'destroy',
-    saveUninitialized: true,
-    resave: true
+    saveUninitialized: false,
+    resave: false
   })
 );
 app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
