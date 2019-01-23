@@ -1,18 +1,69 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-const Dashboard = ({
-  match: {
-    params: { id }
+import {
+  ClipboardSolid as ShoppingListIcon,
+  UsersSolid as CohortIcon
+} from 'assets/images/icons';
+import { fetchAllLists } from './model/actions';
+import { getCohorts, getShoppingLists } from './model/selectors';
+import CardItem from './CardItem';
+
+class Dashboard extends Component {
+  componentDidMount() {
+    const { fetchAllLists } = this.props;
+
+    fetchAllLists();
   }
-}) => <div>Dashboard</div>;
+
+  render() {
+    const { shoppingLists, cohortsList } = this.props;
+
+    return (
+      <div className="wrapper">
+        <div className="dashboard">
+          <h2 className="dashboard__heading">
+            <ShoppingListIcon />
+            Shopping lists
+          </h2>
+          <ul className="dashboard__list">
+            {shoppingLists.map(list => (
+              <li className="dashboard__list-item" key={list.id}>
+                <CardItem name={list.name} />
+              </li>
+            ))}
+          </ul>
+          <h2 className="dashboard__heading">
+            <CohortIcon />
+            Cohorts
+          </h2>
+          <ul className="dashboard__list">
+            {cohortsList.map(cohort => (
+              <li className="dashboard__list-item" key={cohort.id}>
+                <CardItem name={cohort.name} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+}
 
 Dashboard.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string
-    })
-  }).isRequired
+  cohortsList: PropTypes.arrayOf(PropTypes.object),
+  shoppingLists: PropTypes.arrayOf(PropTypes.object),
+
+  fetchAllLists: PropTypes.func.isRequired
 };
 
-export default Dashboard;
+const mapStateToProps = state => ({
+  cohortsList: getCohorts(state),
+  shoppingLists: getShoppingLists(state)
+});
+
+export default connect(
+  mapStateToProps,
+  { fetchAllLists }
+)(Dashboard);

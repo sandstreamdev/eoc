@@ -1,17 +1,19 @@
 html {
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
   font-family: 'Roboto', sans-serif;
   background-color: $app-bg;
-  height: 100%;
+  min-height: 100%;
   position: relative;
 }
 
 #root {
-  height: 100%;
+  min-height: 100vh;
   position: relative;
+  padding-bottom: 54px;
+  box-sizing: border-box;
 }
 
 .app-wrapper {
@@ -19,6 +21,7 @@ body {
   margin: 32px auto 0;
   position: relative;
   height: 100%;
+  min-height: 100%;
 }
 
 .overlay {
