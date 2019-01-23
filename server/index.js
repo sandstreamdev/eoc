@@ -54,3 +54,5 @@ app.get('/auth/google', authenticate);
 app.get('/auth/google/callback', authenticateCallback, setUserAndSession);
 
 app.post('/logout', logout);
+
+require('./routes/shoppingList')(app);

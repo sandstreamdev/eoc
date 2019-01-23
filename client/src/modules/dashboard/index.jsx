@@ -29,7 +29,7 @@ class Dashboard extends Component {
           </h2>
           <ul className="dashboard__list">
             {shoppingLists.map(list => (
-              <li className="dashboard__list-item" key={list.id}>
+              <li className="dashboard__list-item" key={list._id}>
                 <CardItem name={list.name} />
               </li>
             ))}
