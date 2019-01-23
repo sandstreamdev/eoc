@@ -10,6 +10,7 @@ const {
 router.get('/', getAllShoppingLists);
 router.get('/:id', getShoppingListById);
 router.post('/new-list', createNewList);
+
 module.exports = app => {
   app.use('/shopping-lists', router);
 };

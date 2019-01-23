@@ -7,11 +7,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-const item = require('./routes/item');
-const items = require('./routes/items');
 const { DB_URL } = require('./common/variables');
-const { authenticate, authenticateCallback } = require('./config/auth');
-const { logout, setUserAndSession } = require('./controllers/userAuth');
 
 const app = express();
 
@@ -35,24 +31,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('../../dist'));
 
-// Endpoint for all operations related with /item
-app.use('/item', item);
-
-// Endpoint for all operations with /items
-app.use('/items', items);
+// Routes handlers
+require('./routes/authorization')(app);
+require('./routes/shoppingList')(app);
+require('./routes/item')(app);
+require('./routes/items')(app);
 
 // Root endpoint
 app.get('/', (req, resp) => resp.status(200).send('Hello World'));
-
 app.listen(8080, () => console.info('Listening on port 8080!'));
-
-/**
- * Authentication routes
- */
-app.get('/auth/google', authenticate);
-
-app.get('/auth/google/callback', authenticateCallback, setUserAndSession);
-
-app.post('/logout', logout);
-
-require('./routes/shoppingList')(app);

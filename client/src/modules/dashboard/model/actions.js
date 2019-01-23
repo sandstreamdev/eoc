@@ -19,7 +19,7 @@ export const fetchAllLists = () => dispatch => {
     credentials: 'same-origin'
   })
     .then(resp => resp.json())
-    .then(json => dispatch(fetchShoppingLists(json)));
+    .then(json => console.log(json) && dispatch(fetchShoppingLists(json)));
 
   dispatch(fetchCohorts());
 };
