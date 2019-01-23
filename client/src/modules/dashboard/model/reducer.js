@@ -4,7 +4,7 @@ import { initalCohorts } from './initalState';
 export const shoppingLists = (state = [], action) => {
   switch (action.type) {
     case FETCH_ALL_SHOPPING_LISTS:
-      return [...action.payload];
+      return action.payload;
     default:
       return state;
   }
@@ -13,7 +13,7 @@ export const shoppingLists = (state = [], action) => {
 export const cohortsList = (state = initalCohorts, action) => {
   switch (action.type) {
     case FETCH_ALL_COHORTS:
-      return [...state];
+      return state;
     default:
       return state;
   }

@@ -1,11 +1,11 @@
 const ShoppingList = require('../models/shoppingList.model');
 
 const createNewList = (req, resp) => {
-  const { name, description } = req.body;
+  const { description, name } = req.body;
 
   const shoppingList = new ShoppingList({
-    name,
-    description
+    description,
+    name
   });
 
   shoppingList.save((err, doc) => {
@@ -28,7 +28,6 @@ const getAllShoppingLists = (req, resp) => {
 };
 
 const getShoppingListById = (req, resp) => {
-  console.log('shoppig list of id:');
   resp.status(200).send(`Shopping list by id: ${req.params.id}`);
   ShoppingList.findById({ _id: req.params.id }, (err, doc) => {
     if (!doc) return resp.status(404).send('No shopping list of given id');
