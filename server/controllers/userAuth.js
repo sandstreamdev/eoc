@@ -1,8 +1,6 @@
 const { FRONTEND_URL } = require('../common/variables');
 
 const setUserAndSession = (req, res) => {
-  req.session.token = req.user.token;
-
   // Set user cookies
   res.cookie(
     'user',
