@@ -28,7 +28,6 @@ const getAllShoppingLists = (req, resp) => {
 };
 
 const getShoppingListById = (req, resp) => {
-  resp.status(200).send(`Shopping list by id: ${req.params.id}`);
   ShoppingList.findById({ _id: req.params.id }, (err, doc) => {
     if (!doc) return resp.status(404).send('No shopping list of given id');
 
