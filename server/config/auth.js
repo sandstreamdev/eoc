@@ -1,7 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const { ENDPOINT_URL } = require('../common/variables');
+const { ENDPOINT_URL, FRONTEND_URL } = require('../common/variables');
 const {
   userFindOrCreate,
   extractUserProfile
@@ -35,7 +35,7 @@ const authenticate = passport.authenticate('google', {
 });
 
 const authenticateCallback = passport.authenticate('google', {
-  failureRedirect: '/'
+  failureRedirect: FRONTEND_URL
 });
 
 module.exports = { authenticate, authenticateCallback };

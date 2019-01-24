@@ -1,19 +1,23 @@
 const { FRONTEND_URL } = require('../common/variables');
 const User = require('../models/user.model');
 
-const userFindOrCreate = (user, cb) => {
+const userFindOrCreate = (user, done) => {
   User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
     if (currentUser) {
-      cb(null, currentUser);
+      done(null, currentUser);
     } else {
-      new User({ ...user }).save().then(
-        newUser => {
-          cb(null, newUser);
-        },
-        saveErr => {
-          throw new Error(saveErr);
-        }
-      );
+      try {
+        new User({ ...user })
+          .save()
+          .then(newUser => {
+            done(null, newUser);
+          })
+          .catch(error => {
+            done(null, null);
+          });
+      } catch (error) {
+        done(null, null);
+      }
     }
   });
 };
@@ -43,7 +47,6 @@ const setUserAndSession = (req, res) => {
       token: 'token'
     })
   );
-
   res.redirect(FRONTEND_URL);
 };
 
