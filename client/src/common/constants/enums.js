@@ -14,3 +14,8 @@ export const StatusType = Object.freeze({
   RESOLVED: 'resolved',
   ERROR: 'error'
 });
+
+export const AuthStatusType = Object.freeze({
+  FAILURE: 'failure',
+  SUCCESS: 'success'
+});

@@ -35,6 +35,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('../../dist'));
 
+// Routes
+require('./routes/user')(app);
+
 // Endpoint for all operations related with /item
 app.use('/item', item);
 

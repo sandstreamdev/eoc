@@ -4,14 +4,14 @@ const { Schema } = mongoose;
 
 const UserSchema = new Schema(
   {
+    accessToken: { type: String, required: true },
+    avatar: { type: String, required: true },
     displayName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
-    avatar: { type: String, required: true },
-    surname: { type: String, required: true },
-    provider: { type: String, required: true },
     idFromProvider: { type: String, required: true },
-    accessToken: { type: String, required: true },
+    name: { type: String, required: true },
+    provider: { type: String, required: true },
+    surname: { type: String, required: true },
     tokens: [
       {
         access: {

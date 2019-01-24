@@ -13,10 +13,10 @@ const userFindOrCreate = (user, done) => {
             done(null, newUser);
           })
           .catch(error => {
-            done(null, null);
+            done(null, false, { message: `catch: ${error.message}` });
           });
-      } catch (error) {
-        done(null, null);
+      } catch (err) {
+        done(null, false, { message: `trycatch: ${err.message}` });
       }
     }
   });
