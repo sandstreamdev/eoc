@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import CompanyLogo from 'assets/images/company_logo.png';
@@ -13,11 +15,12 @@ import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
 import CreationForm from './components/CreationForm';
+import { setNewShoppingList } from './model/actions';
 
 class Toolbar extends Component {
   state = {
-    shoppingFormVisbility: true,
-    cohortFormVisibility: false,
+    shoppingFormVisbility: false,
+    // cohortFormVisibility: false,
     titleValue: '',
     descriptionValue: ''
   };
@@ -34,7 +37,13 @@ class Toolbar extends Component {
     this.setState({ descriptionValue: description });
 
   handleFormSubmission = (title, description) => {
-    console.log(title, description);
+    const { setNewShoppingList } = this.props;
+    setNewShoppingList(title, description);
+    this.setState({
+      titleValue: '',
+      descriptionValue: '',
+      shoppingFormVisbility: false
+    });
   };
 
   render() {
@@ -85,7 +94,7 @@ class Toolbar extends Component {
               </a>
               <div
                 className={classNames('toolbar__form', {
-                  hidden: shoppingFormVisbility
+                  hidden: !shoppingFormVisbility
                 })}
               >
                 <CreationForm
@@ -111,4 +120,11 @@ class Toolbar extends Component {
   }
 }
 
-export default Toolbar;
+Toolbar.propTypes = {
+  setNewShoppingList: PropTypes.func.isRequired
+};
+
+export default connect(
+  null,
+  { setNewShoppingList }
+)(Toolbar);

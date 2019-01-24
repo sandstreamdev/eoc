@@ -13,6 +13,7 @@ const ShoppingListSchema = new Schema(
     organizationIds: Schema.Types.String,
     items: Schema.Types.Mixed
   },
+  { timestamps: { createdAt: 'created_at' } },
   { collection: 'shopping-lists' }
 );
 
