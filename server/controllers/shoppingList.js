@@ -12,7 +12,7 @@ const createNewList = (req, resp) => {
     err
       ? resp.status(400).send(err.message)
       : resp
-          .location(`/shoppin-list/${doc._id}`)
+          .location(`/shopping-list/${doc._id}`)
           .status(201)
           .send(doc);
   });
