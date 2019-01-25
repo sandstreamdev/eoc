@@ -7,6 +7,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
+const user = require('./routes/user');
 const item = require('./routes/item');
 const items = require('./routes/items');
 const { DB_URL } = require('./common/variables');
@@ -35,8 +36,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('../../dist'));
 
-// Routes
-require('./routes/user')(app);
+// Endpoint for all operations related with /user
+app.use('/user', user);
 
 // Endpoint for all operations related with /item
 app.use('/item', item);

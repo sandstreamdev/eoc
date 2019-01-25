@@ -7,8 +7,7 @@ const setUserAndSession = (req, res) => {
     JSON.stringify({
       name: req.user.displayName,
       id: req.user.idFromProvider,
-      avatar: req.user.avatar,
-      token: 'token'
+      avatarUrl: req.user.avatarUrl
     })
   );
   res.redirect(FRONTEND_URL);

@@ -27,7 +27,7 @@ class UserBar extends Component {
 
   render() {
     const {
-      currentUser: { avatar, name }
+      currentUser: { avatarUrl, name }
     } = this.props;
     const { hideMenu } = this.state;
 
@@ -39,7 +39,7 @@ class UserBar extends Component {
           href="#!"
         >
           Profile:
-          <img alt="User avatar" className="user-bar__avatar" src={avatar} />
+          <img alt="User avatar" className="user-bar__avatar" src={avatarUrl} />
           <div
             className={classNames('user-bar__menu-wrapper', {
               hidden: hideMenu

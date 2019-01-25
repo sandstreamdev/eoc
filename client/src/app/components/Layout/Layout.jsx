@@ -41,7 +41,7 @@ class Layout extends Component {
 
     return !currentUser ? (
       <Switch>
-        <Route component={AuthBox} exact path="/:authStatus?" />
+        <Route component={AuthBox} exact path="/" />
         <Redirect to="/" />
       </Switch>
     ) : (

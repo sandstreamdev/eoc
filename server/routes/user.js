@@ -17,6 +17,4 @@ router.delete('/:id/delete', deleteUserById);
 // Update user by id
 router.patch('/:id/update', updateUser);
 
-module.exports = app => {
-  app.use('./user', router);
-};
+module.exports = router;

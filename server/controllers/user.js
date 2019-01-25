@@ -1,44 +1,10 @@
 const User = require('../models/user.model');
 const filter = require('../common/utilities');
 
-// Find or create user
-const findOrCreateUser = (user, done) => {
-  User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
-    if (err) {
-      done(null, false);
-    } else if (currentUser) {
-      done(null, currentUser);
-    } else {
-      new User({ ...user })
-        .save()
-        .then(newUser => {
-          done(null, newUser);
-        })
-        .catch(() => {
-          done(null, false);
-        });
-    }
-  });
-};
-
-const extractUserProfile = (profile, accessToken) => {
-  const { displayName, emails, id, image, name } = profile._json;
-  return {
-    accessToken,
-    avatar: image.url,
-    displayName,
-    emails,
-    idFromProvider: id,
-    name: name.givenName,
-    provider: 'google',
-    surname: name.familyName
-  };
-};
-
 // Get user by given id
 const getUserById = (req, resp) => {
   User.findById(req.params.id, (err, user) => {
-    err ? resp.status(400).send(err.message) : resp.status(200).json(user);
+    err ? resp.status(404).send(err.message) : resp.status(200).json(user);
   });
 };
 
@@ -76,8 +42,6 @@ const updateUser = (req, resp) => {
 
 module.exports = {
   deleteUserById,
-  extractUserProfile,
-  findOrCreateUser,
   getUserById,
   updateUser
 };

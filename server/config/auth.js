@@ -1,8 +1,8 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const { ENDPOINT_URL, FAILURE_URL } = require('../common/variables');
-const { findOrCreateUser, extractUserProfile } = require('../controllers/user');
+const { ENDPOINT_URL, FRONTEND_URL } = require('../common/variables');
+const { findOrCreateUser, extractUserProfile } = require('../utils/userUtils');
 
 // Use GoogleStrategy to authenicate user
 passport.use(
@@ -32,7 +32,7 @@ const authenticate = passport.authenticate('google', {
 });
 
 const authenticateCallback = passport.authenticate('google', {
-  failureRedirect: FAILURE_URL
+  failureRedirect: FRONTEND_URL
 });
 
 module.exports = { authenticate, authenticateCallback };
