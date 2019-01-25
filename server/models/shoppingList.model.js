@@ -13,8 +13,7 @@ const ShoppingListSchema = new Schema(
     purchaserIds: Schema.Types.String,
     visibility: { type: String }
   },
-  { timestamps: { createdAt: 'created_at' } },
-  { collection: 'shopping-lists' }
+  { timestamps: { createdAt: 'created_at' }, collection: 'shopping-lists' }
 );
 
 module.exports = mongoose.model('ShoppingListSchema', ShoppingListSchema);
