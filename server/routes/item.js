@@ -21,4 +21,4 @@ router.delete('/:id/delete', deleteItemById);
 // Update product by id
 router.patch('/:id/update', updateItem);
 
-module.exports = router;
+module.exports = app => app.use('/item', router);

@@ -1,9 +1,12 @@
+import { ENDPOINT_URL } from 'common/constants/variables';
+
 export const FETCH_ALL_SHOPPING_LISTS = 'FETCH_ALL_SHOPPING_LISTS';
 export const FETCH_ALL_COHORTS = 'FETCH_ALL_COHORTS';
 
 // Action creators
-const fetchShoppingLists = () => ({
-  type: FETCH_ALL_SHOPPING_LISTS
+const fetchShoppingLists = shoppingLists => ({
+  type: FETCH_ALL_SHOPPING_LISTS,
+  payload: shoppingLists
 });
 
 const fetchCohorts = () => ({
@@ -12,6 +15,11 @@ const fetchCohorts = () => ({
 
 // Dispatcher
 export const fetchAllLists = () => dispatch => {
-  dispatch(fetchShoppingLists());
+  fetch(`${ENDPOINT_URL}/shopping-lists`, {
+    credentials: 'same-origin'
+  })
+    .then(resp => resp.json())
+    .then(json => dispatch(fetchShoppingLists(json)));
+
   dispatch(fetchCohorts());
 };
