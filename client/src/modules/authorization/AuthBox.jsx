@@ -40,7 +40,7 @@ const AuthBox = ({
 AuthBox.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
-      id: PropTypes.string
+      authStatus: PropTypes.string
     })
   })
 };
