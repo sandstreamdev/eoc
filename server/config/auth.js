@@ -2,10 +2,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 const { ENDPOINT_URL, FAILURE_URL } = require('../common/variables');
-const {
-  userFindOrCreate,
-  extractUserProfile
-} = require('../controllers/userAuth');
+const { findOrCreateUser, extractUserProfile } = require('../controllers/user');
 
 // Use GoogleStrategy to authenicate user
 passport.use(
@@ -17,7 +14,7 @@ passport.use(
       profileFields: ['id', 'displayName', 'photos', 'email']
     },
     (accessToken, refreshToken, profile, done) => {
-      userFindOrCreate(extractUserProfile(profile, accessToken), done);
+      findOrCreateUser(extractUserProfile(profile, accessToken), done);
     }
   )
 );

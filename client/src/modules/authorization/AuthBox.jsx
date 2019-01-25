@@ -14,7 +14,7 @@ const AuthBox = ({
   <Fragment>
     {authStatus === AuthStatusType.FAILURE && (
       <MessageBox
-        message="Authorization failed. Please refresh the page and try again."
+        message="Oops, it looks like we have temporary technical problems. Please try again."
         type={MessageType.ERROR}
       />
     )}

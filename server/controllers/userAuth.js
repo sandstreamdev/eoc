@@ -1,40 +1,4 @@
 const { FRONTEND_URL } = require('../common/variables');
-const User = require('../models/user.model');
-
-const userFindOrCreate = (user, done) => {
-  User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
-    if (currentUser) {
-      done(null, currentUser);
-    } else {
-      try {
-        new User({ ...user })
-          .save()
-          .then(newUser => {
-            done(null, newUser);
-          })
-          .catch(error => {
-            done(null, false, { message: `catch: ${error.message}` });
-          });
-      } catch (err) {
-        done(null, false, { message: `trycatch: ${err.message}` });
-      }
-    }
-  });
-};
-
-const extractUserProfile = (profile, accessToken) => {
-  const { displayName, name, image, emails, id } = profile._json;
-  return {
-    displayName,
-    name: name.givenName,
-    surname: name.familyName,
-    avatar: image.url,
-    email: emails[0].value,
-    provider: 'google',
-    idFromProvider: id,
-    accessToken
-  };
-};
 
 const setUserAndSession = (req, res) => {
   // Set user cookies
@@ -61,8 +25,6 @@ const logout = (req, res) => {
 };
 
 module.exports = {
-  extractUserProfile,
   logout,
-  setUserAndSession,
-  userFindOrCreate
+  setUserAndSession
 };
