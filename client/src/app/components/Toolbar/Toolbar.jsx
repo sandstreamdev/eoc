@@ -14,8 +14,8 @@ import {
 import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
-import CreationForm from './components/CreationForm';
-import { setNewShoppingList } from './model/actions';
+import CreationForm from 'modules/shopping-list/components/CreationForm';
+import { setNewShoppingList } from 'modules/shopping-list/model/actions';
 
 class Toolbar extends Component {
   state = {

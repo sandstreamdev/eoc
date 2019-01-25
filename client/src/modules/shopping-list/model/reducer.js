@@ -1,5 +1,9 @@
 import { items as itemsInitialState, initialStatus } from './initialState';
-import { FETCH_FAILED, FETCH_ITEMS } from 'modules/shopping-list/model/actions';
+import {
+  FETCH_FAILED,
+  FETCH_ITEMS,
+  ADD_SHOPPING_LIST_SUCCESS
+} from './actions';
 import {
   TOGGLE_ITEM,
   VOTE_FOR_ITEM
@@ -9,6 +13,7 @@ import {
   ADD_ITEM_SUCCESS
 } from 'modules/shopping-list/components/InputBar/actions';
 import { StatusType } from 'common/constants/enums';
+import { FETCH_ALL_SHOPPING_LISTS_SUCCESS } from 'modules/dashboard/model/actions';
 
 const items = (state = itemsInitialState, action) => {
   const { type } = action;
@@ -33,7 +38,18 @@ const items = (state = itemsInitialState, action) => {
   }
 };
 
-const uiStatus = (state = initialStatus, action) => {
+export const shoppingLists = (state = [], action) => {
+  switch (action.type) {
+    case FETCH_ALL_SHOPPING_LISTS_SUCCESS:
+      return action.payload;
+    case ADD_SHOPPING_LIST_SUCCESS:
+      return [action.payload, ...state];
+    default:
+      return state;
+  }
+};
+
+export const uiStatus = (state = initialStatus, action) => {
   switch (action.type) {
     case FETCH_FAILED:
       return {
@@ -61,4 +77,3 @@ const uiStatus = (state = initialStatus, action) => {
 };
 
 export default items;
-export { uiStatus };
