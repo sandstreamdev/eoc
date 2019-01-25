@@ -25,8 +25,7 @@ class Toolbar extends Component {
     descriptionValue: ''
   };
 
-  handleShoppingFormVisibilty = event => {
-    event.stopPropagation();
+  handleShoppingFormVisibilty = () => {
     const { shoppingFormVisbility } = this.state;
     this.setState({ shoppingFormVisbility: !shoppingFormVisbility });
   };
@@ -38,16 +37,17 @@ class Toolbar extends Component {
 
   handleFormSubmission = (title, description) => {
     const { setNewShoppingList } = this.props;
+
     setNewShoppingList(title, description);
     this.setState({
-      titleValue: '',
       descriptionValue: '',
-      shoppingFormVisbility: false
+      shoppingFormVisbility: false,
+      titleValue: ''
     });
   };
 
   render() {
-    const { shoppingFormVisbility, titleValue, descriptionValue } = this.state;
+    const { descriptionValue, shoppingFormVisbility, titleValue } = this.state;
     return (
       <div className="toolbar">
         <div className="wrapper toolbar__wrapper">
@@ -98,12 +98,12 @@ class Toolbar extends Component {
                 })}
               >
                 <CreationForm
-                  label="Create new shopping list"
-                  titleValue={titleValue}
                   descriptionValue={descriptionValue}
+                  label="Create new shopping list"
                   onDescriptionChange={this.handleDescriptionChange}
                   onSubmit={this.handleFormSubmission}
                   onTitleChange={this.handleTitleChange}
+                  titleValue={titleValue}
                 />
               </div>
             </div>

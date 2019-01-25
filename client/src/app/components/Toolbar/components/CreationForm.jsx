@@ -3,34 +3,32 @@ import PropTypes from 'prop-types';
 
 class CreationForm extends Component {
   handleValueChange = event => {
-    const { onTitleChange, onDescriptionChange } = this.props;
+    const { onDescriptionChange, onTitleChange } = this.props;
     const {
-      target: { value }
+      target: { value, nodeName }
     } = event;
 
-    event.target.nodeName === 'TEXTAREA'
-      ? onDescriptionChange(value)
-      : onTitleChange(value);
+    nodeName === 'TEXTAREA' ? onDescriptionChange(value) : onTitleChange(value);
   };
 
   handleFormSubmission = event => {
     event.preventDefault();
-    const { onSubmit, titleValue, descriptionValue } = this.props;
+    const { descriptionValue, onSubmit, titleValue } = this.props;
 
     onSubmit(titleValue, descriptionValue);
   };
 
   render() {
-    const { label, titleValue, descriptionValue } = this.props;
+    const { descriptionValue, label, titleValue } = this.props;
     return (
       <form className="creation-form" onSubmit={this.handleFormSubmission}>
         <h2 className="creation-form__heading">{label}</h2>
         <label className="creation-form__label">
           <input
             className="creation-form__input"
+            onChange={this.handleValueChange}
             placeholder="Title"
             required
-            onChange={this.handleValueChange}
             type="text"
             value={titleValue}
           />
@@ -44,7 +42,7 @@ class CreationForm extends Component {
             value={descriptionValue}
           />
         </label>
-        <input type="submit" className="creation-form__submit" value="Create" />
+        <input className="creation-form__submit" type="submit" value="Create" />
       </form>
     );
   }

@@ -1,15 +1,10 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 
 export const ADD_SHOPPING_LIST_SUCCESS = 'ADD_NEW_SHOPPING_LIST';
-const ADD_SHOPPING_LIST_FAILURE = 'ADD_SHOPPING_LIST_FAIULRE';
 
 const newShoppingListSuccess = data => ({
   type: ADD_SHOPPING_LIST_SUCCESS,
   payload: data
-});
-
-const newShoppingListFailure = () => ({
-  type: ADD_SHOPPING_LIST_FAILURE
 });
 
 export const setNewShoppingList = (name, description) => dispatch =>
@@ -22,7 +17,4 @@ export const setNewShoppingList = (name, description) => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => dispatch(newShoppingListSuccess(json)))
-    .catch(err => {
-      console.error(err);
-      dispatch(newShoppingListFailure());
-    });
+    .catch(err => console.error(err));

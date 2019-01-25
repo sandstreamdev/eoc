@@ -1,16 +1,17 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 
-export const FETCH_ALL_SHOPPING_LISTS = 'FETCH_ALL_SHOPPING_LISTS';
-export const FETCH_ALL_COHORTS = 'FETCH_ALL_COHORTS';
+export const FETCH_ALL_SHOPPING_LISTS_SUCCESS =
+  'FETCH_ALL_SHOPPING_LISTS_SUCCESS';
+export const FETCH_ALL_COHORTS_SUCCESS = 'FETCH_ALL_COHORTS_SUCCESS';
 
 // Action creators
-const fetchShoppingLists = shoppingLists => ({
-  type: FETCH_ALL_SHOPPING_LISTS,
-  payload: shoppingLists
+const fetchShoppingListsSuccess = data => ({
+  type: FETCH_ALL_SHOPPING_LISTS_SUCCESS,
+  payload: data
 });
 
-const fetchCohorts = () => ({
-  type: FETCH_ALL_COHORTS
+const fetchCohortsSuccess = () => ({
+  type: FETCH_ALL_COHORTS_SUCCESS
 });
 
 // Dispatcher
@@ -19,7 +20,8 @@ export const fetchAllLists = () => dispatch => {
     credentials: 'same-origin'
   })
     .then(resp => resp.json())
-    .then(json => dispatch(fetchShoppingLists(json)));
+    .then(json => dispatch(fetchShoppingListsSuccess(json)))
+    .catch(err => console.err(err));
 
-  dispatch(fetchCohorts());
+  dispatch(fetchCohortsSuccess());
 };
