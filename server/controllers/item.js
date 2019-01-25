@@ -59,7 +59,7 @@ const updateItem = (req, resp) => {
       if (!doc) return resp.status(404).send('No item of given id');
       return err
         ? resp.status(400).send(err.message)
-        : console.log(typeof doc) && resp.status(200).send(doc);
+        : resp.status(200).send(doc);
     }
   );
 };
