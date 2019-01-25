@@ -33,14 +33,14 @@ class ProductsList extends Component {
   };
 
   voteForItem = item => () => {
-    const { _id, votes } = item;
+    const { _id, voterIds } = item;
     const {
       vote,
       currentUser: { id }
     } = this.props;
-    votes.includes(id)
-      ? vote(_id, votes.filter(voterId => voterId !== id))
-      : vote(_id, votes.concat(id));
+    voterIds.includes(id)
+      ? vote(_id, voterIds.filter(voterId => voterId !== id))
+      : vote(_id, voterIds.concat(id));
   };
 
   render() {
@@ -68,8 +68,8 @@ class ProductsList extends Component {
                 name={item.name}
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
-                votesCount={item.votes.length}
-                whetherUserVoted={item.votes.includes(userId)}
+                votesCount={item.voterIds.length}
+                whetherUserVoted={item.voterIds.includes(userId)}
               />
             ))}
           </ul>

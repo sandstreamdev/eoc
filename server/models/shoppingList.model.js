@@ -6,7 +6,7 @@ const ShoppingListSchema = new Schema(
   {
     adminIds: Schema.Types.String,
     description: { type: String },
-    items: Schema.Types.Mixed,
+    itemIds: Schema.Types.Mixed,
     name: { type: String, required: true },
     ordererIds: Schema.Types.String,
     organizationIds: Schema.Types.String,
