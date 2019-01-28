@@ -5,9 +5,9 @@ const setUserAndSession = (req, res) => {
   res.cookie(
     'user',
     JSON.stringify({
-      name: req.user.displayName,
-      id: req.user.idFromProvider,
-      avatarUrl: req.user.avatarUrl
+      avatarUrl: req.user.avatarUrl,
+      id: req.user.id,
+      name: req.user.displayName
     })
   );
   res.redirect(FRONTEND_URL);
