@@ -1,4 +1,5 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
+import { postData } from 'common/utils/fetchMethods';
 
 // Action types
 export const ADD_ITEM = 'ADD_ITEM';
@@ -11,13 +12,7 @@ export const addItemSuccess = item => ({ type: ADD_ITEM_SUCCESS, item });
 
 // Dispatchers
 export const addItem = item => dispatch =>
-  fetch(`${ENDPOINT_URL}/item/create`, {
-    body: JSON.stringify(item),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    method: 'POST'
-  })
+  postData(`${ENDPOINT_URL}/item/create`, JSON.stringify(item))
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json)))
     .catch(err => {

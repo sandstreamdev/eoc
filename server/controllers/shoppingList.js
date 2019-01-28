@@ -26,7 +26,7 @@ const getAllShoppingLists = (req, resp) => {
     { sort: { created_at: -1 } },
     (err, shoppingLists) => {
       err
-        ? resp.status(401).send(err.message)
+        ? resp.status(400).send(err.message)
         : resp.status(200).send(shoppingLists);
     }
   );

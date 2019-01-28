@@ -1,4 +1,5 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
+import { getData } from 'common/utils/fetchMethods';
 
 export const FETCH_ALL_SHOPPING_LISTS_SUCCESS =
   'FETCH_ALL_SHOPPING_LISTS_SUCCESS';
@@ -16,9 +17,7 @@ const fetchCohortsSuccess = () => ({
 
 // Dispatcher
 export const fetchAllLists = () => dispatch => {
-  fetch(`${ENDPOINT_URL}/shopping-lists`, {
-    credentials: 'same-origin'
-  })
+  getData(`${ENDPOINT_URL}/shopping-lists`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchShoppingListsSuccess(json)))
     .catch(err => console.err(err));

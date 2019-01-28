@@ -15,12 +15,11 @@ import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
 import CreationForm from 'modules/shopping-list/components/CreationForm';
-import { setNewShoppingList } from 'modules/shopping-list/model/actions';
+import { createNewShoppingList } from 'modules/shopping-list/model/actions';
 
 class Toolbar extends Component {
   state = {
     shoppingFormVisbility: false,
-    // cohortFormVisibility: false,
     titleValue: '',
     descriptionValue: ''
   };
@@ -36,9 +35,9 @@ class Toolbar extends Component {
     this.setState({ descriptionValue: description });
 
   handleFormSubmission = (title, description) => {
-    const { setNewShoppingList } = this.props;
+    const { createNewShoppingList } = this.props;
 
-    setNewShoppingList(title, description);
+    createNewShoppingList(title, description);
     this.setState({
       descriptionValue: '',
       shoppingFormVisbility: false,
@@ -121,10 +120,10 @@ class Toolbar extends Component {
 }
 
 Toolbar.propTypes = {
-  setNewShoppingList: PropTypes.func.isRequired
+  createNewShoppingList: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { setNewShoppingList }
+  { createNewShoppingList }
 )(Toolbar);
