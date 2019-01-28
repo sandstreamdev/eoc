@@ -27,7 +27,6 @@ export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
 
 export const vote = (id, voterIds) => dispatch => {
   const payload = { _id: id, voterIds };
-  console.log(payload);
   fetch(`${ENDPOINT_URL}/item/${id}/update`, {
     body: JSON.stringify(payload),
     headers: { 'Content-Type': 'application/json' },

@@ -30,7 +30,6 @@ const items = (state = itemsInitialState, action) => {
       );
     }
     case VOTE_FOR_ITEM: {
-      console.log(action.item);
       const { _id, voterIds } = action.item;
       return state.map(item =>
         item._id === _id ? { ...item, voterIds } : item
