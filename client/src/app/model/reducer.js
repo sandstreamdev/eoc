@@ -5,7 +5,7 @@ import items, {
   shoppingLists
 } from 'modules/shopping-list/model/reducer';
 import currentUser from 'modules/authorization/model/reducer';
-import { cohortsList } from 'modules/dashboard/model/reducer';
+import { cohortsList } from 'modules/cohort/model/reducer';
 
 const rootReducer = combineReducers({
   cohortsList,

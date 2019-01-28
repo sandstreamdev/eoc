@@ -1,9 +1,9 @@
-import { FETCH_ALL_COHORTS_SUCCESS } from './actions';
-import { initalCohorts } from './initalState';
+import { CohortActionTypes } from '../enum';
+import { initalCohorts } from './initialState';
 
 export const cohortsList = (state = initalCohorts, action) => {
   switch (action.type) {
-    case FETCH_ALL_COHORTS_SUCCESS:
+    case CohortActionTypes.FETCH_ALL_COHORTS_SUCCESS:
       return state;
     default:
       return state;

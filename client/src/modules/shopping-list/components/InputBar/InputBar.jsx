@@ -7,7 +7,7 @@ import { getNewItemStatus } from 'modules/shopping-list/model/selectors';
 import { StatusType, MessageType } from 'common/constants/enums';
 import { StatusPropType, UserPropType } from 'common/constants/propTypes';
 import MessageBox from 'common/components/MessageBox';
-import { addItem } from './actions';
+import { addItem } from './model/actions';
 
 class InputBar extends Component {
   state = {

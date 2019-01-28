@@ -6,15 +6,18 @@ import {
   ClipboardSolid as ShoppingListIcon,
   UsersSolid as CohortIcon
 } from 'assets/images/icons';
-import { fetchAllLists } from './model/actions';
-import { getCohorts, getShoppingLists } from './model/selectors';
+import { fetchShoppingLists } from 'modules/shopping-list/model/actions';
+import { fetchAllCohorts } from 'modules/cohort/model/actions';
+import { getShoppingLists } from 'modules/shopping-list/model/selectors';
+import { getCohorts } from 'modules/cohort/model/selectors';
 import CardItem from './CardItem';
 
 class Dashboard extends Component {
   componentDidMount() {
-    const { fetchAllLists } = this.props;
+    const { fetchShoppingLists, fetchAllCohorts } = this.props;
 
-    fetchAllLists();
+    fetchShoppingLists();
+    fetchAllCohorts();
   }
 
   render() {
@@ -55,7 +58,8 @@ Dashboard.propTypes = {
   cohortsList: PropTypes.arrayOf(PropTypes.object),
   shoppingLists: PropTypes.arrayOf(PropTypes.object),
 
-  fetchAllLists: PropTypes.func.isRequired
+  fetchAllCohorts: PropTypes.func.isRequired,
+  fetchShoppingLists: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -65,5 +69,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { fetchAllLists }
+  { fetchShoppingLists, fetchAllCohorts }
 )(Dashboard);
