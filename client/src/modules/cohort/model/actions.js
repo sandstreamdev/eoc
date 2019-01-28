@@ -6,6 +6,6 @@ const fetchCohortsSuccess = () => ({
 });
 
 // Dispatchers
-export const fetchAllCohorts = () => dispatch => {
+export const fetchCohorts = () => dispatch => {
   dispatch(fetchCohortsSuccess());
 };

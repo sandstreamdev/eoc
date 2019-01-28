@@ -3,7 +3,7 @@ import { postData } from 'common/utils/fetchMethods';
 import { ItemActionTypes } from '../enum';
 
 // Action creators
-export const addItemError = err => ({
+export const addItemFailure = err => ({
   type: ItemActionTypes.ADD_ITEM_FAILURE,
   err
 });
@@ -18,6 +18,6 @@ export const addItem = item => dispatch =>
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json)))
     .catch(err => {
-      dispatch(addItemError(err));
+      dispatch(addItemFailure(err));
       throw new Error('There was an error while adding new item.');
     });
