@@ -16,6 +16,7 @@ import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
 import CreationForm from 'modules/shopping-list/components/CreationForm';
 import { createNewShoppingList } from 'modules/shopping-list/model/actions';
+import { createCohort } from 'modules/cohort/model/actions';
 
 class Toolbar extends PureComponent {
   state = {
@@ -38,14 +39,15 @@ class Toolbar extends PureComponent {
   };
 
   handleFormSubmission = (title, description, isShoppingList) => {
-    const { createNewShoppingList } = this.props;
+    const { createCohort, createNewShoppingList } = this.props;
 
     isShoppingList
       ? (this.setState({
           shoppingFormVisbility: false
         }),
         createNewShoppingList(title, description))
-      : console.log('create cohort');
+      : (this.setState({ cohortFormVisbility: false }),
+        createCohort(title, description));
   };
 
   render() {
@@ -134,10 +136,11 @@ class Toolbar extends PureComponent {
 }
 
 Toolbar.propTypes = {
+  createCohort: PropTypes.func.isRequired,
   createNewShoppingList: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { createNewShoppingList }
+  { createCohort, createNewShoppingList }
 )(Toolbar);

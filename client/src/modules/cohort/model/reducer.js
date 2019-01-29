@@ -1,10 +1,11 @@
 import { CohortActionTypes } from './actionTypes';
-import { initalCohorts } from './initialState';
 
-export const cohorts = (state = initalCohorts, action) => {
+export const cohorts = (state = [], action) => {
   switch (action.type) {
+    case CohortActionTypes.CREATE_COHORT_SUCCESS:
+      return [action.payload, ...state];
     case CohortActionTypes.FETCH_COHORTS_SUCCESS:
-      return state;
+      return action.payload;
     default:
       return state;
   }
