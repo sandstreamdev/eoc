@@ -1,0 +1,76 @@
+.creation-form {
+  background: $bg-color;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  align-items: flex-start;
+  box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+
+  &::before {
+    right: 7px;
+    top: -10px;
+    position: absolute;
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 15px solid $bg-color;
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    color: $text-normal;
+    font-size: 12px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  &__label {
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  &__input {
+    border-style: solid;
+    border: 1px solid $text-normal;
+    border-radius: 5px;
+    padding: 2px;
+    width: 100%;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: $text-light;
+      font-size: 10px;
+    }
+  }
+
+  &__textarea {
+    border-style: solid;
+    border: 1px solid $text-normal;
+    box-sizing: border-box;
+    border-radius: 5px;
+    width: 100%;
+    resize: vertical;
+
+    &::placeholder {
+      color: $text-light;
+      font-size: 10px;
+    }
+  }
+
+  &__submit {
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    background: $gray-bg;
+  }
+}

@@ -3,49 +3,49 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { getNewItemStatus } from 'modules/shopping-list/model/selectors';
+import { getNewProductStatus } from 'modules/shopping-list/model/selectors';
 import { StatusType, MessageType } from 'common/constants/enums';
 import { StatusPropType, UserPropType } from 'common/constants/propTypes';
 import MessageBox from 'common/components/MessageBox';
-import { addItem } from './actions';
+import { addProduct } from './model/actions';
 
 class InputBar extends Component {
   state = {
-    itemName: ''
+    productName: ''
   };
 
   handleNameChange = e => {
     this.setState({
-      itemName: e.target.value
+      productName: e.target.value
     });
   };
 
   handleFormSubmit = e => {
     e.preventDefault();
-    const { addItem, currentUser } = this.props;
-    const { itemName } = this.state;
-    const newItem = {
+    const { addProduct, currentUser } = this.props;
+    const { productName } = this.state;
+    const newProduct = {
       authorName: currentUser.name,
       authorId: currentUser.id,
       isOrdered: false,
-      name: itemName
+      name: productName
     };
 
-    addItem(newItem);
+    addProduct(newProduct);
 
     this.setState({
-      itemName: ''
+      productName: ''
     });
   };
 
   render() {
-    const { itemName } = this.state;
-    const { newItemStatus } = this.props;
+    const { productName } = this.state;
+    const { newProductStatus } = this.props;
     return (
       <Fragment>
-        {newItemStatus === StatusType.ERROR && (
+        {newProductStatus === StatusType.ERROR && (
           <MessageBox
-            message="There was an error while adding new item. Try again later"
+            message="There was an error while adding new product. Try again later"
             type={MessageType.ERROR}
           />
         )}
@@ -57,7 +57,7 @@ class InputBar extends Component {
               placeholder="What is missing?"
               required
               type="text"
-              value={itemName}
+              value={productName}
             />
             <input className="input-bar__submit" type="submit" />
           </form>
@@ -69,17 +69,17 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
-  newItemStatus: StatusPropType.isRequired,
+  newProductStatus: StatusPropType.isRequired,
 
-  addItem: PropTypes.func.isRequired
+  addProduct: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   currentUser: getCurrentUser(state),
-  newItemStatus: getNewItemStatus(state)
+  newProductStatus: getNewProductStatus(state)
 });
 
 export default connect(
   mapStateToProps,
-  { addItem }
+  { addProduct }
 )(InputBar);

@@ -1,3 +1,4 @@
-export const getNewItemStatus = state => state.uiStatus.newItemStatus;
+export const getNewProductStatus = state => state.uiStatus.newProductStatus;
 export const getFetchStatus = state => state.uiStatus.fetchStatus;
-export const getItems = state => state.items;
+export const getProducts = state => state.products;
+export const getShoppingLists = state => state.shoppingLists;

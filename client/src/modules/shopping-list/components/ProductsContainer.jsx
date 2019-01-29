@@ -47,12 +47,12 @@ class ProductsContainer extends Component {
 
     switch (sortBy) {
       case SortOptionType.NAME:
-        result = _sortBy(result, item => item.name.toLowerCase());
+        result = _sortBy(result, product => product.name.toLowerCase());
         break;
       case SortOptionType.AUTHOR:
         result = _sortBy(result, [
-          item => item.authorName.toLowerCase(),
-          item => item.name.toLowerCase()
+          product => product.authorName.toLowerCase(),
+          product => product.name.toLowerCase()
         ]);
         break;
       case SortOptionType.DATE:
@@ -80,7 +80,7 @@ class ProductsContainer extends Component {
     } = this.props;
 
     return filterBy === FilterOptionType.MY_PRODUCTS
-      ? products.filter(item => item.authorId === id)
+      ? products.filter(product => product.authorId === id)
       : products;
   };
 

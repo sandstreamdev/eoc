@@ -11,8 +11,8 @@ const ProductListItem = ({
   id,
   image = PLACEHOLDER_URL,
   name,
-  toggleItem,
-  voteForItem,
+  toggleProduct,
+  voteForProduct,
   votesCount,
   whetherUserVoted
 }) => (
@@ -32,7 +32,7 @@ const ProductListItem = ({
       className="products-list__label"
       htmlFor={`option${id}`}
       id={`option${id}`}
-      onClick={() => toggleItem(authorName, id, archived)}
+      onClick={() => toggleProduct(authorName, id, archived)}
     >
       <img alt="Product icon" className="products-list__icon" src={image} />
       <span className="products-list__data">
@@ -41,7 +41,7 @@ const ProductListItem = ({
       </span>
       {!archived && (
         <VotingBox
-          voteForItem={voteForItem}
+          voteForProduct={voteForProduct}
           votesCount={votesCount}
           whetherUserVoted={whetherUserVoted}
         />
@@ -59,8 +59,8 @@ ProductListItem.propTypes = {
   votesCount: PropTypes.number.isRequired,
   whetherUserVoted: PropTypes.bool.isRequired,
 
-  toggleItem: PropTypes.func,
-  voteForItem: PropTypes.func
+  toggleProduct: PropTypes.func,
+  voteForProduct: PropTypes.func
 };
 
 export default ProductListItem;

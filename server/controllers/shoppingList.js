@@ -20,11 +20,16 @@ const createNewList = (req, resp) => {
 
 // Get all the lists
 const getAllShoppingLists = (req, resp) => {
-  ShoppingList.find({}, (err, shoppingLists) => {
-    err
-      ? resp.status(401).send(err.message)
-      : resp.status(200).send(shoppingLists);
-  });
+  ShoppingList.find(
+    {},
+    null,
+    { sort: { created_at: -1 } },
+    (err, shoppingLists) => {
+      err
+        ? resp.status(400).send(err.message)
+        : resp.status(200).send(shoppingLists);
+    }
+  );
 };
 
 const getShoppingListById = (req, resp) => {
