@@ -19,8 +19,8 @@ const createCohort = (req, resp) => {
 };
 
 const getCohorts = (req, resp) => {
-  Cohort.find({}, null, { sort: { createdAt: -1 } }, (err, cohort) => {
-    err ? resp.status(400).send(err.message) : resp.status(200).send(cohort);
+  Cohort.find({}, null, { sort: { createdAt: -1 } }, (err, cohorts) => {
+    err ? resp.status(400).send(err.message) : resp.status(200).send(cohorts);
   });
 };
 

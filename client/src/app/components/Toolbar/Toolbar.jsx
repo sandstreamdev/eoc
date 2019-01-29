@@ -116,9 +116,9 @@ class Toolbar extends PureComponent {
                 })}
               >
                 <CreationForm
+                  isShoppingList
                   label="Create new shopping list"
                   onSubmit={this.handleFormSubmission}
-                  isShoppingList
                 />
               </div>
             </div>
