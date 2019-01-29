@@ -20,9 +20,9 @@ class CreationForm extends Component {
   handleFormSubmission = event => {
     event.preventDefault();
     const { description, title } = this.state;
-    const { onSubmit } = this.props;
+    const { onSubmit, isShoppingList } = this.props;
 
-    onSubmit(title, description);
+    onSubmit(title, description, isShoppingList);
   };
 
   render() {
@@ -57,6 +57,7 @@ class CreationForm extends Component {
 }
 
 CreationForm.propTypes = {
+  isShoppingList: PropTypes.bool,
   label: PropTypes.string.isRequired,
 
   onSubmit: PropTypes.func.isRequired

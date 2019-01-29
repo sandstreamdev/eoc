@@ -19,25 +19,37 @@ import { createNewShoppingList } from 'modules/shopping-list/model/actions';
 
 class Toolbar extends PureComponent {
   state = {
+    cohortFormVisbility: false,
     shoppingFormVisbility: false
   };
 
-  handleShoppingFormVisibilty = () => {
-    const { shoppingFormVisbility } = this.state;
-    this.setState({ shoppingFormVisbility: !shoppingFormVisbility });
+  handleFormVisibilty = isShoppingList => {
+    const { cohortFormVisbility, shoppingFormVisbility } = this.state;
+
+    isShoppingList
+      ? this.setState({
+          cohortFormVisbility: false,
+          shoppingFormVisbility: !shoppingFormVisbility
+        })
+      : this.setState({
+          shoppingFormVisbility: false,
+          cohortFormVisbility: !cohortFormVisbility
+        });
   };
 
-  handleFormSubmission = (title, description) => {
+  handleFormSubmission = (title, description, isShoppingList) => {
     const { createNewShoppingList } = this.props;
 
-    this.setState({
-      shoppingFormVisbility: false
-    });
-    createNewShoppingList(title, description);
+    isShoppingList
+      ? (this.setState({
+          shoppingFormVisbility: false
+        }),
+        createNewShoppingList(title, description))
+      : console.log('create cohort');
   };
 
   render() {
-    const { shoppingFormVisbility } = this.state;
+    const { shoppingFormVisbility, cohortFormVisbility } = this.state;
     return (
       <div className="toolbar">
         <div className="wrapper toolbar__wrapper">
@@ -63,7 +75,7 @@ class Toolbar extends PureComponent {
               <a
                 className="toolbar__icon-link"
                 href="#!"
-                onClick={this.handleCohortFormVisibilty}
+                onClick={() => this.handleFormVisibilty(false)}
               >
                 <CohortIcon />
                 <img
@@ -72,12 +84,22 @@ class Toolbar extends PureComponent {
                   src={PlusIcon}
                 />
               </a>
+              <div
+                className={classNames('toolbar__form', {
+                  hidden: !cohortFormVisbility
+                })}
+              >
+                <CreationForm
+                  label="Create new cohort"
+                  onSubmit={this.handleFormSubmission}
+                />
+              </div>
             </div>
             <div className="toolbar__icon-wrapper">
               <a
                 className="toolbar__icon-link"
                 href="#!"
-                onClick={this.handleShoppingFormVisibilty}
+                onClick={() => this.handleFormVisibilty(true)}
               >
                 <ShoppingListIcon />
                 <img
@@ -94,6 +116,7 @@ class Toolbar extends PureComponent {
                 <CreationForm
                   label="Create new shopping list"
                   onSubmit={this.handleFormSubmission}
+                  isShoppingList
                 />
               </div>
             </div>
