@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -17,11 +17,9 @@ import AppLogo from 'common/components/AppLogo';
 import CreationForm from 'modules/shopping-list/components/CreationForm';
 import { createNewShoppingList } from 'modules/shopping-list/model/actions';
 
-class Toolbar extends Component {
+class Toolbar extends PureComponent {
   state = {
-    shoppingFormVisbility: false,
-    titleValue: '',
-    descriptionValue: ''
+    shoppingFormVisbility: false
   };
 
   handleShoppingFormVisibilty = () => {
@@ -29,24 +27,17 @@ class Toolbar extends Component {
     this.setState({ shoppingFormVisbility: !shoppingFormVisbility });
   };
 
-  handleTitleChange = title => this.setState({ titleValue: title });
-
-  handleDescriptionChange = description =>
-    this.setState({ descriptionValue: description });
-
   handleFormSubmission = (title, description) => {
     const { createNewShoppingList } = this.props;
 
-    createNewShoppingList(title, description);
     this.setState({
-      descriptionValue: '',
-      shoppingFormVisbility: false,
-      titleValue: ''
+      shoppingFormVisbility: false
     });
+    createNewShoppingList(title, description);
   };
 
   render() {
-    const { descriptionValue, shoppingFormVisbility, titleValue } = this.state;
+    const { shoppingFormVisbility } = this.state;
     return (
       <div className="toolbar">
         <div className="wrapper toolbar__wrapper">
@@ -69,7 +60,11 @@ class Toolbar extends Component {
               </Link>
             </div>
             <div className="toolbar__icon-wrapper">
-              <a className="toolbar__icon-link" href="#!">
+              <a
+                className="toolbar__icon-link"
+                href="#!"
+                onClick={this.handleCohortFormVisibilty}
+              >
                 <CohortIcon />
                 <img
                   alt="Plus icon"
@@ -97,12 +92,8 @@ class Toolbar extends Component {
                 })}
               >
                 <CreationForm
-                  descriptionValue={descriptionValue}
                   label="Create new shopping list"
-                  onDescriptionChange={this.handleDescriptionChange}
                   onSubmit={this.handleFormSubmission}
-                  onTitleChange={this.handleTitleChange}
-                  titleValue={titleValue}
                 />
               </div>
             </div>
