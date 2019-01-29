@@ -2,10 +2,8 @@ import { CohortActionTypes } from './actionTypes';
 
 // Action creators
 const fetchCohortsSuccess = () => ({
-  type: CohortActionTypes.FETCH_ALL_COHORTS_SUCCESS
+  type: CohortActionTypes.FETCH_COHORTS_SUCCESS
 });
 
 // Dispatchers
-export const fetchCohorts = () => dispatch => {
-  dispatch(fetchCohortsSuccess());
-};
+export const fetchCohorts = () => dispatch => dispatch(fetchCohortsSuccess());
