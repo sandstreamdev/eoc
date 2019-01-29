@@ -60,11 +60,7 @@ class Toolbar extends PureComponent {
               </Link>
             </div>
             <div className="toolbar__icon-wrapper">
-              <a
-                className="toolbar__icon-link"
-                href="#!"
-                onClick={this.handleCohortFormVisibilty}
-              >
+              <a className="toolbar__icon-link" href="#!">
                 <CohortIcon />
                 <img
                   alt="Plus icon"
