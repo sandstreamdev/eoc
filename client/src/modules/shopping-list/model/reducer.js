@@ -1,25 +1,30 @@
-import { items as itemsInitialState, initialStatus } from './initialState';
-import { ShoppingListActionTypes } from '../enum';
-import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/enum';
+import {
+  products as productsInitialState,
+  initialStatus
+} from './initialState';
+import { ShoppingListActionTypes } from './actionTypes';
+import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
 import { StatusType } from 'common/constants/enums';
 
-const items = (state = itemsInitialState, action) => {
+const products = (state = productsInitialState, action) => {
   const { type } = action;
   switch (type) {
-    case ItemActionTypes.ADD_ITEM_SUCCESS:
-      return [...state, action.item];
-    case ShoppingListActionTypes.FETCH_ITEMS:
-      return action.items;
-    case ItemActionTypes.TOGGLE_ITEM: {
-      return state.map(item =>
-        item._id === action.item._id
-          ? { ...item, isOrdered: !item.isOrdered }
-          : item
+    case ProductActionTypes.ADD_PRODUCT_SUCCESS:
+      return [...state, action.product];
+    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
+      return action.products;
+    case ProductActionTypes.TOGGLE_PRODUCT: {
+      return state.map(product =>
+        product._id === action.product._id
+          ? { ...product, isOrdered: !product.isOrdered }
+          : product
       );
     }
-    case ItemActionTypes.VOTE_FOR_ITEM: {
-      const { _id, votes } = action.item;
-      return state.map(item => (item._id === _id ? { ...item, votes } : item));
+    case ProductActionTypes.VOTE_FOR_PRODUCT: {
+      const { _id, votes } = action.product;
+      return state.map(product =>
+        product._id === _id ? { ...product, votes } : product
+      );
     }
     default:
       return state;
@@ -28,7 +33,7 @@ const items = (state = itemsInitialState, action) => {
 
 export const shoppingLists = (state = [], action) => {
   switch (action.type) {
-    case ShoppingListActionTypes.FETCH_ALL_SHOPPING_LISTS_SUCCESS:
+    case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS:
       return action.payload;
     case ShoppingListActionTypes.ADD_SHOPPING_LIST_SUCCESS:
       return [action.payload, ...state];
@@ -39,29 +44,29 @@ export const shoppingLists = (state = [], action) => {
 
 export const uiStatus = (state = initialStatus, action) => {
   switch (action.type) {
-    case ShoppingListActionTypes.FETCH_FAILED:
+    case ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE:
       return {
         ...state,
         fetchStatus: StatusType.ERROR
       };
-    case ShoppingListActionTypes.FETCH_ITEMS:
+    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
       return {
         ...state,
         fetchStatus: StatusType.RESOLVED
       };
-    case ItemActionTypes.ADD_ITEM_FAILURE:
+    case ProductActionTypes.ADD_PRODUCT_FAILURE:
       return {
         ...state,
-        newItemStatus: StatusType.ERROR
+        newProductStatus: StatusType.ERROR
       };
-    case ItemActionTypes.ADD_ITEM_SUCCESS:
+    case ProductActionTypes.ADD_PRODUCT_SUCCESS:
       return {
         ...state,
-        newItemStatus: StatusType.RESOLVED
+        newProductStatus: StatusType.RESOLVED
       };
     default:
       return state;
   }
 };
 
-export default items;
+export default products;

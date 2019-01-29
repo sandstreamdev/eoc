@@ -5,7 +5,7 @@ export const getData = url =>
 
 export const postData = (url, data) =>
   fetch(url, {
-    body: data,
+    body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json'
     },
@@ -14,7 +14,7 @@ export const postData = (url, data) =>
 
 export const patchData = (url, data) =>
   fetch(url, {
-    body: data,
+    body: JSON.stringify(data),
     headers: { 'Content-Type': 'application/json' },
     method: 'PATCH'
   });

@@ -1,23 +1,23 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { postData } from 'common/utils/fetchMethods';
-import { ItemActionTypes } from '../enum';
+import { ProductActionTypes } from './actionTypes';
 
 // Action creators
-export const addItemFailure = err => ({
-  type: ItemActionTypes.ADD_ITEM_FAILURE,
+export const addProductFailure = err => ({
+  type: ProductActionTypes.ADD_PRODUCT_FAILURE,
   err
 });
-export const addItemSuccess = item => ({
-  type: ItemActionTypes.ADD_ITEM_SUCCESS,
-  item
+export const addProductSuccess = product => ({
+  type: ProductActionTypes.ADD_PRODUCT_SUCCESS,
+  product
 });
 
 // Dispatchers
-export const addItem = item => dispatch =>
-  postData(`${ENDPOINT_URL}/item/create`, JSON.stringify(item))
+export const addProduct = product => dispatch =>
+  postData(`${ENDPOINT_URL}/item/create`, product)
     .then(resp => resp.json())
-    .then(json => dispatch(addItemSuccess(json)))
+    .then(json => dispatch(addProductSuccess(json)))
     .catch(err => {
-      dispatch(addItemFailure(err));
-      throw new Error('There was an error while adding new item.');
+      dispatch(addProductFailure(err));
+      throw new Error('There was an error while adding new product.');
     });

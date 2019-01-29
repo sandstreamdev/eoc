@@ -1,0 +1,7 @@
+export const ProductActionTypes = Object.freeze({
+  ADD_PRODUCT_REQUEST: 'product/ADD_PRODUCT',
+  ADD_PRODUCT_FAILURE: 'product/ADD_PRODUCT_FAILURE',
+  ADD_PRODUCT_SUCCESS: 'product/ADD_PRODUCT_SUCCESS',
+  TOGGLE_PRODUCT: 'product/TOGGLE_PRODUCT',
+  VOTE_FOR_PRODUCT: 'product/VOTE_FOR_PRODUCT'
+});

@@ -1,1 +1,1 @@
-export const getCohorts = state => state.cohortsList;
+export const getCohorts = state => state.cohorts;

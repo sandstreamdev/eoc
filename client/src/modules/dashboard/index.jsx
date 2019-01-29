@@ -21,7 +21,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { shoppingLists, cohortsList } = this.props;
+    const { shoppingLists, cohorts } = this.props;
 
     return (
       <div className="wrapper">
@@ -42,7 +42,7 @@ class Dashboard extends Component {
             Cohorts
           </h2>
           <ul className="dashboard__list">
-            {cohortsList.map(cohort => (
+            {cohorts.map(cohort => (
               <li className="dashboard__list-item" key={cohort.id}>
                 <CardItem name={cohort.name} />
               </li>
@@ -55,7 +55,7 @@ class Dashboard extends Component {
 }
 
 Dashboard.propTypes = {
-  cohortsList: PropTypes.arrayOf(PropTypes.object),
+  cohorts: PropTypes.arrayOf(PropTypes.object),
   shoppingLists: PropTypes.arrayOf(PropTypes.object),
 
   fetchCohorts: PropTypes.func.isRequired,
@@ -63,7 +63,7 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  cohortsList: getCohorts(state),
+  cohorts: getCohorts(state),
   shoppingLists: getShoppingLists(state)
 });
 

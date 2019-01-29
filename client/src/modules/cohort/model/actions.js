@@ -1,4 +1,4 @@
-import { CohortActionTypes } from '../enum';
+import { CohortActionTypes } from './actionTypes';
 
 // Action creators
 const fetchCohortsSuccess = () => ({

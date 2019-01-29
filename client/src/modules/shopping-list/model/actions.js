@@ -1,37 +1,34 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { getData, postData } from 'common/utils/fetchMethods';
-import { ShoppingListActionTypes } from '../enum';
+import { ShoppingListActionTypes } from './actionTypes';
 
 // Action creators
-export const fetchItemsError = err => ({
-  type: ShoppingListActionTypes.FETCH_FAILED,
+export const fetchProductsError = err => ({
+  type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
   err
 });
-export const recieveItems = json => ({
-  type: ShoppingListActionTypes.FETCH_ITEMS,
-  items: json
+export const recieveProducts = json => ({
+  type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST,
+  products: json
 });
 const createNewShoppingListSuccess = data => ({
   type: ShoppingListActionTypes.ADD_SHOPPING_LIST_SUCCESS,
   payload: data
 });
 const fetchShoppingListsSuccess = data => ({
-  type: ShoppingListActionTypes.FETCH_ALL_SHOPPING_LISTS_SUCCESS,
+  type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS,
   payload: data
 });
 
 // Dispatchers
-export const fetchItems = () => dispatch =>
+export const fetchProducts = () => dispatch =>
   getData(`${ENDPOINT_URL}/items`)
     .then(resp => resp.json())
-    .then(json => dispatch(recieveItems(json)))
-    .catch(err => dispatch(fetchItemsError(err)));
+    .then(json => dispatch(recieveProducts(json)))
+    .catch(err => dispatch(fetchProductsError(err)));
 
 export const createNewShoppingList = (name, description) => dispatch =>
-  postData(
-    `${ENDPOINT_URL}/shopping-lists/new-list`,
-    JSON.stringify({ name, description })
-  )
+  postData(`${ENDPOINT_URL}/shopping-lists/new-list`, { name, description })
     .then(resp => resp.json())
     .then(json => dispatch(createNewShoppingListSuccess(json)))
     .catch(err => console.error(err));

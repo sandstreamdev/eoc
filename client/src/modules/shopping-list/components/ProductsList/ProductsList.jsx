@@ -18,7 +18,7 @@ class ProductsList extends Component {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
-  toggleItem = (author, id, isOrdered) => {
+  toggleProduct = (author, id, isOrdered) => {
     const { toggle } = this.props;
     const {
       currentUser: { name }
@@ -32,8 +32,8 @@ class ProductsList extends Component {
     }
   };
 
-  voteForItem = item => () => {
-    const { _id, votes } = item;
+  voteForProduct = product => () => {
+    const { _id, votes } = product;
     const {
       vote,
       currentUser: { id }
@@ -54,22 +54,22 @@ class ProductsList extends Component {
       <Fragment>
         {!products.length ? (
           <div className="products__message">
-            <p>There are no items!</p>
+            <p>There are no products!</p>
           </div>
         ) : (
           <ul className="products-list">
-            {products.slice(0, limit).map(item => (
+            {products.slice(0, limit).map(product => (
               <ProductsListItem
-                archived={item.isOrdered}
-                authorName={item.authorName}
-                id={item._id}
-                image={item.image}
-                key={item._id}
-                name={item.name}
-                toggleItem={this.toggleItem}
-                voteForItem={this.voteForItem(item)}
-                votesCount={item.votes.length}
-                whetherUserVoted={item.votes.includes(userId)}
+                archived={product.isOrdered}
+                authorName={product.authorName}
+                id={product._id}
+                image={product.image}
+                key={product._id}
+                name={product.name}
+                toggleProduct={this.toggleProduct}
+                voteForProduct={this.voteForProduct(product)}
+                votesCount={product.votes.length}
+                whetherUserVoted={product.votes.includes(userId)}
               />
             ))}
           </ul>
