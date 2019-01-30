@@ -15,7 +15,8 @@
     "lint": "npm run lint:client && npm run lint:server",
     "lint:client": "eslint -c .eslintrc --ext \".jsx,.js\" \"client/\" --fix",
     "lint:server": "eslint -c .eslintrc --ext \".js\" \"server/\" --fix",
-    "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js"
+    "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js",
+    "test": "jest"
   },
   "author": "Sandstream Development",
   "license": "MIT",
@@ -48,10 +49,13 @@
     "@babel/preset-env": "7.0.0",
     "@babel/preset-react": "7.0.0",
     "babel-eslint": "10.0.0",
+    "babel-jest": "24.0.0",
     "babel-loader": "8.0.0",
     "clean-webpack-plugin": "0.1.19",
     "concurrently": "4.0.0",
     "css-loader": "1.0.0",
+    "enzyme": "3.8.0",
+    "enzyme-adapter-react-16": "1.8.0",
     "eslint": "5.9.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-config-prettier": "3.3.0",
@@ -64,6 +68,9 @@
     "file-loader": "2.0.0",
     "html-webpack-plugin": "3.2.0",
     "husky": "1.2.0",
+    "identity-obj-proxy": "3.0.0",
+    "jest": "24.0.0",
+    "jest-enzyme": "7.0.1",
     "lint-staged": "8.1.0",
     "mini-css-extract-plugin": "0.4.5",
     "node-sass": "4.10.0",
@@ -79,17 +86,17 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "npm test && lint-staged",
       "pre-push": "npm run lint"
     }
   },
   "lint-staged": {
     "linters": {
-      "*.{js,json,scss,md}": [
+      "*.{js,jsx,json,scss,md}": [
         "prettier --write",
         "git add"
       ],
-      "*.js": [
+      "*.{js,jsx}": [
         "eslint -c .eslintrc --fix",
         "echo test",
         "git add"
@@ -99,6 +106,25 @@
   "proxy": {
     "/auth/google**": {
       "target": "http://localhost:8080"
+    }
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setupTest.js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "client",
+      "src"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/__mocks__/fileMock.js",
+      "\\.(css|scss)$": "identity-obj-proxy"
     }
   }
 }
