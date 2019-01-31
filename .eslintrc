@@ -93,5 +93,13 @@
     "window": false,
     "fetch": false,
     "document": false
-  }
+  },
+  "overrides": [
+    {
+      "files": ["tests/__mocks__/*.*"],
+      "rules": {
+        "react/prop-types": "off"
+      }
+    }
+  ]
 }

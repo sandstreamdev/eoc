@@ -16,7 +16,7 @@
     "lint:client": "eslint -c .eslintrc --ext \".jsx,.js\" \"client/\" --fix",
     "lint:server": "eslint -c .eslintrc --ext \".js\" \"server/\" --fix",
     "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js",
-    "test": "jest"
+    "test": "jest -runInBand"
   },
   "author": "Sandstream Development",
   "license": "MIT",
@@ -51,6 +51,7 @@
     "babel-eslint": "10.0.0",
     "babel-jest": "24.0.0",
     "babel-loader": "8.0.0",
+    "babel-plugin-jsx-remove-data-test-id": "1.2.3",
     "clean-webpack-plugin": "0.1.19",
     "concurrently": "4.0.0",
     "css-loader": "1.0.0",
@@ -109,6 +110,10 @@
     }
   },
   "jest": {
+    "roots": [
+      "<rootDir>",
+      "<rootDir>/tests"
+    ],
     "setupFilesAfterEnv": [
       "<rootDir>/tests/setupTest.js"
     ],
@@ -120,7 +125,8 @@
     "moduleDirectories": [
       "node_modules",
       "client",
-      "src"
+      "src",
+      "tests"
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/__mocks__/fileMock.js",
