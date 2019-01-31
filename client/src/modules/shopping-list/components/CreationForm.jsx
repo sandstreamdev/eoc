@@ -29,7 +29,11 @@ class CreationForm extends Component {
     const { label } = this.props;
     const { description, title } = this.state;
     return (
-      <form className="creation-form" onSubmit={this.handleFormSubmission}>
+      <form
+        data-test-id="creation-form-component"
+        className="creation-form"
+        onSubmit={this.handleFormSubmission}
+      >
         <h2 className="creation-form__heading">{label}</h2>
         <label className="creation-form__label">
           <input

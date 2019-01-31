@@ -13,7 +13,7 @@ import { UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
 
-class Layout extends Component {
+export class Layout extends Component {
   componentDidMount() {
     this.setAuthenticationState();
   }
