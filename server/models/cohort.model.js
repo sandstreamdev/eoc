@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const CohortSchema = new Schema(
   {
-    adminIds: { type: String },
+    adminIds: [String],
     authorId: { type: String },
     description: { type: String },
     memberIds: [String],
