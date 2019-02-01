@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -14,15 +14,14 @@ import {
 import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
-import CreationForm from 'modules/shopping-list/components/CreationForm';
+import CreationForm from 'common/components/CreationForm';
 import { setNewShoppingList } from 'modules/shopping-list/model/actions';
 
-class Toolbar extends Component {
+class Toolbar extends PureComponent {
   state = {
+    descriptionValue: '',
     shoppingFormVisbility: false,
-    // cohortFormVisibility: false,
-    titleValue: '',
-    descriptionValue: ''
+    titleValue: ''
   };
 
   handleShoppingFormVisibilty = () => {
