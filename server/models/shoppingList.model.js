@@ -10,6 +10,7 @@ const ShoppingListSchema = new Schema(
     name: { type: String, required: true },
     ordererIds: Schema.Types.String,
     organizationIds: Schema.Types.String,
+    ownerId: { type: String },
     purchaserIds: Schema.Types.String,
     visibility: { type: String }
   },

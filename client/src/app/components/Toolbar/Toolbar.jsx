@@ -17,6 +17,8 @@ import AppLogo from 'common/components/AppLogo';
 import CreationForm from 'common/components/CreationForm';
 import { createShoppingList } from 'modules/shopping-list/model/actions';
 import { createCohort } from 'modules/cohort/model/actions';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { UserPropType } from 'common/constants/propTypes';
 
 class Toolbar extends PureComponent {
   state = {
@@ -42,14 +44,20 @@ class Toolbar extends PureComponent {
   };
 
   handleShoppingListSubmission = (title, description) => {
-    const { createShoppingList } = this.props;
-    createShoppingList(title, description);
+    const {
+      createShoppingList,
+      currentUser: { id }
+    } = this.props;
+    createShoppingList(title, description, id);
     this.setState({ shoppingFormVisbility: false });
   };
 
   handleCohortSubmission = (title, description) => {
-    const { createCohort } = this.props;
-    createCohort(title, description);
+    const {
+      createCohort,
+      currentUser: { id }
+    } = this.props;
+    createCohort(title, description, id);
     this.setState({ cohortFormVisbility: false });
   };
 
@@ -138,11 +146,17 @@ class Toolbar extends PureComponent {
 }
 
 Toolbar.propTypes = {
+  currentUser: UserPropType.isRequired,
+
   createCohort: PropTypes.func.isRequired,
   createShoppingList: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   { createCohort, createShoppingList }
 )(Toolbar);

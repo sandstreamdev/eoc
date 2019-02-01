@@ -14,8 +14,13 @@ const fetchCohortsSuccess = data => ({
 });
 
 // Dispatchers
-export const createCohort = (name, description) => dispatch =>
-  postData(`${ENDPOINT_URL}/cohorts/new`, { name, description })
+export const createCohort = (name, description, ownerId) => dispatch =>
+  postData(`${ENDPOINT_URL}/cohorts/new`, {
+    name,
+    description,
+    ownerId,
+    adminIds: ownerId
+  })
     .then(resp => resp.json())
     .then(json => dispatch(createCohortSuccess(json)))
     .catch(err => console.error(err));
