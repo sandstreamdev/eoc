@@ -2,24 +2,32 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 class CreationForm extends PureComponent {
+  state = {
+    description: '',
+    title: ''
+  };
+
   handleValueChange = event => {
-    const { onDescriptionChange, onTitleChange } = this.props;
     const {
       target: { value, nodeName }
     } = event;
 
-    nodeName === 'TEXTAREA' ? onDescriptionChange(value) : onTitleChange(value);
+    nodeName === 'TEXTAREA'
+      ? this.setState({ description: value })
+      : this.setState({ title: value });
   };
 
   handleFormSubmission = event => {
     event.preventDefault();
-    const { descriptionValue, onSubmit, titleValue } = this.props;
+    const { description, title } = this.state;
+    const { onSubmit } = this.props;
 
-    onSubmit(titleValue, descriptionValue);
+    onSubmit(title, description);
   };
 
   render() {
-    const { descriptionValue, label, titleValue } = this.props;
+    const { label } = this.props;
+    const { description, title } = this.state;
     return (
       <form className="creation-form" onSubmit={this.handleFormSubmission}>
         <h2 className="creation-form__heading">{label}</h2>
@@ -30,7 +38,7 @@ class CreationForm extends PureComponent {
             placeholder="Title"
             required
             type="text"
-            value={titleValue}
+            value={title}
           />
         </label>
         <label className="creation-form__label">
@@ -39,7 +47,7 @@ class CreationForm extends PureComponent {
             onChange={this.handleValueChange}
             placeholder="Description"
             type="text"
-            value={descriptionValue}
+            value={description}
           />
         </label>
         <input className="creation-form__submit" type="submit" value="Create" />
@@ -49,13 +57,9 @@ class CreationForm extends PureComponent {
 }
 
 CreationForm.propTypes = {
-  descriptionValue: PropTypes.string,
   label: PropTypes.string.isRequired,
-  titleValue: PropTypes.string,
 
-  onDescriptionChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  onTitleChange: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired
 };
 
 export default CreationForm;

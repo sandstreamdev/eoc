@@ -15,13 +15,11 @@ import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
 import CreationForm from 'common/components/CreationForm';
-import { setNewShoppingList } from 'modules/shopping-list/model/actions';
+import { createNewShoppingList } from 'modules/shopping-list/model/actions';
 
 class Toolbar extends PureComponent {
   state = {
-    descriptionValue: '',
-    shoppingFormVisbility: false,
-    titleValue: ''
+    shoppingFormVisbility: false
   };
 
   handleShoppingFormVisibilty = () => {
@@ -29,24 +27,17 @@ class Toolbar extends PureComponent {
     this.setState({ shoppingFormVisbility: !shoppingFormVisbility });
   };
 
-  handleTitleChange = title => this.setState({ titleValue: title });
-
-  handleDescriptionChange = description =>
-    this.setState({ descriptionValue: description });
-
   handleFormSubmission = (title, description) => {
-    const { setNewShoppingList } = this.props;
+    const { createNewShoppingList } = this.props;
 
-    setNewShoppingList(title, description);
     this.setState({
-      descriptionValue: '',
-      shoppingFormVisbility: false,
-      titleValue: ''
+      shoppingFormVisbility: false
     });
+    createNewShoppingList(title, description);
   };
 
   render() {
-    const { descriptionValue, shoppingFormVisbility, titleValue } = this.state;
+    const { shoppingFormVisbility } = this.state;
     return (
       <div className="toolbar">
         <div className="wrapper toolbar__wrapper">
@@ -97,12 +88,8 @@ class Toolbar extends PureComponent {
                 })}
               >
                 <CreationForm
-                  descriptionValue={descriptionValue}
                   label="Create new shopping list"
-                  onDescriptionChange={this.handleDescriptionChange}
                   onSubmit={this.handleFormSubmission}
-                  onTitleChange={this.handleTitleChange}
-                  titleValue={titleValue}
                 />
               </div>
             </div>
@@ -120,10 +107,10 @@ class Toolbar extends PureComponent {
 }
 
 Toolbar.propTypes = {
-  setNewShoppingList: PropTypes.func.isRequired
+  createNewShoppingList: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { setNewShoppingList }
+  { createNewShoppingList }
 )(Toolbar);

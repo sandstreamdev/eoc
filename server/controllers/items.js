@@ -14,7 +14,7 @@ const getAllItems = (req, resp) => {
       findConditions = {};
   }
 
-  Item.find(findConditions, (err, items) =>
+  Item.find(findConditions, null, { sort: { createdAt: -1 } }, (err, items) =>
     err ? resp.status(400).send(err.message) : resp.status(200).json(items)
   );
 };

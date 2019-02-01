@@ -1,5 +1,6 @@
 import { getCookie } from 'common/utils/cookie';
 import { ENDPOINT_URL } from 'common/constants/variables';
+import { postRequest } from 'common/utils/fetchMethods';
 
 export const AuthorizationActionTypes = Object.freeze({
   SET_CURRENT_USER: 'SET_CURRENT_USER',
@@ -25,11 +26,7 @@ export const setCurrentUser = () => dispatch => {
 };
 
 export const logoutCurrentUser = () => dispatch =>
-  fetch(`${ENDPOINT_URL}/logout`, {
-    method: 'POST',
-    mode: 'no-cors',
-    credentials: 'include'
-  })
+  postRequest(`${ENDPOINT_URL}/logout`)
     .then(() => dispatch(logoutUser()))
     .catch(err => {
       throw new Error(err.message);

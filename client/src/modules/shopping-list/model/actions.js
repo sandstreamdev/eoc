@@ -1,33 +1,41 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
-
-// Action types
-export const FETCH_FAILED = 'FETCH_FAILED';
-export const FETCH_ITEMS = 'FETCH_ITEMS';
-export const ADD_SHOPPING_LIST_SUCCESS = 'ADD_NEW_SHOPPING_LIST';
+import { getData, postData } from 'common/utils/fetchMethods';
+import { ShoppingListActionTypes } from './actionTypes';
 
 // Action creators
-export const fetchItemsError = err => ({ type: FETCH_FAILED, err });
-export const recieveItems = json => ({ type: FETCH_ITEMS, items: json });
-const newShoppingListSuccess = data => ({
-  type: ADD_SHOPPING_LIST_SUCCESS,
+export const fetchProductsError = err => ({
+  type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
+  err
+});
+export const recieveProducts = json => ({
+  type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST,
+  products: json
+});
+const createNewShoppingListSuccess = data => ({
+  type: ShoppingListActionTypes.ADD_SHOPPING_LIST_SUCCESS,
+  payload: data
+});
+const fetchShoppingListsSuccess = data => ({
+  type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS,
   payload: data
 });
 
 // Dispatchers
-export const fetchItems = () => dispatch =>
-  fetch(`${ENDPOINT_URL}/items`, { credentials: 'same-origin' })
+export const fetchProducts = () => dispatch =>
+  getData(`${ENDPOINT_URL}/items`)
     .then(resp => resp.json())
-    .then(json => dispatch(recieveItems(json)))
-    .catch(err => dispatch(fetchItemsError(err)));
+    .then(json => dispatch(recieveProducts(json)))
+    .catch(err => dispatch(fetchProductsError(err)));
 
-export const setNewShoppingList = (name, description) => dispatch =>
-  fetch(`${ENDPOINT_URL}/shopping-lists/new-list`, {
-    body: JSON.stringify({ name, description }),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    method: 'POST'
-  })
+export const createNewShoppingList = (name, description) => dispatch =>
+  postData(`${ENDPOINT_URL}/shopping-lists/new-list`, { name, description })
     .then(resp => resp.json())
-    .then(json => dispatch(newShoppingListSuccess(json)))
+    .then(json => dispatch(createNewShoppingListSuccess(json)))
     .catch(err => console.error(err));
+
+export const fetchShoppingLists = () => dispatch => {
+  getData(`${ENDPOINT_URL}/shopping-lists`)
+    .then(resp => resp.json())
+    .then(json => dispatch(fetchShoppingListsSuccess(json)))
+    .catch(err => console.err(err));
+};

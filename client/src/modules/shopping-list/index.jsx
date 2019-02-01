@@ -9,28 +9,27 @@ import Preloader from 'common/components/Preloader';
 import { StatusType, MessageType } from 'common/constants/enums';
 import {
   getFetchStatus,
-  getItems
+  getProducts
 } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import { StatusPropType } from 'common/constants/propTypes';
-import { fetchItems } from 'modules/shopping-list/model/actions';
+import { fetchProducts } from 'modules/shopping-list/model/actions';
 
 class ShoppingList extends Component {
   componentDidMount() {
-    this.fetchItems();
+    this.fetchProducts();
   }
 
-  fetchItems = () => {
-    const { fetchItems } = this.props;
-    fetchItems();
+  fetchProducts = () => {
+    const { fetchProducts } = this.props;
+    fetchProducts();
   };
 
   render() {
-    const { fetchStatus, items } = this.props;
+    const { fetchStatus, products } = this.props;
 
-    const reversedItem = [...items].reverse();
-    const archiveList = reversedItem.filter(item => item.isOrdered);
-    const shoppingList = reversedItem.filter(item => !item.isOrdered);
+    const archiveList = products.filter(product => product.isOrdered);
+    const shoppingList = products.filter(product => !product.isOrdered);
 
     return (
       <Fragment>
@@ -59,17 +58,17 @@ class ShoppingList extends Component {
 
 ShoppingList.propTypes = {
   fetchStatus: StatusPropType.isRequired,
-  items: PropTypes.arrayOf(PropTypes.object),
+  products: PropTypes.arrayOf(PropTypes.object),
 
-  fetchItems: PropTypes.func
+  fetchProducts: PropTypes.func
 };
 
 const mapStateToProps = state => ({
   fetchStatus: getFetchStatus(state),
-  items: getItems(state)
+  products: getProducts(state)
 });
 
 export default connect(
   mapStateToProps,
-  { fetchItems }
+  { fetchProducts }
 )(ShoppingList);

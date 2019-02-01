@@ -12,7 +12,8 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 const SortOptionType = Object.freeze({
   NAME: 'name',
   DATE: 'createdAt',
-  AUTHOR: 'author'
+  AUTHOR: 'author',
+  VOTES: 'votes'
 });
 
 export const FilterOptionType = Object.freeze({
@@ -23,7 +24,8 @@ export const FilterOptionType = Object.freeze({
 const sortOptions = [
   { id: SortOptionType.AUTHOR, label: 'author' },
   { id: SortOptionType.DATE, label: 'date' },
-  { id: SortOptionType.NAME, label: 'name' }
+  { id: SortOptionType.NAME, label: 'name' },
+  { id: SortOptionType.VOTES, label: 'votes' }
 ];
 
 const filterOptions = [
@@ -45,12 +47,12 @@ class ProductsContainer extends Component {
 
     switch (sortBy) {
       case SortOptionType.NAME:
-        result = _sortBy(result, item => item.name.toLowerCase());
+        result = _sortBy(result, product => product.name.toLowerCase());
         break;
       case SortOptionType.AUTHOR:
         result = _sortBy(result, [
-          item => item.authorName.toLowerCase(),
-          item => item.name.toLowerCase()
+          product => product.authorName.toLowerCase(),
+          product => product.name.toLowerCase()
         ]);
         break;
       case SortOptionType.DATE:
@@ -59,6 +61,9 @@ class ProductsContainer extends Component {
           const dateB = new Date(b.createdAt);
           return dateA - dateB;
         });
+        break;
+      case SortOptionType.VOTES:
+        result.sort((a, b) => a.votes.length - b.votes.length);
         break;
       default:
         break;
@@ -75,7 +80,7 @@ class ProductsContainer extends Component {
     } = this.props;
 
     return filterBy === FilterOptionType.MY_PRODUCTS
-      ? products.filter(item => item.authorId === id)
+      ? products.filter(product => product.authorId === id)
       : products;
   };
 

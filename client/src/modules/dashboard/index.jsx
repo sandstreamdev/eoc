@@ -6,19 +6,22 @@ import {
   ClipboardSolid as ShoppingListIcon,
   UsersSolid as CohortIcon
 } from 'assets/images/icons';
-import { fetchAllLists } from './model/actions';
-import { getCohorts, getShoppingLists } from './model/selectors';
+import { fetchShoppingLists } from 'modules/shopping-list/model/actions';
+import { fetchCohorts } from 'modules/cohort/model/actions';
+import { getShoppingLists } from 'modules/shopping-list/model/selectors';
+import { getCohorts } from 'modules/cohort/model/selectors';
 import CardItem from './CardItem';
 
 class Dashboard extends Component {
   componentDidMount() {
-    const { fetchAllLists } = this.props;
+    const { fetchShoppingLists, fetchCohorts } = this.props;
 
-    fetchAllLists();
+    fetchShoppingLists();
+    fetchCohorts();
   }
 
   render() {
-    const { shoppingLists, cohortsList } = this.props;
+    const { shoppingLists, cohorts } = this.props;
 
     return (
       <div className="wrapper">
@@ -39,7 +42,7 @@ class Dashboard extends Component {
             Cohorts
           </h2>
           <ul className="dashboard__list">
-            {cohortsList.map(cohort => (
+            {cohorts.map(cohort => (
               <li className="dashboard__list-item" key={cohort.id}>
                 <CardItem name={cohort.name} />
               </li>
@@ -52,18 +55,19 @@ class Dashboard extends Component {
 }
 
 Dashboard.propTypes = {
-  cohortsList: PropTypes.arrayOf(PropTypes.object),
+  cohorts: PropTypes.arrayOf(PropTypes.object),
   shoppingLists: PropTypes.arrayOf(PropTypes.object),
 
-  fetchAllLists: PropTypes.func.isRequired
+  fetchCohorts: PropTypes.func.isRequired,
+  fetchShoppingLists: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  cohortsList: getCohorts(state),
+  cohorts: getCohorts(state),
   shoppingLists: getShoppingLists(state)
 });
 
 export default connect(
   mapStateToProps,
-  { fetchAllLists }
+  { fetchShoppingLists, fetchCohorts }
 )(Dashboard);
