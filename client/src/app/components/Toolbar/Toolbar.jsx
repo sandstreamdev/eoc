@@ -14,8 +14,8 @@ import {
 import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
-import CreationForm from 'modules/shopping-list/components/CreationForm';
-import { createNewShoppingList } from 'modules/shopping-list/model/actions';
+import CreationForm from 'common/components/CreationForm';
+import { createShoppingList } from 'modules/shopping-list/model/actions';
 import { createCohort } from 'modules/cohort/model/actions';
 
 class Toolbar extends PureComponent {
@@ -24,30 +24,33 @@ class Toolbar extends PureComponent {
     shoppingFormVisbility: false
   };
 
-  handleFormVisibilty = isShoppingList => {
-    const { cohortFormVisbility, shoppingFormVisbility } = this.state;
-
-    isShoppingList
-      ? this.setState({
-          cohortFormVisbility: false,
-          shoppingFormVisbility: !shoppingFormVisbility
-        })
-      : this.setState({
-          shoppingFormVisbility: false,
-          cohortFormVisbility: !cohortFormVisbility
-        });
+  handleShoppingListFormVisibility = () => {
+    const { shoppingFormVisbility } = this.state;
+    this.setState({
+      shoppingFormVisbility: !shoppingFormVisbility,
+      cohortFormVisbility: false
+    });
   };
 
-  handleFormSubmission = (title, description, isShoppingList) => {
-    const { createCohort, createNewShoppingList } = this.props;
+  handleCohortFormVisibility = () => {
+    const { cohortFormVisbility } = this.state;
 
-    isShoppingList
-      ? (this.setState({
-          shoppingFormVisbility: false
-        }),
-        createNewShoppingList(title, description))
-      : (this.setState({ cohortFormVisbility: false }),
-        createCohort(title, description));
+    this.setState({
+      shoppingFormVisbility: false,
+      cohortFormVisbility: !cohortFormVisbility
+    });
+  };
+
+  handleShoppingListSubmission = (title, description) => {
+    const { createShoppingList } = this.props;
+    createShoppingList(title, description);
+    this.setState({ shoppingFormVisbility: false });
+  };
+
+  handleCohortSubmission = (title, description) => {
+    const { createCohort } = this.props;
+    createCohort(title, description);
+    this.setState({ cohortFormVisbility: false });
   };
 
   render() {
@@ -77,7 +80,7 @@ class Toolbar extends PureComponent {
               <a
                 className="toolbar__icon-link"
                 href="#!"
-                onClick={() => this.handleFormVisibilty(false)}
+                onClick={this.handleCohortFormVisibility}
               >
                 <CohortIcon />
                 <img
@@ -93,7 +96,7 @@ class Toolbar extends PureComponent {
               >
                 <CreationForm
                   label="Create new cohort"
-                  onSubmit={this.handleFormSubmission}
+                  onSubmit={this.handleCohortSubmission}
                 />
               </div>
             </div>
@@ -101,7 +104,7 @@ class Toolbar extends PureComponent {
               <a
                 className="toolbar__icon-link"
                 href="#!"
-                onClick={() => this.handleFormVisibilty(true)}
+                onClick={this.handleShoppingListFormVisibility}
               >
                 <ShoppingListIcon />
                 <img
@@ -116,9 +119,8 @@ class Toolbar extends PureComponent {
                 })}
               >
                 <CreationForm
-                  isShoppingList
                   label="Create new shopping list"
-                  onSubmit={this.handleFormSubmission}
+                  onSubmit={this.handleShoppingListSubmission}
                 />
               </div>
             </div>
@@ -137,10 +139,10 @@ class Toolbar extends PureComponent {
 
 Toolbar.propTypes = {
   createCohort: PropTypes.func.isRequired,
-  createNewShoppingList: PropTypes.func.isRequired
+  createShoppingList: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { createCohort, createNewShoppingList }
+  { createCohort, createShoppingList }
 )(Toolbar);

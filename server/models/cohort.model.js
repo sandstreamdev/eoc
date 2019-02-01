@@ -7,7 +7,7 @@ const CohortSchema = new Schema(
     adminIds: { type: String },
     description: { type: String },
     memberIds: [String],
-    name: { type: String },
+    name: { type: String, required: true },
     ownerId: { type: String }
   },
   { timestamps: { createdAt: 'createdAt' }, collection: 'cohorts' }

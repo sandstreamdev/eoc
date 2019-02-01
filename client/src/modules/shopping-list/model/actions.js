@@ -27,7 +27,7 @@ export const fetchProducts = () => dispatch =>
     .then(json => dispatch(recieveProducts(json)))
     .catch(err => dispatch(fetchProductsError(err)));
 
-export const createNewShoppingList = (name, description) => dispatch =>
+export const createShoppingList = (name, description) => dispatch =>
   postData(`${ENDPOINT_URL}/shopping-lists/new-list`, { name, description })
     .then(resp => resp.json())
     .then(json => dispatch(createNewShoppingListSuccess(json)))
