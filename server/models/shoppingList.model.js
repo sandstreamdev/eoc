@@ -6,11 +6,11 @@ const ShoppingListSchema = new Schema(
   {
     adminIds: [String],
     authorId: { type: String },
+    cohortId: { type: String },
     description: { type: String },
     itemIds: [String],
     name: { type: String, required: true },
     ordererIds: [String],
-    organizationIds: [String],
     purchaserIds: [String],
     visibility: { type: String }
   },
