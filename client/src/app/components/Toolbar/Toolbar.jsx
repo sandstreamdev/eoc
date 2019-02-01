@@ -14,7 +14,7 @@ import {
 import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
-import CreationForm from 'modules/shopping-list/components/CreationForm';
+import CreationForm from 'common/components/CreationForm';
 import { createNewShoppingList } from 'modules/shopping-list/model/actions';
 
 class Toolbar extends PureComponent {

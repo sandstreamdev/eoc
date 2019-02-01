@@ -21,9 +21,9 @@ const products = (state = productsInitialState, action) => {
       );
     }
     case ProductActionTypes.VOTE_FOR_PRODUCT: {
-      const { _id, votes } = action.product;
+      const { _id, voterIds } = action.product;
       return state.map(product =>
-        product._id === _id ? { ...product, votes } : product
+        product._id === _id ? { ...product, voterIds } : product
       );
     }
     default:

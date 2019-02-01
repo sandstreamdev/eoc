@@ -4,13 +4,14 @@ const { Schema } = mongoose;
 
 const ShoppingListSchema = new Schema(
   {
-    adminIds: Schema.Types.String,
+    adminIds: [String],
+    authorId: { type: String },
+    cohortId: { type: String },
     description: { type: String },
-    items: Schema.Types.Mixed,
+    itemIds: [String],
     name: { type: String, required: true },
-    ordererIds: Schema.Types.String,
-    organizationIds: Schema.Types.String,
-    purchaserIds: Schema.Types.String,
+    ordererIds: [String],
+    purchaserIds: [String],
     visibility: { type: String }
   },
   { timestamps: { createdAt: 'created_at' }, collection: 'shopping-lists' }

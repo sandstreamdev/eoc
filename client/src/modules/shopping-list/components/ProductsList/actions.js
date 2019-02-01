@@ -23,8 +23,9 @@ export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
     .catch(err => console.error(err));
 };
 
-export const vote = (id, votes) => dispatch => {
-  const payload = { _id: id, votes };
+export const vote = (id, voterIds) => dispatch => {
+  const payload = { _id: id, voterIds };
+  console.log(payload);
   patchData(`${ENDPOINT_URL}/item/${id}/update`, payload)
     .then(resp => resp.json())
     .then(product => dispatch(voteForProduct(product)))
