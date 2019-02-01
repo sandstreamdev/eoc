@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import { MessageType } from 'common/constants/enums';
 import { MessagePropType } from '../constants/propTypes';
+import MessageIcon from 'assets/images/info-solid.svg';
 
 const MessageBox = ({ message, type }) => (
   <div
@@ -13,11 +14,7 @@ const MessageBox = ({ message, type }) => (
       'message-box--gray': type === MessageType.INFO
     })}
   >
-    <img
-      alt="Info icon"
-      className="message-box__img"
-      src="client/assets/images/info-solid.svg"
-    />
+    <img alt="Info icon" className="message-box__img" src={MessageIcon} />
     <p className="message-box__content">{message}</p>
   </div>
 );

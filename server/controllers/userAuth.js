@@ -5,12 +5,11 @@ const setUserAndSession = (req, res) => {
   res.cookie(
     'user',
     JSON.stringify({
-      name: req.user.displayName,
+      avatarUrl: req.user.avatarUrl,
       id: req.user.id,
-      avatar: req.user.photos[0].value
+      name: req.user.displayName
     })
   );
-
   res.redirect(FRONTEND_URL);
 };
 
@@ -25,6 +24,6 @@ const logout = (req, res) => {
 };
 
 module.exports = {
-  setUserAndSession,
-  logout
+  logout,
+  setUserAndSession
 };
