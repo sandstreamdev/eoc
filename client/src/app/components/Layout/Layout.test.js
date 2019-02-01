@@ -7,7 +7,6 @@ import { Layout } from './Layout';
 import Toolbar from '../Toolbar/Toolbar';
 import Footer from '../Footer';
 import AuthBox from 'modules/authorization/AuthBox';
-import Dashboard from 'modules/dashboard';
 
 const defaultProps = {
   currentUser: {

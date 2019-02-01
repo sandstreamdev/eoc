@@ -72,14 +72,17 @@
     "identity-obj-proxy": "3.0.0",
     "jest": "24.0.0",
     "jest-enzyme": "7.0.1",
+    "jest-fetch-mock": "2.1.0",
     "lint-staged": "8.1.0",
     "mini-css-extract-plugin": "0.4.5",
     "node-sass": "4.10.0",
     "nodemon": "1.17.3",
     "prettier": "1.15.2",
     "redux-devtools-extension": "2.13.7",
+    "redux-mock-store": "1.5.3",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",
+    "supertest": "3.4.2",
     "url-loader": "1.0.1",
     "webpack": "4.5.0",
     "webpack-cli": "3.0.8",
@@ -88,7 +91,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "npm test && lint-staged",
-      "pre-push": "npm run lint"
+      "pre-push": "npm test && npm run lint"
     }
   },
   "lint-staged": {
@@ -110,27 +113,9 @@
     }
   },
   "jest": {
-    "roots": [
-      "<rootDir>",
-      "<rootDir>/tests"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/setupTest.js"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json"
-    ],
-    "moduleDirectories": [
-      "node_modules",
-      "client",
-      "src",
-      "tests"
-    ],
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/__mocks__/fileMock.js",
-      "\\.(css|scss)$": "identity-obj-proxy"
-    }
+    "projects": [
+      "client/tests/jest.config.js",
+      "server/tests/jest.config.js"
+    ]
   }
 }
