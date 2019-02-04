@@ -27,12 +27,11 @@ export const fetchProducts = () => dispatch =>
     .then(json => dispatch(recieveProducts(json)))
     .catch(err => dispatch(fetchProductsError(err)));
 
-export const createShoppingList = (name, description, ownerId) => dispatch =>
+export const createShoppingList = (name, description, adminId) => dispatch =>
   postData(`${ENDPOINT_URL}/shopping-lists/create`, {
     name,
     description,
-    ownerId,
-    adminIds: ownerId
+    adminIds: adminId
   })
     .then(resp => resp.json())
     .then(json => dispatch(createNewShoppingListSuccess(json)))

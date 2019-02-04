@@ -1,12 +1,11 @@
 const ShoppingList = require('../models/shoppingList.model');
 
 const createNewList = (req, resp) => {
-  const { description, name, ownerId, adminIds } = req.body;
+  const { description, name, adminIds } = req.body;
 
   const shoppingList = new ShoppingList({
     description,
     name,
-    ownerId,
     adminIds
   });
 

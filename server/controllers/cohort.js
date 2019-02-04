@@ -1,12 +1,11 @@
 const Cohort = require('../models/cohort.model');
 
 const createCohort = (req, resp) => {
-  const { description, name, ownerId, adminIds } = req.body;
+  const { description, name, adminIds } = req.body;
 
   const cohort = new Cohort({
     name,
     description,
-    ownerId,
     adminIds
   });
 
