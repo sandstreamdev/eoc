@@ -21,7 +21,7 @@ const createNewList = (req, resp) => {
 // Get all the lists
 const getAllShoppingLists = (req, resp) => {
   ShoppingList.find(
-    {},
+    { ordererIds: req.user._id },
     null,
     { sort: { created_at: -1 } },
     (err, shoppingLists) => {

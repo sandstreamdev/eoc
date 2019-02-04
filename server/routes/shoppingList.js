@@ -6,9 +6,10 @@ const {
   getAllShoppingLists,
   getShoppingListById
 } = require('../controllers/shoppingList');
+const { authorize } = require('../middleware/authorize');
 
-router.get('/', getAllShoppingLists);
-router.get('/:id', getShoppingListById);
-router.post('/new-list', createNewList);
+router.get('/', authorize, getAllShoppingLists);
+router.get('/:id', authorize, getShoppingListById);
+router.post('/new-list', authorize, createNewList);
 
 module.exports = app => app.use('/shopping-lists', router);
