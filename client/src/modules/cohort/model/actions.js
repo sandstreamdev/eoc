@@ -18,7 +18,7 @@ export const createCohort = (name, description, adminId) => dispatch =>
   postData(`${ENDPOINT_URL}/cohorts/create`, {
     name,
     description,
-    adminIds: adminId
+    adminId
   })
     .then(resp => resp.json())
     .then(json => dispatch(createCohortSuccess(json)))
