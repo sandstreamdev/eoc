@@ -15,7 +15,7 @@ const fetchCohortsSuccess = data => ({
 
 // Dispatchers
 export const createCohort = (name, description, ownerId) => dispatch =>
-  postData(`${ENDPOINT_URL}/cohorts/new`, {
+  postData(`${ENDPOINT_URL}/cohorts/create`, {
     name,
     description,
     ownerId,

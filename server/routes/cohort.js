@@ -10,6 +10,6 @@ const {
 
 router.get('/', getCohorts);
 router.get('/:id', getCohortById);
-router.post('/new', createCohort);
+router.post('/create', createCohort);
 
 module.exports = app => app.use('/cohorts', router);
