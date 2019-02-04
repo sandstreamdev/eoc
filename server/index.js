@@ -26,7 +26,12 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('../../dist'));

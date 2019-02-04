@@ -1,6 +1,6 @@
 export const getData = url =>
   fetch(url, {
-    credentials: 'same-origin'
+    credentials: 'include'
   });
 
 export const postData = (url, data) =>
