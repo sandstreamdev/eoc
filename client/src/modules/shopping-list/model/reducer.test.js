@@ -49,7 +49,7 @@ describe('Products reducer', () => {
     ).toEqual([{ ...newProduct, votes: ['abcd', 'efgh', 'ijkl'] }]);
   });
 
-  it('removes voters id after the vote for the seconf time', () => {
+  it('removes voters id after the vote for the second time', () => {
     expect(
       products([newProduct], {
         type: ProductActionTypes.VOTE_FOR_PRODUCT,

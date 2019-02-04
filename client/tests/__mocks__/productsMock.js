@@ -1,24 +1,24 @@
 export const productsMock = [
   {
-    id: '5678',
-    name: 'Coffe',
     authorName: 'John Smith',
+    id: '5678',
     isOrdered: false,
+    name: 'Coffe',
     votes: ['abcd', 'efgh']
   },
   {
-    id: '9876',
-    name: 'Tea',
     authorName: 'Joan Smith',
+    id: '9876',
     isOrdered: true,
+    name: 'Tea',
     votes: []
   }
 ];
 
 export const newProductMock = {
-  id: '1234',
-  name: 'Sugar',
   authorName: 'Marry Smith',
+  id: '1234',
   isOrdered: false,
+  name: 'Sugar',
   votes: ['abcd', 'efgh']
 };

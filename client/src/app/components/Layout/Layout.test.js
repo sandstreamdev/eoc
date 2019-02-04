@@ -17,7 +17,7 @@ const defaultProps = {
   setCurrentUser: () => {}
 };
 
-describe('Layot Component', () => {
+describe('Layout Component', () => {
   let wrapper;
 
   beforeEach(() => {
