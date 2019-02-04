@@ -1,11 +1,12 @@
 const ShoppingList = require('../models/shoppingList.model');
 
 const createNewList = (req, resp) => {
-  const { description, name } = req.body;
+  const { description, name, adminId } = req.body;
 
   const shoppingList = new ShoppingList({
     description,
-    name
+    name,
+    adminIds: adminId
   });
 
   shoppingList.save((err, doc) => {

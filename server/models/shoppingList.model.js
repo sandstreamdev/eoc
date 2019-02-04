@@ -6,10 +6,10 @@ const ShoppingListSchema = new Schema(
   {
     adminIds: [String],
     description: { type: String },
-    items: Schema.Types.Mixed,
+    items: [String],
     name: { type: String, required: true },
     ordererIds: [String],
-    organizationIds: Schema.Types.String,
+    organizationIds: [String],
     purchaserIds: [String],
     visibility: { type: String }
   },

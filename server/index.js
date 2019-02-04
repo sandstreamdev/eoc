@@ -41,7 +41,7 @@ require('./routes/authorization')(app);
 require('./routes/shoppingList')(app);
 require('./routes/item')(app);
 require('./routes/items')(app);
-
+require('./routes/cohort')(app);
 // Root endpoint
 app.get('/', (req, resp) => resp.status(200).send('Hello World'));
 app.listen(8080, () => console.info('Listening on port 8080!'));
