@@ -9,14 +9,16 @@ export const postData = (url, data) =>
     headers: {
       'Content-Type': 'application/json'
     },
-    method: 'POST'
+    method: 'POST',
+    credentials: 'include'
   });
 
 export const patchData = (url, data) =>
   fetch(url, {
     body: JSON.stringify(data),
     headers: { 'Content-Type': 'application/json' },
-    method: 'PATCH'
+    method: 'PATCH',
+    credentials: 'include'
   });
 
 export const postRequest = url =>

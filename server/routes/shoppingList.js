@@ -10,6 +10,6 @@ const { authorize } = require('../middleware/authorize');
 
 router.get('/', authorize, getAllShoppingLists);
 router.get('/:id', authorize, getShoppingListById);
-router.post('/new-list', authorize, createNewList);
+router.post('/create', authorize, createNewList);
 
 module.exports = app => app.use('/shopping-lists', router);
