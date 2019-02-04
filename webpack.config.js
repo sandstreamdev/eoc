@@ -12,7 +12,11 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    modules: [path.resolve(__dirname, 'client', 'src'), 'node_modules'],
+    modules: [
+      path.resolve(__dirname, 'client', 'src'),
+      'tests',
+      'node_modules'
+    ],
     extensions: ['.js', '.jsx']
   },
   module: {
@@ -21,7 +25,10 @@ module.exports = {
         test: /\.(jsx?)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          options: {
+            plugins: ['babel-plugin-jsx-remove-data-test-id']
+          }
         }
       },
       {

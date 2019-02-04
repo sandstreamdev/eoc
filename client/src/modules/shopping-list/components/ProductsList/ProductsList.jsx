@@ -33,7 +33,6 @@ class ProductsList extends Component {
   };
 
   voteForProduct = product => () => {
-    console.log(product);
     const { _id, voterIds } = product;
     const {
       vote,
