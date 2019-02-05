@@ -7,7 +7,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-const { DB_URL } = require('./common/variables');
+const { DB_URL, FRONTEND_URL } = require('./common/variables');
 
 const app = express();
 
@@ -26,7 +26,12 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+    credentials: true
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('../../dist'));

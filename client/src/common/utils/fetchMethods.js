@@ -1,11 +1,12 @@
 export const getData = url =>
   fetch(url, {
-    credentials: 'same-origin'
+    credentials: 'include'
   });
 
 export const postData = (url, data) =>
   fetch(url, {
     body: JSON.stringify(data),
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -15,13 +16,14 @@ export const postData = (url, data) =>
 export const patchData = (url, data) =>
   fetch(url, {
     body: JSON.stringify(data),
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     method: 'PATCH'
   });
 
 export const postRequest = url =>
   fetch(url, {
+    credentials: 'include',
     method: 'POST',
-    mode: 'no-cors',
-    credentials: 'include'
+    mode: 'no-cors'
   });

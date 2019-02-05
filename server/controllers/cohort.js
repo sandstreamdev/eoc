@@ -20,9 +20,16 @@ const createCohort = (req, resp) => {
 };
 
 const getCohorts = (req, resp) => {
-  Cohort.find({}, null, { sort: { createdAt: -1 } }, (err, cohorts) => {
-    err ? resp.status(400).send(err.message) : resp.status(200).send(cohorts);
-  });
+  Cohort.find(
+    {
+      $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }]
+    },
+    null,
+    { sort: { createdAt: -1 } },
+    (err, cohorts) => {
+      err ? resp.status(400).send(err.message) : resp.status(200).send(cohorts);
+    }
+  );
 };
 
 const getCohortById = (req, resp) => {

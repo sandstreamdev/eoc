@@ -7,9 +7,10 @@ const {
   getCohortById,
   getCohorts
 } = require('../controllers/cohort');
+const { authorize } = require('../middleware/authorize');
 
-router.get('/', getCohorts);
-router.get('/:id', getCohortById);
-router.post('/create', createCohort);
+router.get('/', authorize, getCohorts);
+router.get('/:id', authorize, getCohortById);
+router.post('/create', authorize, createCohort);
 
 module.exports = app => app.use('/cohorts', router);

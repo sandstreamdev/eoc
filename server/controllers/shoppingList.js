@@ -22,7 +22,13 @@ const createNewList = (req, resp) => {
 // Get all the lists
 const getAllShoppingLists = (req, resp) => {
   ShoppingList.find(
-    {},
+    {
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
     null,
     { sort: { created_at: -1 } },
     (err, shoppingLists) => {
