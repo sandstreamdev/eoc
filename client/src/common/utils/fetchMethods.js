@@ -6,24 +6,24 @@ export const getData = url =>
 export const postData = (url, data) =>
   fetch(url, {
     body: JSON.stringify(data),
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     },
-    method: 'POST',
-    credentials: 'include'
+    method: 'POST'
   });
 
 export const patchData = (url, data) =>
   fetch(url, {
     body: JSON.stringify(data),
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    method: 'PATCH',
-    credentials: 'include'
+    method: 'PATCH'
   });
 
 export const postRequest = url =>
   fetch(url, {
+    credentials: 'include',
     method: 'POST',
-    mode: 'no-cors',
-    credentials: 'include'
+    mode: 'no-cors'
   });

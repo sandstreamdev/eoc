@@ -7,7 +7,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-const { DB_URL } = require('./common/variables');
+const { DB_URL, FRONTEND_URL } = require('./common/variables');
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: FRONTEND_URL,
     credentials: true
   })
 );
