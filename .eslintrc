@@ -1,6 +1,7 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "jest": true
   },
   "extends": ["airbnb", "plugin:prettier/recommended"],
   "plugins": ["dependencies"],
@@ -92,5 +93,13 @@
     "window": false,
     "fetch": false,
     "document": false
-  }
+  },
+  "overrides": [
+    {
+      "files": ["client/tests/__mocks__/*.*"],
+      "rules": {
+        "react/prop-types": "off"
+      }
+    }
+  ]
 }

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-class CreationForm extends Component {
+class CreationForm extends PureComponent {
   state = {
     description: '',
     title: ''

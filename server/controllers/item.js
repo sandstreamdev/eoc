@@ -3,14 +3,14 @@ const filter = require('../common/utilities');
 
 // Create new item
 const itemCreate = (req, resp) => {
-  const { authorName, authorId, isOrdered, name, votes } = req.body;
+  const { authorName, authorId, isOrdered, name, voterIds } = req.body;
   const item = new Item({
     authorName,
     authorId,
     isOrdered,
     name,
     createdAt: new Date(Date.now()).toISOString(),
-    votes
+    voterIds
   });
 
   item.save((err, doc) => {
@@ -42,13 +42,13 @@ const deleteItemById = (req, resp) => {
 
 // Update item by given id
 const updateItem = (req, resp) => {
-  const { name, isOrdered, author, votes } = req.body;
+  const { name, isOrdered, author, voterIds } = req.body;
   const newData = filter(x => x !== undefined)({
     name,
     isOrdered,
     author,
     createdAt: new Date(Date.now()).toISOString(),
-    votes
+    voterIds
   });
 
   Item.findOneAndUpdate(

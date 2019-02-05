@@ -28,5 +28,5 @@ export const fetchCohorts = () => dispatch => {
   getData(`${ENDPOINT_URL}/cohorts`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchCohortsSuccess(json)))
-    .catch(err => console.err(err));
+    .catch(err => console.error(err));
 };
