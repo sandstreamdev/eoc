@@ -34,6 +34,7 @@ app.use(express.static('../../dist'));
 // Routes handlers
 require('./routes/authorization')(app);
 require('./routes/shoppingList')(app);
+require('./routes/cohort')(app);
 require('./routes/item')(app);
 require('./routes/items')(app);
 

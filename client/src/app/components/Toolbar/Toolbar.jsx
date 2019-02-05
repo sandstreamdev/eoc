@@ -15,29 +15,54 @@ import PlusIcon from 'assets/images/plus-solid.svg';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
 import CreationForm from 'common/components/CreationForm';
-import { createNewShoppingList } from 'modules/shopping-list/model/actions';
+import { createShoppingList } from 'modules/shopping-list/model/actions';
+import { createCohort } from 'modules/cohort/model/actions';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { UserPropType } from 'common/constants/propTypes';
 
 class Toolbar extends PureComponent {
   state = {
+    cohortFormVisbility: false,
     shoppingFormVisbility: false
   };
 
-  handleShoppingFormVisibilty = () => {
+  handleShoppingListFormVisibility = () => {
     const { shoppingFormVisbility } = this.state;
-    this.setState({ shoppingFormVisbility: !shoppingFormVisbility });
+    this.setState({
+      shoppingFormVisbility: !shoppingFormVisbility,
+      cohortFormVisbility: false
+    });
   };
 
-  handleFormSubmission = (title, description) => {
-    const { createNewShoppingList } = this.props;
+  handleCohortFormVisibility = () => {
+    const { cohortFormVisbility } = this.state;
 
     this.setState({
-      shoppingFormVisbility: false
+      shoppingFormVisbility: false,
+      cohortFormVisbility: !cohortFormVisbility
     });
-    createNewShoppingList(title, description);
+  };
+
+  handleShoppingListSubmission = (title, description) => {
+    const {
+      createShoppingList,
+      currentUser: { id }
+    } = this.props;
+    createShoppingList(title, description, id);
+    this.setState({ shoppingFormVisbility: false });
+  };
+
+  handleCohortSubmission = (title, description) => {
+    const {
+      createCohort,
+      currentUser: { id }
+    } = this.props;
+    createCohort(title, description, id);
+    this.setState({ cohortFormVisbility: false });
   };
 
   render() {
-    const { shoppingFormVisbility } = this.state;
+    const { shoppingFormVisbility, cohortFormVisbility } = this.state;
     return (
       <div className="toolbar">
         <div className="wrapper toolbar__wrapper">
@@ -60,7 +85,11 @@ class Toolbar extends PureComponent {
               </Link>
             </div>
             <div className="toolbar__icon-wrapper">
-              <a className="toolbar__icon-link" href="#!">
+              <a
+                className="toolbar__icon-link"
+                href="#!"
+                onClick={this.handleCohortFormVisibility}
+              >
                 <CohortIcon />
                 <img
                   alt="Plus icon"
@@ -68,12 +97,22 @@ class Toolbar extends PureComponent {
                   src={PlusIcon}
                 />
               </a>
+              <div
+                className={classNames('toolbar__form', {
+                  hidden: !cohortFormVisbility
+                })}
+              >
+                <CreationForm
+                  label="Create new cohort"
+                  onSubmit={this.handleCohortSubmission}
+                />
+              </div>
             </div>
             <div className="toolbar__icon-wrapper">
               <a
                 className="toolbar__icon-link"
                 href="#!"
-                onClick={this.handleShoppingFormVisibilty}
+                onClick={this.handleShoppingListFormVisibility}
               >
                 <ShoppingListIcon />
                 <img
@@ -89,7 +128,7 @@ class Toolbar extends PureComponent {
               >
                 <CreationForm
                   label="Create new shopping list"
-                  onSubmit={this.handleFormSubmission}
+                  onSubmit={this.handleShoppingListSubmission}
                 />
               </div>
             </div>
@@ -107,10 +146,17 @@ class Toolbar extends PureComponent {
 }
 
 Toolbar.propTypes = {
-  createNewShoppingList: PropTypes.func.isRequired
+  currentUser: UserPropType.isRequired,
+
+  createCohort: PropTypes.func.isRequired,
+  createShoppingList: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default connect(
-  null,
-  { createNewShoppingList }
+  mapStateToProps,
+  { createCohort, createShoppingList }
 )(Toolbar);
