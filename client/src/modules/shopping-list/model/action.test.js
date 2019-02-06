@@ -34,7 +34,7 @@ describe('fetchProducts action creator', () => {
     const expectedActions = [
       {
         type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
-        err: 'error'
+        errMessage: 'error'
       }
     ];
     store.dispatch(fetchProducts()).then(() => {

@@ -9,8 +9,40 @@ import {
 import { fetchShoppingLists } from 'modules/shopping-list/model/actions';
 import { fetchCohorts } from 'modules/cohort/model/actions';
 import { getShoppingLists } from 'modules/shopping-list/model/selectors';
-import { getCohorts } from 'modules/cohort/model/selectors';
+import { getCohorts, getCohortsError } from 'modules/cohort/model/selectors';
+import { MessageType } from 'common/constants/enums';
 import CardItem from './CardItem';
+import MessageBox from 'common/components/MessageBox';
+// import { getData } from 'common/utils/fetchMethods';
+
+// class Http extends Component {
+//   state = {
+//     query: undefined,
+//     busy: false,
+//     error: undefined,
+//     data: undefined
+//   }
+
+//   fetch = (...query) => {
+//     const [url, ...params] = query;
+
+//     const action = () => getData(url);
+
+//     this.setState({ query, busy: true }, () => {
+//       action()
+//         .then(resp => resp.json())
+//         .then(data => this.setState({ data }))
+//         .catch(error => this.setState({ error }))
+//         .then(() => this.setState({ busy: false }))
+//     });
+//   }
+
+//   render()
+//   {
+
+//     return this.props.children({ fetch: this.fetch, ...this.state });
+//   }
+// }
 
 class Dashboard extends Component {
   componentDidMount() {
@@ -21,11 +53,17 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { shoppingLists, cohorts } = this.props;
+    const { shoppingLists, cohorts, cohortsError } = this.props;
 
     return (
+      // <Http>
+      //   {({ fetch, data, busy, error }) => (
       <div className="wrapper">
         <div className="dashboard">
+          {/* <div>Data: {JSON.stringify(data, null, 2)}</div>
+          <div>Busy: {busy ? 'busy' : 'not busy'}</div>
+          <div>Error: {error}</div>
+          <button onClick={() => fetch('http://localhost:8080/cohorts')}>Fetch data</button> */}
           <h2 className="dashboard__heading">
             <ShoppingListIcon />
             Shopping lists
@@ -41,6 +79,9 @@ class Dashboard extends Component {
             <CohortIcon />
             Cohorts
           </h2>
+          {cohortsError && (
+            <MessageBox message={cohortsError} type={MessageType.ERROR} />
+          )}
           <ul className="dashboard__list">
             {cohorts.map(cohort => (
               <li className="dashboard__list-item" key={cohort._id}>
@@ -50,6 +91,8 @@ class Dashboard extends Component {
           </ul>
         </div>
       </div>
+      //   )}
+      // </Http>
     );
   }
 }
@@ -57,6 +100,7 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   cohorts: PropTypes.arrayOf(PropTypes.object),
   shoppingLists: PropTypes.arrayOf(PropTypes.object),
+  cohortsError: PropTypes.string,
 
   fetchCohorts: PropTypes.func.isRequired,
   fetchShoppingLists: PropTypes.func.isRequired
@@ -64,6 +108,7 @@ Dashboard.propTypes = {
 
 const mapStateToProps = state => ({
   cohorts: getCohorts(state),
+  cohortsError: getCohortsError(state),
   shoppingLists: getShoppingLists(state)
 });
 

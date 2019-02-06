@@ -35,7 +35,7 @@ export const shoppingLists = (state = [], action) => {
   switch (action.type) {
     case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS:
       return action.payload;
-    case ShoppingListActionTypes.ADD_SHOPPING_LIST_SUCCESS:
+    case ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS:
       return [action.payload, ...state];
     default:
       return state;
