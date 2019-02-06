@@ -5,7 +5,7 @@ import products, {
   shoppingLists
 } from 'modules/shopping-list/model/reducer';
 import currentUser from 'modules/authorization/model/reducer';
-import { cohorts } from 'modules/cohort/model/reducer';
+import cohorts from 'modules/cohort/model/reducer';
 
 const rootReducer = combineReducers({
   cohorts,

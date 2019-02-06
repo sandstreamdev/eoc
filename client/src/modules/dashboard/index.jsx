@@ -79,9 +79,6 @@ class Dashboard extends Component {
             <CohortIcon />
             Cohorts
           </h2>
-          {cohortsError && (
-            <MessageBox message={cohortsError} type={MessageType.ERROR} />
-          )}
           <ul className="dashboard__list">
             {cohorts.map(cohort => (
               <li className="dashboard__list-item" key={cohort._id}>

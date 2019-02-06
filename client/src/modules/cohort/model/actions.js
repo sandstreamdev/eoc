@@ -46,8 +46,12 @@ export const createCohort = (name, description, adminId) => dispatch => {
 
 export const fetchCohorts = () => dispatch => {
   dispatch(fetchCohortsRequest());
-  getData(`${ENDPOINT_URL}/cohorts`)
+  getData(`${ENDPOINT_URL}/cohors`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchCohortsSuccess(json)))
-    .catch(err => dispatch(fetchCohortsFailure(err.message || 'error')));
+    .catch(err =>
+      dispatch(
+        fetchCohortsFailure("Oops, we couldn't fetch cohorts from a server...")
+      )
+    );
 };

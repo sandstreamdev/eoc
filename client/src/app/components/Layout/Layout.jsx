@@ -12,6 +12,9 @@ import { setCurrentUser } from 'modules/authorization/model/actions';
 import { UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
+import MessageBox from 'common/components/MessageBox';
+import { getCohortsError } from 'modules/cohort/model/selectors';
+import { MessageType } from 'common/constants/enums';
 
 export class Layout extends Component {
   componentDidMount() {
@@ -37,7 +40,7 @@ export class Layout extends Component {
   };
 
   render() {
-    const { currentUser } = this.props;
+    const { currentUser, cohortError } = this.props;
 
     return !currentUser ? (
       <Switch>
@@ -47,6 +50,9 @@ export class Layout extends Component {
     ) : (
       <Fragment>
         <Toolbar />
+        {cohortError && (
+          <MessageBox message={cohortError} type={MessageType.ERROR} />
+        )}
         <Switch>
           <Route component={Dashboard} path="/dashboard" />
           <Route component={Cohort} path="/cohort/:id(\w+)" />
@@ -60,6 +66,7 @@ export class Layout extends Component {
 }
 
 Layout.propTypes = {
+  cohortError: PropTypes.string,
   currentUser: UserPropType,
   history: PropTypes.shape({
     push: PropTypes.func
@@ -69,7 +76,8 @@ Layout.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  currentUser: getCurrentUser(state)
+  currentUser: getCurrentUser(state),
+  cohortError: getCohortsError(state)
 });
 
 export default withRouter(

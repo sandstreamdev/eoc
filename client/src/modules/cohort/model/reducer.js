@@ -1,31 +1,46 @@
-import { CohortActionTypes } from './actionTypes';
-import { initialState } from './initialState';
+import { combineReducers } from 'redux';
 
-export const cohorts = (state = initialState, action) => {
+import { CohortActionTypes } from './actionTypes';
+
+const data = (state = [], action) => {
   switch (action.type) {
-    case CohortActionTypes.CREATE_COHORTS_REQUEST:
-    case CohortActionTypes.FETCH_COHORTS_REQUEST:
-      return {
-        ...state,
-        errorMessage: null
-      };
     case CohortActionTypes.CREATE_COHORT_SUCCESS:
-      return {
-        cohorts: [action.payload, ...state],
-        errorMessage: null
-      };
+      return [action.payload, ...state];
     case CohortActionTypes.FETCH_COHORTS_SUCCESS:
-      return {
-        cohorts: action.payload,
-        errorMessage: null
-      };
-    case CohortActionTypes.CREATE_COHORT_FAILURE:
-    case CohortActionTypes.FETCH_COHORTS_FAILURE:
-      return {
-        ...state,
-        errorMessage: action.errMessage
-      };
+      return action.payload;
     default:
       return state;
   }
 };
+
+const errorMessage = (state = null, action) => {
+  switch (action.type) {
+    case CohortActionTypes.CREATE_COHORT_FAILURE:
+    case CohortActionTypes.FETCH_COHORTS_FAILURE:
+      return action.errMessage;
+    case CohortActionTypes.CREATE_COHORT_SUCCESS:
+    case CohortActionTypes.CREATE_COHORT_REQUEST:
+    case CohortActionTypes.FETCH_COHORTS_REQUEST:
+    case CohortActionTypes.FETCH_COHORTS_SUCCESS:
+      return null;
+    default:
+      return state;
+  }
+};
+
+const isFetching = (state = false, action) => {
+  switch (action.type) {
+    case CohortActionTypes.CREATE_COHORT_FAILURE:
+    case CohortActionTypes.FETCH_COHORTS_FAILURE:
+    case CohortActionTypes.CREATE_COHORT_SUCCESS:
+    case CohortActionTypes.FETCH_COHORTS_SUCCESS:
+      return false;
+    case CohortActionTypes.CREATE_COHORT_REQUEST:
+    case CohortActionTypes.FETCH_COHORTS_REQUEST:
+      return true;
+    default:
+      return state;
+  }
+};
+
+export default combineReducers({ data, errorMessage, isFetching });
