@@ -7,16 +7,19 @@ export const addProductFailure = err => ({
   type: ProductActionTypes.ADD_PRODUCT_FAILURE,
   err
 });
-export const addProductSuccess = product => ({
+export const addProductSuccess = (product, listId) => ({
   type: ProductActionTypes.ADD_PRODUCT_SUCCESS,
-  product
+  payload: { product, listId }
 });
 
 // Dispatchers
-export const addProduct = product => dispatch =>
-  postData(`${ENDPOINT_URL}/item/create`, product)
+export const addProductToList = (product, listId) => dispatch =>
+  postData(`${ENDPOINT_URL}/shopping-lists/add-product`, { product, listId })
     .then(resp => resp.json())
-    .then(json => dispatch(addProductSuccess(json)))
+    .then(json => {
+      console.log(json);
+      dispatch(addProductSuccess(json, listId));
+    })
     .catch(err => {
       dispatch(addProductFailure(err));
       throw new Error('There was an error while adding new product.');

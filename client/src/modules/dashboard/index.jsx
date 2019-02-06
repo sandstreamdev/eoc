@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import {
   ClipboardSolid as ShoppingListIcon,
   UsersSolid as CohortIcon
 } from 'assets/images/icons';
-import { fetchShoppingLists } from 'modules/shopping-list/model/actions';
+import { fetchShoppingListsMetaData } from 'modules/shopping-list/model/actions';
 import { fetchCohorts } from 'modules/cohort/model/actions';
 import { getShoppingLists } from 'modules/shopping-list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
@@ -14,9 +15,9 @@ import CardItem from './CardItem';
 
 class Dashboard extends Component {
   componentDidMount() {
-    const { fetchShoppingLists, fetchCohorts } = this.props;
+    const { fetchShoppingListsMetaData, fetchCohorts } = this.props;
 
-    fetchShoppingLists();
+    fetchShoppingListsMetaData();
     fetchCohorts();
   }
 
@@ -33,7 +34,9 @@ class Dashboard extends Component {
           <ul className="dashboard__list">
             {shoppingLists.map(list => (
               <li className="dashboard__list-item" key={list._id}>
-                <CardItem name={list.name} />
+                <Link to={`list/${list._id}`}>
+                  <CardItem name={list.name} />
+                </Link>
               </li>
             ))}
           </ul>
@@ -59,7 +62,7 @@ Dashboard.propTypes = {
   shoppingLists: PropTypes.arrayOf(PropTypes.object),
 
   fetchCohorts: PropTypes.func.isRequired,
-  fetchShoppingLists: PropTypes.func.isRequired
+  fetchShoppingListsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -69,5 +72,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { fetchShoppingLists, fetchCohorts }
+  { fetchShoppingListsMetaData, fetchCohorts }
 )(Dashboard);

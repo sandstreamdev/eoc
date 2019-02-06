@@ -6,7 +6,7 @@ const ShoppingListSchema = new Schema(
   {
     adminIds: [String],
     description: { type: String },
-    items: [String],
+    products: [Object],
     name: { type: String, required: true },
     ordererIds: [String],
     organizationIds: [String],

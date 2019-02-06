@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import MessageBox from 'common/components/MessageBox';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
@@ -13,23 +14,37 @@ import {
 } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import { StatusPropType } from 'common/constants/propTypes';
-import { fetchProducts } from 'modules/shopping-list/model/actions';
+import {
+  fetchProductsFromGivenList,
+  fetchShoppingLists
+} from 'modules/shopping-list/model/actions';
 
 class ShoppingList extends Component {
   componentDidMount() {
     this.fetchProducts();
+    this.fetchLists();
   }
 
+  fetchLists = () => {
+    const { fetchShoppingLists } = this.props;
+    fetchShoppingLists();
+  };
+
   fetchProducts = () => {
-    const { fetchProducts } = this.props;
-    fetchProducts();
+    const {
+      fetchProductsFromGivenList,
+      match: {
+        params: { id }
+      }
+    } = this.props;
+    fetchProductsFromGivenList(id);
   };
 
   render() {
-    const { fetchStatus, products } = this.props;
+    const { fetchStatus } = this.props;
 
-    const archiveList = products.filter(product => product.isOrdered);
-    const shoppingList = products.filter(product => !product.isOrdered);
+    const archiveList = [].filter(product => product.isOrdered);
+    const shoppingList = [].filter(product => !product.isOrdered);
 
     return (
       <Fragment>
@@ -58,9 +73,11 @@ class ShoppingList extends Component {
 
 ShoppingList.propTypes = {
   fetchStatus: StatusPropType.isRequired,
+  match: PropTypes.objectOf(PropTypes.any),
   products: PropTypes.arrayOf(PropTypes.object),
 
-  fetchProducts: PropTypes.func
+  fetchProductsFromGivenList: PropTypes.func,
+  fetchShoppingLists: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -68,7 +85,9 @@ const mapStateToProps = state => ({
   products: getProducts(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchProducts }
-)(ShoppingList);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { fetchProductsFromGivenList, fetchShoppingLists }
+  )(ShoppingList)
+);

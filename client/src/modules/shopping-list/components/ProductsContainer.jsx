@@ -94,7 +94,7 @@ class ProductsContainer extends Component {
       <div className="products">
         <header className="products__header">
           <h2 className="products__heading">
-            {archived ? 'Orders history' : 'Products list'}
+            {archived ? 'History' : 'Items'}
           </h2>
           <FilterBox
             filterBy={filterBy}

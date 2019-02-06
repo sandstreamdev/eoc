@@ -1,13 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { getNewProductStatus } from 'modules/shopping-list/model/selectors';
 import { StatusType, MessageType } from 'common/constants/enums';
 import { StatusPropType, UserPropType } from 'common/constants/propTypes';
 import MessageBox from 'common/components/MessageBox';
-import { addProduct } from './model/actions';
+import { addProductToList } from './model/actions';
 
 class InputBar extends Component {
   state = {
@@ -22,7 +23,13 @@ class InputBar extends Component {
 
   handleFormSubmit = e => {
     e.preventDefault();
-    const { addProduct, currentUser } = this.props;
+    const {
+      addProductToList,
+      currentUser,
+      match: {
+        params: { id }
+      }
+    } = this.props;
     const { productName } = this.state;
     const newProduct = {
       authorName: currentUser.name,
@@ -31,7 +38,7 @@ class InputBar extends Component {
       name: productName
     };
 
-    addProduct(newProduct);
+    addProductToList(newProduct, id);
 
     this.setState({
       productName: ''
@@ -69,9 +76,10 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
+  match: PropTypes.objectOf(PropTypes.any),
   newProductStatus: StatusPropType.isRequired,
 
-  addProduct: PropTypes.func.isRequired
+  addProductToList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -79,7 +87,9 @@ const mapStateToProps = state => ({
   newProductStatus: getNewProductStatus(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { addProduct }
-)(InputBar);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { addProductToList }
+  )(InputBar)
+);

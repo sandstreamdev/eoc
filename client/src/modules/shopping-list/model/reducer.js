@@ -9,10 +9,11 @@ import { StatusType } from 'common/constants/enums';
 const products = (state = productsInitialState, action) => {
   const { type } = action;
   switch (type) {
-    case ProductActionTypes.ADD_PRODUCT_SUCCESS:
-      return [...state, action.product];
+    // case ProductActionTypes.ADD_PRODUCT_SUCCESS:
+    //   return [...state, action.product];
     case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
-      return action.products;
+      console.log(action);
+      return action.payload.products;
     case ProductActionTypes.TOGGLE_PRODUCT: {
       return state.map(product =>
         product._id === action.product._id
@@ -33,10 +34,13 @@ const products = (state = productsInitialState, action) => {
 
 export const shoppingLists = (state = [], action) => {
   switch (action.type) {
-    case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS:
-      return action.payload;
+    case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_META_DATA_SUCCESS:
+      return [...action.payload];
     case ShoppingListActionTypes.ADD_SHOPPING_LIST_SUCCESS:
       return [action.payload, ...state];
+    case ProductActionTypes.ADD_PRODUCT_SUCCESS:
+      console.log(state);
+      return [...state];
     default:
       return state;
   }
