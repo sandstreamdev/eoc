@@ -62,6 +62,7 @@ const getShoppingListsMetaData = (req, resp) => {
     '_id name description',
     { sort: { created_at: -1 } },
     (err, docs) => {
+      console.log(docs);
       err ? resp.status(404).send(err.message) : resp.status(200).send(docs);
     }
   );

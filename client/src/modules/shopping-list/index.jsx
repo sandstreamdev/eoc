@@ -10,25 +10,16 @@ import Preloader from 'common/components/Preloader';
 import { StatusType, MessageType } from 'common/constants/enums';
 import {
   getFetchStatus,
-  getProducts
+  getShoppingList
 } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import { StatusPropType } from 'common/constants/propTypes';
-import {
-  fetchProductsFromGivenList,
-  fetchShoppingLists
-} from 'modules/shopping-list/model/actions';
+import { fetchProductsFromGivenList } from 'modules/shopping-list/model/actions';
 
 class ShoppingList extends Component {
   componentDidMount() {
     this.fetchProducts();
-    this.fetchLists();
   }
-
-  fetchLists = () => {
-    const { fetchShoppingLists } = this.props;
-    fetchShoppingLists();
-  };
 
   fetchProducts = () => {
     const {
@@ -41,10 +32,10 @@ class ShoppingList extends Component {
   };
 
   render() {
-    const { fetchStatus } = this.props;
-
-    const archiveList = [].filter(product => product.isOrdered);
-    const shoppingList = [].filter(product => !product.isOrdered);
+    const { fetchStatus, list } = this.props;
+    const listItems = list && list.products ? list.products : [];
+    const archiveList = listItems.filter(product => product.isOrdered);
+    const shoppingList = listItems.filter(product => !product.isOrdered);
 
     return (
       <Fragment>
@@ -74,20 +65,19 @@ class ShoppingList extends Component {
 ShoppingList.propTypes = {
   fetchStatus: StatusPropType.isRequired,
   match: PropTypes.objectOf(PropTypes.any),
-  products: PropTypes.arrayOf(PropTypes.object),
+  list: PropTypes.objectOf(PropTypes.any),
 
-  fetchProductsFromGivenList: PropTypes.func,
-  fetchShoppingLists: PropTypes.func
+  fetchProductsFromGivenList: PropTypes.func
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   fetchStatus: getFetchStatus(state),
-  products: getProducts(state)
+  list: getShoppingList(state, ownProps.match.params.id)
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
-    { fetchProductsFromGivenList, fetchShoppingLists }
+    { fetchProductsFromGivenList }
   )(ShoppingList)
 );

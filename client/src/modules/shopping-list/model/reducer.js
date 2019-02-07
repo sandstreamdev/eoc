@@ -9,11 +9,6 @@ import { StatusType } from 'common/constants/enums';
 const products = (state = productsInitialState, action) => {
   const { type } = action;
   switch (type) {
-    // case ProductActionTypes.ADD_PRODUCT_SUCCESS:
-    //   return [...state, action.product];
-    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
-      console.log(action);
-      return action.payload.products;
     case ProductActionTypes.TOGGLE_PRODUCT: {
       return state.map(product =>
         product._id === action.product._id
@@ -32,15 +27,38 @@ const products = (state = productsInitialState, action) => {
   }
 };
 
-export const shoppingLists = (state = [], action) => {
+export const shoppingLists = (state = {}, action) => {
   switch (action.type) {
     case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_META_DATA_SUCCESS:
-      return [...action.payload];
+      return { ...action.payload };
     case ShoppingListActionTypes.ADD_SHOPPING_LIST_SUCCESS:
-      return [action.payload, ...state];
-    case ProductActionTypes.ADD_PRODUCT_SUCCESS:
-      console.log(state);
-      return [...state];
+      return {
+        ...state,
+        [action.payload._id]: { ...action.payload }
+      };
+    case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS: {
+      const updatedShoppingList = {
+        ...state[action.payload.listId],
+        products: action.payload.products
+      };
+      return {
+        ...state,
+        [action.payload.listId]: updatedShoppingList
+      };
+    }
+    case ProductActionTypes.ADD_PRODUCT_SUCCESS: {
+      const updatedShoppingList = {
+        ...state[action.payload.listId],
+        products: [
+          ...state[action.payload.listId].products,
+          action.payload.product
+        ]
+      };
+      return {
+        ...state,
+        [action.payload.listId]: updatedShoppingList
+      };
+    }
     default:
       return state;
   }
@@ -53,7 +71,7 @@ export const uiStatus = (state = initialStatus, action) => {
         ...state,
         fetchStatus: StatusType.ERROR
       };
-    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
+    case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS:
       return {
         ...state,
         fetchStatus: StatusType.RESOLVED

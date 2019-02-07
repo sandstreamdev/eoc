@@ -16,10 +16,7 @@ export const addProductSuccess = (product, listId) => ({
 export const addProductToList = (product, listId) => dispatch =>
   postData(`${ENDPOINT_URL}/shopping-lists/add-product`, { product, listId })
     .then(resp => resp.json())
-    .then(json => {
-      console.log(json);
-      dispatch(addProductSuccess(json, listId));
-    })
+    .then(json => dispatch(addProductSuccess(json, listId)))
     .catch(err => {
       dispatch(addProductFailure(err));
       throw new Error('There was an error while adding new product.');

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import _map from 'lodash/map';
 
 import {
   ClipboardSolid as ShoppingListIcon,
@@ -32,10 +33,10 @@ class Dashboard extends Component {
             Shopping lists
           </h2>
           <ul className="dashboard__list">
-            {shoppingLists.map(list => (
-              <li className="dashboard__list-item" key={list._id}>
-                <Link to={`list/${list._id}`}>
-                  <CardItem name={list.name} />
+            {_map(shoppingLists, item => (
+              <li className="dashboard__list-item" key={item._id}>
+                <Link to={`list/${item._id}`}>
+                  <CardItem name={item.name} />
                 </Link>
               </li>
             ))}
@@ -59,7 +60,7 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   cohorts: PropTypes.arrayOf(PropTypes.object),
-  shoppingLists: PropTypes.arrayOf(PropTypes.object),
+  shoppingLists: PropTypes.objectOf(PropTypes.object),
 
   fetchCohorts: PropTypes.func.isRequired,
   fetchShoppingListsMetaData: PropTypes.func.isRequired
