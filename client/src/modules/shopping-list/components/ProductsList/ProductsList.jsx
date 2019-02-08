@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import ProductsListItem from 'modules/shopping-list/components/ProductsListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
@@ -19,16 +20,23 @@ class ProductsList extends Component {
   };
 
   toggleProduct = (author, id, isOrdered) => {
-    const { toggle } = this.props;
+    const {
+      toggle,
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
     const {
       currentUser: { name }
     } = this.props;
     const isSameAuthor = author === name;
 
     if (isOrdered) {
-      isSameAuthor ? toggle(id, isOrdered) : toggle(id, isOrdered, name);
+      isSameAuthor
+        ? toggle(id, listId, isOrdered)
+        : toggle(id, listId, isOrdered, name);
     } else {
-      toggle(id, isOrdered);
+      toggle(id, listId, isOrdered);
     }
   };
 
@@ -88,6 +96,7 @@ class ProductsList extends Component {
 
 ProductsList.propTypes = {
   currentUser: UserPropType.isRequired,
+  match: PropTypes.objectOf(PropTypes.any),
   products: PropTypes.arrayOf(PropTypes.object),
 
   toggle: PropTypes.func,
@@ -98,7 +107,9 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { toggle, vote }
-)(ProductsList);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { toggle, vote }
+  )(ProductsList)
+);

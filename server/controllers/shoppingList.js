@@ -1,5 +1,6 @@
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
+const filter = require('../common/utilities');
 
 const createNewList = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -62,7 +63,6 @@ const getShoppingListsMetaData = (req, resp) => {
     '_id name description',
     { sort: { created_at: -1 } },
     (err, docs) => {
-      console.log(docs);
       err ? resp.status(404).send(err.message) : resp.status(200).send(docs);
     }
   );
@@ -100,11 +100,48 @@ const getProductsForGivenList = (req, resp) => {
   });
 };
 
+const updateShoppingListItem = (req, resp) => {
+  const { name, isOrdered, author, voterIds, _id, listId } = req.body;
+
+  const newData = filter(x => x !== undefined)({
+    name,
+    isOrdered,
+    author,
+    createdAt: new Date(Date.now()).toISOString(),
+    voterIds,
+    _id
+  });
+
+  ShoppingList.find({ _id: listId, 'products._id': _id })
+    .exec()
+    .then(res => console.info(res));
+  // console.info(test, '!!!');
+
+  ShoppingList.find({ _id: listId }, function(err, doc) {
+    const list = new ShoppingList();
+    console.log(list);
+  });
+
+  // ShoppingList.findOneAndUpdate({ _id: listId }, (err, doc) => {
+  //   let updatedItems = [...doc.products];
+
+  //   updatedItems.map(item =>
+  //     item._id == _id ? (item.isOrdered = 'test') : item.isOrdered
+  //   );
+  // });
+
+  // ShoppingList.update({"shoppingLists.list.products.item.id": "item id here" },
+  //   { "$set": { "shoppinglists.$.list.$.products.$.item.name": "New Item"}},function(err,result) {
+  //      console.log(err,result);
+  //   });
+};
+
 module.exports = {
   addProductToList,
   createNewList,
   getAllShoppingLists,
   getProductsForGivenList,
   getShoppingListById,
-  getShoppingListsMetaData
+  getShoppingListsMetaData,
+  updateShoppingListItem
 };
