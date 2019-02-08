@@ -101,39 +101,21 @@ const getProductsForGivenList = (req, resp) => {
 };
 
 const updateShoppingListItem = (req, resp) => {
-  const { name, isOrdered, author, voterIds, _id, listId } = req.body;
+  const { isOrdered, itemId, listId } = req.body;
 
-  const newData = filter(x => x !== undefined)({
-    name,
-    isOrdered,
-    author,
-    createdAt: new Date(Date.now()).toISOString(),
-    voterIds,
-    _id
-  });
-
-  ShoppingList.find({ _id: listId, 'products._id': _id })
-    .exec()
-    .then(res => console.info(res));
-  // console.info(test, '!!!');
-
-  ShoppingList.find({ _id: listId }, function(err, doc) {
-    const list = new ShoppingList();
-    console.log(list);
-  });
-
-  // ShoppingList.findOneAndUpdate({ _id: listId }, (err, doc) => {
-  //   let updatedItems = [...doc.products];
-
-  //   updatedItems.map(item =>
-  //     item._id == _id ? (item.isOrdered = 'test') : item.isOrdered
-  //   );
-  // });
-
-  // ShoppingList.update({"shoppingLists.list.products.item.id": "item id here" },
-  //   { "$set": { "shoppinglists.$.list.$.products.$.item.name": "New Item"}},function(err,result) {
-  //      console.log(err,result);
-  //   });
+  ShoppingList.findOneAndUpdate(
+    { _id: listId, 'products._id': itemId },
+    {
+      $set: {
+        'products.$.isOrdered': isOrdered
+      }
+    },
+    (err, doc) => {
+      const itemIndex = doc.products.findIndex(item => item._id.equals(itemId));
+      const item = doc.products[itemIndex];
+      err ? resp.status(404).send(err.message) : resp.status(200).json(item);
+    }
+  );
 };
 
 module.exports = {

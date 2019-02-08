@@ -12,16 +12,23 @@ const voteForProduct = product => ({
   product
 });
 
-export const toggle = (id, listId, isOrdered, updatedAuthor) => dispatch => {
-  console.log({ id, listId, isOrdered, updatedAuthor });
-  patchData(`${ENDPOINT_URL}/shopping-lists/${id}/update-item`, {
-    _id: id,
+export const toggle = (
+  itemId,
+  listId,
+  isOrdered,
+  updatedAuthor
+) => dispatch => {
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
+    itemId,
     isOrdered: !isOrdered,
     authorName: updatedAuthor,
     listId
   })
     .then(resp => resp.json())
-    .then(product => setTimeout(() => dispatch(toggleProduct(product)), 600))
+    .then(product => {
+      console.log(product);
+      setTimeout(() => dispatch(toggleProduct(product)), 600);
+    })
     .catch(err => console.error(err));
 };
 
