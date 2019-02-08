@@ -1,15 +1,19 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { getData, postData } from 'common/utils/fetchMethods';
 import { ShoppingListActionTypes } from './actionTypes';
-
+import { MessageType as NotificationType } from 'common/constants/enums';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 // Action creators
-export const fetchProductsError = errMessage => ({
+const fetchProductsFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
   errMessage
 });
-export const recieveProducts = json => ({
-  type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST,
+const fetchProductSuccess = json => ({
+  type: ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS,
   products: json
+});
+const fetchProductRequest = () => ({
+  type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST
 });
 const createNewShoppingListSuccess = data => ({
   type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS,
@@ -19,23 +23,39 @@ const createNewShoppingListFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_FAILURE,
   errMessage
 });
+const createNewShoppingListRequest = () => ({
+  type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_REQUEST
+});
 const fetchShoppingListsSuccess = data => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS,
   payload: data
 });
 const fetchShoppingListsFailure = errMessage => ({
-  type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS,
+  type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_FAILURE,
   errMessage
+});
+const fetchShoppingListsRequest = () => ({
+  type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_REQUEST
 });
 
 // Dispatchers
-export const fetchProducts = () => dispatch =>
-  getData(`${ENDPOINT_URL}/items`)
+export const fetchProducts = () => dispatch => {
+  dispatch(fetchProductRequest());
+  return getData(`${ENDPOINT_URL}/items`)
     .then(resp => resp.json())
-    .then(json => dispatch(recieveProducts(json)))
-    .catch(err => dispatch(fetchProductsError(err.message || 'error')));
+    .then(json => dispatch(fetchProductSuccess(json)))
+    .catch(err => {
+      dispatch(fetchProductsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, fetching products failed..."
+      );
+    });
+};
 
-export const createShoppingList = (name, description, adminId) => dispatch =>
+export const createShoppingList = (name, description, adminId) => dispatch => {
+  dispatch(createNewShoppingListRequest());
   postData(`${ENDPOINT_URL}/shopping-lists/create`, {
     name,
     description,
@@ -43,13 +63,27 @@ export const createShoppingList = (name, description, adminId) => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => dispatch(createNewShoppingListSuccess(json)))
-    .catch(err =>
-      dispatch(createNewShoppingListFailure(err.message || 'error'))
-    );
+    .catch(err => {
+      dispatch(createNewShoppingListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, creating new list failed..."
+      );
+    });
+};
 
 export const fetchShoppingLists = () => dispatch => {
+  dispatch(fetchShoppingListsRequest());
   getData(`${ENDPOINT_URL}/shopping-lists`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchShoppingListsSuccess(json)))
-    .catch(err => dispatch(fetchShoppingListsFailure(err.message || 'error')));
+    .catch(err => {
+      dispatch(fetchShoppingListsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, fetching lists failed..."
+      );
+    });
 };

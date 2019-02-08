@@ -13,21 +13,6 @@ const data = (state = [], action) => {
   }
 };
 
-const errorMessage = (state = null, action) => {
-  switch (action.type) {
-    case CohortActionTypes.CREATE_COHORT_FAILURE:
-    case CohortActionTypes.FETCH_COHORTS_FAILURE:
-      return action.errMessage;
-    case CohortActionTypes.CREATE_COHORT_SUCCESS:
-    case CohortActionTypes.CREATE_COHORT_REQUEST:
-    case CohortActionTypes.FETCH_COHORTS_REQUEST:
-    case CohortActionTypes.FETCH_COHORTS_SUCCESS:
-      return null;
-    default:
-      return state;
-  }
-};
-
 const isFetching = (state = false, action) => {
   switch (action.type) {
     case CohortActionTypes.CREATE_COHORT_FAILURE:
@@ -43,4 +28,4 @@ const isFetching = (state = false, action) => {
   }
 };
 
-export default combineReducers({ data, errorMessage, isFetching });
+export default combineReducers({ data, isFetching });

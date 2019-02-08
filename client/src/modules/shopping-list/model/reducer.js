@@ -1,26 +1,23 @@
-import {
-  products as productsInitialState,
-  initialStatus
-} from './initialState';
+import { combineReducers } from 'redux';
+
 import { ShoppingListActionTypes } from './actionTypes';
 import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
-import { StatusType } from 'common/constants/enums';
 
-const products = (state = productsInitialState, action) => {
+export const products = (state = [], action) => {
   const { type } = action;
   switch (type) {
     case ProductActionTypes.ADD_PRODUCT_SUCCESS:
       return [...state, action.product];
-    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
+    case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS:
       return action.products;
-    case ProductActionTypes.TOGGLE_PRODUCT: {
+    case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS: {
       return state.map(product =>
         product._id === action.product._id
           ? { ...product, isOrdered: !product.isOrdered }
           : product
       );
     }
-    case ProductActionTypes.VOTE_FOR_PRODUCT: {
+    case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS: {
       const { _id, voterIds } = action.product;
       return state.map(product =>
         product._id === _id ? { ...product, voterIds } : product
@@ -31,7 +28,7 @@ const products = (state = productsInitialState, action) => {
   }
 };
 
-export const shoppingLists = (state = [], action) => {
+const data = (state = [], action) => {
   switch (action.type) {
     case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS:
       return action.payload;
@@ -42,31 +39,31 @@ export const shoppingLists = (state = [], action) => {
   }
 };
 
-export const uiStatus = (state = initialStatus, action) => {
+const isFetching = (state = false, action) => {
   switch (action.type) {
-    case ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE:
-      return {
-        ...state,
-        fetchStatus: StatusType.ERROR
-      };
-    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
-      return {
-        ...state,
-        fetchStatus: StatusType.RESOLVED
-      };
     case ProductActionTypes.ADD_PRODUCT_FAILURE:
-      return {
-        ...state,
-        newProductStatus: StatusType.ERROR
-      };
     case ProductActionTypes.ADD_PRODUCT_SUCCESS:
-      return {
-        ...state,
-        newProductStatus: StatusType.RESOLVED
-      };
+    case ProductActionTypes.TOGGLE_PRODUCT_FAILURE:
+    case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS:
+    case ProductActionTypes.VOTE_FOR_PRODUCT_FAILURE:
+    case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS:
+    case ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE:
+    case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS:
+    case ShoppingListActionTypes.CREATE_SHOPPING_LIST_FAILURE:
+    case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_FAILURE:
+    case ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS:
+    case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS:
+      return false;
+    case ProductActionTypes.ADD_PRODUCT_REQUEST:
+    case ProductActionTypes.TOGGLE_PRODUCT_REQUEST:
+    case ProductActionTypes.VOTE_FOR_PRODUCT_REQUEST:
+    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
+    case ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST:
+    case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_REQUEST:
+      return true;
     default:
       return state;
   }
 };
 
-export default products;
+export default combineReducers({ data, isFetching, products });

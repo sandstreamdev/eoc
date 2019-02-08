@@ -1,6 +1,8 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { CohortActionTypes } from './actionTypes';
 import { getData, postData } from 'common/utils/fetchMethods';
+import { MessageType as NotificationType } from 'common/constants/enums';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
 // Action creators
 const createCohortSuccess = data => ({
@@ -41,9 +43,14 @@ export const createCohort = (name, description, adminId) => dispatch => {
   })
     .then(resp => resp.json())
     .then(json => dispatch(createCohortSuccess(json)))
-    .catch(err =>
-      dispatch(createCohortFailure("Oops, the new cohort couldn't be added..."))
-    );
+    .catch(err => {
+      dispatch(createCohortFailure(err.message));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, creating new cohort failed..."
+      );
+    });
 };
 
 export const fetchCohorts = () => dispatch => {
@@ -51,11 +58,12 @@ export const fetchCohorts = () => dispatch => {
   getData(`${ENDPOINT_URL}/cohorts`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchCohortsSuccess(json)))
-    .catch(err =>
-      dispatch(
-        fetchCohortsFailure(
-          "Oops, cohorts couldn't be downloaded from the server"
-        )
-      )
-    );
+    .catch(err => {
+      dispatch(fetchCohortsFailure(err.message));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, fetching cohorts failed..."
+      );
+    });
 };

@@ -9,7 +9,7 @@ import {
 import { fetchShoppingLists } from 'modules/shopping-list/model/actions';
 import { fetchCohorts } from 'modules/cohort/model/actions';
 import { getShoppingLists } from 'modules/shopping-list/model/selectors';
-import { getCohorts, getCohortsError } from 'modules/cohort/model/selectors';
+import { getCohorts } from 'modules/cohort/model/selectors';
 import CardItem from './CardItem';
 
 class Dashboard extends Component {
@@ -64,7 +64,6 @@ Dashboard.propTypes = {
 
 const mapStateToProps = state => ({
   cohorts: getCohorts(state),
-  cohortsError: getCohortsError(state),
   shoppingLists: getShoppingLists(state)
 });
 
