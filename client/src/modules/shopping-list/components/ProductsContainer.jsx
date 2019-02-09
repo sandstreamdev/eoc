@@ -85,13 +85,14 @@ class ProductsContainer extends Component {
   };
 
   render() {
-    const { archived, products } = this.props;
+    const { archived, children, products } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterProducts(products, filterBy);
     const sortedList = this.sortProducts(filteredList, sortBy, sortOrder);
 
     return (
       <div className="products">
+        {children}
         <header className="products__header">
           <h2 className="products__heading">
             {archived ? 'Orders history' : 'Products list'}
@@ -118,6 +119,7 @@ class ProductsContainer extends Component {
 
 ProductsContainer.propTypes = {
   archived: PropTypes.bool,
+  children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
   products: PropTypes.arrayOf(PropTypes.object)
 };
