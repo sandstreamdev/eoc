@@ -31,10 +31,12 @@ export const toggle = (
     .catch(err => console.error(err));
 };
 
-export const vote = (id, voterIds) => dispatch => {
-  const payload = { _id: id, voterIds };
-  patchData(`${ENDPOINT_URL}/item/${id}/update`, payload)
+export const vote = (itemId, listId, voterIds) => dispatch => {
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
+    itemId,
+    voterIds
+  })
     .then(resp => resp.json())
-    .then(product => dispatch(voteForProduct(product)))
+    .then(product => dispatch(voteForProduct(product, listId)))
     .catch(err => console.error(err));
 };

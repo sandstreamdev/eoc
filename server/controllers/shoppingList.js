@@ -101,15 +101,26 @@ const getProductsForGivenList = (req, resp) => {
 };
 
 const updateShoppingListItem = (req, resp) => {
-  const { isOrdered, itemId, listId } = req.body;
+  const { isOrdered, itemId, voterIds } = req.body;
+  const { id: listId } = req.params;
+
+  /**
+   * Create object with properties to jupdate, but onyl these which
+   * are passed in the request
+   *  */
+
+  const propertiesToUpdate = {};
+  typeof isOrdered !== 'undefined'
+    ? (propertiesToUpdate['products.$.isOrdered'] = isOrdered)
+    : null;
+  voterIds ? (propertiesToUpdate['products.$.voterIds'] = voterIds) : null;
 
   ShoppingList.findOneAndUpdate(
     { _id: listId, 'products._id': itemId },
     {
-      $set: {
-        'products.$.isOrdered': isOrdered
-      }
+      $set: propertiesToUpdate
     },
+    { new: true },
     (err, doc) => {
       const itemIndex = doc.products.findIndex(item => item._id.equals(itemId));
       const item = doc.products[itemIndex];

@@ -44,11 +44,14 @@ class ProductsList extends Component {
     const { _id, voterIds } = product;
     const {
       vote,
-      currentUser: { id }
+      currentUser: { id },
+      match: {
+        params: { id: listId }
+      }
     } = this.props;
     voterIds.includes(id)
-      ? vote(_id, voterIds.filter(voterId => voterId !== id))
-      : vote(_id, voterIds.concat(id));
+      ? vote(_id, listId, voterIds.filter(voterId => voterId !== id))
+      : vote(_id, listId, voterIds.concat(id));
   };
 
   render() {
