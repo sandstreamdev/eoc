@@ -9,13 +9,6 @@ import { StatusType } from 'common/constants/enums';
 const products = (state = productsInitialState, action) => {
   const { type } = action;
   switch (type) {
-    case ProductActionTypes.TOGGLE_PRODUCT: {
-      return state.map(product =>
-        product._id === action.product._id
-          ? { ...product, isOrdered: !product.isOrdered }
-          : product
-      );
-    }
     case ProductActionTypes.VOTE_FOR_PRODUCT: {
       const { _id, voterIds } = action.product;
       return state.map(product =>
@@ -53,6 +46,23 @@ export const shoppingLists = (state = {}, action) => {
           ...state[action.payload.listId].products,
           action.payload.product
         ]
+      };
+      return {
+        ...state,
+        [action.payload.listId]: updatedShoppingList
+      };
+    }
+    case ProductActionTypes.TOGGLE_PRODUCT: {
+      const updatedShoppingList = {
+        ...state[action.payload.listId],
+        products: [...state[action.payload.listId].products].map(product =>
+          product._id === action.payload.product._id
+            ? {
+                ...action.payload.product,
+                isOrdered: !action.payload.product.isOrdered
+              }
+            : product
+        )
       };
       return {
         ...state,

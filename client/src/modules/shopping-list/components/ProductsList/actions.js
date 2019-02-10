@@ -3,13 +3,13 @@ import { patchData } from 'common/utils/fetchMethods';
 import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
 
 // Action creators
-const toggleProduct = product => ({
+const toggleProduct = (product, listId) => ({
   type: ProductActionTypes.TOGGLE_PRODUCT,
-  product
+  payload: { product, listId }
 });
-const voteForProduct = product => ({
+const voteForProduct = (product, listId) => ({
   type: ProductActionTypes.VOTE_FOR_PRODUCT,
-  product
+  payload: { product, listId }
 });
 
 export const toggle = (
@@ -25,10 +25,9 @@ export const toggle = (
     listId
   })
     .then(resp => resp.json())
-    .then(product => {
-      console.log(product);
-      setTimeout(() => dispatch(toggleProduct(product)), 600);
-    })
+    .then(product =>
+      setTimeout(() => dispatch(toggleProduct(product, listId)), 600)
+    )
     .catch(err => console.error(err));
 };
 
