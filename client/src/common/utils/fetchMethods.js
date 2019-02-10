@@ -24,6 +24,11 @@ export const patchData = (url, data) =>
 export const postRequest = url =>
   fetch(url, {
     credentials: 'include',
-    method: 'POST',
-    mode: 'no-cors'
+    method: 'POST'
+  });
+
+export const deleteData = url =>
+  fetch(url, {
+    credentials: 'include',
+    method: 'DELETE'
   });

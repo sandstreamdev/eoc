@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -33,7 +34,9 @@ class Dashboard extends Component {
           <ul className="dashboard__list">
             {shoppingLists.map(list => (
               <li className="dashboard__list-item" key={list._id}>
-                <CardItem name={list.name} />
+                <Link className="dashboard__list-link" to={`list/${list._id}`}>
+                  <CardItem name={list.name} />
+                </Link>
               </li>
             ))}
           </ul>

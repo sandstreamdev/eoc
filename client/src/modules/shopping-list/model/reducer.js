@@ -34,6 +34,9 @@ const data = (state = [], action) => {
       return action.payload;
     case ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS:
       return [action.payload, ...state];
+    case ShoppingListActionTypes.DELETE_SHOPPING_LIST_SUCCESS: {
+      return state.filter(list => list._id !== action.id);
+    }
     default:
       return state;
   }
@@ -47,18 +50,21 @@ const isFetching = (state = false, action) => {
     case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS:
     case ProductActionTypes.VOTE_FOR_PRODUCT_FAILURE:
     case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS:
+    case ShoppingListActionTypes.CREATE_SHOPPING_LIST_FAILURE:
+    case ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS:
+    case ShoppingListActionTypes.DELETE_SHOPPING_LIST_FAILURE:
+    case ShoppingListActionTypes.DELETE_SHOPPING_LIST_SUCCESS:
     case ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE:
     case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS:
-    case ShoppingListActionTypes.CREATE_SHOPPING_LIST_FAILURE:
     case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_FAILURE:
-    case ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS:
     case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS:
       return false;
     case ProductActionTypes.ADD_PRODUCT_REQUEST:
     case ProductActionTypes.TOGGLE_PRODUCT_REQUEST:
     case ProductActionTypes.VOTE_FOR_PRODUCT_REQUEST:
-    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
     case ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST:
+    case ShoppingListActionTypes.DELETE_SHOPPING_LIST_REQUEST:
+    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
     case ShoppingListActionTypes.FETCH_SHOPPING_LISTS_REQUEST:
       return true;
     default:

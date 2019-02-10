@@ -3,21 +3,18 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import { getProducts } from 'modules/shopping-list/model/selectors';
+import { fetchProducts, deleteList } from 'modules/shopping-list/model/actions';
+import {
+  getProducts,
+  getShoppingLists
+} from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
-import { fetchProducts } from 'modules/shopping-list/model/actions';
 import DropdownMenu from 'common/components/DropdownMenu';
 import EditIcon from 'assets/images/pen-solid.svg';
 import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
 
 class ShoppingList extends Component {
-  shoppingListMenu = [
-    { label: 'Edit list', icon: EditIcon, callback: () => {} },
-    { label: 'Remove list', icon: RemoveIcon, callback: () => {} },
-    { label: 'invite user', icon: InviteUserIcon, callback: () => {} }
-  ];
-
   componentDidMount() {
     this.fetchProducts();
   }
@@ -27,17 +24,34 @@ class ShoppingList extends Component {
     fetchProducts();
   };
 
-  render() {
-    const { products } = this.props;
+  deleteListHandler = id => () => {
+    deleteList(id);
+  };
 
+  render() {
+    const {
+      match: {
+        params: { id: listId }
+      },
+      products
+    } = this.props;
     const archiveList = products.filter(product => product.isOrdered);
     const shoppingList = products.filter(product => !product.isOrdered);
+    const shoppingListMenu = [
+      { label: 'Edit list', icon: EditIcon, callback: () => {} },
+      {
+        label: 'Remove list',
+        icon: RemoveIcon,
+        callback: this.deleteListHandler(listId)
+      },
+      { label: 'invite user', icon: InviteUserIcon, callback: () => {} }
+    ];
 
     return (
       <div className="app-wrapper">
         <InputBar />
         <ProductsContainer products={shoppingList}>
-          <DropdownMenu menuItems={this.shoppingListMenu} />
+          <DropdownMenu menuItems={shoppingListMenu} />
         </ProductsContainer>
         <ProductsContainer archived products={archiveList} />
       </div>
@@ -46,12 +60,18 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string
+    })
+  }).isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
   fetchProducts: PropTypes.func
 };
 
 const mapStateToProps = state => ({
+  list: getShoppingLists(state),
   products: getProducts(state)
 });
 

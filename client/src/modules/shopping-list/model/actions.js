@@ -1,39 +1,62 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
-import { getData, postData } from 'common/utils/fetchMethods';
+import { getData, postData, deleteData } from 'common/utils/fetchMethods';
 import { ShoppingListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+
 // Action creators
 const fetchProductsFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
   errMessage
 });
+
 const fetchProductSuccess = json => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS,
   products: json
 });
+
 const fetchProductRequest = () => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST
 });
+
 const createNewShoppingListSuccess = data => ({
   type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS,
   payload: data
 });
+
 const createNewShoppingListFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_FAILURE,
   errMessage
 });
+
 const createNewShoppingListRequest = () => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_REQUEST
 });
+
+const deleteListSuccess = id => ({
+  type: ShoppingListActionTypes.DELETE_LIST_SUCCESS,
+  id
+});
+
+const deleteListFailure = errMessage => ({
+  type: ShoppingListActionTypes.DELETE_LISTS_FAILURE,
+  errMessage
+});
+
+const deleteListRequest = () => ({
+  type: ShoppingListActionTypes.DELETE_LISTS_REQUEST
+});
+
 const fetchShoppingListsSuccess = data => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_SUCCESS,
   payload: data
 });
+
 const fetchShoppingListsFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_FAILURE,
   errMessage
 });
+
 const fetchShoppingListsRequest = () => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_REQUEST
 });
@@ -84,6 +107,20 @@ export const fetchShoppingLists = () => dispatch => {
         dispatch,
         NotificationType.ERROR,
         "Oops, we're sorry, fetching lists failed..."
+      );
+    });
+};
+
+export const deleteList = id => dispatch => {
+  dispatch(deleteListRequest());
+  deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
+    .then(() => dispatch(deleteListSuccess()))
+    .catch(err => {
+      dispatch(deleteListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, deleting list failed..."
       );
     });
 };
