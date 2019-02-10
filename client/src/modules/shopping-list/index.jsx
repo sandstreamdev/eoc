@@ -25,6 +25,7 @@ class ShoppingList extends Component {
   };
 
   deleteListHandler = id => () => {
+    const { deleteList } = this.props;
     deleteList(id);
   };
 
@@ -67,6 +68,7 @@ ShoppingList.propTypes = {
   }).isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
+  deleteList: PropTypes.func,
   fetchProducts: PropTypes.func
 };
 
@@ -77,5 +79,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { fetchProducts }
+  { deleteList, fetchProducts }
 )(ShoppingList);

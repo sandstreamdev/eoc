@@ -1,5 +1,10 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
-import { getData, postData, deleteData } from 'common/utils/fetchMethods';
+import {
+  getData,
+  postData,
+  deleteData,
+  onFetchError
+} from 'common/utils/fetchMethods';
 import { ShoppingListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
@@ -39,12 +44,12 @@ const deleteListSuccess = id => ({
 });
 
 const deleteListFailure = errMessage => ({
-  type: ShoppingListActionTypes.DELETE_LISTS_FAILURE,
+  type: ShoppingListActionTypes.DELETE_LIST_FAILURE,
   errMessage
 });
 
 const deleteListRequest = () => ({
-  type: ShoppingListActionTypes.DELETE_LISTS_REQUEST
+  type: ShoppingListActionTypes.DELETE_LIST_REQUEST
 });
 
 const fetchShoppingListsSuccess = data => ({
@@ -114,13 +119,23 @@ export const fetchShoppingLists = () => dispatch => {
 export const deleteList = id => dispatch => {
   dispatch(deleteListRequest());
   deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
-    .then(() => dispatch(deleteListSuccess()))
+    .then(resp =>
+      resp.text().then(message => {
+        if (resp.ok) {
+          // dispatch()add success notification
+          dispatch(deleteListSuccess());
+          // redirection
+        } else {
+          const error = new Error(message);
+          error.fromBackend = true;
+          throw error;
+        }
+      })
+    )
     .catch(err => {
-      dispatch(deleteListFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        "Oops, we're sorry, deleting list failed..."
-      );
+      const message = err.fromBackend
+        ? err.message
+        : "Oops, we're sorry, deleting list failed...";
+      onFetchError(dispatch, message, () => dispatch(deleteListFailure()));
     });
 };

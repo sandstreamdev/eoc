@@ -1,3 +1,6 @@
+import { MessageType as NotificationType } from 'common/constants/enums';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+
 export const getData = url =>
   fetch(url, {
     credentials: 'include'
@@ -32,3 +35,8 @@ export const deleteData = url =>
     credentials: 'include',
     method: 'DELETE'
   });
+
+export const onFetchError = (dispatch, message, callback) => {
+  if (callback) callback();
+  createNotificationWithTimeout(dispatch, NotificationType.ERROR, message);
+};

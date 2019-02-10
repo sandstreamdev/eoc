@@ -49,8 +49,27 @@ const getShoppingListById = (req, resp) => {
   });
 };
 
+// Delete list by given id
+const deleteListById = (req, resp) => {
+  ShoppingList.findOneAndDelete(
+    { _id: req.params.id, adminIds: req.user._id },
+    (err, doc) => {
+      if (!doc)
+        return resp
+          .status(401)
+          .send("You don't have permission to delete the list");
+      return err
+        ? resp
+            .status(400)
+            .send("Oops we're sorry, an error occurred while deleting the list")
+        : resp.status(204).send(`List with _ID: ${req.params.id} deleted!`);
+    }
+  );
+};
+
 module.exports = {
   createNewList,
+  deleteListById,
   getAllShoppingLists,
   getShoppingListById
 };
