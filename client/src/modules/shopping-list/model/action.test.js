@@ -40,11 +40,11 @@ describe('fetchProducts action creator', () => {
       },
       {
         type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
-        errMessage: undefined
+        payload: undefined
       },
       {
-        type: NotificationActionTypes.ADD_NOTIFICATION,
-        notification: {
+        type: NotificationActionTypes.ADD,
+        payload: {
           id: 'notification_1',
           message: "Oops, we're sorry, fetching products failed...",
           type: 'error'
