@@ -122,9 +122,9 @@ export const deleteList = id => dispatch => {
     .then(resp =>
       resp.text().then(message => {
         if (resp.ok) {
-          // dispatch()add success notification
+          // TODO dispatch()add success notification
           dispatch(deleteListSuccess());
-          // redirection
+          // TODO redirection
         } else {
           const error = new Error(message);
           error.fromBackend = true;

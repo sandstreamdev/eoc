@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,7 @@ import {
 } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import DropdownMenu from 'common/components/DropdownMenu';
+import DialogBox from 'common/components/DialogBox';
 import EditIcon from 'assets/images/pen-solid.svg';
 import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
@@ -49,13 +50,16 @@ class ShoppingList extends Component {
     ];
 
     return (
-      <div className="app-wrapper">
-        <InputBar />
-        <ProductsContainer products={shoppingList}>
-          <DropdownMenu menuItems={shoppingListMenu} />
-        </ProductsContainer>
-        <ProductsContainer archived products={archiveList} />
-      </div>
+      <Fragment>
+        <div className="app-wrapper">
+          <InputBar />
+          <ProductsContainer products={shoppingList}>
+            <DropdownMenu menuItems={shoppingListMenu} />
+          </ProductsContainer>
+          <ProductsContainer archived products={archiveList} />
+        </div>
+        <DialogBox message="Do You really want to delete the list?" />
+      </Fragment>
     );
   }
 }
