@@ -9,4 +9,23 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 5;
+  max-width: 320px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  &__heading {
+    width: 100%;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  &__button {
+    padding: 8px;
+
+    &:first-of-type {
+      margin-right: 20px;
+    }
+  }
 }

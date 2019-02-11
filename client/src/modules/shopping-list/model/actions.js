@@ -116,15 +116,19 @@ export const fetchShoppingLists = () => dispatch => {
     });
 };
 
-export const deleteList = id => dispatch => {
+export const deleteList = (id, successRedirectCallback) => dispatch => {
   dispatch(deleteListRequest());
   deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
     .then(resp =>
       resp.text().then(message => {
         if (resp.ok) {
-          // TODO dispatch()add success notification
           dispatch(deleteListSuccess());
-          // TODO redirection
+          createNotificationWithTimeout(
+            dispatch,
+            NotificationType.SUCCESS,
+            message
+          );
+          successRedirectCallback();
         } else {
           const error = new Error(message);
           error.fromBackend = true;

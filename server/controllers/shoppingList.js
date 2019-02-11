@@ -62,7 +62,9 @@ const deleteListById = (req, resp) => {
         ? resp
             .status(400)
             .send("Oops we're sorry, an error occurred while deleting the list")
-        : resp.status(204).send(`List with _ID: ${req.params.id} deleted!`);
+        : resp
+            .status(200)
+            .send(`List with id: ${req.params.id} was successfully deleted!`);
     }
   );
 };

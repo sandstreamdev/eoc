@@ -16,6 +16,10 @@ import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
 
 class ShoppingList extends Component {
+  state = {
+    showDialogBox: false
+  };
+
   componentDidMount() {
     this.fetchProducts();
   }
@@ -25,12 +29,27 @@ class ShoppingList extends Component {
     fetchProducts();
   };
 
-  deleteListHandler = id => () => {
+  showDialogBox = () => {
+    this.setState({ showDialogBox: true });
+  };
+
+  hideDialogBox = () => {
+    this.setState({ showDialogBox: false });
+  };
+
+  deleteListHandler = (id, redirectCallback) => () => {
+    this.hideDialogBox();
     const { deleteList } = this.props;
-    deleteList(id);
+    deleteList(id, redirectCallback);
+  };
+
+  redirectHandler = () => {
+    const { history } = this.props;
+    history.push('/dashboard');
   };
 
   render() {
+    const { showDialogBox } = this.state;
     const {
       match: {
         params: { id: listId }
@@ -44,7 +63,7 @@ class ShoppingList extends Component {
       {
         label: 'Remove list',
         icon: RemoveIcon,
-        callback: this.deleteListHandler(listId)
+        callback: this.showDialogBox
       },
       { label: 'invite user', icon: InviteUserIcon, callback: () => {} }
     ];
@@ -58,13 +77,23 @@ class ShoppingList extends Component {
           </ProductsContainer>
           <ProductsContainer archived products={archiveList} />
         </div>
-        <DialogBox message="Do You really want to delete the list?" />
+        {showDialogBox && (
+          <DialogBox
+            cancelCallback={this.hideDialogBox}
+            cofirmCallback={this.deleteListHandler(
+              listId,
+              this.redirectHandler
+            )}
+            message="Do you really want to delete the list?"
+          />
+        )}
       </Fragment>
     );
   }
 }
 
 ShoppingList.propTypes = {
+  history: PropTypes.objectOf(PropTypes.any),
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string
