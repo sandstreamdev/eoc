@@ -1,11 +1,11 @@
 import { AuthorizationActionTypes } from './actions';
-import reducer from 'modules/authorization/model/reducer';
+import { data } from 'modules/authorization/model/reducer';
 
 describe('Authorization reducer', () => {
   it('should store user data upon login', () => {
     expect(
-      reducer(null, {
-        type: AuthorizationActionTypes.SET_CURRENT_USER,
+      data(null, {
+        type: AuthorizationActionTypes.SET_CURRENT_USER_SUCCESS,
         payload: {
           name: 'John Smith',
           avatarUrl: 'http://www.example.com',
@@ -21,14 +21,14 @@ describe('Authorization reducer', () => {
 
   it('should delete user data upon logout', () => {
     expect(
-      reducer(
+      data(
         {
           name: 'John Smith',
           avatarUrl: 'http://www.example.com',
           id: '12345'
         },
         {
-          type: AuthorizationActionTypes.LOGOUT_USER
+          type: AuthorizationActionTypes.LOGOUT_USER_SUCCESS
         }
       )
     ).toEqual(null);

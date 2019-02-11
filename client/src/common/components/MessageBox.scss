@@ -2,7 +2,6 @@
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
   box-sizing: border-box;
   padding: 20px 30px;
-  width: 100%;
   display: flex;
   align-items: center;
   text-align: left;
@@ -11,7 +10,7 @@
   transition: color 200ms ease-in;
   overflow: hidden;
   background: $bg-color;
-  margin-bottom: 20px;
+  margin: 20px;
 
   &--red {
     color: $text-white;

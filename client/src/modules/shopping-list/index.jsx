@@ -1,18 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import MessageBox from 'common/components/MessageBox';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import Preloader from 'common/components/Preloader';
-import { StatusType, MessageType } from 'common/constants/enums';
-import {
-  getFetchStatus,
-  getProducts
-} from 'modules/shopping-list/model/selectors';
+import { getProducts } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
-import { StatusPropType } from 'common/constants/propTypes';
 import { fetchProducts } from 'modules/shopping-list/model/actions';
 
 class ShoppingList extends Component {
@@ -26,30 +18,17 @@ class ShoppingList extends Component {
   };
 
   render() {
-    const { fetchStatus, products } = this.props;
+    const { products } = this.props;
 
     const archiveList = products.filter(product => product.isOrdered);
     const shoppingList = products.filter(product => !product.isOrdered);
 
     return (
       <Fragment>
-        <div
-          className={classNames('app-wrapper', {
-            overlay: fetchStatus === StatusType.PENDING
-          })}
-        >
-          {fetchStatus === StatusType.ERROR && (
-            <MessageBox
-              message="Fetching failed. Try to refresh the page."
-              type={MessageType.ERROR}
-            />
-          )}
+        <div className="app-wrapper">
           <InputBar />
           <ProductsContainer products={shoppingList} />
           <ProductsContainer archived products={archiveList} />
-          {fetchStatus === StatusType.PENDING && (
-            <Preloader message="Fetching data..." />
-          )}
         </div>
       </Fragment>
     );
@@ -57,14 +36,12 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
-  fetchStatus: StatusPropType.isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
   fetchProducts: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: getFetchStatus(state),
   products: getProducts(state)
 });
 

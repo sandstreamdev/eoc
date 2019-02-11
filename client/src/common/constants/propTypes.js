@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import _values from 'lodash/values';
 
-import { SortOrderType, StatusType, MessageType } from './enums';
+import { MessageType, SortOrderType, StatusType } from './enums';
 
 export const UserPropType = PropTypes.shape({
   avatarUrl: PropTypes.string.isRequired,

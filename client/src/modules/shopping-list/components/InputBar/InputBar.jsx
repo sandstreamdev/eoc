@@ -3,10 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { getNewProductStatus } from 'modules/shopping-list/model/selectors';
-import { StatusType, MessageType } from 'common/constants/enums';
-import { StatusPropType, UserPropType } from 'common/constants/propTypes';
-import MessageBox from 'common/components/MessageBox';
+import { UserPropType } from 'common/constants/propTypes';
 import { addProduct } from './model/actions';
 
 class InputBar extends Component {
@@ -40,15 +37,8 @@ class InputBar extends Component {
 
   render() {
     const { productName } = this.state;
-    const { newProductStatus } = this.props;
     return (
       <Fragment>
-        {newProductStatus === StatusType.ERROR && (
-          <MessageBox
-            message="There was an error while adding new product. Try again later"
-            type={MessageType.ERROR}
-          />
-        )}
         <div className="input-bar">
           <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
             <input
@@ -69,14 +59,12 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
-  newProductStatus: StatusPropType.isRequired,
 
   addProduct: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  currentUser: getCurrentUser(state),
-  newProductStatus: getNewProductStatus(state)
+  currentUser: getCurrentUser(state)
 });
 
 export default connect(
