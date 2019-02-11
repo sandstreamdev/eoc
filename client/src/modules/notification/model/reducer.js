@@ -2,15 +2,15 @@ import { NotificationActionTypes } from './actionsTypes';
 
 const notifications = (state = {}, action) => {
   switch (action.type) {
-    case NotificationActionTypes.ADD_NOTIFICATION: {
-      const { id, message, type } = action.notification;
+    case NotificationActionTypes.ADD: {
+      const { id, message, type } = action.payload;
       return {
         ...state,
         [id]: { type, message }
       };
     }
-    case NotificationActionTypes.REMOVE_NOTIFICATION: {
-      const { [action.id]: removed, ...newState } = state;
+    case NotificationActionTypes.REMOVE: {
+      const { [action.payload]: removed, ...newState } = state;
       return newState;
     }
     default:

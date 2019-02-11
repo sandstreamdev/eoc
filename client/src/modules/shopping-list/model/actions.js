@@ -6,7 +6,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 // Action creators
 const fetchProductsFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
-  errMessage
+  payload: errMessage
 });
 const fetchProductSuccess = json => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS,
@@ -21,7 +21,7 @@ const createNewShoppingListSuccess = data => ({
 });
 const createNewShoppingListFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_FAILURE,
-  errMessage
+  payload: errMessage
 });
 const createNewShoppingListRequest = () => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_REQUEST
@@ -32,7 +32,7 @@ const fetchShoppingListsSuccess = data => ({
 });
 const fetchShoppingListsFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_FAILURE,
-  errMessage
+  payload: errMessage
 });
 const fetchShoppingListsRequest = () => ({
   type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_REQUEST

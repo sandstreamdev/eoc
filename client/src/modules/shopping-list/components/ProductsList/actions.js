@@ -14,7 +14,7 @@ const toggleProductRequest = () => ({
 });
 const toggleProductFailure = errMessage => ({
   type: ProductActionTypes.TOGGLE_PRODUCT_FAILURE,
-  errMessage
+  payload: errMessage
 });
 const voteForProductSuccess = product => ({
   type: ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS,
@@ -25,7 +25,7 @@ const voteForProductRequest = () => ({
 });
 const voteForProductFailure = errMessage => ({
   type: ProductActionTypes.VOTE_FOR_PRODUCT_FAILURE,
-  errMessage
+  payload: errMessage
 });
 
 export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
@@ -44,7 +44,7 @@ export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, setting item as done failed..."
+        "Oops, we're sorry, changing item's status failed..."
       );
     });
 };

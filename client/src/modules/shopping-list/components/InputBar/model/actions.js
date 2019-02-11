@@ -7,7 +7,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 // Action creators
 const addProductFailure = errorMessage => ({
   type: ProductActionTypes.ADD_PRODUCT_FAILURE,
-  errorMessage
+  payload: errorMessage
 });
 const addProductSuccess = product => ({
   type: ProductActionTypes.ADD_PRODUCT_SUCCESS,
