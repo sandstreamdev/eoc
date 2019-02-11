@@ -13,15 +13,15 @@ const voteForProduct = (product, listId) => ({
 });
 
 export const toggle = (
+  isOrdered,
   itemId,
   listId,
-  isOrdered,
   updatedAuthor
 ) => dispatch => {
   patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
+    authorName: updatedAuthor,
     itemId,
     isOrdered: !isOrdered,
-    authorName: updatedAuthor,
     listId
   })
     .then(resp => resp.json())

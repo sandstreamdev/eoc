@@ -33,10 +33,10 @@ class ProductsList extends Component {
 
     if (isOrdered) {
       isSameAuthor
-        ? toggle(id, listId, isOrdered)
-        : toggle(id, listId, isOrdered, name);
+        ? toggle(isOrdered, id, listId)
+        : toggle(isOrdered, id, listId, name);
     } else {
-      toggle(id, listId, isOrdered);
+      toggle(isOrdered, id, listId);
     }
   };
 

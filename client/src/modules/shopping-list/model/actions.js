@@ -13,16 +13,16 @@ export const fetchProductsSuccess = (json, listId) => ({
   payload: { products: json, listId }
 });
 const createNewShoppingListSuccess = data => ({
-  type: ShoppingListActionTypes.ADD_SHOPPING_LIST_SUCCESS,
+  type: ShoppingListActionTypes.ADD_LIST_SUCCESS,
   payload: data
 });
 const fetchShoppingListMetaDataSuccess = data => ({
-  type: ShoppingListActionTypes.FETCH_SHOPPING_LISTS_META_DATA_SUCCESS,
+  type: ShoppingListActionTypes.FETCH_META_DATA_SUCCESS,
   payload: data
 });
 
 // Dispatchers
-export const fetchProductsFromGivenList = listId => dispatch =>
+export const fetchItemsFromGivenList = listId => dispatch =>
   getData(`${ENDPOINT_URL}/shopping-lists/${listId}/get-products`)
     .then(resp => resp.json())
     .then(json => {

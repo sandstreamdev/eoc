@@ -2,7 +2,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
 import { ENDPOINT_URL } from 'common/constants/variables';
-import { fetchProductsFromGivenList } from './actions';
+import { fetchItemsFromGivenList } from './actions';
 import {
   productsMock,
   newProductMock,
@@ -24,7 +24,7 @@ describe('fetchProducts action creator', () => {
       }
     ];
 
-    store.dispatch(fetchProductsFromGivenList()).then(() => {
+    store.dispatch(fetchItemsFromGivenList()).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
     });
     expect(fetch.mock.calls.length).toEqual(1);
@@ -44,7 +44,7 @@ describe('fetchProducts action creator', () => {
         err: 'error'
       }
     ];
-    store.dispatch(fetchProductsFromGivenList()).then(() => {
+    store.dispatch(fetchItemsFromGivenList()).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
     });
     expect(fetch.mock.calls.length).toEqual(1);

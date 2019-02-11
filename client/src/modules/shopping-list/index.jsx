@@ -14,7 +14,7 @@ import {
 } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import { StatusPropType } from 'common/constants/propTypes';
-import { fetchProductsFromGivenList } from 'modules/shopping-list/model/actions';
+import { fetchItemsFromGivenList } from 'modules/shopping-list/model/actions';
 
 class ShoppingList extends Component {
   componentDidMount() {
@@ -23,12 +23,12 @@ class ShoppingList extends Component {
 
   fetchProducts = () => {
     const {
-      fetchProductsFromGivenList,
+      fetchItemsFromGivenList,
       match: {
         params: { id }
       }
     } = this.props;
-    fetchProductsFromGivenList(id);
+    fetchItemsFromGivenList(id);
   };
 
   render() {
@@ -64,10 +64,10 @@ class ShoppingList extends Component {
 
 ShoppingList.propTypes = {
   fetchStatus: StatusPropType.isRequired,
-  match: PropTypes.objectOf(PropTypes.any),
   list: PropTypes.objectOf(PropTypes.any),
+  match: PropTypes.objectOf(PropTypes.any),
 
-  fetchProductsFromGivenList: PropTypes.func
+  fetchItemsFromGivenList: PropTypes.func
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -78,6 +78,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { fetchProductsFromGivenList }
+    { fetchItemsFromGivenList }
   )(ShoppingList)
 );

@@ -84,7 +84,12 @@ const addProductToList = (req, resp) => {
 
   ShoppingList.findOneAndUpdate(
     {
-      _id: listId
+      _id: listId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
     },
     { $push: { products: product } },
     (err, data) => {
@@ -94,9 +99,20 @@ const addProductToList = (req, resp) => {
 };
 
 const getProductsForGivenList = (req, resp) => {
-  ShoppingList.find({ _id: req.params.id }, 'products', (err, documents) => {
-    err ? resp.status(404).send(err) : resp.status(200).send(documents);
-  });
+  ShoppingList.find(
+    {
+      _id: req.params.id,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    'products',
+    (err, documents) => {
+      err ? resp.status(404).send(err) : resp.status(200).send(documents);
+    }
+  );
 };
 
 const updateShoppingListItem = (req, resp) => {
@@ -104,10 +120,9 @@ const updateShoppingListItem = (req, resp) => {
   const { id: listId } = req.params;
 
   /**
-   * Create object with properties to jupdate, but onyl these which
+   * Create object with properties to update, but onyl these which
    * are passed in the request
    *  */
-
   const propertiesToUpdate = {};
   typeof isOrdered !== 'undefined'
     ? (propertiesToUpdate['products.$.isOrdered'] = isOrdered)
@@ -115,7 +130,15 @@ const updateShoppingListItem = (req, resp) => {
   voterIds ? (propertiesToUpdate['products.$.voterIds'] = voterIds) : null;
 
   ShoppingList.findOneAndUpdate(
-    { _id: listId, 'products._id': itemId },
+    {
+      _id: listId,
+      'products._id': itemId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
     {
       $set: propertiesToUpdate
     },
