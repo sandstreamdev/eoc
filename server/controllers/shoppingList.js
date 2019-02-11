@@ -1,6 +1,5 @@
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
-const filter = require('../common/utilities');
 
 const createNewList = (req, resp) => {
   const { description, name, adminId } = req.body;
