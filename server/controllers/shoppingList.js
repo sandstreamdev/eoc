@@ -110,7 +110,8 @@ const getProductsForGivenList = (req, resp) => {
     },
     'products',
     (err, documents) => {
-      err ? resp.status(404).send(err) : resp.status(200).send(documents);
+      const { products } = documents[0];
+      err ? resp.status(404).send(err) : resp.status(200).json(products);
     }
   );
 };
@@ -120,7 +121,7 @@ const updateShoppingListItem = (req, resp) => {
   const { id: listId } = req.params;
 
   /**
-   * Create object with properties to update, but onyl these which
+   * Create object with properties to update, but only these which
    * are passed in the request
    *  */
   const propertiesToUpdate = {};

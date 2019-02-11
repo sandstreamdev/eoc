@@ -34,8 +34,8 @@ class ShoppingList extends Component {
   render() {
     const { fetchStatus, list } = this.props;
     const listItems = list && list.products ? list.products : [];
-    const archiveList = listItems.filter(product => product.isOrdered);
-    const shoppingList = listItems.filter(product => !product.isOrdered);
+    const archiveList = listItems.filter(item => item.isOrdered);
+    const shoppingList = listItems.filter(item => !item.isOrdered);
 
     return (
       <Fragment>
@@ -65,7 +65,11 @@ class ShoppingList extends Component {
 ShoppingList.propTypes = {
   fetchStatus: StatusPropType.isRequired,
   list: PropTypes.objectOf(PropTypes.any),
-  match: PropTypes.objectOf(PropTypes.any),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string
+    })
+  }).isRequired,
 
   fetchItemsFromGivenList: PropTypes.func
 };

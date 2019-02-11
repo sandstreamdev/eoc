@@ -17,7 +17,7 @@ router.get('/meta-data', authorize, getShoppingListsMetaData);
 router.get('/:id', authorize, getShoppingListById);
 router.post('/create', createNewList);
 router.post('/add-product', authorize, addProductToList);
-router.get('/:id/get-products', authorize, getProductsForGivenList);
+router.get('/:id/products', authorize, getProductsForGivenList);
 router.patch('/:id/update-item', authorize, updateShoppingListItem);
 
 module.exports = app => app.use('/shopping-lists', router);

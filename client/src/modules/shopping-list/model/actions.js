@@ -1,7 +1,8 @@
+import _keyBy from 'lodash/keyBy';
+
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { getData, postData } from 'common/utils/fetchMethods';
 import { ShoppingListActionTypes } from './actionTypes';
-import { convertArrayToMap } from 'common/utils';
 
 // Action creators
 export const fetchProductsError = err => ({
@@ -13,7 +14,7 @@ export const fetchProductsSuccess = (json, listId) => ({
   payload: { products: json, listId }
 });
 const createNewShoppingListSuccess = data => ({
-  type: ShoppingListActionTypes.ADD_LIST_SUCCESS,
+  type: ShoppingListActionTypes.ADD_SUCCESS,
   payload: data
 });
 const fetchShoppingListMetaDataSuccess = data => ({
@@ -23,12 +24,9 @@ const fetchShoppingListMetaDataSuccess = data => ({
 
 // Dispatchers
 export const fetchItemsFromGivenList = listId => dispatch =>
-  getData(`${ENDPOINT_URL}/shopping-lists/${listId}/get-products`)
+  getData(`${ENDPOINT_URL}/shopping-lists/${listId}/products`)
     .then(resp => resp.json())
-    .then(json => {
-      const { products } = json[0];
-      dispatch(fetchProductsSuccess(products, listId));
-    })
+    .then(json => dispatch(fetchProductsSuccess(json, listId)))
     .catch(err => dispatch(fetchProductsError(err)));
 
 export const createShoppingList = (name, description, adminId) => dispatch =>
@@ -45,7 +43,7 @@ export const fetchShoppingListsMetaData = () => dispatch => {
   getData(`${ENDPOINT_URL}/shopping-lists/meta-data`)
     .then(resp => resp.json())
     .then(json => {
-      const dataMap = convertArrayToMap(json);
+      const dataMap = _keyBy(json, '_id');
       dispatch(fetchShoppingListMetaDataSuccess(dataMap));
     })
     .catch(err => console.error(err));

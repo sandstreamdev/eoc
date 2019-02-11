@@ -76,7 +76,11 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
-  match: PropTypes.objectOf(PropTypes.any),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string
+    })
+  }).isRequired,
   newProductStatus: StatusPropType.isRequired,
 
   addProductToList: PropTypes.func.isRequired

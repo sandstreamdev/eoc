@@ -28,7 +28,6 @@ describe('fetchProducts action creator', () => {
       expect(store.getActions()).toEqual(expectedActions);
     });
     expect(fetch.mock.calls.length).toEqual(1);
-    console.log('TESTTTTTT!!', fetch.mock.calls);
     expect(fetch.mock.calls[0][0]).toEqual(
       `${ENDPOINT_URL}/shopping-lists/1234/get-products`
     );

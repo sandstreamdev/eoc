@@ -99,7 +99,11 @@ class ProductsList extends Component {
 
 ProductsList.propTypes = {
   currentUser: UserPropType.isRequired,
-  match: PropTypes.objectOf(PropTypes.any),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string
+    })
+  }).isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
   toggle: PropTypes.func,

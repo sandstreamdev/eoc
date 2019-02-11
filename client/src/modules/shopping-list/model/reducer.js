@@ -7,7 +7,7 @@ export const shoppingLists = (state = {}, action) => {
   switch (action.type) {
     case ShoppingListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...action.payload };
-    case ShoppingListActionTypes.ADD_LIST_SUCCESS:
+    case ShoppingListActionTypes.ADD_SUCCESS:
       return {
         ...state,
         [action.payload._id]: { ...action.payload }
