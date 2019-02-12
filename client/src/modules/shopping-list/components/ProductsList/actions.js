@@ -5,56 +5,64 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
 // Action creators
-const toggleProductSuccess = product => ({
+const toggleProductSuccess = (product, listId) => ({
   type: ProductActionTypes.TOGGLE_PRODUCT_SUCCESS,
-  product
+  payload: { product, listId }
 });
 const toggleProductRequest = () => ({
   type: ProductActionTypes.TOGGLE_PRODUCT_REQUEST
 });
 const toggleProductFailure = errMessage => ({
   type: ProductActionTypes.TOGGLE_PRODUCT_FAILURE,
-  errMessage
+  payload: errMessage
 });
-const voteForProductSuccess = product => ({
+const voteForProductSuccess = (product, listId) => ({
   type: ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS,
-  product
+  payload: { product, listId }
 });
 const voteForProductRequest = () => ({
   type: ProductActionTypes.VOTE_FOR_PRODUCT_REQUEST
 });
 const voteForProductFailure = errMessage => ({
   type: ProductActionTypes.VOTE_FOR_PRODUCT_FAILURE,
-  errMessage
+  payload: errMessage
 });
 
-export const toggle = (id, isOrdered, updatedAuthor) => dispatch => {
+export const toggle = (
+  isOrdered,
+  itemId,
+  listId,
+  updatedAuthor
+) => dispatch => {
   dispatch(toggleProductRequest());
-  patchData(`${ENDPOINT_URL}/item/${id}/update`, {
-    _id: id,
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
+    authorName: updatedAuthor,
+    itemId,
     isOrdered: !isOrdered,
-    authorName: updatedAuthor
+    listId
   })
     .then(resp => resp.json())
     .then(product =>
-      setTimeout(() => dispatch(toggleProductSuccess(product)), 600)
+      setTimeout(() => dispatch(toggleProductSuccess(product, listId)), 600)
     )
     .catch(err => {
       dispatch(toggleProductFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, setting item as done failed..."
+        "Oops, we're sorry, changing item's status failed..."
       );
     });
 };
 
-export const vote = (id, voterIds) => dispatch => {
+export const vote = (itemId, listId, voterIds) => dispatch => {
   dispatch(voteForProductRequest());
-  const payload = { _id: id, voterIds };
-  patchData(`${ENDPOINT_URL}/item/${id}/update`, payload)
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
+    itemId,
+    voterIds
+  })
     .then(resp => resp.json())
-    .then(product => dispatch(voteForProductSuccess(product)))
+    .then(product => dispatch(voteForProductSuccess(product, listId)))
     .catch(err => {
       dispatch(voteForProductFailure());
       createNotificationWithTimeout(

@@ -1,14 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import { fetchProducts, deleteList } from 'modules/shopping-list/model/actions';
-import {
-  getProducts,
-  getShoppingLists
-} from 'modules/shopping-list/model/selectors';
+import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
+import {
+  fetchItemsFromGivenList,
+  deleteList
+} from 'modules/shopping-list/model/actions';
 import DropdownMenu from 'common/components/DropdownMenu';
 import DialogBox from 'common/components/DialogBox';
 import EditIcon from 'assets/images/pen-solid.svg';
@@ -25,8 +26,13 @@ class ShoppingList extends Component {
   }
 
   fetchProducts = () => {
-    const { fetchProducts } = this.props;
-    fetchProducts();
+    const {
+      fetchItemsFromGivenList,
+      match: {
+        params: { id }
+      }
+    } = this.props;
+    fetchItemsFromGivenList(id);
   };
 
   showDialogBox = () => {
@@ -54,10 +60,11 @@ class ShoppingList extends Component {
       match: {
         params: { id: listId }
       },
-      products
+      list
     } = this.props;
-    const archiveList = products.filter(product => product.isOrdered);
-    const shoppingList = products.filter(product => !product.isOrdered);
+    const listItems = list && list.products ? list.products : [];
+    const archiveList = listItems.filter(item => item.isOrdered);
+    const shoppingList = listItems.filter(item => !item.isOrdered);
     const shoppingListMenu = [
       { label: 'Edit list', icon: EditIcon, callback: () => {} },
       {
@@ -94,23 +101,23 @@ class ShoppingList extends Component {
 
 ShoppingList.propTypes = {
   history: PropTypes.objectOf(PropTypes.any),
+  list: PropTypes.objectOf(PropTypes.any),
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string
     })
   }).isRequired,
-  products: PropTypes.arrayOf(PropTypes.object),
-
   deleteList: PropTypes.func,
-  fetchProducts: PropTypes.func
+  fetchItemsFromGivenList: PropTypes.func
 };
 
-const mapStateToProps = state => ({
-  list: getShoppingLists(state),
-  products: getProducts(state)
+const mapStateToProps = (state, ownProps) => ({
+  list: getShoppingList(state, ownProps.match.params.id)
 });
 
-export default connect(
-  mapStateToProps,
-  { deleteList, fetchProducts }
-)(ShoppingList);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { deleteList, fetchItemsFromGivenList }
+  )(ShoppingList)
+);

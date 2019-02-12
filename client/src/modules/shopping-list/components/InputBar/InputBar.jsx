@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import { addProduct } from './model/actions';
+import { addProductToList } from './model/actions';
 
 class InputBar extends Component {
   state = {
@@ -19,7 +20,13 @@ class InputBar extends Component {
 
   handleFormSubmit = e => {
     e.preventDefault();
-    const { addProduct, currentUser } = this.props;
+    const {
+      addProductToList,
+      currentUser,
+      match: {
+        params: { id }
+      }
+    } = this.props;
     const { productName } = this.state;
     const newProduct = {
       authorName: currentUser.name,
@@ -28,7 +35,7 @@ class InputBar extends Component {
       name: productName
     };
 
-    addProduct(newProduct);
+    addProductToList(newProduct, id);
 
     this.setState({
       productName: ''
@@ -59,15 +66,22 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string
+    })
+  }).isRequired,
 
-  addProduct: PropTypes.func.isRequired
+  addProductToList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { addProduct }
-)(InputBar);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { addProductToList }
+  )(InputBar)
+);

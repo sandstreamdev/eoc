@@ -63,7 +63,7 @@ class ProductsContainer extends Component {
         });
         break;
       case SortOptionType.VOTES:
-        result.sort((a, b) => a.votes.length - b.votes.length);
+        result.sort((a, b) => a.voterIds.length - b.voterIds.length);
         break;
       default:
         break;
@@ -95,7 +95,7 @@ class ProductsContainer extends Component {
         {children}
         <header className="products__header">
           <h2 className="products__heading">
-            {archived ? 'Orders history' : 'Products list'}
+            {archived ? 'History' : 'Items'}
           </h2>
           <FilterBox
             filterBy={filterBy}

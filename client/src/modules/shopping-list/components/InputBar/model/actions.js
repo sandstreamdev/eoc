@@ -7,22 +7,22 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 // Action creators
 const addProductFailure = errorMessage => ({
   type: ProductActionTypes.ADD_PRODUCT_FAILURE,
-  errorMessage
+  payload: errorMessage
 });
-const addProductSuccess = product => ({
+export const addProductSuccess = (product, listId) => ({
   type: ProductActionTypes.ADD_PRODUCT_SUCCESS,
-  product
+  payload: { product, listId }
 });
 const addProductRequest = () => ({
   type: ProductActionTypes.ADD_PRODUCT_REQUEST
 });
 
 // Dispatchers
-export const addProduct = product => dispatch => {
+export const addProductToList = (product, listId) => dispatch => {
   dispatch(addProductRequest());
-  postData(`${ENDPOINT_URL}/item/create`, product)
+  postData(`${ENDPOINT_URL}/shopping-lists/add-product`, { product, listId })
     .then(resp => resp.json())
-    .then(json => dispatch(addProductSuccess(json)))
+    .then(json => dispatch(addProductSuccess(json, listId)))
     .catch(err => {
       dispatch(addProductFailure());
       createNotificationWithTimeout(
