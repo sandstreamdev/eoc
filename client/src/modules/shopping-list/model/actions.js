@@ -40,17 +40,17 @@ const createNewShoppingListRequest = () => ({
 });
 
 const deleteListSuccess = id => ({
-  type: ShoppingListActionTypes.DELETE_LIST_SUCCESS,
-  id
+  type: ShoppingListActionTypes.DELETE_SUCCESS,
+  payload: id
 });
 
 const deleteListFailure = errMessage => ({
-  type: ShoppingListActionTypes.DELETE_LIST_FAILURE,
-  errMessage
+  type: ShoppingListActionTypes.DELETE_FAILURE,
+  payload: errMessage
 });
 
 const deleteListRequest = () => ({
-  type: ShoppingListActionTypes.DELETE_LIST_REQUEST
+  type: ShoppingListActionTypes.DELETE_REQUEST
 });
 
 const fetchShoppingListMetaDataSuccess = data => ({
@@ -120,11 +120,11 @@ export const fetchShoppingListsMetaData = () => dispatch => {
 
 export const deleteList = (id, successRedirectCallback) => dispatch => {
   dispatch(deleteListRequest());
-  deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delee`)
+  deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
     .then(resp =>
       resp.text().then(message => {
         if (resp.ok) {
-          dispatch(deleteListSuccess());
+          dispatch(deleteListSuccess(id));
           createNotificationWithTimeout(
             dispatch,
             NotificationType.SUCCESS,
