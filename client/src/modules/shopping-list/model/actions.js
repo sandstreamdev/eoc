@@ -4,6 +4,7 @@ import { ENDPOINT_URL } from 'common/constants/variables';
 import {
   getData,
   postData,
+  patchData,
   deleteData,
   onFetchError
 } from 'common/utils/fetchMethods';
@@ -51,6 +52,20 @@ const deleteListFailure = errMessage => ({
 
 const deleteListRequest = () => ({
   type: ShoppingListActionTypes.DELETE_REQUEST
+});
+
+const updateListSuccess = id => ({
+  type: ShoppingListActionTypes.UPDATE_SUCCESS,
+  payload: id
+});
+
+const updateListFailure = errMessage => ({
+  type: ShoppingListActionTypes.UPDATE_FAILURE,
+  payload: errMessage
+});
+
+const updateListRequest = () => ({
+  type: ShoppingListActionTypes.UPDATE_REQUEST
 });
 
 const fetchShoppingListMetaDataSuccess = data => ({
@@ -143,5 +158,25 @@ export const deleteList = (id, successRedirectCallback) => dispatch => {
         ? err.message
         : "Oops, we're sorry, deleting list failed...";
       onFetchError(dispatch, message, () => dispatch(deleteListFailure()));
+    });
+};
+
+export const updateList = (description, id, name) => dispatch => {
+  dispatch(updateListRequest());
+  patchData(`${ENDPOINT_URL}/shopping-lists/${id}/update`, {
+    description,
+    name
+  })
+    .then(resp => resp.json())
+    .then(list => {
+      dispatch(updateListSuccess(list, id));
+    })
+    .catch(err => {
+      dispatch(updateListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, updating list failed..."
+      );
     });
 };
