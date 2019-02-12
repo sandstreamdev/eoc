@@ -66,13 +66,13 @@ class ShoppingList extends Component {
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
     const shoppingListMenu = [
-      { label: 'Edit list', icon: EditIcon, callback: () => {} },
+      { callback: () => {}, icon: EditIcon, label: 'Edit list' },
       {
-        label: 'Remove list',
+        callback: this.showDialogBox,
         icon: RemoveIcon,
-        callback: this.showDialogBox
+        label: 'Remove list'
       },
-      { label: 'invite user', icon: InviteUserIcon, callback: () => {} }
+      { callback: () => {}, icon: InviteUserIcon, label: 'invite user' }
     ];
 
     return (
@@ -107,6 +107,7 @@ ShoppingList.propTypes = {
       id: PropTypes.string
     })
   }).isRequired,
+
   deleteList: PropTypes.func,
   fetchItemsFromGivenList: PropTypes.func
 };
