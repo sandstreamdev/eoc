@@ -56,10 +56,12 @@ const updateItem = (req, resp) => {
     newData,
     { new: true },
     (err, doc) => {
-      if (!doc) return resp.status(404).send('No item of given id');
+      if (!doc) {
+        return resp.status(404).send({ message: 'No item of given id' });
+      }
       return err
-        ? resp.status(400).send(err.message)
-        : resp.status(200).send(doc);
+        ? resp.status(400).send({ message: 'Updating item failed...' })
+        : resp.status(404).send({ message: 'Updating success' });
     }
   );
 };

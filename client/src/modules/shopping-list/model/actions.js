@@ -176,7 +176,7 @@ export const updateList = (id, description, name) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, updating lists failed..."
+        err.message || "Oops, we're sorry, updating lists failed..."
       );
     });
 };

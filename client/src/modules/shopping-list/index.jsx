@@ -20,6 +20,15 @@ import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
 
 class ShoppingList extends Component {
+  constructor(props) {
+    super(props);
+    this.listMenu = [
+      { onClick: this.showUpdateForm, icon: EditIcon, label: 'Edit list' },
+      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
+      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
+    ];
+  }
+
   state = {
     showDialogBox: false,
     showUpdateFrom: false
@@ -60,20 +69,16 @@ class ShoppingList extends Component {
 
   hideUpdateForm = () => {
     this.setState({ showUpdateFrom: false });
-    document.addEventListener('click', this.hideMenu);
-    document.addEventListener('keydown', this.onPressEscape);
   };
 
   showUpdateForm = () => {
     this.setState({ showUpdateFrom: true });
-    document.removeEventListener('click', this.hideUpdateForm);
-    document.removeEventListener('keydown', this.onPressEscape);
   };
 
   updateListHandler = id => (description, name) => {
     const { updateList } = this.props;
     // updateList(id, description, name);
-    // this.hideUpdateForm();
+    this.hideUpdateForm();
   };
 
   render() {
@@ -87,18 +92,19 @@ class ShoppingList extends Component {
     const listItems = list && list.products ? list.products : [];
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
-    const shoppingListMenu = [
-      { onClick: this.showUpdateForm, icon: EditIcon, label: 'Edit list' },
-      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
-      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
-    ];
+    const description = list && list.description ? list.description : null;
+    const name = list && list.name ? list.name : null;
 
     return (
       <Fragment>
         <div className="app-wrapper">
           <InputBar />
-          <ProductsContainer products={shoppingList}>
-            <DropdownMenu menuItems={shoppingListMenu} />
+          <ProductsContainer
+            description={description}
+            name={name}
+            products={shoppingList}
+          >
+            <DropdownMenu menuItems={this.listMenu} />
           </ProductsContainer>
           <ProductsContainer archived products={archiveList} />
         </div>
@@ -112,7 +118,7 @@ class ShoppingList extends Component {
           </ModalBox>
         )}
         {showUpdateFrom && (
-          <ModalBox>
+          <ModalBox onClose={this.hideUpdateForm}>
             <CreationForm
               type="modal"
               label="Edit list"

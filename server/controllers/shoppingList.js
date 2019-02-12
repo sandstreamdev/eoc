@@ -197,8 +197,8 @@ const updateListById = (req, resp) => {
     },
     err => {
       err
-        ? resp.status(404).send(err.message)
-        : resp.status(200).send('Updated succefully');
+        ? resp.status(404).send({ message: 'List not found' })
+        : resp.status(200).send({ message: 'Updated succefully' });
     }
   );
 };

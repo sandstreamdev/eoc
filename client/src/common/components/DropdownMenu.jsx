@@ -36,6 +36,7 @@ class DropdownMenu extends Component {
         <img alt="Menu Icon" className="dropdown__menu-icon" src={MenuIcon} />
       </div>
     );
+
     return (
       <div className="dropdown">
         <button
