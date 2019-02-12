@@ -1,5 +1,3 @@
-const _pick = require('lodash/pick');
-
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
 const filter = require('../common/utilities');
