@@ -118,15 +118,13 @@ export const deleteList = (id, successRedirectCallback) => dispatch => {
   deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
     .then(resp =>
       resp.json().then(json => {
-        if (resp.ok) {
-          dispatch(deleteListSuccess(id));
-          createNotificationWithTimeout(
-            dispatch,
-            NotificationType.SUCCESS,
-            json.message
-          );
-          successRedirectCallback();
-        }
+        dispatch(deleteListSuccess(id));
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          json.message
+        );
+        successRedirectCallback();
       })
     )
     .catch(err => {

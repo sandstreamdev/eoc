@@ -49,7 +49,7 @@ class DropdownMenu extends Component {
               <li className="dropdown__menu-item" key={item.label}>
                 <button
                   className="dropdown__menu-button"
-                  onClick={item.callback}
+                  onClick={item.onClick}
                   type="button"
                 >
                   {item.label}
