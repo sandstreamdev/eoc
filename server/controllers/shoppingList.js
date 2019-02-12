@@ -193,20 +193,8 @@ const updateListById = (req, resp) => {
     {
       new: true
     },
-    (err, doc) => {
-      const dataToReturn = _pick(doc, [
-        '_id',
-        'adminIds',
-        'description',
-        'name',
-        'ordererId',
-        'organizationIds',
-        'purchaserIds'
-      ]);
-
-      err
-        ? resp.status(404).send(err.message)
-        : resp.status(200).json(dataToReturn);
+    err => {
+      err ? resp.status(404).send(err.message) : resp.status(200);
     }
   );
 };
