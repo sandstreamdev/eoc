@@ -54,9 +54,9 @@ const deleteListRequest = () => ({
   type: ShoppingListActionTypes.DELETE_REQUEST
 });
 
-const updateListSuccess = id => ({
+const updateListSuccess = data => ({
   type: ShoppingListActionTypes.UPDATE_SUCCESS,
-  payload: id
+  payload: data
 });
 
 const updateListFailure = errMessage => ({
@@ -161,22 +161,27 @@ export const deleteList = (id, successRedirectCallback) => dispatch => {
     });
 };
 
-export const updateList = (description, id, name) => dispatch => {
+export const updateList = (id, description, name) => dispatch => {
   dispatch(updateListRequest());
   patchData(`${ENDPOINT_URL}/shopping-lists/${id}/update`, {
     description,
     name
   })
     .then(resp => resp.json())
-    .then(list => {
-      dispatch(updateListSuccess(list, id));
+    .then(json => {
+      dispatch(updateListSuccess({ description, id, name }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
     })
     .catch(err => {
       dispatch(updateListFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, updating list failed..."
+        "Oops, we're sorry, updating lists failed..."
       );
     });
 };

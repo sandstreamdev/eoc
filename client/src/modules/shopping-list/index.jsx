@@ -8,7 +8,8 @@ import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
   fetchItemsFromGivenList,
-  deleteList
+  deleteList,
+  updateList
 } from 'modules/shopping-list/model/actions';
 import DropdownMenu from 'common/components/DropdownMenu';
 import DialogBox from 'common/components/DialogBox';
@@ -18,7 +19,8 @@ import InviteUserIcon from 'assets/images/user-plus-solid.svg';
 
 class ShoppingList extends Component {
   state = {
-    showDialogBox: false
+    showDialogBox: false,
+    showUpdateFrom: false
   };
 
   componentDidMount() {
@@ -54,8 +56,22 @@ class ShoppingList extends Component {
     history.push('/dashboard');
   };
 
+  hideUpdateForm = () => {
+    this.setState({ showUpdateFrom: false });
+  };
+
+  showUpdateForm = () => {
+    this.setState({ showUpdateFrom: true });
+  };
+
+  updateListHandler = (id, description, name) => {
+    this.hideUpdateForm();
+    const { updateList } = this.props;
+    // updateList(id, description, name);
+  };
+
   render() {
-    const { showDialogBox } = this.state;
+    const { showDialogBox, showUpdateFrom } = this.state;
     const {
       match: {
         params: { id: listId }
@@ -66,12 +82,8 @@ class ShoppingList extends Component {
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
     const shoppingListMenu = [
-      { callback: () => {}, icon: EditIcon, label: 'Edit list' },
-      {
-        callback: this.showDialogBox,
-        icon: RemoveIcon,
-        label: 'Remove list'
-      },
+      { callback: this.showUpdateForm, icon: EditIcon, label: 'Edit list' },
+      { callback: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
       { callback: () => {}, icon: InviteUserIcon, label: 'invite user' }
     ];
 
@@ -94,6 +106,27 @@ class ShoppingList extends Component {
             message="Do you really want to delete the list?"
           />
         )}
+        {/* TODO create separete component for that like DialogBox */}
+        {showUpdateFrom && (
+          <div>
+            <h1>Update form</h1>
+            <form>
+              <button onClick={this.hideUpdateForm} type="button">
+                Cancel
+              </button>
+              <button
+                onClick={this.updateListHandler(
+                  listId,
+                  'nowy opis listy',
+                  'nowa nazwa listy'
+                )}
+                type="button"
+              >
+                Update
+              </button>
+            </form>
+          </div>
+        )}
       </Fragment>
     );
   }
@@ -109,7 +142,8 @@ ShoppingList.propTypes = {
   }).isRequired,
 
   deleteList: PropTypes.func,
-  fetchItemsFromGivenList: PropTypes.func
+  fetchItemsFromGivenList: PropTypes.func,
+  updateList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -119,6 +153,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { deleteList, fetchItemsFromGivenList }
+    { deleteList, fetchItemsFromGivenList, updateList }
   )(ShoppingList)
 );
