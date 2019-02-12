@@ -9,6 +9,7 @@ const {
   getProductsForGivenList,
   getShoppingListById,
   getShoppingListsMetaData,
+  updateListById,
   updateShoppingListItem
 } = require('../controllers/shoppingList');
 const { authorize } = require('../middleware/authorize');
@@ -19,6 +20,7 @@ router.get('/:id', authorize, getShoppingListById);
 router.post('/create', createNewList);
 router.post('/add-product', authorize, addProductToList);
 router.delete('/:id/delete', authorize, deleteListById);
+router.patch('/:id/update', authorize, updateListById);
 router.get('/:id/products', authorize, getProductsForGivenList);
 router.patch('/:id/update-item', authorize, updateShoppingListItem);
 

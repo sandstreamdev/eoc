@@ -1,5 +1,8 @@
+const _pick = require('lodash/pick');
+
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
+const filter = require('../common/utilities');
 
 const createNewList = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -172,6 +175,42 @@ const updateShoppingListItem = (req, resp) => {
   );
 };
 
+const updateListById = (req, resp) => {
+  const { description, name } = req.body;
+  const { id: listId } = req.params;
+
+  const dataToUpdate = filter(x => x !== undefined)({
+    description,
+    name
+  });
+
+  ShoppingList.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [{ adminIds: req.user._id }]
+    },
+    dataToUpdate,
+    {
+      new: true
+    },
+    (err, doc) => {
+      const dataToReturn = _pick(doc, [
+        '_id',
+        'adminIds',
+        'description',
+        'name',
+        'ordererId',
+        'organizationIds',
+        'purchaserIds'
+      ]);
+
+      err
+        ? resp.status(404).send(err.message)
+        : resp.status(200).json(dataToReturn);
+    }
+  );
+};
+
 module.exports = {
   addProductToList,
   createNewList,
@@ -180,5 +219,6 @@ module.exports = {
   getProductsForGivenList,
   getShoppingListById,
   getShoppingListsMetaData,
+  updateListById,
   updateShoppingListItem
 };
