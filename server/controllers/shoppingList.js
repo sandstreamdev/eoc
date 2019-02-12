@@ -182,7 +182,7 @@ const updateListById = (req, resp) => {
     name
   });
 
-  ShoppingList.findOneAndUpdate(
+  ShoppingList.updateOne(
     {
       _id: listId,
       $or: [{ adminIds: req.user._id }]
@@ -192,7 +192,9 @@ const updateListById = (req, resp) => {
       new: true
     },
     err => {
-      err ? resp.status(404).send(err.message) : resp.status(200);
+      err
+        ? resp.status(404).send(err.message)
+        : resp.status(200).send('Updated succefully');
     }
   );
 };
