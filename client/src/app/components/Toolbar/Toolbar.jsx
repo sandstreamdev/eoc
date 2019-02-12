@@ -105,6 +105,7 @@ class Toolbar extends PureComponent {
                 <CreationForm
                   label="Create new cohort"
                   onSubmit={this.handleCohortSubmission}
+                  type="menu"
                 />
               </div>
             </div>
@@ -129,6 +130,7 @@ class Toolbar extends PureComponent {
                 <CreationForm
                   label="Create new shopping list"
                   onSubmit={this.handleShoppingListSubmission}
+                  type="menu"
                 />
               </div>
             </div>

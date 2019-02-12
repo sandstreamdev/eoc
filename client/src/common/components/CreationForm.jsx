@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 class CreationForm extends PureComponent {
   state = {
@@ -23,13 +24,23 @@ class CreationForm extends PureComponent {
     const { onSubmit } = this.props;
 
     onSubmit(title, description);
+
+    this.setState({
+      description: '',
+      title: ''
+    });
   };
 
   render() {
-    const { label } = this.props;
+    const { label, type } = this.props;
     const { description, title } = this.state;
     return (
-      <form className="creation-form" onSubmit={this.handleFormSubmission}>
+      <form
+        className={classNames('creation-form', {
+          'creation-form__menu': type === 'menu'
+        })}
+        onSubmit={this.handleFormSubmission}
+      >
         <h2 className="creation-form__heading">{label}</h2>
         <label className="creation-form__label">
           <input
@@ -58,6 +69,7 @@ class CreationForm extends PureComponent {
 
 CreationForm.propTypes = {
   label: PropTypes.string.isRequired,
+  type: PropTypes.string,
 
   onSubmit: PropTypes.func.isRequired
 };

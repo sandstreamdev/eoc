@@ -13,6 +13,8 @@ import {
 } from 'modules/shopping-list/model/actions';
 import DropdownMenu from 'common/components/DropdownMenu';
 import DialogBox from 'common/components/DialogBox';
+import ModalBox from 'common/components/ModalBox';
+import CreationForm from 'common/components/CreationForm';
 import EditIcon from 'assets/images/pen-solid.svg';
 import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
@@ -58,16 +60,20 @@ class ShoppingList extends Component {
 
   hideUpdateForm = () => {
     this.setState({ showUpdateFrom: false });
+    document.addEventListener('click', this.hideMenu);
+    document.addEventListener('keydown', this.onPressEscape);
   };
 
   showUpdateForm = () => {
     this.setState({ showUpdateFrom: true });
+    document.removeEventListener('click', this.hideUpdateForm);
+    document.removeEventListener('keydown', this.onPressEscape);
   };
 
-  updateListHandler = (id, description, name) => {
-    this.hideUpdateForm();
+  updateListHandler = id => (description, name) => {
     const { updateList } = this.props;
     // updateList(id, description, name);
+    // this.hideUpdateForm();
   };
 
   render() {
@@ -97,35 +103,25 @@ class ShoppingList extends Component {
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (
-          <DialogBox
-            cancelCallback={this.hideDialogBox}
-            cofirmCallback={this.deleteListHandler(
-              listId,
-              this.redirectHandler
-            )}
-            message="Do you really want to delete the list?"
-          />
+          <ModalBox>
+            <DialogBox
+              cancelCallback={this.hideDialogBox}
+              cofirmCallback={this.deleteListHandler(
+                listId,
+                this.redirectHandler
+              )}
+              message="Do you really want to delete the list?"
+            />
+          </ModalBox>
         )}
-        {/* TODO create separete component for that like DialogBox */}
         {showUpdateFrom && (
-          <div>
-            <h1>Update form</h1>
-            <form>
-              <button onClick={this.hideUpdateForm} type="button">
-                Cancel
-              </button>
-              <button
-                onClick={this.updateListHandler(
-                  listId,
-                  'nowy opis listy',
-                  'nowa nazwa listy'
-                )}
-                type="button"
-              >
-                Update
-              </button>
-            </form>
-          </div>
+          <ModalBox>
+            <CreationForm
+              type="modal"
+              label="Edit list"
+              onSubmit={this.updateListHandler(listId)}
+            />
+          </ModalBox>
         )}
       </Fragment>
     );

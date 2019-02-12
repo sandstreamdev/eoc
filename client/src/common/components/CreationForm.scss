@@ -8,7 +8,7 @@
   align-items: flex-start;
   box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
 
-  &::before {
+  &__menu::before {
     right: 7px;
     top: -10px;
     position: absolute;

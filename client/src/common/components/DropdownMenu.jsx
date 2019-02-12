@@ -43,8 +43,14 @@ class DropdownMenu extends Component {
       </div>
     );
     return (
-      <a className="dropdown" href="#!" onClick={this.toggleMenuVisibility}>
-        {menuButton}
+      <div className="dropdown">
+        <button
+          className="dropdown__button"
+          type="button"
+          onClick={this.toggleMenuVisibility}
+        >
+          {menuButton}
+        </button>
         <div
           className={classNames('dropdown__menu-wrapper', {
             hidden: hideMenu
@@ -71,7 +77,7 @@ class DropdownMenu extends Component {
             ))}
           </ul>
         </div>
-      </a>
+      </div>
     );
   }
 }
