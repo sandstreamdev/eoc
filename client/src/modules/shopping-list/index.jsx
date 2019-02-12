@@ -17,6 +17,15 @@ import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
 
 class ShoppingList extends Component {
+  constructor(props) {
+    super(props);
+    this.listMenu = [
+      { onClick: () => {}, icon: EditIcon, label: 'Edit list' },
+      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
+      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
+    ];
+  }
+
   state = {
     showDialogBox: false
   };
@@ -65,22 +74,13 @@ class ShoppingList extends Component {
     const listItems = list && list.products ? list.products : [];
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
-    const shoppingListMenu = [
-      { onClick: () => {}, icon: EditIcon, label: 'Edit list' },
-      {
-        onClick: this.showDialogBox,
-        icon: RemoveIcon,
-        label: 'Remove list'
-      },
-      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
-    ];
 
     return (
       <Fragment>
         <div className="app-wrapper">
           <InputBar />
           <ProductsContainer products={shoppingList}>
-            <DropdownMenu menuItems={shoppingListMenu} />
+            <DropdownMenu menuItems={this.listMenu} />
           </ProductsContainer>
           <ProductsContainer archived products={archiveList} />
         </div>
