@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { MessageType } from 'common/constants/enums';
-import { MessagePropType } from '../constants/propTypes';
+import { MessagePropType } from 'common/constants/propTypes';
 import MessageIcon from 'assets/images/info-solid.svg';
 
 const MessageBox = ({ message, type }) => (

@@ -1,19 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import MessageBox from 'common/components/MessageBox';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import Preloader from 'common/components/Preloader';
-import { StatusType, MessageType } from 'common/constants/enums';
-import {
-  getFetchStatus,
-  getShoppingList
-} from 'modules/shopping-list/model/selectors';
+import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
-import { StatusPropType } from 'common/constants/propTypes';
 import { fetchItemsFromGivenList } from 'modules/shopping-list/model/actions';
 
 class ShoppingList extends Component {
@@ -32,30 +24,17 @@ class ShoppingList extends Component {
   };
 
   render() {
-    const { fetchStatus, list } = this.props;
+    const { list } = this.props;
     const listItems = list && list.products ? list.products : [];
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
 
     return (
       <Fragment>
-        <div
-          className={classNames('app-wrapper', {
-            overlay: fetchStatus === StatusType.PENDING
-          })}
-        >
-          {fetchStatus === StatusType.ERROR && (
-            <MessageBox
-              message="Fetching failed. Try to refresh the page."
-              type={MessageType.ERROR}
-            />
-          )}
+        <div className="app-wrapper">
           <InputBar />
           <ProductsContainer products={shoppingList} />
           <ProductsContainer archived products={archiveList} />
-          {fetchStatus === StatusType.PENDING && (
-            <Preloader message="Fetching data..." />
-          )}
         </div>
       </Fragment>
     );
@@ -63,7 +42,6 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
-  fetchStatus: StatusPropType.isRequired,
   list: PropTypes.objectOf(PropTypes.any),
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -75,7 +53,6 @@ ShoppingList.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  fetchStatus: getFetchStatus(state),
   list: getShoppingList(state, ownProps.match.params.id)
 });
 

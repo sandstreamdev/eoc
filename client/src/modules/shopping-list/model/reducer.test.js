@@ -1,6 +1,6 @@
 import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
 import { ShoppingListActionTypes } from './actionTypes';
-import { shoppingLists } from './reducer';
+import shoppingLists from './reducer';
 import {
   newProductMock,
   shoppingListMockNotPopulated,
@@ -10,7 +10,10 @@ import {
 } from '__mocks__/productsMock';
 
 describe('Products reducer', () => {
-  let storeProducts;
+  let storeProducts = {
+    isFetching: false,
+    data: []
+  };
   let newProduct;
 
   beforeEach(() => {

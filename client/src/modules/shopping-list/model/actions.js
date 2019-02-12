@@ -3,33 +3,62 @@ import _keyBy from 'lodash/keyBy';
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { getData, postData } from 'common/utils/fetchMethods';
 import { ShoppingListActionTypes } from './actionTypes';
+import { MessageType as NotificationType } from 'common/constants/enums';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
 // Action creators
-export const fetchProductsError = err => ({
+const fetchProductsFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
-  err
+  payload: errMessage
 });
 export const fetchProductsSuccess = (json, listId) => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS,
   payload: { products: json, listId }
 });
+const fetchProductRequest = () => ({
+  type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST
+});
 const createNewShoppingListSuccess = data => ({
-  type: ShoppingListActionTypes.ADD_SUCCESS,
+  type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS,
   payload: data
+});
+const createNewShoppingListFailure = errMessage => ({
+  type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_FAILURE,
+  payload: errMessage
+});
+const createNewShoppingListRequest = () => ({
+  type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST
 });
 const fetchShoppingListMetaDataSuccess = data => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_SUCCESS,
   payload: data
 });
+const fetchShoppingListsMetaDataFailure = errMessage => ({
+  type: ShoppingListActionTypes.FETCH_META_DATA_FAILURE,
+  payload: errMessage
+});
+const fetchShoppingListsMetaDataRequest = () => ({
+  type: ShoppingListActionTypes.FETCH_META_DATA_REQUEST
+});
 
 // Dispatchers
-export const fetchItemsFromGivenList = listId => dispatch =>
+export const fetchItemsFromGivenList = listId => dispatch => {
+  dispatch(fetchProductRequest());
   getData(`${ENDPOINT_URL}/shopping-lists/${listId}/products`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchProductsSuccess(json, listId)))
-    .catch(err => dispatch(fetchProductsError(err)));
+    .catch(err => {
+      dispatch(fetchProductsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, fetching products failed..."
+      );
+    });
+};
 
-export const createShoppingList = (name, description, adminId) => dispatch =>
+export const createShoppingList = (name, description, adminId) => dispatch => {
+  dispatch(createNewShoppingListRequest());
   postData(`${ENDPOINT_URL}/shopping-lists/create`, {
     name,
     description,
@@ -37,14 +66,30 @@ export const createShoppingList = (name, description, adminId) => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => dispatch(createNewShoppingListSuccess(json)))
-    .catch(err => console.error(err));
+    .catch(err => {
+      dispatch(createNewShoppingListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, creating new list failed..."
+      );
+    });
+};
 
 export const fetchShoppingListsMetaData = () => dispatch => {
+  dispatch(fetchShoppingListsMetaDataRequest());
   getData(`${ENDPOINT_URL}/shopping-lists/meta-data`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchShoppingListMetaDataSuccess(dataMap));
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      dispatch(fetchShoppingListsMetaDataFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, fetching lists failed..."
+      );
+    });
 };

@@ -12,6 +12,7 @@ import { setCurrentUser } from 'modules/authorization/model/actions';
 import { UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
+import Notifications from 'modules/notification';
 
 export class Layout extends Component {
   componentDidMount() {
@@ -47,6 +48,7 @@ export class Layout extends Component {
     ) : (
       <Fragment>
         <Toolbar />
+        <Notifications />
         <Switch>
           <Route component={Dashboard} path="/dashboard" />
           <Route component={Cohort} path="/cohort/:id(\w+)" />

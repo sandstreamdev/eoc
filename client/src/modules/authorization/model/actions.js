@@ -1,20 +1,31 @@
 import { getCookie } from 'common/utils/cookie';
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { postRequest } from 'common/utils/fetchMethods';
+import { MessageType as NotificationType } from 'common/constants/enums';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
 export const AuthorizationActionTypes = Object.freeze({
-  SET_CURRENT_USER: 'SET_CURRENT_USER',
-  LOGOUT_USER: 'LOGOUT_USER'
+  LOGOUT_USER_FAILURE: 'LOGOUT_USER_FAILURE',
+  LOGOUT_USER_REQUEST: 'LOGOUT_USER_REQUEST',
+  LOGOUT_USER_SUCCESS: 'LOGOUT_USER_SUCCESS',
+  SET_CURRENT_USER_SUCCESS: 'SET_CURRENT_USER_SUCCESS'
 });
 
 // Action creators
-export const mountCurrentUser = user => ({
-  type: AuthorizationActionTypes.SET_CURRENT_USER,
+const setCurrentUserSuccesss = user => ({
+  type: AuthorizationActionTypes.SET_CURRENT_USER_SUCCESS,
   payload: user
 });
 
-const logoutUser = () => ({
-  type: AuthorizationActionTypes.LOGOUT_USER
+const logoutUserFailure = errorMessage => ({
+  type: AuthorizationActionTypes.LOGOUT_USER_FAILURE,
+  errorMessage
+});
+const logoutUserSuccess = () => ({
+  type: AuthorizationActionTypes.LOGOUT_USER_SUCCESS
+});
+const logoutUserRequest = () => ({
+  type: AuthorizationActionTypes.LOGOUT_USER_REQUEST
 });
 
 // Dispatcher
@@ -22,12 +33,19 @@ export const setCurrentUser = () => dispatch => {
   const user = JSON.parse(decodeURIComponent(getCookie('user')));
   const payload = typeof user === 'object' ? user : null;
 
-  dispatch(mountCurrentUser(payload));
+  dispatch(setCurrentUserSuccesss(payload));
 };
 
-export const logoutCurrentUser = () => dispatch =>
+export const logoutCurrentUser = () => dispatch => {
+  dispatch(logoutUserRequest());
   postRequest(`${ENDPOINT_URL}/logout`)
-    .then(() => dispatch(logoutUser()))
+    .then(() => dispatch(logoutUserSuccess()))
     .catch(err => {
-      throw new Error(err.message);
+      dispatch(logoutUserFailure(err.message));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        "Oops, we're sorry, logout failed..."
+      );
     });
+};

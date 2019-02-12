@@ -9,7 +9,7 @@ import {
   shoppingListMockNotPopulated
 } from '__mocks__/productsMock';
 import { ShoppingListActionTypes } from './actionTypes';
-import { StatusType } from 'common/constants/enums';
+import { NotificationActionTypes } from 'modules/notification/model/actionsTypes';
 
 const getMockStore = configureMockStore([thunk]);
 
@@ -35,12 +35,23 @@ describe('fetchProducts action creator', () => {
   });
 
   it('dispatches the correct actions on fetch failed', () => {
-    fetch.mockRejectOnce('error');
-    const store = getMockStore({ fetchStatus: StatusType.PENDING });
+    fetch.mockRejectOnce();
+    const store = getMockStore({ data: [], products: [], isFetching: false });
     const expectedActions = [
       {
+        type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST
+      },
+      {
         type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
-        err: 'error'
+        payload: undefined
+      },
+      {
+        type: NotificationActionTypes.ADD,
+        payload: {
+          id: 'notification_1',
+          message: "Oops, we're sorry, fetching products failed...",
+          type: 'error'
+        }
       }
     ];
     store.dispatch(fetchItemsFromGivenList()).then(() => {
