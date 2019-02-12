@@ -1,63 +1,71 @@
 import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
 import { ShoppingListActionTypes } from './actionTypes';
-import { products } from './reducer';
-import { products as productsInitialState } from './initialState';
-import { productsMock, newProductMock } from '__mocks__/productsMock';
+import shoppingLists from './reducer';
+import {
+  newProductMock,
+  shoppingListMockNotPopulated,
+  shoppingListMockPopulated,
+  shoppingListMockProductToggled,
+  shoppingListMockProductVoted
+} from '__mocks__/productsMock';
 
 describe('Products reducer', () => {
-  const storeProducts = {
+  let storeProducts = {
     isFetching: false,
     data: []
   };
   let newProduct;
 
   beforeEach(() => {
-    storeProducts.products = productsMock.map(product => ({ ...product }));
+    storeProducts = shoppingListMockNotPopulated;
     newProduct = { ...newProductMock };
   });
 
   it('stores products data upon fetch', () => {
     expect(
-      products(productsInitialState, {
+      shoppingLists(storeProducts, {
         type: ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS,
-        products: storeProducts
+        payload: { products: [newProduct], listId: '1234' }
       })
-    ).toEqual(storeProducts);
+    ).toEqual(shoppingListMockPopulated);
   });
 
   it('adds new product data', () => {
     expect(
-      products(storeProducts.products, {
+      shoppingLists(storeProducts, {
         type: ProductActionTypes.ADD_PRODUCT_SUCCESS,
-        product: newProduct
+        payload: { product: newProduct, listId: '1234' }
       })
-    ).toEqual([...storeProducts.products, newProduct]);
+    ).toEqual(shoppingListMockPopulated);
   });
 
   it('tooggles product is ordered', () => {
     expect(
-      products([newProduct], {
-        type: ProductActionTypes.TOGGLE_PRODUCT_SUCCESS,
-        product: [newProduct]
+      shoppingLists(shoppingListMockPopulated, {
+        type: ProductActionTypes.TOGGLE_PRODUCT,
+        payload: {
+          product: { ...newProduct, isOrdered: !newProduct.isOrdered },
+          listId: '1234'
+        }
       })
-    ).toEqual([{ ...newProduct, isOrdered: !newProduct.isOrdered }]);
+    ).toEqual(shoppingListMockProductToggled);
   });
 
   it('saves voters id upon voting', () => {
     expect(
-      products([newProduct], {
-        type: ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS,
-        product: { id: '1234', voterIds: ['abcd', 'efgh', 'ijkl'] }
+      shoppingLists(shoppingListMockPopulated, {
+        type: ProductActionTypes.VOTE_FOR_PRODUCT,
+        payload: { ...newProduct, voterIds: ['abcd', 'efgh', 'ijkl'] }
       })
-    ).toEqual([{ ...newProduct, voterIds: ['abcd', 'efgh', 'ijkl'] }]);
+    ).toEqual(shoppingListMockProductVoted);
   });
 
   it('removes voters id after the vote for the second time', () => {
     expect(
-      products([newProduct], {
-        type: ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS,
-        product: { id: '1234', voterIds: ['abcd'] }
+      shoppingLists(shoppingListMockProductVoted, {
+        type: ProductActionTypes.VOTE_FOR_PRODUCT,
+        payload: { ...newProduct, voterIds: ['abcd', 'efgh'] }
       })
-    ).toEqual([{ ...newProduct, voterIds: ['abcd'] }]);
+    ).toEqual(shoppingListMockPopulated);
   });
 });

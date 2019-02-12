@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const CardItem = ({ name }) => (
-  <a className="card-item" href="#!">
+  <div className="card-item">
     <h3 className="card-item__heading">{name}</h3>
-  </a>
+  </div>
 );
 
 export default CardItem;

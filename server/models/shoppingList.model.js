@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
+const ItemSchema = require('./item.model').schema;
 
 const ShoppingListSchema = new Schema(
   {
     adminIds: [String],
     description: { type: String },
-    items: [String],
+    products: [ItemSchema],
     name: { type: String, required: true },
     ordererIds: [String],
     organizationIds: [String],

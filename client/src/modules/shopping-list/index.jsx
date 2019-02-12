@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import { getProducts } from 'modules/shopping-list/model/selectors';
+import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
-import { fetchProducts } from 'modules/shopping-list/model/actions';
+import { fetchItemsFromGivenList } from 'modules/shopping-list/model/actions';
 
 class ShoppingList extends Component {
   componentDidMount() {
@@ -13,15 +14,20 @@ class ShoppingList extends Component {
   }
 
   fetchProducts = () => {
-    const { fetchProducts } = this.props;
-    fetchProducts();
+    const {
+      fetchItemsFromGivenList,
+      match: {
+        params: { id }
+      }
+    } = this.props;
+    fetchItemsFromGivenList(id);
   };
 
   render() {
-    const { products } = this.props;
-
-    const archiveList = products.filter(product => product.isOrdered);
-    const shoppingList = products.filter(product => !product.isOrdered);
+    const { list } = this.props;
+    const listItems = list && list.products ? list.products : [];
+    const archiveList = listItems.filter(item => item.isOrdered);
+    const shoppingList = listItems.filter(item => !item.isOrdered);
 
     return (
       <Fragment>
@@ -36,16 +42,23 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.object),
+  list: PropTypes.objectOf(PropTypes.any),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string
+    })
+  }).isRequired,
 
-  fetchProducts: PropTypes.func
+  fetchItemsFromGivenList: PropTypes.func
 };
 
-const mapStateToProps = state => ({
-  products: getProducts(state)
+const mapStateToProps = (state, ownProps) => ({
+  list: getShoppingList(state, ownProps.match.params.id)
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchProducts }
-)(ShoppingList);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { fetchItemsFromGivenList }
+  )(ShoppingList)
+);

@@ -1,4 +1,5 @@
 const ShoppingList = require('../models/shoppingList.model');
+const Product = require('../models/item.model');
 
 const createNewList = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -49,8 +50,114 @@ const getShoppingListById = (req, resp) => {
   });
 };
 
+const getShoppingListsMetaData = (req, resp) => {
+  ShoppingList.find(
+    {
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    '_id name description',
+    { sort: { created_at: -1 } },
+    (err, docs) => {
+      err ? resp.status(404).send(err.message) : resp.status(200).send(docs);
+    }
+  );
+};
+
+const addProductToList = (req, resp) => {
+  const {
+    product: { name, isOrdered, authorName, authorId, voterIds },
+    listId
+  } = req.body;
+
+  const product = new Product({
+    authorName,
+    authorId,
+    isOrdered,
+    name,
+    createdAt: new Date(Date.now()).toISOString(),
+    voterIds
+  });
+
+  ShoppingList.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    { $push: { products: product } },
+    (err, data) => {
+      err ? resp.status(404).send(err) : resp.status(200).send(product);
+    }
+  );
+};
+
+const getProductsForGivenList = (req, resp) => {
+  ShoppingList.find(
+    {
+      _id: req.params.id,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    'products',
+    (err, documents) => {
+      const { products } = documents[0];
+      err ? resp.status(404).send(err) : resp.status(200).json(products);
+    }
+  );
+};
+
+const updateShoppingListItem = (req, resp) => {
+  const { isOrdered, itemId, voterIds } = req.body;
+  const { id: listId } = req.params;
+
+  /**
+   * Create object with properties to update, but only these which
+   * are passed in the request
+   *  */
+  const propertiesToUpdate = {};
+  typeof isOrdered !== 'undefined'
+    ? (propertiesToUpdate['products.$.isOrdered'] = isOrdered)
+    : null;
+  voterIds ? (propertiesToUpdate['products.$.voterIds'] = voterIds) : null;
+
+  ShoppingList.findOneAndUpdate(
+    {
+      _id: listId,
+      'products._id': itemId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    {
+      $set: propertiesToUpdate
+    },
+    { new: true },
+    (err, doc) => {
+      const itemIndex = doc.products.findIndex(item => item._id.equals(itemId));
+      const item = doc.products[itemIndex];
+      err ? resp.status(404).send(err.message) : resp.status(200).json(item);
+    }
+  );
+};
+
 module.exports = {
+  addProductToList,
   createNewList,
   getAllShoppingLists,
-  getShoppingListById
+  getProductsForGivenList,
+  getShoppingListById,
+  getShoppingListsMetaData,
+  updateShoppingListItem
 };

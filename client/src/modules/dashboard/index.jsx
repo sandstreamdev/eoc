@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import _map from 'lodash/map';
 
 import {
   ClipboardSolid as ShoppingListIcon,
   UsersSolid as CohortIcon
 } from 'assets/images/icons';
-import { fetchShoppingLists } from 'modules/shopping-list/model/actions';
+import { fetchShoppingListsMetaData } from 'modules/shopping-list/model/actions';
 import { fetchCohorts } from 'modules/cohort/model/actions';
 import { getShoppingLists } from 'modules/shopping-list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
@@ -14,9 +16,9 @@ import CardItem from './CardItem';
 
 class Dashboard extends Component {
   componentDidMount() {
-    const { fetchShoppingLists, fetchCohorts } = this.props;
+    const { fetchShoppingListsMetaData, fetchCohorts } = this.props;
 
-    fetchShoppingLists();
+    fetchShoppingListsMetaData();
     fetchCohorts();
   }
 
@@ -31,9 +33,11 @@ class Dashboard extends Component {
             Shopping lists
           </h2>
           <ul className="dashboard__list">
-            {shoppingLists.map(list => (
-              <li className="dashboard__list-item" key={list._id}>
-                <CardItem name={list.name} />
+            {_map(shoppingLists, item => (
+              <li className="dashboard__list-item" key={item._id}>
+                <Link to={`list/${item._id}`}>
+                  <CardItem name={item.name} />
+                </Link>
               </li>
             ))}
           </ul>
@@ -56,10 +60,10 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   cohorts: PropTypes.arrayOf(PropTypes.object),
-  shoppingLists: PropTypes.arrayOf(PropTypes.object),
+  shoppingLists: PropTypes.objectOf(PropTypes.object),
 
   fetchCohorts: PropTypes.func.isRequired,
-  fetchShoppingLists: PropTypes.func.isRequired
+  fetchShoppingListsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -69,5 +73,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { fetchShoppingLists, fetchCohorts }
+  { fetchShoppingListsMetaData, fetchCohorts }
 )(Dashboard);
