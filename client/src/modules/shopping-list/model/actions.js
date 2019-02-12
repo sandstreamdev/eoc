@@ -2,11 +2,10 @@ import _keyBy from 'lodash/keyBy';
 
 import { ENDPOINT_URL } from 'common/constants/variables';
 import {
-  getData,
-  postData,
-  patchData,
   deleteData,
-  onFetchError
+  getData,
+  patchData,
+  postData
 } from 'common/utils/fetchMethods';
 import { ShoppingListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
@@ -137,27 +136,23 @@ export const deleteList = (id, successRedirectCallback) => dispatch => {
   dispatch(deleteListRequest());
   deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
     .then(resp =>
-      resp.text().then(message => {
-        if (resp.ok) {
-          dispatch(deleteListSuccess(id));
-          createNotificationWithTimeout(
-            dispatch,
-            NotificationType.SUCCESS,
-            message
-          );
-          successRedirectCallback();
-        } else {
-          const error = new Error(message);
-          error.fromBackend = true;
-          throw error;
-        }
+      resp.json().then(json => {
+        dispatch(deleteListSuccess(id));
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          json.message
+        );
+        successRedirectCallback();
       })
     )
     .catch(err => {
-      const message = err.fromBackend
-        ? err.message
-        : "Oops, we're sorry, deleting list failed...";
-      onFetchError(dispatch, message, () => dispatch(deleteListFailure()));
+      dispatch(deleteListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, deleting list failed..."
+      );
     });
 };
 

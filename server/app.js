@@ -35,6 +35,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('../../dist'));
+
 // Routes handlers
 require('./routes/authorization')(app);
 require('./routes/shoppingList')(app);
@@ -43,7 +44,7 @@ require('./routes/item')(app);
 require('./routes/items')(app);
 
 app.use((req, res, next) => {
-  res.status(404).send('Resource not found');
+  res.status(404).send({ message: 'Resource not found' });
 });
 
 // Root endpoint

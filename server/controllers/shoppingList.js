@@ -56,17 +56,21 @@ const deleteListById = (req, resp) => {
   ShoppingList.findOneAndDelete(
     { _id: req.params.id, adminIds: req.user._id },
     (err, doc) => {
-      if (!doc)
-        return resp
-          .status(401)
-          .send("You don't have permission to delete the list");
+      if (!doc) {
+        return resp.status(404).send({
+          message:
+            "No list of given id or you don't have permission to delete it"
+        });
+      }
+
       return err
-        ? resp
-            .status(400)
-            .send("Oops we're sorry, an error occurred while deleting the list")
-        : resp
-            .status(200)
-            .send(`List with id: ${req.params.id} was successfully deleted!`);
+        ? resp.status(400).send({
+            message:
+              "Oops we're sorry, an error occurred while deleting the list"
+          })
+        : resp.status(200).send({
+            message: `List with id: ${req.params.id} was successfully deleted!`
+          });
     }
   );
 };

@@ -88,9 +88,9 @@ class ShoppingList extends Component {
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
     const shoppingListMenu = [
-      { callback: this.showUpdateForm, icon: EditIcon, label: 'Edit list' },
-      { callback: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
-      { callback: () => {}, icon: InviteUserIcon, label: 'invite user' }
+      { onClick: this.showUpdateForm, icon: EditIcon, label: 'Edit list' },
+      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
+      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
     ];
 
     return (
@@ -105,11 +105,8 @@ class ShoppingList extends Component {
         {showDialogBox && (
           <ModalBox>
             <DialogBox
-              cancelCallback={this.hideDialogBox}
-              cofirmCallback={this.deleteListHandler(
-                listId,
-                this.redirectHandler
-              )}
+              onCancel={this.hideDialogBox}
+              onConfirm={this.deleteListHandler(listId, this.redirectHandler)}
               message="Do you really want to delete the list?"
             />
           </ModalBox>
@@ -137,8 +134,8 @@ ShoppingList.propTypes = {
     })
   }).isRequired,
 
-  deleteList: PropTypes.func,
-  fetchItemsFromGivenList: PropTypes.func,
+  deleteList: PropTypes.func.isRequired,
+  fetchItemsFromGivenList: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
