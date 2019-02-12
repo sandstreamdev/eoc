@@ -1,5 +1,3 @@
-const _pick = require('lodash/pick');
-
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
 const filter = require('../common/utilities');
@@ -193,20 +191,8 @@ const updateListById = (req, resp) => {
     {
       new: true
     },
-    (err, doc) => {
-      const dataToReturn = _pick(doc, [
-        '_id',
-        'adminIds',
-        'description',
-        'name',
-        'ordererId',
-        'organizationIds',
-        'purchaserIds'
-      ]);
-
-      err
-        ? resp.status(404).send(err.message)
-        : resp.status(200).json(dataToReturn);
+    err => {
+      err ? resp.status(404).send(err.message) : resp.status(200);
     }
   );
 };
