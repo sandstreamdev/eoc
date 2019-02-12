@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const DialogBox = ({ message, cofirmCallback, cancelCallback }) => (
+const DialogBox = ({ cancelCallback, cofirmCallback, message }) => (
   <div className="overlay">
     <div className="dialogbox">
       <h1 className="dialogbox__heading">{message}</h1>
@@ -28,6 +28,6 @@ export default DialogBox;
 DialogBox.propTypes = {
   message: PropTypes.string,
 
-  cancelCallback: PropTypes.func,
-  cofirmCallback: PropTypes.func
+  cancelCallback: PropTypes.func.isRequired,
+  cofirmCallback: PropTypes.func.isRequired
 };

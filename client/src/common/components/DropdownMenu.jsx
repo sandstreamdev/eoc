@@ -21,17 +21,11 @@ class DropdownMenu extends Component {
     document.addEventListener('keydown', this.onPressEscape);
   };
 
-  onPressEscape = e => {
-    if (e.keyCode === 27) this.hideMenu();
-  };
+  onPressEscape = e => (e.keyCode === 27 ? this.hideMenu() : null);
 
   toggleMenuVisibility = () => {
     const { hideMenu } = this.state;
-    if (hideMenu) {
-      this.showMenu();
-    } else {
-      this.hideMenu();
-    }
+    hideMenu ? this.showMenu() : this.hideMenu();
   };
 
   render() {

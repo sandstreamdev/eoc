@@ -72,7 +72,7 @@ class ShoppingList extends Component {
         icon: RemoveIcon,
         label: 'Remove list'
       },
-      { callback: () => {}, icon: InviteUserIcon, label: 'invite user' }
+      { callback: () => {}, icon: InviteUserIcon, label: 'Invite user' }
     ];
 
     return (
@@ -108,8 +108,8 @@ ShoppingList.propTypes = {
     })
   }).isRequired,
 
-  deleteList: PropTypes.func,
-  fetchItemsFromGivenList: PropTypes.func
+  deleteList: PropTypes.func.isRequired,
+  fetchItemsFromGivenList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
