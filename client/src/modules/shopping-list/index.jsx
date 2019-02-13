@@ -51,10 +51,10 @@ class ShoppingList extends Component {
     this.setState({ showDialogBox: false });
   };
 
-  deleteListHandler = (id, redirectCallback) => () => {
+  deleteListHandler = id => () => {
     this.hideDialogBox();
     const { deleteList } = this.props;
-    deleteList(id, redirectCallback).then(() => this.redirectHandler());
+    deleteList(id).then(() => this.redirectHandler());
   };
 
   redirectHandler = () => {
