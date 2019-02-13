@@ -29,8 +29,8 @@ const sortOptions = [
 ];
 
 const filterOptions = [
-  { id: FilterOptionType.ALL_PRODUCTS, label: 'all products' },
-  { id: FilterOptionType.MY_PRODUCTS, label: 'my products' }
+  { id: FilterOptionType.ALL_PRODUCTS, label: 'all' },
+  { id: FilterOptionType.MY_PRODUCTS, label: 'my' }
 ];
 
 class ProductsContainer extends Component {
