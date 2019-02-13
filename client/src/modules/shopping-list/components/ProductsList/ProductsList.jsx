@@ -65,7 +65,7 @@ class ProductsList extends Component {
       <Fragment>
         {!products.length ? (
           <div className="products__message">
-            <p>There are no products!</p>
+            <p>There are no items!</p>
           </div>
         ) : (
           <ul className="products-list">

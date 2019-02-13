@@ -30,7 +30,7 @@ class Dashboard extends Component {
         <div className="dashboard">
           <h2 className="dashboard__heading">
             <ShoppingListIcon />
-            Shopping lists
+            Lists
           </h2>
           <ul className="dashboard__list">
             {_map(shoppingLists, item => (
