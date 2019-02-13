@@ -1,7 +1,7 @@
 import _keyBy from 'lodash/keyBy';
 
 import { ENDPOINT_URL } from 'common/constants/variables';
-import { getData, postData } from 'common/utils/fetchMethods';
+import { deleteData, getData, postData } from 'common/utils/fetchMethods';
 import { ShoppingListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
@@ -15,20 +15,39 @@ export const fetchProductsSuccess = (json, listId) => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS,
   payload: { products: json, listId }
 });
+
 const fetchProductRequest = () => ({
   type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST
 });
+
 const createNewShoppingListSuccess = data => ({
   type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS,
   payload: data
 });
+
 const createNewShoppingListFailure = errMessage => ({
   type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_FAILURE,
   payload: errMessage
 });
+
 const createNewShoppingListRequest = () => ({
   type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST
 });
+
+const deleteListSuccess = id => ({
+  type: ShoppingListActionTypes.DELETE_SUCCESS,
+  payload: id
+});
+
+const deleteListFailure = errMessage => ({
+  type: ShoppingListActionTypes.DELETE_FAILURE,
+  payload: errMessage
+});
+
+const deleteListRequest = () => ({
+  type: ShoppingListActionTypes.DELETE_REQUEST
+});
+
 const fetchShoppingListMetaDataSuccess = data => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_SUCCESS,
   payload: data
@@ -91,5 +110,29 @@ export const fetchShoppingListsMetaData = () => dispatch => {
         NotificationType.ERROR,
         "Oops, we're sorry, fetching lists failed..."
       );
+    });
+};
+
+export const deleteList = id => dispatch => {
+  dispatch(deleteListRequest());
+  return deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
+    .then(resp =>
+      resp.json().then(json => {
+        dispatch(deleteListSuccess(id));
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          json.message
+        );
+      })
+    )
+    .catch(err => {
+      dispatch(deleteListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, deleting list failed..."
+      );
+      throw new Error();
     });
 };

@@ -27,3 +27,16 @@ export const postRequest = url =>
     method: 'POST',
     mode: 'no-cors'
   });
+
+export const deleteData = url =>
+  fetch(url, {
+    credentials: 'include',
+    method: 'DELETE'
+  }).then(resp => {
+    if (resp.status >= 400 && resp.status < 600) {
+      return resp.json().then(json => {
+        throw new Error(json.message);
+      });
+    }
+    return resp;
+  });

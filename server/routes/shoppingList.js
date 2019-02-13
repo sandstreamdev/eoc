@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   addProductToList,
   createNewList,
+  deleteListById,
   getAllShoppingLists,
   getProductsForGivenList,
   getShoppingListById,
@@ -17,6 +18,7 @@ router.get('/meta-data', authorize, getShoppingListsMetaData);
 router.get('/:id', authorize, getShoppingListById);
 router.post('/create', createNewList);
 router.post('/add-product', authorize, addProductToList);
+router.delete('/:id/delete', authorize, deleteListById);
 router.get('/:id/products', authorize, getProductsForGivenList);
 router.patch('/:id/update-item', authorize, updateShoppingListItem);
 

@@ -50,6 +50,30 @@ const getShoppingListById = (req, resp) => {
   });
 };
 
+// Delete list by given id
+const deleteListById = (req, resp) => {
+  ShoppingList.findOneAndDelete(
+    { _id: req.params.id, adminIds: req.user._id },
+    (err, doc) => {
+      if (!doc) {
+        return resp.status(404).send({
+          message:
+            "No list of given id or you don't have permission to delete it"
+        });
+      }
+
+      return err
+        ? resp.status(400).send({
+            message:
+              "Oops we're sorry, an error occurred while deleting the list"
+          })
+        : resp.status(200).send({
+            message: `List with id: ${req.params.id} was successfully deleted!`
+          });
+    }
+  );
+};
+
 const getShoppingListsMetaData = (req, resp) => {
   ShoppingList.find(
     {
@@ -155,6 +179,7 @@ const updateShoppingListItem = (req, resp) => {
 module.exports = {
   addProductToList,
   createNewList,
+  deleteListById,
   getAllShoppingLists,
   getProductsForGivenList,
   getShoppingListById,
