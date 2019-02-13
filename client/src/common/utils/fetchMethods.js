@@ -1,4 +1,9 @@
 const handleFetchErrors = resp => {
+  if (resp.status === 403) {
+    setTimeout(() => {
+      window.location = '/';
+    }, 5000);
+  }
   if (resp.status >= 400 && resp.status < 600) {
     return resp.json().then(json => {
       throw new Error(json.message);
