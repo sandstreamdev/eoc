@@ -4,14 +4,14 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const { ENDPOINT_URL, FRONTEND_URL } = require('../common/variables');
 const { findOrCreateUser, extractUserProfile } = require('../utils/userUtils');
 
-// Use GoogleStrategy to authenicate user
+// Use GoogleStrategy to authenticate user
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: `${ENDPOINT_URL}/auth/google/callback`,
-      profileFields: ['id', 'displayName', 'photos', 'email']
+      userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
     },
     (accessToken, refreshToken, profile, done) => {
       findOrCreateUser(extractUserProfile(profile, accessToken), done);
@@ -28,7 +28,7 @@ passport.deserializeUser((user, done) => {
 });
 
 const authenticate = passport.authenticate('google', {
-  scope: ['https://www.googleapis.com/auth/plus.login', 'email', 'profile']
+  scope: ['profile', 'email']
 });
 
 const authenticateCallback = passport.authenticate('google', {

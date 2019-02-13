@@ -12,17 +12,20 @@ const findOrCreateUser = (user, doneCallback) => {
   });
 };
 
+/* eslint camelcase: "off" */
 const extractUserProfile = (profile, accessToken) => {
-  const { displayName, emails, id, image, name } = profile._json;
+  const { email, picture, name, given_name, family_name } = profile._json;
+  const { id } = profile;
+
   return {
     accessToken,
-    avatarUrl: image.url,
-    displayName,
-    email: emails[0].value,
+    avatarUrl: picture,
+    displayName: name,
+    email,
     idFromProvider: id,
-    name: name.givenName,
+    name: given_name,
     provider: 'google',
-    surname: name.familyName
+    surname: family_name
   };
 };
 
