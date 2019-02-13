@@ -61,7 +61,7 @@ const updateItem = (req, resp) => {
       }
       return err
         ? resp.status(400).send({ message: 'Updating item failed...' })
-        : resp.status(404).send({ message: 'Updating success' });
+        : resp.status(200).send({ message: 'Updating success' });
     }
   );
 };

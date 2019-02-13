@@ -23,7 +23,7 @@ const ModalBox = ({ children, onClose }) => (
 ModalBox.propTypes = {
   children: PropTypes.node.isRequired,
 
-  onClose: PropTypes.func
+  onClose: PropTypes.func.isRequired
 };
 
 export default ModalBox;

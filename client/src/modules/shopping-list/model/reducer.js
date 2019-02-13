@@ -17,15 +17,15 @@ const shoppingLists = (state = {}, action) => {
       return newState;
     }
     case ShoppingListActionTypes.UPDATE_SUCCESS: {
-      const updateList = {
-        ...state[action.payload.listId]
+      const prevList = state[action.payload.listId];
+      const updatedList = {
+        ...prevList,
+        name: action.payload.name || prevList.name,
+        description: action.payload.description || prevList.description
       };
-      updateList.name = action.payload.name || updateList.name;
-      updateList.description =
-        action.payload.description || updateList.description;
       return {
         ...state,
-        [action.payload.listId]: updateList
+        [action.payload.listId]: updatedList
       };
     }
     case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS: {
