@@ -17,21 +17,20 @@ import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
 
 class ShoppingList extends Component {
-  constructor(props) {
-    super(props);
-    this.listMenu = [
-      { onClick: () => {}, icon: EditIcon, label: 'Edit list' },
-      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
-      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
-    ];
-  }
-
   state = {
     showDialogBox: false
   };
 
   componentDidMount() {
     this.fetchProducts();
+  }
+
+  get listMenu() {
+    return [
+      { onClick: () => {}, icon: EditIcon, label: 'Edit list' },
+      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
+      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
+    ];
   }
 
   fetchProducts = () => {
@@ -55,7 +54,7 @@ class ShoppingList extends Component {
   deleteListHandler = (id, redirectCallback) => () => {
     this.hideDialogBox();
     const { deleteList } = this.props;
-    deleteList(id, redirectCallback);
+    deleteList(id, redirectCallback).then(() => this.redirectHandler());
   };
 
   redirectHandler = () => {
@@ -97,7 +96,9 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
-  history: PropTypes.objectOf(PropTypes.any),
+  history: PropTypes.shape({
+    push: PropTypes.func
+  }),
   list: PropTypes.objectOf(PropTypes.any),
   match: PropTypes.shape({
     params: PropTypes.shape({

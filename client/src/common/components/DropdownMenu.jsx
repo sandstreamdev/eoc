@@ -21,7 +21,7 @@ class DropdownMenu extends Component {
     document.addEventListener('keydown', this.onPressEscape);
   };
 
-  onPressEscape = e => (e.keyCode === 27 ? this.hideMenu() : null);
+  onPressEscape = e => (e.code === 'Escape' ? this.hideMenu() : null);
 
   toggleMenuVisibility = () => {
     const { hideMenu } = this.state;
@@ -37,8 +37,14 @@ class DropdownMenu extends Component {
       </div>
     );
     return (
-      <a className="dropdown" href="#!" onClick={this.toggleMenuVisibility}>
-        {menuButton}
+      <div className="dropdown">
+        <button
+          className="dropdown__button"
+          type="button"
+          onClick={this.toggleMenuVisibility}
+        >
+          {menuButton}
+        </button>
         <div
           className={classNames('dropdown__menu-wrapper', {
             hidden: hideMenu
@@ -65,7 +71,7 @@ class DropdownMenu extends Component {
             ))}
           </ul>
         </div>
-      </a>
+      </div>
     );
   }
 }
@@ -77,7 +83,7 @@ DropdownMenu.propTypes = {
       icon: PropTypes.string,
       label: PropTypes.string,
 
-      callback: PropTypes.func
+      onClick: PropTypes.func
     })
   ).isRequired
 };
