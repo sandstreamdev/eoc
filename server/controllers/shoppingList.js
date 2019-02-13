@@ -135,7 +135,7 @@ const getProductsForGivenList = (req, resp) => {
     },
     'products',
     (err, documents) => {
-      if (documents) {
+      if (documents.length > 0) {
         const { products } = documents[0];
         return resp.status(200).json(products);
       }
@@ -188,16 +188,27 @@ const updateListById = (req, resp) => {
     name
   });
 
-  ShoppingList.updateOne(
+  ShoppingList.findOneAndUpdate(
     {
       _id: listId,
       $or: [{ adminIds: req.user._id }]
     },
     dataToUpdate,
-    err => {
-      err
-        ? resp.status(404).send({ message: 'List not found' })
-        : resp.status(200).send({ message: 'Updated successfully' });
+    { new: true },
+    (err, doc) => {
+      if (!doc) {
+        return resp.status(404).send({
+          message: 'You dont have permissions to update this list'
+        });
+      }
+      return err
+        ? resp.status(400).send({
+            message:
+              "Oops we're sorry, an error occurred while updating the list"
+          })
+        : resp.status(200).send({
+            message: `List with id: ${req.params.id} was successfully updated!`
+          });
     }
   );
 };
