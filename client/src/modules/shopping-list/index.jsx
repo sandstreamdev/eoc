@@ -12,6 +12,7 @@ import {
 } from 'modules/shopping-list/model/actions';
 import DropdownMenu from 'common/components/DropdownMenu';
 import DialogBox from 'common/components/DialogBox';
+import { noOp } from 'common/utils/noOp';
 import EditIcon from 'assets/images/pen-solid.svg';
 import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
@@ -54,7 +55,9 @@ class ShoppingList extends Component {
   deleteListHandler = id => () => {
     this.hideDialogBox();
     const { deleteList } = this.props;
-    deleteList(id).then(() => this.redirectHandler());
+    deleteList(id)
+      .then(this.redirectHandler)
+      .catch(noOp);
   };
 
   redirectHandler = () => {

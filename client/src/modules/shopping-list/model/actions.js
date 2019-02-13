@@ -133,5 +133,6 @@ export const deleteList = id => dispatch => {
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, deleting list failed..."
       );
+      throw new Error();
     });
 };
