@@ -79,7 +79,12 @@ class ShoppingList extends Component {
 
   updateListHandler = listId => (name, description) => {
     const { updateList } = this.props;
-    updateList(listId, description, name);
+    const dataToUpdate = {};
+
+    name ? (dataToUpdate.name = name) : null;
+    description ? (dataToUpdate.description = description) : null;
+
+    updateList(listId, dataToUpdate);
     this.hideUpdateForm();
   };
 

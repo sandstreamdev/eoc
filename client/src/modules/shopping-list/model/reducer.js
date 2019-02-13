@@ -17,7 +17,16 @@ const shoppingLists = (state = {}, action) => {
       return newState;
     }
     case ShoppingListActionTypes.UPDATE_SUCCESS: {
-      return state;
+      const updateList = {
+        ...state[action.payload.listId]
+      };
+      updateList.name = action.payload.name || updateList.name;
+      updateList.description =
+        action.payload.description || updateList.description;
+      return {
+        ...state,
+        [action.payload.listId]: updateList
+      };
     }
     case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS: {
       const updatedShoppingList = {

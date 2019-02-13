@@ -156,15 +156,12 @@ export const deleteList = id => dispatch => {
     });
 };
 
-export const updateList = (listId, description, name) => dispatch => {
+export const updateList = (listId, data) => dispatch => {
   dispatch(updateListRequest());
-  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, {
-    description,
-    name
-  })
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
-      dispatch(updateListSuccess({ description, listId, name }));
+      dispatch(updateListSuccess({ ...data, listId }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
