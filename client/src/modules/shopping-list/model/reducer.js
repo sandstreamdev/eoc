@@ -16,8 +16,9 @@ const shoppingLists = (state = {}, action) => {
       const { [action.payload]: removed, ...newState } = state;
       return newState;
     }
-    case ShoppingListActionTypes.UPDATE_SUCCESS:
+    case ShoppingListActionTypes.UPDATE_SUCCESS: {
       return state;
+    }
     case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS: {
       const updatedShoppingList = {
         ...state[action.payload.listId],

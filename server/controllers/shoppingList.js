@@ -135,8 +135,11 @@ const getProductsForGivenList = (req, resp) => {
     },
     'products',
     (err, documents) => {
-      const { products } = documents[0];
-      err ? resp.status(404).send(err) : resp.status(200).json(products);
+      if (documents) {
+        const { products } = documents[0];
+        return resp.status(200).json(products);
+      }
+      return resp.status(404).send(err);
     }
   );
 };
@@ -180,7 +183,6 @@ const updateShoppingListItem = (req, resp) => {
 const updateListById = (req, resp) => {
   const { description, name } = req.body;
   const { id: listId } = req.params;
-
   const dataToUpdate = filter(x => x !== undefined)({
     description,
     name
@@ -192,13 +194,10 @@ const updateListById = (req, resp) => {
       $or: [{ adminIds: req.user._id }]
     },
     dataToUpdate,
-    {
-      new: true
-    },
     err => {
       err
         ? resp.status(404).send({ message: 'List not found' })
-        : resp.status(200).send({ message: 'Updated succefully' });
+        : resp.status(200).send({ message: 'Updated successfully' });
     }
   );
 };

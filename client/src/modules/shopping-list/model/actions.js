@@ -156,15 +156,15 @@ export const deleteList = (id, successRedirectCallback) => dispatch => {
     });
 };
 
-export const updateList = (id, description, name) => dispatch => {
+export const updateList = (listId, description, name) => dispatch => {
   dispatch(updateListRequest());
-  patchData(`${ENDPOINT_URL}/shopping-lists/${id}/update`, {
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, {
     description,
     name
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(updateListSuccess({ description, id, name }));
+      dispatch(updateListSuccess({ description, listId, name }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,

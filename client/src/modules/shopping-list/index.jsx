@@ -75,9 +75,9 @@ class ShoppingList extends Component {
     this.setState({ showUpdateFrom: true });
   };
 
-  updateListHandler = id => (description, name) => {
+  updateListHandler = listId => (name, description) => {
     const { updateList } = this.props;
-    // updateList(id, description, name);
+    updateList(listId, description, name);
     this.hideUpdateForm();
   };
 
