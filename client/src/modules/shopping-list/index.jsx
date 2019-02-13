@@ -14,21 +14,13 @@ import {
 import DropdownMenu from 'common/components/DropdownMenu';
 import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
+import { noOp } from 'common/utils/noOp';
 import CreationForm from 'common/components/CreationForm';
 import EditIcon from 'assets/images/pen-solid.svg';
 import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
 
 class ShoppingList extends Component {
-  constructor(props) {
-    super(props);
-    this.listMenu = [
-      { onClick: this.showUpdateForm, icon: EditIcon, label: 'Edit list' },
-      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
-      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
-    ];
-  }
-
   state = {
     showDialogBox: false,
     showUpdateFrom: false
@@ -36,6 +28,14 @@ class ShoppingList extends Component {
 
   componentDidMount() {
     this.fetchProducts();
+  }
+
+  get listMenu() {
+    return [
+      { onClick: this.showUpdateForm, icon: EditIcon, label: 'Edit list' },
+      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
+      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
+    ];
   }
 
   fetchProducts = () => {
@@ -56,10 +56,12 @@ class ShoppingList extends Component {
     this.setState({ showDialogBox: false });
   };
 
-  deleteListHandler = (id, redirectCallback) => () => {
+  deleteListHandler = id => () => {
     this.hideDialogBox();
     const { deleteList } = this.props;
-    deleteList(id, redirectCallback);
+    deleteList(id)
+      .then(this.redirectHandler)
+      .catch(noOp);
   };
 
   redirectHandler = () => {

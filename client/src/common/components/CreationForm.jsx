@@ -47,7 +47,7 @@ class CreationForm extends PureComponent {
             className="creation-form__input"
             onChange={this.handleValueChange}
             placeholder="Title"
-            required
+            required={type === 'menu'}
             type="text"
             value={title}
           />

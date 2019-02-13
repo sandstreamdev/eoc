@@ -132,9 +132,9 @@ export const fetchShoppingListsMetaData = () => dispatch => {
     });
 };
 
-export const deleteList = (id, successRedirectCallback) => dispatch => {
+export const deleteList = id => dispatch => {
   dispatch(deleteListRequest());
-  deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
+  return deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
     .then(resp =>
       resp.json().then(json => {
         dispatch(deleteListSuccess(id));
@@ -143,7 +143,6 @@ export const deleteList = (id, successRedirectCallback) => dispatch => {
           NotificationType.SUCCESS,
           json.message
         );
-        successRedirectCallback();
       })
     )
     .catch(err => {
@@ -153,6 +152,7 @@ export const deleteList = (id, successRedirectCallback) => dispatch => {
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, deleting list failed..."
       );
+      throw new Error();
     });
 };
 
