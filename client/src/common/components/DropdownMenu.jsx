@@ -60,11 +60,11 @@ class DropdownMenu extends Component {
                   type="button"
                 >
                   {item.label}
-                  {item.icon && (
+                  {item.iconSrc && (
                     <img
                       alt={`${item.label} icon`}
                       className="dropdown__menu-icon"
-                      src={item.icon}
+                      src={item.iconSrc}
                     />
                   )}
                 </button>
@@ -81,7 +81,7 @@ DropdownMenu.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
   menuItems: PropTypes.arrayOf(
     PropTypes.shape({
-      icon: PropTypes.string,
+      iconSrc: PropTypes.string,
       label: PropTypes.string.isRequired,
 
       onClick: PropTypes.func.isRequired

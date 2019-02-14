@@ -32,9 +32,13 @@ class ShoppingList extends Component {
 
   get listMenu() {
     return [
-      { onClick: this.showUpdateForm, icon: EditIcon, label: 'Edit list' },
-      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
-      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
+      { onClick: this.showUpdateForm, iconSrc: EditIcon, label: 'Edit list' },
+      {
+        onClick: this.showDialogBox,
+        iconSrc: RemoveIcon,
+        label: 'Remove list'
+      },
+      { onClick: () => {}, iconSrc: InviteUserIcon, label: 'Invite user' }
     ];
   }
 

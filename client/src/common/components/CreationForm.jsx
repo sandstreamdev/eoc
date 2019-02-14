@@ -37,7 +37,7 @@ class CreationForm extends PureComponent {
     return (
       <form
         className={classNames('creation-form', {
-          'creation-form__menu': type === 'menu'
+          'creation-form--menu': type === 'menu'
         })}
         onSubmit={this.handleFormSubmission}
       >
