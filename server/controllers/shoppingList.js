@@ -143,7 +143,7 @@ const getProductsForGivenList = (req, resp) => {
       }
 
       const { products } = documents[0];
-      return resp.status(200).json(products);
+      resp.status(200).json(products);
     }
   );
 };
