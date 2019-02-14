@@ -15,7 +15,7 @@ const itemCreate = (req, resp) => {
 
   item.save((err, doc) => {
     err
-      ? resp.status(400).send(err.message)
+      ? resp.status(400).send({ message: err.message })
       : resp
           .location(`/item/${doc._id}`)
           .status(201)

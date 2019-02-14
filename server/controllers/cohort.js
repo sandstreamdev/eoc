@@ -11,7 +11,7 @@ const createCohort = (req, resp) => {
 
   cohort.save((err, doc) => {
     err
-      ? resp.status(400).send(err.message)
+      ? resp.status(400).send({ message: err.message })
       : resp
           .location(`/cohorts/${doc._id}`)
           .status(201)
@@ -27,17 +27,21 @@ const getCohorts = (req, resp) => {
     null,
     { sort: { createdAt: -1 } },
     (err, cohorts) => {
-      err ? resp.status(400).send(err.message) : resp.status(200).send(cohorts);
+      err
+        ? resp.status(400).send({ message: err.message })
+        : resp.status(200).send(cohorts);
     }
   );
 };
 
 const getCohortById = (req, resp) => {
   Cohort.findById({ _id: req.params.id }, (err, doc) => {
-    if (!doc) return resp.status(404).send('No cohort of given id');
+    if (!doc) {
+      return resp.status(404).send({ message: 'No cohort of given id' });
+    }
 
     return err
-      ? resp.status(400).send(err.message)
+      ? resp.status(400).send({ message: err.message })
       : resp.status(200).json(doc);
   });
 };

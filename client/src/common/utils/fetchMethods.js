@@ -1,8 +1,10 @@
+import { FRONTED_URL, NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
+
 const handleFetchErrors = resp => {
   if (resp.status === 403) {
     setTimeout(() => {
-      window.location = '/';
-    }, 5000);
+      window.location = FRONTED_URL;
+    }, NOTIFICATION_TIMEOUT);
   }
   if (resp.status >= 400 && resp.status < 600) {
     return resp.json().then(json => {
@@ -15,7 +17,7 @@ const handleFetchErrors = resp => {
 export const getData = url =>
   fetch(url, {
     credentials: 'include'
-  });
+  }).then(handleFetchErrors);
 
 export const postData = (url, data) =>
   fetch(url, {
@@ -25,7 +27,7 @@ export const postData = (url, data) =>
       'Content-Type': 'application/json'
     },
     method: 'POST'
-  });
+  }).then(handleFetchErrors);
 
 export const patchData = (url, data) =>
   fetch(url, {
