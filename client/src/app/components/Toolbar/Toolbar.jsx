@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -19,27 +19,57 @@ import { createShoppingList } from 'modules/shopping-list/model/actions';
 import { createCohort } from 'modules/cohort/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
+import Overlay from 'common/components/Overlay';
 
 class Toolbar extends PureComponent {
-  state = {
-    cohortFormVisbility: false,
-    shoppingFormVisbility: false
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      cohortFormVisbility: false,
+      shoppingFormVisbility: false,
+      overlayVisibility: false
+    };
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', event => {
+      event.target.className === 'overlay' ? this.hideOverlayAndForm() : null;
+    });
+    document.addEventListener('keydown', event => {
+      event.code === 'Escape' ? this.hideOverlayAndForm() : null;
+    });
+  }
+
+  /**
+   * TODO Przerobić dodawania listenerów i usuwać listenery zanim component się odmontuje
+   */
+
+  hideOverlayAndForm = () => {
+    this.setState({
+      overlayVisibility: false,
+      cohortFormVisbility: false,
+      shoppingFormVisbility: false
+    });
   };
 
   handleShoppingListFormVisibility = () => {
-    const { shoppingFormVisbility } = this.state;
+    const { shoppingFormVisbility, overlayVisibility } = this.state;
+
     this.setState({
       shoppingFormVisbility: !shoppingFormVisbility,
-      cohortFormVisbility: false
+      cohortFormVisbility: false,
+      overlayVisibility: !overlayVisibility
     });
   };
 
   handleCohortFormVisibility = () => {
-    const { cohortFormVisbility } = this.state;
+    const { cohortFormVisbility, overlayVisibility } = this.state;
 
     this.setState({
       shoppingFormVisbility: false,
-      cohortFormVisbility: !cohortFormVisbility
+      cohortFormVisbility: !cohortFormVisbility,
+      overlayVisibility: !overlayVisibility
     });
   };
 
@@ -49,7 +79,7 @@ class Toolbar extends PureComponent {
       currentUser: { id }
     } = this.props;
     createShoppingList(title, description, id);
-    this.setState({ shoppingFormVisbility: false });
+    this.setState({ shoppingFormVisbility: false, overlayVisibility: false });
   };
 
   handleCohortSubmission = (title, description) => {
@@ -58,91 +88,114 @@ class Toolbar extends PureComponent {
       currentUser: { id }
     } = this.props;
     createCohort(title, description, id);
-    this.setState({ cohortFormVisbility: false });
+    this.setState({ cohortFormVisbility: false, overlayVisibility: false });
   };
 
   render() {
-    const { shoppingFormVisbility, cohortFormVisbility } = this.state;
+    const {
+      shoppingFormVisbility,
+      cohortFormVisbility,
+      overlayVisibility
+    } = this.state;
+
+    const styles = {
+      cohortWrapperFormStyles: classNames('toolbar__icon-wrapper', {
+        'z-index-high': cohortFormVisbility
+      }),
+      cohortFormLinkStyles: classNames('toolbar__icon-link', {
+        'toolbar__icon-link--active': cohortFormVisbility
+      }),
+      listWrapperFormStyles: classNames('toolbar__icon-wrapper', {
+        'z-index-high': shoppingFormVisbility
+      }),
+      listFormLinkStyles: classNames('toolbar__icon-link', {
+        'toolbar__icon-link--active': shoppingFormVisbility
+      })
+    };
+
     return (
-      <div className="toolbar">
-        <div className="wrapper toolbar__wrapper">
-          <div className="toolbar__left">
-            <a
-              className="toolbar__company-link"
-              href={COMPANY_PAGE_URL}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <img
-                alt="Company logo"
-                className="toolbar__company-logo"
-                src={CompanyLogo}
-              />
-            </a>
-            <div className="toolbar__icon-wrapper">
-              <Link className="toolbar__icon-link" to="/dashboard">
-                <HomeIcon />
-              </Link>
-            </div>
-            <div className="toolbar__icon-wrapper">
+      <Fragment>
+        <div className="toolbar">
+          <div className="wrapper toolbar__wrapper">
+            <div className="toolbar__left">
               <a
-                className="toolbar__icon-link"
-                href="#!"
-                onClick={this.handleCohortFormVisibility}
+                className="toolbar__company-link"
+                href={COMPANY_PAGE_URL}
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                <CohortIcon />
                 <img
-                  alt="Plus icon"
-                  className="toolbar__icon-plus"
-                  src={PlusIcon}
+                  alt="Company logo"
+                  className="toolbar__company-logo"
+                  src={CompanyLogo}
                 />
               </a>
-              <div
-                className={classNames('toolbar__form', {
-                  hidden: !cohortFormVisbility
-                })}
-              >
-                <CreationForm
-                  label="Create new cohort"
-                  onSubmit={this.handleCohortSubmission}
-                  type="menu"
-                />
+              <div className="toolbar__icon-wrapper">
+                <Link className="toolbar__icon-link" to="/dashboard">
+                  <HomeIcon />
+                </Link>
+              </div>
+              <div className={styles.cohortWrapperFormStyles}>
+                <a
+                  className={styles.cohortFormLinkStyles}
+                  href="#!"
+                  onClick={this.handleCohortFormVisibility}
+                >
+                  <CohortIcon />
+                  <img
+                    alt="Plus icon"
+                    className="toolbar__icon-plus"
+                    src={PlusIcon}
+                  />
+                </a>
+                <div
+                  className={classNames('toolbar__form', {
+                    hidden: !cohortFormVisbility
+                  })}
+                >
+                  <CreationForm
+                    label="Create new cohort"
+                    onSubmit={this.handleCohortSubmission}
+                    type="menu"
+                  />
+                </div>
+              </div>
+              <div className={styles.listWrapperFormStyles}>
+                <a
+                  className={styles.listFormLinkStyles}
+                  href="#!"
+                  onClick={this.handleShoppingListFormVisibility}
+                >
+                  <ShoppingListIcon />
+                  <img
+                    alt="Plus Icon"
+                    className="toolbar__icon-plus"
+                    src={PlusIcon}
+                  />
+                </a>
+                <div
+                  className={classNames('toolbar__form', {
+                    hidden: !shoppingFormVisbility
+                  })}
+                >
+                  <CreationForm
+                    label="Create new shopping list"
+                    onSubmit={this.handleShoppingListSubmission}
+                    type="menu"
+                  />
+                </div>
               </div>
             </div>
-            <div className="toolbar__icon-wrapper">
-              <a
-                className="toolbar__icon-link"
-                href="#!"
-                onClick={this.handleShoppingListFormVisibility}
-              >
-                <ShoppingListIcon />
-                <img
-                  alt="Plus Icon"
-                  className="toolbar__icon-plus"
-                  src={PlusIcon}
-                />
-              </a>
-              <div
-                className={classNames('toolbar__form', {
-                  hidden: !shoppingFormVisbility
-                })}
-              >
-                <CreationForm
-                  label="Create new shopping list"
-                  onSubmit={this.handleShoppingListSubmission}
-                  type="menu"
-                />
-              </div>
+            <div className="toolbar__logo">
+              <AppLogo />
             </div>
-          </div>
-          <div className="toolbar__logo">
-            <AppLogo />
-          </div>
-          <div className="toolbar__right">
-            <UserBar />
+            <div className="toolbar__right">
+              <UserBar />
+            </div>
           </div>
         </div>
-      </div>
+        {overlayVisibility && <Overlay />}
+      </Fragment>
     );
   }
 }

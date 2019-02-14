@@ -19,6 +19,7 @@ import CreationForm from 'common/components/CreationForm';
 import EditIcon from 'assets/images/pen-solid.svg';
 import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
+import Overlay from 'common/components/Overlay';
 
 class ShoppingList extends Component {
   state = {
@@ -120,13 +121,15 @@ class ShoppingList extends Component {
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (
-          <ModalBox>
-            <DialogBox
-              onCancel={this.hideDialogBox}
-              onConfirm={this.deleteListHandler(listId)}
-              message="Do you really want to delete the list?"
-            />
-          </ModalBox>
+          <Overlay>
+            <ModalBox>
+              <DialogBox
+                onCancel={this.hideDialogBox}
+                onConfirm={this.deleteListHandler(listId)}
+                message="Do you really want to delete the list?"
+              />
+            </ModalBox>
+          </Overlay>
         )}
         {showUpdateFrom && (
           <ModalBox onClose={this.hideUpdateForm}>
