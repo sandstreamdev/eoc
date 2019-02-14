@@ -123,7 +123,7 @@ class ShoppingList extends Component {
           <ModalBox>
             <DialogBox
               onCancel={this.hideDialogBox}
-              onConfirm={this.deleteListHandler(listId, this.redirectHandler)}
+              onConfirm={this.deleteListHandler(listId)}
               message="Do you really want to delete the list?"
             />
           </ModalBox>
