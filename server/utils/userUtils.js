@@ -14,7 +14,7 @@ const findOrCreateUser = (user, doneCallback) => {
 
 /* eslint camelcase: "off" */
 const extractUserProfile = (profile, accessToken) => {
-  const { email, picture, name, given_name, family_name } = profile._json;
+  const { email, family_name, given_name, name, picture } = profile._json;
   const { id } = profile;
 
   return {

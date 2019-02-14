@@ -28,7 +28,7 @@ passport.deserializeUser((user, done) => {
 });
 
 const authenticate = passport.authenticate('google', {
-  scope: ['profile', 'email']
+  scope: ['email', 'profile']
 });
 
 const authenticateCallback = passport.authenticate('google', {
