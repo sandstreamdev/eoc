@@ -63,7 +63,7 @@ const fetchShoppingListsMetaDataRequest = () => ({
 // Dispatchers
 export const fetchItemsFromGivenList = listId => dispatch => {
   dispatch(fetchProductRequest());
-  getData(`${ENDPOINT_URL}/shopping-lists/${listId}/productss`)
+  getData(`${ENDPOINT_URL}/shopping-lists/${listId}/products`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchProductsSuccess(json, listId)))
     .catch(err => {
