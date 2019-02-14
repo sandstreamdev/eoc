@@ -82,9 +82,9 @@ DropdownMenu.propTypes = {
   menuItems: PropTypes.arrayOf(
     PropTypes.shape({
       icon: PropTypes.string,
-      label: PropTypes.string,
+      label: PropTypes.string.isRequired,
 
-      onClick: PropTypes.func
+      onClick: PropTypes.func.isRequired
     })
   ).isRequired
 };
