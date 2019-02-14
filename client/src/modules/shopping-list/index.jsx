@@ -73,8 +73,7 @@ class ShoppingList extends Component {
       },
       list
     } = this.props;
-    const listItems =
-      list && list.products instanceof Array ? list.products : [];
+    const listItems = list && list.products ? list.products : [];
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
 
