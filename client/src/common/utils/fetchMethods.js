@@ -1,3 +1,12 @@
+const handleFetchErrors = resp => {
+  if (resp.status >= 400 && resp.status < 600) {
+    return resp.json().then(json => {
+      throw new Error(json.message);
+    });
+  }
+  return resp;
+};
+
 export const getData = url =>
   fetch(url, {
     credentials: 'include'
@@ -19,7 +28,7 @@ export const patchData = (url, data) =>
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     method: 'PATCH'
-  });
+  }).then(handleFetchErrors);
 
 export const postRequest = url =>
   fetch(url, {
@@ -32,11 +41,4 @@ export const deleteData = url =>
   fetch(url, {
     credentials: 'include',
     method: 'DELETE'
-  }).then(resp => {
-    if (resp.status >= 400 && resp.status < 600) {
-      return resp.json().then(json => {
-        throw new Error(json.message);
-      });
-    }
-    return resp;
-  });
+  }).then(handleFetchErrors);

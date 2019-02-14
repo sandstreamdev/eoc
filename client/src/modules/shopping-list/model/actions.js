@@ -1,7 +1,12 @@
 import _keyBy from 'lodash/keyBy';
 
 import { ENDPOINT_URL } from 'common/constants/variables';
-import { deleteData, getData, postData } from 'common/utils/fetchMethods';
+import {
+  deleteData,
+  getData,
+  patchData,
+  postData
+} from 'common/utils/fetchMethods';
 import { ShoppingListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
@@ -46,6 +51,20 @@ const deleteListFailure = errMessage => ({
 
 const deleteListRequest = () => ({
   type: ShoppingListActionTypes.DELETE_REQUEST
+});
+
+const updateListSuccess = data => ({
+  type: ShoppingListActionTypes.UPDATE_SUCCESS,
+  payload: data
+});
+
+const updateListFailure = errMessage => ({
+  type: ShoppingListActionTypes.UPDATE_FAILURE,
+  payload: errMessage
+});
+
+const updateListRequest = () => ({
+  type: ShoppingListActionTypes.UPDATE_REQUEST
 });
 
 const fetchShoppingListMetaDataSuccess = data => ({
@@ -134,5 +153,27 @@ export const deleteList = id => dispatch => {
         err.message || "Oops, we're sorry, deleting list failed..."
       );
       throw new Error();
+    });
+};
+
+export const updateList = (listId, data) => dispatch => {
+  dispatch(updateListRequest());
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, data)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(updateListSuccess({ ...data, listId }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(updateListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, updating lists failed..."
+      );
     });
 };

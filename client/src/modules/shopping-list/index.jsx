@@ -8,18 +8,22 @@ import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
   fetchItemsFromGivenList,
-  deleteList
+  deleteList,
+  updateList
 } from 'modules/shopping-list/model/actions';
 import DropdownMenu from 'common/components/DropdownMenu';
 import DialogBox from 'common/components/DialogBox';
+import ModalBox from 'common/components/ModalBox';
 import { noOp } from 'common/utils/noOp';
+import CreationForm from 'common/components/CreationForm';
 import EditIcon from 'assets/images/pen-solid.svg';
 import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
 
 class ShoppingList extends Component {
   state = {
-    showDialogBox: false
+    showDialogBox: false,
+    showUpdateFrom: false
   };
 
   componentDidMount() {
@@ -28,9 +32,13 @@ class ShoppingList extends Component {
 
   get listMenu() {
     return [
-      { onClick: () => {}, icon: EditIcon, label: 'Edit list' },
-      { onClick: this.showDialogBox, icon: RemoveIcon, label: 'Remove list' },
-      { onClick: () => {}, icon: InviteUserIcon, label: 'Invite user' }
+      { onClick: this.showUpdateForm, iconSrc: EditIcon, label: 'Edit list' },
+      {
+        onClick: this.showDialogBox,
+        iconSrc: RemoveIcon,
+        label: 'Remove list'
+      },
+      { onClick: () => {}, iconSrc: InviteUserIcon, label: 'Invite user' }
     ];
   }
 
@@ -65,8 +73,27 @@ class ShoppingList extends Component {
     history.push('/dashboard');
   };
 
+  hideUpdateForm = () => {
+    this.setState({ showUpdateFrom: false });
+  };
+
+  showUpdateForm = () => {
+    this.setState({ showUpdateFrom: true });
+  };
+
+  updateListHandler = listId => (name, description) => {
+    const { updateList } = this.props;
+    const dataToUpdate = {};
+
+    name ? (dataToUpdate.name = name) : null;
+    description ? (dataToUpdate.description = description) : null;
+
+    updateList(listId, dataToUpdate);
+    this.hideUpdateForm();
+  };
+
   render() {
-    const { showDialogBox } = this.state;
+    const { showDialogBox, showUpdateFrom } = this.state;
     const {
       match: {
         params: { id: listId }
@@ -76,22 +103,39 @@ class ShoppingList extends Component {
     const listItems = list && list.products ? list.products : [];
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
+    const description = list && list.description ? list.description : null;
+    const name = list && list.name ? list.name : null;
 
     return (
       <Fragment>
         <div className="app-wrapper">
           <InputBar />
-          <ProductsContainer products={shoppingList}>
+          <ProductsContainer
+            description={description}
+            name={name}
+            products={shoppingList}
+          >
             <DropdownMenu menuItems={this.listMenu} />
           </ProductsContainer>
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (
-          <DialogBox
-            onCancel={this.hideDialogBox}
-            onConfirm={this.deleteListHandler(listId, this.redirectHandler)}
-            message="Do you really want to delete the list?"
-          />
+          <ModalBox>
+            <DialogBox
+              onCancel={this.hideDialogBox}
+              onConfirm={this.deleteListHandler(listId)}
+              message="Do you really want to delete the list?"
+            />
+          </ModalBox>
+        )}
+        {showUpdateFrom && (
+          <ModalBox onClose={this.hideUpdateForm}>
+            <CreationForm
+              type="modal"
+              label="Edit list"
+              onSubmit={this.updateListHandler(listId)}
+            />
+          </ModalBox>
         )}
       </Fragment>
     );
@@ -110,7 +154,8 @@ ShoppingList.propTypes = {
   }).isRequired,
 
   deleteList: PropTypes.func.isRequired,
-  fetchItemsFromGivenList: PropTypes.func.isRequired
+  fetchItemsFromGivenList: PropTypes.func.isRequired,
+  updateList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -120,6 +165,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { deleteList, fetchItemsFromGivenList }
+    { deleteList, fetchItemsFromGivenList, updateList }
   )(ShoppingList)
 );

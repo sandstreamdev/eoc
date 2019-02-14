@@ -50,7 +50,7 @@ export const toggle = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, changing item's status failed..."
+        err.message || "Oops, we're sorry, changing item's status failed..."
       );
     });
 };
@@ -68,7 +68,7 @@ export const vote = (itemId, listId, voterIds) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, voting failed...."
+        err.message || "Oops, we're sorry, voting failed...."
       );
     });
 };

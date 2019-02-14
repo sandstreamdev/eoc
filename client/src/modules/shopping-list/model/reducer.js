@@ -16,6 +16,18 @@ const shoppingLists = (state = {}, action) => {
       const { [action.payload]: removed, ...newState } = state;
       return newState;
     }
+    case ShoppingListActionTypes.UPDATE_SUCCESS: {
+      const prevList = state[action.payload.listId];
+      const updatedList = {
+        ...prevList,
+        name: action.payload.name || prevList.name,
+        description: action.payload.description || prevList.description
+      };
+      return {
+        ...state,
+        [action.payload.listId]: updatedList
+      };
+    }
     case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS: {
       const updatedShoppingList = {
         ...state[action.payload.listId],
@@ -94,6 +106,8 @@ const isFetching = (state = false, action) => {
     case ShoppingListActionTypes.FETCH_META_DATA_SUCCESS:
     case ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE:
     case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS:
+    case ShoppingListActionTypes.UPDATE_FAILURE:
+    case ShoppingListActionTypes.UPDATE_SUCCESS:
       return false;
     case ProductActionTypes.ADD_PRODUCT_REQUEST:
     case ProductActionTypes.TOGGLE_PRODUCT_REQUEST:
@@ -102,6 +116,7 @@ const isFetching = (state = false, action) => {
     case ShoppingListActionTypes.DELETE_REQUEST:
     case ShoppingListActionTypes.FETCH_META_DATA_REQUEST:
     case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
+    case ShoppingListActionTypes.UPDATE_REQUEST:
       return true;
     default:
       return state;

@@ -4,7 +4,7 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const { ENDPOINT_URL, FRONTEND_URL } = require('../common/variables');
 const { findOrCreateUser, extractUserProfile } = require('../utils/userUtils');
 
-// Use GoogleStrategy to authenicate user
+// Use GoogleStrategy to authenticate user
 passport.use(
   new GoogleStrategy(
     {

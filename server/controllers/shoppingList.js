@@ -1,5 +1,6 @@
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
+const filter = require('../common/utilities');
 
 const createNewList = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -134,8 +135,11 @@ const getProductsForGivenList = (req, resp) => {
     },
     'products',
     (err, documents) => {
-      const { products } = documents[0];
-      err ? resp.status(404).send(err) : resp.status(200).json(products);
+      if (documents.length > 0) {
+        const { products } = documents[0];
+        return resp.status(200).json(products);
+      }
+      return resp.status(404).send(err);
     }
   );
 };
@@ -176,6 +180,39 @@ const updateShoppingListItem = (req, resp) => {
   );
 };
 
+const updateListById = (req, resp) => {
+  const { description, name } = req.body;
+  const { id: listId } = req.params;
+  const dataToUpdate = filter(x => x !== undefined)({
+    description,
+    name
+  });
+
+  ShoppingList.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [{ adminIds: req.user._id }]
+    },
+    dataToUpdate,
+    { new: true },
+    (err, doc) => {
+      if (!doc) {
+        return resp.status(404).send({
+          message: 'You dont have permissions to update this list'
+        });
+      }
+      return err
+        ? resp.status(400).send({
+            message:
+              "Oops we're sorry, an error occurred while updating the list"
+          })
+        : resp.status(200).send({
+            message: `List with id: ${req.params.id} was successfully updated!`
+          });
+    }
+  );
+};
+
 module.exports = {
   addProductToList,
   createNewList,
@@ -184,5 +221,6 @@ module.exports = {
   getProductsForGivenList,
   getShoppingListById,
   getShoppingListsMetaData,
+  updateListById,
   updateShoppingListItem
 };
