@@ -19,31 +19,35 @@ import { createShoppingList } from 'modules/shopping-list/model/actions';
 import { createCohort } from 'modules/cohort/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import Overlay from 'common/components/Overlay';
+import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class Toolbar extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      cohortFormVisbility: false,
-      shoppingFormVisbility: false,
-      overlayVisibility: false
-    };
-  }
+  state = {
+    cohortFormVisbility: false,
+    shoppingFormVisbility: false,
+    overlayVisibility: false
+  };
 
   componentDidMount() {
-    document.addEventListener('click', event => {
-      event.target.className === 'overlay' ? this.hideOverlayAndForm() : null;
-    });
-    document.addEventListener('keydown', event => {
-      event.code === 'Escape' ? this.hideOverlayAndForm() : null;
-    });
+    document.addEventListener('click', this.clickListener);
+    document.addEventListener('keydown', this.escapeListener);
   }
 
-  /**
-   * TODO Przerobić dodawania listenerów i usuwać listenery zanim component się odmontuje
-   */
+  componentWillUnmount() {
+    document.removeEventListener('click', this.clickListener);
+    document.removeEventListener('keydown', this.escapeListener);
+  }
+
+  clickListener = event => {
+    const { className } = event.target;
+    className.length > 0 && className.includes('overlay')
+      ? this.hideOverlayAndForm()
+      : null;
+  };
+
+  escapeListener = event => {
+    event.code === 'Escape' ? this.hideOverlayAndForm() : null;
+  };
 
   hideOverlayAndForm = () => {
     this.setState({
@@ -54,22 +58,22 @@ class Toolbar extends PureComponent {
   };
 
   handleShoppingListFormVisibility = () => {
-    const { shoppingFormVisbility, overlayVisibility } = this.state;
+    const { shoppingFormVisbility } = this.state;
 
     this.setState({
       shoppingFormVisbility: !shoppingFormVisbility,
       cohortFormVisbility: false,
-      overlayVisibility: !overlayVisibility
+      overlayVisibility: !shoppingFormVisbility
     });
   };
 
   handleCohortFormVisibility = () => {
-    const { cohortFormVisbility, overlayVisibility } = this.state;
+    const { cohortFormVisbility } = this.state;
 
     this.setState({
       shoppingFormVisbility: false,
       cohortFormVisbility: !cohortFormVisbility,
-      overlayVisibility: !overlayVisibility
+      overlayVisibility: !cohortFormVisbility
     });
   };
 
@@ -79,7 +83,7 @@ class Toolbar extends PureComponent {
       currentUser: { id }
     } = this.props;
     createShoppingList(title, description, id);
-    this.setState({ shoppingFormVisbility: false, overlayVisibility: false });
+    this.hideOverlayAndForm();
   };
 
   handleCohortSubmission = (title, description) => {
@@ -88,7 +92,7 @@ class Toolbar extends PureComponent {
       currentUser: { id }
     } = this.props;
     createCohort(title, description, id);
-    this.setState({ cohortFormVisbility: false, overlayVisibility: false });
+    this.hideOverlayAndForm();
   };
 
   render() {
@@ -97,21 +101,6 @@ class Toolbar extends PureComponent {
       cohortFormVisbility,
       overlayVisibility
     } = this.state;
-
-    const styles = {
-      cohortWrapperFormStyles: classNames('toolbar__icon-wrapper', {
-        'z-index-high': cohortFormVisbility
-      }),
-      cohortFormLinkStyles: classNames('toolbar__icon-link', {
-        'toolbar__icon-link--active': cohortFormVisbility
-      }),
-      listWrapperFormStyles: classNames('toolbar__icon-wrapper', {
-        'z-index-high': shoppingFormVisbility
-      }),
-      listFormLinkStyles: classNames('toolbar__icon-link', {
-        'toolbar__icon-link--active': shoppingFormVisbility
-      })
-    };
 
     return (
       <Fragment>
@@ -135,11 +124,11 @@ class Toolbar extends PureComponent {
                   <HomeIcon />
                 </Link>
               </div>
-              <div className={styles.cohortWrapperFormStyles}>
-                <a
-                  className={styles.cohortFormLinkStyles}
-                  href="#!"
+              <div className="toolbar__icon-wrapper z-index-high">
+                <button
+                  className="toolbar__icon-link"
                   onClick={this.handleCohortFormVisibility}
+                  type="button"
                 >
                   <CohortIcon />
                   <img
@@ -147,7 +136,7 @@ class Toolbar extends PureComponent {
                     className="toolbar__icon-plus"
                     src={PlusIcon}
                   />
-                </a>
+                </button>
                 <div
                   className={classNames('toolbar__form', {
                     hidden: !cohortFormVisbility
@@ -160,11 +149,11 @@ class Toolbar extends PureComponent {
                   />
                 </div>
               </div>
-              <div className={styles.listWrapperFormStyles}>
-                <a
-                  className={styles.listFormLinkStyles}
-                  href="#!"
+              <div className="toolbar__icon-wrapper z-index-high">
+                <button
+                  className="toolbar__icon-link"
                   onClick={this.handleShoppingListFormVisibility}
+                  type="button"
                 >
                   <ShoppingListIcon />
                   <img
@@ -172,7 +161,7 @@ class Toolbar extends PureComponent {
                     className="toolbar__icon-plus"
                     src={PlusIcon}
                   />
-                </a>
+                </button>
                 <div
                   className={classNames('toolbar__form', {
                     hidden: !shoppingFormVisbility
@@ -194,7 +183,7 @@ class Toolbar extends PureComponent {
             </div>
           </div>
         </div>
-        {overlayVisibility && <Overlay />}
+        {overlayVisibility && <Overlay type={OverlayStyleType.LIGHT} />}
       </Fragment>
     );
   }

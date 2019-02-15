@@ -19,7 +19,7 @@ import CreationForm from 'common/components/CreationForm';
 import EditIcon from 'assets/images/pen-solid.svg';
 import RemoveIcon from 'assets/images/trash-alt-solid.svg';
 import InviteUserIcon from 'assets/images/user-plus-solid.svg';
-import Overlay from 'common/components/Overlay';
+import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class ShoppingList extends Component {
   state = {
@@ -121,7 +121,7 @@ class ShoppingList extends Component {
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (
-          <Overlay>
+          <Overlay type={OverlayStyleType.MEDIUM}>
             <ModalBox>
               <DialogBox
                 onCancel={this.hideDialogBox}
