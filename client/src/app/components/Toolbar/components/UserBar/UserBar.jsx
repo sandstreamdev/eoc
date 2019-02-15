@@ -11,74 +11,72 @@ import UserIcon from 'assets/images/user-solid.svg';
 import LogoutIcon from 'assets/images/sign-out.svg';
 
 class UserBar extends Component {
-  state = {
-    hideMenu: true
-  };
-
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
     logoutCurrentUser();
   };
 
   handleShowMenu = () => {
-    const { hideMenu } = this.state;
-    this.setState({ hideMenu: !hideMenu });
+    const { onClick, isMenuVisible } = this.props;
+
+    onClick(!isMenuVisible);
   };
 
   render() {
     const {
-      currentUser: { avatarUrl, name }
+      currentUser: { avatarUrl, name },
+      isMenuVisible
     } = this.props;
-    const { hideMenu } = this.state;
 
     return (
       <div className="user-bar">
-        <a
-          className="user-bar__wrapper"
+        <button
+          className="user-bar__button z-index-high"
           onClick={this.handleShowMenu}
-          href="#!"
+          type="button"
         >
           Profile:
           <img alt="User avatar" className="user-bar__avatar" src={avatarUrl} />
-          <div
-            className={classNames('user-bar__menu-wrapper', {
-              hidden: hideMenu
-            })}
-          >
-            <ul className="user-bar__menu">
-              <li className="user-bar__menu-item">
-                {`Loged as:  ${name}`}
+        </button>
+
+        <div
+          className={classNames('user-bar__menu-wrapper z-index-high', {
+            hidden: !isMenuVisible
+          })}
+        >
+          <ul className="user-bar__menu">
+            <li className="user-bar__menu-item">
+              {`Logged as:  ${name}`}
+              <img
+                alt="User Icon"
+                className="user-bar__menu-icon"
+                src={UserIcon}
+              />
+            </li>
+            <li className="user-bar__menu-item">
+              Profile settings
+              <img
+                alt="Settings icon"
+                className="user-bar__menu-icon"
+                src={SettingsIcon}
+              />
+            </li>
+            <li className="user-bar__menu-item">
+              <button
+                className="user-bar__menu-logout"
+                onClick={this.handleLogOut}
+                type="button"
+              >
+                Logout
                 <img
-                  alt="User Icon"
+                  alt="Log out"
                   className="user-bar__menu-icon"
-                  src={UserIcon}
+                  src={LogoutIcon}
                 />
-              </li>
-              <li className="user-bar__menu-item">
-                Profile settings
-                <img
-                  alt="Settings icon"
-                  className="user-bar__menu-icon"
-                  src={SettingsIcon}
-                />
-              </li>
-              <li className="user-bar__menu-item">
-                <button
-                  className="user-bar__menu-logout"
-                  onClick={this.handleLogOut}
-                  type="button"
-                >
-                  Logout
-                  <img
-                    alt="Log out"
-                    className="user-bar__menu-icon"
-                    src={LogoutIcon}
-                  />
-                </button>
-              </li>
-            </ul>
-          </div>
-        </a>
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     );
   }
@@ -86,8 +84,10 @@ class UserBar extends Component {
 
 UserBar.propTypes = {
   currentUser: UserPropType.isRequired,
+  isMenuVisible: PropTypes.bool.isRequired,
 
-  logoutCurrentUser: PropTypes.func.isRequired
+  logoutCurrentUser: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

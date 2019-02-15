@@ -23,9 +23,10 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class Toolbar extends PureComponent {
   state = {
-    cohortFormVisbility: false,
-    shoppingFormVisbility: false,
-    overlayVisibility: false
+    cohortFormVisibility: false,
+    overlayVisibility: false,
+    shoppingFormVisibility: false,
+    userBarMenuVisibility: false
   };
 
   componentDidMount() {
@@ -51,29 +52,32 @@ class Toolbar extends PureComponent {
 
   hideOverlayAndForm = () => {
     this.setState({
+      cohortFormVisibility: false,
       overlayVisibility: false,
-      cohortFormVisbility: false,
-      shoppingFormVisbility: false
+      shoppingFormVisibility: false,
+      userBarMenuVisibility: false
     });
   };
 
   handleShoppingListFormVisibility = () => {
-    const { shoppingFormVisbility } = this.state;
+    const { shoppingFormVisibility } = this.state;
 
     this.setState({
-      shoppingFormVisbility: !shoppingFormVisbility,
-      cohortFormVisbility: false,
-      overlayVisibility: !shoppingFormVisbility
+      cohortFormVisibility: false,
+      overlayVisibility: !shoppingFormVisibility,
+      shoppingFormVisibility: !shoppingFormVisibility,
+      userBarMenuVisibility: false
     });
   };
 
   handleCohortFormVisibility = () => {
-    const { cohortFormVisbility } = this.state;
+    const { cohortFormVisibility } = this.state;
 
     this.setState({
-      shoppingFormVisbility: false,
-      cohortFormVisbility: !cohortFormVisbility,
-      overlayVisibility: !cohortFormVisbility
+      cohortFormVisibility: !cohortFormVisibility,
+      overlayVisibility: !cohortFormVisibility,
+      shoppingFormVisibility: false,
+      userBarMenuVisibility: false
     });
   };
 
@@ -95,11 +99,21 @@ class Toolbar extends PureComponent {
     this.hideOverlayAndForm();
   };
 
+  handleUserBarMenu = isVisible => {
+    this.setState({
+      cohortFormVisibility: false,
+      overlayVisibility: isVisible,
+      shoppingFormVisibility: false,
+      userBarMenuVisibility: isVisible
+    });
+  };
+
   render() {
     const {
-      shoppingFormVisbility,
-      cohortFormVisbility,
-      overlayVisibility
+      cohortFormVisibility,
+      overlayVisibility,
+      shoppingFormVisibility,
+      userBarMenuVisibility
     } = this.state;
 
     return (
@@ -139,7 +153,7 @@ class Toolbar extends PureComponent {
                 </button>
                 <div
                   className={classNames('toolbar__form', {
-                    hidden: !cohortFormVisbility
+                    hidden: !cohortFormVisibility
                   })}
                 >
                   <CreationForm
@@ -164,7 +178,7 @@ class Toolbar extends PureComponent {
                 </button>
                 <div
                   className={classNames('toolbar__form', {
-                    hidden: !shoppingFormVisbility
+                    hidden: !shoppingFormVisibility
                   })}
                 >
                   <CreationForm
@@ -179,7 +193,10 @@ class Toolbar extends PureComponent {
               <AppLogo />
             </div>
             <div className="toolbar__right">
-              <UserBar />
+              <UserBar
+                isMenuVisible={userBarMenuVisibility}
+                onClick={this.handleUserBarMenu}
+              />
             </div>
           </div>
         </div>

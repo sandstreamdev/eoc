@@ -1,8 +1,9 @@
 .user-bar {
   display: flex;
   justify-content: flex-end;
+  position: relative;
 
-  &__wrapper {
+  &__button {
     padding: 5px 8px;
     border: 0;
     text-align: left;
@@ -17,6 +18,7 @@
     font-size: 12px;
     line-height: 1.2;
     text-decoration: none;
+    outline: none;
   }
 
   &__avatar {
@@ -43,7 +45,6 @@
     top: 50px;
     right: 0;
     box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-    z-index: 2;
 
     &::before {
       right: 7px;
