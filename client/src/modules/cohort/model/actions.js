@@ -48,7 +48,7 @@ export const createCohort = (name, description, adminId) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, creating new cohort failed..."
+        err.message || "Oops, we're sorry, creating new cohort failed..."
       );
     });
 };
@@ -63,7 +63,7 @@ export const fetchCohorts = () => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, fetching cohorts failed..."
+        err.message || "Oops, we're sorry, fetching cohorts failed..."
       );
     });
 };

@@ -28,7 +28,7 @@ export const addProductToList = (product, listId) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, adding item failed..."
+        err.message || "Oops, we're sorry, adding item failed..."
       );
     });
 };
