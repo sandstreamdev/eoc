@@ -11,15 +11,13 @@ import {
   deleteList,
   updateList
 } from 'modules/shopping-list/model/actions';
-import DropdownMenu from 'common/components/DropdownMenu';
 import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
 import { noOp } from 'common/utils/noOp';
 import CreationForm from 'common/components/CreationForm';
-import EditIcon from 'assets/images/pen-solid.svg';
-import RemoveIcon from 'assets/images/trash-alt-solid.svg';
-import InviteUserIcon from 'assets/images/user-plus-solid.svg';
+import Toolbar from 'app/components/Toolbar/Toolbar';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
+import PlusIcon from 'assets/images/plus-solid.svg';
 
 class ShoppingList extends Component {
   state = {
@@ -31,15 +29,24 @@ class ShoppingList extends Component {
     this.fetchProducts();
   }
 
-  get listMenu() {
+  get menuItems() {
     return [
-      { onClick: this.showUpdateForm, iconSrc: EditIcon, label: 'Edit list' },
       {
-        onClick: this.showDialogBox,
-        iconSrc: RemoveIcon,
-        label: 'Remove list'
+        label: 'Edit list',
+        mainIcon: 'edit',
+        onClick: this.showUpdateForm
       },
-      { onClick: () => {}, iconSrc: InviteUserIcon, label: 'Invite user' }
+      {
+        label: 'Remove list',
+        mainIcon: 'remove',
+        onClick: this.showDialogBox
+      },
+      {
+        label: 'Invite user',
+        mainIcon: 'invite',
+        onClick: () => {},
+        supplementIconSrc: PlusIcon
+      }
     ];
   }
 
@@ -109,15 +116,14 @@ class ShoppingList extends Component {
 
     return (
       <Fragment>
+        <Toolbar menuItems={this.menuItems} />
         <div className="app-wrapper">
           <InputBar />
           <ProductsContainer
             description={description}
             name={name}
             products={shoppingList}
-          >
-            <DropdownMenu menuItems={this.listMenu} />
-          </ProductsContainer>
+          />
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (
@@ -132,13 +138,15 @@ class ShoppingList extends Component {
           </Overlay>
         )}
         {showUpdateFrom && (
-          <ModalBox onClose={this.hideUpdateForm}>
-            <CreationForm
-              type="modal"
-              label="Edit list"
-              onSubmit={this.updateListHandler(listId)}
-            />
-          </ModalBox>
+          <Overlay type={OverlayStyleType.MEDIUM}>
+            <ModalBox onClose={this.hideUpdateForm}>
+              <CreationForm
+                type="modal"
+                label="Edit list"
+                onSubmit={this.updateListHandler(listId)}
+              />
+            </ModalBox>
+          </Overlay>
         )}
       </Fragment>
     );

@@ -1,4 +1,6 @@
 .creation-form {
+  position: relative;
+  z-index: 11;
   background: $bg-color;
   padding: 16px;
   border-radius: 8px;

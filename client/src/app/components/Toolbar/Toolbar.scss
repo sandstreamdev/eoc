@@ -32,7 +32,10 @@
     height: 38px;
     width: 38px;
     background: rgba($shadow-color, 0.1);
+    border: none;
     border-radius: 3px;
+    position: relative;
+    z-index: 1;
     svg {
       height: 16px;
     }
@@ -65,6 +68,6 @@
     position: absolute;
     right: 0;
     top: 50px;
-    z-index: 2;
+    z-index: 11;
   }
 }

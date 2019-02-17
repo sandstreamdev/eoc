@@ -9,6 +9,7 @@ import CompanyLogo from 'assets/images/company_logo.png';
 import {
   ClipboardSolid as ShoppingListIcon,
   HomeSolid as HomeIcon,
+  SvgIcon,
   UsersSolid as CohortIcon
 } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
@@ -116,79 +117,111 @@ class Toolbar extends PureComponent {
       userBarMenuVisibility
     } = this.state;
 
+    const { isHomePage, menuItems } = this.props;
+
     return (
       <Fragment>
         <div className="toolbar">
           <div className="wrapper toolbar__wrapper">
-            <div className="toolbar__left">
-              <a
-                className="toolbar__company-link"
-                href={COMPANY_PAGE_URL}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <img
-                  alt="Company logo"
-                  className="toolbar__company-logo"
-                  src={CompanyLogo}
-                />
-              </a>
-              <div className="toolbar__icon-wrapper">
-                <Link className="toolbar__icon-link" to="/dashboard">
-                  <HomeIcon />
-                </Link>
-              </div>
-              <div className="toolbar__icon-wrapper z-index-high">
-                <button
-                  className="toolbar__icon-link"
-                  onClick={this.handleCohortFormVisibility}
-                  type="button"
+            <ul className="toolbar__left">
+              <li>
+                <a
+                  className="toolbar__company-link"
+                  href={COMPANY_PAGE_URL}
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
-                  <CohortIcon />
                   <img
-                    alt="Plus icon"
-                    className="toolbar__icon-plus"
-                    src={PlusIcon}
+                    alt="Company logo"
+                    className="toolbar__company-logo"
+                    src={CompanyLogo}
                   />
-                </button>
-                <div
-                  className={classNames('toolbar__form', {
-                    hidden: !cohortFormVisibility
-                  })}
-                >
-                  <CreationForm
-                    label="Create new cohort"
-                    onSubmit={this.handleCohortSubmission}
-                    type="menu"
-                  />
-                </div>
-              </div>
-              <div className="toolbar__icon-wrapper z-index-high">
-                <button
-                  className="toolbar__icon-link"
-                  onClick={this.handleShoppingListFormVisibility}
-                  type="button"
-                >
-                  <ShoppingListIcon />
-                  <img
-                    alt="Plus Icon"
-                    className="toolbar__icon-plus"
-                    src={PlusIcon}
-                  />
-                </button>
-                <div
-                  className={classNames('toolbar__form', {
-                    hidden: !shoppingFormVisibility
-                  })}
-                >
-                  <CreationForm
-                    label="Create new shopping list"
-                    onSubmit={this.handleShoppingListSubmission}
-                    type="menu"
-                  />
-                </div>
-              </div>
-            </div>
+                </a>
+              </li>
+              {!isHomePage && (
+                <li className="toolbar__icon-wrapper">
+                  <Link className="toolbar__icon-link" to="/dashboard">
+                    <HomeIcon />
+                  </Link>
+                </li>
+              )}
+              {isHomePage && (
+                <Fragment>
+                  <li className="toolbar__icon-wrapper z-index-high">
+                    <button
+                      className="toolbar__icon-link"
+                      onClick={this.handleCohortFormVisibility}
+                      type="button"
+                    >
+                      <CohortIcon />
+                      <img
+                        alt="Plus icon"
+                        className="toolbar__icon-plus"
+                        src={PlusIcon}
+                      />
+                    </button>
+                    <div
+                      className={classNames('toolbar__form', {
+                        hidden: !cohortFormVisibility
+                      })}
+                    >
+                      <CreationForm
+                        label="Create new cohort"
+                        onSubmit={this.handleCohortSubmission}
+                        type="menu"
+                      />
+                    </div>
+                  </li>
+                  <li className="toolbar__icon-wrapper z-index-high">
+                    <button
+                      className="toolbar__icon-link"
+                      onClick={this.handleShoppingListFormVisibility}
+                      type="button"
+                    >
+                      <ShoppingListIcon />
+                      <img
+                        alt="Plus Icon"
+                        className="toolbar__icon-plus"
+                        src={PlusIcon}
+                      />
+                    </button>
+                    <div
+                      className={classNames('toolbar__form', {
+                        hidden: !shoppingFormVisibility
+                      })}
+                    >
+                      <CreationForm
+                        label="Create new shopping list"
+                        onSubmit={this.handleShoppingListSubmission}
+                        type="menu"
+                      />
+                    </div>
+                  </li>
+                </Fragment>
+              )}
+              {!isHomePage &&
+                menuItems.map(item => (
+                  <li
+                    className="toolbar__icon-wrapper z-index-high"
+                    key={item.label}
+                  >
+                    <button
+                      className="toolbar__icon-link"
+                      onClick={item.onClick}
+                      type="button"
+                    >
+                      <SvgIcon icon={item.mainIcon} />
+                      {item.supplementIconSrc && (
+                        <img
+                          alt="Plus icon"
+                          className="toolbar__icon-plus"
+                          src={item.supplementIconSrc}
+                        />
+                      )}
+                    </button>
+                  </li>
+                ))}
+            </ul>
             <div className="toolbar__logo">
               <AppLogo />
             </div>
@@ -208,6 +241,15 @@ class Toolbar extends PureComponent {
 
 Toolbar.propTypes = {
   currentUser: UserPropType.isRequired,
+  isHomePage: PropTypes.bool,
+  menuItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      iconSrc: PropTypes.string,
+      label: PropTypes.string.isRequired,
+
+      onClick: PropTypes.func
+    })
+  ).isRequired,
 
   createCohort: PropTypes.func.isRequired,
   createShoppingList: PropTypes.func.isRequired
