@@ -24,7 +24,7 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 class ShoppingList extends Component {
   state = {
     showDialogBox: false,
-    showUpdateFrom: false
+    showUpdateForm: false
   };
 
   componentDidMount() {
@@ -53,12 +53,36 @@ class ShoppingList extends Component {
     fetchItemsFromGivenList(id);
   };
 
+  handleClick = event => {
+    const { className } = event.target;
+
+    className.length > 0 && className.includes('overlay')
+      ? this.setState({ showDialogBox: false, showUpdateForm: false })
+      : null;
+  };
+
+  escapeHandler = () => {
+    this.setState({ showDialogBox: false, showUpdateForm: false });
+  };
+
+  addEventListeners = () => {
+    document.addEventListener('click', this.handleClick);
+    document.addEventListener('keydown', this.escapeHandler);
+  };
+
+  removeEventListeners = () => {
+    document.removeEventListener('click', this.handleClick);
+    document.removeEventListener('keydown', this.escapeHandler);
+  };
+
   showDialogBox = () => {
+    this.addEventListeners();
     this.setState({ showDialogBox: true });
   };
 
   hideDialogBox = () => {
     this.setState({ showDialogBox: false });
+    this.removeEventListeners();
   };
 
   deleteListHandler = id => () => {
@@ -75,11 +99,13 @@ class ShoppingList extends Component {
   };
 
   hideUpdateForm = () => {
-    this.setState({ showUpdateFrom: false });
+    this.setState({ showUpdateForm: false });
+    this.removeEventListeners();
   };
 
   showUpdateForm = () => {
-    this.setState({ showUpdateFrom: true });
+    this.addEventListeners();
+    this.setState({ showUpdateForm: true });
   };
 
   updateListHandler = listId => (name, description) => {
@@ -94,7 +120,7 @@ class ShoppingList extends Component {
   };
 
   render() {
-    const { showDialogBox, showUpdateFrom } = this.state;
+    const { showDialogBox, showUpdateForm } = this.state;
     const {
       match: {
         params: { id: listId }
@@ -131,7 +157,7 @@ class ShoppingList extends Component {
             </ModalBox>
           </Overlay>
         )}
-        {showUpdateFrom && (
+        {showUpdateForm && (
           <Overlay type={OverlayStyleType.MEDIUM}>
             <ModalBox onClose={this.hideUpdateForm}>
               <CreationForm

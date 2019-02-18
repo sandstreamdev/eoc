@@ -11,19 +11,14 @@
   max-width: 600px;
 
   &__cancel-button {
-    background: transparent;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    background: $gray-bg;
     position: absolute;
-    right: 0;
-    padding: 10px 15px;
-    border: none;
+    right: 16px;
+    bottom: 16px;
     outline: none;
-    border-radius: 50%;
-    transform: scale(1);
-    transition: all 0.25s;
-
-    &:hover {
-      transform: scale(1.3);
-    }
   }
 
   &__icon {

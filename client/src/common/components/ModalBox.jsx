@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import CloseIcon from 'assets/images/times-solid.svg';
-
 const ModalBox = ({ children, onClose }) => (
   <div className="modalbox">
     {onClose && (
@@ -11,7 +9,7 @@ const ModalBox = ({ children, onClose }) => (
         onClick={onClose}
         type="button"
       >
-        <img alt="Close Icon" className="modalbox__icon" src={CloseIcon} />
+        Cancel
       </button>
     )}
     {children}
