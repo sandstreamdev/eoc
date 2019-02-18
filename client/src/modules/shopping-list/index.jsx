@@ -18,6 +18,7 @@ import CreationForm from 'common/components/CreationForm';
 import Toolbar from 'app/components/Toolbar/Toolbar';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import PlusIcon from 'assets/images/plus-solid.svg';
+import { IconType } from 'common/constants/enums';
 
 class ShoppingList extends Component {
   state = {
@@ -33,17 +34,17 @@ class ShoppingList extends Component {
     return [
       {
         label: 'Edit list',
-        mainIcon: 'edit',
+        mainIcon: IconType.EDIT,
         onClick: this.showUpdateForm
       },
       {
         label: 'Remove list',
-        mainIcon: 'remove',
+        mainIcon: IconType.REMOVE,
         onClick: this.showDialogBox
       },
       {
         label: 'Invite user',
-        mainIcon: 'invite',
+        mainIcon: IconType.INVITE,
         onClick: () => {},
         supplementIconSrc: PlusIcon
       }

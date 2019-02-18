@@ -14,3 +14,12 @@ export const StatusType = Object.freeze({
   RESOLVED: 'resolved',
   ERROR: 'error'
 });
+
+export const IconType = Object.freeze({
+  COHORT: 'cohort',
+  EDIT: 'edit',
+  HOME: 'home',
+  INVITE: 'invite',
+  LIST: 'list',
+  REMOVE: 'remove'
+});

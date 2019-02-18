@@ -3,23 +3,24 @@ import PropTypes from 'prop-types';
 
 import Toolbar from 'app/components/Toolbar/Toolbar';
 import PlusIcon from 'assets/images/plus-solid.svg';
+import { IconType } from 'common/constants/enums';
 
 class Cohort extends PureComponent {
   get menuItems() {
     return [
       {
         label: 'Edit list',
-        mainIcon: 'edit',
+        mainIcon: IconType.EDIT,
         onClick: this.showUpdateForm
       },
       {
         label: 'Remove list',
-        mainIcon: 'remove',
+        mainIcon: IconType.REMOVE,
         onClick: this.showDialogBox
       },
       {
         label: 'Invite user',
-        mainIcon: 'invite',
+        mainIcon: IconType.INVITE,
         onClick: () => {},
         supplementIconSrc: PlusIcon
       }

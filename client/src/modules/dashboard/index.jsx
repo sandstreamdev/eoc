@@ -4,17 +4,14 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _map from 'lodash/map';
 
-import {
-  ClipboardSolid as ShoppingListIcon,
-  UsersSolid as CohortIcon
-} from 'assets/images/icons';
+import { SvgIcon } from 'assets/images/icons';
 import { fetchShoppingListsMetaData } from 'modules/shopping-list/model/actions';
 import { fetchCohorts } from 'modules/cohort/model/actions';
 import { getShoppingLists } from 'modules/shopping-list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import CardItem from './CardItem';
 import Toolbar from 'app/components/Toolbar/Toolbar';
-import PlusIcon from 'assets/images/plus-solid.svg';
+import { IconType } from 'common/constants/enums';
 
 class Dashboard extends Component {
   componentDidMount() {
@@ -24,23 +21,6 @@ class Dashboard extends Component {
     fetchCohorts();
   }
 
-  get menuItems() {
-    return [
-      {
-        label: 'Create new list',
-        mainIcon: 'cohort',
-        onClick: this.showCreateForm,
-        supplementIconSrc: PlusIcon
-      },
-      {
-        label: 'Create ne cohort',
-        mainIcon: 'list',
-        onClick: this.showCreateForm,
-        supplementIconSrc: PlusIcon
-      }
-    ];
-  }
-
   showCreateForm = () => {};
 
   render() {
@@ -48,11 +28,11 @@ class Dashboard extends Component {
 
     return (
       <Fragment>
-        <Toolbar isHomePage menuItems={this.menuItems} />
+        <Toolbar isHomePage />
         <div className="wrapper">
           <div className="dashboard">
             <h2 className="dashboard__heading">
-              <ShoppingListIcon />
+              <SvgIcon icon={IconType.LIST} />
               Lists
             </h2>
             <ul className="dashboard__list">
@@ -65,7 +45,7 @@ class Dashboard extends Component {
               ))}
             </ul>
             <h2 className="dashboard__heading">
-              <CohortIcon />
+              <SvgIcon icon={IconType.COHORT} />
               Cohorts
             </h2>
             <ul className="dashboard__list">

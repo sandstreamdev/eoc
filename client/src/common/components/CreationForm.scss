@@ -11,7 +11,7 @@
   box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
 
   &--menu::before {
-    right: 7px;
+    left: calc(50% - 15px);
     top: -10px;
     position: absolute;
     content: '';
