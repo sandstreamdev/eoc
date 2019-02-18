@@ -90,7 +90,7 @@ export const fetchItemsFromGivenList = listId => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, fetching products failed..."
+        err.message || "Oops, we're sorry, fetching products failed..."
       );
     });
 };
@@ -109,7 +109,7 @@ export const createShoppingList = (name, description, adminId) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, creating new list failed..."
+        err.message || "Oops, we're sorry, creating new list failed..."
       );
     });
 };
@@ -127,7 +127,7 @@ export const fetchShoppingListsMetaData = () => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, fetching lists failed..."
+        err.message || "Oops, we're sorry, fetching lists failed..."
       );
     });
 };

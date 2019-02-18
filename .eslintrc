@@ -22,6 +22,7 @@
     "comma-dangle": ["error", "never"],
     "comma-spacing": ["warn"],
     "computed-property-spacing": ["error", "never"],
+    "consistent-return": ["off"],
     "dependencies/case-sensitive": "error",
     "dependencies/no-cycles": "error",
     "dependencies/require-json-ext": "error",
