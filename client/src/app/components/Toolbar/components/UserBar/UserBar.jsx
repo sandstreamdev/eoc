@@ -31,7 +31,9 @@ class UserBar extends Component {
     return (
       <div className="user-bar">
         <button
-          className="user-bar__button z-index-high"
+          className={classNames('user-bar__button', {
+            'z-index-high': isMenuVisible
+          })}
           onClick={this.handleShowMenu}
           type="button"
         >
