@@ -12,9 +12,6 @@ class CreationForm extends PureComponent {
     const {
       target: { value, nodeName }
     } = event;
-    const { onFormChange } = this.props;
-
-    onFormChange && onFormChange(nodeName, value);
 
     nodeName === 'TEXTAREA'
       ? this.setState({ description: value })
@@ -35,7 +32,8 @@ class CreationForm extends PureComponent {
   };
 
   render() {
-    const { label, type, description, title } = this.props;
+    const { label, type } = this.props;
+    const { description, title } = this.state;
 
     return (
       <form
@@ -71,12 +69,9 @@ class CreationForm extends PureComponent {
 }
 
 CreationForm.propTypes = {
-  description: PropTypes.string,
-  label: PropTypes.string.isRequired,
-  title: PropTypes.string,
+  label: PropTypes.string,
   type: PropTypes.string,
 
-  onFormChange: PropTypes.func,
   onSubmit: PropTypes.func.isRequired
 };
 
