@@ -13,7 +13,7 @@ const createNewList = (req, resp) => {
 
   shoppingList.save((err, doc) => {
     err
-      ? resp.status(400).send(err.message)
+      ? resp.status(400).send({ message: err.message })
       : resp
           .location(`/shopping-list/${doc._id}`)
           .status(201)
@@ -35,7 +35,7 @@ const getAllShoppingLists = (req, resp) => {
     { sort: { created_at: -1 } },
     (err, shoppingLists) => {
       err
-        ? resp.status(400).send(err.message)
+        ? resp.status(400).send({ message: err.message })
         : resp.status(200).send(shoppingLists);
     }
   );
@@ -43,10 +43,12 @@ const getAllShoppingLists = (req, resp) => {
 
 const getShoppingListById = (req, resp) => {
   ShoppingList.findById({ _id: req.params.id }, (err, doc) => {
-    if (!doc) return resp.status(404).send('No shopping list of given id');
+    if (!doc) {
+      return resp.status(404).send({ message: 'No shopping list of given id' });
+    }
 
     return err
-      ? resp.status(400).send(err.message)
+      ? resp.status(400).send({ message: err.message })
       : resp.status(200).json(doc);
   });
 };
@@ -87,7 +89,9 @@ const getShoppingListsMetaData = (req, resp) => {
     '_id name description',
     { sort: { created_at: -1 } },
     (err, docs) => {
-      err ? resp.status(404).send(err.message) : resp.status(200).send(docs);
+      err
+        ? resp.status(404).send({ message: err.message })
+        : resp.status(200).send(docs);
     }
   );
 };
@@ -118,7 +122,9 @@ const addProductToList = (req, resp) => {
     },
     { $push: { products: product } },
     (err, data) => {
-      err ? resp.status(404).send(err) : resp.status(200).send(product);
+      err
+        ? resp.status(404).send({ message: err.message })
+        : resp.status(200).send(product);
     }
   );
 };
@@ -135,11 +141,16 @@ const getProductsForGivenList = (req, resp) => {
     },
     'products',
     (err, documents) => {
-      if (documents.length > 0) {
-        const { products } = documents[0];
-        return resp.status(200).json(products);
+      if (!documents) {
+        return resp.status(404).send('Products not found for given list id!');
       }
-      return resp.status(404).send(err);
+
+      if (err) {
+        return resp.status(404).send({ message: err.message });
+      }
+
+      const { products } = documents[0];
+      resp.status(200).json(products);
     }
   );
 };
