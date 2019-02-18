@@ -24,20 +24,22 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 class Toolbar extends PureComponent {
   state = {
     cohortFormVisibility: false,
+    formDescription: '',
+    formTitle: '',
     overlayVisibility: false,
     shoppingFormVisibility: false,
     userBarMenuVisibility: false
   };
 
-  componentDidMount() {
-    document.addEventListener('click', this.clickListener);
-    document.addEventListener('keydown', this.escapeListener);
-  }
-
   componentWillUnmount() {
     document.removeEventListener('click', this.clickListener);
     document.removeEventListener('keydown', this.escapeListener);
   }
+
+  addEventListeners = () => {
+    document.addEventListener('click', this.clickListener);
+    document.addEventListener('keydown', this.escapeListener);
+  };
 
   clickListener = event => {
     const { className } = event.target;
@@ -62,8 +64,11 @@ class Toolbar extends PureComponent {
   handleShoppingListFormVisibility = () => {
     const { shoppingFormVisibility } = this.state;
 
+    this.addEventListeners();
     this.setState({
       cohortFormVisibility: false,
+      formDescription: '',
+      formTitle: '',
       overlayVisibility: !shoppingFormVisibility,
       shoppingFormVisibility: !shoppingFormVisibility,
       userBarMenuVisibility: false
@@ -73,8 +78,11 @@ class Toolbar extends PureComponent {
   handleCohortFormVisibility = () => {
     const { cohortFormVisibility } = this.state;
 
+    this.addEventListeners();
     this.setState({
       cohortFormVisibility: !cohortFormVisibility,
+      formDescription: '',
+      formTitle: '',
       overlayVisibility: !cohortFormVisibility,
       shoppingFormVisibility: false,
       userBarMenuVisibility: false
@@ -100,6 +108,7 @@ class Toolbar extends PureComponent {
   };
 
   handleUserBarMenu = isVisible => {
+    this.addEventListeners();
     this.setState({
       cohortFormVisibility: false,
       overlayVisibility: isVisible,
@@ -108,9 +117,17 @@ class Toolbar extends PureComponent {
     });
   };
 
+  onFormChange = (nodeName, value) => {
+    nodeName === 'TEXTAREA'
+      ? this.setState({ formDescription: value })
+      : this.setState({ formTitle: value });
+  };
+
   render() {
     const {
       cohortFormVisibility,
+      formDescription,
+      formTitle,
       overlayVisibility,
       shoppingFormVisibility,
       userBarMenuVisibility
@@ -138,7 +155,11 @@ class Toolbar extends PureComponent {
                   <HomeIcon />
                 </Link>
               </div>
-              <div className="toolbar__icon-wrapper z-index-high">
+              <div
+                className={classNames('toolbar__icon-wrapper', {
+                  'z-index-high': cohortFormVisibility
+                })}
+              >
                 <button
                   className="toolbar__icon-link"
                   onClick={this.handleCohortFormVisibility}
@@ -157,13 +178,20 @@ class Toolbar extends PureComponent {
                   })}
                 >
                   <CreationForm
+                    description={formDescription}
                     label="Create new cohort"
+                    onFormChange={this.onFormChange}
                     onSubmit={this.handleCohortSubmission}
+                    title={formTitle}
                     type="menu"
                   />
                 </div>
               </div>
-              <div className="toolbar__icon-wrapper z-index-high">
+              <div
+                className={classNames('toolbar__icon-wrapper', {
+                  'z-index-high': shoppingFormVisibility
+                })}
+              >
                 <button
                   className="toolbar__icon-link"
                   onClick={this.handleShoppingListFormVisibility}
@@ -182,8 +210,11 @@ class Toolbar extends PureComponent {
                   })}
                 >
                   <CreationForm
+                    description={formDescription}
                     label="Create new shopping list"
+                    onFormChange={this.onFormChange}
                     onSubmit={this.handleShoppingListSubmission}
+                    title={formTitle}
                     type="menu"
                   />
                 </div>

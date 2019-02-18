@@ -132,13 +132,15 @@ class ShoppingList extends Component {
           </Overlay>
         )}
         {showUpdateFrom && (
-          <ModalBox onClose={this.hideUpdateForm}>
-            <CreationForm
-              type="modal"
-              label="Edit list"
-              onSubmit={this.updateListHandler(listId)}
-            />
-          </ModalBox>
+          <Overlay type={OverlayStyleType.MEDIUM}>
+            <ModalBox onClose={this.hideUpdateForm}>
+              <CreationForm
+                type="modal"
+                label="Edit list"
+                onSubmit={this.updateListHandler(listId)}
+              />
+            </ModalBox>
+          </Overlay>
         )}
       </Fragment>
     );
