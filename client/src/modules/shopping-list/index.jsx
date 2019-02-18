@@ -15,9 +15,9 @@ import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
 import { noOp } from 'common/utils/noOp';
 import CreationForm from 'common/components/CreationForm';
-import Toolbar from 'app/components/Toolbar/Toolbar';
+import Toolbar from 'common/components/Toolbar/Toolbar';
+import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
-import PlusIcon from 'assets/images/plus-solid.svg';
 import { IconType } from 'common/constants/enums';
 
 class ShoppingList extends Component {
@@ -28,27 +28,6 @@ class ShoppingList extends Component {
 
   componentDidMount() {
     this.fetchProducts();
-  }
-
-  get menuItems() {
-    return [
-      {
-        label: 'Edit list',
-        mainIcon: IconType.EDIT,
-        onClick: this.showUpdateForm
-      },
-      {
-        label: 'Remove list',
-        mainIcon: IconType.REMOVE,
-        onClick: this.showDialogBox
-      },
-      {
-        label: 'Invite user',
-        mainIcon: IconType.INVITE,
-        onClick: () => {},
-        supplementIconSrc: PlusIcon
-      }
-    ];
   }
 
   fetchProducts = () => {
@@ -117,7 +96,14 @@ class ShoppingList extends Component {
 
     return (
       <Fragment>
-        <Toolbar menuItems={this.menuItems} />
+        <Toolbar>
+          <ToolbarItem mainIcon={IconType.EDIT} onClick={this.showUpdateForm} />
+          <ToolbarItem
+            mainIcon={IconType.REMOVE}
+            onClick={this.showDialogBox}
+          />
+          <ToolbarItem mainIcon={IconType.INVITE} onClick={() => {}} />
+        </Toolbar>
         <div className="app-wrapper">
           <InputBar />
           <ProductsContainer

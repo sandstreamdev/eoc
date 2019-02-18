@@ -1,32 +1,11 @@
 import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import Toolbar from 'app/components/Toolbar/Toolbar';
-import PlusIcon from 'assets/images/plus-solid.svg';
+import Toolbar from 'common/components/Toolbar/Toolbar';
+import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import { IconType } from 'common/constants/enums';
 
 class Cohort extends PureComponent {
-  get menuItems() {
-    return [
-      {
-        label: 'Edit list',
-        mainIcon: IconType.EDIT,
-        onClick: this.showUpdateForm
-      },
-      {
-        label: 'Remove list',
-        mainIcon: IconType.REMOVE,
-        onClick: this.showDialogBox
-      },
-      {
-        label: 'Invite user',
-        mainIcon: IconType.INVITE,
-        onClick: () => {},
-        supplementIconSrc: PlusIcon
-      }
-    ];
-  }
-
   showUpdateForm = () => {};
 
   showDialogBox = () => {};
@@ -40,7 +19,14 @@ class Cohort extends PureComponent {
 
     return (
       <Fragment>
-        <Toolbar menuItems={this.menuItems} />
+        <Toolbar>
+          <ToolbarItem mainIcon={IconType.EDIT} onClick={this.showUpdateForm} />
+          <ToolbarItem
+            mainIcon={IconType.REMOVE}
+            onClick={this.showDialogBox}
+          />
+          <ToolbarItem mainIcon={IconType.INVITE} onClick={() => {}} />
+        </Toolbar>
         <div>{`Cohort of id: ${id}`}</div>
       </Fragment>
     );

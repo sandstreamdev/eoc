@@ -11,28 +11,64 @@ import UserIcon from 'assets/images/user-solid.svg';
 import LogoutIcon from 'assets/images/sign-out.svg';
 
 class UserBar extends Component {
+  constructor(props) {
+    super(props);
+    this.userBarMenuRef = React.createRef();
+  }
+
+  state = {
+    hideMenu: true
+  };
+
+  componentWillUnmount() {
+    this.removeEventListeners();
+  }
+
+  addEventListeners = () => {
+    document.addEventListener('click', this.hideMenu);
+    document.addEventListener('keydown', this.onPressEscape);
+  };
+
+  removeEventListeners = () => {
+    document.removeEventListener('click', this.hideMenu);
+    document.removeEventListener('keydown', this.onPressEscape);
+  };
+
+  hideMenu = e => {
+    if (!this.userBarMenuRef.current.contains(e.target)) {
+      this.setState({ hideMenu: true });
+      this.removeEventListeners();
+    }
+  };
+
+  showMenu = () => {
+    this.setState({ hideMenu: false });
+    this.addEventListeners();
+  };
+
+  onPressEscape = e => (e.code === 'Escape' ? this.hideMenu(e) : null);
+
+  toggleMenuVisibility = e => {
+    const { hideMenu } = this.state;
+    hideMenu ? this.showMenu() : this.hideMenu(e);
+  };
+
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
     logoutCurrentUser();
   };
 
-  handleShowMenu = () => {
-    const { onClick, isMenuVisible } = this.props;
-
-    onClick(!isMenuVisible);
-  };
-
   render() {
+    const { hideMenu } = this.state;
     const {
-      currentUser: { avatarUrl, name },
-      isMenuVisible
+      currentUser: { avatarUrl, name }
     } = this.props;
 
     return (
       <div className="user-bar">
         <button
           className="user-bar__button z-index-high"
-          onClick={this.handleShowMenu}
+          onClick={this.toggleMenuVisibility}
           type="button"
         >
           Profile:
@@ -41,8 +77,9 @@ class UserBar extends Component {
 
         <div
           className={classNames('user-bar__menu-wrapper z-index-high', {
-            hidden: !isMenuVisible
+            hidden: hideMenu
           })}
+          ref={this.userBarMenuRef}
         >
           <ul className="user-bar__menu">
             <li className="user-bar__menu-item">
@@ -84,10 +121,9 @@ class UserBar extends Component {
 
 UserBar.propTypes = {
   currentUser: UserPropType.isRequired,
-  isMenuVisible: PropTypes.bool.isRequired,
 
-  logoutCurrentUser: PropTypes.func.isRequired,
-  onClick: PropTypes.func.isRequired
+  logoutCurrentUser: PropTypes.func.isRequired
+  // onClick: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

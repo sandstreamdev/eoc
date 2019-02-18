@@ -27,12 +27,12 @@
 @import '../../modules/shopping-list/components/ProductsContainer';
 @import '../../modules/shopping-list/components/ProductsList.scss';
 @import '../../modules/shopping-list/components/InputBar/InputBar.scss';
-@import '../../app/components/Toolbar/components/UserBar/UserBar.scss';
+@import '../../common/components/Toolbar/components/UserBar/UserBar.scss';
 @import '../../common/components/DropdownMenu.scss';
 @import '../../common/components/SortBox.scss';
 @import '../../modules/shopping-list/components/VotingBox';
 @import '../../modules/shopping-list/components/FilterBox.scss';
-@import '../components/Toolbar/Toolbar.scss';
+@import '../../common/components/Toolbar/Toolbar.scss';
 @import '../../modules/dashboard/Dashboard.scss';
 @import '../../modules/dashboard/CardItem.scss';
 @import '../../common/components/CreationForm.scss';
