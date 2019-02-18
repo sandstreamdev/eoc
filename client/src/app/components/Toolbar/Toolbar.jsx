@@ -24,8 +24,6 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 class Toolbar extends PureComponent {
   state = {
     cohortFormVisibility: false,
-    formDescription: '',
-    formTitle: '',
     overlayVisibility: false,
     shoppingFormVisibility: false,
     userBarMenuVisibility: false
@@ -67,8 +65,6 @@ class Toolbar extends PureComponent {
     this.addEventListeners();
     this.setState({
       cohortFormVisibility: false,
-      formDescription: '',
-      formTitle: '',
       overlayVisibility: !shoppingFormVisibility,
       shoppingFormVisibility: !shoppingFormVisibility,
       userBarMenuVisibility: false
@@ -81,8 +77,6 @@ class Toolbar extends PureComponent {
     this.addEventListeners();
     this.setState({
       cohortFormVisibility: !cohortFormVisibility,
-      formDescription: '',
-      formTitle: '',
       overlayVisibility: !cohortFormVisibility,
       shoppingFormVisibility: false,
       userBarMenuVisibility: false
@@ -117,17 +111,9 @@ class Toolbar extends PureComponent {
     });
   };
 
-  onFormChange = (nodeName, value) => {
-    nodeName === 'TEXTAREA'
-      ? this.setState({ formDescription: value })
-      : this.setState({ formTitle: value });
-  };
-
   render() {
     const {
       cohortFormVisibility,
-      formDescription,
-      formTitle,
       overlayVisibility,
       shoppingFormVisibility,
       userBarMenuVisibility
@@ -172,19 +158,14 @@ class Toolbar extends PureComponent {
                     src={PlusIcon}
                   />
                 </button>
-                <div
-                  className={classNames('toolbar__form', {
-                    hidden: !cohortFormVisibility
-                  })}
-                >
-                  <CreationForm
-                    description={formDescription}
-                    label="Create new cohort"
-                    onFormChange={this.onFormChange}
-                    onSubmit={this.handleCohortSubmission}
-                    title={formTitle}
-                    type="menu"
-                  />
+                <div className="toolbar__form">
+                  {cohortFormVisibility && (
+                    <CreationForm
+                      label="Create new cohort"
+                      onSubmit={this.handleCohortSubmission}
+                      type="menu"
+                    />
+                  )}
                 </div>
               </div>
               <div
@@ -204,19 +185,14 @@ class Toolbar extends PureComponent {
                     src={PlusIcon}
                   />
                 </button>
-                <div
-                  className={classNames('toolbar__form', {
-                    hidden: !shoppingFormVisibility
-                  })}
-                >
-                  <CreationForm
-                    description={formDescription}
-                    label="Create new shopping list"
-                    onFormChange={this.onFormChange}
-                    onSubmit={this.handleShoppingListSubmission}
-                    title={formTitle}
-                    type="menu"
-                  />
+                <div className="toolbar__form">
+                  {shoppingFormVisibility && (
+                    <CreationForm
+                      label="Create new shopping list"
+                      onSubmit={this.handleShoppingListSubmission}
+                      type="menu"
+                    />
+                  )}
                 </div>
               </div>
             </div>
