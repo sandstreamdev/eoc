@@ -138,13 +138,6 @@ class Toolbar extends PureComponent {
                   />
                 </a>
               </li>
-              {!isHomePage && (
-                <li className="toolbar__icon-wrapper">
-                  <Link className="toolbar__icon-link" to="/dashboard">
-                    <HomeIcon />
-                  </Link>
-                </li>
-              )}
               {isHomePage && (
                 <Fragment>
                   <li className="toolbar__icon-wrapper z-index-high">
@@ -199,28 +192,36 @@ class Toolbar extends PureComponent {
                   </li>
                 </Fragment>
               )}
-              {!isHomePage &&
-                menuItems.map(item => (
-                  <li
-                    className="toolbar__icon-wrapper z-index-high"
-                    key={item.label}
-                  >
-                    <button
-                      className="toolbar__icon-link"
-                      onClick={item.onClick}
-                      type="button"
-                    >
-                      <SvgIcon icon={item.mainIcon} />
-                      {item.supplementIconSrc && (
-                        <img
-                          alt="Plus icon"
-                          className="toolbar__icon-plus"
-                          src={item.supplementIconSrc}
-                        />
-                      )}
-                    </button>
+              {!isHomePage && (
+                <Fragment>
+                  <li className="toolbar__icon-wrapper">
+                    <Link className="toolbar__icon-link" to="/dashboard">
+                      <HomeIcon />
+                    </Link>
                   </li>
-                ))}
+                  {menuItems.map(item => (
+                    <li
+                      className="toolbar__icon-wrapper z-index-high"
+                      key={item.label}
+                    >
+                      <button
+                        className="toolbar__icon-link"
+                        onClick={item.onClick}
+                        type="button"
+                      >
+                        <SvgIcon icon={item.mainIcon} />
+                        {item.supplementIconSrc && (
+                          <img
+                            alt="Plus icon"
+                            className="toolbar__icon-plus"
+                            src={item.supplementIconSrc}
+                          />
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </Fragment>
+              )}
             </ul>
             <div className="toolbar__logo">
               <AppLogo />
