@@ -24,8 +24,6 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 class Toolbar extends PureComponent {
   state = {
     cohortFormVisibility: false,
-    formDescription: '',
-    formTitle: '',
     overlayVisibility: false,
     shoppingFormVisibility: false,
     userBarMenuVisibility: false
@@ -67,8 +65,6 @@ class Toolbar extends PureComponent {
     this.addEventListeners();
     this.setState({
       cohortFormVisibility: false,
-      formDescription: '',
-      formTitle: '',
       overlayVisibility: !shoppingFormVisibility,
       shoppingFormVisibility: !shoppingFormVisibility,
       userBarMenuVisibility: false
@@ -81,8 +77,6 @@ class Toolbar extends PureComponent {
     this.addEventListeners();
     this.setState({
       cohortFormVisibility: !cohortFormVisibility,
-      formDescription: '',
-      formTitle: '',
       overlayVisibility: !cohortFormVisibility,
       shoppingFormVisibility: false,
       userBarMenuVisibility: false
@@ -117,17 +111,9 @@ class Toolbar extends PureComponent {
     });
   };
 
-  onFormChange = (nodeName, value) => {
-    nodeName === 'TEXTAREA'
-      ? this.setState({ formDescription: value })
-      : this.setState({ formTitle: value });
-  };
-
   render() {
     const {
       cohortFormVisibility,
-      formDescription,
-      formTitle,
       overlayVisibility,
       shoppingFormVisibility,
       userBarMenuVisibility
