@@ -126,7 +126,6 @@ UserBar.propTypes = {
   currentUser: UserPropType.isRequired,
 
   logoutCurrentUser: PropTypes.func.isRequired
-  // onClick: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

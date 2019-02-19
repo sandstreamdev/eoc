@@ -1,6 +1,13 @@
 import React from 'react';
 
-import { IconType } from 'common/constants/enums';
+export const IconType = Object.freeze({
+  COHORT: 'cohort',
+  EDIT: 'edit',
+  HOME: 'home',
+  INVITE: 'invite',
+  LIST: 'list',
+  REMOVE: 'remove'
+});
 
 export const icons = {
   [IconType.COHORT]: (

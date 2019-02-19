@@ -3,14 +3,10 @@ import PropTypes from 'prop-types';
 
 import Toolbar from 'common/components/Toolbar/Toolbar';
 import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
-import { IconType } from 'common/constants/enums';
+import { IconType } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 
 class Cohort extends PureComponent {
-  showUpdateForm = () => {};
-
-  showDialogBox = () => {};
-
   render() {
     const {
       match: {
@@ -21,15 +17,12 @@ class Cohort extends PureComponent {
     return (
       <Fragment>
         <Toolbar>
-          <ToolbarItem mainIcon={IconType.EDIT} onClick={this.showUpdateForm} />
-          <ToolbarItem
-            mainIcon={IconType.REMOVE}
-            onClick={this.showDialogBox}
-          />
+          <ToolbarItem mainIcon={IconType.EDIT} onClick={() => {}} />
+          <ToolbarItem mainIcon={IconType.REMOVE} onClick={() => {}} />
           <ToolbarItem
             mainIcon={IconType.INVITE}
             onClick={() => {}}
-            supplementIconSrc={PlusIcon}
+            additionalIconSrc={PlusIcon}
           />
         </Toolbar>
         <div>{`Cohort of id: ${id}`}</div>

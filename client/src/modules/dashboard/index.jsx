@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import _map from 'lodash/map';
 import classNames from 'classnames';
 
-import { SvgIcon } from 'assets/images/icons';
+import { IconType, SvgIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import CreationForm from 'common/components/CreationForm';
 import {
@@ -20,7 +20,6 @@ import Toolbar from 'common/components/Toolbar/Toolbar';
 import { UserPropType } from 'common/constants/propTypes';
 import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import CardItem from './CardItem';
-import { IconType } from 'common/constants/enums';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -66,7 +65,9 @@ class Dashboard extends Component {
   };
 
   escapeListener = event => {
-    event.code === 'Escape' ? this.hideForms() : null;
+    if (event.code === 'Escape') {
+      this.hideForms();
+    }
   };
 
   hideForms = () => {
@@ -109,7 +110,7 @@ class Dashboard extends Component {
     this.hideForms();
   };
 
-  renderCreateCohortOption = () => {
+  renderCreateCohortForm = () => {
     const { cohortFormVisibility } = this.state;
     return (
       <div
@@ -158,14 +159,14 @@ class Dashboard extends Component {
           <ToolbarItem
             mainIcon={IconType.COHORT}
             onClick={this.showCohortForm}
-            supplementIconSrc={PlusIcon}
+            additionalIconSrc={PlusIcon}
           >
-            {this.renderCreateCohortOption()}
+            {this.renderCreateCohortForm()}
           </ToolbarItem>
           <ToolbarItem
             mainIcon={IconType.LIST}
             onClick={this.showListForm}
-            supplementIconSrc={PlusIcon}
+            additionalIconSrc={PlusIcon}
           >
             {this.renderCreateListForm()}
           </ToolbarItem>

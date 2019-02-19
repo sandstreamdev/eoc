@@ -18,7 +18,7 @@ import CreationForm from 'common/components/CreationForm';
 import Toolbar from 'common/components/Toolbar/Toolbar';
 import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
-import { IconType } from 'common/constants/enums';
+import { IconType } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 
 class ShoppingList extends Component {
@@ -106,7 +106,7 @@ class ShoppingList extends Component {
           <ToolbarItem
             mainIcon={IconType.INVITE}
             onClick={() => {}}
-            supplementIconSrc={PlusIcon}
+            additionalIconSrc={PlusIcon}
           />
         </Toolbar>
         <div className="app-wrapper">
