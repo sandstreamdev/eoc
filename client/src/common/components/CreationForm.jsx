@@ -56,7 +56,7 @@ class CreationForm extends PureComponent {
   };
 
   render() {
-    const { label, type } = this.props;
+    const { label, onHide, type } = this.props;
     const { description, title } = this.state;
 
     return (
@@ -93,7 +93,7 @@ class CreationForm extends PureComponent {
             value="Create"
           />
         </form>
-        <Overlay onClick={this.overlayHandler} type={OverlayStyleType.LIGHT} />
+        <Overlay onClick={onHide} type={OverlayStyleType.LIGHT} />
       </Fragment>
     );
   }
