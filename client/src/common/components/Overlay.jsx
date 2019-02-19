@@ -9,25 +9,10 @@ export const OverlayStyleType = {
 };
 
 class Overlay extends PureComponent {
-  componentDidMount() {
-    document.addEventListener('keydown', this.escapeListener);
-  }
+  onClick = () => {
+    const { onClick } = this.props;
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.escapeListener);
-  }
-
-  onEvent = () => {
-    const { onVisbilityChange } = this.props;
-
-    onVisbilityChange(false);
-  };
-
-  escapeListener = event => {
-    const { code } = event;
-    if (code === 'Escape') {
-      this.onEvent();
-    }
+    onClick();
   };
 
   render() {
@@ -40,7 +25,7 @@ class Overlay extends PureComponent {
           'overlay--dark': type === OverlayStyleType.DARK,
           'overlay--medium': type === OverlayStyleType.MEDIUM
         })}
-        onClick={this.onEvent}
+        onClick={this.onClick}
         role="banner"
       >
         {children}
@@ -53,7 +38,7 @@ Overlay.propTypes = {
   children: PropTypes.node,
   type: PropTypes.string.isRequired,
 
-  onVisbilityChange: PropTypes.func
+  onClick: PropTypes.func
 };
 
 export default Overlay;

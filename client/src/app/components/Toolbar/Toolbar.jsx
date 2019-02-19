@@ -111,16 +111,16 @@ class Toolbar extends PureComponent {
                     src={PlusIcon}
                   />
                 </button>
-                <div className="toolbar__form">
-                  {cohortFormVisibility && (
+                {cohortFormVisibility && (
+                  <div className="toolbar__form">
                     <CreationForm
                       label="Create new cohort"
                       onSubmit={this.handleCohortSubmission}
                       type="menu"
-                      hideForms={this.hideForms}
+                      onFormHide={this.hideForms}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               <div
                 className={classNames('toolbar__icon-wrapper', {
@@ -139,16 +139,16 @@ class Toolbar extends PureComponent {
                     src={PlusIcon}
                   />
                 </button>
-                <div className="toolbar__form">
-                  {shoppingFormVisibility && (
+                {shoppingFormVisibility && (
+                  <div className="toolbar__form">
                     <CreationForm
                       label="Create new shopping list"
                       onSubmit={this.handleShoppingListSubmission}
                       type="menu"
-                      hideForms={this.hideForms}
+                      onFormHide={this.hideForms}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
             <div className="toolbar__logo">
