@@ -1,6 +1,5 @@
 .creation-form {
   position: relative;
-  z-index: 11;
   background: $bg-color;
   padding: 16px;
   border-radius: 8px;
@@ -11,7 +10,7 @@
   box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
 
   &--menu::before {
-    left: calc(50% - 15px);
+    left: 7px;
     top: -10px;
     position: absolute;
     content: '';

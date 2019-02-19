@@ -8,21 +8,23 @@ export const OverlayStyleType = {
   MEDIUM: 'overlay/MEDIUM'
 };
 
-const Overlay = ({ children, type }) => (
+const Overlay = ({ type, onClick }) => (
   <div
     className={classNames('overlay', {
       'overlay--light': type === OverlayStyleType.LIGHT,
       'overlay--dark': type === OverlayStyleType.DARK,
       'overlay--medium': type === OverlayStyleType.MEDIUM
     })}
-  >
-    {children}
-  </div>
+    onClick={onClick}
+    role="banner"
+  />
 );
 
 Overlay.propTypes = {
-  children: PropTypes.node,
-  type: PropTypes.string.isRequired
+  // children: PropTypes.node,
+  type: PropTypes.string.isRequired,
+
+  onClick: PropTypes.func
 };
 
 export default Overlay;

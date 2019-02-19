@@ -41,9 +41,8 @@
 
   &__form {
     position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0);
+    left: 0;
     top: 50px;
-    z-index: 11;
+    z-index: 2;
   }
 }

@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
+import Toolbar from 'common/components/Toolbar/Toolbar';
+import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
 import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
@@ -15,9 +17,6 @@ import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
 import { noOp } from 'common/utils/noOp';
 import CreationForm from 'common/components/CreationForm';
-import Toolbar from 'common/components/Toolbar/Toolbar';
-import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
-import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import { EditIcon, RemoveIcon } from 'assets/images/icons';
 
 class ShoppingList extends Component {
@@ -110,26 +109,22 @@ class ShoppingList extends Component {
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (
-          <Overlay type={OverlayStyleType.MEDIUM}>
-            <ModalBox>
-              <DialogBox
-                onCancel={this.hideDialogBox}
-                onConfirm={this.deleteListHandler(listId)}
-                message="Do you really want to delete the list?"
-              />
-            </ModalBox>
-          </Overlay>
+          <ModalBox>
+            <DialogBox
+              onCancel={this.hideDialogBox}
+              onConfirm={this.deleteListHandler(listId)}
+              message="Do you really want to delete the list?"
+            />
+          </ModalBox>
         )}
         {showUpdateFrom && (
-          <Overlay type={OverlayStyleType.MEDIUM}>
-            <ModalBox onClose={this.hideUpdateForm}>
-              <CreationForm
-                type="modal"
-                label="Edit list"
-                onSubmit={this.updateListHandler(listId)}
-              />
-            </ModalBox>
-          </Overlay>
+          <ModalBox onClose={this.hideUpdateForm}>
+            <CreationForm
+              type="modal"
+              label="Edit list"
+              onSubmit={this.updateListHandler(listId)}
+            />
+          </ModalBox>
         )}
       </Fragment>
     );

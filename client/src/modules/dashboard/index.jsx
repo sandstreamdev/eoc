@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _map from 'lodash/map';
-import classNames from 'classnames';
 
+import Toolbar from 'common/components/Toolbar/Toolbar';
+import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import { CohortIcon, ListIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import CreationForm from 'common/components/CreationForm';
@@ -16,9 +17,7 @@ import { createCohort, fetchCohorts } from 'modules/cohort/model/actions';
 import { getShoppingLists } from 'modules/shopping-list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import Toolbar from 'common/components/Toolbar/Toolbar';
 import { UserPropType } from 'common/constants/propTypes';
-import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import CardItem from './CardItem';
 
 class Dashboard extends Component {
@@ -34,50 +33,29 @@ class Dashboard extends Component {
     fetchCohorts();
   }
 
-  componentWillUnmount() {
-    this.removeEventListeners();
-  }
-
-  addEventListeners = () => {
-    document.addEventListener('click', this.clickListener, true);
-    document.addEventListener('keydown', this.escapeListener);
-  };
-
-  removeEventListeners = () => {
-    document.removeEventListener('click', this.clickListener, true);
-    document.removeEventListener('keydown', this.escapeListener);
-  };
-
-  clickListener = () => {
-    this.hideForms();
-  };
-
-  escapeListener = event => {
-    if (event.code === 'Escape') {
-      this.hideForms();
-    }
-  };
-
   hideForms = () => {
     this.setState({
       cohortFormVisibility: false,
       shoppingFormVisibility: false
     });
-    this.removeEventListeners();
   };
 
-  showListForm = () => {
+  handleShoppingListFormVisibility = () => {
+    const { shoppingFormVisibility } = this.state;
+
     this.setState({
-      shoppingFormVisibility: true
+      cohortFormVisibility: false,
+      shoppingFormVisibility: !shoppingFormVisibility
     });
-    this.addEventListeners();
   };
 
-  showCohortForm = () => {
+  handleCohortFormVisibility = () => {
+    const { cohortFormVisibility } = this.state;
+
     this.setState({
-      cohortFormVisibility: true
+      cohortFormVisibility: !cohortFormVisibility,
+      shoppingFormVisibility: false
     });
-    this.addEventListeners();
   };
 
   handleShoppingListSubmission = (title, description) => {
@@ -101,38 +79,32 @@ class Dashboard extends Component {
   renderCreateCohortForm = () => {
     const { cohortFormVisibility } = this.state;
     return (
-      <div
-        className={classNames('dashboard__form', {
-          hidden: !cohortFormVisibility
-        })}
-      >
-        {cohortFormVisibility && (
+      cohortFormVisibility && (
+        <div className="dashboard__form">
           <CreationForm
             label="Create new cohort"
             onSubmit={this.handleCohortSubmission}
             type="menu"
+            onHide={this.hideForms}
           />
-        )}
-      </div>
+        </div>
+      )
     );
   };
 
   renderCreateListForm = () => {
     const { shoppingFormVisibility } = this.state;
     return (
-      <div
-        className={classNames('dashboard__form', {
-          hidden: !shoppingFormVisibility
-        })}
-      >
-        {shoppingFormVisibility && (
+      shoppingFormVisibility && (
+        <div className="dashboard__form">
           <CreationForm
             label="Create new shopping list"
             onSubmit={this.handleShoppingListSubmission}
             type="menu"
+            onHide={this.hideForms}
           />
-        )}
-      </div>
+        </div>
+      )
     );
   };
 
@@ -144,14 +116,14 @@ class Dashboard extends Component {
         <Toolbar isHomePage>
           <ToolbarItem
             mainIcon={<CohortIcon />}
-            onClick={this.showCohortForm}
+            onClick={this.handleCohortFormVisibility}
             additionalIconSrc={PlusIcon}
           >
             {this.renderCreateCohortForm()}
           </ToolbarItem>
           <ToolbarItem
             mainIcon={<ListIcon />}
-            onClick={this.showListForm}
+            onClick={this.handleShoppingListFormVisibility}
             additionalIconSrc={PlusIcon}
           >
             {this.renderCreateListForm()}
