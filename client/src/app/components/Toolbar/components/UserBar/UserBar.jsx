@@ -16,12 +16,29 @@ class UserBar extends Component {
     isVisible: false
   };
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.escapeListener);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escapeListener);
+  }
+
+  escapeListener = event => {
+    const { code } = event;
+    if (code === 'Escape') {
+      this.setState({
+        isVisible: false
+      });
+    }
+  };
+
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
     logoutCurrentUser();
   };
 
-  handleShowMenu = () => {
+  toggleMenu = () => {
     const { isVisible } = this.state;
 
     this.setState({
@@ -43,7 +60,7 @@ class UserBar extends Component {
             className={classNames('user-bar__button', {
               'z-index-high': isVisible
             })}
-            onClick={this.handleShowMenu}
+            onClick={this.toggleMenu}
             type="button"
           >
             Profile:
@@ -93,10 +110,7 @@ class UserBar extends Component {
           </div>
         </div>
         {isVisible && (
-          <Overlay
-            type={OverlayStyleType.LIGHT}
-            onVisbilityChange={this.handleShowMenu}
-          />
+          <Overlay type={OverlayStyleType.LIGHT} onClick={this.toggleMenu} />
         )}
       </Fragment>
     );
