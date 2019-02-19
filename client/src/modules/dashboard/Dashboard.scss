@@ -38,4 +38,12 @@
   &__list-link {
     text-decoration: none;
   }
+
+  &__form {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 50px;
+    z-index: 11;
+  }
 }

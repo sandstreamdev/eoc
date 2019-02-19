@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import { SvgIcon } from 'assets/images/icons';
 
 const ToolbarItem = ({ children, mainIcon, onClick, supplementIconSrc }) => (
-  <div className="toolbar__icon-wrapper z-index-high">
-    <button className="toolbar__icon-link" onClick={onClick} type="button">
+  <div className="toolbar-item z-index-high">
+    <button className="toolbar-item__icon-link" onClick={onClick} type="button">
       <SvgIcon icon={mainIcon} />
       {supplementIconSrc && (
         <img
           alt="Plus icon"
-          className="toolbar__icon-plus"
+          className="toolbar-item__icon-plus"
           src={supplementIconSrc}
         />
       )}

@@ -35,7 +35,10 @@ class UserBar extends Component {
   };
 
   hideMenu = e => {
-    if (!this.userBarMenuRef.current.contains(e.target)) {
+    const {
+      userBarMenuRef: { current: userMenu }
+    } = this;
+    if (!userMenu.contains(e.target)) {
       this.setState({ hideMenu: true });
       this.removeEventListeners();
     }

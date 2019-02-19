@@ -56,10 +56,11 @@ class Dashboard extends Component {
   };
 
   clickListener = e => {
-    if (
-      !this.listFormRef.current.contains(e.target) &&
-      !this.cohortFormRef.current.contains(e.target)
-    ) {
+    const {
+      listFormRef: { current: listForm },
+      cohortFormRef: { current: cohortForm }
+    } = this;
+    if (!listForm.contains(e.target) && !cohortForm.contains(e.target)) {
       this.hideForms();
     }
   };
@@ -112,7 +113,7 @@ class Dashboard extends Component {
     const { cohortFormVisibility } = this.state;
     return (
       <div
-        className={classNames('toolbar__form', {
+        className={classNames('dashboard__form', {
           hidden: !cohortFormVisibility
         })}
         ref={this.cohortFormRef}
@@ -130,7 +131,7 @@ class Dashboard extends Component {
     const { shoppingFormVisibility } = this.state;
     return (
       <div
-        className={classNames('toolbar__form', {
+        className={classNames('dashboard__form', {
           hidden: !shoppingFormVisibility
         })}
         ref={this.listFormRef}
