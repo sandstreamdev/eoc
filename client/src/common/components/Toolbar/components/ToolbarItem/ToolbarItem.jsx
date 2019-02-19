@@ -15,7 +15,7 @@ const ToolbarItem = ({ children, mainIcon, onClick, supplementIconSrc }) => (
         />
       )}
     </button>
-    {children && children}
+    {children}
   </div>
 );
 

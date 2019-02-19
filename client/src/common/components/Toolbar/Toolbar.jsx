@@ -42,7 +42,7 @@ class Toolbar extends PureComponent {
                   </Link>
                 </div>
               )}
-              {children && children}
+              {children}
             </div>
             <div className="toolbar__logo">
               <AppLogo />
