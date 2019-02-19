@@ -20,16 +20,16 @@ class CreationForm extends PureComponent {
 
   escapeListener = event => {
     const { code } = event;
-    const { onFormsHide } = this.props;
+    const { onFormHide } = this.props;
     if (code === 'Escape') {
-      onFormsHide();
+      onFormHide();
     }
   };
 
   overlayHandler = () => {
-    const { onFormsHide } = this.props;
+    const { onFormHide } = this.props;
 
-    onFormsHide();
+    onFormHide();
   };
 
   handleValueChange = event => {
@@ -93,7 +93,7 @@ class CreationForm extends PureComponent {
             value="Create"
           />
         </form>
-        <Overlay type={OverlayStyleType.LIGHT} onClick={this.overlayHandler} />
+        <Overlay onClick={this.overlayHandler} type={OverlayStyleType.LIGHT} />
       </Fragment>
     );
   }
@@ -103,7 +103,7 @@ CreationForm.propTypes = {
   label: PropTypes.string,
   type: PropTypes.string,
 
-  onFormsHide: PropTypes.func,
+  onFormHide: PropTypes.func,
   onSubmit: PropTypes.func.isRequired
 };
 

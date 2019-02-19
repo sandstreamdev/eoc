@@ -110,7 +110,7 @@ class UserBar extends Component {
           </div>
         </div>
         {isVisible && (
-          <Overlay type={OverlayStyleType.LIGHT} onClick={this.toggleMenu} />
+          <Overlay onClick={this.toggleMenu} type={OverlayStyleType.LIGHT} />
         )}
       </Fragment>
     );

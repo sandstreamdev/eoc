@@ -12,7 +12,7 @@ class Overlay extends PureComponent {
   onClick = () => {
     const { onClick } = this.props;
 
-    onClick(false);
+    onClick();
   };
 
   render() {
