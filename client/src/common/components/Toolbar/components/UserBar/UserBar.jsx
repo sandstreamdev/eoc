@@ -77,7 +77,6 @@ class UserBar extends Component {
           Profile:
           <img alt="User avatar" className="user-bar__avatar" src={avatarUrl} />
         </button>
-
         <div
           className={classNames('user-bar__menu-wrapper z-index-high', {
             hidden: hideMenu
@@ -91,14 +90,6 @@ class UserBar extends Component {
                 alt="User Icon"
                 className="user-bar__menu-icon"
                 src={UserIcon}
-              />
-            </li>
-            <li className="user-bar__menu-item">
-              Profile settings
-              <img
-                alt="Settings icon"
-                className="user-bar__menu-icon"
-                src={SettingsIcon}
               />
             </li>
             <li className="user-bar__menu-item">

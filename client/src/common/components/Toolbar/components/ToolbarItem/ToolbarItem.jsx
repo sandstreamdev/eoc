@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { SvgIcon } from 'assets/images/icons';
-
 const ToolbarItem = ({ children, mainIcon, onClick, additionalIconSrc }) => (
   <div className="toolbar-item z-index-high">
     <button className="toolbar-item__icon-link" onClick={onClick} type="button">
-      <SvgIcon icon={mainIcon} />
+      {mainIcon}
       {additionalIconSrc && (
         <img
           alt="Plus icon"
@@ -21,7 +19,7 @@ const ToolbarItem = ({ children, mainIcon, onClick, additionalIconSrc }) => (
 
 ToolbarItem.propTypes = {
   children: PropTypes.node,
-  mainIcon: PropTypes.string.isRequired,
+  mainIcon: PropTypes.node.isRequired,
   additionalIconSrc: PropTypes.string,
 
   onClick: PropTypes.func.isRequired

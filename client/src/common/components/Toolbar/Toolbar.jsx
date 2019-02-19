@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import CompanyLogo from 'assets/images/company_logo.png';
-import { SvgIcon } from 'assets/images/icons';
+import { HomeIcon } from 'assets/images/icons';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
 import { createShoppingList } from 'modules/shopping-list/model/actions';
@@ -38,7 +38,7 @@ class Toolbar extends PureComponent {
               {!isHomePage && (
                 <div className="toolbar__icon-wrapper">
                   <Link className="toolbar__icon-link" to="/dashboard">
-                    <SvgIcon icon="home" />
+                    <HomeIcon />
                   </Link>
                 </div>
               )}

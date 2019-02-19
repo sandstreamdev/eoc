@@ -18,8 +18,7 @@ import CreationForm from 'common/components/CreationForm';
 import Toolbar from 'common/components/Toolbar/Toolbar';
 import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
-import { IconType } from 'assets/images/icons';
-import PlusIcon from 'assets/images/plus-solid.svg';
+import { EditIcon, RemoveIcon } from 'assets/images/icons';
 
 class ShoppingList extends Component {
   state = {
@@ -98,16 +97,8 @@ class ShoppingList extends Component {
     return (
       <Fragment>
         <Toolbar>
-          <ToolbarItem mainIcon={IconType.EDIT} onClick={this.showUpdateForm} />
-          <ToolbarItem
-            mainIcon={IconType.REMOVE}
-            onClick={this.showDialogBox}
-          />
-          <ToolbarItem
-            mainIcon={IconType.INVITE}
-            onClick={() => {}}
-            additionalIconSrc={PlusIcon}
-          />
+          <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
+          <ToolbarItem mainIcon={<RemoveIcon />} onClick={this.showDialogBox} />
         </Toolbar>
         <div className="app-wrapper">
           <InputBar />

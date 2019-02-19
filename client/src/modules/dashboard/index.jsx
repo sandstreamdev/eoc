@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import _map from 'lodash/map';
 import classNames from 'classnames';
 
-import { IconType, SvgIcon } from 'assets/images/icons';
+import { CohortIcon, ListIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import CreationForm from 'common/components/CreationForm';
 import {
@@ -157,14 +157,14 @@ class Dashboard extends Component {
       <Fragment>
         <Toolbar isHomePage>
           <ToolbarItem
-            mainIcon={IconType.COHORT}
+            mainIcon={<CohortIcon />}
             onClick={this.showCohortForm}
             additionalIconSrc={PlusIcon}
           >
             {this.renderCreateCohortForm()}
           </ToolbarItem>
           <ToolbarItem
-            mainIcon={IconType.LIST}
+            mainIcon={<ListIcon />}
             onClick={this.showListForm}
             additionalIconSrc={PlusIcon}
           >
@@ -174,7 +174,7 @@ class Dashboard extends Component {
         <div className="wrapper">
           <div className="dashboard">
             <h2 className="dashboard__heading">
-              <SvgIcon icon={IconType.LIST} />
+              <ListIcon />
               Lists
             </h2>
             <ul className="dashboard__list">
@@ -187,7 +187,7 @@ class Dashboard extends Component {
               ))}
             </ul>
             <h2 className="dashboard__heading">
-              <SvgIcon icon={IconType.COHORT} />
+              <CohortIcon />
               Cohorts
             </h2>
             <ul className="dashboard__list">
