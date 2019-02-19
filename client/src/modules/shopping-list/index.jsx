@@ -19,6 +19,7 @@ import Toolbar from 'common/components/Toolbar/Toolbar';
 import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import { IconType } from 'common/constants/enums';
+import PlusIcon from 'assets/images/plus-solid.svg';
 
 class ShoppingList extends Component {
   state = {
@@ -102,7 +103,11 @@ class ShoppingList extends Component {
             mainIcon={IconType.REMOVE}
             onClick={this.showDialogBox}
           />
-          <ToolbarItem mainIcon={IconType.INVITE} onClick={() => {}} />
+          <ToolbarItem
+            mainIcon={IconType.INVITE}
+            onClick={() => {}}
+            supplementIconSrc={PlusIcon}
+          />
         </Toolbar>
         <div className="app-wrapper">
           <InputBar />

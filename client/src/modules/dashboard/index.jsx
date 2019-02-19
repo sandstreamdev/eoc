@@ -118,11 +118,13 @@ class Dashboard extends Component {
         })}
         ref={this.cohortFormRef}
       >
-        <CreationForm
-          label="Create new cohort"
-          onSubmit={this.handleCohortSubmission}
-          type="menu"
-        />
+        {cohortFormVisibility && (
+          <CreationForm
+            label="Create new cohort"
+            onSubmit={this.handleCohortSubmission}
+            type="menu"
+          />
+        )}
       </div>
     );
   };
@@ -136,11 +138,13 @@ class Dashboard extends Component {
         })}
         ref={this.listFormRef}
       >
-        <CreationForm
-          label="Create new shopping list"
-          onSubmit={this.handleShoppingListSubmission}
-          type="menu"
-        />
+        {shoppingFormVisibility && (
+          <CreationForm
+            label="Create new shopping list"
+            onSubmit={this.handleShoppingListSubmission}
+            type="menu"
+          />
+        )}
       </div>
     );
   };

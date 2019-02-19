@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Toolbar from 'common/components/Toolbar/Toolbar';
 import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
 import { IconType } from 'common/constants/enums';
+import PlusIcon from 'assets/images/plus-solid.svg';
 
 class Cohort extends PureComponent {
   showUpdateForm = () => {};
@@ -25,7 +26,11 @@ class Cohort extends PureComponent {
             mainIcon={IconType.REMOVE}
             onClick={this.showDialogBox}
           />
-          <ToolbarItem mainIcon={IconType.INVITE} onClick={() => {}} />
+          <ToolbarItem
+            mainIcon={IconType.INVITE}
+            onClick={() => {}}
+            supplementIconSrc={PlusIcon}
+          />
         </Toolbar>
         <div>{`Cohort of id: ${id}`}</div>
       </Fragment>
