@@ -22,12 +22,6 @@ import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/Toolba
 import CardItem from './CardItem';
 
 class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-    this.cohortFormRef = React.createRef();
-    this.listFormRef = React.createRef();
-  }
-
   state = {
     cohortFormVisibility: false,
     shoppingFormVisibility: false
@@ -54,14 +48,8 @@ class Dashboard extends Component {
     document.removeEventListener('keydown', this.escapeListener);
   };
 
-  clickListener = e => {
-    const {
-      listFormRef: { current: listForm },
-      cohortFormRef: { current: cohortForm }
-    } = this;
-    if (!listForm.contains(e.target) && !cohortForm.contains(e.target)) {
-      this.hideForms();
-    }
+  clickListener = () => {
+    this.hideForms();
   };
 
   escapeListener = event => {
@@ -117,7 +105,6 @@ class Dashboard extends Component {
         className={classNames('dashboard__form', {
           hidden: !cohortFormVisibility
         })}
-        ref={this.cohortFormRef}
       >
         {cohortFormVisibility && (
           <CreationForm
@@ -137,7 +124,6 @@ class Dashboard extends Component {
         className={classNames('dashboard__form', {
           hidden: !shoppingFormVisibility
         })}
-        ref={this.listFormRef}
       >
         {shoppingFormVisibility && (
           <CreationForm

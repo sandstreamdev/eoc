@@ -6,16 +6,10 @@ import classNames from 'classnames';
 import { logoutCurrentUser } from 'modules/authorization/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import SettingsIcon from 'assets/images/cog-solid.svg';
 import UserIcon from 'assets/images/user-solid.svg';
 import LogoutIcon from 'assets/images/sign-out.svg';
 
 class UserBar extends Component {
-  constructor(props) {
-    super(props);
-    this.userBarMenuRef = React.createRef();
-  }
-
   state = {
     hideMenu: true
   };
@@ -34,14 +28,9 @@ class UserBar extends Component {
     document.removeEventListener('keydown', this.onPressEscape);
   };
 
-  hideMenu = e => {
-    const {
-      userBarMenuRef: { current: userMenu }
-    } = this;
-    if (!userMenu.contains(e.target)) {
-      this.setState({ hideMenu: true });
-      this.removeEventListeners();
-    }
+  hideMenu = () => {
+    this.setState({ hideMenu: true });
+    this.removeEventListeners();
   };
 
   showMenu = () => {
@@ -81,7 +70,6 @@ class UserBar extends Component {
           className={classNames('user-bar__menu-wrapper z-index-high', {
             hidden: hideMenu
           })}
-          ref={this.userBarMenuRef}
         >
           <ul className="user-bar__menu">
             <li className="user-bar__menu-item">
