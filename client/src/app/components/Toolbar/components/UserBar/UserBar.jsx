@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -9,10 +9,28 @@ import { UserPropType } from 'common/constants/propTypes';
 import SettingsIcon from 'assets/images/cog-solid.svg';
 import UserIcon from 'assets/images/user-solid.svg';
 import LogoutIcon from 'assets/images/sign-out.svg';
+import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class UserBar extends Component {
   state = {
-    hideMenu: true
+    isVisible: false
+  };
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.escapeListener);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escapeListener);
+  }
+
+  escapeListener = event => {
+    const { code } = event;
+    if (code === 'Escape') {
+      this.setState({
+        isVisible: false
+      });
+    }
   };
 
   handleLogOut = () => {
@@ -20,34 +38,41 @@ class UserBar extends Component {
     logoutCurrentUser();
   };
 
-  handleShowMenu = () => {
-    const { hideMenu } = this.state;
-    this.setState({ hideMenu: !hideMenu });
-  };
+  toggleMenu = () =>
+    this.setState(({ isVisible: prevValue }) => ({ isVisible: !prevValue }));
 
   render() {
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
-    const { hideMenu } = this.state;
+
+    const { isVisible } = this.state;
 
     return (
-      <div className="user-bar">
-        <a
-          className="user-bar__wrapper"
-          onClick={this.handleShowMenu}
-          href="#!"
-        >
-          Profile:
-          <img alt="User avatar" className="user-bar__avatar" src={avatarUrl} />
+      <Fragment>
+        <div className="user-bar">
+          <button
+            className={classNames('user-bar__button', {
+              'z-index-high': isVisible
+            })}
+            onClick={this.toggleMenu}
+            type="button"
+          >
+            Profile:
+            <img
+              alt="User avatar"
+              className="user-bar__avatar"
+              src={avatarUrl}
+            />
+          </button>
           <div
-            className={classNames('user-bar__menu-wrapper', {
-              hidden: hideMenu
+            className={classNames('user-bar__menu-wrapper z-index-high', {
+              hidden: !isVisible
             })}
           >
             <ul className="user-bar__menu">
               <li className="user-bar__menu-item">
-                {`Loged as:  ${name}`}
+                {`Logged as:  ${name}`}
                 <img
                   alt="User Icon"
                   className="user-bar__menu-icon"
@@ -78,8 +103,11 @@ class UserBar extends Component {
               </li>
             </ul>
           </div>
-        </a>
-      </div>
+        </div>
+        {isVisible && (
+          <Overlay onClick={this.toggleMenu} type={OverlayStyleType.LIGHT} />
+        )}
+      </Fragment>
     );
   }
 }

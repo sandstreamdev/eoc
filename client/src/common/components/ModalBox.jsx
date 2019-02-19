@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
+import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import CloseIcon from 'assets/images/times-solid.svg';
 
 const ModalBox = ({ children, onClose }) => (
-  <div className="overlay">
+  <Fragment>
+    <Overlay type={OverlayStyleType.MEDIUM} />
     <div className="modalbox">
       {onClose && (
         <button
@@ -17,7 +19,7 @@ const ModalBox = ({ children, onClose }) => (
       )}
       {children}
     </div>
-  </div>
+  </Fragment>
 );
 
 ModalBox.propTypes = {
