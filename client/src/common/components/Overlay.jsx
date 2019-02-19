@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -8,31 +8,19 @@ export const OverlayStyleType = {
   MEDIUM: 'overlay/MEDIUM'
 };
 
-class Overlay extends PureComponent {
-  onClick = () => {
-    const { onClick } = this.props;
-
-    onClick();
-  };
-
-  render() {
-    const { children, type } = this.props;
-
-    return (
-      <div
-        className={classNames('overlay', {
-          'overlay--light': type === OverlayStyleType.LIGHT,
-          'overlay--dark': type === OverlayStyleType.DARK,
-          'overlay--medium': type === OverlayStyleType.MEDIUM
-        })}
-        onClick={this.onClick}
-        role="banner"
-      >
-        {children}
-      </div>
-    );
-  }
-}
+const Overlay = ({ children, type, onClick }) => (
+  <div
+    className={classNames('overlay', {
+      'overlay--light': type === OverlayStyleType.LIGHT,
+      'overlay--dark': type === OverlayStyleType.DARK,
+      'overlay--medium': type === OverlayStyleType.MEDIUM
+    })}
+    onClick={onClick}
+    role="banner"
+  >
+    {children}
+  </div>
+);
 
 Overlay.propTypes = {
   children: PropTypes.node,

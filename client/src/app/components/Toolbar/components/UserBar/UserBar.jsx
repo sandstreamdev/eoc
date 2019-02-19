@@ -38,13 +38,8 @@ class UserBar extends Component {
     logoutCurrentUser();
   };
 
-  toggleMenu = () => {
-    const { isVisible } = this.state;
-
-    this.setState({
-      isVisible: !isVisible
-    });
-  };
+  toggleMenu = () =>
+    this.setState(({ isVisible: prevValue }) => ({ isVisible: !prevValue }));
 
   render() {
     const {
