@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -9,87 +9,104 @@ import { UserPropType } from 'common/constants/propTypes';
 import SettingsIcon from 'assets/images/cog-solid.svg';
 import UserIcon from 'assets/images/user-solid.svg';
 import LogoutIcon from 'assets/images/sign-out.svg';
+import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class UserBar extends Component {
+  state = {
+    isVisible: false
+  };
+
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
     logoutCurrentUser();
   };
 
   handleShowMenu = () => {
-    const { onClick, isMenuVisible } = this.props;
+    const { isVisible } = this.state;
 
-    onClick(!isMenuVisible);
+    this.setState({
+      isVisible: !isVisible
+    });
   };
 
   render() {
     const {
-      currentUser: { avatarUrl, name },
-      isMenuVisible
+      currentUser: { avatarUrl, name }
     } = this.props;
 
-    return (
-      <div className="user-bar">
-        <button
-          className={classNames('user-bar__button', {
-            'z-index-high': isMenuVisible
-          })}
-          onClick={this.handleShowMenu}
-          type="button"
-        >
-          Profile:
-          <img alt="User avatar" className="user-bar__avatar" src={avatarUrl} />
-        </button>
+    const { isVisible } = this.state;
 
-        <div
-          className={classNames('user-bar__menu-wrapper z-index-high', {
-            hidden: !isMenuVisible
-          })}
-        >
-          <ul className="user-bar__menu">
-            <li className="user-bar__menu-item">
-              {`Logged as:  ${name}`}
-              <img
-                alt="User Icon"
-                className="user-bar__menu-icon"
-                src={UserIcon}
-              />
-            </li>
-            <li className="user-bar__menu-item">
-              Profile settings
-              <img
-                alt="Settings icon"
-                className="user-bar__menu-icon"
-                src={SettingsIcon}
-              />
-            </li>
-            <li className="user-bar__menu-item">
-              <button
-                className="user-bar__menu-logout"
-                onClick={this.handleLogOut}
-                type="button"
-              >
-                Logout
+    return (
+      <Fragment>
+        <div className="user-bar">
+          <button
+            className={classNames('user-bar__button', {
+              'z-index-high': isVisible
+            })}
+            onClick={this.handleShowMenu}
+            type="button"
+          >
+            Profile:
+            <img
+              alt="User avatar"
+              className="user-bar__avatar"
+              src={avatarUrl}
+            />
+          </button>
+          <div
+            className={classNames('user-bar__menu-wrapper z-index-high', {
+              hidden: !isVisible
+            })}
+          >
+            <ul className="user-bar__menu">
+              <li className="user-bar__menu-item">
+                {`Logged as:  ${name}`}
                 <img
-                  alt="Log out"
+                  alt="User Icon"
                   className="user-bar__menu-icon"
-                  src={LogoutIcon}
+                  src={UserIcon}
                 />
-              </button>
-            </li>
-          </ul>
+              </li>
+              <li className="user-bar__menu-item">
+                Profile settings
+                <img
+                  alt="Settings icon"
+                  className="user-bar__menu-icon"
+                  src={SettingsIcon}
+                />
+              </li>
+              <li className="user-bar__menu-item">
+                <button
+                  className="user-bar__menu-logout"
+                  onClick={this.handleLogOut}
+                  type="button"
+                >
+                  Logout
+                  <img
+                    alt="Log out"
+                    className="user-bar__menu-icon"
+                    src={LogoutIcon}
+                  />
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+        {isVisible && (
+          <Overlay
+            type={OverlayStyleType.LIGHT}
+            onVisbilityChange={this.handleShowMenu}
+          />
+        )}
+      </Fragment>
     );
   }
 }
 
 UserBar.propTypes = {
   currentUser: UserPropType.isRequired,
-  isMenuVisible: PropTypes.bool.isRequired,
 
-  logoutCurrentUser: PropTypes.func.isRequired,
-  onClick: PropTypes.func.isRequired
+  logoutCurrentUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

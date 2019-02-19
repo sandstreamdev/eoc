@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -8,25 +8,52 @@ export const OverlayStyleType = {
   MEDIUM: 'overlay/MEDIUM'
 };
 
-const Overlay = ({ children, onClick, type }) => (
-  <div
-    className={classNames('overlay', {
-      'overlay--light': type === OverlayStyleType.LIGHT,
-      'overlay--dark': type === OverlayStyleType.DARK,
-      'overlay--medium': type === OverlayStyleType.MEDIUM
-    })}
-    onClick={onClick}
-    role="banner"
-  >
-    {children}
-  </div>
-);
+class Overlay extends PureComponent {
+  componentDidMount() {
+    document.addEventListener('keydown', this.escapeListener);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escapeListener);
+  }
+
+  onEvent = () => {
+    const { onVisbilityChange } = this.props;
+
+    onVisbilityChange(false);
+  };
+
+  escapeListener = event => {
+    const { code } = event;
+    if (code === 'Escape') {
+      this.onEvent();
+    }
+  };
+
+  render() {
+    const { children, type } = this.props;
+
+    return (
+      <div
+        className={classNames('overlay', {
+          'overlay--light': type === OverlayStyleType.LIGHT,
+          'overlay--dark': type === OverlayStyleType.DARK,
+          'overlay--medium': type === OverlayStyleType.MEDIUM
+        })}
+        onClick={this.onEvent}
+        role="banner"
+      >
+        {children}
+      </div>
+    );
+  }
+}
 
 Overlay.propTypes = {
   children: PropTypes.node,
   type: PropTypes.string.isRequired,
 
-  onClick: PropTypes.func
+  onVisbilityChange: PropTypes.func.isRequired
 };
 
 export default Overlay;
