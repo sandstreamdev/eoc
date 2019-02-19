@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _map from 'lodash/map';
 
-import Toolbar from 'common/components/Toolbar/Toolbar';
-import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
+import Toolbar from 'common/components/Toolbar';
+import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem';
 import { CohortIcon, ListIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import CreationForm from 'common/components/CreationForm';
@@ -115,16 +115,16 @@ class Dashboard extends Component {
       <Fragment>
         <Toolbar isHomePage>
           <ToolbarItem
+            additionalIconSrc={PlusIcon}
             mainIcon={<CohortIcon />}
             onClick={this.handleCohortFormVisibility}
-            additionalIconSrc={PlusIcon}
           >
             {this.renderCreateCohortForm()}
           </ToolbarItem>
           <ToolbarItem
+            additionalIconSrc={PlusIcon}
             mainIcon={<ListIcon />}
             onClick={this.handleShoppingListFormVisibility}
-            additionalIconSrc={PlusIcon}
           >
             {this.renderCreateListForm()}
           </ToolbarItem>

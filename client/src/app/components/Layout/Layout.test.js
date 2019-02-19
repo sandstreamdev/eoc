@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 
 import { getWrapper } from 'testUtils';
 import { Layout } from './Layout';
-import Toolbar from 'common/components/Toolbar/Toolbar';
+import Toolbar from 'common/components/Toolbar';
 import Footer from '../Footer';
 import AuthBox from 'modules/authorization/AuthBox';
 

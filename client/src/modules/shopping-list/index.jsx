@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import Toolbar from 'common/components/Toolbar/Toolbar';
-import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem/ToolbarItem';
+import Toolbar from 'common/components/Toolbar';
+import ToolbarItem from 'common/components/Toolbar/components/ToolbarItem';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
 import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';

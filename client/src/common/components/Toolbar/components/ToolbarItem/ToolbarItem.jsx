@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ToolbarItem = ({ children, mainIcon, onClick, additionalIconSrc }) => (
-  <div className="toolbar-item z-index-high">
+const ToolbarItem = ({ additionalIconSrc, children, mainIcon, onClick }) => (
+  <div className="toolbar-item">
     <button className="toolbar-item__icon-link" onClick={onClick} type="button">
       {mainIcon}
       {additionalIconSrc && (
@@ -13,14 +13,14 @@ const ToolbarItem = ({ children, mainIcon, onClick, additionalIconSrc }) => (
         />
       )}
     </button>
-    {children}
+    {children && <div className="z-index-high">{children}</div>}
   </div>
 );
 
 ToolbarItem.propTypes = {
+  additionalIconSrc: PropTypes.string,
   children: PropTypes.node,
   mainIcon: PropTypes.node.isRequired,
-  additionalIconSrc: PropTypes.string,
 
   onClick: PropTypes.func.isRequired
 };

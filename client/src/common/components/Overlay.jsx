@@ -21,7 +21,6 @@ const Overlay = ({ type, onClick }) => (
 );
 
 Overlay.propTypes = {
-  // children: PropTypes.node,
   type: PropTypes.string.isRequired,
 
   onClick: PropTypes.func

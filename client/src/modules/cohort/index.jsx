@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import Toolbar from 'common/components/Toolbar/Toolbar';
+import Toolbar from 'common/components/Toolbar';
 
 class Cohort extends PureComponent {
   render() {

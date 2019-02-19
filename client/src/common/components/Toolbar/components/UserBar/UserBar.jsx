@@ -38,7 +38,11 @@ class UserBar extends Component {
     this.addEventListeners();
   };
 
-  onPressEscape = e => (e.code === 'Escape' ? this.hideMenu(e) : null);
+  onPressEscape = e => {
+    if (e.code === 'Escape') {
+      this.hideMenu(e);
+    }
+  };
 
   toggleMenuVisibility = e => {
     const { hideMenu } = this.state;
