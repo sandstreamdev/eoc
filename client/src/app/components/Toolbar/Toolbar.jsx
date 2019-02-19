@@ -117,7 +117,7 @@ class Toolbar extends PureComponent {
                       label="Create new cohort"
                       onSubmit={this.handleCohortSubmission}
                       type="menu"
-                      onFormHide={this.hideForms}
+                      onHide={this.hideForms}
                     />
                   </div>
                 )}
@@ -145,7 +145,7 @@ class Toolbar extends PureComponent {
                       label="Create new shopping list"
                       onSubmit={this.handleShoppingListSubmission}
                       type="menu"
-                      onFormHide={this.hideForms}
+                      onHide={this.hideForms}
                     />
                   </div>
                 )}
