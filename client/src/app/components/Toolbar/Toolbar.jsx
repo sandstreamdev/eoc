@@ -19,67 +19,35 @@ import { createShoppingList } from 'modules/shopping-list/model/actions';
 import { createCohort } from 'modules/cohort/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class Toolbar extends PureComponent {
   state = {
     cohortFormVisibility: false,
-    overlayVisibility: false,
-    shoppingFormVisibility: false,
-    userBarMenuVisibility: false
+    shoppingFormVisibility: false
   };
 
-  componentWillUnmount() {
-    document.removeEventListener('click', this.clickListener);
-    document.removeEventListener('keydown', this.escapeListener);
-  }
-
-  addEventListeners = () => {
-    document.addEventListener('click', this.clickListener);
-    document.addEventListener('keydown', this.escapeListener);
-  };
-
-  clickListener = event => {
-    const { className } = event.target;
-    className.length > 0 && className.includes('overlay')
-      ? this.hideOverlayAndForm()
-      : null;
-  };
-
-  escapeListener = event => {
-    event.code === 'Escape' ? this.hideOverlayAndForm() : null;
-  };
-
-  hideOverlayAndForm = () => {
+  hideForms = () => {
     this.setState({
       cohortFormVisibility: false,
-      overlayVisibility: false,
-      shoppingFormVisibility: false,
-      userBarMenuVisibility: false
+      shoppingFormVisibility: false
     });
   };
 
   handleShoppingListFormVisibility = () => {
     const { shoppingFormVisibility } = this.state;
 
-    this.addEventListeners();
     this.setState({
       cohortFormVisibility: false,
-      overlayVisibility: !shoppingFormVisibility,
-      shoppingFormVisibility: !shoppingFormVisibility,
-      userBarMenuVisibility: false
+      shoppingFormVisibility: !shoppingFormVisibility
     });
   };
 
   handleCohortFormVisibility = () => {
     const { cohortFormVisibility } = this.state;
 
-    this.addEventListeners();
     this.setState({
       cohortFormVisibility: !cohortFormVisibility,
-      overlayVisibility: !cohortFormVisibility,
-      shoppingFormVisibility: false,
-      userBarMenuVisibility: false
+      shoppingFormVisibility: false
     });
   };
 
@@ -89,7 +57,7 @@ class Toolbar extends PureComponent {
       currentUser: { id }
     } = this.props;
     createShoppingList(title, description, id);
-    this.hideOverlayAndForm();
+    this.hideForms();
   };
 
   handleCohortSubmission = (title, description) => {
@@ -98,26 +66,11 @@ class Toolbar extends PureComponent {
       currentUser: { id }
     } = this.props;
     createCohort(title, description, id);
-    this.hideOverlayAndForm();
-  };
-
-  handleUserBarMenu = isVisible => {
-    this.addEventListeners();
-    this.setState({
-      cohortFormVisibility: false,
-      overlayVisibility: isVisible,
-      shoppingFormVisibility: false,
-      userBarMenuVisibility: isVisible
-    });
+    this.hideForms();
   };
 
   render() {
-    const {
-      cohortFormVisibility,
-      overlayVisibility,
-      shoppingFormVisibility,
-      userBarMenuVisibility
-    } = this.state;
+    const { cohortFormVisibility, shoppingFormVisibility } = this.state;
 
     return (
       <Fragment>
@@ -164,6 +117,7 @@ class Toolbar extends PureComponent {
                       label="Create new cohort"
                       onSubmit={this.handleCohortSubmission}
                       type="menu"
+                      hideForms={this.hideForms}
                     />
                   )}
                 </div>
@@ -191,6 +145,7 @@ class Toolbar extends PureComponent {
                       label="Create new shopping list"
                       onSubmit={this.handleShoppingListSubmission}
                       type="menu"
+                      hideForms={this.hideForms}
                     />
                   )}
                 </div>
@@ -200,14 +155,10 @@ class Toolbar extends PureComponent {
               <AppLogo />
             </div>
             <div className="toolbar__right">
-              <UserBar
-                isMenuVisible={userBarMenuVisibility}
-                onClick={this.handleUserBarMenu}
-              />
+              <UserBar />
             </div>
           </div>
         </div>
-        {overlayVisibility && <Overlay type={OverlayStyleType.LIGHT} />}
       </Fragment>
     );
   }
