@@ -30,24 +30,17 @@ class Toolbar extends PureComponent {
   };
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.clickListener);
     document.removeEventListener('keydown', this.escapeListener);
   }
 
   addEventListeners = () => {
-    document.addEventListener('click', this.clickListener);
     document.addEventListener('keydown', this.escapeListener);
   };
 
-  clickListener = event => {
-    const { className } = event.target;
-    className.length > 0 && className.includes('overlay')
-      ? this.hideOverlayAndForm()
-      : null;
-  };
-
   escapeListener = event => {
-    event.code === 'Escape' ? this.hideOverlayAndForm() : null;
+    if (event.code === 'Escape') {
+      this.hideOverlayAndForm();
+    }
   };
 
   hideOverlayAndForm = () => {
@@ -109,6 +102,10 @@ class Toolbar extends PureComponent {
       shoppingFormVisibility: false,
       userBarMenuVisibility: isVisible
     });
+  };
+
+  handleOverlayOnClick = () => {
+    this.hideOverlayAndForm();
   };
 
   render() {
@@ -207,7 +204,12 @@ class Toolbar extends PureComponent {
             </div>
           </div>
         </div>
-        {overlayVisibility && <Overlay type={OverlayStyleType.LIGHT} />}
+        {overlayVisibility && (
+          <Overlay
+            onClick={this.handleOverlayOnClick}
+            type={OverlayStyleType.LIGHT}
+          />
+        )}
       </Fragment>
     );
   }
