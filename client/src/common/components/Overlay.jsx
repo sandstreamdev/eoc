@@ -53,7 +53,7 @@ Overlay.propTypes = {
   children: PropTypes.node,
   type: PropTypes.string.isRequired,
 
-  onVisbilityChange: PropTypes.func.isRequired
+  onVisbilityChange: PropTypes.func
 };
 
 export default Overlay;
