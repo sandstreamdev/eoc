@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -6,47 +6,31 @@ import classNames from 'classnames';
 import { logoutCurrentUser } from 'modules/authorization/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
+import SettingsIcon from 'assets/images/cog-solid.svg';
 import UserIcon from 'assets/images/user-solid.svg';
 import LogoutIcon from 'assets/images/sign-out.svg';
+import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class UserBar extends Component {
   state = {
-    hideMenu: true
+    isVisible: false
   };
 
-  componentWillUnmount() {
-    this.removeEventListeners();
+  componentDidMount() {
+    document.addEventListener('keydown', this.escapeListener);
   }
 
-  addEventListeners = () => {
-    document.addEventListener('click', this.hideMenu);
-    document.addEventListener('keydown', this.onPressEscape);
-  };
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escapeListener);
+  }
 
-  removeEventListeners = () => {
-    document.removeEventListener('click', this.hideMenu);
-    document.removeEventListener('keydown', this.onPressEscape);
-  };
-
-  hideMenu = () => {
-    this.setState({ hideMenu: true });
-    this.removeEventListeners();
-  };
-
-  showMenu = () => {
-    this.setState({ hideMenu: false });
-    this.addEventListeners();
-  };
-
-  onPressEscape = e => {
-    if (e.code === 'Escape') {
-      this.hideMenu(e);
+  escapeListener = event => {
+    const { code } = event;
+    if (code === 'Escape') {
+      this.setState({
+        isVisible: false
+      });
     }
-  };
-
-  toggleMenuVisibility = e => {
-    const { hideMenu } = this.state;
-    hideMenu ? this.showMenu() : this.hideMenu(e);
   };
 
   handleLogOut = () => {
@@ -54,53 +38,68 @@ class UserBar extends Component {
     logoutCurrentUser();
   };
 
+  toggleMenu = () =>
+    this.setState(({ isVisible: prevValue }) => ({ isVisible: !prevValue }));
+
   render() {
-    const { hideMenu } = this.state;
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
 
+    const { isVisible } = this.state;
+
     return (
-      <div className="user-bar">
-        <button
-          className="user-bar__button z-index-high"
-          onClick={this.toggleMenuVisibility}
-          type="button"
-        >
-          Profile:
-          <img alt="User avatar" className="user-bar__avatar" src={avatarUrl} />
-        </button>
-        <div
-          className={classNames('user-bar__menu-wrapper z-index-high', {
-            hidden: hideMenu
-          })}
-        >
-          <ul className="user-bar__menu">
-            <li className="user-bar__menu-item">
-              {`Logged as:  ${name}`}
-              <img
-                alt="User Icon"
-                className="user-bar__menu-icon"
-                src={UserIcon}
-              />
-            </li>
-            <li className="user-bar__menu-item">
-              <button
-                className="user-bar__menu-logout"
-                onClick={this.handleLogOut}
-                type="button"
-              >
-                Logout
+      <Fragment>
+        <div className="user-bar">
+          <button
+            className={classNames('user-bar__button', {
+              'z-index-high': isVisible
+            })}
+            onClick={this.toggleMenu}
+            type="button"
+          >
+            Profile:
+            <img
+              alt="User avatar"
+              className="user-bar__avatar"
+              src={avatarUrl}
+            />
+          </button>
+          <div
+            className={classNames('user-bar__menu-wrapper z-index-high', {
+              hidden: !isVisible
+            })}
+          >
+            <ul className="user-bar__menu">
+              <li className="user-bar__menu-item">
+                {`Logged as:  ${name}`}
                 <img
-                  alt="Log out"
+                  alt="User Icon"
                   className="user-bar__menu-icon"
-                  src={LogoutIcon}
+                  src={UserIcon}
                 />
-              </button>
-            </li>
-          </ul>
+              </li>
+              <li className="user-bar__menu-item">
+                <button
+                  className="user-bar__menu-logout"
+                  onClick={this.handleLogOut}
+                  type="button"
+                >
+                  Logout
+                  <img
+                    alt="Log out"
+                    className="user-bar__menu-icon"
+                    src={LogoutIcon}
+                  />
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+        {isVisible && (
+          <Overlay onClick={this.toggleMenu} type={OverlayStyleType.LIGHT} />
+        )}
+      </Fragment>
     );
   }
 }
