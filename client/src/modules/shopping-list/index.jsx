@@ -52,7 +52,7 @@ class ShoppingList extends Component {
     fetchItemsFromGivenList(id);
   };
 
-  handleClick = event => {
+  clickListener = event => {
     const { className } = event.target;
 
     className.length > 0 && className.includes('overlay')
@@ -60,18 +60,18 @@ class ShoppingList extends Component {
       : null;
   };
 
-  escapeHandler = () => {
+  escapeListener = () => {
     this.setState({ showDialogBox: false, showUpdateForm: false });
   };
 
   addEventListeners = () => {
-    document.addEventListener('click', this.handleClick);
-    document.addEventListener('keydown', this.escapeHandler);
+    document.addEventListener('click', this.clickListener);
+    document.addEventListener('keydown', this.escapeListener);
   };
 
   removeEventListeners = () => {
-    document.removeEventListener('click', this.handleClick);
-    document.removeEventListener('keydown', this.escapeHandler);
+    document.removeEventListener('click', this.clickListener);
+    document.removeEventListener('keydown', this.escapeListener);
   };
 
   showDialogBox = () => {
