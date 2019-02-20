@@ -8,7 +8,8 @@ const createNewList = (req, resp) => {
   const shoppingList = new ShoppingList({
     description,
     name,
-    adminIds: adminId
+    adminIds: adminId,
+    isArchived: false
   });
 
   shoppingList.save((err, doc) => {
@@ -210,16 +211,16 @@ const updateListById = (req, resp) => {
     (err, doc) => {
       if (!doc) {
         return resp.status(404).send({
-          message: 'You dont have permissions to update this list'
+          message: 'You have no permissions to this action'
         });
       }
       return err
         ? resp.status(400).send({
             message:
-              "Oops we're sorry, an error occurred while updating the list"
+              "Oops we're sorry, an error occurred while processing the list"
           })
         : resp.status(200).send({
-            message: `List with id: ${req.params.id} was successfully updated!`
+            message: `List "${doc.name}" was successfully updated!`
           });
     }
   );

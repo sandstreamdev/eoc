@@ -39,7 +39,7 @@ const createNewShoppingListRequest = () => ({
   type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST
 });
 
-const deleteListSuccess = id => ({
+export const deleteListSuccess = id => ({
   type: ShoppingListActionTypes.DELETE_SUCCESS,
   payload: id
 });
@@ -161,11 +161,17 @@ export const updateList = (listId, data) => dispatch => {
   patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
+      let { message } = json;
+      if (data.isArchived !== undefined) {
+        message = data.isArchived
+          ? 'List was successfully archived!'
+          : 'List was successfully restored!';
+      }
       dispatch(updateListSuccess({ ...data, listId }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        message
       );
     })
     .catch(err => {
@@ -173,7 +179,7 @@ export const updateList = (listId, data) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, updating lists failed..."
+        err.message || "Oops, we're sorry, something went wrong..."
       );
     });
 };

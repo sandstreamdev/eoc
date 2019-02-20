@@ -21,7 +21,11 @@ const shoppingLists = (state = {}, action) => {
       const updatedList = {
         ...prevList,
         name: action.payload.name || prevList.name,
-        description: action.payload.description || prevList.description
+        description: action.payload.description || prevList.description,
+        isArchived:
+          action.payload.isArchived !== undefined
+            ? action.payload.isArchived
+            : prevList.isArchived
       };
       return {
         ...state,

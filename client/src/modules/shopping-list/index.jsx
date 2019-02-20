@@ -8,8 +8,9 @@ import ProductsContainer from 'modules/shopping-list/components/ProductsContaine
 import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
-  fetchDataFromGivenList,
   deleteList,
+  deleteListSuccess as deleteListFromStore,
+  fetchDataFromGivenList,
   updateList
 } from 'modules/shopping-list/model/actions';
 import DialogBox from 'common/components/DialogBox';
@@ -26,6 +27,19 @@ class ShoppingList extends Component {
 
   componentDidMount() {
     this.fetchData();
+  }
+
+  componentWillUnmount() {
+    const {
+      deleteListFromStore,
+      list,
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+    if (list && list.isArchived) {
+      deleteListFromStore(listId);
+    }
   }
 
   fetchData = () => {
@@ -47,11 +61,21 @@ class ShoppingList extends Component {
   };
 
   deleteListHandler = id => () => {
-    this.hideDialogBox();
     const { deleteList } = this.props;
     deleteList(id)
       .then(this.redirectHandler)
       .catch(noOp);
+  };
+
+  archiveListHandler = listId => () => {
+    this.hideDialogBox();
+    const { updateList } = this.props;
+    updateList(listId, { isArchived: true });
+  };
+
+  restoreListHandler = listId => () => {
+    const { updateList } = this.props;
+    updateList(listId, { isArchived: false });
   };
 
   redirectHandler = () => {
@@ -90,6 +114,7 @@ class ShoppingList extends Component {
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
     const description = list && list.description ? list.description : null;
+    const isArchived = list && list.isArchived ? list.isArchived : null;
     const name = list && list.name ? list.name : null;
 
     return (
@@ -98,20 +123,32 @@ class ShoppingList extends Component {
           <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
           <ToolbarItem mainIcon={<RemoveIcon />} onClick={this.showDialogBox} />
         </Toolbar>
-        <div className="app-wrapper">
-          <InputBar />
-          <ProductsContainer
-            description={description}
-            name={name}
-            products={shoppingList}
-          />
-          <ProductsContainer archived products={archiveList} />
-        </div>
+        {!isArchived && (
+          <div className="app-wrapper">
+            <InputBar />
+            <ProductsContainer
+              description={description}
+              name={name}
+              products={shoppingList}
+            />
+            <ProductsContainer archived products={archiveList} />
+          </div>
+        )}
+        {isArchived && (
+          <div>
+            <button type="button" onClick={this.deleteListHandler(listId)}>
+              delete
+            </button>
+            <button type="button" onClick={this.restoreListHandler(listId)}>
+              restore
+            </button>
+          </div>
+        )}
         {showDialogBox && (
           <DialogBox
-            message="Do you really want to delete the list?"
+            message="Do you really want to archive the list?"
             onCancel={this.hideDialogBox}
-            onConfirm={this.deleteListHandler(listId)}
+            onConfirm={this.archiveListHandler(listId)}
           />
         )}
         {showUpdateForm && (
@@ -140,6 +177,7 @@ ShoppingList.propTypes = {
   }).isRequired,
 
   deleteList: PropTypes.func.isRequired,
+  deleteListFromStore: PropTypes.func.isRequired,
   fetchDataFromGivenList: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
@@ -151,6 +189,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { deleteList, fetchDataFromGivenList, updateList }
+    { deleteList, deleteListFromStore, fetchDataFromGivenList, updateList }
   )(ShoppingList)
 );
