@@ -21,7 +21,7 @@ import { EditIcon, RemoveIcon } from 'assets/images/icons';
 class ShoppingList extends Component {
   state = {
     showDialogBox: false,
-    showUpdateFrom: false
+    showUpdateForm: false
   };
 
   componentDidMount() {
@@ -60,11 +60,11 @@ class ShoppingList extends Component {
   };
 
   hideUpdateForm = () => {
-    this.setState({ showUpdateFrom: false });
+    this.setState({ showUpdateForm: false });
   };
 
   showUpdateForm = () => {
-    this.setState({ showUpdateFrom: true });
+    this.setState({ showUpdateForm: true });
   };
 
   updateListHandler = listId => (name, description) => {
@@ -79,7 +79,7 @@ class ShoppingList extends Component {
   };
 
   render() {
-    const { showDialogBox, showUpdateFrom } = this.state;
+    const { showDialogBox, showUpdateForm } = this.state;
     const {
       match: {
         params: { id: listId }
@@ -108,20 +108,18 @@ class ShoppingList extends Component {
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (
-          <ModalBox>
-            <DialogBox
-              onCancel={this.hideDialogBox}
-              onConfirm={this.deleteListHandler(listId)}
-              message="Do you really want to delete the list?"
-            />
-          </ModalBox>
+          <DialogBox
+            message="Do you really want to delete the list?"
+            onCancel={this.hideDialogBox}
+            onConfirm={this.deleteListHandler(listId)}
+          />
         )}
-        {showUpdateFrom && (
-          <ModalBox onClose={this.hideUpdateForm}>
+        {showUpdateForm && (
+          <ModalBox onCancel={this.hideUpdateForm}>
             <CreationForm
-              type="modal"
               label="Edit list"
               onSubmit={this.updateListHandler(listId)}
+              type="modal"
             />
           </ModalBox>
         )}

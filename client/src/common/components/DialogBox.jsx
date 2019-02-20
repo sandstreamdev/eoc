@@ -1,17 +1,52 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-const DialogBox = ({ onCancel, onConfirm, message }) => (
-  <div className="dialogbox">
-    <h1 className="dialogbox__heading">{message}</h1>
-    <button className="dialogbox__button" onClick={onCancel} type="button">
-      Cancel
-    </button>
-    <button className="dialogbox__button" onClick={onConfirm} type="button">
-      Confirm
-    </button>
-  </div>
-);
+import Overlay, { OverlayStyleType } from 'common/components/Overlay';
+
+class DialogBox extends Component {
+  componentDidMount() {
+    document.addEventListener('keydown', this.escapeListener);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escapeListener);
+  }
+
+  escapeListener = event => {
+    const { code } = event;
+    const { onCancel } = this.props;
+
+    if (code === 'Escape') {
+      onCancel && onCancel();
+    }
+  };
+
+  render() {
+    const { message, onCancel, onConfirm } = this.props;
+    return (
+      <Fragment>
+        <Overlay type={OverlayStyleType.MEDIUM} />
+        <div className="dialogbox">
+          <h1 className="dialogbox__heading">{message}</h1>
+          <button
+            className="dialogbox__button"
+            onClick={onCancel}
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            className="dialogbox__button"
+            onClick={onConfirm}
+            type="button"
+          >
+            Confirm
+          </button>
+        </div>
+      </Fragment>
+    );
+  }
+}
 
 DialogBox.propTypes = {
   message: PropTypes.string,
