@@ -52,36 +52,12 @@ class ShoppingList extends Component {
     fetchItemsFromGivenList(id);
   };
 
-  clickListener = event => {
-    const { className } = event.target;
-
-    className.length > 0 && className.includes('overlay')
-      ? this.setState({ showDialogBox: false, showUpdateForm: false })
-      : null;
-  };
-
-  escapeListener = () => {
-    this.setState({ showDialogBox: false, showUpdateForm: false });
-  };
-
-  addEventListeners = () => {
-    document.addEventListener('click', this.clickListener);
-    document.addEventListener('keydown', this.escapeListener);
-  };
-
-  removeEventListeners = () => {
-    document.removeEventListener('click', this.clickListener);
-    document.removeEventListener('keydown', this.escapeListener);
-  };
-
   showDialogBox = () => {
-    this.addEventListeners();
     this.setState({ showDialogBox: true });
   };
 
   hideDialogBox = () => {
     this.setState({ showDialogBox: false });
-    this.removeEventListeners();
   };
 
   deleteListHandler = id => () => {
@@ -99,11 +75,9 @@ class ShoppingList extends Component {
 
   hideUpdateForm = () => {
     this.setState({ showUpdateForm: false });
-    this.removeEventListeners();
   };
 
   showUpdateForm = () => {
-    this.addEventListeners();
     this.setState({ showUpdateForm: true });
   };
 
@@ -146,16 +120,14 @@ class ShoppingList extends Component {
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (
-          <ModalBox>
-            <DialogBox
-              onCancel={this.hideDialogBox}
-              onConfirm={this.deleteListHandler(listId)}
-              message="Do you really want to delete the list?"
-            />
-          </ModalBox>
+          <DialogBox
+            onCancel={this.hideDialogBox}
+            onConfirm={this.deleteListHandler(listId)}
+            message="Do you really want to delete the list?"
+          />
         )}
         {showUpdateForm && (
-          <ModalBox onClose={this.hideUpdateForm}>
+          <ModalBox onCancel={this.hideUpdateForm}>
             <CreationForm
               type="modal"
               label="Edit list"

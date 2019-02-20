@@ -1,31 +1,52 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
-import CloseIcon from 'assets/images/times-solid.svg';
 
-const ModalBox = ({ children, onClose }) => (
-  <Fragment>
-    <Overlay type={OverlayStyleType.MEDIUM} />
-    <div className="modalbox">
-      {onClose && (
-        <button
-          className="modalbox__cancel-button"
-          onClick={onClose}
-          type="button"
-        >
-          <img alt="Close Icon" className="modalbox__icon" src={CloseIcon} />
-        </button>
-      )}
-      {children}
-    </div>
-  </Fragment>
-);
+class ModalBox extends Component {
+  componentDidMount() {
+    document.addEventListener('keydown', this.escapeLister);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keypress', this.escapeLister);
+  }
+
+  escapeLister = event => {
+    const { code } = event;
+    const { onCancel } = this.props;
+
+    if (code === 'Escape') {
+      onCancel && onCancel();
+    }
+  };
+
+  render() {
+    const { children, onCancel } = this.props;
+    return (
+      <Fragment>
+        <Overlay type={OverlayStyleType.MEDIUM} />
+        <div className="modalbox">
+          {onCancel && (
+            <button
+              className="modalbox__cancel-button"
+              onClick={onCancel}
+              type="button"
+            >
+              Cancel
+            </button>
+          )}
+          {children}
+        </div>
+      </Fragment>
+    );
+  }
+}
 
 ModalBox.propTypes = {
   children: PropTypes.node.isRequired,
 
-  onClose: PropTypes.func
+  onCancel: PropTypes.func
 };
 
 export default ModalBox;

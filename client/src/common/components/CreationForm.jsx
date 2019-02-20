@@ -22,14 +22,8 @@ class CreationForm extends PureComponent {
     const { code } = event;
     const { onHide } = this.props;
     if (code === 'Escape') {
-      onHide();
+      onHide && onHide();
     }
-  };
-
-  overlayHandler = () => {
-    const { onHide } = this.props;
-
-    onHide();
   };
 
   handleValueChange = event => {
