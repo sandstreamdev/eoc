@@ -5,14 +5,14 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class DialogBox extends Component {
   componentDidMount() {
-    document.addEventListener('keydown', this.escapeLister);
+    document.addEventListener('keydown', this.escapeListener);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keypress', this.escapeLister);
+    document.removeEventListener('keydown', this.escapeListener);
   }
 
-  escapeLister = event => {
+  escapeListener = event => {
     const { code } = event;
     const { onCancel } = this.props;
 
@@ -22,7 +22,7 @@ class DialogBox extends Component {
   };
 
   render() {
-    const { onCancel, onConfirm, message } = this.props;
+    const { message, onCancel, onConfirm } = this.props;
     return (
       <Fragment>
         <Overlay type={OverlayStyleType.MEDIUM} />

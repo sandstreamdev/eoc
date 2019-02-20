@@ -121,17 +121,17 @@ class ShoppingList extends Component {
         </div>
         {showDialogBox && (
           <DialogBox
+            message="Do you really want to delete the list?"
             onCancel={this.hideDialogBox}
             onConfirm={this.deleteListHandler(listId)}
-            message="Do you really want to delete the list?"
           />
         )}
         {showUpdateForm && (
           <ModalBox onCancel={this.hideUpdateForm}>
             <CreationForm
-              type="modal"
               label="Edit list"
               onSubmit={this.updateListHandler(listId)}
+              type="modal"
             />
           </ModalBox>
         )}

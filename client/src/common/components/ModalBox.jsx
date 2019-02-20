@@ -5,14 +5,14 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class ModalBox extends Component {
   componentDidMount() {
-    document.addEventListener('keydown', this.escapeLister);
+    document.addEventListener('keydown', this.escapeListener);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keypress', this.escapeLister);
+    document.removeEventListener('keydown', this.escapeListener);
   }
 
-  escapeLister = event => {
+  escapeListener = event => {
     const { code } = event;
     const { onCancel } = this.props;
 
