@@ -1,9 +1,23 @@
 import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import Toolbar from 'common/components/Toolbar';
+import { fetchCohortDetails } from './model/actions';
 
 class Cohort extends PureComponent {
+  componentDidMount() {
+    const {
+      fetchCohortDetails,
+      match: {
+        params: { id }
+      }
+    } = this.props;
+
+    fetchCohortDetails(id);
+  }
+
   render() {
     const {
       match: {
@@ -28,7 +42,14 @@ Cohort.propTypes = {
     params: PropTypes.shape({
       id: PropTypes.string
     })
-  }).isRequired
+  }).isRequired,
+
+  fetchCohortDetails: PropTypes.func.isRequired
 };
 
-export default Cohort;
+export default withRouter(
+  connect(
+    null,
+    { fetchCohortDetails }
+  )(Cohort)
+);

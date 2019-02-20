@@ -78,7 +78,25 @@ const deleteListById = (req, resp) => {
 };
 
 const getShoppingListsMetaData = (req, resp) => {
-  ShoppingList.find(
+  const { cohortId } = req.params;
+  const { listIds } = req.body;
+
+  if (cohortId) {
+    return ShoppingList.find(
+      {
+        _id: {
+          $in: listIds
+        }
+      },
+      (err, docs) => {
+        /**
+         * TODO : wyszukaj listy ktore zawieraja to kohortId
+         */
+      }
+    );
+  }
+
+  return ShoppingList.find(
     {
       $or: [
         { adminIds: req.user._id },
