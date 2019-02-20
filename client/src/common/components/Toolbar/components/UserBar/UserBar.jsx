@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import { logoutCurrentUser } from 'modules/authorization/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import SettingsIcon from 'assets/images/cog-solid.svg';
 import UserIcon from 'assets/images/user-solid.svg';
 import LogoutIcon from 'assets/images/sign-out.svg';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
@@ -77,14 +76,6 @@ class UserBar extends Component {
                   alt="User Icon"
                   className="user-bar__menu-icon"
                   src={UserIcon}
-                />
-              </li>
-              <li className="user-bar__menu-item">
-                Profile settings
-                <img
-                  alt="Settings icon"
-                  className="user-bar__menu-icon"
-                  src={SettingsIcon}
                 />
               </li>
               <li className="user-bar__menu-item">

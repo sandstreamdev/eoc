@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
+import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
 import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
@@ -11,14 +12,11 @@ import {
   deleteList,
   updateList
 } from 'modules/shopping-list/model/actions';
-import DropdownMenu from 'common/components/DropdownMenu';
 import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
 import { noOp } from 'common/utils/noOp';
 import CreationForm from 'common/components/CreationForm';
-import EditIcon from 'assets/images/pen-solid.svg';
-import RemoveIcon from 'assets/images/trash-alt-solid.svg';
-import InviteUserIcon from 'assets/images/user-plus-solid.svg';
+import { EditIcon, RemoveIcon } from 'assets/images/icons';
 
 class ShoppingList extends Component {
   state = {
@@ -28,18 +26,6 @@ class ShoppingList extends Component {
 
   componentDidMount() {
     this.fetchProducts();
-  }
-
-  get listMenu() {
-    return [
-      { onClick: this.showUpdateForm, iconSrc: EditIcon, label: 'Edit list' },
-      {
-        onClick: this.showDialogBox,
-        iconSrc: RemoveIcon,
-        label: 'Remove list'
-      },
-      { onClick: () => {}, iconSrc: InviteUserIcon, label: 'Invite user' }
-    ];
   }
 
   fetchProducts = () => {
@@ -108,15 +94,17 @@ class ShoppingList extends Component {
 
     return (
       <Fragment>
+        <Toolbar>
+          <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
+          <ToolbarItem mainIcon={<RemoveIcon />} onClick={this.showDialogBox} />
+        </Toolbar>
         <div className="app-wrapper">
           <InputBar />
           <ProductsContainer
             description={description}
             name={name}
             products={shoppingList}
-          >
-            <DropdownMenu menuItems={this.listMenu} />
-          </ProductsContainer>
+          />
           <ProductsContainer archived products={archiveList} />
         </div>
         {showDialogBox && (

@@ -32,7 +32,10 @@
     height: 38px;
     width: 38px;
     background: rgba($shadow-color, 0.1);
+    border: none;
     border-radius: 3px;
+    position: relative;
+    z-index: 1;
     svg {
       height: 16px;
     }
@@ -43,28 +46,10 @@
     margin-right: 8px;
   }
 
-  &__icon {
-    height: 16px;
-  }
-
-  &__icon-plus {
-    height: 8px;
-    position: absolute;
-    right: 3px;
-    bottom: 3px;
-  }
-
   &__logo {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-  }
-
-  &__form {
-    position: absolute;
-    right: 0;
-    top: 50px;
-    z-index: 2;
   }
 }

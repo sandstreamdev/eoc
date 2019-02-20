@@ -1,11 +1,27 @@
-import React from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-const Cohort = ({
-  match: {
-    params: { id }
+import Toolbar from 'common/components/Toolbar';
+
+class Cohort extends PureComponent {
+  render() {
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props;
+
+    return (
+      <Fragment>
+        <Toolbar />
+        <div>
+          Cohort of id:
+          {id}
+        </div>
+      </Fragment>
+    );
   }
-}) => <div>{`Cohort of id: ${id}`}</div>;
+}
 
 Cohort.propTypes = {
   match: PropTypes.shape({
