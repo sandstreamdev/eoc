@@ -8,7 +8,7 @@ import ProductsContainer from 'modules/shopping-list/components/ProductsContaine
 import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
-  fetchItemsFromGivenList,
+  fetchDataFromGivenList,
   deleteList,
   updateList
 } from 'modules/shopping-list/model/actions';
@@ -25,17 +25,17 @@ class ShoppingList extends Component {
   };
 
   componentDidMount() {
-    this.fetchProducts();
+    this.fetchData();
   }
 
-  fetchProducts = () => {
+  fetchData = () => {
     const {
-      fetchItemsFromGivenList,
+      fetchDataFromGivenList,
       match: {
         params: { id }
       }
     } = this.props;
-    fetchItemsFromGivenList(id);
+    fetchDataFromGivenList(id);
   };
 
   showDialogBox = () => {
@@ -140,7 +140,7 @@ ShoppingList.propTypes = {
   }).isRequired,
 
   deleteList: PropTypes.func.isRequired,
-  fetchItemsFromGivenList: PropTypes.func.isRequired,
+  fetchDataFromGivenList: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
@@ -151,6 +151,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { deleteList, fetchItemsFromGivenList, updateList }
+    { deleteList, fetchDataFromGivenList, updateList }
   )(ShoppingList)
 );

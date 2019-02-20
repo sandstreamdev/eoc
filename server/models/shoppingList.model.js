@@ -7,10 +7,11 @@ const ShoppingListSchema = new Schema(
   {
     adminIds: [String],
     description: { type: String },
-    products: [ItemSchema],
+    isArchived: { type: Boolean },
     name: { type: String, required: true },
     ordererIds: [String],
     organizationIds: [String],
+    products: [ItemSchema],
     purchaserIds: [String],
     visibility: { type: String }
   },

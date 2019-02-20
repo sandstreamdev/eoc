@@ -28,10 +28,12 @@ const shoppingLists = (state = {}, action) => {
         [action.payload.listId]: updatedList
       };
     }
-    case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS: {
+    case ShoppingListActionTypes.FETCH_DATA_SUCCESS: {
       const updatedShoppingList = {
         ...state[action.payload.listId],
-        products: action.payload.products
+        products: action.payload.products,
+        isArchived: action.payload.isArchived,
+        adminIds: action.payload.adminIds
       };
       return {
         ...state,
@@ -102,10 +104,10 @@ const isFetching = (state = false, action) => {
     case ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS:
     case ShoppingListActionTypes.DELETE_FAILURE:
     case ShoppingListActionTypes.DELETE_SUCCESS:
+    case ShoppingListActionTypes.FETCH_DATA_FAILURE:
+    case ShoppingListActionTypes.FETCH_DATA_SUCCESS:
     case ShoppingListActionTypes.FETCH_META_DATA_FAILURE:
     case ShoppingListActionTypes.FETCH_META_DATA_SUCCESS:
-    case ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE:
-    case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS:
     case ShoppingListActionTypes.UPDATE_FAILURE:
     case ShoppingListActionTypes.UPDATE_SUCCESS:
       return false;
@@ -114,8 +116,8 @@ const isFetching = (state = false, action) => {
     case ProductActionTypes.VOTE_FOR_PRODUCT_REQUEST:
     case ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST:
     case ShoppingListActionTypes.DELETE_REQUEST:
+    case ShoppingListActionTypes.FETCH_DATA_REQUEST:
     case ShoppingListActionTypes.FETCH_META_DATA_REQUEST:
-    case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
     case ShoppingListActionTypes.UPDATE_REQUEST:
       return true;
     default:

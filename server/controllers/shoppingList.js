@@ -129,7 +129,7 @@ const addProductToList = (req, resp) => {
   );
 };
 
-const getProductsForGivenList = (req, resp) => {
+const getDataForGivenList = (req, resp) => {
   ShoppingList.find(
     {
       _id: req.params.id,
@@ -139,18 +139,18 @@ const getProductsForGivenList = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
-    'products',
+    'isArchived products adminIds',
     (err, documents) => {
       if (!documents) {
-        return resp.status(404).send('Products not found for given list id!');
+        return resp.status(404).send('Data not found for given list id!');
       }
 
       if (err) {
         return resp.status(404).send({ message: err.message });
       }
 
-      const { products } = documents[0];
-      resp.status(200).json(products);
+      const { adminIds, isArchived, products } = documents[0];
+      resp.status(200).json({ adminIds, isArchived, products });
     }
   );
 };
@@ -192,10 +192,11 @@ const updateShoppingListItem = (req, resp) => {
 };
 
 const updateListById = (req, resp) => {
-  const { description, name } = req.body;
+  const { description, isArchived, name } = req.body;
   const { id: listId } = req.params;
   const dataToUpdate = filter(x => x !== undefined)({
     description,
+    isArchived,
     name
   });
 
@@ -229,7 +230,7 @@ module.exports = {
   createNewList,
   deleteListById,
   getAllShoppingLists,
-  getProductsForGivenList,
+  getDataForGivenList,
   getShoppingListById,
   getShoppingListsMetaData,
   updateListById,
