@@ -35,6 +35,7 @@ const shoppingLists = (state = {}, action) => {
     case ShoppingListActionTypes.FETCH_DATA_SUCCESS: {
       const updatedShoppingList = {
         ...state[action.payload.listId],
+        _id: action.payload.listId,
         products: action.payload.products,
         isArchived: action.payload.isArchived,
         adminIds: action.payload.adminIds

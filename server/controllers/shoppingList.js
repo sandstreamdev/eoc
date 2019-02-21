@@ -72,7 +72,7 @@ const deleteListById = (req, resp) => {
               "Oops we're sorry, an error occurred while deleting the list"
           })
         : resp.status(200).send({
-            message: `List with id: ${req.params.id} was successfully deleted!`
+            message: `List with id: ${doc.name} was successfully deleted!`
           });
     }
   );
@@ -85,7 +85,8 @@ const getShoppingListsMetaData = (req, resp) => {
         { adminIds: req.user._id },
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
-      ]
+      ],
+      isArchived: false
     },
     '_id name description',
     { sort: { created_at: -1 } },
@@ -151,6 +152,11 @@ const getDataForGivenList = (req, resp) => {
       }
 
       const { adminIds, isArchived, products } = documents[0];
+
+      if (isArchived) {
+        return resp.status(200).json({ isArchived });
+      }
+
       resp.status(200).json({ adminIds, isArchived, products });
     }
   );
