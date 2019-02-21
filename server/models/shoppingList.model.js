@@ -6,6 +6,7 @@ const ItemSchema = require('./item.model').schema;
 const ShoppingListSchema = new Schema(
   {
     adminIds: [String],
+    cohortId: { type: String, default: '' },
     description: { type: String },
     products: [ItemSchema],
     name: { type: String, required: true },

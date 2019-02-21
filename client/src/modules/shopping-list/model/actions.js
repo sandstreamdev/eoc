@@ -79,6 +79,20 @@ const fetchShoppingListsMetaDataRequest = () => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_REQUEST
 });
 
+const fetchShoppingListAdditionalMetaDataRequest = () => ({
+  type: ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_SUCCESS
+});
+
+const fetchShoppingListAdditionalMetaDataSuccess = data => ({
+  type: ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_SUCCESS,
+  payload: data
+});
+
+const fetchShoppingListAdditionalMetaDataFailure = errMessage => ({
+  type: ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_SUCCESS,
+  errMessage
+});
+
 // Dispatchers
 export const fetchItemsFromGivenList = listId => dispatch => {
   dispatch(fetchProductRequest());
@@ -132,20 +146,16 @@ export const fetchShoppingListsMetaData = () => dispatch => {
     });
 };
 
-/**
- *
- * TODO pobierac wszystkie shopping listy ktore mają dane cohortID
- */
 export const fetchShoppingListMetaDataForGivenCohort = cohortId => dispatch => {
-  dispatch(fetchShoppingListsMetaDataRequest());
+  dispatch(fetchShoppingListAdditionalMetaDataRequest());
   getData(`${ENDPOINT_URL}/shopping-lists/meta-data/${cohortId}`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
-      dispatch(fetchShoppingListMetaDataSuccess(dataMap));
+      dispatch(fetchShoppingListAdditionalMetaDataSuccess(dataMap));
     })
     .catch(err => {
-      dispatch(fetchShoppingListsMetaDataFailure());
+      dispatch(fetchShoppingListAdditionalMetaDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

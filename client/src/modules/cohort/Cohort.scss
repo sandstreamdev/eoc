@@ -1,0 +1,44 @@
+.cohort {
+  margin: 36px 0 0;
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    color: $text-normal;
+
+    svg {
+      height: 18px;
+      margin-right: 16px;
+
+      path {
+        fill: $text-normal;
+      }
+    }
+  }
+
+  &__description {
+    font-size: 14px;
+    line-height: 1.2;
+    color: $text-normal;
+    margin-bottom: 36px;
+  }
+}
+
+.cohort-list {
+  margin: 0 -10px 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 200px);
+  grid-gap: 20px 10px;
+
+  &__item {
+    margin-left: auto;
+    margin-right: auto;
+
+    a {
+      text-decoration: none;
+    }
+  }
+}

@@ -7,6 +7,8 @@ const shoppingLists = (state = {}, action) => {
   switch (action.type) {
     case ShoppingListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...action.payload };
+    case ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_SUCCESS:
+      return { ...state, ...action.payload };
     case ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS:
       return {
         ...state,
@@ -103,7 +105,9 @@ const isFetching = (state = false, action) => {
     case ShoppingListActionTypes.DELETE_FAILURE:
     case ShoppingListActionTypes.DELETE_SUCCESS:
     case ShoppingListActionTypes.FETCH_META_DATA_FAILURE:
+    case ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_FAILURE:
     case ShoppingListActionTypes.FETCH_META_DATA_SUCCESS:
+    case ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_SUCCESS:
     case ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE:
     case ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS:
     case ShoppingListActionTypes.UPDATE_FAILURE:
@@ -115,6 +119,7 @@ const isFetching = (state = false, action) => {
     case ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST:
     case ShoppingListActionTypes.DELETE_REQUEST:
     case ShoppingListActionTypes.FETCH_META_DATA_REQUEST:
+    case ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_REQUEST:
     case ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST:
     case ShoppingListActionTypes.UPDATE_REQUEST:
       return true;

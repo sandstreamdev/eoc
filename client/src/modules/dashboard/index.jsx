@@ -20,7 +20,7 @@ import { getShoppingLists } from 'modules/shopping-list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import CardItem from './CardItem';
+import CardItem from 'common/components/CardItem';
 
 class Dashboard extends Component {
   state = {
