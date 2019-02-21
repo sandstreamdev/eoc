@@ -120,8 +120,18 @@ class ShoppingList extends Component {
     return (
       <Fragment>
         <Toolbar>
-          <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
-          <ToolbarItem mainIcon={<RemoveIcon />} onClick={this.showDialogBox} />
+          {!isArchived && (
+            <Fragment>
+              <ToolbarItem
+                mainIcon={<EditIcon />}
+                onClick={this.showUpdateForm}
+              />
+              <ToolbarItem
+                mainIcon={<RemoveIcon />}
+                onClick={this.showDialogBox}
+              />
+            </Fragment>
+          )}
         </Toolbar>
         {!isArchived && (
           <div className="app-wrapper">
@@ -135,12 +145,23 @@ class ShoppingList extends Component {
           </div>
         )}
         {isArchived && (
-          <div>
-            <button type="button" onClick={this.deleteListHandler(listId)}>
-              delete
+          <div className="archived-message">
+            <h1 className="archived-message__header">
+              This list was archived.
+            </h1>
+            <button
+              className="archived-message__button"
+              onClick={this.deleteListHandler(listId)}
+              type="button"
+            >
+              permanently delete
             </button>
-            <button type="button" onClick={this.restoreListHandler(listId)}>
-              restore
+            <button
+              className="archived-message__button"
+              type="button"
+              onClick={this.restoreListHandler(listId)}
+            >
+              restore from archive
             </button>
           </div>
         )}

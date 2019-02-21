@@ -1,0 +1,31 @@
+.archived-message {
+  position: relative;
+  width: 50%;
+  margin: 50px auto;
+  text-align: center;
+
+  &__header {
+    font-weight: bold;
+    font-size: 20px;
+    color: $text-normal;
+  }
+
+  &__button {
+    display: block;
+    width: 150px;
+    height: 40px;
+    margin: 25px auto;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: $gray-bg;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+    transform: scale(1);
+    transition: all 0.2s ease-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
