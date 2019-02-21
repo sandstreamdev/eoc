@@ -102,6 +102,26 @@ class ShoppingList extends Component {
     this.hideUpdateForm();
   };
 
+  adjustDialogBox = (listId, isArchived) => {
+    const dialogProps = {
+      message: 'Do you really want to archive the list?',
+      onConfirm: this.archiveListHandler(listId)
+    };
+    if (isArchived) {
+      dialogProps.message =
+        'Do you really want to permanently delete the list?';
+      dialogProps.onConfirm = this.deleteListHandler(listId);
+    }
+
+    return (
+      <DialogBox
+        message={dialogProps.message}
+        onCancel={this.hideDialogBox}
+        onConfirm={dialogProps.onConfirm}
+      />
+    );
+  };
+
   render() {
     const { showDialogBox, showUpdateForm } = this.state;
     const {
@@ -151,7 +171,7 @@ class ShoppingList extends Component {
             </h1>
             <button
               className="archived-message__button"
-              onClick={this.deleteListHandler(listId)}
+              onClick={this.showDialogBox}
               type="button"
             >
               permanently delete
@@ -165,13 +185,7 @@ class ShoppingList extends Component {
             </button>
           </div>
         )}
-        {showDialogBox && (
-          <DialogBox
-            message="Do you really want to archive the list?"
-            onCancel={this.hideDialogBox}
-            onConfirm={this.archiveListHandler(listId)}
-          />
-        )}
+        {showDialogBox && this.adjustDialogBox(listId, isArchived)}
         {showUpdateForm && (
           <ModalBox onCancel={this.hideUpdateForm}>
             <CreationForm
