@@ -34,7 +34,6 @@ class Cohort extends PureComponent {
         : null;
     const name =
       cohortDetails && cohortDetails.name ? cohortDetails.name : null;
-    console.log(lists);
     return (
       <Fragment>
         <Toolbar />

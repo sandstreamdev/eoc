@@ -88,10 +88,6 @@ export const fetchCohortsMetaData = () => dispatch => {
     });
 };
 
-/**
- *
- * Odpalić fetchowanie wszystkich list dla obecnej kohorty (tylko meta-dane)
- */
 export const fetchCohortDetails = cohortId => dispatch => {
   dispatch(fetchCohortDetailsRequest());
   getData(`${ENDPOINT_URL}/cohorts/${cohortId}/details`)
@@ -100,10 +96,5 @@ export const fetchCohortDetails = cohortId => dispatch => {
     .then(() => fetchShoppingListMetaDataForGivenCohort(cohortId)(dispatch))
     .catch(err => {
       dispatch(fetchCohortDetailsFailure(err.message));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching cohort details failed..."
-      );
     });
 };
