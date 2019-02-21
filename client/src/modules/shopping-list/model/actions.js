@@ -16,9 +16,9 @@ const fetchDataFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_DATA_FAILURE,
   payload: errMessage
 });
-const fetchDataSuccess = (json, listId) => ({
+const fetchDataSuccess = (data, listId) => ({
   type: ShoppingListActionTypes.FETCH_DATA_SUCCESS,
-  payload: { ...json, listId }
+  payload: { data, listId }
 });
 
 const fetchDataRequest = () => ({
@@ -77,6 +77,30 @@ const fetchShoppingListsMetaDataFailure = errMessage => ({
 });
 const fetchShoppingListsMetaDataRequest = () => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_REQUEST
+});
+
+const archiveListSuccess = data => ({
+  type: ShoppingListActionTypes.ARCHIVE_SUCCESS,
+  payload: data
+});
+const archiveListFailure = errMessage => ({
+  type: ShoppingListActionTypes.ARCHIVE_FAILURE,
+  payload: errMessage
+});
+const archiveListRequest = () => ({
+  type: ShoppingListActionTypes.ARCHIVE_REQUEST
+});
+
+const restoreListSuccess = (data, listId) => ({
+  type: ShoppingListActionTypes.RESTORE_SUCCESS,
+  payload: { data, listId }
+});
+const restoreListFailure = errMessage => ({
+  type: ShoppingListActionTypes.RESTORE_FAILURE,
+  payload: errMessage
+});
+const restoreListRequest = () => ({
+  type: ShoppingListActionTypes.RESTORE_REQUEST
 });
 
 // Dispatchers
@@ -161,17 +185,11 @@ export const updateList = (listId, data) => dispatch => {
   patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
-      let { message } = json;
-      if (data.isArchived !== undefined) {
-        message = data.isArchived
-          ? 'List was successfully archived!'
-          : 'List was successfully restored!';
-      }
       dispatch(updateListSuccess({ ...data, listId }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        message
+        json.message
       );
     })
     .catch(err => {
@@ -179,7 +197,52 @@ export const updateList = (listId, data) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, something went wrong..."
+        err.message || "Oops, we're sorry, updating list failed..."
+      );
+    });
+};
+
+export const archiveList = (listId, isArchived) => dispatch => {
+  dispatch(archiveListRequest());
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, { isArchived })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(archiveListSuccess({ isArchived, listId }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        'List was successfully archived!' || json.message
+      );
+    })
+    .catch(err => {
+      dispatch(archiveListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, archiving list failed..."
+      );
+    });
+};
+
+export const restoreList = (listId, isArchived) => dispatch => {
+  dispatch(restoreListRequest());
+  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, { isArchived })
+    .then(() => getData(`${ENDPOINT_URL}/shopping-lists/${listId}/data`))
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(restoreListSuccess(json, listId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        'List was successfully restored!' || json.message
+      );
+    })
+    .catch(err => {
+      dispatch(restoreListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, restoring list failed..."
       );
     });
 };

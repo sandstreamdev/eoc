@@ -8,9 +8,10 @@ import ProductsContainer from 'modules/shopping-list/components/ProductsContaine
 import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
+  archiveList,
   deleteList,
-  deleteListSuccess as deleteListFromStore,
   fetchDataFromGivenList,
+  restoreList,
   updateList
 } from 'modules/shopping-list/model/actions';
 import DialogBox from 'common/components/DialogBox';
@@ -27,19 +28,6 @@ class ShoppingList extends Component {
 
   componentDidMount() {
     this.fetchData();
-  }
-
-  componentWillUnmount() {
-    const {
-      deleteListFromStore,
-      list,
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-    if (list && list.isArchived) {
-      deleteListFromStore(listId);
-    }
   }
 
   fetchData = () => {
@@ -69,13 +57,13 @@ class ShoppingList extends Component {
 
   archiveListHandler = listId => () => {
     this.hideDialogBox();
-    const { updateList } = this.props;
-    updateList(listId, { isArchived: true });
+    const { archiveList } = this.props;
+    archiveList(listId, true);
   };
 
   restoreListHandler = listId => () => {
-    const { updateList } = this.props;
-    updateList(listId, { isArchived: false });
+    const { restoreList } = this.props;
+    restoreList(listId, false);
   };
 
   redirectHandler = () => {
@@ -131,7 +119,7 @@ class ShoppingList extends Component {
       list
     } = this.props;
     const listItems = list && list.products ? list.products : [];
-    const archiveList = listItems.filter(item => item.isOrdered);
+    const archivedList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
     const description = list && list.description ? list.description : null;
     const isArchived = list && list.isArchived ? list.isArchived : null;
@@ -161,7 +149,7 @@ class ShoppingList extends Component {
               name={name}
               products={shoppingList}
             />
-            <ProductsContainer archived products={archiveList} />
+            <ProductsContainer archived products={archivedList} />
           </div>
         )}
         {isArchived && (
@@ -211,9 +199,10 @@ ShoppingList.propTypes = {
     })
   }).isRequired,
 
+  archiveList: PropTypes.func.isRequired,
   deleteList: PropTypes.func.isRequired,
-  deleteListFromStore: PropTypes.func.isRequired,
   fetchDataFromGivenList: PropTypes.func.isRequired,
+  restoreList: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
@@ -224,6 +213,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { deleteList, deleteListFromStore, fetchDataFromGivenList, updateList }
+    { archiveList, deleteList, fetchDataFromGivenList, restoreList, updateList }
   )(ShoppingList)
 );

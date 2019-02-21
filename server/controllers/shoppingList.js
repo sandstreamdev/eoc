@@ -141,7 +141,6 @@ const getDataForGivenList = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
-    'isArchived products adminIds',
     (err, documents) => {
       if (!documents) {
         return resp.status(404).send('Data not found for given list id!');
@@ -151,13 +150,13 @@ const getDataForGivenList = (req, resp) => {
         return resp.status(404).send({ message: err.message });
       }
 
-      const { adminIds, isArchived, products } = documents[0];
+      const { _id, isArchived } = documents[0];
 
       if (isArchived) {
-        return resp.status(200).json({ isArchived });
+        return resp.status(200).json({ _id, isArchived });
       }
 
-      resp.status(200).json({ adminIds, isArchived, products });
+      resp.status(200).json(documents[0]);
     }
   );
 };
@@ -217,7 +216,7 @@ const updateListById = (req, resp) => {
     (err, doc) => {
       if (!doc) {
         return resp.status(404).send({
-          message: 'You have no permissions to this action'
+          message: 'You have no permissions to perform this action'
         });
       }
       return err
