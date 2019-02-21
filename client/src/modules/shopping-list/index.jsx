@@ -16,7 +16,6 @@ import {
 } from 'modules/shopping-list/model/actions';
 import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
-import { noOp } from 'common/utils/noOp';
 import CreationForm from 'common/components/CreationForm';
 import { EditIcon, RemoveIcon } from 'assets/images/icons';
 
@@ -50,9 +49,7 @@ class ShoppingList extends Component {
 
   deleteListHandler = id => () => {
     const { deleteList } = this.props;
-    deleteList(id)
-      .then(this.redirectHandler)
-      .catch(noOp);
+    deleteList(id);
   };
 
   archiveListHandler = listId => () => {
@@ -64,11 +61,6 @@ class ShoppingList extends Component {
   restoreListHandler = listId => () => {
     const { restoreList } = this.props;
     restoreList(listId, false);
-  };
-
-  redirectHandler = () => {
-    const { history } = this.props;
-    history.push('/dashboard');
   };
 
   hideUpdateForm = () => {
@@ -189,9 +181,6 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func
-  }),
   list: PropTypes.objectOf(PropTypes.any),
   match: PropTypes.shape({
     params: PropTypes.shape({

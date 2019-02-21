@@ -10,6 +10,7 @@ import {
 import { ShoppingListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+import history from 'common/utils/history';
 
 // Action creators
 const fetchDataFailure = errMessage => ({
@@ -39,7 +40,7 @@ const createNewShoppingListRequest = () => ({
   type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST
 });
 
-export const deleteListSuccess = id => ({
+const deleteListSuccess = id => ({
   type: ShoppingListActionTypes.DELETE_SUCCESS,
   payload: id
 });
@@ -158,7 +159,7 @@ export const fetchShoppingListsMetaData = () => dispatch => {
 
 export const deleteList = id => dispatch => {
   dispatch(deleteListRequest());
-  return deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
+  deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
     .then(resp =>
       resp.json().then(json => {
         dispatch(deleteListSuccess(id));
@@ -167,6 +168,7 @@ export const deleteList = id => dispatch => {
           NotificationType.SUCCESS,
           json.message
         );
+        history.push('/dashboard');
       })
     )
     .catch(err => {
