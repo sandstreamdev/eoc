@@ -5,7 +5,7 @@ import { CohortActionTypes } from './actionTypes';
 import { getData, postData } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
-import { fetchShoppingListMetaDataForGivenCohort } from 'modules/shopping-list/model/actions';
+import { fetchListMetaDataForCurrentCohort } from 'modules/shopping-list/model/actions';
 
 // Action creators
 const createCohortSuccess = data => ({
@@ -34,20 +34,6 @@ const fetchCohortsMetaDataFailure = errMessage => ({
 
 const fetchCohortsMetaDataRequest = () => ({
   type: CohortActionTypes.FETCH_META_DATA_REQUEST
-});
-
-const fetchCohortDetailsRequest = () => ({
-  type: CohortActionTypes.FETCH_DETAILS_REQUEST
-});
-
-const fetchCohortDetailsSuccess = (cohortId, data) => ({
-  type: CohortActionTypes.FETCH_DETAILS_SUCCESS,
-  payload: { cohortId, data }
-});
-
-const fetchCohortDetailsFailure = errMessage => ({
-  type: CohortActionTypes.FETCH_DETAILS_FAILURE,
-  errMessage
 });
 
 // Dispatchers
@@ -83,18 +69,7 @@ export const fetchCohortsMetaData = () => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching cohorts failed..."
+        err.message || "Oops, we're sorry, fetching cohorts meta data failed..."
       );
-    });
-};
-
-export const fetchCohortDetails = cohortId => dispatch => {
-  dispatch(fetchCohortDetailsRequest());
-  getData(`${ENDPOINT_URL}/cohorts/${cohortId}/details`)
-    .then(resp => resp.json())
-    .then(json => dispatch(fetchCohortDetailsSuccess(cohortId, json)))
-    .then(() => fetchShoppingListMetaDataForGivenCohort(cohortId)(dispatch))
-    .catch(err => {
-      dispatch(fetchCohortDetailsFailure(err.message));
     });
 };

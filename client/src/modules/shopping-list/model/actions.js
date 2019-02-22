@@ -146,7 +146,7 @@ export const fetchShoppingListsMetaData = () => dispatch => {
     });
 };
 
-export const fetchShoppingListMetaDataForGivenCohort = cohortId => dispatch => {
+export const fetchListMetaDataForCurrentCohort = cohortId => dispatch => {
   dispatch(fetchShoppingListAdditionalMetaDataRequest());
   getData(`${ENDPOINT_URL}/shopping-lists/meta-data/${cohortId}`)
     .then(resp => resp.json())

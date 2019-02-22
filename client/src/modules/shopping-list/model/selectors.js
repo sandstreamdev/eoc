@@ -5,7 +5,7 @@ import _keyBy from 'lodash/keyBy';
 export const getShoppingList = (state, listId) =>
   _pick(state.shoppingLists.data, listId)[listId];
 export const getShoppingLists = state => state.shoppingLists.data;
-export const getListsForGivenCohort = (state, cohortId) =>
+export const getListsForCurrentCohort = (state, cohortId) =>
   _keyBy(
     _filter(
       state.shoppingLists.data,

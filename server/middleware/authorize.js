@@ -9,7 +9,7 @@ const authorize = (req, res, next) => {
       res.clearCookie('connect.sid');
       res.clearCookie('user');
       error.message =
-        'ssssYour session has ended, you will be redirected to the login page in 5s.';
+        'Your session has ended, you will be redirected to the login page in 5s.';
     }
     return res.status(403).send(error);
   }

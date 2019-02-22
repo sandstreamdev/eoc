@@ -6,7 +6,6 @@ const CohortSchema = new Schema(
   {
     adminIds: [String],
     description: { type: String },
-    listIds: [String],
     memberIds: [String],
     name: { type: String, required: true }
   },
