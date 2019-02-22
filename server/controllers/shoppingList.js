@@ -83,7 +83,12 @@ const getShoppingListsMetaData = (req, resp) => {
   if (cohortId) {
     return ShoppingList.find(
       {
-        cohortId
+        cohortId,
+        $or: [
+          { adminIds: req.user._id },
+          { ordererIds: req.user._id },
+          { purchaserIds: req.user._id }
+        ]
       },
       '_id name description cohortId',
       (err, docs) => {
