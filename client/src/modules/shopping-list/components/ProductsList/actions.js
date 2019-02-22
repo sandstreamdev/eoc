@@ -4,7 +4,6 @@ import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/mo
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
-// Action creators
 const toggleProductSuccess = (product, listId) => ({
   type: ProductActionTypes.TOGGLE_PRODUCT_SUCCESS,
   payload: { product, listId }

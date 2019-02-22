@@ -42,7 +42,7 @@ const shoppingLists = (state = {}, action) => {
     case ShoppingListActionTypes.FETCH_DATA_SUCCESS: {
       return {
         ...state,
-        [action.payload.listId]: { ...action.payload.data }
+        [action.payload.listId]: action.payload.data
       };
     }
     case ProductActionTypes.ADD_PRODUCT_SUCCESS: {

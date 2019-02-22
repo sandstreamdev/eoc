@@ -12,17 +12,16 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 
-// Action creators
-const fetchDataFailure = errMessage => ({
+const fetchListDataFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_DATA_FAILURE,
   payload: errMessage
 });
-const fetchDataSuccess = (data, listId) => ({
+const fetchListDataSuccess = (data, listId) => ({
   type: ShoppingListActionTypes.FETCH_DATA_SUCCESS,
   payload: { data, listId }
 });
 
-const fetchDataRequest = () => ({
+const fetchListDataRequest = () => ({
   type: ShoppingListActionTypes.FETCH_DATA_REQUEST
 });
 
@@ -104,14 +103,13 @@ const restoreListRequest = () => ({
   type: ShoppingListActionTypes.RESTORE_REQUEST
 });
 
-// Dispatchers
-export const fetchDataFromGivenList = listId => dispatch => {
-  dispatch(fetchDataRequest());
-  getData(`${ENDPOINT_URL}/shopping-lists/${listId}/data`)
+export const fetchListData = listId => dispatch => {
+  dispatch(fetchListDataRequest());
+  return getData(`${ENDPOINT_URL}/shopping-lists/${listId}/data`)
     .then(resp => resp.json())
-    .then(json => dispatch(fetchDataSuccess(json, listId)))
+    .then(json => dispatch(fetchListDataSuccess(json, listId)))
     .catch(err => {
-      dispatch(fetchDataFailure());
+      dispatch(fetchListDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
@@ -122,7 +120,7 @@ export const fetchDataFromGivenList = listId => dispatch => {
 
 export const createShoppingList = (name, description, adminId) => dispatch => {
   dispatch(createNewShoppingListRequest());
-  postData(`${ENDPOINT_URL}/shopping-lists/create`, {
+  return postData(`${ENDPOINT_URL}/shopping-lists/create`, {
     name,
     description,
     adminId
@@ -141,7 +139,7 @@ export const createShoppingList = (name, description, adminId) => dispatch => {
 
 export const fetchShoppingListsMetaData = () => dispatch => {
   dispatch(fetchShoppingListsMetaDataRequest());
-  getData(`${ENDPOINT_URL}/shopping-lists/meta-data`)
+  return getData(`${ENDPOINT_URL}/shopping-lists/meta-data`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
@@ -159,7 +157,7 @@ export const fetchShoppingListsMetaData = () => dispatch => {
 
 export const deleteList = id => dispatch => {
   dispatch(deleteListRequest());
-  deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
+  return deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
     .then(resp =>
       resp.json().then(json => {
         dispatch(deleteListSuccess(id));
@@ -184,7 +182,7 @@ export const deleteList = id => dispatch => {
 
 export const updateList = (listId, data) => dispatch => {
   dispatch(updateListRequest());
-  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, data)
+  return patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
       dispatch(updateListSuccess({ ...data, listId }));
@@ -204,12 +202,14 @@ export const updateList = (listId, data) => dispatch => {
     });
 };
 
-export const archiveList = (listId, isArchived) => dispatch => {
+export const archiveList = listId => dispatch => {
   dispatch(archiveListRequest());
-  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, { isArchived })
+  return patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, {
+    isArchived: true
+  })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(archiveListSuccess({ isArchived, listId }));
+      dispatch(archiveListSuccess({ isArchived: true, listId }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -226,9 +226,11 @@ export const archiveList = (listId, isArchived) => dispatch => {
     });
 };
 
-export const restoreList = (listId, isArchived) => dispatch => {
+export const restoreList = listId => dispatch => {
   dispatch(restoreListRequest());
-  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, { isArchived })
+  return patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, {
+    isArchived: false
+  })
     .then(() => getData(`${ENDPOINT_URL}/shopping-lists/${listId}/data`))
     .then(resp => resp.json())
     .then(json => {

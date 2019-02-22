@@ -8,8 +8,7 @@ const createNewList = (req, resp) => {
   const shoppingList = new ShoppingList({
     description,
     name,
-    adminIds: adminId,
-    isArchived: false
+    adminIds: adminId
   });
 
   shoppingList.save((err, doc) => {
@@ -72,7 +71,7 @@ const deleteListById = (req, resp) => {
               "Oops we're sorry, an error occurred while deleting the list"
           })
         : resp.status(200).send({
-            message: `List with id: ${doc.name} was successfully deleted!`
+            message: `List ${doc.name} was successfully deleted!`
           });
     }
   );
@@ -131,7 +130,7 @@ const addProductToList = (req, resp) => {
   );
 };
 
-const getDataForGivenList = (req, resp) => {
+const getListData = (req, resp) => {
   ShoppingList.find(
     {
       _id: req.params.id,
@@ -236,7 +235,7 @@ module.exports = {
   createNewList,
   deleteListById,
   getAllShoppingLists,
-  getDataForGivenList,
+  getListData,
   getShoppingListById,
   getShoppingListsMetaData,
   updateListById,

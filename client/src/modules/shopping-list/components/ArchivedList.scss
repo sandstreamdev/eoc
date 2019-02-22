@@ -5,15 +5,14 @@
   text-align: center;
 
   &__header {
-    font-weight: bold;
+    font-weight: 600;
     font-size: 20px;
     color: $text-normal;
   }
 
   &__button {
     display: block;
-    width: 150px;
-    height: 40px;
+    padding: 12px;
     margin: 25px auto;
     border: none;
     outline: none;

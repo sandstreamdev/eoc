@@ -4,7 +4,6 @@ import { getData, postData } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
-// Action creators
 const createCohortSuccess = data => ({
   type: CohortActionTypes.CREATE_COHORT_SUCCESS,
   payload: data
@@ -33,7 +32,6 @@ const fetchCohortsRequest = () => ({
   type: CohortActionTypes.FETCH_COHORTS_REQUEST
 });
 
-// Dispatchers
 export const createCohort = (name, description, adminId) => dispatch => {
   dispatch(createCohortRequest());
   postData(`${ENDPOINT_URL}/cohorts/create`, {

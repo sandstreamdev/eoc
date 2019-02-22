@@ -9,15 +9,15 @@ import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
   archiveList,
-  deleteList,
-  fetchDataFromGivenList,
-  restoreList,
+  fetchListData,
   updateList
 } from 'modules/shopping-list/model/actions';
 import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
 import CreationForm from 'common/components/CreationForm';
 import { EditIcon, RemoveIcon } from 'assets/images/icons';
+import { noOp } from 'common/utils/noOp';
+import ArchivedList from 'modules/shopping-list/components/ArchivedList';
 
 class ShoppingList extends Component {
   state = {
@@ -31,12 +31,12 @@ class ShoppingList extends Component {
 
   fetchData = () => {
     const {
-      fetchDataFromGivenList,
+      fetchListData,
       match: {
         params: { id }
       }
     } = this.props;
-    fetchDataFromGivenList(id);
+    fetchListData(id);
   };
 
   showDialogBox = () => {
@@ -47,20 +47,11 @@ class ShoppingList extends Component {
     this.setState({ showDialogBox: false });
   };
 
-  deleteListHandler = id => () => {
-    const { deleteList } = this.props;
-    deleteList(id);
-  };
-
   archiveListHandler = listId => () => {
-    this.hideDialogBox();
     const { archiveList } = this.props;
-    archiveList(listId, true);
-  };
-
-  restoreListHandler = listId => () => {
-    const { restoreList } = this.props;
-    restoreList(listId, false);
+    archiveList(listId)
+      .then(this.hideDialogBox)
+      .catch(noOp);
   };
 
   hideUpdateForm = () => {
@@ -82,26 +73,6 @@ class ShoppingList extends Component {
     this.hideUpdateForm();
   };
 
-  adjustDialogBox = (listId, isArchived) => {
-    const dialogProps = {
-      message: 'Do you really want to archive the list?',
-      onConfirm: this.archiveListHandler(listId)
-    };
-    if (isArchived) {
-      dialogProps.message =
-        'Do you really want to permanently delete the list?';
-      dialogProps.onConfirm = this.deleteListHandler(listId);
-    }
-
-    return (
-      <DialogBox
-        message={dialogProps.message}
-        onCancel={this.hideDialogBox}
-        onConfirm={dialogProps.onConfirm}
-      />
-    );
-  };
-
   render() {
     const { showDialogBox, showUpdateForm } = this.state;
     const {
@@ -110,12 +81,14 @@ class ShoppingList extends Component {
       },
       list
     } = this.props;
-    const listItems = list && list.products ? list.products : [];
+
+    if (!list) {
+      return null;
+    }
+    const { description, isArchived, name, products } = list;
+    const listItems = products || [];
     const archivedList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
-    const description = list && list.description ? list.description : null;
-    const isArchived = list && list.isArchived ? list.isArchived : null;
-    const name = list && list.name ? list.name : null;
 
     return (
       <Fragment>
@@ -144,28 +117,14 @@ class ShoppingList extends Component {
             <ProductsContainer archived products={archivedList} />
           </div>
         )}
-        {isArchived && (
-          <div className="archived-message">
-            <h1 className="archived-message__header">
-              This list was archived.
-            </h1>
-            <button
-              className="archived-message__button"
-              onClick={this.showDialogBox}
-              type="button"
-            >
-              permanently delete
-            </button>
-            <button
-              className="archived-message__button"
-              type="button"
-              onClick={this.restoreListHandler(listId)}
-            >
-              restore from archive
-            </button>
-          </div>
+        {isArchived && <ArchivedList listId={listId} />}
+        {showDialogBox && (
+          <DialogBox
+            message="Do you really want to archive the list?"
+            onCancel={this.hideDialogBox}
+            onConfirm={this.archiveListHandler(listId)}
+          />
         )}
-        {showDialogBox && this.adjustDialogBox(listId, isArchived)}
         {showUpdateForm && (
           <ModalBox onCancel={this.hideUpdateForm}>
             <CreationForm
@@ -189,9 +148,7 @@ ShoppingList.propTypes = {
   }).isRequired,
 
   archiveList: PropTypes.func.isRequired,
-  deleteList: PropTypes.func.isRequired,
-  fetchDataFromGivenList: PropTypes.func.isRequired,
-  restoreList: PropTypes.func.isRequired,
+  fetchListData: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
@@ -202,6 +159,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { archiveList, deleteList, fetchDataFromGivenList, restoreList, updateList }
+    { archiveList, fetchListData, updateList }
   )(ShoppingList)
 );

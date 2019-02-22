@@ -11,7 +11,6 @@ export const AuthorizationActionTypes = Object.freeze({
   SET_CURRENT_USER_SUCCESS: 'SET_CURRENT_USER_SUCCESS'
 });
 
-// Action creators
 const setCurrentUserSuccess = user => ({
   type: AuthorizationActionTypes.SET_CURRENT_USER_SUCCESS,
   payload: user
@@ -28,7 +27,6 @@ const logoutUserRequest = () => ({
   type: AuthorizationActionTypes.LOGOUT_USER_REQUEST
 });
 
-// Dispatcher
 export const setCurrentUser = () => dispatch => {
   const user = JSON.parse(decodeURIComponent(getCookie('user')));
   const payload = typeof user === 'object' ? user : null;
