@@ -8,7 +8,7 @@ export const getCohortDetails = (state, cohortId) => {
   if (!_isEmpty(state.cohorts.data)) {
     const { description, name } = _filter(
       state.cohorts.data,
-      value => value._id === cohortId
+      (value, key) => key === cohortId
     )[0];
 
     return {

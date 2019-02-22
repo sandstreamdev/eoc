@@ -5,7 +5,6 @@ import { CohortActionTypes } from './actionTypes';
 import { getData, postData } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
-import { fetchListMetaDataForCurrentCohort } from 'modules/shopping-list/model/actions';
 
 // Action creators
 const createCohortSuccess = data => ({

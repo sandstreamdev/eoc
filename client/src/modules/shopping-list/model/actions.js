@@ -79,20 +79,6 @@ const fetchShoppingListsMetaDataRequest = () => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_REQUEST
 });
 
-const fetchShoppingListAdditionalMetaDataRequest = () => ({
-  type: ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_SUCCESS
-});
-
-const fetchShoppingListAdditionalMetaDataSuccess = data => ({
-  type: ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_SUCCESS,
-  payload: data
-});
-
-const fetchShoppingListAdditionalMetaDataFailure = errMessage => ({
-  type: ShoppingListActionTypes.FETCH_ADDITIONAL_META_DATA_SUCCESS,
-  errMessage
-});
-
 // Dispatchers
 export const fetchItemsFromGivenList = listId => dispatch => {
   dispatch(fetchProductRequest());
@@ -147,15 +133,15 @@ export const fetchShoppingListsMetaData = () => dispatch => {
 };
 
 export const fetchListMetaDataForCurrentCohort = cohortId => dispatch => {
-  dispatch(fetchShoppingListAdditionalMetaDataRequest());
+  dispatch(fetchShoppingListsMetaDataRequest());
   getData(`${ENDPOINT_URL}/shopping-lists/meta-data/${cohortId}`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
-      dispatch(fetchShoppingListAdditionalMetaDataSuccess(dataMap));
+      dispatch(fetchShoppingListMetaDataSuccess(dataMap));
     })
     .catch(err => {
-      dispatch(fetchShoppingListAdditionalMetaDataFailure());
+      dispatch(fetchShoppingListsMetaDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

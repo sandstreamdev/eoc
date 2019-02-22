@@ -29,10 +29,10 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    const { fetchShoppingListsMetaData, fetchCohortsMetaData } = this.props;
+    const { fetchCohortsMetaData, fetchShoppingListsMetaData } = this.props;
 
-    fetchShoppingListsMetaData();
     fetchCohortsMetaData();
+    fetchShoppingListsMetaData();
   }
 
   hideForms = () => {
