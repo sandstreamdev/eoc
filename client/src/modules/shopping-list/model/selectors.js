@@ -7,10 +7,7 @@ export const getShoppingList = (state, listId) =>
 export const getShoppingLists = state => state.shoppingLists.data;
 export const getListsForCurrentCohort = (state, cohortId) =>
   _keyBy(
-    _filter(
-      state.shoppingLists.data,
-      (value, key) => value.cohortId === cohortId
-    ),
+    _filter(state.shoppingLists.data, value => value.cohortId === cohortId),
     '_id'
   );
 
