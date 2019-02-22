@@ -15,7 +15,7 @@ import {
 import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
 import CreationForm from 'common/components/CreationForm';
-import { EditIcon, RemoveIcon } from 'assets/images/icons';
+import { EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/shopping-list/components/ArchivedList';
 
@@ -100,7 +100,7 @@ class ShoppingList extends Component {
                 onClick={this.showUpdateForm}
               />
               <ToolbarItem
-                mainIcon={<RemoveIcon />}
+                mainIcon={<ArchiveIcon />}
                 onClick={this.showDialogBox}
               />
             </Fragment>
