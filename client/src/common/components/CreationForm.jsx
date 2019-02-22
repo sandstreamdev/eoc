@@ -5,10 +5,15 @@ import classNames from 'classnames';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class CreationForm extends PureComponent {
-  state = {
-    description: '',
-    title: ''
-  };
+  constructor(props) {
+    super(props);
+    const { initialTitle, initialDescription } = this.props;
+
+    this.state = {
+      description: initialDescription || '',
+      title: initialTitle || ''
+    };
+  }
 
   componentDidMount() {
     document.addEventListener('keydown', this.escapeListener);
@@ -94,6 +99,8 @@ class CreationForm extends PureComponent {
 }
 
 CreationForm.propTypes = {
+  initialDescription: PropTypes.string,
+  initialTitle: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
 

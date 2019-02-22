@@ -86,11 +86,15 @@ class ShoppingList extends Component {
       },
       list
     } = this.props;
-    const listItems = list && list.products ? list.products : [];
+
+    if (!list) {
+      return null;
+    }
+
+    const listItems = list.products || [];
     const archiveList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
-    const description = list && list.description ? list.description : null;
-    const name = list && list.name ? list.name : null;
+    const { description, name } = list;
 
     return (
       <Fragment>
@@ -120,6 +124,8 @@ class ShoppingList extends Component {
               label="Edit list"
               onSubmit={this.updateListHandler(listId)}
               type="modal"
+              initialTitle={name}
+              initialDescription={description}
             />
           </ModalBox>
         )}
