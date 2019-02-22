@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import ProductsListItem from 'modules/shopping-list/components/ProductsListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { toggle, vote } from './actions';
-import { UserPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
@@ -99,11 +99,7 @@ class ProductsList extends Component {
 
 ProductsList.propTypes = {
   currentUser: UserPropType.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string
-    })
-  }).isRequired,
+  match: RouterMatchPropType.isRequired,
   products: PropTypes.arrayOf(PropTypes.object),
 
   toggle: PropTypes.func,

@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
+const { ObjectId } = Schema.Types;
 const ItemSchema = require('./item.model').schema;
 
 const ShoppingListSchema = new Schema(
   {
     adminIds: [String],
-    cohortId: { type: String, default: '' },
+    cohortId: {
+      type: ObjectId,
+      default: null
+    },
     description: { type: String },
     products: [ItemSchema],
     name: { type: String, required: true },

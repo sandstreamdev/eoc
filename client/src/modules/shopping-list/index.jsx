@@ -17,6 +17,7 @@ import ModalBox from 'common/components/ModalBox';
 import { noOp } from 'common/utils/noOp';
 import CreationForm from 'common/components/CreationForm';
 import { EditIcon, RemoveIcon } from 'assets/images/icons';
+import { RouterMatchPropType } from 'common/constants/propTypes';
 
 class ShoppingList extends Component {
   state = {
@@ -133,11 +134,7 @@ ShoppingList.propTypes = {
     push: PropTypes.func
   }),
   list: PropTypes.objectOf(PropTypes.any),
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string
-    })
-  }).isRequired,
+  match: RouterMatchPropType.isRequired,
 
   deleteList: PropTypes.func.isRequired,
   fetchItemsFromGivenList: PropTypes.func.isRequired,

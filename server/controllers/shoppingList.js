@@ -88,7 +88,9 @@ const getShoppingListsMetaData = (req, resp) => {
       '_id name description cohortId',
       (err, docs) => {
         if (!docs) {
-          return resp.status(404).send('No list in current cohort!');
+          return resp
+            .status(404)
+            .send({ message: 'No list in current cohort!' });
         }
 
         return err
@@ -105,13 +107,13 @@ const getShoppingListsMetaData = (req, resp) => {
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
       ],
-      cohortId: { $eq: '' }
+      cohortId: { $eq: null }
     },
     '_id name description',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (!docs) {
-        return resp.status(404).send('No lists found!');
+        return resp.status(404).send({ message: 'No lists found!' });
       }
 
       return err

@@ -8,28 +8,33 @@ import _isEmpty from 'lodash/isEmpty';
 import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import Toolbar from 'common/components/Toolbar';
-import { getListsForCurrentCohort } from 'modules/shopping-list/model/selectors';
-import { fetchListMetaDataForCurrentCohort } from 'modules/shopping-list/model/actions';
+import { getLists } from 'modules/shopping-list/model/selectors';
+import { fetchListMetaData } from 'modules/shopping-list/model/actions';
 import { CohortIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
+import { RouterMatchPropType } from 'common/constants/propTypes';
 
 class Cohort extends PureComponent {
   componentDidMount() {
     const {
-      fetchListMetaDataForCurrentCohort,
+      fetchListMetaData,
       match: {
         params: { id }
       }
     } = this.props;
 
-    fetchListMetaDataForCurrentCohort(id);
+    fetchListMetaData(id);
   }
 
   render() {
     const { cohortDetails, lists } = this.props;
-    const description = cohortDetails && cohortDetails.description;
-    const name = cohortDetails && cohortDetails.name;
+
+    if (!cohortDetails) {
+      return null;
+    }
+
+    const { name, description } = cohortDetails;
 
     return (
       <Fragment>
@@ -65,25 +70,24 @@ class Cohort extends PureComponent {
 }
 
 Cohort.propTypes = {
-  cohortDetails: PropTypes.objectOf(PropTypes.string),
+  cohortDetails: PropTypes.shape({
+    name: PropTypes.string,
+    description: PropTypes.string
+  }),
   lists: PropTypes.objectOf(PropTypes.object),
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string
-    })
-  }).isRequired,
+  match: RouterMatchPropType.isRequired,
 
-  fetchListMetaDataForCurrentCohort: PropTypes.func.isRequired
+  fetchListMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
   cohortDetails: getCohortDetails(state, ownProps.match.params.id),
-  lists: getListsForCurrentCohort(state, ownProps.match.params.id)
+  lists: getLists(state, ownProps.match.params.id)
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
-    { fetchListMetaDataForCurrentCohort }
+    { fetchListMetaData }
   )(Cohort)
 );

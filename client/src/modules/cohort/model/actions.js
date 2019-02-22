@@ -38,7 +38,7 @@ const fetchCohortsMetaDataRequest = () => ({
 // Dispatchers
 export const createCohort = (name, description, adminId) => dispatch => {
   dispatch(createCohortRequest());
-  postData(`${ENDPOINT_URL}/cohorts/create`, {
+  return postData(`${ENDPOINT_URL}/cohorts/create`, {
     name,
     description,
     adminId
@@ -57,7 +57,7 @@ export const createCohort = (name, description, adminId) => dispatch => {
 
 export const fetchCohortsMetaData = () => dispatch => {
   dispatch(fetchCohortsMetaDataRequest());
-  getData(`${ENDPOINT_URL}/cohorts/meta-data`)
+  return getData(`${ENDPOINT_URL}/cohorts/meta-data`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
