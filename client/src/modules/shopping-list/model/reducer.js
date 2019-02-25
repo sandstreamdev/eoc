@@ -29,10 +29,8 @@ const shoppingLists = (state = {}, action) => {
       };
     }
     case ShoppingListActionTypes.ARCHIVE_SUCCESS: {
-      const archivedList = {
-        _id: action.payload.listId,
-        isArchived: action.payload.isArchived
-      };
+      const { listId: _id, isArchived } = action.payload;
+      const archivedList = { _id, isArchived };
       return {
         ...state,
         [action.payload.listId]: archivedList
