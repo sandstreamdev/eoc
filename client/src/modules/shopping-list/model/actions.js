@@ -137,9 +137,9 @@ export const createShoppingList = (name, description, adminId) => dispatch => {
     });
 };
 
-export const fetchShoppingListsMetaData = () => dispatch => {
+export const fetchShoppingListsMetaData = archived => dispatch => {
   dispatch(fetchShoppingListsMetaDataRequest());
-  return getData(`${ENDPOINT_URL}/shopping-lists/meta-data`)
+  return getData(`${ENDPOINT_URL}/shopping-lists/meta-data/${archived}`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');

@@ -127,6 +127,11 @@ class Dashboard extends Component {
           >
             {this.renderCreateListForm()}
           </ToolbarItem>
+          <div className="toolbar__icon-wrapper">
+            <Link className="toolbar__icon-link" to="/archived">
+              arch
+            </Link>
+          </div>
         </Toolbar>
         <div className="wrapper">
           <div className="dashboard">

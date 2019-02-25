@@ -15,7 +15,7 @@ const {
 const { authorize } = require('../middleware/authorize');
 
 router.get('/', authorize, getAllShoppingLists);
-router.get('/meta-data', authorize, getShoppingListsMetaData);
+router.get('/meta-data/:archived?', authorize, getShoppingListsMetaData);
 router.get('/:id', authorize, getShoppingListById);
 router.post('/create', authorize, createNewList);
 router.post('/add-product', authorize, addProductToList);

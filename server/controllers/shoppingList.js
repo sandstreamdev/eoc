@@ -78,6 +78,8 @@ const deleteListById = (req, resp) => {
 };
 
 const getShoppingListsMetaData = (req, resp) => {
+  const { archived } = req.params;
+
   ShoppingList.find(
     {
       $or: [
@@ -85,7 +87,7 @@ const getShoppingListsMetaData = (req, resp) => {
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
       ],
-      isArchived: false
+      isArchived: archived === 'archived'
     },
     '_id name description',
     { sort: { created_at: -1 } },
