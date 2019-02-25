@@ -27,7 +27,7 @@ class Archived extends PureComponent {
           <div className="archived">
             <h2 className="archived__heading">
               <ListIcon />
-              Lists
+              Archived Lists
             </h2>
             <ul className="archived__list">
               {_map(lists, item => (
