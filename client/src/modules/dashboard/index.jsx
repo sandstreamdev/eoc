@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _map from 'lodash/map';
 
-import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
+import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import EyeIcon from 'assets/images/eye-solid.svg';
@@ -128,7 +128,7 @@ class Dashboard extends Component {
           >
             {this.renderCreateListForm()}
           </ToolbarItem>
-          <ToolbarItem
+          <ToolbarLink
             additionalIconSrc={EyeIcon}
             mainIcon={<ArchiveIcon />}
             path="/archived"

@@ -10,7 +10,7 @@ import AppLogo from 'common/components/AppLogo';
 import { createShoppingList } from 'modules/shopping-list/model/actions';
 import { createCohort } from 'modules/cohort/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import ToolbarItem from './components/ToolbarItem';
+import ToolbarLink from './components/ToolbarLink';
 
 const Toolbar = ({ children, isHomePage }) => (
   <div className="toolbar">
@@ -31,7 +31,7 @@ const Toolbar = ({ children, isHomePage }) => (
           </a>
         </div>
         {!isHomePage && (
-          <ToolbarItem mainIcon={<HomeIcon />} path="/dashboard" />
+          <ToolbarLink mainIcon={<HomeIcon />} path="/dashboard" />
         )}
         {children}
       </div>
