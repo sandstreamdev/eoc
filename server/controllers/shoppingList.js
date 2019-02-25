@@ -79,6 +79,10 @@ const deleteListById = (req, resp) => {
 
 const getShoppingListsMetaData = (req, resp) => {
   const { archived } = req.params;
+  const queriedFields =
+    archived === 'archived'
+      ? '_id name description isArchived'
+      : '_id name description';
 
   ShoppingList.find(
     {
@@ -89,7 +93,7 @@ const getShoppingListsMetaData = (req, resp) => {
       ],
       isArchived: archived === 'archived'
     },
-    '_id name description',
+    queriedFields,
     { sort: { created_at: -1 } },
     (err, docs) => {
       err

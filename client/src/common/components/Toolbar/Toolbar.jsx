@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -11,6 +10,7 @@ import AppLogo from 'common/components/AppLogo';
 import { createShoppingList } from 'modules/shopping-list/model/actions';
 import { createCohort } from 'modules/cohort/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import ToolbarItem from './components/ToolbarItem';
 
 const Toolbar = ({ children, isHomePage }) => (
   <div className="toolbar">
@@ -31,11 +31,7 @@ const Toolbar = ({ children, isHomePage }) => (
           </a>
         </div>
         {!isHomePage && (
-          <div className="toolbar__icon-wrapper">
-            <Link className="toolbar__icon-link" to="/dashboard">
-              <HomeIcon />
-            </Link>
-          </div>
+          <ToolbarItem mainIcon={<HomeIcon />} path="/dashboard" />
         )}
         {children}
       </div>

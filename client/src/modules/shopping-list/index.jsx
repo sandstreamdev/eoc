@@ -26,7 +26,10 @@ class ShoppingList extends Component {
   };
 
   componentDidMount() {
-    this.fetchData();
+    const { list } = this.props;
+    if (!list || (list && !list.isArchived)) {
+      this.fetchData();
+    }
   }
 
   fetchData = () => {

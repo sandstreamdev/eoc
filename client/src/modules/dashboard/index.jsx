@@ -5,8 +5,9 @@ import { Link } from 'react-router-dom';
 import _map from 'lodash/map';
 
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
-import { CohortIcon, ListIcon } from 'assets/images/icons';
+import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
+import EyeIcon from 'assets/images/eye-solid.svg';
 import CreationForm from 'common/components/CreationForm';
 import {
   createShoppingList,
@@ -127,11 +128,11 @@ class Dashboard extends Component {
           >
             {this.renderCreateListForm()}
           </ToolbarItem>
-          <div className="toolbar__icon-wrapper">
-            <Link className="toolbar__icon-link" to="/archived">
-              arch
-            </Link>
-          </div>
+          <ToolbarItem
+            additionalIconSrc={EyeIcon}
+            mainIcon={<ArchiveIcon />}
+            path="/archived"
+          />
         </Toolbar>
         <div className="wrapper">
           <div className="dashboard">
