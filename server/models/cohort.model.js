@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
+const { ObjectId } = Schema.Types;
 
 const CohortSchema = new Schema(
   {
-    adminIds: [String],
+    adminIds: [ObjectId],
     description: { type: String },
-    memberIds: [String],
+    memberIds: [ObjectId],
     name: { type: String, required: true }
   },
   { timestamps: { createdAt: 'createdAt' }, collection: 'cohorts' }

@@ -6,7 +6,7 @@ const ItemSchema = require('./item.model').schema;
 
 const ShoppingListSchema = new Schema(
   {
-    adminIds: [String],
+    adminIds: [ObjectId],
     cohortId: {
       type: ObjectId,
       default: null
@@ -14,9 +14,8 @@ const ShoppingListSchema = new Schema(
     description: { type: String },
     products: [ItemSchema],
     name: { type: String, required: true },
-    ordererIds: [String],
-    organizationIds: [String],
-    purchaserIds: [String],
+    ordererIds: [ObjectId],
+    purchaserIds: [ObjectId],
     visibility: { type: String }
   },
   { timestamps: { createdAt: 'created_at' }, collection: 'shopping-lists' }

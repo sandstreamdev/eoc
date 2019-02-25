@@ -173,7 +173,7 @@ const getProductsForGivenList = (req, resp) => {
     },
     'products',
     (err, documents) => {
-      if (!documents) {
+      if (!documents && documents.length > 0) {
         return resp.status(404).send('Products not found for given list id!');
       }
 
@@ -181,10 +181,8 @@ const getProductsForGivenList = (req, resp) => {
         return resp.status(404).send({ message: err.message });
       }
 
-      if (documents[0]) {
-        const { products } = documents[0];
-        return resp.status(200).json(products);
-      }
+      const { products } = documents[0];
+      return resp.status(200).json(products);
     }
   );
 };

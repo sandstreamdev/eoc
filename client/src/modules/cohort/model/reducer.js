@@ -5,7 +5,10 @@ import { CohortActionTypes } from './actionTypes';
 const cohorts = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.CREATE_COHORT_SUCCESS:
-      return [action.payload, ...state];
+      return {
+        ...state,
+        [action.payload._id]: { ...action.payload }
+      };
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
       return action.payload;
     default:
