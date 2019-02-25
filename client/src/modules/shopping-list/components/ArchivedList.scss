@@ -19,7 +19,7 @@
     border-radius: 5px;
     cursor: pointer;
     background-color: $gray-bg;
-    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
     transform: scale(1);
     transition: all 0.2s ease-out;
 
