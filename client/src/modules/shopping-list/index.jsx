@@ -8,15 +8,16 @@ import ProductsContainer from 'modules/shopping-list/components/ProductsContaine
 import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
-  fetchItemsFromGivenList,
-  deleteList,
+  archiveList,
+  fetchListData,
   updateList
 } from 'modules/shopping-list/model/actions';
 import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
-import { noOp } from 'common/utils/noOp';
 import CreationForm from 'common/components/CreationForm';
-import { EditIcon, RemoveIcon } from 'assets/images/icons';
+import { EditIcon, ArchiveIcon } from 'assets/images/icons';
+import { noOp } from 'common/utils/noOp';
+import ArchivedList from 'modules/shopping-list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 
 class ShoppingList extends Component {
@@ -26,17 +27,17 @@ class ShoppingList extends Component {
   };
 
   componentDidMount() {
-    this.fetchProducts();
+    this.fetchData();
   }
 
-  fetchProducts = () => {
+  fetchData = () => {
     const {
-      fetchItemsFromGivenList,
+      fetchListData,
       match: {
         params: { id }
       }
     } = this.props;
-    fetchItemsFromGivenList(id);
+    fetchListData(id);
   };
 
   showDialogBox = () => {
@@ -47,17 +48,11 @@ class ShoppingList extends Component {
     this.setState({ showDialogBox: false });
   };
 
-  deleteListHandler = id => () => {
-    this.hideDialogBox();
-    const { deleteList } = this.props;
-    deleteList(id)
-      .then(this.redirectHandler)
+  archiveListHandler = listId => () => {
+    const { archiveList } = this.props;
+    archiveList(listId)
+      .then(this.hideDialogBox)
       .catch(noOp);
-  };
-
-  redirectHandler = () => {
-    const { history } = this.props;
-    history.push('/dashboard');
   };
 
   hideUpdateForm = () => {
@@ -87,32 +82,48 @@ class ShoppingList extends Component {
       },
       list
     } = this.props;
-    const listItems = list && list.products ? list.products : [];
-    const archiveList = listItems.filter(item => item.isOrdered);
+
+    if (!list) {
+      return null;
+    }
+    const { description, isArchived, name, products } = list;
+    const listItems = products || [];
+    const archivedList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
-    const description = list && list.description ? list.description : null;
-    const name = list && list.name ? list.name : null;
 
     return (
       <Fragment>
         <Toolbar>
-          <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
-          <ToolbarItem mainIcon={<RemoveIcon />} onClick={this.showDialogBox} />
+          {!isArchived && (
+            <Fragment>
+              <ToolbarItem
+                mainIcon={<EditIcon />}
+                onClick={this.showUpdateForm}
+              />
+              <ToolbarItem
+                mainIcon={<ArchiveIcon />}
+                onClick={this.showDialogBox}
+              />
+            </Fragment>
+          )}
         </Toolbar>
-        <div className="app-wrapper">
-          <InputBar />
-          <ProductsContainer
-            description={description}
-            name={name}
-            products={shoppingList}
-          />
-          <ProductsContainer archived products={archiveList} />
-        </div>
+        {!isArchived && (
+          <div className="app-wrapper">
+            <InputBar />
+            <ProductsContainer
+              description={description}
+              name={name}
+              products={shoppingList}
+            />
+            <ProductsContainer archived products={archivedList} />
+          </div>
+        )}
+        {isArchived && <ArchivedList listId={listId} />}
         {showDialogBox && (
           <DialogBox
-            message="Do you really want to delete the list?"
+            message="Do you really want to archive the list?"
             onCancel={this.hideDialogBox}
-            onConfirm={this.deleteListHandler(listId)}
+            onConfirm={this.archiveListHandler(listId)}
           />
         )}
         {showUpdateForm && (
@@ -130,14 +141,11 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func
-  }),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
 
-  deleteList: PropTypes.func.isRequired,
-  fetchItemsFromGivenList: PropTypes.func.isRequired,
+  archiveList: PropTypes.func.isRequired,
+  fetchListData: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
@@ -148,6 +156,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { deleteList, fetchItemsFromGivenList, updateList }
+    { archiveList, fetchListData, updateList }
   )(ShoppingList)
 );

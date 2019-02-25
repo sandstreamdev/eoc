@@ -71,7 +71,7 @@ const deleteListById = (req, resp) => {
               "Oops we're sorry, an error occurred while deleting the list"
           })
         : resp.status(200).send({
-            message: `List with id: ${req.params.id} was successfully deleted!`
+            message: `List ${doc.name} was successfully deleted!`
           });
     }
   );
@@ -112,7 +112,8 @@ const getShoppingListsMetaData = (req, resp) => {
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
       ],
-      cohortId: { $eq: null }
+      cohortId: { $eq: null },
+      isArchived: false
     },
     '_id name description',
     { sort: { created_at: -1 } },
@@ -161,7 +162,7 @@ const addProductToList = (req, resp) => {
   );
 };
 
-const getProductsForGivenList = (req, resp) => {
+const getListData = (req, resp) => {
   ShoppingList.find(
     {
       _id: req.params.id,
@@ -171,18 +172,24 @@ const getProductsForGivenList = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
-    'products',
     (err, documents) => {
       if (err) {
         return resp.status(404).send({ message: err.message });
       }
 
       if (documents && documents.length > 0) {
-        const { products } = documents[0];
-        return resp.status(200).json(products);
+        const { _id, isArchived } = documents[0];
+
+        if (isArchived) {
+          return resp.status(200).json({ _id, isArchived });
+        }
+
+        return resp.status(200).json(documents[0]);
       }
 
-      return resp.status(404).send('Products not found for given list id!');
+      return resp
+        .status(404)
+        .send({ message: 'Products not found for given list id!' });
     }
   );
 };
@@ -224,10 +231,11 @@ const updateShoppingListItem = (req, resp) => {
 };
 
 const updateListById = (req, resp) => {
-  const { description, name } = req.body;
+  const { description, isArchived, name } = req.body;
   const { id: listId } = req.params;
   const dataToUpdate = filter(x => x !== undefined)({
     description,
+    isArchived,
     name
   });
 
@@ -241,16 +249,16 @@ const updateListById = (req, resp) => {
     (err, doc) => {
       if (!doc) {
         return resp.status(404).send({
-          message: 'You dont have permissions to update this list'
+          message: 'You have no permissions to perform this action'
         });
       }
       return err
         ? resp.status(400).send({
             message:
-              "Oops we're sorry, an error occurred while updating the list"
+              "Oops we're sorry, an error occurred while processing the list"
           })
         : resp.status(200).send({
-            message: `List with id: ${req.params.id} was successfully updated!`
+            message: `List "${doc.name}" was successfully updated!`
           });
     }
   );
@@ -261,7 +269,7 @@ module.exports = {
   createNewList,
   deleteListById,
   getAllShoppingLists,
-  getProductsForGivenList,
+  getListData,
   getShoppingListById,
   getShoppingListsMetaData,
   updateListById,

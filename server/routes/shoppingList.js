@@ -6,7 +6,7 @@ const {
   createNewList,
   deleteListById,
   getAllShoppingLists,
-  getProductsForGivenList,
+  getListData,
   getShoppingListById,
   getShoppingListsMetaData,
   updateListById,
@@ -21,7 +21,7 @@ router.post('/create', authorize, createNewList);
 router.post('/add-product', authorize, addProductToList);
 router.delete('/:id/delete', authorize, deleteListById);
 router.patch('/:id/update', authorize, updateListById);
-router.get('/:id/products', authorize, getProductsForGivenList);
+router.get('/:id/data', authorize, getListData);
 router.patch('/:id/update-item', authorize, updateShoppingListItem);
 
 module.exports = app => app.use('/shopping-lists', router);

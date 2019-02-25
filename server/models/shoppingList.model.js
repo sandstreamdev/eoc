@@ -12,9 +12,10 @@ const ShoppingListSchema = new Schema(
       default: null
     },
     description: { type: String },
-    products: [ItemSchema],
+    isArchived: { type: Boolean, default: false },
     name: { type: String, required: true },
     ordererIds: [ObjectId],
+    products: [ItemSchema],
     purchaserIds: [ObjectId],
     visibility: { type: String }
   },

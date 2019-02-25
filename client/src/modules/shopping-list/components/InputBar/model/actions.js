@@ -4,7 +4,6 @@ import { ProductActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
-// Action creators
 const addProductFailure = errorMessage => ({
   type: ProductActionTypes.ADD_PRODUCT_FAILURE,
   payload: errorMessage
@@ -17,7 +16,6 @@ const addProductRequest = () => ({
   type: ProductActionTypes.ADD_PRODUCT_REQUEST
 });
 
-// Dispatchers
 export const addProductToList = (product, listId) => dispatch => {
   dispatch(addProductRequest());
   postData(`${ENDPOINT_URL}/shopping-lists/add-product`, { product, listId })
