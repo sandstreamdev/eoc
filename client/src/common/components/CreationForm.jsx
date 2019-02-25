@@ -7,11 +7,11 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 class CreationForm extends PureComponent {
   constructor(props) {
     super(props);
-    const { initialTitle, initialDescription } = this.props;
+    const { defaultDescription, defaultName } = this.props;
 
     this.state = {
-      description: initialDescription || '',
-      title: initialTitle || ''
+      description: defaultDescription || '',
+      name: defaultName || ''
     };
   }
 
@@ -38,25 +38,25 @@ class CreationForm extends PureComponent {
 
     nodeName === 'TEXTAREA'
       ? this.setState({ description: value })
-      : this.setState({ title: value });
+      : this.setState({ name: value });
   };
 
   handleFormSubmission = event => {
     event.preventDefault();
-    const { description, title } = this.state;
+    const { description, name } = this.state;
     const { onSubmit } = this.props;
 
-    onSubmit(title, description);
+    onSubmit(name, description);
 
     this.setState({
       description: '',
-      title: ''
+      name: ''
     });
   };
 
   render() {
     const { label, onHide, type } = this.props;
-    const { description, title } = this.state;
+    const { description, name } = this.state;
 
     return (
       <Fragment>
@@ -71,10 +71,10 @@ class CreationForm extends PureComponent {
             <input
               className="creation-form__input"
               onChange={this.handleValueChange}
-              placeholder="Title"
+              placeholder="Name"
               required={type === 'menu'}
               type="text"
-              value={title}
+              value={name}
             />
           </label>
           <label className="creation-form__label">
@@ -99,8 +99,8 @@ class CreationForm extends PureComponent {
 }
 
 CreationForm.propTypes = {
-  initialDescription: PropTypes.string,
-  initialTitle: PropTypes.string,
+  defaultDescription: PropTypes.string,
+  defaultName: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
 

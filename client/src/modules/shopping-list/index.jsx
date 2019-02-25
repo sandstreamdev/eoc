@@ -124,8 +124,8 @@ class ShoppingList extends Component {
               label="Edit list"
               onSubmit={this.updateListHandler(listId)}
               type="modal"
-              initialTitle={name}
-              initialDescription={description}
+              defaultName={name}
+              defaultDescription={description}
             />
           </ModalBox>
         )}
