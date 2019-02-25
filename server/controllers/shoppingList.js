@@ -78,20 +78,52 @@ const deleteListById = (req, resp) => {
 };
 
 const getShoppingListsMetaData = (req, resp) => {
+  const { cohortId } = req.params;
+
+  if (cohortId) {
+    return ShoppingList.find(
+      {
+        cohortId,
+        $or: [
+          { adminIds: req.user._id },
+          { ordererIds: req.user._id },
+          { purchaserIds: req.user._id }
+        ]
+      },
+      '_id name description cohortId',
+      (err, docs) => {
+        if (!docs) {
+          return resp
+            .status(404)
+            .send({ message: 'No list in current cohort!' });
+        }
+
+        return err
+          ? resp.status(404).send({ message: err.message })
+          : resp.status(200).json(docs);
+      }
+    );
+  }
+
   ShoppingList.find(
     {
       $or: [
         { adminIds: req.user._id },
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
-      ]
+      ],
+      cohortId: { $eq: null }
     },
     '_id name description',
     { sort: { created_at: -1 } },
     (err, docs) => {
-      err
+      if (!docs) {
+        return resp.status(404).send({ message: 'No lists found!' });
+      }
+
+      return err
         ? resp.status(404).send({ message: err.message })
-        : resp.status(200).send(docs);
+        : resp.status(200).json(docs);
     }
   );
 };
@@ -141,16 +173,16 @@ const getProductsForGivenList = (req, resp) => {
     },
     'products',
     (err, documents) => {
-      if (!documents) {
-        return resp.status(404).send('Products not found for given list id!');
-      }
-
       if (err) {
         return resp.status(404).send({ message: err.message });
       }
 
-      const { products } = documents[0];
-      resp.status(200).json(products);
+      if (documents && documents.length > 0) {
+        const { products } = documents[0];
+        return resp.status(200).json(products);
+      }
+
+      return resp.status(404).send('Products not found for given list id!');
     }
   );
 };

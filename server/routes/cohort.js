@@ -5,11 +5,11 @@ const router = express.Router();
 const {
   createCohort,
   getCohortById,
-  getCohorts
+  getCohortsMetaData
 } = require('../controllers/cohort');
 const { authorize } = require('../middleware/authorize');
 
-router.get('/', authorize, getCohorts);
+router.get('/meta-data', authorize, getCohortsMetaData);
 router.get('/:id', authorize, getCohortById);
 router.post('/create', authorize, createCohort);
 

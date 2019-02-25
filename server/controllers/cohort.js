@@ -19,15 +19,19 @@ const createCohort = (req, resp) => {
   });
 };
 
-const getCohorts = (req, resp) => {
+const getCohortsMetaData = (req, resp) => {
   Cohort.find(
     {
       $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }]
     },
-    null,
+    '_id name description',
     { sort: { createdAt: -1 } },
     (err, cohorts) => {
-      err
+      if (!cohorts) {
+        return resp.status(404).send({ message: 'No cohorts found!' });
+      }
+
+      return err
         ? resp.status(400).send({ message: err.message })
         : resp.status(200).send(cohorts);
     }
@@ -48,6 +52,6 @@ const getCohortById = (req, resp) => {
 
 module.exports = {
   createCohort,
-  getCohorts,
-  getCohortById
+  getCohortById,
+  getCohortsMetaData
 };

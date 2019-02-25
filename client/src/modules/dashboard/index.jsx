@@ -12,12 +12,15 @@ import {
   createShoppingList,
   fetchShoppingListsMetaData
 } from 'modules/shopping-list/model/actions';
-import { createCohort, fetchCohorts } from 'modules/cohort/model/actions';
+import {
+  createCohort,
+  fetchCohortsMetaData
+} from 'modules/cohort/model/actions';
 import { getShoppingLists } from 'modules/shopping-list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import CardItem from './CardItem';
+import CardItem from 'common/components/CardItem';
 
 class Dashboard extends Component {
   state = {
@@ -26,10 +29,10 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    const { fetchShoppingListsMetaData, fetchCohorts } = this.props;
+    const { fetchCohortsMetaData, fetchShoppingListsMetaData } = this.props;
 
+    fetchCohortsMetaData();
     fetchShoppingListsMetaData();
-    fetchCohorts();
   }
 
   hideForms = () => {
@@ -148,9 +151,11 @@ class Dashboard extends Component {
               Cohorts
             </h2>
             <ul className="dashboard__list">
-              {cohorts.map(cohort => (
+              {_map(cohorts, cohort => (
                 <li className="dashboard__list-item" key={cohort._id}>
-                  <CardItem name={cohort.name} />
+                  <Link to={`cohort/${cohort._id}`}>
+                    <CardItem name={cohort.name} />
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -162,13 +167,13 @@ class Dashboard extends Component {
 }
 
 Dashboard.propTypes = {
-  cohorts: PropTypes.arrayOf(PropTypes.object),
+  cohorts: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
   shoppingLists: PropTypes.objectOf(PropTypes.object),
 
   createCohort: PropTypes.func.isRequired,
   createShoppingList: PropTypes.func.isRequired,
-  fetchCohorts: PropTypes.func.isRequired,
+  fetchCohortsMetaData: PropTypes.func.isRequired,
   fetchShoppingListsMetaData: PropTypes.func.isRequired
 };
 
@@ -180,5 +185,10 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { createCohort, createShoppingList, fetchShoppingListsMetaData, fetchCohorts }
+  {
+    createCohort,
+    createShoppingList,
+    fetchShoppingListsMetaData,
+    fetchCohortsMetaData
+  }
 )(Dashboard);

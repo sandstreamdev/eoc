@@ -132,6 +132,24 @@ export const fetchShoppingListsMetaData = () => dispatch => {
     });
 };
 
+export const fetchListMetaData = cohortId => dispatch => {
+  dispatch(fetchShoppingListsMetaDataRequest());
+  getData(`${ENDPOINT_URL}/shopping-lists/meta-data/${cohortId}`)
+    .then(resp => resp.json())
+    .then(json => {
+      const dataMap = _keyBy(json, '_id');
+      dispatch(fetchShoppingListMetaDataSuccess(dataMap));
+    })
+    .catch(err => {
+      dispatch(fetchShoppingListsMetaDataFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, fetching lists failed..."
+      );
+    });
+};
+
 export const deleteList = id => dispatch => {
   dispatch(deleteListRequest());
   return deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)

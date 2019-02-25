@@ -1,3 +1,5 @@
+import _keyBy from 'lodash/keyBy';
+
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { CohortActionTypes } from './actionTypes';
 import { getData, postData } from 'common/utils/fetchMethods';
@@ -19,24 +21,24 @@ const createCohortRequest = () => ({
   type: CohortActionTypes.CREATE_COHORT_REQUEST
 });
 
-const fetchCohortsSuccess = data => ({
-  type: CohortActionTypes.FETCH_COHORTS_SUCCESS,
+const fetchCohortsMetaDataSuccess = data => ({
+  type: CohortActionTypes.FETCH_META_DATA_SUCCESS,
   payload: data
 });
 
-const fetchCohortsFailure = errMessage => ({
-  type: CohortActionTypes.FETCH_COHORTS_FAILURE,
+const fetchCohortsMetaDataFailure = errMessage => ({
+  type: CohortActionTypes.FETCH_META_DATA_FAILURE,
   errMessage
 });
 
-const fetchCohortsRequest = () => ({
-  type: CohortActionTypes.FETCH_COHORTS_REQUEST
+const fetchCohortsMetaDataRequest = () => ({
+  type: CohortActionTypes.FETCH_META_DATA_REQUEST
 });
 
 // Dispatchers
 export const createCohort = (name, description, adminId) => dispatch => {
   dispatch(createCohortRequest());
-  postData(`${ENDPOINT_URL}/cohorts/create`, {
+  return postData(`${ENDPOINT_URL}/cohorts/create`, {
     name,
     description,
     adminId
@@ -53,17 +55,20 @@ export const createCohort = (name, description, adminId) => dispatch => {
     });
 };
 
-export const fetchCohorts = () => dispatch => {
-  dispatch(fetchCohortsRequest());
-  getData(`${ENDPOINT_URL}/cohorts`)
+export const fetchCohortsMetaData = () => dispatch => {
+  dispatch(fetchCohortsMetaDataRequest());
+  return getData(`${ENDPOINT_URL}/cohorts/meta-data`)
     .then(resp => resp.json())
-    .then(json => dispatch(fetchCohortsSuccess(json)))
+    .then(json => {
+      const dataMap = _keyBy(json, '_id');
+      dispatch(fetchCohortsMetaDataSuccess(dataMap));
+    })
     .catch(err => {
-      dispatch(fetchCohortsFailure(err.message));
+      dispatch(fetchCohortsMetaDataFailure(err.message));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching cohorts failed..."
+        err.message || "Oops, we're sorry, fetching cohorts meta data failed..."
       );
     });
 };

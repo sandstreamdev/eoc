@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { UserPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addProductToList } from './model/actions';
 
 class InputBar extends Component {
@@ -66,11 +66,7 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string
-    })
-  }).isRequired,
+  match: RouterMatchPropType.isRequired,
 
   addProductToList: PropTypes.func.isRequired
 };
