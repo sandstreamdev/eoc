@@ -8,14 +8,14 @@ import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 
-const GridList = ({ icon, items, message, name }) => (
+const GridList = ({ icon, items, placeholder, name }) => (
   <div className="grid-list">
     <h2 className="grid-list__heading">
       {icon}
       {name}
     </h2>
     {_isEmpty(items) ? (
-      <MessageBox message={message} type={MessageType.INFO} />
+      <MessageBox message={placeholder} type={MessageType.INFO} />
     ) : (
       <ul className="grid-list__list">
         {_map(items, item => (
@@ -34,7 +34,7 @@ GridList.propTypes = {
   icon: PropTypes.node.isRequired,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   name: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired
+  placeholder: PropTypes.string.isRequired
 };
 
 export default GridList;

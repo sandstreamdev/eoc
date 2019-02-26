@@ -24,14 +24,14 @@ class Archived extends PureComponent {
         <div className="wrapper">
           <GridList
             icon={<ListIcon />}
-            name="Archived Lists"
             items={lists}
-            message="There are no archived lists!"
+            name="Archived Lists"
+            placeholder="There are no archived lists!"
           />
           <GridList
             icon={<ListIcon />}
             name="Archived Cohorts"
-            message="There are no archived cohorts!"
+            placeholder="There are no archived cohorts!"
           />
         </div>
       </Fragment>

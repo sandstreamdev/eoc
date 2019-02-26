@@ -136,15 +136,15 @@ class Dashboard extends Component {
           <div className="dashboard">
             <GridList
               icon={<ListIcon />}
-              name="Lists"
               items={shoppingLists}
-              message="There are no lists yet!"
+              name="Lists"
+              placeholder="There are no lists yet!"
             />
             <GridList
               icon={<CohortIcon />}
-              name="Cohorts"
               items={cohorts}
-              message="There are no cohorts yet!"
+              name="Cohorts"
+              placeholder="There are no cohorts yet!"
             />
           </div>
         </div>

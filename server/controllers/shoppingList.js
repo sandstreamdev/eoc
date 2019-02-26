@@ -110,9 +110,13 @@ const getArchivedListsMetaData = (req, resp) => {
     '_id name description isArchived',
     { sort: { created_at: -1 } },
     (err, docs) => {
-      err
-        ? resp.status(404).send({ message: err.message })
-        : resp.status(200).send(docs);
+      if (err) {
+        return resp.status(404).send({ message: err.message });
+      }
+      if (!docs) {
+        return resp.status(404).send('There is no archived lists!');
+      }
+      resp.status(200).send(docs);
     }
   );
 };
