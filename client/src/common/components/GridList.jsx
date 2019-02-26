@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _map from 'lodash/map';
@@ -9,27 +9,25 @@ import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 
 const GridList = ({ icon, items, message, name }) => (
-  <Fragment>
-    <div className="grid-list">
-      <h2 className="grid-list__heading">
-        {icon}
-        {name}
-      </h2>
-      {_isEmpty(items) ? (
-        <MessageBox message={message} type={MessageType.INFO} />
-      ) : (
-        <ul className="grid-list__list">
-          {_map(items, item => (
-            <li className="grid-list__item" key={item._id}>
-              <Link to={`list/${item._id}`}>
-                <CardItem name={item.name} />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  </Fragment>
+  <div className="grid-list">
+    <h2 className="grid-list__heading">
+      {icon}
+      {name}
+    </h2>
+    {_isEmpty(items) ? (
+      <MessageBox message={message} type={MessageType.INFO} />
+    ) : (
+      <ul className="grid-list__list">
+        {_map(items, item => (
+          <li className="grid-list__item" key={item._id}>
+            <Link to={`list/${item._id}`}>
+              <CardItem name={item.name} />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
 );
 
 GridList.propTypes = {
