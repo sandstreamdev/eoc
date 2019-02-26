@@ -5,10 +5,15 @@ import classNames from 'classnames';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class CreationForm extends PureComponent {
-  state = {
-    description: '',
-    title: ''
-  };
+  constructor(props) {
+    super(props);
+    const { defaultDescription, defaultName } = this.props;
+
+    this.state = {
+      description: defaultDescription || '',
+      name: defaultName || ''
+    };
+  }
 
   componentDidMount() {
     document.addEventListener('keydown', this.escapeListener);
@@ -33,25 +38,25 @@ class CreationForm extends PureComponent {
 
     nodeName === 'TEXTAREA'
       ? this.setState({ description: value })
-      : this.setState({ title: value });
+      : this.setState({ name: value });
   };
 
   handleFormSubmission = event => {
     event.preventDefault();
-    const { description, title } = this.state;
+    const { description, name } = this.state;
     const { onSubmit } = this.props;
 
-    onSubmit(title, description);
+    onSubmit(name, description);
 
     this.setState({
       description: '',
-      title: ''
+      name: ''
     });
   };
 
   render() {
-    const { label, onHide, type } = this.props;
-    const { description, title } = this.state;
+    const { defaultName, label, onHide, type } = this.props;
+    const { description, name } = this.state;
 
     return (
       <Fragment>
@@ -66,10 +71,10 @@ class CreationForm extends PureComponent {
             <input
               className="creation-form__input"
               onChange={this.handleValueChange}
-              placeholder="Title"
+              placeholder="Name"
               required={type === 'menu'}
               type="text"
-              value={title}
+              value={name}
             />
           </label>
           <label className="creation-form__label">
@@ -84,7 +89,7 @@ class CreationForm extends PureComponent {
           <input
             className="creation-form__submit"
             type="submit"
-            value="Create"
+            value={defaultName ? 'Update' : 'Create'}
           />
         </form>
         <Overlay onClick={onHide} type={OverlayStyleType.LIGHT} />
@@ -94,6 +99,8 @@ class CreationForm extends PureComponent {
 }
 
 CreationForm.propTypes = {
+  defaultDescription: PropTypes.string,
+  defaultName: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
 

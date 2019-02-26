@@ -129,6 +129,8 @@ class ShoppingList extends Component {
         {showUpdateForm && (
           <ModalBox onCancel={this.hideUpdateForm}>
             <CreationForm
+              defaultDescription={description}
+              defaultName={name}
               label="Edit list"
               onSubmit={this.updateListHandler(listId)}
               type="modal"
