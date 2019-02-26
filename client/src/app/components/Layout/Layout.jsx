@@ -6,6 +6,7 @@ import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import ShoppingList from 'modules/shopping-list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
+import Archived from 'modules/archived';
 import AuthBox from 'modules/authorization/AuthBox';
 import { setCurrentUser } from 'modules/authorization/model/actions';
 import { UserPropType } from 'common/constants/propTypes';
@@ -51,6 +52,7 @@ export class Layout extends Component {
           <Route component={Dashboard} path="/dashboard" />
           <Route component={Cohort} path="/cohort/:id(\w+)" />
           <Route component={ShoppingList} path="/list/:id(\w+)" />
+          <Route component={Archived} path="/archived" />
           <Route component={Dashboard} />
         </Switch>
         <Footer />

@@ -129,6 +129,30 @@ const getShoppingListsMetaData = (req, resp) => {
   );
 };
 
+const getArchivedListsMetaData = (req, resp) => {
+  ShoppingList.find(
+    {
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ],
+      isArchived: true
+    },
+    '_id name description isArchived',
+    { sort: { created_at: -1 } },
+    (err, docs) => {
+      if (err) {
+        return resp.status(404).send({ message: err.message });
+      }
+      if (!docs) {
+        return resp.status(404).send('There is no archived lists!');
+      }
+      resp.status(200).send(docs);
+    }
+  );
+};
+
 const addProductToList = (req, resp) => {
   const {
     product: { name, isOrdered, authorName, authorId, voterIds },
@@ -269,6 +293,7 @@ module.exports = {
   createNewList,
   deleteListById,
   getAllShoppingLists,
+  getArchivedListsMetaData,
   getListData,
   getShoppingListById,
   getShoppingListsMetaData,
