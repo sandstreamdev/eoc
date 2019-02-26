@@ -26,8 +26,7 @@ class ShoppingList extends Component {
   };
 
   componentDidMount() {
-    const { list } = this.props;
-    if (!list || (list && !list.isArchived)) {
+    if (this.checkIfArchived()) {
       this.fetchData();
     }
   }
@@ -75,6 +74,11 @@ class ShoppingList extends Component {
     updateList(listId, dataToUpdate);
     this.hideUpdateForm();
   };
+
+  checkIfArchived() {
+    const { list } = this.props;
+    return !list || (list && !list.isArchived);
+  }
 
   render() {
     const { showDialogBox, showUpdateForm } = this.state;
