@@ -79,6 +79,18 @@ const fetchShoppingListsMetaDataRequest = () => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_REQUEST
 });
 
+const fetchArchivedListMetaDataSuccess = data => ({
+  type: ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
+  payload: data
+});
+const fetchArchivedListsMetaDataFailure = errMessage => ({
+  type: ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
+  payload: errMessage
+});
+const fetchArchivedListsMetaDataRequest = () => ({
+  type: ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST
+});
+
 const archiveListSuccess = data => ({
   type: ShoppingListActionTypes.ARCHIVE_SUCCESS,
   payload: data
@@ -137,9 +149,9 @@ export const createShoppingList = (name, description, adminId) => dispatch => {
     });
 };
 
-export const fetchShoppingListsMetaData = archived => dispatch => {
+export const fetchShoppingListsMetaData = () => dispatch => {
   dispatch(fetchShoppingListsMetaDataRequest());
-  return getData(`${ENDPOINT_URL}/shopping-lists/meta-data/${archived}`)
+  return getData(`${ENDPOINT_URL}/shopping-lists/meta-data`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
@@ -147,6 +159,24 @@ export const fetchShoppingListsMetaData = archived => dispatch => {
     })
     .catch(err => {
       dispatch(fetchShoppingListsMetaDataFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, fetching lists failed..."
+      );
+    });
+};
+
+export const fetchArchivedListsMetaData = () => dispatch => {
+  dispatch(fetchArchivedListsMetaDataRequest());
+  return getData(`${ENDPOINT_URL}/shopping-lists/archived`)
+    .then(resp => resp.json())
+    .then(json => {
+      const dataMap = _keyBy(json, '_id');
+      dispatch(fetchArchivedListMetaDataSuccess(dataMap));
+    })
+    .catch(err => {
+      dispatch(fetchArchivedListsMetaDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
