@@ -55,7 +55,7 @@ class CreationForm extends PureComponent {
   };
 
   render() {
-    const { label, onHide, type } = this.props;
+    const { defaultName, label, onHide, type } = this.props;
     const { description, name } = this.state;
 
     return (
@@ -89,7 +89,7 @@ class CreationForm extends PureComponent {
           <input
             className="creation-form__submit"
             type="submit"
-            value="Create"
+            value={defaultName ? 'Update' : 'Create'}
           />
         </form>
         <Overlay onClick={onHide} type={OverlayStyleType.LIGHT} />
