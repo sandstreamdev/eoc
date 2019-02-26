@@ -65,6 +65,13 @@ body{
 :root {
 	--main-bg-color:#fca729; 
 	--secondary-bg-color: #e1d536;
+	--dark-orange: #ef9b1f;
+	--gray-light: #e6e7e8;
+	--gray-medium: #d1d3d4;
+	--gray-dark: #b1b3b6;
+	--text-black: #000;
+	--text-normal: #b6b6b6;
+	--text-white: #fff;
 }
 
 .heading {
@@ -98,7 +105,7 @@ body{
 }
 
 .gray-bg {
-	background:#efefef;
+	background:var(--gray-light);
 }
 
 .dark-section .heading span{
@@ -308,7 +315,11 @@ free trial Sign up
 
 .grop .form-control, .grop .btn {
   height: 45px;
-  width: 36.6%;
+  width: 33.3%;
+}
+
+.grop p a { 
+	color: var(--main-bg-color);
 }
 
 .grop .input-group{
@@ -316,21 +327,22 @@ free trial Sign up
 	-webkit-box-shadow: 0px 8px 51px -4px rgba(144,155,165,0.4);
 	-moz-box-shadow: 0px 8px 51px -4px rgba(144,155,165,0.4);
 	box-shadow: 0px 8px 51px -4px rgba(144,155,165,0.4);
+	display: flex;
+	align-items: center;
 }
 
 .grop .btn {
-  background: #27ae5f;
+  background: var(--main-bg-color);
   color: #fff;
   font-size: 13px;
   font-weight: 400;
-  margin-left: -75px;
   position: relative;
   text-transform: uppercase;
   z-index: 3!important;
 }
 
 .grop .btn:hover {
-  background: #239c55;
+ 	opacity: 0.8;
   transition:all ease .7s;
 }
 
@@ -341,13 +353,6 @@ free trial Sign up
 	
 }
 
-.text1{
-	
-}
-
-.text2{
-	
-}
 
 .grop{
 	margin-top:45px;
@@ -384,9 +389,12 @@ features
 }
 
 .f-box:hover{
-	background:#239c55;
+	background: var(--dark-orange);
 	transition:all ease .7s;
 	border-radius:4px;
+	-webkit-box-shadow: 0px 20px 51px -1px rgba(144,155,165,0.29);
+	-moz-box-shadow: 0px 20px 51px -1px rgba(144,155,165,0.29);
+	box-shadow: 0px 20px 51px -1px rgba(144,155,165,0.29);
 }
 
 .f-box a{
@@ -406,7 +414,7 @@ features
 .f-box p{
 	padding-top:20px;
 	transition: all 0.1s ease;
-	color:#cee8d6;
+	color:#FFFFFF;
 
 }
 .div{
@@ -2473,7 +2481,7 @@ Responsive CSS for all sections
 		height:5px;
 		margin-bottom:5px;
 		display:block;
-		background:#27ae5f;
+		background:var(--main-bg-color);
 	}
 	.menu{
 		background:rgb(59,59,59);
@@ -2573,8 +2581,15 @@ Responsive CSS for all sections
 	box-shadow: 0px 8px 51px -4px rgba(144,155,165,0.4);
 	}
 	.grop .input-group {
-	box-shadow:none;
+		box-shadow:none;
+		flex-direction: column;
 	}
+
+	.form-control {
+		width: 100%;
+		margin-bottom: 5px;
+	}
+
 	.text2{
 		margin:15px 0!important;
 	}
