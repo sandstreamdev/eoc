@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import _map from 'lodash/map';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
@@ -18,7 +16,7 @@ import { getShoppingLists } from 'modules/shopping-list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import CardItem from './CardItem';
+import GridList from 'common/components/GridList';
 
 class Dashboard extends Component {
   state = {
@@ -136,30 +134,18 @@ class Dashboard extends Component {
         </Toolbar>
         <div className="wrapper">
           <div className="dashboard">
-            <h2 className="dashboard__heading">
-              <ListIcon />
-              Lists
-            </h2>
-            <ul className="dashboard__list">
-              {_map(shoppingLists, item => (
-                <li className="dashboard__list-item" key={item._id}>
-                  <Link to={`list/${item._id}`}>
-                    <CardItem name={item.name} />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <h2 className="dashboard__heading">
-              <CohortIcon />
-              Cohorts
-            </h2>
-            <ul className="dashboard__list">
-              {cohorts.map(cohort => (
-                <li className="dashboard__list-item" key={cohort._id}>
-                  <CardItem name={cohort.name} />
-                </li>
-              ))}
-            </ul>
+            <GridList
+              icon={<ListIcon />}
+              name="Lists"
+              items={shoppingLists}
+              message="There are no lists yet!"
+            />
+            <GridList
+              icon={<CohortIcon />}
+              name="Cohorts"
+              items={cohorts}
+              message="There are no cohorts yet!"
+            />
           </div>
         </div>
       </Fragment>

@@ -1,20 +1,18 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import _map from 'lodash/map';
 
 import Toolbar from 'common/components/Toolbar';
-import { fetchShoppingListsMetaData } from 'modules/shopping-list/model/actions';
+import { fetchArchivedListsMetaData } from 'modules/shopping-list/model/actions';
 import { getShoppingLists } from 'modules/shopping-list/model/selectors';
-import CardItem from '../dashboard/CardItem';
 import { ListIcon } from 'assets/images/icons';
+import GridList from 'common/components/GridList';
 
 class Archived extends PureComponent {
   componentDidMount() {
-    const { fetchShoppingListsMetaData } = this.props;
+    const { fetchArchivedListsMetaData } = this.props;
 
-    fetchShoppingListsMetaData('archived');
+    fetchArchivedListsMetaData();
   }
 
   render() {
@@ -24,21 +22,17 @@ class Archived extends PureComponent {
       <Fragment>
         <Toolbar />
         <div className="wrapper">
-          <div className="archived">
-            <h2 className="archived__heading">
-              <ListIcon />
-              Archived Lists
-            </h2>
-            <ul className="archived__list">
-              {_map(lists, item => (
-                <li className="archived__list-item" key={item._id}>
-                  <Link to={`list/${item._id}`}>
-                    <CardItem name={item.name} />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <GridList
+            icon={<ListIcon />}
+            name="Archived Lists"
+            items={lists}
+            message="There are no archived lists!"
+          />
+          <GridList
+            icon={<ListIcon />}
+            name="Archived Cohorts"
+            message="There are no archived cohorts!"
+          />
         </div>
       </Fragment>
     );
@@ -48,7 +42,7 @@ class Archived extends PureComponent {
 Archived.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
 
-  fetchShoppingListsMetaData: PropTypes.func.isRequired
+  fetchArchivedListsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -57,5 +51,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { fetchShoppingListsMetaData }
+  { fetchArchivedListsMetaData }
 )(Archived);

@@ -78,12 +78,6 @@ const deleteListById = (req, resp) => {
 };
 
 const getShoppingListsMetaData = (req, resp) => {
-  const { archived } = req.params;
-  const queriedFields =
-    archived === 'archived'
-      ? '_id name description isArchived'
-      : '_id name description';
-
   ShoppingList.find(
     {
       $or: [
@@ -91,9 +85,29 @@ const getShoppingListsMetaData = (req, resp) => {
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
       ],
-      isArchived: archived === 'archived'
+      isArchived: false
     },
-    queriedFields,
+    '_id name description',
+    { sort: { created_at: -1 } },
+    (err, docs) => {
+      err
+        ? resp.status(404).send({ message: err.message })
+        : resp.status(200).send(docs);
+    }
+  );
+};
+
+const getArchivedListsMetaData = (req, resp) => {
+  ShoppingList.find(
+    {
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ],
+      isArchived: true
+    },
+    '_id name description isArchived',
     { sort: { created_at: -1 } },
     (err, docs) => {
       err
@@ -241,6 +255,7 @@ module.exports = {
   createNewList,
   deleteListById,
   getAllShoppingLists,
+  getArchivedListsMetaData,
   getListData,
   getShoppingListById,
   getShoppingListsMetaData,

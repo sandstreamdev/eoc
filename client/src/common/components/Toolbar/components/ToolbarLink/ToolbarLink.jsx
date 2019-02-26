@@ -8,8 +8,8 @@ const ToolbarLink = ({ additionalIconSrc, mainIcon, path }) => (
       {mainIcon}
       {additionalIconSrc && (
         <img
-          alt="Plus icon"
-          className="toolbar-link__icon-plus"
+          alt="Icon"
+          className="toolbar-link__additional-icon"
           src={additionalIconSrc}
         />
       )}
