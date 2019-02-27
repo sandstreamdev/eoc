@@ -137,6 +137,7 @@ const getArchivedListsMetaData = (req, resp) => {
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
       ],
+      cohortId: { $eq: null },
       isArchived: true
     },
     '_id name description isArchived',
