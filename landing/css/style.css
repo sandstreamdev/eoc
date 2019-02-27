@@ -767,7 +767,7 @@ screens - 3d style gallery
 }
 
 .slide1 span {
-    color: #27ae5f;
+    color: var(--main-bg-color);
     font-size: 15px;
     display: block;
     font-weight:700;
@@ -949,7 +949,7 @@ box-shadow: 0px 20px 51px -1px rgba(144,155,165,0.29);
 
 .plan-ttl span{
 	display:block;
-	color:#27ae5f;
+	color:var(--main-bg-color);
 	font-size:17px;
 	text-transform:uppercase;
 	font-weight:700;
@@ -965,7 +965,7 @@ box-shadow: 0px 20px 51px -1px rgba(144,155,165,0.29);
 }
 
 .prefered {
-	background:#02dbc0;
+	background: var(--gray-medium);
 }
 
 .plan-ttl h3{
@@ -1028,8 +1028,8 @@ box-shadow: 0px 20px 51px -1px rgba(144,155,165,0.29);
 }
 .plan-btn a{
 	background:#fff;
-	border:1px solid #27ae5f;
-	color:#27ae5f;
+	border:1px solid var(--main-bg-color);
+	color:var(--main-bg-color);
 	font-size:13px;
 	font-weight:700;
 	text-transform:uppercase;
@@ -1045,7 +1045,7 @@ box-shadow: 0px 20px 51px -1px rgba(144,155,165,0.29);
 	text-align:center;
 }
 .plan-btn a:hover{
-		background:#27ae5f;
+		background:var(--main-bg-color);
 		color:#fff;
 }
 .section10 .module:hover{
@@ -1100,7 +1100,7 @@ box-shadow: 0px 20px 51px -1px rgba(144,155,165,0.29);
 }
 .team-ttl span{
 	font-weight:600;
-	color:#27ae5f;
+	color:var(--main-bg-color);
 	font-size:18px;
 }
 .team-box .team-ttl p{
