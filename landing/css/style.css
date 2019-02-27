@@ -699,7 +699,7 @@ Dashboard
 	color:#fff!important;
 	text-transform:uppercase;
 	text-align:center;
-	background:#27ae5f;
+	background:var(--main-bg-color);
 	padding:12px 40px;
 	display:inline-block;
 	font-style:13px;
@@ -712,7 +712,7 @@ box-shadow: 0px 8px 51px -4px rgba(144,155,165,0.73);
 
 }
 .acc:hover{
-	background:#239c55;
+	opacity: 0.8;
 	transition:all ease .7s;
 }
 /* End Dashboard */
