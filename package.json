@@ -97,11 +97,11 @@
   },
   "lint-staged": {
     "linters": {
-      "*.{js,jsx,json,scss,css,md}, !*.min.js.": [
+      "*.{js,jsx,json,scss,css,md}, !*.min.js": [
         "prettier --write",
         "git add"
       ],
-      "*.{js,jsx}, !*.min.js.": [
+      "*.{js,jsx}, !*.min.js": [
         "eslint -c .eslintrc --fix",
         "echo test",
         "git add"
