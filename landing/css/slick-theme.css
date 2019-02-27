@@ -1,7 +1,6 @@
 @charset 'UTF-8';
 /* Slider */
 .slick-loading .slick-list {
-  background: #fff url('./ajax-loader.gif') center center no-repeat;
 }
 
 /* Icons */
@@ -21,12 +20,9 @@
 .slick-next {
   font-size: 0;
   line-height: 0;
-
   position: absolute;
   top: 50%;
-
   display: block;
-
   width: 20px;
   height: 20px;
   padding: 0;
@@ -65,10 +61,8 @@
   font-family: 'slick';
   font-size: 20px;
   line-height: 1;
-
   opacity: 0.75;
   color: white;
-
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -120,14 +114,11 @@
 }
 .slick-dots li {
   position: relative;
-
   display: inline-block;
-
   width: 20px;
   height: 20px;
   margin: 0 5px;
   padding: 0;
-
   cursor: pointer;
 }
 .slick-dots li button {
@@ -171,6 +162,4 @@
 .slick-dots li.slick-active button:before {
   opacity: 1;
   color: #fca729;
-}
-.slick-dots {
 }

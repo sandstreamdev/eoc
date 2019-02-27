@@ -15,7 +15,7 @@
     "lint": "npm run lint:client && npm run lint:server",
     "lint:client": "eslint -c .eslintrc --ext \".jsx,.js\" \"client/\" --fix",
     "lint:server": "eslint -c .eslintrc --ext \".js\" \"server/\" --fix",
-    "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js",
+    "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js && prettier --config .prettierrc --write landing/**/*.css",
     "test": "jest -runInBand"
   },
   "author": "Sandstream Development",
@@ -97,11 +97,11 @@
   },
   "lint-staged": {
     "linters": {
-      "*.{js,jsx,json,scss,md}": [
+      "*.{js,jsx,json,scss,css,md}, !*.min.js.": [
         "prettier --write",
         "git add"
       ],
-      "*.{js,jsx}": [
+      "*.{js,jsx}, !*.min.js.": [
         "eslint -c .eslintrc --fix",
         "echo test",
         "git add"

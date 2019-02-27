@@ -4,7 +4,7 @@
 ===================================*/
 .bx-wrapper {
   position: relative;
-  margin-bottom:0px;
+  margin-bottom: 0px;
   padding: 0;
   *zoom: 1;
   -ms-touch-action: pan-y;
@@ -28,7 +28,6 @@ ul.bxslider {
 /** THEME
 ===================================*/
 .bx-wrapper {
-
 }
 .bx-wrapper .bx-pager,
 .bx-wrapper .bx-controls-auto {
@@ -39,7 +38,6 @@ ul.bxslider {
 /* LOADER */
 .bx-wrapper .bx-loading {
   min-height: 50px;
-  background: url('images/bx_loader.gif') center center no-repeat #ffffff;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -50,7 +48,7 @@ ul.bxslider {
 /* PAGER */
 .bx-wrapper .bx-pager {
   text-align: center;
-  font-size: .85em;
+  font-size: 0.85em;
   font-family: Arial;
   font-weight: bold;
   color: #666;
@@ -66,7 +64,7 @@ ul.bxslider {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  border:1px solid #fff;
+  border: 1px solid #fff;
 }
 .bx-wrapper .bx-pager.bx-default-pager a:hover,
 .bx-wrapper .bx-pager.bx-default-pager a.active,
@@ -86,7 +84,7 @@ ul.bxslider {
 }
 /* DIRECTION CONTROLS (NEXT / PREV) */
 .bx-wrapper .bx-prev {
-  left:-40px;
+  left: -40px;
   background: url(../images/leftaro.png) no-repeat 0 0;
 }
 .bx-wrapper .bx-prev:hover,
@@ -94,7 +92,7 @@ ul.bxslider {
   background-position: 0 0;
 }
 .bx-wrapper .bx-next {
-  right:-40px;
+  right: -40px;
   background: url(../images/rightaro.png) no-repeat 0 0;
 }
 
@@ -104,7 +102,7 @@ ul.bxslider {
   margin-top: -27px;
   outline: 0;
   width: 50px;
-  height:50px;
+  height: 50px;
   text-indent: -9999px;
   z-index: 1000;
 }
@@ -146,7 +144,7 @@ ul.bxslider {
 /* PAGER WITH AUTO-CONTROLS HYBRID LAYOUT */
 .bx-wrapper .bx-controls.bx-has-controls-auto.bx-has-pager .bx-pager {
   text-align: center;
-  width:100%;
+  width: 100%;
 }
 .bx-wrapper .bx-controls.bx-has-controls-auto.bx-has-pager .bx-controls-auto {
   right: 0;
@@ -165,6 +163,6 @@ ul.bxslider {
   color: #fff;
   font-family: Arial;
   display: block;
-  font-size: .85em;
+  font-size: 0.85em;
   padding: 10px;
 }
