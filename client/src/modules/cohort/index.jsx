@@ -7,15 +7,25 @@ import _isEmpty from 'lodash/isEmpty';
 
 import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
-import Toolbar from 'common/components/Toolbar';
+import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
 import { getLists } from 'modules/shopping-list/model/selectors';
-import { fetchListMetaData } from 'modules/shopping-list/model/actions';
-import { CohortIcon } from 'assets/images/icons';
+import {
+  createList,
+  fetchListMetaData
+} from 'modules/shopping-list/model/actions';
+import { CohortIcon, ListIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
+import CreationForm from 'common/components/CreationForm';
+import PlusIcon from 'assets/images/plus-solid.svg';
 
 class Cohort extends PureComponent {
+  state = {
+    listFormVisibility: false
+  };
+
   componentDidMount() {
     const {
       fetchListMetaData,
@@ -26,6 +36,42 @@ class Cohort extends PureComponent {
 
     fetchListMetaData(id);
   }
+
+  hideForm = () => {
+    this.setState({ listFormVisibility: false });
+  };
+
+  showForm = () => {
+    this.setState({ listFormVisibility: true });
+  };
+
+  handleListSubmission = (name, description) => {
+    const {
+      createList,
+      currentUser: { id: userId },
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+    createList(name, description, userId, cohortId);
+    this.hideForm();
+  };
+
+  renderCreateListForm = () => {
+    const { listFormVisibility } = this.state;
+    return (
+      listFormVisibility && (
+        <div className="cohort__form">
+          <CreationForm
+            label="Create new list"
+            onSubmit={this.handleListSubmission}
+            type="menu"
+            onHide={this.hideForm}
+          />
+        </div>
+      )
+    );
+  };
 
   render() {
     const { cohortDetails, lists } = this.props;
@@ -38,7 +84,15 @@ class Cohort extends PureComponent {
 
     return (
       <Fragment>
-        <Toolbar />
+        <Toolbar>
+          <ToolbarItem
+            additionalIconSrc={PlusIcon}
+            mainIcon={<ListIcon />}
+            onClick={this.showForm}
+          >
+            {this.renderCreateListForm()}
+          </ToolbarItem>
+        </Toolbar>
         <div className="wrapper">
           <div className="cohort">
             <h2 className="cohort__heading">
@@ -74,6 +128,8 @@ Cohort.propTypes = {
     name: PropTypes.string,
     description: PropTypes.string
   }),
+  createList: PropTypes.func.isRequired,
+  currentUser: UserPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
@@ -82,12 +138,13 @@ Cohort.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
   cohortDetails: getCohortDetails(state, ownProps.match.params.id),
+  currentUser: getCurrentUser(state),
   lists: getLists(state, ownProps.match.params.id)
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
-    { fetchListMetaData }
+    { createList, fetchListMetaData }
   )(Cohort)
 );

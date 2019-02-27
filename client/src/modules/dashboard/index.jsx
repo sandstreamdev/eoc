@@ -8,7 +8,7 @@ import PlusIcon from 'assets/images/plus-solid.svg';
 import EyeIcon from 'assets/images/eye-solid.svg';
 import CreationForm from 'common/components/CreationForm';
 import {
-  createShoppingList,
+  createList,
   fetchShoppingListsMetaData
 } from 'modules/shopping-list/model/actions';
 import {
@@ -61,10 +61,10 @@ class Dashboard extends Component {
 
   handleShoppingListSubmission = (title, description) => {
     const {
-      createShoppingList,
+      createList,
       currentUser: { id }
     } = this.props;
-    createShoppingList(title, description, id);
+    createList(title, description, id);
     this.hideForms();
   };
 
@@ -164,7 +164,7 @@ Dashboard.propTypes = {
   shoppingLists: PropTypes.objectOf(PropTypes.object),
 
   createCohort: PropTypes.func.isRequired,
-  createShoppingList: PropTypes.func.isRequired,
+  createList: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
   fetchShoppingListsMetaData: PropTypes.func.isRequired
 };
@@ -179,7 +179,7 @@ export default connect(
   mapStateToProps,
   {
     createCohort,
-    createShoppingList,
+    createList,
     fetchShoppingListsMetaData,
     fetchCohortsMetaData
   }

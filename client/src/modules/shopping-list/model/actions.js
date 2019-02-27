@@ -25,18 +25,18 @@ const fetchListDataRequest = () => ({
   type: ShoppingListActionTypes.FETCH_DATA_REQUEST
 });
 
-const createNewShoppingListSuccess = data => ({
-  type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_SUCCESS,
+const createListSuccess = data => ({
+  type: ShoppingListActionTypes.CREATE_LIST_SUCCESS,
   payload: data
 });
 
-const createNewShoppingListFailure = errMessage => ({
-  type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_FAILURE,
+const createListFailure = errMessage => ({
+  type: ShoppingListActionTypes.CREATE_LIST_FAILURE,
   payload: errMessage
 });
 
-const createNewShoppingListRequest = () => ({
-  type: ShoppingListActionTypes.CREATE_SHOPPING_LIST_REQUEST
+const createListRequest = () => ({
+  type: ShoppingListActionTypes.CREATE_LIST_REQUEST
 });
 
 const deleteListSuccess = id => ({
@@ -130,17 +130,23 @@ export const fetchListData = listId => dispatch => {
     });
 };
 
-export const createShoppingList = (name, description, adminId) => dispatch => {
-  dispatch(createNewShoppingListRequest());
+export const createList = (
+  name,
+  description,
+  adminId,
+  cohortId
+) => dispatch => {
+  dispatch(createListRequest());
   return postData(`${ENDPOINT_URL}/shopping-lists/create`, {
-    name,
+    adminId,
+    cohortId,
     description,
-    adminId
+    name
   })
     .then(resp => resp.json())
-    .then(json => dispatch(createNewShoppingListSuccess(json)))
+    .then(json => dispatch(createListSuccess(json)))
     .catch(err => {
-      dispatch(createNewShoppingListFailure());
+      dispatch(createListFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
