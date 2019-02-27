@@ -66,7 +66,7 @@
 .slick-slide {
   display: none;
   float: left;
-
+  outline: 0;
   height: 100%;
   min-height: 1px;
 }

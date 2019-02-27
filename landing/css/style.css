@@ -177,7 +177,7 @@ body {
   font-size: 14px;
 }
 .menu li a:hover {
-  border-bottom: 1px solid var(--text-normal);
+  border-bottom: 1px solid var(--main-bg-color);
 }
 
 .header {
@@ -1001,9 +1001,7 @@ pricing
   background: var(--main-bg-color);
   color: #fff;
 }
-.section10 .module:hover {
-  margin-top: -10px;
-}
+
 .pdtop {
   padding-top: 120px;
 }
@@ -1129,13 +1127,13 @@ Lest start yor project now
 
 .get {
   display: inline-block;
-  color: #000000;
+  color: var(--main-bg-color);
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   text-align: center;
   text-decoration: none !important;
-  background: #ffffff;
+  background: #fff;
   padding: 10px 40px;
   line-height: 25px;
 
@@ -1145,8 +1143,8 @@ Lest start yor project now
 }
 
 .get:hover {
-  color: #ffffff;
-  background: #27ae5f;
+  color: var(--main-bg-color);
+  opacity: 0.8;
   transition: all ease 0.5s;
 }
 
@@ -2383,7 +2381,8 @@ Responsive CSS for all sections
   }
 
   .menu li a {
-    color: var(--text-normal);
+    color: var(--main-bg-color);
+    text-decoration: none;
   }
 
   .logo {
@@ -2429,6 +2428,9 @@ Responsive CSS for all sections
     right: 0;
     text-align: left;
     margin-top: 30px;
+  }
+  .two-colom-imag {
+    margin-top: 20px;
   }
 }
 

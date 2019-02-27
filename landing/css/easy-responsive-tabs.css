@@ -40,6 +40,7 @@ h2.resp-accordion {
 .resp-tab-active {
   background: #fff !important;
   color: #fff !important;
+  border: 1px !important;
   /*border: 1px solid #5AB1D0 !important;
 	border-bottom: none;
 	margin-bottom: -1px !important;
@@ -137,7 +138,7 @@ h2.resp-tab-title:last-child {
   margin-top: 3px;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 12px solid #999999;
+  border-top: 12px solid #fff;
 }
 
 h2.resp-tab-active span.resp-arrow {
