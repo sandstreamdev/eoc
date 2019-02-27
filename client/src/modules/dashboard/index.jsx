@@ -81,14 +81,12 @@ class Dashboard extends Component {
     const { cohortFormVisibility } = this.state;
     return (
       cohortFormVisibility && (
-        <div className="dashboard__form">
-          <CreationForm
-            label="Create new cohort"
-            onSubmit={this.handleCohortSubmission}
-            type="menu"
-            onHide={this.hideForms}
-          />
-        </div>
+        <CreationForm
+          label="Create new cohort"
+          onSubmit={this.handleCohortSubmission}
+          type="menu"
+          onHide={this.hideForms}
+        />
       )
     );
   };
@@ -97,14 +95,12 @@ class Dashboard extends Component {
     const { shoppingFormVisibility } = this.state;
     return (
       shoppingFormVisibility && (
-        <div className="dashboard__form">
-          <CreationForm
-            label="Create new shopping list"
-            onSubmit={this.handleShoppingListSubmission}
-            type="menu"
-            onHide={this.hideForms}
-          />
-        </div>
+        <CreationForm
+          label="Create new list"
+          onSubmit={this.handleShoppingListSubmission}
+          type="menu"
+          onHide={this.hideForms}
+        />
       )
     );
   };

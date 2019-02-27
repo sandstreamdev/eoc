@@ -20,6 +20,7 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CreationForm from 'common/components/CreationForm';
 import PlusIcon from 'assets/images/plus-solid.svg';
+import { noOp } from 'common/utils/noOp';
 
 class Cohort extends PureComponent {
   state = {
@@ -53,22 +54,21 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
-    createList(name, description, userId, cohortId);
-    this.hideForm();
+    createList(name, description, userId, cohortId)
+      .then(this.hideForm)
+      .catch(noOp);
   };
 
   renderCreateListForm = () => {
     const { listFormVisibility } = this.state;
     return (
       listFormVisibility && (
-        <div className="cohort__form">
-          <CreationForm
-            label="Create new list"
-            onSubmit={this.handleListSubmission}
-            type="menu"
-            onHide={this.hideForm}
-          />
-        </div>
+        <CreationForm
+          label="Create new list"
+          onSubmit={this.handleListSubmission}
+          type="menu"
+          onHide={this.hideForm}
+        />
       )
     );
   };
