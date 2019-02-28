@@ -34,9 +34,12 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.FETCH_META_DATA_FAILURE:
     case CohortActionTypes.CREATE_COHORT_SUCCESS:
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
+    case CohortActionTypes.UPDATE_SUCCESS:
+    case CohortActionTypes.UPDATE_FAILURE:
       return false;
     case CohortActionTypes.CREATE_COHORT_REQUEST:
     case CohortActionTypes.FETCH_META_DATA_REQUEST:
+    case CohortActionTypes.UPDATE_REQUEST:
       return true;
     default:
       return state;

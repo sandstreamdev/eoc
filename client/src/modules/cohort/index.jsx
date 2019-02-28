@@ -44,9 +44,7 @@ class Cohort extends PureComponent {
 
   updateCohortHandler = cohortId => (name, description) => {
     const { updateCohort } = this.props;
-
     const dataToUpdate = {};
-
     name ? (dataToUpdate.name = name) : null;
     description ? (dataToUpdate.description = description) : null;
 
@@ -55,8 +53,9 @@ class Cohort extends PureComponent {
   };
 
   render() {
-    const { cohortDetails, lists } = this.props;
     const {
+      cohortDetails,
+      lists,
       match: {
         params: { id: cohortId }
       }
