@@ -38,15 +38,15 @@ class Cohort extends PureComponent {
     fetchListMetaData(id);
   }
 
-  hideForm = () => {
+  hideListCreationForm = () => {
     this.setState({ listFormVisibility: false });
   };
 
-  showForm = () => {
+  showListCreationForm = () => {
     this.setState({ listFormVisibility: true });
   };
 
-  handleListSubmission = (name, description) => {
+  createListSubmissionHandler = (name, description) => {
     const {
       createList,
       currentUser: { id: userId },
@@ -55,7 +55,7 @@ class Cohort extends PureComponent {
       }
     } = this.props;
     createList(name, description, userId, cohortId)
-      .then(this.hideForm)
+      .then(this.hideListCreationForm)
       .catch(noOp);
   };
 
@@ -65,9 +65,9 @@ class Cohort extends PureComponent {
       listFormVisibility && (
         <CreationForm
           label="Create new list"
-          onSubmit={this.handleListSubmission}
+          onSubmit={this.createListSubmissionHandler}
           type="menu"
-          onHide={this.hideForm}
+          onHide={this.hideListCreationForm}
         />
       )
     );
@@ -88,7 +88,7 @@ class Cohort extends PureComponent {
           <ToolbarItem
             additionalIconSrc={PlusIcon}
             mainIcon={<ListIcon />}
-            onClick={this.showForm}
+            onClick={this.showListCreationForm}
           >
             {this.renderCreateListForm()}
           </ToolbarItem>
