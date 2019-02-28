@@ -67,15 +67,15 @@ const updateListRequest = () => ({
   type: ShoppingListActionTypes.UPDATE_REQUEST
 });
 
-const fetchShoppingListMetaDataSuccess = data => ({
+const fetchListsMetaDataSuccess = data => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_SUCCESS,
   payload: data
 });
-const fetchShoppingListsMetaDataFailure = errMessage => ({
+const fetchListsMetaDataFailure = errMessage => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_FAILURE,
   payload: errMessage
 });
-const fetchShoppingListsMetaDataRequest = () => ({
+const fetchListsMetaDataRequest = () => ({
   type: ShoppingListActionTypes.FETCH_META_DATA_REQUEST
 });
 
@@ -155,16 +155,16 @@ export const createList = (
     });
 };
 
-export const fetchShoppingListsMetaData = () => dispatch => {
-  dispatch(fetchShoppingListsMetaDataRequest());
+export const fetchListsMetaData = () => dispatch => {
+  dispatch(fetchListsMetaDataRequest());
   return getData(`${ENDPOINT_URL}/shopping-lists/meta-data`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
-      dispatch(fetchShoppingListMetaDataSuccess(dataMap));
+      dispatch(fetchListsMetaDataSuccess(dataMap));
     })
     .catch(err => {
-      dispatch(fetchShoppingListsMetaDataFailure());
+      dispatch(fetchListsMetaDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
@@ -174,15 +174,15 @@ export const fetchShoppingListsMetaData = () => dispatch => {
 };
 
 export const fetchListMetaData = cohortId => dispatch => {
-  dispatch(fetchShoppingListsMetaDataRequest());
+  dispatch(fetchListsMetaDataRequest());
   getData(`${ENDPOINT_URL}/shopping-lists/meta-data/${cohortId}`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
-      dispatch(fetchShoppingListMetaDataSuccess(dataMap));
+      dispatch(fetchListsMetaDataSuccess(dataMap));
     })
     .catch(err => {
-      dispatch(fetchShoppingListsMetaDataFailure());
+      dispatch(fetchListsMetaDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
