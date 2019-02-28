@@ -144,7 +144,7 @@ export const createShoppingList = (name, description, adminId) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, creating new list failed..."
+        "Oops, we're sorry, creating new list failed..."
       );
     });
 };
