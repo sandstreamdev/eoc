@@ -88,7 +88,8 @@ const getShoppingListsMetaData = (req, resp) => {
           { adminIds: req.user._id },
           { ordererIds: req.user._id },
           { purchaserIds: req.user._id }
-        ]
+        ],
+        isArchived: false
       },
       '_id name description cohortId',
       (err, docs) => {
