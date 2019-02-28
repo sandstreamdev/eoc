@@ -7,15 +7,22 @@ import _isEmpty from 'lodash/isEmpty';
 
 import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
-import Toolbar from 'common/components/Toolbar';
+import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
 import { getLists } from 'modules/shopping-list/model/selectors';
 import { fetchListMetaData } from 'modules/shopping-list/model/actions';
-import { CohortIcon } from 'assets/images/icons';
+import { CohortIcon, EditIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType } from 'common/constants/propTypes';
+import ModalBox from 'common/components/ModalBox';
+import CreationForm from 'common/components/CreationForm';
+import { updateCohort } from './model/actions';
 
 class Cohort extends PureComponent {
+  state = {
+    updateFormVisibility: false
+  };
+
   componentDidMount() {
     const {
       fetchListMetaData,
@@ -27,18 +34,56 @@ class Cohort extends PureComponent {
     fetchListMetaData(id);
   }
 
+  showUpdateForm = () => {
+    this.setState({ updateFormVisibility: true });
+  };
+
+  hideUpdateForm = () => {
+    this.setState({ updateFormVisibility: false });
+  };
+
+  updateCohortHandler = cohortId => (name, description) => {
+    const { updateCohort } = this.props;
+
+    const dataToUpdate = {};
+
+    name ? (dataToUpdate.name = name) : null;
+    description ? (dataToUpdate.description = description) : null;
+
+    updateCohort(cohortId, dataToUpdate);
+    this.hideUpdateForm();
+  };
+
   render() {
     const { cohortDetails, lists } = this.props;
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
 
     if (!cohortDetails) {
       return null;
     }
 
     const { name, description } = cohortDetails;
-
+    const { updateFormVisibility } = this.state;
     return (
       <Fragment>
-        <Toolbar />
+        <Toolbar>
+          <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
+        </Toolbar>
+        {updateFormVisibility && (
+          <ModalBox onCancel={this.hideUpdateForm}>
+            <CreationForm
+              defaultDescription={description}
+              defaultName={name}
+              label="Edit cohort"
+              onSubmit={this.updateCohortHandler(cohortId)}
+              type="modal"
+            />
+          </ModalBox>
+        )}
         <div className="wrapper">
           <div className="cohort">
             <h2 className="cohort__heading">
@@ -77,7 +122,8 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
-  fetchListMetaData: PropTypes.func.isRequired
+  fetchListMetaData: PropTypes.func.isRequired,
+  updateCohort: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -88,6 +134,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { fetchListMetaData }
+    { fetchListMetaData, updateCohort }
   )(Cohort)
 );

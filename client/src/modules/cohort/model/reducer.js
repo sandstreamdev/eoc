@@ -9,6 +9,18 @@ const cohorts = (state = {}, action) => {
         ...state,
         [action.payload._id]: { ...action.payload }
       };
+    case CohortActionTypes.UPDATE_SUCCESS: {
+      const prevCohort = state[action.payload.cohortId];
+      const updatedCohort = {
+        ...prevCohort,
+        name: action.payload.name || prevCohort.name,
+        description: action.payload.description || prevCohort.description
+      };
+      return {
+        ...state,
+        [action.payload.cohortId]: updatedCohort
+      };
+    }
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
       return action.payload;
     default:
