@@ -80,9 +80,9 @@ class Cohort extends PureComponent {
             <DropdownForm
               isVisible={listFormVisibility}
               label="Create new list"
+              onHide={this.hideListCreationForm}
               onSubmit={this.createListSubmissionHandler}
               type="menu"
-              onHide={this.hideListCreationForm}
             />
           </ToolbarItem>
         </Toolbar>

@@ -92,9 +92,9 @@ class Dashboard extends Component {
             <DropdownForm
               isVisible={cohortFormVisibility}
               label="Create new cohort"
+              onHide={this.hideForms}
               onSubmit={this.handleCohortSubmission}
               type="menu"
-              onHide={this.hideForms}
             />
           </ToolbarItem>
           <ToolbarItem
@@ -105,9 +105,9 @@ class Dashboard extends Component {
             <DropdownForm
               isVisible={listFormVisibility}
               label="Create new list"
+              onHide={this.hideForms}
               onSubmit={this.handleListSubmission}
               type="menu"
-              onHide={this.hideForms}
             />
           </ToolbarItem>
           <ToolbarLink

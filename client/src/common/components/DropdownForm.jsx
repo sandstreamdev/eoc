@@ -7,9 +7,9 @@ const DropdownForm = ({ isVisible, label, onHide, onSubmit, type }) =>
   isVisible && (
     <CreationForm
       label={label}
+      onHide={onHide}
       onSubmit={onSubmit}
       type={type}
-      onHide={onHide}
     />
   );
 
