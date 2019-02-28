@@ -18,7 +18,8 @@ import CreationForm from 'common/components/CreationForm';
 import { EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/shopping-list/components/ArchivedList';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class ShoppingList extends Component {
   state = {
@@ -76,10 +77,19 @@ class ShoppingList extends Component {
     this.hideUpdateForm();
   };
 
-  checkIfArchived() {
+  checkIfArchived = () => {
     const { list } = this.props;
     return !list || (list && !list.isArchived);
-  }
+  };
+
+  checkIfAuthorized = () => {
+    const {
+      currentUser: { id: userId },
+      list
+    } = this.props;
+
+    return list && list.adminIds && list.adminIds.includes(userId);
+  };
 
   render() {
     const { showDialogBox, showUpdateForm } = this.state;
@@ -101,7 +111,7 @@ class ShoppingList extends Component {
     return (
       <Fragment>
         <Toolbar>
-          {!isArchived && (
+          {!isArchived && this.checkIfAuthorized() && (
             <Fragment>
               <ToolbarItem
                 mainIcon={<EditIcon />}
@@ -150,6 +160,7 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
+  currentUser: UserPropType.isRequired,
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
 
@@ -159,6 +170,7 @@ ShoppingList.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
+  currentUser: getCurrentUser(state),
   list: getShoppingList(state, ownProps.match.params.id)
 });
 
