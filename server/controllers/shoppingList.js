@@ -13,12 +13,22 @@ const createList = (req, resp) => {
   });
 
   shoppingList.save((err, doc) => {
-    err
-      ? resp.status(400).send({ message: err.message })
-      : resp
-          .location(`/shopping-list/${doc._id}`)
-          .status(201)
-          .send(doc);
+    if (err) {
+      return resp.status(404).send({ message: err.message });
+    }
+    if (!doc) {
+      return resp
+        .status(404)
+        .send("Oops we're sorry, an error occurred while creating the list");
+    }
+    const { _id, description, name } = doc;
+    const data = cohortId
+      ? { _id, description, name, cohortId }
+      : { _id, description, name };
+    resp
+      .status(201)
+      .location(`/shopping-lists/${doc._id}`)
+      .send(data);
   });
 };
 
