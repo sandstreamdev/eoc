@@ -6,7 +6,6 @@ import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import EyeIcon from 'assets/images/eye-solid.svg';
-import CreationForm from 'common/components/CreationForm';
 import {
   createList,
   fetchShoppingListsMetaData
@@ -20,6 +19,7 @@ import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
+import DropdownForm from 'common/components/DropdownForm';
 
 class Dashboard extends Component {
   state = {
@@ -77,36 +77,9 @@ class Dashboard extends Component {
     this.hideForms();
   };
 
-  renderCreateCohortForm = () => {
-    const { cohortFormVisibility } = this.state;
-    return (
-      cohortFormVisibility && (
-        <CreationForm
-          label="Create new cohort"
-          onSubmit={this.handleCohortSubmission}
-          type="menu"
-          onHide={this.hideForms}
-        />
-      )
-    );
-  };
-
-  renderCreateListForm = () => {
-    const { shoppingFormVisibility } = this.state;
-    return (
-      shoppingFormVisibility && (
-        <CreationForm
-          label="Create new list"
-          onSubmit={this.handleShoppingListSubmission}
-          type="menu"
-          onHide={this.hideForms}
-        />
-      )
-    );
-  };
-
   render() {
     const { shoppingLists, cohorts } = this.props;
+    const { cohortFormVisibility, shoppingFormVisibility } = this.state;
 
     return (
       <Fragment>
@@ -116,14 +89,26 @@ class Dashboard extends Component {
             mainIcon={<CohortIcon />}
             onClick={this.handleCohortFormVisibility}
           >
-            {this.renderCreateCohortForm()}
+            <DropdownForm
+              isVisible={cohortFormVisibility}
+              label="Create new cohort"
+              onSubmit={this.handleCohortSubmission}
+              type="menu"
+              onHide={this.hideForms}
+            />
           </ToolbarItem>
           <ToolbarItem
             additionalIconSrc={PlusIcon}
             mainIcon={<ListIcon />}
             onClick={this.handleShoppingListFormVisibility}
           >
-            {this.renderCreateListForm()}
+            <DropdownForm
+              isVisible={shoppingFormVisibility}
+              label="Create new list"
+              onSubmit={this.handleShoppingListSubmission}
+              type="menu"
+              onHide={this.hideForms}
+            />
           </ToolbarItem>
           <ToolbarLink
             additionalIconSrc={EyeIcon}

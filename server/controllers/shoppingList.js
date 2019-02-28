@@ -16,11 +16,13 @@ const createList = (req, resp) => {
     if (err) {
       return resp.status(404).send({ message: err.message });
     }
+
     if (!doc) {
       return resp
         .status(404)
         .send("Oops we're sorry, an error occurred while creating the list");
     }
+
     const { _id, description, name } = doc;
     const data = cohortId
       ? { _id, description, name, cohortId }

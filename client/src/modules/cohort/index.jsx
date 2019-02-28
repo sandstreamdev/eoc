@@ -18,9 +18,9 @@ import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import CreationForm from 'common/components/CreationForm';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import { noOp } from 'common/utils/noOp';
+import DropdownForm from 'common/components/DropdownForm';
 
 class Cohort extends PureComponent {
   state = {
@@ -59,22 +59,9 @@ class Cohort extends PureComponent {
       .catch(noOp);
   };
 
-  renderCreateListForm = () => {
-    const { listFormVisibility } = this.state;
-    return (
-      listFormVisibility && (
-        <CreationForm
-          label="Create new list"
-          onSubmit={this.createListSubmissionHandler}
-          type="menu"
-          onHide={this.hideListCreationForm}
-        />
-      )
-    );
-  };
-
   render() {
     const { cohortDetails, lists } = this.props;
+    const { listFormVisibility } = this.state;
 
     if (!cohortDetails) {
       return null;
@@ -90,7 +77,13 @@ class Cohort extends PureComponent {
             mainIcon={<ListIcon />}
             onClick={this.showListCreationForm}
           >
-            {this.renderCreateListForm()}
+            <DropdownForm
+              isVisible={listFormVisibility}
+              label="Create new list"
+              onSubmit={this.createListSubmissionHandler}
+              type="menu"
+              onHide={this.hideListCreationForm}
+            />
           </ToolbarItem>
         </Toolbar>
         <div className="wrapper">
