@@ -1,0 +1,15 @@
+.notification {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding: 50px 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  z-index: 7;
+
+  &__wrapper {
+    max-width: 1440px;
+    padding: 0 20px;
+  }
+}

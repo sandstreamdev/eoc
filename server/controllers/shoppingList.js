@@ -274,13 +274,13 @@ const updateListById = (req, resp) => {
     (err, doc) => {
       if (!doc) {
         return resp.status(404).send({
-          message: 'You have no permissions to perform this action'
+          message: 'You have no permissions to perform this action.'
         });
       }
       return err
         ? resp.status(400).send({
             message:
-              "Oops we're sorry, an error occurred while processing the list"
+              "Oops we're sorry, an error occurred while processing the list."
           })
         : resp.status(200).send({
             message: `List "${doc.name}" was successfully updated!`
