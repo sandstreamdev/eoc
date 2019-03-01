@@ -1,4 +1,4 @@
-.modalbox {
+.modal-form {
   position: relative;
   box-sizing: border-box;
   border-radius: 5px;
@@ -9,18 +9,6 @@
   z-index: 10;
   min-width: 320px;
   max-width: 600px;
-
-  &__cancel-button {
-    padding: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    background: $gray-bg;
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    outline: none;
-    z-index: 10;
-  }
 
   &__icon {
     height: 16px;
