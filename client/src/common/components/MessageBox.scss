@@ -11,23 +11,33 @@
   overflow: hidden;
   background: $bg-color;
   margin: 20px 0;
+  font-size: 14px;
+  line-height: 1.2;
 
   &--red {
-    color: $text-white;
-    background: $message-bg-red;
+    color: $text-normal;
+
+    svg path {
+      fill: $message-bg-red;
+    }
   }
 
   &--gray {
-    color: $text-white;
-    background: $message-bg-gray;
+    color: $text-normal;
+
+    svg path {
+      fill: $message-bg-gray;
+    }
   }
 
   &--green {
-    color: $text-white;
-    background: $message-bg-green;
+    color: $text-normal;
+    svg path {
+      fill: $message-bg-green;
+    }
   }
 
-  &__img {
+  svg {
     height: 14px;
     margin-right: 16px;
   }

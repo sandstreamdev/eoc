@@ -9,13 +9,17 @@ import MessageBox from 'common/components/MessageBox';
 const Notifications = ({ notifications }) => (
   <Fragment>
     {Object.entries(notifications).length > 0 && (
-      <ul>
-        {_map(notifications, (item, id) => (
-          <li key={id}>
-            <MessageBox type={item.type} message={item.message} />
-          </li>
-        ))}
-      </ul>
+      <div className="notification">
+        <div className="notification__wrapper">
+          <ul>
+            {_map(notifications, (item, id) => (
+              <li key={id}>
+                <MessageBox type={item.type} message={item.message} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     )}
   </Fragment>
 );
