@@ -1,16 +1,16 @@
 import { combineReducers } from 'redux';
 
 import { ListActionTypes } from './actionTypes';
-import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
+import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
 
 const items = (state, action) => {
   switch (action.type) {
-    case ProductActionTypes.ADD_PRODUCT_SUCCESS:
+    case ItemActionTypes.ADD_ITEM_SUCCESS:
       return {
         ...state,
         products: [...state.products, action.payload.product]
       };
-    case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS:
+    case ItemActionTypes.TOGGLE_ITEM_SUCCESS:
       return {
         ...state,
         products: [...state.products].map(product =>
@@ -22,7 +22,7 @@ const items = (state, action) => {
             : product
         )
       };
-    case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS:
+    case ItemActionTypes.VOTE_FOR_ITEM_SUCCESS:
       return {
         ...state,
         products: [...state.products].map(product =>
@@ -80,19 +80,19 @@ const lists = (state = {}, action) => {
         [action.payload.listId]: action.payload.data
       };
     }
-    case ProductActionTypes.ADD_PRODUCT_SUCCESS: {
+    case ItemActionTypes.ADD_ITEM_SUCCESS: {
       return {
         ...state,
         [action.payload.listId]: items(state[action.payload.listId], action)
       };
     }
-    case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS: {
+    case ItemActionTypes.TOGGLE_ITEM_SUCCESS: {
       return {
         ...state,
         [action.payload.listId]: items(state[action.payload.listId], action)
       };
     }
-    case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS: {
+    case ItemActionTypes.VOTE_FOR_ITEM_SUCCESS: {
       return {
         ...state,
         [action.payload.listId]: items(state[action.payload.listId], action)
@@ -105,12 +105,12 @@ const lists = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
-    case ProductActionTypes.ADD_PRODUCT_FAILURE:
-    case ProductActionTypes.ADD_PRODUCT_SUCCESS:
-    case ProductActionTypes.TOGGLE_PRODUCT_FAILURE:
-    case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS:
-    case ProductActionTypes.VOTE_FOR_PRODUCT_FAILURE:
-    case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS:
+    case ItemActionTypes.ADD_ITEM_FAILURE:
+    case ItemActionTypes.ADD_ITEM_SUCCESS:
+    case ItemActionTypes.TOGGLE_ITEM_FAILURE:
+    case ItemActionTypes.TOGGLE_ITEM_SUCCESS:
+    case ItemActionTypes.VOTE_FOR_ITEM_FAILURE:
+    case ItemActionTypes.VOTE_FOR_ITEM_SUCCESS:
     case ListActionTypes.ARCHIVE_FAILURE:
     case ListActionTypes.ARCHIVE_SUCCESS:
     case ListActionTypes.CREATE_LIST_FAILURE:
@@ -128,9 +128,9 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.UPDATE_FAILURE:
     case ListActionTypes.UPDATE_SUCCESS:
       return false;
-    case ProductActionTypes.ADD_PRODUCT_REQUEST:
-    case ProductActionTypes.TOGGLE_PRODUCT_REQUEST:
-    case ProductActionTypes.VOTE_FOR_PRODUCT_REQUEST:
+    case ItemActionTypes.ADD_ITEM_REQUEST:
+    case ItemActionTypes.TOGGLE_ITEM_REQUEST:
+    case ItemActionTypes.VOTE_FOR_ITEM_REQUEST:
     case ListActionTypes.ARCHIVE_REQUEST:
     case ListActionTypes.CREATE_LIST_REQUEST:
     case ListActionTypes.DELETE_REQUEST:

@@ -1,29 +1,29 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { patchData } from 'common/utils/fetchMethods';
-import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
+import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
-const toggleProductSuccess = (product, listId) => ({
-  type: ProductActionTypes.TOGGLE_PRODUCT_SUCCESS,
+const toggleItemSuccess = (product, listId) => ({
+  type: ItemActionTypes.TOGGLE_ITEM_SUCCESS,
   payload: { product, listId }
 });
-const toggleProductRequest = () => ({
-  type: ProductActionTypes.TOGGLE_PRODUCT_REQUEST
+const toggleItemRequest = () => ({
+  type: ItemActionTypes.TOGGLE_ITEM_REQUEST
 });
-const toggleProductFailure = errMessage => ({
-  type: ProductActionTypes.TOGGLE_PRODUCT_FAILURE,
+const toggleItemFailure = errMessage => ({
+  type: ItemActionTypes.TOGGLE_ITEM_FAILURE,
   payload: errMessage
 });
-const voteForProductSuccess = (product, listId) => ({
-  type: ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS,
+const voteForItemSuccess = (product, listId) => ({
+  type: ItemActionTypes.VOTE_FOR_ITEM_SUCCESS,
   payload: { product, listId }
 });
-const voteForProductRequest = () => ({
-  type: ProductActionTypes.VOTE_FOR_PRODUCT_REQUEST
+const voteForItemRequest = () => ({
+  type: ItemActionTypes.VOTE_FOR_ITEM_REQUEST
 });
-const voteForProductFailure = errMessage => ({
-  type: ProductActionTypes.VOTE_FOR_PRODUCT_FAILURE,
+const voteForItemFailure = errMessage => ({
+  type: ItemActionTypes.VOTE_FOR_ITEM_FAILURE,
   payload: errMessage
 });
 
@@ -33,7 +33,7 @@ export const toggle = (
   listId,
   updatedAuthor
 ) => dispatch => {
-  dispatch(toggleProductRequest());
+  dispatch(toggleItemRequest());
   patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
     authorName: updatedAuthor,
     itemId,
@@ -42,10 +42,10 @@ export const toggle = (
   })
     .then(resp => resp.json())
     .then(product =>
-      setTimeout(() => dispatch(toggleProductSuccess(product, listId)), 600)
+      setTimeout(() => dispatch(toggleItemSuccess(product, listId)), 600)
     )
     .catch(err => {
-      dispatch(toggleProductFailure());
+      dispatch(toggleItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
@@ -55,15 +55,15 @@ export const toggle = (
 };
 
 export const vote = (itemId, listId, voterIds) => dispatch => {
-  dispatch(voteForProductRequest());
+  dispatch(voteForItemRequest());
   patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
     itemId,
     voterIds
   })
     .then(resp => resp.json())
-    .then(product => dispatch(voteForProductSuccess(product, listId)))
+    .then(product => dispatch(voteForItemSuccess(product, listId)))
     .catch(err => {
-      dispatch(voteForProductFailure());
+      dispatch(voteForItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

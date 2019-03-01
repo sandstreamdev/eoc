@@ -5,45 +5,45 @@ import { withRouter } from 'react-router-dom';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import { addProductToList } from './model/actions';
+import { addItemToList } from './model/actions';
 
 class InputBar extends Component {
   state = {
-    productName: ''
+    itemName: ''
   };
 
   handleNameChange = e => {
     this.setState({
-      productName: e.target.value
+      itemName: e.target.value
     });
   };
 
   handleFormSubmit = e => {
     e.preventDefault();
     const {
-      addProductToList,
+      addItemToList,
       currentUser,
       match: {
         params: { id }
       }
     } = this.props;
-    const { productName } = this.state;
-    const newProduct = {
+    const { itemName } = this.state;
+    const newItem = {
       authorName: currentUser.name,
       authorId: currentUser.id,
       isOrdered: false,
-      name: productName
+      name: itemName
     };
 
-    addProductToList(newProduct, id);
+    addItemToList(newItem, id);
 
     this.setState({
-      productName: ''
+      itemName: ''
     });
   };
 
   render() {
-    const { productName } = this.state;
+    const { itemName } = this.state;
     return (
       <Fragment>
         <div className="input-bar">
@@ -54,7 +54,7 @@ class InputBar extends Component {
               placeholder="What is missing?"
               required
               type="text"
-              value={productName}
+              value={itemName}
             />
             <input className="input-bar__submit" type="submit" />
           </form>
@@ -68,7 +68,7 @@ InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
   match: RouterMatchPropType.isRequired,
 
-  addProductToList: PropTypes.func.isRequired
+  addItemToList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -78,6 +78,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { addProductToList }
+    { addItemToList }
   )(InputBar)
 );
