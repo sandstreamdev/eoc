@@ -6,6 +6,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
+  z-index: 7;
 
   &__wrapper {
     max-width: 1440px;
