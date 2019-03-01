@@ -150,7 +150,7 @@ export const createList = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, creating new list failed..."
+        "Oops, we're sorry, creating new list failed..."
       );
     });
 };
