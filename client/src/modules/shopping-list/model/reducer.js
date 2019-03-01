@@ -3,6 +3,42 @@ import { combineReducers } from 'redux';
 import { ListActionTypes } from './actionTypes';
 import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
 
+const items = (state, action) => {
+  switch (action.type) {
+    case ProductActionTypes.ADD_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        products: [...state.products, action.payload.product]
+      };
+    case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        products: [...state.products].map(product =>
+          product._id === action.payload.product._id
+            ? {
+                ...action.payload.product,
+                isOrdered: action.payload.product.isOrdered
+              }
+            : product
+        )
+      };
+    case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        products: [...state.products].map(product =>
+          product._id === action.payload.product._id
+            ? {
+                ...action.payload.product,
+                voterIds: action.payload.product.voterIds
+              }
+            : product
+        )
+      };
+    default:
+      return state;
+  }
+};
+
 const lists = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
@@ -45,50 +81,21 @@ const lists = (state = {}, action) => {
       };
     }
     case ProductActionTypes.ADD_PRODUCT_SUCCESS: {
-      const updatedShoppingList = {
-        ...state[action.payload.listId],
-        products: [
-          ...state[action.payload.listId].products,
-          action.payload.product
-        ]
-      };
       return {
         ...state,
-        [action.payload.listId]: updatedShoppingList
+        [action.payload.listId]: items(state[action.payload.listId], action)
       };
     }
     case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS: {
-      const updatedShoppingList = {
-        ...state[action.payload.listId],
-        products: [...state[action.payload.listId].products].map(product =>
-          product._id === action.payload.product._id
-            ? {
-                ...action.payload.product,
-                isOrdered: action.payload.product.isOrdered
-              }
-            : product
-        )
-      };
       return {
         ...state,
-        [action.payload.listId]: updatedShoppingList
+        [action.payload.listId]: items(state[action.payload.listId], action)
       };
     }
     case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS: {
-      const updatedShoppingList = {
-        ...state[action.payload.listId],
-        products: [...state[action.payload.listId].products].map(product =>
-          product._id === action.payload.product._id
-            ? {
-                ...action.payload.product,
-                voterIds: action.payload.product.voterIds
-              }
-            : product
-        )
-      };
       return {
         ...state,
-        [action.payload.listId]: updatedShoppingList
+        [action.payload.listId]: items(state[action.payload.listId], action)
       };
     }
     default:
