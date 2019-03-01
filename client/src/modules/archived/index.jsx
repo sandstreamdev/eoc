@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Toolbar from 'common/components/Toolbar';
 import { fetchArchivedListsMetaData } from 'modules/shopping-list/model/actions';
-import { getShoppingLists } from 'modules/shopping-list/model/selectors';
+import { getLists } from 'modules/shopping-list/model/selectors';
 import { ListIcon } from 'assets/images/icons';
 import GridList from 'common/components/GridList';
 
@@ -48,7 +48,7 @@ Archived.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  lists: getShoppingLists(state)
+  lists: getLists(state)
 });
 
 export default connect(

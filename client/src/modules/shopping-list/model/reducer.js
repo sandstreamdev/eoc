@@ -1,23 +1,23 @@
 import { combineReducers } from 'redux';
 
-import { ShoppingListActionTypes } from './actionTypes';
+import { ListActionTypes } from './actionTypes';
 import { ProductActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
 
-const shoppingLists = (state = {}, action) => {
+const lists = (state = {}, action) => {
   switch (action.type) {
-    case ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
-    case ShoppingListActionTypes.FETCH_META_DATA_SUCCESS:
+    case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
+    case ListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...action.payload };
-    case ShoppingListActionTypes.CREATE_LIST_SUCCESS:
+    case ListActionTypes.CREATE_LIST_SUCCESS:
       return {
         ...state,
         [action.payload._id]: { ...action.payload }
       };
-    case ShoppingListActionTypes.DELETE_SUCCESS: {
+    case ListActionTypes.DELETE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;
       return newState;
     }
-    case ShoppingListActionTypes.UPDATE_SUCCESS: {
+    case ListActionTypes.UPDATE_SUCCESS: {
       const prevList = state[action.payload.listId];
       const updatedList = {
         ...prevList,
@@ -29,7 +29,7 @@ const shoppingLists = (state = {}, action) => {
         [action.payload.listId]: updatedList
       };
     }
-    case ShoppingListActionTypes.ARCHIVE_SUCCESS: {
+    case ListActionTypes.ARCHIVE_SUCCESS: {
       const { listId: _id, isArchived } = action.payload;
       const archivedList = { _id, isArchived };
       return {
@@ -37,8 +37,8 @@ const shoppingLists = (state = {}, action) => {
         [action.payload.listId]: archivedList
       };
     }
-    case ShoppingListActionTypes.RESTORE_SUCCESS:
-    case ShoppingListActionTypes.FETCH_DATA_SUCCESS: {
+    case ListActionTypes.RESTORE_SUCCESS:
+    case ListActionTypes.FETCH_DATA_SUCCESS: {
       return {
         ...state,
         [action.payload.listId]: action.payload.data
@@ -104,38 +104,38 @@ const isFetching = (state = false, action) => {
     case ProductActionTypes.TOGGLE_PRODUCT_SUCCESS:
     case ProductActionTypes.VOTE_FOR_PRODUCT_FAILURE:
     case ProductActionTypes.VOTE_FOR_PRODUCT_SUCCESS:
-    case ShoppingListActionTypes.ARCHIVE_FAILURE:
-    case ShoppingListActionTypes.ARCHIVE_SUCCESS:
-    case ShoppingListActionTypes.CREATE_LIST_FAILURE:
-    case ShoppingListActionTypes.CREATE_LIST_SUCCESS:
-    case ShoppingListActionTypes.DELETE_FAILURE:
-    case ShoppingListActionTypes.DELETE_SUCCESS:
-    case ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
-    case ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
-    case ShoppingListActionTypes.FETCH_DATA_FAILURE:
-    case ShoppingListActionTypes.FETCH_DATA_SUCCESS:
-    case ShoppingListActionTypes.FETCH_META_DATA_FAILURE:
-    case ShoppingListActionTypes.FETCH_META_DATA_SUCCESS:
-    case ShoppingListActionTypes.RESTORE_FAILURE:
-    case ShoppingListActionTypes.RESTORE_SUCCESS:
-    case ShoppingListActionTypes.UPDATE_FAILURE:
-    case ShoppingListActionTypes.UPDATE_SUCCESS:
+    case ListActionTypes.ARCHIVE_FAILURE:
+    case ListActionTypes.ARCHIVE_SUCCESS:
+    case ListActionTypes.CREATE_LIST_FAILURE:
+    case ListActionTypes.CREATE_LIST_SUCCESS:
+    case ListActionTypes.DELETE_FAILURE:
+    case ListActionTypes.DELETE_SUCCESS:
+    case ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
+    case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
+    case ListActionTypes.FETCH_DATA_FAILURE:
+    case ListActionTypes.FETCH_DATA_SUCCESS:
+    case ListActionTypes.FETCH_META_DATA_FAILURE:
+    case ListActionTypes.FETCH_META_DATA_SUCCESS:
+    case ListActionTypes.RESTORE_FAILURE:
+    case ListActionTypes.RESTORE_SUCCESS:
+    case ListActionTypes.UPDATE_FAILURE:
+    case ListActionTypes.UPDATE_SUCCESS:
       return false;
     case ProductActionTypes.ADD_PRODUCT_REQUEST:
     case ProductActionTypes.TOGGLE_PRODUCT_REQUEST:
     case ProductActionTypes.VOTE_FOR_PRODUCT_REQUEST:
-    case ShoppingListActionTypes.ARCHIVE_REQUEST:
-    case ShoppingListActionTypes.CREATE_LIST_REQUEST:
-    case ShoppingListActionTypes.DELETE_REQUEST:
-    case ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
-    case ShoppingListActionTypes.FETCH_DATA_REQUEST:
-    case ShoppingListActionTypes.FETCH_META_DATA_REQUEST:
-    case ShoppingListActionTypes.RESTORE_REQUEST:
-    case ShoppingListActionTypes.UPDATE_REQUEST:
+    case ListActionTypes.ARCHIVE_REQUEST:
+    case ListActionTypes.CREATE_LIST_REQUEST:
+    case ListActionTypes.DELETE_REQUEST:
+    case ListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
+    case ListActionTypes.FETCH_DATA_REQUEST:
+    case ListActionTypes.FETCH_META_DATA_REQUEST:
+    case ListActionTypes.RESTORE_REQUEST:
+    case ListActionTypes.UPDATE_REQUEST:
       return true;
     default:
       return state;
   }
 };
 
-export default combineReducers({ data: shoppingLists, isFetching });
+export default combineReducers({ data: lists, isFetching });
