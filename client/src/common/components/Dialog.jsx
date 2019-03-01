@@ -25,8 +25,8 @@ Dialog.propTypes = {
   children: PropTypes.node,
   title: PropTypes.string,
 
-  onCancel: PropTypes.func,
-  onConfirm: PropTypes.func
+  onCancel: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired
 };
 
 export default Dialog;

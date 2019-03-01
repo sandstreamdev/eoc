@@ -44,6 +44,7 @@ class FormDialog extends Component {
           defaultName={defaultName}
           handleDescriptionChange={this.handleDescriptionChange}
           handleNameChange={this.handleNameChange}
+          onSubmit={this.handleFormSubmission}
         />
       </Dialog>
     );
