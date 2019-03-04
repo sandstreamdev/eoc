@@ -1,14 +1,45 @@
 .authbox {
-  display: inline-block;
+  display: flex;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   background-color: $container-bg;
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-  padding: 36px;
   margin-bottom: 20px;
   text-align: center;
+  min-height: 300px;
+
+  &__left {
+    width: 50%;
+    padding: 26px;
+    background: url('/client/src/assets/images/auth-intro.jpg') center;
+    position: relative;
+  }
+
+  &__right {
+    width: 50%;
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__heading {
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: $text-normal;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+
+  &__description {
+    font-size: 12px;
+    line-height: 1.2;
+    color: $text-normal;
+    text-align: left;
+  }
 
   &__intro {
     display: flex;
@@ -16,6 +47,18 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 36px;
+
+    .app-logo {
+      margin-bottom: 6px;
+    }
+  }
+
+  &__sign-in {
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 1.2;
+    color: $text-normal;
+    margin-bottom: 6px;
   }
 
   &__subheading {
@@ -23,17 +66,14 @@
     font-size: 12px;
   }
 
-  &__buttons {
-    border: 1px solid $border-color;
-    border-radius: 2px;
-    padding: 16px;
-  }
-
-  &__heading {
-    color: $text-normal;
+  &__footer {
     font-size: 12px;
     line-height: 1.2;
-    margin-bottom: 16px;
+    color: $text-normal;
+  }
+
+  &__link {
+    text-decoration: none;
   }
 }
 
