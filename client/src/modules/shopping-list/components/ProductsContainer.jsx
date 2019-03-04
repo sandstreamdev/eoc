@@ -94,25 +94,33 @@ class ProductsContainer extends Component {
       <div className="products">
         {children}
         <header className="products__header">
-          <h2 className="products__heading">{archived ? 'History' : name}</h2>
-          {description && (
-            <p className="products__description">{description}</p>
-          )}
-          <FilterBox
-            filterBy={filterBy}
-            label="Filter by:"
-            onChange={this.onFilterChange}
-            options={filterOptions}
-          />
-          <SortBox
-            label="Sort by:"
-            onChange={this.onSortChange}
-            options={sortOptions}
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-          />
+          <div className="products__header-left">
+            <h2 className="products__heading products__heading--left">
+              {archived ? 'History' : name}
+            </h2>
+            {description && (
+              <p className="products__description">{description}</p>
+            )}
+          </div>
+          <div className="products__header-right">
+            <FilterBox
+              filterBy={filterBy}
+              label="Filter by:"
+              onChange={this.onFilterChange}
+              options={filterOptions}
+            />
+            <SortBox
+              label="Sort by:"
+              onChange={this.onSortChange}
+              options={sortOptions}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+            />
+          </div>
         </header>
-        <ProductsList archived={archived} products={sortedList} />
+        <div className="products__body">
+          <ProductsList archived={archived} products={sortedList} />
+        </div>
       </div>
     );
   }

@@ -129,27 +129,31 @@ class Cohort extends PureComponent {
               <CohortIcon />
               {name}
             </h2>
-            <p className="cohort__description">{description}</p>
-            {_isEmpty(lists) ? (
-              <MessageBox
-                message="There are no lists in this cohort!"
-                type={MessageType.INFO}
-              />
-            ) : (
-              <ul className="cohort-list">
-                {_map(lists, list => (
-                  <li className="cohort-list__item" key={list._id}>
-                    <Link to={`/list/${list._id}`}>
-                      <CardItem
-                        color={CardColorType.ORANGE}
-                        description={list.description}
-                        name={list.name}
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            {description && (
+              <p className="cohort__description">{description}</p>
             )}
+            <div className="cohort__body">
+              {_isEmpty(lists) ? (
+                <MessageBox
+                  message="There are no lists in this cohort!"
+                  type={MessageType.INFO}
+                />
+              ) : (
+                <ul className="cohort-list">
+                  {_map(lists, list => (
+                    <li className="cohort-list__item" key={list._id}>
+                      <Link to={`/list/${list._id}`}>
+                        <CardItem
+                          color={CardColorType.ORANGE}
+                          description={list.description}
+                          name={list.name}
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </Fragment>

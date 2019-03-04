@@ -7,13 +7,17 @@ const DialogBox = ({ message, onCancel, onConfirm }) => (
   <Fragment>
     <Overlay type={OverlayStyleType.MEDIUM} />
     <div className="dialogbox">
-      <h1 className="dialogbox__heading">{message}</h1>
-      <button className="dialogbox__button" onClick={onCancel} type="button">
-        Cancel
-      </button>
-      <button className="dialogbox__button" onClick={onConfirm} type="button">
-        Confirm
-      </button>
+      <header className="dialogbox__header">
+        <h1 className="dialogbox__heading">{message}</h1>
+      </header>
+      <footer className="dialogbox__footer">
+        <button className="dialogbox__button" onClick={onCancel} type="button">
+          Cancel
+        </button>
+        <button className="dialogbox__button" onClick={onConfirm} type="button">
+          Confirm
+        </button>
+      </footer>
     </div>
   </Fragment>
 );

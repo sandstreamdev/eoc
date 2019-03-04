@@ -14,23 +14,25 @@ const GridList = ({ color, icon, items, placeholder, route, name }) => (
       {icon}
       {name}
     </h2>
-    {_isEmpty(items) ? (
-      <MessageBox message={placeholder} type={MessageType.INFO} />
-    ) : (
-      <ul className="grid-list__list">
-        {_map(items, item => (
-          <li className="grid-list__item" key={item._id}>
-            <Link to={`${route}/${item._id}`}>
-              <CardItem
-                color={color}
-                description={item.description}
-                name={item.name}
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
-    )}
+    <div className="grid-list__body">
+      {_isEmpty(items) ? (
+        <MessageBox message={placeholder} type={MessageType.INFO} />
+      ) : (
+        <ul className="grid-list__list">
+          {_map(items, item => (
+            <li className="grid-list__item" key={item._id}>
+              <Link to={`${route}/${item._id}`}>
+                <CardItem
+                  color={color}
+                  description={item.description}
+                  name={item.name}
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   </div>
 );
 

@@ -26,6 +26,10 @@
       cursor: pointer;
       visibility: hidden;
     }
+
+    &:first-child {
+      margin-top: 0;
+    }
   }
 
   &__item--green {
@@ -75,7 +79,7 @@
   &__label {
     box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
     box-sizing: border-box;
-    padding: 20px 30px;
+    padding: 15px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -90,9 +94,9 @@
     transition: all 0.1s;
 
     &:hover {
-      box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+      box-shadow: 0 3px 4px rgba($card-color-1, 0.15);
       transition: all 0.1s;
-      transform: scale(1.05);
+      transform: scale(1.02);
     }
 
     &:before {
@@ -131,10 +135,13 @@
   &__data {
     display: flex;
     flex-direction: column;
+    font-size: 14px;
+    line-height: 1.2;
   }
 
   &__author {
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.2;
     color: $text-light;
     margin-top: 5px;
     text-transform: capitalize;

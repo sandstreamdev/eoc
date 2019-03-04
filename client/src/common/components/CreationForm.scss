@@ -6,6 +6,7 @@
   min-width: 195px;
   box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
   box-sizing: border-box;
+  border-radius: 3px;
 
   &__body {
     padding: 16px;
@@ -66,10 +67,10 @@
     padding: 6px 12px;
     font-size: 12px;
     line-height: 1.2;
-    color: #495057;
-    background-color: #fff;
+    color: $text-normal;
+    background-color: $bg-color;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
+    border: 1px solid $border-color;
     border-radius: 4px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     outline: 0;
@@ -82,8 +83,7 @@
 
     &:focus {
       border: 1px solid rgba($border-focus, 0.54);
-      background-color: rgba(0, 0, 0, 0);
-      box-shadow: 0 0 0 0.2rem rgba($border-focus, 0);
+      box-shadow: 0 0 0 2px rgba($border-focus, 0);
     }
   }
 

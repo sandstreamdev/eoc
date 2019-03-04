@@ -25,9 +25,12 @@
     }
   }
 
-  &__list {
+  &__body {
     padding: 16px;
-    margin: 0 -10px 32px;
+  }
+
+  &__list {
+    margin: 0 -10px 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, 195px);
     grid-gap: 20px 10px;
