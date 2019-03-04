@@ -13,8 +13,7 @@ import {
   updateList
 } from 'modules/shopping-list/model/actions';
 import DialogBox from 'common/components/DialogBox';
-import ModalBox from 'common/components/ModalBox';
-import CreationForm from 'common/components/CreationForm';
+import ModalForm from 'common/components/ModalForm';
 import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/shopping-list/components/ArchivedList';
@@ -152,15 +151,13 @@ class ShoppingList extends Component {
           />
         )}
         {showUpdateForm && (
-          <ModalBox onCancel={this.hideUpdateForm}>
-            <CreationForm
-              defaultDescription={description}
-              defaultName={name}
-              label="Edit list"
-              onSubmit={this.updateListHandler(listId)}
-              type="modal"
-            />
-          </ModalBox>
+          <ModalForm
+            defaultDescription={description}
+            defaultName={name}
+            label="Edit list"
+            onCancel={this.hideUpdateForm}
+            onSubmit={this.updateListHandler(listId)}
+          />
         )}
       </Fragment>
     );

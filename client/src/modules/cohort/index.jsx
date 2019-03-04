@@ -13,18 +13,21 @@ import {
   createList,
   fetchListMetaData
 } from 'modules/shopping-list/model/actions';
-import { CohortIcon, ListIcon } from 'assets/images/icons';
+import { CohortIcon, EditIcon, ListIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
-import PlusIcon from 'assets/images/plus-solid.svg';
+import ModalForm from 'common/components/ModalForm';
+import { updateCohort } from './model/actions';
 import { noOp } from 'common/utils/noOp';
 import DropdownForm from 'common/components/DropdownForm';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
+import PlusIcon from 'assets/images/plus-solid.svg';
 
 class Cohort extends PureComponent {
   state = {
-    listFormVisibility: false
+    listFormVisibility: false,
+    updateFormVisibility: false
   };
 
   componentDidMount() {
@@ -59,8 +62,32 @@ class Cohort extends PureComponent {
       .catch(noOp);
   };
 
+  showUpdateForm = () => {
+    this.setState({ updateFormVisibility: true });
+  };
+
+  hideUpdateForm = () => {
+    this.setState({ updateFormVisibility: false });
+  };
+
+  updateCohortHandler = cohortId => (name, description) => {
+    const { updateCohort } = this.props;
+    const dataToUpdate = {};
+    name ? (dataToUpdate.name = name) : null;
+    description ? (dataToUpdate.description = description) : null;
+
+    updateCohort(cohortId, dataToUpdate);
+    this.hideUpdateForm();
+  };
+
   render() {
-    const { cohortDetails, lists } = this.props;
+    const {
+      cohortDetails,
+      lists,
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
     const { listFormVisibility } = this.state;
 
     if (!cohortDetails) {
@@ -68,7 +95,7 @@ class Cohort extends PureComponent {
     }
 
     const { name, description } = cohortDetails;
-
+    const { updateFormVisibility } = this.state;
     return (
       <Fragment>
         <Toolbar>
@@ -85,7 +112,17 @@ class Cohort extends PureComponent {
               type="menu"
             />
           </ToolbarItem>
+          <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
         </Toolbar>
+        {updateFormVisibility && (
+          <ModalForm
+            defaultDescription={description}
+            defaultName={name}
+            label="Edit cohort"
+            onCancel={this.hideUpdateForm}
+            onSubmit={this.updateCohortHandler(cohortId)}
+          />
+        )}
         <div className="wrapper">
           <div className="cohort">
             <h2 className="cohort__heading">
@@ -126,7 +163,8 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
-  fetchListMetaData: PropTypes.func.isRequired
+  fetchListMetaData: PropTypes.func.isRequired,
+  updateCohort: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -138,6 +176,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { createList, fetchListMetaData }
+    { createList, fetchListMetaData, updateCohort }
   )(Cohort)
 );

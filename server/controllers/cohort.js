@@ -1,4 +1,5 @@
 const Cohort = require('../models/cohort.model');
+const filter = require('../common/utilities');
 
 const createCohort = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -50,8 +51,43 @@ const getCohortById = (req, resp) => {
   });
 };
 
+const updateCohortById = (req, resp) => {
+  const { description, name } = req.body;
+  const { id: cohortId } = req.params;
+
+  const dataToUpdate = filter(x => x !== undefined)({
+    description,
+    name
+  });
+
+  Cohort.findOneAndUpdate(
+    {
+      _id: cohortId,
+      $or: [{ adminIds: req.user._id }]
+    },
+    dataToUpdate,
+    { new: true },
+    (err, doc) => {
+      if (!doc) {
+        return resp.status(404).send({
+          message: 'You have no permissions to perform this action'
+        });
+      }
+      return err
+        ? resp.status(400).send({
+            message:
+              "Oops we're sorry, an error occurred while processing the cohort"
+          })
+        : resp.status(200).send({
+            message: `Cohort "${doc.name}" was successfully updated!`
+          });
+    }
+  );
+};
+
 module.exports = {
   createCohort,
   getCohortById,
-  getCohortsMetaData
+  getCohortsMetaData,
+  updateCohortById
 };
