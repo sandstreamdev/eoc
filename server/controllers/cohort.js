@@ -68,12 +68,6 @@ const updateCohortById = (req, resp) => {
     dataToUpdate,
     { new: true },
     (err, doc) => {
-      if (!doc) {
-        return resp.status(404).send({
-          message: 'You have no permissions to perform this action'
-        });
-      }
-
       if (err) {
         return resp.status(400).send({
           message:
@@ -81,7 +75,13 @@ const updateCohortById = (req, resp) => {
         });
       }
 
-      return resp.status(200).send({
+      if (!doc) {
+        return resp.status(404).send({
+          message: 'You have no permissions to perform this action'
+        });
+      }
+
+      resp.status(200).send({
         message: `Cohort "${doc.name}" was successfully updated!`
       });
     }

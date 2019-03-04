@@ -48,13 +48,14 @@ class Cohort extends PureComponent {
       name: previousName
     } = cohortDetails;
     const dataToUpdate = {};
-    name ? (dataToUpdate.name = name) : null;
-    description ? (dataToUpdate.description = description) : null;
 
     if (
       previousDescription !== dataToUpdate.description ||
       previousName !== dataToUpdate.name
     ) {
+      name && (dataToUpdate.name = name);
+      description && (dataToUpdate.description = description);
+
       updateCohort(cohortId, dataToUpdate);
     }
     this.hideUpdateForm();
