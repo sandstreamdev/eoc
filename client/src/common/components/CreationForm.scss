@@ -9,6 +9,13 @@
   align-items: flex-start;
   box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
 
+  &--menu {
+    position: absolute;
+    left: 0;
+    top: 50px;
+    z-index: 9;
+  }
+
   &--menu::before {
     left: 7px;
     top: -10px;

@@ -7,8 +7,6 @@ import CompanyLogo from 'assets/images/company_logo.png';
 import { HomeIcon } from 'assets/images/icons';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
-import { createShoppingList } from 'modules/shopping-list/model/actions';
-import { createCohort } from 'modules/cohort/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import ToolbarLink from './components/ToolbarLink';
 
@@ -54,7 +52,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { createCohort, createShoppingList }
-)(Toolbar);
+export default connect(mapStateToProps)(Toolbar);

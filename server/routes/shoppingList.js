@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const {
   addProductToList,
-  createNewList,
+  createList,
   deleteListById,
   getAllShoppingLists,
   getArchivedListsMetaData,
@@ -19,7 +19,7 @@ router.get('/', authorize, getAllShoppingLists);
 router.get('/meta-data/:cohortId?', authorize, getShoppingListsMetaData);
 router.get('/archived', authorize, getArchivedListsMetaData);
 router.get('/:id', authorize, getShoppingListById);
-router.post('/create', authorize, createNewList);
+router.post('/create', authorize, createList);
 router.post('/add-product', authorize, addProductToList);
 router.delete('/:id/delete', authorize, deleteListById);
 router.patch('/:id/update', authorize, updateListById);
