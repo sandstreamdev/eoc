@@ -5,15 +5,15 @@ import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model
 
 const items = (state, action) => {
   switch (action.type) {
-    case ItemActionTypes.ADD_ITEM_SUCCESS:
+    case ItemActionTypes.ADD_SUCCESS:
       return {
         ...state,
         products: [...state.products, action.payload.product]
       };
-    case ItemActionTypes.TOGGLE_ITEM_SUCCESS:
+    case ItemActionTypes.TOGGLE_SUCCESS:
       return {
         ...state,
-        products: [...state.products].map(product =>
+        products: state.products.map(product =>
           product._id === action.payload.product._id
             ? {
                 ...action.payload.product,
@@ -22,10 +22,10 @@ const items = (state, action) => {
             : product
         )
       };
-    case ItemActionTypes.VOTE_FOR_ITEM_SUCCESS:
+    case ItemActionTypes.VOTE_FOR_SUCCESS:
       return {
         ...state,
-        products: [...state.products].map(product =>
+        products: state.products.map(product =>
           product._id === action.payload.product._id
             ? {
                 ...action.payload.product,
@@ -44,7 +44,7 @@ const lists = (state = {}, action) => {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...action.payload };
-    case ListActionTypes.CREATE_LIST_SUCCESS:
+    case ListActionTypes.CREATE_SUCCESS:
       return {
         ...state,
         [action.payload._id]: { ...action.payload }
@@ -80,19 +80,19 @@ const lists = (state = {}, action) => {
         [action.payload.listId]: action.payload.data
       };
     }
-    case ItemActionTypes.ADD_ITEM_SUCCESS: {
+    case ItemActionTypes.ADD_SUCCESS: {
       return {
         ...state,
         [action.payload.listId]: items(state[action.payload.listId], action)
       };
     }
-    case ItemActionTypes.TOGGLE_ITEM_SUCCESS: {
+    case ItemActionTypes.TOGGLE_SUCCESS: {
       return {
         ...state,
         [action.payload.listId]: items(state[action.payload.listId], action)
       };
     }
-    case ItemActionTypes.VOTE_FOR_ITEM_SUCCESS: {
+    case ItemActionTypes.VOTE_FOR_SUCCESS: {
       return {
         ...state,
         [action.payload.listId]: items(state[action.payload.listId], action)
@@ -105,16 +105,16 @@ const lists = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
-    case ItemActionTypes.ADD_ITEM_FAILURE:
-    case ItemActionTypes.ADD_ITEM_SUCCESS:
-    case ItemActionTypes.TOGGLE_ITEM_FAILURE:
-    case ItemActionTypes.TOGGLE_ITEM_SUCCESS:
-    case ItemActionTypes.VOTE_FOR_ITEM_FAILURE:
-    case ItemActionTypes.VOTE_FOR_ITEM_SUCCESS:
+    case ItemActionTypes.ADD_FAILURE:
+    case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.TOGGLE_FAILURE:
+    case ItemActionTypes.TOGGLE_SUCCESS:
+    case ItemActionTypes.VOTE_FOR_FAILURE:
+    case ItemActionTypes.VOTE_FOR_SUCCESS:
     case ListActionTypes.ARCHIVE_FAILURE:
     case ListActionTypes.ARCHIVE_SUCCESS:
-    case ListActionTypes.CREATE_LIST_FAILURE:
-    case ListActionTypes.CREATE_LIST_SUCCESS:
+    case ListActionTypes.CREATE_FAILURE:
+    case ListActionTypes.CREATE_SUCCESS:
     case ListActionTypes.DELETE_FAILURE:
     case ListActionTypes.DELETE_SUCCESS:
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
@@ -128,11 +128,11 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.UPDATE_FAILURE:
     case ListActionTypes.UPDATE_SUCCESS:
       return false;
-    case ItemActionTypes.ADD_ITEM_REQUEST:
-    case ItemActionTypes.TOGGLE_ITEM_REQUEST:
-    case ItemActionTypes.VOTE_FOR_ITEM_REQUEST:
+    case ItemActionTypes.ADD_REQUEST:
+    case ItemActionTypes.TOGGLE_REQUEST:
+    case ItemActionTypes.VOTE_FOR_REQUEST:
     case ListActionTypes.ARCHIVE_REQUEST:
-    case ListActionTypes.CREATE_LIST_REQUEST:
+    case ListActionTypes.CREATE_REQUEST:
     case ListActionTypes.DELETE_REQUEST:
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
     case ListActionTypes.FETCH_DATA_REQUEST:

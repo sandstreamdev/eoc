@@ -5,25 +5,25 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
 const toggleItemSuccess = (product, listId) => ({
-  type: ItemActionTypes.TOGGLE_ITEM_SUCCESS,
+  type: ItemActionTypes.TOGGLE_SUCCESS,
   payload: { product, listId }
 });
 const toggleItemRequest = () => ({
-  type: ItemActionTypes.TOGGLE_ITEM_REQUEST
+  type: ItemActionTypes.TOGGLE_REQUEST
 });
 const toggleItemFailure = errMessage => ({
-  type: ItemActionTypes.TOGGLE_ITEM_FAILURE,
+  type: ItemActionTypes.TOGGLE_FAILURE,
   payload: errMessage
 });
 const voteForItemSuccess = (product, listId) => ({
-  type: ItemActionTypes.VOTE_FOR_ITEM_SUCCESS,
+  type: ItemActionTypes.VOTE_FOR_SUCCESS,
   payload: { product, listId }
 });
 const voteForItemRequest = () => ({
-  type: ItemActionTypes.VOTE_FOR_ITEM_REQUEST
+  type: ItemActionTypes.VOTE_FOR_REQUEST
 });
 const voteForItemFailure = errMessage => ({
-  type: ItemActionTypes.VOTE_FOR_ITEM_FAILURE,
+  type: ItemActionTypes.VOTE_FOR_FAILURE,
   payload: errMessage
 });
 

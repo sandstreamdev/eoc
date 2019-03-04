@@ -5,15 +5,15 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
 const addItemFailure = errorMessage => ({
-  type: ItemActionTypes.ADD_ITEM_FAILURE,
+  type: ItemActionTypes.ADD_FAILURE,
   payload: errorMessage
 });
 export const addItemSuccess = (product, listId) => ({
-  type: ItemActionTypes.ADD_ITEM_SUCCESS,
+  type: ItemActionTypes.ADD_SUCCESS,
   payload: { product, listId }
 });
 const addItemRequest = () => ({
-  type: ItemActionTypes.ADD_ITEM_REQUEST
+  type: ItemActionTypes.ADD_REQUEST
 });
 
 export const addItemToList = (product, listId) => dispatch => {

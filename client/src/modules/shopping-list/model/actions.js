@@ -26,17 +26,17 @@ const fetchListDataRequest = () => ({
 });
 
 const createListSuccess = data => ({
-  type: ListActionTypes.CREATE_LIST_SUCCESS,
+  type: ListActionTypes.CREATE_SUCCESS,
   payload: data
 });
 
 const createListFailure = errMessage => ({
-  type: ListActionTypes.CREATE_LIST_FAILURE,
+  type: ListActionTypes.CREATE_FAILURE,
   payload: errMessage
 });
 
 const createListRequest = () => ({
-  type: ListActionTypes.CREATE_LIST_REQUEST
+  type: ListActionTypes.CREATE_REQUEST
 });
 
 const deleteListSuccess = id => ({
