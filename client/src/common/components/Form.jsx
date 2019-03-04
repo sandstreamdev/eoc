@@ -12,18 +12,24 @@ class Form extends PureComponent {
     };
   }
 
-  handleValueChange = event => {
+  handleNameChange = event => {
     const {
-      target: { value, nodeName }
+      target: { value }
     } = event;
-    const { handleDescriptionChange, handleNameChange } = this.props;
+    const { handleNameChange } = this.props;
 
-    if (nodeName === 'TEXTAREA') {
-      this.setState({ description: value });
-      return handleDescriptionChange(value);
-    }
     this.setState({ name: value });
-    return handleNameChange(value);
+    handleNameChange(value);
+  };
+
+  handleDescriptionChange = event => {
+    const {
+      target: { value }
+    } = event;
+    const { handleDescriptionChange } = this.props;
+
+    this.setState({ description: value });
+    handleDescriptionChange(value);
   };
 
   handleFormSubmission = event => {
@@ -45,7 +51,7 @@ class Form extends PureComponent {
           <label className="form__label">
             <input
               className="form__input"
-              onChange={this.handleValueChange}
+              onChange={this.handleNameChange}
               placeholder="Name"
               type="text"
               value={name}
@@ -54,7 +60,7 @@ class Form extends PureComponent {
           <label className="form__label">
             <textarea
               className="form__textarea"
-              onChange={this.handleValueChange}
+              onChange={this.handleDescriptionChange}
               placeholder="Description"
               type="text"
               value={description}
