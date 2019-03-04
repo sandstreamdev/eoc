@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
+import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
 import { getShoppingList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
@@ -15,11 +15,12 @@ import {
 import DialogBox from 'common/components/DialogBox';
 import ModalBox from 'common/components/ModalBox';
 import CreationForm from 'common/components/CreationForm';
-import { EditIcon, ArchiveIcon } from 'assets/images/icons';
+import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/shopping-list/components/ArchivedList';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 
 class ShoppingList extends Component {
   state = {
@@ -103,7 +104,7 @@ class ShoppingList extends Component {
     if (!list) {
       return null;
     }
-    const { description, isArchived, name, products } = list;
+    const { cohortId, description, isArchived, name, products } = list;
     const listItems = products || [];
     const archivedList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
@@ -111,6 +112,13 @@ class ShoppingList extends Component {
     return (
       <Fragment>
         <Toolbar>
+          {cohortId && (
+            <ToolbarLink
+              additionalIconSrc={ArrowLeftIcon}
+              mainIcon={<CohortIcon />}
+              path={`/cohort/${cohortId}`}
+            />
+          )}
           {!isArchived && this.checkIfAuthorized() && (
             <Fragment>
               <ToolbarItem

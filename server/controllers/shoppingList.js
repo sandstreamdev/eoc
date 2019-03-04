@@ -204,10 +204,10 @@ const getListData = (req, resp) => {
       }
 
       if (documents && documents.length > 0) {
-        const { _id, isArchived } = documents[0];
+        const { cohortId, _id, isArchived } = documents[0];
 
         if (isArchived) {
-          return resp.status(200).json({ _id, isArchived });
+          return resp.status(200).json({ cohortId, _id, isArchived });
         }
 
         return resp.status(200).json(documents[0]);
