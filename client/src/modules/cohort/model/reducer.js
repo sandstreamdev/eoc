@@ -13,8 +13,8 @@ const cohorts = (state = {}, action) => {
       const prevCohort = state[action.payload.cohortId];
       const updatedCohort = {
         ...prevCohort,
-        name: action.payload.name || prevCohort.name,
-        description: action.payload.description || prevCohort.description
+        name: action.payload.name,
+        description: action.payload.description
       };
       return {
         ...state,
