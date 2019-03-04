@@ -102,7 +102,7 @@ export const updateCohort = (cohortId, data) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, updating list failed..."
+        err.message || "Oops, we're sorry, updating cohort failed..."
       );
     });
 };

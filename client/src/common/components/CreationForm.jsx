@@ -97,7 +97,7 @@ class CreationForm extends PureComponent {
               type="submit"
               value={defaultName ? 'Update' : 'Create'}
             />
-            {type === CreationFormType.MODAL && (
+            {onCancel && (
               <button
                 className="creation-form__cancel-button"
                 onClick={onCancel}
