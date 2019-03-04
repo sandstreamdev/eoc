@@ -81,21 +81,24 @@ const lists = (state = {}, action) => {
       };
     }
     case ItemActionTypes.ADD_SUCCESS: {
+      const currentList = state[action.payload.listId];
       return {
         ...state,
-        [action.payload.listId]: items(state[action.payload.listId], action)
+        [action.payload.listId]: items(currentList, action)
       };
     }
     case ItemActionTypes.TOGGLE_SUCCESS: {
+      const currentList = state[action.payload.listId];
       return {
         ...state,
-        [action.payload.listId]: items(state[action.payload.listId], action)
+        [action.payload.listId]: items(currentList, action)
       };
     }
     case ItemActionTypes.VOTE_FOR_SUCCESS: {
+      const currentList = state[action.payload.listId];
       return {
         ...state,
-        [action.payload.listId]: items(state[action.payload.listId], action)
+        [action.payload.listId]: items(currentList, action)
       };
     }
     default:
