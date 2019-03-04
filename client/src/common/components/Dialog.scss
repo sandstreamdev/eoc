@@ -1,0 +1,26 @@
+.dialog {
+  max-width: 420px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background: $bg-color;
+  z-index: 8;
+  box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+  font-size: 14px;
+  line-height: 1.2;
+  color: $text-normal;
+
+  &__heading {
+    margin-bottom: 16px;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    z-index: 9;
+  }
+}

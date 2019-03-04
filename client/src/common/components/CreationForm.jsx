@@ -4,6 +4,11 @@ import classNames from 'classnames';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
+export const CreationFormType = Object.freeze({
+  MENU: 'creation-form/MENU',
+  MODAL: 'creation-form/MODAL'
+});
+
 class CreationForm extends PureComponent {
   constructor(props) {
     super(props);
@@ -55,7 +60,7 @@ class CreationForm extends PureComponent {
   };
 
   render() {
-    const { defaultName, label, onHide, type } = this.props;
+    const { defaultName, label, onCancel, onHide, type } = this.props;
     const { description, name } = this.state;
 
     return (
@@ -108,6 +113,7 @@ CreationForm.propTypes = {
   label: PropTypes.string,
   type: PropTypes.string,
 
+  onCancel: PropTypes.func,
   onHide: PropTypes.func,
   onSubmit: PropTypes.func.isRequired
 };

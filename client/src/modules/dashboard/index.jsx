@@ -6,10 +6,9 @@ import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import EyeIcon from 'assets/images/eye-solid.svg';
-import CreationForm from 'common/components/CreationForm';
 import {
-  createShoppingList,
-  fetchShoppingListsMetaData
+  createList,
+  fetchListsMetaData
 } from 'modules/shopping-list/model/actions';
 import {
   createCohort,
@@ -20,33 +19,34 @@ import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
+import DropdownForm from 'common/components/DropdownForm';
 
 class Dashboard extends Component {
   state = {
     cohortFormVisibility: false,
-    shoppingFormVisibility: false
+    listFormVisibility: false
   };
 
   componentDidMount() {
-    const { fetchCohortsMetaData, fetchShoppingListsMetaData } = this.props;
+    const { fetchCohortsMetaData, fetchListsMetaData } = this.props;
 
     fetchCohortsMetaData();
-    fetchShoppingListsMetaData();
+    fetchListsMetaData();
   }
 
   hideForms = () => {
     this.setState({
       cohortFormVisibility: false,
-      shoppingFormVisibility: false
+      listFormVisibility: false
     });
   };
 
-  handleShoppingListFormVisibility = () => {
-    const { shoppingFormVisibility } = this.state;
+  handleListFormVisibility = () => {
+    const { listFormVisibility } = this.state;
 
     this.setState({
       cohortFormVisibility: false,
-      shoppingFormVisibility: !shoppingFormVisibility
+      listFormVisibility: !listFormVisibility
     });
   };
 
@@ -55,16 +55,16 @@ class Dashboard extends Component {
 
     this.setState({
       cohortFormVisibility: !cohortFormVisibility,
-      shoppingFormVisibility: false
+      listFormVisibility: false
     });
   };
 
-  handleShoppingListSubmission = (title, description) => {
+  handleListSubmission = (title, description) => {
     const {
-      createShoppingList,
+      createList,
       currentUser: { id }
     } = this.props;
-    createShoppingList(title, description, id);
+    createList(title, description, id);
     this.hideForms();
   };
 
@@ -77,40 +77,9 @@ class Dashboard extends Component {
     this.hideForms();
   };
 
-  renderCreateCohortForm = () => {
-    const { cohortFormVisibility } = this.state;
-    return (
-      cohortFormVisibility && (
-        <div className="dashboard__form">
-          <CreationForm
-            label="Create new cohort"
-            onSubmit={this.handleCohortSubmission}
-            type="menu"
-            onHide={this.hideForms}
-          />
-        </div>
-      )
-    );
-  };
-
-  renderCreateListForm = () => {
-    const { shoppingFormVisibility } = this.state;
-    return (
-      shoppingFormVisibility && (
-        <div className="dashboard__form">
-          <CreationForm
-            label="Create new shopping list"
-            onSubmit={this.handleShoppingListSubmission}
-            type="menu"
-            onHide={this.hideForms}
-          />
-        </div>
-      )
-    );
-  };
-
   render() {
-    const { shoppingLists, cohorts } = this.props;
+    const { lists, cohorts } = this.props;
+    const { cohortFormVisibility, listFormVisibility } = this.state;
 
     return (
       <Fragment>
@@ -120,14 +89,26 @@ class Dashboard extends Component {
             mainIcon={<CohortIcon />}
             onClick={this.handleCohortFormVisibility}
           >
-            {this.renderCreateCohortForm()}
+            <DropdownForm
+              isVisible={cohortFormVisibility}
+              label="Create new cohort"
+              onHide={this.hideForms}
+              onSubmit={this.handleCohortSubmission}
+              type="menu"
+            />
           </ToolbarItem>
           <ToolbarItem
             additionalIconSrc={PlusIcon}
             mainIcon={<ListIcon />}
-            onClick={this.handleShoppingListFormVisibility}
+            onClick={this.handleListFormVisibility}
           >
-            {this.renderCreateListForm()}
+            <DropdownForm
+              isVisible={listFormVisibility}
+              label="Create new list"
+              onHide={this.hideForms}
+              onSubmit={this.handleListSubmission}
+              type="menu"
+            />
           </ToolbarItem>
           <ToolbarLink
             additionalIconSrc={EyeIcon}
@@ -139,7 +120,7 @@ class Dashboard extends Component {
           <div className="dashboard">
             <GridList
               icon={<ListIcon />}
-              items={shoppingLists}
+              items={lists}
               name="Lists"
               placeholder="There are no lists yet!"
               route="list"
@@ -161,26 +142,26 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   cohorts: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
-  shoppingLists: PropTypes.objectOf(PropTypes.object),
+  lists: PropTypes.objectOf(PropTypes.object),
 
   createCohort: PropTypes.func.isRequired,
-  createShoppingList: PropTypes.func.isRequired,
+  createList: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
-  fetchShoppingListsMetaData: PropTypes.func.isRequired
+  fetchListsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   cohorts: getCohorts(state),
   currentUser: getCurrentUser(state),
-  shoppingLists: getShoppingLists(state)
+  lists: getShoppingLists(state)
 });
 
 export default connect(
   mapStateToProps,
   {
     createCohort,
-    createShoppingList,
-    fetchShoppingListsMetaData,
+    createList,
+    fetchListsMetaData,
     fetchCohortsMetaData
   }
 )(Dashboard);

@@ -2,22 +2,29 @@ const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
 const filter = require('../common/utilities');
 
-const createNewList = (req, resp) => {
-  const { description, name, adminId } = req.body;
+const createList = (req, resp) => {
+  const { description, name, adminId, cohortId } = req.body;
 
   const shoppingList = new ShoppingList({
     description,
     name,
-    adminIds: adminId
+    adminIds: adminId,
+    cohortId
   });
 
   shoppingList.save((err, doc) => {
-    err
-      ? resp.status(400).send({ message: err.message })
-      : resp
-          .location(`/shopping-list/${doc._id}`)
-          .status(201)
-          .send(doc);
+    if (err) {
+      return resp.status(404).send({ message: err.message });
+    }
+
+    const { _id, description, name } = doc;
+    const data = cohortId
+      ? { _id, description, name, cohortId }
+      : { _id, description, name };
+    resp
+      .status(201)
+      .location(`/shopping-lists/${doc._id}`)
+      .send(data);
   });
 };
 
@@ -88,7 +95,8 @@ const getShoppingListsMetaData = (req, resp) => {
           { adminIds: req.user._id },
           { ordererIds: req.user._id },
           { purchaserIds: req.user._id }
-        ]
+        ],
+        isArchived: false
       },
       '_id name description cohortId',
       (err, docs) => {
@@ -203,10 +211,10 @@ const getListData = (req, resp) => {
       }
 
       if (documents && documents.length > 0) {
-        const { _id, isArchived } = documents[0];
+        const { cohortId, _id, isArchived } = documents[0];
 
         if (isArchived) {
-          return resp.status(200).json({ _id, isArchived });
+          return resp.status(200).json({ cohortId, _id, isArchived });
         }
 
         return resp.status(200).json(documents[0]);
@@ -291,7 +299,7 @@ const updateListById = (req, resp) => {
 
 module.exports = {
   addProductToList,
-  createNewList,
+  createList,
   deleteListById,
   getAllShoppingLists,
   getArchivedListsMetaData,
