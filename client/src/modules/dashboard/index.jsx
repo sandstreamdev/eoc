@@ -20,6 +20,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
 import DropdownForm from 'common/components/DropdownForm';
+import { CardColorType } from 'common/components/CardItem';
 
 class Dashboard extends Component {
   state = {
@@ -119,6 +120,7 @@ class Dashboard extends Component {
         <div className="wrapper">
           <div className="dashboard">
             <GridList
+              color={CardColorType.ORANGE}
               icon={<ListIcon />}
               items={lists}
               name="Lists"
@@ -126,6 +128,7 @@ class Dashboard extends Component {
               route="list"
             />
             <GridList
+              color={CardColorType.GREEN}
               icon={<CohortIcon />}
               items={cohorts}
               name="Cohorts"

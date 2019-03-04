@@ -12,7 +12,7 @@ const Footer = () => (
       <span className="footer__text">{PROJECT_NAME}</span>
       <span className="footer__text">&copy; Copyrights 2019</span>
       <a
-        className="footer__text"
+        className="footer__text footer__link"
         href={COMPANY_PAGE_URL}
         rel="noopener noreferrer"
         target="_blank"

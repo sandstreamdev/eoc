@@ -1,17 +1,23 @@
 .grid-list {
-  margin-top: 36px;
+  margin: 36px 0 25px 0;
+  box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
+  border: 0;
+  background-color: $bg-color;
+
+  border-radius: 3px;
 
   &__heading {
+    padding: 8px 16px;
     display: flex;
     align-items: center;
-    font-size: 18px;
-    line-height: 1.2;
-    margin-bottom: 16px;
+    font-size: 15px;
+    line-height: 1;
     color: $text-normal;
+    border-bottom: 1px solid $border-light;
 
     svg {
-      height: 18px;
-      margin-right: 16px;
+      height: 13px;
+      margin-right: 8px;
 
       path {
         fill: $text-normal;
@@ -20,9 +26,10 @@
   }
 
   &__list {
+    padding: 16px;
     margin: 0 -10px 32px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, 200px);
+    grid-template-columns: repeat(auto-fill, 195px);
     grid-gap: 20px 10px;
   }
 

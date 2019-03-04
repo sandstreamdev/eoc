@@ -5,7 +5,7 @@ import { withRouter, Link } from 'react-router-dom';
 import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
 
-import CardItem from 'common/components/CardItem';
+import CardItem, { CardColorType } from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
 import { getLists } from 'modules/shopping-list/model/selectors';
@@ -140,7 +140,11 @@ class Cohort extends PureComponent {
                 {_map(lists, list => (
                   <li className="cohort-list__item" key={list._id}>
                     <Link to={`/list/${list._id}`}>
-                      <CardItem name={list.name} />
+                      <CardItem
+                        color={CardColorType.ORANGE}
+                        description={list.description}
+                        name={list.name}
+                      />
                     </Link>
                   </li>
                 ))}

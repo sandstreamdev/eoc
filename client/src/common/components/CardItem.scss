@@ -4,14 +4,42 @@
   height: 96px;
   width: 180px;
   background: url('../../assets/images/card-placeholder.png') center;
-  border-radius: 8px;
-  box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
-  padding: 16px;
+  border-radius: 3px;
+  border: 0;
   color: $text-normal;
+  box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
+  padding: 8px;
+
+  &--orange {
+    background: linear-gradient(45deg, $card-color-2, $card-color-1);
+  }
+
+  &--green {
+    background: linear-gradient(45deg, $green, $light-green);
+  }
 
   &__heading {
     font-size: 14px;
     line-height: 1.2;
+    color: $text-white;
+    font-size: 13px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    word-break: break-word;
+    margin-bottom: 8px;
+    border-bottom: 1px solid $text-white;
+    padding-bottom: 4px;
+  }
+
+  &__description {
+    display: block;
+    color: $text-white;
+    font-size: 12px;
+    line-height: 1.2;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   &:hover {

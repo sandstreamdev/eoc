@@ -8,7 +8,7 @@ import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 
-const GridList = ({ icon, items, placeholder, route, name }) => (
+const GridList = ({ color, icon, items, placeholder, route, name }) => (
   <div className="grid-list">
     <h2 className="grid-list__heading">
       {icon}
@@ -21,7 +21,11 @@ const GridList = ({ icon, items, placeholder, route, name }) => (
         {_map(items, item => (
           <li className="grid-list__item" key={item._id}>
             <Link to={`${route}/${item._id}`}>
-              <CardItem name={item.name} />
+              <CardItem
+                color={color}
+                description={item.description}
+                name={item.name}
+              />
             </Link>
           </li>
         ))}
@@ -31,6 +35,7 @@ const GridList = ({ icon, items, placeholder, route, name }) => (
 );
 
 GridList.propTypes = {
+  color: PropTypes.string.isRequired,
   icon: PropTypes.node.isRequired,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   name: PropTypes.string.isRequired,
