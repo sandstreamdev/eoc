@@ -22,7 +22,7 @@ const items = (state, action) => {
             : product
         )
       };
-    case ItemActionTypes.VOTE_FOR_SUCCESS:
+    case ItemActionTypes.VOTE_SUCCESS:
       return {
         ...state,
         products: state.products.map(product =>
@@ -94,7 +94,7 @@ const lists = (state = {}, action) => {
         [action.payload.listId]: items(currentList, action)
       };
     }
-    case ItemActionTypes.VOTE_FOR_SUCCESS: {
+    case ItemActionTypes.VOTE_SUCCESS: {
       const currentList = state[action.payload.listId];
       return {
         ...state,
@@ -112,8 +112,8 @@ const isFetching = (state = false, action) => {
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.TOGGLE_FAILURE:
     case ItemActionTypes.TOGGLE_SUCCESS:
-    case ItemActionTypes.VOTE_FOR_FAILURE:
-    case ItemActionTypes.VOTE_FOR_SUCCESS:
+    case ItemActionTypes.VOTE_FAILURE:
+    case ItemActionTypes.VOTE_SUCCESS:
     case ListActionTypes.ARCHIVE_FAILURE:
     case ListActionTypes.ARCHIVE_SUCCESS:
     case ListActionTypes.CREATE_FAILURE:
@@ -133,7 +133,7 @@ const isFetching = (state = false, action) => {
       return false;
     case ItemActionTypes.ADD_REQUEST:
     case ItemActionTypes.TOGGLE_REQUEST:
-    case ItemActionTypes.VOTE_FOR_REQUEST:
+    case ItemActionTypes.VOTE_REQUEST:
     case ListActionTypes.ARCHIVE_REQUEST:
     case ListActionTypes.CREATE_REQUEST:
     case ListActionTypes.DELETE_REQUEST:

@@ -16,14 +16,14 @@ const toggleItemFailure = errMessage => ({
   payload: errMessage
 });
 const voteForItemSuccess = (product, listId) => ({
-  type: ItemActionTypes.VOTE_FOR_SUCCESS,
+  type: ItemActionTypes.VOTE_SUCCESS,
   payload: { product, listId }
 });
 const voteForItemRequest = () => ({
-  type: ItemActionTypes.VOTE_FOR_REQUEST
+  type: ItemActionTypes.VOTE_REQUEST
 });
 const voteForItemFailure = errMessage => ({
-  type: ItemActionTypes.VOTE_FOR_FAILURE,
+  type: ItemActionTypes.VOTE_FAILURE,
   payload: errMessage
 });
 

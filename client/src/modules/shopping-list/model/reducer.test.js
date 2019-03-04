@@ -33,7 +33,7 @@ describe('Products reducer', () => {
   it('adds new product data', () => {
     expect(
       lists(storeProducts, {
-        type: ItemActionTypes.ADD_ITEM_SUCCESS,
+        type: ItemActionTypes.ADD_SUCCESS,
         payload: { product: newProduct, listId: '1234' }
       })
     ).toEqual(shoppingListMockPopulated);
@@ -42,7 +42,7 @@ describe('Products reducer', () => {
   it('tooggles product is ordered', () => {
     expect(
       lists(shoppingListMockPopulated, {
-        type: ItemActionTypes.TOGGLE_ITEM_SUCCESS,
+        type: ItemActionTypes.TOGGLE_SUCCESS,
         payload: {
           product: { ...newProduct, isOrdered: !newProduct.isOrdered },
           listId: '1234'
@@ -54,7 +54,7 @@ describe('Products reducer', () => {
   it('saves voters id upon voting', () => {
     expect(
       lists(shoppingListMockPopulated, {
-        type: ItemActionTypes.VOTE_FOR_ITEM,
+        type: ItemActionTypes.VOTE_SUCCESS,
         payload: { ...newProduct, voterIds: ['abcd', 'efgh', 'ijkl'] }
       })
     ).toEqual(shoppingListMockProductVoted);
@@ -63,7 +63,7 @@ describe('Products reducer', () => {
   it('removes voters id after the vote for the second time', () => {
     expect(
       lists(shoppingListMockProductVoted, {
-        type: ItemActionTypes.VOTE_FOR_ITEM,
+        type: ItemActionTypes.VOTE_SUCCESS,
         payload: { ...newProduct, voterIds: ['abcd', 'efgh'] }
       })
     ).toEqual(shoppingListMockPopulated);
