@@ -1,11 +1,12 @@
 .toolbar {
-  background: $gray-bg;
-  box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+  background: $bg-color;
+  box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
+
   &__wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 20px;
+    padding: 4px 20px;
     position: relative;
   }
 
@@ -15,7 +16,7 @@
   }
 
   &__company-logo {
-    height: 32px;
+    height: 28px;
   }
 
   &__company-link {

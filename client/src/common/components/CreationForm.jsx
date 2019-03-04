@@ -66,31 +66,35 @@ class CreationForm extends PureComponent {
           })}
           onSubmit={this.handleFormSubmission}
         >
-          <h2 className="creation-form__heading">{label}</h2>
-          <label className="creation-form__label">
+          <div className="creation-form__header">
+            <h2 className="creation-form__heading">{label}</h2>
+          </div>
+          <div className="creation-form__body">
+            <label className="creation-form__label">
+              <input
+                className="creation-form__input"
+                onChange={this.handleValueChange}
+                placeholder="Name"
+                required={type === 'menu'}
+                type="text"
+                value={name}
+              />
+            </label>
+            <label className="creation-form__label">
+              <textarea
+                className="creation-form__textarea"
+                onChange={this.handleValueChange}
+                placeholder="Description"
+                type="text"
+                value={description}
+              />
+            </label>
             <input
-              className="creation-form__input"
-              onChange={this.handleValueChange}
-              placeholder="Name"
-              required={type === 'menu'}
-              type="text"
-              value={name}
+              className="creation-form__submit"
+              type="submit"
+              value={defaultName ? 'Update' : 'Create'}
             />
-          </label>
-          <label className="creation-form__label">
-            <textarea
-              className="creation-form__textarea"
-              onChange={this.handleValueChange}
-              placeholder="Description"
-              type="text"
-              value={description}
-            />
-          </label>
-          <input
-            className="creation-form__submit"
-            type="submit"
-            value={defaultName ? 'Update' : 'Create'}
-          />
+          </div>
         </form>
         <Overlay onClick={onHide} type={OverlayStyleType.LIGHT} />
       </Fragment>

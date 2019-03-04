@@ -1,13 +1,22 @@
 .creation-form {
   position: relative;
   background: $bg-color;
-  padding: 16px;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  min-width: 160px;
-  align-items: flex-start;
+  min-width: 195px;
   box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
+  box-sizing: border-box;
+
+  &__body {
+    padding: 16px;
+  }
+
+  &__header {
+    box-sizing: border-box;
+    padding: 8px 16px;
+    width: 100%;
+    border-bottom: 1px solid $border-light;
+  }
 
   &--menu::before {
     left: 7px;
@@ -25,10 +34,10 @@
   &__heading {
     display: flex;
     align-items: center;
-    color: $text-normal;
+    color: $text-light;
     font-size: 12px;
     line-height: 1.2;
-    margin-bottom: 16px;
+    font-weight: 700;
   }
 
   &__label {
@@ -40,38 +49,48 @@
     width: 100%;
   }
 
-  &__input {
-    border-style: solid;
-    border: 1px solid $text-normal;
-    border-radius: 5px;
-    padding: 2px;
-    width: 100%;
-    box-sizing: border-box;
-
-    &::placeholder {
-      color: $text-light;
-      font-size: 10px;
-    }
-  }
-
+  &__input,
   &__textarea {
-    border-style: solid;
-    border: 1px solid $text-normal;
     box-sizing: border-box;
-    border-radius: 5px;
+    border: 1px solid $border-color;
+    color: $text-normal;
+    display: block;
     width: 100%;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.2;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    outline: 0;
     resize: vertical;
 
     &::placeholder {
       color: $text-light;
       font-size: 10px;
     }
+
+    &:focus {
+      border: 1px solid rgba($border-focus, 0.54);
+      background-color: rgba(0, 0, 0, 0);
+      box-shadow: 0 0 0 0.2rem rgba($border-focus, 0);
+    }
   }
 
   &__submit {
-    padding: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    background: $gray-bg;
+    font-weight: 600;
+    color: $text-white;
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    line-height: 1.2;
+    text-decoration: none !important;
+    display: inline-block;
+    background: $button-bg;
+    border: 0;
+    box-shadow: 0px 2px 2px rgba($shadow-color, 0.23);
   }
 }

@@ -1,18 +1,10 @@
 .user-bar {
-  display: flex;
-  justify-content: flex-end;
   position: relative;
 
   &__button {
-    padding: 5px 8px;
     border: 0;
     text-align: left;
     cursor: pointer;
-    background: rgba($shadow-color, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 3px;
     position: relative;
     color: $text-white;
     font-size: 12px;
@@ -22,9 +14,11 @@
   }
 
   &__avatar {
-    margin-left: 8px;
     height: 28px;
     border-radius: 100%;
+    box-shadow: 0 16px 38px -12px rgba($shadow-color, 0.86),
+      0 4px 25px 0 rgba($shadow-color, 0.42),
+      0 8px 10px -5px rgba($shadow-color, 0.5);
   }
 
   &__menu-button {
@@ -38,7 +32,6 @@
 
   &__menu-wrapper {
     width: 180px;
-    border-radius: 3px;
     padding: 16px;
     background: $bg-color;
     position: absolute;

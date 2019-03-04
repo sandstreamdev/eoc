@@ -3,15 +3,16 @@ $light-green: #e1f5c4;
 $red: #fa0202;
 $red-light: #e0a5a5;
 $gray1: #646c73;
-$gray2: #d3d3de;
-$gray3: #fbfcfc;
-$gray4: #8a949e;
+$gray2: #d1d3d4;
+$gray3: #e6e7e8;
+$gray4: #a5a7aa;
 $black: #000;
 $blue: #26ade4;
 $white: #fff;
-$yellow: #e1d540;
+$yellow: #e1d536;
 $gold: #c48b31;
-$orange: #fbb040;
+$orange: #fca729;
+$dark-orange: #ef9b1f;
 
 // Colours by roles
 $app-bg: #e6e7e8;
@@ -40,3 +41,6 @@ $chevron-active: $black;
 $chevron-not-active: $gray4;
 $gray-bg: $gray2;
 $overlay-color: $black;
+$border-focus: $dark-orange;
+$border-light: $gray3;
+$button-bg: $orange;

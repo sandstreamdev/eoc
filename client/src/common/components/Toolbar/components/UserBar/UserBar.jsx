@@ -57,7 +57,6 @@ class UserBar extends Component {
             onClick={this.toggleMenu}
             type="button"
           >
-            Profile:
             <img
               alt="User avatar"
               className="user-bar__avatar"
