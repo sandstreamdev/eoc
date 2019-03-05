@@ -71,12 +71,17 @@ class Cohort extends PureComponent {
   };
 
   updateCohortHandler = cohortId => (name, description) => {
-    const { updateCohort } = this.props;
-    const dataToUpdate = {};
-    name ? (dataToUpdate.name = name) : null;
-    description ? (dataToUpdate.description = description) : null;
+    const { cohortDetails, updateCohort } = this.props;
+    const {
+      description: previousDescription,
+      name: previousName
+    } = cohortDetails;
 
-    updateCohort(cohortId, dataToUpdate);
+    if (previousDescription !== description || previousName !== name) {
+      const dataToUpdate = { description, name };
+
+      updateCohort(cohortId, dataToUpdate);
+    }
     this.hideUpdateForm();
   };
 
