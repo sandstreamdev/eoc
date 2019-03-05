@@ -8,10 +8,10 @@ import _isEmpty from 'lodash/isEmpty';
 import CardItem, { CardColorType } from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
-import { getLists } from 'modules/shopping-list/model/selectors';
+import { getCohortLists } from 'modules/shopping-list/model/selectors';
 import {
   createList,
-  fetchListMetaData
+  fetchListsMetaData
 } from 'modules/shopping-list/model/actions';
 import { CohortIcon, EditIcon, ListIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
@@ -32,13 +32,13 @@ class Cohort extends PureComponent {
 
   componentDidMount() {
     const {
-      fetchListMetaData,
+      fetchListsMetaData,
       match: {
         params: { id }
       }
     } = this.props;
 
-    fetchListMetaData(id);
+    fetchListsMetaData(id);
   }
 
   hideListCreationForm = () => {
@@ -176,19 +176,19 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
-  fetchListMetaData: PropTypes.func.isRequired,
+  fetchListsMetaData: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
   cohortDetails: getCohortDetails(state, ownProps.match.params.id),
   currentUser: getCurrentUser(state),
-  lists: getLists(state, ownProps.match.params.id)
+  lists: getCohortLists(state, ownProps.match.params.id)
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
-    { createList, fetchListMetaData, updateCohort }
+    { createList, fetchListsMetaData, updateCohort }
   )(Cohort)
 );

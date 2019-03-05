@@ -14,7 +14,7 @@ import {
   createCohort,
   fetchCohortsMetaData
 } from 'modules/cohort/model/actions';
-import { getShoppingLists } from 'modules/shopping-list/model/selectors';
+import { getLists } from 'modules/shopping-list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
@@ -156,7 +156,7 @@ Dashboard.propTypes = {
 const mapStateToProps = state => ({
   cohorts: getCohorts(state),
   currentUser: getCurrentUser(state),
-  lists: getShoppingLists(state)
+  lists: getLists(state)
 });
 
 export default connect(
