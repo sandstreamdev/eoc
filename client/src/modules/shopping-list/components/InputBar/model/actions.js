@@ -1,28 +1,28 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { postData } from 'common/utils/fetchMethods';
-import { ProductActionTypes } from './actionTypes';
+import { ItemActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
-const addProductFailure = errorMessage => ({
-  type: ProductActionTypes.ADD_PRODUCT_FAILURE,
+const addItemFailure = errorMessage => ({
+  type: ItemActionTypes.ADD_FAILURE,
   payload: errorMessage
 });
-export const addProductSuccess = (product, listId) => ({
-  type: ProductActionTypes.ADD_PRODUCT_SUCCESS,
+export const addItemSuccess = (product, listId) => ({
+  type: ItemActionTypes.ADD_SUCCESS,
   payload: { product, listId }
 });
-const addProductRequest = () => ({
-  type: ProductActionTypes.ADD_PRODUCT_REQUEST
+const addItemRequest = () => ({
+  type: ItemActionTypes.ADD_REQUEST
 });
 
-export const addProductToList = (product, listId) => dispatch => {
-  dispatch(addProductRequest());
+export const addItemToList = (product, listId) => dispatch => {
+  dispatch(addItemRequest());
   postData(`${ENDPOINT_URL}/shopping-lists/add-product`, { product, listId })
     .then(resp => resp.json())
-    .then(json => dispatch(addProductSuccess(json, listId)))
+    .then(json => dispatch(addItemSuccess(json, listId)))
     .catch(err => {
-      dispatch(addProductFailure());
+      dispatch(addItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

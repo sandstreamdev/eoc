@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import { getShoppingList } from 'modules/shopping-list/model/selectors';
+import { getList } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
   archiveList,
@@ -176,7 +176,7 @@ ShoppingList.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
   currentUser: getCurrentUser(state),
-  list: getShoppingList(state, ownProps.match.params.id)
+  list: getList(state, ownProps.match.params.id)
 });
 
 export default withRouter(

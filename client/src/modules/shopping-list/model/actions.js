@@ -7,112 +7,112 @@ import {
   patchData,
   postData
 } from 'common/utils/fetchMethods';
-import { ShoppingListActionTypes } from './actionTypes';
+import { ListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 
 const fetchListDataFailure = errMessage => ({
-  type: ShoppingListActionTypes.FETCH_DATA_FAILURE,
+  type: ListActionTypes.FETCH_DATA_FAILURE,
   payload: errMessage
 });
 const fetchListDataSuccess = (data, listId) => ({
-  type: ShoppingListActionTypes.FETCH_DATA_SUCCESS,
+  type: ListActionTypes.FETCH_DATA_SUCCESS,
   payload: { data, listId }
 });
 
 const fetchListDataRequest = () => ({
-  type: ShoppingListActionTypes.FETCH_DATA_REQUEST
+  type: ListActionTypes.FETCH_DATA_REQUEST
 });
 
 const createListSuccess = data => ({
-  type: ShoppingListActionTypes.CREATE_LIST_SUCCESS,
+  type: ListActionTypes.CREATE_SUCCESS,
   payload: data
 });
 
 const createListFailure = errMessage => ({
-  type: ShoppingListActionTypes.CREATE_LIST_FAILURE,
+  type: ListActionTypes.CREATE_FAILURE,
   payload: errMessage
 });
 
 const createListRequest = () => ({
-  type: ShoppingListActionTypes.CREATE_LIST_REQUEST
+  type: ListActionTypes.CREATE_REQUEST
 });
 
 const deleteListSuccess = id => ({
-  type: ShoppingListActionTypes.DELETE_SUCCESS,
+  type: ListActionTypes.DELETE_SUCCESS,
   payload: id
 });
 
 const deleteListFailure = errMessage => ({
-  type: ShoppingListActionTypes.DELETE_FAILURE,
+  type: ListActionTypes.DELETE_FAILURE,
   payload: errMessage
 });
 
 const deleteListRequest = () => ({
-  type: ShoppingListActionTypes.DELETE_REQUEST
+  type: ListActionTypes.DELETE_REQUEST
 });
 
 const updateListSuccess = data => ({
-  type: ShoppingListActionTypes.UPDATE_SUCCESS,
+  type: ListActionTypes.UPDATE_SUCCESS,
   payload: data
 });
 
 const updateListFailure = errMessage => ({
-  type: ShoppingListActionTypes.UPDATE_FAILURE,
+  type: ListActionTypes.UPDATE_FAILURE,
   payload: errMessage
 });
 
 const updateListRequest = () => ({
-  type: ShoppingListActionTypes.UPDATE_REQUEST
+  type: ListActionTypes.UPDATE_REQUEST
 });
 
 const fetchListsMetaDataSuccess = data => ({
-  type: ShoppingListActionTypes.FETCH_META_DATA_SUCCESS,
+  type: ListActionTypes.FETCH_META_DATA_SUCCESS,
   payload: data
 });
 const fetchListsMetaDataFailure = errMessage => ({
-  type: ShoppingListActionTypes.FETCH_META_DATA_FAILURE,
+  type: ListActionTypes.FETCH_META_DATA_FAILURE,
   payload: errMessage
 });
 const fetchListsMetaDataRequest = () => ({
-  type: ShoppingListActionTypes.FETCH_META_DATA_REQUEST
+  type: ListActionTypes.FETCH_META_DATA_REQUEST
 });
 
 const fetchArchivedListMetaDataSuccess = data => ({
-  type: ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
+  type: ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
   payload: data
 });
 const fetchArchivedListsMetaDataFailure = errMessage => ({
-  type: ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
+  type: ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
   payload: errMessage
 });
 const fetchArchivedListsMetaDataRequest = () => ({
-  type: ShoppingListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST
+  type: ListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST
 });
 
 const archiveListSuccess = data => ({
-  type: ShoppingListActionTypes.ARCHIVE_SUCCESS,
+  type: ListActionTypes.ARCHIVE_SUCCESS,
   payload: data
 });
 const archiveListFailure = errMessage => ({
-  type: ShoppingListActionTypes.ARCHIVE_FAILURE,
+  type: ListActionTypes.ARCHIVE_FAILURE,
   payload: errMessage
 });
 const archiveListRequest = () => ({
-  type: ShoppingListActionTypes.ARCHIVE_REQUEST
+  type: ListActionTypes.ARCHIVE_REQUEST
 });
 
 const restoreListSuccess = (data, listId) => ({
-  type: ShoppingListActionTypes.RESTORE_SUCCESS,
+  type: ListActionTypes.RESTORE_SUCCESS,
   payload: { data, listId }
 });
 const restoreListFailure = errMessage => ({
-  type: ShoppingListActionTypes.RESTORE_FAILURE,
+  type: ListActionTypes.RESTORE_FAILURE,
   payload: errMessage
 });
 const restoreListRequest = () => ({
-  type: ShoppingListActionTypes.RESTORE_REQUEST
+  type: ListActionTypes.RESTORE_REQUEST
 });
 
 export const fetchListData = listId => dispatch => {
@@ -155,27 +155,12 @@ export const createList = (
     });
 };
 
-export const fetchListsMetaData = () => dispatch => {
+export const fetchListsMetaData = (cohortId = null) => dispatch => {
+  const url = cohortId
+    ? `${ENDPOINT_URL}/shopping-lists/meta-data/${cohortId}`
+    : `${ENDPOINT_URL}/shopping-lists/meta-data`;
   dispatch(fetchListsMetaDataRequest());
-  return getData(`${ENDPOINT_URL}/shopping-lists/meta-data`)
-    .then(resp => resp.json())
-    .then(json => {
-      const dataMap = _keyBy(json, '_id');
-      dispatch(fetchListsMetaDataSuccess(dataMap));
-    })
-    .catch(err => {
-      dispatch(fetchListsMetaDataFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching lists failed..."
-      );
-    });
-};
-
-export const fetchListMetaData = cohortId => dispatch => {
-  dispatch(fetchListsMetaDataRequest());
-  getData(`${ENDPOINT_URL}/shopping-lists/meta-data/${cohortId}`)
+  getData(url)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');

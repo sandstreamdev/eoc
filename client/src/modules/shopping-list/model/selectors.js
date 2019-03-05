@@ -2,13 +2,13 @@ import _pick from 'lodash/pick';
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 
-export const getShoppingList = (state, listId) =>
-  _pick(state.shoppingLists.data, listId)[listId];
-export const getShoppingLists = state => state.shoppingLists.data;
-export const getLists = (state, cohortId) =>
+export const getList = (state, listId) =>
+  _pick(state.lists.data, listId)[listId];
+export const getLists = state => state.lists.data;
+export const getCohortLists = (state, cohortId) =>
   _keyBy(
-    _filter(state.shoppingLists.data, value => value.cohortId === cohortId),
+    _filter(state.lists.data, value => value.cohortId === cohortId),
     '_id'
   );
 
-export const getIsFetchingLists = state => state.shoppingLists.isFetching;
+export const getIsFetchingLists = state => state.lists.isFetching;
