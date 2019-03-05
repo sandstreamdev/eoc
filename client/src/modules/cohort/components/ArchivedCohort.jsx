@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 
 import Dialog from 'common/components/Dialog';
 import { deleteCohort, restoreCohort } from 'modules/cohort/model/actions';
+import { noOp } from 'common/utils/noOp';
+import { fetchListMetaData } from 'modules/shopping-list/model/actions';
 
 class ArchivedList extends PureComponent {
   state = {
@@ -19,8 +21,10 @@ class ArchivedList extends PureComponent {
   };
 
   restoreCohortHandler = cohortId => () => {
-    const { restoreCohort } = this.props;
-    restoreCohort(cohortId);
+    const { fetchListMetaData, restoreCohort } = this.props;
+    restoreCohort(cohortId)
+      .then(fetchListMetaData(cohortId))
+      .catch(noOp);
   };
 
   deleteCohortHandler = cohortId => () => {
@@ -69,10 +73,11 @@ ArchivedList.propTypes = {
   cohortId: PropTypes.string.isRequired,
 
   deleteCohort: PropTypes.func.isRequired,
+  fetchListMetaData: PropTypes.func.isRequired,
   restoreCohort: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { deleteCohort, restoreCohort }
+  { deleteCohort, fetchListMetaData, restoreCohort }
 )(ArchivedList);

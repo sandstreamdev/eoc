@@ -42,23 +42,6 @@ class Cohort extends Component {
     this.fetchData();
   }
 
-  componentDidUpdate(prevProps) {
-    const {
-      cohortDetails,
-      fetchListMetaData,
-      match: {
-        params: { id }
-      }
-    } = this.props;
-    if (cohortDetails && prevProps.cohortDetails) {
-      if (cohortDetails.isArchived !== prevProps.cohortDetails.isArchived) {
-        if (this.checkIfArchived()) {
-          fetchListMetaData(id);
-        }
-      }
-    }
-  }
-
   fetchData = () => {
     const {
       fetchCohortData,
@@ -68,10 +51,13 @@ class Cohort extends Component {
       }
     } = this.props;
 
-    fetchCohortData(id);
-    if (this.checkIfArchived()) {
-      fetchListMetaData(id);
-    }
+    fetchCohortData(id)
+      .then(() => {
+        if (!this.checkIfArchived()) {
+          fetchListMetaData(id);
+        }
+      })
+      .catch(noOp);
   };
 
   hideListCreationForm = () => {
@@ -135,7 +121,7 @@ class Cohort extends Component {
 
   checkIfArchived = () => {
     const { cohortDetails } = this.props;
-    return cohortDetails && cohortDetails.isArchived === false;
+    return cohortDetails && cohortDetails.isArchived;
   };
 
   render() {
