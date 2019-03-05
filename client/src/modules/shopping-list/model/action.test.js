@@ -8,7 +8,7 @@ import {
   newProductMock,
   shoppingListMockNotPopulated
 } from '__mocks__/productsMock';
-import { ShoppingListActionTypes } from './actionTypes';
+import { ListActionTypes } from './actionTypes';
 import { NotificationActionTypes } from 'modules/notification/model/actionsTypes';
 
 const getMockStore = configureMockStore([thunk]);
@@ -19,7 +19,7 @@ describe('fetchProducts action creator', () => {
     const store = getMockStore(shoppingListMockNotPopulated);
     const expectedActions = [
       {
-        type: ShoppingListActionTypes.FETCH_PRODUCTS_SUCCESS,
+        type: ListActionTypes.FETCH_PRODUCTS_SUCCESS,
         payload: { products: [newProductMock], listId: '1234' }
       }
     ];
@@ -39,10 +39,7 @@ describe('fetchProducts action creator', () => {
     const store = getMockStore({ data: [], products: [], isFetching: false });
     const expectedActions = [
       {
-        type: ShoppingListActionTypes.FETCH_PRODUCTS_REQUEST
-      },
-      {
-        type: ShoppingListActionTypes.FETCH_PRODUCTS_FAILURE,
+        type: ListActionTypes.FETCH_DATA_FAILURE,
         payload: undefined
       },
       {

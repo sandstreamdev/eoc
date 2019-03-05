@@ -8,10 +8,10 @@ import _isEmpty from 'lodash/isEmpty';
 import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
-import { getLists } from 'modules/shopping-list/model/selectors';
+import { getCohortLists } from 'modules/shopping-list/model/selectors';
 import {
   createList,
-  fetchListMetaData
+  fetchListsMetaData
 } from 'modules/shopping-list/model/actions';
 import {
   ArchiveIcon,
@@ -45,7 +45,7 @@ class Cohort extends Component {
   fetchData = () => {
     const {
       fetchCohortData,
-      fetchListMetaData,
+      fetchListsMetaData,
       match: {
         params: { id }
       }
@@ -54,7 +54,7 @@ class Cohort extends Component {
     fetchCohortData(id)
       .then(() => {
         if (!this.checkIfArchived()) {
-          fetchListMetaData(id);
+          fetchListsMetaData(id);
         }
       })
       .catch(noOp);
@@ -230,14 +230,14 @@ Cohort.propTypes = {
 
   archiveCohort: PropTypes.func.isRequired,
   fetchCohortData: PropTypes.func.isRequired,
-  fetchListMetaData: PropTypes.func.isRequired,
+  fetchListsMetaData: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
   cohortDetails: getCohortDetails(state, ownProps.match.params.id),
   currentUser: getCurrentUser(state),
-  lists: getLists(state, ownProps.match.params.id)
+  lists: getCohortLists(state, ownProps.match.params.id)
 });
 
 export default withRouter(
@@ -247,7 +247,7 @@ export default withRouter(
       archiveCohort,
       createList,
       fetchCohortData,
-      fetchListMetaData,
+      fetchListsMetaData,
       updateCohort
     }
   )(Cohort)
