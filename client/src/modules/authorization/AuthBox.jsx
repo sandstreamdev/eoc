@@ -27,7 +27,12 @@ const AuthBox = () => (
         </a>
       </div>
       <footer className="authbox__footer">
-        <a className="authbox__link" href={COMPANY_PAGE_URL}>
+        <a
+          className="authbox__link"
+          href={COMPANY_PAGE_URL}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           www.sandstream.pl
         </a>
       </footer>
