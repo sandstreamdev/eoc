@@ -94,7 +94,7 @@
     text-transform: uppercase;
     padding: 8px 16px;
     line-height: 1.2;
-    text-decoration: none !important;
+    text-decoration: none;
     display: inline-block;
     background: $button-bg;
     border: 0;
@@ -102,10 +102,17 @@
   }
 
   &__cancel-button {
-    padding: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    background: $gray-bg;
+    font-weight: 600;
+    color: $text-white;
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    line-height: 1.2;
+    text-decoration: none;
+    display: inline-block;
+    background: $button-bg;
+    border: 0;
+    box-shadow: 0px 2px 2px rgba($shadow-color, 0.23);
     position: absolute;
     right: 16px;
     bottom: 16px;
