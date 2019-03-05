@@ -1,26 +1,65 @@
 .dialog {
-  max-width: 420px;
   position: fixed;
-  left: 50%;
   top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  padding: 20px;
-  background: $bg-color;
-  z-index: 8;
-  box-shadow: 0 3px 4px rgba($shadow-color, 0.15);
-  font-size: 14px;
-  line-height: 1.2;
-  color: $text-normal;
+  margin: 0 auto;
+  background-color: $bg-color;
+  box-shadow: 0px 0px 5px rgba($shadow-color, 0.15);
+  box-sizing: border-box;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-width: 320px;
+  max-width: 600px;
+  z-index: 9;
 
-  &__heading {
-    margin-bottom: 16px;
+  &__header {
+    padding: 10px;
+    color: $text-light;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.2;
+    border-bottom: 1px solid $border-light;
+  }
+
+  &__body {
+    font-size: 13px;
+    line-height: 1.2;
+    color: $text-normal;
+    padding: 10px;
   }
 
   &__footer {
+    padding: 15px 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    margin-top: 16px;
-    z-index: 9;
+  }
+
+  &__heading {
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  &__button {
+    font-weight: 600;
+    color: $text-white;
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    line-height: 1.2;
+    text-decoration: none;
+    display: inline-block;
+    background: $button-bg;
+    border: 0;
+    box-shadow: 0px 2px 2px rgba($shadow-color, 0.23);
+
+    &:first-of-type {
+      margin-right: 20px;
+    }
   }
 }
