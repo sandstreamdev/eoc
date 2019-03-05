@@ -10,6 +10,7 @@ import {
 } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+import { removeLists } from 'modules/shopping-list/model/actions';
 import history from 'common/utils/history';
 
 const createCohortSuccess = data => ({
@@ -202,6 +203,7 @@ export const archiveCohort = cohortId => dispatch => {
     .then(resp => resp.json())
     .then(json => {
       dispatch(archiveCohortSuccess({ isArchived: true, cohortId }));
+      dispatch(removeLists());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,

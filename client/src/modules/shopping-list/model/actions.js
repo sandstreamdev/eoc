@@ -115,6 +115,10 @@ const restoreListRequest = () => ({
   type: ListActionTypes.RESTORE_REQUEST
 });
 
+export const removeLists = () => ({
+  type: ListActionTypes.REMOVE
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/shopping-lists/${listId}/data`)

@@ -53,7 +53,7 @@ export class Layout extends Component {
           <Route component={Cohort} path="/cohort/:id(\w+)" />
           <Route component={ShoppingList} path="/list/:id(\w+)" />
           <Route component={Archived} path="/archived" />
-          {/* <Route component={Dashboard} /> */}
+          <Route component={Dashboard} />
         </Switch>
         <Footer />
       </Fragment>

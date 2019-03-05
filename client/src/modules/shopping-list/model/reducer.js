@@ -80,6 +80,8 @@ const lists = (state = {}, action) => {
         [action.payload.listId]: action.payload.data
       };
     }
+    case ListActionTypes.REMOVE:
+      return {};
     case ItemActionTypes.ADD_SUCCESS: {
       const currentList = state[action.payload.listId];
       return {
