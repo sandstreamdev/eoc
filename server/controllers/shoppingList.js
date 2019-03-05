@@ -99,6 +99,7 @@ const getShoppingListsMetaData = (req, resp) => {
         isArchived: false
       },
       '_id name description cohortId',
+      { sort: { created_at: -1 } },
       (err, docs) => {
         if (!docs) {
           return resp
@@ -205,6 +206,8 @@ const getListData = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
+    null,
+    { sort: { created_at: -1 } },
     (err, documents) => {
       if (err) {
         return resp.status(404).send({ message: err.message });

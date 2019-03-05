@@ -5,11 +5,12 @@ import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model
 
 const items = (state, action) => {
   switch (action.type) {
-    case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.ADD_SUCCESS: {
       return {
         ...state,
-        products: [...state.products, action.payload.product]
+        products: [action.payload.product, ...state.products]
       };
+    }
     case ItemActionTypes.TOGGLE_SUCCESS:
       return {
         ...state,
@@ -46,8 +47,8 @@ const lists = (state = {}, action) => {
       return { ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
       return {
-        ...state,
-        [action.payload._id]: { ...action.payload }
+        [action.payload._id]: { ...action.payload },
+        ...state
       };
     case ListActionTypes.DELETE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;

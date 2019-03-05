@@ -2,8 +2,10 @@ import _pick from 'lodash/pick';
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 
-export const getList = (state, listId) =>
-  _pick(state.lists.data, listId)[listId];
+export const getList = (state, listId) => {
+  console.log(_pick(state.lists.data, listId));
+  return _pick(state.lists.data, listId)[listId];
+};
 export const getLists = state => state.lists.data;
 export const getCohortLists = (state, cohortId) =>
   _keyBy(

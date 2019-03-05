@@ -22,8 +22,8 @@ export const FilterOptionType = Object.freeze({
 });
 
 const sortOptions = [
-  { id: SortOptionType.AUTHOR, label: 'author' },
   { id: SortOptionType.DATE, label: 'date' },
+  { id: SortOptionType.AUTHOR, label: 'author' },
   { id: SortOptionType.NAME, label: 'name' },
   { id: SortOptionType.VOTES, label: 'votes' }
 ];
@@ -35,8 +35,8 @@ const filterOptions = [
 
 class ProductsContainer extends Component {
   state = {
-    sortBy: SortOptionType.NAME,
-    sortOrder: SortOrderType.ASCENDING,
+    sortBy: SortOptionType.DATE,
+    sortOrder: SortOrderType.DESCENDING,
     filterBy: FilterOptionType.ALL_PRODUCTS
   };
 
