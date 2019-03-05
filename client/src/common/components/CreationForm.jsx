@@ -99,6 +99,15 @@ class CreationForm extends PureComponent {
               type="submit"
               value={defaultName ? 'Update' : 'Create'}
             />
+            {onCancel && (
+              <button
+                className="creation-form__cancel-button"
+                onClick={onCancel}
+                type="button"
+              >
+                Cancel
+              </button>
+            )}
           </div>
         </form>
         <Overlay onClick={onHide} type={OverlayStyleType.LIGHT} />

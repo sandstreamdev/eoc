@@ -68,19 +68,22 @@ const updateCohortById = (req, resp) => {
     dataToUpdate,
     { new: true },
     (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message:
+            "Oops we're sorry, an error occurred while processing the cohort"
+        });
+      }
+
       if (!doc) {
         return resp.status(404).send({
           message: 'You have no permissions to perform this action'
         });
       }
-      return err
-        ? resp.status(400).send({
-            message:
-              "Oops we're sorry, an error occurred while processing the cohort"
-          })
-        : resp.status(200).send({
-            message: `Cohort "${doc.name}" was successfully updated!`
-          });
+
+      resp.status(200).send({
+        message: `Cohort "${doc.name}" was successfully updated!`
+      });
     }
   );
 };
