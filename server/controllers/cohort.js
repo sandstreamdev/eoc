@@ -23,7 +23,8 @@ const createCohort = (req, resp) => {
 const getCohortsMetaData = (req, resp) => {
   Cohort.find(
     {
-      $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }]
+      $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }],
+      isArchived: false
     },
     '_id name description',
     { sort: { createdAt: -1 } },
@@ -39,24 +40,13 @@ const getCohortsMetaData = (req, resp) => {
   );
 };
 
-const getCohortById = (req, resp) => {
-  Cohort.findById({ _id: req.params.id }, (err, doc) => {
-    if (!doc) {
-      return resp.status(404).send({ message: 'No cohort of given id' });
-    }
-
-    return err
-      ? resp.status(400).send({ message: err.message })
-      : resp.status(200).json(doc);
-  });
-};
-
 const updateCohortById = (req, resp) => {
-  const { description, name } = req.body;
+  const { description, isArchived, name } = req.body;
   const { id: cohortId } = req.params;
 
   const dataToUpdate = filter(x => x !== undefined)({
     description,
+    isArchived,
     name
   });
 
@@ -88,9 +78,64 @@ const updateCohortById = (req, resp) => {
   );
 };
 
+const getCohortData = (req, resp) => {
+  Cohort.findOne(
+    {
+      _id: req.params.id,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({ message: err.message });
+      }
+
+      if (!doc) {
+        return resp
+          .status(404)
+          .send({ message: 'Data not found for given cohort id!' });
+      }
+
+      const { _id, isArchived } = doc;
+
+      if (isArchived) {
+        return resp.status(200).json({ _id, isArchived });
+      }
+
+      return resp.status(200).json(doc);
+    }
+  );
+};
+
+const deleteCohortById = (req, resp) => {
+  Cohort.findOneAndDelete(
+    { _id: req.params.id, adminIds: req.user._id },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({ message: err.message });
+      }
+
+      if (!doc) {
+        return resp.status(404).send({
+          message:
+            "No cohort of given id or you don't have permission to delete it"
+        });
+      }
+
+      resp
+        .status(200)
+        .send({ message: `Cohort ${doc.name} was successfully deleted!` });
+    }
+  );
+};
+
 module.exports = {
   createCohort,
-  getCohortById,
+  deleteCohortById,
+  getCohortData,
   getCohortsMetaData,
   updateCohortById
 };

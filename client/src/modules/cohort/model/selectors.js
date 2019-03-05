@@ -9,7 +9,7 @@ export const getCohortDetails = (state, cohortId) => {
     _filter(getCohorts(state), (_, key) => key === cohortId)
   );
   if (cohort) {
-    const { description, name } = cohort;
-    return { description, name };
+    const { description, isArchived, name } = cohort;
+    return { description, isArchived, name };
   }
 };
