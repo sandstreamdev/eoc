@@ -1,5 +1,6 @@
 const Cohort = require('../models/cohort.model');
 const filter = require('../common/utilities');
+const List = require('../models/shoppingList.model');
 
 const createCohort = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -111,25 +112,29 @@ const getCohortData = (req, resp) => {
 };
 
 const deleteCohortById = (req, resp) => {
-  Cohort.findOneAndDelete(
-    { _id: req.params.id, adminIds: req.user._id },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({ message: err.message });
-      }
-
+  let documentName = '';
+  Cohort.findOne({ _id: req.params.id, adminIds: req.user._id })
+    .then(doc => {
       if (!doc) {
         return resp.status(404).send({
           message:
             "No cohort of given id or you don't have permission to delete it"
         });
       }
-
+      documentName = doc.name;
+      return List.deleteMany({ cohortId: req.params.id });
+    })
+    .then(() => Cohort.deleteOne({ _id: req.params.id }))
+    .then(() => {
       resp
         .status(200)
-        .send({ message: `Cohort ${doc.name} was successfully deleted!` });
-    }
-  );
+        .send({ message: `Cohort ${documentName} was successfully deleted!` });
+    })
+    .catch(err => {
+      resp.status(400).send({
+        message: "Oops we're sorry, an error occurred while deleting the cohort"
+      });
+    });
 };
 
 module.exports = {
