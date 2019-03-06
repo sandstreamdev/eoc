@@ -33,6 +33,7 @@ const cohorts = (state = {}, action) => {
       const { [action.payload]: removed, ...newState } = state;
       return newState;
     }
+    case CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
       return action.payload;
     case CohortActionTypes.RESTORE_SUCCESS:
@@ -55,6 +56,8 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.CREATE_SUCCESS:
     case CohortActionTypes.DELETE_FAILURE:
     case CohortActionTypes.DELETE_SUCCESS:
+    case CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
+    case CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
     case CohortActionTypes.FETCH_DATA_FAILURE:
     case CohortActionTypes.FETCH_DATA_SUCCESS:
     case CohortActionTypes.FETCH_META_DATA_FAILURE:
@@ -67,6 +70,7 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.ARCHIVE_REQUEST:
     case CohortActionTypes.CREATE_REQUEST:
     case CohortActionTypes.DELETE_REQUEST:
+    case CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
     case CohortActionTypes.FETCH_DATA_REQUEST:
     case CohortActionTypes.FETCH_META_DATA_REQUEST:
     case CohortActionTypes.RESTORE_REQUEST:

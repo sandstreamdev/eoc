@@ -41,6 +41,30 @@ const getCohortsMetaData = (req, resp) => {
   );
 };
 
+const getArchivedCohortsMetaData = (req, resp) => {
+  Cohort.find(
+    {
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ],
+      isArchived: true
+    },
+    '_id name description isArchived',
+    { sort: { created_at: -1 } },
+    (err, docs) => {
+      if (err) {
+        return resp.status(400).send({ message: err.message });
+      }
+      if (!docs) {
+        return resp.status(404).send('There is no archived cohorts!');
+      }
+      resp.status(200).send(docs);
+    }
+  );
+};
+
 const updateCohortById = (req, resp) => {
   const { description, isArchived, name } = req.body;
   const { id: cohortId } = req.params;
@@ -140,6 +164,7 @@ const deleteCohortById = (req, resp) => {
 module.exports = {
   createCohort,
   deleteCohortById,
+  getArchivedCohortsMetaData,
   getCohortData,
   getCohortsMetaData,
   updateCohortById

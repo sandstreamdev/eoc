@@ -111,6 +111,18 @@ const fetchCohortDataRequest = () => ({
   type: CohortActionTypes.FETCH_DATA_REQUEST
 });
 
+const fetchArchivedCohortsMetaDataSuccess = data => ({
+  type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
+  payload: data
+});
+const fetchArchivedCohortsMetaDataFailure = errMessage => ({
+  type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
+  payload: errMessage
+});
+const fetchArchivedCohortsMetaDataRequest = () => ({
+  type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST
+});
+
 export const createCohort = (name, description, adminId) => dispatch => {
   dispatch(createCohortRequest());
   return postData(`${ENDPOINT_URL}/cohorts/create`, {
@@ -144,6 +156,24 @@ export const fetchCohortsMetaData = () => dispatch => {
         dispatch,
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, fetching cohorts meta data failed..."
+      );
+    });
+};
+
+export const fetchArchivedCohortsMetaData = () => dispatch => {
+  dispatch(fetchArchivedCohortsMetaDataRequest());
+  return getData(`${ENDPOINT_URL}/cohorts/archived`)
+    .then(resp => resp.json())
+    .then(json => {
+      const dataMap = _keyBy(json, '_id');
+      dispatch(fetchArchivedCohortsMetaDataSuccess(dataMap));
+    })
+    .catch(err => {
+      dispatch(fetchArchivedCohortsMetaDataFailure(err.message));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, fetching cohorts failed..."
       );
     });
 };
