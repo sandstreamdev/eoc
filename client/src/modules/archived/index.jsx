@@ -32,7 +32,7 @@ class Archived extends PureComponent {
             route="list"
           />
           <GridList
-            color={CardColorType.GREEN}
+            color={CardColorType.BROWN}
             icon={<ListIcon />}
             name="Archived Cohorts"
             placeholder="There are no archived cohorts!"

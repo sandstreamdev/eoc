@@ -132,7 +132,7 @@ class ShoppingList extends Component {
           )}
         </Toolbar>
         {!isArchived && (
-          <div className="app-wrapper">
+          <div className="wrapper list-wrapper">
             <InputBar />
             <ProductsContainer
               description={description}

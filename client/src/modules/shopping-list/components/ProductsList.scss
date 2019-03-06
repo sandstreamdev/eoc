@@ -5,15 +5,6 @@
     margin: 10px 0;
     position: relative;
 
-    input:checked ~ label {
-      color: $text-normal;
-
-      &:before {
-        transform: translate(-50%, -50%) scale3d(56, 56, 1);
-        opacity: 1;
-      }
-    }
-
     input {
       width: 32px;
       height: 32px;
@@ -102,7 +93,7 @@
     &:before {
       width: 10px;
       height: 10px;
-      border-radius: 50%;
+      border-radius: 100%;
       content: '';
       position: absolute;
       left: 50%;
@@ -121,7 +112,7 @@
       background-color: $bg-color;
       background-repeat: no-repeat;
       background-position: 2px 3px;
-      border-radius: 50%;
+      border-radius: 100%;
       z-index: 2;
       position: absolute;
       right: 30px;

@@ -4,14 +4,14 @@ import classNames from 'classnames';
 
 export const CardColorType = {
   ORANGE: 'card/ORANGE',
-  GREEN: 'card/GREEN'
+  BROWN: 'card/BROWN'
 };
 
 const CardItem = ({ color, description, name }) => (
   <div
     className={classNames('card-item', {
       'card-item--orange': color === CardColorType.ORANGE,
-      'card-item--green': color === CardColorType.GREEN
+      'card-item--brown': color === CardColorType.BROWN
     })}
   >
     <h3 className="card-item__heading">{name}</h3>

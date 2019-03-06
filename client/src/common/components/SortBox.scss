@@ -17,12 +17,12 @@
     background-color: $bg-color;
     padding: 6px 20px 6px 8px;
     border: 0;
-    border-radius: 30px;
+    border-radius: 0;
     background-image: url('../../assets/images/chevron-down-solid.svg');
     background-position: center right 8px;
     background-repeat: no-repeat;
     background-size: 10px;
-    margin-right: 8px;
+    margin-right: 4px;
     box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
     text-transform: capitalize;
     -webkit-appearance: none;

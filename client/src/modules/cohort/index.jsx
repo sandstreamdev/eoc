@@ -17,7 +17,7 @@ import { CohortIcon, EditIcon, ListIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import ModalForm from 'common/components/ModalForm';
+import FormDialog from 'common/components/FormDialog';
 import { updateCohort } from './model/actions';
 import { noOp } from 'common/utils/noOp';
 import DropdownForm from 'common/components/DropdownForm';
@@ -120,12 +120,12 @@ class Cohort extends PureComponent {
           <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
         </Toolbar>
         {updateFormVisibility && (
-          <ModalForm
+          <FormDialog
             defaultDescription={description}
             defaultName={name}
-            label="Edit cohort"
+            title="Edit cohort"
             onCancel={this.hideUpdateForm}
-            onSubmit={this.updateCohortHandler(cohortId)}
+            onConfirm={this.updateCohortHandler(cohortId)}
           />
         )}
         <div className="wrapper">

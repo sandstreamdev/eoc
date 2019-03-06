@@ -1,7 +1,6 @@
 .modal-form {
   position: relative;
   box-sizing: border-box;
-  border-radius: 5px;
   position: fixed;
   top: calc(50%);
   left: 50%;
@@ -9,7 +8,6 @@
   z-index: 10;
   min-width: 320px;
   max-width: 600px;
-  border-radius: 3px;
 
   &__icon {
     height: 16px;

@@ -9,13 +9,15 @@ $gray4: #a5a7aa;
 $black: #000;
 $blue: #26ade4;
 $white: #fff;
-$yellow: #e1d536;
+$white2: #fefefe;
+$yellow: #ffd900;
 $gold: #c48b31;
 $orange: #fca729;
 $dark-orange: #ef9b1f;
+$brown: #c48b31;
 
 // Colours by roles
-$app-bg: #e6e7e8;
+$app-bg: $white2;
 $success: $green;
 $success-bg: $light-green;
 $danger: $red;
