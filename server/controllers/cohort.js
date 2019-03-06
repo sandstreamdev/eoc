@@ -91,7 +91,7 @@ const updateCohortById = (req, resp) => {
       }
 
       if (!doc) {
-        return resp.status(404).send({
+        return resp.status(401).send({
           message: 'You have no permissions to perform this action'
         });
       }
@@ -107,11 +107,7 @@ const getCohortData = (req, resp) => {
   Cohort.findOne(
     {
       _id: req.params.id,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
+      $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }]
     },
     (err, doc) => {
       if (err) {
@@ -140,9 +136,8 @@ const deleteCohortById = (req, resp) => {
   Cohort.findOne({ _id: req.params.id, adminIds: req.user._id })
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({
-          message:
-            "No cohort of given id or you don't have permission to delete it"
+        return resp.status(401).send({
+          message: "You don't have permission to delete this cohort"
         });
       }
       documentName = doc.name;
