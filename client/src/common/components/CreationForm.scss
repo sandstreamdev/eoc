@@ -87,6 +87,10 @@
     }
   }
 
+  &__textarea {
+    min-height: 65px;
+  }
+
   &__submit {
     font-weight: 600;
     color: $text-white;
@@ -113,11 +117,14 @@
     background: $button-bg;
     border: 0;
     box-shadow: 0px 2px 2px rgba($shadow-color, 0.23);
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
     outline: none;
     z-index: 10;
+    margin-left: 20px;
+  }
+
+  &__controls {
+    display: flex;
+    justify-content: flex-end;
   }
 
   &__footer {
