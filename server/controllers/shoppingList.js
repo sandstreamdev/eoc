@@ -1,6 +1,7 @@
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
 const filter = require('../common/utilities');
+const Cohort = require('../models/cohort.model');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -196,35 +197,47 @@ const addProductToList = (req, resp) => {
 };
 
 const getListData = (req, resp) => {
-  ShoppingList.find(
-    {
-      _id: req.params.id,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
-    },
-    (err, documents) => {
-      if (err) {
-        return resp.status(404).send({ message: err.message });
+  let list;
+  ShoppingList.findOne({
+    _id: req.params.id,
+    $or: [
+      { adminIds: req.user._id },
+      { ordererIds: req.user._id },
+      { purchaserIds: req.user._id }
+    ]
+  })
+    .then(doc => {
+      if (!doc) {
+        return resp.status(404).send({ message: 'No list of given id!' });
       }
 
-      if (documents && documents.length > 0) {
-        const { cohortId, _id, isArchived } = documents[0];
+      list = doc;
 
-        if (isArchived) {
-          return resp.status(200).json({ cohortId, _id, isArchived });
-        }
+      const { cohortId } = list;
+      if (cohortId) {
+        return Cohort.findOne({ _id: cohortId }).then(cohort => {
+          if (!cohort || (cohort && cohort.isArchived)) {
+            return resp
+              .status(404)
+              .send({ message: "The list's data is no accessible" });
+          }
+        });
+      }
+    })
+    .then(() => {
+      const { cohortId, _id, isArchived, name } = list;
 
-        return resp.status(200).json(documents[0]);
+      if (isArchived) {
+        return resp.status(200).json({ cohortId, _id, isArchived, name });
       }
 
-      return resp
-        .status(404)
-        .send({ message: 'Products not found for given list id!' });
-    }
-  );
+      return resp.status(200).json(list);
+    })
+    .catch(err => {
+      resp.status(400).send({
+        message: "Oops we're sorry, the list's data is not accessible..."
+      });
+    });
 };
 
 const updateShoppingListItem = (req, resp) => {
@@ -281,7 +294,7 @@ const updateListById = (req, resp) => {
     { new: true },
     (err, doc) => {
       if (!doc) {
-        return resp.status(404).send({
+        return resp.status(401).send({
           message: 'You have no permissions to perform this action.'
         });
       }
