@@ -1,21 +1,21 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import DialogBox from 'common/components/DialogBox';
 import { deleteList, restoreList } from 'modules/shopping-list/model/actions';
+import Archived from 'common/components/Archived';
 
 class ArchivedList extends PureComponent {
   state = {
-    showDialogBox: false
+    showDialog: false
   };
 
-  showDialogBox = () => {
-    this.setState({ showDialogBox: true });
+  showDialog = () => {
+    this.setState({ showDialog: true });
   };
 
-  hideDialogBox = () => {
-    this.setState({ showDialogBox: false });
+  hideDialog = () => {
+    this.setState({ showDialog: false });
   };
 
   restoreListHandler = listId => () => {
@@ -25,40 +25,22 @@ class ArchivedList extends PureComponent {
 
   deleteListHandler = id => () => {
     const { deleteList } = this.props;
-    deleteList(id);
+    deleteList(id).catch(this.hideDialog);
   };
 
   render() {
-    const { showDialogBox } = this.state;
+    const { showDialog } = this.state;
     const { listId } = this.props;
 
     return (
-      <Fragment>
-        <div className="archived-message">
-          <h1 className="archived-message__header">This list was archived.</h1>
-          <button
-            className="archived-message__button"
-            onClick={this.showDialogBox}
-            type="button"
-          >
-            permanently delete
-          </button>
-          <button
-            className="archived-message__button"
-            type="button"
-            onClick={this.restoreListHandler(listId)}
-          >
-            restore from archive
-          </button>
-        </div>
-        {showDialogBox && (
-          <DialogBox
-            message="Do you really want to permanently delete the list?"
-            onCancel={this.hideDialogBox}
-            onConfirm={this.deleteListHandler(listId)}
-          />
-        )}
-      </Fragment>
+      <Archived
+        item="list"
+        isDialogVisible={showDialog}
+        showDialog={this.showDialog}
+        hideDialog={this.hideDialog}
+        onDelete={this.deleteListHandler(listId)}
+        onRestore={this.restoreListHandler(listId)}
+      />
     );
   }
 }

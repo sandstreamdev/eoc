@@ -1,11 +1,11 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import Dialog from 'common/components/Dialog';
 import { deleteCohort, restoreCohort } from 'modules/cohort/model/actions';
 import { noOp } from 'common/utils/noOp';
 import { fetchListsMetaData } from 'modules/shopping-list/model/actions';
+import Archived from 'common/components/Archived';
 
 class ArchivedList extends PureComponent {
   state = {
@@ -29,7 +29,7 @@ class ArchivedList extends PureComponent {
 
   deleteCohortHandler = cohortId => () => {
     const { deleteCohort } = this.props;
-    deleteCohort(cohortId);
+    deleteCohort(cohortId).catch(this.hideDialog);
   };
 
   render() {
@@ -37,34 +37,14 @@ class ArchivedList extends PureComponent {
     const { cohortId } = this.props;
 
     return (
-      <Fragment>
-        <div className="archived-message">
-          <h1 className="archived-message__header">
-            This cohort was archived.
-          </h1>
-          <button
-            className="archived-message__button"
-            onClick={this.showDialog}
-            type="button"
-          >
-            permanently delete
-          </button>
-          <button
-            className="archived-message__button"
-            type="button"
-            onClick={this.restoreCohortHandler(cohortId)}
-          >
-            restore from archive
-          </button>
-        </div>
-        {showDialog && (
-          <Dialog
-            title="Do you really want to permanently delete the cohort?"
-            onCancel={this.hideDialog}
-            onConfirm={this.deleteCohortHandler(cohortId)}
-          />
-        )}
-      </Fragment>
+      <Archived
+        item="list"
+        isDialogVisible={showDialog}
+        showDialog={this.showDialog}
+        hideDialog={this.hideDialog}
+        onDelete={this.deleteCohortHandler(cohortId)}
+        onRestore={this.restoreCohortHandler(cohortId)}
+      />
     );
   }
 }
