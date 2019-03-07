@@ -94,15 +94,10 @@ class ProductsContainer extends Component {
       <div className="products">
         {children}
         <header className="products__header">
-          <div className="products__header-left">
-            <h2 className="products__heading products__heading--left">
-              {archived ? 'History' : name}
-            </h2>
-            {description && (
-              <p className="products__description">{description}</p>
-            )}
-          </div>
-          <div className="products__header-right">
+          <h2 className="products__heading products__heading--left">
+            {archived ? 'History' : name}
+          </h2>
+          <div className="products__header-controls">
             <FilterBox
               filterBy={filterBy}
               label="Filter by:"
@@ -118,6 +113,7 @@ class ProductsContainer extends Component {
             />
           </div>
         </header>
+        {description && <p className="products__description">{description}</p>}
         <div className="products__body">
           <ProductsList archived={archived} products={sortedList} />
         </div>

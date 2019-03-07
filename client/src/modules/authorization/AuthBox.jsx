@@ -14,7 +14,6 @@ const AuthBox = () => (
     <div className="authbox__right">
       <div className="authbox__intro">
         <AppLogo />
-        <span className="authbox__subheading">When the fridge is empty...</span>
       </div>
       <div className="authbox__buttons">
         <h1 className="authbox__sign-in">Sign in with:</h1>

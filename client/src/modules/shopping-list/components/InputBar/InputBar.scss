@@ -1,37 +1,4 @@
 .input-bar {
-  border-bottom: 1px solid $border-color;
-  box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-
-  &__input {
-    box-sizing: border-box;
-    border: 1px solid $border-color;
-    color: $text-normal;
-    display: block;
-    width: 100%;
-    padding: 6px 12px;
-    font-size: 14px;
-    line-height: 1.2;
-    color: $text-normal;
-    background-color: $bg-color;
-    background-clip: padding-box;
-    border: 1px solid $border-color;
-    border-radius: 4px;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    outline: 0;
-    resize: vertical;
-    box-shadow: 0 0 0 2px rgba($border-focus, 0);
-
-    &::placeholder {
-      color: $text-light;
-      font-size: 10px;
-      text-transform: uppercase;
-    }
-
-    &:focus {
-      border: 1px solid rgba($border-focus, 0.54);
-    }
-  }
-
   &__submit {
     display: none;
   }
@@ -41,6 +8,6 @@
     justify-content: space-between;
     flex-direction: column;
     background: $bg-color;
-    padding: 16px;
+    padding: 16px 0;
   }
 }

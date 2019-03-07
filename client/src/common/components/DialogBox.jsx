@@ -11,11 +11,19 @@ const DialogBox = ({ message, onCancel, onConfirm }) => (
         <h1 className="dialogbox__heading">{message}</h1>
       </header>
       <footer className="dialogbox__footer">
-        <button className="dialogbox__button" onClick={onCancel} type="button">
-          Cancel
-        </button>
-        <button className="dialogbox__button" onClick={onConfirm} type="button">
+        <button
+          className="dialogbox__button primary-button"
+          onClick={onConfirm}
+          type="button"
+        >
           Confirm
+        </button>
+        <button
+          className="dialogbox__button primary-button"
+          onClick={onCancel}
+          type="button"
+        >
+          Cancel
         </button>
       </footer>
     </div>

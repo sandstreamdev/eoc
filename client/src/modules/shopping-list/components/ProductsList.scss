@@ -5,15 +5,6 @@
     margin: 10px 0;
     position: relative;
 
-    input:checked ~ label {
-      color: $text-normal;
-
-      &:before {
-        transform: translate(-50%, -50%) scale3d(56, 56, 1);
-        opacity: 1;
-      }
-    }
-
     input {
       width: 32px;
       height: 32px;
@@ -77,7 +68,7 @@
   }
 
   &__label {
-    box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+    box-shadow: 0px 0px 5px rgba($shadow-color, 0.15);
     box-sizing: border-box;
     padding: 15px;
     width: 100%;
@@ -94,15 +85,14 @@
     transition: all 0.1s;
 
     &:hover {
-      box-shadow: 0 3px 4px rgba($card-color-1, 0.15);
       transition: all 0.1s;
-      transform: scale(1.02);
+      transform: scale(1.01);
     }
 
     &:before {
       width: 10px;
       height: 10px;
-      border-radius: 50%;
+      border-radius: 100%;
       content: '';
       position: absolute;
       left: 50%;
@@ -121,7 +111,7 @@
       background-color: $bg-color;
       background-repeat: no-repeat;
       background-position: 2px 3px;
-      border-radius: 50%;
+      border-radius: 100%;
       z-index: 2;
       position: absolute;
       right: 30px;

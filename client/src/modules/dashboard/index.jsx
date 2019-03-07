@@ -128,7 +128,7 @@ class Dashboard extends Component {
               route="list"
             />
             <GridList
-              color={CardColorType.GREEN}
+              color={CardColorType.BROWN}
               icon={<CohortIcon />}
               items={cohorts}
               name="Cohorts"
