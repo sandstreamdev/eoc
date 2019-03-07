@@ -124,6 +124,15 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isArchived;
   };
 
+  checkIfAuthorized = () => {
+    const {
+      currentUser: { id: userId },
+      cohortDetails: cohort
+    } = this.props;
+
+    return cohort && cohort.adminIds && cohort.adminIds.includes(userId);
+  };
+
   render() {
     const {
       cohortDetails,
@@ -142,7 +151,7 @@ class Cohort extends PureComponent {
     return (
       <Fragment>
         <Toolbar>
-          {!isArchived && (
+          {!isArchived && this.checkIfAuthorized() && (
             <Fragment>
               <ToolbarItem
                 additionalIconSrc={PlusIcon}
