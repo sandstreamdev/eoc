@@ -8,7 +8,7 @@ import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 
-const GridList = ({ color, icon, items, placeholder, route, name }) => (
+const GridList = ({ color, icon, items, name, placeholder, route }) => (
   <div className="grid-list">
     <h2 className="grid-list__heading">
       {icon}

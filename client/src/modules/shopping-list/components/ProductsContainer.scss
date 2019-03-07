@@ -34,6 +34,7 @@
     color: $text-normal;
     margin: 10px 0;
     word-wrap: break-word;
+    max-width: 360px;
   }
 
   &__show-more {

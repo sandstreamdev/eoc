@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 export const CardColorType = {
-  ORANGE: 'card/ORANGE',
-  BROWN: 'card/BROWN'
+  BROWN: 'card/BROWN',
+  ORANGE: 'card/ORANGE'
 };
 
 const CardItem = ({ color, description, name }) => (

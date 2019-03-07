@@ -10,5 +10,4 @@ export const getLists = (state, cohortId) =>
     _filter(state.shoppingLists.data, value => value.cohortId === cohortId),
     '_id'
   );
-
 export const getIsFetchingLists = state => state.shoppingLists.isFetching;
