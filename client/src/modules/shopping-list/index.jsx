@@ -5,7 +5,10 @@ import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import { getList } from 'modules/shopping-list/model/selectors';
+import {
+  getList,
+  getItemsForCurrentList
+} from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
   archiveList,
@@ -97,14 +100,15 @@ class ShoppingList extends Component {
       match: {
         params: { id: listId }
       },
-      list
+      list,
+      items
     } = this.props;
 
     if (!list) {
       return null;
     }
-    const { cohortId, description, isArchived, name, products } = list;
-    const listItems = products || [];
+    const { cohortId, description, isArchived, name } = list;
+    const listItems = items || [];
     const archivedList = listItems.filter(item => item.isOrdered);
     const shoppingList = listItems.filter(item => !item.isOrdered);
 
@@ -166,6 +170,7 @@ class ShoppingList extends Component {
 
 ShoppingList.propTypes = {
   currentUser: UserPropType.isRequired,
+  items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
 
@@ -176,7 +181,8 @@ ShoppingList.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
   currentUser: getCurrentUser(state),
-  list: getList(state, ownProps.match.params.id)
+  list: getList(state, ownProps.match.params.id),
+  items: getItemsForCurrentList(state, ownProps.match.params.id)
 });
 
 export default withRouter(

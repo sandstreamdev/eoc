@@ -98,7 +98,7 @@ const getShoppingListsMetaData = (req, resp) => {
         ],
         isArchived: false
       },
-      '_id name description cohortId',
+      '_id name description cohortId created_at',
       { sort: { created_at: -1 } },
       (err, docs) => {
         if (!docs) {
@@ -124,7 +124,7 @@ const getShoppingListsMetaData = (req, resp) => {
       cohortId: { $eq: null },
       isArchived: false
     },
-    '_id name description',
+    '_id name description created_at',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (!docs) {
@@ -149,7 +149,7 @@ const getArchivedListsMetaData = (req, resp) => {
       cohortId: { $eq: null },
       isArchived: true
     },
-    '_id name description isArchived',
+    '_id name description isArchived created_at',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
