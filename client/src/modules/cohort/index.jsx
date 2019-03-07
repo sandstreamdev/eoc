@@ -170,7 +170,7 @@ class Cohort extends Component {
         </Toolbar>
         {showDialog && (
           <Dialog
-            title="Do you really want to archive the cohort?"
+            title={`Do you really want to archive the ${name} cohort?`}
             onCancel={this.hideDialog}
             onConfirm={this.archiveCohortHandler(cohortId)}
           />
@@ -184,7 +184,7 @@ class Cohort extends Component {
             onConfirm={this.updateCohortHandler(cohortId)}
           />
         )}
-        {isArchived && <ArchivedCohort cohortId={cohortId} />}
+        {isArchived && <ArchivedCohort cohortId={cohortId} name={name} />}
         {!isArchived && (
           <div className="wrapper">
             <div className="cohort">
@@ -195,7 +195,7 @@ class Cohort extends Component {
               <p className="cohort__description">{description}</p>
               {_isEmpty(lists) ? (
                 <MessageBox
-                  message="There are no lists in this cohort!"
+                  message={`There are no lists in the ${name} cohort!`}
                   type={MessageType.INFO}
                 />
               ) : (

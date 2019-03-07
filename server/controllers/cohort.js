@@ -120,10 +120,10 @@ const getCohortData = (req, resp) => {
           .send({ message: 'Data not found for given cohort id!' });
       }
 
-      const { _id, isArchived } = doc;
+      const { _id, isArchived, name } = doc;
 
       if (isArchived) {
-        return resp.status(200).json({ _id, isArchived });
+        return resp.status(200).json({ _id, isArchived, name });
       }
 
       return resp.status(200).json(doc);

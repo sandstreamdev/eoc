@@ -9,15 +9,15 @@ import Archived from 'common/components/Archived';
 
 class ArchivedList extends PureComponent {
   state = {
-    showDialog: false
+    isDialogVisible: false
   };
 
-  showDialog = () => {
-    this.setState({ showDialog: true });
+  showDialogHandler = () => {
+    this.setState({ isDialogVisible: true });
   };
 
-  hideDialog = () => {
-    this.setState({ showDialog: false });
+  hideDialogHandler = () => {
+    this.setState({ isDialogVisible: false });
   };
 
   restoreCohortHandler = cohortId => () => {
@@ -33,17 +33,18 @@ class ArchivedList extends PureComponent {
   };
 
   render() {
-    const { showDialog } = this.state;
-    const { cohortId } = this.props;
+    const { isDialogVisible } = this.state;
+    const { cohortId, name } = this.props;
 
     return (
       <Archived
-        item="list"
-        isDialogVisible={showDialog}
-        showDialog={this.showDialog}
-        hideDialog={this.hideDialog}
+        isDialogVisible={isDialogVisible}
+        item="cohort"
+        name={name}
         onDelete={this.deleteCohortHandler(cohortId)}
+        onHideDialog={this.hideDialogHandler}
         onRestore={this.restoreCohortHandler(cohortId)}
+        onShowDialog={this.showDialogHandler}
       />
     );
   }
@@ -51,6 +52,7 @@ class ArchivedList extends PureComponent {
 
 ArchivedList.propTypes = {
   cohortId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 
   deleteCohort: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,

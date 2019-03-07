@@ -67,7 +67,8 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.ARCHIVE_SUCCESS: {
       const { listId: _id, isArchived } = action.payload;
-      const archivedList = { _id, isArchived };
+      const { name } = state[action.payload.listId];
+      const archivedList = { _id, isArchived, name };
       return {
         ...state,
         [action.payload.listId]: archivedList

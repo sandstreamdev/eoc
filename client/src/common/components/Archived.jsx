@@ -4,21 +4,22 @@ import PropTypes from 'prop-types';
 import Dialog from 'common/components/Dialog';
 
 const Archived = ({
-  hideDialog,
   isDialogVisible,
   item,
+  name,
   onDelete,
+  onHideDialog,
   onRestore,
-  showDialog
+  onShowDialog
 }) => (
   <Fragment>
     <div className="archived-message">
       <h1 className="archived-message__header">
-        {`This ${item} was archived.`}
+        {`The ${name} ${item} was archived.`}
       </h1>
       <button
         className="archived-message__button"
-        onClick={showDialog}
+        onClick={onShowDialog}
         type="button"
       >
         permanently delete
@@ -33,8 +34,8 @@ const Archived = ({
     </div>
     {isDialogVisible && (
       <Dialog
-        title={`Do you really want to permanently delete the ${item}?`}
-        onCancel={hideDialog}
+        title={`Do you really want to permanently delete the ${name} ${item}?`}
+        onCancel={onHideDialog}
         onConfirm={onDelete}
       />
     )}
@@ -44,11 +45,12 @@ const Archived = ({
 Archived.propTypes = {
   isDialogVisible: PropTypes.bool.isRequired,
   item: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 
-  hideDialog: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onHideDialog: PropTypes.func.isRequired,
   onRestore: PropTypes.func.isRequired,
-  showDialog: PropTypes.func.isRequired
+  onShowDialog: PropTypes.func.isRequired
 };
 
 export default Archived;

@@ -7,15 +7,15 @@ import Archived from 'common/components/Archived';
 
 class ArchivedList extends PureComponent {
   state = {
-    showDialog: false
+    isDialogVisible: false
   };
 
-  showDialog = () => {
-    this.setState({ showDialog: true });
+  showDialogHandler = () => {
+    this.setState({ isDialogVisible: true });
   };
 
-  hideDialog = () => {
-    this.setState({ showDialog: false });
+  hideDialogHandler = () => {
+    this.setState({ isDialogVisible: false });
   };
 
   restoreListHandler = listId => () => {
@@ -29,17 +29,18 @@ class ArchivedList extends PureComponent {
   };
 
   render() {
-    const { showDialog } = this.state;
-    const { listId } = this.props;
+    const { isDialogVisible } = this.state;
+    const { listId, name } = this.props;
 
     return (
       <Archived
+        isDialogVisible={isDialogVisible}
         item="list"
-        isDialogVisible={showDialog}
-        showDialog={this.showDialog}
-        hideDialog={this.hideDialog}
+        name={name}
         onDelete={this.deleteListHandler(listId)}
+        onHideDialog={this.hideDialogHandler}
         onRestore={this.restoreListHandler(listId)}
+        onShowDialog={this.showDialogHandler}
       />
     );
   }
@@ -47,6 +48,7 @@ class ArchivedList extends PureComponent {
 
 ArchivedList.propTypes = {
   listId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 
   deleteList: PropTypes.func.isRequired,
   restoreList: PropTypes.func.isRequired
