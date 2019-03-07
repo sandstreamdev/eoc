@@ -3,16 +3,16 @@
   align-items: center;
 
   &__icon {
-    height: 20px;
+    height: 16px;
   }
 
   &__text {
-    font-size: 28px;
+    font-size: 18px;
     line-height: 1.2;
     display: block;
     font-weight: 700;
-    text-shadow: 1px 1px 2px $text-light;
-    color: $brand-color;
-    margin-right: 8px;
+    color: $dark-orange;
+    margin-right: 4px;
+    letter-spacing: 1px;
   }
 }

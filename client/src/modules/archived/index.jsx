@@ -7,6 +7,7 @@ import { fetchArchivedListsMetaData } from 'modules/shopping-list/model/actions'
 import { getLists } from 'modules/shopping-list/model/selectors';
 import { ListIcon } from 'assets/images/icons';
 import GridList from 'common/components/GridList';
+import { CardColorType } from 'common/components/CardItem';
 
 class Archived extends PureComponent {
   componentDidMount() {
@@ -23,6 +24,7 @@ class Archived extends PureComponent {
         <Toolbar />
         <div className="wrapper">
           <GridList
+            color={CardColorType.ORANGE}
             icon={<ListIcon />}
             items={lists}
             name="Archived Lists"
@@ -30,6 +32,7 @@ class Archived extends PureComponent {
             route="list"
           />
           <GridList
+            color={CardColorType.BROWN}
             icon={<ListIcon />}
             name="Archived Cohorts"
             placeholder="There are no archived cohorts!"

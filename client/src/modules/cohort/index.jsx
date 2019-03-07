@@ -5,7 +5,7 @@ import { withRouter, Link } from 'react-router-dom';
 import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
 
-import CardItem from 'common/components/CardItem';
+import CardItem, { CardColorType } from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
 import { getCohortLists } from 'modules/shopping-list/model/selectors';
@@ -17,7 +17,7 @@ import { CohortIcon, EditIcon, ListIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import ModalForm from 'common/components/ModalForm';
+import FormDialog from 'common/components/FormDialog';
 import { updateCohort } from './model/actions';
 import { noOp } from 'common/utils/noOp';
 import DropdownForm from 'common/components/DropdownForm';
@@ -120,12 +120,12 @@ class Cohort extends PureComponent {
           <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
         </Toolbar>
         {updateFormVisibility && (
-          <ModalForm
+          <FormDialog
             defaultDescription={description}
             defaultName={name}
-            label="Edit cohort"
+            title="Edit cohort"
             onCancel={this.hideUpdateForm}
-            onSubmit={this.updateCohortHandler(cohortId)}
+            onConfirm={this.updateCohortHandler(cohortId)}
           />
         )}
         <div className="wrapper">
@@ -134,23 +134,31 @@ class Cohort extends PureComponent {
               <CohortIcon />
               {name}
             </h2>
-            <p className="cohort__description">{description}</p>
-            {_isEmpty(lists) ? (
-              <MessageBox
-                message="There are no lists in this cohort!"
-                type={MessageType.INFO}
-              />
-            ) : (
-              <ul className="cohort-list">
-                {_map(lists, list => (
-                  <li className="cohort-list__item" key={list._id}>
-                    <Link to={`/list/${list._id}`}>
-                      <CardItem name={list.name} />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            {description && (
+              <p className="cohort__description">{description}</p>
             )}
+            <div className="cohort__body">
+              {_isEmpty(lists) ? (
+                <MessageBox
+                  message="There are no lists in this cohort!"
+                  type={MessageType.INFO}
+                />
+              ) : (
+                <ul className="cohort-list">
+                  {_map(lists, list => (
+                    <li className="cohort-list__item" key={list._id}>
+                      <Link to={`/list/${list._id}`}>
+                        <CardItem
+                          color={CardColorType.ORANGE}
+                          description={list.description}
+                          name={list.name}
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </Fragment>

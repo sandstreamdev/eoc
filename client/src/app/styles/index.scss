@@ -14,6 +14,8 @@
 @import './variables';
 @import './mixins';
 @import './utils';
+@import './forms';
+@import './buttons';
 
 // 3. Containers
 @import '../../app/components/Layout/Layout.scss';
@@ -33,7 +35,6 @@
 @import '../../modules/shopping-list/components/VotingBox';
 @import '../../modules/shopping-list/components/FilterBox.scss';
 @import '../../common/components/Toolbar/Toolbar.scss';
-@import '../../modules/dashboard/Dashboard.scss';
 @import '../../common/components/CardItem.scss';
 @import '../../common/components/CreationForm.scss';
 @import '../../common/components/DialogBox.scss';
@@ -47,3 +48,4 @@
 @import '../../modules/notification/Notification.scss';
 @import '../../common/components/Dialog.scss';
 @import '../../common/components/Form.scss';
+@import '../../modules/shopping-list/List.scss';
