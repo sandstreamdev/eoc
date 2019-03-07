@@ -10,7 +10,7 @@ const Dialog = ({ children, onCancel, onConfirm, title }) => (
       <header className="dialog__header">
         <h2 className="dialog__heading">{title && title}</h2>
       </header>
-      <div className="dialog__body">{children}</div>
+      {children && <div className="dialog__body">{children}</div>}
       <div className="dialog__footer">
         <button
           className="dialog__button primary-button"

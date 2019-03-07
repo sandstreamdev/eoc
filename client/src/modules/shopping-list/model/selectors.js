@@ -22,5 +22,4 @@ export const getCohortLists = (state, cohortId) =>
     _filter(state.lists.data, value => value.cohortId === cohortId),
     '_id'
   );
-
 export const getIsFetchingLists = state => state.lists.isFetching;

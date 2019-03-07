@@ -97,11 +97,11 @@ class ShoppingList extends Component {
   render() {
     const { showDialogBox, showUpdateForm } = this.state;
     const {
+      items,
       match: {
         params: { id: listId }
       },
-      list,
-      items
+      list
     } = this.props;
 
     if (!list) {

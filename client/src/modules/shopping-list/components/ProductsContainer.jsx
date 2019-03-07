@@ -22,8 +22,8 @@ export const FilterOptionType = Object.freeze({
 });
 
 const sortOptions = [
-  { id: SortOptionType.DATE, label: 'date' },
   { id: SortOptionType.AUTHOR, label: 'author' },
+  { id: SortOptionType.DATE, label: 'date' },
   { id: SortOptionType.NAME, label: 'name' },
   { id: SortOptionType.VOTES, label: 'votes' }
 ];
