@@ -6,18 +6,6 @@ import { deleteList, restoreList } from 'modules/shopping-list/model/actions';
 import Archived from 'common/components/Archived';
 
 class ArchivedList extends PureComponent {
-  state = {
-    isDialogVisible: false
-  };
-
-  showDialogHandler = () => {
-    this.setState({ isDialogVisible: true });
-  };
-
-  hideDialogHandler = () => {
-    this.setState({ isDialogVisible: false });
-  };
-
   restoreListHandler = listId => () => {
     const { restoreList } = this.props;
     restoreList(listId);
@@ -25,22 +13,18 @@ class ArchivedList extends PureComponent {
 
   deleteListHandler = id => () => {
     const { deleteList } = this.props;
-    deleteList(id).catch(this.hideDialog);
+    return deleteList(id);
   };
 
   render() {
-    const { isDialogVisible } = this.state;
     const { listId, name } = this.props;
 
     return (
       <Archived
-        isDialogVisible={isDialogVisible}
         item="list"
         name={name}
         onDelete={this.deleteListHandler(listId)}
-        onHideDialog={this.hideDialogHandler}
         onRestore={this.restoreListHandler(listId)}
-        onShowDialog={this.showDialogHandler}
       />
     );
   }

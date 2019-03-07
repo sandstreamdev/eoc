@@ -8,18 +8,6 @@ import { fetchListsMetaData } from 'modules/shopping-list/model/actions';
 import Archived from 'common/components/Archived';
 
 class ArchivedList extends PureComponent {
-  state = {
-    isDialogVisible: false
-  };
-
-  showDialogHandler = () => {
-    this.setState({ isDialogVisible: true });
-  };
-
-  hideDialogHandler = () => {
-    this.setState({ isDialogVisible: false });
-  };
-
   restoreCohortHandler = cohortId => () => {
     const { fetchListsMetaData, restoreCohort } = this.props;
     restoreCohort(cohortId)
@@ -29,22 +17,18 @@ class ArchivedList extends PureComponent {
 
   deleteCohortHandler = cohortId => () => {
     const { deleteCohort } = this.props;
-    deleteCohort(cohortId).catch(this.hideDialog);
+    return deleteCohort(cohortId);
   };
 
   render() {
-    const { isDialogVisible } = this.state;
     const { cohortId, name } = this.props;
 
     return (
       <Archived
-        isDialogVisible={isDialogVisible}
         item="cohort"
         name={name}
         onDelete={this.deleteCohortHandler(cohortId)}
-        onHideDialog={this.hideDialogHandler}
         onRestore={this.restoreCohortHandler(cohortId)}
-        onShowDialog={this.showDialogHandler}
       />
     );
   }

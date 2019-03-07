@@ -23,11 +23,11 @@ const cohorts = (state = {}, action) => {
     }
     case CohortActionTypes.ARCHIVE_SUCCESS: {
       const { cohortId: _id, isArchived } = action.payload;
-      const { name } = state[action.payload.cohortId];
+      const { name } = state[_id];
       const archivedCohort = { _id, isArchived, name };
       return {
         ...state,
-        [action.payload.cohortId]: archivedCohort
+        [_id]: archivedCohort
       };
     }
     case CohortActionTypes.DELETE_SUCCESS: {
