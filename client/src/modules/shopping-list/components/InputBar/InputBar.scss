@@ -1,32 +1,4 @@
 .input-bar {
-  &__input {
-    box-sizing: border-box;
-    border: 1px solid $border-color;
-    color: $text-normal;
-    display: block;
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 12px;
-    line-height: 1.2;
-    font-family: 'Montserrat', sans-serif;
-    color: $text-normal;
-    background-color: $bg-color;
-    background-clip: padding-box;
-    border: 1px solid $border-color;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    outline: 0;
-    resize: vertical;
-    box-shadow: 0 0 0 2px rgba($border-focus, 0);
-
-    &::placeholder {
-      color: $text-normal;
-    }
-
-    &:focus {
-      border: 1px solid rgba($border-focus, 0.54);
-    }
-  }
-
   &__submit {
     display: none;
   }

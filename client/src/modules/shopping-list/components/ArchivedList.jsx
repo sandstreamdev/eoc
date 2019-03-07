@@ -37,14 +37,14 @@ class ArchivedList extends PureComponent {
         <div className="archived-message">
           <h1 className="archived-message__header">This list was archived.</h1>
           <button
-            className="archived-message__button"
+            className="archived-message__button primary-button"
             onClick={this.showDialogBox}
             type="button"
           >
             permanently delete
           </button>
           <button
-            className="archived-message__button"
+            className="archived-message__button primary-button"
             type="button"
             onClick={this.restoreListHandler(listId)}
           >
