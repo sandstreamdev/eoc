@@ -7,7 +7,7 @@ import { noOp } from 'common/utils/noOp';
 import { fetchListsMetaData } from 'modules/shopping-list/model/actions';
 import Archived from 'common/components/Archived';
 
-class ArchivedList extends PureComponent {
+class ArchivedCohort extends PureComponent {
   restoreCohortHandler = cohortId => () => {
     const { fetchListsMetaData, restoreCohort } = this.props;
     restoreCohort(cohortId)
@@ -34,7 +34,7 @@ class ArchivedList extends PureComponent {
   }
 }
 
-ArchivedList.propTypes = {
+ArchivedCohort.propTypes = {
   cohortId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 
@@ -46,4 +46,4 @@ ArchivedList.propTypes = {
 export default connect(
   null,
   { deleteCohort, fetchListsMetaData, restoreCohort }
-)(ArchivedList);
+)(ArchivedCohort);

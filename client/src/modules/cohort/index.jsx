@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -31,7 +31,7 @@ import PlusIcon from 'assets/images/plus-solid.svg';
 import Dialog from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 
-class Cohort extends Component {
+class Cohort extends PureComponent {
   state = {
     listFormVisibility: false,
     showDialog: false,
