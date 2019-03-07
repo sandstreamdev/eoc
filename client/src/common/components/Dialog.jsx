@@ -12,10 +12,18 @@ const Dialog = ({ children, onCancel, onConfirm, title }) => (
       </header>
       <div className="dialog__body">{children}</div>
       <div className="dialog__footer">
-        <button className="dialog__button" onClick={onConfirm} type="button">
+        <button
+          className="dialog__button primary-button"
+          onClick={onConfirm}
+          type="button"
+        >
           Confirm
         </button>
-        <button className="dialog__button" onClick={onCancel} type="button">
+        <button
+          className="dialog__button primary-button"
+          onClick={onCancel}
+          type="button"
+        >
           Cancel
         </button>
       </div>
