@@ -39,7 +39,6 @@
   }
 
   &__heading {
-    display: flex;
     align-items: center;
     color: $text-normal;
     font-size: 12px;
@@ -47,10 +46,11 @@
     font-weight: 700;
     letter-spacing: 0.2px;
     text-transform: uppercase;
+    text-align: center;
   }
 
   &__label {
-    margin-bottom: 8px;
+    margin-bottom: 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
