@@ -17,8 +17,7 @@ import ModalForm from 'common/components/ModalForm';
 import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/shopping-list/components/ArchivedList';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 
 class ShoppingList extends Component {
@@ -83,12 +82,8 @@ class ShoppingList extends Component {
   };
 
   checkIfAuthorized = () => {
-    const {
-      currentUser: { id: userId },
-      list
-    } = this.props;
-
-    return list && list.adminIds && list.adminIds.includes(userId);
+    const { list } = this.props;
+    return list && list.isAdmin;
   };
 
   render() {
@@ -165,7 +160,6 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
-  currentUser: UserPropType.isRequired,
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
 
@@ -175,7 +169,6 @@ ShoppingList.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  currentUser: getCurrentUser(state),
   list: getList(state, ownProps.match.params.id)
 });
 

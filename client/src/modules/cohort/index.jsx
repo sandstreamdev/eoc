@@ -125,12 +125,8 @@ class Cohort extends PureComponent {
   };
 
   checkIfAuthorized = () => {
-    const {
-      currentUser: { id: userId },
-      cohortDetails: cohort
-    } = this.props;
-
-    return cohort && cohort.adminIds && cohort.adminIds.includes(userId);
+    const { cohortDetails: cohort } = this.props;
+    return cohort && cohort.isAdmin;
   };
 
   render() {

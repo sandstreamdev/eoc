@@ -1,5 +1,5 @@
 const Cohort = require('../models/cohort.model');
-const filter = require('../common/utilities');
+const { checkRole, filter } = require('../common/utilities');
 const List = require('../models/shoppingList.model');
 
 const createCohort = (req, resp) => {
@@ -120,13 +120,18 @@ const getCohortData = (req, resp) => {
           .send({ message: 'Data not found for given cohort id!' });
       }
 
-      const { _id, isArchived, name } = doc;
+      const { adminIds, _id, isArchived, description, name } = doc;
 
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
 
-      return resp.status(200).json(doc);
+      const isAdmin = checkRole(adminIds, req.user._id);
+      const data = isAdmin
+        ? { _id, isAdmin, isArchived, description, name }
+        : { _id, isArchived, description, name };
+
+      return resp.status(200).json(data);
     }
   );
 };
