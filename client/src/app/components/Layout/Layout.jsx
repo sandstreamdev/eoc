@@ -13,6 +13,7 @@ import { UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
 import Notifications from 'modules/notification';
+import PageNotFound from 'common/components/PageNotFound';
 
 export class Layout extends Component {
   componentDidMount() {
@@ -53,7 +54,7 @@ export class Layout extends Component {
           <Route component={Cohort} path="/cohort/:id(\w+)" />
           <Route component={ShoppingList} path="/list/:id(\w+)" />
           <Route component={Archived} path="/archived" />
-          <Route component={Dashboard} />
+          <Route component={PageNotFound} />
         </Switch>
         <Footer />
       </Fragment>

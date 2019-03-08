@@ -2,6 +2,7 @@ import {
   FRONTEND_URL,
   NOTIFICATION_TIMEOUT
 } from 'common/constants/variables/';
+import history from 'common/utils/history';
 
 const handleFetchErrors = resp => {
   if (resp.status === 403) {
@@ -9,6 +10,11 @@ const handleFetchErrors = resp => {
       window.location = FRONTEND_URL;
     }, NOTIFICATION_TIMEOUT);
   }
+
+  if (resp.status === 404) {
+    history.push('/page-not-found');
+  }
+
   if (resp.status >= 400 && resp.status < 600) {
     return resp.json().then(json => {
       throw new Error(json.message);
