@@ -38,12 +38,11 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
       return action.payload;
     case CohortActionTypes.RESTORE_SUCCESS:
-    case CohortActionTypes.FETCH_DATA_SUCCESS: {
+    case CohortActionTypes.FETCH_DATA_SUCCESS:
       return {
         ...state,
         [action.payload.cohortId]: action.payload.data
       };
-    }
     default:
       return state;
   }

@@ -212,9 +212,9 @@ class Cohort extends PureComponent {
 
 Cohort.propTypes = {
   cohortDetails: PropTypes.shape({
-    name: PropTypes.string,
+    description: PropTypes.string,
     isArchived: PropTypes.bool,
-    description: PropTypes.string
+    name: PropTypes.string
   }),
   createList: PropTypes.func.isRequired,
   currentUser: UserPropType.isRequired,
