@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Dialog from 'common/components/Dialog';
 
-class Archived extends PureComponent {
+class ArchivedMessage extends PureComponent {
   state = {
     isDialogVisible: false
   };
@@ -54,7 +54,7 @@ class Archived extends PureComponent {
   }
 }
 
-Archived.propTypes = {
+ArchivedMessage.propTypes = {
   item: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 
@@ -62,4 +62,4 @@ Archived.propTypes = {
   onRestore: PropTypes.func.isRequired
 };
 
-export default Archived;
+export default ArchivedMessage;
