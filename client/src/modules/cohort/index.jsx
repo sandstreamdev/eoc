@@ -81,13 +81,9 @@ class Cohort extends PureComponent {
       .catch(noOp);
   };
 
-  showUpdateForm = () => {
-    this.setState({ updateFormVisibility: true });
-  };
+  showUpdateForm = () => this.setState({ updateFormVisibility: true });
 
-  hideUpdateForm = () => {
-    this.setState({ updateFormVisibility: false });
-  };
+  hideUpdateForm = () => this.setState({ updateFormVisibility: false });
 
   updateCohortHandler = cohortId => (name, description) => {
     const { cohortDetails, updateCohort } = this.props;
@@ -104,13 +100,9 @@ class Cohort extends PureComponent {
     this.hideUpdateForm();
   };
 
-  showDialog = () => {
-    this.setState({ showDialog: true });
-  };
+  showDialog = () => this.setState({ showDialog: true });
 
-  hideDialog = () => {
-    this.setState({ showDialog: false });
-  };
+  hideDialog = () => this.setState({ showDialog: false });
 
   archiveCohortHandler = cohortId => () => {
     const { archiveCohort } = this.props;
@@ -184,8 +176,9 @@ class Cohort extends PureComponent {
             onConfirm={this.updateCohortHandler(cohortId)}
           />
         )}
-        {isArchived && <ArchivedCohort cohortId={cohortId} name={name} />}
-        {!isArchived && (
+        {isArchived ? (
+          <ArchivedCohort cohortId={cohortId} name={name} />
+        ) : (
           <div className="wrapper">
             <div className="cohort">
               <h2 className="cohort__heading">

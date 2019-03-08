@@ -202,17 +202,16 @@ export const updateCohort = (cohortId, data) => dispatch => {
 export const deleteCohort = cohortId => dispatch => {
   dispatch(deleteCohortRequest());
   return deleteData(`${ENDPOINT_URL}/cohorts/${cohortId}/delete`)
-    .then(resp =>
-      resp.json().then(json => {
-        dispatch(deleteCohortSuccess(cohortId));
-        createNotificationWithTimeout(
-          dispatch,
-          NotificationType.SUCCESS,
-          json.message
-        );
-        history.push('/dashboard');
-      })
-    )
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(deleteCohortSuccess(cohortId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+      history.push('/dashboard');
+    })
     .catch(err => {
       dispatch(deleteCohortFailure());
       createNotificationWithTimeout(

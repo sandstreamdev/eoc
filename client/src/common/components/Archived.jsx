@@ -8,13 +8,9 @@ class Archived extends PureComponent {
     isDialogVisible: false
   };
 
-  showDialogHandler = () => {
-    this.setState({ isDialogVisible: true });
-  };
+  showDialogHandler = () => this.setState({ isDialogVisible: true });
 
-  hideDialogHandler = () => {
-    this.setState({ isDialogVisible: false });
-  };
+  hideDialogHandler = () => this.setState({ isDialogVisible: false });
 
   deleteHandler = () => {
     const { onDelete } = this.props;
