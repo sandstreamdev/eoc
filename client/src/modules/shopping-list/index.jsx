@@ -105,7 +105,7 @@ class ShoppingList extends Component {
       return null;
     }
     const { cohortId, description, isArchived, name } = list;
-    const archivedItems = items ? items.filter(item => item.isOrdered) : [];
+    const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
 
     return (
@@ -139,7 +139,7 @@ class ShoppingList extends Component {
               name={name}
               products={listItems}
             />
-            <ProductsContainer archived products={archivedItems} />
+            <ProductsContainer archived products={orderedItems} />
           </div>
         )}
         {isArchived && <ArchivedList listId={listId} />}
