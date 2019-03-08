@@ -5,12 +5,11 @@ import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model
 
 const items = (state, action) => {
   switch (action.type) {
-    case ItemActionTypes.ADD_SUCCESS: {
+    case ItemActionTypes.ADD_SUCCESS:
       return {
         ...state,
         products: [action.payload.product, ...state.products]
       };
-    }
     case ItemActionTypes.TOGGLE_SUCCESS:
       return {
         ...state,

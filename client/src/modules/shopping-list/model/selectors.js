@@ -4,15 +4,18 @@ import _keyBy from 'lodash/keyBy';
 
 export const getList = (state, listId) =>
   _pick(state.lists.data, listId)[listId];
-export const getItemsForCurrentList = (state, listId) => {
-  const currentList = _pick(state.lists.data, listId)[listId];
-  if (
-    currentList &&
-    Object.prototype.hasOwnProperty.call(currentList, 'products')
-  ) {
+export const getItems = (state, listId) => {
+  const currentList = getList(state, listId);
+
+  if (currentList) {
     const { products } = currentList;
-    return products.sort((a, b) =>
-      new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? -1 : 1
+    return (
+      products &&
+      products.sort((a, b) =>
+        new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
+          ? -1
+          : 1
+      )
     );
   }
 };
