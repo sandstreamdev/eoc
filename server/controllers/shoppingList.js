@@ -5,16 +5,18 @@ const filter = require('../common/utilities');
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
 
-  const shoppingList = new ShoppingList({
+  const list = new ShoppingList({
     description,
     name,
     adminIds: adminId,
     cohortId
   });
 
-  shoppingList.save((err, doc) => {
+  list.save((err, doc) => {
     if (err) {
-      return resp.status(404).send({ message: err.message });
+      return resp
+        .status(404)
+        .send({ message: 'List not saved. Please try again.' });
     }
 
     const { _id, description, name } = doc;
@@ -28,58 +30,22 @@ const createList = (req, resp) => {
   });
 };
 
-// Get all the lists
-const getAllShoppingLists = (req, resp) => {
-  ShoppingList.find(
-    {
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
-    },
-    null,
-    { sort: { created_at: -1 } },
-    (err, shoppingLists) => {
-      err
-        ? resp.status(400).send({ message: err.message })
-        : resp.status(200).send(shoppingLists);
-    }
-  );
-};
-
-const getShoppingListById = (req, resp) => {
-  ShoppingList.findById({ _id: req.params.id }, (err, doc) => {
-    if (!doc) {
-      return resp.status(404).send({ message: 'No shopping list of given id' });
-    }
-
-    return err
-      ? resp.status(400).send({ message: err.message })
-      : resp.status(200).json(doc);
-  });
-};
-
-// Delete list by given id
 const deleteListById = (req, resp) => {
   ShoppingList.findOneAndDelete(
     { _id: req.params.id, adminIds: req.user._id },
     (err, doc) => {
-      if (!doc) {
-        return resp.status(404).send({
+      if (err) {
+        return resp.status(400).send({
           message:
-            "No list of given id or you don't have permission to delete it"
+            'An error occurred while deleting the list. Please try again.'
         });
       }
 
-      return err
-        ? resp.status(400).send({
-            message:
-              "Oops we're sorry, an error occurred while deleting the list"
+      doc
+        ? resp.status(200).send({
+            message: `List ${doc.name} successfully deleted.`
           })
-        : resp.status(200).send({
-            message: `List ${doc.name} was successfully deleted!`
-          });
+        : resp.status(404).send({ message: `List ${doc.name} not found` });
     }
   );
 };
@@ -87,52 +53,28 @@ const deleteListById = (req, resp) => {
 const getShoppingListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
 
-  if (cohortId) {
-    return ShoppingList.find(
-      {
-        cohortId,
-        $or: [
-          { adminIds: req.user._id },
-          { ordererIds: req.user._id },
-          { purchaserIds: req.user._id }
-        ],
-        isArchived: false
-      },
-      '_id name description cohortId',
-      (err, docs) => {
-        if (!docs) {
-          return resp
-            .status(404)
-            .send({ message: 'No list in current cohort!' });
-        }
-
-        return err
-          ? resp.status(404).send({ message: err.message })
-          : resp.status(200).json(docs);
-      }
-    );
-  }
-
   ShoppingList.find(
     {
+      cohortId,
       $or: [
         { adminIds: req.user._id },
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
       ],
-      cohortId: { $eq: null },
       isArchived: false
     },
-    '_id name description',
-    { sort: { created_at: -1 } },
+    `_id name description ${cohortId ? 'cohortId' : ''}`,
     (err, docs) => {
-      if (!docs) {
-        return resp.status(404).send({ message: 'No lists found!' });
+      if (err) {
+        return resp.status(400).send({
+          message:
+            'An error occurred while fetching the lists data. Please try again.'
+        });
       }
 
-      return err
-        ? resp.status(404).send({ message: err.message })
-        : resp.status(200).json(docs);
+      docs
+        ? resp.status(200).json(docs)
+        : resp.status(404).send({ message: 'No lists data found.' });
     }
   );
 };
@@ -301,10 +243,8 @@ module.exports = {
   addProductToList,
   createList,
   deleteListById,
-  getAllShoppingLists,
   getArchivedListsMetaData,
   getListData,
-  getShoppingListById,
   getShoppingListsMetaData,
   updateListById,
   updateShoppingListItem
