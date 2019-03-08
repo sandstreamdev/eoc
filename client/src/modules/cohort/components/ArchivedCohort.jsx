@@ -8,14 +8,14 @@ import { fetchListsMetaData } from 'modules/shopping-list/model/actions';
 import ArchivedMessage from 'common/components/ArchivedMessage';
 
 class ArchivedCohort extends PureComponent {
-  restoreCohortHandler = cohortId => () => {
+  handleCohortRestoring = cohortId => () => {
     const { fetchListsMetaData, restoreCohort } = this.props;
     restoreCohort(cohortId)
       .then(fetchListsMetaData(cohortId))
       .catch(noOp);
   };
 
-  deleteCohortHandler = cohortId => () => {
+  handleCohortDeletion = cohortId => () => {
     const { deleteCohort } = this.props;
     return deleteCohort(cohortId);
   };
@@ -27,8 +27,8 @@ class ArchivedCohort extends PureComponent {
       <ArchivedMessage
         item="cohort"
         name={name}
-        onDelete={this.deleteCohortHandler(cohortId)}
-        onRestore={this.restoreCohortHandler(cohortId)}
+        onDelete={this.handleCohortDeletion(cohortId)}
+        onRestore={this.handleCohortRestoring(cohortId)}
       />
     );
   }

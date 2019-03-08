@@ -8,13 +8,13 @@ class ArchivedMessage extends PureComponent {
     isDialogVisible: false
   };
 
-  showDialogHandler = () => this.setState({ isDialogVisible: true });
+  showDialog = () => this.setState({ isDialogVisible: true });
 
-  hideDialogHandler = () => this.setState({ isDialogVisible: false });
+  hideDialog = () => this.setState({ isDialogVisible: false });
 
-  deleteHandler = () => {
+  handleDeletion = () => {
     const { onDelete } = this.props;
-    onDelete().catch(this.hideDialogHandler);
+    onDelete().catch(this.hideDialog);
   };
 
   render() {
@@ -29,7 +29,7 @@ class ArchivedMessage extends PureComponent {
           </h1>
           <button
             className="archived-message__button"
-            onClick={this.showDialogHandler}
+            onClick={this.showDialog}
             type="button"
           >
             permanently delete
@@ -45,8 +45,8 @@ class ArchivedMessage extends PureComponent {
         {isDialogVisible && (
           <Dialog
             title={`Do you really want to permanently delete the ${name} ${item}?`}
-            onCancel={this.hideDialogHandler}
-            onConfirm={this.deleteHandler}
+            onCancel={this.hideDialog}
+            onConfirm={this.handleDeletion}
           />
         )}
       </Fragment>

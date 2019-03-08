@@ -103,7 +103,7 @@ const updateCohortById = (req, resp) => {
   );
 };
 
-const getCohortData = (req, resp) => {
+const getCohortDetails = (req, resp) => {
   Cohort.findOne(
     {
       _id: req.params.id,
@@ -160,7 +160,7 @@ module.exports = {
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
-  getCohortData,
+  getCohortDetails,
   getCohortsMetaData,
   updateCohortById
 };

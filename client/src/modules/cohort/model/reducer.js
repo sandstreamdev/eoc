@@ -22,7 +22,7 @@ const cohorts = (state = {}, action) => {
       };
     }
     case CohortActionTypes.ARCHIVE_SUCCESS: {
-      const { cohortId: _id, isArchived } = action.payload;
+      const { _id, isArchived } = action.payload;
       const { name } = state[_id];
       const archivedCohort = { _id, isArchived, name };
       return {
@@ -38,10 +38,10 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
       return action.payload;
     case CohortActionTypes.RESTORE_SUCCESS:
-    case CohortActionTypes.FETCH_DATA_SUCCESS:
+    case CohortActionTypes.FETCH_DETAILS_SUCCESS:
       return {
         ...state,
-        [action.payload.cohortId]: action.payload.data
+        [action.payload._id]: action.payload.data
       };
     default:
       return state;
@@ -58,8 +58,8 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.DELETE_SUCCESS:
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
-    case CohortActionTypes.FETCH_DATA_FAILURE:
-    case CohortActionTypes.FETCH_DATA_SUCCESS:
+    case CohortActionTypes.FETCH_DETAILS_FAILURE:
+    case CohortActionTypes.FETCH_DETAILS_SUCCESS:
     case CohortActionTypes.FETCH_META_DATA_FAILURE:
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
     case CohortActionTypes.RESTORE_FAILURE:
@@ -71,7 +71,7 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.CREATE_REQUEST:
     case CohortActionTypes.DELETE_REQUEST:
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
-    case CohortActionTypes.FETCH_DATA_REQUEST:
+    case CohortActionTypes.FETCH_DETAILS_REQUEST:
     case CohortActionTypes.FETCH_META_DATA_REQUEST:
     case CohortActionTypes.RESTORE_REQUEST:
     case CohortActionTypes.UPDATE_REQUEST:

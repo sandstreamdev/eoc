@@ -6,12 +6,12 @@ import { deleteList, restoreList } from 'modules/shopping-list/model/actions';
 import ArchivedMessage from 'common/components/ArchivedMessage';
 
 class ArchivedList extends PureComponent {
-  restoreListHandler = listId => () => {
+  handleListRestoring = listId => () => {
     const { restoreList } = this.props;
     restoreList(listId);
   };
 
-  deleteListHandler = id => () => {
+  handleListDeletion = id => () => {
     const { deleteList } = this.props;
     return deleteList(id);
   };
@@ -23,8 +23,8 @@ class ArchivedList extends PureComponent {
       <ArchivedMessage
         item="list"
         name={name}
-        onDelete={this.deleteListHandler(listId)}
-        onRestore={this.restoreListHandler(listId)}
+        onDelete={this.handleListDeletion(listId)}
+        onRestore={this.handleListRestoring(listId)}
       />
     );
   }

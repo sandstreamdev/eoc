@@ -23,7 +23,11 @@ import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
-import { archiveCohort, fetchCohortData, updateCohort } from './model/actions';
+import {
+  archiveCohort,
+  fetchCohortDetails,
+  updateCohort
+} from './model/actions';
 import { noOp } from 'common/utils/noOp';
 import DropdownForm from 'common/components/DropdownForm';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
@@ -33,9 +37,9 @@ import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 
 class Cohort extends PureComponent {
   state = {
-    listFormVisibility: false,
-    showDialog: false,
-    updateFormVisibility: false
+    isListFormVisible: false,
+    isDialogVisible: false,
+    isUpdateFormVisible: false
   };
 
   componentDidMount() {
@@ -44,14 +48,14 @@ class Cohort extends PureComponent {
 
   fetchData = () => {
     const {
-      fetchCohortData,
+      fetchCohortDetails,
       fetchListsMetaData,
       match: {
         params: { id }
       }
     } = this.props;
 
-    fetchCohortData(id)
+    fetchCohortDetails(id)
       .then(() => {
         if (!this.checkIfArchived()) {
           fetchListsMetaData(id);
@@ -61,14 +65,14 @@ class Cohort extends PureComponent {
   };
 
   hideListCreationForm = () => {
-    this.setState({ listFormVisibility: false });
+    this.setState({ isListFormVisible: false });
   };
 
   showListCreationForm = () => {
-    this.setState({ listFormVisibility: true });
+    this.setState({ isListFormVisible: true });
   };
 
-  createListSubmissionHandler = (name, description) => {
+  handleListCreation = (name, description) => {
     const {
       createList,
       currentUser: { id: userId },
@@ -81,11 +85,11 @@ class Cohort extends PureComponent {
       .catch(noOp);
   };
 
-  showUpdateForm = () => this.setState({ updateFormVisibility: true });
+  showUpdateForm = () => this.setState({ isUpdateFormVisible: true });
 
-  hideUpdateForm = () => this.setState({ updateFormVisibility: false });
+  hideUpdateForm = () => this.setState({ isUpdateFormVisible: false });
 
-  updateCohortHandler = cohortId => (name, description) => {
+  handleCohortEdition = cohortId => (name, description) => {
     const { cohortDetails, updateCohort } = this.props;
     const {
       description: previousDescription,
@@ -100,11 +104,11 @@ class Cohort extends PureComponent {
     this.hideUpdateForm();
   };
 
-  showDialog = () => this.setState({ showDialog: true });
+  showDialog = () => this.setState({ isDialogVisible: true });
 
-  hideDialog = () => this.setState({ showDialog: false });
+  hideDialog = () => this.setState({ isDialogVisible: false });
 
-  archiveCohortHandler = cohortId => () => {
+  handleCohortArchivization = cohortId => () => {
     const { archiveCohort } = this.props;
     archiveCohort(cohortId)
       .then(this.hideDialog)
@@ -130,7 +134,12 @@ class Cohort extends PureComponent {
     }
 
     const { isArchived, name, description } = cohortDetails;
-    const { listFormVisibility, showDialog, updateFormVisibility } = this.state;
+    const {
+      isListFormVisible,
+      isDialogVisible,
+      isUpdateFormVisible
+    } = this.state;
+
     return (
       <Fragment>
         <Toolbar>
@@ -142,10 +151,10 @@ class Cohort extends PureComponent {
                 onClick={this.showListCreationForm}
               >
                 <DropdownForm
-                  isVisible={listFormVisibility}
+                  isVisible={isListFormVisible}
                   label="Create new list"
                   onHide={this.hideListCreationForm}
-                  onSubmit={this.createListSubmissionHandler}
+                  onSubmit={this.handleListCreation}
                   type="menu"
                 />
               </ToolbarItem>
@@ -160,20 +169,20 @@ class Cohort extends PureComponent {
             </Fragment>
           )}
         </Toolbar>
-        {showDialog && (
+        {isDialogVisible && (
           <Dialog
             title={`Do you really want to archive the ${name} cohort?`}
             onCancel={this.hideDialog}
-            onConfirm={this.archiveCohortHandler(cohortId)}
+            onConfirm={this.handleCohortArchivization(cohortId)}
           />
         )}
-        {updateFormVisibility && (
+        {isUpdateFormVisible && (
           <FormDialog
             defaultDescription={description}
             defaultName={name}
-            label="Edit cohort"
+            title="Edit cohort"
             onCancel={this.hideUpdateForm}
-            onConfirm={this.updateCohortHandler(cohortId)}
+            onConfirm={this.handleCohortEdition(cohortId)}
           />
         )}
         {isArchived ? (
@@ -222,7 +231,7 @@ Cohort.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   archiveCohort: PropTypes.func.isRequired,
-  fetchCohortData: PropTypes.func.isRequired,
+  fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
 };
@@ -239,7 +248,7 @@ export default withRouter(
     {
       archiveCohort,
       createList,
-      fetchCohortData,
+      fetchCohortDetails,
       fetchListsMetaData,
       updateCohort
     }

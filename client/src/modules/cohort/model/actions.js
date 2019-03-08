@@ -54,9 +54,9 @@ const updateCohortFailure = err => ({
   payload: err.message
 });
 
-const archiveCohortSuccess = data => ({
+const archiveCohortSuccess = (isArchived, _id) => ({
   type: CohortActionTypes.ARCHIVE_SUCCESS,
-  payload: data
+  payload: { isArchived, _id }
 });
 
 const archiveCohortFailure = errMessage => ({
@@ -68,9 +68,9 @@ const archiveCohortRequest = () => ({
   type: CohortActionTypes.ARCHIVE_REQUEST
 });
 
-const restoreCohortSuccess = (data, cohortId) => ({
+const restoreCohortSuccess = (data, _id) => ({
   type: CohortActionTypes.RESTORE_SUCCESS,
-  payload: { data, cohortId }
+  payload: { data, _id }
 });
 
 const restoreCohortFailure = errMessage => ({
@@ -82,9 +82,9 @@ const restoreCohortRequest = () => ({
   type: CohortActionTypes.RESTORE_REQUEST
 });
 
-const deleteCohortSuccess = cohortId => ({
+const deleteCohortSuccess = _id => ({
   type: CohortActionTypes.DELETE_SUCCESS,
-  payload: cohortId
+  payload: _id
 });
 
 const deleteCohortFailure = errMessage => ({
@@ -96,18 +96,18 @@ const deleteCohortRequest = () => ({
   type: CohortActionTypes.DELETE_REQUEST
 });
 
-const fetchCohortDataFailure = errMessage => ({
-  type: CohortActionTypes.FETCH_DATA_FAILURE,
+const fetchCohortDetailsFailure = errMessage => ({
+  type: CohortActionTypes.FETCH_DETAILS_FAILURE,
   payload: errMessage
 });
 
-const fetchCohortDataSuccess = (data, cohortId) => ({
-  type: CohortActionTypes.FETCH_DATA_SUCCESS,
-  payload: { data, cohortId }
+const fetchCohortDetailsSuccess = (data, _id) => ({
+  type: CohortActionTypes.FETCH_DETAILS_SUCCESS,
+  payload: { data, _id }
 });
 
-const fetchCohortDataRequest = () => ({
-  type: CohortActionTypes.FETCH_DATA_REQUEST
+const fetchCohortDetailsRequest = () => ({
+  type: CohortActionTypes.FETCH_DETAILS_REQUEST
 });
 
 const fetchArchivedCohortsMetaDataSuccess = data => ({
@@ -224,17 +224,16 @@ export const deleteCohort = cohortId => dispatch => {
 };
 
 export const archiveCohort = cohortId => dispatch => {
+  const isArchived = true;
   dispatch(archiveCohortRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/update`, {
-    isArchived: true
-  })
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/update`, { isArchived })
     .then(resp => resp.json())
-    .then(json => {
-      dispatch(archiveCohortSuccess({ isArchived: true, cohortId }));
+    .then(() => {
+      dispatch(archiveCohortSuccess(isArchived, cohortId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'Cohort was successfully archived!' || json.message
+        'Cohort was successfully archived!'
       );
     })
     .catch(err => {
@@ -259,7 +258,7 @@ export const restoreCohort = cohortId => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'Cohort was successfully restored!' || json.message
+        'Cohort was successfully restored!'
       );
     })
     .catch(err => {
@@ -272,13 +271,13 @@ export const restoreCohort = cohortId => dispatch => {
     });
 };
 
-export const fetchCohortData = cohortId => dispatch => {
-  dispatch(fetchCohortDataRequest());
+export const fetchCohortDetails = cohortId => dispatch => {
+  dispatch(fetchCohortDetailsRequest());
   return getData(`${ENDPOINT_URL}/cohorts/${cohortId}/data`)
     .then(resp => resp.json())
-    .then(json => dispatch(fetchCohortDataSuccess(json, cohortId)))
+    .then(json => dispatch(fetchCohortDetailsSuccess(json, cohortId)))
     .catch(err => {
-      dispatch(fetchCohortDataFailure());
+      dispatch(fetchCohortDetailsFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
