@@ -12,7 +12,7 @@ const handleFetchErrors = resp => {
   }
 
   if (resp.status === 404) {
-    history.replace('/page-not-found');
+    return history.replace('/page-not-found');
   }
 
   if (resp.status >= 400 && resp.status < 600) {
