@@ -185,7 +185,7 @@ const updateShoppingListItem = (req, resp) => {
    * are passed in the request
    *  */
   const propertiesToUpdate = {};
-  if (typeof isOrdered !== 'undefined') {
+  if (isOrdered !== undefined) {
     propertiesToUpdate['products.$.isOrdered'] = isOrdered;
   }
   if (voterIds) {
