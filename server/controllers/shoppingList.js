@@ -149,7 +149,7 @@ const addProductToList = (req, resp) => {
 };
 
 const getListData = (req, resp) => {
-  ShoppingList.find(
+  ShoppingList.findOne(
     {
       _id: req.params.id,
       $or: [
@@ -166,16 +166,14 @@ const getListData = (req, resp) => {
         });
       }
 
-      if (doc) {
-        const list = _head(doc);
-        const { cohortId, _id, isArchived } = list;
-
-        return isArchived
-          ? resp.status(200).json({ cohortId, _id, isArchived })
-          : resp.status(200).json(list);
+      if (!doc) {
+        resp.status(404).send({ message: 'List data not found.' });
       }
 
-      resp.status(404).send({ message: 'List data not found.' });
+      const { cohortId, _id, isArchived } = doc;
+      return isArchived
+        ? resp.status(200).json({ cohortId, _id, isArchived })
+        : resp.status(200).json(doc);
     }
   );
 };
@@ -189,9 +187,12 @@ const updateShoppingListItem = (req, resp) => {
    * are passed in the request
    *  */
   const propertiesToUpdate = {};
-  typeof isOrdered !== 'undefined' &&
-    (propertiesToUpdate['products.$.isOrdered'] = isOrdered);
-  voterIds && (propertiesToUpdate['products.$.voterIds'] = voterIds);
+  if (typeof isOrdered !== 'undefined') {
+    propertiesToUpdate['products.$.isOrdered'] = isOrdered;
+  }
+  if (voterIds) {
+    propertiesToUpdate['products.$.voterIds'] = voterIds;
+  }
 
   ShoppingList.findOneAndUpdate(
     {
