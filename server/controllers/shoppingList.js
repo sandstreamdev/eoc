@@ -17,7 +17,7 @@ const createList = (req, resp) => {
   list.save((err, doc) => {
     if (err) {
       return resp
-        .status(404)
+        .status(400)
         .send({ message: 'List not saved. Please try again.' });
     }
 
@@ -98,7 +98,7 @@ const getArchivedListsMetaData = (req, resp) => {
       if (err) {
         return resp.status(400).send({
           message:
-            'An error occurred while fetching the lists data. Please try again.'
+            'An error occurred while fetching the archived lists data. Please try again.'
         });
       }
 
@@ -160,7 +160,7 @@ const getListData = (req, resp) => {
     },
     (err, doc) => {
       if (err) {
-        return resp.status(404).send({
+        return resp.status(400).send({
           message:
             'An error occurred while fetching the lists data. Please try again.'
         });
@@ -175,7 +175,7 @@ const getListData = (req, resp) => {
           : resp.status(200).json(list);
       }
 
-      return resp.status(404).send({ message: 'List data not found.' });
+      resp.status(404).send({ message: 'List data not found.' });
     }
   );
 };
@@ -211,7 +211,7 @@ const updateShoppingListItem = (req, resp) => {
       if (err) {
         return resp.status(400).send({
           message:
-            'An error occurred while updating the lists data. Please try again.'
+            'An error occurred while updating the list data. Please try again.'
         });
       }
       const itemIndex = doc.products.findIndex(item => item._id.equals(itemId));
