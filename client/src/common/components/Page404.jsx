@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 
 import Toolbar from 'common/components/Toolbar';
 
-const PageNotFound = () => (
-  <div className="page-not-found">
+const Page404 = () => (
+  <div className="page-404">
     <Toolbar />
-    <div className="page-not-found__wrapper">
-      <h1 className="page-not-found__heading">Oops!</h1>
-      <p className="page-not-found__error">Error code: 404 (page not found)</p>
-      <p className="page-not-found__message">
+    <div className="page-404__wrapper">
+      <h1 className="page-404__heading">Oops!</h1>
+      <p className="page-404__error">Error code: 404 (page not found)</p>
+      <p className="page-404__message">
         It looks that the page you are trying to reach might have been removed
         or it is temporarily unavailable.
       </p>
@@ -20,4 +20,4 @@ const PageNotFound = () => (
   </div>
 );
 
-export default PageNotFound;
+export default Page404;
