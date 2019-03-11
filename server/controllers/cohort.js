@@ -142,7 +142,7 @@ const deleteCohortById = (req, resp) => {
   Cohort.findOne({ _id: req.params.id, adminIds: req.user._id })
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({ message: 'Cohort not found' });
+        return resp.status(404).send({ message: 'Cohort not found.' });
       }
       documentName = doc.name;
       return List.deleteMany({ cohortId: req.params.id });
@@ -151,7 +151,7 @@ const deleteCohortById = (req, resp) => {
     .then(() => {
       resp
         .status(200)
-        .send({ message: `Cohort ${documentName} successfully deleted!` });
+        .send({ message: `Cohort ${documentName} successfully deleted.` });
     })
     .catch(err => {
       resp.status(400).send({
