@@ -1,6 +1,6 @@
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
-const filter = require('../common/utilities');
+const { checkRole, filter } = require('../common/utilities');
 const Cohort = require('../models/cohort.model');
 
 const createList = (req, resp) => {
@@ -174,13 +174,27 @@ const getListData = (req, resp) => {
       }
     })
     .then(() => {
-      const { cohortId, _id, isArchived, name } = list;
+      const {
+        adminIds,
+        cohortId,
+        description,
+        _id,
+        isArchived,
+        name,
+        products
+      } = list;
 
       if (isArchived) {
         return resp.status(200).json({ cohortId, _id, isArchived, name });
       }
 
-      return resp.status(200).json(list);
+      const isAdmin = checkRole(adminIds, req.user._id);
+
+      const data = isAdmin
+        ? { _id, cohortId, description, isAdmin, isArchived, name, products }
+        : { _id, cohortId, description, isArchived, name, products };
+
+      return resp.status(200).json(data);
     })
     .catch(err => {
       resp.status(400).send({

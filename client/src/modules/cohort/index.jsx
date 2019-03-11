@@ -120,6 +120,11 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isArchived;
   };
 
+  checkIfAdmin = () => {
+    const { cohortDetails } = this.props;
+    return cohortDetails && cohortDetails.isAdmin;
+  };
+
   render() {
     const {
       cohortDetails,
@@ -143,7 +148,7 @@ class Cohort extends PureComponent {
     return (
       <Fragment>
         <Toolbar>
-          {!isArchived && (
+          {!isArchived && this.checkIfAdmin() && (
             <Fragment>
               <ToolbarItem
                 additionalIconSrc={PlusIcon}
