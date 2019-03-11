@@ -142,10 +142,10 @@ class ShoppingList extends Component {
             <ProductsContainer archived products={orderedItems} />
           </div>
         )}
-        {isArchived && <ArchivedList listId={listId} />}
+        {isArchived && <ArchivedList listId={listId} name={name} />}
         {showDialogBox && (
           <DialogBox
-            message="Do you really want to archive the list?"
+            message={`Do you really want to archive the ${name} list?`}
             onCancel={this.hideDialogBox}
             onConfirm={this.archiveListHandler(listId)}
           />

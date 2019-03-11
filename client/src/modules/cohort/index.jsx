@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -13,43 +13,66 @@ import {
   createList,
   fetchListsMetaData
 } from 'modules/shopping-list/model/actions';
-import { CohortIcon, EditIcon, ListIcon } from 'assets/images/icons';
+import {
+  ArchiveIcon,
+  CohortIcon,
+  EditIcon,
+  ListIcon
+} from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
-import { updateCohort } from './model/actions';
+import {
+  archiveCohort,
+  fetchCohortDetails,
+  updateCohort
+} from './model/actions';
 import { noOp } from 'common/utils/noOp';
 import DropdownForm from 'common/components/DropdownForm';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import PlusIcon from 'assets/images/plus-solid.svg';
+import Dialog from 'common/components/Dialog';
+import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 
 class Cohort extends PureComponent {
   state = {
-    listFormVisibility: false,
-    updateFormVisibility: false
+    isListFormVisible: false,
+    isDialogVisible: false,
+    isUpdateFormVisible: false
   };
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     const {
+      fetchCohortDetails,
       fetchListsMetaData,
       match: {
         params: { id }
       }
     } = this.props;
 
-    fetchListsMetaData(id);
-  }
+    fetchCohortDetails(id)
+      .then(() => {
+        if (!this.checkIfArchived()) {
+          fetchListsMetaData(id);
+        }
+      })
+      .catch(noOp);
+  };
 
   hideListCreationForm = () => {
-    this.setState({ listFormVisibility: false });
+    this.setState({ isListFormVisible: false });
   };
 
   showListCreationForm = () => {
-    this.setState({ listFormVisibility: true });
+    this.setState({ isListFormVisible: true });
   };
 
-  createListSubmissionHandler = (name, description) => {
+  handleListCreation = (name, description) => {
     const {
       createList,
       currentUser: { id: userId },
@@ -62,15 +85,11 @@ class Cohort extends PureComponent {
       .catch(noOp);
   };
 
-  showUpdateForm = () => {
-    this.setState({ updateFormVisibility: true });
-  };
+  showUpdateForm = () => this.setState({ isUpdateFormVisible: true });
 
-  hideUpdateForm = () => {
-    this.setState({ updateFormVisibility: false });
-  };
+  hideUpdateForm = () => this.setState({ isUpdateFormVisible: false });
 
-  updateCohortHandler = cohortId => (name, description) => {
+  handleCohortEdition = cohortId => (name, description) => {
     const { cohortDetails, updateCohort } = this.props;
     const {
       description: previousDescription,
@@ -85,6 +104,22 @@ class Cohort extends PureComponent {
     this.hideUpdateForm();
   };
 
+  showDialog = () => this.setState({ isDialogVisible: true });
+
+  hideDialog = () => this.setState({ isDialogVisible: false });
+
+  handleCohortArchivization = cohortId => () => {
+    const { archiveCohort } = this.props;
+    archiveCohort(cohortId)
+      .then(this.hideDialog)
+      .catch(noOp);
+  };
+
+  checkIfArchived = () => {
+    const { cohortDetails } = this.props;
+    return cohortDetails && cohortDetails.isArchived;
+  };
+
   render() {
     const {
       cohortDetails,
@@ -93,54 +128,76 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
-    const { listFormVisibility } = this.state;
 
     if (!cohortDetails) {
       return null;
     }
 
-    const { name, description } = cohortDetails;
-    const { updateFormVisibility } = this.state;
+    const { isArchived, name, description } = cohortDetails;
+    const {
+      isListFormVisible,
+      isDialogVisible,
+      isUpdateFormVisible
+    } = this.state;
+
     return (
       <Fragment>
         <Toolbar>
-          <ToolbarItem
-            additionalIconSrc={PlusIcon}
-            mainIcon={<ListIcon />}
-            onClick={this.showListCreationForm}
-          >
-            <DropdownForm
-              isVisible={listFormVisibility}
-              label="Create new list"
-              onHide={this.hideListCreationForm}
-              onSubmit={this.createListSubmissionHandler}
-              type="menu"
-            />
-          </ToolbarItem>
-          <ToolbarItem mainIcon={<EditIcon />} onClick={this.showUpdateForm} />
+          {!isArchived && (
+            <Fragment>
+              <ToolbarItem
+                additionalIconSrc={PlusIcon}
+                mainIcon={<ListIcon />}
+                onClick={this.showListCreationForm}
+              >
+                <DropdownForm
+                  isVisible={isListFormVisible}
+                  label="Create new list"
+                  onHide={this.hideListCreationForm}
+                  onSubmit={this.handleListCreation}
+                  type="menu"
+                />
+              </ToolbarItem>
+              <ToolbarItem
+                mainIcon={<EditIcon />}
+                onClick={this.showUpdateForm}
+              />
+              <ToolbarItem
+                mainIcon={<ArchiveIcon />}
+                onClick={this.showDialog}
+              />
+            </Fragment>
+          )}
         </Toolbar>
-        {updateFormVisibility && (
+        {isDialogVisible && (
+          <Dialog
+            title={`Do you really want to archive the ${name} cohort?`}
+            onCancel={this.hideDialog}
+            onConfirm={this.handleCohortArchivization(cohortId)}
+          />
+        )}
+        {isUpdateFormVisible && (
           <FormDialog
             defaultDescription={description}
             defaultName={name}
             title="Edit cohort"
             onCancel={this.hideUpdateForm}
-            onConfirm={this.updateCohortHandler(cohortId)}
+            onConfirm={this.handleCohortEdition(cohortId)}
           />
         )}
-        <div className="wrapper">
-          <div className="cohort">
-            <h2 className="cohort__heading">
-              <CohortIcon />
-              {name}
-            </h2>
-            {description && (
+        {isArchived ? (
+          <ArchivedCohort cohortId={cohortId} name={name} />
+        ) : (
+          <div className="wrapper">
+            <div className="cohort">
+              <h2 className="cohort__heading">
+                <CohortIcon />
+                {name}
+              </h2>
               <p className="cohort__description">{description}</p>
-            )}
-            <div className="cohort__body">
               {_isEmpty(lists) ? (
                 <MessageBox
-                  message="There are no lists in this cohort!"
+                  message={`There are no lists in the ${name} cohort!`}
                   type={MessageType.INFO}
                 />
               ) : (
@@ -160,7 +217,7 @@ class Cohort extends PureComponent {
               )}
             </div>
           </div>
-        </div>
+        )}
       </Fragment>
     );
   }
@@ -168,14 +225,17 @@ class Cohort extends PureComponent {
 
 Cohort.propTypes = {
   cohortDetails: PropTypes.shape({
-    name: PropTypes.string,
-    description: PropTypes.string
+    description: PropTypes.string,
+    isArchived: PropTypes.bool,
+    name: PropTypes.string
   }),
   createList: PropTypes.func.isRequired,
   currentUser: UserPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
+  archiveCohort: PropTypes.func.isRequired,
+  fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
 };
@@ -189,6 +249,12 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { createList, fetchListsMetaData, updateCohort }
+    {
+      archiveCohort,
+      createList,
+      fetchCohortDetails,
+      fetchListsMetaData,
+      updateCohort
+    }
   )(Cohort)
 );

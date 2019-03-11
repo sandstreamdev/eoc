@@ -1,6 +1,7 @@
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
 const filter = require('../common/utilities');
+const Cohort = require('../models/cohort.model');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -147,33 +148,46 @@ const addProductToList = (req, resp) => {
 };
 
 const getListData = (req, resp) => {
-  ShoppingList.findOne(
-    {
-      _id: req.params.id,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
-    },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while fetching the list data. Please try again.'
+  let list;
+  ShoppingList.findOne({
+    _id: req.params.id,
+    $or: [
+      { adminIds: req.user._id },
+      { ordererIds: req.user._id },
+      { purchaserIds: req.user._id }
+    ]
+  })
+    .then(doc => {
+      if (!doc) {
+        return resp.status(404).send({ message: 'List data not found.' });
+      }
+
+      list = doc;
+
+      const { cohortId } = list;
+      if (cohortId) {
+        return Cohort.findOne({ _id: cohortId }).then(cohort => {
+          if (!cohort || (cohort && cohort.isArchived)) {
+            return resp.status(404).send({ message: 'List data not found.' });
+          }
         });
       }
+    })
+    .then(() => {
+      const { cohortId, _id, isArchived, name } = list;
 
-      if (!doc) {
-        resp.status(404).send({ message: 'List data not found.' });
+      if (isArchived) {
+        return resp.status(200).json({ cohortId, _id, isArchived, name });
       }
 
-      const { cohortId, _id, isArchived } = doc;
-      return isArchived
-        ? resp.status(200).json({ cohortId, _id, isArchived })
-        : resp.status(200).json(doc);
-    }
-  );
+      return resp.status(200).json(list);
+    })
+    .catch(err => {
+      resp.status(400).send({
+        message:
+          'An error occurred while fetching the list data. Please try again.'
+      });
+    });
 };
 
 const updateShoppingListItem = (req, resp) => {

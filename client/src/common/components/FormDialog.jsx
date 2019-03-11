@@ -5,10 +5,15 @@ import Form from 'common/components/Form';
 import Dialog from 'common/components/Dialog';
 
 class FormDialog extends Component {
-  state = {
-    description: '',
-    name: ''
-  };
+  constructor(props) {
+    super(props);
+    const { defaultDescription, defaultName } = this.props;
+
+    this.state = {
+      description: defaultDescription || '',
+      name: defaultName || ''
+    };
+  }
 
   handleDescriptionChange = description => {
     this.setState({ description });
@@ -21,7 +26,6 @@ class FormDialog extends Component {
   handleFormSubmission = () => {
     const { onConfirm } = this.props;
     const { description, name } = this.state;
-
     onConfirm(name, description);
   };
 
