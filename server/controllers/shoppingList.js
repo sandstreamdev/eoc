@@ -189,9 +189,12 @@ const updateShoppingListItem = (req, resp) => {
    * are passed in the request
    *  */
   const propertiesToUpdate = {};
-  typeof isOrdered !== 'undefined' &&
-    (propertiesToUpdate['products.$.isOrdered'] = isOrdered);
-  voterIds && (propertiesToUpdate['products.$.voterIds'] = voterIds);
+  if (typeof isOrdered !== 'undefined') {
+    propertiesToUpdate['products.$.isOrdered'] = isOrdered;
+  }
+  if (voterIds) {
+    propertiesToUpdate['products.$.voterIds'] = voterIds;
+  }
 
   ShoppingList.findOneAndUpdate(
     {
