@@ -160,7 +160,7 @@ const getListData = (req, resp) => {
       if (err) {
         return resp.status(400).send({
           message:
-            'An error occurred while fetching the lists data. Please try again.'
+            'An error occurred while fetching the list data. Please try again.'
         });
       }
 
