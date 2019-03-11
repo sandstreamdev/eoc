@@ -10,14 +10,16 @@ const createCohort = (req, resp) => {
     adminIds: adminId
   });
 
-  cohort.save((err, doc) => {
+  cohort.save((err, doc) =>
     err
-      ? resp.status(400).send({ message: err.message })
+      ? resp
+          .status(400)
+          .send({ message: 'Cohort not saved. Please try again.' })
       : resp
           .location(`/cohorts/${doc._id}`)
           .status(201)
-          .send(doc);
-  });
+          .send(doc)
+  );
 };
 
 const getCohortsMetaData = (req, resp) => {
@@ -27,33 +29,24 @@ const getCohortsMetaData = (req, resp) => {
     },
     '_id name description',
     { sort: { createdAt: -1 } },
-    (err, cohorts) => {
-      if (!cohorts) {
-        return resp.status(404).send({ message: 'No cohorts found!' });
+    (err, docs) => {
+      if (err) {
+        return resp.status(400).send({
+          message:
+            'An error occurred while fetching the cohorts data. Please try again.'
+        });
       }
 
-      return err
-        ? resp.status(400).send({ message: err.message })
-        : resp.status(200).send(cohorts);
+      docs
+        ? resp.status(200).send(docs)
+        : resp.status(404).send({ message: 'No cohorts data found.' });
     }
   );
 };
 
-const getCohortById = (req, resp) => {
-  Cohort.findById({ _id: req.params.id }, (err, doc) => {
-    if (!doc) {
-      return resp.status(404).send({ message: 'No cohort of given id' });
-    }
-
-    return err
-      ? resp.status(400).send({ message: err.message })
-      : resp.status(200).json(doc);
-  });
-};
-
 const updateCohortById = (req, resp) => {
   const { description, name } = req.body;
-  const { id: cohortId } = req.params;
+  const { id } = req.params;
 
   const dataToUpdate = filter(x => x !== undefined)({
     description,
@@ -62,35 +55,29 @@ const updateCohortById = (req, resp) => {
 
   Cohort.findOneAndUpdate(
     {
-      _id: cohortId,
+      _id: id,
       $or: [{ adminIds: req.user._id }]
     },
     dataToUpdate,
-    { new: true },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
           message:
-            "Oops we're sorry, an error occurred while processing the cohort"
+            'An error occurred while updating the cohort. Please try again.'
         });
       }
 
-      if (!doc) {
-        return resp.status(404).send({
-          message: 'You have no permissions to perform this action'
-        });
-      }
-
-      resp.status(200).send({
-        message: `Cohort "${doc.name}" was successfully updated!`
-      });
+      doc
+        ? resp
+            .status(200)
+            .send({ message: `Cohort ${name} successfully updated.` })
+        : resp.status(404).send({ message: 'Cohort  not found.' });
     }
   );
 };
 
 module.exports = {
   createCohort,
-  getCohortById,
   getCohortsMetaData,
   updateCohortById
 };
