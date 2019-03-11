@@ -54,9 +54,9 @@ const updateCohortFailure = err => ({
   payload: err.message
 });
 
-const archiveCohortSuccess = (isArchived, _id) => ({
+const archiveCohortSuccess = id => ({
   type: CohortActionTypes.ARCHIVE_SUCCESS,
-  payload: { isArchived, _id }
+  payload: id
 });
 
 const archiveCohortFailure = errMessage => ({
@@ -219,17 +219,17 @@ export const deleteCohort = cohortId => dispatch => {
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, deleting cohort failed..."
       );
-      throw new Error();
     });
 };
 
 export const archiveCohort = cohortId => dispatch => {
-  const isArchived = true;
   dispatch(archiveCohortRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/update`, { isArchived })
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/update`, {
+    isArchived: true
+  })
     .then(resp => resp.json())
     .then(() => {
-      dispatch(archiveCohortSuccess(isArchived, cohortId));
+      dispatch(archiveCohortSuccess(cohortId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,

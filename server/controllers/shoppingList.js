@@ -208,7 +208,7 @@ const getListData = (req, resp) => {
   })
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({ message: 'No list of given id!' });
+        return resp.status(404).send({ message: 'List data not found.' });
       }
 
       list = doc;
@@ -217,9 +217,7 @@ const getListData = (req, resp) => {
       if (cohortId) {
         return Cohort.findOne({ _id: cohortId }).then(cohort => {
           if (!cohort || (cohort && cohort.isArchived)) {
-            return resp
-              .status(404)
-              .send({ message: "The list's data is no accessible" });
+            return resp.status(404).send({ message: 'List data not found.' });
           }
         });
       }
@@ -235,7 +233,8 @@ const getListData = (req, resp) => {
     })
     .catch(err => {
       resp.status(400).send({
-        message: "Oops we're sorry, the list's data is not accessible..."
+        message:
+          'An error occurred while fetching the list data. Please try again.'
       });
     });
 };
