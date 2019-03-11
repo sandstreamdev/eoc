@@ -11,11 +11,11 @@
     line-height: 1.2;
     text-decoration: none;
     outline: none;
+    background: transparent;
   }
 
   &__avatar {
     height: 28px;
-
     box-shadow: 0px 0px 5px rgba($shadow-color, 0.36);
   }
 

@@ -6,8 +6,8 @@ const cohorts = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.CREATE_COHORT_SUCCESS:
       return {
-        ...state,
-        [action.payload._id]: { ...action.payload }
+        [action.payload._id]: { ...action.payload },
+        ...state
       };
     case CohortActionTypes.UPDATE_SUCCESS: {
       const prevCohort = state[action.payload.cohortId];

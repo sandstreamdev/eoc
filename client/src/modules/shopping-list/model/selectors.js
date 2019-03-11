@@ -4,6 +4,21 @@ import _keyBy from 'lodash/keyBy';
 
 export const getList = (state, listId) =>
   _pick(state.lists.data, listId)[listId];
+export const getItems = (state, listId) => {
+  const currentList = getList(state, listId);
+
+  if (currentList) {
+    const { products } = currentList;
+    return (
+      products &&
+      products.sort((a, b) =>
+        new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
+          ? -1
+          : 1
+      )
+    );
+  }
+};
 export const getLists = state => state.lists.data;
 export const getCohortLists = (state, cohortId) =>
   _keyBy(

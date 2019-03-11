@@ -35,8 +35,8 @@ const filterOptions = [
 
 class ProductsContainer extends Component {
   state = {
-    sortBy: SortOptionType.NAME,
-    sortOrder: SortOrderType.ASCENDING,
+    sortBy: SortOptionType.DATE,
+    sortOrder: SortOrderType.DESCENDING,
     filterBy: FilterOptionType.ALL_PRODUCTS
   };
 
