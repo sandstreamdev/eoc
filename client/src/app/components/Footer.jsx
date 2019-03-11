@@ -9,7 +9,9 @@ const Footer = () => (
       <Link className="footer__text footer__link" to="/about">
         About
       </Link>
-      <span className="footer__text">&copy; Copyrights 2019</span>
+      <span className="footer__text footer__copyrights">
+        &copy; Copyrights 2019
+      </span>
       <a
         className="footer__text footer__link"
         href={COMPANY_PAGE_URL}

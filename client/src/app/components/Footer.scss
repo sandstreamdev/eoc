@@ -10,6 +10,7 @@
   &__wrapper {
     display: flex;
     justify-content: space-between;
+    position: relative;
   }
 
   &__text {
@@ -24,5 +25,12 @@
     &:hover {
       color: $text-orange;
     }
+  }
+
+  &__copyrights {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 }
