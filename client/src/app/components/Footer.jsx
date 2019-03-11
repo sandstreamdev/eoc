@@ -1,15 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-import {
-  COMPANY_NAME,
-  COMPANY_PAGE_URL,
-  PROJECT_NAME
-} from 'common/constants/variables';
+import { COMPANY_NAME, COMPANY_PAGE_URL } from 'common/constants/variables';
 
 const Footer = () => (
   <div className="footer">
     <div className="wrapper footer__wrapper">
-      <span className="footer__text">{PROJECT_NAME}</span>
+      <Link className="footer__text footer__link" to="/about">
+        About
+      </Link>
       <span className="footer__text">&copy; Copyrights 2019</span>
       <a
         className="footer__text footer__link"
