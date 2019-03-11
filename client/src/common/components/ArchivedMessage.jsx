@@ -3,22 +3,18 @@ import PropTypes from 'prop-types';
 
 import Dialog from 'common/components/Dialog';
 
-class Archived extends PureComponent {
+class ArchivedMessage extends PureComponent {
   state = {
     isDialogVisible: false
   };
 
-  showDialogHandler = () => {
-    this.setState({ isDialogVisible: true });
-  };
+  showDialog = () => this.setState({ isDialogVisible: true });
 
-  hideDialogHandler = () => {
-    this.setState({ isDialogVisible: false });
-  };
+  hideDialog = () => this.setState({ isDialogVisible: false });
 
-  deleteHandler = () => {
+  handleDeletion = () => {
     const { onDelete } = this.props;
-    onDelete().catch(this.hideDialogHandler);
+    onDelete().catch(this.hideDialog);
   };
 
   render() {
@@ -32,14 +28,14 @@ class Archived extends PureComponent {
             {`The ${name} ${item} was archived.`}
           </h1>
           <button
-            className="archived-message__button"
-            onClick={this.showDialogHandler}
+            className="archived-message__button primary-button"
+            onClick={this.showDialog}
             type="button"
           >
             permanently delete
           </button>
           <button
-            className="archived-message__button"
+            className="archived-message__button primary-button"
             type="button"
             onClick={onRestore}
           >
@@ -49,8 +45,8 @@ class Archived extends PureComponent {
         {isDialogVisible && (
           <Dialog
             title={`Do you really want to permanently delete the ${name} ${item}?`}
-            onCancel={this.hideDialogHandler}
-            onConfirm={this.deleteHandler}
+            onCancel={this.hideDialog}
+            onConfirm={this.handleDeletion}
           />
         )}
       </Fragment>
@@ -58,7 +54,7 @@ class Archived extends PureComponent {
   }
 }
 
-Archived.propTypes = {
+ArchivedMessage.propTypes = {
   item: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 
@@ -66,4 +62,4 @@ Archived.propTypes = {
   onRestore: PropTypes.func.isRequired
 };
 
-export default Archived;
+export default ArchivedMessage;

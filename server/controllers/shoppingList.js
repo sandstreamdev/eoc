@@ -6,16 +6,18 @@ const Cohort = require('../models/cohort.model');
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
 
-  const shoppingList = new ShoppingList({
+  const list = new ShoppingList({
     description,
     name,
     adminIds: adminId,
     cohortId
   });
 
-  shoppingList.save((err, doc) => {
+  list.save((err, doc) => {
     if (err) {
-      return resp.status(404).send({ message: err.message });
+      return resp
+        .status(400)
+        .send({ message: 'List not saved. Please try again.' });
     }
 
     const { _id, description, name } = doc;
@@ -29,58 +31,22 @@ const createList = (req, resp) => {
   });
 };
 
-// Get all the lists
-const getAllShoppingLists = (req, resp) => {
-  ShoppingList.find(
-    {
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
-    },
-    null,
-    { sort: { created_at: -1 } },
-    (err, shoppingLists) => {
-      err
-        ? resp.status(400).send({ message: err.message })
-        : resp.status(200).send(shoppingLists);
-    }
-  );
-};
-
-const getShoppingListById = (req, resp) => {
-  ShoppingList.findById({ _id: req.params.id }, (err, doc) => {
-    if (!doc) {
-      return resp.status(404).send({ message: 'No shopping list of given id' });
-    }
-
-    return err
-      ? resp.status(400).send({ message: err.message })
-      : resp.status(200).json(doc);
-  });
-};
-
-// Delete list by given id
 const deleteListById = (req, resp) => {
   ShoppingList.findOneAndDelete(
     { _id: req.params.id, adminIds: req.user._id },
     (err, doc) => {
-      if (!doc) {
-        return resp.status(404).send({
+      if (err) {
+        return resp.status(400).send({
           message:
-            "No list of given id or you don't have permission to delete it"
+            'An error occurred while deleting the list. Please try again.'
         });
       }
 
-      return err
-        ? resp.status(400).send({
-            message:
-              "Oops we're sorry, an error occurred while deleting the list"
+      doc
+        ? resp.status(200).send({
+            message: `List "${doc.name}" successfully deleted.`
           })
-        : resp.status(200).send({
-            message: `List ${doc.name} was successfully deleted!`
-          });
+        : resp.status(404).send({ message: 'List not found.' });
     }
   );
 };
@@ -88,52 +54,28 @@ const deleteListById = (req, resp) => {
 const getShoppingListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
 
-  if (cohortId) {
-    return ShoppingList.find(
-      {
-        cohortId,
-        $or: [
-          { adminIds: req.user._id },
-          { ordererIds: req.user._id },
-          { purchaserIds: req.user._id }
-        ],
-        isArchived: false
-      },
-      '_id name description cohortId',
-      (err, docs) => {
-        if (!docs) {
-          return resp
-            .status(404)
-            .send({ message: 'No list in current cohort!' });
-        }
-
-        return err
-          ? resp.status(404).send({ message: err.message })
-          : resp.status(200).json(docs);
-      }
-    );
-  }
-
   ShoppingList.find(
     {
+      cohortId,
       $or: [
         { adminIds: req.user._id },
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
       ],
-      cohortId: { $eq: null },
       isArchived: false
     },
-    '_id name description',
-    { sort: { created_at: -1 } },
+    `_id name description ${cohortId ? 'cohortId' : ''}`,
     (err, docs) => {
-      if (!docs) {
-        return resp.status(404).send({ message: 'No lists found!' });
+      if (err) {
+        return resp.status(400).send({
+          message:
+            'An error occurred while fetching the lists data. Please try again.'
+        });
       }
 
-      return err
-        ? resp.status(404).send({ message: err.message })
-        : resp.status(200).json(docs);
+      docs
+        ? resp.status(200).json(docs)
+        : resp.status(404).send({ message: 'No lists data found.' });
     }
   );
 };
@@ -153,12 +95,15 @@ const getArchivedListsMetaData = (req, resp) => {
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
-        return resp.status(404).send({ message: err.message });
+        return resp.status(400).send({
+          message:
+            'An error occurred while fetching the archived lists data. Please try again.'
+        });
       }
-      if (!docs) {
-        return resp.status(404).send('There is no archived lists!');
-      }
-      resp.status(200).send(docs);
+
+      docs
+        ? resp.status(200).json(docs)
+        : resp.status(404).send({ message: 'No archived lists data found.' });
     }
   );
 };
@@ -174,7 +119,6 @@ const addProductToList = (req, resp) => {
     authorId,
     isOrdered,
     name,
-    createdAt: new Date(Date.now()).toISOString(),
     voterIds
   });
 
@@ -188,10 +132,17 @@ const addProductToList = (req, resp) => {
       ]
     },
     { $push: { products: product } },
-    (err, data) => {
-      err
-        ? resp.status(404).send({ message: err.message })
-        : resp.status(200).send(product);
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message:
+            'An error occurred while adding a new item. Please try again.'
+        });
+      }
+
+      doc
+        ? resp.status(200).send(product)
+        : resp.status(404).send({ message: 'List  not found.' });
     }
   );
 };
@@ -208,7 +159,7 @@ const getListData = (req, resp) => {
   })
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({ message: 'No list of given id!' });
+        return resp.status(404).send({ message: 'List data not found.' });
       }
 
       list = doc;
@@ -217,9 +168,7 @@ const getListData = (req, resp) => {
       if (cohortId) {
         return Cohort.findOne({ _id: cohortId }).then(cohort => {
           if (!cohort || (cohort && cohort.isArchived)) {
-            return resp
-              .status(404)
-              .send({ message: "The list's data is no accessible" });
+            return resp.status(404).send({ message: 'List data not found.' });
           }
         });
       }
@@ -249,7 +198,8 @@ const getListData = (req, resp) => {
     })
     .catch(err => {
       resp.status(400).send({
-        message: "Oops we're sorry, the list's data is not accessible..."
+        message:
+          'An error occurred while fetching the list data. Please try again.'
       });
     });
 };
@@ -263,10 +213,12 @@ const updateShoppingListItem = (req, resp) => {
    * are passed in the request
    *  */
   const propertiesToUpdate = {};
-  typeof isOrdered !== 'undefined'
-    ? (propertiesToUpdate['products.$.isOrdered'] = isOrdered)
-    : null;
-  voterIds ? (propertiesToUpdate['products.$.voterIds'] = voterIds) : null;
+  if (isOrdered !== undefined) {
+    propertiesToUpdate['products.$.isOrdered'] = isOrdered;
+  }
+  if (voterIds) {
+    propertiesToUpdate['products.$.voterIds'] = voterIds;
+  }
 
   ShoppingList.findOneAndUpdate(
     {
@@ -283,9 +235,18 @@ const updateShoppingListItem = (req, resp) => {
     },
     { new: true },
     (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message:
+            'An error occurred while updating the list data. Please try again.'
+        });
+      }
       const itemIndex = doc.products.findIndex(item => item._id.equals(itemId));
       const item = doc.products[itemIndex];
-      err ? resp.status(404).send(err.message) : resp.status(200).json(item);
+
+      doc
+        ? resp.status(200).json(item)
+        : resp.status(404).send({ message: 'List data not found.' });
     }
   );
 };
@@ -305,21 +266,19 @@ const updateListById = (req, resp) => {
       $or: [{ adminIds: req.user._id }]
     },
     dataToUpdate,
-    { new: true },
     (err, doc) => {
-      if (!doc) {
-        return resp.status(401).send({
-          message: 'You have no permissions to perform this action.'
+      if (err) {
+        return resp.status(400).send({
+          message:
+            'An error occurred while updating the list data. Please try again.'
         });
       }
-      return err
-        ? resp.status(400).send({
-            message:
-              "Oops we're sorry, an error occurred while processing the list."
-          })
-        : resp.status(200).send({
-            message: `List "${doc.name}" was successfully updated!`
-          });
+
+      doc
+        ? resp
+            .status(200)
+            .send({ message: `List "${doc.name}" successfully updated.` })
+        : resp.status(404).send({ message: 'List data not found.' });
     }
   );
 };
@@ -328,10 +287,8 @@ module.exports = {
   addProductToList,
   createList,
   deleteListById,
-  getAllShoppingLists,
   getArchivedListsMetaData,
   getListData,
-  getShoppingListById,
   getShoppingListsMetaData,
   updateListById,
   updateShoppingListItem

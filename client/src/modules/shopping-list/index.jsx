@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import { getList } from 'modules/shopping-list/model/selectors';
+import { getList, getItems } from 'modules/shopping-list/model/selectors';
 import InputBar from 'modules/shopping-list/components/InputBar';
 import {
   archiveList,
@@ -89,6 +89,7 @@ class ShoppingList extends Component {
   render() {
     const { showDialogBox, showUpdateForm } = this.state;
     const {
+      items,
       match: {
         params: { id: listId }
       },
@@ -98,10 +99,9 @@ class ShoppingList extends Component {
     if (!list) {
       return null;
     }
-    const { cohortId, description, isArchived, name, products } = list;
-    const listItems = products || [];
-    const archivedList = listItems.filter(item => item.isOrdered);
-    const shoppingList = listItems.filter(item => !item.isOrdered);
+    const { cohortId, description, isArchived, name } = list;
+    const orderedItems = items ? items.filter(item => item.isOrdered) : [];
+    const listItems = items ? items.filter(item => !item.isOrdered) : [];
 
     return (
       <Fragment>
@@ -127,14 +127,14 @@ class ShoppingList extends Component {
           )}
         </Toolbar>
         {!isArchived && (
-          <div className="app-wrapper">
+          <div className="wrapper list-wrapper">
             <InputBar />
             <ProductsContainer
               description={description}
               name={name}
-              products={shoppingList}
+              products={listItems}
             />
-            <ProductsContainer archived products={archivedList} />
+            <ProductsContainer archived products={orderedItems} />
           </div>
         )}
         {isArchived && <ArchivedList listId={listId} name={name} />}
@@ -160,6 +160,7 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
 
@@ -169,7 +170,8 @@ ShoppingList.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  list: getList(state, ownProps.match.params.id)
+  list: getList(state, ownProps.match.params.id),
+  items: getItems(state, ownProps.match.params.id)
 });
 
 export default withRouter(

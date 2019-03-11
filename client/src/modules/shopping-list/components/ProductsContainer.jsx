@@ -35,8 +35,8 @@ const filterOptions = [
 
 class ProductsContainer extends Component {
   state = {
-    sortBy: SortOptionType.NAME,
-    sortOrder: SortOrderType.ASCENDING,
+    sortBy: SortOptionType.DATE,
+    sortOrder: SortOrderType.DESCENDING,
     filterBy: FilterOptionType.ALL_PRODUCTS
   };
 
@@ -94,25 +94,29 @@ class ProductsContainer extends Component {
       <div className="products">
         {children}
         <header className="products__header">
-          <h2 className="products__heading">{archived ? 'History' : name}</h2>
-          {description && (
-            <p className="products__description">{description}</p>
-          )}
-          <FilterBox
-            filterBy={filterBy}
-            label="Filter by:"
-            onChange={this.onFilterChange}
-            options={filterOptions}
-          />
-          <SortBox
-            label="Sort by:"
-            onChange={this.onSortChange}
-            options={sortOptions}
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-          />
+          <h2 className="products__heading products__heading--left">
+            {archived ? 'History' : name}
+          </h2>
+          <div className="products__header-controls">
+            <FilterBox
+              filterBy={filterBy}
+              label="Filter by:"
+              onChange={this.onFilterChange}
+              options={filterOptions}
+            />
+            <SortBox
+              label="Sort by:"
+              onChange={this.onSortChange}
+              options={sortOptions}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+            />
+          </div>
         </header>
-        <ProductsList archived={archived} products={sortedList} />
+        {description && <p className="products__description">{description}</p>}
+        <div className="products__body">
+          <ProductsList archived={archived} products={sortedList} />
+        </div>
       </div>
     );
   }

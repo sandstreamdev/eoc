@@ -1,14 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-const CardItem = ({ name }) => (
-  <div className="card-item">
+export const CardColorType = {
+  BROWN: 'card/BROWN',
+  ORANGE: 'card/ORANGE'
+};
+
+const CardItem = ({ color, description, name }) => (
+  <div
+    className={classNames('card-item', {
+      'card-item--orange': color === CardColorType.ORANGE,
+      'card-item--brown': color === CardColorType.BROWN
+    })}
+  >
     <h3 className="card-item__heading">{name}</h3>
+    <p className="card-item__description">{description}</p>
   </div>
 );
 
 export default CardItem;
 
 CardItem.propTypes = {
+  color: PropTypes.string.isRequired,
+  description: PropTypes.string,
   name: PropTypes.string
 };

@@ -1,7 +1,7 @@
 .footer {
-  background-color: $gray-bg;
-  box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-  padding: 20px;
+  background-color: $bg-color;
+  box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
+  padding: 15px 0;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -11,10 +11,18 @@
     display: flex;
     justify-content: space-between;
   }
+
   &__text {
     font-size: 12px;
     font-weight: 400;
     line-height: 1.2;
     color: $text-normal;
+    text-decoration: none;
+  }
+
+  &__link {
+    &:hover {
+      color: $text-orange;
+    }
   }
 }

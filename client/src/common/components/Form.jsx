@@ -50,7 +50,7 @@ class Form extends PureComponent {
         >
           <label className="form__label">
             <input
-              className="form__input"
+              className="form__input primary-input"
               onChange={this.handleNameChange}
               placeholder="Name"
               type="text"
@@ -59,7 +59,7 @@ class Form extends PureComponent {
           </label>
           <label className="form__label">
             <textarea
-              className="form__textarea"
+              className="form__textarea primary-textarea"
               onChange={this.handleDescriptionChange}
               placeholder="Description"
               type="text"

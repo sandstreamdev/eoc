@@ -8,21 +8,24 @@
     align-items: center;
     height: 38px;
     width: 38px;
-    background: rgba($shadow-color, 0.1);
     border: none;
-    border-radius: 3px;
     position: relative;
     z-index: 1;
     cursor: pointer;
+    background: transparent;
     svg {
       height: 16px;
+
+      path {
+        fill: $text-light;
+      }
     }
   }
 
   &__icon-plus {
     height: 8px;
     position: absolute;
-    right: 3px;
-    bottom: 3px;
+    right: 5px;
+    top: 5px;
   }
 }

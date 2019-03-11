@@ -5,17 +5,17 @@ import PropTypes from 'prop-types';
 import { deleteCohort, restoreCohort } from 'modules/cohort/model/actions';
 import { noOp } from 'common/utils/noOp';
 import { fetchListsMetaData } from 'modules/shopping-list/model/actions';
-import Archived from 'common/components/Archived';
+import ArchivedMessage from 'common/components/ArchivedMessage';
 
 class ArchivedCohort extends PureComponent {
-  restoreCohortHandler = cohortId => () => {
+  handleCohortRestoring = cohortId => () => {
     const { fetchListsMetaData, restoreCohort } = this.props;
     restoreCohort(cohortId)
       .then(fetchListsMetaData(cohortId))
       .catch(noOp);
   };
 
-  deleteCohortHandler = cohortId => () => {
+  handleCohortDeletion = cohortId => () => {
     const { deleteCohort } = this.props;
     return deleteCohort(cohortId);
   };
@@ -24,11 +24,11 @@ class ArchivedCohort extends PureComponent {
     const { cohortId, name } = this.props;
 
     return (
-      <Archived
+      <ArchivedMessage
         item="cohort"
         name={name}
-        onDelete={this.deleteCohortHandler(cohortId)}
-        onRestore={this.restoreCohortHandler(cohortId)}
+        onDelete={this.handleCohortDeletion(cohortId)}
+        onRestore={this.handleCohortRestoring(cohortId)}
       />
     );
   }
