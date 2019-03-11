@@ -10,7 +10,7 @@ const filter = f => object =>
 
 const checkRole = (ids, userIdFromReq) => {
   const userId = mongoose.Types.ObjectId(userIdFromReq);
-  return ids.filter(id => id.equals(userId)).length === 1;
+  return ids.some(id => id.equals(userId));
 };
 
 module.exports = { checkRole, filter };
