@@ -1,5 +1,3 @@
-const _head = require('lodash/head');
-
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
 const filter = require('../common/utilities');
@@ -47,7 +45,7 @@ const deleteListById = (req, resp) => {
         ? resp.status(200).send({
             message: `List "${doc.name}" successfully deleted.`
           })
-        : resp.status(404).send({ message: `List "${doc.name}" not found` });
+        : resp.status(404).send({ message: 'List not found.' });
     }
   );
 };
@@ -143,7 +141,7 @@ const addProductToList = (req, resp) => {
 
       doc
         ? resp.status(200).send(product)
-        : resp.status(404).send({ message: `List "${doc.name}" not found.` });
+        : resp.status(404).send({ message: 'List  not found.' });
     }
   );
 };
