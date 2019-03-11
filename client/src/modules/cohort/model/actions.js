@@ -219,6 +219,7 @@ export const deleteCohort = cohortId => dispatch => {
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, deleting cohort failed..."
       );
+      throw err;
     });
 };
 
