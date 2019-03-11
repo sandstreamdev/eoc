@@ -8,9 +8,9 @@ const filter = f => object =>
     Object.entries(object).filter(([key, value]) => f(value, key, object))
   );
 
-const checkRole = (ids, userIdFromReq) => {
+const checkRole = (idsArray, userIdFromReq) => {
   const userId = mongoose.Types.ObjectId(userIdFromReq);
-  return ids.some(id => id.equals(userId));
+  return idsArray.some(id => id.equals(userId));
 };
 
 module.exports = { checkRole, filter };

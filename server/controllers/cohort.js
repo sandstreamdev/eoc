@@ -133,11 +133,8 @@ const getCohortDetails = (req, resp) => {
       }
 
       const isAdmin = checkRole(adminIds, req.user._id);
-      const data = isAdmin
-        ? { _id, isAdmin, isArchived, description, name }
-        : { _id, isArchived, description, name };
 
-      resp.status(200).json(data);
+      resp.status(200).json({ _id, isAdmin, isArchived, description, name });
     }
   );
 };
