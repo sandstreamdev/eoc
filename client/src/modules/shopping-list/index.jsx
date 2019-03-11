@@ -81,7 +81,7 @@ class ShoppingList extends Component {
     return !list || (list && !list.isArchived);
   };
 
-  checkIfAuthorized = () => {
+  checkIfAdmin = () => {
     const { list } = this.props;
     return list && list.isAdmin;
   };
@@ -113,7 +113,7 @@ class ShoppingList extends Component {
               path={`/cohort/${cohortId}`}
             />
           )}
-          {!isArchived && this.checkIfAuthorized() && (
+          {!isArchived && this.checkIfAdmin() && (
             <Fragment>
               <ToolbarItem
                 mainIcon={<EditIcon />}
