@@ -1,12 +1,9 @@
-import {
-  FRONTEND_URL,
-  NOTIFICATION_TIMEOUT
-} from 'common/constants/variables/';
+import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 
 const handleFetchErrors = resp => {
   if (resp.status === 403) {
     setTimeout(() => {
-      window.location = FRONTEND_URL;
+      window.location = '/';
     }, NOTIFICATION_TIMEOUT);
   }
   if (resp.status >= 400 && resp.status < 600) {
@@ -20,6 +17,12 @@ const handleFetchErrors = resp => {
 export const getData = url =>
   fetch(url, {
     credentials: 'include'
+  }).then(handleFetchErrors);
+
+export const getRequest = url =>
+  fetch(url, {
+    credentials: 'include',
+    mode: 'no-cors'
   }).then(handleFetchErrors);
 
 export const postData = (url, data) =>
