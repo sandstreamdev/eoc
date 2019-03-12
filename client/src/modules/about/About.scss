@@ -40,11 +40,11 @@
   }
 
   &__content {
-    column-count: 3;
-    column-gap: 25px;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.2;
     color: $text-white;
+    letter-spacing: 0.3px;
+    margin-bottom: 16px;
   }
 
   &__cta {
@@ -59,10 +59,20 @@
     }
   }
 
+  &__section {
+    column-count: 2;
+    column-gap: 25px;
+  }
+
   &__cta-heading {
     font-size: 24px;
     line-height: 1.2;
     color: $text-normal;
     margin-bottom: 16px;
+  }
+
+  &__article {
+    max-width: 860px;
+    margin: 0 auto;
   }
 }
