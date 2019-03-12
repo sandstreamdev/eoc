@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
-import ProductsContainer from 'modules/list/components/ProductsContainer';
+import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getList, getItems } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/InputBar';
 import {
@@ -130,12 +130,12 @@ class List extends Component {
         {!isArchived && (
           <div className="wrapper list-wrapper">
             <InputBar />
-            <ProductsContainer
+            <ItemsContainer
               description={description}
               name={name}
               items={listItems}
             />
-            <ProductsContainer archived items={orderedItems} />
+            <ItemsContainer archived items={orderedItems} />
           </div>
         )}
         {isArchived && <ArchivedList listId={listId} name={name} />}

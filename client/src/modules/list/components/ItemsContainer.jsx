@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _sortBy from 'lodash/sortBy';
 
-import ProductsList from 'modules/list/components/ProductsList';
+import ItemsList from 'modules/list/components/ItemsList';
 import SortBox from 'common/components/SortBox';
 import { SortOrderType } from 'common/constants/enums';
 import FilterBox from 'modules/list/components/FilterBox';
@@ -33,7 +33,7 @@ const filterOptions = [
   { id: FilterOptionType.MY_ITEMS, label: 'my' }
 ];
 
-class ProductsContainer extends Component {
+class ItemsContainer extends Component {
   state = {
     sortBy: SortOptionType.DATE,
     sortOrder: SortOrderType.DESCENDING,
@@ -115,14 +115,14 @@ class ProductsContainer extends Component {
         </header>
         {description && <p className="items__description">{description}</p>}
         <div className="items__body">
-          <ProductsList archived={archived} items={sortedList} />
+          <ItemsList archived={archived} items={sortedList} />
         </div>
       </div>
     );
   }
 }
 
-ProductsContainer.propTypes = {
+ItemsContainer.propTypes = {
   archived: PropTypes.bool,
   children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -135,4 +135,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(mapStateToProps)(ProductsContainer);
+export default connect(mapStateToProps)(ItemsContainer);

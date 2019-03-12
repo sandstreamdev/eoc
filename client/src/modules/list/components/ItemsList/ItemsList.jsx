@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import ProductsListItem from 'modules/list/components/ProductsListItem';
+import ItemsListItem from 'modules/list/components/ItemsListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { toggle, vote } from './actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
-class ProductsList extends Component {
+class ItemsList extends Component {
   state = {
     limit: DISPLAY_LIMIT
   };
@@ -70,7 +70,7 @@ class ProductsList extends Component {
         ) : (
           <ul className="items-list">
             {items.slice(0, limit).map(item => (
-              <ProductsListItem
+              <ItemsListItem
                 archived={item.isOrdered}
                 authorName={item.authorName}
                 id={item._id}
@@ -97,7 +97,7 @@ class ProductsList extends Component {
   }
 }
 
-ProductsList.propTypes = {
+ItemsList.propTypes = {
   currentUser: UserPropType.isRequired,
   match: RouterMatchPropType.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
@@ -114,5 +114,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     { toggle, vote }
-  )(ProductsList)
+  )(ItemsList)
 );

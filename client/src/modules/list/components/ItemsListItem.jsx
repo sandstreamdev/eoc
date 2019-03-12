@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { PLACEHOLDER_URL } from 'common/constants/variables';
 import VotingBox from 'modules/list/components/VotingBox';
 
-const ProductListItem = ({
+const ItemsListItem = ({
   archived,
   authorName,
   id,
@@ -50,7 +50,7 @@ const ProductListItem = ({
   </li>
 );
 
-ProductListItem.propTypes = {
+ItemsListItem.propTypes = {
   archived: PropTypes.bool,
   authorName: PropTypes.string,
   id: PropTypes.string.isRequired,
@@ -63,4 +63,4 @@ ProductListItem.propTypes = {
   voteForItem: PropTypes.func
 };
 
-export default ProductListItem;
+export default ItemsListItem;
