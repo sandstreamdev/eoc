@@ -7,7 +7,7 @@ import {
   listMockPopulated,
   listMockItemToggled,
   listMockItemVoted
-} from '__mocks__/productsMock';
+} from '__mocks__/itemsMock';
 
 describe('Items reducer', () => {
   let storeItems = {

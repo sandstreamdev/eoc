@@ -7,7 +7,7 @@ import {
   itemsMock,
   newItemMock,
   listMockNotPopulated
-} from '__mocks__/productsMock';
+} from '__mocks__/itemsMock';
 import { ListActionTypes } from './actionTypes';
 import { NotificationActionTypes } from 'modules/notification/model/actionsTypes';
 
