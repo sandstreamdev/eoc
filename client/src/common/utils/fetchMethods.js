@@ -12,7 +12,10 @@ const handleFetchErrors = resp => {
   }
 
   if (resp.status === 404) {
-    return history.replace('/page-not-found');
+    return resp.json().then(json => {
+      history.replace('/page-not-found');
+      throw new Error(json.message);
+    });
   }
 
   if (resp.status >= 400 && resp.status < 600) {

@@ -2,6 +2,7 @@ const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
 const { checkRole, filter } = require('../common/utilities');
 const Cohort = require('../models/cohort.model');
+const ResponseError = require('../common/ResponseError');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -157,22 +158,30 @@ const getListData = (req, resp) => {
       { purchaserIds: req.user._id }
     ]
   })
-    .then(doc => {
-      if (!doc) {
-        return resp.status(404).send({ message: 'List data not found.' });
+    .exec()
+    .then(
+      doc => {
+        if (!doc) {
+          throw new ResponseError('List data not found.', 404);
+        }
+        list = doc;
+        const { cohortId } = list;
+        if (cohortId) {
+          return Cohort.findOne({ _id: cohortId })
+            .exec()
+            .then(cohort => {
+              if (!cohort || cohort.isArchived) {
+                throw new ResponseError('List data not found.', 404);
+              }
+            });
+        }
+      },
+      err => {
+        if (err.name === 'CastError') {
+          throw new ResponseError('List data not found.', 404);
+        }
       }
-
-      list = doc;
-
-      const { cohortId } = list;
-      if (cohortId) {
-        return Cohort.findOne({ _id: cohortId }).then(cohort => {
-          if (!cohort || (cohort && cohort.isArchived)) {
-            return resp.status(404).send({ message: 'List data not found.' });
-          }
-        });
-      }
-    })
+    )
     .then(() => {
       const {
         adminIds,
@@ -194,13 +203,18 @@ const getListData = (req, resp) => {
         ? { _id, cohortId, description, isAdmin, isArchived, name, products }
         : { _id, cohortId, description, isArchived, name, products };
 
-      return resp.status(200).json(data);
+      resp.status(200).json(data);
     })
     .catch(err => {
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the list data. Please try again.'
-      });
+      if (err instanceof ResponseError) {
+        const { status, message } = err;
+        resp.status(status).send({ message });
+      } else {
+        resp.status(400).send({
+          message:
+            'An error occurred while fetching the list data. Please try again.'
+        });
+      }
     });
 };
 

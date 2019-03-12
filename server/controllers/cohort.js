@@ -1,6 +1,7 @@
 const Cohort = require('../models/cohort.model');
 const { checkRole, filter } = require('../common/utilities');
 const List = require('../models/shoppingList.model');
+const ResponseError = require('../common/ResponseError');
 
 const createCohort = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -142,24 +143,30 @@ const getCohortDetails = (req, resp) => {
 const deleteCohortById = (req, resp) => {
   let documentName = '';
   Cohort.findOne({ _id: req.params.id, adminIds: req.user._id })
+    .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({ message: 'Cohort not found.' });
+        throw new ResponseError('Cohort not found.', 404);
       }
       documentName = doc.name;
-      return List.deleteMany({ cohortId: req.params.id });
+      return List.deleteMany({ cohortId: req.params.id }).exec();
     })
-    .then(() => Cohort.deleteOne({ _id: req.params.id }))
+    .then(() => Cohort.deleteOne({ _id: req.params.id }).exec())
     .then(() => {
       resp
         .status(200)
         .send({ message: `Cohort ${documentName} successfully deleted.` });
     })
     .catch(err => {
-      resp.status(400).send({
-        message:
-          'An error occurred while deleting the cohort. Please try again.'
-      });
+      if (err instanceof ResponseError) {
+        const { status, message } = err;
+        resp.status(status).send({ message });
+      } else {
+        resp.status(400).send({
+          message:
+            'An error occurred while deleting the cohort. Please try again.'
+        });
+      }
     });
 };
 
