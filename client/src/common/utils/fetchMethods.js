@@ -25,12 +25,6 @@ export const getData = url =>
     credentials: 'include'
   }).then(handleFetchErrors);
 
-export const getRequest = url =>
-  fetch(url, {
-    credentials: 'include',
-    mode: 'no-cors'
-  }).then(handleFetchErrors);
-
 export const postData = (url, data) =>
   fetch(url, {
     body: JSON.stringify(data),

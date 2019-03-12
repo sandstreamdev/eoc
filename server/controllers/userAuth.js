@@ -8,8 +8,10 @@ const setUserAndSession = (req, res) => {
       name: req.user.displayName
     })
   );
+
+  const clientUrl = req.headers.referer;
   res.status(200);
-  res.redirect(req.headers.referer);
+  res.redirect(clientUrl);
 };
 
 const logout = (req, res) => {
