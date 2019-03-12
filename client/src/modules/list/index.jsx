@@ -20,7 +20,7 @@ import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 
-class ShoppingList extends Component {
+class List extends Component {
   state = {
     showDialogBox: false,
     showUpdateForm: false
@@ -160,7 +160,7 @@ class ShoppingList extends Component {
   }
 }
 
-ShoppingList.propTypes = {
+List.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
@@ -179,5 +179,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     { archiveList, fetchListData, updateList }
-  )(ShoppingList)
+  )(List)
 );
