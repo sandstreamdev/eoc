@@ -6,7 +6,6 @@ import Toolbar from 'common/components/Toolbar';
 const About = () => (
   <Fragment>
     <Toolbar />
-
     <div className="about">
       <div className="about__intro">
         <div className="wrapper">
