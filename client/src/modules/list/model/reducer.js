@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 import { ListActionTypes } from './actionTypes';
-import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
+import { ItemActionTypes } from 'modules/list/components/InputBar/model/actionTypes';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 
 const items = (state, action) => {

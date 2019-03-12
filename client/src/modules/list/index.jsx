@@ -4,19 +4,19 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
-import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import { getList, getItems } from 'modules/shopping-list/model/selectors';
-import InputBar from 'modules/shopping-list/components/InputBar';
+import ProductsContainer from 'modules/list/components/ProductsContainer';
+import { getList, getItems } from 'modules/list/model/selectors';
+import InputBar from 'modules/list/components/InputBar';
 import {
   archiveList,
   fetchListData,
   updateList
-} from 'modules/shopping-list/model/actions';
+} from 'modules/list/model/actions';
 import DialogBox from 'common/components/DialogBox';
 import ModalForm from 'common/components/ModalForm';
 import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
-import ArchivedList from 'modules/shopping-list/components/ArchivedList';
+import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 

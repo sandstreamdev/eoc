@@ -6,15 +6,12 @@ import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import EyeIcon from 'assets/images/eye-solid.svg';
-import {
-  createList,
-  fetchListsMetaData
-} from 'modules/shopping-list/model/actions';
+import { createList, fetchListsMetaData } from 'modules/list/model/actions';
 import {
   createCohort,
   fetchCohortsMetaData
 } from 'modules/cohort/model/actions';
-import { getLists } from 'modules/shopping-list/model/selectors';
+import { getLists } from 'modules/list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';

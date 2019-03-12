@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
-import ShoppingList from 'modules/shopping-list';
+import ShoppingList from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import Archived from 'modules/archived';

@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _sortBy from 'lodash/sortBy';
 
-import ProductsList from 'modules/shopping-list/components/ProductsList';
+import ProductsList from 'modules/list/components/ProductsList';
 import SortBox from 'common/components/SortBox';
 import { SortOrderType } from 'common/constants/enums';
-import FilterBox from 'modules/shopping-list/components/FilterBox';
+import FilterBox from 'modules/list/components/FilterBox';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 const SortOptionType = Object.freeze({

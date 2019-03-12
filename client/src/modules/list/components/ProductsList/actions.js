@@ -1,6 +1,6 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { patchData } from 'common/utils/fetchMethods';
-import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
+import { ItemActionTypes } from 'modules/list/components/InputBar/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
