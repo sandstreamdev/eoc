@@ -34,7 +34,6 @@ class UserBar extends Component {
 
   handleLogOut = () => {
     const { logoutCurrentUser } = this.props;
-
     logoutCurrentUser();
   };
 
