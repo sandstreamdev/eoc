@@ -7,7 +7,7 @@
   }
 
   &__intro-heading {
-    font-weight: 300;
+    font-weight: 400;
     color: $text-normal;
     text-align: center;
     font-size: 52px;
@@ -19,9 +19,8 @@
     color: $text-light;
     text-align: center;
     font-size: 14px;
-    margin-top: 20px;
     line-height: 1.5;
-    margin-bottom: 50px;
+    margin: 20px 0 50px;
   }
 
   &__main {
