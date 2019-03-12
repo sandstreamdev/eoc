@@ -1,70 +1,38 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import DialogBox from 'common/components/DialogBox';
 import { deleteList, restoreList } from 'modules/shopping-list/model/actions';
+import ArchivedMessage from 'common/components/ArchivedMessage';
 
 class ArchivedList extends PureComponent {
-  state = {
-    showDialogBox: false
-  };
-
-  showDialogBox = () => {
-    this.setState({ showDialogBox: true });
-  };
-
-  hideDialogBox = () => {
-    this.setState({ showDialogBox: false });
-  };
-
-  restoreListHandler = listId => () => {
+  handleListRestoring = listId => () => {
     const { restoreList } = this.props;
     restoreList(listId);
   };
 
-  deleteListHandler = id => () => {
+  handleListDeletion = id => () => {
     const { deleteList } = this.props;
-    deleteList(id);
+    return deleteList(id);
   };
 
   render() {
-    const { showDialogBox } = this.state;
-    const { listId } = this.props;
+    const { listId, name } = this.props;
 
     return (
-      <Fragment>
-        <div className="archived-message">
-          <h1 className="archived-message__header">This list was archived.</h1>
-          <button
-            className="archived-message__button primary-button"
-            onClick={this.showDialogBox}
-            type="button"
-          >
-            permanently delete
-          </button>
-          <button
-            className="archived-message__button primary-button"
-            type="button"
-            onClick={this.restoreListHandler(listId)}
-          >
-            restore from archive
-          </button>
-        </div>
-        {showDialogBox && (
-          <DialogBox
-            message="Do you really want to permanently delete the list?"
-            onCancel={this.hideDialogBox}
-            onConfirm={this.deleteListHandler(listId)}
-          />
-        )}
-      </Fragment>
+      <ArchivedMessage
+        item="list"
+        name={name}
+        onDelete={this.handleListDeletion(listId)}
+        onRestore={this.handleListRestoring(listId)}
+      />
     );
   }
 }
 
 ArchivedList.propTypes = {
   listId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 
   deleteList: PropTypes.func.isRequired,
   restoreList: PropTypes.func.isRequired

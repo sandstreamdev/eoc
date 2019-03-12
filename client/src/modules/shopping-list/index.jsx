@@ -17,8 +17,7 @@ import ModalForm from 'common/components/ModalForm';
 import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/shopping-list/components/ArchivedList';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 
 class ShoppingList extends Component {
@@ -82,13 +81,9 @@ class ShoppingList extends Component {
     return !list || (list && !list.isArchived);
   };
 
-  checkIfAuthorized = () => {
-    const {
-      currentUser: { id: userId },
-      list
-    } = this.props;
-
-    return list && list.adminIds && list.adminIds.includes(userId);
+  checkIfAdmin = () => {
+    const { list } = this.props;
+    return list && list.isAdmin;
   };
 
   render() {
@@ -118,7 +113,7 @@ class ShoppingList extends Component {
               path={`/cohort/${cohortId}`}
             />
           )}
-          {!isArchived && this.checkIfAuthorized() && (
+          {!isArchived && this.checkIfAdmin() && (
             <Fragment>
               <ToolbarItem
                 mainIcon={<EditIcon />}
@@ -142,10 +137,10 @@ class ShoppingList extends Component {
             <ProductsContainer archived products={orderedItems} />
           </div>
         )}
-        {isArchived && <ArchivedList listId={listId} />}
+        {isArchived && <ArchivedList listId={listId} name={name} />}
         {showDialogBox && (
           <DialogBox
-            message="Do you really want to archive the list?"
+            message={`Do you really want to archive the ${name} list?`}
             onCancel={this.hideDialogBox}
             onConfirm={this.archiveListHandler(listId)}
           />
@@ -165,7 +160,6 @@ class ShoppingList extends Component {
 }
 
 ShoppingList.propTypes = {
-  currentUser: UserPropType.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
@@ -176,7 +170,6 @@ ShoppingList.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  currentUser: getCurrentUser(state),
   list: getList(state, ownProps.match.params.id),
   items: getItems(state, ownProps.match.params.id)
 });

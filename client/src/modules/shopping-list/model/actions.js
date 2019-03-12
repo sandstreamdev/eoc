@@ -79,7 +79,7 @@ const fetchListsMetaDataRequest = () => ({
   type: ListActionTypes.FETCH_META_DATA_REQUEST
 });
 
-const fetchArchivedListMetaDataSuccess = data => ({
+const fetchArchivedListsMetaDataSuccess = data => ({
   type: ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
   payload: data
 });
@@ -182,7 +182,7 @@ export const fetchArchivedListsMetaData = () => dispatch => {
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
-      dispatch(fetchArchivedListMetaDataSuccess(dataMap));
+      dispatch(fetchArchivedListsMetaDataSuccess(dataMap));
     })
     .catch(err => {
       dispatch(fetchArchivedListsMetaDataFailure());

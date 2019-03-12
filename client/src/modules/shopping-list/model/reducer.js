@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 import { ListActionTypes } from './actionTypes';
 import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model/actionTypes';
+import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 
 const items = (state, action) => {
   switch (action.type) {
@@ -67,7 +68,8 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.ARCHIVE_SUCCESS: {
       const { listId: _id, isArchived } = action.payload;
-      const archivedList = { _id, isArchived };
+      const { name } = state[action.payload.listId];
+      const archivedList = { _id, isArchived, name };
       return {
         ...state,
         [action.payload.listId]: archivedList
@@ -80,6 +82,8 @@ const lists = (state = {}, action) => {
         [action.payload.listId]: action.payload.data
       };
     }
+    case CohortActionTypes.ARCHIVE_SUCCESS:
+      return {};
     case ItemActionTypes.ADD_SUCCESS: {
       const currentList = state[action.payload.listId];
       return {
