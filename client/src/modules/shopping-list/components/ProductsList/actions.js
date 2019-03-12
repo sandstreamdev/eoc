@@ -4,9 +4,9 @@ import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
-const toggleItemSuccess = (product, listId) => ({
+const toggleItemSuccess = (item, listId) => ({
   type: ItemActionTypes.TOGGLE_SUCCESS,
-  payload: { product, listId }
+  payload: { item, listId }
 });
 const toggleItemRequest = () => ({
   type: ItemActionTypes.TOGGLE_REQUEST
@@ -15,9 +15,9 @@ const toggleItemFailure = errMessage => ({
   type: ItemActionTypes.TOGGLE_FAILURE,
   payload: errMessage
 });
-const voteForItemSuccess = (product, listId) => ({
+const voteForItemSuccess = (item, listId) => ({
   type: ItemActionTypes.VOTE_SUCCESS,
-  payload: { product, listId }
+  payload: { item, listId }
 });
 const voteForItemRequest = () => ({
   type: ItemActionTypes.VOTE_REQUEST
@@ -34,15 +34,15 @@ export const toggle = (
   updatedAuthor
 ) => dispatch => {
   dispatch(toggleItemRequest());
-  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
+  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
     authorName: updatedAuthor,
     itemId,
     isOrdered: !isOrdered,
     listId
   })
     .then(resp => resp.json())
-    .then(product =>
-      setTimeout(() => dispatch(toggleItemSuccess(product, listId)), 600)
+    .then(item =>
+      setTimeout(() => dispatch(toggleItemSuccess(item, listId)), 600)
     )
     .catch(err => {
       dispatch(toggleItemFailure());
@@ -56,12 +56,12 @@ export const toggle = (
 
 export const vote = (itemId, listId, voterIds) => dispatch => {
   dispatch(voteForItemRequest());
-  patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update-item`, {
+  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
     itemId,
     voterIds
   })
     .then(resp => resp.json())
-    .then(product => dispatch(voteForItemSuccess(product, listId)))
+    .then(item => dispatch(voteForItemSuccess(item, listId)))
     .catch(err => {
       dispatch(voteForItemFailure());
       createNotificationWithTimeout(

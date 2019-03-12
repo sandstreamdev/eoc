@@ -2,70 +2,70 @@ import { ItemActionTypes } from 'modules/shopping-list/components/InputBar/model
 import { ListActionTypes } from './actionTypes';
 import lists from './reducer';
 import {
-  newProductMock,
-  shoppingListMockNotPopulated,
-  shoppingListMockPopulated,
-  shoppingListMockProductToggled,
-  shoppingListMockProductVoted
+  newItemMock,
+  listMockNotPopulated,
+  listMockPopulated,
+  listMockItemToggled,
+  listMockItemVoted
 } from '__mocks__/productsMock';
 
-describe('Products reducer', () => {
-  let storeProducts = {
+describe('Items reducer', () => {
+  let storeItems = {
     isFetching: false,
     data: []
   };
-  let newProduct;
+  let newItem;
 
   beforeEach(() => {
-    storeProducts = shoppingListMockNotPopulated;
-    newProduct = { ...newProductMock };
+    storeItems = listMockNotPopulated;
+    newItem = { ...newItemMock };
   });
 
-  it('stores products data upon fetch', () => {
+  it('stores items data upon fetch', () => {
     expect(
-      lists(storeProducts, {
+      lists(storeItems, {
         type: ListActionTypes.FETCH_DATA_SUCCESS,
-        payload: { products: [newProduct], listId: '1234' }
+        payload: { items: [newItem], listId: '1234' }
       })
-    ).toEqual(shoppingListMockPopulated);
+    ).toEqual(listMockPopulated);
   });
 
-  it('adds new product data', () => {
+  it('adds new item data', () => {
     expect(
-      lists(storeProducts, {
+      lists(storeItems, {
         type: ItemActionTypes.ADD_SUCCESS,
-        payload: { product: newProduct, listId: '1234' }
+        payload: { item: newItem, listId: '1234' }
       })
-    ).toEqual(shoppingListMockPopulated);
+    ).toEqual(listMockPopulated);
   });
 
-  it('tooggles product is ordered', () => {
+  it('tooggles item is ordered', () => {
     expect(
-      lists(shoppingListMockPopulated, {
+      lists(listMockPopulated, {
         type: ItemActionTypes.TOGGLE_SUCCESS,
         payload: {
-          product: { ...newProduct, isOrdered: !newProduct.isOrdered },
+          item: { ...newItem, isOrdered: !newItem.isOrdered },
           listId: '1234'
         }
       })
-    ).toEqual(shoppingListMockProductToggled);
+    ).toEqual(listMockItemToggled);
   });
 
   it('saves voters id upon voting', () => {
     expect(
-      lists(shoppingListMockPopulated, {
+      lists(listMockPopulated, {
         type: ItemActionTypes.VOTE_SUCCESS,
-        payload: { ...newProduct, voterIds: ['abcd', 'efgh', 'ijkl'] }
+        payload: { ...newItem, voterIds: ['abcd', 'efgh', 'ijkl'] }
       })
-    ).toEqual(shoppingListMockProductVoted);
+    ).toEqual(listMockItemVoted);
   });
 
   it('removes voters id after the vote for the second time', () => {
     expect(
-      lists(shoppingListMockProductVoted, {
+      lists(listMockItemVoted, {
         type: ItemActionTypes.VOTE_SUCCESS,
-        payload: { ...newProduct, voterIds: ['abcd', 'efgh'] }
+        payload: { ...newItem, voterIds: ['abcd', 'efgh'] }
       })
-    ).toEqual(shoppingListMockPopulated);
+    ).toEqual(listMockPopulated);
   });
 });

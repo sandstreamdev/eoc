@@ -8,17 +8,17 @@ const addItemFailure = errorMessage => ({
   type: ItemActionTypes.ADD_FAILURE,
   payload: errorMessage
 });
-export const addItemSuccess = (product, listId) => ({
+export const addItemSuccess = (item, listId) => ({
   type: ItemActionTypes.ADD_SUCCESS,
-  payload: { product, listId }
+  payload: { item, listId }
 });
 const addItemRequest = () => ({
   type: ItemActionTypes.ADD_REQUEST
 });
 
-export const addItemToList = (product, listId) => dispatch => {
+export const addItemToList = (item, listId) => dispatch => {
   dispatch(addItemRequest());
-  postData(`${ENDPOINT_URL}/shopping-lists/add-product`, { product, listId })
+  postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json, listId)))
     .catch(err => {

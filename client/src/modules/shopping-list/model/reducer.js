@@ -9,30 +9,30 @@ const items = (state, action) => {
     case ItemActionTypes.ADD_SUCCESS:
       return {
         ...state,
-        products: [action.payload.product, ...state.products]
+        items: [action.payload.item, ...state.items]
       };
     case ItemActionTypes.TOGGLE_SUCCESS:
       return {
         ...state,
-        products: state.products.map(product =>
-          product._id === action.payload.product._id
+        items: state.items.map(item =>
+          item._id === action.payload.item._id
             ? {
-                ...action.payload.product,
-                isOrdered: action.payload.product.isOrdered
+                ...action.payload.item,
+                isOrdered: action.payload.item.isOrdered
               }
-            : product
+            : item
         )
       };
     case ItemActionTypes.VOTE_SUCCESS:
       return {
         ...state,
-        products: state.products.map(product =>
-          product._id === action.payload.product._id
+        items: state.items.map(item =>
+          item._id === action.payload.item._id
             ? {
-                ...action.payload.product,
-                voterIds: action.payload.product.voterIds
+                ...action.payload.item,
+                voterIds: action.payload.item.voterIds
               }
-            : product
+            : item
         )
       };
     default:

@@ -1,4 +1,4 @@
-export const productsMock = [
+export const itemsMock = [
   {
     authorName: 'John Smith',
     id: '5678',
@@ -15,7 +15,7 @@ export const productsMock = [
   }
 ];
 
-export const newProductMock = {
+export const newItemMock = {
   authorName: 'Marry Smith',
   id: '1234',
   isOrdered: false,
@@ -23,17 +23,17 @@ export const newProductMock = {
   voterIds: ['abcd', 'efgh']
 };
 
-export const shoppingListMockNotPopulated = {
+export const listMockNotPopulated = {
   1234: {
     listId: '1234',
-    products: []
+    items: []
   }
 };
 
-export const shoppingListMockPopulated = {
+export const listMockPopulated = {
   1234: {
     listId: '1234',
-    products: [
+    items: [
       {
         authorName: 'Marry Smith',
         id: '1234',
@@ -45,10 +45,10 @@ export const shoppingListMockPopulated = {
   }
 };
 
-export const shoppingListMockProductToggled = {
+export const listMockItemToggled = {
   1234: {
     listId: '1234',
-    products: [
+    items: [
       {
         authorName: 'Marry Smith',
         id: '1234',
@@ -60,10 +60,10 @@ export const shoppingListMockProductToggled = {
   }
 };
 
-export const shoppingListMockProductVoted = {
+export const listMockItemVoted = {
   1234: {
     listId: '1234',
-    products: [
+    items: [
       {
         authorName: 'Marry Smith',
         id: '1234',

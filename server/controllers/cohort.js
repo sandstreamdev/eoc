@@ -1,6 +1,6 @@
 const Cohort = require('../models/cohort.model');
 const { checkRole, filter } = require('../common/utilities');
-const List = require('../models/shoppingList.model');
+const List = require('../models/list.model');
 
 const createCohort = (req, resp) => {
   const { description, name, adminId } = req.body;

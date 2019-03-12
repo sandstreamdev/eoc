@@ -19,7 +19,7 @@ class ProductsList extends Component {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
-  toggleProduct = (author, id, isOrdered) => {
+  toggleItem = (author, id, isOrdered) => {
     const {
       toggle,
       match: {
@@ -40,8 +40,8 @@ class ProductsList extends Component {
     }
   };
 
-  voteForProduct = product => () => {
-    const { _id, voterIds } = product;
+  voteForItem = item => () => {
+    const { _id, voterIds } = item;
     const {
       vote,
       currentUser: { id },
@@ -56,38 +56,38 @@ class ProductsList extends Component {
 
   render() {
     const {
-      products,
+      items,
       currentUser: { id: userId }
     } = this.props;
     const { limit } = this.state;
 
     return (
       <Fragment>
-        {!products.length ? (
-          <div className="products__message">
+        {!items.length ? (
+          <div className="items__message">
             <p>There are no items!</p>
           </div>
         ) : (
-          <ul className="products-list">
-            {products.slice(0, limit).map(product => (
+          <ul className="items-list">
+            {items.slice(0, limit).map(item => (
               <ProductsListItem
-                archived={product.isOrdered}
-                authorName={product.authorName}
-                id={product._id}
-                image={product.image}
-                key={product._id}
-                name={product.name}
-                toggleProduct={this.toggleProduct}
-                voteForProduct={this.voteForProduct(product)}
-                votesCount={product.voterIds.length}
-                whetherUserVoted={product.voterIds.includes(userId)}
+                archived={item.isOrdered}
+                authorName={item.authorName}
+                id={item._id}
+                image={item.image}
+                key={item._id}
+                name={item.name}
+                toggleItem={this.toggleItem}
+                voteForItem={this.voteForItem(item)}
+                votesCount={item.voterIds.length}
+                whetherUserVoted={item.voterIds.includes(userId)}
               />
             ))}
           </ul>
         )}
-        {limit < products.length && (
+        {limit < items.length && (
           <button
-            className="products__show-more"
+            className="items__show-more"
             onClick={this.showMore}
             type="button"
           />
@@ -100,7 +100,7 @@ class ProductsList extends Component {
 ProductsList.propTypes = {
   currentUser: UserPropType.isRequired,
   match: RouterMatchPropType.isRequired,
-  products: PropTypes.arrayOf(PropTypes.object),
+  items: PropTypes.arrayOf(PropTypes.object),
 
   toggle: PropTypes.func,
   vote: PropTypes.func

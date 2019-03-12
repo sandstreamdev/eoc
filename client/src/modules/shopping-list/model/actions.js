@@ -117,7 +117,7 @@ const restoreListRequest = () => ({
 
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
-  return getData(`${ENDPOINT_URL}/shopping-lists/${listId}/data`)
+  return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchListDataSuccess(json, listId)))
     .catch(err => {
@@ -137,7 +137,7 @@ export const createList = (
   cohortId
 ) => dispatch => {
   dispatch(createListRequest());
-  return postData(`${ENDPOINT_URL}/shopping-lists/create`, {
+  return postData(`${ENDPOINT_URL}/lists/create`, {
     adminId,
     cohortId,
     description,
@@ -157,8 +157,8 @@ export const createList = (
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
-    ? `${ENDPOINT_URL}/shopping-lists/meta-data/${cohortId}`
-    : `${ENDPOINT_URL}/shopping-lists/meta-data`;
+    ? `${ENDPOINT_URL}/lists/meta-data/${cohortId}`
+    : `${ENDPOINT_URL}/lists/meta-data`;
   dispatch(fetchListsMetaDataRequest());
   getData(url)
     .then(resp => resp.json())
@@ -178,7 +178,7 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
 
 export const fetchArchivedListsMetaData = () => dispatch => {
   dispatch(fetchArchivedListsMetaDataRequest());
-  return getData(`${ENDPOINT_URL}/shopping-lists/archived`)
+  return getData(`${ENDPOINT_URL}/lists/archived`)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
@@ -196,7 +196,7 @@ export const fetchArchivedListsMetaData = () => dispatch => {
 
 export const deleteList = id => dispatch => {
   dispatch(deleteListRequest());
-  return deleteData(`${ENDPOINT_URL}/shopping-lists/${id}/delete`)
+  return deleteData(`${ENDPOINT_URL}/lists/${id}/delete`)
     .then(resp =>
       resp.json().then(json => {
         dispatch(deleteListSuccess(id));
@@ -221,7 +221,7 @@ export const deleteList = id => dispatch => {
 
 export const updateList = (listId, data) => dispatch => {
   dispatch(updateListRequest());
-  return patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, data)
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
       dispatch(updateListSuccess({ ...data, listId }));
@@ -243,7 +243,7 @@ export const updateList = (listId, data) => dispatch => {
 
 export const archiveList = listId => dispatch => {
   dispatch(archiveListRequest());
-  return patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, {
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, {
     isArchived: true
   })
     .then(resp => resp.json())
@@ -267,10 +267,10 @@ export const archiveList = listId => dispatch => {
 
 export const restoreList = listId => dispatch => {
   dispatch(restoreListRequest());
-  return patchData(`${ENDPOINT_URL}/shopping-lists/${listId}/update`, {
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, {
     isArchived: false
   })
-    .then(() => getData(`${ENDPOINT_URL}/shopping-lists/${listId}/data`))
+    .then(() => getData(`${ENDPOINT_URL}/lists/${listId}/data`))
     .then(resp => resp.json())
     .then(json => {
       dispatch(restoreListSuccess(json, listId));
