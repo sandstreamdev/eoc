@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const { ObjectId } = require('mongoose').Types;
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -9,8 +9,10 @@ const filter = f => object =>
   );
 
 const checkRole = (idsArray, userIdFromReq) => {
-  const userId = mongoose.Types.ObjectId(userIdFromReq);
+  const userId = ObjectId(userIdFromReq);
   return idsArray.some(id => id.equals(userId));
 };
 
-module.exports = { checkRole, filter };
+const isIdValid = id => ObjectId.isValid(id);
+
+module.exports = { checkRole, filter, isIdValid };

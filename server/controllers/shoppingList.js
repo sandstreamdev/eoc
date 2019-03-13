@@ -1,8 +1,8 @@
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
-const { checkRole, filter } = require('../common/utilities');
+const { checkRole, filter, isIdValid } = require('../common/utilities');
 const Cohort = require('../models/cohort.model');
-const ResponseError = require('../common/ResponseError');
+const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -149,39 +149,44 @@ const addProductToList = (req, resp) => {
 };
 
 const getListData = (req, resp) => {
+  const {
+    params: { id: listId },
+    user: { _id: userId }
+  } = req;
+
+  if (!isIdValid(listId)) {
+    return resp
+      .status(404)
+      .send({ message: `Data of list id: ${listId} not found.` });
+  }
   let list;
   ShoppingList.findOne({
-    _id: req.params.id,
+    _id: listId,
     $or: [
-      { adminIds: req.user._id },
-      { ordererIds: req.user._id },
-      { purchaserIds: req.user._id }
+      { adminIds: userId },
+      { ordererIds: userId },
+      { purchaserIds: userId }
     ]
   })
     .exec()
-    .then(
-      doc => {
-        if (!doc) {
-          throw new ResponseError('List data not found.', 404);
-        }
-        list = doc;
-        const { cohortId } = list;
-        if (cohortId) {
-          return Cohort.findOne({ _id: cohortId })
-            .exec()
-            .then(cohort => {
-              if (!cohort || cohort.isArchived) {
-                throw new ResponseError('List data not found.', 404);
-              }
-            });
-        }
-      },
-      err => {
-        if (err.name === 'CastError') {
-          throw new ResponseError('List data not found.', 404);
-        }
+    .then(doc => {
+      if (!doc) {
+        throw new NotFoundException(`Data of list id: ${listId} not found.`);
       }
-    )
+      list = doc;
+      const { cohortId } = list;
+      if (cohortId) {
+        return Cohort.findOne({ _id: cohortId })
+          .exec()
+          .then(cohort => {
+            if (!cohort || cohort.isArchived) {
+              throw new NotFoundException(
+                `Data of list id: ${listId} not found.`
+              );
+            }
+          });
+      }
+    })
     .then(() => {
       const {
         adminIds,
@@ -206,7 +211,7 @@ const getListData = (req, resp) => {
       resp.status(200).json(data);
     })
     .catch(err => {
-      if (err instanceof ResponseError) {
+      if (err instanceof NotFoundException) {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }

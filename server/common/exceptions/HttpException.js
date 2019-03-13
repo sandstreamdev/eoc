@@ -1,9 +1,9 @@
-class ResponseError extends Error {
-  constructor(message, status) {
+class HttpException extends Error {
+  constructor(status, message) {
     super(message);
     this.status = status;
-    this.name = 'ResponseError';
+    this.message = message;
   }
 }
 
-module.exports = ResponseError;
+module.exports = HttpException;

@@ -1,7 +1,7 @@
 const Cohort = require('../models/cohort.model');
-const { checkRole, filter } = require('../common/utilities');
+const { checkRole, filter, isIdValid } = require('../common/utilities');
 const List = require('../models/shoppingList.model');
-const ResponseError = require('../common/ResponseError');
+const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createCohort = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -110,6 +110,11 @@ const updateCohortById = (req, resp) => {
 };
 
 const getCohortDetails = (req, resp) => {
+  if (!isIdValid(req.params.id)) {
+    return resp
+      .status(404)
+      .send({ message: `Data of list id: ${req.params.id} not found.` });
+  }
   Cohort.findOne(
     {
       _id: req.params.id,
@@ -146,7 +151,9 @@ const deleteCohortById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new ResponseError('Cohort not found.', 404);
+        throw new NotFoundException(
+          `Data of cohort id: ${req.params.id} not found.`
+        );
       }
       documentName = doc.name;
       return List.deleteMany({ cohortId: req.params.id }).exec();
@@ -158,7 +165,7 @@ const deleteCohortById = (req, resp) => {
         .send({ message: `Cohort ${documentName} successfully deleted.` });
     })
     .catch(err => {
-      if (err instanceof ResponseError) {
+      if (err instanceof NotFoundException) {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
