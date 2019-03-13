@@ -149,7 +149,7 @@ class ShoppingList extends Component {
           <FormDialog
             defaultDescription={description}
             defaultName={name}
-            label="Edit list"
+            title="Edit list"
             onCancel={this.hideUpdateForm}
             onConfirm={this.updateListHandler(listId)}
           />
