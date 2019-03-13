@@ -12,8 +12,8 @@ import {
   fetchListData,
   updateList
 } from 'modules/shopping-list/model/actions';
-import DialogBox from 'common/components/DialogBox';
-import ModalForm from 'common/components/ModalForm';
+import Dialog from 'common/components/Dialog';
+import FormDialog from 'common/components/FormDialog';
 import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/shopping-list/components/ArchivedList';
@@ -139,19 +139,19 @@ class ShoppingList extends Component {
         )}
         {isArchived && <ArchivedList listId={listId} name={name} />}
         {showDialogBox && (
-          <DialogBox
-            message={`Do you really want to archive the ${name} list?`}
+          <Dialog
+            title={`Do you really want to archive the ${name} list?`}
             onCancel={this.hideDialogBox}
             onConfirm={this.archiveListHandler(listId)}
           />
         )}
         {showUpdateForm && (
-          <ModalForm
+          <FormDialog
             defaultDescription={description}
             defaultName={name}
             label="Edit list"
             onCancel={this.hideUpdateForm}
-            onSubmit={this.updateListHandler(listId)}
+            onConfirm={this.updateListHandler(listId)}
           />
         )}
       </Fragment>
