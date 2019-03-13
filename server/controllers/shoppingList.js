@@ -1,6 +1,6 @@
 const ShoppingList = require('../models/shoppingList.model');
 const Product = require('../models/item.model');
-const { checkRole, filter, isIdValid } = require('../common/utilities');
+const { checkRole, filter, isValidMongoId } = require('../common/utilities');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
@@ -154,7 +154,7 @@ const getListData = (req, resp) => {
     user: { _id: userId }
   } = req;
 
-  if (!isIdValid(listId)) {
+  if (!isValidMongoId(listId)) {
     return resp
       .status(404)
       .send({ message: `Data of list id: ${listId} not found.` });

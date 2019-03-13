@@ -1,5 +1,5 @@
 const Cohort = require('../models/cohort.model');
-const { checkRole, filter, isIdValid } = require('../common/utilities');
+const { checkRole, filter, isValidMongoId } = require('../common/utilities');
 const List = require('../models/shoppingList.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
@@ -110,7 +110,7 @@ const updateCohortById = (req, resp) => {
 };
 
 const getCohortDetails = (req, resp) => {
-  if (!isIdValid(req.params.id)) {
+  if (!isValidMongoId(req.params.id)) {
     return resp
       .status(404)
       .send({ message: `Data of list id: ${req.params.id} not found.` });

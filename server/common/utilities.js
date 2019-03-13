@@ -13,6 +13,6 @@ const checkRole = (idsArray, userIdFromReq) => {
   return idsArray.some(id => id.equals(userId));
 };
 
-const isIdValid = id => ObjectId.isValid(id);
+const isValidMongoId = id => ObjectId.isValid(id);
 
-module.exports = { checkRole, filter, isIdValid };
+module.exports = { checkRole, filter, isValidMongoId };
