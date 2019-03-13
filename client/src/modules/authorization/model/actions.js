@@ -36,7 +36,7 @@ export const setCurrentUser = () => dispatch => {
 
 export const logoutCurrentUser = () => dispatch => {
   dispatch(logoutUserRequest());
-  postRequest(`${ENDPOINT_URL}/logout`)
+  return postRequest(`${ENDPOINT_URL}/logout`)
     .then(() => dispatch(logoutUserSuccess()))
     .catch(err => {
       dispatch(logoutUserFailure(err.message));

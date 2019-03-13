@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _sortBy from 'lodash/sortBy';
 
-import ProductsList from 'modules/shopping-list/components/ProductsList';
+import ItemsList from 'modules/list/components/ItemsList';
 import SortBox from 'common/components/SortBox';
 import { SortOrderType } from 'common/constants/enums';
-import FilterBox from 'modules/shopping-list/components/FilterBox';
+import FilterBox from 'modules/list/components/FilterBox';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 const SortOptionType = Object.freeze({
@@ -17,8 +17,8 @@ const SortOptionType = Object.freeze({
 });
 
 export const FilterOptionType = Object.freeze({
-  MY_PRODUCTS: 'my_products',
-  ALL_PRODUCTS: 'all_products'
+  MY_ITEMS: 'my_items',
+  ALL_ITEMS: 'all_items'
 });
 
 const sortOptions = [
@@ -29,30 +29,30 @@ const sortOptions = [
 ];
 
 const filterOptions = [
-  { id: FilterOptionType.ALL_PRODUCTS, label: 'all' },
-  { id: FilterOptionType.MY_PRODUCTS, label: 'my' }
+  { id: FilterOptionType.ALL_ITEMS, label: 'all' },
+  { id: FilterOptionType.MY_ITEMS, label: 'my' }
 ];
 
-class ProductsContainer extends Component {
+class ItemsContainer extends Component {
   state = {
     sortBy: SortOptionType.DATE,
     sortOrder: SortOrderType.DESCENDING,
-    filterBy: FilterOptionType.ALL_PRODUCTS
+    filterBy: FilterOptionType.ALL_ITEMS
   };
 
   onSortChange = (sortBy, sortOrder) => this.setState({ sortBy, sortOrder });
 
-  sortProducts = (products, sortBy, sortOrder) => {
-    let result = [...products];
+  sortItems = (items, sortBy, sortOrder) => {
+    let result = [...items];
 
     switch (sortBy) {
       case SortOptionType.NAME:
-        result = _sortBy(result, product => product.name.toLowerCase());
+        result = _sortBy(result, item => item.name.toLowerCase());
         break;
       case SortOptionType.AUTHOR:
         result = _sortBy(result, [
-          product => product.authorName.toLowerCase(),
-          product => product.name.toLowerCase()
+          item => item.authorName.toLowerCase(),
+          item => item.name.toLowerCase()
         ]);
         break;
       case SortOptionType.DATE:
@@ -74,30 +74,30 @@ class ProductsContainer extends Component {
 
   onFilterChange = filterBy => this.setState({ filterBy });
 
-  filterProducts = (products, filterBy) => {
+  filterItems = (items, filterBy) => {
     const {
       currentUser: { id }
     } = this.props;
 
-    return filterBy === FilterOptionType.MY_PRODUCTS
-      ? products.filter(product => product.authorId === id)
-      : products;
+    return filterBy === FilterOptionType.MY_ITEMS
+      ? items.filter(item => item.authorId === id)
+      : items;
   };
 
   render() {
-    const { archived, children, description, name, products } = this.props;
+    const { archived, children, description, name, items } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
-    const filteredList = this.filterProducts(products, filterBy);
-    const sortedList = this.sortProducts(filteredList, sortBy, sortOrder);
+    const filteredList = this.filterItems(items, filterBy);
+    const sortedList = this.sortItems(filteredList, sortBy, sortOrder);
 
     return (
-      <div className="products">
+      <div className="items">
         {children}
-        <header className="products__header">
-          <h2 className="products__heading products__heading--left">
+        <header className="items__header">
+          <h2 className="items__heading items__heading--left">
             {archived ? 'History' : name}
           </h2>
-          <div className="products__header-controls">
+          <div className="items__header-controls">
             <FilterBox
               filterBy={filterBy}
               label="Filter by:"
@@ -113,26 +113,26 @@ class ProductsContainer extends Component {
             />
           </div>
         </header>
-        {description && <p className="products__description">{description}</p>}
-        <div className="products__body">
-          <ProductsList archived={archived} products={sortedList} />
+        {description && <p className="items__description">{description}</p>}
+        <div className="items__body">
+          <ItemsList archived={archived} items={sortedList} />
         </div>
       </div>
     );
   }
 }
 
-ProductsContainer.propTypes = {
+ItemsContainer.propTypes = {
   archived: PropTypes.bool,
   children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
   description: PropTypes.string,
-  name: PropTypes.string,
-  products: PropTypes.arrayOf(PropTypes.object)
+  items: PropTypes.arrayOf(PropTypes.object),
+  name: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(mapStateToProps)(ProductsContainer);
+export default connect(mapStateToProps)(ItemsContainer);

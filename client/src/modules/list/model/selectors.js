@@ -8,10 +8,10 @@ export const getItems = (state, listId) => {
   const currentList = getList(state, listId);
 
   if (currentList) {
-    const { products } = currentList;
+    const { items } = currentList;
     return (
-      products &&
-      products.sort((a, b) =>
+      items &&
+      items.sort((a, b) =>
         new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
           ? -1
           : 1

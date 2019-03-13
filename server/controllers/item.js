@@ -25,8 +25,8 @@ const itemCreate = (req, resp) => {
 
 // Get item by given id
 const getItemById = (req, resp) => {
-  Item.findById(req.params.id, (err, product) => {
-    err ? resp.status(400).send(err.message) : resp.status(200).json(product);
+  Item.findById(req.params.id, (err, item) => {
+    err ? resp.status(400).send(err.message) : resp.status(200).json(item);
   });
 };
 
