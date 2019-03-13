@@ -208,13 +208,12 @@ const getListData = (req, resp) => {
     .catch(err => {
       if (err instanceof ResponseError) {
         const { status, message } = err;
-        resp.status(status).send({ message });
-      } else {
-        resp.status(400).send({
-          message:
-            'An error occurred while fetching the list data. Please try again.'
-        });
+        return resp.status(status).send({ message });
       }
+      resp.status(400).send({
+        message:
+          'An error occurred while fetching the list data. Please try again.'
+      });
     });
 };
 
