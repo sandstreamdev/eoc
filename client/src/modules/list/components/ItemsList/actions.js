@@ -34,7 +34,7 @@ export const toggle = (
   updatedAuthor
 ) => dispatch => {
   dispatch(toggleItemRequest());
-  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
     authorName: updatedAuthor,
     itemId,
     isOrdered: !isOrdered,
@@ -56,7 +56,7 @@ export const toggle = (
 
 export const vote = (itemId, listId, voterIds) => dispatch => {
   dispatch(voteForItemRequest());
-  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
     itemId,
     voterIds
   })

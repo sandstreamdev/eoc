@@ -160,7 +160,7 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
     ? `${ENDPOINT_URL}/lists/meta-data/${cohortId}`
     : `${ENDPOINT_URL}/lists/meta-data`;
   dispatch(fetchListsMetaDataRequest());
-  getData(url)
+  return getData(url)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');

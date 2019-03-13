@@ -18,7 +18,7 @@ const addItemRequest = () => ({
 
 export const addItemToList = (item, listId) => dispatch => {
   dispatch(addItemRequest());
-  postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
+  return postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json, listId)))
     .catch(err => {

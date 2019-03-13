@@ -7,10 +7,10 @@ const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
 
   const list = new List({
-    description,
-    name,
     adminIds: adminId,
-    cohortId
+    cohortId,
+    description,
+    name
   });
 
   list.save((err, doc) => {

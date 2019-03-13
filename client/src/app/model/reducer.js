@@ -8,8 +8,8 @@ import lists from 'modules/list/model/reducer';
 const rootReducer = combineReducers({
   cohorts,
   currentUser,
-  notifications,
-  lists
+  lists,
+  notifications
 });
 
 export default rootReducer;
