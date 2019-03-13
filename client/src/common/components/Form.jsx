@@ -10,6 +10,12 @@ class Form extends PureComponent {
       description: defaultDescription || '',
       name: defaultName || ''
     };
+
+    this.input = React.createRef();
+  }
+
+  componentDidMount() {
+    this.input.current.focus();
   }
 
   handleNameChange = event => {
@@ -50,10 +56,10 @@ class Form extends PureComponent {
         >
           <label className="form__label">
             <input
-              autoFocus
               className="form__input primary-input"
               onChange={this.handleNameChange}
               placeholder="Name"
+              ref={this.input}
               type="text"
               value={name}
             />
