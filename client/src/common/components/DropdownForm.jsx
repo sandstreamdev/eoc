@@ -56,8 +56,8 @@ class DropdownForm extends Component {
             </div>
             <div className="dropdown-form__body">
               <Form
-                handleDescriptionChange={this.handleDescriptionChange}
-                handleNameChange={this.handleNameChange}
+                onDescriptionChange={this.handleDescriptionChange}
+                onNameChange={this.handleNameChange}
                 onSubmit={this.handleSubmission}
               />
             </div>
