@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const ToolbarLink = ({ additionalIconSrc, mainIcon, path }) => (
+const ToolbarLink = ({ additionalIconSrc, mainIcon, path, title }) => (
   <div className="toolbar-link">
-    <Link className="toolbar-link__icon-link" to={path}>
+    <Link className="toolbar-link__icon-link" title={title} to={path}>
       {mainIcon}
       {additionalIconSrc && (
         <img
@@ -20,7 +20,8 @@ const ToolbarLink = ({ additionalIconSrc, mainIcon, path }) => (
 ToolbarLink.propTypes = {
   additionalIconSrc: PropTypes.string,
   mainIcon: PropTypes.node.isRequired,
-  path: PropTypes.string.isRequired
+  path: PropTypes.string.isRequired,
+  title: PropTypes.string
 };
 
 export default ToolbarLink;

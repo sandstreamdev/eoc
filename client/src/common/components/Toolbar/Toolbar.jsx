@@ -29,7 +29,11 @@ const Toolbar = ({ children, isHomePage }) => (
           </a>
         </div>
         {!isHomePage && (
-          <ToolbarLink mainIcon={<HomeIcon />} path="/dashboard" />
+          <ToolbarLink
+            mainIcon={<HomeIcon />}
+            path="/dashboard"
+            title="Go back to dashboard."
+          />
         )}
         {children}
       </div>

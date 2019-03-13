@@ -53,6 +53,7 @@ class Form extends PureComponent {
               className="form__input primary-input"
               onChange={this.handleNameChange}
               placeholder="Name"
+              title="Please enter name here."
               type="text"
               value={name}
             />
@@ -62,6 +63,7 @@ class Form extends PureComponent {
               className="form__textarea primary-textarea"
               onChange={this.handleDescriptionChange}
               placeholder="Description"
+              title="Please enter description here."
               type="text"
               value={description}
             />
