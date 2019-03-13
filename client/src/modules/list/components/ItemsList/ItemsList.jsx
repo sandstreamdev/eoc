@@ -99,8 +99,8 @@ class ItemsList extends Component {
 
 ItemsList.propTypes = {
   currentUser: UserPropType.isRequired,
-  match: RouterMatchPropType.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
+  match: RouterMatchPropType.isRequired,
 
   toggle: PropTypes.func,
   vote: PropTypes.func

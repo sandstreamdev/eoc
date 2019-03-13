@@ -13,9 +13,9 @@ const ListSchema = new Schema(
     },
     description: { type: String },
     isArchived: { type: Boolean, default: false },
+    items: [ItemSchema],
     name: { type: String, required: true },
     ordererIds: [ObjectId],
-    items: [ItemSchema],
     purchaserIds: [ObjectId],
     visibility: { type: String }
   },

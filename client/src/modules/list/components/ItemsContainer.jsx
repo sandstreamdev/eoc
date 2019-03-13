@@ -127,8 +127,8 @@ ItemsContainer.propTypes = {
   children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
   description: PropTypes.string,
-  name: PropTypes.string,
-  items: PropTypes.arrayOf(PropTypes.object)
+  items: PropTypes.arrayOf(PropTypes.object),
+  name: PropTypes.string
 };
 
 const mapStateToProps = state => ({
