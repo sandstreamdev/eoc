@@ -22,13 +22,9 @@ class DropdownForm extends Component {
     document.removeEventListener('keydown', this.escapeListener);
   }
 
-  handleDescriptionChange = description => {
-    this.setState({ description });
-  };
+  handleDescriptionChange = description => this.setState({ description });
 
-  handleNameChange = name => {
-    this.setState({ name });
-  };
+  handleNameChange = name => this.setState({ name });
 
   handleSubmission = () => {
     const { onSubmit } = this.props;
