@@ -49,6 +49,7 @@ class InputBar extends Component {
         <div className="input-bar">
           <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
             <input
+              autoFocus
               className="input-bar__input primary-input"
               onChange={this.handleNameChange}
               placeholder="What is missing?"

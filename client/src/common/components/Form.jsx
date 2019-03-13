@@ -50,6 +50,7 @@ class Form extends PureComponent {
         >
           <label className="form__label">
             <input
+              autoFocus
               className="form__input primary-input"
               onChange={this.handleNameChange}
               placeholder="Name"

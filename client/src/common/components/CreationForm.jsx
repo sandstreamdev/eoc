@@ -77,6 +77,7 @@ class CreationForm extends PureComponent {
           <div className="creation-form__body">
             <label className="creation-form__label">
               <input
+                autoFocus
                 className="creation-form__input primary-input"
                 onChange={this.handleValueChange}
                 placeholder="Name"
