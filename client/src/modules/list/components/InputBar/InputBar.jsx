@@ -8,9 +8,18 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addItemToList } from './model/actions';
 
 class InputBar extends Component {
-  state = {
-    itemName: ''
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      itemName: ''
+    };
+    this.input = React.createRef();
+  }
+
+  componentDidMount() {
+    this.input.current.focus();
+  }
 
   handleNameChange = e => {
     this.setState({
@@ -52,6 +61,7 @@ class InputBar extends Component {
               className="input-bar__input primary-input"
               onChange={this.handleNameChange}
               placeholder="What is missing?"
+              ref={this.input}
               required
               type="text"
               value={itemName}
