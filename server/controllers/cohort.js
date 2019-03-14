@@ -129,7 +129,9 @@ const getCohortDetails = (req, resp) => {
       }
 
       if (!doc) {
-        return resp.status(404).send({ message: 'Cohort data not found.' });
+        return resp
+          .status(404)
+          .send({ message: `Data of cohort id: ${req.params.id} not found.` });
       }
 
       const { adminIds, _id, isArchived, description, name } = doc;
