@@ -284,5 +284,6 @@ export const fetchCohortDetails = cohortId => dispatch => {
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, fetching data failed..."
       );
+      throw err;
     });
 };
