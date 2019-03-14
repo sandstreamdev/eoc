@@ -32,7 +32,7 @@ const Toolbar = ({ children, isHomePage }) => (
           <ToolbarLink
             mainIcon={<HomeIcon />}
             path="/dashboard"
-            title="Go back to dashboard."
+            title="Go back to dashboard"
           />
         )}
         {children}

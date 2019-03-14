@@ -154,7 +154,7 @@ class Cohort extends PureComponent {
                 additionalIconSrc={PlusIcon}
                 mainIcon={<ListIcon />}
                 onClick={this.showListCreationForm}
-                title="Create new list."
+                title="Create new list"
               >
                 <DropdownForm
                   isVisible={isListFormVisible}
@@ -167,12 +167,12 @@ class Cohort extends PureComponent {
               <ToolbarItem
                 mainIcon={<EditIcon />}
                 onClick={this.showUpdateForm}
-                title="Update cohort."
+                title="Update cohort"
               />
               <ToolbarItem
                 mainIcon={<ArchiveIcon />}
                 onClick={this.showDialog}
-                title="Archive cohort."
+                title="Archive cohort"
               />
             </Fragment>
           )}

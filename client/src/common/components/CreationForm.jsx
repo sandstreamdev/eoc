@@ -81,7 +81,6 @@ class CreationForm extends PureComponent {
                 onChange={this.handleValueChange}
                 placeholder="Name"
                 required={type === 'menu'}
-                title="Please enter name here."
                 type="text"
                 value={name}
               />
@@ -91,7 +90,6 @@ class CreationForm extends PureComponent {
                 className="creation-form__textarea primary-textarea"
                 onChange={this.handleValueChange}
                 placeholder="Description"
-                title="Please enter description here."
                 type="text"
                 value={description}
               />

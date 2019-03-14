@@ -111,7 +111,7 @@ class ShoppingList extends Component {
               additionalIconSrc={ArrowLeftIcon}
               mainIcon={<CohortIcon />}
               path={`/cohort/${cohortId}`}
-              title="Go back to cohort."
+              title="Go back to cohort"
             />
           )}
           {!isArchived && this.checkIfAdmin() && (
@@ -119,12 +119,12 @@ class ShoppingList extends Component {
               <ToolbarItem
                 mainIcon={<EditIcon />}
                 onClick={this.showUpdateForm}
-                title="Edit list."
+                title="Edit list"
               />
               <ToolbarItem
                 mainIcon={<ArchiveIcon />}
                 onClick={this.showDialogBox}
-                title="Archive list."
+                title="Archive list"
               />
             </Fragment>
           )}
