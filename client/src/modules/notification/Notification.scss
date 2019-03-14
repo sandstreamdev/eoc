@@ -10,6 +10,9 @@
 
   &__wrapper {
     max-width: 1440px;
-    padding: 0 20px;
+    position: fixed;
+    top: 32px;
+    right: 240px;
+    z-index: 7;
   }
 }
