@@ -1,0 +1,5 @@
+@mixin medium-screens(){
+  @media only screen and (min-width: 800px) {
+    @content;
+  }
+}

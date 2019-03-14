@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -18,8 +18,8 @@ const ItemsListItem = ({
 }) => (
   <li
     className={classNames('items-list__item', {
-      'items-list__item--blue': archived,
-      'items-list__item--green': !archived
+      // 'items-list__item--blue': !archived,
+      'items-list__item--green': archived
     })}
   >
     <input
@@ -27,6 +27,7 @@ const ItemsListItem = ({
       id={`option${id}`}
       name={`option${id}`}
       type="checkbox"
+      checked={archived}
     />
     <label
       className="items-list__label"
@@ -37,7 +38,7 @@ const ItemsListItem = ({
       <img alt="Item icon" className="items-list__icon" src={image} />
       <span className="items-list__data">
         <span>{name}</span>
-        <span className="items-list__author">{`Ordered by: ${authorName}`}</span>
+        <span className="items-list__author">{`Added by: ${authorName}`}</span>
       </span>
       {!archived && (
         <VotingBox

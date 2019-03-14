@@ -95,7 +95,7 @@ class ItemsContainer extends Component {
         {children}
         <header className="items__header">
           <h2 className="items__heading items__heading--left">
-            {archived ? 'History' : name}
+            {archived ? 'Done' : name}
           </h2>
           <div className="items__header-controls">
             <FilterBox
