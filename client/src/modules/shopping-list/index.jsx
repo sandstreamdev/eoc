@@ -140,18 +140,18 @@ class ShoppingList extends Component {
         {isArchived && <ArchivedList listId={listId} name={name} />}
         {showDialogBox && (
           <Dialog
-            title={`Do you really want to archive the ${name} list?`}
             onCancel={this.hideDialogBox}
             onConfirm={this.archiveListHandler(listId)}
+            title={`Do you really want to archive the ${name} list?`}
           />
         )}
         {showUpdateForm && (
           <FormDialog
             defaultDescription={description}
             defaultName={name}
-            title="Edit list"
             onCancel={this.hideUpdateForm}
             onConfirm={this.updateListHandler(listId)}
+            title="Edit list"
           />
         )}
       </Fragment>

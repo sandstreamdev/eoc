@@ -78,7 +78,7 @@ Form.propTypes = {
 
   onDescriptionChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func
+  onSubmit: PropTypes.func.isRequired
 };
 
 export default Form;

@@ -73,6 +73,7 @@ class DropdownForm extends Component {
     );
   }
 }
+
 DropdownForm.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
