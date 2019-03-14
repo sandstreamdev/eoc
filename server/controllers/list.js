@@ -1,5 +1,5 @@
-const ShoppingList = require('../models/shoppingList.model');
-const Product = require('../models/item.model');
+const List = require('../models/list.model');
+const Item = require('../models/item.model');
 const { checkRole, filter, isValidMongoId } = require('../common/utilities');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -7,11 +7,11 @@ const NotFoundException = require('../common/exceptions/NotFoundException');
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
 
-  const list = new ShoppingList({
-    description,
-    name,
+  const list = new List({
     adminIds: adminId,
-    cohortId
+    cohortId,
+    description,
+    name
   });
 
   list.save((err, doc) => {
@@ -27,13 +27,13 @@ const createList = (req, resp) => {
       : { _id, description, name };
     resp
       .status(201)
-      .location(`/shopping-lists/${doc._id}`)
+      .location(`/lists/${doc._id}`)
       .send(data);
   });
 };
 
 const deleteListById = (req, resp) => {
-  ShoppingList.findOneAndDelete(
+  List.findOneAndDelete(
     { _id: req.params.id, adminIds: req.user._id },
     (err, doc) => {
       if (err) {
@@ -52,10 +52,10 @@ const deleteListById = (req, resp) => {
   );
 };
 
-const getShoppingListsMetaData = (req, resp) => {
+const getListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
 
-  ShoppingList.find(
+  List.find(
     {
       cohortId,
       $or: [
@@ -82,7 +82,7 @@ const getShoppingListsMetaData = (req, resp) => {
 };
 
 const getArchivedListsMetaData = (req, resp) => {
-  ShoppingList.find(
+  List.find(
     {
       $or: [
         { adminIds: req.user._id },
@@ -109,13 +109,13 @@ const getArchivedListsMetaData = (req, resp) => {
   );
 };
 
-const addProductToList = (req, resp) => {
+const addItemToList = (req, resp) => {
   const {
-    product: { name, isOrdered, authorName, authorId, voterIds },
+    item: { name, isOrdered, authorName, authorId, voterIds },
     listId
   } = req.body;
 
-  const product = new Product({
+  const item = new Item({
     authorName,
     authorId,
     isOrdered,
@@ -123,7 +123,7 @@ const addProductToList = (req, resp) => {
     voterIds
   });
 
-  ShoppingList.findOneAndUpdate(
+  List.findOneAndUpdate(
     {
       _id: listId,
       $or: [
@@ -132,7 +132,7 @@ const addProductToList = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
-    { $push: { products: product } },
+    { $push: { items: item } },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -142,7 +142,7 @@ const addProductToList = (req, resp) => {
       }
 
       doc
-        ? resp.status(200).send(product)
+        ? resp.status(200).send(item)
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
@@ -160,7 +160,7 @@ const getListData = (req, resp) => {
       .send({ message: `Data of list id: ${listId} not found.` });
   }
   let list;
-  ShoppingList.findOne({
+  List.findOne({
     _id: listId,
     $or: [
       { adminIds: userId },
@@ -189,13 +189,13 @@ const getListData = (req, resp) => {
     })
     .then(() => {
       const {
+        _id,
         adminIds,
         cohortId,
         description,
-        _id,
         isArchived,
-        name,
-        products
+        items,
+        name
       } = list;
 
       if (isArchived) {
@@ -204,11 +204,9 @@ const getListData = (req, resp) => {
 
       const isAdmin = checkRole(adminIds, req.user._id);
 
-      const data = isAdmin
-        ? { _id, cohortId, description, isAdmin, isArchived, name, products }
-        : { _id, cohortId, description, isArchived, name, products };
-
-      resp.status(200).json(data);
+      return resp
+        .status(200)
+        .json({ _id, cohortId, description, isAdmin, isArchived, items, name });
     })
     .catch(err => {
       if (err instanceof NotFoundException) {
@@ -222,7 +220,7 @@ const getListData = (req, resp) => {
     });
 };
 
-const updateShoppingListItem = (req, resp) => {
+const updateListItem = (req, resp) => {
   const { isOrdered, itemId, voterIds } = req.body;
   const { id: listId } = req.params;
 
@@ -232,16 +230,16 @@ const updateShoppingListItem = (req, resp) => {
    *  */
   const propertiesToUpdate = {};
   if (isOrdered !== undefined) {
-    propertiesToUpdate['products.$.isOrdered'] = isOrdered;
+    propertiesToUpdate['items.$.isOrdered'] = isOrdered;
   }
   if (voterIds) {
-    propertiesToUpdate['products.$.voterIds'] = voterIds;
+    propertiesToUpdate['items.$.voterIds'] = voterIds;
   }
 
-  ShoppingList.findOneAndUpdate(
+  List.findOneAndUpdate(
     {
       _id: listId,
-      'products._id': itemId,
+      'items._id': itemId,
       $or: [
         { adminIds: req.user._id },
         { ordererIds: req.user._id },
@@ -259,8 +257,8 @@ const updateShoppingListItem = (req, resp) => {
             'An error occurred while updating the list data. Please try again.'
         });
       }
-      const itemIndex = doc.products.findIndex(item => item._id.equals(itemId));
-      const item = doc.products[itemIndex];
+      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
+      const item = doc.items[itemIndex];
 
       doc
         ? resp.status(200).json(item)
@@ -278,7 +276,7 @@ const updateListById = (req, resp) => {
     name
   });
 
-  ShoppingList.findOneAndUpdate(
+  List.findOneAndUpdate(
     {
       _id: listId,
       $or: [{ adminIds: req.user._id }]
@@ -302,12 +300,12 @@ const updateListById = (req, resp) => {
 };
 
 module.exports = {
-  addProductToList,
+  addItemToList,
   createList,
   deleteListById,
   getArchivedListsMetaData,
   getListData,
-  getShoppingListsMetaData,
+  getListsMetaData,
   updateListById,
-  updateShoppingListItem
+  updateListItem
 };

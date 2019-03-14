@@ -1,6 +1,6 @@
 const Cohort = require('../models/cohort.model');
 const { checkRole, filter, isValidMongoId } = require('../common/utilities');
-const List = require('../models/shoppingList.model');
+const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createCohort = (req, resp) => {

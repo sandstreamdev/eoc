@@ -3,7 +3,7 @@ const request = require('supertest');
 const app = require('../app');
 
 describe('Items Controller', () => {
-  it('resond with json with list of products', done => {
+  it('respond with json with list of items', done => {
     request(app)
       .get('/items')
       .then(res => {

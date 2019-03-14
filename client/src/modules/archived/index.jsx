@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import Toolbar from 'common/components/Toolbar';
-import { fetchArchivedListsMetaData } from 'modules/shopping-list/model/actions';
+import { fetchArchivedListsMetaData } from 'modules/list/model/actions';
 import { fetchArchivedCohortsMetaData } from 'modules/cohort/model/actions';
-import { getLists } from 'modules/shopping-list/model/selectors';
+import { getLists } from 'modules/list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { CohortIcon, ListIcon } from 'assets/images/icons';
 import GridList from 'common/components/GridList';

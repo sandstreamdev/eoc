@@ -18,10 +18,13 @@ class CreationForm extends PureComponent {
       description: defaultDescription || '',
       name: defaultName || ''
     };
+
+    this.input = React.createRef();
   }
 
   componentDidMount() {
     document.addEventListener('keydown', this.escapeListener);
+    this.input.current.focus();
   }
 
   componentWillUnmount() {
@@ -80,6 +83,7 @@ class CreationForm extends PureComponent {
                 className="creation-form__input primary-input"
                 onChange={this.handleValueChange}
                 placeholder="Name"
+                ref={this.input}
                 required={type === 'menu'}
                 type="text"
                 value={name}

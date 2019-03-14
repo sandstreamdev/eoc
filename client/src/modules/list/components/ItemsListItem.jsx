@@ -3,45 +3,45 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import { PLACEHOLDER_URL } from 'common/constants/variables';
-import VotingBox from 'modules/shopping-list/components/VotingBox';
+import VotingBox from 'modules/list/components/VotingBox';
 
-const ProductListItem = ({
+const ItemsListItem = ({
   archived,
   authorName,
   id,
   image = PLACEHOLDER_URL,
   name,
-  toggleProduct,
-  voteForProduct,
+  toggleItem,
+  voteForItem,
   votesCount,
   whetherUserVoted
 }) => (
   <li
-    className={classNames('products-list__item', {
-      'products-list__item--blue': archived,
-      'products-list__item--green': !archived
+    className={classNames('items-list__item', {
+      'items-list__item--blue': archived,
+      'items-list__item--green': !archived
     })}
   >
     <input
-      className="product-list__input"
+      className="item-list__input"
       id={`option${id}`}
       name={`option${id}`}
       type="checkbox"
     />
     <label
-      className="products-list__label"
+      className="items-list__label"
       htmlFor={`option${id}`}
       id={`option${id}`}
-      onClick={() => toggleProduct(authorName, id, archived)}
+      onClick={() => toggleItem(authorName, id, archived)}
     >
-      <img alt="Product icon" className="products-list__icon" src={image} />
-      <span className="products-list__data">
+      <img alt="Item icon" className="items-list__icon" src={image} />
+      <span className="items-list__data">
         <span>{name}</span>
-        <span className="products-list__author">{`Ordered by: ${authorName}`}</span>
+        <span className="items-list__author">{`Ordered by: ${authorName}`}</span>
       </span>
       {!archived && (
         <VotingBox
-          voteForProduct={voteForProduct}
+          voteForItem={voteForItem}
           votesCount={votesCount}
           whetherUserVoted={whetherUserVoted}
         />
@@ -50,7 +50,7 @@ const ProductListItem = ({
   </li>
 );
 
-ProductListItem.propTypes = {
+ItemsListItem.propTypes = {
   archived: PropTypes.bool,
   authorName: PropTypes.string,
   id: PropTypes.string.isRequired,
@@ -59,8 +59,8 @@ ProductListItem.propTypes = {
   votesCount: PropTypes.number.isRequired,
   whetherUserVoted: PropTypes.bool.isRequired,
 
-  toggleProduct: PropTypes.func,
-  voteForProduct: PropTypes.func
+  toggleItem: PropTypes.func,
+  voteForItem: PropTypes.func
 };
 
-export default ProductListItem;
+export default ItemsListItem;

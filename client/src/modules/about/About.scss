@@ -1,0 +1,77 @@
+.about {
+  &__intro {
+    margin-top: 5px;
+    width: 100%;
+    background: url('../../assets/images/hero-bg.png') center -450px;
+    padding: 0 0 150px;
+  }
+
+  &__intro-heading {
+    font-weight: 400;
+    color: $text-normal;
+    text-align: center;
+    font-size: 52px;
+    padding-top: 50px;
+  }
+
+  &__subheading {
+    font-weight: 400;
+    color: $text-light;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 20px 0 50px;
+  }
+
+  &__main {
+    background: $orange-bg;
+    padding: 0 0 40px;
+    box-shadow: 0px 5px 5px $orange-bg;
+    margin-bottom: 10px;
+  }
+
+  &__heading {
+    font-size: 24px;
+    line-height: 1.2;
+    color: $text-white;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  &__content {
+    font-size: 14px;
+    line-height: 1.2;
+    color: $text-white;
+    letter-spacing: 0.3px;
+    margin-bottom: 16px;
+  }
+
+  &__cta {
+    padding: 40px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  &__section {
+    column-count: 2;
+    column-gap: 25px;
+  }
+
+  &__cta-heading {
+    font-size: 24px;
+    line-height: 1.2;
+    color: $text-normal;
+    margin-bottom: 16px;
+  }
+
+  &__article {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+}

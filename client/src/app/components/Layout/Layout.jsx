@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
-import ShoppingList from 'modules/shopping-list';
+import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import Archived from 'modules/archived';
@@ -14,6 +14,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
 import Notifications from 'modules/notification';
 import Page404 from 'common/components/Page404';
+import About from 'modules/about';
 
 export class Layout extends Component {
   componentDidMount() {
@@ -52,8 +53,9 @@ export class Layout extends Component {
         <Switch>
           <Route component={Dashboard} path="/dashboard" />
           <Route component={Cohort} path="/cohort/:id(\w+)" />
-          <Route component={ShoppingList} path="/list/:id(\w+)" />
+          <Route component={List} path="/list/:id(\w+)" />
           <Route component={Archived} path="/archived" />
+          <Route component={About} path="/about" />
           <Route component={Page404} />
         </Switch>
         <Footer />

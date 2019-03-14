@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { deleteList, restoreList } from 'modules/shopping-list/model/actions';
+import { deleteList, restoreList } from 'modules/list/model/actions';
 import ArchivedMessage from 'common/components/ArchivedMessage';
 
 class ArchivedList extends PureComponent {

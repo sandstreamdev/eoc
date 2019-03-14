@@ -1,4 +1,4 @@
-.products-list {
+.items-list {
   &__item {
     background-color: $bg-color;
     display: block;
@@ -31,7 +31,7 @@
       }
     }
 
-    .products-list__label {
+    .items-list__label {
       &::before {
         background-color: $success-bg;
       }
@@ -51,7 +51,7 @@
       }
     }
 
-    .products-list__label {
+    .items-list__label {
       &::before {
         background-color: $restore-color;
       }

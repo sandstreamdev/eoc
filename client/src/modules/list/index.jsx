@@ -4,23 +4,23 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
-import ProductsContainer from 'modules/shopping-list/components/ProductsContainer';
-import { getList, getItems } from 'modules/shopping-list/model/selectors';
-import InputBar from 'modules/shopping-list/components/InputBar';
+import ItemsContainer from 'modules/list/components/ItemsContainer';
+import { getList, getItems } from 'modules/list/model/selectors';
+import InputBar from 'modules/list/components/InputBar';
 import {
   archiveList,
   fetchListData,
   updateList
-} from 'modules/shopping-list/model/actions';
+} from 'modules/list/model/actions';
 import DialogBox from 'common/components/DialogBox';
 import ModalForm from 'common/components/ModalForm';
 import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
-import ArchivedList from 'modules/shopping-list/components/ArchivedList';
+import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 
-class ShoppingList extends Component {
+class List extends Component {
   state = {
     showDialogBox: false,
     showUpdateForm: false
@@ -99,6 +99,7 @@ class ShoppingList extends Component {
     if (!list) {
       return null;
     }
+
     const { cohortId, description, isArchived, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
@@ -129,12 +130,12 @@ class ShoppingList extends Component {
         {!isArchived && (
           <div className="wrapper list-wrapper">
             <InputBar />
-            <ProductsContainer
+            <ItemsContainer
               description={description}
               name={name}
-              products={listItems}
+              items={listItems}
             />
-            <ProductsContainer archived products={orderedItems} />
+            <ItemsContainer archived items={orderedItems} />
           </div>
         )}
         {isArchived && <ArchivedList listId={listId} name={name} />}
@@ -159,7 +160,7 @@ class ShoppingList extends Component {
   }
 }
 
-ShoppingList.propTypes = {
+List.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
@@ -178,5 +179,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     { archiveList, fetchListData, updateList }
-  )(ShoppingList)
+  )(List)
 );

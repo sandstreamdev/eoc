@@ -8,11 +8,8 @@ import _isEmpty from 'lodash/isEmpty';
 import CardItem, { CardColorType } from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
-import { getCohortLists } from 'modules/shopping-list/model/selectors';
-import {
-  createList,
-  fetchListsMetaData
-} from 'modules/shopping-list/model/actions';
+import { getCohortLists } from 'modules/list/model/selectors';
+import { createList, fetchListsMetaData } from 'modules/list/model/actions';
 import {
   ArchiveIcon,
   CohortIcon,

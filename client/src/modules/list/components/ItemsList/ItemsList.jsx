@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import ProductsListItem from 'modules/shopping-list/components/ProductsListItem';
+import ItemsListItem from 'modules/list/components/ItemsListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { toggle, vote } from './actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
-class ProductsList extends Component {
+class ItemsList extends Component {
   state = {
     limit: DISPLAY_LIMIT
   };
@@ -19,7 +19,7 @@ class ProductsList extends Component {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
-  toggleProduct = (author, id, isOrdered) => {
+  toggleItem = (author, id, isOrdered) => {
     const {
       toggle,
       match: {
@@ -40,8 +40,8 @@ class ProductsList extends Component {
     }
   };
 
-  voteForProduct = product => () => {
-    const { _id, voterIds } = product;
+  voteForItem = item => () => {
+    const { _id, voterIds } = item;
     const {
       vote,
       currentUser: { id },
@@ -56,38 +56,38 @@ class ProductsList extends Component {
 
   render() {
     const {
-      products,
+      items,
       currentUser: { id: userId }
     } = this.props;
     const { limit } = this.state;
 
     return (
       <Fragment>
-        {!products.length ? (
-          <div className="products__message">
+        {!items.length ? (
+          <div className="items__message">
             <p>There are no items!</p>
           </div>
         ) : (
-          <ul className="products-list">
-            {products.slice(0, limit).map(product => (
-              <ProductsListItem
-                archived={product.isOrdered}
-                authorName={product.authorName}
-                id={product._id}
-                image={product.image}
-                key={product._id}
-                name={product.name}
-                toggleProduct={this.toggleProduct}
-                voteForProduct={this.voteForProduct(product)}
-                votesCount={product.voterIds.length}
-                whetherUserVoted={product.voterIds.includes(userId)}
+          <ul className="items-list">
+            {items.slice(0, limit).map(item => (
+              <ItemsListItem
+                archived={item.isOrdered}
+                authorName={item.authorName}
+                id={item._id}
+                image={item.image}
+                key={item._id}
+                name={item.name}
+                toggleItem={this.toggleItem}
+                voteForItem={this.voteForItem(item)}
+                votesCount={item.voterIds.length}
+                whetherUserVoted={item.voterIds.includes(userId)}
               />
             ))}
           </ul>
         )}
-        {limit < products.length && (
+        {limit < items.length && (
           <button
-            className="products__show-more"
+            className="items__show-more"
             onClick={this.showMore}
             type="button"
           />
@@ -97,10 +97,10 @@ class ProductsList extends Component {
   }
 }
 
-ProductsList.propTypes = {
+ItemsList.propTypes = {
   currentUser: UserPropType.isRequired,
+  items: PropTypes.arrayOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
-  products: PropTypes.arrayOf(PropTypes.object),
 
   toggle: PropTypes.func,
   vote: PropTypes.func
@@ -114,5 +114,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     { toggle, vote }
-  )(ProductsList)
+  )(ItemsList)
 );
