@@ -17,7 +17,8 @@
     background: $brown;
   }
 
-  &__heading {
+  &__heading,
+  &__heading-plus {
     color: $text-white;
     font-size: 11px;
     line-height: 1.2;
@@ -43,5 +44,15 @@
 
   &:hover {
     box-shadow: 0 3px 4px rgba($shadow-color, 0.35);
+  }
+
+  &__heading-plus {
+    border: 0;
+  }
+
+  svg {
+    path {
+      fill: $text-white;
+    }
   }
 }

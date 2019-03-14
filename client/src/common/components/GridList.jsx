@@ -19,6 +19,11 @@ const GridList = ({ color, icon, items, name, placeholder, route }) => (
         <MessageBox message={placeholder} type={MessageType.INFO} />
       ) : (
         <ul className="grid-list__list">
+          <li className="grid-list__item">
+            <button className="grid-list__button" type="button">
+              <CardItem color={color} withPlus />
+            </button>
+          </li>
           {_map(items, item => (
             <li className="grid-list__item" key={item._id}>
               <Link to={`${route}/${item._id}`}>
