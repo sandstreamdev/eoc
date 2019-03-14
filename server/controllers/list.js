@@ -1,7 +1,8 @@
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
-const { checkRole, filter } = require('../common/utilities');
+const { checkRole, filter, isValidMongoId } = require('../common/utilities');
 const Cohort = require('../models/cohort.model');
+const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -148,29 +149,42 @@ const addItemToList = (req, resp) => {
 };
 
 const getListData = (req, resp) => {
+  const {
+    params: { id: listId },
+    user: { _id: userId }
+  } = req;
+
+  if (!isValidMongoId(listId)) {
+    return resp
+      .status(404)
+      .send({ message: `Data of list id: ${listId} not found.` });
+  }
   let list;
   List.findOne({
-    _id: req.params.id,
+    _id: listId,
     $or: [
-      { adminIds: req.user._id },
-      { ordererIds: req.user._id },
-      { purchaserIds: req.user._id }
+      { adminIds: userId },
+      { ordererIds: userId },
+      { purchaserIds: userId }
     ]
   })
+    .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({ message: 'List data not found.' });
+        throw new NotFoundException(`Data of list id: ${listId} not found.`);
       }
-
       list = doc;
-
       const { cohortId } = list;
       if (cohortId) {
-        return Cohort.findOne({ _id: cohortId }).then(cohort => {
-          if (!cohort || (cohort && cohort.isArchived)) {
-            return resp.status(404).send({ message: 'List data not found.' });
-          }
-        });
+        return Cohort.findOne({ _id: cohortId })
+          .exec()
+          .then(cohort => {
+            if (!cohort || cohort.isArchived) {
+              throw new NotFoundException(
+                `Data of list id: ${listId} not found.`
+              );
+            }
+          });
       }
     })
     .then(() => {
@@ -195,6 +209,10 @@ const getListData = (req, resp) => {
         .json({ _id, cohortId, description, isAdmin, isArchived, items, name });
     })
     .catch(err => {
+      if (err instanceof NotFoundException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
       resp.status(400).send({
         message:
           'An error occurred while fetching the list data. Please try again.'
