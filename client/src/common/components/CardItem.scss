@@ -17,6 +17,10 @@
     background: $brown;
   }
 
+  &--gray {
+    background: $gray-bg2;
+  }
+
   &__heading,
   &__heading-plus {
     color: $text-white;
@@ -48,11 +52,20 @@
 
   &__heading-plus {
     border: 0;
+    color: $text-normal;
+  }
+
+  &__plus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 
   svg {
+    height: 24px;
     path {
-      fill: $text-white;
+      fill: $text-normal;
     }
   }
 }

@@ -14,6 +14,7 @@ const CardItem = ({ color, description, name, withPlus }) => (
     className={classNames('card-item', {
       'card-item--orange': color === CardColorType.ORANGE,
       'card-item--brown': color === CardColorType.BROWN,
+      'card-item--gray': withPlus,
       'card-item__plus': withPlus
     })}
   >
