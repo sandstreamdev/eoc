@@ -1,18 +1,28 @@
 .notification {
-  position: fixed;
   left: 0;
-  bottom: 0;
-  padding: 50px 0;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
+  margin: 0 auto;
+  max-width: 1440px;
+  padding: 0 20px;
+  position: fixed;
+  right: 0;
   z-index: 7;
-
   &__wrapper {
-    max-width: 1440px;
-    position: fixed;
-    top: 32px;
-    right: 240px;
-    z-index: 7;
+    position: absolute;
+    top: 52px;
+    right: 20px;
+  }
+
+  .message-box {
+    margin: 0;
+  }
+
+  &__list {
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  &__list-item {
+    margin-bottom: 25px;
   }
 }

@@ -11,9 +11,9 @@ const Notifications = ({ notifications }) => (
     {Object.entries(notifications).length > 0 && (
       <div className="notification">
         <div className="notification__wrapper">
-          <ul>
+          <ul className="notification__list">
             {_map(notifications, (item, id) => (
-              <li key={id}>
+              <li className="notification__list-item" key={id}>
                 <MessageBox type={item.type} message={item.message} />
               </li>
             ))}
