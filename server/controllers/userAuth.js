@@ -9,6 +9,9 @@ const setUserAndSession = (req, res) => {
     })
   );
 
+  /**
+   * TODO Refferer is not always present on req. FIXIT
+   */
   const clientUrl = req.headers.referer;
   res.status(200);
   res.redirect(clientUrl);
