@@ -22,20 +22,20 @@ class Form extends PureComponent {
     const {
       target: { value }
     } = event;
-    const { handleNameChange } = this.props;
+    const { onNameChange } = this.props;
 
     this.setState({ name: value });
-    handleNameChange(value);
+    onNameChange && onNameChange(value);
   };
 
   handleDescriptionChange = event => {
     const {
       target: { value }
     } = event;
-    const { handleDescriptionChange } = this.props;
+    const { onDescriptionChange } = this.props;
 
     this.setState({ description: value });
-    handleDescriptionChange(value);
+    onDescriptionChange && onDescriptionChange(value);
   };
 
   handleFormSubmission = event => {
@@ -83,9 +83,9 @@ Form.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
 
-  handleDescriptionChange: PropTypes.func.isRequired,
-  handleNameChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func
+  onDescriptionChange: PropTypes.func.isRequired,
+  onNameChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired
 };
 
 export default Form;
