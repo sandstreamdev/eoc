@@ -4,6 +4,11 @@ import PropTypes from 'prop-types';
 import Form from 'common/components/Form';
 import Dialog from 'common/components/Dialog';
 
+export const FormDialogContext = Object.freeze({
+  COHORT: 'cohort',
+  LIST: 'list'
+});
+
 class FormDialog extends Component {
   constructor(props) {
     super(props);

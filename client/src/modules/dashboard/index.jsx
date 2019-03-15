@@ -16,17 +16,12 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
-import FormDialog from 'common/components/FormDialog';
-
-const CreationFormContext = Object.freeze({
-  COHORT: 'cohort',
-  LIST: 'list'
-});
+import FormDialog, { FormDialogContext } from 'common/components/FormDialog';
 
 class Dashboard extends Component {
   state = {
-    creationFormVisibility: false,
-    creationFormContext: ''
+    formDialogVisibility: false,
+    formDialogContext: ''
   };
 
   componentDidMount() {
@@ -36,40 +31,40 @@ class Dashboard extends Component {
     fetchListsMetaData();
   }
 
-  handleCreationFormVisibility = context => {
-    const { creationFormVisibility } = this.state;
+  handleFormDialogVisibility = context => {
+    const { formDialogVisibility } = this.state;
 
-    creationFormVisibility
+    formDialogVisibility
       ? this.setState({
-          creationFormVisibility: false,
-          creationFormContext: ''
+          formDialogVisibility: false,
+          formDialogContext: ''
         })
       : this.setState({
-          creationFormVisibility: true,
-          creationFormContext: context
+          formDialogVisibility: true,
+          formDialogContext: context
         });
   };
 
   handleFormSubmission = (title, description) => {
-    const { creationFormContext } = this.state;
+    const { formDialogContext } = this.state;
     const {
       createCohort,
       createList,
       currentUser: { id }
     } = this.props;
 
-    if (creationFormContext === CreationFormContext.COHORT) {
+    if (formDialogContext === FormDialogContext.COHORT) {
       createCohort(title, description, id);
-      return this.handleCreationFormVisibility();
+      return this.handleFormDialogVisibility();
     }
 
     createList(title, description, id);
-    this.handleCreationFormVisibility();
+    this.handleFormDialogVisibility();
   };
 
   render() {
     const { lists, cohorts } = this.props;
-    const { creationFormContext, creationFormVisibility } = this.state;
+    const { formDialogContext, formDialogVisibility } = this.state;
 
     return (
       <Fragment>
@@ -88,7 +83,7 @@ class Dashboard extends Component {
               items={lists}
               name="Lists"
               onAddNew={() =>
-                this.handleCreationFormVisibility(CreationFormContext.LIST)
+                this.handleFormDialogVisibility(FormDialogContext.LIST)
               }
               placeholder="There are no lists yet!"
               route="list"
@@ -99,18 +94,18 @@ class Dashboard extends Component {
               items={cohorts}
               name="Cohorts"
               onAddNew={() =>
-                this.handleCreationFormVisibility(CreationFormContext.COHORT)
+                this.handleFormDialogVisibility(FormDialogContext.COHORT)
               }
               placeholder="There are no cohorts yet!"
               route="cohort"
             />
           </div>
         </div>
-        {creationFormVisibility && (
+        {formDialogVisibility && (
           <FormDialog
-            onCancel={this.handleCreationFormVisibility}
+            onCancel={this.handleFormDialogVisibility}
             onConfirm={this.handleFormSubmission}
-            title={`Add new ${creationFormContext}`}
+            title={`Add new ${formDialogContext}`}
           />
         )}
       </Fragment>
