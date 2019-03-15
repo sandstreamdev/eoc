@@ -8,7 +8,15 @@ import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 
-const GridList = ({ color, icon, items, name, placeholder, route }) => (
+const GridList = ({
+  color,
+  icon,
+  items,
+  name,
+  onAddNew,
+  placeholder,
+  route
+}) => (
   <div className="grid-list">
     <h2 className="grid-list__heading">
       {icon}
@@ -20,7 +28,11 @@ const GridList = ({ color, icon, items, name, placeholder, route }) => (
       ) : (
         <ul className="grid-list__list">
           <li className="grid-list__item">
-            <button className="grid-list__button" type="button">
+            <button
+              className="grid-list__button"
+              onClick={onAddNew}
+              type="button"
+            >
               <CardItem color={color} withPlus />
             </button>
           </li>
@@ -47,7 +59,9 @@ GridList.propTypes = {
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
-  route: PropTypes.string.isRequired
+  route: PropTypes.string.isRequired,
+
+  onAddNew: PropTypes.func.isRequired
 };
 
 export default GridList;
