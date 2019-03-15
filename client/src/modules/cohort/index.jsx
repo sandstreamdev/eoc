@@ -2,7 +2,6 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
 import { CardColorType } from 'common/components/CardItem';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
 import { getCohortLists } from 'modules/list/model/selectors';
@@ -167,7 +166,15 @@ class Cohort extends PureComponent {
             defaultName={name}
             title="Edit cohort"
             onCancel={this.hideUpdateForm}
-            onConfirm={this.handleCohortEdition(cohortId)}
+            onConfirm={this.handleFormSubmission(cohortId)}
+          />
+        )}
+        {isCreationFormVisible && (
+          <FormDialog
+            isNameRequired
+            onCancel={this.handleFormDialogVisibility}
+            onConfirm={this.handleListCreation}
+            title="Add new list"
           />
         )}
         {isCreationFormVisible && (
