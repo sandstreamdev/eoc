@@ -5,7 +5,7 @@
   text-align: center;
   width: 100%;
 
-  @include medium-screens {
+  @include breakpoint($medium) {
     width: 45%;
   }
 

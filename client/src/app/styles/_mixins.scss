@@ -1,5 +1,5 @@
-@mixin medium-screens(){
-  @media only screen and (min-width: 800px) {
+@mixin breakpoint($width){
+  @media only screen and (min-width: $width) {
     @content;
   }
 }
