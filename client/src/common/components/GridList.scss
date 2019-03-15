@@ -28,6 +28,14 @@
     padding: 16px 0;
   }
 
+  &__description {
+    font-size: 12px;
+    line-height: 1.2;
+    color: $text-light;
+    padding: 16px 0 0;
+    max-width: 360px;
+  }
+
   &__list {
     margin: 0 -10px 0;
     display: grid;

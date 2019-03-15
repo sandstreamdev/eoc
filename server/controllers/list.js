@@ -82,17 +82,19 @@ const getListsMetaData = (req, resp) => {
 };
 
 const getArchivedListsMetaData = (req, resp) => {
+  const { cohortId } = req.params;
+
   List.find(
     {
+      cohortId,
       $or: [
         { adminIds: req.user._id },
         { ordererIds: req.user._id },
         { purchaserIds: req.user._id }
       ],
-      cohortId: { $eq: null },
       isArchived: true
     },
-    '_id name description isArchived',
+    `_id name description isArchived ${cohortId ? 'cohortId' : ''}`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {

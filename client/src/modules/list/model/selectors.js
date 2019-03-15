@@ -22,7 +22,18 @@ export const getItems = (state, listId) => {
 export const getLists = state => state.lists.data;
 export const getCohortLists = (state, cohortId) =>
   _keyBy(
-    _filter(state.lists.data, value => value.cohortId === cohortId),
+    _filter(
+      state.lists.data,
+      value => value.cohortId === cohortId && !value.isArchived
+    ),
+    '_id'
+  );
+export const getCohortArchivedLists = (state, cohortId) =>
+  _keyBy(
+    _filter(
+      getLists(state),
+      list => list.cohortId === cohortId && list.isArchived
+    ),
     '_id'
   );
 export const getIsFetchingLists = state => state.lists.isFetching;
