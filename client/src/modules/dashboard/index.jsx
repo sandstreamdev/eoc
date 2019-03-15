@@ -80,6 +80,7 @@ class Dashboard extends Component {
           <div className="dashboard">
             <GridList
               color={CardColorType.ORANGE}
+              withCreateNewTile
               icon={<ListIcon />}
               items={lists}
               name="Lists"
@@ -91,6 +92,7 @@ class Dashboard extends Component {
             />
             <GridList
               color={CardColorType.BROWN}
+              withCreateNewTile
               icon={<CohortIcon />}
               items={cohorts}
               name="Cohorts"

@@ -10,25 +10,27 @@ import { MessageType } from 'common/constants/enums';
 
 const GridList = ({
   color,
+  description,
   icon,
-  isArchived,
   items,
   name,
   onAddNew,
   placeholder,
-  route
+  route,
+  withCreateNewTile
 }) => (
   <div className="grid-list">
     <h2 className="grid-list__heading">
       {icon}
       {name}
     </h2>
+    {description && <p className="grid-list__description">{description}</p>}
     <div className="grid-list__body">
       {_isEmpty(items) ? (
         <MessageBox message={placeholder} type={MessageType.INFO} />
       ) : (
         <ul className="grid-list__list">
-          {!isArchived && (
+          {withCreateNewTile && (
             <li className="grid-list__item">
               <button
                 className="grid-list__button"
@@ -41,7 +43,7 @@ const GridList = ({
           )}
           {_map(items, item => (
             <li className="grid-list__item" key={item._id}>
-              <Link to={`${route}/${item._id}`}>
+              <Link to={`/${route}/${item._id}`}>
                 <CardItem
                   color={color}
                   description={item.description}
@@ -58,14 +60,15 @@ const GridList = ({
 
 GridList.propTypes = {
   color: PropTypes.string.isRequired,
+  description: PropTypes.string,
   icon: PropTypes.node.isRequired,
-  isArchived: PropTypes.bool,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
+  withCreateNewTile: PropTypes.bool,
 
-  onAddNew: PropTypes.func.isRequired
+  onAddNew: PropTypes.func
 };
 
 export default GridList;
