@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { PLACEHOLDER_URL } from 'common/constants/variables';
 import VotingBox from 'modules/list/components/VotingBox';
 
-class ItemsListItem extends PureComponent {
+class ListItem extends PureComponent {
   constructor(props) {
     super(props);
     const { archived } = this.props;
@@ -68,7 +68,7 @@ class ItemsListItem extends PureComponent {
   }
 }
 
-ItemsListItem.propTypes = {
+ListItem.propTypes = {
   archived: PropTypes.bool,
   authorName: PropTypes.string,
   id: PropTypes.string.isRequired,
@@ -81,4 +81,4 @@ ItemsListItem.propTypes = {
   voteForItem: PropTypes.func
 };
 
-export default ItemsListItem;
+export default ListItem;
