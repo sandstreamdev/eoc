@@ -73,6 +73,7 @@ class Dashboard extends Component {
             additionalIconSrc={EyeIcon}
             mainIcon={<ArchiveIcon />}
             path="/archived"
+            title="Go to archived"
           />
         </Toolbar>
         <div className="wrapper">

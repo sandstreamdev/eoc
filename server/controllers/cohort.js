@@ -1,6 +1,7 @@
 const Cohort = require('../models/cohort.model');
-const { checkRole, filter } = require('../common/utilities');
+const { checkRole, filter, isValidMongoId } = require('../common/utilities');
 const List = require('../models/list.model');
+const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createCohort = (req, resp) => {
   const { description, name, adminId } = req.body;
@@ -109,6 +110,11 @@ const updateCohortById = (req, resp) => {
 };
 
 const getCohortDetails = (req, resp) => {
+  if (!isValidMongoId(req.params.id)) {
+    return resp
+      .status(404)
+      .send({ message: `Data of cohort id: ${req.params.id} not found.` });
+  }
   Cohort.findOne(
     {
       _id: req.params.id,
@@ -123,7 +129,9 @@ const getCohortDetails = (req, resp) => {
       }
 
       if (!doc) {
-        return resp.status(404).send({ message: 'Cohort data not found.' });
+        return resp
+          .status(404)
+          .send({ message: `Data of cohort id: ${req.params.id} not found.` });
       }
 
       const { adminIds, _id, isArchived, description, name } = doc;
@@ -142,20 +150,28 @@ const getCohortDetails = (req, resp) => {
 const deleteCohortById = (req, resp) => {
   let documentName = '';
   Cohort.findOne({ _id: req.params.id, adminIds: req.user._id })
+    .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({ message: 'Cohort not found.' });
+        throw new NotFoundException(
+          `Data of cohort id: ${req.params.id} not found.`
+        );
       }
       documentName = doc.name;
-      return List.deleteMany({ cohortId: req.params.id });
+      return List.deleteMany({ cohortId: req.params.id }).exec();
     })
-    .then(() => Cohort.deleteOne({ _id: req.params.id }))
+    .then(() => Cohort.deleteOne({ _id: req.params.id }).exec())
     .then(() => {
       resp
         .status(200)
         .send({ message: `Cohort ${documentName} successfully deleted.` });
     })
     .catch(err => {
+      if (err instanceof NotFoundException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+
       resp.status(400).send({
         message:
           'An error occurred while deleting the cohort. Please try again.'
