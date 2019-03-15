@@ -131,9 +131,7 @@ class Cohort extends PureComponent {
     const { areArchivedListVisible } = this.state;
     const { fetchArchivedListsMetaData } = this.props;
     this.setState({ areArchivedListVisible: !areArchivedListVisible });
-    !areArchivedListVisible
-      ? fetchArchivedListsMetaData(id)
-      : console.log('hide archived list');
+    !areArchivedListVisible ? fetchArchivedListsMetaData(id) : null;
   };
 
   render() {
@@ -210,31 +208,38 @@ class Cohort extends PureComponent {
           <ArchivedCohort cohortId={cohortId} name={name} />
         ) : (
           <div className="wrapper">
-            <GridList
-              color={CardColorType.ORANGE}
-              description={description}
-              icon={<CohortIcon />}
-              items={lists}
-              name={name}
-              placeholder={`There are no lists in the ${name} cohort!`}
-              route="list"
-            />
-            <button
-              type="button"
-              onClick={this.handleArchivedListVisibility(cohortId)}
-            >
-              show archived lists
-            </button>
-            {areArchivedListVisible && (
+            <div className="cohort">
+              <h1 className="cohort__heading">
+                <CohortIcon />
+                {name}
+              </h1>
+              <p className="cohort__description">{description}</p>
               <GridList
                 color={CardColorType.ORANGE}
-                icon={<CohortIcon />}
-                items={archivedLists}
-                name="Archived lists"
-                placeholder={`There are no archived lists in the ${name} cohort!`}
+                icon={<ListIcon />}
+                items={lists}
+                name="Lists"
+                placeholder={`There are no lists in the ${name} cohort!`}
                 route="list"
               />
-            )}
+              <button
+                className="cohort__toggle-archived-lists"
+                onClick={this.handleArchivedListVisibility(cohortId)}
+                type="button"
+              >
+                {` ${areArchivedListVisible ? 'hide' : 'show'} archived lists`}
+              </button>
+              {areArchivedListVisible && (
+                <GridList
+                  color={CardColorType.ORANGE}
+                  icon={<ListIcon />}
+                  items={archivedLists}
+                  name="Archived lists"
+                  placeholder={`There are no archived lists in the ${name} cohort!`}
+                  route="list"
+                />
+              )}
+            </div>
           </div>
         )}
       </Fragment>
