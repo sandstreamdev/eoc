@@ -1,9 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ToolbarItem = ({ additionalIconSrc, children, mainIcon, onClick }) => (
+const ToolbarItem = ({
+  additionalIconSrc,
+  children,
+  mainIcon,
+  onClick,
+  title
+}) => (
   <div className="toolbar-item">
-    <button className="toolbar-item__icon-link" onClick={onClick} type="button">
+    <button
+      className="toolbar-item__icon-link"
+      onClick={onClick}
+      title={title}
+      type="button"
+    >
       {mainIcon}
       {additionalIconSrc && (
         <img
@@ -21,6 +32,7 @@ ToolbarItem.propTypes = {
   additionalIconSrc: PropTypes.string,
   children: PropTypes.node,
   mainIcon: PropTypes.node.isRequired,
+  title: PropTypes.string,
 
   onClick: PropTypes.func.isRequired
 };

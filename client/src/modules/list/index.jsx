@@ -112,6 +112,7 @@ class List extends Component {
               additionalIconSrc={ArrowLeftIcon}
               mainIcon={<CohortIcon />}
               path={`/cohort/${cohortId}`}
+              title="Go back to cohort"
             />
           )}
           {!isArchived && this.checkIfAdmin() && (
@@ -119,10 +120,12 @@ class List extends Component {
               <ToolbarItem
                 mainIcon={<EditIcon />}
                 onClick={this.showUpdateForm}
+                title="Edit list"
               />
               <ToolbarItem
                 mainIcon={<ArchiveIcon />}
                 onClick={this.showDialogBox}
+                title="Archive list"
               />
             </Fragment>
           )}

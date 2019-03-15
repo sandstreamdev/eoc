@@ -86,6 +86,7 @@ class Dashboard extends Component {
             additionalIconSrc={PlusIcon}
             mainIcon={<CohortIcon />}
             onClick={this.handleCohortFormVisibility}
+            title="Create new cohort"
           >
             <DropdownForm
               isVisible={cohortFormVisibility}
@@ -99,6 +100,7 @@ class Dashboard extends Component {
             additionalIconSrc={PlusIcon}
             mainIcon={<ListIcon />}
             onClick={this.handleListFormVisibility}
+            title="Create new list"
           >
             <DropdownForm
               isVisible={listFormVisibility}
@@ -112,6 +114,7 @@ class Dashboard extends Component {
             additionalIconSrc={EyeIcon}
             mainIcon={<ArchiveIcon />}
             path="/archived"
+            title="Go to archived"
           />
         </Toolbar>
         <div className="wrapper">
