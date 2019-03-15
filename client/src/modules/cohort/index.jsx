@@ -2,6 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+
 import { CardColorType } from 'common/components/CardItem';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
 import { getCohortLists } from 'modules/list/model/selectors';

@@ -26,33 +26,32 @@ const GridList = ({
     </h2>
     {description && <p className="grid-list__description">{description}</p>}
     <div className="grid-list__body">
-      {_isEmpty(items) ? (
+      <ul className="grid-list__list">
+        {withCreateNewTile && (
+          <li className="grid-list__item">
+            <button
+              className="grid-list__button"
+              onClick={onAddNew}
+              type="button"
+            >
+              <CardItem color={color} withPlus />
+            </button>
+          </li>
+        )}
+        {_map(items, item => (
+          <li className="grid-list__item" key={item._id}>
+            <Link to={`/${route}/${item._id}`}>
+              <CardItem
+                color={color}
+                description={item.description}
+                name={item.name}
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+      {_isEmpty(items) && (
         <MessageBox message={placeholder} type={MessageType.INFO} />
-      ) : (
-        <ul className="grid-list__list">
-          {withCreateNewTile && (
-            <li className="grid-list__item">
-              <button
-                className="grid-list__button"
-                onClick={onAddNew}
-                type="button"
-              >
-                <CardItem color={color} withPlus />
-              </button>
-            </li>
-          )}
-          {_map(items, item => (
-            <li className="grid-list__item" key={item._id}>
-              <Link to={`/${route}/${item._id}`}>
-                <CardItem
-                  color={color}
-                  description={item.description}
-                  name={item.name}
-                />
-              </Link>
-            </li>
-          ))}
-        </ul>
       )}
     </div>
   </div>
