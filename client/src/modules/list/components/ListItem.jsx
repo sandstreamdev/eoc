@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import { PLACEHOLDER_URL } from 'common/constants/variables';
 import VotingBox from 'modules/list/components/VotingBox';
 
 class ListItem extends PureComponent {
@@ -24,7 +23,6 @@ class ListItem extends PureComponent {
       archived,
       authorName,
       id,
-      image = PLACEHOLDER_URL,
       name,
       voteForItem,
       votesCount,
@@ -50,7 +48,6 @@ class ListItem extends PureComponent {
           id={`option${id}`}
           onClick={this.handleItemToggling(authorName, id, archived)}
         >
-          <img alt="Item icon" className="items-list__icon" src={image} />
           <span className="items-list__data">
             <span>{name}</span>
             <span className="items-list__author">{`Added by: ${authorName}`}</span>
@@ -72,7 +69,6 @@ ListItem.propTypes = {
   archived: PropTypes.bool,
   authorName: PropTypes.string,
   id: PropTypes.string.isRequired,
-  image: PropTypes.string,
   name: PropTypes.string.isRequired,
   votesCount: PropTypes.number.isRequired,
   whetherUserVoted: PropTypes.bool.isRequired,

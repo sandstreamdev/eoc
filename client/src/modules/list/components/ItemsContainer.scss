@@ -6,7 +6,7 @@
   width: 100%;
 
   @include medium-screens {
-    width: 48%;
+    width: 45%;
   }
 
   &__header {
@@ -18,7 +18,7 @@
   }
 
   &__body {
-    padding: 16px 0;
+    padding: 0 0 20px;
   }
 
   &__heading {
