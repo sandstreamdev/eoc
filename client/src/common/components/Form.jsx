@@ -47,7 +47,7 @@ class Form extends PureComponent {
 
   render() {
     const { description, name } = this.state;
-
+    const { isNameRequired } = this.props;
     return (
       <Fragment>
         <form
@@ -60,6 +60,7 @@ class Form extends PureComponent {
               onChange={this.handleNameChange}
               placeholder="Name"
               ref={this.input}
+              required={isNameRequired && true}
               type="text"
               value={name}
             />
@@ -82,6 +83,7 @@ class Form extends PureComponent {
 Form.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
+  isNameRequired: PropTypes.bool,
 
   onDescriptionChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,

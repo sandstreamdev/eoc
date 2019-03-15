@@ -4,6 +4,11 @@ import PropTypes from 'prop-types';
 import Form from 'common/components/Form';
 import Dialog from 'common/components/Dialog';
 
+export const FormDialogContext = Object.freeze({
+  COHORT: 'cohort',
+  LIST: 'list'
+});
+
 class FormDialog extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +41,12 @@ class FormDialog extends Component {
   };
 
   render() {
-    const { defaultDescription, defaultName, title } = this.props;
+    const {
+      defaultDescription,
+      defaultName,
+      isNameRequired,
+      title
+    } = this.props;
     return (
       <Dialog
         onConfirm={this.handleFormSubmission}
@@ -46,6 +56,7 @@ class FormDialog extends Component {
         <Form
           defaultDescription={defaultDescription}
           defaultName={defaultName}
+          isNameRequired={isNameRequired}
           onDescriptionChange={this.handleDescriptionChange}
           onNameChange={this.handleNameChange}
           onSubmit={this.handleFormSubmission}
@@ -58,6 +69,7 @@ class FormDialog extends Component {
 FormDialog.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
+  isNameRequired: PropTypes.bool,
   title: PropTypes.string,
 
   onCancel: PropTypes.func,

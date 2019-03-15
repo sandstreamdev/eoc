@@ -11,6 +11,7 @@ import { MessageType } from 'common/constants/enums';
 const GridList = ({
   color,
   icon,
+  isArchived,
   items,
   name,
   onAddNew,
@@ -27,15 +28,17 @@ const GridList = ({
         <MessageBox message={placeholder} type={MessageType.INFO} />
       ) : (
         <ul className="grid-list__list">
-          <li className="grid-list__item">
-            <button
-              className="grid-list__button"
-              onClick={onAddNew}
-              type="button"
-            >
-              <CardItem color={color} withPlus />
-            </button>
-          </li>
+          {!isArchived && (
+            <li className="grid-list__item">
+              <button
+                className="grid-list__button"
+                onClick={onAddNew}
+                type="button"
+              >
+                <CardItem color={color} withPlus />
+              </button>
+            </li>
+          )}
           {_map(items, item => (
             <li className="grid-list__item" key={item._id}>
               <Link to={`${route}/${item._id}`}>
@@ -56,6 +59,7 @@ const GridList = ({
 GridList.propTypes = {
   color: PropTypes.string.isRequired,
   icon: PropTypes.node.isRequired,
+  isArchived: PropTypes.bool,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
