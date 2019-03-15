@@ -19,11 +19,6 @@ class ItemsListItem extends PureComponent {
     toggleItem(authorName, id, archived);
   };
 
-  handleItemChange = () => {
-    const { done } = this.state;
-    this.setState({ done: !done });
-  };
-
   render() {
     const {
       archived,
