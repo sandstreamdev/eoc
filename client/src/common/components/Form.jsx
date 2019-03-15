@@ -19,7 +19,7 @@ class Form extends PureComponent {
     const { onNameChange } = this.props;
 
     this.setState({ name: value });
-    onNameChange && onNameChange(value);
+    onNameChange(value);
   };
 
   handleDescriptionChange = event => {
@@ -29,7 +29,7 @@ class Form extends PureComponent {
     const { onDescriptionChange } = this.props;
 
     this.setState({ description: value });
-    onDescriptionChange && onDescriptionChange(value);
+    onDescriptionChange(value);
   };
 
   handleFormSubmission = event => {
