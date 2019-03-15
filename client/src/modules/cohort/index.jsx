@@ -1,23 +1,14 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
-import _map from 'lodash/map';
-import _isEmpty from 'lodash/isEmpty';
+import { withRouter } from 'react-router-dom';
 
-import CardItem, { CardColorType } from 'common/components/CardItem';
-import MessageBox from 'common/components/MessageBox';
+import { CardColorType } from 'common/components/CardItem';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
 import { getCohortLists } from 'modules/list/model/selectors';
 import { createList, fetchListsMetaData } from 'modules/list/model/actions';
-import {
-  ArchiveIcon,
-  CohortIcon,
-  EditIcon,
-  ListIcon
-} from 'assets/images/icons';
+import { ArchiveIcon, CohortIcon, EditIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
-import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import {
@@ -26,15 +17,14 @@ import {
   updateCohort
 } from './model/actions';
 import { noOp } from 'common/utils/noOp';
-import DropdownForm from 'common/components/DropdownForm';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import PlusIcon from 'assets/images/plus-solid.svg';
 import Dialog from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
+import GridList from 'common/components/GridList';
 
 class Cohort extends PureComponent {
   state = {
-    isListFormVisible: false,
+    isCreationFormVisible: false,
     isDialogVisible: false,
     isUpdateFormVisible: false
   };
@@ -61,14 +51,6 @@ class Cohort extends PureComponent {
       .catch(noOp);
   };
 
-  hideListCreationForm = () => {
-    this.setState({ isListFormVisible: false });
-  };
-
-  showListCreationForm = () => {
-    this.setState({ isListFormVisible: true });
-  };
-
   handleListCreation = (name, description) => {
     const {
       createList,
@@ -78,7 +60,7 @@ class Cohort extends PureComponent {
       }
     } = this.props;
     createList(name, description, userId, cohortId)
-      .then(this.hideListCreationForm)
+      .then(this.handleFormDialogVisibility)
       .catch(noOp);
   };
 
@@ -122,6 +104,18 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isAdmin;
   };
 
+  handleFormDialogVisibility = () => {
+    const { isCreationFormVisible } = this.state;
+
+    isCreationFormVisible
+      ? this.setState({
+          isCreationFormVisible: false
+        })
+      : this.setState({
+          isCreationFormVisible: true
+        });
+  };
+
   render() {
     const {
       cohortDetails,
@@ -137,7 +131,7 @@ class Cohort extends PureComponent {
 
     const { isArchived, name, description } = cohortDetails;
     const {
-      isListFormVisible,
+      isCreationFormVisible,
       isDialogVisible,
       isUpdateFormVisible
     } = this.state;
@@ -147,20 +141,6 @@ class Cohort extends PureComponent {
         <Toolbar>
           {!isArchived && this.checkIfAdmin() && (
             <Fragment>
-              <ToolbarItem
-                additionalIconSrc={PlusIcon}
-                mainIcon={<ListIcon />}
-                onClick={this.showListCreationForm}
-                title="Create new list"
-              >
-                <DropdownForm
-                  isVisible={isListFormVisible}
-                  label="Create new list"
-                  onHide={this.hideListCreationForm}
-                  onSubmit={this.handleListCreation}
-                  type="menu"
-                />
-              </ToolbarItem>
               <ToolbarItem
                 mainIcon={<EditIcon />}
                 onClick={this.showUpdateForm}
@@ -190,36 +170,30 @@ class Cohort extends PureComponent {
             onConfirm={this.handleCohortEdition(cohortId)}
           />
         )}
+        {isCreationFormVisible && (
+          <FormDialog
+            isNameRequired
+            onCancel={this.handleFormDialogVisibility}
+            onConfirm={this.handleListCreation}
+            title="Add new list"
+          />
+        )}
         {isArchived ? (
           <ArchivedCohort cohortId={cohortId} name={name} />
         ) : (
           <div className="wrapper">
             <div className="cohort">
-              <h2 className="cohort__heading">
-                <CohortIcon />
-                {name}
-              </h2>
-              <p className="cohort__description">{description}</p>
-              {_isEmpty(lists) ? (
-                <MessageBox
-                  message={`There are no lists in the ${name} cohort!`}
-                  type={MessageType.INFO}
-                />
-              ) : (
-                <ul className="cohort-list">
-                  {_map(lists, list => (
-                    <li className="cohort-list__item" key={list._id}>
-                      <Link to={`/list/${list._id}`}>
-                        <CardItem
-                          color={CardColorType.ORANGE}
-                          description={list.description}
-                          name={list.name}
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <GridList
+                color={CardColorType.ORANGE}
+                description={description}
+                icon={<CohortIcon />}
+                items={lists}
+                name={name}
+                onAddNew={this.handleFormDialogVisibility}
+                placeholder="There are no lists yet!"
+                route="list"
+                withCreateNewTile
+              />
             </div>
           </div>
         )}
