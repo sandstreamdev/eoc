@@ -103,10 +103,7 @@ class Dashboard extends Component {
         </div>
         {formDialogVisibility && (
           <FormDialog
-<<<<<<< HEAD
             isNameRequired
-=======
->>>>>>> f0739dfe3addf5e0eee811bb5625e58b2231adcf
             onCancel={this.handleFormDialogVisibility}
             onConfirm={this.handleFormSubmission}
             title={`Add new ${formDialogContext}`}
