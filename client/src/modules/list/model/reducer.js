@@ -82,15 +82,13 @@ const lists = (state = {}, action) => {
       };
     }
     case ListActionTypes.RESTORE_SUCCESS:
-    case ListActionTypes.FETCH_DATA_SUCCESS: {
+    case ListActionTypes.FETCH_DATA_SUCCESS:
       return {
         ...state,
         [action.payload.listId]: action.payload.data
       };
-    }
-    case ListActionTypes.REMOVE_ARCHIVED: {
+    case ListActionTypes.REMOVE_ARCHIVED:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
-    }
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
     case ItemActionTypes.ADD_SUCCESS: {
