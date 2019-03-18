@@ -38,22 +38,13 @@ class Form extends PureComponent {
     onDescriptionChange(value);
   };
 
-  handleFormSubmission = event => {
-    event.preventDefault();
-    const { onSubmit } = this.props;
-
-    onSubmit && onSubmit();
-  };
-
   render() {
     const { description, name } = this.state;
     const { isNameRequired } = this.props;
+
     return (
       <Fragment>
-        <form
-          className="form z-index-high"
-          onSubmit={this.handleFormSubmission}
-        >
+        <form className="form z-index-high">
           <label className="form__label">
             <input
               className="form__input primary-input"
@@ -86,8 +77,7 @@ Form.propTypes = {
   isNameRequired: PropTypes.bool,
 
   onDescriptionChange: PropTypes.func.isRequired,
-  onNameChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onNameChange: PropTypes.func.isRequired
 };
 
 export default Form;

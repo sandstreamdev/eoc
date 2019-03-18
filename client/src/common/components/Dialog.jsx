@@ -15,7 +15,7 @@ const Dialog = ({ children, onCancel, onConfirm, title }) => (
         <button
           className="dialog__button primary-button"
           onClick={onConfirm}
-          type="button"
+          type="submit"
         >
           Confirm
         </button>

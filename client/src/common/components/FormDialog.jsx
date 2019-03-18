@@ -20,6 +20,18 @@ class FormDialog extends Component {
     };
   }
 
+  componentDidMount() {
+    document.addEventListener('keypress', this.handleEnterKeypress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keypress', this.handleEnterKeypress);
+  }
+
+  handleEnterKeypress = event => {
+    event.code === 'Enter' && this.handleFormSubmission();
+  };
+
   handleDescriptionChange = description => {
     this.setState({ description });
   };
@@ -28,10 +40,13 @@ class FormDialog extends Component {
     this.setState({ name });
   };
 
-  handleFormSubmission = () => {
-    const { onConfirm } = this.props;
+  handleConfirm = () => {
+    const { defaultDescription, defaultName, onConfirm } = this.props;
     const { description, name } = this.state;
-    onConfirm(name, description);
+
+    if (defaultDescription !== description || defaultName !== name) {
+      name && onConfirm(name, description);
+    }
   };
 
   handleCancel = () => {
@@ -47,9 +62,10 @@ class FormDialog extends Component {
       isNameRequired,
       title
     } = this.props;
+
     return (
       <Dialog
-        onConfirm={this.handleFormSubmission}
+        onConfirm={this.handleConfirm}
         onCancel={this.handleCancel}
         title={title}
       >
@@ -59,7 +75,6 @@ class FormDialog extends Component {
           isNameRequired={isNameRequired}
           onDescriptionChange={this.handleDescriptionChange}
           onNameChange={this.handleNameChange}
-          onSubmit={this.handleFormSubmission}
         />
       </Dialog>
     );

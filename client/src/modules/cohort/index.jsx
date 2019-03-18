@@ -165,9 +165,10 @@ class Cohort extends PureComponent {
           <FormDialog
             defaultDescription={description}
             defaultName={name}
+            isNameRequired
             title="Edit cohort"
             onCancel={this.hideUpdateForm}
-            onConfirm={this.handleFormSubmission(cohortId)}
+            onConfirm={this.handleCohortEdition(cohortId)}
           />
         )}
         {isCreationFormVisible && (
