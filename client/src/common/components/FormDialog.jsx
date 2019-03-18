@@ -28,17 +28,11 @@ class FormDialog extends Component {
     document.removeEventListener('keypress', this.handleEnterKeypress);
   }
 
-  handleEnterKeypress = event => {
-    event.code === 'Enter' && this.handleFormSubmission();
-  };
+  handleEnterKeypress = event => event.code === 'Enter' && this.handleConfirm();
 
-  handleDescriptionChange = description => {
-    this.setState({ description });
-  };
+  handleDescriptionChange = description => this.setState({ description });
 
-  handleNameChange = name => {
-    this.setState({ name });
-  };
+  handleNameChange = name => this.setState({ name });
 
   handleConfirm = () => {
     const { defaultDescription, defaultName, onConfirm } = this.props;
@@ -49,30 +43,14 @@ class FormDialog extends Component {
     }
   };
 
-  handleCancel = () => {
-    const { onCancel } = this.props;
-
-    onCancel();
-  };
-
   render() {
-    const {
-      defaultDescription,
-      defaultName,
-      isNameRequired,
-      title
-    } = this.props;
+    const { defaultDescription, defaultName, onCancel, title } = this.props;
 
     return (
-      <Dialog
-        onConfirm={this.handleConfirm}
-        onCancel={this.handleCancel}
-        title={title}
-      >
+      <Dialog onConfirm={this.handleConfirm} onCancel={onCancel} title={title}>
         <Form
           defaultDescription={defaultDescription}
           defaultName={defaultName}
-          isNameRequired={isNameRequired}
           onDescriptionChange={this.handleDescriptionChange}
           onNameChange={this.handleNameChange}
         />
@@ -84,7 +62,6 @@ class FormDialog extends Component {
 FormDialog.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
-  isNameRequired: PropTypes.bool,
   title: PropTypes.string,
 
   onCancel: PropTypes.func,

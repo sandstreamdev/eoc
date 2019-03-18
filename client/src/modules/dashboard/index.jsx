@@ -45,7 +45,7 @@ class Dashboard extends Component {
         });
   };
 
-  handleFormSubmission = (title, description) => {
+  handleConfirm = (title, description) => {
     const { formDialogContext } = this.state;
     const {
       createCohort,
@@ -60,6 +60,10 @@ class Dashboard extends Component {
 
     createList(title, description, id);
     this.handleFormDialogVisibility();
+  };
+
+  handleOnAddNew = context => () => {
+    this.handleFormDialogVisibility(context);
   };
 
   render() {
@@ -80,35 +84,30 @@ class Dashboard extends Component {
           <div className="dashboard">
             <GridList
               color={CardColorType.ORANGE}
-              withCreateNewTile
               icon={<ListIcon />}
               items={lists}
               name="Lists"
-              onAddNew={() =>
-                this.handleFormDialogVisibility(FormDialogContext.LIST)
-              }
+              onAddNew={this.handleOnAddNew(FormDialogContext.LIST)}
               placeholder="There are no lists yet!"
               route="list"
+              withPlusTile
             />
             <GridList
               color={CardColorType.BROWN}
-              withCreateNewTile
               icon={<CohortIcon />}
               items={cohorts}
               name="Cohorts"
-              onAddNew={() =>
-                this.handleFormDialogVisibility(FormDialogContext.COHORT)
-              }
+              onAddNew={this.handleOnAddNew(FormDialogContext.COHORT)}
               placeholder="There are no cohorts yet!"
               route="cohort"
+              withPlusTile
             />
           </div>
         </div>
         {formDialogVisibility && (
           <FormDialog
-            isNameRequired
             onCancel={this.handleFormDialogVisibility}
-            onConfirm={this.handleFormSubmission}
+            onConfirm={this.handleConfirm}
             title={`Add new ${formDialogContext}`}
           />
         )}
@@ -139,7 +138,7 @@ export default connect(
   {
     createCohort,
     createList,
-    fetchListsMetaData,
-    fetchCohortsMetaData
+    fetchCohortsMetaData,
+    fetchListsMetaData
   }
 )(Dashboard);

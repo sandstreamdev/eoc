@@ -107,13 +107,9 @@ class Cohort extends PureComponent {
   handleFormDialogVisibility = () => {
     const { isCreationFormVisible } = this.state;
 
-    isCreationFormVisible
-      ? this.setState({
-          isCreationFormVisible: false
-        })
-      : this.setState({
-          isCreationFormVisible: true
-        });
+    this.setState({
+      isCreationFormVisible: !isCreationFormVisible
+    });
   };
 
   render() {
@@ -165,7 +161,6 @@ class Cohort extends PureComponent {
           <FormDialog
             defaultDescription={description}
             defaultName={name}
-            isNameRequired
             title="Edit cohort"
             onCancel={this.hideUpdateForm}
             onConfirm={this.handleCohortEdition(cohortId)}
@@ -173,7 +168,6 @@ class Cohort extends PureComponent {
         )}
         {isCreationFormVisible && (
           <FormDialog
-            isNameRequired
             onCancel={this.handleFormDialogVisibility}
             onConfirm={this.handleListCreation}
             title="Add new list"
@@ -181,7 +175,6 @@ class Cohort extends PureComponent {
         )}
         {isCreationFormVisible && (
           <FormDialog
-            isNameRequired
             onCancel={this.handleFormDialogVisibility}
             onConfirm={this.handleListCreation}
             title="Add new list"
@@ -201,7 +194,7 @@ class Cohort extends PureComponent {
                 onAddNew={this.handleFormDialogVisibility}
                 placeholder="There are no lists yet!"
                 route="list"
-                withCreateNewTile
+                withPlusTile
               />
             </div>
           </div>

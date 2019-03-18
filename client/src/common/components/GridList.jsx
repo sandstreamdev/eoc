@@ -17,7 +17,7 @@ const GridList = ({
   onAddNew,
   placeholder,
   route,
-  withCreateNewTile
+  withPlusTile
 }) => (
   <div className="grid-list">
     <h2 className="grid-list__heading">
@@ -27,7 +27,7 @@ const GridList = ({
     {description && <p className="grid-list__description">{description}</p>}
     <div className="grid-list__body">
       <ul className="grid-list__list">
-        {withCreateNewTile && (
+        {withPlusTile && (
           <li className="grid-list__item">
             <button
               className="grid-list__button"
@@ -65,7 +65,7 @@ GridList.propTypes = {
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
-  withCreateNewTile: PropTypes.bool,
+  withPlusTile: PropTypes.bool,
 
   onAddNew: PropTypes.func
 };
