@@ -234,7 +234,7 @@ class Cohort extends PureComponent {
               </button>
               {areArchivedListVisible && (
                 <GridList
-                  color={CardColorType.ORANGE}
+                  color={CardColorType.GRAY}
                   icon={<ListIcon />}
                   items={archivedLists}
                   name="Archived lists"

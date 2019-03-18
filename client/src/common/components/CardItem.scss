@@ -17,6 +17,10 @@
     background: $brown;
   }
 
+  &--gray {
+    background: $gray4;
+  }
+
   &__heading {
     color: $text-white;
     font-size: 11px;
