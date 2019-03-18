@@ -24,6 +24,14 @@
     }
   }
 
+  &__description {
+    font-size: 12px;
+    line-height: 1.2;
+    color: $text-light;
+    padding: 16px 0 0;
+    max-width: 360px;
+  }
+
   &__body {
     padding: 16px 0;
   }
@@ -42,5 +50,17 @@
     a {
       text-decoration: none;
     }
+  }
+
+  &__button {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    width: 100%;
   }
 }

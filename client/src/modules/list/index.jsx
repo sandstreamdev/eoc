@@ -132,12 +132,13 @@ class List extends Component {
         </Toolbar>
         {!isArchived && (
           <div className="wrapper list-wrapper">
-            <InputBar />
             <ItemsContainer
               description={description}
               name={name}
               items={listItems}
-            />
+            >
+              <InputBar />
+            </ItemsContainer>
             <ItemsContainer archived items={orderedItems} />
           </div>
         )}

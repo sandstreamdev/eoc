@@ -17,7 +17,12 @@
     background: $brown;
   }
 
-  &__heading {
+  &--gray {
+    background: $gray-bg2;
+  }
+
+  &__heading,
+  &__heading-plus {
     color: $text-white;
     font-size: 11px;
     line-height: 1.2;
@@ -43,5 +48,24 @@
 
   &:hover {
     box-shadow: 0 3px 4px rgba($shadow-color, 0.35);
+  }
+
+  &__heading-plus {
+    border: 0;
+    color: $text-normal;
+  }
+
+  &__plus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  svg {
+    height: 24px;
+    path {
+      fill: $text-normal;
+    }
   }
 }

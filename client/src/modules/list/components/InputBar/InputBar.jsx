@@ -6,26 +6,28 @@ import { withRouter } from 'react-router-dom';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addItemToList } from './model/actions';
+import { PlusIcon } from 'assets/images/icons';
 
 class InputBar extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      itemName: ''
+      itemName: '',
+      isFormVisible: false
     };
     this.input = React.createRef();
   }
 
-  componentDidMount() {
-    this.input.current.focus();
+  componentDidUpdate() {
+    const { isFormVisible } = this.state;
+    isFormVisible && this.input.current.focus();
   }
 
-  handleNameChange = e => {
+  handleNameChange = event =>
     this.setState({
-      itemName: e.target.value
+      itemName: event.target.value
     });
-  };
 
   handleFormSubmit = e => {
     e.preventDefault();
@@ -49,25 +51,42 @@ class InputBar extends Component {
     this.setState({
       itemName: ''
     });
+    this.handleFormVisibility();
+  };
+
+  handleFormVisibility = () => {
+    const { isFormVisible } = this.state;
+    this.setState({ isFormVisible: !isFormVisible });
   };
 
   render() {
-    const { itemName } = this.state;
+    const { itemName, isFormVisible } = this.state;
     return (
       <Fragment>
         <div className="input-bar">
-          <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
-            <input
-              className="input-bar__input primary-input"
-              onChange={this.handleNameChange}
-              placeholder="What is missing?"
-              ref={this.input}
-              required
-              type="text"
-              value={itemName}
-            />
-            <input className="input-bar__submit" type="submit" />
-          </form>
+          {isFormVisible ? (
+            <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
+              <input
+                className="input-bar__input primary-input"
+                onChange={this.handleNameChange}
+                placeholder="What is missing?"
+                ref={this.input}
+                required
+                type="text"
+                value={itemName}
+              />
+              <input className="input-bar__submit" type="submit" />
+            </form>
+          ) : (
+            <button
+              className="input-bar__button"
+              onClick={this.handleFormVisibility}
+              type="button"
+            >
+              <PlusIcon />
+              Add new item
+            </button>
+          )}
         </div>
       </Fragment>
     );

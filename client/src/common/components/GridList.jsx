@@ -8,29 +8,50 @@ import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 
-const GridList = ({ color, icon, items, name, placeholder, route }) => (
+const GridList = ({
+  color,
+  description,
+  icon,
+  items,
+  name,
+  onAddNew,
+  placeholder,
+  route,
+  withPlusTile
+}) => (
   <div className="grid-list">
     <h2 className="grid-list__heading">
       {icon}
       {name}
     </h2>
+    {description && <p className="grid-list__description">{description}</p>}
     <div className="grid-list__body">
-      {_isEmpty(items) ? (
+      <ul className="grid-list__list">
+        {withPlusTile && (
+          <li className="grid-list__item">
+            <button
+              className="grid-list__button"
+              onClick={onAddNew}
+              type="button"
+            >
+              <CardItem color={color} withPlus />
+            </button>
+          </li>
+        )}
+        {_map(items, item => (
+          <li className="grid-list__item" key={item._id}>
+            <Link to={`/${route}/${item._id}`}>
+              <CardItem
+                color={color}
+                description={item.description}
+                name={item.name}
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+      {_isEmpty(items) && (
         <MessageBox message={placeholder} type={MessageType.INFO} />
-      ) : (
-        <ul className="grid-list__list">
-          {_map(items, item => (
-            <li className="grid-list__item" key={item._id}>
-              <Link to={`${route}/${item._id}`}>
-                <CardItem
-                  color={color}
-                  description={item.description}
-                  name={item.name}
-                />
-              </Link>
-            </li>
-          ))}
-        </ul>
       )}
     </div>
   </div>
@@ -38,11 +59,15 @@ const GridList = ({ color, icon, items, name, placeholder, route }) => (
 
 GridList.propTypes = {
   color: PropTypes.string.isRequired,
+  description: PropTypes.string,
   icon: PropTypes.node.isRequired,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
-  route: PropTypes.string.isRequired
+  route: PropTypes.string.isRequired,
+  withPlusTile: PropTypes.bool,
+
+  onAddNew: PropTypes.func
 };
 
 export default GridList;
