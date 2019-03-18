@@ -152,25 +152,18 @@ class Cohort extends PureComponent {
         </Toolbar>
         {isDialogVisible && (
           <Dialog
-            title={`Do you really want to archive the ${name} cohort?`}
             onCancel={this.hideDialog}
             onConfirm={this.handleCohortArchivization(cohortId)}
+            title={`Do you really want to archive the ${name} cohort?`}
           />
         )}
         {isUpdateFormVisible && (
           <FormDialog
             defaultDescription={description}
             defaultName={name}
-            title="Edit cohort"
             onCancel={this.hideUpdateForm}
             onConfirm={this.handleCohortEdition(cohortId)}
-          />
-        )}
-        {isCreationFormVisible && (
-          <FormDialog
-            onCancel={this.handleFormDialogVisibility}
-            onConfirm={this.handleListCreation}
-            title="Add new list"
+            title="Edit cohort"
           />
         )}
         {isCreationFormVisible && (

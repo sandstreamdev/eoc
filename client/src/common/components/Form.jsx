@@ -38,12 +38,14 @@ class Form extends PureComponent {
     onDescriptionChange(value);
   };
 
+  handleSubmit = event => event.preventDefault();
+
   render() {
     const { description, name } = this.state;
 
     return (
       <Fragment>
-        <form className="form z-index-high">
+        <form className="form z-index-high" onSubmit={this.handleSubmit}>
           <label className="form__label">
             <input
               className="form__input primary-input"
