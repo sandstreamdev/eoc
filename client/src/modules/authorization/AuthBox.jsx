@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL, ENDPOINT_URL } from 'common/constants/variables';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
-import { getCookie } from 'common/utils/cookie';
+import { checkIfCookieSet } from 'common/utils/cookie';
 
 class AuthBox extends PureComponent {
   state = {
@@ -13,7 +13,7 @@ class AuthBox extends PureComponent {
   };
 
   componentDidMount() {
-    const isCookieSet = getCookie('eoc_cookie-consent');
+    const isCookieSet = checkIfCookieSet('eoc_cookie-consent');
     this.setState({ isCookieSet });
   }
 

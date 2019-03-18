@@ -1,4 +1,4 @@
-const getCookie = name => {
+const checkIfCookieSet = name => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   return parts.length === 2
@@ -9,4 +9,4 @@ const getCookie = name => {
     : false;
 };
 
-export { getCookie };
+export { checkIfCookieSet };
