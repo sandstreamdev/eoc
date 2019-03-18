@@ -24,11 +24,10 @@ class InputBar extends Component {
     isFormVisible && this.input.current.focus();
   }
 
-  handleNameChange = e => {
+  handleNameChange = event =>
     this.setState({
-      itemName: e.target.value
+      itemName: event.target.value
     });
-  };
 
   handleFormSubmit = e => {
     e.preventDefault();

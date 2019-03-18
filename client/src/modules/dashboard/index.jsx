@@ -31,19 +31,14 @@ class Dashboard extends Component {
     fetchListsMetaData();
   }
 
-  handleFormDialogVisibility = context => {
+  handleFormDialogVisibility = () => {
     const { formDialogVisibility } = this.state;
 
-    formDialogVisibility
-      ? this.setState({
-          formDialogVisibility: false,
-          formDialogContext: ''
-        })
-      : this.setState({
-          formDialogVisibility: true,
-          formDialogContext: context
-        });
+    this.setState({ formDialogVisibility: !formDialogVisibility });
   };
+
+  handleFormDialogContext = context =>
+    this.setState({ formDialogContext: context });
 
   handleConfirm = (title, description) => {
     const { formDialogContext } = this.state;
@@ -63,7 +58,8 @@ class Dashboard extends Component {
   };
 
   handleOnAddNew = context => () => {
-    this.handleFormDialogVisibility(context);
+    this.handleFormDialogContext(context);
+    this.handleFormDialogVisibility();
   };
 
   render() {
