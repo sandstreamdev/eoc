@@ -12,7 +12,7 @@ const CardItem = ({ color, description, name }) => (
   <div
     className={classNames('card-item', {
       'card-item--orange': color === CardColorType.ORANGE,
-      'card-item--gray': color === CardColorType.GRAY,
+      'card-item--archived': color === CardColorType.ARCHIVED,
       'card-item--brown': color === CardColorType.BROWN
     })}
   >

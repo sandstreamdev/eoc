@@ -13,7 +13,7 @@ import {
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
-  removeArchivedLists
+  removeArchivedListsMetaData
 } from 'modules/list/model/actions';
 import {
   ArchiveIcon,
@@ -128,13 +128,21 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isAdmin;
   };
 
-  handleArchivedListVisibility = id => () => {
+  handleArchivedListsVisibility = id => () => {
     const { areArchivedListVisible } = this.state;
-    const { fetchArchivedListsMetaData, removeArchivedLists } = this.props;
     this.setState({ areArchivedListVisible: !areArchivedListVisible });
+    this.handleArchivedListsData(id);
+  };
+
+  handleArchivedListsData = id => {
+    const { areArchivedListVisible } = this.state;
+    const {
+      fetchArchivedListsMetaData,
+      removeArchivedListsMetaData
+    } = this.props;
     !areArchivedListVisible
       ? fetchArchivedListsMetaData(id)
-      : removeArchivedLists();
+      : removeArchivedListsMetaData();
   };
 
   render() {
@@ -227,14 +235,14 @@ class Cohort extends PureComponent {
               />
               <button
                 className="cohort__toggle-archived-lists"
-                onClick={this.handleArchivedListVisibility(cohortId)}
+                onClick={this.handleArchivedListsVisibility(cohortId)}
                 type="button"
               >
                 {` ${areArchivedListVisible ? 'hide' : 'show'} archived lists`}
               </button>
               {areArchivedListVisible && (
                 <GridList
-                  color={CardColorType.GRAY}
+                  color={CardColorType.ARCHIVED}
                   icon={<ListIcon />}
                   items={archivedLists}
                   name="Archived lists"
@@ -266,15 +274,15 @@ Cohort.propTypes = {
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
-  removeArchivedLists: PropTypes.func.isRequired,
+  removeArchivedListsMetaData: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
+  archivedLists: getCohortArchivedLists(state, ownProps.match.params.id),
   cohortDetails: getCohortDetails(state, ownProps.match.params.id),
   currentUser: getCurrentUser(state),
-  lists: getCohortLists(state, ownProps.match.params.id),
-  archivedLists: getCohortArchivedLists(state, ownProps.match.params.id)
+  lists: getCohortLists(state, ownProps.match.params.id)
 });
 
 export default withRouter(
@@ -286,7 +294,7 @@ export default withRouter(
       fetchArchivedListsMetaData,
       fetchCohortDetails,
       fetchListsMetaData,
-      removeArchivedLists,
+      removeArchivedListsMetaData,
       updateCohort
     }
   )(Cohort)

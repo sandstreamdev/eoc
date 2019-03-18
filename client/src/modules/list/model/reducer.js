@@ -87,7 +87,7 @@ const lists = (state = {}, action) => {
         ...state,
         [action.payload.listId]: action.payload.data
       };
-    case ListActionTypes.REMOVE_ARCHIVED:
+    case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};

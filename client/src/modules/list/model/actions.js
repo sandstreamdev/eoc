@@ -115,8 +115,8 @@ const restoreListRequest = () => ({
   type: ListActionTypes.RESTORE_REQUEST
 });
 
-export const removeArchivedLists = () => ({
-  type: ListActionTypes.REMOVE_ARCHIVED
+export const removeArchivedListsMetaData = () => ({
+  type: ListActionTypes.REMOVE_ARCHIVED_META_DATA
 });
 
 export const fetchListData = listId => dispatch => {
