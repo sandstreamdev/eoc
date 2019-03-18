@@ -12,7 +12,8 @@ import {
 import {
   createList,
   fetchArchivedListsMetaData,
-  fetchListsMetaData
+  fetchListsMetaData,
+  removeArchivedLists
 } from 'modules/list/model/actions';
 import {
   ArchiveIcon,
@@ -129,9 +130,11 @@ class Cohort extends PureComponent {
 
   handleArchivedListVisibility = id => () => {
     const { areArchivedListVisible } = this.state;
-    const { fetchArchivedListsMetaData } = this.props;
+    const { fetchArchivedListsMetaData, removeArchivedLists } = this.props;
     this.setState({ areArchivedListVisible: !areArchivedListVisible });
-    !areArchivedListVisible ? fetchArchivedListsMetaData(id) : null;
+    !areArchivedListVisible
+      ? fetchArchivedListsMetaData(id)
+      : removeArchivedLists();
   };
 
   render() {
@@ -263,6 +266,7 @@ Cohort.propTypes = {
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
+  removeArchivedLists: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
 };
 
@@ -282,6 +286,7 @@ export default withRouter(
       fetchArchivedListsMetaData,
       fetchCohortDetails,
       fetchListsMetaData,
+      removeArchivedLists,
       updateCohort
     }
   )(Cohort)

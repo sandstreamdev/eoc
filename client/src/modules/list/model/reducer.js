@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import _filter from 'lodash/filter';
+import _keyBy from 'lodash/keyBy';
 
 import { ListActionTypes } from './actionTypes';
 import { ItemActionTypes } from 'modules/list/components/InputBar/model/actionTypes';
@@ -85,6 +87,9 @@ const lists = (state = {}, action) => {
         ...state,
         [action.payload.listId]: action.payload.data
       };
+    }
+    case ListActionTypes.REMOVE_ARCHIVED: {
+      return _keyBy(_filter(state, list => !list.isArchived), '_id');
     }
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
