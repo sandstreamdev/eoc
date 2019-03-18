@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import ItemsListItem from 'modules/list/components/ItemsListItem';
+import ListItem from 'modules/list/components/ListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { toggle, vote } from './actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
@@ -70,7 +70,7 @@ class ItemsList extends Component {
         ) : (
           <ul className="items-list">
             {items.slice(0, limit).map(item => (
-              <ItemsListItem
+              <ListItem
                 archived={item.isOrdered}
                 authorName={item.authorName}
                 id={item._id}
