@@ -13,8 +13,8 @@ class InputBar extends Component {
     super(props);
 
     this.state = {
-      itemName: '',
-      isFormVisible: false
+      isFormVisible: false,
+      itemName: ''
     };
     this.input = React.createRef();
   }
@@ -51,13 +51,12 @@ class InputBar extends Component {
     this.setState({
       itemName: ''
     });
-    this.handleFormVisibility();
+    this.hideForm();
   };
 
-  handleFormVisibility = () => {
-    const { isFormVisible } = this.state;
-    this.setState({ isFormVisible: !isFormVisible });
-  };
+  showForm = () => this.setState({ isFormVisible: true });
+
+  hideForm = () => this.setState({ isFormVisible: false });
 
   render() {
     const { itemName, isFormVisible } = this.state;
@@ -80,7 +79,7 @@ class InputBar extends Component {
           ) : (
             <button
               className="input-bar__button"
-              onClick={this.handleFormVisibility}
+              onClick={this.showForm}
               type="button"
             >
               <PlusIcon />

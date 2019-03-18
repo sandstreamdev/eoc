@@ -32,7 +32,6 @@ class Archived extends PureComponent {
           <GridList
             color={CardColorType.ORANGE}
             icon={<ListIcon />}
-            isArchived
             items={lists}
             name="Archived Lists"
             placeholder="There are no archived lists!"
@@ -41,7 +40,6 @@ class Archived extends PureComponent {
           <GridList
             color={CardColorType.BROWN}
             icon={<CohortIcon />}
-            isArchived
             items={cohorts}
             name="Archived Cohorts"
             placeholder="There are no archived cohorts!"
