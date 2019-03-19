@@ -58,9 +58,8 @@ class Cohort extends PureComponent {
       }
     } = this.props;
     createList(name, description, userId, cohortId)
-      .then(this.hideFormDialog)
+      .then(this.handleDialogContext(null)())
       .catch(noOp);
-    this.handleDialogContext(null)();
   };
 
   handleCohortEdition = cohortId => (name, description) => {
@@ -82,9 +81,8 @@ class Cohort extends PureComponent {
   handleCohortArchivization = cohortId => () => {
     const { archiveCohort } = this.props;
     archiveCohort(cohortId)
-      .then(this.hideDialog)
+      .then(this.handleDialogContext(null)())
       .catch(noOp);
-    this.handleDialogContext(null)();
   };
 
   checkIfArchived = () => {

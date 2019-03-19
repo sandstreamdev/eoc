@@ -5,8 +5,8 @@ import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 export const DialogContext = Object.freeze({
   ARCHIVE: 'dialog/ARCHIVE',
-  UPDATE: 'dialog/UPDATE',
-  CREATE: 'dialog/create'
+  CREATE: 'dialog/create',
+  UPDATE: 'dialog/UPDATE'
 });
 
 const Dialog = ({ children, onCancel, onConfirm, title }) => (
