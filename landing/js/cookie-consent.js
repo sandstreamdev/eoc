@@ -1,82 +1,64 @@
 /* eslint-disable */
 $(window).on('load', function() {
-  //global variables
-  const popupDiv = $('[data-id="popup"]');
-  const popupCloseButton = $('[data-id="close-button"]');
+  const cookieBar = $('[data-id="cookie-bar"]');
   const bodyOverlayDiv = $('[data-id="body-overlay"]');
-  const agreeButton = $('[data-id="agree-button"]');
+  const cookieButton = $('[data-id="cookie-button"]');
+  const body = $('body');
 
   const cookie = {
-    setCookie(name, days) {
+    set: (name, days) => {
       let expires = '';
       const date = new Date();
+
       date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
       expires = 'expires=' + date.toUTCString();
-
       document.cookie = `${name}=true; ${expires}`;
     },
 
-    checkIfCookieExist(name) {
+    checkIfSet: name => {
       return document.cookie.indexOf(`${name}`) >= 0 ? true : false;
     }
   };
 
   const bodyOverlay = {
-    hideOverlay(bodyOverlayDiv) {
-      bodyOverlayDiv.removeClass('body-overlay');
+    hideOverlay: () => {
+      body.removeClass('body-overlay');
     },
 
-    showOverlay(bodyOverlayDiv) {
-      bodyOverlayDiv.addClass('body-overlay');
+    showOverlay: () => {
+      body.addClass('body-overlay');
     }
   };
 
-  const popup = {
-    openPopup(popupDiv) {
-      popupDiv.css('display', 'block');
+  const cookieMessage = {
+    open: () => {
+      cookieBar.removeClass('hidden');
     },
 
-    closePopup(popupDiv) {
-      popupDiv.css('display', 'none');
+    close: () => {
+      cookieBar.addClass('hidden');
     }
   };
 
-  const isCookieSet = cookie.checkIfCookieExist('popup-cookie');
-  // app initializtion
-  const app = {
-    init() {
+  const isCookieSet = cookie.checkIfSet('cookie-consent');
+
+  const module = {
+    init: () => {
       if (!isCookieSet) {
-        cookie.setCookie('popup-cookie', 30);
-        popup.openPopup(popupDiv);
-        bodyOverlay.showOverlay(bodyOverlayDiv);
+        cookieMessage.open();
+        bodyOverlay.showOverlay();
       } else {
-        popup.closePopup(popupDiv);
-        bodyOverlay.hideOverlay(bodyOverlayDiv);
+        cookieMessage.close();
+        bodyOverlay.hideOverlay();
       }
     }
   };
 
-  // eventListeners
-  popupCloseButton.on('click', function() {
-    popup.closePopup(popupDiv);
-    bodyOverlay.hideOverlay(bodyOverlayDiv);
+  cookieButton.on('click', function() {
+    cookieMessage.close();
+    bodyOverlay.hideOverlay();
+    cookie.set('cookie-consent', 30);
   });
 
-  agreeButton.on('click', function() {
-    popup.closePopup(popupDiv);
-    bodyOverlay.hideOverlay(bodyOverlayDiv);
-  });
-
-  app.init();
-  console.log(cookie.checkIfCookieExist('popup-cookie'));
+  module.init();
 });
-
-// Algorithm
-// 1. Check if cookie is set
-// 2. If cookie is not set
-//    2.1. Set cookie
-//    2.2. Open popup
-//    2.3 Open body overlay
-// 3. If cookie is set
-//    3.1. Close popup
-//    3.2 Hide body overlay

@@ -19,6 +19,7 @@
  15. Freetrial (Section)
  16. Contact Details (Section)
  17. footer (Section)
+ 18. Cookie consent
 
 -----------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------
@@ -53,12 +54,17 @@
   clear: both;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   color: #8490a4;
   font-size: 15px;
   line-height: 1.7;
+  min-height: 100%;
 }
 
 :root {
@@ -71,6 +77,7 @@ body {
   --text-black: #000;
   --text-normal: #b6b6b6;
   --text-white: #fff;
+  --white-bg: #fff;
 }
 
 .heading {
@@ -1467,6 +1474,44 @@ Footer
 
 /* End Footer */
 
+.cookie-consent {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--white-bg);
+  padding: 10px 0;
+  font-size: 12px;
+  box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
+  z-index: 10001;
+}
+
+.cookie-consent__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cookie-consent__button {
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: 400;
+  height: auto;
+  border: 0;
+}
+
+.body-overlay::before {
+  content: '';
+  display: block;
+  position: fixed; /* could also be absolute */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 /*-----------------------------------------------------------------------------------
 
 Scroll Animation
@@ -2284,6 +2329,10 @@ BLOG CSS
 .comment-form button:hover {
   background: #47a032;
   transition: all ease 0.5s;
+}
+
+.hidden {
+  display: none;
 }
 
 /*-----------------------------------------------------------------------------------
