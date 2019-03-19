@@ -43,14 +43,14 @@ class Dashboard extends Component {
 
     switch (dialogContext) {
       case FormDialogContext.CREATE_COHORT:
-        createCohort(title, description, id);
-        return this.hideDialog();
+        return createCohort(title, description, id);
       case FormDialogContext.CREATE_LIST:
-        createList(title, description, id);
-        return this.hideDialog();
+        return createList(title, description, id);
       default:
         break;
     }
+
+    this.hideDialog();
   };
 
   hideDialog = () => this.handleDialogContext(null)();
