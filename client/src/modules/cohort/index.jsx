@@ -5,10 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import { CardColorType } from 'common/components/CardItem';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
-import {
-  getCohortArchivedLists,
-  getCohortLists
-} from 'modules/list/model/selectors';
+import { getActiveLists, getArchivedLists } from 'modules/list/model/selectors';
 import {
   createList,
   fetchArchivedListsMetaData,
@@ -279,10 +276,10 @@ Cohort.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  archivedLists: getCohortArchivedLists(state, ownProps.match.params.id),
+  archivedLists: getArchivedLists(state),
   cohortDetails: getCohortDetails(state, ownProps.match.params.id),
   currentUser: getCurrentUser(state),
-  lists: getCohortLists(state, ownProps.match.params.id)
+  lists: getActiveLists(state)
 });
 
 export default withRouter(

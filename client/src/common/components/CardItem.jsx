@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 export const CardColorType = {
   BROWN: 'card/BROWN',
-  GRAY: 'card/GRAY',
+  ARCHIVED: 'card/GRAY',
   ORANGE: 'card/ORANGE'
 };
 
