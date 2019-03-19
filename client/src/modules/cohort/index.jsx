@@ -1,15 +1,17 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
-import _map from 'lodash/map';
-import _isEmpty from 'lodash/isEmpty';
+import { withRouter } from 'react-router-dom';
 
-import CardItem, { CardColorType } from 'common/components/CardItem';
-import MessageBox from 'common/components/MessageBox';
+import { CardColorType } from 'common/components/CardItem';
 import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
-import { getCohortLists } from 'modules/list/model/selectors';
-import { createList, fetchListsMetaData } from 'modules/list/model/actions';
+import { getActiveLists, getArchivedLists } from 'modules/list/model/selectors';
+import {
+  createList,
+  fetchArchivedListsMetaData,
+  fetchListsMetaData,
+  removeArchivedListsMetaData
+} from 'modules/list/model/actions';
 import {
   ArchiveIcon,
   CohortIcon,
@@ -17,7 +19,6 @@ import {
   ListIcon
 } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
-import { MessageType } from 'common/constants/enums';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import {
@@ -31,9 +32,11 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import PlusIcon from 'assets/images/plus-solid.svg';
 import Dialog from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
+import GridList from 'common/components/GridList';
 
 class Cohort extends PureComponent {
   state = {
+    areArchivedListVisible: false,
     isListFormVisible: false,
     isDialogVisible: false,
     isUpdateFormVisible: false
@@ -122,8 +125,26 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isAdmin;
   };
 
+  handleArchivedListsVisibility = id => () => {
+    const { areArchivedListVisible } = this.state;
+    this.setState({ areArchivedListVisible: !areArchivedListVisible });
+    this.handleArchivedListsData(id);
+  };
+
+  handleArchivedListsData = id => {
+    const { areArchivedListVisible } = this.state;
+    const {
+      fetchArchivedListsMetaData,
+      removeArchivedListsMetaData
+    } = this.props;
+    !areArchivedListVisible
+      ? fetchArchivedListsMetaData(id)
+      : removeArchivedListsMetaData();
+  };
+
   render() {
     const {
+      archivedLists,
       cohortDetails,
       lists,
       match: {
@@ -137,6 +158,7 @@ class Cohort extends PureComponent {
 
     const { isArchived, name, description } = cohortDetails;
     const {
+      areArchivedListVisible,
       isListFormVisible,
       isDialogVisible,
       isUpdateFormVisible
@@ -195,30 +217,35 @@ class Cohort extends PureComponent {
         ) : (
           <div className="wrapper">
             <div className="cohort">
-              <h2 className="cohort__heading">
+              <h1 className="cohort__heading">
                 <CohortIcon />
                 {name}
-              </h2>
+              </h1>
               <p className="cohort__description">{description}</p>
-              {_isEmpty(lists) ? (
-                <MessageBox
-                  message={`There are no lists in the ${name} cohort!`}
-                  type={MessageType.INFO}
+              <GridList
+                color={CardColorType.ORANGE}
+                icon={<ListIcon />}
+                items={lists}
+                name="Lists"
+                placeholder={`There are no lists in the ${name} cohort!`}
+                route="list"
+              />
+              <button
+                className="cohort__toggle-archived-lists"
+                onClick={this.handleArchivedListsVisibility(cohortId)}
+                type="button"
+              >
+                {` ${areArchivedListVisible ? 'hide' : 'show'} archived lists`}
+              </button>
+              {areArchivedListVisible && (
+                <GridList
+                  color={CardColorType.ARCHIVED}
+                  icon={<ListIcon />}
+                  items={archivedLists}
+                  name="Archived lists"
+                  placeholder={`There are no archived lists in the ${name} cohort!`}
+                  route="list"
                 />
-              ) : (
-                <ul className="cohort-list">
-                  {_map(lists, list => (
-                    <li className="cohort-list__item" key={list._id}>
-                      <Link to={`/list/${list._id}`}>
-                        <CardItem
-                          color={CardColorType.ORANGE}
-                          description={list.description}
-                          name={list.name}
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
               )}
             </div>
           </div>
@@ -229,6 +256,7 @@ class Cohort extends PureComponent {
 }
 
 Cohort.propTypes = {
+  archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortDetails: PropTypes.shape({
     description: PropTypes.string,
     isArchived: PropTypes.bool,
@@ -240,15 +268,18 @@ Cohort.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   archiveCohort: PropTypes.func.isRequired,
+  fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
+  removeArchivedListsMetaData: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
+  archivedLists: getArchivedLists(state),
   cohortDetails: getCohortDetails(state, ownProps.match.params.id),
   currentUser: getCurrentUser(state),
-  lists: getCohortLists(state, ownProps.match.params.id)
+  lists: getActiveLists(state)
 });
 
 export default withRouter(
@@ -257,8 +288,10 @@ export default withRouter(
     {
       archiveCohort,
       createList,
+      fetchArchivedListsMetaData,
       fetchCohortDetails,
       fetchListsMetaData,
+      removeArchivedListsMetaData,
       updateCohort
     }
   )(Cohort)

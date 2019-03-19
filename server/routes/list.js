@@ -14,7 +14,7 @@ const {
 const { authorize } = require('../middleware/authorize');
 
 router.get('/meta-data/:cohortId?', authorize, getListsMetaData);
-router.get('/archived', authorize, getArchivedListsMetaData);
+router.get('/archived/:cohortId?', authorize, getArchivedListsMetaData);
 router.post('/create', authorize, createList);
 router.post('/add-item', authorize, addItemToList);
 router.delete('/:id/delete', authorize, deleteListById);
