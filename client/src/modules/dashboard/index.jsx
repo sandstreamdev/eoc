@@ -41,14 +41,19 @@ class Dashboard extends Component {
       currentUser: { id }
     } = this.props;
 
-    if (dialogContext === FormDialogContext.CREATE_COHORT) {
-      createCohort(title, description, id);
-      return this.handleDialogContext(null)();
+    switch (dialogContext) {
+      case FormDialogContext.CREATE_COHORT:
+        createCohort(title, description, id);
+        return this.hideDialog();
+      case FormDialogContext.CREATE_LIST:
+        createList(title, description, id);
+        return this.hideDialog();
+      default:
+        break;
     }
-
-    createList(title, description, id);
-    this.handleDialogContext(null)();
   };
+
+  hideDialog = () => this.handleDialogContext(null)();
 
   render() {
     const { lists, cohorts } = this.props;

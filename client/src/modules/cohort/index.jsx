@@ -58,7 +58,7 @@ class Cohort extends PureComponent {
       }
     } = this.props;
     createList(name, description, userId, cohortId)
-      .then(this.handleDialogContext(null)())
+      .then(this.hideDialog())
       .catch(noOp);
   };
 
@@ -75,13 +75,13 @@ class Cohort extends PureComponent {
       updateCohort(cohortId, dataToUpdate);
     }
 
-    this.handleDialogContext(null)();
+    this.hideDialog();
   };
 
   handleCohortArchivization = cohortId => () => {
     const { archiveCohort } = this.props;
     archiveCohort(cohortId)
-      .then(this.handleDialogContext(null)())
+      .then(this.hideDialog())
       .catch(noOp);
   };
 
@@ -97,6 +97,8 @@ class Cohort extends PureComponent {
 
   handleDialogContext = context => () =>
     this.setState({ dialogContext: context });
+
+  hideDialog = () => this.handleDialogContext(null)();
 
   render() {
     const {

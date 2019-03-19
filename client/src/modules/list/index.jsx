@@ -44,7 +44,7 @@ class List extends Component {
   archiveListHandler = listId => () => {
     const { archiveList } = this.props;
     archiveList(listId)
-      .then(this.handleDialogContext(null)())
+      .then(this.hideDialog())
       .catch(noOp);
   };
 
@@ -56,7 +56,7 @@ class List extends Component {
     description ? (dataToUpdate.description = description) : null;
 
     updateList(listId, dataToUpdate);
-    this.handleDialogContext(null)();
+    this.hideDialog();
   };
 
   checkIfArchived = () => {
@@ -71,6 +71,8 @@ class List extends Component {
 
   handleDialogContext = context => () =>
     this.setState({ dialogContext: context });
+
+  hideDialog = () => this.handleDialogContext(null)();
 
   render() {
     const { dialogContext } = this.state;
@@ -131,7 +133,7 @@ class List extends Component {
         {isArchived && <ArchivedList listId={listId} name={name} />}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
-            onCancel={this.hideDialogBox}
+            onCancel={this.hideDialog}
             onConfirm={this.archiveListHandler(listId)}
             title={`Do you really want to archive the ${name} list?`}
           />
@@ -140,7 +142,7 @@ class List extends Component {
           <FormDialog
             defaultDescription={description}
             defaultName={name}
-            onCancel={this.hideUpdateForm}
+            onCancel={this.hideDialog}
             onConfirm={this.updateListHandler(listId)}
             title="Edit list"
           />

@@ -10,15 +10,12 @@ export const getItems = createSelector(
   [getList],
   list => {
     if (list) {
-      const { items } = list;
+      const { items = [] } = list;
 
-      return (
-        items &&
-        items.sort((a, b) =>
-          new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
-            ? 1
-            : -1
-        )
+      return items.sort((a, b) =>
+        new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
+          ? 1
+          : -1
       );
     }
   }
