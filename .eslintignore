@@ -1,4 +1,4 @@
 *.css
 *.scss
 *.min.js
-landing/js/*.js
+./landing/js/*.js
