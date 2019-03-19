@@ -18,15 +18,13 @@ import {
 } from './model/actions';
 import { noOp } from 'common/utils/noOp';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import Dialog from 'common/components/Dialog';
+import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList from 'common/components/GridList';
 
 class Cohort extends PureComponent {
   state = {
-    isCreationFormVisible: false,
-    isDialogVisible: false,
-    isUpdateFormVisible: false
+    dialogContext: null
   };
 
   componentDidMount() {
@@ -62,11 +60,8 @@ class Cohort extends PureComponent {
     createList(name, description, userId, cohortId)
       .then(this.hideFormDialog)
       .catch(noOp);
+    this.handleDialogContext(null)();
   };
-
-  showUpdateForm = () => this.setState({ isUpdateFormVisible: true });
-
-  hideUpdateForm = () => this.setState({ isUpdateFormVisible: false });
 
   handleCohortEdition = cohortId => (name, description) => {
     const { cohortDetails, updateCohort } = this.props;
@@ -80,18 +75,16 @@ class Cohort extends PureComponent {
 
       updateCohort(cohortId, dataToUpdate);
     }
-    this.hideUpdateForm();
+
+    this.handleDialogContext(null)();
   };
-
-  showDialog = () => this.setState({ isDialogVisible: true });
-
-  hideDialog = () => this.setState({ isDialogVisible: false });
 
   handleCohortArchivization = cohortId => () => {
     const { archiveCohort } = this.props;
     archiveCohort(cohortId)
       .then(this.hideDialog)
       .catch(noOp);
+    this.handleDialogContext(null)();
   };
 
   checkIfArchived = () => {
@@ -104,12 +97,8 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isAdmin;
   };
 
-  showFormDialog = () =>
-    this.setState({
-      isCreationFormVisible: true
-    });
-
-  hideFormDialog = () => this.setState({ isCreationFormVisible: false });
+  handleDialogContext = context => () =>
+    this.setState({ dialogContext: context });
 
   render() {
     const {
@@ -125,11 +114,7 @@ class Cohort extends PureComponent {
     }
 
     const { isArchived, name, description } = cohortDetails;
-    const {
-      isCreationFormVisible,
-      isDialogVisible,
-      isUpdateFormVisible
-    } = this.state;
+    const { dialogContext } = this.state;
 
     return (
       <Fragment>
@@ -138,36 +123,36 @@ class Cohort extends PureComponent {
             <Fragment>
               <ToolbarItem
                 mainIcon={<EditIcon />}
-                onClick={this.showUpdateForm}
+                onClick={this.handleDialogContext(DialogContext.UPDATE)}
                 title="Update cohort"
               />
               <ToolbarItem
                 mainIcon={<ArchiveIcon />}
-                onClick={this.showDialog}
+                onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
                 title="Archive cohort"
               />
             </Fragment>
           )}
         </Toolbar>
-        {isDialogVisible && (
+        {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
-            onCancel={this.hideDialog}
+            onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleCohortArchivization(cohortId)}
             title={`Do you really want to archive the ${name} cohort?`}
           />
         )}
-        {isUpdateFormVisible && (
+        {dialogContext === DialogContext.UPDATE && (
           <FormDialog
             defaultDescription={description}
             defaultName={name}
-            onCancel={this.hideUpdateForm}
+            onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleCohortEdition(cohortId)}
             title="Edit cohort"
           />
         )}
-        {isCreationFormVisible && (
+        {dialogContext === DialogContext.CREATE && (
           <FormDialog
-            onCancel={this.hideFormDialog}
+            onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleListCreation}
             title="Add new list"
           />
@@ -183,10 +168,9 @@ class Cohort extends PureComponent {
                 icon={<CohortIcon />}
                 items={lists}
                 name={name}
-                onAddNew={this.showFormDialog}
+                onAddNew={this.handleDialogContext(DialogContext.CREATE)}
                 placeholder="There are no lists yet!"
                 route="list"
-                withPlusTile
               />
             </div>
           </div>

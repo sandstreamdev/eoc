@@ -7,6 +7,7 @@ import _isEmpty from 'lodash/isEmpty';
 import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
+import CardPlus from 'common/components/CardPlus';
 
 const GridList = ({
   color,
@@ -16,8 +17,7 @@ const GridList = ({
   name,
   onAddNew,
   placeholder,
-  route,
-  withPlusTile
+  route
 }) => (
   <div className="grid-list">
     <h2 className="grid-list__heading">
@@ -27,14 +27,14 @@ const GridList = ({
     {description && <p className="grid-list__description">{description}</p>}
     <div className="grid-list__body">
       <ul className="grid-list__list">
-        {withPlusTile && (
+        {onAddNew && (
           <li className="grid-list__item">
             <button
               className="grid-list__button"
               onClick={onAddNew}
               type="button"
             >
-              <CardItem color={color} withPlus />
+              <CardPlus />
             </button>
           </li>
         )}
@@ -65,7 +65,6 @@ GridList.propTypes = {
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
-  withPlusTile: PropTypes.bool,
 
   onAddNew: PropTypes.func
 };

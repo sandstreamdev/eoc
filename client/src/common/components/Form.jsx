@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 class Form extends PureComponent {
@@ -44,29 +44,27 @@ class Form extends PureComponent {
     const { description, name } = this.state;
 
     return (
-      <Fragment>
-        <form className="form z-index-high" onSubmit={this.handleSubmit}>
-          <label className="form__label">
-            <input
-              className="form__input primary-input"
-              onChange={this.handleNameChange}
-              placeholder="Name"
-              ref={this.input}
-              type="text"
-              value={name}
-            />
-          </label>
-          <label className="form__label">
-            <textarea
-              className="form__textarea primary-textarea"
-              onChange={this.handleDescriptionChange}
-              placeholder="Description"
-              type="text"
-              value={description}
-            />
-          </label>
-        </form>
-      </Fragment>
+      <form className="form" onSubmit={this.handleSubmit}>
+        <label className="form__label">
+          <input
+            className="form__input primary-input"
+            onChange={this.handleNameChange}
+            placeholder="Name"
+            ref={this.input}
+            type="text"
+            value={name}
+          />
+        </label>
+        <label className="form__label">
+          <textarea
+            className="form__textarea primary-textarea"
+            onChange={this.handleDescriptionChange}
+            placeholder="Description"
+            type="text"
+            value={description}
+          />
+        </label>
+      </form>
     );
   }
 }

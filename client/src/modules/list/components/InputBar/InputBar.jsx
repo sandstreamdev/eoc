@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -61,33 +61,31 @@ class InputBar extends Component {
   render() {
     const { itemName, isFormVisible } = this.state;
     return (
-      <Fragment>
-        <div className="input-bar">
-          {isFormVisible ? (
-            <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
-              <input
-                className="input-bar__input primary-input"
-                onChange={this.handleNameChange}
-                placeholder="What is missing?"
-                ref={this.input}
-                required
-                type="text"
-                value={itemName}
-              />
-              <input className="input-bar__submit" type="submit" />
-            </form>
-          ) : (
-            <button
-              className="input-bar__button"
-              onClick={this.showForm}
-              type="button"
-            >
-              <PlusIcon />
-              Add new item
-            </button>
-          )}
-        </div>
-      </Fragment>
+      <div className="input-bar">
+        {isFormVisible ? (
+          <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
+            <input
+              className="input-bar__input primary-input"
+              onChange={this.handleNameChange}
+              placeholder="What is missing?"
+              ref={this.input}
+              required
+              type="text"
+              value={itemName}
+            />
+            <input className="input-bar__submit" type="submit" />
+          </form>
+        ) : (
+          <button
+            className="input-bar__button"
+            onClick={this.showForm}
+            type="button"
+          >
+            <PlusIcon />
+            Add new item
+          </button>
+        )}
+      </div>
     );
   }
 }

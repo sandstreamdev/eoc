@@ -20,8 +20,7 @@ import FormDialog, { FormDialogContext } from 'common/components/FormDialog';
 
 class Dashboard extends Component {
   state = {
-    formDialogVisibility: false,
-    formDialogContext: ''
+    dialogContext: ''
   };
 
   componentDidMount() {
@@ -31,40 +30,29 @@ class Dashboard extends Component {
     fetchListsMetaData();
   }
 
-  handleFormDialogVisibility = () => {
-    const { formDialogVisibility } = this.state;
-
-    this.setState({ formDialogVisibility: !formDialogVisibility });
-  };
-
-  handleFormDialogContext = context =>
-    this.setState({ formDialogContext: context });
+  handleDialogContext = context => () =>
+    this.setState({ dialogContext: context });
 
   handleConfirm = (title, description) => {
-    const { formDialogContext } = this.state;
+    const { dialogContext } = this.state;
     const {
       createCohort,
       createList,
       currentUser: { id }
     } = this.props;
 
-    if (formDialogContext === FormDialogContext.COHORT) {
+    if (dialogContext === FormDialogContext.CREATE_COHORT) {
       createCohort(title, description, id);
-      return this.handleFormDialogVisibility();
+      return this.handleDialogContext(null)();
     }
 
     createList(title, description, id);
-    this.handleFormDialogVisibility();
-  };
-
-  handleOnAddNew = context => () => {
-    this.handleFormDialogContext(context);
-    this.handleFormDialogVisibility();
+    this.handleDialogContext(null)();
   };
 
   render() {
     const { lists, cohorts } = this.props;
-    const { formDialogContext, formDialogVisibility } = this.state;
+    const { dialogContext } = this.state;
 
     return (
       <Fragment>
@@ -83,28 +71,32 @@ class Dashboard extends Component {
               icon={<ListIcon />}
               items={lists}
               name="Lists"
-              onAddNew={this.handleOnAddNew(FormDialogContext.LIST)}
+              onAddNew={this.handleDialogContext(FormDialogContext.CREATE_LIST)}
               placeholder="There are no lists yet!"
               route="list"
-              withPlusTile
             />
             <GridList
               color={CardColorType.BROWN}
               icon={<CohortIcon />}
               items={cohorts}
               name="Cohorts"
-              onAddNew={this.handleOnAddNew(FormDialogContext.COHORT)}
+              onAddNew={this.handleDialogContext(
+                FormDialogContext.CREATE_COHORT
+              )}
               placeholder="There are no cohorts yet!"
               route="cohort"
-              withPlusTile
             />
           </div>
         </div>
-        {formDialogVisibility && (
+        {dialogContext && (
           <FormDialog
-            onCancel={this.handleFormDialogVisibility}
+            onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleConfirm}
-            title={`Add new ${formDialogContext}`}
+            title={`Add new ${
+              dialogContext === FormDialogContext.CREATE_COHORT
+                ? 'cohort'
+                : 'list'
+            }`}
           />
         )}
       </Fragment>

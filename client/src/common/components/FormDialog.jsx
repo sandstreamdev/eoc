@@ -5,8 +5,8 @@ import Form from 'common/components/Form';
 import Dialog from 'common/components/Dialog';
 
 export const FormDialogContext = Object.freeze({
-  COHORT: 'cohort',
-  LIST: 'list'
+  CREATE_COHORT: 'formDialog/CREATE_COHORT',
+  CREATE_LIST: 'formDialog/CREATE_LIST'
 });
 
 class FormDialog extends Component {
