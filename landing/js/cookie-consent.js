@@ -48,7 +48,7 @@ $(window).on('load', () => {
     }
   };
 
-  cookieButton.on('click', function() {
+  cookieButton.on('click', () => {
     cookieMessage.close();
     bodyElement.hideOverlay();
     cookie.set('cookie-consent', 365);
