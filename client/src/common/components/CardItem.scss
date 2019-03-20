@@ -48,4 +48,11 @@
   &:hover {
     box-shadow: 0 3px 4px rgba($shadow-color, 0.35);
   }
+
+  svg {
+    height: 24px;
+    path {
+      fill: $text-normal;
+    }
+  }
 }

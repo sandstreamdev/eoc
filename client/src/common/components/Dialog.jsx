@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
+export const DialogContext = Object.freeze({
+  ARCHIVE: 'dialog/ARCHIVE',
+  CREATE: 'dialog/create',
+  UPDATE: 'dialog/UPDATE'
+});
+
 const Dialog = ({ children, onCancel, onConfirm, title }) => (
   <Fragment>
     <Overlay type={OverlayStyleType.MEDIUM} />

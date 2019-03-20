@@ -2,27 +2,25 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
+import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
-import PlusIcon from 'assets/images/plus-solid.svg';
 import EyeIcon from 'assets/images/eye-solid.svg';
 import { createList, fetchListsMetaData } from 'modules/list/model/actions';
 import {
   createCohort,
   fetchCohortsMetaData
 } from 'modules/cohort/model/actions';
-import { getLists } from 'modules/list/model/selectors';
+import { getActiveLists } from 'modules/list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
-import DropdownForm from 'common/components/DropdownForm';
 import { CardColorType } from 'common/components/CardItem';
+import FormDialog, { FormDialogContext } from 'common/components/FormDialog';
 
 class Dashboard extends Component {
   state = {
-    cohortFormVisibility: false,
-    listFormVisibility: false
+    dialogContext: ''
   };
 
   componentDidMount() {
@@ -32,84 +30,38 @@ class Dashboard extends Component {
     fetchListsMetaData();
   }
 
-  hideForms = () => {
-    this.setState({
-      cohortFormVisibility: false,
-      listFormVisibility: false
-    });
-  };
+  handleDialogContext = context => () =>
+    this.setState({ dialogContext: context });
 
-  handleListFormVisibility = () => {
-    const { listFormVisibility } = this.state;
-
-    this.setState({
-      cohortFormVisibility: false,
-      listFormVisibility: !listFormVisibility
-    });
-  };
-
-  handleCohortFormVisibility = () => {
-    const { cohortFormVisibility } = this.state;
-
-    this.setState({
-      cohortFormVisibility: !cohortFormVisibility,
-      listFormVisibility: false
-    });
-  };
-
-  handleListSubmission = (title, description) => {
+  handleConfirm = (title, description) => {
+    const { dialogContext } = this.state;
     const {
+      createCohort,
       createList,
       currentUser: { id }
     } = this.props;
-    createList(title, description, id);
-    this.hideForms();
+
+    switch (dialogContext) {
+      case FormDialogContext.CREATE_COHORT:
+        return createCohort(title, description, id);
+      case FormDialogContext.CREATE_LIST:
+        return createList(title, description, id);
+      default:
+        break;
+    }
+
+    this.hideDialog();
   };
 
-  handleCohortSubmission = (title, description) => {
-    const {
-      createCohort,
-      currentUser: { id }
-    } = this.props;
-    createCohort(title, description, id);
-    this.hideForms();
-  };
+  hideDialog = () => this.handleDialogContext(null)();
 
   render() {
     const { lists, cohorts } = this.props;
-    const { cohortFormVisibility, listFormVisibility } = this.state;
+    const { dialogContext } = this.state;
 
     return (
       <Fragment>
         <Toolbar isHomePage>
-          <ToolbarItem
-            additionalIconSrc={PlusIcon}
-            mainIcon={<CohortIcon />}
-            onClick={this.handleCohortFormVisibility}
-            title="Create new cohort"
-          >
-            <DropdownForm
-              isVisible={cohortFormVisibility}
-              label="Create new cohort"
-              onHide={this.hideForms}
-              onSubmit={this.handleCohortSubmission}
-              type="menu"
-            />
-          </ToolbarItem>
-          <ToolbarItem
-            additionalIconSrc={PlusIcon}
-            mainIcon={<ListIcon />}
-            onClick={this.handleListFormVisibility}
-            title="Create new list"
-          >
-            <DropdownForm
-              isVisible={listFormVisibility}
-              label="Create new list"
-              onHide={this.hideForms}
-              onSubmit={this.handleListSubmission}
-              type="menu"
-            />
-          </ToolbarItem>
           <ToolbarLink
             additionalIconSrc={EyeIcon}
             mainIcon={<ArchiveIcon />}
@@ -124,6 +76,7 @@ class Dashboard extends Component {
               icon={<ListIcon />}
               items={lists}
               name="Lists"
+              onAddNew={this.handleDialogContext(FormDialogContext.CREATE_LIST)}
               placeholder="There are no lists yet!"
               route="list"
             />
@@ -132,11 +85,25 @@ class Dashboard extends Component {
               icon={<CohortIcon />}
               items={cohorts}
               name="Cohorts"
+              onAddNew={this.handleDialogContext(
+                FormDialogContext.CREATE_COHORT
+              )}
               placeholder="There are no cohorts yet!"
               route="cohort"
             />
           </div>
         </div>
+        {dialogContext && (
+          <FormDialog
+            onCancel={this.handleDialogContext(null)}
+            onConfirm={this.handleConfirm}
+            title={`Add new ${
+              dialogContext === FormDialogContext.CREATE_COHORT
+                ? 'cohort'
+                : 'list'
+            }`}
+          />
+        )}
       </Fragment>
     );
   }
@@ -156,7 +123,7 @@ Dashboard.propTypes = {
 const mapStateToProps = state => ({
   cohorts: getCohorts(state),
   currentUser: getCurrentUser(state),
-  lists: getLists(state)
+  lists: getActiveLists(state)
 });
 
 export default connect(
@@ -164,7 +131,7 @@ export default connect(
   {
     createCohort,
     createList,
-    fetchListsMetaData,
-    fetchCohortsMetaData
+    fetchCohortsMetaData,
+    fetchListsMetaData
   }
 )(Dashboard);

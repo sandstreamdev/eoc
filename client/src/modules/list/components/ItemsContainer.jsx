@@ -92,7 +92,6 @@ class ItemsContainer extends Component {
 
     return (
       <div className="items">
-        {children}
         <header className="items__header">
           <h2 className="items__heading items__heading--left">
             {archived ? 'Done' : name}
@@ -113,6 +112,7 @@ class ItemsContainer extends Component {
             />
           </div>
         </header>
+        {children}
         {description && <p className="items__description">{description}</p>}
         <div className="items__body">
           <ItemsList archived={archived} items={sortedList} />
