@@ -150,6 +150,23 @@ const addItemToList = (req, resp) => {
   );
 };
 
+/**
+ * TODO improve this function to promise */
+const getItemsForList = list => {
+  const { items } = list;
+
+  return items.map(item => ({
+    _id: item._id,
+    isOrdered: item.isOrdered,
+    authorName: item.authorName,
+    authorId: item.authorId,
+    name: item.name,
+    updatedAt: item.updatedAt,
+    createdAt: item.createdAt,
+    votesCount: item.voterIds.length
+  }));
+};
+
 const getListData = (req, resp) => {
   const {
     params: { id: listId },
@@ -190,15 +207,9 @@ const getListData = (req, resp) => {
       }
     })
     .then(() => {
-      const {
-        _id,
-        adminIds,
-        cohortId,
-        description,
-        isArchived,
-        items,
-        name
-      } = list;
+      const { _id, adminIds, cohortId, description, isArchived, name } = list;
+
+      const items = getItemsForList(list);
 
       if (isArchived) {
         return resp.status(200).json({ cohortId, _id, isArchived, name });
@@ -223,7 +234,7 @@ const getListData = (req, resp) => {
 };
 
 const updateListItem = (req, resp) => {
-  const { isOrdered, itemId, voterIds } = req.body;
+  const { isOrdered, itemId } = req.body;
   const { id: listId } = req.params;
 
   /**
@@ -234,9 +245,9 @@ const updateListItem = (req, resp) => {
   if (isOrdered !== undefined) {
     propertiesToUpdate['items.$.isOrdered'] = isOrdered;
   }
-  if (voterIds) {
-    propertiesToUpdate['items.$.voterIds'] = voterIds;
-  }
+  // if (userId) {
+  //   propertiesToUpdate['items.$.voterIds'] = voterIds;
+  // }
 
   List.findOneAndUpdate(
     {
@@ -249,7 +260,8 @@ const updateListItem = (req, resp) => {
       ]
     },
     {
-      $set: propertiesToUpdate
+      $set: propertiesToUpdate,
+      $push: { 'items.$.voterIds': req.user._id }
     },
     { new: true },
     (err, doc) => {
