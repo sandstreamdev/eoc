@@ -1,16 +1,16 @@
 /* eslint-disable */
-$(window).on('load', function() {
+$(window).on('load', () => {
   const cookieBar = $('[data-id="cookie-bar"]');
   const cookieButton = $('[data-id="cookie-button"]');
   const body = $('body');
 
   const cookie = {
     set: (name, days) => {
-      let expires = '';
+      let expires;
       const date = new Date();
 
       date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = 'expires=' + date.toUTCString();
+      expires = `expires=${date.toUTCString()}`;
       document.cookie = `${name}=true; ${expires}`;
     },
     checkIfSet: name => {
@@ -51,7 +51,7 @@ $(window).on('load', function() {
   cookieButton.on('click', function() {
     cookieMessage.close();
     bodyElement.hideOverlay();
-    cookie.set('cookie-consent', 30);
+    cookie.set('cookie-consent', 365);
   });
 
   module.init();
