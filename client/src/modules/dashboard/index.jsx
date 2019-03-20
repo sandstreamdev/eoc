@@ -43,9 +43,11 @@ class Dashboard extends Component {
 
     switch (dialogContext) {
       case FormDialogContext.CREATE_COHORT:
-        return createCohort(title, description, id);
+        createCohort(title, description, id);
+        break;
       case FormDialogContext.CREATE_LIST:
-        return createList(title, description, id);
+        createList(title, description, id);
+        break;
       default:
         break;
     }
