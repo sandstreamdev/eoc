@@ -12,7 +12,7 @@ import {
   fetchListData,
   updateList
 } from 'modules/list/model/actions';
-import Dialog from 'common/components/Dialog';
+import Dialog, { DialogContext } from 'common/components/Dialog';
 import FormDialog from 'common/components/FormDialog';
 import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
@@ -22,8 +22,7 @@ import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 
 class List extends Component {
   state = {
-    showDialogBox: false,
-    showUpdateForm: false
+    dialogContext: null
   };
 
   componentDidMount() {
@@ -42,27 +41,11 @@ class List extends Component {
     fetchListData(id);
   };
 
-  showDialogBox = () => {
-    this.setState({ showDialogBox: true });
-  };
-
-  hideDialogBox = () => {
-    this.setState({ showDialogBox: false });
-  };
-
   archiveListHandler = listId => () => {
     const { archiveList } = this.props;
     archiveList(listId)
-      .then(this.hideDialogBox)
+      .then(this.hideDialog())
       .catch(noOp);
-  };
-
-  hideUpdateForm = () => {
-    this.setState({ showUpdateForm: false });
-  };
-
-  showUpdateForm = () => {
-    this.setState({ showUpdateForm: true });
   };
 
   updateListHandler = listId => (name, description) => {
@@ -73,7 +56,7 @@ class List extends Component {
     description ? (dataToUpdate.description = description) : null;
 
     updateList(listId, dataToUpdate);
-    this.hideUpdateForm();
+    this.hideDialog();
   };
 
   checkIfArchived = () => {
@@ -86,8 +69,13 @@ class List extends Component {
     return list && list.isAdmin;
   };
 
+  handleDialogContext = context => () =>
+    this.setState({ dialogContext: context });
+
+  hideDialog = () => this.handleDialogContext(null)();
+
   render() {
-    const { showDialogBox, showUpdateForm } = this.state;
+    const { dialogContext } = this.state;
     const {
       items,
       match: {
@@ -119,12 +107,12 @@ class List extends Component {
             <Fragment>
               <ToolbarItem
                 mainIcon={<EditIcon />}
-                onClick={this.showUpdateForm}
+                onClick={this.handleDialogContext(DialogContext.UPDATE)}
                 title="Edit list"
               />
               <ToolbarItem
                 mainIcon={<ArchiveIcon />}
-                onClick={this.showDialogBox}
+                onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
                 title="Archive list"
               />
             </Fragment>
@@ -132,28 +120,29 @@ class List extends Component {
         </Toolbar>
         {!isArchived && (
           <div className="wrapper list-wrapper">
-            <InputBar />
             <ItemsContainer
               description={description}
               name={name}
               items={listItems}
-            />
+            >
+              <InputBar />
+            </ItemsContainer>
             <ItemsContainer archived items={orderedItems} />
           </div>
         )}
         {isArchived && <ArchivedList listId={listId} name={name} />}
-        {showDialogBox && (
+        {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
-            onCancel={this.hideDialogBox}
+            onCancel={this.hideDialog}
             onConfirm={this.archiveListHandler(listId)}
             title={`Do you really want to archive the ${name} list?`}
           />
         )}
-        {showUpdateForm && (
+        {dialogContext === DialogContext.UPDATE && (
           <FormDialog
             defaultDescription={description}
             defaultName={name}
-            onCancel={this.hideUpdateForm}
+            onCancel={this.hideDialog}
             onConfirm={this.updateListHandler(listId)}
             title="Edit list"
           />

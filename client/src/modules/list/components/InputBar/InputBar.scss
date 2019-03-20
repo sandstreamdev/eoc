@@ -10,6 +10,29 @@
     justify-content: space-between;
     flex-direction: column;
     background: $bg-color;
-    padding: 16px 0;
+    padding: 8px 0;
+  }
+
+  &__button {
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    border: 0;
+    border-bottom: 1px solid $border-light;
+    padding: 17px 0;
+    outline: 0;
+    font-size: 14px;
+    line-height: 1.2;
+    color: $text-normal;
+    justify-content: center;
+    svg {
+      height: 16px;
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background: $gray-bg2;
+    }
   }
 }

@@ -17,6 +17,10 @@
     background: $brown;
   }
 
+  &--archived {
+    background: $gray4;
+  }
+
   &__heading {
     color: $text-white;
     font-size: 11px;
@@ -43,5 +47,12 @@
 
   &:hover {
     box-shadow: 0 3px 4px rgba($shadow-color, 0.35);
+  }
+
+  svg {
+    height: 24px;
+    path {
+      fill: $text-normal;
+    }
   }
 }

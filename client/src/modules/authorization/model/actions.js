@@ -1,4 +1,4 @@
-import { getCookie } from 'common/utils/cookie';
+import { checkIfCookieSet } from 'common/utils/cookie';
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
@@ -28,7 +28,7 @@ const logoutUserRequest = () => ({
 });
 
 export const setCurrentUser = () => dispatch => {
-  const user = JSON.parse(decodeURIComponent(getCookie('user')));
+  const user = JSON.parse(decodeURIComponent(checkIfCookieSet('user')));
   const payload = typeof user === 'object' ? user : null;
 
   dispatch(setCurrentUserSuccess(payload));

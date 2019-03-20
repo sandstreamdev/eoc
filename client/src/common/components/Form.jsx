@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 class Form extends PureComponent {
@@ -38,43 +38,33 @@ class Form extends PureComponent {
     onDescriptionChange(value);
   };
 
-  handleFormSubmission = event => {
-    event.preventDefault();
-    const { onSubmit } = this.props;
-
-    onSubmit && onSubmit();
-  };
+  handleSubmit = event => event.preventDefault();
 
   render() {
     const { description, name } = this.state;
 
     return (
-      <Fragment>
-        <form
-          className="form z-index-high"
-          onSubmit={this.handleFormSubmission}
-        >
-          <label className="form__label">
-            <input
-              className="form__input primary-input"
-              onChange={this.handleNameChange}
-              placeholder="Name"
-              ref={this.input}
-              type="text"
-              value={name}
-            />
-          </label>
-          <label className="form__label">
-            <textarea
-              className="form__textarea primary-textarea"
-              onChange={this.handleDescriptionChange}
-              placeholder="Description"
-              type="text"
-              value={description}
-            />
-          </label>
-        </form>
-      </Fragment>
+      <form className="form" onSubmit={this.handleSubmit}>
+        <label className="form__label">
+          <input
+            className="form__input primary-input"
+            onChange={this.handleNameChange}
+            placeholder="Name"
+            ref={this.input}
+            type="text"
+            value={name}
+          />
+        </label>
+        <label className="form__label">
+          <textarea
+            className="form__textarea primary-textarea"
+            onChange={this.handleDescriptionChange}
+            placeholder="Description"
+            type="text"
+            value={description}
+          />
+        </label>
+      </form>
     );
   }
 }
@@ -84,8 +74,7 @@ Form.propTypes = {
   defaultName: PropTypes.string,
 
   onDescriptionChange: PropTypes.func.isRequired,
-  onNameChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onNameChange: PropTypes.func.isRequired
 };
 
 export default Form;

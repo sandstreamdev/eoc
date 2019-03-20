@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import _filter from 'lodash/filter';
+import _keyBy from 'lodash/keyBy';
 
 import { ListActionTypes } from './actionTypes';
 import { ItemActionTypes } from 'modules/list/components/InputBar/model/actionTypes';
@@ -43,6 +45,10 @@ const items = (state, action) => {
 const lists = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
+      return {
+        ...state,
+        ...action.payload
+      };
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
@@ -76,12 +82,13 @@ const lists = (state = {}, action) => {
       };
     }
     case ListActionTypes.RESTORE_SUCCESS:
-    case ListActionTypes.FETCH_DATA_SUCCESS: {
+    case ListActionTypes.FETCH_DATA_SUCCESS:
       return {
         ...state,
         [action.payload.listId]: action.payload.data
       };
-    }
+    case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
+      return _keyBy(_filter(state, list => !list.isArchived), '_id');
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
     case ItemActionTypes.ADD_SUCCESS: {

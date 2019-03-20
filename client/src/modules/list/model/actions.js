@@ -115,6 +115,10 @@ const restoreListRequest = () => ({
   type: ListActionTypes.RESTORE_REQUEST
 });
 
+export const removeArchivedListsMetaData = () => ({
+  type: ListActionTypes.REMOVE_ARCHIVED_META_DATA
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
@@ -176,9 +180,12 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const fetchArchivedListsMetaData = () => dispatch => {
+export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
+  const url = cohortId
+    ? `${ENDPOINT_URL}/lists/archived/${cohortId}`
+    : `${ENDPOINT_URL}/lists/archived`;
   dispatch(fetchArchivedListsMetaDataRequest());
-  return getData(`${ENDPOINT_URL}/lists/archived`)
+  return getData(url)
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');

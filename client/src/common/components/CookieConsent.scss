@@ -1,0 +1,49 @@
+.cookie-consent {
+  width: 100%;
+  text-align: center;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 0px;
+  max-width: 1440px;
+  position: fixed;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  z-index: 11;
+  flex-direction: column;
+
+  @include breakpoint($large) {
+    flex-direction: row;
+  }
+
+  &::before {
+    content: '';
+    display: block;
+    background: $gray-bg2;
+    position: absolute;
+    left: -999999px;
+    top: 0;
+    bottom: 0;
+    right: -999999px;
+    z-index: 10;
+  }
+
+  &__content {
+    color: $text-normal;
+    font-size: 14px;
+    line-height: 1.2;
+    z-index: 11;
+    margin: 0 16px 16px;
+
+    @include breakpoint($large) {
+      margin: 0 16px 0;
+    }
+  }
+
+  .primary-button {
+    z-index: 11;
+    cursor: pointer;
+  }
+}
