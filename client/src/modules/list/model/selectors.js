@@ -22,9 +22,15 @@ export const getItems = createSelector(
 );
 
 export const getLists = state => state.lists.data;
-export const getCohortLists = (state, cohortId) =>
-  _keyBy(
-    _filter(state.lists.data, value => value.cohortId === cohortId),
-    '_id'
-  );
+
+export const getActiveLists = createSelector(
+  getLists,
+  lists => _keyBy(_filter(lists, list => !list.isArchived), '_id')
+);
+
+export const getArchivedLists = createSelector(
+  getLists,
+  lists => _keyBy(_filter(lists, list => list.isArchived), '_id')
+);
+
 export const getIsFetchingLists = state => state.lists.isFetching;

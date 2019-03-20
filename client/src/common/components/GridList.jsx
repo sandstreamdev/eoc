@@ -24,7 +24,6 @@ const GridList = ({
       {icon}
       {name}
     </h2>
-    {description && <p className="grid-list__description">{description}</p>}
     <div className="grid-list__body">
       <ul className="grid-list__list">
         {onAddNew && (

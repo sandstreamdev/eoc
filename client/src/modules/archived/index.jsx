@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Toolbar from 'common/components/Toolbar';
 import { fetchArchivedListsMetaData } from 'modules/list/model/actions';
 import { fetchArchivedCohortsMetaData } from 'modules/cohort/model/actions';
-import { getLists } from 'modules/list/model/selectors';
+import { getArchivedLists } from 'modules/list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { CohortIcon, ListIcon } from 'assets/images/icons';
 import GridList from 'common/components/GridList';
@@ -61,7 +61,7 @@ Archived.propTypes = {
 
 const mapStateToProps = state => ({
   cohorts: getCohorts(state),
-  lists: getLists(state)
+  lists: getArchivedLists(state)
 });
 
 export default connect(
