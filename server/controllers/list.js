@@ -281,7 +281,6 @@ const updateListItem = (req, resp) => {
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
       const { voterIds, ...rest } = item.toObject();
-      console.log('itemToObject', item.toObject());
       const itemToSend = {
         ...rest,
         didCurrentUserVoted: item.voterIds.indexOf(userId) > -1
