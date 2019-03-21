@@ -116,6 +116,14 @@ const getArchivedListsMetaData = (req, resp) => {
 const checkIfCurrentUserVoted = (item, userId) =>
   item.voterIds.indexOf(userId) > -1;
 
+const itemToSend = (item, userId) => {
+  const { voterIds, ...rest } = item.toObject();
+  return {
+    ...rest,
+    didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
+  };
+};
+
 const addItemToList = (req, resp) => {
   const {
     item: { name, isOrdered, authorName, authorId },
@@ -150,14 +158,8 @@ const addItemToList = (req, resp) => {
         });
       }
 
-      const { voterIds, ...rest } = item.toObject();
-      const itemToSend = {
-        ...rest,
-        didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
-      };
-
       doc
-        ? resp.status(200).send(itemToSend)
+        ? resp.status(200).send(itemToSend(item, userId))
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
@@ -280,14 +282,9 @@ const updateListItem = (req, resp) => {
       }
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
-      const { voterIds, ...rest } = item.toObject();
-      const itemToSend = {
-        ...rest,
-        didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
-      };
 
       doc
-        ? resp.status(200).json(itemToSend)
+        ? resp.status(200).json(itemToSend(item, userId))
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );
