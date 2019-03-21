@@ -25,8 +25,8 @@ class ListItem extends PureComponent {
       id,
       name,
       voteForItem,
-      votesCount,
-      whetherUserVoted
+      votesCount = 0,
+      whetherUserVoted = false
     } = this.props;
     const { done } = this.state;
     return (

@@ -1,3 +1,5 @@
+const _map = require('lodash/map');
+
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const { checkRole, filter, isValidMongoId } = require('../common/utilities');
@@ -143,26 +145,37 @@ const addItemToList = (req, resp) => {
         });
       }
 
+      const itemToSend = {
+        _id: item._id,
+        authorId: item.authorId,
+        authorName: item.authorName,
+        createdAt: item.createdAt,
+        didCurrentUserVoted: false,
+        isOrdered: item.isOrdered,
+        name: item.name,
+        updatedAt: item.updatedAt,
+        votesCount: item.voterIds.length
+      };
+
       doc
-        ? resp.status(200).send(item)
+        ? resp.status(200).send(itemToSend)
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
 };
 
-/**
- * TODO improve this function to promise */
-const getItemsForList = list => {
+const getItemsForList = (id, list) => {
   const { items } = list;
 
-  return items.map(item => ({
+  return _map(items, item => ({
     _id: item._id,
-    isOrdered: item.isOrdered,
-    authorName: item.authorName,
     authorId: item.authorId,
+    authorName: item.authorName,
+    createdAt: item.createdAt,
+    didCurrentUserVoted: item.voterIds.indexOf(id) > -1,
+    isOrdered: item.isOrdered,
     name: item.name,
     updatedAt: item.updatedAt,
-    createdAt: item.createdAt,
     votesCount: item.voterIds.length
   }));
 };
@@ -209,7 +222,7 @@ const getListData = (req, resp) => {
     .then(() => {
       const { _id, adminIds, cohortId, description, isArchived, name } = list;
 
-      const items = getItemsForList(list);
+      const items = getItemsForList(userId, list);
 
       if (isArchived) {
         return resp.status(200).json({ cohortId, _id, isArchived, name });
@@ -236,6 +249,9 @@ const getListData = (req, resp) => {
 const updateListItem = (req, resp) => {
   const { isOrdered, itemId } = req.body;
   const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   /**
    * Create object with properties to update, but only these which
@@ -245,9 +261,6 @@ const updateListItem = (req, resp) => {
   if (isOrdered !== undefined) {
     propertiesToUpdate['items.$.isOrdered'] = isOrdered;
   }
-  // if (userId) {
-  //   propertiesToUpdate['items.$.voterIds'] = voterIds;
-  // }
 
   List.findOneAndUpdate(
     {
@@ -260,8 +273,7 @@ const updateListItem = (req, resp) => {
       ]
     },
     {
-      $set: propertiesToUpdate,
-      $push: { 'items.$.voterIds': req.user._id }
+      $set: propertiesToUpdate
     },
     { new: true },
     (err, doc) => {
@@ -273,9 +285,71 @@ const updateListItem = (req, resp) => {
       }
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
+      const itemToSend = {
+        _id: item._id,
+        authorId: item.authorId,
+        authorName: item.authorName,
+        createdAt: item.createdAt,
+        didCurrentUserVoted: item.voterIds.indexOf(userId) > -1,
+        isOrdered: item.isOrdered,
+        name: item.name,
+        updatedAt: item.updatedAt,
+        votesCount: item.voterIds.length
+      };
 
       doc
-        ? resp.status(200).json(item)
+        ? resp.status(200).json(itemToSend)
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const voteForItem = (req, resp) => {
+  const { itemId, didCurrentUserVoted } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
+
+  const dataToUpdate = didCurrentUserVoted
+    ? { $pull: { 'items.$.voterIds': req.user._id } }
+    : { $push: { 'items.$.voterIds': req.user._id } };
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      'items._id': itemId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    dataToUpdate,
+    { new: true },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message:
+            'An error occurred while updating the list data. Please try again.'
+        });
+      }
+      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
+      const item = doc.items[itemIndex];
+
+      const itemToSend = {
+        _id: item._id,
+        authorId: item.authorId,
+        authorName: item.authorName,
+        createdAt: item.createdAt,
+        didCurrentUserVoted: item.voterIds.indexOf(userId) > -1,
+        isOrdered: item.isOrdered,
+        name: item.name,
+        updatedAt: item.updatedAt,
+        votesCount: item.voterIds.length
+      };
+      doc
+        ? resp.status(200).json(itemToSend)
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );
@@ -321,5 +395,6 @@ module.exports = {
   getListData,
   getListsMetaData,
   updateListById,
-  updateListItem
+  updateListItem,
+  voteForItem
 };

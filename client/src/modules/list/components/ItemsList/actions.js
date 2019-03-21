@@ -54,10 +54,11 @@ export const toggle = (
     });
 };
 
-export const vote = (itemId, listId) => dispatch => {
+export const vote = (itemId, listId, didCurrentUserVoted) => dispatch => {
   dispatch(voteForItemRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
-    itemId
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/vote-for-item`, {
+    itemId,
+    didCurrentUserVoted
   })
     .then(resp => resp.json())
     .then(item => dispatch(voteForItemSuccess(item, listId)))
