@@ -5,8 +5,8 @@ const { ObjectId } = Schema.Types;
 
 const ItemSchema = new Schema(
   {
-    authorName: { type: String, required: true },
     authorId: { type: String, required: true },
+    authorName: { type: String, required: true },
     comment: { type: String },
     isOrdered: { type: Boolean, default: false },
     name: { type: String, required: true },

@@ -113,19 +113,23 @@ const getArchivedListsMetaData = (req, resp) => {
   );
 };
 
+const checkIfCurrentUserVoted = (item, userId) =>
+  item.voterIds.indexOf(userId) > -1;
+
 const addItemToList = (req, resp) => {
   const {
     item: { name, isOrdered, authorName, authorId },
     listId
   } = req.body;
-  const votesCount = 0;
+  const {
+    user: { _id: userId }
+  } = req;
 
   const item = new Item({
     authorName,
     authorId,
     isOrdered,
-    name,
-    votesCount
+    name
   });
 
   List.findOneAndUpdate(
@@ -149,8 +153,7 @@ const addItemToList = (req, resp) => {
       const { voterIds, ...rest } = item.toObject();
       const itemToSend = {
         ...rest,
-        createdAt: item.createdAt,
-        didCurrentUserVoted: false
+        didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
       };
 
       doc
@@ -159,9 +162,6 @@ const addItemToList = (req, resp) => {
     }
   );
 };
-
-const checkIfCurrentUserVoted = (item, userId) =>
-  item.voterIds.indexOf(userId) > -1;
 
 const getItemsForList = (userId, list) => {
   const { items } = list;
@@ -283,7 +283,7 @@ const updateListItem = (req, resp) => {
       const { voterIds, ...rest } = item.toObject();
       const itemToSend = {
         ...rest,
-        didCurrentUserVoted: item.voterIds.indexOf(userId) > -1
+        didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
       };
 
       doc
@@ -292,15 +292,6 @@ const updateListItem = (req, resp) => {
     }
   );
 };
-
-// const itemToSend = item, userId => {
-//   const { voterIds, ...rest } = item.toObject();
-
-//   return {
-//     ...rest,
-//     didCurrentUserVoted: item.voterIds.indexOf(userId) > -1
-//   };
-// };
 
 const voteForItem = (req, resp) => {
   const { itemId, didCurrentUserVoted } = req.body;
@@ -343,7 +334,7 @@ const voteForItem = (req, resp) => {
       const { voterIds, ...rest } = item.toObject();
       const itemToSend = {
         ...rest,
-        didCurrentUserVoted: item.voterIds.indexOf(userId) > -1
+        didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
       };
 
       doc
