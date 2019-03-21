@@ -1,3 +1,5 @@
+const _map = require('lodash/map');
+
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const { checkRole, filter, isValidMongoId } = require('../common/utilities');
@@ -111,18 +113,31 @@ const getArchivedListsMetaData = (req, resp) => {
   );
 };
 
+const checkIfCurrentUserVoted = (item, userId) =>
+  item.voterIds.indexOf(userId) > -1;
+
+const itemToSend = (item, userId) => {
+  const { voterIds, ...rest } = item.toObject();
+  return {
+    ...rest,
+    didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
+  };
+};
+
 const addItemToList = (req, resp) => {
   const {
-    item: { name, isOrdered, authorName, authorId, voterIds },
+    item: { name, isOrdered, authorName, authorId },
     listId
   } = req.body;
+  const {
+    user: { _id: userId }
+  } = req;
 
   const item = new Item({
     authorName,
     authorId,
     isOrdered,
-    name,
-    voterIds
+    name
   });
 
   List.findOneAndUpdate(
@@ -144,10 +159,23 @@ const addItemToList = (req, resp) => {
       }
 
       doc
-        ? resp.status(200).send(item)
+        ? resp.status(200).send(itemToSend(item, userId))
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
+};
+
+const getItemsForList = (userId, list) => {
+  const { items } = list;
+
+  return _map(items, item => {
+    const { voterIds, ...rest } = item.toObject();
+
+    return {
+      ...rest,
+      didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
+    };
+  });
 };
 
 const getListData = (req, resp) => {
@@ -190,15 +218,8 @@ const getListData = (req, resp) => {
       }
     })
     .then(() => {
-      const {
-        _id,
-        adminIds,
-        cohortId,
-        description,
-        isArchived,
-        items,
-        name
-      } = list;
+      const { _id, adminIds, cohortId, description, isArchived, name } = list;
+      const items = getItemsForList(userId, list);
 
       if (isArchived) {
         return resp.status(200).json({ cohortId, _id, isArchived, name });
@@ -223,8 +244,11 @@ const getListData = (req, resp) => {
 };
 
 const updateListItem = (req, resp) => {
-  const { isOrdered, itemId, voterIds } = req.body;
+  const { isOrdered, itemId } = req.body;
   const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   /**
    * Create object with properties to update, but only these which
@@ -233,9 +257,6 @@ const updateListItem = (req, resp) => {
   const propertiesToUpdate = {};
   if (isOrdered !== undefined) {
     propertiesToUpdate['items.$.isOrdered'] = isOrdered;
-  }
-  if (voterIds) {
-    propertiesToUpdate['items.$.voterIds'] = voterIds;
   }
 
   List.findOneAndUpdate(
@@ -263,7 +284,53 @@ const updateListItem = (req, resp) => {
       const item = doc.items[itemIndex];
 
       doc
-        ? resp.status(200).json(item)
+        ? resp.status(200).json(itemToSend(item, userId))
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const voteForItem = (req, resp) => {
+  const { itemId, didCurrentUserVoted } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
+
+  const dataToUpdate = didCurrentUserVoted
+    ? {
+        $pull: { 'items.$.voterIds': req.user._id },
+        $inc: { 'items.$.votesCount': -1 }
+      }
+    : {
+        $push: { 'items.$.voterIds': req.user._id },
+        $inc: { 'items.$.votesCount': 1 }
+      };
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      'items._id': itemId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    dataToUpdate,
+    { new: true },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message:
+            'An error occurred while updating the list data. Please try again.'
+        });
+      }
+      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
+      const item = doc.items[itemIndex];
+
+      doc
+        ? resp.status(200).json(itemToSend(item, userId))
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );
@@ -309,5 +376,6 @@ module.exports = {
   getListData,
   getListsMetaData,
   updateListById,
-  updateListItem
+  updateListItem,
+  voteForItem
 };

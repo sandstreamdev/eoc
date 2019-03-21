@@ -41,24 +41,19 @@ class ItemsList extends Component {
   };
 
   voteForItem = item => () => {
-    const { _id, voterIds } = item;
+    const { _id, didCurrentUserVoted } = item;
     const {
       vote,
-      currentUser: { id },
       match: {
         params: { id: listId }
       }
     } = this.props;
-    voterIds.includes(id)
-      ? vote(_id, listId, voterIds.filter(voterId => voterId !== id))
-      : vote(_id, listId, voterIds.concat(id));
+
+    vote(_id, listId, didCurrentUserVoted);
   };
 
   render() {
-    const {
-      items,
-      currentUser: { id: userId }
-    } = this.props;
+    const { items } = this.props;
     const { limit } = this.state;
 
     return (
@@ -79,8 +74,8 @@ class ItemsList extends Component {
                 name={item.name}
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
-                votesCount={item.voterIds.length}
-                whetherUserVoted={item.voterIds.includes(userId)}
+                votesCount={item.votesCount}
+                whetherUserVoted={item.didCurrentUserVoted}
               />
             ))}
           </ul>

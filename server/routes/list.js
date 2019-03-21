@@ -9,7 +9,8 @@ const {
   getListData,
   getListsMetaData,
   updateListById,
-  updateListItem
+  updateListItem,
+  voteForItem
 } = require('../controllers/list');
 const { authorize } = require('../middleware/authorize');
 
@@ -21,5 +22,6 @@ router.delete('/:id/delete', authorize, deleteListById);
 router.patch('/:id/update', authorize, updateListById);
 router.get('/:id/data', authorize, getListData);
 router.patch('/:id/update-item', authorize, updateListItem);
+router.patch('/:id/vote-for-item', authorize, voteForItem);
 
 module.exports = app => app.use('/lists', router);
