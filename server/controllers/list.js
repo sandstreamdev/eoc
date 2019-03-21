@@ -118,13 +118,15 @@ const addItemToList = (req, resp) => {
     item: { name, isOrdered, authorName, authorId, voterIds },
     listId
   } = req.body;
+  const votesCount = 0;
 
   const item = new Item({
     authorName,
     authorId,
     isOrdered,
     name,
-    voterIds
+    voterIds,
+    votesCount
   });
 
   List.findOneAndUpdate(
@@ -154,7 +156,7 @@ const addItemToList = (req, resp) => {
         isOrdered: item.isOrdered,
         name: item.name,
         updatedAt: item.updatedAt,
-        votesCount: item.voterIds.length
+        votesCount: item.votesCount
       };
 
       doc
@@ -176,7 +178,7 @@ const getItemsForList = (id, list) => {
     isOrdered: item.isOrdered,
     name: item.name,
     updatedAt: item.updatedAt,
-    votesCount: item.voterIds.length
+    votesCount: item.votesCount
   }));
 };
 
@@ -294,7 +296,7 @@ const updateListItem = (req, resp) => {
         isOrdered: item.isOrdered,
         name: item.name,
         updatedAt: item.updatedAt,
-        votesCount: item.voterIds.length
+        votesCount: item.votesCount
       };
 
       doc
@@ -312,8 +314,14 @@ const voteForItem = (req, resp) => {
   } = req;
 
   const dataToUpdate = didCurrentUserVoted
-    ? { $pull: { 'items.$.voterIds': req.user._id } }
-    : { $push: { 'items.$.voterIds': req.user._id } };
+    ? {
+        $pull: { 'items.$.voterIds': req.user._id },
+        $inc: { 'items.$.votesCount': -1 }
+      }
+    : {
+        $push: { 'items.$.voterIds': req.user._id },
+        $inc: { 'items.$.votesCount': 1 }
+      };
 
   List.findOneAndUpdate(
     {

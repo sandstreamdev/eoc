@@ -12,7 +12,8 @@ const ItemSchema = new Schema(
     name: { type: String, required: true },
     purchaserId: { type: String },
     status: { type: String },
-    voterIds: [ObjectId]
+    voterIds: [ObjectId],
+    votesCount: { type: Number, default: 0 }
   },
   { timestamps: { createdAt: 'createdAt' } }
 );

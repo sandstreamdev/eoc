@@ -40,8 +40,8 @@ app.use(express.static('../../dist'));
 require('./routes/authorization')(app);
 require('./routes/list')(app);
 require('./routes/cohort')(app);
-// require('./routes/item')(app);
-// require('./routes/items')(app);
+require('./routes/item')(app);
+require('./routes/items')(app);
 
 app.use((req, res, next) => {
   res.status(404).send({ message: 'Resource not found' });
