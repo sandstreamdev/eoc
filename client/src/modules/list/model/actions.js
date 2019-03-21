@@ -119,6 +119,19 @@ export const removeArchivedListsMetaData = () => ({
   type: ListActionTypes.REMOVE_ARCHIVED_META_DATA
 });
 
+const addToFavouritesRequest = () => ({
+  type: ListActionTypes.ADD_TO_FAVOURITES_REQUEST
+});
+
+const addToFavouritesSuccess = listId => ({
+  type: ListActionTypes.ADD_TO_FAVOURITES_SUCCESS,
+  payload: listId
+});
+
+const addToFavouritesFailure = () => ({
+  type: ListActionTypes.ADD_TO_FAVOURITES_FAILURE
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
@@ -293,6 +306,30 @@ export const restoreList = listId => dispatch => {
         dispatch,
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, restoring list failed..."
+      );
+    });
+};
+
+export const addToFavourites = listId => dispatch => {
+  dispatch(addToFavouritesRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, {
+    isFavourite: true
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(addToFavouritesSuccess({ isArchived: true, listId }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message || 'List is successfully marked as favourite'
+      );
+    })
+    .catch(err => {
+      dispatch(addToFavouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || 'Marking list as favourite failed'
       );
     });
 };

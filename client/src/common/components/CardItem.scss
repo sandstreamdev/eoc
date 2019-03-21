@@ -9,6 +9,7 @@
   box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
   padding: 8px;
   position: relative;
+  cursor: pointer;
 
   &--orange {
     background: $card-color-1;
@@ -30,9 +31,9 @@
     word-break: break-word;
     margin-bottom: 8px;
     border-bottom: 1px solid $text-white;
-    padding-bottom: 4px;
     font-weight: 700;
     letter-spacing: 0.2px;
+    padding: 0 20px 4px 0;
   }
 
   &__description {

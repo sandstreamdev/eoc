@@ -10,21 +10,19 @@ export const CardColorType = {
   ORANGE: 'card/ORANGE'
 };
 
-const CardItem = ({ color, description, name }) => (
+const CardItem = ({ color, description, name, onCardClick, onFavClick }) => (
   <div
     className={classNames('card-item', {
       'card-item--orange': color === CardColorType.ORANGE,
       'card-item--archived': color === CardColorType.ARCHIVED,
       'card-item--brown': color === CardColorType.BROWN
     })}
+    onClick={onCardClick}
+    role="figure"
   >
     <h3 className="card-item__heading">{name}</h3>
     <p className="card-item__description">{description}</p>
-    <button
-      className="card-item__star"
-      onClick={e => console.log(e.target)}
-      type="button"
-    >
+    <button className="card-item__star" onClick={onFavClick} type="button">
       <RegularStar />
     </button>
   </div>
@@ -35,5 +33,8 @@ export default CardItem;
 CardItem.propTypes = {
   color: PropTypes.string.isRequired,
   description: PropTypes.string,
-  name: PropTypes.string
+  name: PropTypes.string,
+
+  onCardClick: PropTypes.func.isRequired,
+  onFavClick: PropTypes.func
 };

@@ -337,11 +337,12 @@ const voteForItem = (req, resp) => {
 };
 
 const updateListById = (req, resp) => {
-  const { description, isArchived, name } = req.body;
+  const { description, isArchived, isFavourite, name } = req.body;
   const { id: listId } = req.params;
   const dataToUpdate = filter(x => x !== undefined)({
     description,
     isArchived,
+    isFavourite,
     name
   });
 

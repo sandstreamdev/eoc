@@ -13,6 +13,7 @@ const ListSchema = new Schema(
     },
     description: { type: String },
     isArchived: { type: Boolean, default: false },
+    isFavourite: { type: Boolean, default: false },
     items: [ItemSchema],
     name: { type: String, required: true },
     ordererIds: [ObjectId],
