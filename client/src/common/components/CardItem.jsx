@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { RegularStar, SolidStar } from 'assets/images/icons';
+
 export const CardColorType = {
   BROWN: 'card/BROWN',
   ARCHIVED: 'card/GRAY',
@@ -18,6 +20,13 @@ const CardItem = ({ color, description, name }) => (
   >
     <h3 className="card-item__heading">{name}</h3>
     <p className="card-item__description">{description}</p>
+    <button
+      className="card-item__star"
+      onClick={e => console.log(e.target)}
+      type="button"
+    >
+      <RegularStar />
+    </button>
   </div>
 );
 

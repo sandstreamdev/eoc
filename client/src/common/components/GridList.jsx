@@ -11,7 +11,6 @@ import CardPlus from 'common/components/CardPlus';
 
 const GridList = ({
   color,
-  description,
   icon,
   items,
   name,
