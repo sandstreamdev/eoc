@@ -115,7 +115,7 @@ const getArchivedListsMetaData = (req, resp) => {
 
 const addItemToList = (req, resp) => {
   const {
-    item: { name, isOrdered, authorName, authorId, voterIds },
+    item: { name, isOrdered, authorName, authorId },
     listId
   } = req.body;
   const votesCount = 0;
@@ -125,7 +125,6 @@ const addItemToList = (req, resp) => {
     authorId,
     isOrdered,
     name,
-    voterIds,
     votesCount
   });
 
@@ -147,16 +146,11 @@ const addItemToList = (req, resp) => {
         });
       }
 
+      const { voterIds, ...rest } = item.toObject();
       const itemToSend = {
-        _id: item._id,
-        authorId: item.authorId,
-        authorName: item.authorName,
+        ...rest,
         createdAt: item.createdAt,
-        didCurrentUserVoted: false,
-        isOrdered: item.isOrdered,
-        name: item.name,
-        updatedAt: item.updatedAt,
-        votesCount: item.votesCount
+        didCurrentUserVoted: false
       };
 
       doc
@@ -166,20 +160,20 @@ const addItemToList = (req, resp) => {
   );
 };
 
-const getItemsForList = (id, list) => {
+const checkIfCurrentUserVoted = (item, userId) =>
+  item.voterIds.indexOf(userId) > -1;
+
+const getItemsForList = (userId, list) => {
   const { items } = list;
 
-  return _map(items, item => ({
-    _id: item._id,
-    authorId: item.authorId,
-    authorName: item.authorName,
-    createdAt: item.createdAt,
-    didCurrentUserVoted: item.voterIds.indexOf(id) > -1,
-    isOrdered: item.isOrdered,
-    name: item.name,
-    updatedAt: item.updatedAt,
-    votesCount: item.votesCount
-  }));
+  return _map(items, item => {
+    const { voterIds, ...rest } = item.toObject();
+
+    return {
+      ...rest,
+      didCurrentUserVoted: checkIfCurrentUserVoted(item, userId)
+    };
+  });
 };
 
 const getListData = (req, resp) => {
@@ -223,7 +217,6 @@ const getListData = (req, resp) => {
     })
     .then(() => {
       const { _id, adminIds, cohortId, description, isArchived, name } = list;
-
       const items = getItemsForList(userId, list);
 
       if (isArchived) {
@@ -287,16 +280,11 @@ const updateListItem = (req, resp) => {
       }
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
+      const { voterIds, ...rest } = item.toObject();
+      console.log('itemToObject', item.toObject());
       const itemToSend = {
-        _id: item._id,
-        authorId: item.authorId,
-        authorName: item.authorName,
-        createdAt: item.createdAt,
-        didCurrentUserVoted: item.voterIds.indexOf(userId) > -1,
-        isOrdered: item.isOrdered,
-        name: item.name,
-        updatedAt: item.updatedAt,
-        votesCount: item.votesCount
+        ...rest,
+        didCurrentUserVoted: item.voterIds.indexOf(userId) > -1
       };
 
       doc
@@ -305,6 +293,15 @@ const updateListItem = (req, resp) => {
     }
   );
 };
+
+// const itemToSend = item, userId => {
+//   const { voterIds, ...rest } = item.toObject();
+
+//   return {
+//     ...rest,
+//     didCurrentUserVoted: item.voterIds.indexOf(userId) > -1
+//   };
+// };
 
 const voteForItem = (req, resp) => {
   const { itemId, didCurrentUserVoted } = req.body;
@@ -344,18 +341,12 @@ const voteForItem = (req, resp) => {
       }
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
-
+      const { voterIds, ...rest } = item.toObject();
       const itemToSend = {
-        _id: item._id,
-        authorId: item.authorId,
-        authorName: item.authorName,
-        createdAt: item.createdAt,
-        didCurrentUserVoted: item.voterIds.indexOf(userId) > -1,
-        isOrdered: item.isOrdered,
-        name: item.name,
-        updatedAt: item.updatedAt,
-        votesCount: item.voterIds.length
+        ...rest,
+        didCurrentUserVoted: item.voterIds.indexOf(userId) > -1
       };
+
       doc
         ? resp.status(200).json(itemToSend)
         : resp.status(404).send({ message: 'List data not found.' });
