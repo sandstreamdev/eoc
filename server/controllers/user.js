@@ -1,5 +1,5 @@
 const User = require('../models/user.model');
-const filter = require('../common/utilities');
+const filter = require('../common/utils/utilities');
 
 // Get user by given id
 const getUserById = (req, resp) => {

@@ -1,8 +1,13 @@
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
-const { checkRole, filter, isValidMongoId } = require('../common/utilities');
+const {
+  checkRole,
+  filter,
+  isValidMongoId
+} = require('../common/utils/utilities');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
+const { getListItems, responseWithItem } = require('../common/utils/utilities');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -143,11 +148,9 @@ const addItemToList = (req, resp) => {
             'An error occurred while adding a new item. Please try again.'
         });
       }
-      const listInstance = new List();
+
       doc
-        ? resp
-            .status(200)
-            .send(listInstance.responseWithItem(item, listInstance, userId))
+        ? resp.status(200).send(responseWithItem(item, userId))
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
@@ -194,14 +197,13 @@ const getListData = (req, resp) => {
     })
     .then(() => {
       const { _id, adminIds, cohortId, description, isArchived, name } = list;
-      const listInstance = new List();
 
       if (isArchived) {
         return resp.status(200).json({ cohortId, _id, isArchived, name });
       }
 
       const isAdmin = checkRole(adminIds, req.user._id);
-      const items = listInstance.getListItems(userId, listInstance, list);
+      const items = getListItems(userId, list);
 
       return resp
         .status(200)
@@ -258,11 +260,9 @@ const updateListItem = (req, resp) => {
       }
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
-      const listInstance = new List();
+
       doc
-        ? resp
-            .status(200)
-            .json(listInstance.responseWithItem(item, listInstance, userId))
+        ? resp.status(200).json(responseWithItem(item, userId))
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );
@@ -303,11 +303,9 @@ const voteForItem = (req, resp) => {
       }
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
-      const listInstance = new List();
+
       doc
-        ? resp
-            .status(200)
-            .json(listInstance.responseWithItem(item, listInstance, userId))
+        ? resp.status(200).json(responseWithItem(item, userId))
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );

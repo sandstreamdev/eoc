@@ -43,7 +43,11 @@ ListSchema.method('getListItems', (userId, listInstance, list) => {
 
   return _map(items, item => {
     const { voterIds, ...rest } = item.toObject();
-    return { ...rest, isVoted: listInstance.userVoted(item, userId) };
+    return {
+      ...rest,
+      isVoted: listInstance.userVoted(item, userId),
+      votesCount: voterIds.length
+    };
   });
 });
 
