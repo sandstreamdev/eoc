@@ -49,10 +49,6 @@
 
   &:hover {
     box-shadow: 0 3px 4px rgba($shadow-color, 0.35);
-
-    .card-item__star {
-      display: block;
-    }
   }
 
   &__star {
@@ -60,7 +56,7 @@
     border: 0;
     box-shadow: 0;
     cursor: pointer;
-    display: none;
+    display: block;
     padding: 3px;
     position: absolute;
     right: 5px;

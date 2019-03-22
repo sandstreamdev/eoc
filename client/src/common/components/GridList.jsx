@@ -11,17 +11,21 @@ import { MessageType } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
 import { addToFavourites } from 'modules/list/model/actions';
 
+export const GridListRoutes = Object.freeze({
+  COHORT: 'cohort',
+  LIST: 'list'
+});
+
 class GridList extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
-    const { addToFavourites } = this.props;
+    const { addToFavourites, route } = this.props;
 
-    addToFavourites(itemId, isFavourite);
+    route === GridListRoutes.LIST && addToFavourites(itemId, isFavourite);
   };
 
   handleCardClick = (route, itemId) => () => {
     const { history } = this.props;
-
     history.push(`/${route}/${itemId}`);
   };
 
@@ -64,6 +68,7 @@ class GridList extends PureComponent {
                   name={item.name}
                   onCardClick={this.handleCardClick(route, item._id)}
                   onFavClick={this.handleFavClick(item._id, item.isFavourite)}
+                  route={route}
                 />
               </li>
             ))}

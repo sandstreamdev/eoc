@@ -28,18 +28,17 @@ export const getActiveLists = createSelector(
   getLists,
   lists =>
     _keyBy(
-      _filter(lists, list => !list.isArchived).sort((a, b) =>
-        new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
-          ? 1
-          : -1
-      ),
+      _sortBy(_filter(lists, list => !list.isArchived), el => !el.isFavourite),
       '_id'
     )
 );
 
 export const getArchivedLists = createSelector(
   getLists,
-  lists => _keyBy(_filter(lists, list => list.isArchived), '_id')
+  lists =>
+    _keyBy(
+      _sortBy(_filter(lists, list => list.isArchived), el => !el.isFavourite),
+      '_id'
+    )
 );
-
 export const getIsFetchingLists = state => state.lists.isFetching;

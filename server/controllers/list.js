@@ -23,10 +23,10 @@ const createList = (req, resp) => {
         .send({ message: 'List not saved. Please try again.' });
     }
 
-    const { _id, description, name } = doc;
+    const { _id, description, isFavourite, name } = doc;
     const data = cohortId
-      ? { _id, description, name, cohortId }
-      : { _id, description, name };
+      ? { _id, description, isFavourite, name, cohortId }
+      : { _id, description, isFavourite, name };
     resp
       .status(201)
       .location(`/lists/${doc._id}`)
@@ -68,6 +68,7 @@ const getListsMetaData = (req, resp) => {
       isArchived: false
     },
     `_id isFavourite name description ${cohortId ? 'cohortId' : ''}`,
+    { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
         return resp.status(400).send({
@@ -96,7 +97,7 @@ const getArchivedListsMetaData = (req, resp) => {
       ],
       isArchived: true
     },
-    `_id name description isArchived ${cohortId ? 'cohortId' : ''}`,
+    `_id isFavourite name description isArchived ${cohortId ? 'cohortId' : ''}`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
