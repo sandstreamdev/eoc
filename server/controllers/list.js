@@ -1,8 +1,15 @@
+const _map = require('lodash/map');
+
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
-const { checkRole, filter, isValidMongoId } = require('../common/utilities');
+const {
+  checkRole,
+  filter,
+  isValidMongoId
+} = require('../common/utils/utilities');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
+const { responseWithLists } = require('../common/utils/utilities');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -54,6 +61,9 @@ const deleteListById = (req, resp) => {
 
 const getListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   List.find(
     {
@@ -65,7 +75,7 @@ const getListsMetaData = (req, resp) => {
       ],
       isArchived: false
     },
-    `_id isFavourite name description ${cohortId ? 'cohortId' : ''}`,
+    `_id name description favIds ${cohortId ? 'cohortId' : ''}`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -76,7 +86,7 @@ const getListsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).json(docs)
+        ? resp.status(200).json(responseWithLists(docs, userId))
         : resp.status(404).send({ message: 'No lists data found.' });
     }
   );
@@ -84,7 +94,9 @@ const getListsMetaData = (req, resp) => {
 
 const getArchivedListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
-
+  const {
+    user: { _id: userId }
+  } = req;
   List.find(
     {
       cohortId,
@@ -95,7 +107,7 @@ const getArchivedListsMetaData = (req, resp) => {
       ],
       isArchived: true
     },
-    `_id isFavourite name description isArchived ${cohortId ? 'cohortId' : ''}`,
+    `_id name description favIds isArchived ${cohortId ? 'cohortId' : ''}`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -106,7 +118,7 @@ const getArchivedListsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).json(docs)
+        ? resp.status(200).json(responseWithLists(docs, userId))
         : resp.status(404).send({ message: 'No archived lists data found.' });
     }
   );
@@ -315,12 +327,11 @@ const voteForItem = (req, resp) => {
 };
 
 const updateListById = (req, resp) => {
-  const { description, isArchived, isFavourite, name } = req.body;
+  const { description, isArchived, name } = req.body;
   const { id: listId } = req.params;
   const dataToUpdate = filter(x => x !== undefined)({
     description,
     isArchived,
-    isFavourite,
     name
   });
 
@@ -348,10 +359,14 @@ const updateListById = (req, resp) => {
 };
 
 const handleFavourite = (req, resp) => {
-  const {
-    user: { _id }
-  } = req;
   const { id: listId } = req.params;
+  const dataToUpdate = req.route.path.includes('add-to-fav')
+    ? {
+        $push: { favIds: req.user._id }
+      }
+    : {
+        $pull: { favIds: req.user._id }
+      };
 
   List.findOneAndUpdate(
     {
@@ -362,7 +377,7 @@ const handleFavourite = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
-    { $push: { 'items.$.favIds': _id } },
+    dataToUpdate,
     (err, doc) => {
       if (err) {
         return resp.status(400).send({

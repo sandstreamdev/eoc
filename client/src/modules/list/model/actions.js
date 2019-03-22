@@ -310,20 +310,21 @@ export const restoreList = listId => dispatch => {
     });
 };
 
-export const addToFavourites = (listId, isFavourite) => dispatch => {
+export const manageFavourites = (listId, isFavourite) => dispatch => {
   dispatch(addToFavouritesRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, {
-    isFavourite: !isFavourite
-  })
-    .then(resp => resp.json())
+  const path = !isFavourite
+    ? `${ENDPOINT_URL}/lists/${listId}/add-to-fav`
+    : `${ENDPOINT_URL}/lists/${listId}/remove-from-fav`;
+  return patchData(path)
+    .then(resp => {
+      resp.json();
+    })
     .then(json => {
-      dispatch(addToFavouritesSuccess({ isFavourite: !isFavourite, listId }));
+      dispatch(addToFavouritesSuccess({ listId, isFavourite: !isFavourite }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        isFavourite
-          ? 'List removed from favourites'
-          : 'List is successfully marked as favourite'
+        'List is successfully marked as favourite'
       );
     })
     .catch(err => {
@@ -331,9 +332,7 @@ export const addToFavourites = (listId, isFavourite) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        isFavourite
-          ? 'Removing list from favourites failed'
-          : 'Marking list as favourite failed'
+        'Marking list as favourite failed'
       );
     });
 };

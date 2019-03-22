@@ -15,7 +15,6 @@ const ListSchema = new Schema(
     description: { type: String },
     favIds: [ObjectId],
     isArchived: { type: Boolean, default: false },
-    isFavourite: { type: Boolean, default: false },
     items: [ItemSchema],
     name: { type: String, required: true },
     ordererIds: [ObjectId],
@@ -28,6 +27,11 @@ const ListSchema = new Schema(
 ListSchema.method(
   'userVoted',
   (item, userId) => item.voterIds.indexOf(userId) > -1
+);
+
+ListSchema.method(
+  'userMarkedAsFavourite',
+  (list, userId) => list.favIds.indexOf(userId) > -1
 );
 
 ListSchema.method('responseWithItem', (item, listInstance, userId) => {

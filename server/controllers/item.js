@@ -1,5 +1,5 @@
 const Item = require('../models/item.model');
-const filter = require('../common/utilities');
+const filter = require('../common/utils/utilities');
 
 // Create new item
 const itemCreate = (req, resp) => {
