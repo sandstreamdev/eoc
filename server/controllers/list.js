@@ -67,7 +67,7 @@ const getListsMetaData = (req, resp) => {
       ],
       isArchived: false
     },
-    `_id name description ${cohortId ? 'cohortId' : ''}`,
+    `_id isFavourite name description ${cohortId ? 'cohortId' : ''}`,
     (err, docs) => {
       if (err) {
         return resp.status(400).send({

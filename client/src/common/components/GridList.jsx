@@ -12,11 +12,11 @@ import CardPlus from 'common/components/CardPlus';
 import { addToFavourites } from 'modules/list/model/actions';
 
 class GridList extends PureComponent {
-  handleFavClick = itemId => event => {
+  handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
     const { addToFavourites } = this.props;
 
-    addToFavourites(itemId);
+    addToFavourites(itemId, isFavourite);
   };
 
   handleCardClick = (route, itemId) => () => {
@@ -60,9 +60,10 @@ class GridList extends PureComponent {
                 <CardItem
                   color={color}
                   description={item.description}
+                  isFavourite={item.isFavourite}
                   name={item.name}
                   onCardClick={this.handleCardClick(route, item._id)}
-                  onFavClick={this.handleFavClick(item._id)}
+                  onFavClick={this.handleFavClick(item._id, item.isFavourite)}
                 />
               </li>
             ))}

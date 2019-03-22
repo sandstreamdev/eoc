@@ -310,18 +310,20 @@ export const restoreList = listId => dispatch => {
     });
 };
 
-export const addToFavourites = listId => dispatch => {
+export const addToFavourites = (listId, isFavourite) => dispatch => {
   dispatch(addToFavouritesRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, {
-    isFavourite: true
+    isFavourite: !isFavourite
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(addToFavouritesSuccess({ isArchived: true, listId }));
+      dispatch(addToFavouritesSuccess({ isFavourite: !isFavourite, listId }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'List is successfully marked as favourite'
+        isFavourite
+          ? 'List removed from favourites'
+          : 'List is successfully marked as favourite'
       );
     })
     .catch(err => {
@@ -329,7 +331,9 @@ export const addToFavourites = listId => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || 'Marking list as favourite failed'
+        isFavourite
+          ? 'Removing list from favourites failed'
+          : 'Marking list as favourite failed'
       );
     });
 };
