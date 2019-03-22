@@ -41,7 +41,7 @@ class ItemsList extends Component {
   };
 
   voteForItem = item => () => {
-    const { _id, didCurrentUserVoted } = item;
+    const { _id, isVoted } = item;
     const {
       vote,
       match: {
@@ -49,7 +49,7 @@ class ItemsList extends Component {
       }
     } = this.props;
 
-    vote(_id, listId, didCurrentUserVoted);
+    vote(_id, listId, isVoted);
   };
 
   render() {
@@ -75,7 +75,7 @@ class ItemsList extends Component {
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
                 votesCount={item.votesCount}
-                whetherUserVoted={item.didCurrentUserVoted}
+                whetherUserVoted={item.isVoted}
               />
             ))}
           </ul>

@@ -23,7 +23,8 @@ router.delete('/:id/delete', authorize, deleteListById);
 router.patch('/:id/update', authorize, updateListById);
 router.get('/:id/data', authorize, getListData);
 router.patch('/:id/update-item', authorize, updateListItem);
-router.patch('/:id/vote-for-item', authorize, voteForItem);
+router.patch('/:id/set-vote', authorize, voteForItem);
+router.patch('/:id/clear-vote', authorize, voteForItem);
 router.patch('/:id/add-to-fav', authorize, handleFavourite);
 router.patch('/:id/remove-from-fav', authorize, handleFavourite);
 

@@ -93,9 +93,12 @@ class ItemsContainer extends Component {
     return (
       <div className="items">
         <header className="items__header">
-          <h2 className="items__heading items__heading--left">
-            {archived ? 'Done' : name}
-          </h2>
+          <div className="items__header-content">
+            <h2 className="items__heading items__heading--left">
+              {archived ? 'Done' : name}
+            </h2>
+            {description && <p className="items__description">{description}</p>}
+          </div>
           <div className="items__header-controls">
             <FilterBox
               filterBy={filterBy}
@@ -113,7 +116,6 @@ class ItemsContainer extends Component {
           </div>
         </header>
         {children}
-        {description && <p className="items__description">{description}</p>}
         <div className="items__body">
           <ItemsList archived={archived} items={sortedList} />
         </div>
