@@ -110,11 +110,6 @@ class List extends Component {
                 onClick={this.handleDialogContext(DialogContext.UPDATE)}
                 title="Edit list"
               />
-              <ToolbarItem
-                mainIcon={<ArchiveIcon />}
-                onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
-                title="Archive list"
-              />
             </Fragment>
           )}
         </Toolbar>
@@ -128,6 +123,13 @@ class List extends Component {
               <InputBar />
             </ItemsContainer>
             <ItemsContainer archived items={orderedItems} />
+            <button
+              className="link-button"
+              onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+              type="button"
+            >
+              {`Archive the ${name} list`}
+            </button>
           </div>
         )}
         {isArchived && <ArchivedList listId={listId} name={name} />}

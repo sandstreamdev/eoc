@@ -206,7 +206,7 @@ class Cohort extends PureComponent {
                 route="list"
               />
               <button
-                className="cohort__toggle-archived-lists"
+                className="link-button"
                 onClick={this.handleArchivedListsVisibility(cohortId)}
                 type="button"
               >
