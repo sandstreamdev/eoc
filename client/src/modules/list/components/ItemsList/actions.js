@@ -54,12 +54,13 @@ export const toggle = (
     });
 };
 
-export const vote = (itemId, listId, didCurrentUserVoted) => dispatch => {
+export const vote = (itemId, listId, isVoted) => dispatch => {
   dispatch(voteForItemRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/vote-for-item`, {
-    didCurrentUserVoted,
-    itemId
-  })
+  const path = isVoted
+    ? `${ENDPOINT_URL}/lists/${listId}/set-vote`
+    : `${ENDPOINT_URL}/lists/${listId}/clear-vote`;
+
+  return patchData(path, { itemId })
     .then(resp => resp.json())
     .then(item => dispatch(voteForItemSuccess(item, listId)))
     .catch(err => {
