@@ -14,7 +14,7 @@ import {
 } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import FormDialog from 'common/components/FormDialog';
-import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
+import { CohortIcon, EditIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
