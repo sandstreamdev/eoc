@@ -316,15 +316,13 @@ export const manageFavourites = (listId, isFavourite) => dispatch => {
     ? `${ENDPOINT_URL}/lists/${listId}/add-to-fav`
     : `${ENDPOINT_URL}/lists/${listId}/remove-from-fav`;
   return patchData(path)
-    .then(resp => {
-      resp.json();
-    })
+    .then(resp => resp.json())
     .then(json => {
       dispatch(addToFavouritesSuccess({ listId, isFavourite: !isFavourite }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'List is successfully marked as favourite'
+        json.message
       );
     })
     .catch(err => {
@@ -332,7 +330,7 @@ export const manageFavourites = (listId, isFavourite) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        'Marking list as favourite failed'
+        err.message
       );
     });
 };

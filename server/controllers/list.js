@@ -358,7 +358,8 @@ const updateListById = (req, resp) => {
 
 const handleFavourite = (req, resp) => {
   const { id: listId } = req.params;
-  const dataToUpdate = req.route.path.includes('add-to-fav')
+  const addToFav = req.route.path.includes('add-to-fav');
+  const dataToUpdate = addToFav
     ? {
         $push: { favIds: req.user._id }
       }
@@ -379,13 +380,15 @@ const handleFavourite = (req, resp) => {
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
-          message: "Can't mark list as favourite . Please try again."
+          message: "Can't mark list as favourite. Please try again."
         });
       }
 
       doc
         ? resp.status(200).send({
-            message: `List "${doc.name}" successfully marked as favourite.`
+            message: addToFav
+              ? `List "${doc.name}" successfully marked as favourite.`
+              : `List "${doc.name}" successfully removed from favourite.`
           })
         : resp.status(404).send({ message: 'List data not found.' });
     }
