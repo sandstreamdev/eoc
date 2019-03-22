@@ -8,6 +8,7 @@ const {
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
+  handleFavourite,
   updateListById,
   updateListItem,
   voteForItem
@@ -23,5 +24,7 @@ router.patch('/:id/update', authorize, updateListById);
 router.get('/:id/data', authorize, getListData);
 router.patch('/:id/update-item', authorize, updateListItem);
 router.patch('/:id/vote-for-item', authorize, voteForItem);
+router.patch('/:id/add-to-fav', authorize, handleFavourite);
+router.patch('/:id/remove-from-fav', authorize, handleFavourite);
 
 module.exports = app => app.use('/lists', router);

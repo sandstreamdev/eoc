@@ -370,6 +370,38 @@ const updateListById = (req, resp) => {
   );
 };
 
+const handleFavourite = (req, resp) => {
+  const {
+    user: { _id }
+  } = req;
+  const { id: listId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    { $push: { 'items.$.favIds': _id } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't mark list as favourite . Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `List "${doc.name}" successfully marked as favourite.`
+          })
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
 module.exports = {
   addItemToList,
   createList,
@@ -377,6 +409,7 @@ module.exports = {
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
+  handleFavourite,
   updateListById,
   updateListItem,
   voteForItem
