@@ -1,5 +1,3 @@
-const _map = require('lodash/map');
-
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {

@@ -16,12 +16,10 @@ const checkRole = (idsArray, userIdFromReq) => {
 
 const isValidMongoId = id => ObjectId.isValid(id);
 
-const isUserFavourite = (list, userId) => {
-  return list.favIds.indexOf(userId) > -1;
-};
+const isUserFavourite = (list, userId) => list.favIds.indexOf(userId) > -1;
 
-const responseWithLists = (lists, userId) => {
-  return _map(lists, list => ({
+const responseWithLists = (lists, userId) =>
+  _map(lists, list => ({
     _id: list._id,
     description: list.description,
     name: list.name,
@@ -29,7 +27,6 @@ const responseWithLists = (lists, userId) => {
     isArchived: list.isArchived && list.isArchived,
     isFavourite: list.favIds && isUserFavourite(list, userId)
   }));
-};
 
 module.exports = {
   checkRole,
