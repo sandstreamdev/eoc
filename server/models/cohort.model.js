@@ -7,6 +7,7 @@ const CohortSchema = new Schema(
   {
     adminIds: [ObjectId],
     description: { type: String },
+    favIds: [ObjectId],
     isArchived: { type: Boolean, default: false },
     memberIds: [ObjectId],
     name: { type: String, required: true }
