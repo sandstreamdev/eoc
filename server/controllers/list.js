@@ -3,15 +3,13 @@ const Item = require('../models/item.model');
 const {
   checkRole,
   filter,
-  isValidMongoId
+  reponseWithItems,
+  isValidMongoId,
+  responseWithItem,
+  responseWithLists
 } = require('../common/utils/utilities');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
-const {
-  getListItems,
-  responseWithLists,
-  responseWithItem
-} = require('../common/utils/utilities');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -213,7 +211,7 @@ const getListData = (req, resp) => {
       }
 
       const isAdmin = checkRole(adminIds, req.user._id);
-      const items = getListItems(userId, list);
+      const items = reponseWithItems(userId, list);
 
       return resp
         .status(200)
