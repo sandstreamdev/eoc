@@ -25,7 +25,9 @@ const CookieConsentBox = ({ isAuthPage, onAccept }) => (
         <Fragment>
           <br />
           {'For more information, please see our '}
-          <Link to="/privacy-policy">privacy policy</Link>
+          <Link className="cookie-consent__link" to="/privacy-policy">
+            privacy policy
+          </Link>
           {'.'}
         </Fragment>
       )}

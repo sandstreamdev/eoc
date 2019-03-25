@@ -30,13 +30,13 @@ class PrivacyPolicy extends PureComponent {
         {currentUser && <Toolbar />}
         <div className="privacy-policy">
           <h1 className="privacy-policy__intro-heading">
-            Privacy &&nbsp;Terms
+            Privacy <span>& Terms</span>
           </h1>
           <h2 className="privacy-policy__intro-subheading">
-            Check our Privacy Policy and&nbsp;Terms.
+            Check our Privacy Policy <span>and Terms.</span>
           </h2>
           <div className="privacy-policy__info-wrapper">
-            <div className="privacy-policy__info">
+            <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">Privacy Policy</h2>
               <p className="privacy-policy__content">
                 Sandstream Development (herein referred to as “Sandstream”) has
@@ -46,10 +46,10 @@ class PrivacyPolicy extends PureComponent {
                 use and disclosure of Personal Information, Information Security
                 and Quality, and Cookies.
               </p>
-            </div>
+            </article>
           </div>
           <div className="privacy-policy__info-wrapper">
-            <div className="privacy-policy__info">
+            <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">Personal Information</h2>
               <p className="privacy-policy__content">
                 Our privacy practices are designed to provide a high level of
@@ -58,10 +58,10 @@ class PrivacyPolicy extends PureComponent {
                 to the collection and use of this information in accordance with
                 this policy.
               </p>
-            </div>
+            </article>
           </div>
           <div className="privacy-policy__info-wrapper">
-            <div className="privacy-policy__info">
+            <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">
                 Information Security and&nbsp;Quality
               </h2>
@@ -75,10 +75,10 @@ class PrivacyPolicy extends PureComponent {
                 message containing the inaccuracies to the author with details
                 of the correction requested.
               </p>
-            </div>
+            </article>
           </div>
           <div className="privacy-policy__info-wrapper">
-            <div className="privacy-policy__info">
+            <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">Cookies</h2>
               <p className="privacy-policy__content">
                 Like many site operators, we collect information (i.e. cookies)
@@ -87,20 +87,20 @@ class PrivacyPolicy extends PureComponent {
                 a cookie is being sent. However, if you do not accept cookies,
                 you may not be able to use our App.
               </p>
-            </div>
+            </article>
           </div>
           <div className="privacy-policy__info-wrapper">
-            <div className="privacy-policy__info">
+            <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">Business Connections</h2>
               <p className="privacy-policy__content">
                 This web application may contain links to various third-party
                 websites. Sandstream has no control over and is not responsible
                 for the content, privacy policies or reliability of such sites.
               </p>
-            </div>
+            </article>
           </div>
           <div className="privacy-policy__info-wrapper">
-            <div className="privacy-policy__info">
+            <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">Contact Us</h2>
               <p className="privacy-policy__content">
                 If you have any questions about this Privacy Policy or
@@ -114,10 +114,10 @@ class PrivacyPolicy extends PureComponent {
                 </a>
                 .
               </p>
-            </div>
+            </article>
           </div>
           <div className="privacy-policy__info-wrapper">
-            <div className="privacy-policy__info">
+            <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">
                 Changes to this Privacy Policy
               </h2>
@@ -127,7 +127,7 @@ class PrivacyPolicy extends PureComponent {
                 to review this privacy statement periodically to track the
                 changes.
               </p>
-            </div>
+            </article>
           </div>
           {!currentUser && (
             <div className="privacy-policy__links">

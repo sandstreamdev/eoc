@@ -10,7 +10,7 @@ const Footer = () => (
         <Link className="footer__text footer__link" to="/about">
           About
         </Link>
-        {' | '}
+        <span className="footer__text-divider"> | </span>
         <Link className="footer__text footer__link" to="/privacy-policy">
           Privacy Policy
         </Link>
