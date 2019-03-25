@@ -275,13 +275,40 @@ const voteForItem = (req, resp) => {
     user: { _id: userId }
   } = req;
 
-  const dataToUpdate = req.route.path.includes('set-vote')
-    ? {
-        $pull: { 'items.$.voterIds': req.user._id }
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      'items._id': itemId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    { $push: { 'items.$.voterIds': req.user._id } },
+    { new: true },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: 'An error occurred while voting. Please try again.'
+        });
       }
-    : {
-        $push: { 'items.$.voterIds': req.user._id }
-      };
+      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
+      const item = doc.items[itemIndex];
+
+      doc
+        ? resp.status(200).json(responseWithItem(item, userId))
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const clearVote = (req, resp) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   List.findOneAndUpdate(
     {
@@ -293,7 +320,7 @@ const voteForItem = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
-    dataToUpdate,
+    { $pull: { 'items.$.voterIds': req.user._id } },
     { new: true },
     (err, doc) => {
       if (err) {
@@ -345,6 +372,7 @@ const updateListById = (req, resp) => {
 
 module.exports = {
   addItemToList,
+  clearVote,
   createList,
   deleteListById,
   getArchivedListsMetaData,
