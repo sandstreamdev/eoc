@@ -16,7 +16,7 @@ const checkRole = (idsArray, userIdFromReq) => {
 
 const isValidMongoId = id => ObjectId.isValid(id);
 
-const isUserFavourite = (list, userId) => list.favIds.indexOf(userId) > -1;
+const isUserFavourite = (el, userId) => el.favIds.indexOf(userId) > -1;
 
 const responseWithLists = (lists, userId) =>
   _map(lists, list => ({
@@ -31,7 +31,7 @@ const responseWithLists = (lists, userId) =>
 const checkIfCurrentUserVoted = (item, userId) =>
   item.voterIds.indexOf(userId) > -1;
 
-const reponseWithItems = (userId, list) => {
+const responseWithItems = (userId, list) => {
   const { items } = list;
 
   return _map(items, item => {
@@ -54,12 +54,22 @@ const responseWithItem = (item, userId) => {
   };
 };
 
+const responseWithCohorts = (cohorts, userId) =>
+  _map(cohorts, cohort => ({
+    _id: cohort._id,
+    description: cohort.description,
+    isArchived: cohort.isArchived && cohort.isArchived,
+    isFavourite: cohort.favIds && isUserFavourite(cohort, userId),
+    name: cohort.name
+  }));
+
 module.exports = {
   checkRole,
   filter,
-  reponseWithItems,
   isUserFavourite,
   isValidMongoId,
+  responseWithCohorts,
   responseWithItem,
+  responseWithItems,
   responseWithLists
 };

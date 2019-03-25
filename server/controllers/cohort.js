@@ -1,5 +1,10 @@
 const Cohort = require('../models/cohort.model');
-const { checkRole, filter, isValidMongoId } = require('../common/utils');
+const {
+  checkRole,
+  filter,
+  isValidMongoId,
+  responseWithCohorts
+} = require('../common/utils');
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
@@ -25,9 +30,12 @@ const createCohort = (req, resp) => {
 };
 
 const getCohortsMetaData = (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
   Cohort.find(
     {
-      $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }],
+      $or: [{ adminIds: userId }, { memberIds: userId }],
       isArchived: false
     },
     '_id name description favIds',
@@ -41,20 +49,19 @@ const getCohortsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).send(docs)
+        ? resp.status(200).send(responseWithCohorts(docs, userId))
         : resp.status(404).send({ message: 'No cohorts data found.' });
     }
   );
 };
 
 const getArchivedCohortsMetaData = (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
   Cohort.find(
     {
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ],
+      $or: [{ adminIds: userId }, { memberIds: userId }],
       isArchived: true
     },
     '_id name description favIds isArchived',
@@ -71,7 +78,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
           .status(404)
           .send({ message: 'No archived cohorts data found.' });
       }
-      resp.status(200).send(docs);
+      resp.status(200).send(responseWithCohorts(docs, userId));
     }
   );
 };
@@ -181,18 +188,17 @@ const deleteCohortById = (req, resp) => {
 
 const addToFavourites = (req, resp) => {
   const { id: cohortId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
-  List.findOneAndUpdate(
+  Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
+      $or: [{ adminIds: userId }, { memberIds: userId }]
     },
     {
-      $push: { favIds: req.user._id }
+      $push: { favIds: userId }
     },
     (err, doc) => {
       if (err) {
@@ -212,18 +218,17 @@ const addToFavourites = (req, resp) => {
 
 const removeFromFavourites = (req, resp) => {
   const { id: cohortId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
-  List.findOneAndUpdate(
+  Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
+      $or: [{ adminIds: userId }, { memberIds: userId }]
     },
     {
-      $pull: { favIds: req.user._id }
+      $pull: { favIds: userId }
     },
     (err, doc) => {
       if (err) {

@@ -301,16 +301,34 @@ export const fetchCohortDetails = cohortId => dispatch => {
     });
 };
 
-export const manageCohortFavourites = (cohortId, isFavourite) => dispatch => {
-  console.log(cohortId, isFavourite);
+export const addCohortToFavourites = cohortId => dispatch => {
   dispatch(favouritesRequest());
-  const path = isFavourite
-    ? `${ENDPOINT_URL}/cohorts/${cohortId}/remove-from-fav`
-    : `${ENDPOINT_URL}/cohorts/${cohortId}/add-to-fav`;
-  return patchData(path)
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-to-fav`)
     .then(resp => resp.json())
     .then(json => {
-      dispatch(favouritesSuccess({ cohortId, isFavourite: !isFavourite }));
+      dispatch(favouritesSuccess({ cohortId, isFavourite: true }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const removeCohortFromFavourites = cohortId => dispatch => {
+  dispatch(favouritesRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-from-fav`)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(favouritesSuccess({ cohortId, isFavourite: false }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,

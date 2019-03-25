@@ -10,9 +10,13 @@ import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
 import {
-  addToFavourites,
-  removeFromFavourites
+  addListToFavourites,
+  removeListFromFavourites
 } from 'modules/list/model/actions';
+import {
+  addCohortToFavourites,
+  removeCohortFromFavourites
+} from 'modules/cohort/model/actions';
 
 export const GridListRoutes = Object.freeze({
   COHORT: 'cohort',
@@ -20,12 +24,28 @@ export const GridListRoutes = Object.freeze({
 });
 
 class GridList extends PureComponent {
-  handleFavClick = (itemId, isFavourite) => event => {
+  handleFavClick = (itemId, isFavourite, route) => event => {
     event.stopPropagation();
-    const { addToFavourites, removeFromFavourites, route } = this.props;
+    const {
+      addCohortToFavourites,
+      addListToFavourites,
+      removeCohortFromFavourites,
+      removeListFromFavourites
+    } = this.props;
 
-    if (route === GridListRoutes.LIST) {
-      isFavourite ? removeFromFavourites(itemId) : addToFavourites(itemId);
+    switch (route) {
+      case GridListRoutes.LIST:
+        isFavourite
+          ? removeListFromFavourites(itemId)
+          : addListToFavourites(itemId);
+        break;
+      case GridListRoutes.COHORT:
+        isFavourite
+          ? removeCohortFromFavourites(itemId)
+          : addCohortToFavourites(itemId);
+        break;
+      default:
+        break;
     }
   };
 
@@ -72,7 +92,11 @@ class GridList extends PureComponent {
                   isFavourite={item.isFavourite}
                   name={item.name}
                   onCardClick={this.handleCardClick(route, item._id)}
-                  onFavClick={this.handleFavClick(item._id, item.isFavourite)}
+                  onFavClick={this.handleFavClick(
+                    item._id,
+                    item.isFavourite,
+                    route
+                  )}
                   route={route}
                 />
               </li>
@@ -98,14 +122,21 @@ GridList.propTypes = {
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
 
-  addToFavourites: PropTypes.func,
+  addCohortToFavourites: PropTypes.func,
+  addListToFavourites: PropTypes.func,
   onAddNew: PropTypes.func,
-  removeFromFavourites: PropTypes.func
+  removeCohortFromFavourites: PropTypes.func,
+  removeListFromFavourites: PropTypes.func
 };
 
 export default withRouter(
   connect(
     null,
-    { addToFavourites, removeFromFavourites }
+    {
+      addCohortToFavourites,
+      addListToFavourites,
+      removeCohortFromFavourites,
+      removeListFromFavourites
+    }
   )(GridList)
 );

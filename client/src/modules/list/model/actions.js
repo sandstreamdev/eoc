@@ -310,7 +310,7 @@ export const restoreList = listId => dispatch => {
     });
 };
 
-export const addToFavourites = listId => dispatch => {
+export const addListToFavourites = listId => dispatch => {
   dispatch(favouritesRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/add-to-fav`)
     .then(resp => resp.json())
@@ -332,7 +332,7 @@ export const addToFavourites = listId => dispatch => {
     });
 };
 
-export const removeFromFavourites = listId => dispatch => {
+export const removeListFromFavourites = listId => dispatch => {
   dispatch(favouritesRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/remove-from-fav`)
     .then(resp => resp.json())

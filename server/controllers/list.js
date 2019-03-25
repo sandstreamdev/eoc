@@ -4,7 +4,7 @@ const {
   checkRole,
   filter,
   isValidMongoId,
-  reponseWithItems,
+  responseWithItems,
   responseWithItem,
   responseWithLists
 } = require('../common/utils');
@@ -211,7 +211,7 @@ const getListData = (req, resp) => {
       }
 
       const isAdmin = checkRole(adminIds, req.user._id);
-      const items = reponseWithItems(userId, list);
+      const items = responseWithItems(userId, list);
 
       return resp
         .status(200)
