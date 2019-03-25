@@ -57,8 +57,8 @@ export const toggle = (
 export const vote = (itemId, listId, isVoted) => dispatch => {
   dispatch(voteForItemRequest());
   const path = isVoted
-    ? `${ENDPOINT_URL}/lists/${listId}/set-vote`
-    : `${ENDPOINT_URL}/lists/${listId}/clear-vote`;
+    ? `${ENDPOINT_URL}/lists/${listId}/clear-vote`
+    : `${ENDPOINT_URL}/lists/${listId}/set-vote`;
 
   return patchData(path, { itemId })
     .then(resp => resp.json())

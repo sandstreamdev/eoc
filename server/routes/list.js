@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const {
   addItemToList,
+  clearVote,
   createList,
   deleteListById,
   getArchivedListsMetaData,
@@ -24,7 +25,7 @@ router.patch('/:id/update', authorize, updateListById);
 router.get('/:id/data', authorize, getListData);
 router.patch('/:id/update-item', authorize, updateListItem);
 router.patch('/:id/set-vote', authorize, voteForItem);
-router.patch('/:id/clear-vote', authorize, voteForItem);
+router.patch('/:id/clear-vote', authorize, clearVote);
 router.patch('/:id/add-to-fav', authorize, handleFavourite);
 router.patch('/:id/remove-from-fav', authorize, handleFavourite);
 

@@ -27,11 +27,38 @@ const responseWithLists = (lists, userId) =>
     isFavourite: list.favIds && isUserFavourite(list, userId),
     name: list.name
   }));
+const checkIfCurrentUserVoted = (item, userId) =>
+  item.voterIds.indexOf(userId) > -1;
+
+const getListItems = (userId, list) => {
+  const { items } = list;
+
+  return _map(items, item => {
+    const { voterIds, ...rest } = item.toObject();
+    return {
+      ...rest,
+      isVoted: checkIfCurrentUserVoted(item, userId),
+      votesCount: voterIds.length
+    };
+  });
+};
+
+const responseWithItem = (item, userId) => {
+  const { voterIds, ...rest } = item.toObject();
+
+  return {
+    ...rest,
+    isVoted: checkIfCurrentUserVoted(item, userId),
+    votesCount: voterIds.length
+  };
+};
 
 module.exports = {
   checkRole,
   filter,
+  getListItems,
   isUserFavourite,
   isValidMongoId,
+  responseWithItem,
   responseWithLists
 };

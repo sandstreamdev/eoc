@@ -7,7 +7,11 @@ const {
 } = require('../common/utils/utilities');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
-const { responseWithLists } = require('../common/utils/utilities');
+const {
+  getListItems,
+  responseWithLists,
+  responseWithItem
+} = require('../common/utils/utilities');
 
 const createList = (req, resp) => {
   const { description, name, adminId, cohortId } = req.body;
@@ -154,11 +158,9 @@ const addItemToList = (req, resp) => {
             'An error occurred while adding a new item. Please try again.'
         });
       }
-      const listInstance = new List();
+
       doc
-        ? resp
-            .status(200)
-            .send(listInstance.responseWithItem(item, listInstance, userId))
+        ? resp.status(200).send(responseWithItem(item, userId))
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
@@ -205,14 +207,13 @@ const getListData = (req, resp) => {
     })
     .then(() => {
       const { _id, adminIds, cohortId, description, isArchived, name } = list;
-      const listInstance = new List();
 
       if (isArchived) {
         return resp.status(200).json({ cohortId, _id, isArchived, name });
       }
 
       const isAdmin = checkRole(adminIds, req.user._id);
-      const items = listInstance.getListItems(userId, listInstance, list);
+      const items = getListItems(userId, list);
 
       return resp
         .status(200)
@@ -269,11 +270,9 @@ const updateListItem = (req, resp) => {
       }
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
-      const listInstance = new List();
+
       doc
-        ? resp
-            .status(200)
-            .json(listInstance.responseWithItem(item, listInstance, userId))
+        ? resp.status(200).json(responseWithItem(item, userId))
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );
@@ -286,13 +285,40 @@ const voteForItem = (req, resp) => {
     user: { _id: userId }
   } = req;
 
-  const dataToUpdate = req.route.path.includes('set-vote')
-    ? {
-        $pull: { 'items.$.voterIds': req.user._id }
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      'items._id': itemId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    { $push: { 'items.$.voterIds': req.user._id } },
+    { new: true },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: 'An error occurred while voting. Please try again.'
+        });
       }
-    : {
-        $push: { 'items.$.voterIds': req.user._id }
-      };
+      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
+      const item = doc.items[itemIndex];
+
+      doc
+        ? resp.status(200).json(responseWithItem(item, userId))
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const clearVote = (req, resp) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   List.findOneAndUpdate(
     {
@@ -304,7 +330,7 @@ const voteForItem = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
-    dataToUpdate,
+    { $pull: { 'items.$.voterIds': req.user._id } },
     { new: true },
     (err, doc) => {
       if (err) {
@@ -314,11 +340,9 @@ const voteForItem = (req, resp) => {
       }
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
-      const listInstance = new List();
+
       doc
-        ? resp
-            .status(200)
-            .json(listInstance.responseWithItem(item, listInstance, userId))
+        ? resp.status(200).json(responseWithItem(item, userId))
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );
@@ -397,6 +421,7 @@ const handleFavourite = (req, resp) => {
 
 module.exports = {
   addItemToList,
+  clearVote,
   createList,
   deleteListById,
   getArchivedListsMetaData,
