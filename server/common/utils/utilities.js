@@ -21,11 +21,11 @@ const isUserFavourite = (list, userId) => list.favIds.indexOf(userId) > -1;
 const responseWithLists = (lists, userId) =>
   _map(lists, list => ({
     _id: list._id,
-    description: list.description,
-    name: list.name,
     cohortId: list.cohortId && list.cohortId,
+    description: list.description,
     isArchived: list.isArchived && list.isArchived,
-    isFavourite: list.favIds && isUserFavourite(list, userId)
+    isFavourite: list.favIds && isUserFavourite(list, userId),
+    name: list.name
   }));
 
 module.exports = {
