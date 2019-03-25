@@ -25,9 +25,7 @@ class GridList extends PureComponent {
     const { addToFavourites, removeFromFavourites, route } = this.props;
 
     if (route === GridListRoutes.LIST) {
-      isFavourite
-        ? removeFromFavourites(itemId, isFavourite)
-        : addToFavourites(itemId, isFavourite);
+      isFavourite ? removeFromFavourites(itemId) : addToFavourites(itemId);
     }
   };
 
