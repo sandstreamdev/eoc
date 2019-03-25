@@ -123,9 +123,9 @@ const favouritesRequest = () => ({
   type: ListActionTypes.FAVOURITES_REQUEST
 });
 
-const favouritesSuccess = listId => ({
+const favouritesSuccess = data => ({
   type: ListActionTypes.FAVOURITES_SUCCESS,
-  payload: listId
+  payload: data
 });
 
 const favouritesFailure = () => ({
@@ -310,12 +310,31 @@ export const restoreList = listId => dispatch => {
     });
 };
 
-export const manageFavourites = (listId, isFavourite) => dispatch => {
+export const addToFavourites = (listId, isFavourite) => dispatch => {
   dispatch(favouritesRequest());
-  const path = isFavourite
-    ? `${ENDPOINT_URL}/lists/${listId}/remove-from-fav`
-    : `${ENDPOINT_URL}/lists/${listId}/add-to-fav`;
-  return patchData(path)
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-to-fav`)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(favouritesSuccess({ listId, isFavourite: !isFavourite }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const removeFromFavourites = (listId, isFavourite) => dispatch => {
+  dispatch(favouritesRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/remove-from-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ listId, isFavourite: !isFavourite }));
