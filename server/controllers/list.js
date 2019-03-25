@@ -378,16 +378,8 @@ const updateListById = (req, resp) => {
   );
 };
 
-const handleFavourite = (req, resp) => {
+const addToFavourites = (req, resp) => {
   const { id: listId } = req.params;
-  const addToFav = req.route.path.includes('add-to-fav');
-  const dataToUpdate = addToFav
-    ? {
-        $push: { favIds: req.user._id }
-      }
-    : {
-        $pull: { favIds: req.user._id }
-      };
 
   List.findOneAndUpdate(
     {
@@ -398,7 +390,9 @@ const handleFavourite = (req, resp) => {
         { purchaserIds: req.user._id }
       ]
     },
-    dataToUpdate,
+    {
+      $push: { favIds: req.user._id }
+    },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -408,9 +402,38 @@ const handleFavourite = (req, resp) => {
 
       doc
         ? resp.status(200).send({
-            message: addToFav
-              ? `List "${doc.name}" successfully marked as favourite.`
-              : `List "${doc.name}" successfully removed from favourite.`
+            message: `List "${doc.name}" successfully marked as favourite.`
+          })
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const removeFromFavourites = (req, resp) => {
+  const { id: listId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    {
+      $pull: { favIds: req.user._id }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove list from favourites. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `List "${doc.name}" successfully removed from favourites.`
           })
         : resp.status(404).send({ message: 'List data not found.' });
     }
@@ -419,13 +442,14 @@ const handleFavourite = (req, resp) => {
 
 module.exports = {
   addItemToList,
+  addToFavourites,
   clearVote,
   createList,
   deleteListById,
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
-  handleFavourite,
+  removeFromFavourites,
   updateListById,
   updateListItem,
   voteForItem

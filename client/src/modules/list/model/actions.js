@@ -312,9 +312,9 @@ export const restoreList = listId => dispatch => {
 
 export const manageFavourites = (listId, isFavourite) => dispatch => {
   dispatch(favouritesRequest());
-  const path = !isFavourite
-    ? `${ENDPOINT_URL}/lists/${listId}/add-to-fav`
-    : `${ENDPOINT_URL}/lists/${listId}/remove-from-fav`;
+  const path = isFavourite
+    ? `${ENDPOINT_URL}/lists/${listId}/remove-from-fav`
+    : `${ENDPOINT_URL}/lists/${listId}/add-to-fav`;
   return patchData(path)
     .then(resp => resp.json())
     .then(json => {
