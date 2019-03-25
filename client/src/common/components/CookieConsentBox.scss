@@ -37,6 +37,14 @@
     z-index: 11;
     margin: 0 16px 16px;
 
+    a {
+      font-style: italic;
+      color: $text-normal;
+      &:hover {
+        color: $dark-orange;
+      }
+    }
+
     @include breakpoint($large) {
       margin: 0 16px 0;
     }
