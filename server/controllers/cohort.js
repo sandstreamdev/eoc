@@ -34,7 +34,7 @@ const getCohortsMetaData = (req, resp) => {
       $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }],
       isArchived: false
     },
-    '_id name description',
+    '_id name description favIds',
     { sort: { createdAt: -1 } },
     (err, docs) => {
       if (err) {
@@ -61,7 +61,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
       ],
       isArchived: true
     },
-    '_id name description isArchived',
+    '_id name description favIds isArchived',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -183,11 +183,77 @@ const deleteCohortById = (req, resp) => {
     });
 };
 
+const addToFavourites = (req, resp) => {
+  const { id: cohortId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: cohortId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    {
+      $push: { favIds: req.user._id }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't mark cohort as favourite. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `Cohort "${doc.name}" successfully marked as favourite.`
+          })
+        : resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
+const removeFromFavourites = (req, resp) => {
+  const { id: cohortId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: cohortId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    {
+      $pull: { favIds: req.user._id }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove cohort from favourites. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `Cohort "${
+              doc.name
+            }" successfully removed from favourites.`
+          })
+        : resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
 module.exports = {
+  addToFavourites,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
+  removeFromFavourites,
   updateCohortById
 };

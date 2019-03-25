@@ -43,6 +43,15 @@ const cohorts = (state = {}, action) => {
         ...state,
         [action.payload._id]: action.payload.data
       };
+    case CohortActionTypes.FAVOURITES_SUCCESS: {
+      return {
+        ...state,
+        [action.payload.cohortId]: {
+          ...state[action.payload.cohortId],
+          isFavourite: action.payload.isFavourite
+        }
+      };
+    }
     default:
       return state;
   }
@@ -56,6 +65,8 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.CREATE_SUCCESS:
     case CohortActionTypes.DELETE_FAILURE:
     case CohortActionTypes.DELETE_SUCCESS:
+    case CohortActionTypes.FAVOURITES_FAILURE:
+    case CohortActionTypes.FAVOURITES_SUCCESS:
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
     case CohortActionTypes.FETCH_DETAILS_FAILURE:
@@ -70,6 +81,7 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.ARCHIVE_REQUEST:
     case CohortActionTypes.CREATE_REQUEST:
     case CohortActionTypes.DELETE_REQUEST:
+    case CohortActionTypes.FAVOURITES_REQUEST:
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
     case CohortActionTypes.FETCH_DETAILS_REQUEST:
     case CohortActionTypes.FETCH_META_DATA_REQUEST:

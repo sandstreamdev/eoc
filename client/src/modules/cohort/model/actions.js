@@ -122,6 +122,19 @@ const fetchArchivedCohortsMetaDataRequest = () => ({
   type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST
 });
 
+const favouritesRequest = () => ({
+  type: CohortActionTypes.FAVOURITES_REQUEST
+});
+
+const favouritesSuccess = data => ({
+  type: CohortActionTypes.FAVOURITES_SUCCESS,
+  payload: data
+});
+
+const favouritesFailure = () => ({
+  type: CohortActionTypes.FAVOURITES_FAILURE
+});
+
 export const createCohort = (name, description, adminId) => dispatch => {
   dispatch(createCohortRequest());
   return postData(`${ENDPOINT_URL}/cohorts/create`, {
@@ -285,5 +298,31 @@ export const fetchCohortDetails = cohortId => dispatch => {
         err.message || "Oops, we're sorry, fetching data failed..."
       );
       throw err;
+    });
+};
+
+export const manageCohortFavourites = (cohortId, isFavourite) => dispatch => {
+  console.log(cohortId, isFavourite);
+  dispatch(favouritesRequest());
+  const path = isFavourite
+    ? `${ENDPOINT_URL}/cohorts/${cohortId}/remove-from-fav`
+    : `${ENDPOINT_URL}/cohorts/${cohortId}/add-to-fav`;
+  return patchData(path)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(favouritesSuccess({ cohortId, isFavourite: !isFavourite }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
     });
 };

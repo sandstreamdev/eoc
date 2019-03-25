@@ -31,11 +31,11 @@ const CardItem = ({
   >
     <h3 className="card-item__heading">{name}</h3>
     <p className="card-item__description">{description}</p>
-    {route === GridListRoutes.LIST && (
-      <button className="card-item__star" onClick={onFavClick} type="button">
-        {isFavourite ? <SolidStar /> : <RegularStar />}
-      </button>
-    )}
+    {/* {route === GridListRoutes.LIST && ( */}
+    <button className="card-item__star" onClick={onFavClick} type="button">
+      {isFavourite ? <SolidStar /> : <RegularStar />}
+    </button>
+    {/* )} */}
   </div>
 );
 
