@@ -24,13 +24,14 @@ export const GridListRoutes = Object.freeze({
 });
 
 class GridList extends PureComponent {
-  handleFavClick = (itemId, isFavourite, route) => event => {
+  handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
     const {
       addCohortToFavourites,
       addListToFavourites,
       removeCohortFromFavourites,
-      removeListFromFavourites
+      removeListFromFavourites,
+      route
     } = this.props;
 
     switch (route) {
@@ -91,7 +92,7 @@ class GridList extends PureComponent {
                   description={item.description}
                   isFavourite={item.isFavourite}
                   name={item.name}
-                  onCardClick={this.handleCardClick(route, item._id)}
+                  onCardClick={this.handleCardClick(item._id)}
                   onFavClick={this.handleFavClick(
                     item._id,
                     item.isFavourite,
