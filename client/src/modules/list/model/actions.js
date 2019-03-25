@@ -119,17 +119,17 @@ export const removeArchivedListsMetaData = () => ({
   type: ListActionTypes.REMOVE_ARCHIVED_META_DATA
 });
 
-const addToFavouritesRequest = () => ({
-  type: ListActionTypes.ADD_TO_FAVOURITES_REQUEST
+const favouritesRequest = () => ({
+  type: ListActionTypes.FAVOURITES_REQUEST
 });
 
-const addToFavouritesSuccess = listId => ({
-  type: ListActionTypes.ADD_TO_FAVOURITES_SUCCESS,
+const favouritesSuccess = listId => ({
+  type: ListActionTypes.FAVOURITES_SUCCESS,
   payload: listId
 });
 
-const addToFavouritesFailure = () => ({
-  type: ListActionTypes.ADD_TO_FAVOURITES_FAILURE
+const favouritesFailure = () => ({
+  type: ListActionTypes.FAVOURITES_FAILURE
 });
 
 export const fetchListData = listId => dispatch => {
@@ -311,14 +311,14 @@ export const restoreList = listId => dispatch => {
 };
 
 export const manageFavourites = (listId, isFavourite) => dispatch => {
-  dispatch(addToFavouritesRequest());
+  dispatch(favouritesRequest());
   const path = !isFavourite
     ? `${ENDPOINT_URL}/lists/${listId}/add-to-fav`
     : `${ENDPOINT_URL}/lists/${listId}/remove-from-fav`;
   return patchData(path)
     .then(resp => resp.json())
     .then(json => {
-      dispatch(addToFavouritesSuccess({ listId, isFavourite: !isFavourite }));
+      dispatch(favouritesSuccess({ listId, isFavourite: !isFavourite }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -326,7 +326,7 @@ export const manageFavourites = (listId, isFavourite) => dispatch => {
       );
     })
     .catch(err => {
-      dispatch(addToFavouritesFailure());
+      dispatch(favouritesFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

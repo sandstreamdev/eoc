@@ -112,7 +112,7 @@ const lists = (state = {}, action) => {
         [action.payload.listId]: items(currentList, action)
       };
     }
-    case ListActionTypes.ADD_TO_FAVOURITES_SUCCESS: {
+    case ListActionTypes.FAVOURITES_SUCCESS: {
       return {
         ...state,
         [action.payload.listId]: {
@@ -150,8 +150,8 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.RESTORE_SUCCESS:
     case ListActionTypes.UPDATE_FAILURE:
     case ListActionTypes.UPDATE_SUCCESS:
-    case ListActionTypes.ADD_TO_FAVOURITES_SUCCESS:
-    case ListActionTypes.ADD_TO_FAVOURITES_FAILURE:
+    case ListActionTypes.FAVOURITES_SUCCESS:
+    case ListActionTypes.FAVOURITES_FAILURE:
       return false;
     case ItemActionTypes.ADD_REQUEST:
     case ItemActionTypes.TOGGLE_REQUEST:
@@ -164,7 +164,7 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.FETCH_META_DATA_REQUEST:
     case ListActionTypes.RESTORE_REQUEST:
     case ListActionTypes.UPDATE_REQUEST:
-    case ListActionTypes.ADD_TO_FAVOURITES_REQUEST:
+    case ListActionTypes.FAVOURITES_REQUEST:
       return true;
     default:
       return state;
