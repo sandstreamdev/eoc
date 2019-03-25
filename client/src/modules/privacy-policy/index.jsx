@@ -2,7 +2,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
