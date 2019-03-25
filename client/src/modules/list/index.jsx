@@ -128,7 +128,7 @@ class List extends Component {
               onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
               type="button"
             >
-              {`Archive the ${name} list`}
+              {`Archive the "${name}" list`}
             </button>
           </div>
         )}
@@ -137,7 +137,7 @@ class List extends Component {
           <Dialog
             onCancel={this.hideDialog}
             onConfirm={this.archiveListHandler(listId)}
-            title={`Do you really want to archive the ${name} list?`}
+            title={`Do you really want to archive the "${name}" list?`}
           />
         )}
         {dialogContext === DialogContext.UPDATE && (

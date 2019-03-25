@@ -167,7 +167,7 @@ class Cohort extends PureComponent {
           <Dialog
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleCohortArchivization(cohortId)}
-            title={`Do you really want to archive the ${name} cohort?`}
+            title={`Do you really want to archive the "${name}" cohort?`}
           />
         )}
         {dialogContext === DialogContext.UPDATE && (
@@ -202,7 +202,7 @@ class Cohort extends PureComponent {
                 items={lists}
                 name="Lists"
                 onAddNew={this.handleDialogContext(DialogContext.CREATE)}
-                placeholder={`There are no lists in the ${name} cohort!`}
+                placeholder={`There are no lists in the "${name}" cohort!`}
                 route="list"
               />
               <button
@@ -218,7 +218,7 @@ class Cohort extends PureComponent {
                   icon={<ListIcon />}
                   items={archivedLists}
                   name="Archived lists"
-                  placeholder={`There are no archived lists in the ${name} cohort!`}
+                  placeholder={`There are no archived lists in the "${name}" cohort!`}
                   route="list"
                 />
               )}
