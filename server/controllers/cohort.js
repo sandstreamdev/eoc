@@ -1,9 +1,5 @@
 const Cohort = require('../models/cohort.model');
-const {
-  checkRole,
-  filter,
-  isValidMongoId
-} = require('../common/utils/utilities');
+const { checkRole, filter, isValidMongoId } = require('../common/utils');
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 

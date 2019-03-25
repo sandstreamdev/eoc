@@ -1,5 +1,5 @@
 const Item = require('../models/item.model');
-const filter = require('../common/utils/utilities');
+const filter = require('../common/utils');
 
 const itemCreate = (req, resp) => {
   const { authorName, authorId, isOrdered, name, voterIds } = req.body;

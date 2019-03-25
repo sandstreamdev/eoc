@@ -3,11 +3,11 @@ const Item = require('../models/item.model');
 const {
   checkRole,
   filter,
-  reponseWithItems,
   isValidMongoId,
+  reponseWithItems,
   responseWithItem,
   responseWithLists
-} = require('../common/utils/utilities');
+} = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 

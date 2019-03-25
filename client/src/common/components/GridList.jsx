@@ -9,8 +9,10 @@ import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
-import { manageFavourites } from 'modules/list/model/actions';
-import { manageCohortFavourites } from 'modules/cohort/model/actions';
+import {
+  addToFavourites,
+  removeFromFavourites
+} from 'modules/list/model/actions';
 
 export const GridListRoutes = Object.freeze({
   COHORT: 'cohort',
@@ -20,11 +22,11 @@ export const GridListRoutes = Object.freeze({
 class GridList extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
-    const { manageCohortFavourites, manageFavourites, route } = this.props;
-    console.log(isFavourite);
-    route === GridListRoutes.LIST
-      ? manageFavourites(itemId, isFavourite)
-      : manageCohortFavourites(itemId, isFavourite);
+    const { addToFavourites, removeFromFavourites, route } = this.props;
+
+    if (route === GridListRoutes.LIST) {
+      isFavourite ? removeFromFavourites(itemId) : addToFavourites(itemId);
+    }
   };
 
   handleCardClick = (route, itemId) => () => {
@@ -96,14 +98,14 @@ GridList.propTypes = {
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
 
-  manageCohortFavourites: PropTypes.func,
-  manageFavourites: PropTypes.func,
-  onAddNew: PropTypes.func
+  addToFavourites: PropTypes.func,
+  onAddNew: PropTypes.func,
+  removeFromFavourites: PropTypes.func
 };
 
 export default withRouter(
   connect(
     null,
-    { manageCohortFavourites, manageFavourites }
+    { addToFavourites, removeFromFavourites }
   )(GridList)
 );

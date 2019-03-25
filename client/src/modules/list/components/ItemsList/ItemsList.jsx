@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import ListItem from 'modules/list/components/ListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { toggle, vote } from './actions';
+import { toggle, clearVote, setVote } from './actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
@@ -43,13 +43,14 @@ class ItemsList extends Component {
   voteForItem = item => () => {
     const { _id, isVoted } = item;
     const {
-      vote,
+      clearVote,
+      setVote,
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    vote(_id, listId, isVoted);
+    isVoted ? clearVote(_id, listId, isVoted) : setVote(_id, listId, isVoted);
   };
 
   render() {
@@ -97,8 +98,9 @@ ItemsList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
-  toggle: PropTypes.func,
-  vote: PropTypes.func
+  clearVote: PropTypes.func,
+  setVote: PropTypes.func,
+  toggle: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -108,6 +110,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { toggle, vote }
+    { toggle, clearVote, setVote }
   )(ItemsList)
 );

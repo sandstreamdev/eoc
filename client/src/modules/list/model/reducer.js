@@ -140,6 +140,8 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.CREATE_SUCCESS:
     case ListActionTypes.DELETE_FAILURE:
     case ListActionTypes.DELETE_SUCCESS:
+    case ListActionTypes.FAVOURITES_FAILURE:
+    case ListActionTypes.FAVOURITES_SUCCESS:
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
     case ListActionTypes.FETCH_DATA_FAILURE:
@@ -150,8 +152,6 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.RESTORE_SUCCESS:
     case ListActionTypes.UPDATE_FAILURE:
     case ListActionTypes.UPDATE_SUCCESS:
-    case ListActionTypes.FAVOURITES_SUCCESS:
-    case ListActionTypes.FAVOURITES_FAILURE:
       return false;
     case ItemActionTypes.ADD_REQUEST:
     case ItemActionTypes.TOGGLE_REQUEST:
@@ -159,12 +159,12 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.ARCHIVE_REQUEST:
     case ListActionTypes.CREATE_REQUEST:
     case ListActionTypes.DELETE_REQUEST:
+    case ListActionTypes.FAVOURITES_REQUEST:
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
     case ListActionTypes.FETCH_DATA_REQUEST:
     case ListActionTypes.FETCH_META_DATA_REQUEST:
     case ListActionTypes.RESTORE_REQUEST:
     case ListActionTypes.UPDATE_REQUEST:
-    case ListActionTypes.FAVOURITES_REQUEST:
       return true;
     default:
       return state;
