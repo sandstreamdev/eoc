@@ -113,7 +113,9 @@ class List extends Component {
             </Fragment>
           )}
         </Toolbar>
-        {!isArchived ? (
+        {isArchived ? (
+          <ArchivedList listId={listId} name={name} />
+        ) : (
           <div className="wrapper">
             <div className="list">
               <h1 className="list__heading">
@@ -126,11 +128,16 @@ class List extends Component {
                   <InputBar />
                 </ItemsContainer>
                 <ItemsContainer archived items={orderedItems} />
+                <button
+                  className="link-button"
+                  onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                  type="button"
+                >
+                  {`Archive the "${name}" list`}
+                </button>
               </div>
             </div>
           </div>
-        ) : (
-          <ArchivedList listId={listId} name={name} />
         )}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
