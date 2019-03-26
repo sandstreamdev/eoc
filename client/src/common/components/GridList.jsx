@@ -34,20 +34,20 @@ class GridList extends PureComponent {
       route
     } = this.props;
 
+    let action;
     switch (route) {
       case GridListRoutes.LIST:
-        isFavourite
-          ? removeListFromFavourites(itemId)
-          : addListToFavourites(itemId);
+        action = isFavourite ? removeListFromFavourites : addListToFavourites;
         break;
       case GridListRoutes.COHORT:
-        isFavourite
-          ? removeCohortFromFavourites(itemId)
-          : addCohortToFavourites(itemId);
+        action = isFavourite
+          ? removeCohortFromFavourites
+          : addCohortToFavourites;
         break;
       default:
         break;
     }
+    action(itemId);
   };
 
   handleCardClick = (route, itemId) => () => {
