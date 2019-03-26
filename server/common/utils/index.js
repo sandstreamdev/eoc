@@ -16,16 +16,12 @@ const checkRole = (idsArray, userIdFromReq) => {
 
 const isValidMongoId = id => ObjectId.isValid(id);
 
-const isUserFavourite = (list, userId) => list.favIds.indexOf(userId) > -1;
+const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
 
 const responseWithLists = (lists, userId) =>
-  _map(lists, list => ({
-    _id: list._id,
-    cohortId: list.cohortId && list.cohortId,
-    description: list.description,
-    isArchived: list.isArchived && list.isArchived,
-    isFavourite: list.favIds && isUserFavourite(list, userId),
-    name: list.name
+  _map(lists, ({ favIds, ...rest }) => ({
+    ...rest._doc,
+    isFavourite: isUserFavourite(favIds, userId)
   }));
 
 const checkIfCurrentUserVoted = (item, userId) =>
