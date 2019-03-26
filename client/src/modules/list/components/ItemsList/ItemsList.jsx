@@ -50,7 +50,8 @@ class ItemsList extends Component {
       }
     } = this.props;
 
-    isVoted ? clearVote(_id, listId, isVoted) : setVote(_id, listId, isVoted);
+    const action = isVoted ? clearVote : setVote;
+    action(_id, listId);
   };
 
   render() {
@@ -76,7 +77,7 @@ class ItemsList extends Component {
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
                 votesCount={item.votesCount}
-                whetherUserVoted={item.isVoted}
+                isVoted={item.isVoted}
               />
             ))}
           </ul>
