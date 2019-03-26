@@ -2,6 +2,7 @@ import _pick from 'lodash/pick';
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 import { createSelector } from 'reselect';
+import _sortBy from 'lodash/sortBy';
 
 export const getList = (state, listId) =>
   _pick(state.lists.data, listId)[listId];
@@ -25,12 +26,19 @@ export const getLists = state => state.lists.data;
 
 export const getActiveLists = createSelector(
   getLists,
-  lists => _keyBy(_filter(lists, list => !list.isArchived), '_id')
+  lists =>
+    _keyBy(
+      _sortBy(_filter(lists, list => !list.isArchived), el => !el.isFavourite),
+      '_id'
+    )
 );
 
 export const getArchivedLists = createSelector(
   getLists,
-  lists => _keyBy(_filter(lists, list => list.isArchived), '_id')
+  lists =>
+    _keyBy(
+      _sortBy(_filter(lists, list => list.isArchived), el => !el.isFavourite),
+      '_id'
+    )
 );
-
 export const getIsFetchingLists = state => state.lists.isFetching;

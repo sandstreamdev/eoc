@@ -14,7 +14,7 @@ import { getActiveLists } from 'modules/list/model/selectors';
 import { getCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import GridList from 'common/components/GridList';
+import GridList, { GridListRoutes } from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog, { FormDialogContext } from 'common/components/FormDialog';
 
@@ -80,7 +80,7 @@ class Dashboard extends Component {
               name="Lists"
               onAddNew={this.handleDialogContext(FormDialogContext.CREATE_LIST)}
               placeholder="There are no lists yet!"
-              route="list"
+              route={GridListRoutes.LIST}
             />
             <GridList
               color={CardColorType.BROWN}
@@ -91,7 +91,7 @@ class Dashboard extends Component {
                 FormDialogContext.CREATE_COHORT
               )}
               placeholder="There are no cohorts yet!"
-              route="cohort"
+              route={GridListRoutes.COHORT}
             />
           </div>
         </div>

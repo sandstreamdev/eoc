@@ -3,9 +3,10 @@ const Item = require('../models/item.model');
 const {
   checkRole,
   filter,
-  getListItems,
   isValidMongoId,
-  responseWithItem
+  responseWithItems,
+  responseWithItem,
+  responseWithLists
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -60,6 +61,9 @@ const deleteListById = (req, resp) => {
 
 const getListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   List.find(
     {
@@ -71,7 +75,8 @@ const getListsMetaData = (req, resp) => {
       ],
       isArchived: false
     },
-    `_id name description ${cohortId ? 'cohortId' : ''}`,
+    `_id name description favIds ${cohortId ? 'cohortId' : ''}`,
+    { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
         return resp.status(400).send({
@@ -81,7 +86,7 @@ const getListsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).json(docs)
+        ? resp.status(200).json(responseWithLists(docs, userId))
         : resp.status(404).send({ message: 'No lists data found.' });
     }
   );
@@ -89,7 +94,9 @@ const getListsMetaData = (req, resp) => {
 
 const getArchivedListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
-
+  const {
+    user: { _id: userId }
+  } = req;
   List.find(
     {
       cohortId,
@@ -100,7 +107,7 @@ const getArchivedListsMetaData = (req, resp) => {
       ],
       isArchived: true
     },
-    `_id name description isArchived ${cohortId ? 'cohortId' : ''}`,
+    `_id name description favIds isArchived ${cohortId ? 'cohortId' : ''}`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -111,7 +118,7 @@ const getArchivedListsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).json(docs)
+        ? resp.status(200).json(responseWithLists(docs, userId))
         : resp.status(404).send({ message: 'No archived lists data found.' });
     }
   );
@@ -204,7 +211,7 @@ const getListData = (req, resp) => {
       }
 
       const isAdmin = checkRole(adminIds, req.user._id);
-      const items = getListItems(userId, list);
+      const items = responseWithItems(userId, list);
 
       return resp
         .status(200)
@@ -371,14 +378,78 @@ const updateListById = (req, resp) => {
   );
 };
 
+const addToFavourites = (req, resp) => {
+  const { id: listId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    {
+      $push: { favIds: req.user._id }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't mark list as favourite. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `List "${doc.name}" successfully marked as favourite.`
+          })
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const removeFromFavourites = (req, resp) => {
+  const { id: listId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    {
+      $pull: { favIds: req.user._id }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove list from favourites. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `List "${doc.name}" successfully removed from favourites.`
+          })
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
 module.exports = {
   addItemToList,
+  addToFavourites,
   clearVote,
   createList,
   deleteListById,
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
+  removeFromFavourites,
   updateListById,
   updateListItem,
   voteForItem

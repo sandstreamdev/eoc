@@ -112,6 +112,18 @@ const lists = (state = {}, action) => {
         [action.payload.listId]: items(currentList, action)
       };
     }
+    case ListActionTypes.FAVOURITES_SUCCESS: {
+      const {
+        payload: { listId, isFavourite }
+      } = action;
+      return {
+        ...state,
+        [listId]: {
+          ...state[listId],
+          isFavourite
+        }
+      };
+    }
     default:
       return state;
   }
@@ -131,6 +143,8 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.CREATE_SUCCESS:
     case ListActionTypes.DELETE_FAILURE:
     case ListActionTypes.DELETE_SUCCESS:
+    case ListActionTypes.FAVOURITES_FAILURE:
+    case ListActionTypes.FAVOURITES_SUCCESS:
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
     case ListActionTypes.FETCH_DATA_FAILURE:
@@ -148,6 +162,7 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.ARCHIVE_REQUEST:
     case ListActionTypes.CREATE_REQUEST:
     case ListActionTypes.DELETE_REQUEST:
+    case ListActionTypes.FAVOURITES_REQUEST:
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
     case ListActionTypes.FETCH_DATA_REQUEST:
     case ListActionTypes.FETCH_META_DATA_REQUEST:

@@ -119,6 +119,19 @@ export const removeArchivedListsMetaData = () => ({
   type: ListActionTypes.REMOVE_ARCHIVED_META_DATA
 });
 
+const favouritesRequest = () => ({
+  type: ListActionTypes.FAVOURITES_REQUEST
+});
+
+const favouritesSuccess = data => ({
+  type: ListActionTypes.FAVOURITES_SUCCESS,
+  payload: data
+});
+
+const favouritesFailure = () => ({
+  type: ListActionTypes.FAVOURITES_FAILURE
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
@@ -293,6 +306,50 @@ export const restoreList = listId => dispatch => {
         dispatch,
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, restoring list failed..."
+      );
+    });
+};
+
+export const addToFavourites = listId => dispatch => {
+  dispatch(favouritesRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-to-fav`)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(favouritesSuccess({ listId, isFavourite: true }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const removeFromFavourites = listId => dispatch => {
+  dispatch(favouritesRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/remove-from-fav`)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(favouritesSuccess({ listId, isFavourite: false }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
       );
     });
 };
