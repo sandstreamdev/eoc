@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import CompanyLogo from 'assets/images/company_logo.png';
-import { HomeIcon } from 'assets/images/icons';
+import { BellIcon, HomeIcon } from 'assets/images/icons';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import ToolbarLink from './components/ToolbarLink';
+import ToolbarItem from './components/ToolbarItem';
 
 const Toolbar = ({ children, isHomePage }) => (
   <div className="toolbar">
@@ -41,6 +42,11 @@ const Toolbar = ({ children, isHomePage }) => (
         <AppLogo />
       </div>
       <div className="toolbar__right">
+        <ToolbarItem
+          mainIcon={<BellIcon />}
+          onClick={() => {}}
+          title="Set notifications up"
+        />
         <UserBar />
       </div>
     </div>
