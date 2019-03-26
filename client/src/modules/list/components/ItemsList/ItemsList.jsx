@@ -80,7 +80,7 @@ class ItemsList extends Component {
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
                 votesCount={item.voterIds.length}
-                whetherUserVoted={item.voterIds.includes(userId)}
+                isVoted={item.voterIds.includes(userId)}
               />
             ))}
           </ul>

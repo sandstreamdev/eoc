@@ -26,7 +26,7 @@ class ListItem extends PureComponent {
       name,
       voteForItem,
       votesCount,
-      whetherUserVoted
+      isVoted
     } = this.props;
     const { done } = this.state;
     return (
@@ -56,7 +56,7 @@ class ListItem extends PureComponent {
             <VotingBox
               voteForItem={voteForItem}
               votesCount={votesCount}
-              whetherUserVoted={whetherUserVoted}
+              isVoted={isVoted}
             />
           )}
         </label>
@@ -71,7 +71,7 @@ ListItem.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   votesCount: PropTypes.number.isRequired,
-  whetherUserVoted: PropTypes.bool.isRequired,
+  isVoted: PropTypes.bool.isRequired,
 
   toggleItem: PropTypes.func,
   voteForItem: PropTypes.func
