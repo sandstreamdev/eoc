@@ -44,11 +44,14 @@ const cohorts = (state = {}, action) => {
         [action.payload._id]: action.payload.data
       };
     case CohortActionTypes.FAVOURITES_SUCCESS: {
+      const {
+        payload: { cohortId, isFavourite }
+      } = action;
       return {
         ...state,
-        [action.payload.cohortId]: {
-          ...state[action.payload.cohortId],
-          isFavourite: action.payload.isFavourite
+        [cohortId]: {
+          ...state[cohortId],
+          isFavourite
         }
       };
     }
