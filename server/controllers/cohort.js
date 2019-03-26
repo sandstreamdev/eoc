@@ -103,7 +103,7 @@ const updateCohortById = (req, resp) => {
       doc
         ? resp
             .status(200)
-            .send({ message: `Cohort ${name} successfully updated.` })
+            .send({ message: `Cohort "${name}" successfully updated.` })
         : resp.status(404).send({ message: 'Cohort  not found.' });
     }
   );
@@ -164,7 +164,7 @@ const deleteCohortById = (req, resp) => {
     .then(() => {
       resp
         .status(200)
-        .send({ message: `Cohort ${documentName} successfully deleted.` });
+        .send({ message: `Cohort "${documentName}" successfully deleted.` });
     })
     .catch(err => {
       if (err instanceof NotFoundException) {
