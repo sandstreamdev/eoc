@@ -1,6 +1,13 @@
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
-const { checkRole, filter, isValidMongoId } = require('../common/utilities');
+const {
+  checkRole,
+  filter,
+  isValidMongoId,
+  responseWithItems,
+  responseWithItem,
+  responseWithLists
+} = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
@@ -54,6 +61,9 @@ const deleteListById = (req, resp) => {
 
 const getListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   List.find(
     {
@@ -65,7 +75,8 @@ const getListsMetaData = (req, resp) => {
       ],
       isArchived: false
     },
-    `_id name description ${cohortId ? 'cohortId' : ''}`,
+    `_id name description favIds ${cohortId ? 'cohortId' : ''}`,
+    { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
         return resp.status(400).send({
@@ -75,7 +86,7 @@ const getListsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).json(docs)
+        ? resp.status(200).json(responseWithLists(docs, userId))
         : resp.status(404).send({ message: 'No lists data found.' });
     }
   );
@@ -83,7 +94,9 @@ const getListsMetaData = (req, resp) => {
 
 const getArchivedListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
-
+  const {
+    user: { _id: userId }
+  } = req;
   List.find(
     {
       cohortId,
@@ -94,7 +107,7 @@ const getArchivedListsMetaData = (req, resp) => {
       ],
       isArchived: true
     },
-    `_id name description isArchived ${cohortId ? 'cohortId' : ''}`,
+    `_id name description favIds isArchived ${cohortId ? 'cohortId' : ''}`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -105,7 +118,7 @@ const getArchivedListsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).json(docs)
+        ? resp.status(200).json(responseWithLists(docs, userId))
         : resp.status(404).send({ message: 'No archived lists data found.' });
     }
   );
@@ -113,16 +126,17 @@ const getArchivedListsMetaData = (req, resp) => {
 
 const addItemToList = (req, resp) => {
   const {
-    item: { name, isOrdered, authorName, authorId, voterIds },
+    item: { name, authorName, authorId },
     listId
   } = req.body;
+  const {
+    user: { _id: userId }
+  } = req;
 
   const item = new Item({
     authorName,
     authorId,
-    isOrdered,
-    name,
-    voterIds
+    name
   });
 
   List.findOneAndUpdate(
@@ -144,7 +158,7 @@ const addItemToList = (req, resp) => {
       }
 
       doc
-        ? resp.status(200).send(item)
+        ? resp.status(200).send(responseWithItem(item, userId))
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
@@ -190,21 +204,14 @@ const getListData = (req, resp) => {
       }
     })
     .then(() => {
-      const {
-        _id,
-        adminIds,
-        cohortId,
-        description,
-        isArchived,
-        items,
-        name
-      } = list;
+      const { _id, adminIds, cohortId, description, isArchived, name } = list;
 
       if (isArchived) {
         return resp.status(200).json({ cohortId, _id, isArchived, name });
       }
 
       const isAdmin = checkRole(adminIds, req.user._id);
+      const items = responseWithItems(userId, list);
 
       return resp
         .status(200)
@@ -223,8 +230,11 @@ const getListData = (req, resp) => {
 };
 
 const updateListItem = (req, resp) => {
-  const { isOrdered, itemId, voterIds } = req.body;
+  const { isOrdered, itemId } = req.body;
   const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   /**
    * Create object with properties to update, but only these which
@@ -233,9 +243,6 @@ const updateListItem = (req, resp) => {
   const propertiesToUpdate = {};
   if (isOrdered !== undefined) {
     propertiesToUpdate['items.$.isOrdered'] = isOrdered;
-  }
-  if (voterIds) {
-    propertiesToUpdate['items.$.voterIds'] = voterIds;
   }
 
   List.findOneAndUpdate(
@@ -263,7 +270,77 @@ const updateListItem = (req, resp) => {
       const item = doc.items[itemIndex];
 
       doc
-        ? resp.status(200).json(item)
+        ? resp.status(200).json(responseWithItem(item, userId))
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const voteForItem = (req, resp) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      'items._id': itemId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    { $push: { 'items.$.voterIds': req.user._id } },
+    { new: true },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: 'An error occurred while voting. Please try again.'
+        });
+      }
+      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
+      const item = doc.items[itemIndex];
+
+      doc
+        ? resp.status(200).json(responseWithItem(item, userId))
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const clearVote = (req, resp) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      'items._id': itemId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    { $pull: { 'items.$.voterIds': req.user._id } },
+    { new: true },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: 'An error occurred while voting. Please try again.'
+        });
+      }
+      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
+      const item = doc.items[itemIndex];
+
+      doc
+        ? resp.status(200).json(responseWithItem(item, userId))
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );
@@ -295,7 +372,69 @@ const updateListById = (req, resp) => {
       doc
         ? resp
             .status(200)
-            .send({ message: `List "${doc.name}" successfully updated.` })
+            .send({ message: `List "${name}" successfully updated.` })
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const addToFavourites = (req, resp) => {
+  const { id: listId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    {
+      $push: { favIds: req.user._id }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't mark list as favourite. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `List "${doc.name}" successfully marked as favourite.`
+          })
+        : resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
+const removeFromFavourites = (req, resp) => {
+  const { id: listId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      $or: [
+        { adminIds: req.user._id },
+        { ordererIds: req.user._id },
+        { purchaserIds: req.user._id }
+      ]
+    },
+    {
+      $pull: { favIds: req.user._id }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove list from favourites. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `List "${doc.name}" successfully removed from favourites.`
+          })
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );
@@ -303,11 +442,15 @@ const updateListById = (req, resp) => {
 
 module.exports = {
   addItemToList,
+  addToFavourites,
+  clearVote,
   createList,
   deleteListById,
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
+  removeFromFavourites,
   updateListById,
-  updateListItem
+  updateListItem,
+  voteForItem
 };

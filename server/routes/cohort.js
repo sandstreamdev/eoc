@@ -3,11 +3,13 @@ const express = require('express');
 const router = express.Router();
 
 const {
+  addToFavourites,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
+  removeFromFavourites,
   updateCohortById
 } = require('../controllers/cohort');
 const { authorize } = require('../middleware/authorize');
@@ -18,5 +20,7 @@ router.get('/archived', authorize, getArchivedCohortsMetaData);
 router.patch('/:id/update', authorize, updateCohortById);
 router.get('/:id/data', authorize, getCohortDetails);
 router.delete('/:id/delete', authorize, deleteCohortById);
+router.patch('/:id/add-to-fav', authorize, addToFavourites);
+router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
 
 module.exports = app => app.use('/cohorts', router);

@@ -25,7 +25,7 @@ class ArchivedMessage extends PureComponent {
       <Fragment>
         <div className="archived-message">
           <h1 className="archived-message__header">
-            {`The ${name} ${item} was archived.`}
+            {`The "${name}" ${item} was archived.`}
           </h1>
           <button
             className="archived-message__button primary-button"
@@ -44,7 +44,7 @@ class ArchivedMessage extends PureComponent {
         </div>
         {isDialogVisible && (
           <Dialog
-            title={`Do you really want to permanently delete the ${name} ${item}?`}
+            title={`Do you really want to permanently delete the "${name}" ${item}?`}
             onCancel={this.hideDialog}
             onConfirm={this.handleDeletion}
           />

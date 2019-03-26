@@ -42,6 +42,15 @@
     }
   }
 
+
+  &__link {
+    font-style: italic;
+    color: $text-normal;
+    &:hover {
+      color: $dark-orange;
+    }
+  }
+
   .primary-button {
     z-index: 11;
     cursor: pointer;

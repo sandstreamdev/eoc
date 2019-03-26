@@ -30,7 +30,7 @@ import { noOp } from 'common/utils/noOp';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
-import GridList from 'common/components/GridList';
+import GridList, { GridListRoutes } from 'common/components/GridList';
 
 class Cohort extends PureComponent {
   state = {
@@ -167,7 +167,7 @@ class Cohort extends PureComponent {
           <Dialog
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleCohortArchivization(cohortId)}
-            title={`Do you really want to archive the ${name} cohort?`}
+            title={`Do you really want to archive the "${name}" cohort?`}
           />
         )}
         {dialogContext === DialogContext.UPDATE && (
@@ -203,10 +203,10 @@ class Cohort extends PureComponent {
                 name="Lists"
                 onAddNew={this.handleDialogContext(DialogContext.CREATE)}
                 placeholder={`There are no lists in the ${name} cohort!`}
-                route="list"
+                route={GridListRoutes.LIST}
               />
               <button
-                className="cohort__toggle-archived-lists"
+                className="link-button"
                 onClick={this.handleArchivedListsVisibility(cohortId)}
                 type="button"
               >
@@ -219,7 +219,7 @@ class Cohort extends PureComponent {
                   items={archivedLists}
                   name="Archived lists"
                   placeholder={`There are no archived lists in the ${name} cohort!`}
-                  route="list"
+                  route={GridListRoutes.LIST}
                 />
               )}
             </div>

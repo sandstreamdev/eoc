@@ -4,10 +4,10 @@ import classNames from 'classnames';
 
 import ThumbIcon from 'assets/images/thumbs-up-solid.svg';
 
-const VotingBox = ({ voteForItem, votesCount, whetherUserVoted }) => (
+const VotingBox = ({ isVoted, voteForItem, votesCount }) => (
   <button
     className={classNames('voting-box', {
-      'voting-box__voted': whetherUserVoted
+      'voting-box__voted': isVoted
     })}
     onClick={e => {
       e.stopPropagation();
@@ -21,8 +21,8 @@ const VotingBox = ({ voteForItem, votesCount, whetherUserVoted }) => (
 );
 
 VotingBox.propTypes = {
+  isVoted: PropTypes.bool.isRequired,
   votesCount: PropTypes.number.isRequired,
-  whetherUserVoted: PropTypes.bool.isRequired,
 
   voteForItem: PropTypes.func.isRequired
 };

@@ -122,6 +122,19 @@ const fetchArchivedCohortsMetaDataRequest = () => ({
   type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST
 });
 
+const favouritesRequest = () => ({
+  type: CohortActionTypes.FAVOURITES_REQUEST
+});
+
+const favouritesSuccess = data => ({
+  type: CohortActionTypes.FAVOURITES_SUCCESS,
+  payload: data
+});
+
+const favouritesFailure = () => ({
+  type: CohortActionTypes.FAVOURITES_FAILURE
+});
+
 export const createCohort = (name, description, adminId) => dispatch => {
   dispatch(createCohortRequest());
   return postData(`${ENDPOINT_URL}/cohorts/create`, {
@@ -285,5 +298,49 @@ export const fetchCohortDetails = cohortId => dispatch => {
         err.message || "Oops, we're sorry, fetching data failed..."
       );
       throw err;
+    });
+};
+
+export const addCohortToFavourites = cohortId => dispatch => {
+  dispatch(favouritesRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-to-fav`)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(favouritesSuccess({ cohortId, isFavourite: true }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const removeCohortFromFavourites = cohortId => dispatch => {
+  dispatch(favouritesRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-from-fav`)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(favouritesSuccess({ cohortId, isFavourite: false }));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
     });
 };

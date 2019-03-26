@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import ListItem from 'modules/list/components/ListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { toggle, vote } from './actions';
+import { toggle, clearVote, setVote } from './actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
@@ -41,24 +41,21 @@ class ItemsList extends Component {
   };
 
   voteForItem = item => () => {
-    const { _id, voterIds } = item;
+    const { _id, isVoted } = item;
     const {
-      vote,
-      currentUser: { id },
+      clearVote,
+      setVote,
       match: {
         params: { id: listId }
       }
     } = this.props;
-    voterIds.includes(id)
-      ? vote(_id, listId, voterIds.filter(voterId => voterId !== id))
-      : vote(_id, listId, voterIds.concat(id));
+
+    const action = isVoted ? clearVote : setVote;
+    action(_id, listId);
   };
 
   render() {
-    const {
-      items,
-      currentUser: { id: userId }
-    } = this.props;
+    const { items } = this.props;
     const { limit } = this.state;
 
     return (
@@ -79,8 +76,8 @@ class ItemsList extends Component {
                 name={item.name}
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
-                votesCount={item.voterIds.length}
-                whetherUserVoted={item.voterIds.includes(userId)}
+                votesCount={item.votesCount}
+                isVoted={item.isVoted}
               />
             ))}
           </ul>
@@ -102,8 +99,9 @@ ItemsList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
-  toggle: PropTypes.func,
-  vote: PropTypes.func
+  clearVote: PropTypes.func,
+  setVote: PropTypes.func,
+  toggle: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -113,6 +111,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { toggle, vote }
+    { toggle, clearVote, setVote }
   )(ItemsList)
 );

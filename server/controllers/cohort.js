@@ -1,5 +1,10 @@
 const Cohort = require('../models/cohort.model');
-const { checkRole, filter, isValidMongoId } = require('../common/utilities');
+const {
+  checkRole,
+  filter,
+  isValidMongoId,
+  responseWithCohorts
+} = require('../common/utils');
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
@@ -25,12 +30,15 @@ const createCohort = (req, resp) => {
 };
 
 const getCohortsMetaData = (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
   Cohort.find(
     {
-      $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }],
+      $or: [{ adminIds: userId }, { memberIds: userId }],
       isArchived: false
     },
-    '_id name description',
+    '_id name description favIds',
     { sort: { createdAt: -1 } },
     (err, docs) => {
       if (err) {
@@ -41,23 +49,22 @@ const getCohortsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).send(docs)
+        ? resp.status(200).send(responseWithCohorts(docs, userId))
         : resp.status(404).send({ message: 'No cohorts data found.' });
     }
   );
 };
 
 const getArchivedCohortsMetaData = (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
   Cohort.find(
     {
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ],
+      $or: [{ adminIds: userId }, { memberIds: userId }],
       isArchived: true
     },
-    '_id name description isArchived',
+    '_id name description favIds isArchived',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -71,7 +78,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
           .status(404)
           .send({ message: 'No archived cohorts data found.' });
       }
-      resp.status(200).send(docs);
+      resp.status(200).send(responseWithCohorts(docs, userId));
     }
   );
 };
@@ -103,7 +110,7 @@ const updateCohortById = (req, resp) => {
       doc
         ? resp
             .status(200)
-            .send({ message: `Cohort ${name} successfully updated.` })
+            .send({ message: `Cohort "${name}" successfully updated.` })
         : resp.status(404).send({ message: 'Cohort  not found.' });
     }
   );
@@ -164,7 +171,7 @@ const deleteCohortById = (req, resp) => {
     .then(() => {
       resp
         .status(200)
-        .send({ message: `Cohort ${documentName} successfully deleted.` });
+        .send({ message: `Cohort "${documentName}" successfully deleted.` });
     })
     .catch(err => {
       if (err instanceof NotFoundException) {
@@ -179,11 +186,75 @@ const deleteCohortById = (req, resp) => {
     });
 };
 
+const addToFavourites = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    {
+      _id: cohortId,
+      $or: [{ adminIds: userId }, { memberIds: userId }]
+    },
+    {
+      $push: { favIds: userId }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't mark cohort as favourite. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `Cohort "${doc.name}" successfully marked as favourite.`
+          })
+        : resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
+const removeFromFavourites = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    {
+      _id: cohortId,
+      $or: [{ adminIds: userId }, { memberIds: userId }]
+    },
+    {
+      $pull: { favIds: userId }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove cohort from favourites. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `Cohort "${
+              doc.name
+            }" successfully removed from favourites.`
+          })
+        : resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
 module.exports = {
+  addToFavourites,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
+  removeFromFavourites,
   updateCohortById
 };
