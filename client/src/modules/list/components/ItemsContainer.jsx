@@ -85,7 +85,7 @@ class ItemsContainer extends Component {
   };
 
   render() {
-    const { archived, children, description, items } = this.props;
+    const { archived, children, items } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterItems(items, filterBy);
     const sortedList = this.sortItems(filteredList, sortBy, sortOrder);
