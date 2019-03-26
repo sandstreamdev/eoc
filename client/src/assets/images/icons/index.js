@@ -156,7 +156,7 @@ export const PlusIcon = () => (
   </svg>
 );
 
-export const RegularStar = () => (
+export const RegularStarIcon = () => (
   <svg
     aria-hidden="true"
     className="svg-inline--fa fa-star fa-w-18"
@@ -174,7 +174,7 @@ export const RegularStar = () => (
   </svg>
 );
 
-export const SolidStar = () => (
+export const SolidStarIcon = () => (
   <svg
     aria-hidden="true"
     className="svg-inline--fa fa-star fa-w-18"

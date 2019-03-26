@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { RegularStar, SolidStar } from 'assets/images/icons';
+import { RegularStarIcon, SolidStarIcon } from 'assets/images/icons';
 import { GridListRoutes } from 'common/components/GridList';
 
 export const CardColorType = {
@@ -33,7 +33,7 @@ const CardItem = ({
     <p className="card-item__description">{description}</p>
     {route === GridListRoutes.LIST && (
       <button className="card-item__star" onClick={onFavClick} type="button">
-        {isFavourite ? <SolidStar /> : <RegularStar />}
+        {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
       </button>
     )}
   </div>

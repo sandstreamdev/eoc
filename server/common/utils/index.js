@@ -31,7 +31,7 @@ const responseWithLists = (lists, userId) =>
 const checkIfCurrentUserVoted = (item, userId) =>
   item.voterIds.indexOf(userId) > -1;
 
-const reponseWithItems = (userId, list) => {
+const responseWithItems = (userId, list) => {
   const { items } = list;
 
   return _map(items, item => {
@@ -57,9 +57,9 @@ const responseWithItem = (item, userId) => {
 module.exports = {
   checkRole,
   filter,
-  reponseWithItems,
   isUserFavourite,
   isValidMongoId,
   responseWithItem,
+  responseWithItems,
   responseWithLists
 };
