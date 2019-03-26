@@ -50,11 +50,18 @@ const responseWithItem = (item, userId) => {
   };
 };
 
+const responseWithCohorts = (cohorts, userId) =>
+  _map(cohorts, ({ favIds, ...rest }) => ({
+    ...rest._doc,
+    isFavourite: isUserFavourite(favIds, userId)
+  }));
+
 module.exports = {
   checkRole,
   filter,
   isUserFavourite,
   isValidMongoId,
+  responseWithCohorts,
   responseWithItem,
   responseWithItems,
   responseWithLists

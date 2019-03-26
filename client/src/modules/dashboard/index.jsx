@@ -11,7 +11,7 @@ import {
   fetchCohortsMetaData
 } from 'modules/cohort/model/actions';
 import { getActiveLists } from 'modules/list/model/selectors';
-import { getCohorts } from 'modules/cohort/model/selectors';
+import { getActiveCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import GridList, { GridListRoutes } from 'common/components/GridList';
@@ -123,7 +123,7 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  cohorts: getCohorts(state),
+  cohorts: getActiveCohorts(state),
   currentUser: getCurrentUser(state),
   lists: getActiveLists(state)
 });
