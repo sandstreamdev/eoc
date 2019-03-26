@@ -17,6 +17,34 @@
     border-bottom: 1px solid $border-light;
   }
 
+  &__header-content {
+    width: 50%;
+  }
+
+  &__header-controls {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .filter-box {
+      order: 2;
+      @include breakpoint($xlarge) {
+        order: 0;
+      }
+    }
+    .sort-box {
+      margin-bottom: 10px;
+      @include breakpoint($xlarge) {
+        margin-bottom: 0;
+      }
+    }
+    @include breakpoint($xlarge) {
+      flex-direction: row;
+    }
+  }
+
   &__body {
     padding: 0 0 20px;
   }

@@ -42,7 +42,6 @@ class InputBar extends Component {
     const newItem = {
       authorName: currentUser.name,
       authorId: currentUser.id,
-      isOrdered: false,
       name: itemName
     };
 

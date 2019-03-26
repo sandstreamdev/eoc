@@ -54,12 +54,26 @@ export const toggle = (
     });
 };
 
-export const vote = (itemId, listId, voterIds) => dispatch => {
+export const setVote = (itemId, listId) => dispatch => {
   dispatch(voteForItemRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
-    itemId,
-    voterIds
-  })
+
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/set-vote`, { itemId })
+    .then(resp => resp.json())
+    .then(item => dispatch(voteForItemSuccess(item, listId)))
+    .catch(err => {
+      dispatch(voteForItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, voting failed...."
+      );
+    });
+};
+
+export const clearVote = (itemId, listId) => dispatch => {
+  dispatch(voteForItemRequest());
+
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/clear-vote`, { itemId })
     .then(resp => resp.json())
     .then(item => dispatch(voteForItemSuccess(item, listId)))
     .catch(err => {
