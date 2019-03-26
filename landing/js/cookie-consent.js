@@ -3,6 +3,7 @@ $(window).on('load', () => {
   const cookieBar = $('[data-id="cookie-bar"]');
   const cookieButton = $('[data-id="cookie-button"]');
   const body = $('body');
+  const privacyPage = $('.privacy-policy');
 
   const cookie = {
     set: (name, days) => {
@@ -40,7 +41,9 @@ $(window).on('load', () => {
     init: () => {
       if (!cookie.checkIfSet('cookie-consent')) {
         cookieMessage.open();
-        bodyElement.showOverlay();
+        if (privacyPage.length === 0) {
+          bodyElement.showOverlay();
+        }
         return;
       }
       cookieMessage.close();

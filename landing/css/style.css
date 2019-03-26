@@ -28,7 +28,7 @@
 
  # html
  # body
- # colors 
+ # colors
  # a tag
  # responsive images
  # input placeholders
@@ -285,7 +285,7 @@ body {
 .header-top.affix {
   top: 0;
   width: 100%;
-  z-index: 9999 !important;
+  z-index: 9 !important;
   margin: 0 auto;
   left: 0;
   right: 0;
@@ -567,7 +567,7 @@ features
 
 /*-----------------------------------------------------------------------------------
 
-video 
+video
 
 -----------------------------------------------------------------------------------*/
 
@@ -1497,6 +1497,16 @@ Cookie-consent
   align-items: center;
 }
 
+.cookie-consent__content a {
+  color: #8490a4;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.cookie-consent__content a:hover {
+  color: #ef9b1f;
+}
+
 .cookie-consent__button {
   padding: 8px 20px;
   font-size: 12px;
@@ -1517,6 +1527,56 @@ Cookie-consent
   background-color: rgba(0, 0, 0, 0.4);
 }
 /* End cookie consent */
+
+/*-----------------------------------------------------------------------------------
+
+Privacy-policy
+
+-----------------------------------------------------------------------------------*/
+.header.privacy-policy {
+  background: none;
+  margin-bottom: 50px
+}
+
+.section17 {
+  margin: 0px 0;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.section17 .heading {
+  margin-bottom: 30px;
+}
+
+.section17 .row {
+  padding: 50px 20px;
+}
+
+.section17:first-child {
+  margin-top: 50px;
+}
+
+.section17 .p {
+  padding: 30px 0;
+}
+
+.dark-color-bg .info{
+  color:  var(--text-white);
+}
+
+.dark-color-bg .info a {
+  color: var(--text-white);
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.dark-color-bg .info a:hover {
+  color: var(--text-black);
+}
+
+/* Privacy-policy */
+
 
 /*-----------------------------------------------------------------------------------
 

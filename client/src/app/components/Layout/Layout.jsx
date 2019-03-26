@@ -15,6 +15,7 @@ import Footer from '../Footer';
 import Notifications from 'modules/notification';
 import Page404 from 'common/components/Page404';
 import About from 'modules/about';
+import PrivacyPolicy from 'modules/privacy-policy';
 
 export class Layout extends Component {
   componentDidMount() {
@@ -45,6 +46,7 @@ export class Layout extends Component {
     return !currentUser ? (
       <Switch>
         <Route component={AuthBox} exact path="/" />
+        <Route component={PrivacyPolicy} path="/privacy-policy" />
         <Redirect to="/" />
       </Switch>
     ) : (
@@ -56,6 +58,7 @@ export class Layout extends Component {
           <Route component={List} path="/list/:id(\w+)" />
           <Route component={Archived} path="/archived" />
           <Route component={About} path="/about" />
+          <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={Page404} />
         </Switch>
         <Footer />
