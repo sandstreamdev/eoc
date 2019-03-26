@@ -33,7 +33,7 @@ class DropdownMenu extends Component {
     const { children, menuItems } = this.props;
     const menuButton = children || (
       <div className="dropdown__wrapper">
-        <img alt="Menu Icon" className="dropdown__menu-icon" src={MenuIcon} />
+        <img alt="Menu" className="dropdown__menu-icon" src={MenuIcon} />
       </div>
     );
 

@@ -39,6 +39,7 @@ class SortBox extends Component {
           className="sort-box__select"
           onChange={this.handleSortByChange}
           value={sortBy}
+          name="sorting options"
         >
           {options.map(option => (
             <option key={option.label} value={option.id}>
@@ -52,7 +53,7 @@ class SortBox extends Component {
             onClick={this.handleSortOrderChange}
             type="button"
           >
-            <img alt="Arrow icon" src={ArrowIcon} />
+            <img alt={`sort ${sortOrder}`} src={ArrowIcon} />
           </button>
         </div>
       </div>

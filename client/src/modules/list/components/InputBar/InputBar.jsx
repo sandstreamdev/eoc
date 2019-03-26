@@ -66,6 +66,7 @@ class InputBar extends Component {
           <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
             <input
               className="input-bar__input primary-input"
+              name="item name"
               onChange={this.handleNameChange}
               placeholder="What is missing?"
               ref={this.input}

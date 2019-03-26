@@ -44,7 +44,7 @@ class AuthBox extends PureComponent {
                 tabIndex={!isCookieSet ? '-1' : '1'}
               >
                 <img
-                  alt="Google Icon"
+                  alt="Sign in with Google"
                   className="google-button__img"
                   src="client/src/assets/images/google-btn.png"
                 />

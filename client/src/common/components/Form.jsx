@@ -48,6 +48,7 @@ class Form extends PureComponent {
         <label className="form__label">
           <input
             className="form__input primary-input"
+            name="name"
             onChange={this.handleNameChange}
             placeholder="Name"
             ref={this.input}
@@ -58,6 +59,7 @@ class Form extends PureComponent {
         <label className="form__label">
           <textarea
             className="form__textarea primary-textarea"
+            name="description"
             onChange={this.handleDescriptionChange}
             placeholder="Description"
             type="text"
