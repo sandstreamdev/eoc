@@ -5,10 +5,10 @@ const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createList = (req, resp) => {
-  const { description, name, adminId, cohortId } = req.body;
+  const { description, name, ownerId, cohortId } = req.body;
 
   const list = new List({
-    adminIds: adminId,
+    ownerIds: ownerId,
     cohortId,
     description,
     name
@@ -34,7 +34,7 @@ const createList = (req, resp) => {
 
 const deleteListById = (req, resp) => {
   List.findOneAndDelete(
-    { _id: req.params.id, adminIds: req.user._id },
+    { _id: req.params.id, ownerIds: req.user._id },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -58,11 +58,7 @@ const getListsMetaData = (req, resp) => {
   List.find(
     {
       cohortId,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ],
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }],
       isArchived: false
     },
     `_id name description ${cohortId ? 'cohortId' : ''}`,
@@ -87,11 +83,7 @@ const getArchivedListsMetaData = (req, resp) => {
   List.find(
     {
       cohortId,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ],
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }],
       isArchived: true
     },
     `_id name description isArchived ${cohortId ? 'cohortId' : ''}`,
@@ -128,11 +120,7 @@ const addItemToList = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     { $push: { items: item } },
     (err, doc) => {
@@ -164,11 +152,7 @@ const getListData = (req, resp) => {
   let list;
   List.findOne({
     _id: listId,
-    $or: [
-      { adminIds: userId },
-      { ordererIds: userId },
-      { purchaserIds: userId }
-    ]
+    $or: [{ ownerIds: userId }, { memberIds: userId }]
   })
     .exec()
     .then(doc => {
@@ -192,7 +176,7 @@ const getListData = (req, resp) => {
     .then(() => {
       const {
         _id,
-        adminIds,
+        ownerIds,
         cohortId,
         description,
         isArchived,
@@ -204,11 +188,17 @@ const getListData = (req, resp) => {
         return resp.status(200).json({ cohortId, _id, isArchived, name });
       }
 
-      const isAdmin = checkRole(adminIds, req.user._id);
+      const isOwner = checkRole(ownerIds, req.user._id);
 
-      return resp
-        .status(200)
-        .json({ _id, cohortId, description, isAdmin, isArchived, items, name });
+      return resp.status(200).json({
+        _id,
+        cohortId,
+        description,
+        isOwner,
+        isArchived,
+        items,
+        name
+      });
     })
     .catch(err => {
       if (err instanceof NotFoundException) {
@@ -242,11 +232,7 @@ const updateListItem = (req, resp) => {
     {
       _id: listId,
       'items._id': itemId,
-      $or: [
-        { adminIds: req.user._id },
-        { ordererIds: req.user._id },
-        { purchaserIds: req.user._id }
-      ]
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     {
       $set: propertiesToUpdate
@@ -281,7 +267,7 @@ const updateListById = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [{ adminIds: req.user._id }]
+      $or: [{ ownerIds: req.user._id }]
     },
     dataToUpdate,
     (err, doc) => {

@@ -6,7 +6,7 @@ const ItemSchema = require('./item.model').schema;
 
 const ListSchema = new Schema(
   {
-    adminIds: [ObjectId],
+    ownerIds: [ObjectId],
     cohortId: {
       type: ObjectId,
       default: null
@@ -15,8 +15,7 @@ const ListSchema = new Schema(
     isArchived: { type: Boolean, default: false },
     items: [ItemSchema],
     name: { type: String, required: true },
-    ordererIds: [ObjectId],
-    purchaserIds: [ObjectId],
+    memberIds: [ObjectId],
     visibility: { type: String }
   },
   { timestamps: { createdAt: 'created_at' }, collection: 'lists' }

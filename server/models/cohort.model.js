@@ -5,7 +5,7 @@ const { ObjectId } = Schema.Types;
 
 const CohortSchema = new Schema(
   {
-    adminIds: [ObjectId],
+    ownerIds: [ObjectId],
     description: { type: String },
     isArchived: { type: Boolean, default: false },
     memberIds: [ObjectId],
