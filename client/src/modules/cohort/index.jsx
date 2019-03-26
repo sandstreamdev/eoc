@@ -167,7 +167,7 @@ class Cohort extends PureComponent {
           <Dialog
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleCohortArchivization(cohortId)}
-            title={`Do you really want to archive the ${name} cohort?`}
+            title={`Do you really want to archive the "${name}" cohort?`}
           />
         )}
         {dialogContext === DialogContext.UPDATE && (
@@ -206,7 +206,7 @@ class Cohort extends PureComponent {
                 route={GridListRoutes.LIST}
               />
               <button
-                className="cohort__toggle-archived-lists"
+                className="link-button"
                 onClick={this.handleArchivedListsVisibility(cohortId)}
                 type="button"
               >

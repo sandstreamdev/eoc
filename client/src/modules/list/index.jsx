@@ -14,7 +14,7 @@ import {
 } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import FormDialog from 'common/components/FormDialog';
-import { CohortIcon, EditIcon, ArchiveIcon } from 'assets/images/icons';
+import { CohortIcon, EditIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
@@ -110,11 +110,6 @@ class List extends Component {
                 onClick={this.handleDialogContext(DialogContext.UPDATE)}
                 title="Edit list"
               />
-              <ToolbarItem
-                mainIcon={<ArchiveIcon />}
-                onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
-                title="Archive list"
-              />
             </Fragment>
           )}
         </Toolbar>
@@ -128,6 +123,13 @@ class List extends Component {
               <InputBar />
             </ItemsContainer>
             <ItemsContainer archived items={orderedItems} />
+            <button
+              className="link-button"
+              onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+              type="button"
+            >
+              {`Archive the "${name}" list`}
+            </button>
           </div>
         )}
         {isArchived && <ArchivedList listId={listId} name={name} />}
@@ -135,7 +137,7 @@ class List extends Component {
           <Dialog
             onCancel={this.hideDialog}
             onConfirm={this.archiveListHandler(listId)}
-            title={`Do you really want to archive the ${name} list?`}
+            title={`Do you really want to archive the "${name}" list?`}
           />
         )}
         {dialogContext === DialogContext.UPDATE && (

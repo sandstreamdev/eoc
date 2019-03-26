@@ -156,7 +156,7 @@ export const PlusIcon = () => (
   </svg>
 );
 
-export const RegularStar = () => (
+export const RegularStarIcon = () => (
   <svg
     aria-hidden="true"
     className="svg-inline--fa fa-star fa-w-18"
@@ -174,7 +174,7 @@ export const RegularStar = () => (
   </svg>
 );
 
-export const SolidStar = () => (
+export const SolidStarIcon = () => (
   <svg
     aria-hidden="true"
     className="svg-inline--fa fa-star fa-w-18"
@@ -188,6 +188,24 @@ export const SolidStar = () => (
     <path
       d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"
       fill="currentColor"
+    />
+  </svg>
+);
+
+export const BellIcon = () => (
+  <svg
+    aria-hidden="true"
+    className="svg-inline--fa fa-bell fa-w-14"
+    data-icon="bell"
+    data-prefix="fas"
+    focusable="false"
+    role="img"
+    viewBox="0 0 448 512"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"
+      fill="#fff"
     />
   </svg>
 );

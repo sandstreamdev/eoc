@@ -1,11 +1,10 @@
 import React, { Fragment, PureComponent } from 'react';
-import CookieConsent from 'react-cookie-consent';
 import classNames from 'classnames';
 
 import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL, ENDPOINT_URL } from 'common/constants/variables';
-import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import { checkIfCookieSet } from 'common/utils/cookie';
+import CookieConsentBox from 'common/components/CookieConsentBox';
 
 class AuthBox extends PureComponent {
   state = {
@@ -63,23 +62,7 @@ class AuthBox extends PureComponent {
           </div>
         </div>
         {!isCookieSet && (
-          <Fragment>
-            <Overlay type={OverlayStyleType.MEDIUM} />
-            <CookieConsent
-              buttonClasses="primary-button"
-              buttonText="Accept"
-              containerClasses="cookie-consent"
-              contentClasses="cookie-consent__content"
-              cookieName="eoc_cookie-consent"
-              disableStyles
-              expires={365}
-              location="bottom"
-              onAccept={this.handleCookieAccept}
-            >
-              We use cookies to ensure you get the best experience. By using
-              this website, you consent to use of these cookies.
-            </CookieConsent>
-          </Fragment>
+          <CookieConsentBox isAuthPage onAccept={this.handleCookieAccept} />
         )}
       </Fragment>
     );

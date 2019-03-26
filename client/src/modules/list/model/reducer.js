@@ -113,11 +113,14 @@ const lists = (state = {}, action) => {
       };
     }
     case ListActionTypes.FAVOURITES_SUCCESS: {
+      const {
+        payload: { listId, isFavourite }
+      } = action;
       return {
         ...state,
-        [action.payload.listId]: {
-          ...state[action.payload.listId],
-          isFavourite: action.payload.isFavourite
+        [listId]: {
+          ...state[listId],
+          isFavourite
         }
       };
     }
