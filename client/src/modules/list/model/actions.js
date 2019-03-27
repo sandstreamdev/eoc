@@ -150,12 +150,12 @@ export const fetchListData = listId => dispatch => {
 export const createList = (
   name,
   description,
-  adminId,
+  ownerId,
   cohortId
 ) => dispatch => {
   dispatch(createListRequest());
   return postData(`${ENDPOINT_URL}/lists/create`, {
-    adminId,
+    ownerId,
     cohortId,
     description,
     name

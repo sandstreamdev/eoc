@@ -64,9 +64,9 @@ class List extends Component {
     return !list || (list && !list.isArchived);
   };
 
-  checkIfAdmin = () => {
+  checkIfOwner = () => {
     const { list } = this.props;
-    return list && list.isAdmin;
+    return list && list.isOwner;
   };
 
   handleDialogContext = context => () =>
@@ -103,7 +103,7 @@ class List extends Component {
               title="Go back to cohort"
             />
           )}
-          {!isArchived && this.checkIfAdmin() && (
+          {!isArchived && this.checkIfOwner() && (
             <Fragment>
               <ToolbarItem
                 mainIcon={<EditIcon />}

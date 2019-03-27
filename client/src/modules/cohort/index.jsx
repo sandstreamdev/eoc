@@ -101,9 +101,9 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isArchived;
   };
 
-  checkIfAdmin = () => {
+  checkIfOwner = () => {
     const { cohortDetails } = this.props;
-    return cohortDetails && cohortDetails.isAdmin;
+    return cohortDetails && cohortDetails.isOwner;
   };
 
   handleDialogContext = context => () =>
@@ -148,7 +148,7 @@ class Cohort extends PureComponent {
     return (
       <Fragment>
         <Toolbar>
-          {!isArchived && this.checkIfAdmin() && (
+          {!isArchived && this.checkIfOwner() && (
             <Fragment>
               <ToolbarItem
                 mainIcon={<EditIcon />}

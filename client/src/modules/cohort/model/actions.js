@@ -135,12 +135,12 @@ const favouritesFailure = () => ({
   type: CohortActionTypes.FAVOURITES_FAILURE
 });
 
-export const createCohort = (name, description, adminId) => dispatch => {
+export const createCohort = (name, description, ownerId) => dispatch => {
   dispatch(createCohortRequest());
   return postData(`${ENDPOINT_URL}/cohorts/create`, {
     name,
     description,
-    adminId
+    ownerId
   })
     .then(resp => resp.json())
     .then(json => dispatch(createCohortSuccess(json)))

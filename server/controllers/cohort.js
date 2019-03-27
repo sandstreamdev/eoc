@@ -9,12 +9,12 @@ const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createCohort = (req, resp) => {
-  const { description, name, adminId } = req.body;
+  const { description, name, ownerId } = req.body;
 
   const cohort = new Cohort({
     name,
     description,
-    adminIds: adminId
+    ownerIds: ownerId
   });
 
   cohort.save((err, doc) =>
@@ -35,7 +35,7 @@ const getCohortsMetaData = (req, resp) => {
   } = req;
   Cohort.find(
     {
-      $or: [{ adminIds: userId }, { memberIds: userId }],
+      $or: [{ ownerIds: userId }, { memberIds: userId }],
       isArchived: false
     },
     '_id name description favIds',
@@ -61,7 +61,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
   } = req;
   Cohort.find(
     {
-      $or: [{ adminIds: userId }, { memberIds: userId }],
+      $or: [{ ownerIds: userId }, { memberIds: userId }],
       isArchived: true
     },
     '_id name description favIds isArchived',
@@ -96,7 +96,7 @@ const updateCohortById = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: id,
-      $or: [{ adminIds: req.user._id }]
+      $or: [{ ownerIds: req.user._id }]
     },
     dataToUpdate,
     (err, doc) => {
@@ -125,7 +125,7 @@ const getCohortDetails = (req, resp) => {
   Cohort.findOne(
     {
       _id: req.params.id,
-      $or: [{ adminIds: req.user._id }, { memberIds: req.user._id }]
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     (err, doc) => {
       if (err) {
@@ -141,22 +141,22 @@ const getCohortDetails = (req, resp) => {
           .send({ message: `Data of cohort id: ${req.params.id} not found.` });
       }
 
-      const { adminIds, _id, isArchived, description, name } = doc;
+      const { ownerIds, _id, isArchived, description, name } = doc;
 
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
 
-      const isAdmin = checkRole(adminIds, req.user._id);
+      const isOwner = checkRole(ownerIds, req.user._id);
 
-      resp.status(200).json({ _id, isAdmin, isArchived, description, name });
+      resp.status(200).json({ _id, isOwner, isArchived, description, name });
     }
   );
 };
 
 const deleteCohortById = (req, resp) => {
   let documentName = '';
-  Cohort.findOne({ _id: req.params.id, adminIds: req.user._id })
+  Cohort.findOne({ _id: req.params.id, ownerIds: req.user._id })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -195,7 +195,7 @@ const addToFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ adminIds: userId }, { memberIds: userId }]
+      $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     {
       $push: { favIds: userId }
@@ -225,7 +225,7 @@ const removeFromFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ adminIds: userId }, { memberIds: userId }]
+      $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     {
       $pull: { favIds: userId }
