@@ -94,6 +94,7 @@ const seedLists = async () => {
   }
 
   console.log('Seeding lists... 🌱 🌱');
+  // eslint-disable-next-line no-unused-vars
   let counter = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const list of initialLists) {
