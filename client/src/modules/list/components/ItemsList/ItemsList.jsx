@@ -72,12 +72,12 @@ class ItemsList extends Component {
                 authorName={item.authorName}
                 id={item._id}
                 image={item.image}
+                isVoted={item.isVoted}
                 key={item._id}
                 name={item.name}
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
                 votesCount={item.votesCount}
-                isVoted={item.isVoted}
               />
             ))}
           </ul>

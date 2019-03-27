@@ -58,7 +58,7 @@ class UserBar extends Component {
             type="button"
           >
             <img
-              alt="User avatar"
+              alt={`${name} avatar`}
               className="user-bar__avatar"
               src={avatarUrl}
             />

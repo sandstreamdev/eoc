@@ -17,6 +17,7 @@ class FilterBox extends Component {
         <span className="filter-box__label">{label}</span>
         <select
           className="filter-box__select"
+          name="filters"
           onChange={this.handleFilterByChange}
           value={filterBy}
         >

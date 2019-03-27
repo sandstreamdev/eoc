@@ -15,7 +15,11 @@ const VotingBox = ({ isVoted, voteForItem, votesCount }) => (
     }}
     type="button"
   >
-    <img alt="Thumb icon" className="voting-box__icon" src={ThumbIcon} />
+    <img
+      alt={`${isVoted ? 'remove your vote' : 'vote'}`}
+      className="voting-box__icon"
+      src={ThumbIcon}
+    />
     {votesCount}
   </button>
 );

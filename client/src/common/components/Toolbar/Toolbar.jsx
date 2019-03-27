@@ -23,7 +23,7 @@ const Toolbar = ({ children, isHomePage }) => (
             target="_blank"
           >
             <img
-              alt="Company logo"
+              alt="Sandstream Development"
               className="toolbar__company-logo"
               src={CompanyLogo}
             />
