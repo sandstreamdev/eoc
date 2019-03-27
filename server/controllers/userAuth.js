@@ -10,7 +10,6 @@ const setUserAndSession = (req, res) => {
       name: req.user.displayName
     })
   );
-  console.log(req.user.id);
   res.redirect(FRONTEND_URL);
 };
 
