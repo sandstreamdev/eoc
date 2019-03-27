@@ -26,8 +26,9 @@ const seedDatabase = async () => {
   await connectDatabase();
 
   try {
-    await seedLists();
-    await seedCohorts();
+    const data = await seedCohorts();
+    const { _id: cohortId } = data[0];
+    await seedLists(cohortId);
     console.log('\n🍺  All seeds done!\n');
   } finally {
     await disconnectDatabase();

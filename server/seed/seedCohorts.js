@@ -1,28 +1,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-console */
-
 const Cohort = require('../models/cohort.model');
 require('dotenv').config();
-
-const userId = process.env.USER_ID;
-const initialCohorts = [
-  {
-    _id: '5c9a12eb46e555ba24992a2c',
-    adminIds: [userId],
-    description: '',
-    isArchived: false,
-    memberIds: [],
-    name: 'Cohort 1'
-  },
-  {
-    _id: '5c9a12f046e555ba24992a2d',
-    adminIds: [userId],
-    description: '',
-    isArchived: false,
-    memberIds: [],
-    name: 'Cohort 2'
-  }
-];
+const { generateCohorts } = require('./generateCohorts');
 
 const seedCohorts = async () => {
   const existingCohorts = await Cohort.find();
@@ -32,15 +12,19 @@ const seedCohorts = async () => {
     return;
   }
 
+  const cohorts = generateCohorts(2);
+
   console.log('Seeding cohorts... 🌱 🌱');
+  // eslint-disable-next-line no-unused-vars
   let counter = 0;
   // eslint-disable-next-line no-restricted-syntax
-  for (const cohort of initialCohorts) {
+  for (const cohort of cohorts) {
     const newCohort = new Cohort(cohort);
 
     await newCohort.save();
     counter += 1;
   }
+  return cohorts;
 };
 
 module.exports = {
