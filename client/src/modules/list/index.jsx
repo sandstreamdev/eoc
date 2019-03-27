@@ -20,6 +20,10 @@ import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 
+export const ListType = Object.freeze({
+  PRIVATE: 'private',
+  PUBLIC: 'public'
+});
 class List extends Component {
   state = {
     dialogContext: null

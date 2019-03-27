@@ -48,3 +48,24 @@
     box-shadow: 0 0 0 2px rgba($border-focus, 0);
   }
 }
+
+.primary-select {
+  background-color: $bg-color;
+  background: url('../../assets/images/chevron-down-solid.svg') no-repeat right
+    10px center/10px;
+  border: 1px solid $border-color;
+  box-sizing: border-box;
+  color: $text-normal;
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  outline: 0;
+  text-transform: capitalize;
+  width: 100%;
+  height: 36px;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 10px 12px;
+}

@@ -151,14 +151,16 @@ export const createList = (
   name,
   description,
   ownerId,
-  cohortId
+  cohortId,
+  isPrivate
 ) => dispatch => {
   dispatch(createListRequest());
   return postData(`${ENDPOINT_URL}/lists/create`, {
     ownerId,
     cohortId,
     description,
-    name
+    name,
+    isPrivate
   })
     .then(resp => resp.json())
     .then(json => dispatch(createListSuccess(json)))

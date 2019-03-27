@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { RegularStarIcon, SolidStarIcon } from 'assets/images/icons';
+import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
 
 export const CardColorType = {
   BROWN: 'card/BROWN',
@@ -14,6 +14,7 @@ const CardItem = ({
   color,
   description,
   isFavourite,
+  isPrivate,
   name,
   onCardClick,
   onFavClick
@@ -27,7 +28,10 @@ const CardItem = ({
     onClick={onCardClick}
     role="figure"
   >
-    <h3 className="card-item__heading">{name}</h3>
+    <header className="card-item__header">
+      {isPrivate && <LockIcon />}
+      <h3 className="card-item__heading">{name}</h3>
+    </header>
     <p className="card-item__description">{description}</p>
     <button className="card-item__star" onClick={onFavClick} type="button">
       {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
@@ -41,6 +45,7 @@ CardItem.propTypes = {
   color: PropTypes.string.isRequired,
   description: PropTypes.string,
   isFavourite: PropTypes.bool,
+  isPrivate: PropTypes.bool,
   name: PropTypes.string,
 
   onCardClick: PropTypes.func.isRequired,

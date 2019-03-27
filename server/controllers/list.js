@@ -12,13 +12,14 @@ const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createList = (req, resp) => {
-  const { description, name, ownerId, cohortId } = req.body;
+  const { description, isPrivate, name, ownerId, cohortId } = req.body;
 
   const list = new List({
-    ownerIds: ownerId,
     cohortId,
     description,
-    name
+    isPrivate,
+    name,
+    ownerIds: ownerId
   });
 
   list.save((err, doc) => {
@@ -28,10 +29,10 @@ const createList = (req, resp) => {
         .send({ message: 'List not saved. Please try again.' });
     }
 
-    const { _id, description, name } = doc;
+    const { _id, description, isPrivate, name } = doc;
     const data = cohortId
-      ? { _id, description, name, cohortId }
-      : { _id, description, name };
+      ? { _id, description, isPrivate, name, cohortId }
+      : { _id, description, isPrivate, name };
     resp
       .status(201)
       .location(`/lists/${doc._id}`)
@@ -68,10 +69,14 @@ const getListsMetaData = (req, resp) => {
   List.find(
     {
       cohortId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }],
+      $or: [
+        { ownerIds: req.user._id },
+        { memberIds: req.user._id },
+        { isPrivate: false }
+      ],
       isArchived: false
     },
-    `_id name description favIds ${cohortId ? 'cohortId' : ''}`,
+    `_id name description isPrivate favIds ${cohortId ? 'cohortId' : ''}`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -96,10 +101,16 @@ const getArchivedListsMetaData = (req, resp) => {
   List.find(
     {
       cohortId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }],
+      $or: [
+        { ownerIds: req.user._id },
+        { memberIds: req.user._id },
+        { isPrivate: false }
+      ],
       isArchived: true
     },
-    `_id name description favIds isArchived ${cohortId ? 'cohortId' : ''}`,
+    `_id name description isPrivate favIds isArchived ${
+      cohortId ? 'cohortId' : ''
+    }`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -134,7 +145,11 @@ const addItemToList = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      $or: [
+        { ownerIds: req.user._id },
+        { memberIds: req.user._id },
+        { isPrivate: false }
+      ]
     },
     { $push: { items: item } },
     (err, doc) => {
@@ -166,7 +181,7 @@ const getListData = (req, resp) => {
   let list;
   List.findOne({
     _id: listId,
-    $or: [{ ownerIds: userId }, { memberIds: userId }]
+    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }]
   })
     .exec()
     .then(doc => {
@@ -188,10 +203,20 @@ const getListData = (req, resp) => {
       }
     })
     .then(() => {
-      const { _id, cohortId, description, isArchived, name, ownerIds } = list;
+      const {
+        _id,
+        cohortId,
+        description,
+        isArchived,
+        isPrivate,
+        name,
+        ownerIds
+      } = list;
 
       if (isArchived) {
-        return resp.status(200).json({ cohortId, _id, isArchived, name });
+        return resp
+          .status(200)
+          .json({ cohortId, _id, isArchived, isPrivate, name });
       }
 
       const isOwner = checkRole(ownerIds, req.user._id);
@@ -202,6 +227,7 @@ const getListData = (req, resp) => {
         cohortId,
         description,
         isOwner,
+        isPrivate,
         isArchived,
         items,
         name
@@ -239,7 +265,11 @@ const updateListItem = (req, resp) => {
     {
       _id: listId,
       'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      $or: [
+        { ownerIds: req.user._id },
+        { memberIds: req.user._id },
+        { isPrivate: false }
+      ]
     },
     {
       $set: propertiesToUpdate
@@ -273,7 +303,11 @@ const voteForItem = (req, resp) => {
     {
       _id: listId,
       'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      $or: [
+        { ownerIds: req.user._id },
+        { memberIds: req.user._id },
+        { isPrivate: false }
+      ]
     },
     { $push: { 'items.$.voterIds': req.user._id } },
     { new: true },
@@ -304,7 +338,11 @@ const clearVote = (req, resp) => {
     {
       _id: listId,
       'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      $or: [
+        { ownerIds: req.user._id },
+        { memberIds: req.user._id },
+        { isPrivate: false }
+      ]
     },
     { $pull: { 'items.$.voterIds': req.user._id } },
     { new: true },
@@ -362,7 +400,11 @@ const addToFavourites = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      $or: [
+        { ownerIds: req.user._id },
+        { memberIds: req.user._id },
+        { isPrivate: false }
+      ]
     },
     {
       $push: { favIds: req.user._id }
@@ -389,7 +431,11 @@ const removeFromFavourites = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      $or: [
+        { ownerIds: req.user._id },
+        { memberIds: req.user._id },
+        { isPrivate: false }
+      ]
     },
     {
       $pull: { favIds: req.user._id }

@@ -31,11 +31,13 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList, { GridListRoutes } from 'common/components/GridList';
+import { ListType } from '../list';
 
 class Cohort extends PureComponent {
   state = {
     areArchivedListVisible: false,
-    dialogContext: null
+    dialogContext: null,
+    isListPrivate: true
   };
 
   componentDidMount() {
@@ -68,7 +70,8 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
-    createList(name, description, userId, cohortId)
+    const { isListPrivate } = this.state;
+    createList(name, description, userId, cohortId, isListPrivate)
       .then(this.hideDialog())
       .catch(noOp);
   };
@@ -128,6 +131,15 @@ class Cohort extends PureComponent {
       : removeArchivedListsMetaData();
   };
 
+  handleListType = isPrivate => {
+    console.log(isPrivate);
+
+    if (isPrivate === ListType.PRIVATE) {
+      this.setState({ isListPrivate: true });
+    }
+    this.setState({ isListPrivate: false });
+  };
+
   render() {
     const {
       archivedLists,
@@ -184,6 +196,7 @@ class Cohort extends PureComponent {
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleListCreation}
             title="Add new list"
+            onSelect={this.handleListType}
           />
         )}
         {isArchived ? (
