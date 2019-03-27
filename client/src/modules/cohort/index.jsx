@@ -31,7 +31,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList, { GridListRoutes } from 'common/components/GridList';
-import { ListType } from '../list';
+import { ListType } from 'modules/list';
 
 class Cohort extends PureComponent {
   state = {
@@ -70,8 +70,11 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
+
     const { isListPrivate } = this.state;
-    createList(name, description, userId, cohortId, isListPrivate)
+    const data = { name, description, userId, cohortId, isListPrivate };
+
+    createList(data)
       .then(this.hideDialog())
       .catch(noOp);
   };

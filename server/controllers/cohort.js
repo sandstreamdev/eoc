@@ -9,12 +9,11 @@ const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 
 const createCohort = (req, resp) => {
-  const { description, name, ownerId } = req.body;
-
+  const { description, name, userId } = req.body;
   const cohort = new Cohort({
     name,
     description,
-    ownerIds: ownerId
+    ownerIds: userId
   });
 
   cohort.save((err, doc) =>
