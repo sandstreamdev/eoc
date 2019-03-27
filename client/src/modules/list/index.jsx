@@ -24,6 +24,7 @@ export const ListType = Object.freeze({
   PRIVATE: 'private',
   PUBLIC: 'public'
 });
+
 class List extends Component {
   state = {
     dialogContext: null
