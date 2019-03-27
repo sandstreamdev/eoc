@@ -55,7 +55,7 @@ const generateLists = cohortId => [
   {
     _id: '5c9a130146e555ba24992a2e',
     adminIds: [userId],
-    cohortId: '5c9a12f046e555ba24992a2d',
+    cohortId,
     description: '',
     isArchived: false,
     items: [],
