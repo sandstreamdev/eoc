@@ -14,7 +14,7 @@ import {
 } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import FormDialog from 'common/components/FormDialog';
-import { CohortIcon, EditIcon } from 'assets/images/icons';
+import { CohortIcon, EditIcon, ListIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
@@ -113,26 +113,32 @@ class List extends Component {
             </Fragment>
           )}
         </Toolbar>
-        {!isArchived && (
-          <div className="wrapper list-wrapper">
-            <ItemsContainer
-              description={description}
-              name={name}
-              items={listItems}
-            >
-              <InputBar />
-            </ItemsContainer>
-            <ItemsContainer archived items={orderedItems} />
-            <button
-              className="link-button"
-              onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
-              type="button"
-            >
-              {`Archive the "${name}" list`}
-            </button>
+        {isArchived ? (
+          <ArchivedList listId={listId} name={name} />
+        ) : (
+          <div className="wrapper">
+            <div className="list">
+              <h1 className="list__heading">
+                <ListIcon />
+                {name}
+              </h1>
+              <p className="list__description">{description}</p>
+              <div className="list__items">
+                <ItemsContainer items={listItems}>
+                  <InputBar />
+                </ItemsContainer>
+                <ItemsContainer archived items={orderedItems} />
+                <button
+                  className="link-button"
+                  onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                  type="button"
+                >
+                  {`Archive the "${name}" list`}
+                </button>
+              </div>
+            </div>
           </div>
         )}
-        {isArchived && <ArchivedList listId={listId} name={name} />}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
             onCancel={this.hideDialog}

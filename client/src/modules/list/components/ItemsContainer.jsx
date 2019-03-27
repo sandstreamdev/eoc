@@ -85,7 +85,7 @@ class ItemsContainer extends Component {
   };
 
   render() {
-    const { archived, children, description, name, items } = this.props;
+    const { archived, children, items } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterItems(items, filterBy);
     const sortedList = this.sortItems(filteredList, sortBy, sortOrder);
@@ -93,12 +93,9 @@ class ItemsContainer extends Component {
     return (
       <div className="items">
         <header className="items__header">
-          <div className="items__header-content">
-            <h2 className="items__heading items__heading--left">
-              {archived ? 'Done' : name}
-            </h2>
-            {description && <p className="items__description">{description}</p>}
-          </div>
+          <h2 className="items__heading items__heading--left">
+            {archived ? 'Done' : 'Unhandled'}
+          </h2>
           <div className="items__header-controls">
             <FilterBox
               filterBy={filterBy}
@@ -128,9 +125,7 @@ ItemsContainer.propTypes = {
   archived: PropTypes.bool,
   children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
-  description: PropTypes.string,
-  items: PropTypes.arrayOf(PropTypes.object),
-  name: PropTypes.string
+  items: PropTypes.arrayOf(PropTypes.object)
 };
 
 const mapStateToProps = state => ({
