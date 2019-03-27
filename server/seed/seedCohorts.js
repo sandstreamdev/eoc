@@ -32,7 +32,7 @@ const seedCohorts = async () => {
     return;
   }
 
-  console.log('Seeding lists... 🌱 🌱');
+  console.log('Seeding cohorts... 🌱 🌱');
   let counter = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const cohort of initialCohorts) {
