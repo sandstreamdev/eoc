@@ -9,18 +9,18 @@ const initialCohorts = [
   {
     _id: '5c9a12eb46e555ba24992a2c',
     adminIds: [userId],
+    description: '',
     isArchived: false,
     memberIds: [],
-    name: 'Cohorta 1',
-    description: ''
+    name: 'Cohorta 1'
   },
   {
     _id: '5c9a12f046e555ba24992a2d',
     adminIds: [userId],
+    description: '',
     isArchived: false,
     memberIds: [],
-    name: 'Cohort 2',
-    description: ''
+    name: 'Cohort 2'
   }
 ];
 

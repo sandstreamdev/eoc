@@ -28,11 +28,10 @@ const seedDatabase = async () => {
   try {
     await seedLists();
     await seedCohorts();
+    console.log('\n🍺  All seeds done!\n');
   } finally {
     await disconnectDatabase();
   }
-
-  console.log('\n🍺  All done!\n');
 };
 
 seedDatabase().catch(error => {
