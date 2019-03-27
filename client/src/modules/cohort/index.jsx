@@ -132,8 +132,6 @@ class Cohort extends PureComponent {
   };
 
   handleListType = isPrivate => {
-    console.log(isPrivate);
-
     if (isPrivate === ListType.PRIVATE) {
       this.setState({ isListPrivate: true });
     }
