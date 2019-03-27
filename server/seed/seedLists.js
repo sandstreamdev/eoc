@@ -97,9 +97,7 @@ const seedLists = async () => {
   let counter = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const list of initialLists) {
-    const newList = new List({
-      ...list
-    });
+    const newList = new List(list);
 
     await newList.save();
     counter += 1;

@@ -12,7 +12,7 @@ const initialCohorts = [
     description: '',
     isArchived: false,
     memberIds: [],
-    name: 'Cohorta 1'
+    name: 'Cohort 1'
   },
   {
     _id: '5c9a12f046e555ba24992a2d',
@@ -36,7 +36,7 @@ const seedCohorts = async () => {
   let counter = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const cohort of initialCohorts) {
-    const newCohort = new Cohort({ ...cohort });
+    const newCohort = new Cohort(cohort);
 
     await newCohort.save();
     counter += 1;
