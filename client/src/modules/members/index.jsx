@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 import { DotsIcon, UserIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
+import MemberBox from './components/MemberBox';
 
 class MembersBox extends PureComponent {
   state = {
@@ -23,6 +25,7 @@ class MembersBox extends PureComponent {
 
   render() {
     const { isAddNewVisible } = this.state;
+    const { isCurrentOwner } = this.props;
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -43,9 +46,12 @@ class MembersBox extends PureComponent {
             )}
           </li>
           <li className="members-box__list-item">
-            <button className="members-box__member" type="button">
-              <UserIcon />
-            </button>
+            <MemberBox
+              isCurrentOwner={isCurrentOwner}
+              isOwner
+              name="Name Surname"
+              userId="abcde"
+            />
           </li>
           <li className="members-box__list-item">
             <button className="members-box__member" type="button">
@@ -71,5 +77,7 @@ class MembersBox extends PureComponent {
     );
   }
 }
+
+MembersBox.propTypes = { isCurrentOwner: PropTypes.bool.isRequired };
 
 export default MembersBox;

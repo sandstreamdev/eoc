@@ -14,6 +14,11 @@
 
 .disabled-button {
   pointer-events: none;
+  background-color: $button-disabled;
+}
+
+.disabled-google-button {
+  pointer-events: none;
 }
 
 .link-button {

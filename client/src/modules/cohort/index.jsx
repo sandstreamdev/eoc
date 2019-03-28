@@ -211,7 +211,7 @@ class Cohort extends PureComponent {
                 {name}
               </h1>
               <p className="cohort__description">{description}</p>
-              <MembersBox />
+              <MembersBox isCurrentOwner={this.checkIfOwner()} />
               <GridList
                 color={CardColorType.ORANGE}
                 icon={<ListIcon />}

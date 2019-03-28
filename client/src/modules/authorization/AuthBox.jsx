@@ -37,7 +37,7 @@ class AuthBox extends PureComponent {
               <h1 className="authbox__sign-in">Sign in with:</h1>
               <a
                 className={classNames('google-button', {
-                  'disabled-button': !isCookieSet
+                  'disabled-google-button': !isCookieSet
                 })}
                 href={`${ENDPOINT_URL}/auth/google`}
                 tabIndex={!isCookieSet ? '-1' : '1'}

@@ -71,7 +71,7 @@ export const fetchUsers = () => dispatch => {
     });
 };
 
-export const removeCohortUser = (cohortId, isOwner, userId) => dispatch => {
+export const removeCohortUser = (cohortId, userId, isOwner) => dispatch => {
   const url = isOwner
     ? `${ENDPOINT_URL}/cohorts/${cohortId}/remove-owner`
     : `${ENDPOINT_URL}/cohorts/${cohortId}/remove-member`;
