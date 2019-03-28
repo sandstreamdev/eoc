@@ -1,9 +1,13 @@
 .member-box {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: $bg-color;
+  position: absolute;
+  top: 0;
+  max-width: 200px;
+  border: 1px solid red;
+  z-index: 10;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  // background-color: $bg-color;
 
   &__user-button {
     position: relative;
@@ -30,24 +34,37 @@
   }
 
   &__details {
-    position: absolute;
-    width: 90%;
-    max-width: 200px;
+    // position: absolute;
+    box-sizing: border-box;
+    width: 100%;
     // top: 36px;
-    margin-top: 10px;
+    // margin-top: 10px;
     z-index: 5;
     background-color: $bg-color;
-    padding: 15px;
-    box-shadow: 0px 0px 5px rgba($shadow-color, 0.15);
+    // padding: 15px;
+    // box-shadow: 0px 0px 5px rgba($shadow-color, 0.15);
   }
 
   &__heading {
+    width: 100%;
     font-weight: 500;
     white-space: nowrap;
   }
 
+  &__role-description {
+    display: none;
+    font-weight: 400;
+  }
+
   &__option {
     padding: 15px 0 0;
-    border-bottom: 1px solid $gray2;
+    // width: 33.333%;
+    //border-bottom: 1px solid $gray2;
+  }
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
   }
 }

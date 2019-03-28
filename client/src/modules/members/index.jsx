@@ -7,13 +7,17 @@ import MemberBox from './components/MemberBox';
 
 class MembersBox extends PureComponent {
   state = {
-    isAddNewVisible: false
+    isAddNewVisible: false,
+    memberDetails: null
   };
 
   handleAddNewVisibility = () => {
     const { isAddNewVisible } = this.state;
     this.setState({ isAddNewVisible: !isAddNewVisible });
   };
+
+  handleDisplayingMemberDetails = (name, userId, avatarUrl, isOwner) => () =>
+    this.setState({ memberDetails: { avatarUrl, isOwner, name, userId } });
 
   handleShowAll = () => {
     // console.log('show all members');
@@ -24,7 +28,7 @@ class MembersBox extends PureComponent {
   };
 
   render() {
-    const { isAddNewVisible } = this.state;
+    const { isAddNewVisible, memberDetails } = this.state;
     const { isCurrentOwner } = this.props;
     return (
       <div className="members-box">
@@ -46,33 +50,63 @@ class MembersBox extends PureComponent {
             )}
           </li>
           <li className="members-box__list-item">
-            <MemberBox
-              isCurrentOwner={isCurrentOwner}
-              isOwner
-              name="Name Surname"
-              userId="abcde"
-            />
-          </li>
-          <li className="members-box__list-item">
-            <button className="members-box__member" type="button">
+            {/* {memberDetails ? (
+              <MemberBox isCurrentOwner={isCurrentOwner} {...memberDetails} />
+            ) : ( */}
+            <button
+              className="members-box__member"
+              onClick={this.handleDisplayingMemberDetails(
+                'Jan Kowalski',
+                '01234',
+                '',
+                true
+              )}
+              type="button"
+            >
               <UserIcon />
             </button>
+            {/* )} */}
+            {memberDetails && (
+              <MemberBox isCurrentOwner={isCurrentOwner} {...memberDetails} />
+            )}
           </li>
           <li className="members-box__list-item">
-            <button className="members-box__member" type="button">
+            <button
+              className="members-box__member"
+              onClick={this.handleDisplayingMemberDetails(
+                'John Doe',
+                'abcde',
+                '',
+                true
+              )}
+              type="button"
+            >
               <UserIcon />
             </button>
           </li>
           <li className="members-box__list-item">
             <button
               className="members-box__member"
-              onClick={this.handleShowAll}
+              onClick={this.handleDisplayingMemberDetails(
+                'Maria Wow',
+                'fghij',
+                '',
+                false
+              )}
               type="button"
             >
+              <UserIcon />
+            </button>
+          </li>
+          <li className="members-box__list-item">
+            <button className="members-box__member" type="button">
               <DotsIcon />
             </button>
           </li>
         </ul>
+        {/* {memberDetails && (
+          <MemberBox isCurrentOwner={isCurrentOwner} {...memberDetails} />
+        )} */}
       </div>
     );
   }

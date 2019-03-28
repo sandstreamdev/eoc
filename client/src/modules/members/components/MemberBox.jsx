@@ -82,92 +82,96 @@ class MemberBox extends PureComponent {
 
   render() {
     const { areDetailsVisible, dialogContext, dialogTitle } = this.state;
-    const { avatarUrl, isCurrentOwner, isOwner, name } = this.props;
+    const { isCurrentOwner, avatarUrl, isOwner, name } = this.props;
     return (
       <Fragment>
         <div className="member-box">
-          <button
-            className="member-box__user-button"
-            onClick={this.handleDetailsVisibility}
-            type="button"
-          >
-            {avatarUrl ? (
-              <img
-                alt={`${name} avatar`}
-                className="member-box__avatar"
-                src={avatarUrl}
-              />
-            ) : (
-              <UserIcon />
-            )}
-          </button>
+          {!areDetailsVisible && (
+            <div className="member-box__details">
+              <button
+                className="member-box__user-button"
+                // onClick={this.handleDetailsVisibility}
+                type="button"
+              >
+                {avatarUrl ? (
+                  <img
+                    alt={`${name} avatar`}
+                    className="member-box__avatar"
+                    src={avatarUrl}
+                  />
+                ) : (
+                  <UserIcon />
+                )}
+              </button>
+              <h3 className="member-box__heading">
+                {name}
+                <span className="member-box__role">
+                  {` - ${isOwner ? 'owner' : 'member'}`}
+                </span>
+              </h3>
+              {isCurrentOwner && (
+                <ul className="member-box__panel">
+                  <li className="member-box__option">
+                    <button
+                      className={classNames(
+                        'member-box__button',
+                        'primary-button',
+                        {
+                          'disabled-button': isOwner
+                        }
+                      )}
+                      disabled={isOwner}
+                      onClick={this.handleDialogContext(
+                        MemberDialogContext.SET_OWNER
+                      )}
+                      type="button"
+                    >
+                      Set as a Owner
+                    </button>
+                    <p className="member-box__role-description">
+                      {'Can edit, archive and delete this cohort. '}
+                      {"Can add, edit list's items and mark them as done. "}
+                      {'Can add, edit, archive and delete lists. '}
+                      {'Can add, remove members, and change their roles. '}
+                    </p>
+                  </li>
+                  <li className="member-box__option">
+                    <button
+                      className={classNames(
+                        'member-box__button',
+                        'primary-button',
+                        {
+                          'disabled-button': !isOwner
+                        }
+                      )}
+                      disabled={!isOwner}
+                      onClick={this.handleDialogContext(
+                        MemberDialogContext.SET_MEMBER
+                      )}
+                      type="button"
+                    >
+                      Set as a member
+                    </button>
+                    <p className="member-box__role-description">
+                      {"Can view lists, add and edit list's items."}
+                    </p>
+                  </li>
+                  <li className="member-box__option">
+                    <button
+                      className="member-box__button primary-button"
+                      onClick={this.handleDialogContext(
+                        MemberDialogContext.REMOVE
+                      )}
+                      type="button"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </div>
+          )}
         </div>
-        {areDetailsVisible && (
-          <div className="member-box__details">
-            <h3 className="member-box__heading">{name}</h3>
-            <p className="member-box__role">{isOwner ? 'owner' : 'member'}</p>
-            {isCurrentOwner && (
-              <ul className="member-box__panel">
-                <li className="member-box__option">
-                  <button
-                    className={classNames(
-                      'member-box__button',
-                      'primary-button',
-                      {
-                        'disabled-button': isOwner
-                      }
-                    )}
-                    disabled={isOwner}
-                    onClick={this.handleDialogContext(
-                      MemberDialogContext.SET_OWNER
-                    )}
-                    type="button"
-                  >
-                    Set as a Owner
-                  </button>
-                  <p className="member-box__role-description">
-                    {'Can edit, archive and delete this cohort. '}
-                    {"Can add, edit list's items and mark them as done. "}
-                    {'Can add, edit, archive and delete lists. '}
-                    {'Can add, remove members, and change their roles. '}
-                  </p>
-                </li>
-                <li className="member-box__option">
-                  <button
-                    className={classNames(
-                      'member-box__button',
-                      'primary-button',
-                      {
-                        'disabled-button': !isOwner
-                      }
-                    )}
-                    disabled={!isOwner}
-                    onClick={this.handleDialogContext(
-                      MemberDialogContext.SET_MEMBER
-                    )}
-                    type="button"
-                  >
-                    Set as a member
-                  </button>
-                  <p className="member-box__role-description">
-                    {"Can view lists, add and edit list's items."}
-                  </p>
-                </li>
-                <li className="member-box__option">
-                  <button
-                    className="member-box__button primary-button"
-                    onClick={this.handleDialogContext(
-                      MemberDialogContext.REMOVE
-                    )}
-                    type="button"
-                  >
-                    Remove
-                  </button>
-                </li>
-              </ul>
-            )}
-          </div>
-        )}
         {dialogContext && (
           <Dialog
             onCancel={this.handleDialogContext(null)}
