@@ -31,6 +31,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList, { GridListRoutes } from 'common/components/GridList';
+import MembersBox from 'common/components/MembersBox';
 
 class Cohort extends PureComponent {
   state = {
@@ -196,6 +197,7 @@ class Cohort extends PureComponent {
                 {name}
               </h1>
               <p className="cohort__description">{description}</p>
+              <MembersBox />
               <GridList
                 color={CardColorType.ORANGE}
                 icon={<ListIcon />}
