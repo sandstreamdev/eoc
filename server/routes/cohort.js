@@ -10,6 +10,10 @@ const {
   getCohortDetails,
   getCohortsMetaData,
   removeFromFavourites,
+  removeMember,
+  removeOwner,
+  setAsMember,
+  setAsOwner,
   updateCohortById
 } = require('../controllers/cohort');
 const { authorize } = require('../middleware/authorize');
@@ -22,5 +26,9 @@ router.get('/:id/data', authorize, getCohortDetails);
 router.delete('/:id/delete', authorize, deleteCohortById);
 router.patch('/:id/add-to-fav', authorize, addToFavourites);
 router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
+router.patch('/:id/remove-owner', authorize, removeOwner);
+router.patch('/:id/remove-member', authorize, removeMember);
+router.patch('/:id/set-as-owner', authorize, setAsOwner);
+router.patch('/:id/set-as_member', authorize, setAsMember);
 
 module.exports = app => app.use('/cohorts', router);

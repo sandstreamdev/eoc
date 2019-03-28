@@ -224,7 +224,7 @@ const removeFromFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ ownerIds: userId }, { memberIds: userId }]
+      ownerIds: userId
     },
     {
       $pull: { favIds: userId }
@@ -247,6 +247,118 @@ const removeFromFavourites = (req, resp) => {
   );
 };
 
+const removeOwner = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
+    { $pull: { ownerIds: userId } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove owner from cohort."
+        });
+      }
+
+      if (doc) {
+        return resp.status(200).send({
+          message: 'Owner successfully removed from cohort.'
+        });
+      }
+
+      resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
+const removeMember = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    { _id: cohortId, ownerIds: ownerId, memberIds: userId },
+    { $pull: { memberIds: userId } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove member from cohort."
+        });
+      }
+
+      if (doc) {
+        return resp.status(200).send({
+          message: 'Member successfully removed from cohort.'
+        });
+      }
+
+      resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
+const setAsOwner = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    { _id: cohortId, ownerIds: ownerId, memberIds: userId },
+    { $push: { ownerIds: userId }, $pull: { memberIds: userId } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't set user as a cohort's owner."
+        });
+      }
+
+      if (doc) {
+        return resp.status(200).send({
+          message: "User has been successfully set as a cohort's owner."
+        });
+      }
+
+      resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
+const setAsMember = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
+    { $push: { memberIds: userId }, $pull: { ownerIds: userId } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't set user as a cohort's member."
+        });
+      }
+
+      if (doc) {
+        return resp.status(200).send({
+          message: "User has been successfully set as a cohort's member."
+        });
+      }
+
+      resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
 module.exports = {
   addToFavourites,
   createCohort,
@@ -255,5 +367,9 @@ module.exports = {
   getCohortDetails,
   getCohortsMetaData,
   removeFromFavourites,
+  removeMember,
+  removeOwner,
+  setAsMember,
+  setAsOwner,
   updateCohortById
 };
