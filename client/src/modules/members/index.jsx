@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { DotsIcon, UserIcon, PlusIcon } from 'assets/images/icons';
-import MembersForm from 'common/components/MembersForm';
+import MembersForm from './components/MembersForm';
 
 class MembersBox extends PureComponent {
   state = {
@@ -14,11 +14,11 @@ class MembersBox extends PureComponent {
   };
 
   handleShowAll = () => {
-    console.log('show all members');
+    // console.log('show all members');
   };
 
   handleAddNew = data => {
-    console.log(data);
+    // console.log(data);
   };
 
   render() {
