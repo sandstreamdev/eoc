@@ -42,7 +42,7 @@ class MembersForm extends PureComponent {
           className="members-form__input primary-input"
           onChange={this.handleInputChange}
           placeholder="Enter email"
-          type="text"
+          type="email"
           value={inputValue}
         />
         <input className="primary-button" type="submit" value="Add new" />
