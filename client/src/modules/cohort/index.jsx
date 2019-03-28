@@ -32,6 +32,7 @@ import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList, { GridListRoutes } from 'common/components/GridList';
 import MembersBox from 'modules/members';
+import { fetchCohortMembers } from 'modules/members/model/actions';
 
 class Cohort extends PureComponent {
   state = {
@@ -47,6 +48,7 @@ class Cohort extends PureComponent {
     const {
       fetchCohortDetails,
       fetchListsMetaData,
+      fetchCohortMembers,
       match: {
         params: { id }
       }
@@ -56,6 +58,7 @@ class Cohort extends PureComponent {
       .then(() => {
         if (!this.checkIfArchived()) {
           fetchListsMetaData(id);
+          fetchCohortMembers(id);
         }
       })
       .catch(noOp);
@@ -247,6 +250,7 @@ Cohort.propTypes = {
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
+  fetchCohortMembers: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
@@ -267,6 +271,7 @@ export default withRouter(
       createList,
       fetchArchivedListsMetaData,
       fetchCohortDetails,
+      fetchCohortMembers,
       fetchListsMetaData,
       removeArchivedListsMetaData,
       updateCohort

@@ -1,14 +1,13 @@
 import { combineReducers } from 'redux';
 
-import { UsersActionTypes } from './actionTypes';
+import { MembersActionTypes } from './actionTypes';
 
 const users = (state = {}, action) => {
   switch (action.type) {
-    case UsersActionTypes.FETCH_SUCCESS:
-      return {
-        ...state,
-        ...action.payload
-      };
+    case MembersActionTypes.FETCH_SUCCESS:
+      return { ...state, ...action.payload };
+    case MembersActionTypes.CLEAR_DATA:
+      return {};
     default:
       return state;
   }
@@ -16,10 +15,10 @@ const users = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
-    case UsersActionTypes.FETCH_SUCCESS:
-    case UsersActionTypes.FETCH_FAILURE:
+    case MembersActionTypes.FETCH_SUCCESS:
+    case MembersActionTypes.FETCH_FAILURE:
       return false;
-    case UsersActionTypes.FETCH_REQUEST:
+    case MembersActionTypes.FETCH_REQUEST:
       return true;
     default:
       return state;

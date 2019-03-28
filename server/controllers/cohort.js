@@ -7,6 +7,8 @@ const {
 } = require('../common/utils');
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
+const User = require('../models/user.model');
+const { responseWithUsers } = require('../common/utils/index');
 
 const createCohort = (req, resp) => {
   const { description, name, ownerId } = req.body;
@@ -248,6 +250,32 @@ const removeFromFavourites = (req, resp) => {
   );
 };
 
+const getMembers = (req, resp) => {
+  const { id: cohortId } = req.params;
+
+  Cohort.findOne({ _id: cohortId }, 'memberIds ownerIds', (err, doc) => {
+    if (err) {
+      return resp.status(400).send({
+        message: "Can't get members data. Please try again."
+      });
+    }
+
+    if (doc) {
+      const { memberIds, ownerIds } = doc;
+
+      User.find({ _id: [...memberIds, ownerIds] }, (err, docs) => {
+        if (err) {
+          return resp.status(400).send({
+            message: "Can't get members data. Please try again."
+          });
+        }
+        const users = responseWithUsers(docs, ownerIds);
+        resp.status(200).json(users);
+      });
+    }
+  });
+};
+
 module.exports = {
   addToFavourites,
   createCohort,
@@ -255,6 +283,7 @@ module.exports = {
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
+  getMembers,
   removeFromFavourites,
   updateCohortById
 };

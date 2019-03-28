@@ -1,12 +1,23 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import _map from 'lodash/map';
+import PropTypes from 'prop-types';
 
-import { DotsIcon, UserIcon, PlusIcon } from 'assets/images/icons';
+import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
+import { getUsers } from './model/selectors';
+import { clearMembers } from './model/actions';
 
 class MembersBox extends PureComponent {
   state = {
     isAddNewVisible: false
   };
+
+  componentWillUnmount() {
+    const { clearMembers } = this.props;
+
+    clearMembers();
+  }
 
   handleAddNewVisibility = () => {
     const { isAddNewVisible } = this.state;
@@ -23,6 +34,7 @@ class MembersBox extends PureComponent {
 
   render() {
     const { isAddNewVisible } = this.state;
+    const { users } = this.props;
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -42,21 +54,22 @@ class MembersBox extends PureComponent {
               </button>
             )}
           </li>
-          <li className="members-box__list-item">
-            <button className="members-box__member" type="button">
-              <UserIcon />
-            </button>
-          </li>
-          <li className="members-box__list-item">
-            <button className="members-box__member" type="button">
-              <UserIcon />
-            </button>
-          </li>
-          <li className="members-box__list-item">
-            <button className="members-box__member" type="button">
-              <UserIcon />
-            </button>
-          </li>
+          {_map(users, user => (
+            <li className="members-box__list-item" title={user.displayName}>
+              <button
+                className="members-box__member"
+                type="button"
+                title={user.displayName}
+              >
+                <img
+                  alt={`${user.displayName} avatar`}
+                  className="members-box__avatar"
+                  src={user.avatarUrl}
+                  title={user.displayName}
+                />
+              </button>
+            </li>
+          ))}
           <li className="members-box__list-item">
             <button
               className="members-box__member"
@@ -72,4 +85,17 @@ class MembersBox extends PureComponent {
   }
 }
 
-export default MembersBox;
+MembersBox.propTypes = {
+  users: PropTypes.objectOf(PropTypes.object).isRequired,
+
+  clearMembers: PropTypes.func
+};
+
+const mapStateToProps = state => ({
+  users: getUsers(state)
+});
+
+export default connect(
+  mapStateToProps,
+  { clearMembers }
+)(MembersBox);
