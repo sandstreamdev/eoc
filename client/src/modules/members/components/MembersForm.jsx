@@ -13,12 +13,12 @@ class MembersForm extends PureComponent {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleAddNew);
+    document.addEventListener('keydown', this.handleEnterPress);
     this.input.current.focus();
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleAddNew);
+    document.removeEventListener('keydown', this.handleEnterPress);
   }
 
   handleInputChange = event => {
@@ -28,15 +28,19 @@ class MembersForm extends PureComponent {
     this.setState({ inputValue: value });
   };
 
-  handleAddNew = event => {
+  handleEnterPress = event => {
     const { code } = event;
+
+    if (code === 'Enter') {
+      this.handleAddNew();
+    }
+  };
+
+  handleAddNew = () => {
     const { onAddNew } = this.props;
     const { inputValue } = this.state;
 
-    if (code === 'Enter') {
-      onAddNew(inputValue);
-      this.setState({ inputValue: '' });
-    }
+    onAddNew(inputValue);
   };
 
   handleSubmit = event => event.preventDefault();
@@ -53,7 +57,12 @@ class MembersForm extends PureComponent {
           type="email"
           value={inputValue}
         />
-        <input className="primary-button" type="submit" value="Add new" />
+        <input
+          className="primary-button"
+          onClick={this.handleAddNew}
+          type="button"
+          value="Add new"
+        />
       </form>
     );
   }
