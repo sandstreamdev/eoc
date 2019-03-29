@@ -27,15 +27,12 @@ class MembersBox extends PureComponent {
   hideForm = () => this.setState({ isFormVisible: false });
 
   handleDisplayingMemberDetails = user => () => {
-    const { displayName: name, _id: userId, avatarUrl, isOwner } = user;
-    this.setState({
-      context: userId,
-      memberDetails: { avatarUrl, isOwner, name, userId }
-    });
+    const { _id: userId } = user;
+    this.setState({ context: userId });
   };
 
   handleClosingMemberDetails = () => {
-    this.setState({ memberDetails: null });
+    this.setState({ context: null });
   };
 
   handleOnAddNew = () => data => {
@@ -46,7 +43,7 @@ class MembersBox extends PureComponent {
   };
 
   render() {
-    const { context, isFormVisible, memberDetails } = this.state;
+    const { context, isFormVisible } = this.state;
     const { isCurrentOwner, users } = this.props;
     return (
       <div className="members-box">
@@ -86,9 +83,9 @@ class MembersBox extends PureComponent {
                   title={user.displayName}
                 />
               </button>
-              {memberDetails && context === user._id && (
+              {context === user._id && (
                 <MemberBox
-                  {...memberDetails}
+                  {...user}
                   isCurrentOwner={isCurrentOwner}
                   onClose={this.handleClosingMemberDetails}
                 />

@@ -41,7 +41,7 @@ class MemberBox extends PureComponent {
         params: { id }
       },
       removeCohortUser,
-      userId
+      _id: userId
     } = this.props;
     removeCohortUser(id, userId, isOwner);
   };
@@ -67,7 +67,7 @@ class MemberBox extends PureComponent {
       },
       setAsCohortMember,
       setAsCohortOwner,
-      userId
+      _id: userId
     } = this.props;
     this.setState({ isOwner: !isOwner });
     switch (e.target.value) {
@@ -89,7 +89,7 @@ class MemberBox extends PureComponent {
       isOwnerHelpVisible,
       isMemberHelpVisible
     } = this.state;
-    const { isCurrentOwner, avatarUrl, onClose, name } = this.props;
+    const { isCurrentOwner, avatarUrl, onClose, displayName } = this.props;
 
     return (
       <Fragment>
@@ -102,7 +102,7 @@ class MemberBox extends PureComponent {
               <div className="member-box__avatar">
                 {avatarUrl ? (
                   <img
-                    alt={`${name} avatar`}
+                    alt={`${displayName} avatar`}
                     className="member-box__image"
                     src={avatarUrl}
                   />
@@ -111,7 +111,7 @@ class MemberBox extends PureComponent {
                 )}
               </div>
               <h3 className="member-box__name">
-                {name}
+                {displayName}
                 <span className="member-box__role">
                   {` - ${isOwner ? 'owner' : 'member'}`}
                 </span>
@@ -175,7 +175,7 @@ class MemberBox extends PureComponent {
                 <li className="member-box__option">
                   {isConfirmVisible ? (
                     <div className="member-box__confirmation">
-                      <h4>{`Do you really want to remove ${name}?`}</h4>
+                      <h4>{`Do you really want to remove ${displayName}?`}</h4>
                       <button
                         className="primary-button"
                         onClick={this.handleUserRemoving}
@@ -214,9 +214,9 @@ MemberBox.propTypes = {
   avatarUrl: PropTypes.string,
   isCurrentOwner: PropTypes.bool.isRequired,
   isOwner: PropTypes.bool,
-  name: PropTypes.string.isRequired,
+  displayName: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
-  userId: PropTypes.string.isRequired,
+  _id: PropTypes.string.isRequired,
 
   onClose: PropTypes.func.isRequired,
   removeCohortUser: PropTypes.func.isRequired,
