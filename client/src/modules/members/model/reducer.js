@@ -1,32 +1,29 @@
 import { combineReducers } from 'redux';
 
-import { UsersActionTypes } from './actionTypes';
+import { MembersActionTypes } from './actionTypes';
 
-const users = (state = {}, action) => {
+const members = (state = {}, action) => {
   switch (action.type) {
-    case UsersActionTypes.FETCH_SUCCESS:
-      return {
-        ...state,
-        ...action.payload
-      };
-    case UsersActionTypes.REMOVE_SUCCESS: {
+    case MembersActionTypes.REMOVE_SUCCESS: {
       const { [action.payload]: removed, ...rest } = state;
       return rest;
     }
-    case UsersActionTypes.COHORT_OWNER_SUCCESS: {
+    case MembersActionTypes.COHORT_OWNER_SUCCESS: {
       const { payload: _id } = action;
-      return {
-        ...state,
-        [_id]: { ...state[_id], isOwner: true }
-      };
+      return { ...state, [_id]: { ...state[_id], isOwner: true } };
     }
-    case UsersActionTypes.COHORT_MEMBER_SUCCESS: {
+    case MembersActionTypes.COHORT_MEMBER_SUCCESS: {
       const { payload: _id } = action;
       const { isOwner: removed, ...rest } = state[_id];
-      return {
-        ...state,
-        [_id]: rest
-      };
+      return { ...state, [_id]: rest };
+    }
+    case MembersActionTypes.FETCH_SUCCESS:
+      return { ...state, ...action.payload };
+    case MembersActionTypes.CLEAR_DATA:
+      return {};
+    case MembersActionTypes.ADD_SUCCESS: {
+      const { avatarUrl, displayName, email, newMemberId } = action.payload;
+      return { ...state, [newMemberId]: { avatarUrl, displayName, email } };
     }
     default:
       return state;
@@ -35,23 +32,26 @@ const users = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
-    case UsersActionTypes.COHORT_MEMBER_FAILURE:
-    case UsersActionTypes.COHORT_MEMBER_SUCCESS:
-    case UsersActionTypes.COHORT_OWNER_FAILURE:
-    case UsersActionTypes.COHORT_OWNER_SUCCESS:
-    case UsersActionTypes.FETCH_FAILURE:
-    case UsersActionTypes.FETCH_SUCCESS:
-    case UsersActionTypes.REMOVE_FAILURE:
-    case UsersActionTypes.REMOVE_SUCCESS:
+    case MembersActionTypes.ADD_FAILURE:
+    case MembersActionTypes.ADD_SUCCESS:
+    case MembersActionTypes.COHORT_MEMBER_FAILURE:
+    case MembersActionTypes.COHORT_MEMBER_SUCCESS:
+    case MembersActionTypes.COHORT_OWNER_FAILURE:
+    case MembersActionTypes.COHORT_OWNER_SUCCESS:
+    case MembersActionTypes.FETCH_FAILURE:
+    case MembersActionTypes.FETCH_SUCCESS:
+    case MembersActionTypes.REMOVE_FAILURE:
+    case MembersActionTypes.REMOVE_SUCCESS:
       return false;
-    case UsersActionTypes.COHORT_MEMBER_REQUEST:
-    case UsersActionTypes.COHORT_OWNER_REQUEST:
-    case UsersActionTypes.FETCH_REQUEST:
-    case UsersActionTypes.REMOVE_REQUEST:
+    case MembersActionTypes.ADD_REQUEST:
+    case MembersActionTypes.COHORT_MEMBER_REQUEST:
+    case MembersActionTypes.COHORT_OWNER_REQUEST:
+    case MembersActionTypes.FETCH_REQUEST:
+    case MembersActionTypes.REMOVE_REQUEST:
       return true;
     default:
       return state;
   }
 };
 
-export default combineReducers({ data: users, isFetching });
+export default combineReducers({ data: members, isFetching });

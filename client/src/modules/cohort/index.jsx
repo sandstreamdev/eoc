@@ -33,6 +33,10 @@ import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList, { GridListRoutes } from 'common/components/GridList';
 import { ListType } from 'modules/list';
 import MembersBox from 'modules/members';
+import {
+  addCohortMember,
+  fetchCohortMembers
+} from 'modules/members/model/actions';
 
 class Cohort extends PureComponent {
   state = {
@@ -49,6 +53,7 @@ class Cohort extends PureComponent {
     const {
       fetchCohortDetails,
       fetchListsMetaData,
+      fetchCohortMembers,
       match: {
         params: { id }
       }
@@ -58,6 +63,7 @@ class Cohort extends PureComponent {
       .then(() => {
         if (!this.checkIfArchived()) {
           fetchListsMetaData(id);
+          fetchCohortMembers(id);
         }
       })
       .catch(noOp);
@@ -142,6 +148,16 @@ class Cohort extends PureComponent {
     this.setState({ isListPrivate: false });
   };
 
+  handleAddNewMember = email => {
+    const { addCohortMember } = this.props;
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+    addCohortMember(cohortId, email);
+  };
+
   render() {
     const {
       archivedLists,
@@ -210,8 +226,13 @@ class Cohort extends PureComponent {
                 <CohortIcon />
                 {name}
               </h1>
-              <p className="cohort__description">{description}</p>
-              <MembersBox isCurrentOwner={this.checkIfOwner() || false} />
+              {description && (
+                <p className="cohort__description">{description}</p>
+              )}
+              <MembersBox
+                isCurrentOwner={this.checkIfOwner() || false}
+                onAddNew={this.handleAddNewMember}
+              />
               <GridList
                 color={CardColorType.ORANGE}
                 icon={<ListIcon />}
@@ -258,9 +279,11 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
+  addCohortMember: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
+  fetchCohortMembers: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
@@ -277,10 +300,12 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
+      addCohortMember,
       archiveCohort,
       createList,
       fetchArchivedListsMetaData,
       fetchCohortDetails,
+      fetchCohortMembers,
       fetchListsMetaData,
       removeArchivedListsMetaData,
       updateCohort

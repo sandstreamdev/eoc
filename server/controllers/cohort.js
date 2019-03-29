@@ -7,6 +7,8 @@ const {
 } = require('../common/utils');
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
+const User = require('../models/user.model');
+const { responseWithUsers } = require('../common/utils/index');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
@@ -359,13 +361,98 @@ const setAsMember = (req, resp) => {
   );
 };
 
+const getMembers = (req, resp) => {
+  const { id: cohortId } = req.params;
+
+  Cohort.findOne({ _id: cohortId }, 'memberIds ownerIds', (err, doc) => {
+    if (err) {
+      return resp.status(400).send({
+        message: "Can't get members data. Please try again."
+      });
+    }
+
+    if (doc) {
+      const { memberIds, ownerIds } = doc;
+
+      User.find({ _id: [...memberIds, ownerIds] }, (err, docs) => {
+        if (err) {
+          return resp.status(400).send({
+            message: "Can't get members data. Please try again."
+          });
+        }
+        const users = responseWithUsers(docs, ownerIds);
+        resp.status(200).json(users);
+      });
+    }
+  });
+};
+
+const addMember = (req, resp) => {
+  const {
+    user: { _id: currentUser }
+  } = req;
+  const { id: cohortId } = req.params;
+  const { email } = req.body;
+
+  Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUser }] })
+    .exec()
+    .then(doc => {
+      if (doc) {
+        return User.findOne({ email })
+          .exec()
+          .then(doc => {
+            const { _id, avatarUrl, displayName, email } = doc;
+            return { _id, avatarUrl, displayName, email };
+          })
+          .catch(() =>
+            resp.status(400).send({ message: 'User data not found.' })
+          );
+      }
+      return resp
+        .status(400)
+        .send({ message: "You don't have permission to add new member" });
+    })
+    .then(data => {
+      const { _id: newMemberId, displayName, avatarUrl, email } = data;
+      Cohort.findOneAndUpdate(
+        { _id: cohortId, memberIds: { $nin: [newMemberId] } },
+        { $push: { memberIds: newMemberId } }
+      )
+        .exec()
+        .then(doc => {
+          if (doc) {
+            return resp
+              .status(200)
+              .json({ avatarUrl, displayName, email, newMemberId });
+          }
+          return resp
+            .status(400)
+            .send({ message: 'User is already a member.' });
+        })
+        .catch(() => {
+          throw new NotFoundException('Cohort data not found.');
+        });
+    })
+    .catch(err => {
+      if (err instanceof NotFoundException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+      resp.status(400).send({
+        message: 'An error occurred while adding new member. Please try again.'
+      });
+    });
+};
+
 module.exports = {
+  addMember,
   addToFavourites,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
+  getMembers,
   removeFromFavourites,
   removeMember,
   removeOwner,

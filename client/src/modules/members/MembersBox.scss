@@ -17,8 +17,14 @@
   }
 
   &__list-item {
+    display: block;
     margin: 0 16px 16px 0;
     position: relative;
+  }
+
+  &__avatar {
+    height: 100%;
+    width: 100%;
   }
 
   &__member {

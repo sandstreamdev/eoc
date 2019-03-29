@@ -56,6 +56,14 @@ const responseWithCohorts = (cohorts, userId) =>
     isFavourite: isUserFavourite(favIds, userId)
   }));
 
+const responseWithUsers = (users, ownerIds) =>
+  _map(users, user => ({
+    _id: user._id,
+    displayName: user.name,
+    avatarUrl: user.avatarUrl,
+    isOwner: ownerIds.indexOf(user._id) > -1
+  }));
+
 module.exports = {
   checkRole,
   filter,
@@ -64,5 +72,6 @@ module.exports = {
   responseWithCohorts,
   responseWithItem,
   responseWithItems,
-  responseWithLists
+  responseWithLists,
+  responseWithUsers
 };

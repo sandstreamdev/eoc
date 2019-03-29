@@ -1,49 +1,53 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import _map from 'lodash/map';
 import PropTypes from 'prop-types';
 
-import { DotsIcon, UserIcon, PlusIcon } from 'assets/images/icons';
+import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
+import { getMembers } from './model/selectors';
+import { clearMembers } from './model/actions';
 
 class MembersBox extends PureComponent {
   state = {
-    isAddNewVisible: false,
+    isFormVisible: false,
     memberDetails: null,
     context: null
   };
 
-  handleAddNewVisibility = () => {
-    const { isAddNewVisible } = this.state;
-    this.setState({ isAddNewVisible: !isAddNewVisible });
-  };
+  componentWillUnmount() {
+    const { clearMembers } = this.props;
 
-  handleDisplayingMemberDetails = (
-    name,
-    userId,
-    avatarUrl,
-    isOwner,
-    context
-  ) => () =>
+    clearMembers();
+  }
+
+  showForm = () => this.setState({ isFormVisible: true });
+
+  hideForm = () => this.setState({ isFormVisible: false });
+
+  handleDisplayingMemberDetails = user => () => {
+    const { displayName: name, _id: userId, avatarUrl, isOwner } = user;
     this.setState({
-      context,
+      context: userId,
       memberDetails: { avatarUrl, isOwner, name, userId }
     });
+  };
 
   handleClosingMemberDetails = () => {
     this.setState({ memberDetails: null });
   };
 
-  handleShowAll = () => {
-    // console.log('show all members');
-  };
+  handleOnAddNew = () => data => {
+    const { onAddNew } = this.props;
 
-  handleAddNew = data => {
-    // console.log(data);
+    this.hideForm();
+    onAddNew(data);
   };
 
   render() {
-    const { context, isAddNewVisible, memberDetails } = this.state;
-    const { isCurrentOwner } = this.props;
+    const { context, isFormVisible, memberDetails } = this.state;
+    const { isCurrentOwner, users } = this.props;
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -51,90 +55,70 @@ class MembersBox extends PureComponent {
         </header>
         <ul className="members-box__list">
           <li className="members-box__list-item">
-            {isAddNewVisible ? (
-              <MembersForm onAddNew={this.handleAddNew} />
+            {isFormVisible ? (
+              <MembersForm onAddNew={this.handleOnAddNew()} />
             ) : (
               <button
                 className="members-box__member"
-                onClick={this.handleAddNewVisibility}
+                onClick={this.showForm}
                 type="button"
               >
                 <PlusIcon />
               </button>
             )}
           </li>
-          <li className="members-box__list-item">
-            <button
-              className="members-box__member"
-              onClick={this.handleDisplayingMemberDetails(
-                'Jan Kowalski',
-                '01234',
-                '',
-                true,
-                1
-              )}
-              type="button"
+          {_map(users, user => (
+            <li
+              className="members-box__list-item"
+              key={user.avatarUrl}
+              title={user.displayName}
             >
-              <UserIcon />
-            </button>
-            {memberDetails && context === 1 && (
-              <MemberBox
-                {...memberDetails}
-                isCurrentOwner={isCurrentOwner}
-                onClose={this.handleClosingMemberDetails}
-              />
-            )}
-          </li>
-          <li className="members-box__list-item">
-            <button
-              className="members-box__member"
-              onClick={this.handleDisplayingMemberDetails(
-                'John Doe',
-                'abcde',
-                '',
-                true,
-                2
+              <button
+                className="members-box__member"
+                title={user.displayName}
+                type="button"
+              >
+                <img
+                  alt={`${user.displayName} avatar`}
+                  className="members-box__avatar"
+                  onClick={this.handleDisplayingMemberDetails(user)}
+                  src={user.avatarUrl}
+                  title={user.displayName}
+                />
+              </button>
+              {memberDetails && context === user._id && (
+                <MemberBox
+                  {...memberDetails}
+                  isCurrentOwner={isCurrentOwner}
+                  onClose={this.handleClosingMemberDetails}
+                />
               )}
-              type="button"
-            >
-              <UserIcon />
-            </button>
-            {memberDetails && context === 2 && (
-              <MemberBox
-                {...memberDetails}
-                isCurrentOwner={isCurrentOwner}
-                onClose={this.handleClosingMemberDetails}
-              />
-            )}
-          </li>
-          <li className="members-box__list-item">
-            <button
-              className="members-box__member"
-              onClick={this.handleDisplayingMemberDetails(
-                'Maria Wow',
-                'fghij',
-                '',
-                false
-              )}
-              type="button"
-            >
-              <UserIcon />
-            </button>
-          </li>
+            </li>
+          ))}
           <li className="members-box__list-item">
             <button className="members-box__member" type="button">
               <DotsIcon />
             </button>
           </li>
         </ul>
-        {/* {memberDetails && (
-          <MemberBox isCurrentOwner={isCurrentOwner} {...memberDetails} />
-        )} */}
       </div>
     );
   }
 }
 
-MembersBox.propTypes = { isCurrentOwner: PropTypes.bool.isRequired };
+MembersBox.propTypes = {
+  isCurrentOwner: PropTypes.bool.isRequired,
+  users: PropTypes.objectOf(PropTypes.object).isRequired,
 
-export default MembersBox;
+  clearMembers: PropTypes.func.isRequired,
+  onAddNew: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  users: getMembers(state)
+});
+
+export default connect(
+  mapStateToProps,
+  { clearMembers }
+)(MembersBox);

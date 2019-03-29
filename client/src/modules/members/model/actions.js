@@ -1,72 +1,113 @@
-import { UsersActionTypes } from './actionTypes';
+import _keyBy from 'lodash/keyBy';
+
+import { MembersActionTypes } from './actionTypes';
 import { getData, patchData } from 'common/utils/fetchMethods';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { ENDPOINT_URL } from 'common/constants/variables';
 
-const fetchUsersRequest = () => ({
-  type: UsersActionTypes.FETCH_REQUEST
+const fetchMembersRequest = () => ({
+  type: MembersActionTypes.FETCH_REQUEST
 });
 
-const fetchUsersFailure = () => ({
-  type: UsersActionTypes.FETCH_FAILURE
+const fetchMembersFailure = () => ({
+  type: MembersActionTypes.FETCH_FAILURE
 });
 
-const fetchUsersSuccess = data => ({
-  type: UsersActionTypes.FETCH_SUCCESS,
+const fetchMembersSuccess = data => ({
+  type: MembersActionTypes.FETCH_SUCCESS,
   payload: data
 });
 
+const clearMembersRequest = () => ({
+  type: MembersActionTypes.CLEAR_DATA
+});
+
+const addMemberRequest = () => ({
+  type: MembersActionTypes.ADD_REQUEST
+});
+
+const addMemberSuccess = data => ({
+  type: MembersActionTypes.ADD_SUCCESS,
+  payload: data
+});
+
+const addMemberFailure = () => ({
+  type: MembersActionTypes.ADD_FAILURE
+});
+
 const removeCohortUserRequest = () => ({
-  type: UsersActionTypes.REMOVE_REQUEST
+  type: MembersActionTypes.REMOVE_REQUEST
 });
 
 const removeCohortUserFailure = () => ({
-  type: UsersActionTypes.REMOVE_FAILURE
+  type: MembersActionTypes.REMOVE_FAILURE
 });
 
 const removeCohortUserSuccess = id => ({
-  type: UsersActionTypes.REMOVE_SUCCESS,
+  type: MembersActionTypes.REMOVE_SUCCESS,
   payload: id
 });
 
 const setAsCohortOwnerRequest = () => ({
-  type: UsersActionTypes.COHORT_OWNER_REQUEST
+  type: MembersActionTypes.COHORT_OWNER_REQUEST
 });
 
 const setAsCohortOwnerFailure = () => ({
-  type: UsersActionTypes.COHORT_OWNER_FAILURE
+  type: MembersActionTypes.COHORT_OWNER_FAILURE
 });
 
 const setAsCohortOwnerSuccess = id => ({
-  type: UsersActionTypes.COHORT_OWNER_SUCCESS,
+  type: MembersActionTypes.COHORT_OWNER_SUCCESS,
   payload: id
 });
 
 const setAsCohortMemberRequest = () => ({
-  type: UsersActionTypes.COHORT_MEMBER_REQUEST
+  type: MembersActionTypes.COHORT_MEMBER_REQUEST
 });
 
 const setAsCohortMemberFailure = () => ({
-  type: UsersActionTypes.COHORT_MEMBER_FAILURE
+  type: MembersActionTypes.COHORT_MEMBER_FAILURE
 });
 
 const setAsCohortMemberSuccess = id => ({
-  type: UsersActionTypes.COHORT_MEMBER_SUCCESS,
+  type: MembersActionTypes.COHORT_MEMBER_SUCCESS,
   payload: id
 });
 
-export const fetchUsers = () => dispatch => {
-  dispatch(fetchUsersRequest());
-  return getData('path')
+export const fetchCohortMembers = cohortId => dispatch => {
+  dispatch(fetchMembersRequest());
+  return getData(`${ENDPOINT_URL}/cohorts/${cohortId}/get-members`)
     .then(resp => resp.json())
-    .then(json => dispatch(fetchUsersSuccess(json)))
+    .then(json => {
+      const data = _keyBy(json, '_id');
+      dispatch(fetchMembersSuccess(data));
+    })
     .catch(err => {
-      dispatch(fetchUsersFailure());
+      dispatch(fetchMembersFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching users failed..."
+        err.message || "Oops, we're sorry, fetching members failed..."
+      );
+    });
+};
+
+export const clearMembers = () => dispatch => dispatch(clearMembersRequest());
+
+export const addCohortMember = (cohortId, email) => dispatch => {
+  dispatch(addMemberRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-member`, {
+    email
+  })
+    .then(resp => resp.json())
+    .then(json => dispatch(addMemberSuccess(json)))
+    .catch(err => {
+      dispatch(addMemberFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, adding new member failed..."
       );
     });
 };
