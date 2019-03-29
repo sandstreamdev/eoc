@@ -36,6 +36,14 @@
     z-index: 1;
     cursor: pointer;
     color: $text-normal;
+    svg {
+      height: 12px;
+      width: 12px;
+
+      path {
+        fill: $text-normal;
+      }
+    }
   }
 
   &__details {
@@ -89,6 +97,14 @@
     border: 0;
     cursor: pointer;
     color: $text-normal;
+    svg {
+      height: 12px;
+      width: 12px;
+
+      path {
+        fill: $text-normal;
+      }
+    }
   }
 
   &__confirmation {

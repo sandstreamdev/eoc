@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { UserIcon } from 'assets/images/icons';
+import { CloseIcon, HelpIcon, UserIcon } from 'assets/images/icons';
 import {
   removeCohortUser,
   setAsCohortMember,
@@ -95,7 +95,7 @@ class MemberBox extends PureComponent {
       <Fragment>
         <div className="member-box">
           <button className="member-box__close" type="button" onClick={onClose}>
-            X
+            <CloseIcon />
           </button>
           <div className="member-box__details">
             <div className="member-box__heading">
@@ -127,7 +127,7 @@ class MemberBox extends PureComponent {
                       onClick={this.handleOwnerHelpVisibility}
                       type="button"
                     >
-                      ?
+                      <HelpIcon />
                     </button>
                     <input
                       checked={isOwner}
@@ -155,7 +155,7 @@ class MemberBox extends PureComponent {
                       onClick={this.handleMemberHelpVisibility}
                       type="button"
                     >
-                      ?
+                      <HelpIcon />
                     </button>
                     <input
                       checked={!isOwner}
