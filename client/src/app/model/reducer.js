@@ -10,8 +10,8 @@ const rootReducer = combineReducers({
   cohorts,
   currentUser,
   lists,
-  notifications,
-  members
+  members,
+  notifications
 });
 
 export default rootReducer;

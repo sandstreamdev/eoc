@@ -10,7 +10,7 @@ import { clearMembers } from './model/actions';
 
 class MembersBox extends PureComponent {
   state = {
-    isAddNewVisible: false
+    isFormVisible: false
   };
 
   componentWillUnmount() {
@@ -19,19 +19,19 @@ class MembersBox extends PureComponent {
     clearMembers();
   }
 
-  showAddNewForm = () => this.setState({ isAddNewVisible: true });
+  showForm = () => this.setState({ isFormVisible: true });
 
-  hideAddNewForm = () => this.setState({ isAddNewVisible: false });
+  hideForm = () => this.setState({ isFormVisible: false });
 
   handleOnAddNew = () => data => {
     const { onAddNew } = this.props;
 
-    this.hideAddNewForm();
+    this.hideForm();
     onAddNew(data);
   };
 
   render() {
-    const { isAddNewVisible } = this.state;
+    const { isFormVisible } = this.state;
     const { users } = this.props;
     return (
       <div className="members-box">
@@ -40,12 +40,12 @@ class MembersBox extends PureComponent {
         </header>
         <ul className="members-box__list">
           <li className="members-box__list-item">
-            {isAddNewVisible ? (
+            {isFormVisible ? (
               <MembersForm onAddNew={this.handleOnAddNew()} />
             ) : (
               <button
                 className="members-box__member"
-                onClick={this.showAddNewForm}
+                onClick={this.showForm}
                 type="button"
               >
                 <PlusIcon />
@@ -60,8 +60,8 @@ class MembersBox extends PureComponent {
             >
               <button
                 className="members-box__member"
-                type="button"
                 title={user.displayName}
+                type="button"
               >
                 <img
                   alt={`${user.displayName} avatar`}
@@ -86,7 +86,7 @@ class MembersBox extends PureComponent {
 MembersBox.propTypes = {
   users: PropTypes.objectOf(PropTypes.object).isRequired,
 
-  clearMembers: PropTypes.func,
+  clearMembers: PropTypes.func.isRequired,
   onAddNew: PropTypes.func.isRequired
 };
 

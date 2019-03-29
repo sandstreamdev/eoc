@@ -49,7 +49,7 @@ export const fetchCohortMembers = cohortId => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching users failed..."
+        err.message || "Oops, we're sorry, fetching members failed..."
       );
     });
 };
@@ -68,7 +68,7 @@ export const addCohortMember = (cohortId, email) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching users failed..."
+        err.message || "Oops, we're sorry, adding new member failed..."
       );
     });
 };
