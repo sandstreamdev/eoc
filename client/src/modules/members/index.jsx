@@ -19,18 +19,20 @@ class MembersBox extends PureComponent {
     clearMembers();
   }
 
-  handleAddNewVisibility = () => {
-    const { isAddNewVisible } = this.state;
-    this.setState({ isAddNewVisible: !isAddNewVisible });
-  };
+  showAddNewForm = () => this.setState({ isAddNewVisible: true });
 
-  handleShowAll = () => {
-    // console.log('show all members');
+  hideAddNewForm = () => this.setState({ isAddNewVisible: false });
+
+  handleOnAddNew = () => data => {
+    const { onAddNew } = this.props;
+
+    this.hideAddNewForm();
+    onAddNew(data);
   };
 
   render() {
     const { isAddNewVisible } = this.state;
-    const { users, onAddNew } = this.props;
+    const { users } = this.props;
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -39,11 +41,11 @@ class MembersBox extends PureComponent {
         <ul className="members-box__list">
           <li className="members-box__list-item">
             {isAddNewVisible ? (
-              <MembersForm onAddNew={onAddNew} />
+              <MembersForm onAddNew={this.handleOnAddNew()} />
             ) : (
               <button
                 className="members-box__member"
-                onClick={this.handleAddNewVisibility}
+                onClick={this.showAddNewForm}
                 type="button"
               >
                 <PlusIcon />
@@ -53,7 +55,7 @@ class MembersBox extends PureComponent {
           {_map(users, user => (
             <li
               className="members-box__list-item"
-              key={user._id}
+              key={user.avatarUrl}
               title={user.displayName}
             >
               <button
@@ -71,11 +73,7 @@ class MembersBox extends PureComponent {
             </li>
           ))}
           <li className="members-box__list-item">
-            <button
-              className="members-box__member"
-              onClick={this.handleShowAll}
-              type="button"
-            >
+            <button className="members-box__member" type="button">
               <DotsIcon />
             </button>
           </li>

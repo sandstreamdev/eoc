@@ -293,9 +293,9 @@ const addMember = (req, resp) => {
             const { _id, avatarUrl, displayName, email } = doc;
             return { _id, avatarUrl, displayName, email };
           })
-          .catch(() => {
-            throw new NotFoundException('User data not found.');
-          });
+          .catch(() =>
+            resp.status(400).send({ message: 'User data not found.' })
+          );
       }
       return resp
         .status(400)

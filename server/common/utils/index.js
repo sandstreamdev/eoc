@@ -58,9 +58,8 @@ const responseWithCohorts = (cohorts, userId) =>
 
 const responseWithUsers = (users, ownerIds) =>
   _map(users, user => ({
-    name: user.name,
-    email: user.email,
     _id: user._id,
+    name: user.name,
     avatarUrl: user.avatarUrl,
     isOwner: ownerIds.indexOf(user._id) > -1
   }));
