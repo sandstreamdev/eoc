@@ -1,27 +1,19 @@
 .member-box {
-  position: absolute;
-  top: 0;
-  max-width: 200px;
-  border: 1px solid red;
-  z-index: 10;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
-  // background-color: $bg-color;
+  position: relative;
+  top: -36px;
+  width: 270px;
+  box-shadow: 0px 0px 5px rgba($shadow-color, 0.15);
 
-  &__user-button {
+  &__avatar {
     position: relative;
     align-items: center;
     background: $bg-color;
-    border: 1px solid $border-light;
     cursor: pointer;
     display: flex;
     justify-content: center;
-    margin: 0;
     width: 36px;
     height: 36px;
     padding: 0;
-    z-index: 5;
 
     svg {
       height: 18px;
@@ -33,38 +25,91 @@
     }
   }
 
+  &__close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    background-color: $bg-color;
+    border: 0;
+    z-index: 1;
+    cursor: pointer;
+    color: $text-normal;
+  }
+
   &__details {
-    // position: absolute;
     box-sizing: border-box;
     width: 100%;
-    // top: 36px;
-    // margin-top: 10px;
-    z-index: 5;
     background-color: $bg-color;
-    // padding: 15px;
-    // box-shadow: 0px 0px 5px rgba($shadow-color, 0.15);
   }
 
   &__heading {
     width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__name {
     font-weight: 500;
     white-space: nowrap;
+    padding: 0 15px 0 10px;
   }
 
-  &__role-description {
-    display: none;
+  &__role {
     font-weight: 400;
-  }
-
-  &__option {
-    padding: 15px 0 0;
-    // width: 33.333%;
-    //border-bottom: 1px solid $gray2;
   }
 
   &__panel {
     display: flex;
     flex-direction: column;
+    padding: 15px;
+  }
+
+  &__option {
+    display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 10px 0;
+
+    &:last-child {
+      padding: 10px 0 0;
+      justify-content: center;
+    }
+  }
+
+  &__help-button {
+    font-size: 14px;
+    width: 36px;
+    height: 36px;
+    background-color: transparent;
+    outline: 0;
+    border: 0;
+    cursor: pointer;
+    color: $text-normal;
+  }
+
+  &__confirmation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    h4 {
+      text-align: center;
+      line-height: 1.2;
+      padding: 0 0 10px;
+    }
+  }
+
+  &__role-description {
+    width: 100%;
+    font-weight: 400;
+    color: $text-normal;
+    font-size: 14px;
+    line-height: 1.25;
+    padding: 5px 0 0;
   }
 }
