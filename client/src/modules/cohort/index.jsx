@@ -32,7 +32,10 @@ import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList, { GridListRoutes } from 'common/components/GridList';
 import MembersBox from 'modules/members';
-import { fetchCohortMembers } from 'modules/members/model/actions';
+import {
+  addCohortMember,
+  fetchCohortMembers
+} from 'modules/members/model/actions';
 
 class Cohort extends PureComponent {
   state = {
@@ -132,6 +135,16 @@ class Cohort extends PureComponent {
       : removeArchivedListsMetaData();
   };
 
+  handleAddNewMember = email => {
+    const { addCohortMember } = this.props;
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+    addCohortMember(cohortId, email);
+  };
+
   render() {
     const {
       archivedLists,
@@ -202,7 +215,7 @@ class Cohort extends PureComponent {
               {description && (
                 <p className="cohort__description">{description}</p>
               )}
-              <MembersBox />
+              <MembersBox onAddNew={this.handleAddNewMember} />
               <GridList
                 color={CardColorType.ORANGE}
                 icon={<ListIcon />}
@@ -249,6 +262,7 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
+  addCohortMember: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
@@ -269,6 +283,7 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
+      addCohortMember,
       archiveCohort,
       createList,
       fetchArchivedListsMetaData,

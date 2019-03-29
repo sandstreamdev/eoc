@@ -56,10 +56,10 @@ export const fetchCohortMembers = cohortId => dispatch => {
 
 export const clearMembers = () => dispatch => dispatch(clearMembersRequest());
 
-export const addCohortMember = (cohortId, userId) => dispatch => {
+export const addCohortMember = (cohortId, email) => dispatch => {
   dispatch(addMemberRequest());
   return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-member`, {
-    userId
+    email
   })
     .then(resp => resp.json())
     .then(json => dispatch(addMemberSuccess(json)))

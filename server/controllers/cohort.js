@@ -277,27 +277,60 @@ const getMembers = (req, resp) => {
 };
 
 const addMember = (req, resp) => {
+  const {
+    user: { _id: currentUser }
+  } = req;
   const { id: cohortId } = req.params;
-  const { userId } = req.body;
-  Cohort.findOne(
-    { _id: cohortId },
-    {
-      $push: { memberIds: userId }
-    },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't add member to cohort. Please try again."
-        });
-      }
+  const { email } = req.body;
 
-      doc
-        ? resp.status(200).send({
-            message: `Member successfully added to ${doc.name}.`
+  Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUser }] })
+    .exec()
+    .then(doc => {
+      if (doc) {
+        return User.findOne({ email })
+          .exec()
+          .then(doc => {
+            const { _id, avatarUrl, displayName, email } = doc;
+            return { _id, avatarUrl, displayName, email };
           })
-        : resp.status(404).send({ message: 'Cohort data not found.' });
-    }
-  );
+          .catch(() => {
+            throw new NotFoundException('User data not found.');
+          });
+      }
+      return resp
+        .status(400)
+        .send({ message: "You don't have permission to add new member" });
+    })
+    .then(data => {
+      const { _id: newMemberId, displayName, avatarUrl, email } = data;
+      Cohort.findOneAndUpdate(
+        { _id: cohortId, memberIds: { $nin: [newMemberId] } },
+        { $push: { memberIds: newMemberId } }
+      )
+        .exec()
+        .then(doc => {
+          if (doc) {
+            return resp
+              .status(200)
+              .json({ avatarUrl, displayName, email, newMemberId });
+          }
+          return resp
+            .status(400)
+            .send({ message: 'User is already a member.' });
+        })
+        .catch(() => {
+          throw new NotFoundException('Cohort data not found.');
+        });
+    })
+    .catch(err => {
+      if (err instanceof NotFoundException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+      resp.status(400).send({
+        message: 'An error occurred while adding new member. Please try again.'
+      });
+    });
 };
 
 module.exports = {

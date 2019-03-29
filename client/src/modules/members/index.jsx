@@ -28,13 +28,9 @@ class MembersBox extends PureComponent {
     // console.log('show all members');
   };
 
-  handleAddNew = data => {
-    // console.log(data);
-  };
-
   render() {
     const { isAddNewVisible } = this.state;
-    const { users } = this.props;
+    const { users, onAddNew } = this.props;
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -43,7 +39,7 @@ class MembersBox extends PureComponent {
         <ul className="members-box__list">
           <li className="members-box__list-item">
             {isAddNewVisible ? (
-              <MembersForm onAddNew={this.handleAddNew} />
+              <MembersForm onAddNew={onAddNew} />
             ) : (
               <button
                 className="members-box__member"
@@ -92,7 +88,8 @@ class MembersBox extends PureComponent {
 MembersBox.propTypes = {
   users: PropTypes.objectOf(PropTypes.object).isRequired,
 
-  clearMembers: PropTypes.func
+  clearMembers: PropTypes.func,
+  onAddNew: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

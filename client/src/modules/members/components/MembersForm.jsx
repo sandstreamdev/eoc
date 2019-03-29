@@ -2,12 +2,19 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 class MembersForm extends PureComponent {
-  state = {
-    inputValue: ''
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      inputValue: ''
+    };
+
+    this.input = React.createRef();
+  }
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleAddNew);
+    this.input.current.focus();
   }
 
   componentWillUnmount() {
@@ -42,6 +49,7 @@ class MembersForm extends PureComponent {
           className="members-form__input primary-input"
           onChange={this.handleInputChange}
           placeholder="Enter email"
+          ref={this.input}
           type="email"
           value={inputValue}
         />
