@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 
 import { MembersActionTypes } from './actionTypes';
 
-const users = (state = {}, action) => {
+const members = (state = {}, action) => {
   switch (action.type) {
     case MembersActionTypes.FETCH_SUCCESS:
       return { ...state, ...action.payload };
@@ -25,4 +25,4 @@ const isFetching = (state = false, action) => {
   }
 };
 
-export default combineReducers({ data: users, isFetching });
+export default combineReducers({ data: members, isFetching });

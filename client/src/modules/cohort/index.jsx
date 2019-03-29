@@ -199,7 +199,9 @@ class Cohort extends PureComponent {
                 <CohortIcon />
                 {name}
               </h1>
-              <p className="cohort__description">{description}</p>
+              {description && (
+                <p className="cohort__description">{description}</p>
+              )}
               <MembersBox />
               <GridList
                 color={CardColorType.ORANGE}

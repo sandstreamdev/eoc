@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
-import { getUsers } from './model/selectors';
+import { getMembers } from './model/selectors';
 import { clearMembers } from './model/actions';
 
 class MembersBox extends PureComponent {
@@ -55,7 +55,11 @@ class MembersBox extends PureComponent {
             )}
           </li>
           {_map(users, user => (
-            <li className="members-box__list-item" title={user.displayName}>
+            <li
+              className="members-box__list-item"
+              key={user._id}
+              title={user.displayName}
+            >
               <button
                 className="members-box__member"
                 type="button"
@@ -92,7 +96,7 @@ MembersBox.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  users: getUsers(state)
+  users: getMembers(state)
 });
 
 export default connect(

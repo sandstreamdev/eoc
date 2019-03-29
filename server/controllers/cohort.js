@@ -276,7 +276,32 @@ const getMembers = (req, resp) => {
   });
 };
 
+const addMember = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  Cohort.findOne(
+    { _id: cohortId },
+    {
+      $push: { memberIds: userId }
+    },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't add member to cohort. Please try again."
+        });
+      }
+
+      doc
+        ? resp.status(200).send({
+            message: `Member successfully added to ${doc.name}.`
+          })
+        : resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
 module.exports = {
+  addMember,
   addToFavourites,
   createCohort,
   deleteCohortById,

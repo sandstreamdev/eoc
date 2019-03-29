@@ -1,7 +1,7 @@
 import _keyBy from 'lodash/keyBy';
 
 import { MembersActionTypes } from './actionTypes';
-import { getData } from 'common/utils/fetchMethods';
+import { getData, patchData } from 'common/utils/fetchMethods';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { ENDPOINT_URL } from 'common/constants/variables';
@@ -11,7 +11,7 @@ const fetchMembersRequest = () => ({
 });
 
 const fetchMembersFailure = () => ({
-  type: MembersActionTypes.FETCH_FAIULRE
+  type: MembersActionTypes.FETCH_FAILURE
 });
 
 const fetchMembersSuccess = data => ({
@@ -21,6 +21,19 @@ const fetchMembersSuccess = data => ({
 
 const clearMembersRequest = () => ({
   type: MembersActionTypes.CLEAR_DATA
+});
+
+const addMemberRequest = () => ({
+  type: MembersActionTypes.ADD_REQUEST
+});
+
+const addMemberSuccess = data => ({
+  type: MembersActionTypes.ADD_SUCCESS,
+  payload: data
+});
+
+const addMemberFailure = () => ({
+  type: MembersActionTypes.ADD_FAILURE
 });
 
 export const fetchCohortMembers = cohortId => dispatch => {
@@ -41,6 +54,21 @@ export const fetchCohortMembers = cohortId => dispatch => {
     });
 };
 
-export const clearMembers = () => dispatch => {
-  dispatch(clearMembersRequest());
+export const clearMembers = () => dispatch => dispatch(clearMembersRequest());
+
+export const addCohortMember = (cohortId, userId) => dispatch => {
+  dispatch(addMemberRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-member`, {
+    userId
+  })
+    .then(resp => resp.json())
+    .then(json => dispatch(addMemberSuccess(json)))
+    .catch(err => {
+      dispatch(addMemberFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, fetching users failed..."
+      );
+    });
 };
