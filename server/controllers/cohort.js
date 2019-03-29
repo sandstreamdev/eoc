@@ -339,7 +339,6 @@ const setAsMember = (req, resp) => {
   const {
     user: { _id: ownerId }
   } = req;
-
   Cohort.findOneAndUpdate(
     { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
     { $push: { memberIds: userId }, $pull: { ownerIds: userId } },
@@ -373,8 +372,7 @@ const getMembers = (req, resp) => {
 
     if (doc) {
       const { memberIds, ownerIds } = doc;
-
-      User.find({ _id: [...memberIds, ownerIds] }, (err, docs) => {
+      User.find({ _id: [...memberIds, ...ownerIds] }, (err, docs) => {
         if (err) {
           return resp.status(400).send({
             message: "Can't get members data. Please try again."
@@ -421,9 +419,13 @@ const addMember = (req, resp) => {
         .exec()
         .then(doc => {
           if (doc) {
-            return resp
-              .status(200)
-              .json({ avatarUrl, displayName, email, newMemberId });
+            return resp.status(200).json({
+              avatarUrl,
+              displayName,
+              email,
+              isOwner: false,
+              newMemberId
+            });
           }
           return resp
             .status(400)

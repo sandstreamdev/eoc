@@ -34,16 +34,18 @@ class MemberBox extends PureComponent {
     this.setState({ isConfirmVisible: !isConfirmVisible });
   };
 
-  handleUserRemovingConfirm = () => {
+  handleUserRemoving = () => {
     const {
       isOwner,
       match: {
         params: { id }
       },
+      onClose,
       removeCohortUser,
       _id: userId
     } = this.props;
     removeCohortUser(id, userId, isOwner);
+    onClose();
   };
 
   handleOwnerHelpVisibility = e => {

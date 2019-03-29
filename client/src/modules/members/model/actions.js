@@ -163,7 +163,7 @@ export const setAsCohortOwner = (cohortId, userId) => dispatch => {
 
 export const setAsCohortMember = (cohortId, userId) => dispatch => {
   dispatch(setAsCohortMemberRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/set-as-owner`, {
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/set-as-member`, {
     userId
   })
     .then(resp => resp.json())

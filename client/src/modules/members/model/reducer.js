@@ -23,7 +23,10 @@ const members = (state = {}, action) => {
       return {};
     case MembersActionTypes.ADD_SUCCESS: {
       const { avatarUrl, displayName, email, newMemberId } = action.payload;
-      return { ...state, [newMemberId]: { avatarUrl, displayName, email } };
+      return {
+        ...state,
+        [newMemberId]: { avatarUrl, displayName, email, _id: newMemberId }
+      };
     }
     default:
       return state;

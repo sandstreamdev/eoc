@@ -31,7 +31,7 @@ router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
 router.patch('/:id/remove-owner', authorize, removeOwner);
 router.patch('/:id/remove-member', authorize, removeMember);
 router.patch('/:id/set-as-owner', authorize, setAsOwner);
-router.patch('/:id/set-as_member', authorize, setAsMember);
+router.patch('/:id/set-as-member', authorize, setAsMember);
 router.get('/:id/get-members', authorize, getMembers);
 router.patch('/:id/add-member', authorize, addMember);
 
