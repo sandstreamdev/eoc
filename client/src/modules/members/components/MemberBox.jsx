@@ -2,9 +2,11 @@ import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import classNames from 'classnames';
 
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { CloseIcon, HelpIcon, UserIcon } from 'assets/images/icons';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
   removeCohortUser,
   setAsCohortMember,
@@ -91,11 +93,21 @@ class MemberBox extends PureComponent {
       isOwnerHelpVisible,
       isMemberHelpVisible
     } = this.state;
-    const { isCurrentOwner, avatarUrl, onClose, displayName } = this.props;
-
+    const {
+      currentUser: { id: currentUserId },
+      _id: userId,
+      isCurrentOwner,
+      avatarUrl,
+      onClose,
+      displayName
+    } = this.props;
     return (
       <Fragment>
-        <div className="member-box">
+        <div
+          className={classNames('member-box', {
+            'member-box--flexible': !isCurrentOwner
+          })}
+        >
           <button className="member-box__close" type="button" onClick={onClose}>
             <CloseIcon />
           </button>
@@ -112,98 +124,105 @@ class MemberBox extends PureComponent {
                   <UserIcon />
                 )}
               </div>
-              <h3 className="member-box__name">
-                {displayName}
-                <span className="member-box__role">
-                  {` - ${isOwner ? 'owner' : 'member'}`}
-                </span>
-              </h3>
+              <div>
+                <h3 className="member-box__name">{displayName}</h3>
+                <p className="member-box__role">
+                  {`${isOwner ? 'owner' : 'member'}`}
+                </p>
+              </div>
             </div>
-            {isCurrentOwner && (
-              <ul className="member-box__panel">
-                <li className="member-box__option">
-                  <label htmlFor="ownerRole">Set as a owner</label>
-                  <span>
-                    <button
-                      className="member-box__help-button"
-                      onClick={this.handleOwnerHelpVisibility}
-                      type="button"
-                    >
-                      <HelpIcon />
-                    </button>
-                    <input
-                      checked={isOwner}
-                      id="ownerRole"
-                      name="role"
-                      onChange={this.handleChangingRoles}
-                      type="radio"
-                      value={MemberDetailsContext.OWNER}
-                    />
-                  </span>
-                  {isOwnerHelpVisible && (
-                    <p className="member-box__role-description">
-                      {'Can edit, archive and delete this cohort. '}
-                      {"Can add, edit list's items and mark them as done. "}
-                      {'Can add, edit, archive and delete lists. '}
-                      {'Can add, remove members, and change their roles. '}
-                    </p>
-                  )}
-                </li>
-                <li className="member-box__option">
-                  <label htmlFor="memberRole">Set as a member</label>
-                  <span>
-                    <button
-                      className="member-box__help-button"
-                      onClick={this.handleMemberHelpVisibility}
-                      type="button"
-                    >
-                      <HelpIcon />
-                    </button>
-                    <input
-                      checked={!isOwner}
-                      id="memberRole"
-                      name="role"
-                      onChange={this.handleChangingRoles}
-                      type="radio"
-                      value={MemberDetailsContext.MEMBER}
-                    />
-                  </span>
-                  {isMemberHelpVisible && (
-                    <p className="member-box__role-description">
-                      {"Can view lists, add and edit list's items."}
-                    </p>
-                  )}
-                </li>
-                <li className="member-box__option">
-                  {isConfirmVisible ? (
-                    <div className="member-box__confirmation">
-                      <h4>{`Do you really want to remove ${displayName}?`}</h4>
+            {isCurrentOwner && userId !== currentUserId && (
+              <Fragment>
+                <ul className="member-box__panel">
+                  <li className="member-box__option">
+                    <label htmlFor="ownerRole">Set as a owner</label>
+                    <span>
                       <button
-                        className="primary-button"
-                        onClick={this.handleUserRemoving}
+                        className="member-box__help-button"
+                        onClick={this.handleOwnerHelpVisibility}
                         type="button"
                       >
-                        Confirm
+                        <HelpIcon />
                       </button>
+                      <input
+                        checked={isOwner}
+                        id="ownerRole"
+                        name="role"
+                        onChange={this.handleChangingRoles}
+                        type="radio"
+                        value={MemberDetailsContext.OWNER}
+                      />
+                    </span>
+                    {isOwnerHelpVisible && (
+                      <p className="member-box__role-description">
+                        {'Can edit, archive and delete this cohort. '}
+                        {"Can add, edit list's items and mark them as done. "}
+                        {'Can add, edit, archive and delete lists. '}
+                        {'Can add, remove members, and change their roles. '}
+                      </p>
+                    )}
+                  </li>
+                  <li className="member-box__option">
+                    <label htmlFor="memberRole">Set as a member</label>
+                    <span>
                       <button
-                        className="primary-button"
+                        className="member-box__help-button"
+                        onClick={this.handleMemberHelpVisibility}
+                        type="button"
+                      >
+                        <HelpIcon />
+                      </button>
+                      <input
+                        checked={!isOwner}
+                        id="memberRole"
+                        name="role"
+                        onChange={this.handleChangingRoles}
+                        type="radio"
+                        value={MemberDetailsContext.MEMBER}
+                      />
+                    </span>
+                    {isMemberHelpVisible && (
+                      <p className="member-box__role-description">
+                        {"Can view lists, add and edit list's items."}
+                      </p>
+                    )}
+                  </li>
+                  <li className="member-box__option">
+                    {isConfirmVisible ? (
+                      <div className="member-box__confirmation">
+                        <h4>{`Do you really want to remove ${displayName}?`}</h4>
+                        <button
+                          className="primary-button"
+                          onClick={this.handleUserRemoving}
+                          type="button"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          className="primary-button"
+                          onClick={this.handleConfirmationVisibility}
+                          type="button"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        className="member-box__button primary-button"
                         onClick={this.handleConfirmationVisibility}
                         type="button"
                       >
-                        Cancel
+                        Remove user
                       </button>
-                    </div>
-                  ) : (
-                    <button
-                      className="member-box__button primary-button"
-                      onClick={this.handleConfirmationVisibility}
-                      type="button"
-                    >
-                      Remove user
-                    </button>
-                  )}
-                </li>
-              </ul>
+                    )}
+                  </li>
+                </ul>
+              </Fragment>
+            )}
+            {isCurrentOwner && userId === currentUserId && (
+              <p className="member-box__notice">
+                You cannot edit your own settings here.
+              </p>
             )}
           </div>
         </div>
@@ -214,6 +233,7 @@ class MemberBox extends PureComponent {
 
 MemberBox.propTypes = {
   avatarUrl: PropTypes.string,
+  currentUser: UserPropType.isRequired,
   isCurrentOwner: PropTypes.bool.isRequired,
   isOwner: PropTypes.bool,
   displayName: PropTypes.string.isRequired,
@@ -226,9 +246,13 @@ MemberBox.propTypes = {
   setAsCohortOwner: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     { removeCohortUser, setAsCohortMember, setAsCohortOwner }
   )(MemberBox)
 );

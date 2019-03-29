@@ -12,7 +12,6 @@ import { clearMembers } from './model/actions';
 class MembersBox extends PureComponent {
   state = {
     isFormVisible: false,
-    memberDetails: null,
     context: null
   };
 

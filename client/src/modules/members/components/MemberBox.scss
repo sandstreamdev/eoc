@@ -4,6 +4,11 @@
   width: 270px;
   box-shadow: 0px 0px 5px rgba($shadow-color, 0.15);
 
+  &--flexible {
+    width: auto;
+    padding-right: 36px;
+  }
+
   &__avatar {
     position: relative;
     align-items: center;
@@ -72,6 +77,8 @@
 
   &__role {
     font-weight: 400;
+    font-size: 14px;
+    padding: 0 15px 0 10px;
   }
 
   &__panel {
@@ -125,12 +132,17 @@
     }
   }
 
-  &__role-description {
+  &__role-description,
+  &__notice {
     width: 100%;
     font-weight: 400;
     color: $text-normal;
     font-size: 14px;
     line-height: 1.25;
     padding: 5px 0 0;
+  }
+
+  &__notice {
+    padding: 15px;
   }
 }
