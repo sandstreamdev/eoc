@@ -2,12 +2,12 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import PropTypes from 'prop-types';
-import { Popper, Reference, Manager } from 'react-popper';
+import { Manager } from 'react-popper';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
-import MemberPo from './components/MemberPo';
+import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
 import { getMembers } from './model/selectors';
 import { clearMembers } from './model/actions';
@@ -78,13 +78,13 @@ class MembersBox extends PureComponent {
                   onDisplayDetails={this.handleDisplayingMemberDetails(user)}
                 />
                 {context === user._id && (
-                  <MemberPo>
-                    <MemberBox
+                  <MemberBox>
+                    <MemberDetails
                       {...user}
                       isCurrentOwner={isCurrentOwner}
                       onClose={this.handleClosingMemberDetails}
                     />
-                  </MemberPo>
+                  </MemberBox>
                 )}
               </Manager>
             </li>

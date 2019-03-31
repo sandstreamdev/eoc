@@ -7,13 +7,13 @@ const MemberButton = ({ onDisplayDetails, user }) => (
     {({ ref }) => (
       <button
         ref={ref}
-        className="members-box__member"
+        className="member-button"
         title={user.displayName}
         type="button"
       >
         <img
           alt={`${user.displayName} avatar`}
-          className="members-box__avatar"
+          className="member-button__avatar"
           onClick={onDisplayDetails}
           src={user.avatarUrl}
           title={user.displayName}

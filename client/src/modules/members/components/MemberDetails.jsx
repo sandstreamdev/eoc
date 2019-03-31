@@ -19,7 +19,7 @@ const MemberDetailsContext = Object.freeze({
   OWNER: 'memberDialog/OWNER'
 });
 
-class MemberBox extends PureComponent {
+class MemberDetails extends PureComponent {
   constructor(props) {
     super(props);
     const { isOwner } = props;
@@ -104,20 +104,24 @@ class MemberBox extends PureComponent {
     return (
       <Fragment>
         <div
-          className={classNames('member-box', {
-            'member-box--flexible': !isCurrentOwner
+          className={classNames('member-details', {
+            'member-details--flexible': !isCurrentOwner
           })}
         >
-          <button className="member-box__close" type="button" onClick={onClose}>
+          <button
+            className="member-details__close"
+            type="button"
+            onClick={onClose}
+          >
             <CloseIcon />
           </button>
-          <div className="member-box__details">
-            <div className="member-box__heading">
-              <div className="member-box__avatar">
+          <div className="member-details__details">
+            <div className="member-details__heading">
+              <div className="member-details__avatar">
                 {avatarUrl ? (
                   <img
                     alt={`${displayName} avatar`}
-                    className="member-box__image"
+                    className="member-details__image"
                     src={avatarUrl}
                   />
                 ) : (
@@ -125,20 +129,20 @@ class MemberBox extends PureComponent {
                 )}
               </div>
               <div>
-                <h3 className="member-box__name">{displayName}</h3>
-                <p className="member-box__role">
+                <h3 className="member-details__name">{displayName}</h3>
+                <p className="member-details__role">
                   {`${isOwner ? 'owner' : 'member'}`}
                 </p>
               </div>
             </div>
             {isCurrentOwner && userId !== currentUserId && (
               <Fragment>
-                <ul className="member-box__panel">
-                  <li className="member-box__option">
+                <ul className="member-details__panel">
+                  <li className="member-details__option">
                     <label htmlFor="ownerRole">Set as a owner</label>
                     <span>
                       <button
-                        className="member-box__help-button"
+                        className="member-details__help-button"
                         onClick={this.handleOwnerHelpVisibility}
                         type="button"
                       >
@@ -154,7 +158,7 @@ class MemberBox extends PureComponent {
                       />
                     </span>
                     {isOwnerHelpVisible && (
-                      <p className="member-box__role-description">
+                      <p className="member-details__role-description">
                         {'Can edit, archive and delete this cohort. '}
                         {"Can add, edit list's items and mark them as done. "}
                         {'Can add, edit, archive and delete lists. '}
@@ -162,11 +166,11 @@ class MemberBox extends PureComponent {
                       </p>
                     )}
                   </li>
-                  <li className="member-box__option">
+                  <li className="member-details__option">
                     <label htmlFor="memberRole">Set as a member</label>
                     <span>
                       <button
-                        className="member-box__help-button"
+                        className="member-details__help-button"
                         onClick={this.handleMemberHelpVisibility}
                         type="button"
                       >
@@ -182,14 +186,14 @@ class MemberBox extends PureComponent {
                       />
                     </span>
                     {isMemberHelpVisible && (
-                      <p className="member-box__role-description">
+                      <p className="member-details__role-description">
                         {"Can view lists, add and edit list's items."}
                       </p>
                     )}
                   </li>
-                  <li className="member-box__option">
+                  <li className="member-details__option">
                     {isConfirmVisible ? (
-                      <div className="member-box__confirmation">
+                      <div className="member-details__confirmation">
                         <h4>{`Do you really want to remove ${displayName}?`}</h4>
                         <button
                           className="primary-button"
@@ -208,7 +212,7 @@ class MemberBox extends PureComponent {
                       </div>
                     ) : (
                       <button
-                        className="member-box__button primary-button"
+                        className="member-details__button primary-button"
                         onClick={this.handleConfirmationVisibility}
                         type="button"
                       >
@@ -220,7 +224,7 @@ class MemberBox extends PureComponent {
               </Fragment>
             )}
             {isCurrentOwner && userId === currentUserId && (
-              <p className="member-box__notice">
+              <p className="member-details__notice">
                 You cannot edit your own settings here.
               </p>
             )}
@@ -231,7 +235,7 @@ class MemberBox extends PureComponent {
   }
 }
 
-MemberBox.propTypes = {
+MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   isCurrentOwner: PropTypes.bool.isRequired,
@@ -254,5 +258,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     { removeCohortUser, setAsCohortMember, setAsCohortOwner }
-  )(MemberBox)
+  )(MemberDetails)
 );
