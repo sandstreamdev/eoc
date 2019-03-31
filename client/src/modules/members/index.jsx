@@ -2,10 +2,13 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import PropTypes from 'prop-types';
+import { Popper, Reference, Manager } from 'react-popper';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
+import MemberPo from './components/MemberPo';
+import MemberButton from './components/MemberButton';
 import { getMembers } from './model/selectors';
 import { clearMembers } from './model/actions';
 
@@ -69,26 +72,21 @@ class MembersBox extends PureComponent {
               key={user.avatarUrl}
               title={user.displayName}
             >
-              <button
-                className="members-box__member"
-                title={user.displayName}
-                type="button"
-              >
-                <img
-                  alt={`${user.displayName} avatar`}
-                  className="members-box__avatar"
-                  onClick={this.handleDisplayingMemberDetails(user)}
-                  src={user.avatarUrl}
-                  title={user.displayName}
+              <Manager>
+                <MemberButton
+                  user={user}
+                  onDisplayDetails={this.handleDisplayingMemberDetails(user)}
                 />
-              </button>
-              {context === user._id && (
-                <MemberBox
-                  {...user}
-                  isCurrentOwner={isCurrentOwner}
-                  onClose={this.handleClosingMemberDetails}
-                />
-              )}
+                {context === user._id && (
+                  <MemberPo>
+                    <MemberBox
+                      {...user}
+                      isCurrentOwner={isCurrentOwner}
+                      onClose={this.handleClosingMemberDetails}
+                    />
+                  </MemberPo>
+                )}
+              </Manager>
             </li>
           ))}
           <li className="members-box__list-item">
