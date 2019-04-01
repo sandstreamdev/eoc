@@ -24,6 +24,7 @@ const seedCohorts = async () => {
     await newCohort.save();
     counter += 1;
   }
+
   return cohorts;
 };
 
