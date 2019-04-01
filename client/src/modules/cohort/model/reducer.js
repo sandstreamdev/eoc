@@ -5,10 +5,7 @@ import { CohortActionTypes } from './actionTypes';
 const cohorts = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.CREATE_SUCCESS:
-      return {
-        [action.payload._id]: { ...action.payload },
-        ...state
-      };
+      return { [action.payload._id]: { ...action.payload }, ...state };
     case CohortActionTypes.UPDATE_SUCCESS: {
       const prevCohort = state[action.payload.cohortId];
       const updatedCohort = {
@@ -16,19 +13,13 @@ const cohorts = (state = {}, action) => {
         name: action.payload.name,
         description: action.payload.description
       };
-      return {
-        ...state,
-        [action.payload.cohortId]: updatedCohort
-      };
+      return { ...state, [action.payload.cohortId]: updatedCohort };
     }
     case CohortActionTypes.ARCHIVE_SUCCESS: {
       const _id = action.payload;
       const { name } = state[_id];
       const archivedCohort = { _id, isArchived: true, name };
-      return {
-        ...state,
-        [_id]: archivedCohort
-      };
+      return { ...state, [_id]: archivedCohort };
     }
     case CohortActionTypes.DELETE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;
@@ -39,20 +30,22 @@ const cohorts = (state = {}, action) => {
       return action.payload;
     case CohortActionTypes.RESTORE_SUCCESS:
     case CohortActionTypes.FETCH_DETAILS_SUCCESS:
-      return {
-        ...state,
-        [action.payload._id]: action.payload.data
-      };
+      return { ...state, [action.payload._id]: action.payload.data };
     case CohortActionTypes.FAVOURITES_SUCCESS: {
       const {
         payload: { cohortId, isFavourite }
       } = action;
+      return { ...state, [cohortId]: { ...state[cohortId], isFavourite } };
+    }
+    case CohortActionTypes.ADD_MEMBER_SUCCESS: {
+      const {
+        payload: { cohortId, data }
+      } = action;
+      const { members } = state[cohortId];
+
       return {
         ...state,
-        [cohortId]: {
-          ...state[cohortId],
-          isFavourite
-        }
+        [cohortId]: { ...state[cohortId], members: [...members, data] }
       };
     }
     default:
@@ -80,6 +73,8 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.RESTORE_SUCCESS:
     case CohortActionTypes.UPDATE_FAILURE:
     case CohortActionTypes.UPDATE_SUCCESS:
+    case CohortActionTypes.ADD_MEMBER_FAILURE:
+    case CohortActionTypes.ADD_MEMBER_SUCCESS:
       return false;
     case CohortActionTypes.ARCHIVE_REQUEST:
     case CohortActionTypes.CREATE_REQUEST:
@@ -90,6 +85,7 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.FETCH_META_DATA_REQUEST:
     case CohortActionTypes.RESTORE_REQUEST:
     case CohortActionTypes.UPDATE_REQUEST:
+    case CohortActionTypes.ADD_MEMBER_REQUEST:
       return true;
     default:
       return state;

@@ -40,3 +40,6 @@ export const getArchivedCohorts = createSelector(
       '_id'
     )
 );
+
+export const getMembers = (state, id) =>
+  _keyBy(state.cohorts.data[id].members, '_id');

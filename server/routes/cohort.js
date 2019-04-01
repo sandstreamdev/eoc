@@ -10,7 +10,6 @@ const {
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
-  getMembers,
   removeFromFavourites,
   updateCohortById
 } = require('../controllers/cohort');
@@ -24,7 +23,6 @@ router.get('/:id/data', authorize, getCohortDetails);
 router.delete('/:id/delete', authorize, deleteCohortById);
 router.patch('/:id/add-to-fav', authorize, addToFavourites);
 router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
-router.get('/:id/get-members', authorize, getMembers);
 router.patch('/:id/add-member', authorize, addMember);
 
 module.exports = app => app.use('/cohorts', router);
