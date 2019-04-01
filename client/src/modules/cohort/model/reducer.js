@@ -8,7 +8,7 @@ const membersReducer = (state, action) => {
       const {
         payload: { data }
       } = action;
-      return { ...state, data };
+      return [...state, data];
     }
     default:
       return state;
