@@ -64,6 +64,16 @@ const responseWithUsers = (users, ownerIds) =>
     isOwner: ownerIds.indexOf(user._id) > -1
   }));
 
+const responseWithUser = data => {
+  const { avatarUrl, displayName, newMemberId } = data;
+  return {
+    _id: newMemberId,
+    avatarUrl,
+    displayName,
+    isOwner: false
+  };
+};
+
 module.exports = {
   checkRole,
   filter,
@@ -73,5 +83,6 @@ module.exports = {
   responseWithItem,
   responseWithItems,
   responseWithLists,
+  responseWithUser,
   responseWithUsers
 };

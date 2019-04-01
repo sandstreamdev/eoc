@@ -9,8 +9,8 @@ const members = (state = {}, action) => {
     case MembersActionTypes.CLEAR_DATA:
       return {};
     case MembersActionTypes.ADD_SUCCESS: {
-      const { avatarUrl, displayName, email, newMemberId } = action.payload;
-      return { ...state, [newMemberId]: { avatarUrl, displayName, email } };
+      const { _id, avatarUrl, displayName, isOwner } = action.payload;
+      return { ...state, [_id]: { _id, avatarUrl, displayName, isOwner } };
     }
     default:
       return state;
@@ -19,13 +19,13 @@ const members = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
-    case MembersActionTypes.ADD_SUCCESS:
     case MembersActionTypes.ADD_FAILURE:
-    case MembersActionTypes.FETCH_SUCCESS:
+    case MembersActionTypes.ADD_SUCCESS:
     case MembersActionTypes.FETCH_FAILURE:
+    case MembersActionTypes.FETCH_SUCCESS:
       return false;
-    case MembersActionTypes.FETCH_REQUEST:
     case MembersActionTypes.ADD_REQUEST:
+    case MembersActionTypes.FETCH_REQUEST:
       return true;
     default:
       return state;
