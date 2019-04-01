@@ -2,6 +2,19 @@ import { combineReducers } from 'redux';
 
 import { CohortActionTypes } from './actionTypes';
 
+const members = (state, action) => {
+  switch (action.type) {
+    case CohortActionTypes.ADD_MEMBER_SUCCESS: {
+      const {
+        payload: { data }
+      } = action;
+      return { ...state, data };
+    }
+    default:
+      return state;
+  }
+};
+
 const cohorts = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.CREATE_SUCCESS:
@@ -39,13 +52,13 @@ const cohorts = (state = {}, action) => {
     }
     case CohortActionTypes.ADD_MEMBER_SUCCESS: {
       const {
-        payload: { cohortId, data }
+        payload: { cohortId }
       } = action;
       const { members } = state[cohortId];
 
       return {
         ...state,
-        [cohortId]: { ...state[cohortId], members: [...members, data] }
+        [cohortId]: { ...state[cohortId], members: members(members, action) }
       };
     }
     default:

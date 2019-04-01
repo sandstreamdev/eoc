@@ -51,13 +51,12 @@ const getCohortsMetaData = (req, resp) => {
         ? resp.status(200).send(responseWithCohorts(docs, userId))
         : resp.status(404).send({ message: 'No cohorts data found.' })
     )
-    .catch(err => {
-      console.log(err);
-      return resp.status(400).send({
+    .catch(err =>
+      resp.status(400).send({
         message:
           'An error occurred while fetching the cohorts data. Please try again.'
-      });
-    });
+      })
+    );
 };
 
 const getArchivedCohortsMetaData = (req, resp) => {
@@ -149,13 +148,13 @@ const getCohortDetails = (req, resp) => {
         name,
         members: membersData
       } = doc;
-      const ownerIds = owners.map(owner => owner.id);
-      const members = responseWithUsers([...membersData, ...owners], ownerIds);
 
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
 
+      const ownerIds = owners.map(owner => owner.id);
+      const members = responseWithUsers([...membersData, ...owners], ownerIds);
       const isOwner = checkRole(owners, req.user._id);
 
       resp.status(200).json({
