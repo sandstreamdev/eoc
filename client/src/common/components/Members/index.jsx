@@ -92,9 +92,4 @@ const mapStateToProps = (state, ownProps) => {
   return { users: getCohortMembers(state, id) };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    null
-  )(MembersBox)
-);
+export default withRouter(connect(mapStateToProps)(MembersBox));

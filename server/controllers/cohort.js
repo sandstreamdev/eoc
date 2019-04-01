@@ -19,7 +19,7 @@ const createCohort = (req, resp) => {
   const cohort = new Cohort({
     name,
     description,
-    owners: ownerId
+    ownerIds: ownerId
   });
 
   cohort.save((err, doc) =>
@@ -40,7 +40,7 @@ const getCohortsMetaData = (req, resp) => {
   } = req;
 
   Cohort.find({
-    $or: [{ owners: userId }, { members: userId }],
+    $or: [{ ownerIds: userId }, { members: userId }],
     isArchived: false
   })
     .select('_id name description favIds')
@@ -65,7 +65,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
   } = req;
   Cohort.find(
     {
-      $or: [{ owners: userId }, { members: userId }],
+      $or: [{ ownerIds: userId }, { members: userId }],
       isArchived: true
     },
     '_id name description favIds isArchived',
@@ -100,7 +100,7 @@ const updateCohortById = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: id,
-      $or: [{ owners: req.user._id }]
+      $or: [{ ownerIds: req.user._id }]
     },
     dataToUpdate,
     (err, doc) => {
@@ -128,10 +128,10 @@ const getCohortDetails = (req, resp) => {
   }
   Cohort.findOne({
     _id: req.params.id,
-    $or: [{ owners: req.user._id }, { members: req.user._id }]
+    $or: [{ ownerIds: req.user._id }, { members: req.user._id }]
   })
     .populate('members', 'avatarUrl displayName _id')
-    .populate('owners', 'avatarUrl displayName _id')
+    .populate('ownerIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -141,7 +141,7 @@ const getCohortDetails = (req, resp) => {
       }
 
       const {
-        owners,
+        ownerIds,
         _id,
         isArchived,
         description,
@@ -153,9 +153,9 @@ const getCohortDetails = (req, resp) => {
         return resp.status(200).json({ _id, isArchived, name });
       }
 
-      const ownerIds = owners.map(owner => owner.id);
-      const members = responseWithUsers([...membersData, ...owners], ownerIds);
-      const isOwner = checkRole(owners, req.user._id);
+      const owners = ownerIds.map(owner => owner.id);
+      const members = responseWithUsers([...membersData, ...ownerIds], owners);
+      const isOwner = checkRole(ownerIds, req.user._id);
 
       resp.status(200).json({
         _id,
@@ -176,7 +176,7 @@ const getCohortDetails = (req, resp) => {
 
 const deleteCohortById = (req, resp) => {
   let documentName = '';
-  Cohort.findOne({ _id: req.params.id, owners: req.user._id })
+  Cohort.findOne({ _id: req.params.id, ownerIds: req.user._id })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -215,7 +215,7 @@ const addToFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ owners: userId }, { members: userId }]
+      $or: [{ ownerIds: userId }, { members: userId }]
     },
     {
       $push: { favIds: userId }
@@ -245,7 +245,7 @@ const removeFromFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ owners: userId }, { members: userId }]
+      $or: [{ ownerIds: userId }, { members: userId }]
     },
     {
       $pull: { favIds: userId }
@@ -275,7 +275,7 @@ const addMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { email } = req.body;
 
-  Cohort.findOne({ _id: cohortId, $or: [{ owners: currentUser }] })
+  Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUser }] })
     .exec()
     .then(doc => {
       if (doc) {

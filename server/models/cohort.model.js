@@ -10,7 +10,7 @@ const CohortSchema = new Schema(
     isArchived: { type: Boolean, default: false },
     members: [{ type: ObjectId, ref: 'User' }],
     name: { type: String, required: true },
-    owners: [{ type: ObjectId, ref: 'User' }]
+    ownerIds: [{ type: ObjectId, ref: 'User' }]
   },
   { timestamps: { createdAt: 'createdAt' }, collection: 'cohorts' }
 );
