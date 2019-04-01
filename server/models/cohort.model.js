@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
-// const Users = require('../models/user.model');
 
 const CohortSchema = new Schema(
   {

@@ -268,32 +268,6 @@ const removeFromFavourites = (req, resp) => {
   );
 };
 
-// const getMembers = (req, resp) => {
-//   const { id: cohortId } = req.params;
-
-//   Cohort.findOne({ _id: cohortId }, 'members owners', (err, doc) => {
-//     if (err) {
-//       return resp.status(400).send({
-//         message: "Can't get members data. Please try again."
-//       });
-//     }
-
-//     if (doc) {
-//       const { members, owners } = doc;
-
-//       User.find({ _id: [...members, ...owners] }, (err, docs) => {
-//         if (err) {
-//           return resp.status(400).send({
-//             message: "Can't get members data. Please try again."
-//           });
-//         }
-//         const users = responseWithUsers(docs, owners);
-//         resp.status(200).json(users);
-//       });
-//     }
-//   });
-// };
-
 const addMember = (req, resp) => {
   const {
     user: { _id: currentUser }

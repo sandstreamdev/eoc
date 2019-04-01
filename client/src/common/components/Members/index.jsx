@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
-import { getMembers } from 'modules/cohort/model/selectors';
+import { getMembers as getCohortMembers } from 'modules/cohort/model/selectors';
 
 class MembersBox extends PureComponent {
   state = {
@@ -89,7 +89,7 @@ const mapStateToProps = (state, ownProps) => {
       params: { id }
     }
   } = ownProps;
-  return { users: getMembers(state, id) };
+  return { users: getCohortMembers(state, id) };
 };
 
 export default withRouter(
