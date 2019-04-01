@@ -40,7 +40,7 @@ const getCohortsMetaData = (req, resp) => {
   } = req;
 
   Cohort.find({
-    $or: [{ ownerIds: userId }, { members: userId }],
+    $or: [{ ownerIds: userId }, { memberIds: userId }],
     isArchived: false
   })
     .select('_id name description favIds')
@@ -65,7 +65,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
   } = req;
   Cohort.find(
     {
-      $or: [{ ownerIds: userId }, { members: userId }],
+      $or: [{ ownerIds: userId }, { memberIds: userId }],
       isArchived: true
     },
     '_id name description favIds isArchived',
@@ -128,9 +128,9 @@ const getCohortDetails = (req, resp) => {
   }
   Cohort.findOne({
     _id: req.params.id,
-    $or: [{ ownerIds: req.user._id }, { members: req.user._id }]
+    $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
   })
-    .populate('members', 'avatarUrl displayName _id')
+    .populate('memberIds', 'avatarUrl displayName _id')
     .populate('ownerIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
@@ -146,7 +146,7 @@ const getCohortDetails = (req, resp) => {
         isArchived,
         description,
         name,
-        members: membersData
+        memberIds: membersData
       } = doc;
 
       if (isArchived) {
@@ -215,7 +215,7 @@ const addToFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ ownerIds: userId }, { members: userId }]
+      $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     {
       $push: { favIds: userId }
@@ -245,7 +245,7 @@ const removeFromFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ ownerIds: userId }, { members: userId }]
+      $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     {
       $pull: { favIds: userId }
@@ -282,8 +282,8 @@ const addMember = (req, resp) => {
         return User.findOne({ email })
           .exec()
           .then(doc => {
-            const { _id, avatarUrl, displayName, email } = doc;
-            return { _id, avatarUrl, displayName, email };
+            const { _id, avatarUrl, displayName, isOwner, email } = doc;
+            return { _id, avatarUrl, displayName, isOwner, email };
           })
           .catch(() =>
             resp.status(400).send({ message: 'User data not found.' })
@@ -294,16 +294,16 @@ const addMember = (req, resp) => {
         .send({ message: "You don't have permission to add new member" });
     })
     .then(data => {
-      const { _id: newMemberId, displayName, avatarUrl } = data;
+      const { _id: newMemberId, displayName, isOwner, avatarUrl } = data;
 
       Cohort.findOneAndUpdate(
-        { _id: cohortId, members: { $nin: [newMemberId] } },
-        { $push: { members: newMemberId } }
+        { _id: cohortId, memberIds: { $nin: [newMemberId] } },
+        { $push: { memberIds: newMemberId } }
       )
         .exec()
         .then(doc => {
           if (doc) {
-            const data = { avatarUrl, displayName, newMemberId };
+            const data = { avatarUrl, displayName, isOwner, newMemberId };
             const dataToSend = responseWithUser(data);
             return resp.status(200).json(dataToSend);
           }

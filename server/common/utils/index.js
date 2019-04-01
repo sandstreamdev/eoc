@@ -66,12 +66,12 @@ const responseWithUsers = (users, ownerIds) =>
   }));
 
 const responseWithUser = data => {
-  const { avatarUrl, displayName, newMemberId } = data;
+  const { avatarUrl, displayName, isOwner, newMemberId } = data;
   return {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isOwner: false
+    isOwner
   };
 };
 
