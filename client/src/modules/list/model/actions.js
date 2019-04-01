@@ -8,7 +8,10 @@ import {
   postData
 } from 'common/utils/fetchMethods';
 import { ListActionTypes } from './actionTypes';
-import { MessageType as NotificationType } from 'common/constants/enums';
+import {
+  MessageType as NotificationType,
+  UserRoles
+} from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 
@@ -145,30 +148,17 @@ const removeMemberSuccess = (listId, id) => ({
   payload: { listId, id }
 });
 
-const changeToOwnerRequest = () => ({
-  type: ListActionTypes.CHANGE_TO_OWNER_REQUEST
+const changeRoleRequest = () => ({
+  type: ListActionTypes.CHANGE_ROLE_REQUEST
 });
 
-const changeToOwnerFailure = () => ({
-  type: ListActionTypes.CHANGE_TO_OWNER_FAILURE
+const changeRoleFailure = () => ({
+  type: ListActionTypes.CHANGE_ROLE_FAILURE
 });
 
-const changeToOwnerSuccess = (listId, id) => ({
-  type: ListActionTypes.CHANGE_TO_OWNER_SUCCESS,
-  payload: { listId, id }
-});
-
-const changeToMemberRequest = () => ({
-  type: ListActionTypes.CHANGE_TO_MEMBER_REQUEST
-});
-
-const changeToMemberFailure = () => ({
-  type: ListActionTypes.CHANGE_TO_MEMBER_FAILURE
-});
-
-const changeToMemberSuccess = (listId, id) => ({
-  type: ListActionTypes.CHANGE_TO_MEMBER_SUCCESS,
-  payload: { listId, id }
+const changeRoleSuccess = (listId, userId, isOwner) => ({
+  type: ListActionTypes.CHANGE_ROLE_SUCCESS,
+  payload: { listId, userId, isOwner }
 });
 
 export const fetchListData = listId => dispatch => {
@@ -408,14 +398,16 @@ export const removeListMember = (listId, userId, isOwner) => dispatch => {
     });
 };
 
-export const changeToListOwner = (listId, userId) => dispatch => {
-  dispatch(changeToOwnerRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-to-owner`, {
-    userId
-  })
+export const changeRole = (listId, userId, role) => dispatch => {
+  const isOwner = role === UserRoles.OWNER;
+  const url = isOwner
+    ? `${ENDPOINT_URL}/lists/${listId}/change-to-owner`
+    : `${ENDPOINT_URL}/lists/${listId}/change-to-member`;
+  dispatch(changeRoleRequest());
+  return patchData(url, { userId })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(changeToOwnerSuccess(userId));
+      dispatch(changeRoleSuccess(listId, userId, isOwner));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -423,31 +415,7 @@ export const changeToListOwner = (listId, userId) => dispatch => {
       );
     })
     .catch(err => {
-      dispatch(changeToOwnerFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message
-      );
-    });
-};
-
-export const changeToListMember = (listId, userId) => dispatch => {
-  dispatch(changeToMemberRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-to-member`, {
-    userId
-  })
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch(changeToMemberSuccess(userId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
-    .catch(err => {
-      dispatch(changeToMemberFailure());
+      dispatch(changeRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

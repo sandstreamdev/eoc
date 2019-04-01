@@ -8,8 +8,9 @@ import { fetchArchivedCohortsMetaData } from 'modules/cohort/model/actions';
 import { getArchivedLists } from 'modules/list/model/selectors';
 import { getArchivedCohorts } from 'modules/cohort/model/selectors';
 import { CohortIcon, ListIcon } from 'assets/images/icons';
-import GridList, { GridListRoutes } from 'common/components/GridList';
+import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
+import { Routes } from 'common/constants/enums';
 
 class Archived extends PureComponent {
   componentDidMount() {
@@ -35,7 +36,7 @@ class Archived extends PureComponent {
             items={lists}
             name="Archived Lists"
             placeholder="There are no archived lists!"
-            route={GridListRoutes.LIST}
+            route={Routes.LIST}
           />
           <GridList
             color={CardColorType.BROWN}
@@ -43,7 +44,7 @@ class Archived extends PureComponent {
             items={cohorts}
             name="Archived Cohorts"
             placeholder="There are no archived cohorts!"
-            route={GridListRoutes.COHORT}
+            route={Routes.COHORT}
           />
         </div>
       </Fragment>

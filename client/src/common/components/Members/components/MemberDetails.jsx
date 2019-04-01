@@ -8,21 +8,28 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { CloseIcon, HelpIcon, UserIcon } from 'assets/images/icons';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
-  changeToCohortMember,
-  changeToCohortOwner,
+  changeRole as changeRoleInCohort,
   removeCohortMember
 } from 'modules/cohort/model/actions';
 import {
-  changeToListMember,
-  changeToListOwner,
+  changeRole as changeRoleInList,
   removeListMember
 } from 'modules/list/model/actions';
-import { Routes } from 'common/constants/enums';
+import { Routes, UserRoles } from 'common/constants/enums';
+import { noOp } from 'common/utils/noOp';
 
-const UserRoles = Object.freeze({
-  MEMBER: 'userRoles/MEMBER',
-  OWNER: 'userRoles/OWNER'
-});
+const infoText = {
+  [Routes.COHORT]: {
+    [UserRoles.OWNER]:
+      "Can edit, archive and delete this cohort. Can add, edit list's items and mark them as done. Can add, edit, archive and delete lists. Can add, remove members, and change their roles.",
+    [UserRoles.MEMBER]:
+      "Can edit, archive and delete this list. Can add, edit list's items and mark them as done. Can add, remove members, and change their roles."
+  },
+  [Routes.LIST]: {
+    [UserRoles.OWNER]: "Can view lists, add and edit list's items.",
+    [UserRoles.MEMBER]: "Can view, add and edit list's items."
+  }
+};
 
 class MemberDetails extends PureComponent {
   constructor(props) {
@@ -30,9 +37,9 @@ class MemberDetails extends PureComponent {
     const { isOwner } = props;
     this.state = {
       isConfirmVisible: false,
-      isMemberHelpVisible: false,
-      isOwnerHelpVisible: false,
-      isOwner
+      isMemberInfoVisible: false,
+      isOwnerInfoVisible: false,
+      role: isOwner ? UserRoles.OWNER : UserRoles.MEMBER
     };
   }
 
@@ -67,83 +74,68 @@ class MemberDetails extends PureComponent {
     onClose();
   };
 
-  handleOwnerHelpVisibility = e => {
+  handleOwnerInfoVisibility = e => {
     e.stopPropagation();
-    const { isOwnerHelpVisible } = this.state;
-    this.setState({ isOwnerHelpVisible: !isOwnerHelpVisible });
+    const { isOwnerInfoVisible } = this.state;
+    this.setState({ isOwnerInfoVisible: !isOwnerInfoVisible });
   };
 
-  handleMemberHelpVisibility = e => {
+  handleMemberInfoVisibility = e => {
     e.stopPropagation();
-    const { isMemberHelpVisible } = this.state;
-    this.setState({ isMemberHelpVisible: !isMemberHelpVisible });
+    const { isMemberInfoVisible } = this.state;
+    this.setState({ isMemberInfoVisible: !isMemberInfoVisible });
   };
 
   handleChangingPermissions = e => {
     e.stopPropagation();
-    const { isOwner } = this.state;
     const { route } = this.props;
-    this.setState({ isOwner: !isOwner });
     switch (route) {
       case Routes.COHORT:
-        this.handleCohortMemberPermissionsChange(e.target.value);
+        this.handleCohortMemberRoleChange(e.target.value);
         break;
       case Routes.LIST:
-        this.handleListMemberPermissionsChange(e.target.value);
+        this.handleListMemberRoleChange(e.target.value);
         break;
       default:
         break;
     }
   };
 
-  handleCohortMemberPermissionsChange = role => {
+  handleCohortMemberRoleChange = role => {
     const {
-      changeToCohortMember,
-      changeToCohortOwner,
+      changeRoleInCohort,
       match: {
         params: { id }
       },
       _id: userId
     } = this.props;
-    switch (role) {
-      case UserRoles.OWNER:
-        changeToCohortOwner(id, userId);
-        break;
-      case UserRoles.MEMBER:
-        changeToCohortMember(id, userId);
-        break;
-      default:
-        break;
-    }
+
+    changeRoleInCohort(id, userId, role)
+      .then(this.setState({ role }))
+      .catch(noOp);
   };
 
-  handleListMemberPermissionsChange = role => {
+  handleListMemberRoleChange = role => {
     const {
-      changeToListMember,
-      changeToListOwner,
+      changeRoleInList,
       match: {
         params: { id }
       },
       _id: userId
     } = this.props;
-    switch (role) {
-      case UserRoles.OWNER:
-        changeToListOwner(id, userId);
-        break;
-      case UserRoles.MEMBER:
-        changeToListMember(id, userId);
-        break;
-      default:
-        break;
-    }
+
+    changeRoleInList(id, userId, role)
+      .then(this.setState({ role }))
+      .catch(noOp);
   };
 
   render() {
     const {
       isConfirmVisible,
       isOwner,
-      isOwnerHelpVisible,
-      isMemberHelpVisible
+      isOwnerInfoVisible,
+      isMemberInfoVisible,
+      role
     } = this.state;
     const {
       _id: userId,
@@ -151,8 +143,10 @@ class MemberDetails extends PureComponent {
       currentUser: { id: currentUserId },
       displayName,
       isCurrentOwner,
-      onClose
+      onClose,
+      route
     } = this.props;
+
     return (
       <Fragment>
         <div
@@ -195,13 +189,13 @@ class MemberDetails extends PureComponent {
                     <span>
                       <button
                         className="member-details__help-button"
-                        onClick={this.handleOwnerHelpVisibility}
+                        onClick={this.handleOwnerInfoVisibility}
                         type="button"
                       >
                         <HelpIcon />
                       </button>
                       <input
-                        checked={isOwner}
+                        checked={role === UserRoles.OWNER}
                         id="ownerRole"
                         name="role"
                         onChange={this.handleChangingPermissions}
@@ -209,12 +203,9 @@ class MemberDetails extends PureComponent {
                         value={UserRoles.OWNER}
                       />
                     </span>
-                    {isOwnerHelpVisible && (
+                    {isOwnerInfoVisible && (
                       <p className="member-details__role-description">
-                        {'Can edit, archive and delete this cohort. '}
-                        {"Can add, edit list's items and mark them as done. "}
-                        {'Can add, edit, archive and delete lists. '}
-                        {'Can add, remove members, and change their roles. '}
+                        {infoText[route][UserRoles.OWNER]}
                       </p>
                     )}
                   </li>
@@ -223,13 +214,13 @@ class MemberDetails extends PureComponent {
                     <span>
                       <button
                         className="member-details__help-button"
-                        onClick={this.handleMemberHelpVisibility}
+                        onClick={this.handleMemberInfoVisibility}
                         type="button"
                       >
                         <HelpIcon />
                       </button>
                       <input
-                        checked={!isOwner}
+                        checked={role === UserRoles.MEMBER}
                         id="memberRole"
                         name="role"
                         onChange={this.handleChangingPermissions}
@@ -237,9 +228,9 @@ class MemberDetails extends PureComponent {
                         value={UserRoles.MEMBER}
                       />
                     </span>
-                    {isMemberHelpVisible && (
+                    {isMemberInfoVisible && (
                       <p className="member-details__role-description">
-                        {"Can view lists, add and edit list's items."}
+                        {infoText[route][UserRoles.MEMBER]}
                       </p>
                     )}
                   </li>
@@ -297,10 +288,8 @@ MemberDetails.propTypes = {
   route: PropTypes.string,
   _id: PropTypes.string.isRequired,
 
-  changeToCohortMember: PropTypes.func.isRequired,
-  changeToCohortOwner: PropTypes.func.isRequired,
-  changeToListMember: PropTypes.func.isRequired,
-  changeToListOwner: PropTypes.func.isRequired,
+  changeRoleInCohort: PropTypes.func.isRequired,
+  changeRoleInList: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   removeCohortMember: PropTypes.func.isRequired,
   removeListMember: PropTypes.func.isRequired
@@ -314,10 +303,8 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
-      changeToCohortMember,
-      changeToCohortOwner,
-      changeToListMember,
-      changeToListOwner,
+      changeRoleInCohort,
+      changeRoleInList,
       removeCohortMember,
       removeListMember
     }

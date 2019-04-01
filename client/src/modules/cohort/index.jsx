@@ -27,13 +27,14 @@ import {
   fetchCohortDetails,
   updateCohort
 } from './model/actions';
-import { noOp } from 'common/utils/noOp';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
-import GridList, { GridListRoutes } from 'common/components/GridList';
+import GridList from 'common/components/GridList';
 import { ListType } from 'modules/list';
 import MembersBox from 'common/components/Members';
+import { Routes } from 'common/constants/enums';
+import { noOp } from 'common/utils/noOp';
 
 class Cohort extends PureComponent {
   state = {
@@ -227,7 +228,7 @@ class Cohort extends PureComponent {
               <MembersBox
                 isCurrentOwner={this.checkIfOwner() || false}
                 onAddNew={this.handleAddNewMember}
-                route={GridListRoutes.COHORT}
+                route={Routes.COHORT}
               />
               <GridList
                 color={CardColorType.ORANGE}
@@ -236,7 +237,7 @@ class Cohort extends PureComponent {
                 name="Lists"
                 onAddNew={this.handleDialogContext(DialogContext.CREATE)}
                 placeholder={`There are no lists in the ${name} cohort!`}
-                route={GridListRoutes.LIST}
+                route={Routes.LIST}
               />
               <button
                 className="link-button"
@@ -252,7 +253,7 @@ class Cohort extends PureComponent {
                   items={archivedLists}
                   name="Archived lists"
                   placeholder={`There are no archived lists in the ${name} cohort!`}
-                  route={GridListRoutes.LIST}
+                  route={Routes.LIST}
                 />
               )}
             </div>

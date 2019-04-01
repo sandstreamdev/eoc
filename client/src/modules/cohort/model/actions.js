@@ -8,7 +8,10 @@ import {
   patchData,
   postData
 } from 'common/utils/fetchMethods';
-import { MessageType as NotificationType } from 'common/constants/enums';
+import {
+  MessageType as NotificationType,
+  UserRoles
+} from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 
@@ -161,30 +164,17 @@ const removeMemberSuccess = (cohortId, userId) => ({
   payload: { cohortId, userId }
 });
 
-const changeToOwnerRequest = () => ({
-  type: CohortActionTypes.CHANGE_TO_OWNER_REQUEST
+const changeRoleRequest = () => ({
+  type: CohortActionTypes.CHANGE_ROLE_REQUEST
 });
 
-const changeToOwnerFailure = () => ({
-  type: CohortActionTypes.CHANGE_TO_OWNER_FAILURE
+const changeRoleFailure = () => ({
+  type: CohortActionTypes.CHANGE_ROLE_FAILURE
 });
 
-const changeToOwnerSuccess = (cohortId, userId) => ({
-  type: CohortActionTypes.CHANGE_TO_OWNER_SUCCESS,
-  payload: { cohortId, userId }
-});
-
-const changeToMemberRequest = () => ({
-  type: CohortActionTypes.CHANGE_TO_MEMBER_REQUEST
-});
-
-const changeToMemberFailure = () => ({
-  type: CohortActionTypes.CHANGE_TO_MEMBER_FAILURE
-});
-
-const changeToMemberSuccess = (cohortId, userId) => ({
-  type: CohortActionTypes.CHANGE_TO_MEMBER_SUCCESS,
-  payload: { cohortId, userId }
+const changeRoleSuccess = (cohortId, userId, isOwner) => ({
+  type: CohortActionTypes.CHANGE_ROLE_SUCCESS,
+  payload: { cohortId, userId, isOwner }
 });
 
 export const createCohort = data => dispatch => {
@@ -435,14 +425,16 @@ export const removeCohortMember = (cohortId, userId, isOwner) => dispatch => {
     });
 };
 
-export const changeToCohortOwner = (cohortId, userId) => dispatch => {
-  dispatch(changeToOwnerRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/change-to-owner`, {
-    userId
-  })
+export const changeRole = (cohortId, userId, role) => dispatch => {
+  const isOwner = role === UserRoles.OWNER;
+  const url = isOwner
+    ? `${ENDPOINT_URL}/cohorts/${cohortId}/change-to-owner`
+    : `${ENDPOINT_URL}/cohorts/${cohortId}/change-to-member`;
+  dispatch(changeRoleRequest());
+  return patchData(url, { userId })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(changeToOwnerSuccess(cohortId, userId));
+      dispatch(changeRoleSuccess(cohortId, userId, isOwner));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -450,31 +442,7 @@ export const changeToCohortOwner = (cohortId, userId) => dispatch => {
       );
     })
     .catch(err => {
-      dispatch(changeToOwnerFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message
-      );
-    });
-};
-
-export const changeToCohortMember = (cohortId, userId) => dispatch => {
-  dispatch(changeToMemberRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/change-to-member`, {
-    userId
-  })
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch(changeToMemberSuccess(cohortId, userId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
-    .catch(err => {
-      dispatch(changeToMemberFailure());
+      dispatch(changeRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

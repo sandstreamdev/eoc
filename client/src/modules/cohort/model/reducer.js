@@ -37,7 +37,21 @@ const membersReducer = (state, action) => {
         member._id === userId
           ? {
               ...member,
-              isOwner: true
+              isOwner: false
+            }
+          : member
+      );
+    }
+    case CohortActionTypes.CHANGE_ROLE_SUCCESS: {
+      const {
+        payload: { userId },
+        payload: { isOwner }
+      } = action;
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isOwner
             }
           : member
       );
@@ -85,6 +99,7 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.CHANGE_TO_MEMBER_SUCCESS:
     case CohortActionTypes.CHANGE_TO_OWNER_SUCCESS:
+    case CohortActionTypes.CHANGE_ROLE_SUCCESS:
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { cohortId }
@@ -113,6 +128,8 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.CHANGE_TO_MEMBER_SUCCESS:
     case CohortActionTypes.CHANGE_TO_OWNER_FAILURE:
     case CohortActionTypes.CHANGE_TO_OWNER_SUCCESS:
+    case CohortActionTypes.CHANGE_ROLE_FAILURE:
+    case CohortActionTypes.CHANGE_ROLE_SUCCESS:
     case CohortActionTypes.CREATE_FAILURE:
     case CohortActionTypes.CREATE_SUCCESS:
     case CohortActionTypes.DELETE_FAILURE:
@@ -136,6 +153,7 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.ARCHIVE_REQUEST:
     case CohortActionTypes.CHANGE_TO_MEMBER_REQUEST:
     case CohortActionTypes.CHANGE_TO_OWNER_REQUEST:
+    case CohortActionTypes.CHANGE_ROLE_REQUEST:
     case CohortActionTypes.CREATE_REQUEST:
     case CohortActionTypes.DELETE_REQUEST:
     case CohortActionTypes.FAVOURITES_REQUEST:
