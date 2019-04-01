@@ -151,6 +151,7 @@ const getCohortDetails = (req, resp) => {
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
+
       const owners = ownerIds.map(owner => owner.id);
       const members = responseWithUsers([...membersData, ...ownerIds], owners);
       const isOwner = checkRole(ownerIds, req.user._id);

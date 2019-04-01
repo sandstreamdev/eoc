@@ -10,7 +10,7 @@ import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
-import { getMembers } from 'modules/cohort/model/selectors';
+import { getMembers as getCohortMembers } from 'modules/cohort/model/selectors';
 
 class MembersBox extends PureComponent {
   state = {
@@ -109,12 +109,7 @@ const mapStateToProps = (state, ownProps) => {
       params: { id }
     }
   } = ownProps;
-  return { users: getMembers(state, id) };
+  return { users: getCohortMembers(state, id) };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    null
-  )(MembersBox)
-);
+export default withRouter(connect(mapStateToProps)(MembersBox));
