@@ -8,11 +8,11 @@ const members = (state = {}, action) => {
       const { [action.payload]: removed, ...rest } = state;
       return rest;
     }
-    case MembersActionTypes.COHORT_OWNER_SUCCESS: {
+    case MembersActionTypes.OWNER_SUCCESS: {
       const { payload: _id } = action;
       return { ...state, [_id]: { ...state[_id], isOwner: true } };
     }
-    case MembersActionTypes.COHORT_MEMBER_SUCCESS: {
+    case MembersActionTypes.MEMBER_SUCCESS: {
       const { payload: _id } = action;
       const { isOwner: removed, ...rest } = state[_id];
       return { ...state, [_id]: rest };
@@ -37,18 +37,18 @@ const isFetching = (state = false, action) => {
   switch (action.type) {
     case MembersActionTypes.ADD_FAILURE:
     case MembersActionTypes.ADD_SUCCESS:
-    case MembersActionTypes.COHORT_MEMBER_FAILURE:
-    case MembersActionTypes.COHORT_MEMBER_SUCCESS:
-    case MembersActionTypes.COHORT_OWNER_FAILURE:
-    case MembersActionTypes.COHORT_OWNER_SUCCESS:
+    case MembersActionTypes.MEMBER_FAILURE:
+    case MembersActionTypes.MEMBER_SUCCESS:
+    case MembersActionTypes.OWNER_FAILURE:
+    case MembersActionTypes.OWNER_SUCCESS:
     case MembersActionTypes.FETCH_FAILURE:
     case MembersActionTypes.FETCH_SUCCESS:
     case MembersActionTypes.REMOVE_FAILURE:
     case MembersActionTypes.REMOVE_SUCCESS:
       return false;
     case MembersActionTypes.ADD_REQUEST:
-    case MembersActionTypes.COHORT_MEMBER_REQUEST:
-    case MembersActionTypes.COHORT_OWNER_REQUEST:
+    case MembersActionTypes.MEMBER_REQUEST:
+    case MembersActionTypes.OWNER_REQUEST:
     case MembersActionTypes.FETCH_REQUEST:
     case MembersActionTypes.REMOVE_REQUEST:
       return true;
