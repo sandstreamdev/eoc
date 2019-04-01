@@ -10,7 +10,7 @@ const NotFoundException = require('../common/exceptions/NotFoundException');
 const User = require('../models/user.model');
 const {
   responseWithUsers,
-  responseWithUser
+  responseWithMember
 } = require('../common/utils/index');
 
 const createCohort = (req, resp) => {
@@ -279,11 +279,13 @@ const addMember = (req, resp) => {
     .exec()
     .then(doc => {
       if (doc) {
+        const { ownerIds } = doc;
+
         return User.findOne({ email })
           .exec()
           .then(doc => {
-            const { _id, avatarUrl, displayName, isOwner, email } = doc;
-            return { _id, avatarUrl, displayName, isOwner, email };
+            const { _id, avatarUrl, displayName, email } = doc;
+            return { _id, avatarUrl, displayName, email, ownerIds };
           })
           .catch(() =>
             resp.status(400).send({ message: 'User data not found.' })
@@ -294,7 +296,7 @@ const addMember = (req, resp) => {
         .send({ message: "You don't have permission to add new member" });
     })
     .then(data => {
-      const { _id: newMemberId, displayName, isOwner, avatarUrl } = data;
+      const { _id: newMemberId, displayName, avatarUrl, ownerIds } = data;
 
       Cohort.findOneAndUpdate(
         { _id: cohortId, memberIds: { $nin: [newMemberId] } },
@@ -303,8 +305,8 @@ const addMember = (req, resp) => {
         .exec()
         .then(doc => {
           if (doc) {
-            const data = { avatarUrl, displayName, isOwner, newMemberId };
-            const dataToSend = responseWithUser(data);
+            const data = { avatarUrl, displayName, newMemberId };
+            const dataToSend = responseWithMember(data, ownerIds);
             return resp.status(200).json(dataToSend);
           }
           return resp

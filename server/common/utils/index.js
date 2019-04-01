@@ -65,13 +65,13 @@ const responseWithUsers = (users, ownerIds) =>
     isOwner: ownerIds.indexOf(user._doc._id.toString()) > -1
   }));
 
-const responseWithUser = data => {
-  const { avatarUrl, displayName, isOwner, newMemberId } = data;
+const responseWithMember = (data, ownerIds) => {
+  const { avatarUrl, displayName, newMemberId } = data;
   return {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isOwner
+    isOwner: ownerIds.indexOf(newMemberId.toString()) > -1
   };
 };
 
@@ -84,6 +84,6 @@ module.exports = {
   responseWithItem,
   responseWithItems,
   responseWithLists,
-  responseWithUser,
+  responseWithMember,
   responseWithUsers
 };
