@@ -295,6 +295,7 @@ const addMember = (req, resp) => {
     })
     .then(data => {
       const { _id: newMemberId, displayName, avatarUrl } = data;
+
       Cohort.findOneAndUpdate(
         { _id: cohortId, members: { $nin: [newMemberId] } },
         { $push: { members: newMemberId } }
