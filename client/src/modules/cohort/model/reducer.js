@@ -71,6 +71,8 @@ const cohorts = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
+    case CohortActionTypes.ADD_MEMBER_FAILURE:
+    case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.ARCHIVE_FAILURE:
     case CohortActionTypes.ARCHIVE_SUCCESS:
     case CohortActionTypes.CREATE_FAILURE:
@@ -89,9 +91,8 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.RESTORE_SUCCESS:
     case CohortActionTypes.UPDATE_FAILURE:
     case CohortActionTypes.UPDATE_SUCCESS:
-    case CohortActionTypes.ADD_MEMBER_FAILURE:
-    case CohortActionTypes.ADD_MEMBER_SUCCESS:
       return false;
+    case CohortActionTypes.ADD_MEMBER_REQUEST:
     case CohortActionTypes.ARCHIVE_REQUEST:
     case CohortActionTypes.CREATE_REQUEST:
     case CohortActionTypes.DELETE_REQUEST:
@@ -101,7 +102,6 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.FETCH_META_DATA_REQUEST:
     case CohortActionTypes.RESTORE_REQUEST:
     case CohortActionTypes.UPDATE_REQUEST:
-    case CohortActionTypes.ADD_MEMBER_REQUEST:
       return true;
     default:
       return state;
