@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import PropTypes from 'prop-types';
 import { Manager } from 'react-popper';
+import { withRouter } from 'react-router-dom';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
-import { getMembers } from './model/selectors';
+import { getMembers } from 'modules/cohort/model/selectors';
 
 class MembersBox extends PureComponent {
   state = {
@@ -39,7 +40,7 @@ class MembersBox extends PureComponent {
 
   render() {
     const { context, isFormVisible } = this.state;
-    const { isCurrentOwner, users } = this.props;
+    const { isCurrentOwner, route, users } = this.props;
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -76,6 +77,7 @@ class MembersBox extends PureComponent {
                       {...user}
                       isCurrentOwner={isCurrentOwner}
                       onClose={this.handleClosingMemberDetails}
+                      route={route}
                     />
                   </MemberBox>
                 )}
@@ -95,13 +97,24 @@ class MembersBox extends PureComponent {
 
 MembersBox.propTypes = {
   isCurrentOwner: PropTypes.bool.isRequired,
+  route: PropTypes.string.isRequired,
   users: PropTypes.objectOf(PropTypes.object).isRequired,
 
   onAddNew: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-  users: getMembers(state)
-});
+const mapStateToProps = (state, ownProps) => {
+  const {
+    match: {
+      params: { id }
+    }
+  } = ownProps;
+  return { users: getMembers(state, id) };
+};
 
-export default connect(mapStateToProps)(MembersBox);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    null
+  )(MembersBox)
+);

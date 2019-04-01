@@ -10,11 +10,13 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
   changeToCohortMember,
   changeToCohortOwner,
+  removeCohortMember
+} from 'modules/cohort/model/actions';
+import {
   changeToListMember,
   changeToListOwner,
-  removeCohortMember,
   removeListMember
-} from 'modules/members/model/actions';
+} from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
 
 const UserRoles = Object.freeze({
@@ -22,16 +24,6 @@ const UserRoles = Object.freeze({
   OWNER: 'userRoles/OWNER'
 });
 
-const Roles = {
-  cohort: {
-    owner: "Can edit, archive and delete this cohort. Can add, edit, archive and delete cohort's lists. Can add, edit list's items and mark them as done. Can add, remove members, and change their roles.",
-    member: "Can view lists, add and edit list's items."
-  },
-  list: {
-    owner: "Can edit, archive and delete this list. Can add, edit list's items and mark them as done. Can add, remove members, and change their roles.",
-    member: "Can view list, add and edit list's items."
-  }
-}
 class MemberDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -159,8 +151,7 @@ class MemberDetails extends PureComponent {
       currentUser: { id: currentUserId },
       displayName,
       isCurrentOwner,
-      onClose,
-      route
+      onClose
     } = this.props;
     return (
       <Fragment>
@@ -248,9 +239,7 @@ class MemberDetails extends PureComponent {
                     </span>
                     {isMemberHelpVisible && (
                       <p className="member-details__role-description">
-                        {route === Routes.COHORT && (
-                          {"Can view lists, add and edit list's items."}
-                        )}
+                        {"Can view lists, add and edit list's items."}
                       </p>
                     )}
                   </li>

@@ -38,9 +38,9 @@ class Dashboard extends Component {
     const {
       createCohort,
       createList,
-      currentUser: { id: userId }
+      currentUser: { id: ownerId }
     } = this.props;
-    const data = { description, userId, name };
+    const data = { description, ownerId, name };
 
     switch (dialogContext) {
       case FormDialogContext.CREATE_COHORT:

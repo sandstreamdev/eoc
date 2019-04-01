@@ -12,7 +12,6 @@ const {
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
-  getMembers,
   removeFromFavourites,
   removeMember,
   removeOwner,
@@ -32,7 +31,6 @@ router.patch('/:id/remove-owner', authorize, removeOwner);
 router.patch('/:id/remove-member', authorize, removeMember);
 router.patch('/:id/change-to-owner', authorize, changeToOwner);
 router.patch('/:id/change-to-member', authorize, changeToMember);
-router.get('/:id/get-members', authorize, getMembers);
 router.patch('/:id/add-member', authorize, addMember);
 
 module.exports = app => app.use('/cohorts', router);

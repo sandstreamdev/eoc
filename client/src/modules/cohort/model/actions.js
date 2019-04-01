@@ -135,6 +135,58 @@ const favouritesFailure = () => ({
   type: CohortActionTypes.FAVOURITES_FAILURE
 });
 
+const addMemberRequest = () => ({
+  type: CohortActionTypes.ADD_MEMBER_REQUEST
+});
+
+const addMemberSuccess = (data, cohortId) => ({
+  type: CohortActionTypes.ADD_MEMBER_SUCCESS,
+  payload: { cohortId, data }
+});
+
+const addMemberFailure = () => ({
+  type: CohortActionTypes.ADD_MEMBER_FAILURE
+});
+
+const removeMemberRequest = () => ({
+  type: CohortActionTypes.REMOVE_MEMBER_REQUEST
+});
+
+const removeMemberFailure = () => ({
+  type: CohortActionTypes.REMOVE_MEMBER_FAILURE
+});
+
+const removeMemberSuccess = (cohortId, userId) => ({
+  type: CohortActionTypes.REMOVE_MEMBER_SUCCESS,
+  payload: { cohortId, userId }
+});
+
+const changeToOwnerRequest = () => ({
+  type: CohortActionTypes.CHANGE_TO_OWNER_REQUEST
+});
+
+const changeToOwnerFailure = () => ({
+  type: CohortActionTypes.CHANGE_TO_OWNER_FAILURE
+});
+
+const changeToOwnerSuccess = (cohortId, userId) => ({
+  type: CohortActionTypes.CHANGE_TO_OWNER_SUCCESS,
+  payload: { cohortId, userId }
+});
+
+const changeToMemberRequest = () => ({
+  type: CohortActionTypes.CHANGE_TO_MEMBER_REQUEST
+});
+
+const changeToMemberFailure = () => ({
+  type: CohortActionTypes.CHANGE_TO_MEMBER_FAILURE
+});
+
+const changeToMemberSuccess = (cohortId, userId) => ({
+  type: CohortActionTypes.CHANGE_TO_MEMBER_SUCCESS,
+  payload: { cohortId, userId }
+});
+
 export const createCohort = data => dispatch => {
   dispatch(createCohortRequest());
   return postData(`${ENDPOINT_URL}/cohorts/create`, data)
@@ -333,6 +385,96 @@ export const removeCohortFromFavourites = cohortId => dispatch => {
     })
     .catch(err => {
       dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const addCohortMember = (cohortId, email) => dispatch => {
+  dispatch(addMemberRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-member`, {
+    email
+  })
+    .then(resp => resp.json())
+    .then(json => dispatch(addMemberSuccess(json, cohortId)))
+    .catch(err => {
+      dispatch(addMemberFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, adding new member failed..."
+      );
+    });
+};
+
+export const removeCohortMember = (cohortId, userId, isOwner) => dispatch => {
+  const url = isOwner
+    ? `${ENDPOINT_URL}/cohorts/${cohortId}/remove-owner`
+    : `${ENDPOINT_URL}/cohorts/${cohortId}/remove-member`;
+  dispatch(removeMemberRequest());
+  return patchData(url, { userId })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(removeMemberSuccess(cohortId, userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(removeMemberFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changeToCohortOwner = (cohortId, userId) => dispatch => {
+  dispatch(changeToOwnerRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/change-to-owner`, {
+    userId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(changeToOwnerSuccess(cohortId, userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changeToOwnerFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changeToCohortMember = (cohortId, userId) => dispatch => {
+  dispatch(changeToMemberRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/change-to-member`, {
+    userId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(changeToMemberSuccess(cohortId, userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changeToMemberFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

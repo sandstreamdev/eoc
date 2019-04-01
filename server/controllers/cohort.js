@@ -8,14 +8,17 @@ const {
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 const User = require('../models/user.model');
-const { responseWithUsers } = require('../common/utils/index');
+const {
+  responseWithMember,
+  responseWithUsers
+} = require('../common/utils/index');
 
 const createCohort = (req, resp) => {
-  const { description, name, userId } = req.body;
+  const { description, name, ownerId } = req.body;
   const cohort = new Cohort({
     name,
     description,
-    ownerIds: userId
+    ownerIds: ownerId
   });
 
   cohort.save((err, doc) =>
@@ -34,26 +37,25 @@ const getCohortsMetaData = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
-  Cohort.find(
-    {
-      $or: [{ ownerIds: userId }, { memberIds: userId }],
-      isArchived: false
-    },
-    '_id name description favIds',
-    { sort: { createdAt: -1 } },
-    (err, docs) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while fetching the cohorts data. Please try again.'
-        });
-      }
 
+  Cohort.find({
+    $or: [{ ownerIds: userId }, { memberIds: userId }],
+    isArchived: false
+  })
+    .select('_id name description favIds')
+    .sort({ createdAt: -1 })
+    .exec()
+    .then(docs =>
       docs
         ? resp.status(200).send(responseWithCohorts(docs, userId))
-        : resp.status(404).send({ message: 'No cohorts data found.' });
-    }
-  );
+        : resp.status(404).send({ message: 'No cohorts data found.' })
+    )
+    .catch(err =>
+      resp.status(400).send({
+        message:
+          'An error occurred while fetching the cohorts data. Please try again.'
+      })
+    );
 };
 
 const getArchivedCohortsMetaData = (req, resp) => {
@@ -123,36 +125,51 @@ const getCohortDetails = (req, resp) => {
       .status(404)
       .send({ message: `Data of cohort id: ${req.params.id} not found.` });
   }
-  Cohort.findOne(
-    {
-      _id: req.params.id,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
-    },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while fetching the cohort data. Please try again.'
+  Cohort.findOne({
+    _id: req.params.id,
+    $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+  })
+    .populate('memberIds', 'avatarUrl displayName _id')
+    .populate('ownerIds', 'avatarUrl displayName _id')
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(404).send({
+          message: `Data of cohort id: ${req.params.id} not found.`
         });
       }
 
-      if (!doc) {
-        return resp
-          .status(404)
-          .send({ message: `Data of cohort id: ${req.params.id} not found.` });
-      }
-
-      const { ownerIds, _id, isArchived, description, name } = doc;
+      const {
+        ownerIds,
+        _id,
+        isArchived,
+        description,
+        name,
+        memberIds: membersData
+      } = doc;
 
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
-
+      const owners = ownerIds.map(owner => owner.id);
+      const members = responseWithUsers([...membersData, ...ownerIds], owners);
       const isOwner = checkRole(ownerIds, req.user._id);
 
-      resp.status(200).json({ _id, isOwner, isArchived, description, name });
-    }
-  );
+      resp.status(200).json({
+        _id,
+        isOwner,
+        isArchived,
+        description,
+        name,
+        members
+      });
+    })
+    .catch(err =>
+      resp.status(400).send({
+        message:
+          'An error occurred while fetching the cohort data.Please try again.'
+      })
+    );
 };
 
 const deleteCohortById = (req, resp) => {
@@ -226,7 +243,7 @@ const removeFromFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      ownerIds: userId
+      $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     {
       $pull: { favIds: userId }
@@ -360,31 +377,6 @@ const changeToMember = (req, resp) => {
   );
 };
 
-const getMembers = (req, resp) => {
-  const { id: cohortId } = req.params;
-
-  Cohort.findOne({ _id: cohortId }, 'memberIds ownerIds', (err, doc) => {
-    if (err) {
-      return resp.status(400).send({
-        message: "Can't get members data. Please try again."
-      });
-    }
-
-    if (doc) {
-      const { memberIds, ownerIds } = doc;
-      User.find({ _id: [...memberIds, ...ownerIds] }, (err, docs) => {
-        if (err) {
-          return resp.status(400).send({
-            message: "Can't get members data. Please try again."
-          });
-        }
-        const users = responseWithUsers(docs, ownerIds);
-        resp.status(200).json(users);
-      });
-    }
-  });
-};
-
 const addMember = (req, resp) => {
   const {
     user: { _id: currentUser }
@@ -396,11 +388,13 @@ const addMember = (req, resp) => {
     .exec()
     .then(doc => {
       if (doc) {
+        const { ownerIds } = doc;
+
         return User.findOne({ email })
           .exec()
           .then(doc => {
             const { _id, avatarUrl, displayName, email } = doc;
-            return { _id, avatarUrl, displayName, email };
+            return { _id, avatarUrl, displayName, email, ownerIds };
           })
           .catch(() =>
             resp.status(400).send({ message: 'User data not found.' })
@@ -411,7 +405,8 @@ const addMember = (req, resp) => {
         .send({ message: "You don't have permission to add new member" });
     })
     .then(data => {
-      const { _id: newMemberId, displayName, avatarUrl, email } = data;
+      const { _id: newMemberId, displayName, avatarUrl, ownerIds } = data;
+
       Cohort.findOneAndUpdate(
         { _id: cohortId, memberIds: { $nin: [newMemberId] } },
         { $push: { memberIds: newMemberId } }
@@ -419,13 +414,9 @@ const addMember = (req, resp) => {
         .exec()
         .then(doc => {
           if (doc) {
-            return resp.status(200).json({
-              avatarUrl,
-              displayName,
-              email,
-              isOwner: false,
-              newMemberId
-            });
+            const data = { avatarUrl, displayName, newMemberId };
+            const dataToSend = responseWithMember(data, ownerIds);
+            return resp.status(200).json(dataToSend);
           }
           return resp
             .status(400)
@@ -456,7 +447,6 @@ module.exports = {
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
-  getMembers,
   removeFromFavourites,
   removeMember,
   removeOwner,

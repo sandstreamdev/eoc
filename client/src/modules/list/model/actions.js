@@ -132,6 +132,45 @@ const favouritesFailure = () => ({
   type: ListActionTypes.FAVOURITES_FAILURE
 });
 
+const removeMemberRequest = () => ({
+  type: ListActionTypes.REMOVE_MEMBER_REQUEST
+});
+
+const removeMemberFailure = () => ({
+  type: ListActionTypes.REMOVE_MEMBER_FAILURE
+});
+
+const removeMemberSuccess = (listId, id) => ({
+  type: ListActionTypes.REMOVE_MEMBER_SUCCESS,
+  payload: { listId, id }
+});
+
+const changeToOwnerRequest = () => ({
+  type: ListActionTypes.CHANGE_TO_OWNER_REQUEST
+});
+
+const changeToOwnerFailure = () => ({
+  type: ListActionTypes.CHANGE_TO_OWNER_FAILURE
+});
+
+const changeToOwnerSuccess = (listId, id) => ({
+  type: ListActionTypes.CHANGE_TO_OWNER_SUCCESS,
+  payload: { listId, id }
+});
+
+const changeToMemberRequest = () => ({
+  type: ListActionTypes.CHANGE_TO_MEMBER_REQUEST
+});
+
+const changeToMemberFailure = () => ({
+  type: ListActionTypes.CHANGE_TO_MEMBER_FAILURE
+});
+
+const changeToMemberSuccess = (listId, id) => ({
+  type: ListActionTypes.CHANGE_TO_MEMBER_SUCCESS,
+  payload: { listId, id }
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
@@ -336,6 +375,79 @@ export const removeListFromFavourites = listId => dispatch => {
     })
     .catch(err => {
       dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const removeListMember = (listId, userId, isOwner) => dispatch => {
+  const url = isOwner
+    ? `${ENDPOINT_URL}/lists/${listId}/remove-owner`
+    : `${ENDPOINT_URL}/lists/${listId}/remove-member`;
+  dispatch(removeMemberRequest());
+  return patchData(url, { userId })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(removeMemberSuccess(listId, userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(removeMemberFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changeToListOwner = (listId, userId) => dispatch => {
+  dispatch(changeToOwnerRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-to-owner`, {
+    userId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(changeToOwnerSuccess(userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changeToOwnerFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changeToListMember = (listId, userId) => dispatch => {
+  dispatch(changeToMemberRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-to-member`, {
+    userId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(changeToMemberSuccess(userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changeToMemberFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
