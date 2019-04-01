@@ -14,3 +14,8 @@ export const StatusType = Object.freeze({
   RESOLVED: 'resolved',
   ERROR: 'error'
 });
+
+export const Routes = Object.freeze({
+  COHORT: 'cohort',
+  LIST: 'list'
+});

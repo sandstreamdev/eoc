@@ -10,19 +10,12 @@ import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
 import { getMembers } from './model/selectors';
-import { clearMembers } from './model/actions';
 
 class MembersBox extends PureComponent {
   state = {
     isFormVisible: false,
     context: null
   };
-
-  componentWillUnmount() {
-    const { clearMembers } = this.props;
-
-    clearMembers();
-  }
 
   showForm = () => this.setState({ isFormVisible: true });
 
@@ -104,7 +97,6 @@ MembersBox.propTypes = {
   isCurrentOwner: PropTypes.bool.isRequired,
   users: PropTypes.objectOf(PropTypes.object).isRequired,
 
-  clearMembers: PropTypes.func.isRequired,
   onAddNew: PropTypes.func.isRequired
 };
 
@@ -112,7 +104,4 @@ const mapStateToProps = state => ({
   users: getMembers(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { clearMembers }
-)(MembersBox);
+export default connect(mapStateToProps)(MembersBox);

@@ -305,7 +305,7 @@ const removeMember = (req, resp) => {
   );
 };
 
-const setAsOwner = (req, resp) => {
+const changeToOwner = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
@@ -333,7 +333,7 @@ const setAsOwner = (req, resp) => {
   );
 };
 
-const setAsMember = (req, resp) => {
+const changeToMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
@@ -449,6 +449,8 @@ const addMember = (req, resp) => {
 module.exports = {
   addMember,
   addToFavourites,
+  changeToMember,
+  changeToOwner,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
@@ -458,7 +460,5 @@ module.exports = {
   removeFromFavourites,
   removeMember,
   removeOwner,
-  setAsMember,
-  setAsOwner,
   updateCohortById
 };

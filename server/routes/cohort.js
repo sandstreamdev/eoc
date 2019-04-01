@@ -5,6 +5,8 @@ const router = express.Router();
 const {
   addMember,
   addToFavourites,
+  changeToMember,
+  changeToOwner,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
@@ -14,8 +16,6 @@ const {
   removeFromFavourites,
   removeMember,
   removeOwner,
-  setAsMember,
-  setAsOwner,
   updateCohortById
 } = require('../controllers/cohort');
 const { authorize } = require('../middleware/authorize');
@@ -30,8 +30,8 @@ router.patch('/:id/add-to-fav', authorize, addToFavourites);
 router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
 router.patch('/:id/remove-owner', authorize, removeOwner);
 router.patch('/:id/remove-member', authorize, removeMember);
-router.patch('/:id/set-as-owner', authorize, setAsOwner);
-router.patch('/:id/set-as-member', authorize, setAsMember);
+router.patch('/:id/change-to-owner', authorize, changeToOwner);
+router.patch('/:id/change-to-member', authorize, changeToMember);
 router.get('/:id/get-members', authorize, getMembers);
 router.patch('/:id/add-member', authorize, addMember);
 
