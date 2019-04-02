@@ -26,9 +26,10 @@
 
   &--gray {
     color: $text-normal;
-
-    svg path {
-      fill: $message-bg-gray;
+    svg {
+      path {
+        fill: $message-bg-gray;
+      }
     }
   }
 
