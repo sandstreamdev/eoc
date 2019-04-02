@@ -9,7 +9,7 @@ const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 const User = require('../models/user.model');
 const {
-  responseWithUsers,
+  responseWithMembers,
   responseWithMember
 } = require('../common/utils/index');
 
@@ -154,7 +154,10 @@ const getCohortDetails = (req, resp) => {
       }
 
       const owners = ownerIds.map(owner => owner.id);
-      const members = responseWithUsers([...membersData, ...ownerIds], owners);
+      const members = responseWithMembers(
+        [...membersData, ...ownerIds],
+        owners
+      );
       const isOwner = checkRole(ownerIds, req.user._id);
 
       resp.status(200).json({
