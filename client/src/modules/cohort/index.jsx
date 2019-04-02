@@ -137,12 +137,8 @@ class Cohort extends PureComponent {
       : removeArchivedListsMetaData();
   };
 
-  handleListType = isPrivate => {
-    if (isPrivate === ListType.PRIVATE) {
-      this.setState({ isListPrivate: true });
-    }
-    this.setState({ isListPrivate: false });
-  };
+  handleListType = isPrivate =>
+    this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
 
   handleAddNewMember = email => {
     const { addCohortMember } = this.props;
