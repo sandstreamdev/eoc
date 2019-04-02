@@ -5,7 +5,6 @@ import { Popper } from 'react-popper';
 const MemberBox = ({ children }) => (
   <Popper
     placement="bottom-start"
-    disablePortal={false}
     modifiers={{
       flip: { enabled: true },
       preventOverflow: {

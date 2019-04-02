@@ -8,6 +8,7 @@ import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getList, getItems } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/InputBar';
 import {
+  addListMember,
   archiveList,
   fetchListData,
   updateList
@@ -19,6 +20,8 @@ import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
+import MembersBox from 'common/components/Members';
+import { Routes } from 'common/constants/enums';
 
 export const ListType = Object.freeze({
   PRIVATE: 'private',
@@ -27,7 +30,8 @@ export const ListType = Object.freeze({
 
 class List extends Component {
   state = {
-    dialogContext: null
+    dialogContext: null,
+    membersBoxVisible: false
   };
 
   componentDidMount() {
@@ -79,8 +83,24 @@ class List extends Component {
 
   hideDialog = () => this.handleDialogContext(null)();
 
+  handleMembersBoxVisibility = () => {
+    this.setState(({ membersBoxVisible }) => ({
+      membersBoxVisible: !membersBoxVisible
+    }));
+  };
+
+  handleAddNewMember = email => {
+    const { addListMember } = this.props;
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+    addListMember(listId, email);
+  };
+
   render() {
-    const { dialogContext } = this.state;
+    const { dialogContext, membersBoxVisible } = this.state;
     const {
       items,
       match: {
@@ -141,6 +161,20 @@ class List extends Component {
                   {`Archive the "${name}" list`}
                 </button>
               </div>
+              <button
+                className="link-button"
+                onClick={this.handleMembersBoxVisibility}
+                type="button"
+              >
+                {` ${membersBoxVisible ? 'show' : 'hide'} list's members`}
+              </button>
+              {membersBoxVisible && (
+                <MembersBox
+                  isCurrentOwner={this.checkIfOwner() || false}
+                  onAddNew={this.handleAddNewMember}
+                  route={Routes.LIST}
+                />
+              )}
             </div>
           </div>
         )}
@@ -170,6 +204,7 @@ List.propTypes = {
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
 
+  addListMember: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
@@ -183,6 +218,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { archiveList, fetchListData, updateList }
+    { addListMember, archiveList, fetchListData, updateList }
   )(List)
 );
