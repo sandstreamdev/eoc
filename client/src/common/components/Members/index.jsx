@@ -11,6 +11,7 @@ import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
 import { getMembers as getCohortMembers } from 'modules/cohort/model/selectors';
+import { addCohortMember } from 'modules/cohort/model/actions';
 
 class MembersBox extends PureComponent {
   state = {
@@ -30,17 +31,20 @@ class MembersBox extends PureComponent {
     this.setState({ context: null });
   };
 
-  handleOnAddNew = () => data => {
-    const { onAddNew } = this.props;
-
+  handleAddNewMember = () => email => {
     this.hideForm();
-    onAddNew(data);
+    const { addCohortMember } = this.props;
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+    addCohortMember(cohortId, email);
   };
 
   render() {
     const { context, isFormVisible } = this.state;
     const { isCurrentOwner, route, users } = this.props;
-    console.log(isCurrentOwner);
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -49,7 +53,7 @@ class MembersBox extends PureComponent {
         <ul className="members-box__list">
           <li className="members-box__list-item">
             {isFormVisible ? (
-              <MembersForm onAddNew={this.handleOnAddNew()} />
+              <MembersForm onAddNew={this.handleAddNewMember()} />
             ) : (
               <button
                 className="members-box__member"
@@ -102,7 +106,7 @@ MembersBox.propTypes = {
   route: PropTypes.string.isRequired,
   users: PropTypes.objectOf(PropTypes.object).isRequired,
 
-  onAddNew: PropTypes.func.isRequired
+  addCohortMember: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -114,4 +118,9 @@ const mapStateToProps = (state, ownProps) => {
   return { users: getCohortMembers(state, id) };
 };
 
-export default withRouter(connect(mapStateToProps)(MembersBox));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { addCohortMember }
+  )(MembersBox)
+);

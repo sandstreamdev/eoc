@@ -22,7 +22,6 @@ import { getCohortDetails } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import {
-  addCohortMember,
   archiveCohort,
   fetchCohortDetails,
   updateCohort
@@ -143,16 +142,6 @@ class Cohort extends PureComponent {
   handleListType = isPrivate =>
     this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
 
-  handleAddNewMember = email => {
-    const { addCohortMember } = this.props;
-    const {
-      match: {
-        params: { id: cohortId }
-      }
-    } = this.props;
-    addCohortMember(cohortId, email);
-  };
-
   handleListType = isPrivate =>
     this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
 
@@ -229,7 +218,6 @@ class Cohort extends PureComponent {
               )}
               <MembersBox
                 isCurrentOwner={this.checkIfOwner()}
-                onAddNew={this.handleAddNewMember}
                 route={Routes.COHORT}
               />
               <GridList
@@ -278,7 +266,6 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
-  addCohortMember: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
@@ -298,7 +285,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
-      addCohortMember,
       archiveCohort,
       createList,
       fetchArchivedListsMetaData,
