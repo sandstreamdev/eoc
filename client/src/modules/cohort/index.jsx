@@ -154,6 +154,9 @@ class Cohort extends PureComponent {
     addCohortMember(cohortId, email);
   };
 
+  handleListType = isPrivate =>
+    this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
+
   render() {
     const {
       archivedLists,

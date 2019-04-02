@@ -59,7 +59,7 @@ const responseWithCohorts = (cohorts, userId) =>
     };
   });
 
-const responseWithUsers = (users, ownerIds) =>
+const responseWithMembers = (users, ownerIds) =>
   users.map(user => ({
     ...user._doc,
     isOwner: ownerIds.indexOf(user._doc._id.toString()) > -1
@@ -85,5 +85,5 @@ module.exports = {
   responseWithItems,
   responseWithLists,
   responseWithMember,
-  responseWithUsers
+  responseWithMembers
 };

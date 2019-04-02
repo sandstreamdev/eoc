@@ -16,7 +16,8 @@
     "lint:client": "eslint -c .eslintrc --ext \".jsx,.js\" \"client/\" --fix",
     "lint:server": "eslint -c .eslintrc --ext \".js\" \"server/\" --fix",
     "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js && prettier --config .prettierrc --write landing/**/*.css",
-    "test": "jest -runInBand"
+    "test": "jest -runInBand",
+    "seed": "node server/seed/seedDb.js"
   },
   "author": "Sandstream Development",
   "license": "MIT",
