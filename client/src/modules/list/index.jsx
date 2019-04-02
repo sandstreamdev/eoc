@@ -8,7 +8,6 @@ import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getList, getItems, getMembers } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/InputBar';
 import {
-  addListMember,
   archiveList,
   fetchListData,
   updateList
@@ -89,16 +88,6 @@ class List extends Component {
     }));
   };
 
-  handleAddNewMember = email => {
-    const { addListMember } = this.props;
-    const {
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-    addListMember(listId, email);
-  };
-
   render() {
     const { dialogContext, membersBoxVisible } = this.state;
     const {
@@ -171,8 +160,7 @@ class List extends Component {
               </button>
               {membersBoxVisible && (
                 <MembersBox
-                  isCurrentOwner={this.checkIfOwner() || false}
-                  onAddNew={this.handleAddNewMember}
+                  isCurrentOwner={this.checkIfOwner()}
                   route={Routes.LIST}
                   users={users}
                 />
@@ -207,7 +195,6 @@ List.propTypes = {
   match: RouterMatchPropType.isRequired,
   users: PropTypes.objectOf(PropTypes.object),
 
-  addListMember: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
@@ -229,6 +216,6 @@ const mapStateToProps = (state, ownProps) => {
 export default withRouter(
   connect(
     mapStateToProps,
-    { addListMember, archiveList, fetchListData, updateList }
+    { archiveList, fetchListData, updateList }
   )(List)
 );

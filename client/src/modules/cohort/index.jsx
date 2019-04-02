@@ -22,7 +22,6 @@ import { getCohortDetails, getMembers } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import {
-  addCohortMember,
   archiveCohort,
   fetchCohortDetails,
   updateCohort
@@ -112,8 +111,8 @@ class Cohort extends PureComponent {
 
   checkIfOwner = () => {
     const { cohortDetails } = this.props;
-    if (cohortDetails) {
-      return cohortDetails.isOwner;
+    if (cohortDetails && cohortDetails.isOwner) {
+      return true;
     }
     return false;
   };
@@ -142,16 +141,6 @@ class Cohort extends PureComponent {
 
   handleListType = isPrivate =>
     this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
-
-  handleAddNewMember = email => {
-    const { addCohortMember } = this.props;
-    const {
-      match: {
-        params: { id: cohortId }
-      }
-    } = this.props;
-    addCohortMember(cohortId, email);
-  };
 
   handleListType = isPrivate =>
     this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
@@ -230,7 +219,6 @@ class Cohort extends PureComponent {
               )}
               <MembersBox
                 isCurrentOwner={this.checkIfOwner()}
-                onAddNew={this.handleAddNewMember}
                 route={Routes.COHORT}
                 users={users}
               />
@@ -281,7 +269,6 @@ Cohort.propTypes = {
   match: RouterMatchPropType.isRequired,
   users: PropTypes.objectOf(PropTypes.object),
 
-  addCohortMember: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
@@ -309,7 +296,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
-      addCohortMember,
       archiveCohort,
       createList,
       fetchArchivedListsMetaData,
