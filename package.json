@@ -17,7 +17,8 @@
     "lint:server": "eslint -c .eslintrc --ext \".js\" \"server/\" --fix",
     "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js && prettier --config .prettierrc --write landing/**/*.css",
     "test": "jest -runInBand",
-    "seed": "node server/seed/seedDb.js"
+    "seed": "node server/seed/seedDb.js",
+    "stylelint": "stylelint --fix client/src/**/*.scss"
   },
   "author": "Sandstream Development",
   "license": "MIT",
@@ -97,10 +98,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": " lint-staged",
       "pre-push": "npm run lint"
     }
   },
+  "stylelint-staged": "npm run stylelint",
   "lint-staged": {
     "linters": {
       "*.{js,jsx,json,scss,css,md}, !*.min.js": [
@@ -110,6 +112,11 @@
       "*.{js,jsx}, !*.min.js": [
         "eslint -c .eslintrc --fix",
         "echo test",
+        "git add"
+      ],
+      "**/*.scss": [
+        "stylefmt",
+        "stylelint --syntax scss",
         "git add"
       ]
     }
