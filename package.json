@@ -115,6 +115,7 @@
         "git add"
       ],
       "**/*.scss": [
+        "stylefmt",
         "stylelint --syntax scss",
         "git add"
       ]
