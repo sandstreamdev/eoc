@@ -35,8 +35,10 @@
 
   &--green {
     color: $text-normal;
-    svg path {
-      fill: $message-bg-green;
+    svg {
+      path {
+        fill: $message-bg-green;
+      }
     }
   }
 
