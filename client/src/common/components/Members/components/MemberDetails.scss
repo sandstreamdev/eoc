@@ -100,7 +100,7 @@
     }
   }
 
-  &__help-button {
+  &__info-button {
     font-size: 14px;
     width: 36px;
     height: 36px;
@@ -109,9 +109,16 @@
     border: 0;
     cursor: pointer;
     color: $text-normal;
+    span {
+      display: block;
+      width: 18px;
+      height: 18px;
+      border: 1px solid $gray2;
+      border-radius: 50%;
+    }
     svg {
-      height: 12px;
-      width: 12px;
+      height: 10px;
+      width: 10px;
 
       path {
         fill: $text-normal;

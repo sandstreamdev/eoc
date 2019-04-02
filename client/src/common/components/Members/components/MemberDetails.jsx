@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import { CloseIcon, HelpIcon, UserIcon } from 'assets/images/icons';
+import { CloseIcon, InfoIcon, UserIcon } from 'assets/images/icons';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
   changeRole as changeRoleInCohort,
@@ -22,11 +22,11 @@ const infoText = {
   [Routes.COHORT]: {
     [UserRoles.OWNER]:
       "Can edit, archive and delete this cohort. Can add, edit list's items and mark them as done. Can add, edit, archive and delete lists. Can add, remove members, and change their roles.",
-    [UserRoles.MEMBER]:
-      "Can edit, archive and delete this list. Can add, edit list's items and mark them as done. Can add, remove members, and change their roles."
+    [UserRoles.MEMBER]: "Can view lists, add and edit list's items."
   },
   [Routes.LIST]: {
-    [UserRoles.OWNER]: "Can view lists, add and edit list's items.",
+    [UserRoles.OWNER]:
+      "Can edit, archive and delete this list. Can add, edit list's items and mark them as done. Can add, remove members, and change their roles.",
     [UserRoles.MEMBER]: "Can view, add and edit list's items."
   }
 };
@@ -188,11 +188,13 @@ class MemberDetails extends PureComponent {
                     <label htmlFor="ownerRole">Change to owner</label>
                     <span>
                       <button
-                        className="member-details__help-button"
+                        className="member-details__info-button"
                         onClick={this.handleOwnerInfoVisibility}
                         type="button"
                       >
-                        <HelpIcon />
+                        <span>
+                          <InfoIcon />
+                        </span>
                       </button>
                       <input
                         checked={role === UserRoles.OWNER}
@@ -213,11 +215,13 @@ class MemberDetails extends PureComponent {
                     <label htmlFor="memberRole">Change to member</label>
                     <span>
                       <button
-                        className="member-details__help-button"
+                        className="member-details__info-button"
                         onClick={this.handleMemberInfoVisibility}
                         type="button"
                       >
-                        <HelpIcon />
+                        <span>
+                          <InfoIcon />
+                        </span>
                       </button>
                       <input
                         checked={role === UserRoles.MEMBER}
