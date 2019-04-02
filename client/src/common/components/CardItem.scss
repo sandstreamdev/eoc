@@ -23,17 +23,34 @@
     background: $gray4;
   }
 
+  &__header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid $text-white;
+    padding: 0 20px 8px 0;
+    svg {
+      min-height: 12px;
+      min-width: 12px;
+      margin-right: 8px;
+
+      path {
+        fill: $text-white;
+      }
+    }
+  }
+
   &__heading {
     color: $text-white;
     font-size: 11px;
-    line-height: 1.2;
+    line-height: 1;
     text-transform: uppercase;
     word-break: break-word;
-    margin-bottom: 8px;
-    border-bottom: 1px solid $text-white;
     font-weight: 700;
     letter-spacing: 0.2px;
-    padding: 0 20px 4px 0;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   &__description {

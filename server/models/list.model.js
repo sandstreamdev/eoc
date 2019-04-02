@@ -14,9 +14,10 @@ const ListSchema = new Schema(
     description: { type: String },
     favIds: [ObjectId],
     isArchived: { type: Boolean, default: false },
+    isPrivate: { type: Boolean, default: true },
     items: [ItemSchema],
-    name: { type: String, required: true },
     memberIds: [ObjectId],
+    name: { type: String, required: true },
     visibility: { type: String }
   },
   { timestamps: { createdAt: 'created_at' }, collection: 'lists' }
