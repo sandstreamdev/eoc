@@ -180,7 +180,7 @@ class MemberDetails extends PureComponent {
               <div>
                 <h3 className="member-details__name">{displayName}</h3>
                 <p className="member-details__role">
-                  {`${isOwner ? 'owner' : 'member'}`}
+                  {`${role === UserRoles.OWNER ? 'owner' : 'member'}`}
                 </p>
               </div>
             </div>
