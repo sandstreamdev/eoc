@@ -20,7 +20,7 @@ const MemberBox = ({ children }) => (
       <div
         ref={ref}
         data-placement={placement}
-        style={{ ...style, zIndex: 10, margin: '10px' }}
+        style={{ ...style, zIndex: 10, margin: 10 }}
       >
         {children}
       </div>

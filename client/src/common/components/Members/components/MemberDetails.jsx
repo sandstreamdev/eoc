@@ -44,8 +44,9 @@ class MemberDetails extends PureComponent {
   }
 
   handleConfirmationVisibility = () => {
-    const { isConfirmVisible } = this.state;
-    this.setState({ isConfirmVisible: !isConfirmVisible });
+    this.setState(({ isConfirmVisible }) => ({
+      isConfirmVisible: !isConfirmVisible
+    }));
   };
 
   handleMemberRemoving = () => {
@@ -76,14 +77,16 @@ class MemberDetails extends PureComponent {
 
   handleOwnerInfoVisibility = e => {
     e.stopPropagation();
-    const { isOwnerInfoVisible } = this.state;
-    this.setState({ isOwnerInfoVisible: !isOwnerInfoVisible });
+    this.setState(({ isOwnerInfoVisible }) => ({
+      isOwnerInfoVisible: !isOwnerInfoVisible
+    }));
   };
 
   handleMemberInfoVisibility = e => {
     e.stopPropagation();
-    const { isMemberInfoVisible } = this.state;
-    this.setState({ isMemberInfoVisible: !isMemberInfoVisible });
+    this.setState(({ isMemberInfoVisible }) => ({
+      isMemberInfoVisible: !isMemberInfoVisible
+    }));
   };
 
   handleChangingPermissions = e => {
@@ -283,14 +286,14 @@ class MemberDetails extends PureComponent {
 }
 
 MemberDetails.propTypes = {
+  _id: PropTypes.string.isRequired,
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
+  displayName: PropTypes.string.isRequired,
   isCurrentOwner: PropTypes.bool.isRequired,
   isOwner: PropTypes.bool,
-  displayName: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
   route: PropTypes.string,
-  _id: PropTypes.string.isRequired,
 
   changeRoleInCohort: PropTypes.func.isRequired,
   changeRoleInList: PropTypes.func.isRequired,
