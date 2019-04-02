@@ -41,14 +41,11 @@ export const getArchivedCohorts = createSelector(
     )
 );
 
-export const getMembers2 = (state, id) => {
-  if (state.cohorts.data) {
-    // debugger;
-    return _keyBy(state.cohorts.data[id].members, '_id');
-  }
-};
-
 export const getMembers = createSelector(
   getCohortDetails,
-  cohort => _keyBy(cohort.members, '_id')
+  cohort => {
+    if (cohort) {
+      return _keyBy(cohort.members, '_id');
+    }
+  }
 );

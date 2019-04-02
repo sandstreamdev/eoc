@@ -1,17 +1,13 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import PropTypes from 'prop-types';
 import { Manager } from 'react-popper';
-import { withRouter } from 'react-router-dom';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
-import { getMembers as getCohortMembers } from 'modules/cohort/model/selectors';
-import { getMembers as getListMembers } from 'modules/list/model/selectors';
 
 class MembersBox extends PureComponent {
   state = {
@@ -104,13 +100,4 @@ MembersBox.propTypes = {
   onAddNew: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const {
-    match: {
-      params: { id }
-    }
-  } = ownProps;
-  return { users: getCohortMembers(state, id) || getListMembers(state, id) };
-};
-
-export default withRouter(connect(mapStateToProps)(MembersBox));
+export default MembersBox;

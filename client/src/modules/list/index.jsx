@@ -167,14 +167,14 @@ class List extends Component {
                 onClick={this.handleMembersBoxVisibility}
                 type="button"
               >
-                {` ${membersBoxVisible ? 'show' : 'hide'} list's members`}
+                {` ${membersBoxVisible ? 'hide' : 'show'} list's members`}
               </button>
               {membersBoxVisible && (
                 <MembersBox
                   isCurrentOwner={this.checkIfOwner() || false}
                   onAddNew={this.handleAddNewMember}
                   route={Routes.LIST}
-                  // users={users}
+                  users={users}
                 />
               )}
             </div>
@@ -205,7 +205,7 @@ List.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
-  users: PropTypes.arrayOf(PropTypes.object),
+  users: PropTypes.objectOf(PropTypes.object),
 
   addListMember: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
@@ -213,11 +213,18 @@ List.propTypes = {
   updateList: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  list: getList(state, ownProps.match.params.id),
-  items: getItems(state, ownProps.match.params.id),
-  users: getMembers(state, ownProps.match.params.id)
-});
+const mapStateToProps = (state, ownProps) => {
+  const {
+    match: {
+      params: { id }
+    }
+  } = ownProps;
+  return {
+    list: getList(state, id),
+    items: getItems(state, id),
+    users: getMembers(state, id)
+  };
+};
 
 export default withRouter(
   connect(

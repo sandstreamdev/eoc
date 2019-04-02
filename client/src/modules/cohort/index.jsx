@@ -276,7 +276,7 @@ Cohort.propTypes = {
   currentUser: UserPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
-  users: PropTypes.arrayOf(PropTypes.object),
+  users: PropTypes.objectOf(PropTypes.object),
 
   addCohortMember: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
@@ -295,7 +295,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   return {
     archivedLists: getArchivedLists(state),
-    cohortDetails: getCohortDetails(state, ownProps.match.params.id),
+    cohortDetails: getCohortDetails(state, id),
     currentUser: getCurrentUser(state),
     lists: getActiveLists(state),
     users: getMembers(state, id)

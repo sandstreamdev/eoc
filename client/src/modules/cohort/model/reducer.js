@@ -16,36 +16,9 @@ const membersReducer = (state, action) => {
       } = action;
       return state.filter(member => member._id !== userId);
     }
-    case CohortActionTypes.CHANGE_TO_OWNER_SUCCESS: {
-      const {
-        payload: { userId }
-      } = action;
-      return state.map(member =>
-        member._id === userId
-          ? {
-              ...member,
-              isOwner: true
-            }
-          : member
-      );
-    }
-    case CohortActionTypes.CHANGE_TO_MEMBER_SUCCESS: {
-      const {
-        payload: { userId }
-      } = action;
-      return state.map(member =>
-        member._id === userId
-          ? {
-              ...member,
-              isOwner: false
-            }
-          : member
-      );
-    }
     case CohortActionTypes.CHANGE_ROLE_SUCCESS: {
       const {
-        payload: { userId },
-        payload: { isOwner }
+        payload: { userId, isOwner }
       } = action;
       return state.map(member =>
         member._id === userId
@@ -97,8 +70,6 @@ const cohorts = (state = {}, action) => {
       return { ...state, [cohortId]: { ...state[cohortId], isFavourite } };
     }
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
-    case CohortActionTypes.CHANGE_TO_MEMBER_SUCCESS:
-    case CohortActionTypes.CHANGE_TO_OWNER_SUCCESS:
     case CohortActionTypes.CHANGE_ROLE_SUCCESS:
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
@@ -124,10 +95,6 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.ARCHIVE_FAILURE:
     case CohortActionTypes.ARCHIVE_SUCCESS:
-    case CohortActionTypes.CHANGE_TO_MEMBER_FAILURE:
-    case CohortActionTypes.CHANGE_TO_MEMBER_SUCCESS:
-    case CohortActionTypes.CHANGE_TO_OWNER_FAILURE:
-    case CohortActionTypes.CHANGE_TO_OWNER_SUCCESS:
     case CohortActionTypes.CHANGE_ROLE_FAILURE:
     case CohortActionTypes.CHANGE_ROLE_SUCCESS:
     case CohortActionTypes.CREATE_FAILURE:
@@ -151,8 +118,6 @@ const isFetching = (state = false, action) => {
       return false;
     case CohortActionTypes.ADD_MEMBER_REQUEST:
     case CohortActionTypes.ARCHIVE_REQUEST:
-    case CohortActionTypes.CHANGE_TO_MEMBER_REQUEST:
-    case CohortActionTypes.CHANGE_TO_OWNER_REQUEST:
     case CohortActionTypes.CHANGE_ROLE_REQUEST:
     case CohortActionTypes.CREATE_REQUEST:
     case CohortActionTypes.DELETE_REQUEST:

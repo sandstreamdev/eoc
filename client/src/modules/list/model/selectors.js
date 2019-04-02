@@ -43,5 +43,11 @@ export const getArchivedLists = createSelector(
 );
 export const getIsFetchingLists = state => state.lists.isFetching;
 
-export const getMembers = (state, id) =>
-  _keyBy(state.cohorts.data[id].members, '_id');
+export const getMembers = createSelector(
+  getList,
+  list => {
+    if (list) {
+      return _keyBy(list.members, '_id');
+    }
+  }
+);

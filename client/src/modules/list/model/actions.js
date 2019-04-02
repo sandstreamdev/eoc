@@ -139,9 +139,9 @@ const addMemberRequest = () => ({
   type: ListActionTypes.ADD_MEMBER_REQUEST
 });
 
-const addMemberSuccess = (data, cohortId) => ({
+const addMemberSuccess = (data, listId) => ({
   type: ListActionTypes.ADD_MEMBER_SUCCESS,
-  payload: { cohortId, data }
+  payload: { listId, data }
 });
 
 const addMemberFailure = () => ({
