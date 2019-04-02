@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
+import { ListType } from 'modules/list';
+
 class Form extends PureComponent {
   constructor(props) {
     super(props);
@@ -40,8 +42,18 @@ class Form extends PureComponent {
 
   handleSubmit = event => event.preventDefault();
 
+  handleSelect = event => {
+    const { onSelect } = this.props;
+    const {
+      target: { value }
+    } = event;
+
+    onSelect(value);
+  };
+
   render() {
     const { description, name } = this.state;
+    const { onSelect } = this.props;
 
     return (
       <form className="form" onSubmit={this.handleSubmit}>
@@ -66,6 +78,15 @@ class Form extends PureComponent {
             value={description}
           />
         </label>
+        {onSelect && (
+          <select
+            className="form__select primary-select"
+            onChange={this.handleSelect}
+          >
+            <option value={ListType.PRIVATE}>{ListType.PRIVATE}</option>
+            <option value={ListType.PUBLIC}>{ListType.PUBLIC}</option>
+          </select>
+        )}
       </form>
     );
   }
@@ -76,7 +97,8 @@ Form.propTypes = {
   defaultName: PropTypes.string,
 
   onDescriptionChange: PropTypes.func.isRequired,
-  onNameChange: PropTypes.func.isRequired
+  onNameChange: PropTypes.func.isRequired,
+  onSelect: PropTypes.func
 };
 
 export default Form;

@@ -148,13 +148,9 @@ const addMemberFailure = () => ({
   type: CohortActionTypes.ADD_MEMBER_FAILURE
 });
 
-export const createCohort = (name, description, ownerId) => dispatch => {
+export const createCohort = data => dispatch => {
   dispatch(createCohortRequest());
-  return postData(`${ENDPOINT_URL}/cohorts/create`, {
-    name,
-    description,
-    ownerId
-  })
+  return postData(`${ENDPOINT_URL}/cohorts/create`, data)
     .then(resp => resp.json())
     .then(json => dispatch(createCohortSuccess(json)))
     .catch(err => {

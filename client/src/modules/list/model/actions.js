@@ -147,19 +147,9 @@ export const fetchListData = listId => dispatch => {
     });
 };
 
-export const createList = (
-  name,
-  description,
-  ownerId,
-  cohortId
-) => dispatch => {
+export const createList = data => dispatch => {
   dispatch(createListRequest());
-  return postData(`${ENDPOINT_URL}/lists/create`, {
-    ownerId,
-    cohortId,
-    description,
-    name
-  })
+  return postData(`${ENDPOINT_URL}/lists/create`, data)
     .then(resp => resp.json())
     .then(json => dispatch(createListSuccess(json)))
     .catch(err => {

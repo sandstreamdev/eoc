@@ -33,20 +33,21 @@ class Dashboard extends Component {
   handleDialogContext = context => () =>
     this.setState({ dialogContext: context });
 
-  handleConfirm = (title, description) => {
+  handleConfirm = (name, description) => {
     const { dialogContext } = this.state;
     const {
       createCohort,
       createList,
-      currentUser: { id }
+      currentUser: { id: userId }
     } = this.props;
+    const data = { description, userId, name };
 
     switch (dialogContext) {
       case FormDialogContext.CREATE_COHORT:
-        createCohort(title, description, id);
+        createCohort(data);
         break;
       case FormDialogContext.CREATE_LIST:
-        createList(title, description, id);
+        createList(data);
         break;
       default:
         break;

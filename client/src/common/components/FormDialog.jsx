@@ -44,7 +44,13 @@ class FormDialog extends Component {
   };
 
   render() {
-    const { defaultDescription, defaultName, onCancel, title } = this.props;
+    const {
+      defaultDescription,
+      defaultName,
+      onCancel,
+      onSelect,
+      title
+    } = this.props;
 
     return (
       <Dialog onConfirm={this.handleConfirm} onCancel={onCancel} title={title}>
@@ -53,6 +59,7 @@ class FormDialog extends Component {
           defaultName={defaultName}
           onDescriptionChange={this.handleDescriptionChange}
           onNameChange={this.handleNameChange}
+          onSelect={onSelect}
         />
       </Dialog>
     );
@@ -65,7 +72,8 @@ FormDialog.propTypes = {
   title: PropTypes.string,
 
   onCancel: PropTypes.func,
-  onConfirm: PropTypes.func
+  onConfirm: PropTypes.func,
+  onSelect: PropTypes.func
 };
 
 export default FormDialog;
