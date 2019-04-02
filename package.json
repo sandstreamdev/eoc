@@ -89,6 +89,7 @@
     "style-loader": "0.23.0",
     "stylelint": "9.10.1",
     "stylelint-config-recommended": "2.1.0",
+    "stylelint-scss": "3.5.4",
     "stylelint-webpack-plugin": "0.10.5",
     "supertest": "3.4.2",
     "url-loader": "1.0.1",
@@ -115,7 +116,6 @@
         "git add"
       ],
       "**/*.scss": [
-        "stylefmt",
         "stylelint --syntax scss",
         "git add"
       ]

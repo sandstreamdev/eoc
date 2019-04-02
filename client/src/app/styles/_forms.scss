@@ -50,9 +50,8 @@
 }
 
 .primary-select {
-  background-color: $bg-color;
   background: url('../../assets/images/chevron-down-solid.svg') no-repeat right
-    10px center/10px;
+    10px center/10px $bg-color;
   border: 1px solid $border-color;
   box-sizing: border-box;
   color: $text-normal;
