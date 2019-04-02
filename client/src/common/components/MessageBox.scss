@@ -17,8 +17,10 @@
   &--red {
     color: $text-normal;
 
-    svg path {
-      fill: $message-bg-red;
+    svg {
+      path {
+        fill: $message-bg-red;
+      }
     }
   }
 
