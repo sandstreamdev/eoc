@@ -44,19 +44,19 @@ const items = (state, action) => {
 
 const membersReducer = (state, action) => {
   switch (action.type) {
-    case CohortActionTypes.ADD_MEMBER_SUCCESS: {
+    case ListActionTypes.ADD_MEMBER_SUCCESS: {
       const {
         payload: { data }
       } = action;
       return [...state, data];
     }
-    case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { userId }
       } = action;
       return state.filter(member => member._id !== userId);
     }
-    case CohortActionTypes.CHANGE_ROLE_SUCCESS: {
+    case ListActionTypes.CHANGE_ROLE_SUCCESS: {
       const {
         payload: { userId, isOwner }
       } = action;

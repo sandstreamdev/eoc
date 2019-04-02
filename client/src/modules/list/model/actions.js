@@ -156,9 +156,9 @@ const removeMemberFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = (listId, id) => ({
+const removeMemberSuccess = (listId, userId) => ({
   type: ListActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: { listId, id }
+  payload: { listId, userId }
 });
 
 const changeRoleRequest = () => ({
