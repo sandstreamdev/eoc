@@ -103,7 +103,6 @@
       "pre-push": "npm run lint"
     }
   },
-  "stylelint-staged": "npm run stylelint",
   "lint-staged": {
     "linters": {
       "*.{js,jsx,json,scss,css,md}, !*.min.js": [
