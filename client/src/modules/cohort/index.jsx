@@ -18,7 +18,7 @@ import {
   EditIcon,
   ListIcon
 } from 'assets/images/icons';
-import { getCohortDetails } from './model/selectors';
+import { getCohortDetails, getMembers } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import {
@@ -137,12 +137,8 @@ class Cohort extends PureComponent {
       : removeArchivedListsMetaData();
   };
 
-  handleListType = isPrivate => {
-    if (isPrivate === ListType.PRIVATE) {
-      this.setState({ isListPrivate: true });
-    }
-    this.setState({ isListPrivate: false });
-  };
+  handleListType = isPrivate =>
+    this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
 
   handleAddNewMember = email => {
     const { addCohortMember } = this.props;
@@ -164,7 +160,8 @@ class Cohort extends PureComponent {
       lists,
       match: {
         params: { id: cohortId }
-      }
+      },
+      users
     } = this.props;
 
     if (!cohortDetails) {
@@ -232,6 +229,7 @@ class Cohort extends PureComponent {
                 isCurrentOwner={this.checkIfOwner() || false}
                 onAddNew={this.handleAddNewMember}
                 route={Routes.COHORT}
+                users={users}
               />
               <GridList
                 color={CardColorType.ORANGE}
@@ -278,6 +276,7 @@ Cohort.propTypes = {
   currentUser: UserPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
+  users: PropTypes.arrayOf(PropTypes.object),
 
   addCohortMember: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
@@ -288,12 +287,20 @@ Cohort.propTypes = {
   updateCohort: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  archivedLists: getArchivedLists(state),
-  cohortDetails: getCohortDetails(state, ownProps.match.params.id),
-  currentUser: getCurrentUser(state),
-  lists: getActiveLists(state)
-});
+const mapStateToProps = (state, ownProps) => {
+  const {
+    match: {
+      params: { id }
+    }
+  } = ownProps;
+  return {
+    archivedLists: getArchivedLists(state),
+    cohortDetails: getCohortDetails(state, ownProps.match.params.id),
+    currentUser: getCurrentUser(state),
+    lists: getActiveLists(state),
+    users: getMembers(state, id)
+  };
+};
 
 export default withRouter(
   connect(

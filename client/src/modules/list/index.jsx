@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
-import { getList, getItems } from 'modules/list/model/selectors';
+import { getList, getItems, getMembers } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/InputBar';
 import {
   addListMember,
@@ -106,7 +106,8 @@ class List extends Component {
       match: {
         params: { id: listId }
       },
-      list
+      list,
+      users
     } = this.props;
 
     if (!list) {
@@ -173,6 +174,7 @@ class List extends Component {
                   isCurrentOwner={this.checkIfOwner() || false}
                   onAddNew={this.handleAddNewMember}
                   route={Routes.LIST}
+                  // users={users}
                 />
               )}
             </div>
@@ -203,6 +205,7 @@ List.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
+  users: PropTypes.arrayOf(PropTypes.object),
 
   addListMember: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
@@ -212,7 +215,8 @@ List.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
   list: getList(state, ownProps.match.params.id),
-  items: getItems(state, ownProps.match.params.id)
+  items: getItems(state, ownProps.match.params.id),
+  users: getMembers(state, ownProps.match.params.id)
 });
 
 export default withRouter(

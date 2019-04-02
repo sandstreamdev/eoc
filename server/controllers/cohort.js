@@ -397,8 +397,8 @@ const addMember = (req, resp) => {
         return User.findOne({ email })
           .exec()
           .then(doc => {
-            const { _id, avatarUrl, displayName, email } = doc;
-            return { _id, avatarUrl, displayName, email, ownerIds };
+            const { _id, avatarUrl, displayName } = doc;
+            return { _id, avatarUrl, displayName, ownerIds };
           })
           .catch(() =>
             resp.status(400).send({ message: 'User data not found.' })

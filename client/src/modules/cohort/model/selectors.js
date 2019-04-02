@@ -12,8 +12,8 @@ export const getCohortDetails = (state, cohortId) => {
     _filter(getCohorts(state), (_, key) => key === cohortId)
   );
   if (cohort) {
-    const { description, isOwner, isArchived, name } = cohort;
-    return { description, isOwner, isArchived, name };
+    const { description, isOwner, isArchived, members, name } = cohort;
+    return { description, isOwner, isArchived, members, name };
   }
 };
 
@@ -41,5 +41,14 @@ export const getArchivedCohorts = createSelector(
     )
 );
 
-export const getMembers = (state, id) =>
-  _keyBy(state.cohorts.data[id].members, '_id');
+export const getMembers2 = (state, id) => {
+  if (state.cohorts.data) {
+    // debugger;
+    return _keyBy(state.cohorts.data[id].members, '_id');
+  }
+};
+
+export const getMembers = createSelector(
+  getCohortDetails,
+  cohort => _keyBy(cohort.members, '_id')
+);
