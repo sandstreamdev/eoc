@@ -135,6 +135,19 @@ const favouritesFailure = () => ({
   type: CohortActionTypes.FAVOURITES_FAILURE
 });
 
+const addMemberRequest = () => ({
+  type: CohortActionTypes.ADD_MEMBER_REQUEST
+});
+
+const addMemberSuccess = (data, cohortId) => ({
+  type: CohortActionTypes.ADD_MEMBER_SUCCESS,
+  payload: { cohortId, data }
+});
+
+const addMemberFailure = () => ({
+  type: CohortActionTypes.ADD_MEMBER_FAILURE
+});
+
 export const createCohort = (name, description, ownerId) => dispatch => {
   dispatch(createCohortRequest());
   return postData(`${ENDPOINT_URL}/cohorts/create`, {
@@ -341,6 +354,23 @@ export const removeCohortFromFavourites = cohortId => dispatch => {
         dispatch,
         NotificationType.ERROR,
         err.message
+      );
+    });
+};
+
+export const addCohortMember = (cohortId, email) => dispatch => {
+  dispatch(addMemberRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-member`, {
+    email
+  })
+    .then(resp => resp.json())
+    .then(json => dispatch(addMemberSuccess(json, cohortId)))
+    .catch(err => {
+      dispatch(addMemberFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, adding new member failed..."
       );
     });
 };
