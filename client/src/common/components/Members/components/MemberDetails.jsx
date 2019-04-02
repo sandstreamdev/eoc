@@ -135,7 +135,6 @@ class MemberDetails extends PureComponent {
   render() {
     const {
       isConfirmVisible,
-      isOwner,
       isOwnerInfoVisible,
       isMemberInfoVisible,
       role
