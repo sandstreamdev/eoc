@@ -5,12 +5,12 @@ const { ObjectId } = Schema.Types;
 
 const CohortSchema = new Schema(
   {
-    ownerIds: [ObjectId],
     description: { type: String },
     favIds: [ObjectId],
     isArchived: { type: Boolean, default: false },
-    memberIds: [ObjectId],
-    name: { type: String, required: true }
+    memberIds: [{ type: ObjectId, ref: 'User' }],
+    name: { type: String, required: true },
+    ownerIds: [{ type: ObjectId, ref: 'User' }]
   },
   { timestamps: { createdAt: 'createdAt' }, collection: 'cohorts' }
 );

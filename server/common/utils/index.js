@@ -51,10 +51,29 @@ const responseWithItem = (item, userId) => {
 };
 
 const responseWithCohorts = (cohorts, userId) =>
-  _map(cohorts, ({ favIds, ...rest }) => ({
-    ...rest._doc,
-    isFavourite: isUserFavourite(favIds, userId)
+  _map(cohorts, ({ _doc }) => {
+    const { favIds, ...rest } = _doc;
+    return {
+      ...rest,
+      isFavourite: isUserFavourite(favIds, userId)
+    };
+  });
+
+const responseWithMembers = (users, ownerIds) =>
+  users.map(user => ({
+    ...user._doc,
+    isOwner: ownerIds.indexOf(user._doc._id.toString()) > -1
   }));
+
+const responseWithMember = (data, ownerIds) => {
+  const { avatarUrl, displayName, newMemberId } = data;
+  return {
+    _id: newMemberId,
+    avatarUrl,
+    displayName,
+    isOwner: ownerIds.indexOf(newMemberId.toString()) > -1
+  };
+};
 
 module.exports = {
   checkRole,
@@ -64,5 +83,7 @@ module.exports = {
   responseWithCohorts,
   responseWithItem,
   responseWithItems,
-  responseWithLists
+  responseWithLists,
+  responseWithMember,
+  responseWithMembers
 };

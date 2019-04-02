@@ -22,6 +22,7 @@ import { getCohortDetails } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import {
+  addCohortMember,
   archiveCohort,
   fetchCohortDetails,
   updateCohort
@@ -31,6 +32,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList, { GridListRoutes } from 'common/components/GridList';
+import MembersBox from 'common/components/Members';
 
 class Cohort extends PureComponent {
   state = {
@@ -128,6 +130,16 @@ class Cohort extends PureComponent {
       : removeArchivedListsMetaData();
   };
 
+  handleAddNewMember = email => {
+    const { addCohortMember } = this.props;
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+    addCohortMember(cohortId, email);
+  };
+
   render() {
     const {
       archivedLists,
@@ -195,7 +207,10 @@ class Cohort extends PureComponent {
                 <CohortIcon />
                 {name}
               </h1>
-              <p className="cohort__description">{description}</p>
+              {description && (
+                <p className="cohort__description">{description}</p>
+              )}
+              <MembersBox onAddNew={this.handleAddNewMember} />
               <GridList
                 color={CardColorType.ORANGE}
                 icon={<ListIcon />}
@@ -242,6 +257,7 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
+  addCohortMember: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
@@ -261,6 +277,7 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
+      addCohortMember,
       archiveCohort,
       createList,
       fetchArchivedListsMetaData,
