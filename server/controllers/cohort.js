@@ -171,7 +171,7 @@ const getCohortDetails = (req, resp) => {
     .catch(err =>
       resp.status(400).send({
         message:
-          'An error occurred while fetching the cohort data.Please try again.'
+          'An error occurred while fetching the cohort data. Please try again.'
       })
     );
 };
