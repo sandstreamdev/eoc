@@ -4,22 +4,21 @@ import { Popper } from 'react-popper';
 
 const MemberBox = ({ children }) => (
   <Popper
-    placement="bottom-start"
-    disablePortal={false}
     modifiers={{
       flip: { enabled: true },
       preventOverflow: {
+        boundariesElement: 'viewport',
         enabled: true,
         padding: 15,
-        priority: ['left', 'right'],
-        boundariesElement: 'viewport'
+        priority: ['left', 'right']
       }
     }}
+    placement="bottom-start"
   >
     {({ ref, placement, style }) => (
       <div
-        ref={ref}
         data-placement={placement}
+        ref={ref}
         style={{ ...style, zIndex: 10, margin: 10 }}
       >
         {children}
