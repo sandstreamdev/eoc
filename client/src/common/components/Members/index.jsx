@@ -65,8 +65,8 @@ class MembersBox extends PureComponent {
             >
               <Manager>
                 <MemberButton
-                  user={user}
                   onDisplayDetails={this.handleDisplayingMemberDetails(user)}
+                  user={user}
                 />
                 {context === user._id && (
                   <MemberBox>

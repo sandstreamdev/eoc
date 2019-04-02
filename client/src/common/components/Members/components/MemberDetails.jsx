@@ -35,6 +35,7 @@ class MemberDetails extends PureComponent {
   constructor(props) {
     super(props);
     const { isOwner } = props;
+
     this.state = {
       isConfirmVisible: false,
       isMemberInfoVisible: false,
@@ -43,11 +44,10 @@ class MemberDetails extends PureComponent {
     };
   }
 
-  handleConfirmationVisibility = () => {
+  handleConfirmationVisibility = () =>
     this.setState(({ isConfirmVisible }) => ({
       isConfirmVisible: !isConfirmVisible
     }));
-  };
 
   handleMemberRemoving = () => {
     const {
@@ -91,13 +91,16 @@ class MemberDetails extends PureComponent {
 
   handleChangingPermissions = e => {
     e.stopPropagation();
+    const {
+      target: { value }
+    } = e;
     const { route } = this.props;
     switch (route) {
       case Routes.COHORT:
-        this.handleCohortMemberRoleChange(e.target.value);
+        this.handleCohortMemberRoleChange(value);
         break;
       case Routes.LIST:
-        this.handleListMemberRoleChange(e.target.value);
+        this.handleListMemberRoleChange(value);
         break;
       default:
         break;
@@ -158,13 +161,13 @@ class MemberDetails extends PureComponent {
         >
           <button
             className="member-details__close"
-            type="button"
             onClick={onClose}
+            type="button"
           >
             <CloseIcon />
           </button>
           <div className="member-details__details">
-            <div className="member-details__heading">
+            <header className="member-details__heading">
               <div className="member-details__avatar">
                 {avatarUrl ? (
                   <img
@@ -182,7 +185,7 @@ class MemberDetails extends PureComponent {
                   {`${role === UserRoles.OWNER ? 'owner' : 'member'}`}
                 </p>
               </div>
-            </div>
+            </header>
             {isCurrentOwner && userId !== currentUserId && (
               <Fragment>
                 <ul className="member-details__panel">

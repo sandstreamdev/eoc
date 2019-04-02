@@ -6,8 +6,8 @@ const MemberButton = ({ onDisplayDetails, user }) => (
   <Reference>
     {({ ref }) => (
       <button
-        ref={ref}
         className="member-button"
+        ref={ref}
         title={user.displayName}
         type="button"
       >

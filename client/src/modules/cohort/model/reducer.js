@@ -18,7 +18,7 @@ const membersReducer = (state, action) => {
     }
     case CohortActionTypes.CHANGE_ROLE_SUCCESS: {
       const {
-        payload: { userId, isOwner }
+        payload: { isOwner, userId }
       } = action;
       return state.map(member =>
         member._id === userId

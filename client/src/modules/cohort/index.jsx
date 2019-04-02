@@ -112,7 +112,10 @@ class Cohort extends PureComponent {
 
   checkIfOwner = () => {
     const { cohortDetails } = this.props;
-    return cohortDetails && cohortDetails.isOwner;
+    if (cohortDetails) {
+      return cohortDetails.isOwner;
+    }
+    return false;
   };
 
   handleDialogContext = context => () =>
@@ -226,7 +229,7 @@ class Cohort extends PureComponent {
                 <p className="cohort__description">{description}</p>
               )}
               <MembersBox
-                isCurrentOwner={this.checkIfOwner() || false}
+                isCurrentOwner={this.checkIfOwner()}
                 onAddNew={this.handleAddNewMember}
                 route={Routes.COHORT}
                 users={users}
