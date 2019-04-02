@@ -75,26 +75,27 @@ class MemberDetails extends PureComponent {
     onClose();
   };
 
-  handleOwnerInfoVisibility = e => {
-    e.stopPropagation();
+  handleOwnerInfoVisibility = event => {
+    event.stopPropagation();
     this.setState(({ isOwnerInfoVisible }) => ({
       isOwnerInfoVisible: !isOwnerInfoVisible
     }));
   };
 
-  handleMemberInfoVisibility = e => {
-    e.stopPropagation();
+  handleMemberInfoVisibility = event => {
+    event.stopPropagation();
     this.setState(({ isMemberInfoVisible }) => ({
       isMemberInfoVisible: !isMemberInfoVisible
     }));
   };
 
-  handleChangingPermissions = e => {
-    e.stopPropagation();
+  handleChangingPermissions = event => {
+    event.stopPropagation();
     const {
       target: { value }
-    } = e;
+    } = event;
     const { route } = this.props;
+
     switch (route) {
       case Routes.COHORT:
         this.handleCohortMemberRoleChange(value);

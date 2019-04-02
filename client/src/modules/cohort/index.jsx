@@ -112,8 +112,8 @@ class Cohort extends PureComponent {
 
   checkIfOwner = () => {
     const { cohortDetails } = this.props;
-    if (cohortDetails) {
-      return cohortDetails.isOwner;
+    if (cohortDetails && cohortDetails.isOwner) {
+      return true;
     }
     return false;
   };

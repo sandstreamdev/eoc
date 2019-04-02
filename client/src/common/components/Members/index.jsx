@@ -22,9 +22,8 @@ class MembersBox extends PureComponent {
 
   hideForm = () => this.setState({ isFormVisible: false });
 
-  handleDisplayingMemberDetails = user => () => {
-    const { _id: userId } = user;
-    this.setState({ context: userId });
+  handleDisplayingMemberDetails = id => () => {
+    this.setState({ context: id });
   };
 
   handleClosingMemberDetails = () => {
@@ -41,6 +40,7 @@ class MembersBox extends PureComponent {
   render() {
     const { context, isFormVisible } = this.state;
     const { isCurrentOwner, route, users } = this.props;
+    console.log(isCurrentOwner);
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -68,7 +68,9 @@ class MembersBox extends PureComponent {
             >
               <Manager>
                 <MemberButton
-                  onDisplayDetails={this.handleDisplayingMemberDetails(user)}
+                  onDisplayDetails={this.handleDisplayingMemberDetails(
+                    user._id
+                  )}
                   user={user}
                 />
                 {context === user._id && (
