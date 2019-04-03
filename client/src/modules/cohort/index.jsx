@@ -22,18 +22,18 @@ import { getCohortDetails } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import {
-  addCohortMember,
   archiveCohort,
   fetchCohortDetails,
   updateCohort
 } from './model/actions';
-import { noOp } from 'common/utils/noOp';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
-import GridList, { GridListRoutes } from 'common/components/GridList';
-import MembersBox from 'common/components/Members';
+import GridList from 'common/components/GridList';
 import { ListType } from 'modules/list';
+import MembersBox from 'common/components/Members';
+import { Routes } from 'common/constants/enums';
+import { noOp } from 'common/utils/noOp';
 
 class Cohort extends PureComponent {
   state = {
@@ -111,7 +111,10 @@ class Cohort extends PureComponent {
 
   checkIfOwner = () => {
     const { cohortDetails } = this.props;
-    return cohortDetails && cohortDetails.isOwner;
+    if (cohortDetails && cohortDetails.isOwner) {
+      return true;
+    }
+    return false;
   };
 
   handleDialogContext = context => () =>
@@ -136,15 +139,8 @@ class Cohort extends PureComponent {
       : removeArchivedListsMetaData();
   };
 
-  handleAddNewMember = email => {
-    const { addCohortMember } = this.props;
-    const {
-      match: {
-        params: { id: cohortId }
-      }
-    } = this.props;
-    addCohortMember(cohortId, email);
-  };
+  handleListType = isPrivate =>
+    this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
 
   handleListType = isPrivate =>
     this.setState({ isListPrivate: isPrivate === ListType.PRIVATE });
@@ -220,7 +216,10 @@ class Cohort extends PureComponent {
               {description && (
                 <p className="cohort__description">{description}</p>
               )}
-              <MembersBox onAddNew={this.handleAddNewMember} />
+              <MembersBox
+                isCurrentOwner={this.checkIfOwner()}
+                route={Routes.COHORT}
+              />
               <GridList
                 color={CardColorType.ORANGE}
                 icon={<ListIcon />}
@@ -228,7 +227,7 @@ class Cohort extends PureComponent {
                 name="Lists"
                 onAddNew={this.handleDialogContext(DialogContext.CREATE)}
                 placeholder={`There are no lists in the ${name} cohort!`}
-                route={GridListRoutes.LIST}
+                route={Routes.LIST}
               />
               <button
                 className="link-button"
@@ -244,7 +243,7 @@ class Cohort extends PureComponent {
                   items={archivedLists}
                   name="Archived lists"
                   placeholder={`There are no archived lists in the ${name} cohort!`}
-                  route={GridListRoutes.LIST}
+                  route={Routes.LIST}
                 />
               )}
             </div>
@@ -267,7 +266,6 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
-  addCohortMember: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
@@ -287,7 +285,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
-      addCohortMember,
       archiveCohort,
       createList,
       fetchArchivedListsMetaData,

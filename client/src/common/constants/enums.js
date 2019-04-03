@@ -14,3 +14,13 @@ export const StatusType = Object.freeze({
   RESOLVED: 'resolved',
   ERROR: 'error'
 });
+
+export const Routes = Object.freeze({
+  COHORT: 'cohort',
+  LIST: 'list'
+});
+
+export const UserRoles = Object.freeze({
+  MEMBER: 'userRoles/MEMBER',
+  OWNER: 'userRoles/OWNER'
+});

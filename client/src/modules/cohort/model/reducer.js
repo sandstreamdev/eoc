@@ -10,6 +10,25 @@ const membersReducer = (state, action) => {
       } = action;
       return [...state, data];
     }
+    case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+      return state.filter(member => member._id !== userId);
+    }
+    case CohortActionTypes.CHANGE_ROLE_SUCCESS: {
+      const {
+        payload: { isOwner, userId }
+      } = action;
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isOwner
+            }
+          : member
+      );
+    }
     default:
       return state;
   }
@@ -50,12 +69,13 @@ const cohorts = (state = {}, action) => {
       } = action;
       return { ...state, [cohortId]: { ...state[cohortId], isFavourite } };
     }
-    case CohortActionTypes.ADD_MEMBER_SUCCESS: {
+    case CohortActionTypes.ADD_MEMBER_SUCCESS:
+    case CohortActionTypes.CHANGE_ROLE_SUCCESS:
+    case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { cohortId }
       } = action;
       const { members } = state[cohortId];
-
       return {
         ...state,
         [cohortId]: {
@@ -75,6 +95,8 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.ARCHIVE_FAILURE:
     case CohortActionTypes.ARCHIVE_SUCCESS:
+    case CohortActionTypes.CHANGE_ROLE_FAILURE:
+    case CohortActionTypes.CHANGE_ROLE_SUCCESS:
     case CohortActionTypes.CREATE_FAILURE:
     case CohortActionTypes.CREATE_SUCCESS:
     case CohortActionTypes.DELETE_FAILURE:
@@ -87,6 +109,8 @@ const isFetching = (state = false, action) => {
     case CohortActionTypes.FETCH_DETAILS_SUCCESS:
     case CohortActionTypes.FETCH_META_DATA_FAILURE:
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
+    case CohortActionTypes.REMOVE_MEMBER_FAILURE:
+    case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
     case CohortActionTypes.RESTORE_FAILURE:
     case CohortActionTypes.RESTORE_SUCCESS:
     case CohortActionTypes.UPDATE_FAILURE:
@@ -94,12 +118,14 @@ const isFetching = (state = false, action) => {
       return false;
     case CohortActionTypes.ADD_MEMBER_REQUEST:
     case CohortActionTypes.ARCHIVE_REQUEST:
+    case CohortActionTypes.CHANGE_ROLE_REQUEST:
     case CohortActionTypes.CREATE_REQUEST:
     case CohortActionTypes.DELETE_REQUEST:
     case CohortActionTypes.FAVOURITES_REQUEST:
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
     case CohortActionTypes.FETCH_DETAILS_REQUEST:
     case CohortActionTypes.FETCH_META_DATA_REQUEST:
+    case CohortActionTypes.REMOVE_MEMBER_REQUEST:
     case CohortActionTypes.RESTORE_REQUEST:
     case CohortActionTypes.UPDATE_REQUEST:
       return true;

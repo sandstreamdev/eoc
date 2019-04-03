@@ -9,8 +9,8 @@ const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 const User = require('../models/user.model');
 const {
-  responseWithMembers,
-  responseWithMember
+  responseWithMember,
+  responseWithMembers
 } = require('../common/utils/index');
 
 const createCohort = (req, resp) => {
@@ -270,6 +270,117 @@ const removeFromFavourites = (req, resp) => {
   );
 };
 
+const removeOwner = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
+    { $pull: { ownerIds: userId } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove owner from cohort."
+        });
+      }
+
+      if (doc) {
+        return resp.status(200).send({
+          message: 'Owner successfully removed from cohort.'
+        });
+      }
+
+      resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
+const removeMember = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    { _id: cohortId, ownerIds: ownerId, memberIds: userId },
+    { $pull: { memberIds: userId } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't remove member from cohort."
+        });
+      }
+
+      if (doc) {
+        return resp.status(200).send({
+          message: 'Member successfully removed from cohort.'
+        });
+      }
+
+      resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
+const changeToOwner = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  Cohort.findOneAndUpdate(
+    { _id: cohortId, ownerIds: ownerId, memberIds: userId },
+    { $push: { ownerIds: userId }, $pull: { memberIds: userId } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't set user as a cohort's owner."
+        });
+      }
+
+      if (doc) {
+        return resp.status(200).send({
+          message: "User has been successfully set as a cohort's owner."
+        });
+      }
+
+      resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
+const changeToMember = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+  Cohort.findOneAndUpdate(
+    { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
+    { $push: { memberIds: userId }, $pull: { ownerIds: userId } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: "Can't set user as a cohort's member."
+        });
+      }
+
+      if (doc) {
+        return resp.status(200).send({
+          message: "User has been successfully set as a cohort's member."
+        });
+      }
+
+      resp.status(404).send({ message: 'Cohort data not found.' });
+    }
+  );
+};
+
 const addMember = (req, resp) => {
   const {
     user: { _id: currentUser }
@@ -286,8 +397,8 @@ const addMember = (req, resp) => {
         return User.findOne({ email })
           .exec()
           .then(doc => {
-            const { _id, avatarUrl, displayName, email } = doc;
-            return { _id, avatarUrl, displayName, email, ownerIds };
+            const { _id, avatarUrl, displayName } = doc;
+            return { _id, avatarUrl, displayName, ownerIds };
           })
           .catch(() =>
             resp.status(400).send({ message: 'User data not found.' })
@@ -333,11 +444,15 @@ const addMember = (req, resp) => {
 module.exports = {
   addMember,
   addToFavourites,
+  changeToMember,
+  changeToOwner,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
   removeFromFavourites,
+  removeMember,
+  removeOwner,
   updateCohortById
 };

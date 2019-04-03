@@ -8,7 +8,10 @@ import {
   postData
 } from 'common/utils/fetchMethods';
 import { ListActionTypes } from './actionTypes';
-import { MessageType as NotificationType } from 'common/constants/enums';
+import {
+  MessageType as NotificationType,
+  UserRoles
+} from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 
@@ -130,6 +133,32 @@ const favouritesSuccess = data => ({
 
 const favouritesFailure = () => ({
   type: ListActionTypes.FAVOURITES_FAILURE
+});
+
+const removeMemberRequest = () => ({
+  type: ListActionTypes.REMOVE_MEMBER_REQUEST
+});
+
+const removeMemberFailure = () => ({
+  type: ListActionTypes.REMOVE_MEMBER_FAILURE
+});
+
+const removeMemberSuccess = (listId, id) => ({
+  type: ListActionTypes.REMOVE_MEMBER_SUCCESS,
+  payload: { listId, id }
+});
+
+const changeRoleRequest = () => ({
+  type: ListActionTypes.CHANGE_ROLE_REQUEST
+});
+
+const changeRoleFailure = () => ({
+  type: ListActionTypes.CHANGE_ROLE_FAILURE
+});
+
+const changeRoleSuccess = (listId, userId, isOwner) => ({
+  type: ListActionTypes.CHANGE_ROLE_SUCCESS,
+  payload: { listId, userId, isOwner }
 });
 
 export const fetchListData = listId => dispatch => {
@@ -336,6 +365,57 @@ export const removeListFromFavourites = listId => dispatch => {
     })
     .catch(err => {
       dispatch(favouritesFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const removeListMember = (listId, userId, isOwner) => dispatch => {
+  const url = isOwner
+    ? `${ENDPOINT_URL}/lists/${listId}/remove-owner`
+    : `${ENDPOINT_URL}/lists/${listId}/remove-member`;
+  dispatch(removeMemberRequest());
+  return patchData(url, { userId })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(removeMemberSuccess(listId, userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(removeMemberFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changeRole = (listId, userId, role) => dispatch => {
+  const isOwner = role === UserRoles.OWNER;
+  const url = isOwner
+    ? `${ENDPOINT_URL}/lists/${listId}/change-to-owner`
+    : `${ENDPOINT_URL}/lists/${listId}/change-to-member`;
+  dispatch(changeRoleRequest());
+  return patchData(url, { userId })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(changeRoleSuccess(listId, userId, isOwner));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changeRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

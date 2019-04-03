@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import CardItem from 'common/components/CardItem';
 import MessageBox from 'common/components/MessageBox';
-import { MessageType } from 'common/constants/enums';
+import { MessageType, Routes } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
 import {
   addListToFavourites,
@@ -17,11 +17,6 @@ import {
   addCohortToFavourites,
   removeCohortFromFavourites
 } from 'modules/cohort/model/actions';
-
-export const GridListRoutes = Object.freeze({
-  COHORT: 'cohort',
-  LIST: 'list'
-});
 
 class GridList extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
@@ -36,10 +31,10 @@ class GridList extends PureComponent {
 
     let action;
     switch (route) {
-      case GridListRoutes.LIST:
+      case Routes.LIST:
         action = isFavourite ? removeListFromFavourites : addListToFavourites;
         break;
-      case GridListRoutes.COHORT:
+      case Routes.COHORT:
         action = isFavourite
           ? removeCohortFromFavourites
           : addCohortToFavourites;
