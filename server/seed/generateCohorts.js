@@ -10,7 +10,7 @@ const generateCohorts = length => {
   for (let i = 1; i <= length; i += 1) {
     data.push({
       _id: ObjectId(),
-      adminIds: [userId],
+      ownerIds: [userId],
       description: '',
       isArchived: false,
       memberIds: [],
