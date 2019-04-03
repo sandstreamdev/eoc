@@ -3,6 +3,11 @@
   border: 0;
   background-color: $bg-color;
 
+  &__header {
+    border-bottom: 1px solid $border-light;
+    margin-bottom: 8px;
+  }
+
   &__heading {
     padding: 8px 0;
     display: flex;
@@ -11,8 +16,6 @@
     font-weight: 700;
     line-height: 1;
     color: $text-normal;
-    border-bottom: 1px solid $border-light;
-    margin-bottom: 8px;
 
     svg {
       height: 20px;
@@ -31,5 +34,14 @@
     padding: 8px 0 16px;
     border-bottom: 1px solid $border-light;
     margin-bottom: 16px;
+  }
+
+  &__name-input {
+    max-width: 240px;
+  }
+
+  &__name-form,
+  &__description-form {
+    padding-bottom: 8px;
   }
 }

@@ -39,7 +39,9 @@ class Cohort extends PureComponent {
   state = {
     areArchivedListVisible: false,
     dialogContext: null,
-    isListPrivate: true
+    isListPrivate: true,
+    isNameFormVisible: false,
+    name: ''
   };
 
   componentDidMount() {
@@ -81,20 +83,45 @@ class Cohort extends PureComponent {
       .catch(noOp);
   };
 
-  handleCohortEdition = cohortId => (name, description) => {
-    const { cohortDetails, updateCohort } = this.props;
+  // handleCohortEdition = cohortId => (name, description) => {
+  //   const { cohortDetails, updateCohort } = this.props;
+  //   const {
+  //     description: previousDescription,
+  //     name: previousName
+  //   } = cohortDetails;
+
+  //   if (previousDescription !== description || previousName !== name) {
+  //     const dataToUpdate = { description, name };
+
+  //     updateCohort(cohortId, dataToUpdate);
+  //   }
+
+  //   this.hideDialog();
+  // };
+
+  handleNameChange = event => {
     const {
-      description: previousDescription,
-      name: previousName
-    } = cohortDetails;
+      target: { value }
+    } = event;
+    this.setState({ name: value });
+  };
 
-    if (previousDescription !== description || previousName !== name) {
-      const dataToUpdate = { description, name };
+  handleNameEdition = cohortId => event => {
+    event.preventDefault();
+    const { cohortDetails, updateCohort } = this.props;
+    const { name: previousName } = cohortDetails;
+    const { name } = this.state;
 
-      updateCohort(cohortId, dataToUpdate);
+    if (previousName !== name) {
+      updateCohort(cohortId, { name });
+      this.handleNameFormVisibility();
     }
+  };
 
-    this.hideDialog();
+  handleNameFormVisibility = () => {
+    const { isNameFormVisible } = this.state;
+
+    this.setState({ isNameFormVisible: !isNameFormVisible });
   };
 
   handleCohortArchivization = cohortId => () => {
@@ -160,18 +187,22 @@ class Cohort extends PureComponent {
     }
 
     const { isArchived, name, description } = cohortDetails;
-    const { areArchivedListVisible, dialogContext } = this.state;
+    const {
+      areArchivedListVisible,
+      dialogContext,
+      isNameFormVisible
+    } = this.state;
 
     return (
       <Fragment>
         <Toolbar>
           {!isArchived && this.checkIfOwner() && (
             <Fragment>
-              <ToolbarItem
+              {/* <ToolbarItem
                 mainIcon={<EditIcon />}
                 onClick={this.handleDialogContext(DialogContext.UPDATE)}
                 title="Update cohort"
-              />
+              /> */}
               <ToolbarItem
                 mainIcon={<ArchiveIcon />}
                 onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
@@ -187,7 +218,7 @@ class Cohort extends PureComponent {
             title={`Do you really want to archive the "${name}" cohort?`}
           />
         )}
-        {dialogContext === DialogContext.UPDATE && (
+        {/* {dialogContext === DialogContext.UPDATE && (
           <FormDialog
             defaultDescription={description}
             defaultName={name}
@@ -195,7 +226,7 @@ class Cohort extends PureComponent {
             onConfirm={this.handleCohortEdition(cohortId)}
             title="Edit cohort"
           />
-        )}
+        )} */}
         {dialogContext === DialogContext.CREATE && (
           <FormDialog
             onCancel={this.handleDialogContext(null)}
@@ -209,10 +240,28 @@ class Cohort extends PureComponent {
         ) : (
           <div className="wrapper">
             <div className="cohort">
-              <h1 className="cohort__heading">
-                <CohortIcon />
-                {name}
-              </h1>
+              <header
+                className="cohort__header"
+                onDoubleClick={this.handleNameFormVisibility}
+              >
+                <h1 className="cohort__heading">
+                  <CohortIcon />
+                  {isNameFormVisible ? (
+                    <form
+                      className="cohort__name-form"
+                      onSubmit={this.handleNameEdition(cohortId)}
+                    >
+                      <input
+                        className="cohort__name-input primary-input"
+                        onChange={this.handleNameChange}
+                        type="text"
+                      />
+                    </form>
+                  ) : (
+                    <Fragment>{name}</Fragment>
+                  )}
+                </h1>
+              </header>
               {description && (
                 <p className="cohort__description">{description}</p>
               )}
