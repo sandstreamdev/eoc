@@ -2,7 +2,7 @@ const userId = process.env.USER_ID;
 
 const generateLists = cohortId => [
   {
-    adminIds: [userId],
+    ownerIds: [userId],
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     isArchived: false,
@@ -36,7 +36,7 @@ const generateLists = cohortId => [
   },
   {
     _id: '5c9a1299341674ba31ff6aa7',
-    adminIds: [userId],
+    ownerIds: [userId],
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     isArchived: false,
@@ -45,7 +45,7 @@ const generateLists = cohortId => [
   },
   {
     _id: '5c9a1299341674ba31ff6aa8',
-    adminIds: [userId],
+    ownerIds: [userId],
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     isArchived: true,
@@ -54,7 +54,7 @@ const generateLists = cohortId => [
   },
   {
     _id: '5c9a130146e555ba24992a2e',
-    adminIds: [userId],
+    ownerIds: [userId],
     cohortId,
     description: '',
     isArchived: false,
@@ -63,7 +63,7 @@ const generateLists = cohortId => [
   },
   {
     _id: '5c9a130746e555ba24992a2f',
-    adminIds: [userId],
+    ownerIds: [userId],
     cohortId,
     description: '',
     isArchived: false,
@@ -72,7 +72,7 @@ const generateLists = cohortId => [
   },
   {
     _id: '5c9a131346e555ba24992a30',
-    adminIds: [userId],
+    ownerIds: [userId],
     cohortId,
     description: '',
     isArchived: true,
