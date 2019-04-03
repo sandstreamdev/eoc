@@ -14,11 +14,11 @@ const {
 } = require('../common/utils/index');
 
 const createCohort = (req, resp) => {
-  const { description, name, ownerId } = req.body;
+  const { description, name, userId } = req.body;
   const cohort = new Cohort({
     name,
     description,
-    ownerIds: ownerId
+    ownerIds: userId
   });
 
   cohort.save((err, doc) =>
