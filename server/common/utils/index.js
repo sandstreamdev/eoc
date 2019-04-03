@@ -19,10 +19,14 @@ const isValidMongoId = id => ObjectId.isValid(id);
 const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
 
 const responseWithLists = (lists, userId) =>
-  _map(lists, ({ favIds, ...rest }) => ({
-    ...rest._doc,
-    isFavourite: isUserFavourite(favIds, userId)
-  }));
+  _map(lists, list => {
+    const { favIds, ...rest } = list._doc;
+
+    return {
+      ...rest,
+      isFavourite: isUserFavourite(favIds, userId)
+    };
+  });
 
 const checkIfCurrentUserVoted = (item, userId) =>
   item.voterIds.indexOf(userId) > -1;
