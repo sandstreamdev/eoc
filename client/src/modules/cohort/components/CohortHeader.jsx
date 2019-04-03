@@ -21,7 +21,8 @@ class CohortHeader extends PureComponent {
       name
     };
 
-    this.header = React.createRef();
+    this.descriptionTextarea = React.createRef();
+    this.nameInput = React.createRef();
   }
 
   componentDidMount() {
@@ -35,11 +36,25 @@ class CohortHeader extends PureComponent {
   }
 
   handleClick = event => {
-    if (this.header && !this.header.current.contains(event.target)) {
-      this.setState({
-        isDescriptionFormVisible: false,
-        isNameFormVisible: false
-      });
+    const { isDescriptionFormVisible, isNameFormVisible } = this.state;
+
+    if (isDescriptionFormVisible) {
+      if (
+        this.descriptionTextarea &&
+        !this.descriptionTextarea.current.contains(event.target)
+      ) {
+        this.setState({
+          isDescriptionFormVisible: false
+        });
+      }
+    }
+
+    if (isNameFormVisible) {
+      if (this.nameInput && !this.nameInput.current.contains(event.target)) {
+        this.setState({
+          isNameFormVisible: false
+        });
+      }
     }
   };
 
@@ -114,7 +129,7 @@ class CohortHeader extends PureComponent {
     } = this.state;
 
     return (
-      <header className="cohort-header" ref={this.header}>
+      <header className="cohort-header">
         <h1
           className="cohort-header__heading"
           onDoubleClick={this.handleNameFormVisibility}
@@ -124,6 +139,7 @@ class CohortHeader extends PureComponent {
             <input
               className="cohort-header__name-input primary-input"
               onChange={this.handleNameChange}
+              ref={this.nameInput}
               type="text"
               value={name}
             />
@@ -135,6 +151,7 @@ class CohortHeader extends PureComponent {
           <textarea
             className="cohort-header__desc-input primary-textarea"
             onChange={this.handleDescriptionChange}
+            ref={this.descriptionTextarea}
             type="text"
             value={description}
           />

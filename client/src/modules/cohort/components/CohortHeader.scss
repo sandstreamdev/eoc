@@ -29,4 +29,12 @@
     color: $text-light;
     padding: 8px 0 16px;
   }
+
+  &__name-input {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: #646c73;
+    flex: 1;
+  }
 }
