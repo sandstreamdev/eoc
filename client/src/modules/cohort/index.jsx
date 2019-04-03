@@ -12,20 +12,11 @@ import {
   fetchListsMetaData,
   removeArchivedListsMetaData
 } from 'modules/list/model/actions';
-import {
-  ArchiveIcon,
-  CohortIcon,
-  EditIcon,
-  ListIcon
-} from 'assets/images/icons';
+import { ArchiveIcon, ListIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
-import {
-  archiveCohort,
-  fetchCohortDetails,
-  updateCohort
-} from './model/actions';
+import { archiveCohort, fetchCohortDetails } from './model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
@@ -40,9 +31,7 @@ class Cohort extends PureComponent {
   state = {
     areArchivedListVisible: false,
     dialogContext: null,
-    isListPrivate: true,
-    isNameFormVisible: false,
-    name: ''
+    isListPrivate: true
   };
 
   componentDidMount() {
@@ -82,47 +71,6 @@ class Cohort extends PureComponent {
     createList(data)
       .then(this.hideDialog())
       .catch(noOp);
-  };
-
-  // handleCohortEdition = cohortId => (name, description) => {
-  //   const { cohortDetails, updateCohort } = this.props;
-  //   const {
-  //     description: previousDescription,
-  //     name: previousName
-  //   } = cohortDetails;
-
-  //   if (previousDescription !== description || previousName !== name) {
-  //     const dataToUpdate = { description, name };
-
-  //     updateCohort(cohortId, dataToUpdate);
-  //   }
-
-  //   this.hideDialog();
-  // };
-
-  handleNameChange = event => {
-    const {
-      target: { value }
-    } = event;
-    this.setState({ name: value });
-  };
-
-  handleNameEdition = cohortId => event => {
-    event.preventDefault();
-    const { cohortDetails, updateCohort } = this.props;
-    const { name: previousName } = cohortDetails;
-    const { name } = this.state;
-
-    if (previousName !== name) {
-      updateCohort(cohortId, { name });
-      this.handleNameFormVisibility();
-    }
-  };
-
-  handleNameFormVisibility = () => {
-    const { isNameFormVisible } = this.state;
-
-    this.setState({ isNameFormVisible: !isNameFormVisible });
   };
 
   handleCohortArchivization = cohortId => () => {
@@ -187,23 +135,14 @@ class Cohort extends PureComponent {
       return null;
     }
 
-    const { isArchived, name, description } = cohortDetails;
-    const {
-      areArchivedListVisible,
-      dialogContext,
-      isNameFormVisible
-    } = this.state;
+    const { isArchived, name } = cohortDetails;
+    const { areArchivedListVisible, dialogContext } = this.state;
 
     return (
       <Fragment>
         <Toolbar>
           {!isArchived && this.checkIfOwner() && (
             <Fragment>
-              {/* <ToolbarItem
-                mainIcon={<EditIcon />}
-                onClick={this.handleDialogContext(DialogContext.UPDATE)}
-                title="Update cohort"
-              /> */}
               <ToolbarItem
                 mainIcon={<ArchiveIcon />}
                 onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
@@ -219,15 +158,6 @@ class Cohort extends PureComponent {
             title={`Do you really want to archive the "${name}" cohort?`}
           />
         )}
-        {/* {dialogContext === DialogContext.UPDATE && (
-          <FormDialog
-            defaultDescription={description}
-            defaultName={name}
-            onCancel={this.handleDialogContext(null)}
-            onConfirm={this.handleCohortEdition(cohortId)}
-            title="Edit cohort"
-          />
-        )} */}
         {dialogContext === DialogContext.CREATE && (
           <FormDialog
             onCancel={this.handleDialogContext(null)}
@@ -241,31 +171,6 @@ class Cohort extends PureComponent {
         ) : (
           <div className="wrapper">
             <div className="cohort">
-              {/* <header className="cohort__header">
-                <h1
-                  className="cohort__heading"
-                  onDoubleClick={this.handleNameFormVisibility}
-                >
-                  <CohortIcon />
-                  {isNameFormVisible ? (
-                    <form
-                      className="cohort__name-form"
-                      onSubmit={this.handleNameEdition(cohortId)}
-                    >
-                      <input
-                        className="cohort__name-input primary-input"
-                        onChange={this.handleNameChange}
-                        type="text"
-                      />
-                    </form>
-                  ) : (
-                    <Fragment>{name}</Fragment>
-                  )}
-                </h1>
-                {description && (
-                  <p className="cohort__description">{description}</p>
-                )}
-              </header> */}
               <CohortHeader details={cohortDetails} />
               <MembersBox
                 isCurrentOwner={this.checkIfOwner()}
@@ -321,8 +226,7 @@ Cohort.propTypes = {
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
-  removeArchivedListsMetaData: PropTypes.func.isRequired,
-  updateCohort: PropTypes.func.isRequired
+  removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -341,8 +245,7 @@ export default withRouter(
       fetchArchivedListsMetaData,
       fetchCohortDetails,
       fetchListsMetaData,
-      removeArchivedListsMetaData,
-      updateCohort
+      removeArchivedListsMetaData
     }
   )(Cohort)
 );

@@ -22,6 +22,32 @@ class CohortHeader extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    document.addEventListener('keypress', this.handleEnterPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keypress', this.handleEnterPress);
+  }
+
+  handleEnterPress = event => {
+    const { isDescriptionFormVisible } = this.state;
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props;
+    const { code } = event;
+
+    if (code === 'Enter') {
+      const action = isDescriptionFormVisible
+        ? this.handleDescriptionUpdate
+        : this.handleNameUpdate;
+
+      action(id)();
+    }
+  };
+
   handleNameFormVisibility = () => {
     const { isNameFormVisible } = this.state;
 
@@ -50,8 +76,7 @@ class CohortHeader extends PureComponent {
     this.setState({ description: value });
   };
 
-  handleNameUpdate = cohortId => event => {
-    event.preventDefault();
+  handleNameUpdate = cohortId => () => {
     const { updateCohort } = this.props;
     const { name } = this.state;
 
@@ -59,8 +84,7 @@ class CohortHeader extends PureComponent {
     this.setState({ isNameFormVisible: false });
   };
 
-  handleDescriptionUpdate = cohortId => event => {
-    event.preventDefault();
+  handleDescriptionUpdate = cohortId => () => {
     const { updateCohort } = this.props;
     const { description } = this.state;
 
@@ -69,11 +93,6 @@ class CohortHeader extends PureComponent {
   };
 
   render() {
-    const {
-      match: {
-        params: { id }
-      }
-    } = this.props;
     const {
       description,
       isDescriptionFormVisible,
@@ -89,33 +108,23 @@ class CohortHeader extends PureComponent {
         >
           <CohortIcon />
           {isNameFormVisible ? (
-            <form
-              className="cohort-header__name-form"
-              onSubmit={this.handleNameUpdate(id)}
-            >
-              <input
-                className="cohort-header__name-input primary-input"
-                onChange={this.handleNameChange}
-                type="text"
-                value={name}
-              />
-            </form>
+            <input
+              className="cohort-header__name-input primary-input"
+              onChange={this.handleNameChange}
+              type="text"
+              value={name}
+            />
           ) : (
             <Fragment>{name}</Fragment>
           )}
         </h1>
         {isDescriptionFormVisible ? (
-          <form
-            className="cohort-header__desc-form"
-            onSubmit={this.handleDescriptionUpdate(id)}
-          >
-            <input
-              className="cohort-header__desc-input primary-textarea"
-              onChange={this.handleDescriptionChange}
-              type="text"
-              value={description}
-            />
-          </form>
+          <textarea
+            className="cohort-header__desc-input primary-textarea"
+            onChange={this.handleDescriptionChange}
+            type="text"
+            value={description}
+          />
         ) : (
           <Fragment>
             {description && (
