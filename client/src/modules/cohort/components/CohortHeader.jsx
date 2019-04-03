@@ -20,15 +20,28 @@ class CohortHeader extends PureComponent {
       isNameFormVisible: false,
       name
     };
+
+    this.header = React.createRef();
   }
 
   componentDidMount() {
     document.addEventListener('keypress', this.handleEnterPress);
+    document.addEventListener('click', this.handleClick);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keypress', this.handleEnterPress);
+    document.removeEventListener('click', this.handleClick);
   }
+
+  handleClick = event => {
+    if (this.header && !this.header.current.contains(event.target)) {
+      this.setState({
+        isDescriptionFormVisible: false,
+        isNameFormVisible: false
+      });
+    }
+  };
 
   handleEnterPress = event => {
     const { isDescriptionFormVisible } = this.state;
@@ -101,7 +114,7 @@ class CohortHeader extends PureComponent {
     } = this.state;
 
     return (
-      <header className="cohort-header">
+      <header className="cohort-header" ref={this.header}>
         <h1
           className="cohort-header__heading"
           onDoubleClick={this.handleNameFormVisibility}
