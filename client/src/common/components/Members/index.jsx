@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import PropTypes from 'prop-types';
 import { Manager } from 'react-popper';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
