@@ -1,8 +1,4 @@
-.cohort {
-  margin: 30px 0 25px 0;
-  border: 0;
-  background-color: $bg-color;
-
+.cohort-header {
   &__header {
     border-bottom: 1px solid $border-light;
     margin-bottom: 8px;
@@ -32,14 +28,5 @@
     line-height: 1.2;
     color: $text-light;
     padding: 8px 0 16px;
-  }
-
-  &__name-input {
-    max-width: 240px;
-  }
-
-  &__name-form,
-  &__description-form {
-    padding-bottom: 8px;
   }
 }

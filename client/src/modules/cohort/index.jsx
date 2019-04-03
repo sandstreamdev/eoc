@@ -34,6 +34,7 @@ import { ListType } from 'modules/list';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import { noOp } from 'common/utils/noOp';
+import CohortHeader from './components/CohortHeader';
 
 class Cohort extends PureComponent {
   state = {
@@ -240,11 +241,11 @@ class Cohort extends PureComponent {
         ) : (
           <div className="wrapper">
             <div className="cohort">
-              <header
-                className="cohort__header"
-                onDoubleClick={this.handleNameFormVisibility}
-              >
-                <h1 className="cohort__heading">
+              {/* <header className="cohort__header">
+                <h1
+                  className="cohort__heading"
+                  onDoubleClick={this.handleNameFormVisibility}
+                >
                   <CohortIcon />
                   {isNameFormVisible ? (
                     <form
@@ -261,10 +262,11 @@ class Cohort extends PureComponent {
                     <Fragment>{name}</Fragment>
                   )}
                 </h1>
-              </header>
-              {description && (
-                <p className="cohort__description">{description}</p>
-              )}
+                {description && (
+                  <p className="cohort__description">{description}</p>
+                )}
+              </header> */}
+              <CohortHeader details={cohortDetails} />
               <MembersBox
                 isCurrentOwner={this.checkIfOwner()}
                 route={Routes.COHORT}
