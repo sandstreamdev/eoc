@@ -41,25 +41,28 @@ class CohortHeader extends PureComponent {
       isNameInputVisible,
       name
     } = this.state;
-
-    if (isDescriptionTextareaVisible) {
-      if (
-        this.descriptionTextarea &&
-        !this.descriptionTextarea.current.contains(event.target)
-      ) {
-        this.setState({
-          isDescriptionTextareaVisible: false
-        });
+    const {
+      match: {
+        params: { id }
       }
+    } = this.props;
+
+    if (
+      isDescriptionTextareaVisible &&
+      !this.descriptionTextarea.current.contains(event.target)
+    ) {
+      this.setState({ isDescriptionTextareaVisible: false });
+      this.handleDescriptionUpdate(id)();
     }
 
     if (isNameInputVisible) {
       if (
-        name.trim().length > 1 &&
+        name.length >= 1 &&
         this.nameInput &&
         !this.nameInput.current.contains(event.target)
       ) {
         this.setState({ isNameInputVisible: false });
+        this.handleNameUpdate(id)();
       }
     }
   };
@@ -109,7 +112,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ description: value.trim() });
+    this.setState({ description: value });
   };
 
   handleNameUpdate = cohortId => () => {
