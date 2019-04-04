@@ -74,11 +74,14 @@ const checkIfCohortMember = (cohort, userId) => {
   return false;
 };
 
-const getMemberIds = members => members.map(member => member._id);
+const checkIfGuest = (data, userId) => {
+  if (data && data.constructor === Array) {
+    return !data.some(member => member._id.equals(userId));
+  }
 
-const checkIfGuest = (cohortMembers, userId) => {
-  if (cohortMembers) {
-    return !cohortMembers.some(member => member._id.equals(userId));
+  if (data) {
+    const { memberIds, ownerIds } = data;
+    return ![...memberIds, ...ownerIds].some(id => id.equals(userId));
   }
   return true;
 };
@@ -99,7 +102,7 @@ const responseWithListMember = (data, ownerIds, cohort) => {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isGuest: cohort ? !checkIfCohortMember(cohort, newMemberId) : true,
+    isGuest: checkIfGuest(cohort, newMemberId),
     isOwner: ownerIds.indexOf(newMemberId.toString()) > -1
   };
 };
