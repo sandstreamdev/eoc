@@ -3,41 +3,27 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import Toolbar from 'common/components/Toolbar';
-import { fetchArchivedListsMetaData } from 'modules/list/model/actions';
 import { fetchArchivedCohortsMetaData } from 'modules/cohort/model/actions';
-import { getArchivedLists } from 'modules/list/model/selectors';
 import { getArchivedCohorts } from 'modules/cohort/model/selectors';
-import { CohortIcon, ListIcon } from 'assets/images/icons';
+import { CohortIcon } from 'assets/images/icons';
 import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import { Routes } from 'common/constants/enums';
 
 class Archived extends PureComponent {
   componentDidMount() {
-    const {
-      fetchArchivedCohortsMetaData,
-      fetchArchivedListsMetaData
-    } = this.props;
+    const { fetchArchivedCohortsMetaData } = this.props;
 
     fetchArchivedCohortsMetaData();
-    fetchArchivedListsMetaData();
   }
 
   render() {
-    const { cohorts, lists } = this.props;
+    const { cohorts } = this.props;
 
     return (
       <Fragment>
         <Toolbar />
         <div className="wrapper">
-          <GridList
-            color={CardColorType.ORANGE}
-            icon={<ListIcon />}
-            items={lists}
-            name="Archived Lists"
-            placeholder="There are no archived lists!"
-            route={Routes.LIST}
-          />
           <GridList
             color={CardColorType.BROWN}
             icon={<CohortIcon />}
@@ -54,18 +40,15 @@ class Archived extends PureComponent {
 
 Archived.propTypes = {
   cohorts: PropTypes.objectOf(PropTypes.object),
-  lists: PropTypes.objectOf(PropTypes.object),
 
-  fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
-  fetchArchivedListsMetaData: PropTypes.func.isRequired
+  fetchArchivedCohortsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  cohorts: getArchivedCohorts(state),
-  lists: getArchivedLists(state)
+  cohorts: getArchivedCohorts(state)
 });
 
 export default connect(
   mapStateToProps,
-  { fetchArchivedCohortsMetaData, fetchArchivedListsMetaData }
+  { fetchArchivedCohortsMetaData }
 )(Archived);

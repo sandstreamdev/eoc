@@ -5,12 +5,17 @@ import { connect } from 'react-redux';
 import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
 import EyeIcon from 'assets/images/eye-solid.svg';
-import { createList, fetchListsMetaData } from 'modules/list/model/actions';
+import {
+  createList,
+  fetchArchivedListsMetaData,
+  fetchListsMetaData,
+  removeArchivedListsMetaData
+} from 'modules/list/model/actions';
 import {
   createCohort,
   fetchCohortsMetaData
 } from 'modules/cohort/model/actions';
-import { getActiveLists } from 'modules/list/model/selectors';
+import { getActiveLists, getArchivedLists } from 'modules/list/model/selectors';
 import { getActiveCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
@@ -21,6 +26,7 @@ import { Routes } from 'common/constants/enums';
 
 class Dashboard extends Component {
   state = {
+    areArchivedListVisible: false,
     dialogContext: ''
   };
 
@@ -59,9 +65,27 @@ class Dashboard extends Component {
 
   hideDialog = () => this.handleDialogContext(null)();
 
+  handleArchivedListsVisibility = () => {
+    this.setState(({ areArchivedListVisible }) => ({
+      areArchivedListVisible: !areArchivedListVisible
+    }));
+    this.handleArchivedListsData();
+  };
+
+  handleArchivedListsData = id => {
+    const { areArchivedListVisible } = this.state;
+    const {
+      fetchArchivedListsMetaData,
+      removeArchivedListsMetaData
+    } = this.props;
+    !areArchivedListVisible
+      ? fetchArchivedListsMetaData()
+      : removeArchivedListsMetaData();
+  };
+
   render() {
-    const { lists, cohorts } = this.props;
-    const { dialogContext } = this.state;
+    const { archivedLists, lists, cohorts } = this.props;
+    const { areArchivedListVisible, dialogContext } = this.state;
 
     return (
       <Fragment>
@@ -79,11 +103,28 @@ class Dashboard extends Component {
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
               items={lists}
-              name="Lists"
+              name="Private Lists"
               onAddNew={this.handleDialogContext(FormDialogContext.CREATE_LIST)}
               placeholder="There are no lists yet!"
               route={Routes.LIST}
             />
+            <button
+              className="link-button"
+              onClick={this.handleArchivedListsVisibility}
+              type="button"
+            >
+              {` ${areArchivedListVisible ? 'hide' : 'show'} archived lists`}
+            </button>
+            {areArchivedListVisible && (
+              <GridList
+                color={CardColorType.ARCHIVED}
+                icon={<ListIcon />}
+                items={archivedLists}
+                name="Archived lists"
+                placeholder="You have no archived lists!"
+                route={Routes.LIST}
+              />
+            )}
             <GridList
               color={CardColorType.BROWN}
               icon={<CohortIcon />}
@@ -114,17 +155,21 @@ class Dashboard extends Component {
 }
 
 Dashboard.propTypes = {
+  archivedLists: PropTypes.objectOf(PropTypes.object),
   cohorts: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
 
   createCohort: PropTypes.func.isRequired,
   createList: PropTypes.func.isRequired,
+  fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
-  fetchListsMetaData: PropTypes.func.isRequired
+  fetchListsMetaData: PropTypes.func.isRequired,
+  removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+  archivedLists: getArchivedLists(state),
   cohorts: getActiveCohorts(state),
   currentUser: getCurrentUser(state),
   lists: getActiveLists(state)
@@ -135,7 +180,9 @@ export default connect(
   {
     createCohort,
     createList,
+    fetchArchivedListsMetaData,
     fetchCohortsMetaData,
-    fetchListsMetaData
+    fetchListsMetaData,
+    removeArchivedListsMetaData
   }
 )(Dashboard);
