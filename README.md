@@ -87,7 +87,7 @@ To run project within Docker containers simply clone this repo, install Docker o
 
 ### Stylelint
 
-To use stylelint you need to install it globally. `npm install stylelint -g`
+To use stylelint you need run. `npm run stylelint`
 
 ### Run MongoDB locally
 
