@@ -11,10 +11,8 @@ const {
   uniqueMembers
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
-const { NotFoundException } = require('../common/exceptions/NotFoundException');
-const {
-  BadRequestException
-} = require('../common/exceptions/BadRequestException');
+const NotFoundException = require('../common/exceptions/NotFoundException');
+const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
 const {
   responseWithListMember,
