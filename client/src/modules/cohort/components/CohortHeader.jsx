@@ -27,12 +27,12 @@ class CohortHeader extends PureComponent {
 
   componentDidMount() {
     document.addEventListener('keypress', this.handleEnterPress);
-    document.addEventListener('mousedown', this.handleClick, false);
+    document.addEventListener('mousedown', this.handleClick);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keypress', this.handleEnterPress);
-    document.removeEventListener('mousedown', this.handleClick, false);
+    document.removeEventListener('mousedown', this.handleClick);
   }
 
   handleClick = event => {
@@ -55,15 +55,13 @@ class CohortHeader extends PureComponent {
       this.handleDescriptionUpdate(id)();
     }
 
-    if (isNameInputVisible) {
-      if (
-        name.length >= 1 &&
-        this.nameInput &&
-        !this.nameInput.current.contains(event.target)
-      ) {
-        this.setState({ isNameInputVisible: false });
-        this.handleNameUpdate(id)();
-      }
+    if (
+      isNameInputVisible &&
+      name.length >= 1 &&
+      !this.nameInput.current.contains(event.target)
+    ) {
+      this.setState({ isNameInputVisible: false });
+      this.handleNameUpdate(id)();
     }
   };
 
@@ -104,7 +102,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ name: value.trim() });
+    this.setState({ name: value });
   };
 
   handleDescriptionChange = event => {
@@ -118,8 +116,9 @@ class CohortHeader extends PureComponent {
   handleNameUpdate = cohortId => () => {
     const { updateCohort } = this.props;
     const { name } = this.state;
+    const nameToUpdate = name.trim();
 
-    if (name.length >= 1) {
+    if (nameToUpdate.length >= 1) {
       updateCohort(cohortId, { name });
       this.setState({ isNameInputVisible: false });
     }
