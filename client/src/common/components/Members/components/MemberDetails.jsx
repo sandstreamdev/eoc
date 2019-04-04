@@ -149,8 +149,9 @@ class MemberDetails extends PureComponent {
       currentUser: { id: currentUserId },
       displayName,
       isCurrentOwner,
-      onClose,
+      isGuest,
       isPrivate: privateList,
+      onClose,
       route
     } = this.props;
 
@@ -245,7 +246,9 @@ class MemberDetails extends PureComponent {
                       </p>
                     )}
                   </li>
-                  {(route === Routes.COHORT || privateList) && (
+                  {(route === Routes.COHORT ||
+                    privateList ||
+                    (!privateList && isGuest)) && (
                     <li className="member-details__option member-details__option--removing">
                       {isConfirmVisible ? (
                         <div className="member-details__confirmation">
@@ -300,6 +303,7 @@ MemberDetails.propTypes = {
   isOwner: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   isPrivate: PropTypes.bool,
+  isGuest: PropTypes.bool,
   route: PropTypes.string,
 
   changeRoleInCohort: PropTypes.func.isRequired,
