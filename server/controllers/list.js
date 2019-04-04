@@ -1,19 +1,24 @@
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
+  checkIfCohortMember,
   checkRole,
   filter,
   isValidMongoId,
   responseWithItems,
   responseWithItem,
-  responseWithLists
+  responseWithLists,
+  uniqueMembers
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
-const NotFoundException = require('../common/exceptions/NotFoundException');
+const { NotFoundException } = require('../common/exceptions/NotFoundException');
+const {
+  BadRequestException
+} = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
 const {
-  responseWithMember,
-  responseWithMembers
+  responseWithListMember,
+  responseWithListMembers
 } = require('../common/utils/index');
 
 const createList = (req, resp) => {
@@ -199,6 +204,8 @@ const getListData = (req, resp) => {
       const { cohortId } = list;
       if (cohortId) {
         return Cohort.findOne({ _id: cohortId })
+          .populate('memberIds', 'avatarUrl displayName _id')
+          .populate('ownerIds', 'avatarUrl displayName _id')
           .exec()
           .then(cohort => {
             if (!cohort || cohort.isArchived) {
@@ -206,10 +213,12 @@ const getListData = (req, resp) => {
                 `Data of list id: ${listId} not found.`
               );
             }
+            const { memberIds, ownerIds } = cohort;
+            return [...memberIds, ...ownerIds];
           });
       }
     })
-    .then(() => {
+    .then(cohortMembers => {
       const {
         _id,
         cohortId,
@@ -227,8 +236,17 @@ const getListData = (req, resp) => {
           .json({ cohortId, _id, isArchived, isPrivate, name });
       }
 
+      const allMembers = isPrivate
+        ? [...memberIds, ...ownerIds]
+        : uniqueMembers(cohortMembers, [...memberIds, ...ownerIds]);
+
       const owners = ownerIds.map(owner => owner.id);
-      const members = responseWithMembers([...memberIds, ...ownerIds], owners);
+      const members = responseWithListMembers(
+        allMembers,
+        owners,
+        cohortMembers
+      );
+
       const isOwner = checkRole(ownerIds, req.user._id);
       const items = responseWithItems(userId, list);
 
@@ -526,29 +544,38 @@ const removeMember = (req, resp) => {
 const changeToOwner = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
+
   const {
     user: { _id: ownerId }
   } = req;
 
-  List.findOneAndUpdate(
-    { _id: listId, ownerIds: ownerId, memberIds: userId },
-    { $push: { ownerIds: userId }, $pull: { memberIds: userId } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't set user as a list's owner."
-        });
+  List.findOne({ _id: listId, ownerIds: ownerId })
+    .populate('cohortId', 'memberIds ownerIds')
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new BadRequestException("Can't set user as a list's owner.");
       }
-
-      if (doc) {
-        return resp.status(200).send({
-          message: "User has been successfully set as a list's owner."
-        });
+      const { cohortId: cohort, isPrivate, memberIds } = doc;
+      const isCohortMember = checkIfCohortMember(cohort, userId);
+      if (isPrivate || (!isPrivate && !isCohortMember)) {
+        doc.memberIds.splice(memberIds.indexOf(userId), 1);
       }
-
-      resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      doc.ownerIds.push(userId);
+      return doc.save();
+    })
+    .then(() => {
+      resp.status(200).send({
+        message: "User has been successfully set as a list's owner."
+      });
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+      resp.status(400).send({ message: 'List data not found' });
+    });
 };
 
 const changeToMember = (req, resp) => {
@@ -557,25 +584,37 @@ const changeToMember = (req, resp) => {
   const {
     user: { _id: ownerId }
   } = req;
-  List.findOneAndUpdate(
-    { _id: listId, ownerIds: { $all: [ownerId, userId] } },
-    { $push: { memberIds: userId }, $pull: { ownerIds: userId } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't set user as a list's member."
-        });
+  List.findOne({ _id: listId, ownerIds: { $all: [ownerId, userId] } })
+    .populate('cohortId', 'memberIds ownerIds')
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new BadRequestException("Can't set user as a list's member.");
       }
 
-      if (doc) {
-        return resp.status(200).send({
-          message: "User has been successfully set as a list's member."
-        });
-      }
+      const { cohortId: cohort, isPrivate, ownerIds } = doc;
+      const isCohortMember = checkIfCohortMember(cohort, userId);
 
-      resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      if (isPrivate || (!isPrivate && !isCohortMember)) {
+        doc.memberIds.push(userId);
+      }
+      doc.ownerIds.splice(ownerIds.indexOf(userId), 1);
+      return doc.save();
+    })
+    .then(() => {
+      resp.status(200).send({
+        message: "User has been successfully set as a list's member."
+      });
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+      resp.status(400).send({
+        message: 'List data not found'
+      });
+    });
 };
 
 const addMember = (req, resp) => {
@@ -586,16 +625,17 @@ const addMember = (req, resp) => {
   const { email } = req.body;
 
   List.findOne({ _id: listId, $or: [{ ownerIds: currentUser }] })
+    .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
       if (doc) {
-        const { ownerIds } = doc;
+        const { cohortId: cohort, ownerIds } = doc;
 
         return User.findOne({ email })
           .exec()
           .then(doc => {
             const { _id, avatarUrl, displayName } = doc;
-            return { _id, avatarUrl, displayName, ownerIds };
+            return { _id, avatarUrl, cohort, displayName, ownerIds };
           })
           .catch(() =>
             resp.status(400).send({ message: 'User data not found.' })
@@ -606,7 +646,13 @@ const addMember = (req, resp) => {
         .send({ message: "You don't have permission to add new member" });
     })
     .then(data => {
-      const { _id: newMemberId, displayName, avatarUrl, ownerIds } = data;
+      const {
+        _id: newMemberId,
+        cohort,
+        displayName,
+        avatarUrl,
+        ownerIds
+      } = data;
 
       List.findOneAndUpdate(
         { _id: listId, memberIds: { $nin: [newMemberId] } },
@@ -616,7 +662,7 @@ const addMember = (req, resp) => {
         .then(doc => {
           if (doc) {
             const data = { avatarUrl, displayName, newMemberId };
-            const dataToSend = responseWithMember(data, ownerIds);
+            const dataToSend = responseWithListMember(data, ownerIds, cohort);
             return resp.status(200).json(dataToSend);
           }
           return resp

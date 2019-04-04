@@ -103,10 +103,9 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, description, isArchived, name } = list;
+    const { cohortId, description, isArchived, isPrivate, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
-
     return (
       <Fragment>
         <Toolbar>
@@ -163,6 +162,7 @@ class List extends Component {
                   isCurrentOwner={this.checkIfOwner()}
                   route={Routes.LIST}
                   users={users}
+                  isPrivate={isPrivate}
                 />
               )}
             </div>

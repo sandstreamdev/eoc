@@ -97,7 +97,7 @@
     padding: 5px 0;
     border-top: 1px solid $gray2;
 
-    &:last-child {
+    &--removing {
       border-top: 0;
       padding: 0;
       justify-content: flex-end;

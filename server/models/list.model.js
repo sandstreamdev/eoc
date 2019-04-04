@@ -6,7 +6,7 @@ const ItemSchema = require('./item.model').schema;
 
 const ListSchema = new Schema(
   {
-    cohortId: { type: ObjectId, default: null },
+    cohortId: { type: ObjectId, default: null, ref: 'Cohort' },
     description: { type: String },
     favIds: [ObjectId],
     isArchived: { type: Boolean, default: false },

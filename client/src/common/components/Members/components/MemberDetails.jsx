@@ -150,6 +150,7 @@ class MemberDetails extends PureComponent {
       displayName,
       isCurrentOwner,
       onClose,
+      isPrivate: privateList,
       route
     } = this.props;
 
@@ -244,35 +245,37 @@ class MemberDetails extends PureComponent {
                       </p>
                     )}
                   </li>
-                  <li className="member-details__option">
-                    {isConfirmVisible ? (
-                      <div className="member-details__confirmation">
-                        <h4>{`Do you really want to remove ${displayName}?`}</h4>
+                  {(route === Routes.COHORT || privateList) && (
+                    <li className="member-details__option member-details__option--removing">
+                      {isConfirmVisible ? (
+                        <div className="member-details__confirmation">
+                          <h4>{`Do you really want to remove ${displayName}?`}</h4>
+                          <button
+                            className="primary-button"
+                            onClick={this.handleMemberRemoving}
+                            type="button"
+                          >
+                            Confirm
+                          </button>
+                          <button
+                            className="primary-button"
+                            onClick={this.handleConfirmationVisibility}
+                            type="button"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
                         <button
-                          className="primary-button"
-                          onClick={this.handleMemberRemoving}
-                          type="button"
-                        >
-                          Confirm
-                        </button>
-                        <button
-                          className="primary-button"
+                          className="member-details__button primary-button"
                           onClick={this.handleConfirmationVisibility}
                           type="button"
                         >
-                          Cancel
+                          Remove user
                         </button>
-                      </div>
-                    ) : (
-                      <button
-                        className="member-details__button primary-button"
-                        onClick={this.handleConfirmationVisibility}
-                        type="button"
-                      >
-                        Remove user
-                      </button>
-                    )}
-                  </li>
+                      )}
+                    </li>
+                  )}
                 </ul>
               </Fragment>
             )}
@@ -296,6 +299,7 @@ MemberDetails.propTypes = {
   isCurrentOwner: PropTypes.bool.isRequired,
   isOwner: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
+  isPrivate: PropTypes.bool,
   route: PropTypes.string,
 
   changeRoleInCohort: PropTypes.func.isRequired,

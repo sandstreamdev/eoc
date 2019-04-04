@@ -392,7 +392,10 @@ export const addListMember = (listId, email) => dispatch => {
     email
   })
     .then(resp => resp.json())
-    .then(json => dispatch(addMemberSuccess(json, listId)))
+    .then(json => {
+      console.log(json);
+      dispatch(addMemberSuccess(json, listId));
+    })
     .catch(err => {
       dispatch(addMemberFailure());
       createNotificationWithTimeout(

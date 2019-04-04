@@ -65,6 +65,24 @@ const responseWithMembers = (users, ownerIds) =>
     isOwner: ownerIds.indexOf(user._doc._id.toString()) > -1
   }));
 
+const checkIfCohortMember = (cohort, userId) => {
+  if (cohort) {
+    const { memberIds, ownerIds } = cohort;
+    const convertedUserId = ObjectId(userId);
+    return [...memberIds, ...ownerIds].some(id => id.equals(convertedUserId));
+  }
+  return false;
+};
+
+const getMemberIds = members => members.map(member => member._id);
+
+const checkIfGuest = (cohortMembers, userId) => {
+  if (cohortMembers) {
+    return !cohortMembers.some(member => member._id.equals(userId));
+  }
+  return true;
+};
+
 const responseWithMember = (data, ownerIds) => {
   const { avatarUrl, displayName, newMemberId } = data;
   return {
@@ -75,7 +93,35 @@ const responseWithMember = (data, ownerIds) => {
   };
 };
 
+const responseWithListMember = (data, ownerIds, cohort) => {
+  const { avatarUrl, displayName, newMemberId } = data;
+  return {
+    _id: newMemberId,
+    avatarUrl,
+    displayName,
+    isGuest: cohort ? !checkIfCohortMember(cohort, newMemberId) : true,
+    isOwner: ownerIds.indexOf(newMemberId.toString()) > -1
+  };
+};
+
+const responseWithListMembers = (users, ownerIds, cohortMembers) =>
+  users.map(user => ({
+    ...user._doc,
+    isOwner: ownerIds.indexOf(user._doc._id.toString()) > -1,
+    isGuest: checkIfGuest(cohortMembers, user._doc._id)
+  }));
+
+const uniqueMembers = (cohortMembers, listMembers) =>
+  Object.values(
+    [...cohortMembers, ...listMembers].reduce((prev, member) => {
+      prev[member._id] = member; // eslint-disable-line no-param-reassign
+      return prev;
+    }, {})
+  );
+
 module.exports = {
+  uniqueMembers,
+  checkIfCohortMember,
   checkRole,
   filter,
   isUserFavourite,
@@ -85,5 +131,7 @@ module.exports = {
   responseWithItems,
   responseWithLists,
   responseWithMember,
+  responseWithListMember,
+  responseWithListMembers,
   responseWithMembers
 };
