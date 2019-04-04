@@ -16,8 +16,8 @@ class CohortHeader extends PureComponent {
 
     this.state = {
       description,
-      isDescriptionFormVisible: false,
-      isNameFormVisible: false,
+      isDescriptionTextareaVisible: false,
+      isNameInputVisible: false,
       name
     };
 
@@ -27,39 +27,45 @@ class CohortHeader extends PureComponent {
 
   componentDidMount() {
     document.addEventListener('keypress', this.handleEnterPress);
-    document.addEventListener('click', this.handleClick);
+    document.addEventListener('mousedown', this.handleClick, false);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keypress', this.handleEnterPress);
-    document.removeEventListener('click', this.handleClick);
+    document.removeEventListener('mousedown', this.handleClick, false);
   }
 
   handleClick = event => {
-    const { isDescriptionFormVisible, isNameFormVisible } = this.state;
+    const {
+      isDescriptionTextareaVisible,
+      isNameInputVisible,
+      name
+    } = this.state;
 
-    if (isDescriptionFormVisible) {
+    if (isDescriptionTextareaVisible) {
       if (
         this.descriptionTextarea &&
         !this.descriptionTextarea.current.contains(event.target)
       ) {
         this.setState({
-          isDescriptionFormVisible: false
+          isDescriptionTextareaVisible: false
         });
       }
     }
 
-    if (isNameFormVisible) {
-      if (this.nameInput && !this.nameInput.current.contains(event.target)) {
-        this.setState({
-          isNameFormVisible: false
-        });
+    if (isNameInputVisible) {
+      if (
+        name.trim().length > 1 &&
+        this.nameInput &&
+        !this.nameInput.current.contains(event.target)
+      ) {
+        this.setState({ isNameInputVisible: false });
       }
     }
   };
 
   handleEnterPress = event => {
-    const { isDescriptionFormVisible } = this.state;
+    const { isDescriptionTextareaVisible } = this.state;
     const {
       match: {
         params: { id }
@@ -68,7 +74,7 @@ class CohortHeader extends PureComponent {
     const { code } = event;
 
     if (code === 'Enter') {
-      const action = isDescriptionFormVisible
+      const action = isDescriptionTextareaVisible
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
 
@@ -76,16 +82,18 @@ class CohortHeader extends PureComponent {
     }
   };
 
-  handleNameFormVisibility = () => {
-    const { isNameFormVisible } = this.state;
+  handleNameInputVisibility = () => {
+    const { isNameInputVisible } = this.state;
 
-    this.setState({ isNameFormVisible: !isNameFormVisible });
+    this.setState({ isNameInputVisible: !isNameInputVisible });
   };
 
-  handleDescriptionFormVisibility = () => {
-    const { isDescriptionFormVisible } = this.state;
+  handleDescriptionTextareaVisibility = () => {
+    const { isDescriptionTextareaVisible } = this.state;
 
-    this.setState({ isDescriptionFormVisible: !isDescriptionFormVisible });
+    this.setState({
+      isDescriptionTextareaVisible: !isDescriptionTextareaVisible
+    });
   };
 
   handleNameChange = event => {
@@ -93,7 +101,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ name: value });
+    this.setState({ name: value.trim() });
   };
 
   handleDescriptionChange = event => {
@@ -101,15 +109,17 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ description: value });
+    this.setState({ description: value.trim() });
   };
 
   handleNameUpdate = cohortId => () => {
     const { updateCohort } = this.props;
     const { name } = this.state;
 
-    updateCohort(cohortId, { name });
-    this.setState({ isNameFormVisible: false });
+    if (name.length >= 1) {
+      updateCohort(cohortId, { name });
+      this.setState({ isNameInputVisible: false });
+    }
   };
 
   handleDescriptionUpdate = cohortId => () => {
@@ -117,25 +127,22 @@ class CohortHeader extends PureComponent {
     const { description } = this.state;
 
     updateCohort(cohortId, { description });
-    this.setState({ isDescriptionFormVisible: false });
+    this.setState({ isDescriptionTextareaVisible: false });
   };
 
   render() {
     const {
       description,
-      isDescriptionFormVisible,
-      isNameFormVisible,
+      isDescriptionTextareaVisible,
+      isNameInputVisible,
       name
     } = this.state;
 
     return (
       <header className="cohort-header">
-        <h1
-          className="cohort-header__heading"
-          onDoubleClick={this.handleNameFormVisibility}
-        >
+        <div className="cohort-header__top">
           <CohortIcon />
-          {isNameFormVisible ? (
+          {isNameInputVisible ? (
             <input
               className="cohort-header__name-input primary-input"
               onChange={this.handleNameChange}
@@ -144,12 +151,17 @@ class CohortHeader extends PureComponent {
               value={name}
             />
           ) : (
-            <Fragment>{name}</Fragment>
+            <h1
+              className="cohort-header__heading"
+              onClick={this.handleNameInputVisibility}
+            >
+              {name}
+            </h1>
           )}
-        </h1>
-        {isDescriptionFormVisible ? (
+        </div>
+        {isDescriptionTextareaVisible ? (
           <textarea
-            className="cohort-header__desc-input primary-textarea"
+            className="cohort-header__desc-textarea primary-textarea"
             onChange={this.handleDescriptionChange}
             ref={this.descriptionTextarea}
             type="text"
@@ -160,10 +172,20 @@ class CohortHeader extends PureComponent {
             {description && (
               <p
                 className="cohort-header__description"
-                onDoubleClick={this.handleDescriptionFormVisibility}
+                data-id="description"
+                onClick={this.handleDescriptionTextareaVisibility}
               >
                 {description}
               </p>
+            )}
+            {!description && (
+              <button
+                className="cohort-header__button primary-button"
+                onClick={this.handleDescriptionTextareaVisibility}
+                type="button"
+              >
+                Add description
+              </button>
             )}
           </Fragment>
         )}
