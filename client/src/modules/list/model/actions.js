@@ -393,7 +393,6 @@ export const addListMember = (listId, email) => dispatch => {
   })
     .then(resp => resp.json())
     .then(json => {
-      console.log(json);
       dispatch(addMemberSuccess(json, listId));
     })
     .catch(err => {
