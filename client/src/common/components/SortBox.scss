@@ -16,7 +16,7 @@
     color: $text-normal;
     background-color: $bg-color;
     padding: 6px 20px 6px 8px;
-    border: 0;
+    border: 0 0 0 0;
     border-radius: 0;
     background-image: url('../../assets/images/chevron-down-solid.svg');
     background-position: center right 8px;
@@ -26,6 +26,7 @@
     box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
     text-transform: capitalize;
     -webkit-appearance: none;
+
     &::-ms-expand {
       display: none;
     }
@@ -35,6 +36,7 @@
     border: 0;
     background-color: transparent;
     display: flex;
+
     flex-direction: column;
     justify-content: center;
     align-items: center;

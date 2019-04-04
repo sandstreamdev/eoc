@@ -11,6 +11,7 @@
     left: 0;
     z-index: 8;
   }
+
   &--dark {
     &::before {
       background-color: rgba($overlay-color, 0.75);
