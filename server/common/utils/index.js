@@ -59,10 +59,13 @@ const responseWithCohorts = (cohorts, userId) =>
     };
   });
 
+const checkIfOwner = (ownerIds, userId) =>
+  ownerIds.indexOf(userId.toString()) > -1;
+
 const responseWithMembers = (users, ownerIds) =>
   users.map(user => ({
     ...user._doc,
-    isOwner: ownerIds.indexOf(user._doc._id.toString()) > -1
+    isOwner: checkIfOwner(ownerIds, user._doc._id)
   }));
 
 const checkIfCohortMember = (cohort, userId) => {
@@ -92,7 +95,7 @@ const responseWithMember = (data, ownerIds) => {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isOwner: ownerIds.indexOf(newMemberId.toString()) > -1
+    isOwner: checkIfOwner(ownerIds, newMemberId)
   };
 };
 
@@ -103,14 +106,14 @@ const responseWithListMember = (data, ownerIds, cohort) => {
     avatarUrl,
     displayName,
     isGuest: checkIfGuest(cohort, newMemberId),
-    isOwner: ownerIds.indexOf(newMemberId.toString()) > -1
+    isOwner: checkIfOwner(ownerIds, newMemberId)
   };
 };
 
 const responseWithListMembers = (users, ownerIds, cohortMembers) =>
   users.map(user => ({
     ...user._doc,
-    isOwner: ownerIds.indexOf(user._doc._id.toString()) > -1,
+    isOwner: checkIfOwner(ownerIds, user._doc._id),
     isGuest: checkIfGuest(cohortMembers, user._doc._id)
   }));
 

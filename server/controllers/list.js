@@ -556,7 +556,7 @@ const changeToOwner = (req, resp) => {
       }
       const { cohortId: cohort, isPrivate, memberIds } = doc;
       const isCohortMember = checkIfCohortMember(cohort, userId);
-      if (isPrivate || (!isPrivate && !isCohortMember)) {
+      if (isPrivate || !isCohortMember) {
         doc.memberIds.splice(memberIds.indexOf(userId), 1);
       }
       doc.ownerIds.push(userId);
@@ -593,7 +593,7 @@ const changeToMember = (req, resp) => {
       const { cohortId: cohort, isPrivate, ownerIds } = doc;
       const isCohortMember = checkIfCohortMember(cohort, userId);
 
-      if (isPrivate || (!isPrivate && !isCohortMember)) {
+      if (isPrivate || !isCohortMember) {
         doc.memberIds.push(userId);
       }
       doc.ownerIds.splice(ownerIds.indexOf(userId), 1);
