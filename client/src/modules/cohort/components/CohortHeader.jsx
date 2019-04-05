@@ -53,6 +53,7 @@ class CohortHeader extends PureComponent {
     ) {
       this.setState({ isDescriptionTextareaVisible: false });
       this.handleDescriptionUpdate(id)();
+      return;
     }
 
     if (
@@ -83,19 +84,15 @@ class CohortHeader extends PureComponent {
     }
   };
 
-  handleNameInputVisibility = () => {
-    const { isNameInputVisible } = this.state;
+  handleNameInputVisibility = () =>
+    this.setState(({ isNameInputVisible }) => ({
+      isNameInputVisible: !isNameInputVisible
+    }));
 
-    this.setState({ isNameInputVisible: !isNameInputVisible });
-  };
-
-  handleDescriptionTextareaVisibility = () => {
-    const { isDescriptionTextareaVisible } = this.state;
-
-    this.setState({
+  handleDescriptionTextareaVisibility = () =>
+    this.setState(({ isDescriptionTextareaVisible }) => ({
       isDescriptionTextareaVisible: !isDescriptionTextareaVisible
-    });
-  };
+    }));
 
   handleNameChange = event => {
     const {
@@ -114,9 +111,15 @@ class CohortHeader extends PureComponent {
   };
 
   handleNameUpdate = cohortId => () => {
-    const { updateCohort } = this.props;
+    const { updateCohort, details } = this.props;
     const { name } = this.state;
     const nameToUpdate = name.trim();
+    const { name: previousName } = details;
+
+    if (previousName === name) {
+      this.setState({ isNameInputVisible: false });
+      return;
+    }
 
     if (nameToUpdate.length >= 1) {
       updateCohort(cohortId, { name });
@@ -125,8 +128,14 @@ class CohortHeader extends PureComponent {
   };
 
   handleDescriptionUpdate = cohortId => () => {
-    const { updateCohort } = this.props;
+    const { updateCohort, details } = this.props;
     const { description } = this.state;
+    const { description: previousDescription } = details;
+
+    if (previousDescription === description) {
+      this.setState({ isDescriptionTextareaVisible: false });
+      return;
+    }
 
     updateCohort(cohortId, { description });
     this.setState({ isDescriptionTextareaVisible: false });
@@ -147,6 +156,7 @@ class CohortHeader extends PureComponent {
           {isNameInputVisible ? (
             <input
               className="cohort-header__name-input primary-input"
+              name="name"
               onChange={this.handleNameChange}
               ref={this.nameInput}
               type="text"
@@ -164,6 +174,7 @@ class CohortHeader extends PureComponent {
         {isDescriptionTextareaVisible ? (
           <textarea
             className="cohort-header__desc-textarea primary-textarea"
+            name="description"
             onChange={this.handleDescriptionChange}
             ref={this.descriptionTextarea}
             type="text"
