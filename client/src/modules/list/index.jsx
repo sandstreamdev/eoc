@@ -19,6 +19,7 @@ import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
+import ListHeader from './components/ListHeader';
 
 export const ListType = Object.freeze({
   PRIVATE: 'private',
@@ -123,11 +124,7 @@ class List extends Component {
         ) : (
           <div className="wrapper">
             <div className="list">
-              <h1 className="list__heading">
-                <ListIcon />
-                {name}
-              </h1>
-              <p className="list__description">{description}</p>
+              <ListHeader details={list} />
               <div className="list__items">
                 <ItemsContainer items={listItems}>
                   <InputBar />
