@@ -17,23 +17,28 @@
   &--red {
     color: $text-normal;
 
-    svg path {
-      fill: $message-bg-red;
+    svg {
+      path {
+        fill: $message-bg-red;
+      }
     }
   }
 
   &--gray {
     color: $text-normal;
-
-    svg path {
-      fill: $message-bg-gray;
+    svg {
+      path {
+        fill: $message-bg-gray;
+      }
     }
   }
 
   &--green {
     color: $text-normal;
-    svg path {
-      fill: $message-bg-green;
+    svg {
+      path {
+        fill: $message-bg-green;
+      }
     }
   }
 
