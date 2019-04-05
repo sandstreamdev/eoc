@@ -26,12 +26,18 @@ class CohortHeader extends PureComponent {
   }
 
   componentDidMount() {
-    document.addEventListener('keypress', this.handleEnterPress);
+    document.addEventListener('keydown', this.handleKeyPress);
     document.addEventListener('mousedown', this.handleClick);
   }
 
+  componentDidUpdate() {
+    this.descriptionTextarea.current &&
+      this.descriptionTextarea.current.focus();
+    this.nameInput.current && this.nameInput.current.focus();
+  }
+
   componentWillUnmount() {
-    document.removeEventListener('keypress', this.handleEnterPress);
+    document.removeEventListener('keydown', this.handleKeyPress);
     document.removeEventListener('mousedown', this.handleClick);
   }
 
@@ -66,7 +72,7 @@ class CohortHeader extends PureComponent {
     }
   };
 
-  handleEnterPress = event => {
+  handleKeyPress = event => {
     const { isDescriptionTextareaVisible } = this.state;
     const {
       match: {
@@ -75,7 +81,7 @@ class CohortHeader extends PureComponent {
     } = this.props;
     const { code } = event;
 
-    if (code === 'Enter') {
+    if (code === 'Enter' || code === 'Escape') {
       const action = isDescriptionTextareaVisible
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
