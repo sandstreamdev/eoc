@@ -177,6 +177,10 @@ const changeRoleSuccess = (cohortId, userId, isOwner) => ({
   payload: { cohortId, userId, isOwner }
 });
 
+export const removeArchivedCohortsMetaData = () => ({
+  type: CohortActionTypes.REMOVE_ARCHIVED_META_DATA
+});
+
 export const createCohort = data => dispatch => {
   dispatch(createCohortRequest());
   return postData(`${ENDPOINT_URL}/cohorts/create`, data)

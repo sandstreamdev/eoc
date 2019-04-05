@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import _filter from 'lodash/filter';
+import _keyBy from 'lodash/keyBy';
 
 import { CohortActionTypes } from './actionTypes';
 
@@ -58,8 +60,14 @@ const cohorts = (state = {}, action) => {
       return newState;
     }
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
+      return {
+        ...state,
+        ...action.payload
+      };
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
       return action.payload;
+    case CohortActionTypes.REMOVE_ARCHIVED_META_DATA:
+      return _keyBy(_filter(state, cohort => !cohort.isArchived), '_id');
     case CohortActionTypes.RESTORE_SUCCESS:
     case CohortActionTypes.FETCH_DETAILS_SUCCESS:
       return { ...state, [action.payload._id]: action.payload.data };

@@ -89,14 +89,7 @@ class Dashboard extends Component {
 
     return (
       <Fragment>
-        <Toolbar isHomePage>
-          <ToolbarLink
-            additionalIconSrc={EyeIcon}
-            mainIcon={<ArchiveIcon />}
-            path="/archived"
-            title="Go to archived"
-          />
-        </Toolbar>
+        <Toolbar isHomePage />
         <div className="wrapper">
           <div className="dashboard">
             <GridList

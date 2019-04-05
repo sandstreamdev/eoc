@@ -16,6 +16,7 @@ import Notifications from 'modules/notification';
 import Page404 from 'common/components/Page404';
 import About from 'modules/about';
 import PrivacyPolicy from 'modules/privacy-policy';
+import Cohorts from 'modules/cohort/components/Cohorts';
 
 export class Layout extends Component {
   componentDidMount() {
@@ -59,6 +60,8 @@ export class Layout extends Component {
           <Route component={Archived} path="/archived" />
           <Route component={About} path="/about" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
+          <Route component={Cohorts} path="/cohorts" />
+          <Route component={Dashboard} exact path="/" />
           <Route component={Page404} />
         </Switch>
         <Footer />
