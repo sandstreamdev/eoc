@@ -26,7 +26,7 @@ import { Routes } from 'common/constants/enums';
 
 class Dashboard extends Component {
   state = {
-    areArchivedListVisible: false,
+    showArchivedLists: false,
     dialogContext: ''
   };
 
@@ -66,26 +66,30 @@ class Dashboard extends Component {
   hideDialog = () => this.handleDialogContext(null)();
 
   handleArchivedListsVisibility = () => {
-    this.setState(({ areArchivedListVisible }) => ({
-      areArchivedListVisible: !areArchivedListVisible
-    }));
-    this.handleArchivedListsData();
+    this.setState(
+      ({ showArchivedList }) => ({
+        showArchivedList: !showArchivedList
+      }),
+      () => this.handleArchivedListsData()
+    );
   };
 
-  handleArchivedListsData = id => {
-    const { areArchivedListVisible } = this.state;
+  handleArchivedListsData = () => {
+    const { showArchivedLists } = this.state;
     const {
       fetchArchivedListsMetaData,
       removeArchivedListsMetaData
     } = this.props;
-    !areArchivedListVisible
-      ? fetchArchivedListsMetaData()
-      : removeArchivedListsMetaData();
+    const action = showArchivedLists
+      ? removeArchivedListsMetaData
+      : fetchArchivedListsMetaData;
+
+    action();
   };
 
   render() {
     const { archivedLists, lists, cohorts } = this.props;
-    const { areArchivedListVisible, dialogContext } = this.state;
+    const { showArchivedList, dialogContext } = this.state;
 
     return (
       <Fragment>
@@ -113,9 +117,9 @@ class Dashboard extends Component {
               onClick={this.handleArchivedListsVisibility}
               type="button"
             >
-              {` ${areArchivedListVisible ? 'hide' : 'show'} archived lists`}
+              {` ${showArchivedList ? 'hide' : 'show'} archived lists`}
             </button>
-            {areArchivedListVisible && (
+            {showArchivedList && (
               <GridList
                 color={CardColorType.ARCHIVED}
                 icon={<ListIcon />}
