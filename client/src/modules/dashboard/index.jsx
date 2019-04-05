@@ -67,7 +67,7 @@ class Dashboard extends Component {
 
   handleArchivedListsVisibility = () => {
     this.setState(
-      ({ showArchivedList }) => ({
+      ({ showArchivedLists }) => ({
         showArchivedLists: !showArchivedLists
       }),
       () => this.handleArchivedListsData()
@@ -81,8 +81,8 @@ class Dashboard extends Component {
       removeArchivedListsMetaData
     } = this.props;
     const action = showArchivedLists
-      ? removeArchivedListsMetaData
-      : fetchArchivedListsMetaData;
+      ? fetchArchivedListsMetaData
+      : removeArchivedListsMetaData;
 
     action();
   };
