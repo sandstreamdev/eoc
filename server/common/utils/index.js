@@ -78,13 +78,10 @@ const checkIfCohortMember = (cohort, userId) => {
 };
 
 const checkIfGuest = (data, userId) => {
-  if (data && data.constructor === Array) {
-    return !data.some(member => member._id.equals(userId));
-  }
-
   if (data) {
-    const { memberIds, ownerIds } = data;
-    return ![...memberIds, ...ownerIds].some(id => id.equals(userId));
+    return data.constructor === Array
+      ? !data.some(member => member._id.equals(userId))
+      : ![...data.memberIds, ...data.ownerIds].some(id => id.equals(userId));
   }
   return true;
 };
