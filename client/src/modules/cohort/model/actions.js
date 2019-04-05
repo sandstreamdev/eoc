@@ -265,7 +265,7 @@ export const deleteCohort = cohortId => dispatch => {
         NotificationType.SUCCESS,
         json.message
       );
-      history.push('/dashboard');
+      history.replace('/cohorts');
     })
     .catch(err => {
       dispatch(deleteCohortFailure());

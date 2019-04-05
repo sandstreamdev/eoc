@@ -244,7 +244,7 @@ export const deleteList = id => dispatch => {
           NotificationType.SUCCESS,
           json.message
         );
-        history.push('/dashboard');
+        history.replace('/dashboard');
       })
     )
     .catch(err => {

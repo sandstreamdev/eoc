@@ -64,8 +64,8 @@ class Cohorts extends Component {
       removeArchivedCohortsMetaData
     } = this.props;
     const action = showArchivedCohorts
-      ? removeArchivedCohortsMetaData
-      : fetchArchivedCohortsMetaData;
+      ? fetchArchivedCohortsMetaData
+      : removeArchivedCohortsMetaData;
     action();
   };
 

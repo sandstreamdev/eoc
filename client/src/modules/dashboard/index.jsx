@@ -61,8 +61,8 @@ class Dashboard extends Component {
       removeArchivedListsMetaData
     } = this.props;
     const action = showArchivedLists
-      ? removeArchivedListsMetaData
-      : fetchArchivedListsMetaData;
+      ? fetchArchivedListsMetaData
+      : removeArchivedListsMetaData;
 
     action();
   };
