@@ -68,7 +68,7 @@ class Dashboard extends Component {
   handleArchivedListsVisibility = () => {
     this.setState(
       ({ showArchivedList }) => ({
-        showArchivedList: !showArchivedList
+        showArchivedLists: !showArchivedLists
       }),
       () => this.handleArchivedListsData()
     );
@@ -89,7 +89,7 @@ class Dashboard extends Component {
 
   render() {
     const { archivedLists, lists, cohorts } = this.props;
-    const { showArchivedList, dialogContext } = this.state;
+    const { showArchivedLists, dialogContext } = this.state;
 
     return (
       <Fragment>
@@ -117,9 +117,9 @@ class Dashboard extends Component {
               onClick={this.handleArchivedListsVisibility}
               type="button"
             >
-              {` ${showArchivedList ? 'hide' : 'show'} archived lists`}
+              {` ${showArchivedLists ? 'hide' : 'show'} archived lists`}
             </button>
-            {showArchivedList && (
+            {showArchivedLists && (
               <GridList
                 color={CardColorType.ARCHIVED}
                 icon={<ListIcon />}
