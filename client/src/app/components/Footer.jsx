@@ -12,7 +12,7 @@ const Footer = () => (
         </Link>
         <span className="footer__text-divider"> | </span>
         <Link className="footer__text footer__link" to="/privacy-policy">
-          Privacy Policy
+          Privacy & Terms
         </Link>
       </span>
       <span className="footer__text footer__copyrights">
