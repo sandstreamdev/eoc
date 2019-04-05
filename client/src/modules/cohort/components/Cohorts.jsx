@@ -23,7 +23,7 @@ import { Routes } from 'common/constants/enums';
 
 class Cohorts extends Component {
   state = {
-    areArchivedCohortsVisible: false,
+    showArchivedCohorts: false,
     isDialogVisible: false
   };
 
@@ -50,27 +50,28 @@ class Cohorts extends Component {
 
   handleArchivedCohortsVisibility = () => {
     this.setState(
-      ({ areArchivedCohortsVisible }) => ({
-        areArchivedCohortsVisible: !areArchivedCohortsVisible
+      ({ showArchivedCohorts }) => ({
+        showArchivedCohorts: !showArchivedCohorts
       }),
       () => this.handleArchivedCohortsData()
     );
   };
 
   handleArchivedCohortsData = () => {
-    const { areArchivedCohortsVisible } = this.state;
+    const { showArchivedCohorts } = this.state;
     const {
       fetchArchivedCohortsMetaData,
       removeArchivedCohortsMetaData
     } = this.props;
-    !areArchivedCohortsVisible
-      ? fetchArchivedCohortsMetaData()
-      : removeArchivedCohortsMetaData();
+    const action = showArchivedCohorts
+      ? removeArchivedCohortsMetaData
+      : fetchArchivedCohortsMetaData;
+    action();
   };
 
   render() {
     const { archivedCohorts, cohorts } = this.props;
-    const { areArchivedCohortsVisible, isDialogVisible } = this.state;
+    const { showArchivedCohorts, isDialogVisible } = this.state;
 
     return (
       <Fragment>
@@ -91,11 +92,9 @@ class Cohorts extends Component {
               onClick={this.handleArchivedCohortsVisibility}
               type="button"
             >
-              {` ${
-                areArchivedCohortsVisible ? 'hide' : 'show'
-              } archived cohorts`}
+              {` ${showArchivedCohorts ? 'hide' : 'show'} archived cohorts`}
             </button>
-            {areArchivedCohortsVisible && (
+            {showArchivedCohorts && (
               <GridList
                 color={CardColorType.ARCHIVED}
                 icon={<CohortIcon />}
