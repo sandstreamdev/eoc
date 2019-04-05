@@ -12,20 +12,11 @@ import {
   fetchListsMetaData,
   removeArchivedListsMetaData
 } from 'modules/list/model/actions';
-import {
-  ArchiveIcon,
-  CohortIcon,
-  EditIcon,
-  ListIcon
-} from 'assets/images/icons';
+import { ArchiveIcon, ListIcon } from 'assets/images/icons';
 import { getCohortDetails } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
-import {
-  archiveCohort,
-  fetchCohortDetails,
-  updateCohort
-} from './model/actions';
+import { archiveCohort, fetchCohortDetails } from './model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
@@ -34,6 +25,7 @@ import { ListType } from 'modules/list';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import { noOp } from 'common/utils/noOp';
+import CohortHeader from './components/CohortHeader';
 
 class Cohort extends PureComponent {
   state = {
@@ -79,22 +71,6 @@ class Cohort extends PureComponent {
     createList(data)
       .then(this.hideDialog())
       .catch(noOp);
-  };
-
-  handleCohortEdition = cohortId => (name, description) => {
-    const { cohortDetails, updateCohort } = this.props;
-    const {
-      description: previousDescription,
-      name: previousName
-    } = cohortDetails;
-
-    if (previousDescription !== description || previousName !== name) {
-      const dataToUpdate = { description, name };
-
-      updateCohort(cohortId, dataToUpdate);
-    }
-
-    this.hideDialog();
   };
 
   handleCohortArchivization = cohortId => () => {
@@ -159,7 +135,7 @@ class Cohort extends PureComponent {
       return null;
     }
 
-    const { isArchived, name, description } = cohortDetails;
+    const { isArchived, name } = cohortDetails;
     const { areArchivedListVisible, dialogContext } = this.state;
 
     return (
@@ -167,11 +143,6 @@ class Cohort extends PureComponent {
         <Toolbar>
           {!isArchived && this.checkIfOwner() && (
             <Fragment>
-              <ToolbarItem
-                mainIcon={<EditIcon />}
-                onClick={this.handleDialogContext(DialogContext.UPDATE)}
-                title="Update cohort"
-              />
               <ToolbarItem
                 mainIcon={<ArchiveIcon />}
                 onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
@@ -187,15 +158,6 @@ class Cohort extends PureComponent {
             title={`Do you really want to archive the "${name}" cohort?`}
           />
         )}
-        {dialogContext === DialogContext.UPDATE && (
-          <FormDialog
-            defaultDescription={description}
-            defaultName={name}
-            onCancel={this.handleDialogContext(null)}
-            onConfirm={this.handleCohortEdition(cohortId)}
-            title="Edit cohort"
-          />
-        )}
         {dialogContext === DialogContext.CREATE && (
           <FormDialog
             onCancel={this.handleDialogContext(null)}
@@ -209,13 +171,7 @@ class Cohort extends PureComponent {
         ) : (
           <div className="wrapper">
             <div className="cohort">
-              <h1 className="cohort__heading">
-                <CohortIcon />
-                {name}
-              </h1>
-              {description && (
-                <p className="cohort__description">{description}</p>
-              )}
+              <CohortHeader details={cohortDetails} />
               <MembersBox
                 isCurrentOwner={this.checkIfOwner()}
                 route={Routes.COHORT}
@@ -270,8 +226,7 @@ Cohort.propTypes = {
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
-  removeArchivedListsMetaData: PropTypes.func.isRequired,
-  updateCohort: PropTypes.func.isRequired
+  removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -290,8 +245,7 @@ export default withRouter(
       fetchArchivedListsMetaData,
       fetchCohortDetails,
       fetchListsMetaData,
-      removeArchivedListsMetaData,
-      updateCohort
+      removeArchivedListsMetaData
     }
   )(Cohort)
 );

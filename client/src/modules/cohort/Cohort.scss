@@ -3,16 +3,19 @@
   border: 0;
   background-color: $bg-color;
 
+  &__header {
+    border-bottom: 1px solid $border-light;
+    margin-bottom: 8px;
+  }
+
   &__heading {
     padding: 8px 0;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     font-size: 20px;
     font-weight: 700;
     line-height: 1;
     color: $text-normal;
-    border-bottom: 1px solid $border-light;
-    margin-bottom: 8px;
 
     svg {
       height: 20px;
@@ -29,7 +32,14 @@
     line-height: 1.2;
     color: $text-light;
     padding: 8px 0 16px;
-    border-bottom: 1px solid $border-light;
-    margin-bottom: 16px;
+  }
+
+  &__name-input {
+    max-width: 240px;
+  }
+
+  &__name-form,
+  &__description-form {
+    padding-bottom: 8px;
   }
 }
