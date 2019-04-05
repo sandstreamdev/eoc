@@ -10,7 +10,11 @@ import {
   fetchListsMetaData,
   removeArchivedListsMetaData
 } from 'modules/list/model/actions';
-import { getActiveLists, getArchivedLists } from 'modules/list/model/selectors';
+import {
+  getArchivedLists,
+  getCohortLists,
+  getPrivateLists
+} from 'modules/list/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
@@ -68,7 +72,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { archivedLists, lists } = this.props;
+    const { archivedLists, privateLists, cohortLists } = this.props;
     const { showArchivedLists, isDialogVisible } = this.state;
 
     return (
@@ -79,9 +83,17 @@ class Dashboard extends Component {
             <GridList
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
-              items={lists}
+              items={privateLists}
               name="Private Lists"
               onAddNew={this.handleDialogVisibility}
+              placeholder="There are no lists yet!"
+              route={Routes.LIST}
+            />
+            <GridList
+              color={CardColorType.ORANGE}
+              icon={<ListIcon />}
+              items={cohortLists}
+              name="Cohort's Lists"
               placeholder="There are no lists yet!"
               route={Routes.LIST}
             />
@@ -119,7 +131,8 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
-  lists: PropTypes.objectOf(PropTypes.object),
+  privateLists: PropTypes.objectOf(PropTypes.object),
+  cohortLists: PropTypes.objectOf(PropTypes.object),
 
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
@@ -129,8 +142,9 @@ Dashboard.propTypes = {
 
 const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
+  cohortLists: getCohortLists(state),
   currentUser: getCurrentUser(state),
-  lists: getActiveLists(state)
+  privateLists: getPrivateLists(state)
 });
 
 export default connect(

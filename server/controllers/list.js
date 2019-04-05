@@ -66,17 +66,22 @@ const getListsMetaData = (req, resp) => {
     user: { _id: userId }
   } = req;
 
+  const query = {
+    $or: [
+      { ownerIds: req.user._id },
+      { memberIds: req.user._id },
+      { isPrivate: false }
+    ],
+    isArchived: false
+  };
+
+  if (cohortId) {
+    query.cohortId = cohortId;
+  }
+
   List.find(
-    {
-      cohortId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ],
-      isArchived: false
-    },
-    `_id name description isPrivate favIds ${cohortId ? 'cohortId' : ''}`,
+    query,
+    '_id name description isPrivate favIds cohortId',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -98,16 +103,22 @@ const getArchivedListsMetaData = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
+
+  const query = {
+    $or: [
+      { ownerIds: req.user._id },
+      { memberIds: req.user._id },
+      { isPrivate: false }
+    ],
+    isArchived: true
+  };
+
+  if (cohortId) {
+    query.cohortId = cohortId;
+  }
+
   List.find(
-    {
-      cohortId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ],
-      isArchived: true
-    },
+    query,
     `_id name description isPrivate favIds isArchived ${
       cohortId ? 'cohortId' : ''
     }`,

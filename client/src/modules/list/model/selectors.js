@@ -41,4 +41,15 @@ export const getArchivedLists = createSelector(
       '_id'
     )
 );
+
+export const getPrivateLists = createSelector(
+  getActiveLists,
+  lists => _keyBy(_filter(lists, list => !list.cohortId), '_id')
+);
+
+export const getCohortLists = createSelector(
+  getActiveLists,
+  lists => _keyBy(_filter(lists, list => list.cohortId), '_id')
+);
+
 export const getIsFetchingLists = state => state.lists.isFetching;
