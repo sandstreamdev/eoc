@@ -41,6 +41,7 @@ const createList = (req, resp) => {
     const data = cohortId
       ? { _id, description, isPrivate, name, cohortId }
       : { _id, description, isPrivate, name };
+
     resp
       .status(201)
       .location(`/lists/${doc._id}`)
@@ -106,6 +107,7 @@ const getArchivedListsMetaData = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
+
   List.find(
     {
       cohortId,
@@ -186,7 +188,9 @@ const getListData = (req, resp) => {
       .status(404)
       .send({ message: `Data of list id: ${listId} not found.` });
   }
+
   let list;
+
   List.findOne({
     _id: listId,
     $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }]
@@ -198,8 +202,10 @@ const getListData = (req, resp) => {
       if (!doc) {
         throw new NotFoundException(`Data of list id: ${listId} not found.`);
       }
+
       list = doc;
       const { cohortId } = list;
+
       if (cohortId) {
         return Cohort.findOne({ _id: cohortId })
           .populate('memberIds', 'avatarUrl displayName _id')
@@ -211,6 +217,7 @@ const getListData = (req, resp) => {
                 `Data of list id: ${listId} not found.`
               );
             }
+
             const { memberIds, ownerIds } = cohort;
             return [...memberIds, ...ownerIds];
           });
@@ -265,6 +272,7 @@ const getListData = (req, resp) => {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
+
       resp.status(400).send({
         message:
           'An error occurred while fetching the list data. Please try again.'
@@ -309,6 +317,7 @@ const updateListItem = (req, resp) => {
             'An error occurred while updating the list data. Please try again.'
         });
       }
+
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
 
@@ -344,6 +353,7 @@ const voteForItem = (req, resp) => {
           message: 'An error occurred while voting. Please try again.'
         });
       }
+
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
 
@@ -379,6 +389,7 @@ const clearVote = (req, resp) => {
           message: 'An error occurred while voting. Please try again.'
         });
       }
+
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
 
@@ -554,11 +565,14 @@ const changeToOwner = (req, resp) => {
       if (!doc) {
         throw new BadRequestException("Can't set user as a list's owner.");
       }
+
       const { cohortId: cohort, isPrivate, memberIds } = doc;
       const isCohortMember = checkIfCohortMember(cohort, userId);
+
       if (isPrivate || !isCohortMember) {
         doc.memberIds.splice(memberIds.indexOf(userId), 1);
       }
+
       doc.ownerIds.push(userId);
       return doc.save();
     })
@@ -572,6 +586,7 @@ const changeToOwner = (req, resp) => {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
+
       resp.status(400).send({ message: 'List data not found' });
     });
 };
@@ -596,6 +611,7 @@ const changeToMember = (req, resp) => {
       if (isPrivate || !isCohortMember) {
         doc.memberIds.push(userId);
       }
+
       doc.ownerIds.splice(ownerIds.indexOf(userId), 1);
       return doc.save();
     })
@@ -609,6 +625,7 @@ const changeToMember = (req, resp) => {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
+
       resp.status(400).send({
         message: 'List data not found'
       });
@@ -639,6 +656,7 @@ const addMember = (req, resp) => {
             resp.status(400).send({ message: 'User data not found.' })
           );
       }
+
       return resp
         .status(400)
         .send({ message: "You don't have permission to add new member" });
@@ -663,6 +681,7 @@ const addMember = (req, resp) => {
             const dataToSend = responseWithListMember(data, ownerIds, cohort);
             return resp.status(200).json(dataToSend);
           }
+
           return resp
             .status(400)
             .send({ message: 'User is already a member.' });
@@ -676,6 +695,7 @@ const addMember = (req, resp) => {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
+
       resp.status(400).send({
         message: 'An error occurred while adding new member. Please try again.'
       });

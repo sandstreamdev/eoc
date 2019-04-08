@@ -76,6 +76,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
             'An error occurred while fetching the archived cohorts data. Please try again.'
         });
       }
+
       if (!docs) {
         return resp
           .status(404)
@@ -186,6 +187,7 @@ const deleteCohortById = (req, resp) => {
           `Data of cohort id: ${req.params.id} not found.`
         );
       }
+
       documentName = doc.name;
       return List.deleteMany({ cohortId: req.params.id }).exec();
     })
@@ -404,6 +406,7 @@ const addMember = (req, resp) => {
             resp.status(400).send({ message: 'User data not found.' })
           );
       }
+
       return resp
         .status(400)
         .send({ message: "You don't have permission to add new member" });
@@ -422,6 +425,7 @@ const addMember = (req, resp) => {
             const dataToSend = responseWithMember(data, ownerIds);
             return resp.status(200).json(dataToSend);
           }
+
           return resp
             .status(400)
             .send({ message: 'User is already a member.' });
@@ -435,6 +439,7 @@ const addMember = (req, resp) => {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
+
       resp.status(400).send({
         message: 'An error occurred while adding new member. Please try again.'
       });

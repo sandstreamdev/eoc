@@ -72,6 +72,7 @@ class MemberDetails extends PureComponent {
       default:
         break;
     }
+
     onClose();
   };
 
