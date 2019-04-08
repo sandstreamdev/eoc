@@ -65,14 +65,13 @@ class Dashboard extends Component {
 
   hideDialog = () => this.handleDialogContext(null)();
 
-  handleArchivedListsVisibility = () => {
+  handleArchivedListsVisibility = () =>
     this.setState(
       ({ showArchivedLists }) => ({
         showArchivedLists: !showArchivedLists
       }),
       () => this.handleArchivedListsData()
     );
-  };
 
   handleArchivedListsData = () => {
     const { showArchivedLists } = this.state;
