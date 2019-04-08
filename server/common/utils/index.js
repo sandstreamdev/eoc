@@ -21,6 +21,7 @@ const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
 const responseWithList = (list, userId) => {
   const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
   const doneItemsCount = items.filter(item => item.isOrdered).length;
+  const unhandledItemsCount = items.length - doneItemsCount;
 
   const listToSend = {
     _id,
@@ -29,7 +30,7 @@ const responseWithList = (list, userId) => {
     isFavourite: isUserFavourite(favIds, userId),
     isPrivate,
     name,
-    unhandledItemsCount: items.length - doneItemsCount
+    unhandledItemsCount
   };
 
   if (cohortId) {
@@ -43,12 +44,13 @@ const responseWithLists = (lists, userId) =>
   _map(lists, list => {
     const { favIds, items, ...rest } = list._doc;
     const doneItemsCount = items.filter(item => item.isOrdered).length;
+    const unhandledItemsCount = items.length - doneItemsCount;
 
     return {
       ...rest,
       doneItemsCount,
       isFavourite: isUserFavourite(favIds, userId),
-      unhandledItemsCount: items.length - doneItemsCount
+      unhandledItemsCount
     };
   });
 
