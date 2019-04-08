@@ -17,6 +17,7 @@ const CardItem = ({
   doneItemsCount,
   isFavourite,
   isPrivate,
+  membersCount,
   name,
   onCardClick,
   onFavClick,
@@ -46,6 +47,11 @@ const CardItem = ({
         <span>{`Unhandled: ${unhandledItemsCount}`}</span>
       </div>
     )}
+    {route === Routes.COHORT && (
+      <div className="card-item__data">
+        <span>{`Members: ${membersCount}`}</span>
+      </div>
+    )}
   </div>
 );
 
@@ -57,6 +63,7 @@ CardItem.propTypes = {
   doneItemsCount: PropTypes.number,
   isFavourite: PropTypes.bool,
   isPrivate: PropTypes.bool,
+  membersCount: PropTypes.number,
   name: PropTypes.string,
   route: PropTypes.string.isRequired,
   unhandledItemsCount: PropTypes.number,

@@ -62,6 +62,7 @@ const responseWithItems = (userId, list) => {
 
   return _map(items, item => {
     const { voterIds, ...rest } = item.toObject();
+
     return {
       ...rest,
       isVoted: checkIfCurrentUserVoted(item, userId),
@@ -82,12 +83,30 @@ const responseWithItem = (item, userId) => {
 
 const responseWithCohorts = (cohorts, userId) =>
   _map(cohorts, ({ _doc }) => {
-    const { favIds, ...rest } = _doc;
+    const { _id, description, favIds, memberIds, name, ownerIds } = _doc;
+    const membersCount = [...memberIds, ...ownerIds].length;
+
     return {
-      ...rest,
-      isFavourite: isUserFavourite(favIds, userId)
+      _id,
+      description,
+      isFavourite: isUserFavourite(favIds, userId),
+      name,
+      membersCount
     };
   });
+
+const responseWithCohort = (cohort, userId) => {
+  const { _id, description, favIds, memberIds, name, ownerIds } = cohort;
+  const membersCount = [...memberIds, ...ownerIds].length;
+
+  return {
+    _id,
+    description,
+    isFavourite: isUserFavourite(favIds, userId),
+    membersCount,
+    name
+  };
+};
 
 const responseWithMembers = (users, ownerIds) =>
   users.map(user => ({
@@ -97,6 +116,7 @@ const responseWithMembers = (users, ownerIds) =>
 
 const responseWithMember = (data, ownerIds) => {
   const { avatarUrl, displayName, newMemberId } = data;
+
   return {
     _id: newMemberId,
     avatarUrl,
@@ -110,6 +130,7 @@ module.exports = {
   filter,
   isUserFavourite,
   isValidMongoId,
+  responseWithCohort,
   responseWithCohorts,
   responseWithItem,
   responseWithItems,
