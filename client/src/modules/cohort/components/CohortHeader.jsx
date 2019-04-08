@@ -14,9 +14,10 @@ class CohortHeader extends PureComponent {
 
     const { details } = this.props;
     const { name, description } = details;
+    const trimmedDescription = description.trim();
 
     this.state = {
-      description,
+      description: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
       name
@@ -96,7 +97,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ name: value });
+    this.setState({ name: value.trim() });
   };
 
   handleDescriptionChange = event => {
@@ -196,7 +197,7 @@ class CohortHeader extends PureComponent {
           />
         ) : (
           <Fragment>
-            {description.trim() && (
+            {description && (
               <p
                 className="cohort-header__description"
                 data-id="description"
@@ -205,7 +206,7 @@ class CohortHeader extends PureComponent {
                 {description}
               </p>
             )}
-            {!description.trim() && (
+            {!description && (
               <button
                 className="cohort-header__button link-button"
                 onClick={this.handleDescriptionTextareaVisibility}

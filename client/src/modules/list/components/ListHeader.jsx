@@ -14,9 +14,10 @@ class ListHeader extends PureComponent {
 
     const { details } = this.props;
     const { description, name } = details;
+    const trimmedDescription = description.trim();
 
     this.state = {
-      description,
+      description: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
       name
@@ -197,7 +198,7 @@ class ListHeader extends PureComponent {
           />
         ) : (
           <Fragment>
-            {description.trim() && (
+            {description && (
               <p
                 className="cohort-header__description"
                 data-id="description"
@@ -206,7 +207,7 @@ class ListHeader extends PureComponent {
                 {description}
               </p>
             )}
-            {!description.trim() && (
+            {!description && (
               <button
                 className="cohort-header__button link-button"
                 onClick={this.handleDescriptionTextareaVisibility}
