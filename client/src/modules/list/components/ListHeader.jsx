@@ -70,11 +70,6 @@ class ListHeader extends PureComponent {
 
   handleKeyPress = event => {
     const { isDescriptionTextareaVisible } = this.state;
-    const {
-      match: {
-        params: { id }
-      }
-    } = this.props;
     const { code } = event;
 
     if (code === 'Enter' || code === 'Escape') {
@@ -82,12 +77,16 @@ class ListHeader extends PureComponent {
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
 
-      action(id);
+      action();
     }
   };
 
   handleClick = event => {
-    const { isDescriptionTextareaVisible, name } = this.state;
+    const {
+      isDescriptionTextareaVisible,
+      isNameInputVisible,
+      name
+    } = this.state;
     const { target } = event;
 
     if (
@@ -99,7 +98,11 @@ class ListHeader extends PureComponent {
       return;
     }
 
-    if (name.trim().length >= 1 && !this.nameInput.current.contains(target)) {
+    if (
+      isNameInputVisible &&
+      name.trim().length >= 1 &&
+      !this.nameInput.current.contains(target)
+    ) {
       this.setState({ isNameInputVisible: false });
       this.handleNameUpdate();
     }
@@ -183,7 +186,6 @@ class ListHeader extends PureComponent {
             </h1>
           )}
         </div>
-
         {isDescriptionTextareaVisible ? (
           <textarea
             className="cohort-header__desc-textarea primary-textarea"
