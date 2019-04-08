@@ -18,13 +18,37 @@ const isValidMongoId = id => ObjectId.isValid(id);
 
 const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
 
+const responseWithList = (list, userId) => {
+  const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
+  const doneItemsCount = items.filter(item => item.isOrdered).length;
+
+  const listToSend = {
+    _id,
+    description,
+    doneItemsCount,
+    isFavourite: isUserFavourite(favIds, userId),
+    isPrivate,
+    name,
+    unhandledItemsCount: items.length - doneItemsCount
+  };
+
+  if (cohortId) {
+    listToSend.cohortId = cohortId;
+  }
+
+  return listToSend;
+};
+
 const responseWithLists = (lists, userId) =>
   _map(lists, list => {
-    const { favIds, ...rest } = list._doc;
+    const { favIds, items, ...rest } = list._doc;
+    const doneItemsCount = items.filter(item => item.isOrdered).length;
 
     return {
       ...rest,
-      isFavourite: isUserFavourite(favIds, userId)
+      doneItemsCount,
+      isFavourite: isUserFavourite(favIds, userId),
+      unhandledItemsCount: items.length - doneItemsCount
     };
   });
 
@@ -87,6 +111,7 @@ module.exports = {
   responseWithCohorts,
   responseWithItem,
   responseWithItems,
+  responseWithList,
   responseWithLists,
   responseWithMember,
   responseWithMembers

@@ -88,4 +88,20 @@
       }
     }
   }
+
+  &__data {
+    right: 8px;
+    bottom: 8px;
+    position: absolute;
+    font-size: 14px;
+    text-align: right;
+    color: $text-white;
+
+    span {
+      display: block;
+      &:first-child {
+        margin-bottom: 3px;
+      }
+    }
+  }
 }

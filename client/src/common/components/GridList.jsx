@@ -85,12 +85,14 @@ class GridList extends PureComponent {
                 <CardItem
                   color={color}
                   description={item.description}
+                  doneItemsCount={item.doneItemsCount}
                   isFavourite={item.isFavourite}
                   isPrivate={item.isPrivate}
                   name={item.name}
                   onCardClick={this.handleCardClick(route, item._id)}
                   onFavClick={this.handleFavClick(item._id, item.isFavourite)}
                   route={route}
+                  unhandledItemsCount={item.unhandledItemsCount}
                 />
               </li>
             ))}

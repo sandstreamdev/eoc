@@ -6,6 +6,7 @@ const {
   isValidMongoId,
   responseWithItems,
   responseWithItem,
+  responseWithList,
   responseWithLists
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
@@ -29,14 +30,10 @@ const createList = (req, resp) => {
         .send({ message: 'List not saved. Please try again.' });
     }
 
-    const { _id, description, isPrivate, name } = doc;
-    const data = cohortId
-      ? { _id, description, isPrivate, name, cohortId }
-      : { _id, description, isPrivate, name };
     resp
       .status(201)
       .location(`/lists/${doc._id}`)
-      .send(data);
+      .send(responseWithList(doc, userId));
   });
 };
 
@@ -76,7 +73,7 @@ const getListsMetaData = (req, resp) => {
       ],
       isArchived: false
     },
-    `_id name description isPrivate favIds ${cohortId ? 'cohortId' : ''}`,
+    `_id name description isPrivate favIds items ${cohortId ? 'cohortId' : ''}`,
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
