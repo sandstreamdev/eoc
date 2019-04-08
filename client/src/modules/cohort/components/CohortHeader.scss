@@ -1,0 +1,52 @@
+.cohort-header {
+  border-bottom: 1px solid $border-light;
+  margin-bottom: 8px;
+  svg {
+    height: 20px;
+    margin-right: 12px;
+
+    path {
+      fill: $text-normal;
+    }
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+  }
+
+  &__heading {
+    padding: 8px 0;
+    display: inline-flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: $text-normal;
+    cursor: pointer;
+  }
+
+  &__description {
+    font-size: 16px;
+    line-height: 1.2;
+    color: $text-light;
+    padding: 8px 0 16px;
+    cursor: pointer;
+  }
+
+  &__name-input {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: #646c73;
+    margin-bottom: 8px;
+  }
+
+  &__button {
+    margin-bottom: 8px;
+  }
+
+  &__desc-textarea {
+    margin-bottom: 8px;
+  }
+}

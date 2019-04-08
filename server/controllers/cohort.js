@@ -113,7 +113,7 @@ const updateCohortById = (req, resp) => {
       doc
         ? resp
             .status(200)
-            .send({ message: `Cohort "${name}" successfully updated.` })
+            .send({ message: `Cohort "${doc.name}" successfully updated.` })
         : resp.status(404).send({ message: 'Cohort  not found.' });
     }
   );
