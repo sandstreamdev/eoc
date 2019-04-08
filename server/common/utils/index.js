@@ -32,6 +32,7 @@ const responseWithItems = (userId, list) => {
 
   return _map(items, item => {
     const { voterIds, ...rest } = item.toObject();
+
     return {
       ...rest,
       isVoted: checkIfCurrentUserVoted(item, userId),
@@ -53,6 +54,7 @@ const responseWithItem = (item, userId) => {
 const responseWithCohorts = (cohorts, userId) =>
   _map(cohorts, ({ _doc }) => {
     const { favIds, ...rest } = _doc;
+
     return {
       ...rest,
       isFavourite: isUserFavourite(favIds, userId)
@@ -74,6 +76,7 @@ const checkIfCohortMember = (cohort, userId) => {
     const convertedUserId = ObjectId(userId);
     return [...memberIds, ...ownerIds].some(id => id.equals(convertedUserId));
   }
+
   return false;
 };
 
@@ -83,11 +86,13 @@ const checkIfGuest = (data, userId) => {
       ? !data.some(member => member._id.equals(userId))
       : ![...data.memberIds, ...data.ownerIds].some(id => id.equals(userId));
   }
+
   return true;
 };
 
 const responseWithMember = (data, ownerIds) => {
   const { avatarUrl, displayName, newMemberId } = data;
+
   return {
     _id: newMemberId,
     avatarUrl,
@@ -98,6 +103,7 @@ const responseWithMember = (data, ownerIds) => {
 
 const responseWithListMember = (data, ownerIds, cohort) => {
   const { avatarUrl, displayName, newMemberId } = data;
+
   return {
     _id: newMemberId,
     avatarUrl,

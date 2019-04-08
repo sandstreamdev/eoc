@@ -45,9 +45,5 @@ export const getIsFetchingLists = state => state.lists.isFetching;
 
 export const getMembers = createSelector(
   getList,
-  list => {
-    if (list) {
-      return _keyBy(list.members, '_id');
-    }
-  }
+  list => (list ? _keyBy(list.members, '_id') : undefined)
 );

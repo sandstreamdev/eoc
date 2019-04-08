@@ -300,10 +300,10 @@ MemberDetails.propTypes = {
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
   isCurrentOwner: PropTypes.bool.isRequired,
-  isOwner: PropTypes.bool,
-  match: RouterMatchPropType.isRequired,
-  isPrivate: PropTypes.bool,
   isGuest: PropTypes.bool,
+  isOwner: PropTypes.bool,
+  isPrivate: PropTypes.bool,
+  match: RouterMatchPropType.isRequired,
   route: PropTypes.string,
 
   changeRoleInCohort: PropTypes.func.isRequired,
