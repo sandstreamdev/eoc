@@ -3,18 +3,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
+import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getList, getItems } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/InputBar';
-import {
-  archiveList,
-  fetchListData,
-  updateList
-} from 'modules/list/model/actions';
+import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
-import FormDialog from 'common/components/FormDialog';
-import { CohortIcon, EditIcon } from 'assets/images/icons';
+import { CohortIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
@@ -54,17 +49,6 @@ class List extends Component {
       .catch(noOp);
   };
 
-  updateListHandler = listId => (name, description) => {
-    const { updateList } = this.props;
-    const dataToUpdate = {};
-
-    name ? (dataToUpdate.name = name) : null;
-    description ? (dataToUpdate.description = description) : null;
-
-    updateList(listId, dataToUpdate);
-    this.hideDialog();
-  };
-
   checkIfArchived = () => {
     const { list } = this.props;
     return !list || (list && !list.isArchived);
@@ -94,7 +78,7 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, description, isArchived, name } = list;
+    const { cohortId, isArchived, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
 
@@ -108,15 +92,6 @@ class List extends Component {
               path={`/cohort/${cohortId}`}
               title="Go back to cohort"
             />
-          )}
-          {!isArchived && this.checkIfOwner() && (
-            <Fragment>
-              <ToolbarItem
-                mainIcon={<EditIcon />}
-                onClick={this.handleDialogContext(DialogContext.UPDATE)}
-                title="Edit list"
-              />
-            </Fragment>
           )}
         </Toolbar>
         {isArchived ? (
@@ -148,15 +123,6 @@ class List extends Component {
             title={`Do you really want to archive the "${name}" list?`}
           />
         )}
-        {dialogContext === DialogContext.UPDATE && (
-          <FormDialog
-            defaultDescription={description}
-            defaultName={name}
-            onCancel={this.hideDialog}
-            onConfirm={this.updateListHandler(listId)}
-            title="Edit list"
-          />
-        )}
       </Fragment>
     );
   }
@@ -168,8 +134,7 @@ List.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   archiveList: PropTypes.func.isRequired,
-  fetchListData: PropTypes.func.isRequired,
-  updateList: PropTypes.func.isRequired
+  fetchListData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -180,6 +145,6 @@ const mapStateToProps = (state, ownProps) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { archiveList, fetchListData, updateList }
+    { archiveList, fetchListData }
   )(List)
 );

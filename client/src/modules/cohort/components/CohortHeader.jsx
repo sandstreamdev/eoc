@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { CohortIcon } from 'assets/images/icons';
 import { updateCohort } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
+import { whiteSpaceOnly } from 'common/utils/helpers';
 
 class CohortHeader extends PureComponent {
   constructor(props) {
@@ -138,8 +139,13 @@ class CohortHeader extends PureComponent {
     const { description } = this.state;
     const { description: previousDescription } = details;
 
-    if (previousDescription === description) {
+    if (previousDescription.trim() === description.trim()) {
       this.setState({ isDescriptionTextareaVisible: false });
+      return;
+    }
+
+    if (whiteSpaceOnly(description)) {
+      updateCohort(cohortId, { description: '' });
       return;
     }
 
@@ -188,7 +194,7 @@ class CohortHeader extends PureComponent {
           />
         ) : (
           <Fragment>
-            {description && (
+            {description.trim() && (
               <p
                 className="cohort-header__description"
                 data-id="description"
@@ -197,7 +203,7 @@ class CohortHeader extends PureComponent {
                 {description}
               </p>
             )}
-            {!description && (
+            {!description.trim() && (
               <button
                 className="cohort-header__button link-button"
                 onClick={this.handleDescriptionTextareaVisibility}

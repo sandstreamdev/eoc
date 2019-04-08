@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { ListIcon } from 'assets/images/icons';
 import { updateList } from 'modules/list/model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
+import { whiteSpaceOnly } from 'common/utils/helpers';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -86,31 +87,24 @@ class ListHeader extends PureComponent {
   };
 
   handleClick = event => {
-    const {
-      isDescriptionTextareaVisible,
-      isNameInputVisible,
-      name
-    } = this.state;
+    const { isDescriptionTextareaVisible, name } = this.state;
     const {
       match: {
         params: { id }
       }
     } = this.props;
+    const { target } = event;
 
     if (
       isDescriptionTextareaVisible &&
-      !this.descriptionTextarea.current.contains(event.target)
+      !this.descriptionTextarea.current.contains(target)
     ) {
       this.setState({ isDescriptionTextareaVisible: false });
       this.handleDescriptionUpdate(id);
       return;
     }
 
-    if (
-      isNameInputVisible &&
-      name.length >= 1 &&
-      !this.nameInput.current.contains(event.target)
-    ) {
+    if (name.trim().length >= 1 && !this.nameInput.current.contains(target)) {
       this.setState({ isNameInputVisible: false });
       this.handleNameUpdate(id);
     }
@@ -132,7 +126,7 @@ class ListHeader extends PureComponent {
       return;
     }
 
-    if (name.length >= 1) {
+    if (name.trim().length >= 1) {
       updateList(id, { name });
       this.setState({ isNameInputVisible: false });
     }
@@ -149,12 +143,18 @@ class ListHeader extends PureComponent {
     } = this.props;
     const { description: previousDescription } = details;
 
-    if (previousDescription === description) {
+    if (previousDescription.trim() === description.trim()) {
       this.setState({ isDescriptionTextareaVisible: false });
       return;
     }
 
+    if (whiteSpaceOnly(description)) {
+      updateList(id, { description: '' });
+      return;
+    }
+
     updateList(id, { description });
+
     this.setState({ isDescriptionTextareaVisible: false });
   };
 
@@ -200,7 +200,7 @@ class ListHeader extends PureComponent {
           />
         ) : (
           <Fragment>
-            {description && (
+            {description.trim() && (
               <p
                 className="cohort-header__description"
                 data-id="description"
@@ -209,7 +209,7 @@ class ListHeader extends PureComponent {
                 {description}
               </p>
             )}
-            {!description && (
+            {!description.trim() && (
               <button
                 className="cohort-header__button link-button"
                 onClick={this.handleDescriptionTextareaVisibility}
