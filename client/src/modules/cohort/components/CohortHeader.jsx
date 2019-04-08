@@ -48,38 +48,28 @@ class CohortHeader extends PureComponent {
       isNameInputVisible,
       name
     } = this.state;
-    const {
-      match: {
-        params: { id }
-      }
-    } = this.props;
 
     if (
       isDescriptionTextareaVisible &&
       !this.descriptionTextarea.current.contains(event.target)
     ) {
       this.setState({ isDescriptionTextareaVisible: false });
-      this.handleDescriptionUpdate(id)();
+      this.handleDescriptionUpdate();
       return;
     }
 
     if (
       isNameInputVisible &&
-      name.length >= 1 &&
+      name.trim().length >= 1 &&
       !this.nameInput.current.contains(event.target)
     ) {
       this.setState({ isNameInputVisible: false });
-      this.handleNameUpdate(id)();
+      this.handleNameUpdate();
     }
   };
 
   handleKeyPress = event => {
     const { isDescriptionTextareaVisible } = this.state;
-    const {
-      match: {
-        params: { id }
-      }
-    } = this.props;
     const { code } = event;
 
     if (code === 'Enter' || code === 'Escape') {
@@ -87,7 +77,7 @@ class CohortHeader extends PureComponent {
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
 
-      action(id)();
+      action();
     }
   };
 
@@ -117,8 +107,14 @@ class CohortHeader extends PureComponent {
     this.setState({ description: value });
   };
 
-  handleNameUpdate = cohortId => () => {
-    const { updateCohort, details } = this.props;
+  handleNameUpdate = () => {
+    const {
+      updateCohort,
+      details,
+      match: {
+        params: { id }
+      }
+    } = this.props;
     const { name } = this.state;
     const nameToUpdate = name.trim();
     const { name: previousName } = details;
@@ -129,13 +125,19 @@ class CohortHeader extends PureComponent {
     }
 
     if (nameToUpdate.length >= 1) {
-      updateCohort(cohortId, { name });
+      updateCohort(id, { name });
       this.setState({ isNameInputVisible: false });
     }
   };
 
-  handleDescriptionUpdate = cohortId => () => {
-    const { updateCohort, details } = this.props;
+  handleDescriptionUpdate = () => {
+    const {
+      updateCohort,
+      details,
+      match: {
+        params: { id }
+      }
+    } = this.props;
     const { description } = this.state;
     const { description: previousDescription } = details;
 
@@ -145,11 +147,11 @@ class CohortHeader extends PureComponent {
     }
 
     if (whiteSpaceOnly(description)) {
-      updateCohort(cohortId, { description: '' });
+      updateCohort(id, { description: '' });
       return;
     }
 
-    updateCohort(cohortId, { description });
+    updateCohort(id, { description });
     this.setState({ isDescriptionTextareaVisible: false });
   };
 

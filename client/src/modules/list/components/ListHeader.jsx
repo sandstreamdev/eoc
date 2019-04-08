@@ -88,11 +88,6 @@ class ListHeader extends PureComponent {
 
   handleClick = event => {
     const { isDescriptionTextareaVisible, name } = this.state;
-    const {
-      match: {
-        params: { id }
-      }
-    } = this.props;
     const { target } = event;
 
     if (
@@ -100,13 +95,13 @@ class ListHeader extends PureComponent {
       !this.descriptionTextarea.current.contains(target)
     ) {
       this.setState({ isDescriptionTextareaVisible: false });
-      this.handleDescriptionUpdate(id);
+      this.handleDescriptionUpdate();
       return;
     }
 
     if (name.trim().length >= 1 && !this.nameInput.current.contains(target)) {
       this.setState({ isNameInputVisible: false });
-      this.handleNameUpdate(id);
+      this.handleNameUpdate();
     }
   };
 
