@@ -59,6 +59,7 @@ export class Layout extends Component {
           <Route component={Archived} path="/archived" />
           <Route component={About} path="/about" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
+          <Route component={Dashboard} exact path="/" />
           <Route component={Page404} />
         </Switch>
         <Footer />
