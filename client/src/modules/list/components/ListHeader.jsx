@@ -211,7 +211,7 @@ class ListHeader extends PureComponent {
             )}
             {!description && (
               <button
-                className="cohort-header__button primary-button"
+                className="cohort-header__button link-button"
                 onClick={this.handleDescriptionTextareaVisibility}
                 type="button"
               >
