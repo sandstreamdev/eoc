@@ -67,11 +67,7 @@ const getListsMetaData = (req, resp) => {
   } = req;
 
   const query = {
-    $or: [
-      { ownerIds: req.user._id },
-      { memberIds: req.user._id },
-      { isPrivate: false }
-    ],
+    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }],
     isArchived: false
   };
 
@@ -105,11 +101,7 @@ const getArchivedListsMetaData = (req, resp) => {
   } = req;
 
   const query = {
-    $or: [
-      { ownerIds: req.user._id },
-      { memberIds: req.user._id },
-      { isPrivate: false }
-    ],
+    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }],
     isArchived: true
   };
 
@@ -156,11 +148,7 @@ const addItemToList = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ]
+      $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }]
     },
     { $push: { items: item } },
     (err, doc) => {
