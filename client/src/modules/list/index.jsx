@@ -30,7 +30,7 @@ export const ListType = Object.freeze({
 class List extends Component {
   state = {
     dialogContext: null,
-    membersBoxVisible: false
+    isMembersBoxVisible: false
   };
 
   componentDidMount() {
@@ -82,21 +82,20 @@ class List extends Component {
 
   hideDialog = () => this.handleDialogContext(null)();
 
-  handleMembersBoxVisibility = () => {
-    this.setState(({ membersBoxVisible }) => ({
-      membersBoxVisible: !membersBoxVisible
+  handleMembersBoxVisibility = () =>
+    this.setState(({ isMembersBoxVisible }) => ({
+      isMembersBoxVisible: !isMembersBoxVisible
     }));
-  };
 
   render() {
-    const { dialogContext, membersBoxVisible } = this.state;
+    const { dialogContext, isMembersBoxVisible } = this.state;
     const {
       items,
       match: {
         params: { id: listId }
       },
       list,
-      users
+      members
     } = this.props;
 
     if (!list) {
@@ -155,13 +154,13 @@ class List extends Component {
                 onClick={this.handleMembersBoxVisibility}
                 type="button"
               >
-                {` ${membersBoxVisible ? 'hide' : 'show'} list's members`}
+                {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
               </button>
-              {membersBoxVisible && (
+              {isMembersBoxVisible && (
                 <MembersBox
-                  isCurrentOwner={this.checkIfOwner()}
+                  isCurrentUserAnOwner={this.checkIfOwner()}
                   route={Routes.LIST}
-                  users={users}
+                  members={members}
                   isPrivate={isPrivate}
                 />
               )}
@@ -193,7 +192,7 @@ List.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
-  users: PropTypes.objectOf(PropTypes.object),
+  members: PropTypes.objectOf(PropTypes.object),
 
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
@@ -209,7 +208,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     list: getList(state, id),
     items: getItems(state, id),
-    users: getMembers(state, id)
+    members: getMembers(state, id)
   };
 };
 

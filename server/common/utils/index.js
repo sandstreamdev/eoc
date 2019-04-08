@@ -64,11 +64,17 @@ const responseWithCohorts = (cohorts, userId) =>
 const checkIfOwner = (ownerIds, userId) =>
   ownerIds.indexOf(userId.toString()) > -1;
 
-const responseWithMembers = (users, ownerIds) =>
-  users.map(user => ({
-    ...user._doc,
-    isOwner: checkIfOwner(ownerIds, user._doc._id)
-  }));
+const responseWithCohortMembers = (users, ownerIds) =>
+  users.map(user => {
+    const {
+      _doc: { _id: userId }
+    } = user;
+
+    return {
+      ...user._doc,
+      isOwner: checkIfOwner(ownerIds, userId)
+    };
+  });
 
 const checkIfCohortMember = (cohort, userId) => {
   if (cohort) {
@@ -90,7 +96,7 @@ const checkIfGuest = (data, userId) => {
   return true;
 };
 
-const responseWithMember = (data, ownerIds) => {
+const responseWithCohortMember = (data, ownerIds) => {
   const { avatarUrl, displayName, newMemberId } = data;
 
   return {
@@ -139,8 +145,8 @@ module.exports = {
   responseWithItem,
   responseWithItems,
   responseWithLists,
-  responseWithMember,
+  responseWithCohortMember,
   responseWithListMember,
   responseWithListMembers,
-  responseWithMembers
+  responseWithCohortMembers
 };

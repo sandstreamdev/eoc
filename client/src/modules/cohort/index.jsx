@@ -153,7 +153,7 @@ class Cohort extends PureComponent {
       match: {
         params: { id: cohortId }
       },
-      users
+      members
     } = this.props;
 
     if (!cohortDetails) {
@@ -218,9 +218,9 @@ class Cohort extends PureComponent {
                 <p className="cohort__description">{description}</p>
               )}
               <MembersBox
-                isCurrentOwner={this.checkIfOwner()}
+                isCurrentUserAnOwner={this.checkIfOwner()}
                 route={Routes.COHORT}
-                users={users}
+                members={members}
               />
               <GridList
                 color={CardColorType.ORANGE}
@@ -267,7 +267,7 @@ Cohort.propTypes = {
   currentUser: UserPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
-  users: PropTypes.objectOf(PropTypes.object),
+  members: PropTypes.objectOf(PropTypes.object),
 
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
@@ -288,7 +288,7 @@ const mapStateToProps = (state, ownProps) => {
     cohortDetails: getCohortDetails(state, id),
     currentUser: getCurrentUser(state),
     lists: getActiveLists(state),
-    users: getMembers(state, id)
+    members: getMembers(state, id)
   };
 };
 

@@ -597,6 +597,7 @@ const changeToMember = (req, resp) => {
   const {
     user: { _id: ownerId }
   } = req;
+
   List.findOne({ _id: listId, ownerIds: { $all: [ownerId, userId] } })
     .populate('cohortId', 'memberIds ownerIds')
     .exec()
@@ -634,12 +635,12 @@ const changeToMember = (req, resp) => {
 
 const addMember = (req, resp) => {
   const {
-    user: { _id: currentUser }
+    user: { _id: currentUserId }
   } = req;
   const { id: listId } = req.params;
   const { email } = req.body;
 
-  List.findOne({ _id: listId, $or: [{ ownerIds: currentUser }] })
+  List.findOne({ _id: listId, $or: [{ ownerIds: currentUserId }] })
     .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
@@ -679,6 +680,7 @@ const addMember = (req, resp) => {
           if (doc) {
             const data = { avatarUrl, displayName, newMemberId };
             const dataToSend = responseWithListMember(data, ownerIds, cohort);
+
             return resp.status(200).json(dataToSend);
           }
 
@@ -693,6 +695,7 @@ const addMember = (req, resp) => {
     .catch(err => {
       if (err instanceof NotFoundException) {
         const { status, message } = err;
+
         return resp.status(status).send({ message });
       }
 

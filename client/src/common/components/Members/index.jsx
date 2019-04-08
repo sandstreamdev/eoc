@@ -56,7 +56,7 @@ class MembersBox extends PureComponent {
 
   render() {
     const { context, isFormVisible } = this.state;
-    const { isCurrentOwner, route, isPrivate, users } = this.props;
+    const { isCurrentUserAnOwner, route, isPrivate, members } = this.props;
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -76,24 +76,24 @@ class MembersBox extends PureComponent {
               </button>
             )}
           </li>
-          {_map(users, user => (
+          {_map(members, member => (
             <li
               className="members-box__list-item"
-              key={user.avatarUrl}
-              title={user.displayName}
+              key={member.avatarUrl}
+              title={member.displayName}
             >
               <Manager>
                 <MemberButton
                   onDisplayDetails={this.handleDisplayingMemberDetails(
-                    user._id
+                    member._id
                   )}
-                  user={user}
+                  member={member}
                 />
-                {context === user._id && (
+                {context === member._id && (
                   <MemberBox>
                     <MemberDetails
-                      {...user}
-                      isCurrentOwner={isCurrentOwner}
+                      {...member}
+                      isCurrentUserAnOwner={isCurrentUserAnOwner}
                       onClose={this.handleClosingMemberDetails}
                       isPrivate={isPrivate}
                       route={route}
@@ -115,10 +115,10 @@ class MembersBox extends PureComponent {
 }
 
 MembersBox.propTypes = {
-  isCurrentOwner: PropTypes.bool.isRequired,
+  isCurrentUserAnOwner: PropTypes.bool.isRequired,
   isPrivate: PropTypes.bool,
   route: PropTypes.string.isRequired,
-  users: PropTypes.objectOf(PropTypes.object).isRequired,
+  members: PropTypes.objectOf(PropTypes.object).isRequired,
 
   addCohortMember: PropTypes.func.isRequired,
   addListMember: PropTypes.func.isRequired

@@ -9,8 +9,8 @@ const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
 const User = require('../models/user.model');
 const {
-  responseWithMember,
-  responseWithMembers
+  responseWithCohortMember,
+  responseWithCohortMembers
 } = require('../common/utils/index');
 
 const createCohort = (req, resp) => {
@@ -154,7 +154,7 @@ const getCohortDetails = (req, resp) => {
       }
 
       const owners = ownerIds.map(owner => owner.id);
-      const members = responseWithMembers(
+      const members = responseWithCohortMembers(
         [...membersData, ...ownerIds],
         owners
       );
@@ -422,7 +422,7 @@ const addMember = (req, resp) => {
         .then(doc => {
           if (doc) {
             const data = { avatarUrl, displayName, newMemberId };
-            const dataToSend = responseWithMember(data, ownerIds);
+            const dataToSend = responseWithCohortMember(data, ownerIds);
             return resp.status(200).json(dataToSend);
           }
 

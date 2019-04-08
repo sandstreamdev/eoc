@@ -43,5 +43,5 @@ export const getArchivedCohorts = createSelector(
 
 export const getMembers = createSelector(
   getCohortDetails,
-  cohort => (cohort ? _keyBy(cohort.members, '_id') : undefined)
+  cohort => cohort && _keyBy(cohort.members, '_id')
 );

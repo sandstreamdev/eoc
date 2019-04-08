@@ -225,12 +225,12 @@ class MemberDetails extends PureComponent {
     );
   };
 
-  renderHeading = () => {
+  renderHeader = () => {
     const { role } = this.state;
     const { displayName } = this.props;
 
     return (
-      <Fragment>
+      <header className="member-details__header">
         <div className="member-details__avatar">{this.renderAvatar()}</div>
         <div>
           <h3 className="member-details__name">{displayName}</h3>
@@ -238,7 +238,7 @@ class MemberDetails extends PureComponent {
             {`${role === UserRoles.OWNER ? 'owner' : 'member'}`}
           </p>
         </div>
-      </Fragment>
+      </header>
     );
   };
 
@@ -247,7 +247,7 @@ class MemberDetails extends PureComponent {
     const {
       _id: userId,
       currentUser: { id: currentUserId },
-      isCurrentOwner,
+      isCurrentUserAnOwner,
       isGuest,
       isPrivate: privateList,
       onClose,
@@ -258,7 +258,7 @@ class MemberDetails extends PureComponent {
       <Fragment>
         <div
           className={classNames('member-details', {
-            'member-details--flexible': !isCurrentOwner
+            'member-details--flexible': !isCurrentUserAnOwner
           })}
         >
           <button
@@ -269,10 +269,8 @@ class MemberDetails extends PureComponent {
             <CloseIcon />
           </button>
           <div className="member-details__details">
-            <header className="member-details__heading">
-              {this.renderHeading()}
-            </header>
-            {isCurrentOwner && userId !== currentUserId && (
+            {this.renderHeader()}
+            {isCurrentUserAnOwner && userId !== currentUserId && (
               <Fragment>
                 <ul className="member-details__panel">
                   <li className="member-details__option">
@@ -295,7 +293,7 @@ class MemberDetails extends PureComponent {
                 </ul>
               </Fragment>
             )}
-            {isCurrentOwner && userId === currentUserId && (
+            {isCurrentUserAnOwner && userId === currentUserId && (
               <p className="member-details__notice">
                 You cannot edit your own settings here.
               </p>
@@ -312,7 +310,7 @@ MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
-  isCurrentOwner: PropTypes.bool.isRequired,
+  isCurrentUserAnOwner: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool,
   isOwner: PropTypes.bool,
   isPrivate: PropTypes.bool,
