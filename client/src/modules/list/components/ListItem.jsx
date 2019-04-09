@@ -31,26 +31,26 @@ class ListItem extends PureComponent {
     const { done } = this.state;
     return (
       <li
-        className={classNames('items-list__item', {
-          'items-list__item--restore': !done && archived,
-          'items-list__item--done': done || archived
+        className={classNames('list-item', {
+          'list-item--restore': !done && archived,
+          'list-item--done': done || archived
         })}
       >
         <input
-          className="item-list__input"
+          className="list-item__input"
           id={`option${id}`}
           name={`option${id}`}
           type="checkbox"
         />
         <label
-          className="items-list__label"
+          className="list-item__label"
           htmlFor={`option${id}`}
           id={`option${id}`}
-          onClick={this.handleItemToggling(authorName, id, archived)}
+          // onClick={this.handleItemToggling(authorName, id, archived)}
         >
-          <span className="items-list__data">
+          <span className="list-item__data">
             <span>{name}</span>
-            <span className="items-list__author">{`Added by: ${authorName}`}</span>
+            <span className="list-item__author">{`Added by: ${authorName}`}</span>
           </span>
           {!archived && (
             <VotingBox
@@ -60,6 +60,11 @@ class ListItem extends PureComponent {
             />
           )}
         </label>
+        <button
+          className="list-item__icon z-index-high"
+          onClick={this.handleItemToggling(authorName, id, archived)}
+          type="button"
+        />
       </li>
     );
   }
