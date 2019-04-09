@@ -2,11 +2,12 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
+import _trim from 'lodash/trim';
 
 import { CohortIcon } from 'assets/images/icons';
 import { updateCohort } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { whiteSpaceOnly } from 'common/utils/helpers';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 
@@ -127,7 +128,7 @@ class CohortHeader extends PureComponent {
       return;
     }
 
-    if (whiteSpaceOnly(description)) {
+    if (_isEmpty(_trim(description))) {
       updateCohort(id, { description: '' });
       this.setState({ description: '' });
       return;

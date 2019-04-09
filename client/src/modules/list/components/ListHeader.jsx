@@ -2,11 +2,12 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import _isEmpty from 'lodash/isEmpty';
+import _trim from 'lodash/trim';
 
 import { ListIcon } from 'assets/images/icons';
 import { updateList } from 'modules/list/model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { whiteSpaceOnly } from 'common/utils/helpers';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 
@@ -126,7 +127,7 @@ class ListHeader extends PureComponent {
       return;
     }
 
-    if (whiteSpaceOnly(description)) {
+    if (_isEmpty(_trim(description))) {
       updateList(id, { description: '' });
       this.setState({ description: '' });
       return;
