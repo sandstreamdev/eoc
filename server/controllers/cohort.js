@@ -70,7 +70,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
       $or: [{ ownerIds: userId }, { memberIds: userId }],
       isArchived: true
     },
-    '_id name description favIds isArchived',
+    '_id name description favIds isArchived memberIds ownerIds',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {

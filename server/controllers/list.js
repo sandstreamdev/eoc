@@ -105,7 +105,7 @@ const getArchivedListsMetaData = (req, resp) => {
       ],
       isArchived: true
     },
-    `_id name description isPrivate favIds isArchived ${
+    `_id name description isPrivate items favIds isArchived ${
       cohortId ? 'cohortId' : ''
     }`,
     { sort: { created_at: -1 } },

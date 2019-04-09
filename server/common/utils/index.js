@@ -83,14 +83,12 @@ const responseWithItem = (item, userId) => {
 
 const responseWithCohorts = (cohorts, userId) =>
   _map(cohorts, ({ _doc }) => {
-    const { _id, description, favIds, memberIds, name, ownerIds } = _doc;
+    const { favIds, memberIds, ownerIds, ...rest } = _doc;
     const membersCount = [...memberIds, ...ownerIds].length;
 
     return {
-      _id,
-      description,
+      ...rest,
       isFavourite: isUserFavourite(favIds, userId),
-      name,
       membersCount
     };
   });
