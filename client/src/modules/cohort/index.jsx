@@ -219,8 +219,8 @@ class Cohort extends PureComponent {
               )}
               <MembersBox
                 isCurrentUserAnOwner={this.checkIfOwner()}
-                route={Routes.COHORT}
                 members={members}
+                route={Routes.COHORT}
               />
               <GridList
                 color={CardColorType.ORANGE}

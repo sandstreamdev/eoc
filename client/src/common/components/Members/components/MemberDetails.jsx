@@ -37,7 +37,7 @@ class MemberDetails extends PureComponent {
     const { isOwner } = props;
 
     this.state = {
-      isConfirmVisible: false,
+      isConfirmationVisible: false,
       isMemberInfoVisible: false,
       isOwnerInfoVisible: false,
       selectedRole: isOwner ? UserRoles.OWNER : UserRoles.MEMBER
@@ -45,8 +45,8 @@ class MemberDetails extends PureComponent {
   }
 
   handleConfirmationVisibility = () =>
-    this.setState(({ isConfirmVisible }) => ({
-      isConfirmVisible: !isConfirmVisible
+    this.setState(({ isConfirmationVisible }) => ({
+      isConfirmationVisible: !isConfirmationVisible
     }));
 
   handleMemberRemoving = () => {
@@ -179,10 +179,10 @@ class MemberDetails extends PureComponent {
   };
 
   renderRemoveOption = () => {
-    const { isConfirmVisible } = this.state;
+    const { isConfirmationVisible } = this.state;
     const { displayName } = this.props;
 
-    return isConfirmVisible ? (
+    return isConfirmationVisible ? (
       <div className="member-details__confirmation">
         <h4>{`Do you really want to remove ${displayName}?`}</h4>
         <button
@@ -242,16 +242,39 @@ class MemberDetails extends PureComponent {
     );
   };
 
-  render() {
+  renderDetails = () => {
     const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
+    const { isGuest, isPrivate: privateList, route } = this.props;
+
+    return (
+      <ul className="member-details__panel">
+        <li className="member-details__option">
+          {this.renderChangeRoleOption(UserRoles.OWNER, isOwnerInfoVisible)}
+        </li>
+        <li className="member-details__option">
+          {this.renderChangeRoleOption(UserRoles.MEMBER, isMemberInfoVisible)}
+        </li>
+        {(route === Routes.COHORT || privateList || isGuest) && (
+          <li className="member-details__option member-details__option--removing">
+            {this.renderRemoveOption()}
+          </li>
+        )}
+      </ul>
+    );
+  };
+
+  renderMessage = () => (
+    <p className="member-details__notice">
+      You cannot edit your own settings here.
+    </p>
+  );
+
+  render() {
     const {
       _id: userId,
       currentUser: { id: currentUserId },
       isCurrentUserAnOwner,
-      isGuest,
-      isPrivate: privateList,
-      onClose,
-      route
+      onClose
     } = this.props;
 
     return (
@@ -270,34 +293,12 @@ class MemberDetails extends PureComponent {
           </button>
           <div className="member-details__details">
             {this.renderHeader()}
-            {isCurrentUserAnOwner && userId !== currentUserId && (
-              <Fragment>
-                <ul className="member-details__panel">
-                  <li className="member-details__option">
-                    {this.renderChangeRoleOption(
-                      UserRoles.OWNER,
-                      isOwnerInfoVisible
-                    )}
-                  </li>
-                  <li className="member-details__option">
-                    {this.renderChangeRoleOption(
-                      UserRoles.MEMBER,
-                      isMemberInfoVisible
-                    )}
-                  </li>
-                  {(route === Routes.COHORT || privateList || isGuest) && (
-                    <li className="member-details__option member-details__option--removing">
-                      {this.renderRemoveOption()}
-                    </li>
-                  )}
-                </ul>
-              </Fragment>
-            )}
-            {isCurrentUserAnOwner && userId === currentUserId && (
-              <p className="member-details__notice">
-                You cannot edit your own settings here.
-              </p>
-            )}
+            {isCurrentUserAnOwner &&
+              userId !== currentUserId &&
+              this.renderDetails()}
+            {isCurrentUserAnOwner &&
+              userId === currentUserId &&
+              this.renderMessage()}
           </div>
         </div>
       </Fragment>

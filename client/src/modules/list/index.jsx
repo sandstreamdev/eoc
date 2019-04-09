@@ -159,9 +159,9 @@ class List extends Component {
               {isMembersBoxVisible && (
                 <MembersBox
                   isCurrentUserAnOwner={this.checkIfOwner()}
-                  route={Routes.LIST}
-                  members={members}
                   isPrivate={isPrivate}
+                  members={members}
+                  route={Routes.LIST}
                 />
               )}
             </div>
@@ -205,6 +205,7 @@ const mapStateToProps = (state, ownProps) => {
       params: { id }
     }
   } = ownProps;
+
   return {
     list: getList(state, id),
     items: getItems(state, id),

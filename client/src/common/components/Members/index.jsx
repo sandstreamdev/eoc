@@ -54,9 +54,40 @@ class MembersBox extends PureComponent {
     }
   };
 
+  renderMemberList = () => {
+    const { isCurrentUserAnOwner, isPrivate, members, route } = this.props;
+    const { context } = this.state;
+
+    return _map(members, member => (
+      <li
+        className="members-box__list-item"
+        key={member.avatarUrl}
+        title={member.displayName}
+      >
+        <Manager>
+          <MemberButton
+            onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
+            member={member}
+          />
+          {context === member._id && (
+            <MemberBox>
+              <MemberDetails
+                {...member}
+                isCurrentUserAnOwner={isCurrentUserAnOwner}
+                onClose={this.handleClosingMemberDetails}
+                isPrivate={isPrivate}
+                route={route}
+              />
+            </MemberBox>
+          )}
+        </Manager>
+      </li>
+    ));
+  };
+
   render() {
-    const { context, isFormVisible } = this.state;
-    const { isCurrentUserAnOwner, route, isPrivate, members } = this.props;
+    const { isFormVisible } = this.state;
+
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -76,33 +107,7 @@ class MembersBox extends PureComponent {
               </button>
             )}
           </li>
-          {_map(members, member => (
-            <li
-              className="members-box__list-item"
-              key={member.avatarUrl}
-              title={member.displayName}
-            >
-              <Manager>
-                <MemberButton
-                  onDisplayDetails={this.handleDisplayingMemberDetails(
-                    member._id
-                  )}
-                  member={member}
-                />
-                {context === member._id && (
-                  <MemberBox>
-                    <MemberDetails
-                      {...member}
-                      isCurrentUserAnOwner={isCurrentUserAnOwner}
-                      onClose={this.handleClosingMemberDetails}
-                      isPrivate={isPrivate}
-                      route={route}
-                    />
-                  </MemberBox>
-                )}
-              </Manager>
-            </li>
-          ))}
+          {this.renderMemberList()}
           <li className="members-box__list-item">
             <button className="members-box__member" type="button">
               <DotsIcon />

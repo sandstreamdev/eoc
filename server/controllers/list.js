@@ -567,20 +567,20 @@ const changeToOwner = (req, resp) => {
       }
 
       const { cohortId: cohort, isPrivate, memberIds } = doc;
-      const isCohortMember = checkIfCohortMember(cohort, userId);
+      const isNotCohortMember = !checkIfCohortMember(cohort, userId);
 
-      if (isPrivate || !isCohortMember) {
+      if (isPrivate || isNotCohortMember) {
         doc.memberIds.splice(memberIds.indexOf(userId), 1);
       }
 
       doc.ownerIds.push(userId);
       return doc.save();
     })
-    .then(() => {
+    .then(() =>
       resp.status(200).send({
         message: "User has been successfully set as a list's owner."
-      });
-    })
+      })
+    )
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
@@ -607,20 +607,20 @@ const changeToMember = (req, resp) => {
       }
 
       const { cohortId: cohort, isPrivate, ownerIds } = doc;
-      const isCohortMember = checkIfCohortMember(cohort, userId);
+      const isNotCohortMember = !checkIfCohortMember(cohort, userId);
 
-      if (isPrivate || !isCohortMember) {
+      if (isPrivate || isNotCohortMember) {
         doc.memberIds.push(userId);
       }
 
       doc.ownerIds.splice(ownerIds.indexOf(userId), 1);
       return doc.save();
     })
-    .then(() => {
+    .then(() =>
       resp.status(200).send({
         message: "User has been successfully set as a list's member."
-      });
-    })
+      })
+    )
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
