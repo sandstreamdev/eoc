@@ -137,34 +137,11 @@ class CohortHeader extends PureComponent {
     this.setState({ isDescriptionTextareaVisible: false });
   };
 
-  render() {
-    const {
-      description,
-      isDescriptionTextareaVisible,
-      isNameInputVisible,
-      name
-    } = this.state;
+  renderDescription = () => {
+    const { description, isDescriptionTextareaVisible } = this.state;
 
     return (
-      <header className="cohort-header">
-        <div className="cohort-header__top">
-          <CohortIcon />
-          {isNameInputVisible ? (
-            <NameInput
-              handleClick={this.handleClick}
-              handleKeyPress={this.handleKeyPress}
-              handleNameChange={this.handleNameChange}
-              name={name}
-            />
-          ) : (
-            <h1
-              className="cohort-header__heading"
-              onClick={this.handleNameInputVisibility}
-            >
-              {name}
-            </h1>
-          )}
-        </div>
+      <Fragment>
         {isDescriptionTextareaVisible ? (
           <DescriptionTextarea
             description={description}
@@ -193,6 +170,42 @@ class CohortHeader extends PureComponent {
             )}
           </Fragment>
         )}
+      </Fragment>
+    );
+  };
+
+  renderName = () => {
+    const { name, isNameInputVisible } = this.state;
+
+    return (
+      <Fragment>
+        {isNameInputVisible ? (
+          <NameInput
+            handleClick={this.handleClick}
+            handleKeyPress={this.handleKeyPress}
+            handleNameChange={this.handleNameChange}
+            name={name}
+          />
+        ) : (
+          <h1
+            className="cohort-header__heading"
+            onClick={this.handleNameInputVisibility}
+          >
+            {name}
+          </h1>
+        )}
+      </Fragment>
+    );
+  };
+
+  render() {
+    return (
+      <header className="cohort-header">
+        <div className="cohort-header__top">
+          <CohortIcon />
+          {this.renderName()}
+        </div>
+        {this.renderDescription()}
       </header>
     );
   }

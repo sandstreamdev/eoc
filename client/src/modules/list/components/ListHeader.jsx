@@ -127,7 +127,6 @@ class ListHeader extends PureComponent {
     }
 
     if (whiteSpaceOnly(description)) {
-      debugger;
       updateList(id, { description: '' });
       this.setState({ description: '' });
       return;
@@ -137,34 +136,11 @@ class ListHeader extends PureComponent {
     this.setState({ isDescriptionTextareaVisible: false });
   };
 
-  render() {
-    const {
-      description,
-      isDescriptionTextareaVisible,
-      isNameInputVisible,
-      name
-    } = this.state;
+  renderDescription = () => {
+    const { description, isDescriptionTextareaVisible } = this.state;
 
     return (
-      <div className="list-header">
-        <div className="list-header__top">
-          <ListIcon />
-          {isNameInputVisible ? (
-            <NameInput
-              handleClick={this.handleClick}
-              handleKeyPress={this.handleKeyPress}
-              handleNameChange={this.handleNameChange}
-              name={name}
-            />
-          ) : (
-            <h1
-              className="list-header__heading"
-              onClick={this.handleNameInputVisibility}
-            >
-              {name}
-            </h1>
-          )}
-        </div>
+      <Fragment>
         {isDescriptionTextareaVisible ? (
           <DescriptionTextarea
             description={description}
@@ -193,6 +169,42 @@ class ListHeader extends PureComponent {
             )}
           </Fragment>
         )}
+      </Fragment>
+    );
+  };
+
+  renderName = () => {
+    const { name, isNameInputVisible } = this.state;
+
+    return (
+      <Fragment>
+        {isNameInputVisible ? (
+          <NameInput
+            handleClick={this.handleClick}
+            handleKeyPress={this.handleKeyPress}
+            handleNameChange={this.handleNameChange}
+            name={name}
+          />
+        ) : (
+          <h1
+            className="list-header__heading"
+            onClick={this.handleNameInputVisibility}
+          >
+            {name}
+          </h1>
+        )}
+      </Fragment>
+    );
+  };
+
+  render() {
+    return (
+      <div className="list-header">
+        <div className="list-header__top">
+          <ListIcon />
+          {this.renderName()}
+        </div>
+        {this.renderDescription()}
       </div>
     );
   }
