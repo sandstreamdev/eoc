@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -41,17 +41,16 @@ const CardItem = ({
     <button className="card-item__star" onClick={onFavClick} type="button">
       {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
     </button>
-    {route === Routes.LIST && (
-      <div className="card-item__data">
-        <span>{`Done: ${doneItemsCount}`}</span>
-        <span>{`Unhandled: ${unhandledItemsCount}`}</span>
-      </div>
-    )}
-    {route === Routes.COHORT && (
-      <div className="card-item__data">
+    <div className="card-item__data">
+      {route === Routes.LIST ? (
+        <Fragment>
+          <span>{`Done: ${doneItemsCount}`}</span>
+          <span>{`Unhandled: ${unhandledItemsCount}`}</span>
+        </Fragment>
+      ) : (
         <span>{`Members: ${membersCount}`}</span>
-      </div>
-    )}
+      )}
+    </div>
   </div>
 );
 
