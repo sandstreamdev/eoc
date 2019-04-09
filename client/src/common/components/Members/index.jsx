@@ -10,8 +10,9 @@ import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
-import { getMembers as getCohortMembers } from 'modules/cohort/model/selectors';
 import { addCohortMember } from 'modules/cohort/model/actions';
+import { addListMember } from 'modules/list/model/actions';
+import { Routes } from 'common/constants/enums';
 
 class MembersBox extends PureComponent {
   state = {
@@ -33,18 +34,60 @@ class MembersBox extends PureComponent {
 
   handleAddNewMember = () => email => {
     this.hideForm();
-    const { addCohortMember } = this.props;
+    const { addCohortMember, addListMember } = this.props;
     const {
       match: {
-        params: { id: cohortId }
-      }
+        params: { id }
+      },
+      route
     } = this.props;
-    addCohortMember(cohortId, email);
+
+    switch (route) {
+      case Routes.COHORT:
+        addCohortMember(id, email);
+        break;
+      case Routes.LIST:
+        addListMember(id, email);
+        break;
+      default:
+        break;
+    }
+  };
+
+  renderMemberList = () => {
+    const { isCurrentUserAnOwner, isPrivate, members, route } = this.props;
+    const { context } = this.state;
+
+    return _map(members, member => (
+      <li
+        className="members-box__list-item"
+        key={member.avatarUrl}
+        title={member.displayName}
+      >
+        <Manager>
+          <MemberButton
+            onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
+            member={member}
+          />
+          {context === member._id && (
+            <MemberBox>
+              <MemberDetails
+                {...member}
+                isCurrentUserAnOwner={isCurrentUserAnOwner}
+                onClose={this.handleClosingMemberDetails}
+                isPrivate={isPrivate}
+                route={route}
+              />
+            </MemberBox>
+          )}
+        </Manager>
+      </li>
+    ));
   };
 
   render() {
-    const { context, isFormVisible } = this.state;
-    const { isCurrentOwner, route, users } = this.props;
+    const { isFormVisible } = this.state;
+
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -64,32 +107,7 @@ class MembersBox extends PureComponent {
               </button>
             )}
           </li>
-          {_map(users, user => (
-            <li
-              className="members-box__list-item"
-              key={user.avatarUrl}
-              title={user.displayName}
-            >
-              <Manager>
-                <MemberButton
-                  onDisplayDetails={this.handleDisplayingMemberDetails(
-                    user._id
-                  )}
-                  user={user}
-                />
-                {context === user._id && (
-                  <MemberBox>
-                    <MemberDetails
-                      {...user}
-                      isCurrentOwner={isCurrentOwner}
-                      onClose={this.handleClosingMemberDetails}
-                      route={route}
-                    />
-                  </MemberBox>
-                )}
-              </Manager>
-            </li>
-          ))}
+          {this.renderMemberList()}
           <li className="members-box__list-item">
             <button className="members-box__member" type="button">
               <DotsIcon />
@@ -102,25 +120,18 @@ class MembersBox extends PureComponent {
 }
 
 MembersBox.propTypes = {
-  isCurrentOwner: PropTypes.bool.isRequired,
+  isCurrentUserAnOwner: PropTypes.bool.isRequired,
+  isPrivate: PropTypes.bool,
   route: PropTypes.string.isRequired,
-  users: PropTypes.objectOf(PropTypes.object).isRequired,
+  members: PropTypes.objectOf(PropTypes.object).isRequired,
 
-  addCohortMember: PropTypes.func.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  const {
-    match: {
-      params: { id }
-    }
-  } = ownProps;
-  return { users: getCohortMembers(state, id) };
+  addCohortMember: PropTypes.func.isRequired,
+  addListMember: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
-    mapStateToProps,
-    { addCohortMember }
+    null,
+    { addCohortMember, addListMember }
   )(MembersBox)
 );

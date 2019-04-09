@@ -8,10 +8,12 @@ const {
 } = require('../common/utils');
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
+const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
 const {
-  responseWithMember,
-  responseWithMembers
+  checkIfCohortMember,
+  responseWithCohortMember,
+  responseWithCohortMembers
 } = require('../common/utils/index');
 
 const createCohort = (req, resp) => {
@@ -158,7 +160,7 @@ const getCohortDetails = (req, resp) => {
       }
 
       const owners = ownerIds.map(owner => owner.id);
-      const members = responseWithMembers(
+      const members = responseWithCohortMembers(
         [...membersData, ...ownerIds],
         owners
       );
@@ -191,6 +193,7 @@ const deleteCohortById = (req, resp) => {
           `Data of cohort id: ${req.params.id} not found.`
         );
       }
+
       documentName = doc.name;
       return List.deleteMany({ cohortId: req.params.id }).exec();
     })
@@ -395,51 +398,69 @@ const addMember = (req, resp) => {
 
   Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUser }] })
     .exec()
-    .then(doc => {
-      if (doc) {
-        const { ownerIds } = doc;
-
-        return User.findOne({ email })
-          .exec()
-          .then(doc => {
-            const { _id, avatarUrl, displayName } = doc;
-            return { _id, avatarUrl, displayName, ownerIds };
-          })
-          .catch(() =>
-            resp.status(400).send({ message: 'User data not found.' })
-          );
+    .then(cohort => {
+      if (!cohort) {
+        throw new BadRequestException(
+          "You don't have permission to add new member"
+        );
       }
-      return resp
-        .status(400)
-        .send({ message: "You don't have permission to add new member" });
-    })
-    .then(data => {
-      const { _id: newMemberId, displayName, avatarUrl, ownerIds } = data;
 
-      Cohort.findOneAndUpdate(
-        { _id: cohortId, memberIds: { $nin: [newMemberId] } },
-        { $push: { memberIds: newMemberId } }
-      )
+      return User.findOne({ email })
         .exec()
-        .then(doc => {
-          if (doc) {
-            const data = { avatarUrl, displayName, newMemberId };
-            const dataToSend = responseWithMember(data, ownerIds);
-            return resp.status(200).json(dataToSend);
-          }
-          return resp
-            .status(400)
-            .send({ message: 'User is already a member.' });
+        .then(user => {
+          const { _id, avatarUrl, displayName } = user;
+          return { _id, avatarUrl, displayName, cohort };
         })
         .catch(() => {
-          throw new NotFoundException('Cohort data not found.');
+          throw new BadRequestException('User data not found.');
+        });
+    })
+    .then(data => {
+      const { _id: newMemberId, cohort } = data;
+
+      if (checkIfCohortMember(cohort, newMemberId)) {
+        throw new BadRequestException('User is already a member.');
+      }
+
+      return List.updateMany(
+        {
+          cohortId,
+          $or: [{ ownerIds: newMemberId }, { memberIds: newMemberId }],
+          isPrivate: false
+        },
+        { $pull: { memberIds: newMemberId } }
+      )
+        .exec()
+        .then(() => data)
+        .catch(() => {
+          throw new BadRequestException('Adding user failed.');
+        });
+    })
+    .then(data => {
+      const { _id: newMemberId, avatarUrl, displayName, cohort } = data;
+      cohort.memberIds.push(newMemberId);
+      const member = { avatarUrl, newMemberId, displayName };
+
+      return cohort
+        .save()
+        .then(() => {
+          const { ownerIds } = cohort;
+
+          return resp
+            .status(200)
+            .json(responseWithCohortMember(member, ownerIds));
+        })
+        .catch(() => {
+          throw new BadRequestException('Adding user failed.');
         });
     })
     .catch(err => {
-      if (err instanceof NotFoundException) {
+      if (err instanceof BadRequestException) {
         const { status, message } = err;
+
         return resp.status(status).send({ message });
       }
+
       resp.status(400).send({
         message: 'An error occurred while adding new member. Please try again.'
       });

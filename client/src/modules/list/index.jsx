@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
-import { getList, getItems } from 'modules/list/model/selectors';
+import { getList, getItems, getMembers } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/InputBar';
 import {
   archiveList,
@@ -19,6 +19,8 @@ import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
+import MembersBox from 'common/components/Members';
+import { Routes } from 'common/constants/enums';
 
 export const ListType = Object.freeze({
   PRIVATE: 'private',
@@ -27,7 +29,8 @@ export const ListType = Object.freeze({
 
 class List extends Component {
   state = {
-    dialogContext: null
+    dialogContext: null,
+    isMembersBoxVisible: false
   };
 
   componentDidMount() {
@@ -79,24 +82,29 @@ class List extends Component {
 
   hideDialog = () => this.handleDialogContext(null)();
 
+  handleMembersBoxVisibility = () =>
+    this.setState(({ isMembersBoxVisible }) => ({
+      isMembersBoxVisible: !isMembersBoxVisible
+    }));
+
   render() {
-    const { dialogContext } = this.state;
+    const { dialogContext, isMembersBoxVisible } = this.state;
     const {
       items,
       match: {
         params: { id: listId }
       },
-      list
+      list,
+      members
     } = this.props;
 
     if (!list) {
       return null;
     }
 
-    const { cohortId, description, isArchived, name } = list;
+    const { cohortId, description, isArchived, isPrivate, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
-
     return (
       <Fragment>
         <Toolbar>
@@ -141,6 +149,21 @@ class List extends Component {
                   {`Archive the "${name}" list`}
                 </button>
               </div>
+              <button
+                className="link-button"
+                onClick={this.handleMembersBoxVisibility}
+                type="button"
+              >
+                {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
+              </button>
+              {isMembersBoxVisible && (
+                <MembersBox
+                  isCurrentUserAnOwner={this.checkIfOwner()}
+                  isPrivate={isPrivate}
+                  members={members}
+                  route={Routes.LIST}
+                />
+              )}
             </div>
           </div>
         )}
@@ -169,16 +192,26 @@ List.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
+  members: PropTypes.objectOf(PropTypes.object),
 
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  list: getList(state, ownProps.match.params.id),
-  items: getItems(state, ownProps.match.params.id)
-});
+const mapStateToProps = (state, ownProps) => {
+  const {
+    match: {
+      params: { id }
+    }
+  } = ownProps;
+
+  return {
+    list: getList(state, id),
+    items: getItems(state, id),
+    members: getMembers(state, id)
+  };
+};
 
 export default withRouter(
   connect(

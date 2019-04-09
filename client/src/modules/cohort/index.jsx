@@ -13,7 +13,7 @@ import {
   removeArchivedListsMetaData
 } from 'modules/list/model/actions';
 import { ArchiveIcon, ListIcon } from 'assets/images/icons';
-import { getCohortDetails } from './model/selectors';
+import { getCohortDetails, getMembers } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import { archiveCohort, fetchCohortDetails } from './model/actions';
@@ -128,7 +128,8 @@ class Cohort extends PureComponent {
       lists,
       match: {
         params: { id: cohortId }
-      }
+      },
+      members
     } = this.props;
 
     if (!cohortDetails) {
@@ -173,7 +174,8 @@ class Cohort extends PureComponent {
             <div className="cohort">
               <CohortHeader details={cohortDetails} />
               <MembersBox
-                isCurrentOwner={this.checkIfOwner()}
+                isCurrentUserAnOwner={this.checkIfOwner()}
+                members={members}
                 route={Routes.COHORT}
               />
               <GridList
@@ -221,6 +223,7 @@ Cohort.propTypes = {
   currentUser: UserPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
+  members: PropTypes.objectOf(PropTypes.object),
 
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
@@ -229,12 +232,20 @@ Cohort.propTypes = {
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  archivedLists: getArchivedLists(state),
-  cohortDetails: getCohortDetails(state, ownProps.match.params.id),
-  currentUser: getCurrentUser(state),
-  lists: getActiveLists(state)
-});
+const mapStateToProps = (state, ownProps) => {
+  const {
+    match: {
+      params: { id }
+    }
+  } = ownProps;
+  return {
+    archivedLists: getArchivedLists(state),
+    cohortDetails: getCohortDetails(state, id),
+    currentUser: getCurrentUser(state),
+    lists: getActiveLists(state),
+    members: getMembers(state, id)
+  };
+};
 
 export default withRouter(
   connect(

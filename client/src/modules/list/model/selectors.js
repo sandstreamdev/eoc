@@ -53,3 +53,8 @@ export const getCohortLists = createSelector(
 );
 
 export const getIsFetchingLists = state => state.lists.isFetching;
+
+export const getMembers = createSelector(
+  getList,
+  list => list && _keyBy(list.members, '_id')
+);

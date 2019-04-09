@@ -135,6 +135,19 @@ const favouritesFailure = () => ({
   type: ListActionTypes.FAVOURITES_FAILURE
 });
 
+const addMemberRequest = () => ({
+  type: ListActionTypes.ADD_MEMBER_REQUEST
+});
+
+const addMemberSuccess = (data, listId) => ({
+  type: ListActionTypes.ADD_MEMBER_SUCCESS,
+  payload: { listId, data }
+});
+
+const addMemberFailure = () => ({
+  type: ListActionTypes.ADD_MEMBER_FAILURE
+});
+
 const removeMemberRequest = () => ({
   type: ListActionTypes.REMOVE_MEMBER_REQUEST
 });
@@ -143,9 +156,9 @@ const removeMemberFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = (listId, id) => ({
+const removeMemberSuccess = (listId, userId) => ({
   type: ListActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: { listId, id }
+  payload: { listId, userId }
 });
 
 const changeRoleRequest = () => ({
@@ -369,6 +382,23 @@ export const removeListFromFavourites = listId => dispatch => {
         dispatch,
         NotificationType.ERROR,
         err.message
+      );
+    });
+};
+
+export const addListMember = (listId, email) => dispatch => {
+  dispatch(addMemberRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-member`, {
+    email
+  })
+    .then(resp => resp.json())
+    .then(json => dispatch(addMemberSuccess(json, listId)))
+    .catch(err => {
+      dispatch(addMemberFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, adding new member failed..."
       );
     });
 };
