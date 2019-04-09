@@ -63,17 +63,18 @@ const getListsMetaData = (req, resp) => {
     user: { _id: userId }
   } = req;
 
+  const query = {
+    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }],
+    isArchived: false
+  };
+
+  if (cohortId) {
+    query.cohortId = cohortId;
+  }
+
   List.find(
-    {
-      cohortId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ],
-      isArchived: false
-    },
-    `_id name description isPrivate favIds items ${cohortId ? 'cohortId' : ''}`,
+    query,
+    '_id name description isPrivate items favIds cohortId',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -95,16 +96,18 @@ const getArchivedListsMetaData = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
+
+  const query = {
+    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }],
+    isArchived: true
+  };
+
+  if (cohortId) {
+    query.cohortId = cohortId;
+  }
+
   List.find(
-    {
-      cohortId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ],
-      isArchived: true
-    },
+    query,
     `_id name description isPrivate items favIds isArchived ${
       cohortId ? 'cohortId' : ''
     }`,
@@ -142,11 +145,7 @@ const addItemToList = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ]
+      $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }]
     },
     { $push: { items: item } },
     (err, doc) => {

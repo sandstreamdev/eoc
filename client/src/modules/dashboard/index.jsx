@@ -2,9 +2,8 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
-import { ArchiveIcon, CohortIcon, ListIcon } from 'assets/images/icons';
-import EyeIcon from 'assets/images/eye-solid.svg';
+import Toolbar from 'common/components/Toolbar';
+import { ListIcon } from 'assets/images/icons';
 import {
   createList,
   fetchArchivedListsMetaData,
@@ -12,74 +11,59 @@ import {
   removeArchivedListsMetaData
 } from 'modules/list/model/actions';
 import {
-  createCohort,
-  fetchCohortsMetaData
-} from 'modules/cohort/model/actions';
-import { getActiveLists, getArchivedLists } from 'modules/list/model/selectors';
-import { getActiveCohorts } from 'modules/cohort/model/selectors';
+  getArchivedLists,
+  getCohortLists,
+  getPrivateLists
+} from 'modules/list/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
-import FormDialog, { FormDialogContext } from 'common/components/FormDialog';
+import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
 
 class Dashboard extends Component {
   state = {
-    showArchivedLists: false,
-    dialogContext: ''
+    areArchivedListsVisible: false,
+    isDialogVisible: false
   };
 
   componentDidMount() {
-    const { fetchCohortsMetaData, fetchListsMetaData } = this.props;
+    const { fetchListsMetaData } = this.props;
 
-    fetchCohortsMetaData();
     fetchListsMetaData();
   }
 
-  handleDialogContext = context => () =>
-    this.setState({ dialogContext: context });
+  handleDialogVisibility = () =>
+    this.setState(({ isDialogVisible }) => ({
+      isDialogVisible: !isDialogVisible
+    }));
 
   handleConfirm = (name, description) => {
-    const { dialogContext } = this.state;
     const {
-      createCohort,
       createList,
       currentUser: { id: userId }
     } = this.props;
     const data = { description, userId, name };
-
-    switch (dialogContext) {
-      case FormDialogContext.CREATE_COHORT:
-        createCohort(data);
-        break;
-      case FormDialogContext.CREATE_LIST:
-        createList(data);
-        break;
-      default:
-        break;
-    }
-
-    this.hideDialog();
+    createList(data);
+    this.handleDialogVisibility();
   };
-
-  hideDialog = () => this.handleDialogContext(null)();
 
   handleArchivedListsVisibility = () =>
     this.setState(
-      ({ showArchivedLists }) => ({
-        showArchivedLists: !showArchivedLists
+      ({ areArchivedListsVisible }) => ({
+        areArchivedListsVisible: !areArchivedListsVisible
       }),
       () => this.handleArchivedListsData()
     );
 
   handleArchivedListsData = () => {
-    const { showArchivedLists } = this.state;
+    const { areArchivedListsVisible } = this.state;
     const {
       fetchArchivedListsMetaData,
       removeArchivedListsMetaData
     } = this.props;
-    const action = showArchivedLists
+    const action = areArchivedListsVisible
       ? fetchArchivedListsMetaData
       : removeArchivedListsMetaData;
 
@@ -87,27 +71,28 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { archivedLists, lists, cohorts } = this.props;
-    const { showArchivedLists, dialogContext } = this.state;
+    const { archivedLists, privateLists, cohortLists } = this.props;
+    const { areArchivedListsVisible, isDialogVisible } = this.state;
 
     return (
       <Fragment>
-        <Toolbar isHomePage>
-          <ToolbarLink
-            additionalIconSrc={EyeIcon}
-            mainIcon={<ArchiveIcon />}
-            path="/archived"
-            title="Go to archived"
-          />
-        </Toolbar>
+        <Toolbar isHomePage />
         <div className="wrapper">
           <div className="dashboard">
             <GridList
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
-              items={lists}
+              items={privateLists}
               name="Private Lists"
-              onAddNew={this.handleDialogContext(FormDialogContext.CREATE_LIST)}
+              onAddNew={this.handleDialogVisibility}
+              placeholder="There are no lists yet!"
+              route={Routes.LIST}
+            />
+            <GridList
+              color={CardColorType.ORANGE}
+              icon={<ListIcon />}
+              items={cohortLists}
+              name="Cohort's Lists"
               placeholder="There are no lists yet!"
               route={Routes.LIST}
             />
@@ -116,9 +101,9 @@ class Dashboard extends Component {
               onClick={this.handleArchivedListsVisibility}
               type="button"
             >
-              {` ${showArchivedLists ? 'hide' : 'show'} archived lists`}
+              {` ${areArchivedListsVisible ? 'hide' : 'show'} archived lists`}
             </button>
-            {showArchivedLists && (
+            {areArchivedListsVisible && (
               <GridList
                 color={CardColorType.ARCHIVED}
                 icon={<ListIcon />}
@@ -128,28 +113,13 @@ class Dashboard extends Component {
                 route={Routes.LIST}
               />
             )}
-            <GridList
-              color={CardColorType.BROWN}
-              icon={<CohortIcon />}
-              items={cohorts}
-              name="Cohorts"
-              onAddNew={this.handleDialogContext(
-                FormDialogContext.CREATE_COHORT
-              )}
-              placeholder="There are no cohorts yet!"
-              route={Routes.COHORT}
-            />
           </div>
         </div>
-        {dialogContext && (
+        {isDialogVisible && (
           <FormDialog
-            onCancel={this.handleDialogContext(null)}
+            onCancel={this.handleDialogVisibility}
             onConfirm={this.handleConfirm}
-            title={`Add new ${
-              dialogContext === FormDialogContext.CREATE_COHORT
-                ? 'cohort'
-                : 'list'
-            }`}
+            title="Add new cohort"
           />
         )}
       </Fragment>
@@ -159,32 +129,28 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
-  cohorts: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
-  lists: PropTypes.objectOf(PropTypes.object),
+  privateLists: PropTypes.objectOf(PropTypes.object),
+  cohortLists: PropTypes.objectOf(PropTypes.object),
 
-  createCohort: PropTypes.func.isRequired,
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
-  fetchCohortsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
-  cohorts: getActiveCohorts(state),
+  cohortLists: getCohortLists(state),
   currentUser: getCurrentUser(state),
-  lists: getActiveLists(state)
+  privateLists: getPrivateLists(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    createCohort,
     createList,
     fetchArchivedListsMetaData,
-    fetchCohortsMetaData,
     fetchListsMetaData,
     removeArchivedListsMetaData
   }

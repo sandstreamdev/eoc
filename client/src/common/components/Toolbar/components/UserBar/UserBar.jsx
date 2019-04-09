@@ -2,12 +2,12 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
 import { logoutCurrentUser } from 'modules/authorization/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import UserIcon from 'assets/images/user-solid.svg';
-import LogoutIcon from 'assets/images/sign-out.svg';
+import { LogoutIcon, UserIcon, CohortIcon } from 'assets/images/icons';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
 class UserBar extends Component {
@@ -71,11 +71,13 @@ class UserBar extends Component {
             <ul className="user-bar__menu">
               <li className="user-bar__menu-item">
                 {`Logged as:  ${name}`}
-                <img
-                  alt="User Icon"
-                  className="user-bar__menu-icon"
-                  src={UserIcon}
-                />
+                <UserIcon />
+              </li>
+              <li className="user-bar__menu-item">
+                <Link to="/cohorts">
+                  My cohorts
+                  <CohortIcon />
+                </Link>
               </li>
               <li className="user-bar__menu-item">
                 <button
@@ -84,11 +86,7 @@ class UserBar extends Component {
                   type="button"
                 >
                   Logout
-                  <img
-                    alt="Log out"
-                    className="user-bar__menu-icon"
-                    src={LogoutIcon}
-                  />
+                  <LogoutIcon />
                 </button>
               </li>
             </ul>

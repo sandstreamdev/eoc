@@ -1,4 +1,4 @@
-export const COMPANY_NAME = 'Sandstream Development';
+export const COMPANY_NAME = 'Sandstream Development Sp. z o.o.';
 export const COMPANY_PAGE_URL = 'https://sandstream.pl/';
 export const ENDPOINT_URL = 'http://localhost:8080';
 export const FRONTEND_URL = 'http://localhost:3000';
