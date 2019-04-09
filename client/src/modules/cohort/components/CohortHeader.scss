@@ -15,6 +15,14 @@
     align-items: center;
   }
 
+  &__description {
+    font-size: 16px;
+    line-height: 1.2;
+    color: $text-light;
+    padding: 8px 0 16px;
+    cursor: pointer;
+  }
+
   &__heading {
     padding: 8px 0;
     display: inline-flex;
@@ -24,22 +32,6 @@
     line-height: 1;
     color: $text-normal;
     cursor: pointer;
-  }
-
-  &__description {
-    font-size: 16px;
-    line-height: 1.2;
-    color: $text-light;
-    padding: 8px 0 16px;
-    cursor: pointer;
-  }
-
-  &__name-input {
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1;
-    color: #646c73;
-    margin-bottom: 8px;
   }
 
   &__button {
