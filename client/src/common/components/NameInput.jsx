@@ -10,21 +10,21 @@ class NameInput extends PureComponent {
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyPress);
-    document.addEventListener('mousedown', this.handleClick);
+    document.addEventListener('mousedown', this.onClick);
 
     this.nameInput.current.focus();
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyPress);
-    document.removeEventListener('mousedown', this.handleClick);
+    document.removeEventListener('mousedown', this.onClick);
   }
 
-  handleClick = event => {
-    const { handleClick } = this.props;
+  onClick = event => {
+    const { onClick } = this.props;
     const isClickedOutside = !this.nameInput.current.contains(event.target);
 
-    handleClick(event, isClickedOutside);
+    onClick(event, isClickedOutside);
   };
 
   onKeyPress = event => {
@@ -52,7 +52,7 @@ class NameInput extends PureComponent {
 NameInput.propTypes = {
   name: PropTypes.string.isRequired,
 
-  handleClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
   onKeyPress: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired
 };

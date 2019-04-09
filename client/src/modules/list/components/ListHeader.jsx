@@ -143,7 +143,7 @@ class ListHeader extends PureComponent {
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
         description={description}
-        handleClick={this.handleClick}
+        onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
       />
@@ -175,8 +175,8 @@ class ListHeader extends PureComponent {
 
     return isNameInputVisible ? (
       <NameInput
-        handleClick={this.handleClick}
         name={name}
+        onClick={this.handleClick}
         onKeyPress={this.handleKeyPress}
         onNameChange={this.handleNameChange}
       />
