@@ -9,14 +9,14 @@ class NameInput extends PureComponent {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyPress);
+    document.addEventListener('keydown', this.onKeyPress);
     document.addEventListener('mousedown', this.handleClick);
 
     this.nameInput.current.focus();
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyPress);
+    document.removeEventListener('keydown', this.onKeyPress);
     document.removeEventListener('mousedown', this.handleClick);
   }
 
@@ -27,19 +27,19 @@ class NameInput extends PureComponent {
     handleClick(event, isClickedOutside);
   };
 
-  handleKeyPress = event => {
-    const { handleKeyPress } = this.props;
+  onKeyPress = event => {
+    const { onKeyPress } = this.props;
 
-    handleKeyPress(event);
+    onKeyPress(event);
   };
 
   render() {
-    const { name, handleNameChange } = this.props;
+    const { name, onNameChange } = this.props;
     return (
       <input
         className="name-input primary-input"
         name="name"
-        onChange={handleNameChange}
+        onChange={onNameChange}
         ref={this.nameInput}
         type="text"
         value={name}
@@ -53,8 +53,8 @@ NameInput.propTypes = {
   name: PropTypes.string.isRequired,
 
   handleClick: PropTypes.func.isRequired,
-  handleKeyPress: PropTypes.func.isRequired,
-  handleNameChange: PropTypes.func.isRequired
+  onKeyPress: PropTypes.func.isRequired,
+  onNameChange: PropTypes.func.isRequired
 };
 
 export default NameInput;

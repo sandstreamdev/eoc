@@ -9,14 +9,14 @@ class DescriptionTextarea extends PureComponent {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyPress);
+    document.addEventListener('keydown', this.onKeyPress);
     document.addEventListener('mousedown', this.handleClick);
 
     this.descriptionTextarea.current.focus();
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyPress);
+    document.removeEventListener('keydown', this.onKeyPress);
     document.removeEventListener('mousedown', this.handleClick);
   }
 
@@ -29,19 +29,19 @@ class DescriptionTextarea extends PureComponent {
     handleClick(event, isClickedOutside);
   };
 
-  handleKeyPress = event => {
-    const { handleKeyPress } = this.props;
+  onKeyPress = event => {
+    const { onKeyPress } = this.props;
 
-    handleKeyPress(event);
+    onKeyPress(event);
   };
 
   render() {
-    const { description, handleDescriptionChange } = this.props;
+    const { description, onDescriptionChange } = this.props;
     return (
       <textarea
         className="desc-textarea primary-textarea"
         name="description"
-        onChange={handleDescriptionChange}
+        onChange={onDescriptionChange}
         ref={this.descriptionTextarea}
         type="text"
         value={description}
@@ -54,8 +54,8 @@ DescriptionTextarea.propTypes = {
   description: PropTypes.string.isRequired,
 
   handleClick: PropTypes.func.isRequired,
-  handleDescriptionChange: PropTypes.func.isRequired,
-  handleKeyPress: PropTypes.func.isRequired
+  onDescriptionChange: PropTypes.func.isRequired,
+  onKeyPress: PropTypes.func.isRequired
 };
 
 export default DescriptionTextarea;

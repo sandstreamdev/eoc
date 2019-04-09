@@ -140,35 +140,31 @@ class CohortHeader extends PureComponent {
   renderDescription = () => {
     const { description, isDescriptionTextareaVisible } = this.state;
 
-    return (
+    return isDescriptionTextareaVisible ? (
+      <DescriptionTextarea
+        description={description}
+        handleClick={this.handleClick}
+        onDescriptionChange={this.handleDescriptionChange}
+        onKeyPress={this.handleKeyPress}
+      />
+    ) : (
       <Fragment>
-        {isDescriptionTextareaVisible ? (
-          <DescriptionTextarea
-            description={description}
-            handleDescriptionChange={this.handleDescriptionChange}
-            handleClick={this.handleClick}
-            handleKeyPress={this.handleKeyPress}
-          />
+        {description ? (
+          <p
+            className="cohort-header__description"
+            data-id="description"
+            onClick={this.handleDescriptionTextareaVisibility}
+          >
+            {description}
+          </p>
         ) : (
-          <Fragment>
-            {description ? (
-              <p
-                className="cohort-header__description"
-                data-id="description"
-                onClick={this.handleDescriptionTextareaVisibility}
-              >
-                {description}
-              </p>
-            ) : (
-              <button
-                className="cohort-header__button link-button"
-                onClick={this.handleDescriptionTextareaVisibility}
-                type="button"
-              >
-                Add description
-              </button>
-            )}
-          </Fragment>
+          <button
+            className="cohort-header__button link-button"
+            onClick={this.handleDescriptionTextareaVisibility}
+            type="button"
+          >
+            Add description
+          </button>
         )}
       </Fragment>
     );
@@ -177,24 +173,20 @@ class CohortHeader extends PureComponent {
   renderName = () => {
     const { name, isNameInputVisible } = this.state;
 
-    return (
-      <Fragment>
-        {isNameInputVisible ? (
-          <NameInput
-            handleClick={this.handleClick}
-            handleKeyPress={this.handleKeyPress}
-            handleNameChange={this.handleNameChange}
-            name={name}
-          />
-        ) : (
-          <h1
-            className="cohort-header__heading"
-            onClick={this.handleNameInputVisibility}
-          >
-            {name}
-          </h1>
-        )}
-      </Fragment>
+    return isNameInputVisible ? (
+      <NameInput
+        handleClick={this.handleClick}
+        name={name}
+        onKeyPress={this.handleKeyPress}
+        onNameChange={this.handleNameChange}
+      />
+    ) : (
+      <h1
+        className="cohort-header__heading"
+        onClick={this.handleNameInputVisibility}
+      >
+        {name}
+      </h1>
     );
   };
 
