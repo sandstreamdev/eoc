@@ -40,7 +40,7 @@ class MemberDetails extends PureComponent {
       isConfirmVisible: false,
       isMemberInfoVisible: false,
       isOwnerInfoVisible: false,
-      checkedRole: isOwner ? UserRoles.OWNER : UserRoles.MEMBER
+      selectedRole: isOwner ? UserRoles.OWNER : UserRoles.MEMBER
     };
   }
 
@@ -109,7 +109,7 @@ class MemberDetails extends PureComponent {
     }
   };
 
-  handleCohortMemberRoleChange = checkedRole => {
+  handleCohortMemberRoleChange = selectedRole => {
     const {
       changeRoleInCohort,
       match: {
@@ -118,12 +118,12 @@ class MemberDetails extends PureComponent {
       _id: userId
     } = this.props;
 
-    changeRoleInCohort(id, userId, checkedRole)
-      .then(this.setState({ checkedRole }))
+    changeRoleInCohort(id, userId, selectedRole)
+      .then(this.setState({ selectedRole }))
       .catch(noOp);
   };
 
-  handleListMemberRoleChange = checkedRole => {
+  handleListMemberRoleChange = selectedRole => {
     const {
       changeRoleInList,
       match: {
@@ -132,13 +132,13 @@ class MemberDetails extends PureComponent {
       _id: userId
     } = this.props;
 
-    changeRoleInList(id, userId, checkedRole)
-      .then(this.setState({ checkedRole }))
+    changeRoleInList(id, userId, selectedRole)
+      .then(this.setState({ selectedRole }))
       .catch(noOp);
   };
 
   renderChangeRoleOption = (role, isInfoVisible) => {
-    const { checkedRole } = this.state;
+    const { selectedRole } = this.state;
     const { route } = this.props;
 
     const label = role === UserRoles.OWNER ? 'owner' : 'member';
@@ -161,7 +161,7 @@ class MemberDetails extends PureComponent {
             </span>
           </button>
           <input
-            checked={checkedRole === role}
+            checked={selectedRole === role}
             id={`${label}Role`}
             name="role"
             onChange={this.handleChangingPermissions}

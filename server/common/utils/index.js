@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 const _map = require('lodash/map');
+const _isArray = require('lodash/isArray');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -88,7 +89,7 @@ const checkIfCohortMember = (cohort, userId) => {
 
 const checkIfGuest = (data, userId) => {
   if (data) {
-    return data.constructor === Array
+    return _isArray(data)
       ? !data.some(member => member._id.equals(userId))
       : ![...data.memberIds, ...data.ownerIds].some(id => id.equals(userId));
   }

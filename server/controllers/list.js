@@ -653,9 +653,9 @@ const addMember = (req, resp) => {
             const { _id, avatarUrl, displayName } = doc;
             return { _id, avatarUrl, cohort, displayName, ownerIds };
           })
-          .catch(() =>
-            resp.status(400).send({ message: 'User data not found.' })
-          );
+          .catch(() => {
+            throw new BadRequestException('User data not found.');
+          });
       }
 
       return resp
@@ -689,11 +689,11 @@ const addMember = (req, resp) => {
             .send({ message: 'User is already a member.' });
         })
         .catch(() => {
-          throw new NotFoundException('List data not found.');
+          throw new BadRequestException('List data not found.');
         });
     })
     .catch(err => {
-      if (err instanceof NotFoundException) {
+      if (err instanceof BadRequestException) {
         const { status, message } = err;
 
         return resp.status(status).send({ message });
