@@ -420,7 +420,7 @@ const updateListById = (req, resp) => {
       doc
         ? resp
             .status(200)
-            .send({ message: `List "${name}" successfully updated.` })
+            .send({ message: `List "${doc.name}" successfully updated.` })
         : resp.status(404).send({ message: 'List data not found.' });
     }
   );

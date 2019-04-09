@@ -1,17 +1,17 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 
-import { CohortIcon } from 'assets/images/icons';
-import { updateCohort } from '../model/actions';
+import { ListIcon } from 'assets/images/icons';
+import { updateList } from 'modules/list/model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 
-class CohortHeader extends PureComponent {
+class ListHeader extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -27,6 +27,45 @@ class CohortHeader extends PureComponent {
       name
     };
   }
+
+  handleNameInputVisibility = () =>
+    this.setState(({ isNameInputVisible }) => ({
+      isNameInputVisible: !isNameInputVisible
+    }));
+
+  handleDescriptionTextareaVisibility = () =>
+    this.setState(({ isDescriptionTextareaVisible }) => ({
+      isDescriptionTextareaVisible: !isDescriptionTextareaVisible
+    }));
+
+  handleNameChange = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState({ name: value });
+  };
+
+  handleDescriptionChange = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState({ description: value });
+  };
+
+  handleKeyPress = event => {
+    const { isDescriptionTextareaVisible } = this.state;
+    const { code } = event;
+
+    if (code === 'Enter' || code === 'Escape') {
+      const action = isDescriptionTextareaVisible
+        ? this.handleDescriptionUpdate
+        : this.handleNameUpdate;
+
+      action();
+    }
+  };
 
   handleClick = (event, isClickedOutside) => {
     const {
@@ -47,55 +86,15 @@ class CohortHeader extends PureComponent {
     }
   };
 
-  handleKeyPress = event => {
-    const { isDescriptionTextareaVisible } = this.state;
-    const { code } = event;
-
-    if (code === 'Enter' || code === 'Escape') {
-      const action = isDescriptionTextareaVisible
-        ? this.handleDescriptionUpdate
-        : this.handleNameUpdate;
-
-      action();
-    }
-  };
-
-  handleNameInputVisibility = () =>
-    this.setState(({ isNameInputVisible }) => ({
-      isNameInputVisible: !isNameInputVisible
-    }));
-
-  handleDescriptionTextareaVisibility = () =>
-    this.setState(({ isDescriptionTextareaVisible }) => ({
-      isDescriptionTextareaVisible: !isDescriptionTextareaVisible
-    }));
-
-  handleNameChange = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ name: value.trim() });
-  };
-
-  handleDescriptionChange = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ description: value });
-  };
-
   handleNameUpdate = () => {
+    const { name } = this.state;
     const {
-      updateCohort,
       details,
       match: {
         params: { id }
-      }
+      },
+      updateList
     } = this.props;
-    const { name } = this.state;
-    const nameToUpdate = name.trim();
     const { name: previousName } = details;
 
     if (previousName === name) {
@@ -103,21 +102,21 @@ class CohortHeader extends PureComponent {
       return;
     }
 
-    if (nameToUpdate.length >= 1) {
-      updateCohort(id, { name });
+    if (name.trim().length >= 1) {
+      updateList(id, { name });
       this.setState({ isNameInputVisible: false });
     }
   };
 
   handleDescriptionUpdate = () => {
+    const { description } = this.state;
     const {
-      updateCohort,
       details,
       match: {
         params: { id }
-      }
+      },
+      updateList
     } = this.props;
-    const { description } = this.state;
     const { description: previousDescription } = details;
 
     if (previousDescription.trim() === description.trim()) {
@@ -129,12 +128,12 @@ class CohortHeader extends PureComponent {
     }
 
     if (_isEmpty(_trim(description))) {
-      updateCohort(id, { description: '' });
+      updateList(id, { description: '' });
       this.setState({ description: '' });
       return;
     }
 
-    updateCohort(id, { description });
+    updateList(id, { description });
     this.setState({ isDescriptionTextareaVisible: false });
   };
 
@@ -183,7 +182,7 @@ class CohortHeader extends PureComponent {
       />
     ) : (
       <h1
-        className="cohort-header__heading"
+        className="list-header__heading"
         onClick={this.handleNameInputVisibility}
       >
         {name}
@@ -193,29 +192,27 @@ class CohortHeader extends PureComponent {
 
   render() {
     return (
-      <header className="cohort-header">
-        <div className="cohort-header__top">
-          <CohortIcon />
+      <div className="list-header">
+        <div className="list-header__top">
+          <ListIcon />
           {this.renderName()}
         </div>
         {this.renderDescription()}
-      </header>
+      </div>
     );
   }
 }
 
-CohortHeader.propTypes = {
+ListHeader.propTypes = {
   details: PropTypes.objectOf(PropTypes.any).isRequired,
   match: RouterMatchPropType.isRequired,
 
-  updateCohort: PropTypes.func.isRequired
+  updateList: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
     null,
-    {
-      updateCohort
-    }
-  )(CohortHeader)
+    { updateList }
+  )(ListHeader)
 );
