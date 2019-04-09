@@ -3,6 +3,7 @@ const {
   checkRole,
   filter,
   isValidMongoId,
+  responseWithCohort,
   responseWithCohorts
 } = require('../common/utils');
 const List = require('../models/list.model');
@@ -21,16 +22,18 @@ const createCohort = (req, resp) => {
     ownerIds: userId
   });
 
-  cohort.save((err, doc) =>
-    err
-      ? resp
-          .status(400)
-          .send({ message: 'Cohort not saved. Please try again.' })
-      : resp
-          .location(`/cohorts/${doc._id}`)
-          .status(201)
-          .send(doc)
-  );
+  cohort.save((err, doc) => {
+    if (err) {
+      return resp
+        .status(400)
+        .send({ message: 'Cohort not saved. Please try again.' });
+    }
+
+    resp
+      .location(`/cohorts/${doc._id}`)
+      .status(201)
+      .send(responseWithCohort(doc, userId));
+  });
 };
 
 const getCohortsMetaData = (req, resp) => {
@@ -42,7 +45,7 @@ const getCohortsMetaData = (req, resp) => {
     $or: [{ ownerIds: userId }, { memberIds: userId }],
     isArchived: false
   })
-    .select('_id name description favIds')
+    .select('_id name description favIds memberIds ownerIds')
     .sort({ createdAt: -1 })
     .exec()
     .then(docs =>
@@ -76,11 +79,13 @@ const getArchivedCohortsMetaData = (req, resp) => {
             'An error occurred while fetching the archived cohorts data. Please try again.'
         });
       }
+
       if (!docs) {
         return resp
           .status(404)
           .send({ message: 'No archived cohorts data found.' });
       }
+
       resp.status(200).send(responseWithCohorts(docs, userId));
     }
   );
