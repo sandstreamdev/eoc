@@ -13,7 +13,6 @@ import {
 import {
   getArchivedLists,
   getCohortLists,
-  getIsFetchingLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
@@ -26,13 +25,20 @@ import { Routes } from 'common/constants/enums';
 class Dashboard extends Component {
   state = {
     areArchivedListsVisible: false,
-    isDialogVisible: false
+    isDialogVisible: false,
+    pendingForLists: false,
+    pendingForArchivedLists: false,
+    pendingForListCreation: false
   };
 
   componentDidMount() {
     const { fetchListsMetaData } = this.props;
 
-    fetchListsMetaData();
+    this.setState({ pendingForLists: true }, () => {
+      fetchListsMetaData()
+        .then(() => this.setState({ pendingForLists: false }))
+        .catch(() => this.setState({ pendingForLists: false }));
+    });
   }
 
   handleDialogVisibility = () =>
@@ -46,8 +52,18 @@ class Dashboard extends Component {
       currentUser: { id: userId }
     } = this.props;
     const data = { description, userId, name };
-    createList(data);
-    this.handleDialogVisibility();
+
+    this.setState({ pendingForListCreation: true }, () => {
+      createList(data)
+        .then(() => {
+          this.setState({ pendingForListCreation: false });
+          this.handleDialogVisibility();
+        })
+        .catch(() => {
+          this.setState({ pendingForListCreation: false });
+          this.handleDialogVisibility();
+        });
+    });
   };
 
   handleArchivedListsVisibility = () =>
@@ -64,16 +80,27 @@ class Dashboard extends Component {
       fetchArchivedListsMetaData,
       removeArchivedListsMetaData
     } = this.props;
-    const action = areArchivedListsVisible
-      ? fetchArchivedListsMetaData
-      : removeArchivedListsMetaData;
 
-    action();
+    if (areArchivedListsVisible) {
+      this.setState({ pendingForArchivedLists: true }, () => {
+        fetchArchivedListsMetaData()
+          .then(() => this.setState({ pendingForArchivedLists: false }))
+          .catch(() => this.setState({ pendingForArchivedLists: false }));
+      });
+    } else {
+      removeArchivedListsMetaData();
+    }
   };
 
   render() {
-    const { archivedLists, cohortLists, isFetching, privateLists } = this.props;
-    const { areArchivedListsVisible, isDialogVisible } = this.state;
+    const { archivedLists, cohortLists, privateLists } = this.props;
+    const {
+      areArchivedListsVisible,
+      isDialogVisible,
+      pendingForArchivedLists,
+      pendingForListCreation,
+      pendingForLists
+    } = this.state;
 
     return (
       <Fragment>
@@ -83,20 +110,20 @@ class Dashboard extends Component {
             <GridList
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
-              isFetching={isFetching && !areArchivedListsVisible}
               items={privateLists}
               name="Private Lists"
               onAddNew={this.handleDialogVisibility}
+              pending={pendingForLists}
               placeholder="There are no lists yet!"
               route={Routes.LIST}
             />
             <GridList
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
-              isFetching={isFetching && !areArchivedListsVisible}
               items={cohortLists}
-              name="Cohort's Lists"
+              name="Cohorts' Lists"
               placeholder="There are no lists yet!"
+              pending={pendingForLists}
               route={Routes.LIST}
             />
             <button
@@ -110,7 +137,7 @@ class Dashboard extends Component {
               <GridList
                 color={CardColorType.ARCHIVED}
                 icon={<ListIcon />}
-                isFetching={isFetching}
+                pending={pendingForArchivedLists}
                 items={archivedLists}
                 name="Archived lists"
                 placeholder="You have no archived lists!"
@@ -123,7 +150,8 @@ class Dashboard extends Component {
           <FormDialog
             onCancel={this.handleDialogVisibility}
             onConfirm={this.handleConfirm}
-            title="Add new cohort"
+            pending={pendingForListCreation}
+            title={`${pendingForListCreation ? 'Adding' : 'Add'} new list`}
           />
         )}
       </Fragment>
@@ -135,7 +163,6 @@ Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
-  isFetching: PropTypes.bool.isRequired,
   privateLists: PropTypes.objectOf(PropTypes.object),
 
   createList: PropTypes.func.isRequired,
@@ -148,7 +175,6 @@ const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
   cohortLists: getCohortLists(state),
   currentUser: getCurrentUser(state),
-  isFetching: getIsFetchingLists(state),
   privateLists: getPrivateLists(state)
 });
 

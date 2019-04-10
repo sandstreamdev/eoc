@@ -55,10 +55,10 @@ class GridList extends PureComponent {
     const {
       color,
       icon,
-      isFetching,
       items,
       name,
       onAddNew,
+      pending,
       placeholder,
       route
     } = this.props;
@@ -70,7 +70,7 @@ class GridList extends PureComponent {
           {name}
         </h2>
         <div className="grid-list__body">
-          {isFetching ? (
+          {pending ? (
             <Preloader />
           ) : (
             <Fragment>
@@ -124,9 +124,9 @@ GridList.propTypes = {
     push: PropTypes.func
   }),
   icon: PropTypes.node.isRequired,
-  isFetching: PropTypes.bool.isRequired,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   name: PropTypes.string.isRequired,
+  pending: PropTypes.bool.isRequired,
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
 

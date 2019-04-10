@@ -24,13 +24,21 @@ import { Routes } from 'common/constants/enums';
 class Cohorts extends Component {
   state = {
     areArchivedCohortsVisible: false,
-    isDialogVisible: false
+    isDialogVisible: false,
+    pendingForCohortCreation: false,
+    pendingForCohorts: false,
+    pendingForArchivedCohorts: false
   };
 
   componentDidMount() {
     const { fetchCohortsMetaData } = this.props;
 
     fetchCohortsMetaData();
+    this.setState({ pendingForCohorts: true }, () => {
+      fetchCohortsMetaData()
+        .then(() => this.setState({ pendingForCohorts: false }))
+        .catch(() => this.setState({ pendingForCohorts: false }));
+    });
   }
 
   handleDialogVisibility = () =>
@@ -44,8 +52,18 @@ class Cohorts extends Component {
       currentUser: { id: userId }
     } = this.props;
     const data = { description, userId, name };
-    createCohort(data);
-    this.handleDialogVisibility();
+
+    this.setState({ pendingForCohortCreation: true }, () => {
+      createCohort(data)
+        .then(() => {
+          this.setState({ pendingForCohortCreation: false });
+          this.handleDialogVisibility();
+        })
+        .catch(() => {
+          this.setState({ pendingForCohortCreation: false });
+          this.handleDialogVisibility();
+        });
+    });
   };
 
   handleArchivedCohortsVisibility = () =>
@@ -62,15 +80,27 @@ class Cohorts extends Component {
       fetchArchivedCohortsMetaData,
       removeArchivedCohortsMetaData
     } = this.props;
-    const action = areArchivedCohortsVisible
-      ? fetchArchivedCohortsMetaData
-      : removeArchivedCohortsMetaData;
-    action();
+
+    if (areArchivedCohortsVisible) {
+      this.setState({ pendingForArchivedCohorts: true }, () => {
+        fetchArchivedCohortsMetaData()
+          .then(() => this.setState({ pendingForArchivedCohorts: false }))
+          .catch(() => this.setState({ pendingForArchivedCohorts: false }));
+      });
+    } else {
+      removeArchivedCohortsMetaData();
+    }
   };
 
   render() {
     const { archivedCohorts, cohorts } = this.props;
-    const { areArchivedCohortsVisible, isDialogVisible } = this.state;
+    const {
+      areArchivedCohortsVisible,
+      isDialogVisible,
+      pendingForArchivedCohorts,
+      pendingForCohortCreation,
+      pendingForCohorts
+    } = this.state;
 
     return (
       <Fragment>
@@ -83,6 +113,7 @@ class Cohorts extends Component {
               items={cohorts}
               name="Cohorts"
               onAddNew={this.handleDialogVisibility}
+              pending={pendingForCohorts}
               placeholder="There are no cohorts yet!"
               route={Routes.COHORT}
             />
@@ -101,6 +132,7 @@ class Cohorts extends Component {
                 icon={<CohortIcon />}
                 items={archivedCohorts}
                 name="Archived cohorts"
+                pending={pendingForArchivedCohorts}
                 placeholder="You have no archived cohorts!"
                 route={Routes.COHORT}
               />
@@ -111,7 +143,8 @@ class Cohorts extends Component {
           <FormDialog
             onCancel={this.handleDialogVisibility}
             onConfirm={this.handleConfirm}
-            title="Add new cohort"
+            pending={pendingForCohortCreation}
+            title={`${pendingForCohortCreation ? 'Adding' : 'Add'} new cohort`}
           />
         )}
       </Fragment>
