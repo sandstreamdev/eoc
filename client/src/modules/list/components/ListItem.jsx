@@ -23,19 +23,24 @@ class ListItem extends PureComponent {
   hideDetails = () => this.setState({ areDetailsVisible: false });
 
   renderDetails = () => {
-    
-    const{areDetailsVisible} = this.state;
+    const { areDetailsVisible } = this.state;
 
     return (
       <Fragment>
         <div className="list-item__info">
-      
           <textarea
             className="list-item__textarea primary-textarea"
             placeholder="Description"
           />
           <div className="list-item__info-details">
-            <input type="number" placeholder="Enter a price" min="0" max="10000" step="1"  name="price"  />
+            <input
+              type="number"
+              placeholder="Enter a price"
+              min="0"
+              max="10000"
+              step="1"
+              name="price"
+            />
             <input
               type="text"
               className="list-item__link primary-input"
