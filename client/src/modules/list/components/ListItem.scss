@@ -133,4 +133,12 @@
       background-position: center;
     }
   }
+
+  &__info {
+    display: flex;
+
+    textarea {
+      margin-right: 16px;
+    }
+  }
 }
