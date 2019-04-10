@@ -3,22 +3,20 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import Toolbar, { ToolbarItem, ToolbarLink } from 'common/components/Toolbar';
+import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
-import { getList, getItems } from 'modules/list/model/selectors';
+import { getList, getItems, getMembers } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/InputBar';
-import {
-  archiveList,
-  fetchListData,
-  updateList
-} from 'modules/list/model/actions';
+import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
-import FormDialog from 'common/components/FormDialog';
-import { CohortIcon, EditIcon, ListIcon } from 'assets/images/icons';
+import { CohortIcon } from 'assets/images/icons';
 import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
+import MembersBox from 'common/components/Members';
+import { Routes } from 'common/constants/enums';
+import ListHeader from './components/ListHeader';
 
 export const ListType = Object.freeze({
   PRIVATE: 'private',
@@ -27,7 +25,8 @@ export const ListType = Object.freeze({
 
 class List extends Component {
   state = {
-    dialogContext: null
+    dialogContext: null,
+    isMembersBoxVisible: false
   };
 
   componentDidMount() {
@@ -53,17 +52,6 @@ class List extends Component {
       .catch(noOp);
   };
 
-  updateListHandler = listId => (name, description) => {
-    const { updateList } = this.props;
-    const dataToUpdate = {};
-
-    name ? (dataToUpdate.name = name) : null;
-    description ? (dataToUpdate.description = description) : null;
-
-    updateList(listId, dataToUpdate);
-    this.hideDialog();
-  };
-
   checkIfArchived = () => {
     const { list } = this.props;
     return !list || (list && !list.isArchived);
@@ -79,24 +67,29 @@ class List extends Component {
 
   hideDialog = () => this.handleDialogContext(null)();
 
+  handleMembersBoxVisibility = () =>
+    this.setState(({ isMembersBoxVisible }) => ({
+      isMembersBoxVisible: !isMembersBoxVisible
+    }));
+
   render() {
-    const { dialogContext } = this.state;
+    const { dialogContext, isMembersBoxVisible } = this.state;
     const {
       items,
       match: {
         params: { id: listId }
       },
-      list
+      list,
+      members
     } = this.props;
 
     if (!list) {
       return null;
     }
 
-    const { cohortId, description, isArchived, name } = list;
+    const { cohortId, isArchived, isPrivate, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
-
     return (
       <Fragment>
         <Toolbar>
@@ -108,26 +101,13 @@ class List extends Component {
               title="Go back to cohort"
             />
           )}
-          {!isArchived && this.checkIfOwner() && (
-            <Fragment>
-              <ToolbarItem
-                mainIcon={<EditIcon />}
-                onClick={this.handleDialogContext(DialogContext.UPDATE)}
-                title="Edit list"
-              />
-            </Fragment>
-          )}
         </Toolbar>
         {isArchived ? (
           <ArchivedList listId={listId} name={name} />
         ) : (
           <div className="wrapper">
             <div className="list">
-              <h1 className="list__heading">
-                <ListIcon />
-                {name}
-              </h1>
-              <p className="list__description">{description}</p>
+              <ListHeader details={list} />
               <div className="list__items">
                 <ItemsContainer items={listItems}>
                   <InputBar />
@@ -141,6 +121,21 @@ class List extends Component {
                   {`Archive the "${name}" list`}
                 </button>
               </div>
+              <button
+                className="link-button"
+                onClick={this.handleMembersBoxVisibility}
+                type="button"
+              >
+                {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
+              </button>
+              {isMembersBoxVisible && (
+                <MembersBox
+                  isCurrentUserAnOwner={this.checkIfOwner()}
+                  isPrivate={isPrivate}
+                  members={members}
+                  route={Routes.LIST}
+                />
+              )}
             </div>
           </div>
         )}
@@ -149,15 +144,6 @@ class List extends Component {
             onCancel={this.hideDialog}
             onConfirm={this.archiveListHandler(listId)}
             title={`Do you really want to archive the "${name}" list?`}
-          />
-        )}
-        {dialogContext === DialogContext.UPDATE && (
-          <FormDialog
-            defaultDescription={description}
-            defaultName={name}
-            onCancel={this.hideDialog}
-            onConfirm={this.updateListHandler(listId)}
-            title="Edit list"
           />
         )}
       </Fragment>
@@ -169,20 +155,29 @@ List.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
+  members: PropTypes.objectOf(PropTypes.object),
 
   archiveList: PropTypes.func.isRequired,
-  fetchListData: PropTypes.func.isRequired,
-  updateList: PropTypes.func.isRequired
+  fetchListData: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  list: getList(state, ownProps.match.params.id),
-  items: getItems(state, ownProps.match.params.id)
-});
+const mapStateToProps = (state, ownProps) => {
+  const {
+    match: {
+      params: { id }
+    }
+  } = ownProps;
+
+  return {
+    list: getList(state, id),
+    items: getItems(state, id),
+    members: getMembers(state, id)
+  };
+};
 
 export default withRouter(
   connect(
     mapStateToProps,
-    { archiveList, fetchListData, updateList }
+    { archiveList, fetchListData }
   )(List)
 );

@@ -10,7 +10,7 @@ const MemberBox = ({ children }) => (
         boundariesElement: 'viewport',
         enabled: true,
         padding: 15,
-        priority: ['left', 'right']
+        priority: ['left', 'right', 'bottom']
       }
     }}
     placement="bottom-start"

@@ -37,16 +37,16 @@ class MemberDetails extends PureComponent {
     const { isOwner } = props;
 
     this.state = {
-      isConfirmVisible: false,
+      isConfirmationVisible: false,
       isMemberInfoVisible: false,
       isOwnerInfoVisible: false,
-      role: isOwner ? UserRoles.OWNER : UserRoles.MEMBER
+      selectedRole: isOwner ? UserRoles.OWNER : UserRoles.MEMBER
     };
   }
 
   handleConfirmationVisibility = () =>
-    this.setState(({ isConfirmVisible }) => ({
-      isConfirmVisible: !isConfirmVisible
+    this.setState(({ isConfirmationVisible }) => ({
+      isConfirmationVisible: !isConfirmationVisible
     }));
 
   handleMemberRemoving = () => {
@@ -72,6 +72,7 @@ class MemberDetails extends PureComponent {
       default:
         break;
     }
+
     onClose();
   };
 
@@ -108,7 +109,7 @@ class MemberDetails extends PureComponent {
     }
   };
 
-  handleCohortMemberRoleChange = role => {
+  handleCohortMemberRoleChange = selectedRole => {
     const {
       changeRoleInCohort,
       match: {
@@ -117,12 +118,12 @@ class MemberDetails extends PureComponent {
       _id: userId
     } = this.props;
 
-    changeRoleInCohort(id, userId, role)
-      .then(this.setState({ role }))
+    changeRoleInCohort(id, userId, selectedRole)
+      .then(this.setState({ selectedRole }))
       .catch(noOp);
   };
 
-  handleListMemberRoleChange = role => {
+  handleListMemberRoleChange = selectedRole => {
     const {
       changeRoleInList,
       match: {
@@ -131,33 +132,156 @@ class MemberDetails extends PureComponent {
       _id: userId
     } = this.props;
 
-    changeRoleInList(id, userId, role)
-      .then(this.setState({ role }))
+    changeRoleInList(id, userId, selectedRole)
+      .then(this.setState({ selectedRole }))
       .catch(noOp);
   };
 
+  renderChangeRoleOption = (role, isInfoVisible) => {
+    const { selectedRole } = this.state;
+    const { route } = this.props;
+
+    const label = role === UserRoles.OWNER ? 'owner' : 'member';
+
+    return (
+      <Fragment>
+        <label htmlFor={`${label}Role`}>{`Change to ${label}`}</label>
+        <span>
+          <button
+            className="member-details__info-button"
+            onClick={
+              role === UserRoles.OWNER
+                ? this.handleOwnerInfoVisibility
+                : this.handleMemberInfoVisibility
+            }
+            type="button"
+          >
+            <span>
+              <InfoIcon />
+            </span>
+          </button>
+          <input
+            checked={selectedRole === role}
+            id={`${label}Role`}
+            name="role"
+            onChange={this.handleChangingPermissions}
+            type="radio"
+            value={role}
+          />
+        </span>
+        {isInfoVisible && (
+          <p className="member-details__role-description">
+            {infoText[route][role]}
+          </p>
+        )}
+      </Fragment>
+    );
+  };
+
+  renderRemoveOption = () => {
+    const { isConfirmationVisible } = this.state;
+    const { displayName } = this.props;
+
+    return isConfirmationVisible ? (
+      <div className="member-details__confirmation">
+        <h4>{`Do you really want to remove ${displayName}?`}</h4>
+        <button
+          className="primary-button"
+          onClick={this.handleMemberRemoving}
+          type="button"
+        >
+          Confirm
+        </button>
+        <button
+          className="primary-button"
+          onClick={this.handleConfirmationVisibility}
+          type="button"
+        >
+          Cancel
+        </button>
+      </div>
+    ) : (
+      <button
+        className="member-details__button primary-button"
+        onClick={this.handleConfirmationVisibility}
+        type="button"
+      >
+        Remove user
+      </button>
+    );
+  };
+
+  renderAvatar = () => {
+    const { avatarUrl, displayName } = this.props;
+
+    return avatarUrl ? (
+      <img
+        alt={`${displayName} avatar`}
+        className="member-details__image"
+        src={avatarUrl}
+      />
+    ) : (
+      <UserIcon />
+    );
+  };
+
+  renderHeader = () => {
+    const { role } = this.state;
+    const { displayName } = this.props;
+
+    return (
+      <header className="member-details__header">
+        <div className="member-details__avatar">{this.renderAvatar()}</div>
+        <div>
+          <h3 className="member-details__name">{displayName}</h3>
+          <p className="member-details__role">
+            {`${role === UserRoles.OWNER ? 'owner' : 'member'}`}
+          </p>
+        </div>
+      </header>
+    );
+  };
+
+  renderDetails = () => {
+    const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
+    const { isGuest, isPrivate: privateList, route } = this.props;
+
+    return (
+      <ul className="member-details__panel">
+        <li className="member-details__option">
+          {this.renderChangeRoleOption(UserRoles.OWNER, isOwnerInfoVisible)}
+        </li>
+        <li className="member-details__option">
+          {this.renderChangeRoleOption(UserRoles.MEMBER, isMemberInfoVisible)}
+        </li>
+        {(route === Routes.COHORT || privateList || isGuest) && (
+          <li className="member-details__option member-details__option--removing">
+            {this.renderRemoveOption()}
+          </li>
+        )}
+      </ul>
+    );
+  };
+
+  renderMessage = () => (
+    <p className="member-details__notice">
+      You cannot edit your own settings here.
+    </p>
+  );
+
   render() {
     const {
-      isConfirmVisible,
-      isOwnerInfoVisible,
-      isMemberInfoVisible,
-      role
-    } = this.state;
-    const {
       _id: userId,
-      avatarUrl,
       currentUser: { id: currentUserId },
-      displayName,
-      isCurrentOwner,
-      onClose,
-      route
+      isCurrentUserAnOwner,
+      onClose
     } = this.props;
 
     return (
       <Fragment>
         <div
           className={classNames('member-details', {
-            'member-details--flexible': !isCurrentOwner
+            'member-details--flexible': !isCurrentUserAnOwner
           })}
         >
           <button
@@ -168,119 +292,13 @@ class MemberDetails extends PureComponent {
             <CloseIcon />
           </button>
           <div className="member-details__details">
-            <header className="member-details__heading">
-              <div className="member-details__avatar">
-                {avatarUrl ? (
-                  <img
-                    alt={`${displayName} avatar`}
-                    className="member-details__image"
-                    src={avatarUrl}
-                  />
-                ) : (
-                  <UserIcon />
-                )}
-              </div>
-              <div>
-                <h3 className="member-details__name">{displayName}</h3>
-                <p className="member-details__role">
-                  {`${role === UserRoles.OWNER ? 'owner' : 'member'}`}
-                </p>
-              </div>
-            </header>
-            {isCurrentOwner && userId !== currentUserId && (
-              <Fragment>
-                <ul className="member-details__panel">
-                  <li className="member-details__option">
-                    <label htmlFor="ownerRole">Change to owner</label>
-                    <span>
-                      <button
-                        className="member-details__info-button"
-                        onClick={this.handleOwnerInfoVisibility}
-                        type="button"
-                      >
-                        <span>
-                          <InfoIcon />
-                        </span>
-                      </button>
-                      <input
-                        checked={role === UserRoles.OWNER}
-                        id="ownerRole"
-                        name="role"
-                        onChange={this.handleChangingPermissions}
-                        type="radio"
-                        value={UserRoles.OWNER}
-                      />
-                    </span>
-                    {isOwnerInfoVisible && (
-                      <p className="member-details__role-description">
-                        {infoText[route][UserRoles.OWNER]}
-                      </p>
-                    )}
-                  </li>
-                  <li className="member-details__option">
-                    <label htmlFor="memberRole">Change to member</label>
-                    <span>
-                      <button
-                        className="member-details__info-button"
-                        onClick={this.handleMemberInfoVisibility}
-                        type="button"
-                      >
-                        <span>
-                          <InfoIcon />
-                        </span>
-                      </button>
-                      <input
-                        checked={role === UserRoles.MEMBER}
-                        id="memberRole"
-                        name="role"
-                        onChange={this.handleChangingPermissions}
-                        type="radio"
-                        value={UserRoles.MEMBER}
-                      />
-                    </span>
-                    {isMemberInfoVisible && (
-                      <p className="member-details__role-description">
-                        {infoText[route][UserRoles.MEMBER]}
-                      </p>
-                    )}
-                  </li>
-                  <li className="member-details__option">
-                    {isConfirmVisible ? (
-                      <div className="member-details__confirmation">
-                        <h4>{`Do you really want to remove ${displayName}?`}</h4>
-                        <button
-                          className="primary-button"
-                          onClick={this.handleMemberRemoving}
-                          type="button"
-                        >
-                          Confirm
-                        </button>
-                        <button
-                          className="primary-button"
-                          onClick={this.handleConfirmationVisibility}
-                          type="button"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        className="member-details__button primary-button"
-                        onClick={this.handleConfirmationVisibility}
-                        type="button"
-                      >
-                        Remove user
-                      </button>
-                    )}
-                  </li>
-                </ul>
-              </Fragment>
-            )}
-            {isCurrentOwner && userId === currentUserId && (
-              <p className="member-details__notice">
-                You cannot edit your own settings here.
-              </p>
-            )}
+            {this.renderHeader()}
+            {isCurrentUserAnOwner &&
+              userId !== currentUserId &&
+              this.renderDetails()}
+            {isCurrentUserAnOwner &&
+              userId === currentUserId &&
+              this.renderMessage()}
           </div>
         </div>
       </Fragment>
@@ -293,8 +311,10 @@ MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
-  isCurrentOwner: PropTypes.bool.isRequired,
+  isCurrentUserAnOwner: PropTypes.bool.isRequired,
+  isGuest: PropTypes.bool,
   isOwner: PropTypes.bool,
+  isPrivate: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   route: PropTypes.string,
 

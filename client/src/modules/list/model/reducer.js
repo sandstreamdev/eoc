@@ -42,6 +42,38 @@ const items = (state, action) => {
   }
 };
 
+const membersReducer = (state, action) => {
+  switch (action.type) {
+    case ListActionTypes.ADD_MEMBER_SUCCESS: {
+      const {
+        payload: { data }
+      } = action;
+      return [...state, data];
+    }
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+      return state.filter(member => member._id !== userId);
+    }
+    case ListActionTypes.CHANGE_ROLE_SUCCESS: {
+      const {
+        payload: { userId, isOwner }
+      } = action;
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isOwner
+            }
+          : member
+      );
+    }
+    default:
+      return state;
+  }
+};
+
 const lists = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
@@ -121,6 +153,21 @@ const lists = (state = {}, action) => {
         [listId]: {
           ...state[listId],
           isFavourite
+        }
+      };
+    }
+    case ListActionTypes.ADD_MEMBER_SUCCESS:
+    case ListActionTypes.CHANGE_ROLE_SUCCESS:
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
+      const {
+        payload: { listId }
+      } = action;
+      const { members } = state[listId];
+      return {
+        ...state,
+        [listId]: {
+          ...state[listId],
+          members: membersReducer(members, action)
         }
       };
     }
