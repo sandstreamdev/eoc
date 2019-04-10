@@ -13,6 +13,7 @@ import {
 import {
   getArchivedLists,
   getCohortLists,
+  getIsFetchingLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
@@ -71,7 +72,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { archivedLists, privateLists, cohortLists } = this.props;
+    const { archivedLists, cohortLists, isFetching, privateLists } = this.props;
     const { areArchivedListsVisible, isDialogVisible } = this.state;
 
     return (
@@ -82,6 +83,7 @@ class Dashboard extends Component {
             <GridList
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
+              isFetching={isFetching && !areArchivedListsVisible}
               items={privateLists}
               name="Private Lists"
               onAddNew={this.handleDialogVisibility}
@@ -91,6 +93,7 @@ class Dashboard extends Component {
             <GridList
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
+              isFetching={isFetching && !areArchivedListsVisible}
               items={cohortLists}
               name="Cohort's Lists"
               placeholder="There are no lists yet!"
@@ -107,6 +110,7 @@ class Dashboard extends Component {
               <GridList
                 color={CardColorType.ARCHIVED}
                 icon={<ListIcon />}
+                isFetching={isFetching}
                 items={archivedLists}
                 name="Archived lists"
                 placeholder="You have no archived lists!"
@@ -129,9 +133,10 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
-  currentUser: UserPropType.isRequired,
-  privateLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
+  currentUser: UserPropType.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  privateLists: PropTypes.objectOf(PropTypes.object),
 
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
@@ -143,6 +148,7 @@ const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
   cohortLists: getCohortLists(state),
   currentUser: getCurrentUser(state),
+  isFetching: getIsFetchingLists(state),
   privateLists: getPrivateLists(state)
 });
 
