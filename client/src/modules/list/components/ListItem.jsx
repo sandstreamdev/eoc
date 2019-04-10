@@ -20,8 +20,9 @@ class ListItem extends PureComponent {
 
   handleItemToggling = (authorName, id, archived) => () => {
     const { done } = this.state;
-    this.setState({ done: !done });
     const { toggleItem } = this.props;
+
+    this.setState({ done: !done });
     toggleItem(authorName, id, archived);
   };
 
@@ -40,9 +41,7 @@ class ListItem extends PureComponent {
           <TextInput placeholder="Link to product" />
         </div>
       </div>
-      <div className="list-item__new-comment">
-        <NewComment />
-      </div>
+      <NewComment />
       <div className="list-item__comments">
         <h2 className="list-item__heading">Comments</h2>
         <div className="list-item__comment">
