@@ -2,6 +2,8 @@
   background-color: $bg-color;
   display: block;
   position: relative;
+  border-bottom: 1px solid $item-border;
+  padding: 0 16px;
 
   &:first-child {
     margin-top: 0;
@@ -49,6 +51,12 @@
     }
   }
 
+  &--details-visible {
+    border-bottom: 1px solid $item-border;
+    border-right: 1px solid $item-border;
+    border-left: 1px solid $item-border;
+  }
+
   &__input {
     width: 32px;
     height: 32px;
@@ -76,7 +84,6 @@
     overflow: hidden;
     background: $bg-color;
     transition: all 0.1s;
-    border-bottom: 1px solid $item-border;
   }
 
   &__data {
@@ -136,9 +143,28 @@
 
   &__info {
     display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+
+  &__textarea {
+    width: 60%;
+    padding-right: 16px;
 
     textarea {
-      margin-right: 16px;
+      height: 100%;
+    }
+
+    .ss-textarea {
+      height: 100%;
+    }
+  }
+
+  &__info-details {
+    width: 40%;
+
+    .ss-number-input {
+      margin-bottom: 8px;
     }
   }
 }

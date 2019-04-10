@@ -3,6 +3,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import VotingBox from 'modules/list/components/VotingBox';
+import Textarea from 'common/components/Forms/Textarea';
+import TextInput from 'common/components/Forms/TextInput';
+import NumberInput from 'common/components/Forms/NumberInput';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -28,24 +31,12 @@ class ListItem extends PureComponent {
     return (
       <Fragment>
         <div className="list-item__info">
-          <textarea
-            className="list-item__textarea primary-textarea"
-            placeholder="Description"
-          />
+          <div className="list-item__textarea">
+            <Textarea placeholder="Description" />
+          </div>
           <div className="list-item__info-details">
-            <input
-              type="number"
-              placeholder="Enter a price"
-              min="0"
-              max="10000"
-              step="1"
-              name="price"
-            />
-            <input
-              type="text"
-              className="list-item__link primary-input"
-              placeholder="Add link to item"
-            />
+            <NumberInput placeholder="Price" />
+            <TextInput placeholder="Link to product" />
           </div>
         </div>
         <div className="list-item__add-comment">
@@ -54,7 +45,7 @@ class ListItem extends PureComponent {
           </button>
 
           <textarea
-            className="list-item__textarea primary-textarea"
+            className="list-item__textarea primary-textarea secondary-textarea"
             placeholder="Add comment"
           />
           <button className="list-item__button primary-button" type="button">
@@ -113,7 +104,8 @@ class ListItem extends PureComponent {
       <li
         className={classNames('list-item', {
           'list-item--restore': !done && archived,
-          'list-item--done': done || archived
+          'list-item--done': done || archived,
+          'list-item--details-visible': areDetailsVisible
         })}
       >
         <div className="list-item__top">
