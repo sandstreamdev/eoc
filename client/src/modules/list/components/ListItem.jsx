@@ -6,12 +6,16 @@ import VotingBox from 'modules/list/components/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import NumberInput from 'common/components/Forms/NumberInput';
+import NewComment from './NewComment';
 
 class ListItem extends PureComponent {
   constructor(props) {
     super(props);
     const { archived } = this.props;
-    this.state = { done: archived, areDetailsVisible: false };
+    this.state = {
+      areDetailsVisible: false,
+      done: archived
+    };
   }
 
   handleItemToggling = (authorName, id, archived) => () => {
@@ -25,69 +29,55 @@ class ListItem extends PureComponent {
 
   hideDetails = () => this.setState({ areDetailsVisible: false });
 
-  renderDetails = () => {
-    const { areDetailsVisible } = this.state;
-
-    return (
-      <Fragment>
-        <div className="list-item__info">
-          <div className="list-item__textarea">
-            <Textarea placeholder="Description" />
-          </div>
-          <div className="list-item__info-details">
-            <NumberInput placeholder="Price" />
-            <TextInput placeholder="Link to product" />
-          </div>
+  renderDetails = () => (
+    <Fragment>
+      <div className="list-item__info">
+        <div className="list-item__info-textarea">
+          <Textarea placeholder="Description" />
         </div>
-        <div className="list-item__add-comment">
-          <button className="list-item__button link-button" type="button">
-            Add comment
-          </button>
-
-          <textarea
-            className="list-item__textarea primary-textarea secondary-textarea"
-            placeholder="Add comment"
-          />
-          <button className="list-item__button primary-button" type="button">
-            Add comment
-          </button>
+        <div className="list-item__info-details">
+          <NumberInput placeholder="Price" />
+          <TextInput placeholder="Link to product" />
         </div>
-        <div className="list-item__comments">
-          <h2 className="list-item__heading">Comments</h2>
-          <div className="list-item__comment">
-            <img src="" alt="" className="list-item__comment-avatar" />
-            <div className="list-item__comment-body">
-              <span className="list-item__comment-name">Adam Klepacz</span>
-              <p className="list-item__comment-content">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!
-              </p>
-            </div>
-            <div className="list-item__comment-body">
-              <span className="list-item__comment-name">Adam Klepacz</span>
-              <p className="list-item__comment-content">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!
-              </p>
-            </div>
+      </div>
+      <div className="list-item__new-comment">
+        <NewComment />
+      </div>
+      <div className="list-item__comments">
+        <h2 className="list-item__heading">Comments</h2>
+        <div className="list-item__comment">
+          <img src="" alt="" className="list-item__comment-avatar" />
+          <div className="list-item__comment-body">
+            <span className="list-item__comment-name">Adam Klepacz</span>
+            <p className="list-item__comment-content">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+              Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+              accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+              ipsam, molestiae similique optio sint hic!
+            </p>
+          </div>
+          <div className="list-item__comment-body">
+            <span className="list-item__comment-name">Adam Klepacz</span>
+            <p className="list-item__comment-content">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+              Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+              accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+              ipsam, molestiae similique optio sint hic!
+            </p>
           </div>
         </div>
-        <footer className="list-item__footer">
-          <button
-            className="list-item__hide"
-            type="button"
-            onClick={this.hideDetails}
-          >
-            hide info
-          </button>
-        </footer>
-      </Fragment>
-    );
-  };
+      </div>
+      <footer className="list-item__footer">
+        <button
+          className="list-item__hide"
+          type="button"
+          onClick={this.hideDetails}
+        >
+          hide info
+        </button>
+      </footer>
+    </Fragment>
+  );
 
   render() {
     const {
