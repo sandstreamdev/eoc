@@ -6,7 +6,8 @@ import VotingBox from 'modules/list/components/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import NumberInput from 'common/components/Forms/NumberInput';
-import NewComment from './NewComment';
+import NewComment from '../../../common/components/Comments/NewComment';
+import Comment from '../../../common/components/Comments/Comment';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -27,9 +28,10 @@ class ListItem extends PureComponent {
     toggleItem(authorName, id, archived);
   };
 
-  showDetails = () => this.setState({ areDetailsVisible: true });
-
-  hideDetails = () => this.setState({ areDetailsVisible: false });
+  toggleDetails = () => {
+    const { areDetailsVisible } = this.state;
+    this.setState({ areDetailsVisible: !areDetailsVisible });
+  };
 
   showAddNewComment = () => this.setState({ isNewCommentVisible: true });
 
@@ -70,37 +72,21 @@ class ListItem extends PureComponent {
         </div>
         <div className="list-item__comments">
           <h2 className="list-item__heading">Comments</h2>
-          <div className="list-item__comment">
-            <img src="" alt="" className="list-item__comment-avatar" />
-            <div className="list-item__comment-body">
-              <span className="list-item__comment-name">Adam Klepacz</span>
-              <p className="list-item__comment-content">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+          <Comment
+            author="Adam Klepacz"
+            comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
                 Excepturi voluptatem vitae qui nihil reprehenderit quia nam
                 accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!
-              </p>
-            </div>
-            <div className="list-item__comment-body">
-              <span className="list-item__comment-name">Adam Klepacz</span>
-              <p className="list-item__comment-content">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                ipsam, molestiae similique optio sint hic!"
+          />
+          <Comment
+            author="Adam Klepacz"
+            comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
                 Excepturi voluptatem vitae qui nihil reprehenderit quia nam
                 accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!
-              </p>
-            </div>
-          </div>
+                ipsam, molestiae similique optio sint hic!"
+          />
         </div>
-        <footer className="list-item__footer">
-          <button
-            className="list-item__hide"
-            type="button"
-            onClick={this.hideDetails}
-          >
-            hide info
-          </button>
-        </footer>
       </Fragment>
     );
   };
@@ -135,7 +121,7 @@ class ListItem extends PureComponent {
             className="list-item__label"
             htmlFor={`option${id}`}
             id={`option${id}`}
-            onClick={this.showDetails}
+            onClick={this.toggleDetails}
           >
             <span className="list-item__data">
               <span>{name}</span>
