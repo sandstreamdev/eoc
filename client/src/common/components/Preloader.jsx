@@ -7,16 +7,35 @@ export const PreloaderTheme = {
   LIGHT: 'preloader/LIGHT'
 };
 
-const Preloader = ({ message, theme = PreloaderTheme.DARK }) => (
+export const PreloaderSize = {
+  BIG: 'preloader/BIG',
+  SMALL: 'preloader/SMALL'
+};
+
+const Preloader = ({
+  message,
+  size = PreloaderSize.BIG,
+  theme = PreloaderTheme.DARK
+}) => (
   <div className="preloader">
-    <div className="preloader__spinner">
+    <div
+      className={classNames('preloader__spinner', {
+        'preloader__spinner--small': size === PreloaderSize.SMALL,
+        'preloader__spinner--big': size === PreloaderSize.BIG
+      })}
+    >
       <div
         className={classNames('preloader__shape1', {
-          'preloader__shape--dark': theme === PreloaderTheme.DARK,
-          'preloader__shape--light': theme === PreloaderTheme.LIGHT
+          'preloader__shape1--dark': theme === PreloaderTheme.DARK,
+          'preloader__shape1--light': theme === PreloaderTheme.LIGHT
         })}
       />
-      <div className="preloader__shape2" />
+      <div
+        className={classNames('preloader__shape2', {
+          'preloader__shape2--dark': theme === PreloaderTheme.DARK,
+          'preloader__shape2--light': theme === PreloaderTheme.LIGHT
+        })}
+      />
     </div>
     <span className="preloader__text">{message}</span>
   </div>
@@ -24,6 +43,7 @@ const Preloader = ({ message, theme = PreloaderTheme.DARK }) => (
 
 Preloader.propTypes = {
   message: PropTypes.string,
+  size: PropTypes.string,
   theme: PropTypes.string
 };
 

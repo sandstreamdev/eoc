@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
+import Preloader, {
+  PreloaderSize,
+  PreloaderTheme
+} from 'common/components/Preloader';
+
 class MembersForm extends PureComponent {
   constructor(props) {
     super(props);
@@ -47,6 +52,8 @@ class MembersForm extends PureComponent {
 
   render() {
     const { inputValue } = this.state;
+    const { pending } = this.props;
+
     return (
       <form className="members-form" onSubmit={this.handleSubmit}>
         <input
@@ -57,19 +64,28 @@ class MembersForm extends PureComponent {
           type="email"
           value={inputValue}
         />
-        <input
+        <button
           className="primary-button"
           onClick={this.handleAddNew}
           type="button"
-          value="Add new"
-        />
+        >
+          {pending ? (
+            <Preloader
+              size={PreloaderSize.SMALL}
+              theme={PreloaderTheme.LIGHT}
+            />
+          ) : (
+            <span>Add new</span>
+          )}
+        </button>
       </form>
     );
   }
 }
 
 MembersForm.propTypes = {
-  onAddNew: PropTypes.func.isRequired
+  onAddNew: PropTypes.func.isRequired,
+  pending: PropTypes.bool.isRequired
 };
 
 export default MembersForm;

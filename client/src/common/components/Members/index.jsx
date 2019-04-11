@@ -17,7 +17,8 @@ import { Routes } from 'common/constants/enums';
 class MembersBox extends PureComponent {
   state = {
     isFormVisible: false,
-    context: null
+    context: null,
+    pending: false
   };
 
   showForm = () => this.setState({ isFormVisible: true });
@@ -33,7 +34,6 @@ class MembersBox extends PureComponent {
   };
 
   handleAddNewMember = () => email => {
-    this.hideForm();
     const { addCohortMember, addListMember } = this.props;
     const {
       match: {
@@ -42,16 +42,19 @@ class MembersBox extends PureComponent {
       route
     } = this.props;
 
-    switch (route) {
-      case Routes.COHORT:
-        addCohortMember(id, email);
-        break;
-      case Routes.LIST:
-        addListMember(id, email);
-        break;
-      default:
-        break;
-    }
+    const action = route === Routes.COHORT ? addCohortMember : addListMember;
+
+    this.setState({ pending: true }, () => {
+      action(id, email)
+        .then(() => {
+          this.setState({ pending: false });
+          this.hideForm();
+        })
+        .catch(() => {
+          this.setState({ pending: false });
+          this.hideForm();
+        });
+    });
   };
 
   renderMemberList = () => {
@@ -86,8 +89,7 @@ class MembersBox extends PureComponent {
   };
 
   render() {
-    const { isFormVisible } = this.state;
-
+    const { isFormVisible, pending } = this.state;
     return (
       <div className="members-box">
         <header className="members-box__header">
@@ -96,7 +98,10 @@ class MembersBox extends PureComponent {
         <ul className="members-box__list">
           <li className="members-box__list-item">
             {isFormVisible ? (
-              <MembersForm onAddNew={this.handleAddNewMember()} />
+              <MembersForm
+                onAddNew={this.handleAddNewMember()}
+                pending={pending}
+              />
             ) : (
               <button
                 className="members-box__member"
