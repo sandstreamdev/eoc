@@ -8,6 +8,10 @@
   padding: 20px 25px;
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
 
+  &__body {
+    min-height: 80px;
+  }
+
   &__button {
     margin: 0 auto 16px;
 
