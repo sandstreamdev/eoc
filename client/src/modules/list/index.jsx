@@ -10,13 +10,13 @@ import InputBar from 'modules/list/components/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import { CohortIcon } from 'assets/images/icons';
-import { noOp } from 'common/utils/noOp';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
+import Preloader from 'common/components/Preloader';
 
 export const ListType = Object.freeze({
   PRIVATE: 'private',
@@ -26,12 +26,18 @@ export const ListType = Object.freeze({
 class List extends Component {
   state = {
     dialogContext: null,
-    isMembersBoxVisible: false
+    isMembersBoxVisible: false,
+    pendingForDetails: false,
+    pendingForListArchivization: false
   };
 
   componentDidMount() {
     if (this.checkIfArchived()) {
-      this.fetchData();
+      this.setState({ pendingForDetails: true }, () => {
+        this.fetchData()
+          .then(() => this.setState({ pendingForDetails: false }))
+          .catch(() => this.setState({ pendingForDetails: false }));
+      });
     }
   }
 
@@ -42,14 +48,23 @@ class List extends Component {
         params: { id }
       }
     } = this.props;
-    fetchListData(id);
+    return fetchListData(id);
   };
 
-  archiveListHandler = listId => () => {
+  handleListArchivization = listId => () => {
     const { archiveList } = this.props;
-    archiveList(listId)
-      .then(this.hideDialog())
-      .catch(noOp);
+
+    this.setState({ pendingForListArchivization: true }, () => {
+      archiveList(listId)
+        .then(() => {
+          this.setState({ pendingForListArchivization: false });
+          this.hideDialog();
+        })
+        .catch(() => {
+          this.setState({ pendingForListArchivization: false });
+          this.hideDialog();
+        });
+    });
   };
 
   checkIfArchived = () => {
@@ -73,7 +88,13 @@ class List extends Component {
     }));
 
   render() {
-    const { dialogContext, isMembersBoxVisible } = this.state;
+    const {
+      dialogContext,
+      isMembersBoxVisible,
+      pendingForDetails,
+      pendingForListArchivization
+    } = this.state;
+
     const {
       items,
       match: {
@@ -90,6 +111,7 @@ class List extends Component {
     const { cohortId, isArchived, isPrivate, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
+
     return (
       <Fragment>
         <Toolbar>
@@ -103,38 +125,48 @@ class List extends Component {
           )}
         </Toolbar>
         {isArchived ? (
-          <ArchivedList listId={listId} name={name} />
+          <ArchivedList
+            listId={listId}
+            name={name}
+            pending={pendingForDetails}
+          />
         ) : (
           <div className="wrapper">
             <div className="list">
               <ListHeader details={list} />
-              <div className="list__items">
-                <ItemsContainer items={listItems}>
-                  <InputBar />
-                </ItemsContainer>
-                <ItemsContainer archived items={orderedItems} />
-                <button
-                  className="link-button"
-                  onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
-                  type="button"
-                >
-                  {`Archive the "${name}" list`}
-                </button>
-              </div>
-              <button
-                className="link-button"
-                onClick={this.handleMembersBoxVisibility}
-                type="button"
-              >
-                {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
-              </button>
-              {isMembersBoxVisible && (
-                <MembersBox
-                  isCurrentUserAnOwner={this.checkIfOwner()}
-                  isPrivate={isPrivate}
-                  members={members}
-                  route={Routes.LIST}
-                />
+              {pendingForDetails ? (
+                <Preloader />
+              ) : (
+                <Fragment>
+                  <div className="list__items">
+                    <ItemsContainer items={listItems}>
+                      <InputBar />
+                    </ItemsContainer>
+                    <ItemsContainer archived items={orderedItems} />
+                    <button
+                      className="link-button"
+                      onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                      type="button"
+                    >
+                      {`Archive the "${name}" list`}
+                    </button>
+                  </div>
+                  <button
+                    className="link-button"
+                    onClick={this.handleMembersBoxVisibility}
+                    type="button"
+                  >
+                    {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
+                  </button>
+                  {isMembersBoxVisible && (
+                    <MembersBox
+                      isCurrentUserAnOwner={this.checkIfOwner()}
+                      isPrivate={isPrivate}
+                      members={members}
+                      route={Routes.LIST}
+                    />
+                  )}
+                </Fragment>
               )}
             </div>
           </div>
@@ -142,8 +174,13 @@ class List extends Component {
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
             onCancel={this.hideDialog}
-            onConfirm={this.archiveListHandler(listId)}
-            title={`Do you really want to archive the "${name}" list?`}
+            onConfirm={this.handleListArchivization(listId)}
+            pending={pendingForListArchivization}
+            title={
+              pendingForListArchivization
+                ? `"${name}" list archivization`
+                : `Do you really want to archive the "${name}" list?`
+            }
           />
         )}
       </Fragment>

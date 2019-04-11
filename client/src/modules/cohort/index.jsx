@@ -30,9 +30,10 @@ import Preloader from '../../common/components/Preloader';
 
 class Cohort extends PureComponent {
   state = {
-    areArchivedListVisible: false,
+    areArchivedListsVisible: false,
     dialogContext: null,
     isListPrivate: true,
+    pendingForArchivedLists: false,
     pendingForDetails: false,
     pendingForListCreation: false,
     pendingForCohortArchivization: false
@@ -123,21 +124,30 @@ class Cohort extends PureComponent {
 
   hideDialog = () => this.handleDialogContext(null)();
 
-  handleArchivedListsVisibility = id => () => {
-    const { areArchivedListVisible } = this.state;
-    this.setState({ areArchivedListVisible: !areArchivedListVisible });
-    this.handleArchivedListsData(id);
-  };
+  handleArchivedListsVisibility = id => () =>
+    this.setState(
+      ({ areArchivedListsVisible }) => ({
+        areArchivedListsVisible: !areArchivedListsVisible
+      }),
+      () => this.handleArchivedListsData()
+    );
 
   handleArchivedListsData = id => {
-    const { areArchivedListVisible } = this.state;
+    const { areArchivedListsVisible } = this.state;
     const {
       fetchArchivedListsMetaData,
       removeArchivedListsMetaData
     } = this.props;
-    !areArchivedListVisible
-      ? fetchArchivedListsMetaData(id)
-      : removeArchivedListsMetaData();
+
+    if (areArchivedListsVisible) {
+      this.setState({ pendingForArchivedLists: true }, () => {
+        fetchArchivedListsMetaData()
+          .then(() => this.setState({ pendingForArchivedLists: false }))
+          .catch(() => this.setState({ pendingForArchivedLists: false }));
+      });
+    } else {
+      removeArchivedListsMetaData();
+    }
   };
 
   handleListType = isPrivate =>
@@ -163,8 +173,9 @@ class Cohort extends PureComponent {
 
     const { isArchived, name } = cohortDetails;
     const {
-      areArchivedListVisible,
+      areArchivedListsVisible,
       dialogContext,
+      pendingForArchivedLists,
       pendingForCohortArchivization,
       pendingForDetails,
       pendingForListCreation
@@ -239,15 +250,16 @@ class Cohort extends PureComponent {
                     type="button"
                   >
                     {` ${
-                      areArchivedListVisible ? 'hide' : 'show'
+                      areArchivedListsVisible ? 'hide' : 'show'
                     } archived lists`}
                   </button>
-                  {areArchivedListVisible && (
+                  {areArchivedListsVisible && (
                     <GridList
                       color={CardColorType.ARCHIVED}
                       icon={<ListIcon />}
                       items={archivedLists}
                       name="Archived lists"
+                      pending={pendingForArchivedLists}
                       placeholder={`There are no archived lists in the ${name} cohort!`}
                       route={Routes.LIST}
                     />
