@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 import Textarea from 'common/components/Forms/Textarea';
 
@@ -6,35 +7,33 @@ class NewComment extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = { isNewCommentVisible: false, comment: '' };
+    this.state = { comment: '' };
 
     this.commentArea = React.createRef();
   }
 
   componentDidMount() {
-    document.addEventListener('click', this.handleClick);
+    document.addEventListener('keydown', this.handleKeyPress);
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick);
-  }
+  handleKeyPress = event => {
+    const { code } = event;
+    const { onEscapePress } = this.props;
 
-  handleClick = event => {
-    if (
-      this.state.isNewCommentVisible &&
-      !this.commentArea.current.contains(event.target)
-    ) {
-      this.setState({ isNewCommentVisible: false });
+    if (code === 'Escape') {
+      onEscapePress();
+    }
+
+    if (code === 'Enter') {
+      this.handleAddNewComment();
     }
   };
 
-  showAddNewComment = () => {
-    debugger;
-    this.setState({ isNewCommentVisible: true });
-  };
-
   handleAddNewComment = () => {
-    // do some logic
+    const { onAddNewComment } = this.props;
+    const { comment } = this.state;
+
+    onAddNewComment(comment);
   };
 
   handleCommentChange = event => {
@@ -46,35 +45,29 @@ class NewComment extends PureComponent {
   };
 
   render() {
-    const { isNewCommentVisible } = this.state;
     return (
       <div className="new-comment">
-        {isNewCommentVisible ? (
-          <div className="new-comment__wrapper" ref={this.commentArea}>
-            <Textarea
-              placeholder="Add comment"
-              onChange={this.handleCommentChange}
-            />
-            <button
-              className="primary-button"
-              type="button"
-              onClick={this.handleAddNewComment}
-            >
-              Add comment
-            </button>
-          </div>
-        ) : (
+        <div className="new-comment__wrapper" ref={this.commentArea}>
+          <Textarea
+            placeholder="Add comment"
+            onChange={this.handleCommentChange}
+          />
           <button
-            className="link-button"
+            className="primary-button"
             type="button"
-            onClick={this.showAddNewComment}
+            onClick={this.handleAddNewComment}
           >
             Add comment
           </button>
-        )}
+        </div>
       </div>
     );
   }
 }
+
+NewComment.propTypes = {
+  onAddNewComment: PropTypes.func,
+  onEscapePress: PropTypes.func
+};
 
 export default NewComment;

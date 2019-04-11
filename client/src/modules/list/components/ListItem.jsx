@@ -14,7 +14,8 @@ class ListItem extends PureComponent {
     const { archived } = this.props;
     this.state = {
       areDetailsVisible: false,
-      done: archived
+      done: archived,
+      isNewCommentVisible: false
     };
   }
 
@@ -30,53 +31,79 @@ class ListItem extends PureComponent {
 
   hideDetails = () => this.setState({ areDetailsVisible: false });
 
-  renderDetails = () => (
-    <Fragment>
-      <div className="list-item__info">
-        <div className="list-item__info-textarea">
-          <Textarea placeholder="Description" />
-        </div>
-        <div className="list-item__info-details">
-          <NumberInput placeholder="Price" />
-          <TextInput placeholder="Link to product" />
-        </div>
-      </div>
-      <NewComment />
-      <div className="list-item__comments">
-        <h2 className="list-item__heading">Comments</h2>
-        <div className="list-item__comment">
-          <img src="" alt="" className="list-item__comment-avatar" />
-          <div className="list-item__comment-body">
-            <span className="list-item__comment-name">Adam Klepacz</span>
-            <p className="list-item__comment-content">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-              accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-              ipsam, molestiae similique optio sint hic!
-            </p>
+  showAddNewComment = () => this.setState({ isNewCommentVisible: true });
+
+  hideAddNewComment = () => this.setState({ isNewCommentVisible: false });
+
+  handleAddNewComment = comment => {
+    // add new comment here
+  };
+
+  renderDetails = () => {
+    const { isNewCommentVisible } = this.state;
+    return (
+      <Fragment>
+        <div className="list-item__info">
+          <div className="list-item__info-textarea">
+            <Textarea placeholder="Description" />
           </div>
-          <div className="list-item__comment-body">
-            <span className="list-item__comment-name">Adam Klepacz</span>
-            <p className="list-item__comment-content">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-              accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-              ipsam, molestiae similique optio sint hic!
-            </p>
+          <div className="list-item__info-details">
+            <NumberInput placeholder="Price" />
+            <TextInput placeholder="Link to product" />
           </div>
         </div>
-      </div>
-      <footer className="list-item__footer">
-        <button
-          className="list-item__hide"
-          type="button"
-          onClick={this.hideDetails}
-        >
-          hide info
-        </button>
-      </footer>
-    </Fragment>
-  );
+        <div className="list-item__new-comment">
+          {isNewCommentVisible ? (
+            <NewComment
+              onAddNewComment={this.handleAddNewComment}
+              onEscapePress={this.hideAddNewComment}
+            />
+          ) : (
+            <button
+              className="list-item__add-new-button link-button"
+              type="button"
+              onClick={this.showAddNewComment}
+            >
+              Add comment
+            </button>
+          )}
+        </div>
+        <div className="list-item__comments">
+          <h2 className="list-item__heading">Comments</h2>
+          <div className="list-item__comment">
+            <img src="" alt="" className="list-item__comment-avatar" />
+            <div className="list-item__comment-body">
+              <span className="list-item__comment-name">Adam Klepacz</span>
+              <p className="list-item__comment-content">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+                ipsam, molestiae similique optio sint hic!
+              </p>
+            </div>
+            <div className="list-item__comment-body">
+              <span className="list-item__comment-name">Adam Klepacz</span>
+              <p className="list-item__comment-content">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+                ipsam, molestiae similique optio sint hic!
+              </p>
+            </div>
+          </div>
+        </div>
+        <footer className="list-item__footer">
+          <button
+            className="list-item__hide"
+            type="button"
+            onClick={this.hideDetails}
+          >
+            hide info
+          </button>
+        </footer>
+      </Fragment>
+    );
+  };
 
   render() {
     const {
