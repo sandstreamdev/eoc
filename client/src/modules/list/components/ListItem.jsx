@@ -29,17 +29,17 @@ class ListItem extends PureComponent {
     toggleItem(authorName, id, archived);
   };
 
-  toggleDetails = () => {
-    const { areDetailsVisible } = this.state;
-    this.setState({ areDetailsVisible: !areDetailsVisible });
-  };
+  toggleDetails = () =>
+    this.setState(({ areDetailsVisible }) => ({
+      areDetailsVisible: !areDetailsVisible
+    }));
 
   showAddNewComment = () => this.setState({ isNewCommentVisible: true });
 
   hideAddNewComment = () => this.setState({ isNewCommentVisible: false });
 
   handleAddNewComment = comment => {
-    // add new comment here
+    // Adding new comment will be handled in next tasks
   };
 
   handleMouseEnter = () => this.setState({ isHovered: true });
@@ -67,33 +67,37 @@ class ListItem extends PureComponent {
           ) : (
             <button
               className="list-item__add-new-button link-button"
-              type="button"
               onClick={this.showAddNewComment}
+              type="button"
             >
               Add comment
             </button>
           )}
         </div>
-        <div className="list-item__comments">
-          <h2 className="list-item__heading">Comments</h2>
-          <Comment
-            author="Adam Klepacz"
-            comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!"
-          />
-          <Comment
-            author="Adam Klepacz"
-            comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!"
-          />
-        </div>
+        <div className="list-item__comments">{this.renderComments()}</div>
       </Fragment>
     );
   };
+
+  renderComments = () => (
+    <Fragment>
+      <h2 className="list-item__heading">Comments</h2>
+      <Comment
+        author="Adam Klepacz"
+        comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+                ipsam, molestiae similique optio sint hic!"
+      />
+      <Comment
+        author="Adam Klepacz"
+        comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+                ipsam, molestiae similique optio sint hic!"
+      />
+    </Fragment>
+  );
 
   renderChevron = () => {
     const { areDetailsVisible, isHovered } = this.state;
@@ -154,9 +158,9 @@ class ListItem extends PureComponent {
             </span>
             {!archived && (
               <VotingBox
+                isVoted={isVoted}
                 voteForItem={voteForItem}
                 votesCount={votesCount}
-                isVoted={isVoted}
               />
             )}
           </label>

@@ -17,7 +17,7 @@ class Textarea extends PureComponent {
     const { onChange } = this.props;
 
     this.setState({ value });
-    onChange(event);
+    onChange(value);
   };
 
   focusTextarea = () => this.textarea.current.focus();
@@ -48,7 +48,7 @@ class Textarea extends PureComponent {
         )}
         <textarea
           className="ss-textarea__textarea"
-          name="textarea"
+          name={placeholder}
           onBlur={this.handleBlur}
           onChange={this.handleOnChange}
           onFocus={this.handleFocus}
@@ -62,7 +62,7 @@ class Textarea extends PureComponent {
 }
 
 Textarea.propTypes = {
-  placeholder: PropTypes.string,
+  placeholder: PropTypes.string.isRequired,
 
   onChange: PropTypes.func
 };

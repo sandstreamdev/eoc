@@ -39,26 +39,20 @@ class NewComment extends PureComponent {
     onAddNewComment(comment);
   };
 
-  handleCommentChange = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ comment: value });
-  };
+  handleCommentChange = value => this.setState({ comment: value });
 
   render() {
     return (
       <div className="new-comment">
         <div className="new-comment__wrapper" ref={this.commentArea}>
           <Textarea
-            placeholder="Add comment"
             onChange={this.handleCommentChange}
+            placeholder="Add comment"
           />
           <button
             className="primary-button"
-            type="button"
             onClick={this.handleAddNewComment}
+            type="button"
           >
             Add comment
           </button>

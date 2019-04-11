@@ -13,14 +13,6 @@ class TextInput extends PureComponent {
     this.input = React.createRef();
   }
 
-  // componentDidUpdate() {
-  //   const { value } = this.state;
-
-  //   value.length > 0 && this.keepPlaceholderEnlarged();
-  // }
-
-  // keepPlaceholderEnlarged = () => this.setState({ isEnlarged: true });
-
   handleOnChange = event => {
     const {
       target: { value }
@@ -59,7 +51,7 @@ class TextInput extends PureComponent {
         )}
         <input
           className="ss-text-input__input"
-          name="textinput"
+          name={placeholder}
           onBlur={this.handleBlur}
           onChange={this.handleOnChange}
           onFocus={this.handleFocus}
