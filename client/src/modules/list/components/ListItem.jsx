@@ -16,7 +16,10 @@ import { addItemDescription } from '../model/actions';
 class ListItem extends PureComponent {
   constructor(props) {
     super(props);
-    const { archived } = this.props;
+
+    const {
+      data: { archived }
+    } = this.props;
     this.state = {
       areDetailsVisible: false,
       done: archived,
@@ -53,17 +56,23 @@ class ListItem extends PureComponent {
   handleAddDescription = description => {
     const {
       addItemDescription,
-      id: itemId,
+      data: { _id: itemId, description: previousDescription },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    addItemDescription(listId, itemId, description);
+    if (previousDescription.trim() !== description.trim()) {
+      addItemDescription(listId, itemId, description);
+    }
   };
 
   renderDetails = () => {
     const { isNewCommentVisible } = this.state;
+    const {
+      data: { description }
+    } = this.props;
+
     return (
       <Fragment>
         <div className="list-item__info">
@@ -71,6 +80,7 @@ class ListItem extends PureComponent {
             <Textarea
               placeholder="Description"
               onSave={this.handleAddDescription}
+              initialValue={description}
             />
           </div>
           <div className="list-item__info-details">
@@ -136,14 +146,10 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      archived,
-      authorName,
-      id,
-      isVoted,
-      name,
-      voteForItem,
-      votesCount
+      data: { archived, authorName, _id, isVoted, name, votesCount },
+      voteForItem
     } = this.props;
+
     const { done, areDetailsVisible } = this.state;
     return (
       <li
@@ -161,14 +167,14 @@ class ListItem extends PureComponent {
           {this.renderChevron()}
           <input
             className="list-item__input"
-            id={`option${id}`}
-            name={`option${id}`}
+            id={`option${_id}`}
+            name={`option${_id}`}
             type="checkbox"
           />
           <label
             className="list-item__label"
-            htmlFor={`option${id}`}
-            id={`option${id}`}
+            htmlFor={`option${_id}`}
+            id={`option${_id}`}
             onClick={this.toggleDetails}
           >
             <span className="list-item__data">
@@ -185,7 +191,7 @@ class ListItem extends PureComponent {
           </label>
           <button
             className="list-item__icon z-index-high"
-            onClick={this.handleItemToggling(authorName, id, archived)}
+            onClick={this.handleItemToggling(authorName, _id, archived)}
             type="button"
           />
         </div>
@@ -198,13 +204,10 @@ class ListItem extends PureComponent {
 }
 
 ListItem.propTypes = {
-  archived: PropTypes.bool,
-  authorName: PropTypes.string,
-  id: PropTypes.string.isRequired,
-  isVoted: PropTypes.bool.isRequired,
+  data: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])
+  ),
   match: RouterMatchPropType.isRequired,
-  name: PropTypes.string.isRequired,
-  votesCount: PropTypes.number.isRequired,
 
   addItemDescription: PropTypes.func.isRequired,
   toggleItem: PropTypes.func,

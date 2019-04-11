@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const {
+  addItemDescription,
   addItemToList,
   addMember,
   addToFavourites,
@@ -39,5 +40,6 @@ router.patch('/:id/remove-member', authorize, removeMember);
 router.patch('/:id/change-to-owner', authorize, changeToOwner);
 router.patch('/:id/change-to-member', authorize, changeToMember);
 router.patch('/:id/add-member', authorize, addMember);
+router.patch('/:id/add-item-description', authorize, addItemDescription);
 
 module.exports = app => app.use('/lists', router);

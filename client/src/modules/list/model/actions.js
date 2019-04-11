@@ -469,5 +469,25 @@ export const changeRole = (listId, userId, role) => dispatch => {
 
 export const addItemDescription = (listId, itemId, description) => dispatch => {
   dispatch(addItemDescriptionRequest());
-  console.log('action', description);
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-item-description`, {
+    description,
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(addItemDescriptionSuccess(listId, itemId, description));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(addItemDescriptionFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
 };

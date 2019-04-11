@@ -6,7 +6,10 @@ class Textarea extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = { isEnlarged: false, value: '' };
+    const { initialValue } = this.props;
+    const descriptionExist = initialValue && initialValue.length > 0;
+
+    this.state = { isEnlarged: descriptionExist, value: initialValue || '' };
     this.textarea = React.createRef();
   }
 
@@ -23,6 +26,7 @@ class Textarea extends PureComponent {
   handleClick = event => {
     const { target } = event;
     const { value } = this.state;
+
     if (!this.textarea.current.contains(target) && value.length > 0) {
       this.handleDataSave();
     }
@@ -95,6 +99,7 @@ class Textarea extends PureComponent {
 }
 
 Textarea.propTypes = {
+  initialValue: PropTypes.string,
   placeholder: PropTypes.string.isRequired,
 
   onChange: PropTypes.func,

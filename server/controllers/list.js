@@ -679,7 +679,7 @@ const addMember = (req, resp) => {
     });
 };
 
-const addDescriptionToItem = (req, resp) => {
+const addItemDescription = (req, resp) => {
   const { itemId, description } = req.body;
   const { id: listId } = req.params;
 
@@ -709,37 +709,8 @@ const addDescriptionToItem = (req, resp) => {
   );
 };
 
-const removeDescriptionFromItem = (req, resp) => {
-  const { itemId } = req.body;
-  const { id: listId } = req.params;
-
-  List.findOneAndUpdate(
-    {
-      _id: listId,
-      'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
-    },
-    { $unset: { 'items.$.description': '' } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while adding description. Please try again.'
-        });
-      }
-
-      if (doc) {
-        return resp
-          .status(200)
-          .send({ message: 'Item description successfully updated' });
-      }
-
-      resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
-};
-
 module.exports = {
+  addItemDescription,
   addItemToList,
   addMember,
   addToFavourites,
