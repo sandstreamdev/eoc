@@ -44,7 +44,7 @@ class MembersBox extends PureComponent {
 
     const action = route === Routes.COHORT ? addCohortMember : addListMember;
 
-    this.setState({ pending: true }, () => {
+    this.setState({ pending: true }, () =>
       action(id, email)
         .then(() => {
           this.setState({ pending: false });
@@ -53,8 +53,8 @@ class MembersBox extends PureComponent {
         .catch(() => {
           this.setState({ pending: false });
           this.hideForm();
-        });
-    });
+        })
+    );
   };
 
   renderMemberList = () => {

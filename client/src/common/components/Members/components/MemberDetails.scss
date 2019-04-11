@@ -89,6 +89,14 @@
     padding: 15px 0 0;
   }
 
+  &__preloader {
+    position: relative;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 15px 0 0;
+  }
+
   &__option {
     display: flex;
     flex-wrap: wrap;
