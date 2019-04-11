@@ -8,12 +8,15 @@ class NewComment extends PureComponent {
     super(props);
 
     this.state = { comment: '' };
-
     this.commentArea = React.createRef();
   }
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyPress);
   }
 
   handleKeyPress = event => {

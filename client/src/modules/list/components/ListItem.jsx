@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 import VotingBox from 'modules/list/components/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
-import NumberInput from 'common/components/Forms/NumberInput';
 import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
+import { ChevronDown, ChevronUp } from 'assets/images/icons';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -16,6 +16,7 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       done: archived,
+      isHovered: false,
       isNewCommentVisible: false
     };
   }
@@ -41,6 +42,10 @@ class ListItem extends PureComponent {
     // add new comment here
   };
 
+  handleMouseEnter = () => this.setState({ isHovered: true });
+
+  handleMouseLeave = () => this.setState({ isHovered: false });
+
   renderDetails = () => {
     const { isNewCommentVisible } = this.state;
     return (
@@ -50,8 +55,7 @@ class ListItem extends PureComponent {
             <Textarea placeholder="Description" />
           </div>
           <div className="list-item__info-details">
-            <NumberInput placeholder="Price" />
-            <TextInput placeholder="Link to product" />
+            <TextInput placeholder="Link" />
           </div>
         </div>
         <div className="list-item__new-comment">
@@ -91,6 +95,22 @@ class ListItem extends PureComponent {
     );
   };
 
+  renderChevron = () => {
+    const { areDetailsVisible, isHovered } = this.state;
+
+    return (
+      <button
+        className={classNames('list-item__chevron', {
+          'list-item__chevron--details-visible': areDetailsVisible
+        })}
+        onClick={this.toggleDetails}
+        type="button"
+      >
+        {isHovered && (areDetailsVisible ? <ChevronUp /> : <ChevronDown />)}
+      </button>
+    );
+  };
+
   render() {
     const {
       archived,
@@ -110,7 +130,12 @@ class ListItem extends PureComponent {
           'list-item--details-visible': areDetailsVisible
         })}
       >
-        <div className="list-item__top">
+        <div
+          className="list-item__top"
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+        >
+          {this.renderChevron()}
           <input
             className="list-item__input"
             id={`option${id}`}
