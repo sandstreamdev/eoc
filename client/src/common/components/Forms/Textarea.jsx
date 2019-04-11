@@ -10,6 +10,39 @@ class Textarea extends PureComponent {
     this.textarea = React.createRef();
   }
 
+  componentDidMount() {
+    document.addEventListener('click', this.handleClick);
+    document.addEventListener('keypress', this.handleEnterPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick);
+    document.removeEventListener('keypress', this.handleEnterPress);
+  }
+
+  handleClick = event => {
+    const { target } = event;
+    const { value } = this.state;
+    if (!this.textarea.current.contains(target) && value.length > 0) {
+      this.handleDataSave();
+    }
+  };
+
+  handleEnterPress = event => {
+    const { code } = event;
+
+    if (code === 'Enter') {
+      this.handleDataSave();
+    }
+  };
+
+  handleDataSave = () => {
+    const { onSave } = this.props;
+    const { value } = this.state;
+
+    onSave(value);
+  };
+
   handleOnChange = event => {
     const {
       target: { value }
@@ -17,7 +50,7 @@ class Textarea extends PureComponent {
     const { onChange } = this.props;
 
     this.setState({ value });
-    onChange(value);
+    onChange && onChange(value);
   };
 
   focusTextarea = () => this.textarea.current.focus();
@@ -64,7 +97,8 @@ class Textarea extends PureComponent {
 Textarea.propTypes = {
   placeholder: PropTypes.string.isRequired,
 
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onSave: PropTypes.func
 };
 
 export default Textarea;

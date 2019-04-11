@@ -1,6 +1,8 @@
 import React, { Fragment, PureComponent } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import VotingBox from 'modules/list/components/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
@@ -8,6 +10,8 @@ import TextInput from 'common/components/Forms/TextInput';
 import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
 import { ChevronDown, ChevronUp } from 'assets/images/icons';
+import { RouterMatchPropType } from 'common/constants/propTypes';
+import { addItemDescription } from '../model/actions';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -46,13 +50,28 @@ class ListItem extends PureComponent {
 
   handleMouseLeave = () => this.setState({ isHovered: false });
 
+  handleAddDescription = description => {
+    const {
+      addItemDescription,
+      id: itemId,
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    addItemDescription(listId, itemId, description);
+  };
+
   renderDetails = () => {
     const { isNewCommentVisible } = this.state;
     return (
       <Fragment>
         <div className="list-item__info">
           <div className="list-item__info-textarea">
-            <Textarea placeholder="Description" />
+            <Textarea
+              placeholder="Description"
+              onSave={this.handleAddDescription}
+            />
           </div>
           <div className="list-item__info-details">
             <TextInput placeholder="Link" />
@@ -183,11 +202,18 @@ ListItem.propTypes = {
   authorName: PropTypes.string,
   id: PropTypes.string.isRequired,
   isVoted: PropTypes.bool.isRequired,
+  match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
   votesCount: PropTypes.number.isRequired,
 
+  addItemDescription: PropTypes.func.isRequired,
   toggleItem: PropTypes.func,
   voteForItem: PropTypes.func
 };
 
-export default ListItem;
+export default withRouter(
+  connect(
+    null,
+    { addItemDescription }
+  )(ListItem)
+);

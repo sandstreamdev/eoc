@@ -174,6 +174,19 @@ const changeRoleSuccess = (listId, userId, isOwner) => ({
   payload: { listId, userId, isOwner }
 });
 
+const addItemDescriptionSuccess = (listId, itemId, description) => ({
+  type: ListActionTypes.ADD_ITEM_DESCRIPTION_SUCCESS,
+  payload: { listId, itemId, description }
+});
+
+const addItemDescriptionRequest = () => ({
+  type: ListActionTypes.ADD_ITEM_DESCRIPTION_REQUEST
+});
+
+const addItemDescriptionFailure = () => ({
+  type: ListActionTypes.ADD_ITEM_DESCRIPTION_FAILURE
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
@@ -452,4 +465,9 @@ export const changeRole = (listId, userId, role) => dispatch => {
         err.message
       );
     });
+};
+
+export const addItemDescription = (listId, itemId, description) => dispatch => {
+  dispatch(addItemDescriptionRequest());
+  console.log('action', description);
 };
