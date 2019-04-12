@@ -8,7 +8,7 @@ const ItemSchema = new Schema(
     authorId: { type: String, required: true },
     authorName: { type: String, required: true },
     comment: { type: String },
-    description: { type: String },
+    description: { type: String, default: '' },
     isOrdered: { type: Boolean, default: false },
     name: { type: String, required: true },
     purchaserId: { type: String },

@@ -12,19 +12,21 @@ import Comment from '../../../common/components/Comments/Comment';
 import { ChevronDown, ChevronUp } from 'assets/images/icons';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { addItemDescription } from '../model/actions';
+import SaveButton from 'common/components/SaveButton';
 
 class ListItem extends PureComponent {
   constructor(props) {
     super(props);
 
     const {
-      data: { archived }
+      data: { archived, description }
     } = this.props;
     this.state = {
       areDetailsVisible: false,
       done: archived,
       isHovered: false,
-      isNewCommentVisible: false
+      isNewCommentVisible: false,
+      itemDescription: description ? description.trim() : ''
     };
   }
 
@@ -53,7 +55,8 @@ class ListItem extends PureComponent {
 
   handleMouseLeave = () => this.setState({ isHovered: false });
 
-  handleAddDescription = description => {
+  handleAddDescription = () => {
+    const { itemDescription } = this.state;
     const {
       addItemDescription,
       data: { _id: itemId, description: previousDescription },
@@ -62,13 +65,15 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    if (previousDescription.trim() !== description.trim()) {
-      addItemDescription(listId, itemId, description);
+    if (previousDescription.trim() !== itemDescription.trim()) {
+      addItemDescription(listId, itemId, itemDescription);
     }
   };
 
+  handleItemDescription = value => this.setState({ itemDescription: value });
+
   renderDetails = () => {
-    const { isNewCommentVisible } = this.state;
+    const { isNewCommentVisible, itemDescription } = this.state;
     const {
       data: { description }
     } = this.props;
@@ -79,12 +84,19 @@ class ListItem extends PureComponent {
           <div className="list-item__info-textarea">
             <Textarea
               placeholder="Description"
-              onSave={this.handleAddDescription}
               initialValue={description}
+              onChange={this.handleItemDescription}
             />
           </div>
           <div className="list-item__info-details">
             <TextInput placeholder="Link" />
+            <SaveButton
+              value="Save data"
+              onClick={this.handleAddDescription}
+              disabled={
+                itemDescription.trim() === (description && description.trim())
+              }
+            />
           </div>
         </div>
         <div className="list-item__new-comment">

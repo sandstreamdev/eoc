@@ -6,6 +6,17 @@
     box-shadow: 0 0 0 2px rgba($border-focus, 0);
   }
 
+  &::before {
+    display: block;
+    content: '';
+    height: 20px;
+    background: $app-bg;
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    right: 1px;
+  }
+
   &__textarea {
     background-color: $bg-color;
     border: 1px solid $border-color;
@@ -18,9 +29,9 @@
     min-height: 65px;
     outline: 0;
     padding: 20px 12px 10px;
-    resize: vertical;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     width: 100%;
+    resize: none;
 
     &::placeholder {
       font-size: 0;

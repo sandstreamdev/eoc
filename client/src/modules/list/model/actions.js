@@ -14,6 +14,7 @@ import {
 } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
+import { ItemActionTypes } from '../components/InputBar/model/actionTypes';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -175,16 +176,16 @@ const changeRoleSuccess = (listId, userId, isOwner) => ({
 });
 
 const addItemDescriptionSuccess = (listId, itemId, description) => ({
-  type: ListActionTypes.ADD_ITEM_DESCRIPTION_SUCCESS,
+  type: ItemActionTypes.ADD_DESCRIPTION_SUCCESS,
   payload: { listId, itemId, description }
 });
 
 const addItemDescriptionRequest = () => ({
-  type: ListActionTypes.ADD_ITEM_DESCRIPTION_REQUEST
+  type: ItemActionTypes.ADD_DESCRIPTION_REQUEST
 });
 
 const addItemDescriptionFailure = () => ({
-  type: ListActionTypes.ADD_ITEM_DESCRIPTION_FAILURE
+  type: ItemActionTypes.ADD_DESCRIPTION_FAILURE
 });
 
 export const fetchListData = listId => dispatch => {

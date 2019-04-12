@@ -37,6 +37,18 @@ const items = (state, action) => {
             : item
         )
       };
+    case ItemActionTypes.ADD_DESCRIPTION_SUCCESS:
+      return {
+        ...state,
+        items: state.items.map(item =>
+          item._id === action.payload.itemId
+            ? {
+                ...item,
+                description: action.payload.description
+              }
+            : item
+        )
+      };
     default:
       return state;
   }
@@ -169,6 +181,13 @@ const lists = (state = {}, action) => {
           ...state[listId],
           members: membersReducer(members, action)
         }
+      };
+    }
+    case ItemActionTypes.ADD_DESCRIPTION_SUCCESS: {
+      const currentList = state[action.payload.listId];
+      return {
+        ...state,
+        [action.payload.listId]: items(currentList, action)
       };
     }
     default:

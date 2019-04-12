@@ -173,6 +173,10 @@
 
   &__info-details {
     width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
 
     .ss-number-input {
       margin-bottom: 8px;

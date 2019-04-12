@@ -1,0 +1,26 @@
+.save-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  color: $text-white;
+  font-size: 10px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  text-decoration: none;
+  background: $button-bg;
+  border: 0;
+  cursor: pointer;
+  margin: 0;
+  padding: 8px 16px;
+
+  &__icon {
+    display: block;
+    height: 100%;
+    margin-left: 16px;
+  }
+
+  svg {
+    height: 16px;
+  }
+}
