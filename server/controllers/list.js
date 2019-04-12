@@ -709,8 +709,38 @@ const addItemDescription = (req, resp) => {
   );
 };
 
+const addItemLink = (req, resp) => {
+  const { itemId, link } = req.body;
+  const { id: listId } = req.params;
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      'items._id': itemId,
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+    },
+    { $set: { 'items.$.link': link } },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: 'An error occurred while adding link. Please try again.'
+        });
+      }
+
+      if (doc) {
+        return resp
+          .status(200)
+          .send({ message: 'Item link successfully updated' });
+      }
+
+      resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
 module.exports = {
   addItemDescription,
+  addItemLink,
   addItemToList,
   addMember,
   addToFavourites,

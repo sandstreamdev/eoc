@@ -9,10 +9,7 @@ import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 const items = (state, action) => {
   switch (action.type) {
     case ItemActionTypes.ADD_SUCCESS:
-      return {
-        ...state,
-        items: [action.payload.item, ...state.items]
-      };
+      return { ...state, items: [action.payload.item, ...state.items] };
     case ItemActionTypes.TOGGLE_SUCCESS:
       return {
         ...state,
@@ -45,6 +42,18 @@ const items = (state, action) => {
             ? {
                 ...item,
                 description: action.payload.description
+              }
+            : item
+        )
+      };
+    case ItemActionTypes.ADD_LINK_SUCCESS:
+      return {
+        ...state,
+        items: state.items.map(item =>
+          item._id === action.payload.itemId
+            ? {
+                ...item,
+                link: action.payload.link
               }
             : item
         )
@@ -190,6 +199,10 @@ const lists = (state = {}, action) => {
         [action.payload.listId]: items(currentList, action)
       };
     }
+    case ItemActionTypes.ADD_LINK_SUCCESS: {
+      const currentList = state[action.payload.listId];
+      return { ...state, [action.payload.listId]: items(currentList, action) };
+    }
     default:
       return state;
   }
@@ -197,7 +210,9 @@ const lists = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
+    case ItemActionTypes.ADD_DESCRIPTION_SUCCESS:
     case ItemActionTypes.ADD_FAILURE:
+    case ItemActionTypes.ADD_LINK_SUCCESS:
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.TOGGLE_FAILURE:
     case ItemActionTypes.TOGGLE_SUCCESS:
@@ -222,6 +237,10 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.UPDATE_FAILURE:
     case ListActionTypes.UPDATE_SUCCESS:
       return false;
+    case ItemActionTypes.ADD_DESCRIPTION_FAILURE:
+    case ItemActionTypes.ADD_DESCRIPTION_REQUEST:
+    case ItemActionTypes.ADD_LINK_FAILURE:
+    case ItemActionTypes.ADD_LINK_REQUEST:
     case ItemActionTypes.ADD_REQUEST:
     case ItemActionTypes.TOGGLE_REQUEST:
     case ItemActionTypes.VOTE_REQUEST:

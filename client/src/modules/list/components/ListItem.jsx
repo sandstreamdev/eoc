@@ -11,31 +11,39 @@ import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
 import { ChevronDown, ChevronUp } from 'assets/images/icons';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { addItemDescription } from '../model/actions';
+import { addItemDescription, addItemLink } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
+import { areStringsEqual } from 'common/utils/helpers';
 
 class ListItem extends PureComponent {
   constructor(props) {
     super(props);
 
     const {
-      data: { archived, description }
+      data: { isOrdered, description, link }
     } = this.props;
+
     this.state = {
       areDetailsVisible: false,
-      done: archived,
+      areFieldsUpdated: false,
+      done: isOrdered,
       isHovered: false,
       isNewCommentVisible: false,
-      itemDescription: description ? description.trim() : ''
+      itemDescription: description ? description.trim() : '',
+      link: link ? link.trim() : ''
     };
   }
 
-  handleItemToggling = (authorName, id, archived) => () => {
+  componentDidUpdate() {
+    this.checkIfFieldsUpdated();
+  }
+
+  handleItemToggling = (authorName, id, isOrdered) => () => {
     const { done } = this.state;
     const { toggleItem } = this.props;
 
     this.setState({ done: !done });
-    toggleItem(authorName, id, archived);
+    toggleItem(authorName, id, isOrdered);
   };
 
   toggleDetails = () =>
@@ -55,27 +63,63 @@ class ListItem extends PureComponent {
 
   handleMouseLeave = () => this.setState({ isHovered: false });
 
-  handleAddDescription = () => {
-    const { itemDescription } = this.state;
+  handleDataUpdate = () => {
+    const { itemDescription, link } = this.state;
     const {
       addItemDescription,
-      data: { _id: itemId, description: previousDescription },
+      addItemLink,
+      data: {
+        _id: itemId,
+        description: previousDescription,
+        link: previousLink
+      },
       match: {
         params: { id: listId }
       }
     } = this.props;
+    const isLinkUpdated = !areStringsEqual(previousLink, link);
+    const isDescriptionUpdated = !areStringsEqual(
+      previousDescription,
+      itemDescription
+    );
 
-    if (previousDescription.trim() !== itemDescription.trim()) {
+    if (isDescriptionUpdated) {
       addItemDescription(listId, itemId, itemDescription);
     }
+
+    if (isLinkUpdated) {
+      addItemLink(listId, itemId, link);
+    }
+  };
+
+  checkIfFieldsUpdated = () => {
+    const {
+      data: { description: previousDescription, link: previousLink }
+    } = this.props;
+    const { itemDescription, link } = this.state;
+
+    const isLinkUpdated = !areStringsEqual(previousLink, link);
+    const isDescriptionUpdated = !areStringsEqual(
+      previousDescription,
+      itemDescription
+    );
+
+    if (isLinkUpdated || isDescriptionUpdated) {
+      this.setState({ areFieldsUpdated: true });
+      return;
+    }
+
+    this.setState({ areFieldsUpdated: false });
   };
 
   handleItemDescription = value => this.setState({ itemDescription: value });
 
+  handleLinkValue = value => this.setState({ link: value });
+
   renderDetails = () => {
-    const { isNewCommentVisible, itemDescription } = this.state;
+    const { isNewCommentVisible, areFieldsUpdated } = this.state;
     const {
-      data: { description }
+      data: { description, link }
     } = this.props;
 
     return (
@@ -89,13 +133,15 @@ class ListItem extends PureComponent {
             />
           </div>
           <div className="list-item__info-details">
-            <TextInput placeholder="Link" />
+            <TextInput
+              placeholder="Link"
+              initialValue={link}
+              onChange={this.handleLinkValue}
+            />
             <SaveButton
               value="Save data"
-              onClick={this.handleAddDescription}
-              disabled={
-                itemDescription.trim() === (description && description.trim())
-              }
+              onClick={this.handleDataUpdate}
+              disabled={!areFieldsUpdated}
             />
           </div>
         </div>
@@ -158,16 +204,16 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { archived, authorName, _id, isVoted, name, votesCount },
+      data: { isOrdered, authorName, _id, isVoted, name, votesCount },
       voteForItem
     } = this.props;
-
     const { done, areDetailsVisible } = this.state;
+
     return (
       <li
         className={classNames('list-item', {
-          'list-item--restore': !done && archived,
-          'list-item--done': done || archived,
+          'list-item--restore': !done && isOrdered,
+          'list-item--done': done || isOrdered,
           'list-item--details-visible': areDetailsVisible
         })}
       >
@@ -193,7 +239,7 @@ class ListItem extends PureComponent {
               <span>{name}</span>
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
-            {!archived && (
+            {!isOrdered && (
               <VotingBox
                 isVoted={isVoted}
                 voteForItem={voteForItem}
@@ -203,7 +249,7 @@ class ListItem extends PureComponent {
           </label>
           <button
             className="list-item__icon z-index-high"
-            onClick={this.handleItemToggling(authorName, _id, archived)}
+            onClick={this.handleItemToggling(authorName, _id, isOrdered)}
             type="button"
           />
         </div>
@@ -222,6 +268,7 @@ ListItem.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   addItemDescription: PropTypes.func.isRequired,
+  addItemLink: PropTypes.func.isRequired,
   toggleItem: PropTypes.func,
   voteForItem: PropTypes.func
 };
@@ -229,6 +276,6 @@ ListItem.propTypes = {
 export default withRouter(
   connect(
     null,
-    { addItemDescription }
+    { addItemDescription, addItemLink }
   )(ListItem)
 );

@@ -5,9 +5,11 @@ import classNames from 'classnames';
 class TextInput extends PureComponent {
   constructor(props) {
     super(props);
+
+    const { initialValue } = this.props;
     this.state = {
-      isEnlarged: false,
-      value: ''
+      isEnlarged: initialValue.length > 0,
+      value: initialValue
     };
 
     this.input = React.createRef();
@@ -20,7 +22,7 @@ class TextInput extends PureComponent {
     const { onChange } = this.props;
 
     this.setState({ value });
-    onChange(event);
+    onChange && onChange(value);
   };
 
   focusInput = () => this.input.current.focus();
@@ -66,7 +68,8 @@ class TextInput extends PureComponent {
 }
 
 TextInput.propTypes = {
-  placeholder: PropTypes.string,
+  initialValue: PropTypes.string,
+  placeholder: PropTypes.string.isRequired,
 
   onChange: PropTypes.func
 };

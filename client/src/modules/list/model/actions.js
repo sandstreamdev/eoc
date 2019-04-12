@@ -188,6 +188,19 @@ const addItemDescriptionFailure = () => ({
   type: ItemActionTypes.ADD_DESCRIPTION_FAILURE
 });
 
+const addItemLinkSuccess = (listId, itemId, link) => ({
+  type: ItemActionTypes.ADD_LINK_SUCCESS,
+  payload: { listId, itemId, link }
+});
+
+const addItemLinkRequest = () => ({
+  type: ItemActionTypes.ADD_LINK_REQUEST
+});
+
+const addItemLinkFailure = () => ({
+  type: ItemActionTypes.ADD_LINK_FAILURE
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
@@ -485,6 +498,31 @@ export const addItemDescription = (listId, itemId, description) => dispatch => {
     })
     .catch(err => {
       dispatch(addItemDescriptionFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const addItemLink = (listId, itemId, link) => dispatch => {
+  dispatch(addItemLinkRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-item-link`, {
+    link,
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(addItemLinkSuccess(listId, itemId, link));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(addItemLinkFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
