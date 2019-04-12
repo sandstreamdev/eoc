@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
+import _trim from 'lodash/trim';
 
 import VotingBox from 'modules/list/components/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
@@ -13,7 +15,8 @@ import { ChevronDown, ChevronUp } from 'assets/images/icons';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { addItemDescription, addItemLink } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
-import { areStringsEqual } from 'common/utils/helpers';
+import { areStringsEqual, isUrlValid } from 'common/utils/helpers';
+import ErrorMessage from 'common/components/Forms/ErrorMessage';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -29,6 +32,7 @@ class ListItem extends PureComponent {
       done: isOrdered,
       isHovered: false,
       isNewCommentVisible: false,
+      isValidationErrorVisible: false,
       itemDescription: description ? description.trim() : '',
       link: link ? link.trim() : ''
     };
@@ -66,16 +70,7 @@ class ListItem extends PureComponent {
   handleDataUpdate = () => {
     const { itemDescription, link } = this.state;
     const {
-      addItemDescription,
-      addItemLink,
-      data: {
-        _id: itemId,
-        description: previousDescription,
-        link: previousLink
-      },
-      match: {
-        params: { id: listId }
-      }
+      data: { description: previousDescription, link: previousLink }
     } = this.props;
     const isLinkUpdated = !areStringsEqual(previousLink, link);
     const isDescriptionUpdated = !areStringsEqual(
@@ -83,13 +78,44 @@ class ListItem extends PureComponent {
       itemDescription
     );
 
-    if (isDescriptionUpdated) {
-      addItemDescription(listId, itemId, itemDescription);
+    if (isLinkUpdated) {
+      this.handleLinkUpdate();
     }
 
-    if (isLinkUpdated) {
-      addItemLink(listId, itemId, link);
+    if (isDescriptionUpdated) {
+      this.handleDescriptionUpdate();
     }
+  };
+
+  handleLinkUpdate = () => {
+    const { link } = this.state;
+    const {
+      addItemLink,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+    const canBeUpdated = isUrlValid(link) || _isEmpty(_trim(link));
+
+    if (canBeUpdated) {
+      addItemLink(listId, itemId, link);
+    } else if (!isUrlValid(link)) {
+      this.setState({ isValidationErrorVisible: true });
+    }
+  };
+
+  handleDescriptionUpdate = () => {
+    const { itemDescription } = this.state;
+    const {
+      addItemDescription,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    addItemDescription(listId, itemId, itemDescription);
   };
 
   checkIfFieldsUpdated = () => {
@@ -114,10 +140,15 @@ class ListItem extends PureComponent {
 
   handleItemDescription = value => this.setState({ itemDescription: value });
 
-  handleLinkValue = value => this.setState({ link: value });
+  handleLinkValue = value =>
+    this.setState({ link: value, isValidationErrorVisible: false });
 
   renderDetails = () => {
-    const { isNewCommentVisible, areFieldsUpdated } = this.state;
+    const {
+      areFieldsUpdated,
+      isNewCommentVisible,
+      isValidationErrorVisible
+    } = this.state;
     const {
       data: { description, link }
     } = this.props;
@@ -138,6 +169,12 @@ class ListItem extends PureComponent {
               initialValue={link}
               onChange={this.handleLinkValue}
             />
+
+            {isValidationErrorVisible && (
+              <div className="list-item__validation-error">
+                <ErrorMessage message="Incorrect url." />
+              </div>
+            )}
             <SaveButton
               value="Save data"
               onClick={this.handleDataUpdate}
