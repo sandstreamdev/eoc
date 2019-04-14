@@ -12,8 +12,14 @@
   }
 
   &__top {
+    position: relative;
     display: flex;
     align-items: center;
+  }
+
+  &__bottom {
+    position: relative;
+    min-height: 35px;
   }
 
   &__heading {
