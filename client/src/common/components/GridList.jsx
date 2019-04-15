@@ -43,7 +43,7 @@ class GridList extends PureComponent {
       default:
         break;
     }
-    action(itemId);
+    return action(itemId);
   };
 
   handleCardClick = (route, itemId) => () => {
