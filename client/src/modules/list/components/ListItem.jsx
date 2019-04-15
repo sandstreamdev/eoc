@@ -7,7 +7,6 @@ import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
-import { ChevronDown, ChevronUp } from 'assets/images/icons';
 
 class ListItem extends PureComponent {
   constructor(props) {
