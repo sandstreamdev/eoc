@@ -156,7 +156,10 @@ const addItemToList = (req, resp) => {
       $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     { $push: { items: item } },
+    { new: true },
     (err, doc) => {
+      const newItem = doc.items.slice(-1)[0];
+
       if (err) {
         return resp.status(400).send({
           message:
@@ -165,7 +168,7 @@ const addItemToList = (req, resp) => {
       }
 
       doc
-        ? resp.status(200).send(responseWithItem(item, userId))
+        ? resp.status(200).send(responseWithItem(newItem, userId))
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
