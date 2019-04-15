@@ -11,7 +11,6 @@ import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
-import { ChevronDown, ChevronUp } from 'assets/images/icons';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { addItemDescription, addItemLink } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
@@ -30,7 +29,6 @@ class ListItem extends PureComponent {
       areDetailsVisible: false,
       areFieldsUpdated: false,
       done: isOrdered,
-      isHovered: false,
       isNewCommentVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description ? description.trim() : '',
@@ -44,6 +42,7 @@ class ListItem extends PureComponent {
 
   handleItemToggling = (authorName, id, isOrdered) => () => {
     const { toggleItem } = this.props;
+    event.stopPropagation();
 
     this.setState(({ done }) => ({ done: !done }));
     toggleItem(authorName, id, isOrdered);
@@ -61,10 +60,6 @@ class ListItem extends PureComponent {
   handleAddNewComment = comment => {
     // Adding new comment will be handled in next tasks
   };
-
-  handleMouseEnter = () => this.setState({ isHovered: true });
-
-  handleMouseLeave = () => this.setState({ isHovered: false });
 
   handleDataUpdate = () => {
     const { itemDescription, link } = this.state;
@@ -222,22 +217,6 @@ class ListItem extends PureComponent {
     </Fragment>
   );
 
-  renderChevron = () => {
-    const { areDetailsVisible, isHovered } = this.state;
-
-    return (
-      <button
-        className={classNames('list-item__chevron', {
-          'list-item__chevron--details-visible': areDetailsVisible
-        })}
-        onClick={this.toggleDetails}
-        type="button"
-      >
-        {isHovered && (areDetailsVisible ? <ChevronUp /> : <ChevronDown />)}
-      </button>
-    );
-  };
-
   render() {
     const {
       data: { isOrdered, authorName, _id, isVoted, name, votesCount },
@@ -252,37 +231,33 @@ class ListItem extends PureComponent {
           'list-item--done': done || isOrdered,
           'list-item--details-visible': areDetailsVisible
         })}
+        onClick={this.toggleDetails}
       >
         <div
-          className="list-item__top"
-          onMouseEnter={this.handleMouseEnter}
-          onMouseLeave={this.handleMouseLeave}
+          className={classNames('list-item__top', {
+            'list-item__top--details-visible': areDetailsVisible,
+            'list-item__top--details-not-visible': !areDetailsVisible
+          })}
         >
-          {this.renderChevron()}
           <input
             className="list-item__input"
             id={`option${_id}`}
             name={`option${_id}`}
             type="checkbox"
           />
-          <label
-            className="list-item__label"
-            htmlFor={`option${_id}`}
-            id={`option${_id}`}
-            onClick={this.toggleDetails}
-          >
+          <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <span>{name}</span>
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
-            {!isOrdered && (
-              <VotingBox
-                isVoted={isVoted}
-                voteForItem={voteForItem}
-                votesCount={votesCount}
-              />
-            )}
           </label>
+          {!isOrdered && (
+            <VotingBox
+              isVoted={isVoted}
+              voteForItem={voteForItem}
+              votesCount={votesCount}
+            />
+          )}
           <button
             className="list-item__icon z-index-high"
             onClick={this.handleItemToggling(authorName, _id, isOrdered)}
