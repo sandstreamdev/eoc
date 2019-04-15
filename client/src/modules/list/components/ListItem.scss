@@ -155,6 +155,39 @@
 
   &__top {
     position: relative;
+
+    &::before {
+      position: absolute;
+      left: 50%;
+      bottom: 5px;
+      content: '';
+      height: 16px;
+      width: 16px;
+      z-index: 3;
+      cursor: pointer;
+    }
+
+    &:hover {
+      &::before {
+        display: block;
+      }
+    }
+
+    &--details-visible {
+      &::before {
+        display: none;
+        background: url('../../assets/images/chevron-up-solid.svg') no-repeat
+          center;
+      }
+    }
+
+    &--details-not-visible {
+      &::before {
+        display: none;
+        background: url('../../assets/images/chevron-down-solid.svg') no-repeat
+          center;
+      }
+    }
   }
 
   &__info-textarea {
@@ -193,25 +226,10 @@
     margin-bottom: 8px;
   }
 
-  &__chevron {
-    cursor: pointer;
+  .voting-box {
     position: absolute;
-    left: 50%;
-    bottom: 2px;
-    z-index: 99;
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    border: 0;
-    outline: 0;
-
-    &--details-visible {
-      bottom: auto;
-      top: 10px;
-    }
-
-    svg {
-      height: 16px;
-    }
+    right: 55px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }

@@ -16,13 +16,14 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       done: archived,
-      isHovered: false,
+
       isNewCommentVisible: false
     };
   }
 
-  handleItemToggling = (authorName, id, archived) => () => {
+  handleItemToggling = (authorName, id, archived) => event => {
     const { toggleItem } = this.props;
+    event.stopPropagation();
 
     this.setState(({ done }) => ({ done: !done }));
     toggleItem(authorName, id, archived);
@@ -40,10 +41,6 @@ class ListItem extends PureComponent {
   handleAddNewComment = comment => {
     // Adding new comment will be handled in next tasks
   };
-
-  handleMouseEnter = () => this.setState({ isHovered: true });
-
-  handleMouseLeave = () => this.setState({ isHovered: false });
 
   renderDetails = () => {
     const { isNewCommentVisible } = this.state;
@@ -98,22 +95,6 @@ class ListItem extends PureComponent {
     </Fragment>
   );
 
-  renderChevron = () => {
-    const { areDetailsVisible, isHovered } = this.state;
-
-    return (
-      <button
-        className={classNames('list-item__chevron', {
-          'list-item__chevron--details-visible': areDetailsVisible
-        })}
-        onClick={this.toggleDetails}
-        type="button"
-      >
-        {isHovered && (areDetailsVisible ? <ChevronUp /> : <ChevronDown />)}
-      </button>
-    );
-  };
-
   render() {
     const {
       archived,
@@ -132,37 +113,33 @@ class ListItem extends PureComponent {
           'list-item--done': done || archived,
           'list-item--details-visible': areDetailsVisible
         })}
+        onClick={this.toggleDetails}
       >
         <div
-          className="list-item__top"
-          onMouseEnter={this.handleMouseEnter}
-          onMouseLeave={this.handleMouseLeave}
+          className={classNames('list-item__top', {
+            'list-item__top--details-visible': areDetailsVisible,
+            'list-item__top--details-not-visible': !areDetailsVisible
+          })}
         >
-          {this.renderChevron()}
           <input
             className="list-item__input"
             id={`option${id}`}
             name={`option${id}`}
             type="checkbox"
           />
-          <label
-            className="list-item__label"
-            htmlFor={`option${id}`}
-            id={`option${id}`}
-            onClick={this.toggleDetails}
-          >
+          <label className="list-item__label" id={`option${id}`}>
             <span className="list-item__data">
               <span>{name}</span>
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
-            {!archived && (
-              <VotingBox
-                isVoted={isVoted}
-                voteForItem={voteForItem}
-                votesCount={votesCount}
-              />
-            )}
           </label>
+          {!archived && (
+            <VotingBox
+              isVoted={isVoted}
+              voteForItem={voteForItem}
+              votesCount={votesCount}
+            />
+          )}
           <button
             className="list-item__icon z-index-high"
             onClick={this.handleItemToggling(authorName, id, archived)}
