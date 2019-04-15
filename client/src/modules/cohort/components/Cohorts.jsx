@@ -34,11 +34,11 @@ class Cohorts extends Component {
     const { fetchCohortsMetaData } = this.props;
 
     fetchCohortsMetaData();
-    this.setState({ pendingForCohorts: true }, () => {
-      fetchCohortsMetaData()
-        .then(() => this.setState({ pendingForCohorts: false }))
-        .catch(() => this.setState({ pendingForCohorts: false }));
-    });
+    this.setState({ pendingForCohorts: true });
+
+    fetchCohortsMetaData()
+      .then(() => this.setState({ pendingForCohorts: false }))
+      .catch(() => this.setState({ pendingForCohorts: false }));
   }
 
   handleDialogVisibility = () =>
@@ -53,17 +53,17 @@ class Cohorts extends Component {
     } = this.props;
     const data = { description, userId, name };
 
-    this.setState({ pendingForCohortCreation: true }, () => {
-      createCohort(data)
-        .then(() => {
-          this.setState({ pendingForCohortCreation: false });
-          this.handleDialogVisibility();
-        })
-        .catch(() => {
-          this.setState({ pendingForCohortCreation: false });
-          this.handleDialogVisibility();
-        });
-    });
+    this.setState({ pendingForCohortCreation: true });
+
+    createCohort(data)
+      .then(() => {
+        this.setState({ pendingForCohortCreation: false });
+        this.handleDialogVisibility();
+      })
+      .catch(() => {
+        this.setState({ pendingForCohortCreation: false });
+        this.handleDialogVisibility();
+      });
   };
 
   handleArchivedCohortsVisibility = () =>
@@ -82,11 +82,11 @@ class Cohorts extends Component {
     } = this.props;
 
     if (areArchivedCohortsVisible) {
-      this.setState({ pendingForArchivedCohorts: true }, () => {
-        fetchArchivedCohortsMetaData()
-          .then(() => this.setState({ pendingForArchivedCohorts: false }))
-          .catch(() => this.setState({ pendingForArchivedCohorts: false }));
-      });
+      this.setState({ pendingForArchivedCohorts: true });
+
+      fetchArchivedCohortsMetaData()
+        .then(() => this.setState({ pendingForArchivedCohorts: false }))
+        .catch(() => this.setState({ pendingForArchivedCohorts: false }));
     } else {
       removeArchivedCohortsMetaData();
     }

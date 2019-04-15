@@ -107,21 +107,21 @@ class CohortHeader extends PureComponent {
     }
 
     if (nameToUpdate.length >= 1) {
-      this.setState({ pendingForName: true }, () => {
-        updateCohort(id, { name })
-          .then(() =>
-            this.setState({
-              isNameInputVisible: false,
-              pendingForName: false
-            })
-          )
-          .catch(() =>
-            this.setState({
-              isNameInputVisible: false,
-              pendingForName: false
-            })
-          );
-      });
+      this.setState({ pendingForName: true });
+
+      updateCohort(id, { name })
+        .then(() =>
+          this.setState({
+            isNameInputVisible: false,
+            pendingForName: false
+          })
+        )
+        .catch(() =>
+          this.setState({
+            isNameInputVisible: false,
+            pendingForName: false
+          })
+        );
     }
   };
 
@@ -146,21 +146,21 @@ class CohortHeader extends PureComponent {
 
     const updatedDescription = _isEmpty(_trim(description)) ? '' : description;
 
-    this.setState(
-      { isDescriptionTextareaVisible: false, pendingForDescription: true },
-      () => {
-        updateCohort(id, { description: updatedDescription })
-          .then(() =>
-            this.setState({
-              description: updatedDescription,
-              pendingForDescription: false
-            })
-          )
-          .catch(() => {
-            this.setState({ pendingForDescription: false });
-          });
-      }
-    );
+    this.setState({
+      isDescriptionTextareaVisible: false,
+      pendingForDescription: true
+    });
+
+    updateCohort(id, { description: updatedDescription })
+      .then(() =>
+        this.setState({
+          description: updatedDescription,
+          pendingForDescription: false
+        })
+      )
+      .catch(() => {
+        this.setState({ pendingForDescription: false });
+      });
   };
 
   renderDescription = () => {

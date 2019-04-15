@@ -106,15 +106,14 @@ class ListHeader extends PureComponent {
     }
 
     if (name.trim().length >= 1) {
-      this.setState({ pendingForName: true }, () => {
-        updateList(id, { name })
-          .then(() =>
-            this.setState({ isNameInputVisible: false, pendingForName: false })
-          )
-          .catch(() =>
-            this.setState({ isNameInputVisible: false, pendingForName: false })
-          );
-      });
+      this.setState({ pendingForName: true });
+      updateList(id, { name })
+        .then(() =>
+          this.setState({ isNameInputVisible: false, pendingForName: false })
+        )
+        .catch(() =>
+          this.setState({ isNameInputVisible: false, pendingForName: false })
+        );
     }
   };
 
@@ -139,21 +138,20 @@ class ListHeader extends PureComponent {
 
     const updatedDescription = _isEmpty(_trim(description)) ? '' : description;
 
-    this.setState(
-      { isDescriptionTextareaVisible: false, pendingForDescription: true },
-      () => {
-        updateList(id, { description: updatedDescription })
-          .then(() =>
-            this.setState({
-              description: updatedDescription,
-              pendingForDescription: false
-            })
-          )
-          .catch(() => {
-            this.setState({ pendingForDescription: false });
-          });
-      }
-    );
+    this.setState({
+      isDescriptionTextareaVisible: false,
+      pendingForDescription: true
+    });
+    updateList(id, { description: updatedDescription })
+      .then(() =>
+        this.setState({
+          description: updatedDescription,
+          pendingForDescription: false
+        })
+      )
+      .catch(() => {
+        this.setState({ pendingForDescription: false });
+      });
   };
 
   renderDescription = () => {

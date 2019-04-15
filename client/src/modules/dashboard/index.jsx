@@ -34,11 +34,11 @@ class Dashboard extends Component {
   componentDidMount() {
     const { fetchListsMetaData } = this.props;
 
-    this.setState({ pendingForLists: true }, () => {
-      fetchListsMetaData()
-        .then(() => this.setState({ pendingForLists: false }))
-        .catch(() => this.setState({ pendingForLists: false }));
-    });
+    this.setState({ pendingForLists: true });
+
+    fetchListsMetaData()
+      .then(() => this.setState({ pendingForLists: false }))
+      .catch(() => this.setState({ pendingForLists: false }));
   }
 
   handleDialogVisibility = () =>
@@ -53,17 +53,17 @@ class Dashboard extends Component {
     } = this.props;
     const data = { description, userId, name };
 
-    this.setState({ pendingForListCreation: true }, () => {
-      createList(data)
-        .then(() => {
-          this.setState({ pendingForListCreation: false });
-          this.handleDialogVisibility();
-        })
-        .catch(() => {
-          this.setState({ pendingForListCreation: false });
-          this.handleDialogVisibility();
-        });
-    });
+    this.setState({ pendingForListCreation: true });
+
+    createList(data)
+      .then(() => {
+        this.setState({ pendingForListCreation: false });
+        this.handleDialogVisibility();
+      })
+      .catch(() => {
+        this.setState({ pendingForListCreation: false });
+        this.handleDialogVisibility();
+      });
   };
 
   handleArchivedListsVisibility = () =>
@@ -82,11 +82,11 @@ class Dashboard extends Component {
     } = this.props;
 
     if (areArchivedListsVisible) {
-      this.setState({ pendingForArchivedLists: true }, () => {
-        fetchArchivedListsMetaData()
-          .then(() => this.setState({ pendingForArchivedLists: false }))
-          .catch(() => this.setState({ pendingForArchivedLists: false }));
-      });
+      this.setState({ pendingForArchivedLists: true });
+
+      fetchArchivedListsMetaData()
+        .then(() => this.setState({ pendingForArchivedLists: false }))
+        .catch(() => this.setState({ pendingForArchivedLists: false }));
     } else {
       removeArchivedListsMetaData();
     }

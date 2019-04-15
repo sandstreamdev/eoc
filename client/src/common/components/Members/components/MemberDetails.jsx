@@ -66,17 +66,17 @@ class MemberDetails extends PureComponent {
     const action =
       route === Routes.COHORT ? removeCohortMember : removeListMember;
 
-    this.setState({ pending: true }, () =>
-      action(id, userId, isOwner)
-        .then(() => {
-          this.setState({ pending: false });
-          onClose();
-        })
-        .catch(() => {
-          this.setState({ pending: false });
-          onClose();
-        })
-    );
+    this.setState({ pending: true });
+
+    action(id, userId, isOwner)
+      .then(() => {
+        this.setState({ pending: false });
+        onClose();
+      })
+      .catch(() => {
+        this.setState({ pending: false });
+        onClose();
+      });
   };
 
   handleOwnerInfoVisibility = event => {
@@ -101,15 +101,11 @@ class MemberDetails extends PureComponent {
       _id: userId
     } = this.props;
 
-    this.setState({ pending: true }, () =>
-      action(id, userId, selectedRole)
-        .then(() => {
-          this.setState({ pending: false, selectedRole });
-        })
-        .catch(() => {
-          this.setState({ pending: false });
-        })
-    );
+    this.setState({ pending: true });
+
+    action(id, userId, selectedRole)
+      .then(() => this.setState({ pending: false, selectedRole }))
+      .catch(() => this.setState({ pending: false }));
   };
 
   handleChangingRoles = event => {

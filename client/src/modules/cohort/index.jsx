@@ -40,11 +40,11 @@ class Cohort extends PureComponent {
   };
 
   componentDidMount() {
-    this.setState({ pendingForDetails: true }, () => {
-      this.fetchData()
-        .then(() => this.setState({ pendingForDetails: false }))
-        .catch(() => this.setState({ pendingForDetails: false }));
-    });
+    this.setState({ pendingForDetails: true });
+
+    this.fetchData()
+      .then(() => this.setState({ pendingForDetails: false }))
+      .catch(() => this.setState({ pendingForDetails: false }));
   }
 
   fetchData = () => {
@@ -77,33 +77,33 @@ class Cohort extends PureComponent {
     const { isListPrivate } = this.state;
     const data = { name, description, userId, cohortId, isListPrivate };
 
-    this.setState({ pendingForListCreation: true }, () => {
-      createList(data)
-        .then(() => {
-          this.setState({ pendingForListCreation: false });
-          this.hideDialog();
-        })
-        .catch(() => {
-          this.setState({ pendingForListCreation: false });
-          this.hideDialog();
-        });
-    });
+    this.setState({ pendingForListCreation: true });
+
+    createList(data)
+      .then(() => {
+        this.setState({ pendingForListCreation: false });
+        this.hideDialog();
+      })
+      .catch(() => {
+        this.setState({ pendingForListCreation: false });
+        this.hideDialog();
+      });
   };
 
   handleCohortArchivization = cohortId => () => {
     const { archiveCohort } = this.props;
 
-    this.setState({ pendingForCohortArchivization: true }, () => {
-      archiveCohort(cohortId)
-        .then(() => {
-          this.setState({ pendingForCohortArchivization: false });
-          this.hideDialog();
-        })
-        .catch(() => {
-          this.setState({ pendingForCohortArchivization: false });
-          this.hideDialog();
-        });
-    });
+    this.setState({ pendingForCohortArchivization: true });
+
+    archiveCohort(cohortId)
+      .then(() => {
+        this.setState({ pendingForCohortArchivization: false });
+        this.hideDialog();
+      })
+      .catch(() => {
+        this.setState({ pendingForCohortArchivization: false });
+        this.hideDialog();
+      });
   };
 
   checkIfArchived = () => {
@@ -140,11 +140,11 @@ class Cohort extends PureComponent {
     } = this.props;
 
     if (areArchivedListsVisible) {
-      this.setState({ pendingForArchivedLists: true }, () => {
-        fetchArchivedListsMetaData()
-          .then(() => this.setState({ pendingForArchivedLists: false }))
-          .catch(() => this.setState({ pendingForArchivedLists: false }));
-      });
+      this.setState({ pendingForArchivedLists: true });
+
+      fetchArchivedListsMetaData()
+        .then(() => this.setState({ pendingForArchivedLists: false }))
+        .catch(() => this.setState({ pendingForArchivedLists: false }));
     } else {
       removeArchivedListsMetaData();
     }

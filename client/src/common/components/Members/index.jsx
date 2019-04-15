@@ -44,17 +44,17 @@ class MembersBox extends PureComponent {
 
     const action = route === Routes.COHORT ? addCohortMember : addListMember;
 
-    this.setState({ pending: true }, () =>
-      action(id, email)
-        .then(() => {
-          this.setState({ pending: false });
-          this.hideForm();
-        })
-        .catch(() => {
-          this.setState({ pending: false });
-          this.hideForm();
-        })
-    );
+    this.setState({ pending: true });
+
+    action(id, email)
+      .then(() => {
+        this.setState({ pending: false });
+        this.hideForm();
+      })
+      .catch(() => {
+        this.setState({ pending: false });
+        this.hideForm();
+      });
   };
 
   renderMemberList = () => {
