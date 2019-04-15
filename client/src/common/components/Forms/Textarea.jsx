@@ -7,9 +7,11 @@ class Textarea extends PureComponent {
     super(props);
 
     const { initialValue } = this.props;
-    const descriptionExist = initialValue && initialValue.length > 0;
 
-    this.state = { isEnlarged: descriptionExist, value: initialValue || '' };
+    this.state = {
+      isEnlarged: initialValue && initialValue.length > 0,
+      value: initialValue
+    };
     this.textarea = React.createRef();
   }
 

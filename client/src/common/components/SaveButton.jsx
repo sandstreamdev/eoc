@@ -13,7 +13,7 @@ const SaveButton = ({ disabled, onClick, value }) => (
     onClick={onClick}
     type="button"
   >
-    {value}
+    <span className="save-button__context ">{value}</span>
     <div className="save-button__icon">
       <DiscIcon />
     </div>
