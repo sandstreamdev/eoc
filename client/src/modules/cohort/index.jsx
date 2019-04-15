@@ -24,7 +24,6 @@ import GridList from 'common/components/GridList';
 import { ListType } from 'modules/list';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
-import { noOp } from 'common/utils/noOp';
 import CohortHeader from './components/CohortHeader';
 import Preloader from '../../common/components/Preloader';
 
@@ -42,9 +41,7 @@ class Cohort extends PureComponent {
   componentDidMount() {
     this.setState({ pendingForDetails: true });
 
-    this.fetchData()
-      .then(() => this.setState({ pendingForDetails: false }))
-      .catch(() => this.setState({ pendingForDetails: false }));
+    this.fetchData();
   }
 
   fetchData = () => {
@@ -56,13 +53,16 @@ class Cohort extends PureComponent {
       }
     } = this.props;
 
-    return fetchCohortDetails(id)
+    this.setState({ pendingForDetails: true });
+
+    fetchCohortDetails(id)
       .then(() => {
         if (!this.checkIfArchived()) {
-          fetchListsMetaData(id);
+          return fetchListsMetaData(id);
         }
       })
-      .catch(noOp);
+      .then(() => this.setState({ pendingForDetails: false }))
+      .catch(() => this.setState({ pendingForDetails: false }));
   };
 
   handleListCreation = (name, description) => {

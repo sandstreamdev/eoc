@@ -33,7 +33,6 @@ class Cohorts extends Component {
   componentDidMount() {
     const { fetchCohortsMetaData } = this.props;
 
-    fetchCohortsMetaData();
     this.setState({ pendingForCohorts: true });
 
     fetchCohortsMetaData()
