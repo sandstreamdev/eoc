@@ -201,7 +201,7 @@ class Cohort extends PureComponent {
             pending={pendingForCohortArchivization}
             title={
               pendingForCohortArchivization
-                ? `"${name}" cohort archivization`
+                ? `"${name}" cohort archivization...`
                 : `Do you really want to archive the "${name}" cohort?`
             }
           />
@@ -216,11 +216,7 @@ class Cohort extends PureComponent {
           />
         )}
         {isArchived ? (
-          <ArchivedCohort
-            cohortId={cohortId}
-            name={name}
-            pending={pendingForDetails}
-          />
+          <ArchivedCohort cohortId={cohortId} name={name} />
         ) : (
           <div className="wrapper">
             <div className="cohort">

@@ -7,7 +7,7 @@ import Preloader from 'common/components/Preloader';
 class ArchivedMessage extends PureComponent {
   state = {
     isDialogVisible: false,
-    pendingForDeletion: false
+    pending: false
   };
 
   showDialog = () => this.setState({ isDialogVisible: true });
@@ -17,23 +17,35 @@ class ArchivedMessage extends PureComponent {
   handleDeletion = () => {
     const { onDelete } = this.props;
 
-    this.setState({ pendingForDeletion: true }, () =>
+    this.setState({ pending: true }, () =>
       onDelete().catch(() => {
-        this.setState({ pendingForDeletion: false });
+        this.setState({ pending: false });
         this.hideDialog();
       })
     );
   };
 
+  handleRestoring = () => {
+    const { onRestore } = this.props;
+
+    this.setState({ pending: true }, () =>
+      onRestore()
+        .then(() => this.setState({ pending: false }))
+        .catch(() => this.setState({ pending: false }))
+    );
+  };
+
   render() {
-    const { isDialogVisible, pendingForDeletion } = this.state;
-    const { item, name, onRestore, pending, pendingMessage } = this.props;
+    const { isDialogVisible, pending } = this.state;
+    const { item, name } = this.props;
 
     return (
       <Fragment>
         <div className="archived-message">
           <h1 className="archived-message__header">
-            {pendingMessage || `The "${name}" ${item} was archived.`}
+            {pending
+              ? `Restoring "${name}" ${item}...`
+              : `The "${name}" ${item} was archived.`}
           </h1>
           {pending && !isDialogVisible ? (
             <div className="archived-message__body">
@@ -51,7 +63,7 @@ class ArchivedMessage extends PureComponent {
               <button
                 className="archived-message__button primary-button"
                 type="button"
-                onClick={onRestore}
+                onClick={this.handleRestoring}
               >
                 restore from archive
               </button>
@@ -61,11 +73,11 @@ class ArchivedMessage extends PureComponent {
         {isDialogVisible && (
           <Dialog
             title={
-              pendingForDeletion
+              pending
                 ? `Deleting "${name}" ${item}...`
                 : `Do you really want to permanently delete the "${name}" ${item}?`
             }
-            pending={pendingForDeletion}
+            pending={pending}
             onCancel={this.hideDialog}
             onConfirm={this.handleDeletion}
           />
@@ -78,8 +90,6 @@ class ArchivedMessage extends PureComponent {
 ArchivedMessage.propTypes = {
   item: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  pending: PropTypes.bool.isRequired,
-  pendingMessage: PropTypes.string.isRequired,
 
   onDelete: PropTypes.func.isRequired,
   onRestore: PropTypes.func.isRequired

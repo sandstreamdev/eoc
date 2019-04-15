@@ -6,26 +6,10 @@ import { deleteList, restoreList } from 'modules/list/model/actions';
 import ArchivedMessage from 'common/components/ArchivedMessage';
 
 class ArchivedList extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    const { pending } = this.props;
-    this.state = {
-      pending,
-      pendingMessage: ''
-    };
-  }
-
   handleListRestoring = listId => () => {
-    const { name, restoreList } = this.props;
+    const { restoreList } = this.props;
 
-    this.setState(
-      { pending: true, pendingMessage: `Restoring "${name}" list...` },
-      () =>
-        restoreList(listId).catch(() =>
-          this.setState({ pending: false, pendingMessage: '' })
-        )
-    );
+    return restoreList(listId);
   };
 
   handleListDeletion = id => () => {
@@ -36,14 +20,10 @@ class ArchivedList extends PureComponent {
   render() {
     const { listId, name } = this.props;
 
-    const { pending, pendingMessage } = this.state;
-
     return (
       <ArchivedMessage
         item="list"
         name={name}
-        pending={pending}
-        pendingMessage={pendingMessage}
         onDelete={this.handleListDeletion(listId)}
         onRestore={this.handleListRestoring(listId)}
       />
@@ -54,7 +34,6 @@ class ArchivedList extends PureComponent {
 ArchivedList.propTypes = {
   listId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  pending: PropTypes.bool.isRequired,
 
   deleteList: PropTypes.func.isRequired,
   restoreList: PropTypes.func.isRequired

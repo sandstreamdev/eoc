@@ -125,11 +125,7 @@ class List extends Component {
           )}
         </Toolbar>
         {isArchived ? (
-          <ArchivedList
-            listId={listId}
-            name={name}
-            pending={pendingForDetails}
-          />
+          <ArchivedList listId={listId} name={name} />
         ) : (
           <div className="wrapper">
             <div className="list">
@@ -178,7 +174,7 @@ class List extends Component {
             pending={pendingForListArchivization}
             title={
               pendingForListArchivization
-                ? `"${name}" list archivization`
+                ? `"${name}" list archivization...`
                 : `Do you really want to archive the "${name}" list?`
             }
           />
