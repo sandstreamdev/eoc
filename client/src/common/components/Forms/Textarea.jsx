@@ -17,7 +17,9 @@ class Textarea extends PureComponent {
     const { onChange } = this.props;
 
     this.setState({ value });
-    onChange(value);
+    if (onChange) {
+      onChange(value);
+    }
   };
 
   focusTextarea = () => this.textarea.current.focus();
@@ -26,7 +28,10 @@ class Textarea extends PureComponent {
 
   handleBlur = () => {
     const { value } = this.state;
-    value.length <= 0 && this.setState({ isEnlarged: false });
+
+    if (value.length === 0) {
+      this.setState({ isEnlarged: false });
+    }
   };
 
   render() {

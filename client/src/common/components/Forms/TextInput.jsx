@@ -20,7 +20,9 @@ class TextInput extends PureComponent {
     const { onChange } = this.props;
 
     this.setState({ value });
-    onChange(event);
+    if (onChange) {
+      onChange(event);
+    }
   };
 
   focusInput = () => this.input.current.focus();
@@ -29,7 +31,10 @@ class TextInput extends PureComponent {
 
   handleBlur = () => {
     const { value } = this.state;
-    value.length <= 0 && this.setState({ isEnlarged: false });
+
+    if (value.length === 0) {
+      this.setState({ isEnlarged: false });
+    }
   };
 
   render() {

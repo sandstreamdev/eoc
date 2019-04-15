@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { CohortIcon } from 'assets/images/icons';
+import { UserIcon } from 'assets/images/icons';
 
 const Comment = ({ author, comment, avatar }) => (
   <div className="comment">
     <div className="comment__avatar">
-      {/* Cohort icon is temporary for now, it will be user avatar here */}
-      <CohortIcon />
+      {avatar ? (
+        <img src={avatar} alt={`${author} avatar`} name={`${author} avatar`} />
+      ) : (
+        <UserIcon />
+      )}
     </div>
     <div className="comment__body">
       <span className="comment__author">{author}</span>
