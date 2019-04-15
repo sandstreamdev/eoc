@@ -34,30 +34,39 @@ const items = (state, action) => {
             : item
         )
       };
-    case ItemActionTypes.ADD_DESCRIPTION_SUCCESS:
+    case ItemActionTypes.ADD_DESCRIPTION_SUCCESS: {
+      const {
+        payload: { description, itemId }
+      } = action;
+
       return {
         ...state,
         items: state.items.map(item =>
-          item._id === action.payload.itemId
+          item._id === itemId
             ? {
                 ...item,
-                description: action.payload.description
+                description
               }
             : item
         )
       };
-    case ItemActionTypes.ADD_LINK_SUCCESS:
+    }
+    case ItemActionTypes.ADD_LINK_SUCCESS: {
+      const {
+        payload: { link, itemId }
+      } = action;
       return {
         ...state,
         items: state.items.map(item =>
-          item._id === action.payload.itemId
+          item._id === itemId
             ? {
                 ...item,
-                link: action.payload.link
+                link
               }
             : item
         )
       };
+    }
     default:
       return state;
   }

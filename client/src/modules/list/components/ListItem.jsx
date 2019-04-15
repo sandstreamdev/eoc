@@ -31,8 +31,8 @@ class ListItem extends PureComponent {
       done: isOrdered,
       isNewCommentVisible: false,
       isValidationErrorVisible: false,
-      itemDescription: description ? description.trim() : '',
-      link: link ? link.trim() : ''
+      itemDescription: description,
+      link
     };
   }
 
@@ -151,27 +151,26 @@ class ListItem extends PureComponent {
         <div className="list-item__info">
           <div className="list-item__info-textarea">
             <Textarea
-              placeholder="Description"
               initialValue={description}
               onChange={this.handleItemDescription}
+              placeholder="Description"
             />
           </div>
           <div className="list-item__info-details">
             <TextInput
-              placeholder="Link"
               initialValue={link}
               onChange={this.handleLinkValue}
+              placeholder="Link"
             />
-
             {isValidationErrorVisible && (
               <div className="list-item__validation-error">
                 <ErrorMessage message="Incorrect url." />
               </div>
             )}
             <SaveButton
-              value="Save data"
-              onClick={this.handleDataUpdate}
               disabled={!areFieldsUpdated}
+              onClick={this.handleDataUpdate}
+              value="Save data"
             />
           </div>
         </div>
