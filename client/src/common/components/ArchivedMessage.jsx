@@ -29,9 +29,7 @@ class ArchivedMessage extends PureComponent {
     const { onRestore } = this.props;
 
     this.setState({ pending: true }, () =>
-      onRestore()
-        .then(() => this.setState({ pending: false }))
-        .catch(() => this.setState({ pending: false }))
+      onRestore().catch(() => this.setState({ pending: false }))
     );
   };
 
