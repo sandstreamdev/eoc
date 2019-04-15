@@ -23,7 +23,7 @@ class TextInput extends PureComponent {
 
     this.setState({ value });
     if (onChange) {
-      onChange(event);
+      onChange(value);
     }
   };
 

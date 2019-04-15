@@ -230,13 +230,14 @@ class ListItem extends PureComponent {
           'list-item--done': done || isOrdered,
           'list-item--details-visible': areDetailsVisible
         })}
-        onClick={this.toggleDetails}
       >
         <div
           className={classNames('list-item__top', {
             'list-item__top--details-visible': areDetailsVisible,
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
+          onClick={this.toggleDetails}
+          role="listitem"
         >
           <input
             className="list-item__input"
