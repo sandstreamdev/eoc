@@ -43,10 +43,9 @@ class ListItem extends PureComponent {
   }
 
   handleItemToggling = (authorName, id, isOrdered) => () => {
-    const { done } = this.state;
     const { toggleItem } = this.props;
 
-    this.setState({ done: !done });
+    this.setState(({ done }) => ({ done: !done }));
     toggleItem(authorName, id, isOrdered);
   };
 

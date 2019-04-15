@@ -26,10 +26,6 @@ class NewComment extends PureComponent {
     if (code === 'Escape') {
       onEscapePress();
     }
-
-    if (code === 'Enter') {
-      this.handleAddNewComment();
-    }
   };
 
   handleAddNewComment = () => {
