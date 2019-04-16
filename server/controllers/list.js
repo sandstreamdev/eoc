@@ -19,6 +19,7 @@ const {
   responseWithListMember,
   responseWithListMembers
 } = require('../common/utils/index');
+const { updateSubdocumentFields } = require('../common/utils/helpers');
 
 const createList = (req, resp) => {
   const { description, isListPrivate, name, userId, cohortId } = req.body;
@@ -300,7 +301,7 @@ const updateListItem = (req, resp) => {
       $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     {
-      $set: propertiesToUpdate
+      $set: { propertiesToUpdate }
     },
     { new: true },
     (err, doc) => {
@@ -685,14 +686,7 @@ const addMember = (req, resp) => {
 const updateItemDetails = (req, resp) => {
   const { description, link, itemId } = req.body;
   const { id: listId } = req.params;
-
-  const propertiesToUpdate = {};
-  if (description !== undefined) {
-    propertiesToUpdate['items.$.description'] = description;
-  }
-  if (link !== undefined) {
-    propertiesToUpdate['items.$.link'] = link;
-  }
+  const dataToUpdate = updateSubdocumentFields('items', { description, link });
 
   List.findOneAndUpdate(
     {
@@ -700,7 +694,7 @@ const updateItemDetails = (req, resp) => {
       'items._id': itemId,
       $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
-    { $set: propertiesToUpdate },
+    { $set: dataToUpdate },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({

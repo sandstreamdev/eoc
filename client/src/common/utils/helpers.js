@@ -8,5 +8,5 @@ export const isUrlValid = string => {
       '(\\#[-a-z\\d_]*)?$',
     'i'
   );
-  return !!pattern.test(string);
+  return pattern.test(string);
 };
