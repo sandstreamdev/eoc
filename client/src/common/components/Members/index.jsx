@@ -4,6 +4,7 @@ import _map from 'lodash/map';
 import PropTypes from 'prop-types';
 import { Manager, Reference } from 'react-popper';
 import { withRouter } from 'react-router-dom';
+import _debounce from 'lodash/debounce';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
@@ -22,7 +23,7 @@ class MembersBox extends PureComponent {
   };
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('resize', _debounce(this.handleResize, 100));
   }
 
   componentWillUnmount() {
