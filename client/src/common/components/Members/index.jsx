@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import PropTypes from 'prop-types';
-import { Manager } from 'react-popper';
+import { Manager, Reference } from 'react-popper';
 import { withRouter } from 'react-router-dom';
 
 import { DotsIcon, PlusIcon } from 'assets/images/icons';
@@ -16,8 +16,26 @@ import { Routes } from 'common/constants/enums';
 
 class MembersBox extends PureComponent {
   state = {
+    context: null,
     isFormVisible: false,
-    context: null
+    isMobile: window.outerWidth < 400
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    if (window.outerWidth < 400) {
+      this.setState({ isMobile: true });
+      return;
+    }
+
+    this.setState({ isMobile: false });
   };
 
   showForm = () => this.setState({ isFormVisible: true });
@@ -54,9 +72,23 @@ class MembersBox extends PureComponent {
     }
   };
 
+  renderDetails = member => {
+    const { isCurrentUserAnOwner, isPrivate, route } = this.props;
+
+    return (
+      <MemberDetails
+        {...member}
+        isCurrentUserAnOwner={isCurrentUserAnOwner}
+        isPrivate={isPrivate}
+        onClose={this.handleClosingMemberDetails}
+        route={route}
+      />
+    );
+  };
+
   renderMemberList = () => {
-    const { isCurrentUserAnOwner, isPrivate, members, route } = this.props;
-    const { context } = this.state;
+    const { members } = this.props;
+    const { isMobile, context } = this.state;
 
     return _map(members, member => (
       <li
@@ -64,29 +96,37 @@ class MembersBox extends PureComponent {
         key={member.avatarUrl}
         title={member.displayName}
       >
-        <Manager>
+        {isMobile ? (
           <MemberButton
-            onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
             member={member}
+            onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
           />
-          {context === member._id && (
-            <MemberBox>
-              <MemberDetails
-                {...member}
-                isCurrentUserAnOwner={isCurrentUserAnOwner}
-                onClose={this.handleClosingMemberDetails}
-                isPrivate={isPrivate}
-                route={route}
-              />
-            </MemberBox>
-          )}
-        </Manager>
+        ) : (
+          <Manager>
+            <Reference>
+              {({ ref }) => (
+                <MemberButton
+                  member={member}
+                  onDisplayDetails={this.handleDisplayingMemberDetails(
+                    member._id
+                  )}
+                  popperRef={ref}
+                />
+              )}
+            </Reference>
+            {context === member._id && (
+              <MemberBox>{this.renderDetails(member)}</MemberBox>
+            )}
+          </Manager>
+        )}
       </li>
     ));
   };
 
   render() {
-    const { isFormVisible } = this.state;
+    const { isFormVisible, context, isMobile } = this.state;
+    const { members } = this.props;
+    const currentUser = members[context];
 
     return (
       <div className="members-box">
@@ -114,6 +154,7 @@ class MembersBox extends PureComponent {
             </button>
           </li>
         </ul>
+        {isMobile && currentUser && this.renderDetails(currentUser)}
       </div>
     );
   }
@@ -122,8 +163,8 @@ class MembersBox extends PureComponent {
 MembersBox.propTypes = {
   isCurrentUserAnOwner: PropTypes.bool.isRequired,
   isPrivate: PropTypes.bool,
-  route: PropTypes.string.isRequired,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
+  route: PropTypes.string.isRequired,
 
   addCohortMember: PropTypes.func.isRequired,
   addListMember: PropTypes.func.isRequired
