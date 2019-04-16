@@ -129,7 +129,7 @@ class ListItem extends PureComponent {
 
   handleItemDescription = value => this.setState({ itemDescription: value });
 
-  handleLinkValue = value =>
+  handleItemLink = value =>
     this.setState({ link: value, isValidationErrorVisible: false });
 
   renderDetails = () => {
@@ -155,7 +155,7 @@ class ListItem extends PureComponent {
           <div className="list-item__info-details">
             <TextInput
               initialValue={link}
-              onChange={this.handleLinkValue}
+              onChange={this.handleItemLink}
               placeholder="Link"
             />
             {isValidationErrorVisible && (
