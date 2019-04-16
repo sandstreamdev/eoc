@@ -226,16 +226,15 @@ class MemberDetails extends PureComponent {
   };
 
   renderHeader = () => {
-    const { role } = this.state;
+    const { selectedRole } = this.state;
     const { displayName } = this.props;
-
     return (
       <header className="member-details__header">
         <div className="member-details__avatar">{this.renderAvatar()}</div>
         <div>
           <h3 className="member-details__name">{displayName}</h3>
           <p className="member-details__role">
-            {`${role === UserRoles.OWNER ? 'owner' : 'member'}`}
+            {`${selectedRole === UserRoles.OWNER ? 'owner' : 'member'}`}
           </p>
         </div>
       </header>

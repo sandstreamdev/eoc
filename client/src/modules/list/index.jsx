@@ -113,13 +113,15 @@ class List extends Component {
                   <InputBar />
                 </ItemsContainer>
                 <ItemsContainer archived items={orderedItems} />
-                <button
-                  className="link-button"
-                  onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
-                  type="button"
-                >
-                  {`Archive the "${name}" list`}
-                </button>
+                {!isArchived && this.checkIfOwner() && (
+                  <button
+                    className="link-button"
+                    onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                    type="button"
+                  >
+                    {`Archive the "${name}" list`}
+                  </button>
+                )}
               </div>
               <button
                 className="link-button"
