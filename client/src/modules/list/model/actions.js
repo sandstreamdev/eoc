@@ -471,9 +471,8 @@ export const changeRole = (listId, userId, role) => dispatch => {
 export const updateItemDetails = (listId, itemId, data) => dispatch => {
   dispatch(addItemDetailsRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
-    description: data.description,
-    itemId,
-    link: data.link
+    ...data,
+    itemId
   })
     .then(resp => resp.json())
     .then(json => {
