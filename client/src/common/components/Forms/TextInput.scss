@@ -1,0 +1,48 @@
+.ss-text-input {
+  position: relative;
+
+  &__placeholder {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: $text-light;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    outline: 0;
+
+    &--is-focused {
+      font-size: 12px;
+      top: 3px;
+      transform: none;
+    }
+  }
+
+  &__input {
+    background-color: $bg-color;
+    border: 1px solid $border-color;
+    box-sizing: border-box;
+    color: $text-normal;
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    line-height: 1.2;
+    outline: 0;
+    padding: 17px 12px 10px;
+    resize: vertical;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    width: 100%;
+
+    &::placeholder {
+      font-size: 0;
+    }
+
+    &:focus {
+      border: 1px solid rgba($border-focus, 0.54);
+      box-shadow: 0 0 0 2px rgba($border-focus, 0);
+    }
+  }
+}

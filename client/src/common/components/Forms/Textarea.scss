@@ -1,0 +1,52 @@
+.ss-textarea {
+  position: relative;
+
+  &:focus {
+    border: 1px solid rgba($border-focus, 0.54);
+    box-shadow: 0 0 0 2px rgba($border-focus, 0);
+  }
+
+  &__textarea {
+    background-color: $bg-color;
+    border: 1px solid $border-color;
+    box-sizing: border-box;
+    color: $text-normal;
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    line-height: 1.2;
+    min-height: 65px;
+    outline: 0;
+    padding: 20px 12px 10px;
+    resize: vertical;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    width: 100%;
+
+    &::placeholder {
+      font-size: 0;
+    }
+
+    &:focus {
+      border: 1px solid rgba($border-focus, 0.54);
+      box-shadow: 0 0 0 2px rgba($border-focus, 0);
+    }
+  }
+
+  &__placeholder {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    font-size: 14px;
+    color: $text-light;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    outline: 0;
+
+    &--is-focused {
+      font-size: 12px;
+      top: 5px;
+    }
+  }
+}
