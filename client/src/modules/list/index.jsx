@@ -121,13 +121,15 @@ class List extends Component {
                   {`Archive the "${name}" list`}
                 </button>
               </div>
-              <button
-                className="link-button"
-                onClick={this.handleMembersBoxVisibility}
-                type="button"
-              >
-                {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
-              </button>
+              {!isArchived && this.checkIfOwner() && (
+                <button
+                  className="link-button"
+                  onClick={this.handleMembersBoxVisibility}
+                  type="button"
+                >
+                  {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
+                </button>
+              )}
               {isMembersBoxVisible && (
                 <MembersBox
                   isCurrentUserAnOwner={this.checkIfOwner()}

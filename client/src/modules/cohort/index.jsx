@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { CardColorType } from 'common/components/CardItem';
-import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
+import Toolbar from 'common/components/Toolbar';
 import { getActiveLists, getArchivedLists } from 'modules/list/model/selectors';
 import {
   createList,
@@ -12,7 +12,7 @@ import {
   fetchListsMetaData,
   removeArchivedListsMetaData
 } from 'modules/list/model/actions';
-import { ArchiveIcon, ListIcon } from 'assets/images/icons';
+import { ListIcon } from 'assets/images/icons';
 import { getCohortDetails, getMembers } from './model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
@@ -141,17 +141,7 @@ class Cohort extends PureComponent {
 
     return (
       <Fragment>
-        <Toolbar>
-          {!isArchived && this.checkIfOwner() && (
-            <Fragment>
-              <ToolbarItem
-                mainIcon={<ArchiveIcon />}
-                onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
-                title="Archive cohort"
-              />
-            </Fragment>
-          )}
-        </Toolbar>
+        <Toolbar />
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
             onCancel={this.handleDialogContext(null)}
@@ -187,23 +177,36 @@ class Cohort extends PureComponent {
                 placeholder={`There are no lists in the ${name} cohort!`}
                 route={Routes.LIST}
               />
-              <button
-                className="link-button"
-                onClick={this.handleArchivedListsVisibility(cohortId)}
-                type="button"
-              >
-                {` ${areArchivedListVisible ? 'hide' : 'show'} archived lists`}
-              </button>
-              {areArchivedListVisible && (
-                <GridList
-                  color={CardColorType.ARCHIVED}
-                  icon={<ListIcon />}
-                  items={archivedLists}
-                  name="Archived lists"
-                  placeholder={`There are no archived lists in the ${name} cohort!`}
-                  route={Routes.LIST}
-                />
+              {!isArchived && this.checkIfOwner() && (
+                <button
+                  className="link-button"
+                  onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                  type="button"
+                >
+                  {`Archive the "${name}" cohort`}
+                </button>
               )}
+              <div>
+                <button
+                  className="link-button"
+                  onClick={this.handleArchivedListsVisibility(cohortId)}
+                  type="button"
+                >
+                  {` ${
+                    areArchivedListVisible ? 'hide' : 'show'
+                  } archived lists`}
+                </button>
+                {areArchivedListVisible && (
+                  <GridList
+                    color={CardColorType.ARCHIVED}
+                    icon={<ListIcon />}
+                    items={archivedLists}
+                    name="Archived lists"
+                    placeholder={`There are no archived lists in the ${name} cohort!`}
+                    route={Routes.LIST}
+                  />
+                )}
+              </div>
             </div>
           </div>
         )}
