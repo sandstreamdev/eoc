@@ -34,9 +34,9 @@ class List extends Component {
   componentDidMount() {
     if (this.checkIfArchived()) {
       this.setState({ pendingForDetails: true });
-      this.fetchData()
-        .then(() => this.setState({ pendingForDetails: false }))
-        .catch(() => this.setState({ pendingForDetails: false }));
+      this.fetchData().finally(() =>
+        this.setState({ pendingForDetails: false })
+      );
     }
   }
 
@@ -54,15 +54,10 @@ class List extends Component {
     const { archiveList } = this.props;
 
     this.setState({ pendingForListArchivization: true });
-    archiveList(listId)
-      .then(() => {
-        this.setState({ pendingForListArchivization: false });
-        this.hideDialog();
-      })
-      .catch(() => {
-        this.setState({ pendingForListArchivization: false });
-        this.hideDialog();
-      });
+    archiveList(listId).finally(() => {
+      this.setState({ pendingForListArchivization: false });
+      this.hideDialog();
+    });
   };
 
   checkIfArchived = () => {

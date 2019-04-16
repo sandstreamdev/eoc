@@ -56,7 +56,6 @@ class MemberDetails extends PureComponent {
       match: {
         params: { id }
       },
-      onClose,
       removeCohortMember,
       removeListMember,
       route,
@@ -68,15 +67,7 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    action(id, userId, isOwner)
-      .then(() => {
-        this.setState({ pending: false });
-        onClose();
-      })
-      .catch(() => {
-        this.setState({ pending: false });
-        onClose();
-      });
+    action(id, userId, isOwner);
   };
 
   handleOwnerInfoVisibility = event => {
@@ -236,11 +227,15 @@ class MemberDetails extends PureComponent {
     const { isMemberInfoVisible, isOwnerInfoVisible, pending } = this.state;
     const { isGuest, isPrivate: privateList, route } = this.props;
 
-    return pending ? (
-      <div className="member-details__preloader">
-        <Preloader />
-      </div>
-    ) : (
+    if (pending) {
+      return (
+        <div className="member-details__preloader">
+          <Preloader />
+        </div>
+      );
+    }
+
+    return (
       <ul className="member-details__panel">
         <li className="member-details__option">
           {this.renderChangeRoleOption(UserRoles.OWNER, isOwnerInfoVisible)}

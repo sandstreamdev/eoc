@@ -61,8 +61,7 @@ class Cohort extends PureComponent {
           return fetchListsMetaData(id);
         }
       })
-      .then(() => this.setState({ pendingForDetails: false }))
-      .catch(() => this.setState({ pendingForDetails: false }));
+      .finally(() => this.setState({ pendingForDetails: false }));
   };
 
   handleListCreation = (name, description) => {
@@ -79,15 +78,10 @@ class Cohort extends PureComponent {
 
     this.setState({ pendingForListCreation: true });
 
-    createList(data)
-      .then(() => {
-        this.setState({ pendingForListCreation: false });
-        this.hideDialog();
-      })
-      .catch(() => {
-        this.setState({ pendingForListCreation: false });
-        this.hideDialog();
-      });
+    createList(data).finally(() => {
+      this.setState({ pendingForListCreation: false });
+      this.hideDialog();
+    });
   };
 
   handleCohortArchivization = cohortId => () => {
@@ -95,15 +89,10 @@ class Cohort extends PureComponent {
 
     this.setState({ pendingForCohortArchivization: true });
 
-    archiveCohort(cohortId)
-      .then(() => {
-        this.setState({ pendingForCohortArchivization: false });
-        this.hideDialog();
-      })
-      .catch(() => {
-        this.setState({ pendingForCohortArchivization: false });
-        this.hideDialog();
-      });
+    archiveCohort(cohortId).finally(() => {
+      this.setState({ pendingForCohortArchivization: false });
+      this.hideDialog();
+    });
   };
 
   checkIfArchived = () => {
@@ -142,9 +131,9 @@ class Cohort extends PureComponent {
     if (areArchivedListsVisible) {
       this.setState({ pendingForArchivedLists: true });
 
-      fetchArchivedListsMetaData()
-        .then(() => this.setState({ pendingForArchivedLists: false }))
-        .catch(() => this.setState({ pendingForArchivedLists: false }));
+      fetchArchivedListsMetaData().finally(() =>
+        this.setState({ pendingForArchivedLists: false })
+      );
     } else {
       removeArchivedListsMetaData();
     }

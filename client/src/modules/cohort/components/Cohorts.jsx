@@ -35,9 +35,9 @@ class Cohorts extends Component {
 
     this.setState({ pendingForCohorts: true });
 
-    fetchCohortsMetaData()
-      .then(() => this.setState({ pendingForCohorts: false }))
-      .catch(() => this.setState({ pendingForCohorts: false }));
+    fetchCohortsMetaData().finally(() =>
+      this.setState({ pendingForCohorts: false })
+    );
   }
 
   handleDialogVisibility = () =>
@@ -54,15 +54,10 @@ class Cohorts extends Component {
 
     this.setState({ pendingForCohortCreation: true });
 
-    createCohort(data)
-      .then(() => {
-        this.setState({ pendingForCohortCreation: false });
-        this.handleDialogVisibility();
-      })
-      .catch(() => {
-        this.setState({ pendingForCohortCreation: false });
-        this.handleDialogVisibility();
-      });
+    createCohort(data).finally(() => {
+      this.setState({ pendingForCohortCreation: false });
+      this.handleDialogVisibility();
+    });
   };
 
   handleArchivedCohortsVisibility = () =>
@@ -83,9 +78,9 @@ class Cohorts extends Component {
     if (areArchivedCohortsVisible) {
       this.setState({ pendingForArchivedCohorts: true });
 
-      fetchArchivedCohortsMetaData()
-        .then(() => this.setState({ pendingForArchivedCohorts: false }))
-        .catch(() => this.setState({ pendingForArchivedCohorts: false }));
+      fetchArchivedCohortsMetaData().finally(() =>
+        this.setState({ pendingForArchivedCohorts: false })
+      );
     } else {
       removeArchivedCohortsMetaData();
     }

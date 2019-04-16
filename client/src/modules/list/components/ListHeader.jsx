@@ -107,13 +107,9 @@ class ListHeader extends PureComponent {
 
     if (name.trim().length >= 1) {
       this.setState({ pendingForName: true });
-      updateList(id, { name })
-        .then(() =>
-          this.setState({ isNameInputVisible: false, pendingForName: false })
-        )
-        .catch(() =>
-          this.setState({ isNameInputVisible: false, pendingForName: false })
-        );
+      updateList(id, { name }).finally(() =>
+        this.setState({ isNameInputVisible: false, pendingForName: false })
+      );
     }
   };
 
@@ -142,6 +138,7 @@ class ListHeader extends PureComponent {
       isDescriptionTextareaVisible: false,
       pendingForDescription: true
     });
+
     updateList(id, { description: updatedDescription })
       .then(() =>
         this.setState({
@@ -149,9 +146,7 @@ class ListHeader extends PureComponent {
           pendingForDescription: false
         })
       )
-      .catch(() => {
-        this.setState({ pendingForDescription: false });
-      });
+      .catch(() => this.setState({ pendingForDescription: false }));
   };
 
   renderDescription = () => {
@@ -161,9 +156,9 @@ class ListHeader extends PureComponent {
       pendingForDescription
     } = this.state;
 
-    return pendingForDescription ? (
-      <Preloader size={PreloaderSize.SMALL} />
-    ) : (
+    if (pendingForDescription) return <Preloader size={PreloaderSize.SMALL} />;
+
+    return (
       <Fragment>
         {isDescriptionTextareaVisible ? (
           <DescriptionTextarea
@@ -200,9 +195,9 @@ class ListHeader extends PureComponent {
   renderName = () => {
     const { name, isNameInputVisible, pendingForName } = this.state;
 
-    return pendingForName ? (
-      <Preloader size={PreloaderSize.SMALL} />
-    ) : (
+    if (pendingForName) return <Preloader size={PreloaderSize.SMALL} />;
+
+    return (
       <Fragment>
         {isNameInputVisible ? (
           <NameInput

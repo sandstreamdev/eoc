@@ -36,9 +36,9 @@ class Dashboard extends Component {
 
     this.setState({ pendingForLists: true });
 
-    fetchListsMetaData()
-      .then(() => this.setState({ pendingForLists: false }))
-      .catch(() => this.setState({ pendingForLists: false }));
+    fetchListsMetaData().finally(() =>
+      this.setState({ pendingForLists: false })
+    );
   }
 
   handleDialogVisibility = () =>
@@ -55,15 +55,10 @@ class Dashboard extends Component {
 
     this.setState({ pendingForListCreation: true });
 
-    createList(data)
-      .then(() => {
-        this.setState({ pendingForListCreation: false });
-        this.handleDialogVisibility();
-      })
-      .catch(() => {
-        this.setState({ pendingForListCreation: false });
-        this.handleDialogVisibility();
-      });
+    createList(data).finally(() => {
+      this.setState({ pendingForListCreation: false });
+      this.handleDialogVisibility();
+    });
   };
 
   handleArchivedListsVisibility = () =>
@@ -84,9 +79,9 @@ class Dashboard extends Component {
     if (areArchivedListsVisible) {
       this.setState({ pendingForArchivedLists: true });
 
-      fetchArchivedListsMetaData()
-        .then(() => this.setState({ pendingForArchivedLists: false }))
-        .catch(() => this.setState({ pendingForArchivedLists: false }));
+      fetchArchivedListsMetaData().finally(() =>
+        this.setState({ pendingForArchivedLists: false })
+      );
     } else {
       removeArchivedListsMetaData();
     }

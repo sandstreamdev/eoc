@@ -109,19 +109,12 @@ class CohortHeader extends PureComponent {
     if (nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
 
-      updateCohort(id, { name })
-        .then(() =>
-          this.setState({
-            isNameInputVisible: false,
-            pendingForName: false
-          })
-        )
-        .catch(() =>
-          this.setState({
-            isNameInputVisible: false,
-            pendingForName: false
-          })
-        );
+      updateCohort(id, { name }).finally(() =>
+        this.setState({
+          isNameInputVisible: false,
+          pendingForName: false
+        })
+      );
     }
   };
 
@@ -158,9 +151,7 @@ class CohortHeader extends PureComponent {
           pendingForDescription: false
         })
       )
-      .catch(() => {
-        this.setState({ pendingForDescription: false });
-      });
+      .catch(() => this.setState({ pendingForDescription: false }));
   };
 
   renderDescription = () => {
@@ -170,9 +161,9 @@ class CohortHeader extends PureComponent {
       pendingForDescription
     } = this.state;
 
-    return pendingForDescription ? (
-      <Preloader size={PreloaderSize.SMALL} />
-    ) : (
+    if (pendingForDescription) return <Preloader size={PreloaderSize.SMALL} />;
+
+    return (
       <Fragment>
         {isDescriptionTextareaVisible ? (
           <DescriptionTextarea
@@ -209,9 +200,9 @@ class CohortHeader extends PureComponent {
   renderName = () => {
     const { name, isNameInputVisible, pendingForName } = this.state;
 
-    return pendingForName ? (
-      <Preloader size={PreloaderSize.SMALL} />
-    ) : (
+    if (pendingForName) return <Preloader size={PreloaderSize.SMALL} />;
+
+    return (
       <Fragment>
         {isNameInputVisible ? (
           <NameInput

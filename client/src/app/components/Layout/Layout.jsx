@@ -53,7 +53,7 @@ export class Layout extends Component {
       <Fragment>
         <Notifications />
         <Switch>
-          <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
+          <Redirect from="/" exact to="/dashboard" />
           <Route component={Dashboard} path="/dashboard" />
           <Route component={Cohort} path="/cohort/:id(\w+)" />
           <Route component={List} path="/list/:id(\w+)" />

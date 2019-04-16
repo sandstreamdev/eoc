@@ -46,15 +46,10 @@ class MembersBox extends PureComponent {
 
     this.setState({ pending: true });
 
-    action(id, email)
-      .then(() => {
-        this.setState({ pending: false });
-        this.hideForm();
-      })
-      .catch(() => {
-        this.setState({ pending: false });
-        this.hideForm();
-      });
+    action(id, email).finally(() => {
+      this.setState({ pending: false });
+      this.hideForm();
+    });
   };
 
   renderMemberList = () => {

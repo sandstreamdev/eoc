@@ -17,20 +17,20 @@ class ArchivedMessage extends PureComponent {
   handleDeletion = () => {
     const { onDelete } = this.props;
 
-    this.setState({ pending: true }, () =>
-      onDelete().catch(() => {
-        this.setState({ pending: false });
-        this.hideDialog();
-      })
-    );
+    this.setState({ pending: true });
+
+    onDelete().catch(() => {
+      this.setState({ pending: false });
+      this.hideDialog();
+    });
   };
 
   handleRestoring = () => {
     const { onRestore } = this.props;
 
-    this.setState({ pending: true }, () =>
-      onRestore().catch(() => this.setState({ pending: false }))
-    );
+    this.setState({ pending: true });
+
+    onRestore().catch(() => this.setState({ pending: false }));
   };
 
   render() {
@@ -41,7 +41,7 @@ class ArchivedMessage extends PureComponent {
       <Fragment>
         <div className="archived-message">
           <h1 className="archived-message__header">
-            {pending
+            {pending && !isDialogVisible
               ? `Restoring "${name}" ${item}...`
               : `The "${name}" ${item} was archived.`}
           </h1>

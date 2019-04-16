@@ -23,9 +23,7 @@ class CardItem extends PureComponent {
   handleFavClick = e => {
     const { onFavClick } = this.props;
     this.setState({ pending: true });
-    onFavClick(e)
-      .then(() => this.setState({ pending: false }))
-      .catch(() => this.setState({ pending: false }));
+    onFavClick(e).finally(() => this.setState({ pending: false }));
   };
 
   render() {
