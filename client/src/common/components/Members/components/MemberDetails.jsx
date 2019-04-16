@@ -67,9 +67,7 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    action(id, userId, isOwner).catch(() => {
-      this.setState({ pending: false });
-    });
+    action(id, userId, isOwner).catch(() => this.setState({ pending: false }));
   };
 
   handleOwnerInfoVisibility = event => {
