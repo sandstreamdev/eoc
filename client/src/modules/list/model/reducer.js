@@ -34,9 +34,12 @@ const items = (state, action) => {
             : item
         )
       };
-    case ItemActionTypes.ADD_DESCRIPTION_SUCCESS: {
+    case ItemActionTypes.ADD_DETAILS_SUCCESS: {
       const {
-        payload: { description, itemId }
+        payload: {
+          data: { description, link },
+          itemId
+        }
       } = action;
 
       return {
@@ -45,23 +48,8 @@ const items = (state, action) => {
           item._id === itemId
             ? {
                 ...item,
-                description
-              }
-            : item
-        )
-      };
-    }
-    case ItemActionTypes.ADD_LINK_SUCCESS: {
-      const {
-        payload: { link, itemId }
-      } = action;
-      return {
-        ...state,
-        items: state.items.map(item =>
-          item._id === itemId
-            ? {
-                ...item,
-                link
+                description: description || item.description,
+                link: link || item.link
               }
             : item
         )
@@ -201,16 +189,12 @@ const lists = (state = {}, action) => {
         }
       };
     }
-    case ItemActionTypes.ADD_DESCRIPTION_SUCCESS: {
+    case ItemActionTypes.ADD_DETAILS_SUCCESS: {
       const currentList = state[action.payload.listId];
       return {
         ...state,
         [action.payload.listId]: items(currentList, action)
       };
-    }
-    case ItemActionTypes.ADD_LINK_SUCCESS: {
-      const currentList = state[action.payload.listId];
-      return { ...state, [action.payload.listId]: items(currentList, action) };
     }
     default:
       return state;
@@ -219,9 +203,8 @@ const lists = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
-    case ItemActionTypes.ADD_DESCRIPTION_SUCCESS:
+    case ItemActionTypes.ADD_DETAILS_SUCCESS:
     case ItemActionTypes.ADD_FAILURE:
-    case ItemActionTypes.ADD_LINK_SUCCESS:
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.TOGGLE_FAILURE:
     case ItemActionTypes.TOGGLE_SUCCESS:
@@ -246,10 +229,8 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.UPDATE_FAILURE:
     case ListActionTypes.UPDATE_SUCCESS:
       return false;
-    case ItemActionTypes.ADD_DESCRIPTION_FAILURE:
-    case ItemActionTypes.ADD_DESCRIPTION_REQUEST:
-    case ItemActionTypes.ADD_LINK_FAILURE:
-    case ItemActionTypes.ADD_LINK_REQUEST:
+    case ItemActionTypes.ADD_DETAILS_FAILURE:
+    case ItemActionTypes.ADD_DETAILS_REQUEST:
     case ItemActionTypes.ADD_REQUEST:
     case ItemActionTypes.TOGGLE_REQUEST:
     case ItemActionTypes.VOTE_REQUEST:

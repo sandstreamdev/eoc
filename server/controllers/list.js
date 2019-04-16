@@ -682,9 +682,17 @@ const addMember = (req, resp) => {
     });
 };
 
-const addItemDescription = (req, resp) => {
-  const { itemId, description } = req.body;
+const updateItemDetails = (req, resp) => {
+  const { description, link, itemId } = req.body;
   const { id: listId } = req.params;
+
+  const propertiesToUpdate = {};
+  if (description !== undefined) {
+    propertiesToUpdate['items.$.description'] = description;
+  }
+  if (link !== undefined) {
+    propertiesToUpdate['items.$.link'] = link;
+  }
 
   List.findOneAndUpdate(
     {
@@ -692,48 +700,18 @@ const addItemDescription = (req, resp) => {
       'items._id': itemId,
       $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
-    { $set: { 'items.$.description': description } },
+    { $set: propertiesToUpdate },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
-          message:
-            'An error occurred while adding description. Please try again.'
+          message: 'An error occurred while updating details. Please try again.'
         });
       }
 
       if (doc) {
         return resp
           .status(200)
-          .send({ message: 'Item description successfully updated' });
-      }
-
-      resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
-};
-
-const addItemLink = (req, resp) => {
-  const { itemId, link } = req.body;
-  const { id: listId } = req.params;
-
-  List.findOneAndUpdate(
-    {
-      _id: listId,
-      'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
-    },
-    { $set: { 'items.$.link': link } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: 'An error occurred while adding link. Please try again.'
-        });
-      }
-
-      if (doc) {
-        return resp
-          .status(200)
-          .send({ message: 'Item link successfully updated' });
+          .send({ message: 'Item details successfully updated' });
       }
 
       resp.status(404).send({ message: 'List data not found.' });
@@ -742,8 +720,6 @@ const addItemLink = (req, resp) => {
 };
 
 module.exports = {
-  addItemDescription,
-  addItemLink,
   addItemToList,
   addMember,
   addToFavourites,
@@ -758,6 +734,7 @@ module.exports = {
   removeFromFavourites,
   removeMember,
   removeOwner,
+  updateItemDetails,
   updateListById,
   updateListItem,
   voteForItem

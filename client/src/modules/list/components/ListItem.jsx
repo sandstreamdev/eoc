@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
+import _isEqual from 'lodash/isEqual';
 
 import VotingBox from 'modules/list/components/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
@@ -12,9 +13,9 @@ import TextInput from 'common/components/Forms/TextInput';
 import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { addItemDescription, addItemLink } from '../model/actions';
+import { updateItemDetails } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
-import { areStringsEqual, isUrlValid } from 'common/utils/helpers';
+import { isUrlValid } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 
 class ListItem extends PureComponent {
@@ -65,10 +66,10 @@ class ListItem extends PureComponent {
     const {
       data: { description: previousDescription, link: previousLink }
     } = this.props;
-    const isLinkUpdated = !areStringsEqual(previousLink, link);
-    const isDescriptionUpdated = !areStringsEqual(
-      previousDescription,
-      itemDescription
+    const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
+    const isDescriptionUpdated = !_isEqual(
+      _trim(previousDescription),
+      _trim(itemDescription)
     );
 
     if (isLinkUpdated) {
@@ -83,7 +84,7 @@ class ListItem extends PureComponent {
   handleLinkUpdate = () => {
     const { link } = this.state;
     const {
-      addItemLink,
+      updateItemDetails,
       data: { _id: itemId },
       match: {
         params: { id: listId }
@@ -92,23 +93,23 @@ class ListItem extends PureComponent {
     const canBeUpdated = isUrlValid(link) || _isEmpty(_trim(link));
 
     if (canBeUpdated) {
-      addItemLink(listId, itemId, link);
+      updateItemDetails(listId, itemId, { link });
     } else if (!isUrlValid(link)) {
       this.setState({ isValidationErrorVisible: true });
     }
   };
 
   handleDescriptionUpdate = () => {
-    const { itemDescription } = this.state;
+    const { itemDescription: description } = this.state;
     const {
-      addItemDescription,
+      updateItemDetails,
       data: { _id: itemId },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    addItemDescription(listId, itemId, itemDescription);
+    updateItemDetails(listId, itemId, { description });
   };
 
   checkIfFieldsUpdated = () => {
@@ -117,18 +118,13 @@ class ListItem extends PureComponent {
     } = this.props;
     const { itemDescription, link } = this.state;
 
-    const isLinkUpdated = !areStringsEqual(previousLink, link);
-    const isDescriptionUpdated = !areStringsEqual(
-      previousDescription,
-      itemDescription
+    const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
+    const isDescriptionUpdated = !_isEqual(
+      _trim(previousDescription),
+      _trim(itemDescription)
     );
 
-    if (isLinkUpdated || isDescriptionUpdated) {
-      this.setState({ areFieldsUpdated: true });
-      return;
-    }
-
-    this.setState({ areFieldsUpdated: false });
+    this.setState({ areFieldsUpdated: isLinkUpdated || isDescriptionUpdated });
   };
 
   handleItemDescription = value => this.setState({ itemDescription: value });
@@ -277,15 +273,14 @@ ListItem.propTypes = {
   ),
   match: RouterMatchPropType.isRequired,
 
-  addItemDescription: PropTypes.func.isRequired,
-  addItemLink: PropTypes.func.isRequired,
   toggleItem: PropTypes.func,
+  updateItemDetails: PropTypes.func.isRequired,
   voteForItem: PropTypes.func
 };
 
 export default withRouter(
   connect(
     null,
-    { addItemDescription, addItemLink }
+    { updateItemDetails }
   )(ListItem)
 );

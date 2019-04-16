@@ -175,30 +175,17 @@ const changeRoleSuccess = (listId, userId, isOwner) => ({
   payload: { listId, userId, isOwner }
 });
 
-const addItemDescriptionSuccess = (listId, itemId, description) => ({
-  type: ItemActionTypes.ADD_DESCRIPTION_SUCCESS,
-  payload: { listId, itemId, description }
+const addItemDetailsSuccess = (listId, itemId, data) => ({
+  type: ItemActionTypes.ADD_DETAILS_SUCCESS,
+  payload: { listId, itemId, data }
 });
 
-const addItemDescriptionRequest = () => ({
-  type: ItemActionTypes.ADD_DESCRIPTION_REQUEST
+const addItemDetailsRequest = () => ({
+  type: ItemActionTypes.ADD_DETAILS_REQUEST
 });
 
-const addItemDescriptionFailure = () => ({
-  type: ItemActionTypes.ADD_DESCRIPTION_FAILURE
-});
-
-const addItemLinkSuccess = (listId, itemId, link) => ({
-  type: ItemActionTypes.ADD_LINK_SUCCESS,
-  payload: { listId, itemId, link }
-});
-
-const addItemLinkRequest = () => ({
-  type: ItemActionTypes.ADD_LINK_REQUEST
-});
-
-const addItemLinkFailure = () => ({
-  type: ItemActionTypes.ADD_LINK_FAILURE
+const addItemDetailsFailure = () => ({
+  type: ItemActionTypes.ADD_DETAILS_FAILURE
 });
 
 export const fetchListData = listId => dispatch => {
@@ -481,15 +468,16 @@ export const changeRole = (listId, userId, role) => dispatch => {
     });
 };
 
-export const addItemDescription = (listId, itemId, description) => dispatch => {
-  dispatch(addItemDescriptionRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-item-description`, {
-    description,
-    itemId
+export const updateItemDetails = (listId, itemId, data) => dispatch => {
+  dispatch(addItemDetailsRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
+    description: data.description,
+    itemId,
+    link: data.link
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(addItemDescriptionSuccess(listId, itemId, description));
+      dispatch(addItemDetailsSuccess(listId, itemId, data));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -497,32 +485,7 @@ export const addItemDescription = (listId, itemId, description) => dispatch => {
       );
     })
     .catch(err => {
-      dispatch(addItemDescriptionFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message
-      );
-    });
-};
-
-export const addItemLink = (listId, itemId, link) => dispatch => {
-  dispatch(addItemLinkRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-item-link`, {
-    link,
-    itemId
-  })
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch(addItemLinkSuccess(listId, itemId, link));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
-    .catch(err => {
-      dispatch(addItemLinkFailure());
+      dispatch(addItemDetailsFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
