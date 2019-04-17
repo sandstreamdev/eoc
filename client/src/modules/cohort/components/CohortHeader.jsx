@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
+import classNames from 'classnames';
 
 import { CohortIcon } from 'assets/images/icons';
 import { updateCohort } from '../model/actions';
@@ -161,8 +162,20 @@ class CohortHeader extends PureComponent {
       pendingForDescription
     } = this.state;
 
+    const {
+      details: { isOwner }
+    } = this.props;
+
+    if (!description && !isOwner) {
+      return;
+    }
+
     if (pendingForDescription) {
-      return <Preloader size={PreloaderSize.SMALL} />;
+      return (
+        <div className="cohort-header__bottom">
+          <Preloader size={PreloaderSize.SMALL} />
+        </div>
+      );
     }
 
     return isDescriptionTextareaVisible ? (
@@ -174,11 +187,13 @@ class CohortHeader extends PureComponent {
       />
     ) : (
       <Fragment>
-        {description ? (
+        {description || !isOwner ? (
           <p
-            className="cohort-header__description"
+            className={classNames('cohort-header__description', {
+              'cohort-header--clickable': isOwner
+            })}
             data-id="description"
-            onClick={this.handleDescriptionTextareaVisibility}
+            onClick={isOwner ? this.handleDescriptionTextareaVisibility : null}
           >
             {description}
           </p>
@@ -197,6 +212,9 @@ class CohortHeader extends PureComponent {
 
   renderName = () => {
     const { name, isNameInputVisible, pendingForName } = this.state;
+    const {
+      details: { isOwner }
+    } = this.props;
 
     if (pendingForName) {
       return <Preloader size={PreloaderSize.SMALL} />;
@@ -211,8 +229,10 @@ class CohortHeader extends PureComponent {
       />
     ) : (
       <h1
-        className="cohort-header__heading"
-        onClick={this.handleNameInputVisibility}
+        className={classNames('cohort-header__heading', {
+          'cohort-header--clickable': isOwner
+        })}
+        onClick={isOwner ? this.handleNameInputVisibility : null}
       >
         {name}
       </h1>
@@ -226,7 +246,7 @@ class CohortHeader extends PureComponent {
           <CohortIcon />
           {this.renderName()}
         </div>
-        <div className="cohort-header__bottom">{this.renderDescription()}</div>
+        {this.renderDescription()}
       </header>
     );
   }
