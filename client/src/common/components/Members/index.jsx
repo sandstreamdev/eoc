@@ -19,7 +19,8 @@ class MembersBox extends PureComponent {
   state = {
     context: null,
     isFormVisible: false,
-    isMobile: window.outerWidth < 400
+    isMobile: window.outerWidth < 400,
+    pending: false
   };
 
   componentDidMount() {
@@ -45,7 +46,6 @@ class MembersBox extends PureComponent {
   };
 
   handleAddNewMember = () => email => {
-    this.hideForm();
     const { addCohortMember, addListMember } = this.props;
     const {
       match: {
@@ -54,16 +54,14 @@ class MembersBox extends PureComponent {
       route
     } = this.props;
 
-    switch (route) {
-      case Routes.COHORT:
-        addCohortMember(id, email);
-        break;
-      case Routes.LIST:
-        addListMember(id, email);
-        break;
-      default:
-        break;
-    }
+    const action = route === Routes.COHORT ? addCohortMember : addListMember;
+
+    this.setState({ pending: true });
+
+    action(id, email).finally(() => {
+      this.setState({ pending: false });
+      this.hideForm();
+    });
   };
 
   renderDetails = member => {
@@ -118,7 +116,7 @@ class MembersBox extends PureComponent {
   };
 
   render() {
-    const { isFormVisible, context, isMobile } = this.state;
+    const { isFormVisible, context, isMobile, pending } = this.state;
     const { members } = this.props;
     const currentUser = members[context];
 
@@ -130,7 +128,10 @@ class MembersBox extends PureComponent {
         <ul className="members-box__list">
           <li className="members-box__list-item">
             {isFormVisible ? (
-              <MembersForm onAddNew={this.handleAddNewMember()} />
+              <MembersForm
+                onAddNew={this.handleAddNewMember()}
+                pending={pending}
+              />
             ) : (
               <button
                 className="members-box__member"

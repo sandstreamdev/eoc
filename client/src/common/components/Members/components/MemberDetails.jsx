@@ -16,7 +16,7 @@ import {
   removeListMember
 } from 'modules/list/model/actions';
 import { Routes, UserRoles } from 'common/constants/enums';
-import { noOp } from 'common/utils/noOp';
+import Preloader from 'common/components/Preloader';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -40,6 +40,7 @@ class MemberDetails extends PureComponent {
       isConfirmationVisible: false,
       isMemberInfoVisible: false,
       isOwnerInfoVisible: false,
+      pending: false,
       selectedRole: isOwner ? UserRoles.OWNER : UserRoles.MEMBER
     };
   }
@@ -55,25 +56,18 @@ class MemberDetails extends PureComponent {
       match: {
         params: { id }
       },
-      onClose,
       removeCohortMember,
       removeListMember,
       route,
       _id: userId
     } = this.props;
 
-    switch (route) {
-      case Routes.COHORT:
-        removeCohortMember(id, userId, isOwner);
-        break;
-      case Routes.LIST:
-        removeListMember(id, userId, isOwner);
-        break;
-      default:
-        break;
-    }
+    const action =
+      route === Routes.COHORT ? removeCohortMember : removeListMember;
 
-    onClose();
+    this.setState({ pending: true });
+
+    action(id, userId, isOwner).catch(() => this.setState({ pending: false }));
   };
 
   handleOwnerInfoVisibility = event => {
@@ -90,51 +84,38 @@ class MemberDetails extends PureComponent {
     }));
   };
 
-  handleChangingPermissions = event => {
+  changeRole = (action, selectedRole) => {
+    const {
+      match: {
+        params: { id }
+      },
+      _id: userId
+    } = this.props;
+
+    this.setState({ pending: true });
+
+    action(id, userId, selectedRole)
+      .then(() => this.setState({ selectedRole }))
+      .finally(() => this.setState({ pending: false }));
+  };
+
+  handleChangingRoles = event => {
     event.stopPropagation();
     const {
       target: { value }
     } = event;
-    const { route } = this.props;
+    const { changeRoleInCohort, changeRoleInList, route } = this.props;
 
     switch (route) {
       case Routes.COHORT:
-        this.handleCohortMemberRoleChange(value);
+        this.changeRole(changeRoleInCohort, value);
         break;
       case Routes.LIST:
-        this.handleListMemberRoleChange(value);
+        this.changeRole(changeRoleInList, value);
         break;
       default:
         break;
     }
-  };
-
-  handleCohortMemberRoleChange = selectedRole => {
-    const {
-      changeRoleInCohort,
-      match: {
-        params: { id }
-      },
-      _id: userId
-    } = this.props;
-
-    changeRoleInCohort(id, userId, selectedRole)
-      .then(this.setState({ selectedRole }))
-      .catch(noOp);
-  };
-
-  handleListMemberRoleChange = selectedRole => {
-    const {
-      changeRoleInList,
-      match: {
-        params: { id }
-      },
-      _id: userId
-    } = this.props;
-
-    changeRoleInList(id, userId, selectedRole)
-      .then(this.setState({ selectedRole }))
-      .catch(noOp);
   };
 
   renderChangeRoleOption = (role, isInfoVisible) => {
@@ -164,7 +145,7 @@ class MemberDetails extends PureComponent {
             checked={selectedRole === role}
             id={`${label}Role`}
             name="role"
-            onChange={this.handleChangingPermissions}
+            onChange={this.handleChangingRoles}
             type="radio"
             value={role}
           />
@@ -242,8 +223,16 @@ class MemberDetails extends PureComponent {
   };
 
   renderDetails = () => {
-    const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
+    const { isMemberInfoVisible, isOwnerInfoVisible, pending } = this.state;
     const { isGuest, isPrivate: privateList, route } = this.props;
+
+    if (pending) {
+      return (
+        <div className="member-details__preloader">
+          <Preloader />
+        </div>
+      );
+    }
 
     return (
       <ul className="member-details__panel">

@@ -8,11 +8,13 @@ import ArchivedMessage from 'common/components/ArchivedMessage';
 class ArchivedList extends PureComponent {
   handleListRestoring = listId => () => {
     const { restoreList } = this.props;
-    restoreList(listId);
+
+    return restoreList(listId);
   };
 
   handleListDeletion = id => () => {
     const { deleteList } = this.props;
+
     return deleteList(id);
   };
 
