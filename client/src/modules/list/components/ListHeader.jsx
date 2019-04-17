@@ -107,6 +107,7 @@ class ListHeader extends PureComponent {
 
     if (name.trim().length >= 1) {
       this.setState({ pendingForName: true });
+
       updateList(id, { name }).finally(() =>
         this.setState({ isNameInputVisible: false, pendingForName: false })
       );
@@ -140,13 +141,8 @@ class ListHeader extends PureComponent {
     });
 
     updateList(id, { description: updatedDescription })
-      .then(() =>
-        this.setState({
-          description: updatedDescription,
-          pendingForDescription: false
-        })
-      )
-      .catch(() => this.setState({ pendingForDescription: false }));
+      .then(() => this.setState({ description: updatedDescription }))
+      .finally(() => this.setState({ pendingForDescription: false }));
   };
 
   renderDescription = () => {

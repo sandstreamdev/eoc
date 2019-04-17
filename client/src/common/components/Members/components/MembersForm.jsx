@@ -85,8 +85,9 @@ class MembersForm extends PureComponent {
 }
 
 MembersForm.propTypes = {
-  onAddNew: PropTypes.func.isRequired,
-  pending: PropTypes.bool.isRequired
+  pending: PropTypes.bool.isRequired,
+
+  onAddNew: PropTypes.func.isRequired
 };
 
 export default MembersForm;

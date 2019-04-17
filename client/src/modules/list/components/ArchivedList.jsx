@@ -14,6 +14,7 @@ class ArchivedList extends PureComponent {
 
   handleListDeletion = id => () => {
     const { deleteList } = this.props;
+
     return deleteList(id);
   };
 
