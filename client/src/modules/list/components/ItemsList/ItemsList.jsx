@@ -31,9 +31,9 @@ class ItemsList extends Component {
     } = this.props;
     const isSameAuthor = authorId === userId;
 
-    if (isSameAuthor) return toggle(isOrdered, id, listId, name);
-
-    return toggle(isOrdered, id, listId);
+    return isSameAuthor
+      ? toggle(isOrdered, id, listId, name)
+      : toggle(isOrdered, id, listId);
   };
 
   voteForItem = item => () => {

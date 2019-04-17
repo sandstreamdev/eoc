@@ -156,8 +156,8 @@ class ListItem extends PureComponent {
 
 ListItem.propTypes = {
   archived: PropTypes.bool,
-  authorName: PropTypes.string,
   authorId: PropTypes.string.isRequired,
+  authorName: PropTypes.string,
   id: PropTypes.string.isRequired,
   isVoted: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
