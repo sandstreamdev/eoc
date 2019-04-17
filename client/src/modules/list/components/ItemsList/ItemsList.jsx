@@ -19,7 +19,7 @@ class ItemsList extends Component {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
-  toggleItem = (author, id, isOrdered) => {
+  toggleItem = (authorId, id, isOrdered) => {
     const {
       toggle,
       match: {
@@ -27,17 +27,13 @@ class ItemsList extends Component {
       }
     } = this.props;
     const {
-      currentUser: { name }
+      currentUser: { name, id: userId }
     } = this.props;
-    const isSameAuthor = author === name;
+    const isSameAuthor = authorId === userId;
 
-    if (isOrdered) {
-      isSameAuthor
-        ? toggle(isOrdered, id, listId)
-        : toggle(isOrdered, id, listId, name);
-    } else {
-      toggle(isOrdered, id, listId);
-    }
+    if (isSameAuthor) return toggle(isOrdered, id, listId, name);
+
+    return toggle(isOrdered, id, listId);
   };
 
   voteForItem = item => () => {
@@ -70,6 +66,7 @@ class ItemsList extends Component {
               <ListItem
                 archived={item.isOrdered}
                 authorName={item.authorName}
+                authorId={item.authorId}
                 id={item._id}
                 image={item.image}
                 isVoted={item.isVoted}

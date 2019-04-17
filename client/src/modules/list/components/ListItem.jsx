@@ -20,12 +20,12 @@ class ListItem extends PureComponent {
     };
   }
 
-  handleItemToggling = (authorName, id, archived) => event => {
+  handleItemToggling = (authorId, id, archived) => event => {
     const { toggleItem } = this.props;
     event.stopPropagation();
 
     this.setState(({ done }) => ({ done: !done }));
-    toggleItem(authorName, id, archived);
+    toggleItem(authorId, id, archived);
   };
 
   toggleDetails = () =>
@@ -97,6 +97,7 @@ class ListItem extends PureComponent {
   render() {
     const {
       archived,
+      authorId,
       authorName,
       id,
       isVoted,
@@ -141,7 +142,7 @@ class ListItem extends PureComponent {
           )}
           <button
             className="list-item__icon z-index-high"
-            onClick={this.handleItemToggling(authorName, id, archived)}
+            onClick={this.handleItemToggling(authorId, id, archived)}
             type="button"
           />
         </div>
@@ -156,6 +157,7 @@ class ListItem extends PureComponent {
 ListItem.propTypes = {
   archived: PropTypes.bool,
   authorName: PropTypes.string,
+  authorId: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   isVoted: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
