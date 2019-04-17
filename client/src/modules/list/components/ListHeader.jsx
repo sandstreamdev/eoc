@@ -191,18 +191,16 @@ class ListHeader extends PureComponent {
     );
   };
 
-  renderListType = () => {
-    return (
-      <select className="list-header__select primary-select">
-        <option className="list-header__option" value={ListType.LIMITED}>
-          {ListType.LIMITED}
-        </option>
-        <option className="list-header__option" value={ListType.SHARED}>
-          {ListType.SHARED}
-        </option>
-      </select>
-    );
-  };
+  renderListType = () => (
+    <select className="list-header__select primary-select">
+      <option className="list-header__option" value={ListType.LIMITED}>
+        {ListType.LIMITED}
+      </option>
+      <option className="list-header__option" value={ListType.SHARED}>
+        {ListType.SHARED}
+      </option>
+    </select>
+  );
 
   render() {
     return (
