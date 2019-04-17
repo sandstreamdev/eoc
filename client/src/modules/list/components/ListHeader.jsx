@@ -17,7 +17,7 @@ class ListHeader extends PureComponent {
     super(props);
 
     const {
-      details: { description, name }
+      details: { isPrivate, description, name }
     } = this.props;
     const trimmedDescription = description.trim();
 
@@ -25,6 +25,7 @@ class ListHeader extends PureComponent {
       description: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
+      isPrivate,
       name
     };
   }
@@ -138,6 +139,12 @@ class ListHeader extends PureComponent {
     this.setState({ isDescriptionTextareaVisible: false });
   };
 
+  handleSelect = event => {
+    const {
+      target: { value }
+    } = event;
+  };
+
   renderDescription = () => {
     const { description, isDescriptionTextareaVisible } = this.state;
 
@@ -191,16 +198,34 @@ class ListHeader extends PureComponent {
     );
   };
 
-  renderListType = () => (
-    <select className="list-header__select primary-select">
-      <option className="list-header__option" value={ListType.LIMITED}>
-        {ListType.LIMITED}
-      </option>
-      <option className="list-header__option" value={ListType.SHARED}>
-        {ListType.SHARED}
-      </option>
-    </select>
-  );
+  renderListType = () => {
+    const {
+      details: { isPrivate }
+    } = this.props;
+
+    return (
+      <select
+        className="list-header__select primary-select"
+        defaultValue={isPrivate ? ListType.LIMITED : ListType.SHARED}
+        onChange={this.handleSelect}
+      >
+        <option
+          className="list-header__option"
+          value={ListType.LIMITED}
+          // selected={isPrivate}
+        >
+          {ListType.LIMITED}
+        </option>
+        <option
+          className="list-header__option"
+          value={ListType.SHARED}
+          // selected={!isPrivate}
+        >
+          {ListType.SHARED}
+        </option>
+      </select>
+    );
+  };
 
   render() {
     return (
