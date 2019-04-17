@@ -34,7 +34,7 @@ const items = (state, action) => {
             : item
         )
       };
-    case ItemActionTypes.ADD_DETAILS_SUCCESS: {
+    case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {
       const {
         payload: {
           data: { description, link },
@@ -189,7 +189,7 @@ const lists = (state = {}, action) => {
         }
       };
     }
-    case ItemActionTypes.ADD_DETAILS_SUCCESS: {
+    case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {
       const currentList = state[action.payload.listId];
       return {
         ...state,
@@ -203,7 +203,7 @@ const lists = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
-    case ItemActionTypes.ADD_DETAILS_SUCCESS:
+    case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
     case ItemActionTypes.ADD_FAILURE:
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.TOGGLE_FAILURE:
@@ -229,8 +229,8 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.UPDATE_FAILURE:
     case ListActionTypes.UPDATE_SUCCESS:
       return false;
-    case ItemActionTypes.ADD_DETAILS_FAILURE:
-    case ItemActionTypes.ADD_DETAILS_REQUEST:
+    case ItemActionTypes.UPDATE_DETAILS_FAILURE:
+    case ItemActionTypes.UPDATE_DETAILS_REQUEST:
     case ItemActionTypes.ADD_REQUEST:
     case ItemActionTypes.TOGGLE_REQUEST:
     case ItemActionTypes.VOTE_REQUEST:

@@ -175,17 +175,17 @@ const changeRoleSuccess = (listId, userId, isOwner) => ({
   payload: { listId, userId, isOwner }
 });
 
-const addItemDetailsSuccess = (listId, itemId, data) => ({
-  type: ItemActionTypes.ADD_DETAILS_SUCCESS,
+const updateItemDetailsSuccess = (listId, itemId, data) => ({
+  type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
   payload: { listId, itemId, data }
 });
 
-const addItemDetailsRequest = () => ({
-  type: ItemActionTypes.ADD_DETAILS_REQUEST
+const updateItemDetailsRequest = () => ({
+  type: ItemActionTypes.UPDATE_DETAILS_REQUEST
 });
 
-const addItemDetailsFailure = () => ({
-  type: ItemActionTypes.ADD_DETAILS_FAILURE
+const updateItemDetailsFailure = () => ({
+  type: ItemActionTypes.UPDATE_DETAILS_FAILURE
 });
 
 export const fetchListData = listId => dispatch => {
@@ -469,14 +469,14 @@ export const changeRole = (listId, userId, role) => dispatch => {
 };
 
 export const updateItemDetails = (listId, itemId, data) => dispatch => {
-  dispatch(addItemDetailsRequest());
+  dispatch(updateItemDetailsRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
     ...data,
     itemId
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(addItemDetailsSuccess(listId, itemId, data));
+      dispatch(updateItemDetailsSuccess(listId, itemId, data));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -484,7 +484,7 @@ export const updateItemDetails = (listId, itemId, data) => dispatch => {
       );
     })
     .catch(err => {
-      dispatch(addItemDetailsFailure());
+      dispatch(updateItemDetailsFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
