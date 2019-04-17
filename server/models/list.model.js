@@ -15,6 +15,7 @@ const ListSchema = new Schema(
     memberIds: [{ type: ObjectId, ref: 'User' }],
     name: { type: String, required: true },
     ownerIds: [{ type: ObjectId, ref: 'User' }],
+    viewersIds: [{ type: ObjectId, ref: 'User' }],
     visibility: { type: String }
   },
   { timestamps: { createdAt: 'created_at' }, collection: 'lists' }

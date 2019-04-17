@@ -22,14 +22,19 @@ const {
 const { updateSubdocumentFields } = require('../common/utils/helpers');
 
 const createList = (req, resp) => {
-  const { description, isListPrivate, name, userId, cohortId } = req.body;
+  const { description, isListPrivate, name, cohortId } = req.body;
+  const {
+    user: { _id: userId }
+  } = req;
 
   const list = new List({
     cohortId,
     description,
     isPrivate: isListPrivate,
+    memberIds: userId,
     name,
-    ownerIds: userId
+    ownerIds: userId,
+    viewersIds: userId
   });
 
   list.save((err, doc) => {
@@ -473,7 +478,7 @@ const removeOwner = (req, resp) => {
 
   List.findOneAndUpdate(
     { _id: listId, ownerIds: { $all: [ownerId, userId] } },
-    { $pull: { ownerIds: userId } },
+    { $pull: { ownerIds: userId, memberIds: userId, viewersIds: userId } },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -500,8 +505,8 @@ const removeMember = (req, resp) => {
   } = req;
 
   List.findOneAndUpdate(
-    { _id: listId, ownerIds: ownerId, memberIds: userId },
-    { $pull: { memberIds: userId } },
+    { _id: listId, ownerIds: ownerId, viewersIds: userId },
+    { $pull: { viewersIds: userId, memberIds: userId, ownerIds: userId } },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -536,12 +541,13 @@ const changeToOwner = (req, resp) => {
         throw new BadRequestException("Can't set user as a list's owner.");
       }
 
-      const { cohortId: cohort, isPrivate, memberIds } = doc;
-      const isNotCohortMember = !checkIfCohortMember(cohort, userId);
+      const { cohortId, isPrivate, memberIds } = doc;
+      const isNotCohortMember = !checkIfCohortMember(cohortId, userId);
 
-      if (isPrivate || isNotCohortMember) {
-        doc.memberIds.splice(memberIds.indexOf(userId), 1);
-      }
+      // TODO: This propably not necessary in the new scenarios[TO DELETE] TODO:
+      // if (isPrivate || isNotCohortMember) {
+      //   doc.memberIds.splice(memberIds.indexOf(userId), 1);
+      // }
 
       doc.ownerIds.push(userId);
       return doc.save();
@@ -576,12 +582,13 @@ const changeToMember = (req, resp) => {
         throw new BadRequestException("Can't set user as a list's member.");
       }
 
-      const { cohortId: cohort, isPrivate, ownerIds } = doc;
-      const isNotCohortMember = !checkIfCohortMember(cohort, userId);
+      const { cohortId, isPrivate, ownerIds } = doc;
+      const isNotCohortMember = !checkIfCohortMember(cohortId, userId);
 
-      if (isPrivate || isNotCohortMember) {
-        doc.memberIds.push(userId);
-      }
+      // TODO: This is propably not neede in actual scenarios TODO:
+      // if (isPrivate || isNotCohortMember) {
+      //   doc.memberIds.push(userId);
+      // }
 
       doc.ownerIds.splice(ownerIds.indexOf(userId), 1);
       return doc.save();
@@ -611,17 +618,17 @@ const addMember = (req, resp) => {
   const { email } = req.body;
 
   List.findOne({ _id: listId, $or: [{ ownerIds: currentUserId }] })
-    .populate('cohortId', 'memberIds ownerIds')
+    .populate('cohortId', 'ownerIds viewersIds')
     .exec()
     .then(doc => {
       if (doc) {
-        const { cohortId: cohort, ownerIds } = doc;
+        const { cohortId, ownerIds } = doc;
 
         return User.findOne({ email })
           .exec()
           .then(doc => {
             const { _id, avatarUrl, displayName } = doc;
-            return { _id, avatarUrl, cohort, displayName, ownerIds };
+            return { _id, avatarUrl, cohortId, displayName, ownerIds };
           })
           .catch(() => {
             throw new BadRequestException('User data not found.');
@@ -635,21 +642,25 @@ const addMember = (req, resp) => {
     .then(data => {
       const {
         _id: newMemberId,
-        cohort,
-        displayName,
         avatarUrl,
+        cohortId,
+        displayName,
         ownerIds
       } = data;
 
       List.findOneAndUpdate(
-        { _id: listId, memberIds: { $nin: [newMemberId] } },
-        { $push: { memberIds: newMemberId } }
+        {
+          _id: listId,
+          viewersIds: { $nin: [newMemberId] },
+          memberIds: { $nin: [newMemberId] }
+        },
+        { $push: { viewersIds: newMemberId, memberIds: newMemberId } }
       )
         .exec()
         .then(doc => {
           if (doc) {
             const data = { avatarUrl, displayName, newMemberId };
-            const dataToSend = responseWithListMember(data, ownerIds, cohort);
+            const dataToSend = responseWithListMember(data, ownerIds, cohortId);
 
             return resp.status(200).json(dataToSend);
           }

@@ -153,14 +153,15 @@ const responseWithCohortMember = (data, ownerIds) => {
   };
 };
 
-const responseWithListMember = (data, ownerIds, cohort) => {
+const responseWithListMember = (data, ownerIds, cohortId) => {
   const { avatarUrl, displayName, newMemberId } = data;
 
+  // TODO: check if is member TODO:
   return {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isGuest: checkIfGuest(cohort, newMemberId),
+    isGuest: checkIfGuest(cohortId, newMemberId),
     isOwner: checkIfOwner(ownerIds, newMemberId)
   };
 };

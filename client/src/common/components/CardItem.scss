@@ -89,6 +89,12 @@
     }
   }
 
+  &__preloader {
+    position: relative;
+    right: 10px;
+    top: 10px;
+  }
+
   &__data {
     right: 8px;
     bottom: 8px;

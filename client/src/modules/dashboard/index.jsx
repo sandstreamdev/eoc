@@ -15,8 +15,6 @@ import {
   getCohortLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
@@ -25,13 +23,20 @@ import { Routes } from 'common/constants/enums';
 class Dashboard extends Component {
   state = {
     areArchivedListsVisible: false,
-    isDialogVisible: false
+    isDialogVisible: false,
+    pendingForLists: false,
+    pendingForArchivedLists: false,
+    pendingForListCreation: false
   };
 
   componentDidMount() {
     const { fetchListsMetaData } = this.props;
 
-    fetchListsMetaData();
+    this.setState({ pendingForLists: true });
+
+    fetchListsMetaData().finally(() =>
+      this.setState({ pendingForLists: false })
+    );
   }
 
   handleDialogVisibility = () =>
@@ -40,13 +45,15 @@ class Dashboard extends Component {
     }));
 
   handleConfirm = (name, description) => {
-    const {
-      createList,
-      currentUser: { id: userId }
-    } = this.props;
-    const data = { description, userId, name };
-    createList(data);
-    this.handleDialogVisibility();
+    const { createList } = this.props;
+    const data = { description, name };
+
+    this.setState({ pendingForListCreation: true });
+
+    createList(data).finally(() => {
+      this.setState({ pendingForListCreation: false });
+      this.handleDialogVisibility();
+    });
   };
 
   handleArchivedListsVisibility = () =>
@@ -63,16 +70,27 @@ class Dashboard extends Component {
       fetchArchivedListsMetaData,
       removeArchivedListsMetaData
     } = this.props;
-    const action = areArchivedListsVisible
-      ? fetchArchivedListsMetaData
-      : removeArchivedListsMetaData;
 
-    action();
+    if (areArchivedListsVisible) {
+      this.setState({ pendingForArchivedLists: true });
+
+      fetchArchivedListsMetaData().finally(() =>
+        this.setState({ pendingForArchivedLists: false })
+      );
+    } else {
+      removeArchivedListsMetaData();
+    }
   };
 
   render() {
-    const { archivedLists, privateLists, cohortLists } = this.props;
-    const { areArchivedListsVisible, isDialogVisible } = this.state;
+    const { archivedLists, cohortLists, privateLists } = this.props;
+    const {
+      areArchivedListsVisible,
+      isDialogVisible,
+      pendingForArchivedLists,
+      pendingForListCreation,
+      pendingForLists
+    } = this.state;
 
     return (
       <Fragment>
@@ -85,6 +103,7 @@ class Dashboard extends Component {
               items={privateLists}
               name="Private Lists"
               onAddNew={this.handleDialogVisibility}
+              pending={pendingForLists}
               placeholder="There are no lists yet!"
               route={Routes.LIST}
             />
@@ -92,8 +111,9 @@ class Dashboard extends Component {
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
               items={cohortLists}
-              name="Cohort's Lists"
+              name="Cohorts' Lists"
               placeholder="There are no lists yet!"
+              pending={pendingForLists}
               route={Routes.LIST}
             />
             <button
@@ -107,6 +127,7 @@ class Dashboard extends Component {
               <GridList
                 color={CardColorType.ARCHIVED}
                 icon={<ListIcon />}
+                pending={pendingForArchivedLists}
                 items={archivedLists}
                 name="Archived lists"
                 placeholder="You have no archived lists!"
@@ -119,7 +140,8 @@ class Dashboard extends Component {
           <FormDialog
             onCancel={this.handleDialogVisibility}
             onConfirm={this.handleConfirm}
-            title="Add new cohort"
+            pending={pendingForListCreation}
+            title={`${pendingForListCreation ? 'Adding' : 'Add'} new list`}
           />
         )}
       </Fragment>
@@ -129,9 +151,8 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
-  currentUser: UserPropType.isRequired,
-  privateLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
+  privateLists: PropTypes.objectOf(PropTypes.object),
 
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
@@ -142,7 +163,6 @@ Dashboard.propTypes = {
 const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
   cohortLists: getCohortLists(state),
-  currentUser: getCurrentUser(state),
   privateLists: getPrivateLists(state)
 });
 
