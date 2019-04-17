@@ -11,6 +11,7 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import { ListType } from '../index';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -26,7 +27,9 @@ class ListHeader extends PureComponent {
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
       isPrivate,
-      name
+      name,
+      pendingForDescription: false,
+      pendingForName: false
     };
   }
 
@@ -105,8 +108,11 @@ class ListHeader extends PureComponent {
     }
 
     if (name.trim().length >= 1) {
-      updateList(id, { name });
-      this.setState({ isNameInputVisible: false });
+      this.setState({ pendingForName: true });
+
+      updateList(id, { name }).finally(() =>
+        this.setState({ isNameInputVisible: false, pendingForName: false })
+      );
     }
   };
 
@@ -129,14 +135,16 @@ class ListHeader extends PureComponent {
       return;
     }
 
-    if (_isEmpty(_trim(description))) {
-      updateList(id, { description: '' });
-      this.setState({ description: '' });
-      return;
-    }
+    const updatedDescription = _isEmpty(_trim(description)) ? '' : description;
 
-    updateList(id, { description });
-    this.setState({ isDescriptionTextareaVisible: false });
+    this.setState({
+      isDescriptionTextareaVisible: false,
+      pendingForDescription: true
+    });
+
+    updateList(id, { description: updatedDescription })
+      .then(() => this.setState({ description: updatedDescription }))
+      .finally(() => this.setState({ pendingForDescription: false }));
   };
 
   handleSelect = event => {
@@ -146,7 +154,15 @@ class ListHeader extends PureComponent {
   };
 
   renderDescription = () => {
-    const { description, isDescriptionTextareaVisible } = this.state;
+    const {
+      description,
+      isDescriptionTextareaVisible,
+      pendingForDescription
+    } = this.state;
+
+    if (pendingForDescription) {
+      return <Preloader size={PreloaderSize.SMALL} />;
+    }
 
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
@@ -159,7 +175,7 @@ class ListHeader extends PureComponent {
       <Fragment>
         {description ? (
           <p
-            className="cohort-header__description"
+            className="list-header__description"
             data-id="description"
             onClick={this.handleDescriptionTextareaVisibility}
           >
@@ -167,7 +183,7 @@ class ListHeader extends PureComponent {
           </p>
         ) : (
           <button
-            className="cohort-header__button link-button"
+            className="list-header__button link-button"
             onClick={this.handleDescriptionTextareaVisibility}
             type="button"
           >
@@ -179,7 +195,11 @@ class ListHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { name, isNameInputVisible } = this.state;
+    const { name, isNameInputVisible, pendingForName } = this.state;
+
+    if (pendingForName) {
+      return <Preloader size={PreloaderSize.SMALL} />;
+    }
 
     return isNameInputVisible ? (
       <NameInput
@@ -235,7 +255,7 @@ class ListHeader extends PureComponent {
           {this.renderName()}
           {this.renderListType()}
         </div>
-        {this.renderDescription()}
+        <div className="list-header__bottom">{this.renderDescription()}</div>
       </div>
     );
   }

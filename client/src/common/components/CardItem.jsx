@@ -1,9 +1,13 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
 import { Routes } from 'common/constants/enums';
+import Preloader, {
+  PreloaderSize,
+  PreloaderTheme
+} from 'common/components/Preloader';
 
 export const CardColorType = {
   BROWN: 'card/BROWN',
@@ -11,48 +15,81 @@ export const CardColorType = {
   ORANGE: 'card/ORANGE'
 };
 
-const CardItem = ({
-  color,
-  description,
-  doneItemsCount,
-  isFavourite,
-  isPrivate,
-  membersCount,
-  name,
-  onCardClick,
-  onFavClick,
-  route,
-  unhandledItemsCount
-}) => (
-  <div
-    className={classNames('card-item', {
-      'card-item--orange': color === CardColorType.ORANGE,
-      'card-item--archived': color === CardColorType.ARCHIVED,
-      'card-item--brown': color === CardColorType.BROWN
-    })}
-    onClick={onCardClick}
-    role="figure"
-  >
-    <header className="card-item__header">
-      {isPrivate && <LockIcon />}
-      <h3 className="card-item__heading">{name}</h3>
-    </header>
-    <p className="card-item__description">{description}</p>
-    <button className="card-item__star" onClick={onFavClick} type="button">
-      {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
-    </button>
-    <div className="card-item__data">
-      {route === Routes.LIST ? (
-        <Fragment>
-          <span>{`Done: ${doneItemsCount}`}</span>
-          <span>{`Unhandled: ${unhandledItemsCount}`}</span>
-        </Fragment>
-      ) : (
-        <span>{`Members: ${membersCount}`}</span>
-      )}
-    </div>
-  </div>
-);
+class CardItem extends PureComponent {
+  state = {
+    pending: false
+  };
+
+  handleFavClick = e => {
+    const { onFavClick } = this.props;
+    this.setState({ pending: true });
+    onFavClick(e).finally(() => this.setState({ pending: false }));
+  };
+
+  render() {
+    const {
+      color,
+      description,
+      doneItemsCount,
+      isFavourite,
+      isPrivate,
+      membersCount,
+      name,
+      onCardClick,
+      route,
+      unhandledItemsCount
+    } = this.props;
+
+    const { pending } = this.state;
+
+    return (
+      <div
+        className={classNames('card-item', {
+          'card-item--orange': color === CardColorType.ORANGE,
+          'card-item--archived': color === CardColorType.ARCHIVED,
+          'card-item--brown': color === CardColorType.BROWN
+        })}
+        onClick={onCardClick}
+        role="figure"
+      >
+        <header className="card-item__header">
+          {isPrivate && <LockIcon />}
+          <h3 className="card-item__heading">{name}</h3>
+        </header>
+        <p className="card-item__description">{description}</p>
+        <button
+          className="card-item__star"
+          disabled={pending}
+          onClick={this.handleFavClick}
+          type="button"
+        >
+          {pending ? (
+            <div className="card-item__preloader">
+              <Preloader
+                size={PreloaderSize.SMALL}
+                theme={PreloaderTheme.LIGHT}
+              />
+            </div>
+          ) : (
+            <Fragment>
+              {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
+            </Fragment>
+          )}
+        </button>
+        <div className="card-item__data">
+          {route === Routes.LIST ? (
+            <Fragment>
+              <span>{`Done: ${doneItemsCount}`}</span>
+              <span>{`Unhandled: ${unhandledItemsCount}`}</span>
+            </Fragment>
+          ) : (
+            <span>{`Members: ${membersCount}`}</span>
+          )}
+        </div>
+      </div>
+    );
+  }
+}
 
 export default CardItem;
 

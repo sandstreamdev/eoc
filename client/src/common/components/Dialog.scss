@@ -26,10 +26,12 @@
   }
 
   &__body {
+    position: relative;
     font-size: 13px;
     line-height: 1.2;
     color: $text-normal;
     padding: 10px 10px 0;
+    min-height: 100px;
   }
 
   &__footer {

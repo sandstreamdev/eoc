@@ -4,4 +4,13 @@
   &__input {
     margin-right: 8px;
   }
+
+  .primary-button {
+    min-width: 80px;
+    overflow: hidden;
+  }
+
+  span {
+    white-space: nowrap;
+  }
 }

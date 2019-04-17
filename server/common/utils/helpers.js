@@ -1,5 +1,4 @@
 const _pickBy = require('lodash/pickBy');
-const _identity = require('lodash/identity');
 
 /**
  * @param {*} subdocumentName - name of nested collection
@@ -10,7 +9,7 @@ const _identity = require('lodash/identity');
  * You can do it like so: updateSubdocumentFields('items', {description});
  */
 const updateSubdocumentFields = (subdocumentName, data) => {
-  const filteredObject = _pickBy(data, _identity);
+  const filteredObject = _pickBy(data, el => el !== undefined);
 
   const dataToUpdate = {};
   for (let i = 0; i < Object.keys(filteredObject).length; i += 1) {

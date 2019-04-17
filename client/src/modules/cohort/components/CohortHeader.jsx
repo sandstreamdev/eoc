@@ -10,6 +10,7 @@ import { updateCohort } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
 
 class CohortHeader extends PureComponent {
   constructor(props) {
@@ -24,7 +25,9 @@ class CohortHeader extends PureComponent {
       description: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
-      name
+      name,
+      pendingForDescription: false,
+      pendingForName: false
     };
   }
 
@@ -75,7 +78,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ name: value.trim() });
+    this.setState({ name: value });
   };
 
   handleDescriptionChange = event => {
@@ -104,8 +107,14 @@ class CohortHeader extends PureComponent {
     }
 
     if (nameToUpdate.length >= 1) {
-      updateCohort(id, { name });
-      this.setState({ isNameInputVisible: false });
+      this.setState({ pendingForName: true });
+
+      updateCohort(id, { name }).finally(() =>
+        this.setState({
+          isNameInputVisible: false,
+          pendingForName: false
+        })
+      );
     }
   };
 
@@ -128,18 +137,33 @@ class CohortHeader extends PureComponent {
       return;
     }
 
-    if (_isEmpty(_trim(description))) {
-      updateCohort(id, { description: '' });
-      this.setState({ description: '' });
-      return;
-    }
+    const updatedDescription = _isEmpty(_trim(description)) ? '' : description;
 
-    updateCohort(id, { description });
-    this.setState({ isDescriptionTextareaVisible: false });
+    this.setState({
+      isDescriptionTextareaVisible: false,
+      pendingForDescription: true
+    });
+
+    updateCohort(id, { description: updatedDescription })
+      .then(() =>
+        this.setState({
+          description: updatedDescription,
+          pendingForDescription: false
+        })
+      )
+      .catch(() => this.setState({ pendingForDescription: false }));
   };
 
   renderDescription = () => {
-    const { description, isDescriptionTextareaVisible } = this.state;
+    const {
+      description,
+      isDescriptionTextareaVisible,
+      pendingForDescription
+    } = this.state;
+
+    if (pendingForDescription) {
+      return <Preloader size={PreloaderSize.SMALL} />;
+    }
 
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
@@ -172,7 +196,11 @@ class CohortHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { name, isNameInputVisible } = this.state;
+    const { name, isNameInputVisible, pendingForName } = this.state;
+
+    if (pendingForName) {
+      return <Preloader size={PreloaderSize.SMALL} />;
+    }
 
     return isNameInputVisible ? (
       <NameInput
@@ -198,7 +226,7 @@ class CohortHeader extends PureComponent {
           <CohortIcon />
           {this.renderName()}
         </div>
-        {this.renderDescription()}
+        <div className="cohort-header__bottom">{this.renderDescription()}</div>
       </header>
     );
   }
