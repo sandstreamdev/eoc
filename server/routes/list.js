@@ -16,6 +16,7 @@ const {
   removeFromFavourites,
   removeMember,
   removeOwner,
+  updateItemDetails,
   updateListById,
   updateListItem,
   voteForItem
@@ -39,5 +40,6 @@ router.patch('/:id/remove-member', authorize, removeMember);
 router.patch('/:id/change-to-owner', authorize, changeToOwner);
 router.patch('/:id/change-to-member', authorize, changeToMember);
 router.patch('/:id/add-member', authorize, addMember);
+router.patch('/:id/update-item-details', authorize, updateItemDetails);
 
 module.exports = app => app.use('/lists', router);

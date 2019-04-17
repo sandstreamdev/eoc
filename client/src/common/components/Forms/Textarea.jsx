@@ -6,7 +6,12 @@ class Textarea extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = { isEnlarged: false, value: '' };
+    const { initialValue } = this.props;
+
+    this.state = {
+      isEnlarged: initialValue && initialValue.length > 0,
+      value: initialValue || ''
+    };
     this.textarea = React.createRef();
   }
 
@@ -67,6 +72,7 @@ class Textarea extends PureComponent {
 }
 
 Textarea.propTypes = {
+  initialValue: PropTypes.string,
   placeholder: PropTypes.string.isRequired,
 
   onChange: PropTypes.func

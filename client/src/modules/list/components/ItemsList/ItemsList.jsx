@@ -68,16 +68,10 @@ class ItemsList extends Component {
           <ul className="items-list">
             {items.slice(0, limit).map(item => (
               <ListItem
-                archived={item.isOrdered}
-                authorName={item.authorName}
-                id={item._id}
-                image={item.image}
-                isVoted={item.isVoted}
+                data={item}
                 key={item._id}
-                name={item.name}
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
-                votesCount={item.votesCount}
               />
             ))}
           </ul>

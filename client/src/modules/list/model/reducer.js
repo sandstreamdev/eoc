@@ -9,10 +9,7 @@ import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 const items = (state, action) => {
   switch (action.type) {
     case ItemActionTypes.ADD_SUCCESS:
-      return {
-        ...state,
-        items: [action.payload.item, ...state.items]
-      };
+      return { ...state, items: [action.payload.item, ...state.items] };
     case ItemActionTypes.TOGGLE_SUCCESS:
       return {
         ...state,
@@ -37,6 +34,27 @@ const items = (state, action) => {
             : item
         )
       };
+    case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {
+      const {
+        payload: {
+          data: { description, link },
+          itemId
+        }
+      } = action;
+
+      return {
+        ...state,
+        items: state.items.map(item =>
+          item._id === itemId
+            ? {
+                ...item,
+                description: description || item.description,
+                link: link || item.link
+              }
+            : item
+        )
+      };
+    }
     default:
       return state;
   }
@@ -171,6 +189,13 @@ const lists = (state = {}, action) => {
         }
       };
     }
+    case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {
+      const currentList = state[action.payload.listId];
+      return {
+        ...state,
+        [action.payload.listId]: items(currentList, action)
+      };
+    }
     default:
       return state;
   }
@@ -178,6 +203,7 @@ const lists = (state = {}, action) => {
 
 const isFetching = (state = false, action) => {
   switch (action.type) {
+    case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
     case ItemActionTypes.ADD_FAILURE:
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.TOGGLE_FAILURE:
@@ -203,6 +229,8 @@ const isFetching = (state = false, action) => {
     case ListActionTypes.UPDATE_FAILURE:
     case ListActionTypes.UPDATE_SUCCESS:
       return false;
+    case ItemActionTypes.UPDATE_DETAILS_FAILURE:
+    case ItemActionTypes.UPDATE_DETAILS_REQUEST:
     case ItemActionTypes.ADD_REQUEST:
     case ItemActionTypes.TOGGLE_REQUEST:
     case ItemActionTypes.VOTE_REQUEST:

@@ -11,7 +11,9 @@ const generateLists = cohortId => [
         _id: '5c9a123b074ce3b9ff43ce30',
         authorId: userId,
         authorName: 'Adam',
+        description: '',
         isOrdered: true,
+        link: '',
         name: 'item 1',
         voterIds: []
       },
@@ -19,7 +21,9 @@ const generateLists = cohortId => [
         _id: '5c9a123e074ce3b9ff43ce32',
         authorId: userId,
         authorName: 'Adam',
+        description: '',
         isOrdered: false,
+        link: '',
         name: 'item 2',
         voterIds: []
       },
@@ -27,7 +31,9 @@ const generateLists = cohortId => [
         _id: '5c9a1240074ce3b9ff43ce34',
         authorId: userId,
         authorName: 'Adam',
+        description: '',
         isOrdered: false,
+        link: '',
         name: 'item 3',
         voterIds: [userId]
       }
