@@ -30,14 +30,7 @@ class MembersBox extends PureComponent {
     window.removeEventListener('resize', this.handleResize);
   }
 
-  handleResize = () => {
-    if (window.outerWidth < 400) {
-      this.setState({ isMobile: true });
-      return;
-    }
-
-    this.setState({ isMobile: false });
-  };
+  handleResize = () => this.setState({ isMobile: window.outerWidth < 400 });
 
   showForm = () => this.setState({ isFormVisible: true });
 
