@@ -59,6 +59,7 @@ class CardItem extends PureComponent {
         <p className="card-item__description">{description}</p>
         <button
           className="card-item__star"
+          disabled={pending}
           onClick={this.handleFavClick}
           type="button"
         >

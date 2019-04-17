@@ -66,6 +66,7 @@ class MembersForm extends PureComponent {
         />
         <button
           className="primary-button"
+          disabled={pending}
           onClick={this.handleAddNew}
           type="button"
         >
