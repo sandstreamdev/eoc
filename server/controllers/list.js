@@ -284,15 +284,7 @@ const updateListItem = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
-
-  /**
-   * Create object with properties to update, but only these which
-   * are passed in the request
-   *  */
-  const propertiesToUpdate = {};
-  if (isOrdered !== undefined) {
-    propertiesToUpdate['items.$.isOrdered'] = isOrdered;
-  }
+  const dataToUpdate = updateSubdocumentFields('items', { isOrdered });
 
   List.findOneAndUpdate(
     {
@@ -301,7 +293,7 @@ const updateListItem = (req, resp) => {
       $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     {
-      $set: { propertiesToUpdate }
+      $set: dataToUpdate
     },
     { new: true },
     (err, doc) => {

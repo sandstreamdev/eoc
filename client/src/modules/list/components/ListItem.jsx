@@ -41,8 +41,9 @@ class ListItem extends PureComponent {
     this.checkIfFieldsUpdated();
   }
 
-  handleItemToggling = (authorName, id, isOrdered) => () => {
+  handleItemToggling = (authorName, id, isOrdered) => event => {
     const { toggleItem } = this.props;
+    event.stopPropagation();
 
     this.setState(({ done }) => ({ done: !done }));
     toggleItem(authorName, id, isOrdered);
