@@ -41,12 +41,12 @@ class ListItem extends PureComponent {
     this.checkIfFieldsUpdated();
   }
 
-  handleItemToggling = (authorName, id, isOrdered) => event => {
+  handleItemToggling = (authorId, id, isOrdered) => event => {
     const { toggleItem } = this.props;
     event.stopPropagation();
 
     this.setState(({ done }) => ({ done: !done }));
-    toggleItem(authorName, id, isOrdered);
+    toggleItem(authorId, id, isOrdered);
   };
 
   toggleDetails = () =>
@@ -214,7 +214,7 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { isOrdered, authorName, _id, isVoted, name, votesCount },
+      data: { isOrdered, authorId, authorName, _id, isVoted, name, votesCount },
       voteForItem
     } = this.props;
     const { done, areDetailsVisible } = this.state;
@@ -256,7 +256,7 @@ class ListItem extends PureComponent {
           )}
           <button
             className="list-item__icon z-index-high"
-            onClick={this.handleItemToggling(authorName, _id, isOrdered)}
+            onClick={this.handleItemToggling(authorId, _id, isOrdered)}
             type="button"
           />
         </div>
