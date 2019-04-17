@@ -10,6 +10,7 @@ import { updateList } from 'modules/list/model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
+import { ListType } from '../index';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -190,12 +191,26 @@ class ListHeader extends PureComponent {
     );
   };
 
+  renderListType = () => {
+    return (
+      <select className="list-header__select primary-select">
+        <option className="list-header__option" value={ListType.LIMITED}>
+          {ListType.LIMITED}
+        </option>
+        <option className="list-header__option" value={ListType.SHARED}>
+          {ListType.SHARED}
+        </option>
+      </select>
+    );
+  };
+
   render() {
     return (
       <div className="list-header">
         <div className="list-header__top">
           <ListIcon />
           {this.renderName()}
+          {this.renderListType()}
         </div>
         {this.renderDescription()}
       </div>
