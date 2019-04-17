@@ -1,31 +1,51 @@
 import React, { Fragment, PureComponent } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
+import _trim from 'lodash/trim';
+import _isEqual from 'lodash/isEqual';
 
 import VotingBox from 'modules/list/components/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
+import { RouterMatchPropType } from 'common/constants/propTypes';
+import { updateItemDetails } from '../model/actions';
+import SaveButton from 'common/components/SaveButton';
+import { isUrlValid } from 'common/utils/helpers';
+import ErrorMessage from 'common/components/Forms/ErrorMessage';
 
 class ListItem extends PureComponent {
   constructor(props) {
     super(props);
-    const { archived } = this.props;
+
+    const {
+      data: { isOrdered, description, link }
+    } = this.props;
+
     this.state = {
       areDetailsVisible: false,
-      done: archived,
-
-      isNewCommentVisible: false
+      areFieldsUpdated: false,
+      done: isOrdered,
+      isNewCommentVisible: false,
+      isValidationErrorVisible: false,
+      itemDescription: description,
+      link
     };
   }
 
-  handleItemToggling = (authorName, id, archived) => event => {
+  componentDidUpdate() {
+    this.checkIfFieldsUpdated();
+  }
+
+  handleItemToggling = (authorName, id, isOrdered) => () => {
     const { toggleItem } = this.props;
-    event.stopPropagation();
 
     this.setState(({ done }) => ({ done: !done }));
-    toggleItem(authorName, id, archived);
+    toggleItem(authorName, id, isOrdered);
   };
 
   toggleDetails = () =>
@@ -41,16 +61,113 @@ class ListItem extends PureComponent {
     // Adding new comment will be handled in next tasks
   };
 
+  handleDataUpdate = () => {
+    const { itemDescription, link } = this.state;
+    const {
+      data: { description: previousDescription, link: previousLink }
+    } = this.props;
+    const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
+    const isDescriptionUpdated = !_isEqual(
+      _trim(previousDescription),
+      _trim(itemDescription)
+    );
+
+    if (isLinkUpdated) {
+      this.handleLinkUpdate();
+    }
+
+    if (isDescriptionUpdated) {
+      this.handleDescriptionUpdate();
+    }
+  };
+
+  handleLinkUpdate = () => {
+    const { link } = this.state;
+    const {
+      updateItemDetails,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+    const canBeUpdated = isUrlValid(link) || _isEmpty(_trim(link));
+
+    if (canBeUpdated) {
+      updateItemDetails(listId, itemId, { link });
+    } else if (!isUrlValid(link)) {
+      this.setState({ isValidationErrorVisible: true });
+    }
+  };
+
+  handleDescriptionUpdate = () => {
+    const { itemDescription: description } = this.state;
+    const {
+      updateItemDetails,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    updateItemDetails(listId, itemId, { description });
+  };
+
+  checkIfFieldsUpdated = () => {
+    const {
+      data: { description: previousDescription, link: previousLink }
+    } = this.props;
+    const { itemDescription, link } = this.state;
+
+    const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
+    const isDescriptionUpdated = !_isEqual(
+      _trim(previousDescription),
+      _trim(itemDescription)
+    );
+
+    this.setState({ areFieldsUpdated: isLinkUpdated || isDescriptionUpdated });
+  };
+
+  handleItemDescription = value => this.setState({ itemDescription: value });
+
+  handleItemLink = value =>
+    this.setState({ link: value, isValidationErrorVisible: false });
+
   renderDetails = () => {
-    const { isNewCommentVisible } = this.state;
+    const {
+      areFieldsUpdated,
+      isNewCommentVisible,
+      isValidationErrorVisible
+    } = this.state;
+    const {
+      data: { description, link }
+    } = this.props;
+
     return (
       <Fragment>
         <div className="list-item__info">
           <div className="list-item__info-textarea">
-            <Textarea placeholder="Description" />
+            <Textarea
+              initialValue={description}
+              onChange={this.handleItemDescription}
+              placeholder="Description"
+            />
           </div>
           <div className="list-item__info-details">
-            <TextInput placeholder="Link" />
+            <TextInput
+              initialValue={link}
+              onChange={this.handleItemLink}
+              placeholder="Link"
+            />
+            {isValidationErrorVisible && (
+              <div className="list-item__validation-error">
+                <ErrorMessage message="Incorrect url." />
+              </div>
+            )}
+            <SaveButton
+              disabled={!areFieldsUpdated}
+              onClick={this.handleDataUpdate}
+              value="Save data"
+            />
           </div>
         </div>
         <div className="list-item__new-comment">
@@ -96,43 +213,40 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      archived,
-      authorName,
-      id,
-      isVoted,
-      name,
-      voteForItem,
-      votesCount
+      data: { isOrdered, authorName, _id, isVoted, name, votesCount },
+      voteForItem
     } = this.props;
     const { done, areDetailsVisible } = this.state;
+
     return (
       <li
         className={classNames('list-item', {
-          'list-item--restore': !done && archived,
-          'list-item--done': done || archived,
+          'list-item--restore': !done && isOrdered,
+          'list-item--done': done || isOrdered,
           'list-item--details-visible': areDetailsVisible
         })}
-        onClick={this.toggleDetails}
       >
         <div
           className={classNames('list-item__top', {
             'list-item__top--details-visible': areDetailsVisible,
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
+          onClick={this.toggleDetails}
+          role="listitem"
         >
           <input
             className="list-item__input"
-            id={`option${id}`}
-            name={`option${id}`}
+            id={`option${_id}`}
+            name={`option${_id}`}
             type="checkbox"
           />
-          <label className="list-item__label" id={`option${id}`}>
+          <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <span>{name}</span>
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
-          {!archived && (
+          {!isOrdered && (
             <VotingBox
               isVoted={isVoted}
               voteForItem={voteForItem}
@@ -141,7 +255,7 @@ class ListItem extends PureComponent {
           )}
           <button
             className="list-item__icon z-index-high"
-            onClick={this.handleItemToggling(authorName, id, archived)}
+            onClick={this.handleItemToggling(authorName, _id, isOrdered)}
             type="button"
           />
         </div>
@@ -154,15 +268,19 @@ class ListItem extends PureComponent {
 }
 
 ListItem.propTypes = {
-  archived: PropTypes.bool,
-  authorName: PropTypes.string,
-  id: PropTypes.string.isRequired,
-  isVoted: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
-  votesCount: PropTypes.number.isRequired,
+  data: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])
+  ),
+  match: RouterMatchPropType.isRequired,
 
   toggleItem: PropTypes.func,
+  updateItemDetails: PropTypes.func.isRequired,
   voteForItem: PropTypes.func
 };
 
-export default ListItem;
+export default withRouter(
+  connect(
+    null,
+    { updateItemDetails }
+  )(ListItem)
+);

@@ -19,6 +19,7 @@ const {
   responseWithListMember,
   responseWithListMembers
 } = require('../common/utils/index');
+const { updateSubdocumentFields } = require('../common/utils/helpers');
 
 const createList = (req, resp) => {
   const { description, isListPrivate, name, userId, cohortId } = req.body;
@@ -72,7 +73,7 @@ const getListsMetaData = (req, resp) => {
   } = req;
 
   const query = {
-    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }],
+    $or: [{ ownerIds: userId }, { memberIds: userId }],
     isArchived: false
   };
 
@@ -106,7 +107,7 @@ const getArchivedListsMetaData = (req, resp) => {
   } = req;
 
   const query = {
-    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }],
+    $or: [{ ownerIds: userId }, { memberIds: userId }],
     isArchived: true
   };
 
@@ -153,10 +154,13 @@ const addItemToList = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }]
+      $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     { $push: { items: item } },
+    { new: true },
     (err, doc) => {
+      const newItem = doc.items.slice(-1)[0];
+
       if (err) {
         return resp.status(400).send({
           message:
@@ -165,7 +169,7 @@ const addItemToList = (req, resp) => {
       }
 
       doc
-        ? resp.status(200).send(responseWithItem(item, userId))
+        ? resp.status(200).send(responseWithItem(newItem, userId))
         : resp.status(404).send({ message: 'List  not found.' });
     }
   );
@@ -187,7 +191,7 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: listId,
-    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }]
+    $or: [{ ownerIds: userId }, { memberIds: userId }]
   })
     .populate('memberIds', 'avatarUrl displayName _id')
     .populate('ownerIds', 'avatarUrl displayName _id')
@@ -294,14 +298,10 @@ const updateListItem = (req, resp) => {
     {
       _id: listId,
       'items._id': itemId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ]
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     {
-      $set: propertiesToUpdate
+      $set: { propertiesToUpdate }
     },
     { new: true },
     (err, doc) => {
@@ -333,11 +333,7 @@ const voteForItem = (req, resp) => {
     {
       _id: listId,
       'items._id': itemId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ]
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     { $push: { 'items.$.voterIds': req.user._id } },
     { new: true },
@@ -369,11 +365,7 @@ const clearVote = (req, resp) => {
     {
       _id: listId,
       'items._id': itemId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ]
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     { $pull: { 'items.$.voterIds': req.user._id } },
     { new: true },
@@ -432,11 +424,7 @@ const addToFavourites = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ]
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     {
       $push: { favIds: req.user._id }
@@ -463,11 +451,7 @@ const removeFromFavourites = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [
-        { ownerIds: req.user._id },
-        { memberIds: req.user._id },
-        { isPrivate: false }
-      ]
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
     },
     {
       $pull: { favIds: req.user._id }
@@ -699,6 +683,36 @@ const addMember = (req, resp) => {
     });
 };
 
+const updateItemDetails = (req, resp) => {
+  const { description, link, itemId } = req.body;
+  const { id: listId } = req.params;
+  const dataToUpdate = updateSubdocumentFields('items', { description, link });
+
+  List.findOneAndUpdate(
+    {
+      _id: listId,
+      'items._id': itemId,
+      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+    },
+    { $set: dataToUpdate },
+    (err, doc) => {
+      if (err) {
+        return resp.status(400).send({
+          message: 'An error occurred while updating details. Please try again.'
+        });
+      }
+
+      if (doc) {
+        return resp
+          .status(200)
+          .send({ message: 'Item details successfully updated' });
+      }
+
+      resp.status(404).send({ message: 'List data not found.' });
+    }
+  );
+};
+
 module.exports = {
   addItemToList,
   addMember,
@@ -714,6 +728,7 @@ module.exports = {
   removeFromFavourites,
   removeMember,
   removeOwner,
+  updateItemDetails,
   updateListById,
   updateListItem,
   voteForItem

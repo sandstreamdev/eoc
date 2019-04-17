@@ -1,31 +1,52 @@
 .message-box {
-  box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+  box-shadow: 0 1px 3px rgba($shadow-color, 0.5);
   box-sizing: border-box;
-  padding: 20px 30px;
+  padding: 15px;
   display: flex;
   align-items: center;
   text-align: left;
-  color: $text-normal;
+  color: $message-bg-gray;
   z-index: 2;
   transition: color 200ms ease-in;
   overflow: hidden;
   background: $bg-color;
   margin: 20px 0;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 700;
   line-height: 1.2;
 
+  span {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+    box-sizing: border-box;
+    border: 1px solid $message-bg-gray;
+  }
+
   &--red {
-    color: $text-normal;
+    span {
+      background-color: $message-bg-red;
+      border-color: $message-bg-red;
+    }
 
     svg {
       path {
-        fill: $message-bg-red;
+        fill: $bg-color;
       }
     }
   }
 
   &--gray {
+    box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+    font-weight: 400;
+    padding: 20px 25px;
     color: $text-normal;
+
     svg {
       path {
         fill: $message-bg-gray;
@@ -34,16 +55,20 @@
   }
 
   &--green {
-    color: $text-normal;
+    span {
+      background-color: $message-bg-green;
+      border-color: $message-bg-green;
+    }
+
     svg {
       path {
-        fill: $message-bg-green;
+        fill: $bg-color;
       }
     }
   }
 
   svg {
-    height: 12px;
-    margin-right: 12px;
+    width: 14px;
+    height: 14px;
   }
 }

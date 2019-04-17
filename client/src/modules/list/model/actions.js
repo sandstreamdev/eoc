@@ -14,6 +14,7 @@ import {
 } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
+import { ItemActionTypes } from '../components/InputBar/model/actionTypes';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -172,6 +173,19 @@ const changeRoleFailure = () => ({
 const changeRoleSuccess = (listId, userId, isOwner) => ({
   type: ListActionTypes.CHANGE_ROLE_SUCCESS,
   payload: { listId, userId, isOwner }
+});
+
+const updateItemDetailsSuccess = (listId, itemId, data) => ({
+  type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
+  payload: { listId, itemId, data }
+});
+
+const updateItemDetailsRequest = () => ({
+  type: ItemActionTypes.UPDATE_DETAILS_REQUEST
+});
+
+const updateItemDetailsFailure = () => ({
+  type: ItemActionTypes.UPDATE_DETAILS_FAILURE
 });
 
 export const fetchListData = listId => dispatch => {
@@ -446,6 +460,31 @@ export const changeRole = (listId, userId, role) => dispatch => {
     })
     .catch(err => {
       dispatch(changeRoleFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const updateItemDetails = (listId, itemId, data) => dispatch => {
+  dispatch(updateItemDetailsRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
+    ...data,
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(updateItemDetailsSuccess(listId, itemId, data));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(updateItemDetailsFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

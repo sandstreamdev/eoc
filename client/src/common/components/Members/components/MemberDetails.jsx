@@ -280,7 +280,8 @@ class MemberDetails extends PureComponent {
       <Fragment>
         <div
           className={classNames('member-details', {
-            'member-details--flexible': !isCurrentUserAnOwner
+            'member-details--flexible': !isCurrentUserAnOwner,
+            'member-details--mobile': window.outerWidth < 400
           })}
         >
           <button

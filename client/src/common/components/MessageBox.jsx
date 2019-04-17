@@ -14,7 +14,9 @@ const MessageBox = ({ message, type }) => (
       'message-box--gray': type === MessageType.INFO
     })}
   >
-    <InfoIcon />
+    <span>
+      <InfoIcon />
+    </span>
     <p className="message-box__content">{message}</p>
   </div>
 );
