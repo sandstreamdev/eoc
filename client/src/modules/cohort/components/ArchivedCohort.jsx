@@ -3,16 +3,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { deleteCohort, restoreCohort } from 'modules/cohort/model/actions';
-import { noOp } from 'common/utils/noOp';
 import { fetchListsMetaData } from 'modules/list/model/actions';
 import ArchivedMessage from 'common/components/ArchivedMessage';
 
 class ArchivedCohort extends PureComponent {
   handleCohortRestoring = cohortId => () => {
     const { fetchListsMetaData, restoreCohort } = this.props;
-    restoreCohort(cohortId)
-      .then(fetchListsMetaData(cohortId))
-      .catch(noOp);
+
+    return restoreCohort(cohortId).then(() => fetchListsMetaData(cohortId));
   };
 
   handleCohortDeletion = cohortId => () => {
