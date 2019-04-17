@@ -161,37 +161,35 @@ class CohortHeader extends PureComponent {
       pendingForDescription
     } = this.state;
 
-    if (pendingForDescription) return <Preloader size={PreloaderSize.SMALL} />;
+    if (pendingForDescription) {
+      return <Preloader size={PreloaderSize.SMALL} />;
+    }
 
-    return (
+    return isDescriptionTextareaVisible ? (
+      <DescriptionTextarea
+        description={description}
+        onClick={this.handleClick}
+        onDescriptionChange={this.handleDescriptionChange}
+        onKeyPress={this.handleKeyPress}
+      />
+    ) : (
       <Fragment>
-        {isDescriptionTextareaVisible ? (
-          <DescriptionTextarea
-            description={description}
-            onClick={this.handleClick}
-            onDescriptionChange={this.handleDescriptionChange}
-            onKeyPress={this.handleKeyPress}
-          />
+        {description ? (
+          <p
+            className="cohort-header__description"
+            data-id="description"
+            onClick={this.handleDescriptionTextareaVisibility}
+          >
+            {description}
+          </p>
         ) : (
-          <Fragment>
-            {description ? (
-              <p
-                className="cohort-header__description"
-                data-id="description"
-                onClick={this.handleDescriptionTextareaVisibility}
-              >
-                {description}
-              </p>
-            ) : (
-              <button
-                className="cohort-header__button link-button"
-                onClick={this.handleDescriptionTextareaVisibility}
-                type="button"
-              >
-                Add description
-              </button>
-            )}
-          </Fragment>
+          <button
+            className="cohort-header__button link-button"
+            onClick={this.handleDescriptionTextareaVisibility}
+            type="button"
+          >
+            Add description
+          </button>
         )}
       </Fragment>
     );
@@ -200,26 +198,24 @@ class CohortHeader extends PureComponent {
   renderName = () => {
     const { name, isNameInputVisible, pendingForName } = this.state;
 
-    if (pendingForName) return <Preloader size={PreloaderSize.SMALL} />;
+    if (pendingForName) {
+      return <Preloader size={PreloaderSize.SMALL} />;
+    }
 
-    return (
-      <Fragment>
-        {isNameInputVisible ? (
-          <NameInput
-            name={name}
-            onClick={this.handleClick}
-            onKeyPress={this.handleKeyPress}
-            onNameChange={this.handleNameChange}
-          />
-        ) : (
-          <h1
-            className="cohort-header__heading"
-            onClick={this.handleNameInputVisibility}
-          >
-            {name}
-          </h1>
-        )}
-      </Fragment>
+    return isNameInputVisible ? (
+      <NameInput
+        name={name}
+        onClick={this.handleClick}
+        onKeyPress={this.handleKeyPress}
+        onNameChange={this.handleNameChange}
+      />
+    ) : (
+      <h1
+        className="cohort-header__heading"
+        onClick={this.handleNameInputVisibility}
+      >
+        {name}
+      </h1>
     );
   };
 

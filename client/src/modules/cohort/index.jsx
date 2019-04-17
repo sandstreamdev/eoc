@@ -39,8 +39,6 @@ class Cohort extends PureComponent {
   };
 
   componentDidMount() {
-    this.setState({ pendingForDetails: true });
-
     this.fetchData();
   }
 
