@@ -65,8 +65,8 @@ class ItemsList extends Component {
             {items.slice(0, limit).map(item => (
               <ListItem
                 archived={item.isOrdered}
-                authorName={item.authorName}
                 authorId={item.authorId}
+                authorName={item.authorName}
                 id={item._id}
                 image={item.image}
                 isVoted={item.isVoted}
