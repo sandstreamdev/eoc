@@ -19,8 +19,8 @@ import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 
 export const ListType = Object.freeze({
-  PRIVATE: 'private',
-  PUBLIC: 'public'
+  LIMITED: 'limited',
+  SHARED: 'shared'
 });
 
 class List extends Component {

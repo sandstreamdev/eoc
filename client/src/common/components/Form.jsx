@@ -83,8 +83,8 @@ class Form extends PureComponent {
             className="form__select primary-select"
             onChange={this.handleSelect}
           >
-            <option value={ListType.PRIVATE}>{ListType.PRIVATE}</option>
-            <option value={ListType.PUBLIC}>{ListType.PUBLIC}</option>
+            <option value={ListType.LIMITED}>{ListType.LIMITED}</option>
+            <option value={ListType.SHARED}>{ListType.SHARED}</option>
           </select>
         )}
       </form>
