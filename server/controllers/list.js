@@ -191,7 +191,7 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: listId,
-    $or: [{ ownerIds: userId }, { memberIds: userId }]
+    $or: [{ ownerIds: userId }, { memberIds: userId }, { isPrivate: false }]
   })
     .populate('memberIds', 'avatarUrl displayName _id')
     .populate('ownerIds', 'avatarUrl displayName _id')

@@ -151,6 +151,12 @@ class ListHeader extends PureComponent {
     const {
       target: { value }
     } = event;
+
+    if (value === ListType.SHARED) {
+      console.log('zmien liste na publiczna');
+      return;
+    }
+    console.log('zmien liste na prywatna');
   };
 
   renderDescription = () => {

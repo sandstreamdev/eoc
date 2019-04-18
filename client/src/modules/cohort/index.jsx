@@ -111,7 +111,7 @@ class Cohort extends PureComponent {
 
   hideDialog = () => this.handleDialogContext(null)();
 
-  handleArchivedListsVisibility = id => () =>
+  handleArchivedListsVisibility = () => () =>
     this.setState(
       ({ areArchivedListsVisible }) => ({
         areArchivedListsVisible: !areArchivedListsVisible
@@ -119,17 +119,20 @@ class Cohort extends PureComponent {
       () => this.handleArchivedListsData()
     );
 
-  handleArchivedListsData = id => {
+  handleArchivedListsData = () => {
     const { areArchivedListsVisible } = this.state;
     const {
       fetchArchivedListsMetaData,
-      removeArchivedListsMetaData
+      removeArchivedListsMetaData,
+      match: {
+        params: { id }
+      }
     } = this.props;
 
     if (areArchivedListsVisible) {
       this.setState({ pendingForArchivedLists: true });
 
-      fetchArchivedListsMetaData().finally(() =>
+      fetchArchivedListsMetaData(id).finally(() =>
         this.setState({ pendingForArchivedLists: false })
       );
     } else {
