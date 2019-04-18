@@ -188,6 +188,19 @@ const updateItemDetailsFailure = () => ({
   type: ItemActionTypes.UPDATE_DETAILS_FAILURE
 });
 
+const cloneItemSuccess = (listId, data) => ({
+  type: ItemActionTypes.CLONE_SUCCESS,
+  payload: { listId, data }
+});
+
+const cloneItemRequest = () => ({
+  type: ItemActionTypes.CLONE_REQUEST
+});
+
+const cloneItemFailure = () => ({
+  type: ItemActionTypes.CLONE_FAILURE
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
@@ -485,6 +498,30 @@ export const updateItemDetails = (listId, itemId, data) => dispatch => {
     })
     .catch(err => {
       dispatch(updateItemDetailsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const cloneItem = (listId, itemId) => dispatch => {
+  dispatch(cloneItemRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/clone-item`, {
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(cloneItemSuccess(listId, json));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(cloneItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

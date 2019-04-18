@@ -13,10 +13,11 @@ import TextInput from 'common/components/Forms/TextInput';
 import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { updateItemDetails } from '../model/actions';
+import { cloneItem, updateItemDetails } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
 import { isUrlValid } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -33,7 +34,8 @@ class ListItem extends PureComponent {
       isNewCommentVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
-      link
+      link,
+      pending: false
     };
   }
 
@@ -130,6 +132,22 @@ class ListItem extends PureComponent {
 
   handleItemDescription = value => this.setState({ itemDescription: value });
 
+  handleItemCloning = () => {
+    const {
+      cloneItem,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    this.setState({ pending: true });
+
+    cloneItem(listId, itemId)
+      .then(() => this.setState({ areDetailsVisible: false }))
+      .finally(() => this.setState({ pending: false }));
+  };
+
   handleItemLink = value =>
     this.setState({ link: value, isValidationErrorVisible: false });
 
@@ -137,7 +155,8 @@ class ListItem extends PureComponent {
     const {
       areFieldsUpdated,
       isNewCommentVisible,
-      isValidationErrorVisible
+      isValidationErrorVisible,
+      pending
     } = this.state;
     const {
       data: { description, link }
@@ -145,6 +164,17 @@ class ListItem extends PureComponent {
 
     return (
       <Fragment>
+        <button
+          className="list-item__add-new-button link-button"
+          onClick={this.handleItemCloning}
+          type="button"
+        >
+          {pending ? (
+            <Preloader size={PreloaderSize.SMALL} />
+          ) : (
+            <span>Clone Item</span>
+          )}
+        </button>
         <div className="list-item__info">
           <div className="list-item__info-textarea">
             <Textarea
@@ -274,6 +304,7 @@ ListItem.propTypes = {
   ),
   match: RouterMatchPropType.isRequired,
 
+  cloneItem: PropTypes.func.isRequired,
   toggleItem: PropTypes.func,
   updateItemDetails: PropTypes.func.isRequired,
   voteForItem: PropTypes.func
@@ -282,6 +313,6 @@ ListItem.propTypes = {
 export default withRouter(
   connect(
     null,
-    { updateItemDetails }
+    { cloneItem, updateItemDetails }
   )(ListItem)
 );
