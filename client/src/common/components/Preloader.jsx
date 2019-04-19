@@ -15,8 +15,9 @@ export const PreloaderSize = {
 class Preloader extends PureComponent {
   constructor(props) {
     super(props);
+
     this.state = { displayAnimation: false };
-    this.timer = setTimeout(this.enableMessage, 250);
+    this.timer = setTimeout(this.enableAnimation, 250);
   }
 
   componentWillUnmount() {
