@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _sortBy from 'lodash/sortBy';
 
-import ItemsList from 'modules/list/components/ItemsList';
+import ItemsList from 'modules/list/components/Items';
 import SortBox from 'common/components/SortBox';
 import { SortOrderType } from 'common/constants/enums';
 import FilterBox from 'modules/list/components/FilterBox';
