@@ -51,7 +51,7 @@ class ListItem extends PureComponent {
   }
 
   appendPendingPromise = promise => {
-    this.pendingPromises = [...this.pendingPromises, promise];
+    this.pendingPromises.push(promise);
   };
 
   removePendingPromise = promise => {
@@ -162,8 +162,10 @@ class ListItem extends PureComponent {
     this.appendPendingPromise(abortableCloning);
 
     return abortableCloning.promise
-      .then(() => this.setState({ pending: false }))
-      .then(() => this.removePendingPromise(abortableCloning))
+      .then(() => {
+        this.setState({ pending: false });
+        this.removePendingPromise(abortableCloning);
+      })
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           this.setState({ pending: false });
