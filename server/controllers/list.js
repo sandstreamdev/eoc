@@ -709,7 +709,7 @@ const cloneItem = (req, resp) => {
   const { itemId } = req.body;
   const { id: listId } = req.params;
   const { _id: userId, displayName: userName } = req.user;
-  let item;
+  let newItemId;
 
   List.findOne({
     _id: listId,
@@ -724,7 +724,7 @@ const cloneItem = (req, resp) => {
 
       const { description, link, name } = list.items.id(itemId);
 
-      item = new Item({
+      const item = new Item({
         authorId: userId,
         authorName: userName,
         description,
@@ -732,14 +732,15 @@ const cloneItem = (req, resp) => {
         name
       });
 
+      newItemId = item._id;
       list.items.push(item);
 
       return list.save();
     })
-    .then(() =>
+    .then(list =>
       resp.status(200).send({
         message: 'Item successfully cloned.',
-        item: responseWithItem(item)
+        item: responseWithItem(list.items.id(newItemId))
       })
     )
     .catch(err => {

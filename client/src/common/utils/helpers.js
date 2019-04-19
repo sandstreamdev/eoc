@@ -14,17 +14,17 @@ export const isUrlValid = string => {
 };
 
 export const makeAbortablePromise = promise => {
-  let cancel;
+  let _reject;
 
   const wrappedPromise = new Promise((resolve, reject) => {
-    cancel = reject;
+    _reject = reject;
     promise.then(val => resolve(val), error => reject(error));
   });
 
   return {
     promise: wrappedPromise,
     abort() {
-      cancel(new AbortPromiseException());
+      _reject(new AbortPromiseException());
     }
   };
 };
