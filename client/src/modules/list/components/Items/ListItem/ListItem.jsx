@@ -183,7 +183,7 @@ class ListItem extends PureComponent {
       pending
     } = this.state;
     const {
-      data: { description, link }
+      data: { description, isOrdered, link }
     } = this.props;
 
     return (
@@ -214,20 +214,22 @@ class ListItem extends PureComponent {
             />
           </div>
         </div>
-        <div className="list-item__cloning">
-          <button
-            className="link-button"
-            disabled={pending}
-            onClick={this.handleItemCloning}
-            type="button"
-          >
-            {pending ? (
-              <Preloader size={PreloaderSize.SMALL} />
-            ) : (
-              <span>Clone Item</span>
-            )}
-          </button>
-        </div>
+        {!isOrdered && (
+          <div className="list-item__cloning">
+            <button
+              className="link-button"
+              disabled={pending}
+              onClick={this.handleItemCloning}
+              type="button"
+            >
+              {pending ? (
+                <Preloader size={PreloaderSize.SMALL} />
+              ) : (
+                <span>Clone Item</span>
+              )}
+            </button>
+          </div>
+        )}
         <div className="list-item__new-comment">
           {isNewCommentVisible ? (
             <NewComment
