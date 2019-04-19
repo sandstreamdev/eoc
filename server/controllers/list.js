@@ -213,7 +213,6 @@ const getListData = (req, resp) => {
       if (cohortId) {
         return Cohort.findOne({ _id: cohortId })
           .populate('memberIds', 'avatarUrl displayName _id')
-          .populate('ownerIds', 'avatarUrl displayName _id')
           .exec()
           .then(cohort => {
             if (!cohort || cohort.isArchived) {

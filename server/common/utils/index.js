@@ -1,6 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
 const _map = require('lodash/map');
-const _isArray = require('lodash/isArray');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -9,9 +8,6 @@ const filter = f => object =>
   fromEntries(
     Object.entries(object).filter(([key, value]) => f(value, key, object))
   );
-
-const checkRole = (idsArray, userIdFromReq) =>
-  idsArray.indexOf(userIdFromReq) !== -1;
 
 const isValidMongoId = id => ObjectId.isValid(id);
 
@@ -105,8 +101,18 @@ const responseWithCohort = (cohort, userId) => {
   };
 };
 
+const checkRole = (idsArray, userIdFromReq) =>
+  idsArray.indexOf(userIdFromReq) !== -1;
+
 const checkIfOwner = (ownerIds, userId) =>
   ownerIds.indexOf(userId.toString()) > -1;
+
+const checkIfGuest = (cohortMembersIds, userId) => {
+  return !cohortMembersIds.some(id => id.equals(userId));
+};
+
+const checkIfMember = (memberIds, userId) =>
+  memberIds.indexOf(userId.toString()) > -1;
 
 const responseWithCohortMembers = (users, ownerIds) =>
   users.map(user => {
@@ -130,13 +136,6 @@ const checkIfCohortMember = (cohort, userId) => {
   return false;
 };
 
-const checkIfGuest = (cohortMembersIds, userId) => {
-  return !cohortMembersIds.some(id => id.equals(userId));
-};
-
-const checkIfMember = (memberIds, userId) =>
-  memberIds.indexOf(userId.toString()) > -1;
-
 const responseWithCohortMember = (data, ownerIds) => {
   const { avatarUrl, displayName, newMemberId } = data;
 
@@ -144,7 +143,8 @@ const responseWithCohortMember = (data, ownerIds) => {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isOwner: checkIfOwner(ownerIds, newMemberId)
+    isOwner: checkIfOwner(ownerIds, newMemberId),
+    isMember: true
   };
 };
 
