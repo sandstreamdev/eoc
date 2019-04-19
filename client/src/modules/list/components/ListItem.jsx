@@ -163,7 +163,7 @@ class ListItem extends PureComponent {
     this.appendPendingPromise(abortableCloning);
 
     return abortableCloning.promise
-      .then(() => this.setState({ areDetailsVisible: false, pending: false }))
+      .then(() => this.setState({ pending: false }))
       .then(() => this.removePendingPromise(abortableCloning))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
@@ -189,17 +189,6 @@ class ListItem extends PureComponent {
 
     return (
       <Fragment>
-        <button
-          className="list-item__add-new-button link-button"
-          onClick={this.handleItemCloning}
-          type="button"
-        >
-          {pending ? (
-            <Preloader size={PreloaderSize.SMALL} />
-          ) : (
-            <span>Clone Item</span>
-          )}
-        </button>
         <div className="list-item__info">
           <div className="list-item__info-textarea">
             <Textarea
@@ -225,6 +214,20 @@ class ListItem extends PureComponent {
               value="Save data"
             />
           </div>
+        </div>
+        <div className="list-item__cloning">
+          <button
+            className="link-button"
+            disabled={pending}
+            onClick={this.handleItemCloning}
+            type="button"
+          >
+            {pending ? (
+              <Preloader size={PreloaderSize.SMALL} />
+            ) : (
+              <span>Clone Item</span>
+            )}
+          </button>
         </div>
         <div className="list-item__new-comment">
           {isNewCommentVisible ? (
