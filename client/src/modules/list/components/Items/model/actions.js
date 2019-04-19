@@ -1,8 +1,20 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
-import { patchData } from 'common/utils/fetchMethods';
-import { ItemActionTypes } from 'modules/list/components/InputBar/model/actionTypes';
+import { patchData, postData } from 'common/utils/fetchMethods';
+import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+
+const addItemFailure = errorMessage => ({
+  type: ItemActionTypes.ADD_FAILURE,
+  payload: errorMessage
+});
+const addItemSuccess = (item, listId) => ({
+  type: ItemActionTypes.ADD_SUCCESS,
+  payload: { item, listId }
+});
+const addItemRequest = () => ({
+  type: ItemActionTypes.ADD_REQUEST
+});
 
 const toggleItemSuccess = (item, listId) => ({
   type: ItemActionTypes.TOGGLE_SUCCESS,
@@ -15,6 +27,7 @@ const toggleItemFailure = errMessage => ({
   type: ItemActionTypes.TOGGLE_FAILURE,
   payload: errMessage
 });
+
 const voteForItemSuccess = (item, listId) => ({
   type: ItemActionTypes.VOTE_SUCCESS,
   payload: { item, listId }
@@ -25,6 +38,19 @@ const voteForItemRequest = () => ({
 const voteForItemFailure = errMessage => ({
   type: ItemActionTypes.VOTE_FAILURE,
   payload: errMessage
+});
+
+const updateItemDetailsSuccess = (listId, itemId, data) => ({
+  type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
+  payload: { listId, itemId, data }
+});
+
+const updateItemDetailsRequest = () => ({
+  type: ItemActionTypes.UPDATE_DETAILS_REQUEST
+});
+
+const updateItemDetailsFailure = () => ({
+  type: ItemActionTypes.UPDATE_DETAILS_FAILURE
 });
 
 const cloneItemSuccess = (listId, item) => ({
@@ -39,6 +65,21 @@ const cloneItemRequest = () => ({
 const cloneItemFailure = () => ({
   type: ItemActionTypes.CLONE_FAILURE
 });
+
+export const addItem = (item, listId) => dispatch => {
+  dispatch(addItemRequest());
+  return postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
+    .then(resp => resp.json())
+    .then(json => dispatch(addItemSuccess(json, listId)))
+    .catch(err => {
+      dispatch(addItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, adding item failed..."
+      );
+    });
+};
 
 export const toggle = (
   isOrdered,
@@ -95,6 +136,31 @@ export const clearVote = (itemId, listId) => dispatch => {
         dispatch,
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, voting failed...."
+      );
+    });
+};
+
+export const updateItemDetails = (listId, itemId, data) => dispatch => {
+  dispatch(updateItemDetailsRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
+    ...data,
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(updateItemDetailsSuccess(listId, itemId, data));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(updateItemDetailsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
       );
     });
 };

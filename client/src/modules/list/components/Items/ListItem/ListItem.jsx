@@ -13,12 +13,11 @@ import TextInput from 'common/components/Forms/TextInput';
 import NewComment from 'common/components/Comments/NewComment';
 import Comment from 'common/components/Comments/Comment';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { updateItemDetails } from '../../../model/actions';
+import { cloneItem, updateItemDetails } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
 import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { cloneItem } from '../model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 class ListItem extends PureComponent {
