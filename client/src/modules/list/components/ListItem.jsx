@@ -13,13 +13,17 @@ import TextInput from 'common/components/Forms/TextInput';
 import NewComment from '../../../common/components/Comments/NewComment';
 import Comment from '../../../common/components/Comments/Comment';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { cloneItem, updateItemDetails } from '../model/actions';
+import { updateItemDetails } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
-import { isUrlValid } from 'common/utils/helpers';
+import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { cloneItem } from './ItemsList/actions';
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 class ListItem extends PureComponent {
+  pendingPromises = [];
+
   constructor(props) {
     super(props);
 
@@ -42,6 +46,18 @@ class ListItem extends PureComponent {
   componentDidUpdate() {
     this.checkIfFieldsUpdated();
   }
+
+  componentWillUnmount() {
+    this.pendingPromises.map(promise => promise.abort());
+  }
+
+  appendPendingPromise = promise => {
+    this.pendingPromises = [...this.pendingPromises, promise];
+  };
+
+  removePendingPromise = promise => {
+    this.pendingPromises = this.pendingPromises.filter(p => p !== promise);
+  };
 
   handleItemToggling = (authorId, id, isOrdered) => event => {
     const { toggleItem } = this.props;
@@ -132,7 +148,8 @@ class ListItem extends PureComponent {
 
   handleItemDescription = value => this.setState({ itemDescription: value });
 
-  handleItemCloning = () => {
+  handleItemCloning = event => {
+    event.stopPropagation();
     const {
       cloneItem,
       data: { _id: itemId },
@@ -142,10 +159,18 @@ class ListItem extends PureComponent {
     } = this.props;
 
     this.setState({ pending: true });
+    const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
+    this.appendPendingPromise(abortableCloning);
 
-    cloneItem(listId, itemId)
-      .then(() => this.setState({ areDetailsVisible: false }))
-      .finally(() => this.setState({ pending: false }));
+    return abortableCloning.promise
+      .then(() => this.setState({ areDetailsVisible: false, pending: false }))
+      .then(() => this.removePendingPromise(abortableCloning))
+      .catch(err => {
+        if (!(err instanceof AbortPromiseException)) {
+          this.setState({ pending: false });
+          this.removePendingPromise(abortableCloning);
+        }
+      });
   };
 
   handleItemLink = value =>

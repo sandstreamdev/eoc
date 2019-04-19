@@ -1,3 +1,5 @@
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+
 export const isUrlValid = string => {
   const pattern = new RegExp(
     '^(https?:\\/\\/)?' +
@@ -9,4 +11,20 @@ export const isUrlValid = string => {
     'i'
   );
   return pattern.test(string);
+};
+
+export const makeAbortablePromise = promise => {
+  let cancel;
+
+  const wrappedPromise = new Promise((resolve, reject) => {
+    cancel = reject;
+    promise.then(val => resolve(val), error => reject(error));
+  });
+
+  return {
+    promise: wrappedPromise,
+    abort() {
+      cancel(new AbortPromiseException());
+    }
+  };
 };

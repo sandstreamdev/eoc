@@ -9,6 +9,7 @@ import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 const items = (state, action) => {
   switch (action.type) {
     case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.CLONE_SUCCESS:
       return { ...state, items: [action.payload.item, ...state.items] };
     case ItemActionTypes.TOGGLE_SUCCESS:
       return {
@@ -95,17 +96,11 @@ const membersReducer = (state, action) => {
 const lists = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
-      return {
-        ...state,
-        ...action.payload
-      };
+      return { ...state, ...action.payload };
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
-      return {
-        [action.payload._id]: { ...action.payload },
-        ...state
-      };
+      return { [action.payload._id]: { ...action.payload }, ...state };
     case ListActionTypes.DELETE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;
       return newState;
@@ -117,62 +112,34 @@ const lists = (state = {}, action) => {
         name: action.payload.name || prevList.name,
         description: action.payload.description || prevList.description
       };
-      return {
-        ...state,
-        [action.payload.listId]: updatedList
-      };
+      return { ...state, [action.payload.listId]: updatedList };
     }
     case ListActionTypes.ARCHIVE_SUCCESS: {
       const { listId: _id, isArchived } = action.payload;
       const { cohortId, name } = state[action.payload.listId];
       const archivedList = { cohortId, _id, isArchived, name };
-      return {
-        ...state,
-        [action.payload.listId]: archivedList
-      };
+      return { ...state, [action.payload.listId]: archivedList };
     }
     case ListActionTypes.RESTORE_SUCCESS:
     case ListActionTypes.FETCH_DATA_SUCCESS:
-      return {
-        ...state,
-        [action.payload.listId]: action.payload.data
-      };
+      return { ...state, [action.payload.listId]: action.payload.data };
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
-    case ItemActionTypes.ADD_SUCCESS: {
-      const currentList = state[action.payload.listId];
-      return {
-        ...state,
-        [action.payload.listId]: items(currentList, action)
-      };
-    }
-    case ItemActionTypes.TOGGLE_SUCCESS: {
-      const currentList = state[action.payload.listId];
-      return {
-        ...state,
-        [action.payload.listId]: items(currentList, action)
-      };
-    }
-    case ItemActionTypes.VOTE_SUCCESS: {
-      const currentList = state[action.payload.listId];
-      return {
-        ...state,
-        [action.payload.listId]: items(currentList, action)
-      };
-    }
     case ListActionTypes.FAVOURITES_SUCCESS: {
       const {
         payload: { listId, isFavourite }
       } = action;
-      return {
-        ...state,
-        [listId]: {
-          ...state[listId],
-          isFavourite
-        }
-      };
+      return { ...state, [listId]: { ...state[listId], isFavourite } };
+    }
+    case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.CLONE_SUCCESS:
+    case ItemActionTypes.TOGGLE_SUCCESS:
+    case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
+    case ItemActionTypes.VOTE_SUCCESS: {
+      const currentList = state[action.payload.listId];
+      return { ...state, [action.payload.listId]: items(currentList, action) };
     }
     case ListActionTypes.ADD_MEMBER_SUCCESS:
     case ListActionTypes.CHANGE_ROLE_SUCCESS:
@@ -183,17 +150,7 @@ const lists = (state = {}, action) => {
       const { members } = state[listId];
       return {
         ...state,
-        [listId]: {
-          ...state[listId],
-          members: membersReducer(members, action)
-        }
-      };
-    }
-    case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {
-      const currentList = state[action.payload.listId];
-      return {
-        ...state,
-        [action.payload.listId]: items(currentList, action)
+        [listId]: { ...state[listId], members: membersReducer(members, action) }
       };
     }
     default:
@@ -206,6 +163,8 @@ const isFetching = (state = false, action) => {
     case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
     case ItemActionTypes.ADD_FAILURE:
     case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.CLONE_FAILURE:
+    case ItemActionTypes.CLONE_SUCCESS:
     case ItemActionTypes.TOGGLE_FAILURE:
     case ItemActionTypes.TOGGLE_SUCCESS:
     case ItemActionTypes.VOTE_FAILURE:
@@ -232,6 +191,7 @@ const isFetching = (state = false, action) => {
     case ItemActionTypes.UPDATE_DETAILS_FAILURE:
     case ItemActionTypes.UPDATE_DETAILS_REQUEST:
     case ItemActionTypes.ADD_REQUEST:
+    case ItemActionTypes.CLONE_REQUEST:
     case ItemActionTypes.TOGGLE_REQUEST:
     case ItemActionTypes.VOTE_REQUEST:
     case ListActionTypes.ARCHIVE_REQUEST:

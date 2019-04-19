@@ -705,6 +705,53 @@ const updateItemDetails = (req, resp) => {
   );
 };
 
+const cloneItem = (req, resp) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const { _id: userId, displayName: userName } = req.user;
+  let item;
+
+  List.findOne({
+    _id: listId,
+    'items._id': itemId,
+    $or: [{ ownerIds: userId }, { memberIds: userId }]
+  })
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException('List data not found.');
+      }
+
+      const { description, link, name } = list.items.id(itemId);
+
+      item = new Item({
+        authorId: userId,
+        authorName: userName,
+        description,
+        link,
+        name
+      });
+
+      list.items.push(item);
+
+      return list.save();
+    })
+    .then(() =>
+      resp.status(200).send({
+        message: 'Item successfully cloned.',
+        item: responseWithItem(item)
+      })
+    )
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
+};
+
 module.exports = {
   addItemToList,
   addMember,
@@ -712,6 +759,7 @@ module.exports = {
   changeToMember,
   changeToOwner,
   clearVote,
+  cloneItem,
   createList,
   deleteListById,
   getArchivedListsMetaData,

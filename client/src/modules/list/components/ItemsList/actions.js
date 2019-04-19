@@ -27,6 +27,19 @@ const voteForItemFailure = errMessage => ({
   payload: errMessage
 });
 
+const cloneItemSuccess = (listId, item) => ({
+  type: ItemActionTypes.CLONE_SUCCESS,
+  payload: { listId, item }
+});
+
+const cloneItemRequest = () => ({
+  type: ItemActionTypes.CLONE_REQUEST
+});
+
+const cloneItemFailure = () => ({
+  type: ItemActionTypes.CLONE_FAILURE
+});
+
 export const toggle = (
   isOrdered,
   itemId,
@@ -82,6 +95,30 @@ export const clearVote = (itemId, listId) => dispatch => {
         dispatch,
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, voting failed...."
+      );
+    });
+};
+
+export const cloneItem = (listId, itemId) => dispatch => {
+  dispatch(cloneItemRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/clone-item`, {
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(data => {
+      dispatch(cloneItemSuccess(listId, data.item));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        data.message
+      );
+    })
+    .catch(err => {
+      dispatch(cloneItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
       );
     });
 };
