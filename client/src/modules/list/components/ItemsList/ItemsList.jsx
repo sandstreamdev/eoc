@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import ListItem from 'modules/list/components/ListItem';
+import ListItem from 'modules/list/components/Items/ListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { toggle, clearVote, setVote } from './actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';

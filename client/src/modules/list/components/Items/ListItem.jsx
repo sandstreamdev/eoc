@@ -10,15 +10,15 @@ import _isEqual from 'lodash/isEqual';
 import VotingBox from 'modules/list/components/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
-import NewComment from '../../../common/components/Comments/NewComment';
-import Comment from '../../../common/components/Comments/Comment';
+import NewComment from 'common/components/Comments/NewComment';
+import Comment from 'common/components/Comments/Comment';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { updateItemDetails } from '../model/actions';
+import { updateItemDetails } from '../../model/actions';
 import SaveButton from 'common/components/SaveButton';
 import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { cloneItem } from './ItemsList/actions';
+import { cloneItem } from '../ItemsList/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 class ListItem extends PureComponent {
