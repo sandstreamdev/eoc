@@ -10,10 +10,8 @@ const filter = f => object =>
     Object.entries(object).filter(([key, value]) => f(value, key, object))
   );
 
-const checkRole = (idsArray, userIdFromReq) => {
-  const userId = ObjectId(userIdFromReq);
-  return idsArray.some(id => id.equals(userId));
-};
+const checkRole = (idsArray, userIdFromReq) =>
+  idsArray.indexOf(userIdFromReq) !== -1;
 
 const isValidMongoId = id => ObjectId.isValid(id);
 
@@ -85,7 +83,7 @@ const responseWithItem = (item, userId) => {
 const responseWithCohorts = (cohorts, userId) =>
   _map(cohorts, ({ _doc }) => {
     const { favIds, memberIds, ownerIds, ...rest } = _doc;
-    const membersCount = [...memberIds, ...ownerIds].length;
+    const membersCount = [...memberIds].length;
 
     return {
       ...rest,
@@ -95,8 +93,8 @@ const responseWithCohorts = (cohorts, userId) =>
   });
 
 const responseWithCohort = (cohort, userId) => {
-  const { _id, description, favIds, memberIds, name, ownerIds } = cohort;
-  const membersCount = [...memberIds, ...ownerIds].length;
+  const { _id, description, favIds, memberIds, name } = cohort;
+  const membersCount = [...memberIds].length;
 
   return {
     _id,
@@ -132,15 +130,12 @@ const checkIfCohortMember = (cohort, userId) => {
   return false;
 };
 
-const checkIfGuest = (data, userId) => {
-  if (data) {
-    return _isArray(data)
-      ? !data.some(member => member._id.equals(userId))
-      : ![...data.memberIds, ...data.ownerIds].some(id => id.equals(userId));
-  }
-
-  return true;
+const checkIfGuest = (cohortMembersIds, userId) => {
+  return !cohortMembersIds.some(id => id.equals(userId));
 };
+
+const checkIfMember = (memberIds, userId) =>
+  memberIds.indexOf(userId.toString()) > -1;
 
 const responseWithCohortMember = (data, ownerIds) => {
   const { avatarUrl, displayName, newMemberId } = data;
@@ -153,24 +148,31 @@ const responseWithCohortMember = (data, ownerIds) => {
   };
 };
 
-const responseWithListMember = (data, ownerIds, cohortId) => {
-  const { avatarUrl, displayName, newMemberId } = data;
+const responseWithListMember = (user, cohortMembers) => {
+  const { avatarUrl, displayName, _id: newMemberId } = user;
 
   // TODO: check if is member TODO:
   return {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isGuest: checkIfGuest(cohortId, newMemberId),
-    isOwner: checkIfOwner(ownerIds, newMemberId)
+    isGuest: checkIfGuest(cohortMembers, newMemberId),
+    isMember: false,
+    isOwner: false
   };
 };
 
-const responseWithListMembers = (users, ownerIds, cohortMembers) =>
-  users.map(user => ({
+const responseWithListMembers = (
+  viewers,
+  memberIds,
+  ownerIds,
+  cohortMembersIds
+) =>
+  viewers.map(user => ({
     ...user._doc,
     isOwner: checkIfOwner(ownerIds, user._doc._id),
-    isGuest: checkIfGuest(cohortMembers, user._doc._id)
+    isGuest: checkIfGuest(cohortMembersIds, user._doc._id),
+    isMember: checkIfMember(memberIds, user._doc._id)
   }));
 
 /**

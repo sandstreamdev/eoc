@@ -196,10 +196,11 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: listId,
-    $or: [{ ownerIds: userId }, { memberIds: userId }]
+    $or: [{ ownerIds: userId }, { memberIds: userId }, { viewersIds: userId }]
   })
     .populate('memberIds', 'avatarUrl displayName _id')
     .populate('ownerIds', 'avatarUrl displayName _id')
+    .populate('viewersIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -221,8 +222,8 @@ const getListData = (req, resp) => {
               );
             }
 
-            const { memberIds, ownerIds } = cohort;
-            return [...memberIds, ...ownerIds];
+            const { memberIds } = cohort;
+            return memberIds;
           });
       }
     })
@@ -233,9 +234,10 @@ const getListData = (req, resp) => {
         description,
         isArchived,
         isPrivate,
-        memberIds,
+        memberIds: membersCollection,
         name,
-        ownerIds
+        ownerIds: ownersCollection,
+        viewersIds: viewers
       } = list;
 
       if (isArchived) {
@@ -243,16 +245,19 @@ const getListData = (req, resp) => {
           .status(200)
           .json({ cohortId, _id, isArchived, isPrivate, name });
       }
+      // const allMembers = isPrivate
+      //   ? [...members, ...owners]
+      //   : uniqueMembers(cohortMembers, [...members, ...owners]);
 
-      const allMembers = isPrivate
-        ? [...memberIds, ...ownerIds]
-        : uniqueMembers(cohortMembers, [...memberIds, ...ownerIds]);
+      const ownerIds = ownersCollection.map(owner => owner.id);
+      const memberIds = membersCollection.map(member => member.id);
+      const cohortMembersIds = cohortMembers.map(member => member._id);
 
-      const owners = ownerIds.map(owner => owner.id);
       const members = responseWithListMembers(
-        allMembers,
-        owners,
-        cohortMembers
+        viewers,
+        memberIds,
+        ownerIds,
+        cohortMembersIds
       );
 
       const isOwner = checkRole(ownerIds, req.user._id);
@@ -617,19 +622,20 @@ const addMember = (req, resp) => {
   const { id: listId } = req.params;
   const { email } = req.body;
 
-  List.findOne({ _id: listId, $or: [{ ownerIds: currentUserId }] })
+  List.findOne({
+    _id: listId,
+    $or: [{ ownerIds: currentUserId }]
+  })
     .populate('cohortId', 'ownerIds viewersIds')
     .exec()
-    .then(doc => {
-      if (doc) {
-        const { cohortId, ownerIds } = doc;
+    .then(list => {
+      const { cohortId: cohort } = list;
+      const { memberIds: cohortMembers } = cohort;
 
+      if (list) {
         return User.findOne({ email })
           .exec()
-          .then(doc => {
-            const { _id, avatarUrl, displayName } = doc;
-            return { _id, avatarUrl, cohortId, displayName, ownerIds };
-          })
+          .then(user => ({ user, list, cohortMembers }))
           .catch(() => {
             throw new BadRequestException('User data not found.');
           });
@@ -641,37 +647,57 @@ const addMember = (req, resp) => {
     })
     .then(data => {
       const {
-        _id: newMemberId,
-        avatarUrl,
-        cohortId,
-        displayName,
-        ownerIds
+        cohortMembers,
+        list,
+        user,
+        user: { _id: newMemberId },
+        list: { viewersIds }
       } = data;
 
-      List.findOneAndUpdate(
-        {
-          _id: listId,
-          viewersIds: { $nin: [newMemberId] },
-          memberIds: { $nin: [newMemberId] }
-        },
-        { $push: { viewersIds: newMemberId, memberIds: newMemberId } }
-      )
-        .exec()
-        .then(doc => {
-          if (doc) {
-            const data = { avatarUrl, displayName, newMemberId };
-            const dataToSend = responseWithListMember(data, ownerIds, cohortId);
+      const userExists = viewersIds.some(id => id.equals(newMemberId));
 
-            return resp.status(200).json(dataToSend);
-          }
+      if (userExists) {
+        throw new BadRequestException('User is already a member.');
+      }
 
-          return resp
-            .status(400)
-            .send({ message: 'User is already a member.' });
+      list.viewersIds.push(newMemberId);
+      return list
+        .save()
+        .then(() => {
+          const userToSend = responseWithListMember(user, cohortMembers);
+
+          return resp.status(200).json(userToSend);
         })
         .catch(() => {
-          throw new BadRequestException('List data not found.');
+          throw new BadRequestException(
+            'An error occurred while adding new member. Please try again.'
+          );
         });
+
+      // return List.findOneAndUpdate(
+      //   {
+      //     _id: listId,
+      //     viewersIds: { $nin: [newMemberId] },
+      //     memberIds: { $nin: [newMemberId] }
+      //   },
+      //   { $push: { viewersIds: newMemberId, memberIds: newMemberId } }
+      // )
+      //   .exec()
+      //   .then(doc => {
+      //     if (doc) {
+      //       const data = { avatarUrl, displayName, newMemberId };
+      //       const dataToSend = responseWithListMember(data, ownerIds, cohortId);
+
+      //       return resp.status(200).json(dataToSend);
+      //     }
+
+      //     return resp
+      //       .status(400)
+      //       .send({ message: 'User is already a member.' });
+      //   })
+      //   .catch(() => {
+      //     throw new BadRequestException('List data not found.');
+      //   });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

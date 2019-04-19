@@ -21,7 +21,8 @@ const createCohort = (req, resp) => {
   const cohort = new Cohort({
     name,
     description,
-    ownerIds: userId
+    ownerIds: userId,
+    memberIds: userId
   });
 
   cohort.save((err, doc) => {
@@ -286,8 +287,12 @@ const removeOwner = (req, resp) => {
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
-    { $pull: { ownerIds: userId } },
+    {
+      _id: cohortId,
+      ownerIds: { $all: [ownerId, userId] },
+      memberIds: { $all: [ownerId, userId] }
+    },
+    { $pull: { ownerIds: userId, memberIds: userId } },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -343,7 +348,7 @@ const changeToOwner = (req, resp) => {
 
   Cohort.findOneAndUpdate(
     { _id: cohortId, ownerIds: ownerId, memberIds: userId },
-    { $push: { ownerIds: userId }, $pull: { memberIds: userId } },
+    { $push: { ownerIds: userId } },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -370,7 +375,7 @@ const changeToMember = (req, resp) => {
   } = req;
   Cohort.findOneAndUpdate(
     { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
-    { $push: { memberIds: userId }, $pull: { ownerIds: userId } },
+    { $pull: { ownerIds: userId } },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
