@@ -74,6 +74,7 @@ const responseWithItems = (userId, list) => {
 
 const responseWithItem = (item, userId) => {
   const { voterIds, ...rest } = item.toObject();
+
   return {
     ...rest,
     isVoted: checkIfCurrentUserVoted(item, userId),

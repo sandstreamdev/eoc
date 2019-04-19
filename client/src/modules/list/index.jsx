@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getList, getItems, getMembers } from 'modules/list/model/selectors';
-import InputBar from 'modules/list/components/InputBar';
+import InputBar from 'modules/list/components/Items/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import { CohortIcon } from 'assets/images/icons';

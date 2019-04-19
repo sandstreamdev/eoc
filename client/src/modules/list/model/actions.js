@@ -14,7 +14,7 @@ import {
 } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
-import { ItemActionTypes } from '../components/InputBar/model/actionTypes';
+import { ItemActionTypes } from '../components/Items/model/actionTypes';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,

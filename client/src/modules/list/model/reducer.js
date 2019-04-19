@@ -3,7 +3,7 @@ import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 
 import { ListActionTypes } from './actionTypes';
-import { ItemActionTypes } from 'modules/list/components/InputBar/model/actionTypes';
+import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 
 const items = (state, action) => {
