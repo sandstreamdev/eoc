@@ -31,7 +31,7 @@
 @import '../../common/components/Toolbar/components/UserBar/UserBar.scss';
 @import '../../common/components/DropdownMenu.scss';
 @import '../../common/components/SortBox.scss';
-@import '../../modules/list/components/VotingBox';
+@import '../../modules/list/components/Items/VotingBox/VotingBox.scss';
 @import '../../modules/list/components/FilterBox.scss';
 @import '../../common/components/Toolbar/Toolbar.scss';
 @import '../../common/components/CardItem.scss';
@@ -56,7 +56,7 @@
 @import '../../common/components/Members/components/MemberDetails.scss';
 @import '../../common/components/Members/components/MemberButton.scss';
 @import '../../modules/cohort/components/CohortHeader.scss';
-@import '../../modules/list/components/Items/ListItem.scss';
+@import '../../modules/list/components/Items/ListItem/ListItem.scss';
 @import '../../modules/list/components/ListHeader.scss';
 @import '../../common/components/NameInput.scss';
 @import '../../common/components/DescriptionTextarea.scss';
