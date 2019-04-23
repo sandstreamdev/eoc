@@ -50,7 +50,7 @@ class ListItem extends PureComponent {
     this.pendingPromises.map(promise => promise.abort());
   }
 
-  appendPendingPromise = promise => {
+  addPendingPromise = promise => {
     this.pendingPromises.push(promise);
   };
 
@@ -159,7 +159,7 @@ class ListItem extends PureComponent {
 
     this.setState({ pending: true });
     const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
-    this.appendPendingPromise(abortableCloning);
+    this.addPendingPromise(abortableCloning);
 
     return abortableCloning.promise
       .then(() => {

@@ -17,6 +17,9 @@ class Preloader extends PureComponent {
     super(props);
 
     this.state = { displayAnimation: false };
+  }
+
+  componentDidMount() {
     this.timer = setTimeout(this.enableAnimation, 250);
   }
 

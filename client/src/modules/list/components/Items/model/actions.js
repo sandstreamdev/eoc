@@ -89,10 +89,8 @@ export const toggle = (
 ) => dispatch => {
   dispatch(toggleItemRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
-    authorName: updatedAuthor,
     itemId,
-    isOrdered: !isOrdered,
-    listId
+    isOrdered: !isOrdered
   })
     .then(resp => resp.json())
     .then(item =>
