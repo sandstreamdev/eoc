@@ -13,8 +13,8 @@ import {
 } from 'modules/cohort/model/actions';
 import {
   changeToOwner as changeToOwnerInList,
-  changeToMember as changeToMemberInList,
-  changeToViewer as changeToViewerInList,
+  addMemberRole as addMemberRoleInList,
+  removeMemberRole as removeMemberRoleInList,
   removeListMember
 } from 'modules/list/model/actions';
 import { Routes, UserRoles } from 'common/constants/enums';
@@ -103,9 +103,9 @@ class MemberDetails extends PureComponent {
 
   changeListRole = value => {
     const {
-      changeToMemberInList,
+      addMemberRoleInList,
       changeToOwnerInList,
-      changeToViewerInList,
+      removeMemberRoleInList,
       match: {
         params: { id }
       },
@@ -122,13 +122,13 @@ class MemberDetails extends PureComponent {
     }
 
     if (!isMember && value === UserRoles.MEMBER) {
-      changeToMemberInList(id, userId).finally(() =>
+      addMemberRoleInList(id, userId).finally(() =>
         this.setState({ pending: false })
       );
     }
 
     if (isMember && value === UserRoles.MEMBER) {
-      changeToViewerInList(id, userId).finally(() =>
+      removeMemberRoleInList(id, userId).finally(() =>
         this.setState({ pending: false })
       );
     }
@@ -360,12 +360,12 @@ MemberDetails.propTypes = {
   route: PropTypes.string,
 
   changeRoleInCohort: PropTypes.func.isRequired,
-  changeToMemberInList: PropTypes.func.isRequired,
+  addMemberRoleInList: PropTypes.func.isRequired,
   changeToOwnerInList: PropTypes.func.isRequired,
-  changeToViewerInList: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   removeCohortMember: PropTypes.func.isRequired,
-  removeListMember: PropTypes.func.isRequired
+  removeListMember: PropTypes.func.isRequired,
+  removeMemberRoleInList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -377,11 +377,11 @@ export default withRouter(
     mapStateToProps,
     {
       changeRoleInCohort,
-      changeToMemberInList,
+      addMemberRoleInList,
       changeToOwnerInList,
-      changeToViewerInList,
       removeCohortMember,
-      removeListMember
+      removeListMember,
+      removeMemberRoleInList
     }
   )(MemberDetails)
 );

@@ -444,7 +444,7 @@ export const removeListMember = (listId, userId, isOwner) => dispatch => {
 
 export const changeToOwner = (listId, userId, role) => dispatch => {
   dispatch(changeRoleRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/set-as-owner`, {
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-owner-role`, {
     userId
   })
     .then(resp => resp.json())
@@ -466,15 +466,14 @@ export const changeToOwner = (listId, userId, role) => dispatch => {
     });
 };
 
-export const changeToMember = (listId, userId) => dispatch => {
-  dispatch(changeRoleRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-to-member`, {
+export const addMemberRole = (listId, userId) => dispatch => {
+  //dispatch(changeRoleRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-member-role`, {
     userId
   })
     .then(resp => resp.json())
     .then(json => {
-      console.log(json);
-      dispatch(changeRoleSuccess(listId, userId));
+      // dispatch(changeRoleSuccess(listId, userId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -482,7 +481,7 @@ export const changeToMember = (listId, userId) => dispatch => {
       );
     })
     .catch(err => {
-      dispatch(changeRoleFailure());
+      //dispatch(changeRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
@@ -491,15 +490,14 @@ export const changeToMember = (listId, userId) => dispatch => {
     });
 };
 
-export const changeToViewer = (listId, userId) => dispatch => {
-  dispatch(changeRoleRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-to-viewer`, {
+export const removeMemberRole = (listId, userId) => dispatch => {
+  //dispatch(changeRoleRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/remove-member-role`, {
     userId
   })
     .then(resp => resp.json())
     .then(json => {
-      console.log(json);
-      dispatch(changeRoleSuccess(listId, userId));
+      //dispatch(changeRoleSuccess(listId, userId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -507,7 +505,7 @@ export const changeToViewer = (listId, userId) => dispatch => {
       );
     })
     .catch(err => {
-      dispatch(changeRoleFailure());
+      //dispatch(changeRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

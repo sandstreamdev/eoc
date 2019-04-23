@@ -3,11 +3,10 @@ const express = require('express');
 const router = express.Router();
 const {
   addItemToList,
+  addMemberRole,
+  addOwnerRole,
   addToFavourites,
   addViewer,
-  changeToMember,
-  setAsOwner,
-  changeToViewer,
   clearVote,
   createList,
   deleteListById,
@@ -16,6 +15,7 @@ const {
   getListsMetaData,
   removeFromFavourites,
   removeMember,
+  removeMemberRole,
   removeOwner,
   updateItemDetails,
   updateListById,
@@ -38,9 +38,9 @@ router.patch('/:id/add-to-fav', authorize, addToFavourites);
 router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
 router.patch('/:id/remove-owner', authorize, removeOwner);
 router.patch('/:id/remove-member', authorize, removeMember);
-router.patch('/:id/set-as-owner', authorize, setAsOwner);
-router.patch('/:id/change-to-member', authorize, changeToMember);
-router.patch('/:id/change-to-viewer', authorize, changeToViewer);
+router.patch('/:id/add-owner-role', authorize, addOwnerRole);
+router.patch('/:id/add-member-role', authorize, addMemberRole);
+router.patch('/:id/remove-member-role', authorize, removeMemberRole);
 router.patch('/:id/add-viewer', authorize, addViewer);
 router.patch('/:id/update-item-details', authorize, updateItemDetails);
 

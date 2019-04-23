@@ -530,7 +530,7 @@ const removeMember = (req, resp) => {
   );
 };
 
-const setAsOwner = (req, resp) => {
+const addOwnerRole = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
 
@@ -545,14 +545,6 @@ const setAsOwner = (req, resp) => {
       if (!doc) {
         throw new BadRequestException("Can't set user as a list's owner.");
       }
-
-      const { cohortId, isPrivate, memberIds } = doc;
-      const isNotCohortMember = !checkIfCohortMember(cohortId, userId);
-
-      // TODO: This propably not necessary in the new scenarios[TO DELETE] TODO:
-      // if (isPrivate || isNotCohortMember) {
-      //   doc.memberIds.splice(memberIds.indexOf(userId), 1);
-      // }
 
       const userIsNotAnOwner = !doc.ownerIds.some(id => id.equals(userId));
 
@@ -583,7 +575,46 @@ const setAsOwner = (req, resp) => {
     });
 };
 
-const changeToMember = (req, resp) => {
+const removeOwnerRole = (req, resp) => {
+  const { id: listId } = req.params;
+  const { userId } = req.body;
+
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  List.findOne({ _id: listId, ownerIds: ownerId })
+    .populate('cohortId', 'memberIds ownerIds')
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new BadRequestException("Can't remove owner role.");
+      }
+
+      const userIsOwner = doc.ownerIds.some(id => id.equals(userId));
+
+      if (userIsOwner) {
+        doc.ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
+      }
+
+      return doc.save();
+    })
+    .then(() =>
+      resp.status(200).send({
+        message: 'User has no owner role.'
+      })
+    )
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
+};
+
+const addMemberRole = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
@@ -601,13 +632,7 @@ const changeToMember = (req, resp) => {
         throw new BadRequestException("Can't set user as a list's member.");
       }
 
-      const { cohortId, isPrivate, ownerIds, memberIds } = doc;
-      const isNotCohortMember = !checkIfCohortMember(cohortId, userId);
-
-      // TODO: This is propably not neede in actual scenarios TODO:
-      // if (isPrivate || isNotCohortMember) {
-      //   doc.memberIds.push(userId);
-      // }
+      const { ownerIds, memberIds } = doc;
       const userIsNotAMember = !memberIds.some(id => id.equals(userId));
 
       if (userIsNotAMember) {
@@ -637,7 +662,7 @@ const changeToMember = (req, resp) => {
     });
 };
 
-const changeToViewer = (req, resp) => {
+const removeMemberRole = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
@@ -648,30 +673,25 @@ const changeToViewer = (req, resp) => {
     _id: listId,
     ownerIds: { $in: [ownerId] }
   })
-    .populate('cohortId', 'memberIds ownerIds')
+    .populate('cohortId', 'memberIds ownerIds viewersIds')
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't set user as a list's viewer.");
+        throw new BadRequestException("Can't remove member role");
       }
 
-      const { ownerIds, memberIds } = doc;
-      const userIsOwner = ownerIds.some(id => id.equals(userId));
-
-      if (userIsOwner) {
-        ownerIds.splice(ownerIds.indexOf(userId), 1);
-      }
-
+      const { memberIds } = doc;
       const userIsMember = memberIds.some(id => id.equals(userId));
 
       if (userIsMember) {
-        memberIds.splice(ownerIds.indexOf(userId), 1);
+        memberIds.splice(memberIds.indexOf(userId), 1);
       }
+
       return doc.save();
     })
     .then(() =>
       resp.status(200).send({
-        message: "User has been successfully set as a list's viewer."
+        message: 'User has no member role'
       })
     )
     .catch(err => {
@@ -786,11 +806,10 @@ const updateItemDetails = (req, resp) => {
 
 module.exports = {
   addItemToList,
+  addMemberRole,
+  addOwnerRole,
   addToFavourites,
   addViewer,
-  changeToMember,
-  setAsOwner,
-  changeToViewer,
   clearVote,
   createList,
   deleteListById,
@@ -799,7 +818,9 @@ module.exports = {
   getListsMetaData,
   removeFromFavourites,
   removeMember,
+  removeMemberRole,
   removeOwner,
+  removeOwnerRole,
   updateItemDetails,
   updateListById,
   updateListItem,
