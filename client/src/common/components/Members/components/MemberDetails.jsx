@@ -12,7 +12,8 @@ import {
   removeCohortMember
 } from 'modules/cohort/model/actions';
 import {
-  changeToOwner as changeToOwnerInList,
+  addOwnerRole as addOwnerRoleInList,
+  removeOwnerRole as removeOwnerRoleInList,
   addMemberRole as addMemberRoleInList,
   removeMemberRole as removeMemberRoleInList,
   removeListMember
@@ -104,19 +105,28 @@ class MemberDetails extends PureComponent {
   changeListRole = value => {
     const {
       addMemberRoleInList,
-      changeToOwnerInList,
+      addOwnerRoleInList,
       removeMemberRoleInList,
+      removeOwnerRoleInList,
       match: {
         params: { id }
       },
       _id: userId,
-      isMember
+      isMember,
+      isOwner
     } = this.props;
 
     this.setState({ pending: true });
 
-    if (value === UserRoles.OWNER) {
-      changeToOwnerInList(id, userId).finally(() =>
+    /** TODO: Refactore this into 2 if's */
+    if (!isOwner && value === UserRoles.OWNER) {
+      addOwnerRoleInList(id, userId).finally(() =>
+        this.setState({ pending: false })
+      );
+    }
+
+    if (isOwner && value === UserRoles.OWNER) {
+      removeOwnerRoleInList(id, userId).finally(() =>
         this.setState({ pending: false })
       );
     }
@@ -361,11 +371,12 @@ MemberDetails.propTypes = {
 
   changeRoleInCohort: PropTypes.func.isRequired,
   addMemberRoleInList: PropTypes.func.isRequired,
-  changeToOwnerInList: PropTypes.func.isRequired,
+  addOwnerRoleInList: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   removeCohortMember: PropTypes.func.isRequired,
   removeListMember: PropTypes.func.isRequired,
-  removeMemberRoleInList: PropTypes.func.isRequired
+  removeMemberRoleInList: PropTypes.func.isRequired,
+  removeOwnerRoleInList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -378,10 +389,11 @@ export default withRouter(
     {
       changeRoleInCohort,
       addMemberRoleInList,
-      changeToOwnerInList,
+      addOwnerRoleInList,
       removeCohortMember,
       removeListMember,
-      removeMemberRoleInList
+      removeMemberRoleInList,
+      removeOwnerRoleInList
     }
   )(MemberDetails)
 );

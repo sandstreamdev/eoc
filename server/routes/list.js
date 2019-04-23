@@ -19,6 +19,7 @@ const {
   removeOwner,
   updateItemDetails,
   updateListById,
+  removeOwnerRole,
   updateListItem,
   voteForItem
 } = require('../controllers/list');
@@ -39,6 +40,7 @@ router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
 router.patch('/:id/remove-owner', authorize, removeOwner);
 router.patch('/:id/remove-member', authorize, removeMember);
 router.patch('/:id/add-owner-role', authorize, addOwnerRole);
+router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);
 router.patch('/:id/add-member-role', authorize, addMemberRole);
 router.patch('/:id/remove-member-role', authorize, removeMemberRole);
 router.patch('/:id/add-viewer', authorize, addViewer);

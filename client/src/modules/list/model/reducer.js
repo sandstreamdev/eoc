@@ -62,7 +62,7 @@ const items = (state, action) => {
 
 const membersReducer = (state, action) => {
   switch (action.type) {
-    case ListActionTypes.ADD_MEMBER_SUCCESS: {
+    case ListActionTypes.ADD_VIEWER_SUCCESS: {
       const {
         payload: { data }
       } = action;
@@ -174,7 +174,7 @@ const lists = (state = {}, action) => {
         }
       };
     }
-    case ListActionTypes.ADD_MEMBER_SUCCESS:
+    case ListActionTypes.ADD_VIEWER_SUCCESS:
     case ListActionTypes.CHANGE_ROLE_SUCCESS:
     case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
