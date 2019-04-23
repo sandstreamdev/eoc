@@ -157,16 +157,22 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setState({ pending: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pending: true }),
+      1000
+    );
+
     const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
     this.addPendingPromise(abortableCloning);
 
     return abortableCloning.promise
       .then(() => {
+        clearTimeout(delayedPending);
         this.setState({ pending: false });
         this.removePendingPromise(abortableCloning);
       })
       .catch(err => {
+        clearTimeout(delayedPending);
         if (!(err instanceof AbortPromiseException)) {
           this.setState({ pending: false });
           this.removePendingPromise(abortableCloning);
