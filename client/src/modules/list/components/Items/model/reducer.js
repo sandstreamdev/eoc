@@ -23,8 +23,7 @@ const items = (state, action) => {
         items: state.items.map(item =>
           item._id === action.payload.item._id
             ? {
-                ...action.payload.item,
-                voterIds: action.payload.item.voterIds
+                ...action.payload.item
               }
             : item
         )

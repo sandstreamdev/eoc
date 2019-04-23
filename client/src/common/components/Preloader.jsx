@@ -28,7 +28,6 @@ class Preloader extends PureComponent {
 
   render() {
     const { message, size, theme } = this.props;
-
     const { displayAnimation } = this.state;
 
     if (!displayAnimation) {
