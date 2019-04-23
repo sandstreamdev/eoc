@@ -45,7 +45,7 @@
     font-size: 16px;
     line-height: 1.2;
     color: $text-light;
-    padding: 16px 0 0;
+    padding: 8px 0 16px;
     max-width: 360px;
   }
 
@@ -63,5 +63,9 @@
 
   &__desc-textarea {
     margin-bottom: 8px;
+  }
+
+  &--clickable {
+    cursor: pointer;
   }
 }
