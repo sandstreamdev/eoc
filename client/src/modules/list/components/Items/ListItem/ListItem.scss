@@ -239,8 +239,11 @@
     margin-bottom: 8px;
   }
 
-  .voting-box {
+  &__voting {
     position: absolute;
+    height: 40px;
+    min-width: 50px;
+    z-index: 3;
     right: 55px;
     top: 50%;
     transform: translateY(-50%);
