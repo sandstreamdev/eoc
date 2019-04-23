@@ -1,0 +1,55 @@
+.ss-switch {
+  display: flex;
+  width: 100%;
+  align-items: center;
+
+  &__label {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 16px;
+    color: $text-black;
+    text-transform: capitalize;
+  }
+
+  &__input {
+    width: 0;
+    height: 0;
+    overflow: visible;
+    -webkit-appearance: none;
+
+    &:checked + .ss-switch__slider {
+      background-color: $switch-slider-active;
+      &:before {
+        content: '';
+        left: 4px;
+        transform: translateX(36px);
+      }
+    }
+  }
+
+  &__slider {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 63px;
+    height: 20px;
+    background-color: $switch-slider-disabled;
+    cursor: pointer;
+    border-radius: 34px;
+
+    &:before {
+      position: absolute;
+      height: 24px;
+      width: 24px;
+      left: 0px;
+      top: -2px;
+      background-color: $switch-dot-color;
+      border-radius: 100%;
+      transition: ease 0.3s;
+      content: '';
+    }
+  }
+}

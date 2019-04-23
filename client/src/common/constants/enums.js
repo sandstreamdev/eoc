@@ -1,3 +1,5 @@
+import { userInfo } from 'os';
+
 export const MessageType = Object.freeze({
   ERROR: 'error',
   INFO: 'info',
@@ -22,5 +24,6 @@ export const Routes = Object.freeze({
 
 export const UserRoles = Object.freeze({
   MEMBER: 'userRoles/MEMBER',
-  OWNER: 'userRoles/OWNER'
+  OWNER: 'userRoles/OWNER',
+  VIEWER: 'userRoles/VIEWER'
 });

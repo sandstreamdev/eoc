@@ -76,13 +76,13 @@ const membersReducer = (state, action) => {
     }
     case ListActionTypes.CHANGE_ROLE_SUCCESS: {
       const {
-        payload: { userId, isOwner }
+        payload: { userId }
       } = action;
+
       return state.map(member =>
         member._id === userId
           ? {
-              ...member,
-              isOwner
+              ...member
             }
           : member
       );

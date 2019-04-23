@@ -473,6 +473,7 @@ const removeFromFavourites = (req, resp) => {
   );
 };
 
+/** TODO: this method should be now deleted as every owner can be deleted as member by remove member method */
 const removeOwner = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
@@ -529,7 +530,7 @@ const removeMember = (req, resp) => {
   );
 };
 
-const changeToOwner = (req, resp) => {
+const setAsOwner = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
 
@@ -553,7 +554,18 @@ const changeToOwner = (req, resp) => {
       //   doc.memberIds.splice(memberIds.indexOf(userId), 1);
       // }
 
-      doc.ownerIds.push(userId);
+      const userIsNotAnOwner = !doc.ownerIds.some(id => id.equals(userId));
+
+      if (userIsNotAnOwner) {
+        doc.ownerIds.push(userId);
+      }
+
+      const userIsNotAMember = !doc.memberIds.some(id => id.equals(userId));
+
+      if (userIsNotAMember) {
+        doc.memberIds.push(userId);
+      }
+
       return doc.save();
     })
     .then(() =>
@@ -578,23 +590,36 @@ const changeToMember = (req, resp) => {
     user: { _id: ownerId }
   } = req;
 
-  List.findOne({ _id: listId, ownerIds: { $all: [ownerId, userId] } })
-    .populate('cohortId', 'memberIds ownerIds')
+  List.findOne({
+    _id: listId,
+    ownerIds: { $in: [ownerId] }
+  })
+    .populate('cohortId', 'memberIds ownerIds viewersIds')
     .exec()
     .then(doc => {
       if (!doc) {
         throw new BadRequestException("Can't set user as a list's member.");
       }
 
-      const { cohortId, isPrivate, ownerIds } = doc;
+      const { cohortId, isPrivate, ownerIds, memberIds } = doc;
       const isNotCohortMember = !checkIfCohortMember(cohortId, userId);
 
       // TODO: This is propably not neede in actual scenarios TODO:
       // if (isPrivate || isNotCohortMember) {
       //   doc.memberIds.push(userId);
       // }
+      const userIsNotAMember = !memberIds.some(id => id.equals(userId));
 
-      doc.ownerIds.splice(ownerIds.indexOf(userId), 1);
+      if (userIsNotAMember) {
+        memberIds.push(userId);
+      }
+
+      const userIsOwner = ownerIds.some(id => id.equals(userId));
+
+      if (userIsOwner) {
+        ownerIds.splice(ownerIds.indexOf(userId), 1);
+      }
+
       return doc.save();
     })
     .then(() =>
@@ -608,13 +633,58 @@ const changeToMember = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({
-        message: 'List data not found'
-      });
+      resp.status(400).send({ message: 'List data not found' });
     });
 };
 
-const addMember = (req, resp) => {
+const changeToViewer = (req, resp) => {
+  const { id: listId } = req.params;
+  const { userId } = req.body;
+  const {
+    user: { _id: ownerId }
+  } = req;
+
+  List.findOne({
+    _id: listId,
+    ownerIds: { $in: [ownerId] }
+  })
+    .populate('cohortId', 'memberIds ownerIds')
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new BadRequestException("Can't set user as a list's viewer.");
+      }
+
+      const { ownerIds, memberIds } = doc;
+      const userIsOwner = ownerIds.some(id => id.equals(userId));
+
+      if (userIsOwner) {
+        ownerIds.splice(ownerIds.indexOf(userId), 1);
+      }
+
+      const userIsMember = memberIds.some(id => id.equals(userId));
+
+      if (userIsMember) {
+        memberIds.splice(ownerIds.indexOf(userId), 1);
+      }
+      return doc.save();
+    })
+    .then(() =>
+      resp.status(200).send({
+        message: "User has been successfully set as a list's viewer."
+      })
+    )
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
+};
+
+const addViewer = (req, resp) => {
   const {
     user: { _id: currentUserId }
   } = req;
@@ -625,7 +695,7 @@ const addMember = (req, resp) => {
     _id: listId,
     $or: [{ ownerIds: currentUserId }]
   })
-    .populate('cohortId', 'ownerIds viewersIds')
+    .populate('cohortId', 'ownerIds memberIds')
     .exec()
     .then(list => {
       const { cohortId: cohort } = list;
@@ -642,7 +712,7 @@ const addMember = (req, resp) => {
 
       return resp
         .status(400)
-        .send({ message: "You don't have permission to add new member" });
+        .send({ message: "You don't have permission to add new viewer" });
     })
     .then(data => {
       const {
@@ -653,50 +723,23 @@ const addMember = (req, resp) => {
         list: { viewersIds }
       } = data;
 
-      const userExists = viewersIds.some(id => id.equals(newMemberId));
+      const userNotExists = !viewersIds.some(id => id.equals(newMemberId));
 
-      if (userExists) {
-        throw new BadRequestException('User is already a member.');
+      if (userNotExists) {
+        list.viewersIds.push(newMemberId);
       }
 
-      list.viewersIds.push(newMemberId);
       return list
         .save()
         .then(() => {
           const userToSend = responseWithListMember(user, cohortMembers);
-
           return resp.status(200).json(userToSend);
         })
         .catch(() => {
           throw new BadRequestException(
-            'An error occurred while adding new member. Please try again.'
+            'An error occurred while adding new viewer. Please try again.'
           );
         });
-
-      // return List.findOneAndUpdate(
-      //   {
-      //     _id: listId,
-      //     viewersIds: { $nin: [newMemberId] },
-      //     memberIds: { $nin: [newMemberId] }
-      //   },
-      //   { $push: { viewersIds: newMemberId, memberIds: newMemberId } }
-      // )
-      //   .exec()
-      //   .then(doc => {
-      //     if (doc) {
-      //       const data = { avatarUrl, displayName, newMemberId };
-      //       const dataToSend = responseWithListMember(data, ownerIds, cohortId);
-
-      //       return resp.status(200).json(dataToSend);
-      //     }
-
-      //     return resp
-      //       .status(400)
-      //       .send({ message: 'User is already a member.' });
-      //   })
-      //   .catch(() => {
-      //     throw new BadRequestException('List data not found.');
-      //   });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -706,7 +749,7 @@ const addMember = (req, resp) => {
       }
 
       resp.status(400).send({
-        message: 'An error occurred while adding new member. Please try again.'
+        message: 'An error occurred while adding new viewer. Please try again.'
       });
     });
 };
@@ -743,10 +786,11 @@ const updateItemDetails = (req, resp) => {
 
 module.exports = {
   addItemToList,
-  addMember,
   addToFavourites,
+  addViewer,
   changeToMember,
-  changeToOwner,
+  setAsOwner,
+  changeToViewer,
   clearVote,
   createList,
   deleteListById,

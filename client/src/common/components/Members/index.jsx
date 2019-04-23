@@ -12,7 +12,7 @@ import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
 import { addCohortMember } from 'modules/cohort/model/actions';
-import { addListMember } from 'modules/list/model/actions';
+import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
 
 class MembersBox extends PureComponent {
@@ -46,7 +46,7 @@ class MembersBox extends PureComponent {
   };
 
   handleAddNewMember = () => email => {
-    const { addCohortMember, addListMember } = this.props;
+    const { addCohortMember, addListViewer } = this.props;
     const {
       match: {
         params: { id }
@@ -54,7 +54,7 @@ class MembersBox extends PureComponent {
       route
     } = this.props;
 
-    const action = route === Routes.COHORT ? addCohortMember : addListMember;
+    const action = route === Routes.COHORT ? addCohortMember : addListViewer;
 
     this.setState({ pending: true });
 
@@ -162,12 +162,12 @@ MembersBox.propTypes = {
   route: PropTypes.string.isRequired,
 
   addCohortMember: PropTypes.func.isRequired,
-  addListMember: PropTypes.func.isRequired
+  addListViewer: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
     null,
-    { addCohortMember, addListMember }
+    { addCohortMember, addListViewer }
   )(MembersBox)
 );

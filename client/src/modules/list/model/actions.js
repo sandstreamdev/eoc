@@ -400,9 +400,9 @@ export const removeListFromFavourites = listId => dispatch => {
     });
 };
 
-export const addListMember = (listId, email) => dispatch => {
+export const addListViewer = (listId, email) => dispatch => {
   dispatch(addMemberRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-member`, {
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-viewer`, {
     email
   })
     .then(resp => resp.json())
@@ -412,7 +412,7 @@ export const addListMember = (listId, email) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, adding new member failed..."
+        err.message || "Oops, we're sorry, adding new viewer failed..."
       );
     });
 };
@@ -442,16 +442,64 @@ export const removeListMember = (listId, userId, isOwner) => dispatch => {
     });
 };
 
-export const changeRole = (listId, userId, role) => dispatch => {
-  const isOwner = role === UserRoles.OWNER;
-  const url = isOwner
-    ? `${ENDPOINT_URL}/lists/${listId}/change-to-owner`
-    : `${ENDPOINT_URL}/lists/${listId}/change-to-member`;
+export const changeToOwner = (listId, userId, role) => dispatch => {
   dispatch(changeRoleRequest());
-  return patchData(url, { userId })
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/set-as-owner`, {
+    userId
+  })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(changeRoleSuccess(listId, userId, isOwner));
+      dispatch(changeRoleSuccess(listId, userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changeRoleFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changeToMember = (listId, userId) => dispatch => {
+  dispatch(changeRoleRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-to-member`, {
+    userId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      console.log(json);
+      dispatch(changeRoleSuccess(listId, userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changeRoleFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changeToViewer = (listId, userId) => dispatch => {
+  dispatch(changeRoleRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-to-viewer`, {
+    userId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      console.log(json);
+      dispatch(changeRoleSuccess(listId, userId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,

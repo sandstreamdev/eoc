@@ -3,10 +3,11 @@ const express = require('express');
 const router = express.Router();
 const {
   addItemToList,
-  addMember,
   addToFavourites,
+  addViewer,
   changeToMember,
-  changeToOwner,
+  setAsOwner,
+  changeToViewer,
   clearVote,
   createList,
   deleteListById,
@@ -37,9 +38,10 @@ router.patch('/:id/add-to-fav', authorize, addToFavourites);
 router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
 router.patch('/:id/remove-owner', authorize, removeOwner);
 router.patch('/:id/remove-member', authorize, removeMember);
-router.patch('/:id/change-to-owner', authorize, changeToOwner);
+router.patch('/:id/set-as-owner', authorize, setAsOwner);
 router.patch('/:id/change-to-member', authorize, changeToMember);
-router.patch('/:id/add-member', authorize, addMember);
+router.patch('/:id/change-to-viewer', authorize, changeToViewer);
+router.patch('/:id/add-viewer', authorize, addViewer);
 router.patch('/:id/update-item-details', authorize, updateItemDetails);
 
 module.exports = app => app.use('/lists', router);
