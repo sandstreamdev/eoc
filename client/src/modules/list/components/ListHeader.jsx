@@ -178,7 +178,7 @@ class ListHeader extends PureComponent {
       />
     ) : (
       <Fragment>
-        {description || !isOwner ? (
+        {description && (
           <p
             className={classNames('list-header__description', {
               'list-header--clickable': isOwner
@@ -188,7 +188,8 @@ class ListHeader extends PureComponent {
           >
             {description}
           </p>
-        ) : (
+        )}
+        {isOwner && !description && (
           <button
             className="list-header__button link-button"
             onClick={this.handleDescriptionTextareaVisibility}

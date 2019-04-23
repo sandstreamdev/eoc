@@ -187,7 +187,7 @@ class CohortHeader extends PureComponent {
       />
     ) : (
       <Fragment>
-        {description || !isOwner ? (
+        {description && (
           <p
             className={classNames('cohort-header__description', {
               'cohort-header--clickable': isOwner
@@ -197,7 +197,8 @@ class CohortHeader extends PureComponent {
           >
             {description}
           </p>
-        ) : (
+        )}
+        {isOwner && !description && (
           <button
             className="cohort-header__button link-button"
             onClick={this.handleDescriptionTextareaVisibility}
