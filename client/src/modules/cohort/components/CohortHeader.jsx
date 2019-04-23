@@ -193,7 +193,7 @@ class CohortHeader extends PureComponent {
               'cohort-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner ? this.handleDescriptionTextareaVisibility : null}
+            onClick={isOwner && this.handleDescriptionTextareaVisibility}
           >
             {description}
           </p>
@@ -232,7 +232,7 @@ class CohortHeader extends PureComponent {
         className={classNames('cohort-header__heading', {
           'cohort-header--clickable': isOwner
         })}
-        onClick={isOwner ? this.handleNameInputVisibility : null}
+        onClick={isOwner && this.handleNameInputVisibility}
       >
         {name}
       </h1>
