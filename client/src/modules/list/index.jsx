@@ -11,12 +11,13 @@ import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import { CohortIcon } from 'assets/images/icons';
 import ArchivedList from 'modules/list/components/ArchivedList';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 export const ListType = Object.freeze({
   LIMITED: 'limited',
@@ -80,6 +81,15 @@ class List extends Component {
       isMembersBoxVisible: !isMembersBoxVisible
     }));
 
+  isCurrentUserAGuest = () => {
+    const { members, currentUser } = this.props;
+
+    let currentUser2 =
+      members.length > 0 &&
+      members.filter(member => member._id === currentUser.id);
+    console.log(currentUser2);
+  };
+
   render() {
     const {
       dialogContext,
@@ -100,7 +110,7 @@ class List extends Component {
     if (!list) {
       return null;
     }
-
+    this.isCurrentUserAGuest();
     const { cohortId, isArchived, isPrivate, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
@@ -182,6 +192,7 @@ class List extends Component {
 }
 
 List.propTypes = {
+  currentUser: UserPropType,
   items: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
@@ -199,6 +210,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
 
   return {
+    currentUser: getCurrentUser(state),
     list: getList(state, id),
     items: getItems(state, id),
     members: getMembers(state, id)

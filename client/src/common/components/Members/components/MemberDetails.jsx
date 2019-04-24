@@ -115,32 +115,20 @@ class MemberDetails extends PureComponent {
       isMember,
       isOwner
     } = this.props;
+    let action;
 
     this.setState({ pending: true });
 
-    /** TODO: Refactore this into 2 if's */
-    if (!isOwner && value === UserRoles.OWNER) {
-      addOwnerRoleInList(id, userId).finally(() =>
-        this.setState({ pending: false })
-      );
+    if (value === UserRoles.OWNER) {
+      action = !isOwner ? addOwnerRoleInList : removeOwnerRoleInList;
+
+      action(id, userId).finally(() => this.setState({ pending: false }));
     }
 
-    if (isOwner && value === UserRoles.OWNER) {
-      removeOwnerRoleInList(id, userId).finally(() =>
-        this.setState({ pending: false })
-      );
-    }
+    if (value === UserRoles.MEMBER) {
+      action = !isMember ? addMemberRoleInList : removeMemberRoleInList;
 
-    if (!isMember && value === UserRoles.MEMBER) {
-      addMemberRoleInList(id, userId).finally(() =>
-        this.setState({ pending: false })
-      );
-    }
-
-    if (isMember && value === UserRoles.MEMBER) {
-      removeMemberRoleInList(id, userId).finally(() =>
-        this.setState({ pending: false })
-      );
+      action(id, userId).finally(() => this.setState({ pending: false }));
     }
   };
 

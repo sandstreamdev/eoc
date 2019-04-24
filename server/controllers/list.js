@@ -1,7 +1,7 @@
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
-  checkIfCohortMember,
+  checkIfGuest,
   checkRole,
   filter,
   isValidMongoId,
@@ -261,14 +261,13 @@ const getListData = (req, resp) => {
 
       const isOwner = checkRole(ownerIds, req.user._id);
       const items = responseWithItems(userId, list);
-
       return resp.status(200).json({
         _id,
         cohortId,
         description,
+        isArchived,
         isOwner,
         isPrivate,
-        isArchived,
         items,
         members,
         name
