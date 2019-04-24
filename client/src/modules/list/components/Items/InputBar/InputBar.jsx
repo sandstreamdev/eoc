@@ -47,9 +47,13 @@ class InputBar extends Component {
       name: itemName
     };
 
-    this.setState({ pending: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pending: true }),
+      1000
+    );
 
     addItem(newItem, id).finally(() => {
+      clearTimeout(delayedPending);
       this.setState({ itemName: '', pending: false });
       this.hideForm();
     });
