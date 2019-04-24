@@ -74,7 +74,7 @@ const membersReducer = (state, action) => {
       } = action;
       return state.filter(member => member._id !== userId);
     }
-    case ListActionTypes.CHANGE_ROLE_SUCCESS: {
+    case ListActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
@@ -82,9 +82,62 @@ const membersReducer = (state, action) => {
       return state.map(member =>
         member._id === userId
           ? {
+              ...member,
+              isOwner: true,
+              isMember: true
+            }
+          : {
               ...member
             }
-          : member
+      );
+    }
+    case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isOwner: false
+            }
+          : {
+              ...member
+            }
+      );
+    }
+    case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isMember: true
+            }
+          : {
+              ...member
+            }
+      );
+    }
+    case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isMember: false,
+              isOwner: false
+            }
+          : {
+              ...member
+            }
       );
     }
     default:
@@ -95,17 +148,11 @@ const membersReducer = (state, action) => {
 const lists = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
-      return {
-        ...state,
-        ...action.payload
-      };
+      return { ...state, ...action.payload };
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
-      return {
-        [action.payload._id]: { ...action.payload },
-        ...state
-      };
+      return { [action.payload._id]: { ...action.payload }, ...state };
     case ListActionTypes.DELETE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;
       return newState;
@@ -117,84 +164,57 @@ const lists = (state = {}, action) => {
         name: action.payload.name || prevList.name,
         description: action.payload.description || prevList.description
       };
-      return {
-        ...state,
-        [action.payload.listId]: updatedList
-      };
+      return { ...state, [action.payload.listId]: updatedList };
     }
     case ListActionTypes.ARCHIVE_SUCCESS: {
       const { listId: _id, isArchived } = action.payload;
       const { cohortId, name } = state[action.payload.listId];
       const archivedList = { cohortId, _id, isArchived, name };
-      return {
-        ...state,
-        [action.payload.listId]: archivedList
-      };
+      return { ...state, [action.payload.listId]: archivedList };
     }
     case ListActionTypes.RESTORE_SUCCESS:
     case ListActionTypes.FETCH_DATA_SUCCESS:
-      return {
-        ...state,
-        [action.payload.listId]: action.payload.data
-      };
+      return { ...state, [action.payload.listId]: action.payload.data };
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
     case ItemActionTypes.ADD_SUCCESS: {
       const currentList = state[action.payload.listId];
-      return {
-        ...state,
-        [action.payload.listId]: items(currentList, action)
-      };
+      return { ...state, [action.payload.listId]: items(currentList, action) };
     }
     case ItemActionTypes.TOGGLE_SUCCESS: {
       const currentList = state[action.payload.listId];
-      return {
-        ...state,
-        [action.payload.listId]: items(currentList, action)
-      };
+      return { ...state, [action.payload.listId]: items(currentList, action) };
     }
     case ItemActionTypes.VOTE_SUCCESS: {
       const currentList = state[action.payload.listId];
-      return {
-        ...state,
-        [action.payload.listId]: items(currentList, action)
-      };
+      return { ...state, [action.payload.listId]: items(currentList, action) };
     }
     case ListActionTypes.FAVOURITES_SUCCESS: {
       const {
         payload: { listId, isFavourite }
       } = action;
-      return {
-        ...state,
-        [listId]: {
-          ...state[listId],
-          isFavourite
-        }
-      };
+      return { ...state, [listId]: { ...state[listId], isFavourite } };
     }
     case ListActionTypes.ADD_VIEWER_SUCCESS:
-    case ListActionTypes.CHANGE_ROLE_SUCCESS:
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case ListActionTypes.ADD_OWNER_ROLE_SUCCESS:
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
+    case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS:
+    case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS:
+    case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
       const {
         payload: { listId }
       } = action;
       const { members } = state[listId];
       return {
         ...state,
-        [listId]: {
-          ...state[listId],
-          members: membersReducer(members, action)
-        }
+        [listId]: { ...state[listId], members: membersReducer(members, action) }
       };
     }
     case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {
       const currentList = state[action.payload.listId];
-      return {
-        ...state,
-        [action.payload.listId]: items(currentList, action)
-      };
+      return { ...state, [action.payload.listId]: items(currentList, action) };
     }
     default:
       return state;

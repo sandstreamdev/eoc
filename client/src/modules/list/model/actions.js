@@ -162,19 +162,6 @@ const removeMemberSuccess = (listId, userId) => ({
   payload: { listId, userId }
 });
 
-const changeRoleRequest = () => ({
-  type: ListActionTypes.CHANGE_ROLE_REQUEST
-});
-
-const changeRoleFailure = () => ({
-  type: ListActionTypes.CHANGE_ROLE_FAILURE
-});
-
-const changeRoleSuccess = (listId, userId, isOwner) => ({
-  type: ListActionTypes.CHANGE_ROLE_SUCCESS,
-  payload: { listId, userId, isOwner }
-});
-
 const updateItemDetailsSuccess = (listId, itemId, data) => ({
   type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
   payload: { listId, itemId, data }
