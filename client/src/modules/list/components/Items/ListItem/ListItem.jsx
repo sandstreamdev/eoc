@@ -73,14 +73,12 @@ class ListItem extends PureComponent {
     const { toggleItem } = this.props;
     event.stopPropagation();
 
+    this.setState(({ done }) => ({ done: !done }));
     const delayedPending = setTimeout(
-      () =>
-        this.setState(({ done }) => ({
-          done: !done,
-          pendingForToggling: true
-        })),
+      () => this.setState({ pendingForToggling: true }),
       PENDING_DELAY
     );
+
     const abortableToggling = makeAbortablePromise(
       toggleItem(authorId, id, isOrdered)
     );
