@@ -12,6 +12,7 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -23,10 +24,10 @@ class ListHeader extends PureComponent {
     const trimmedDescription = description.trim();
 
     this.state = {
-      description: trimmedDescription,
+      descriptionInput: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
-      name,
+      nameInput: name,
       pendingForDescription: false,
       pendingForName: false
     };
@@ -47,7 +48,7 @@ class ListHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ name: value });
+    this.setState({ nameInput: value });
   };
 
   handleDescriptionChange = event => {
@@ -55,7 +56,7 @@ class ListHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ description: value });
+    this.setState({ descriptionInput: value });
   };
 
   handleKeyPress = event => {
@@ -75,7 +76,7 @@ class ListHeader extends PureComponent {
     const {
       isDescriptionTextareaVisible,
       isNameInputVisible,
-      name
+      nameInput
     } = this.state;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
@@ -84,14 +85,18 @@ class ListHeader extends PureComponent {
       return;
     }
 
-    if (isNameInputVisible && name.trim().length >= 1 && isClickedOutside) {
+    if (
+      isNameInputVisible &&
+      nameInput.trim().length >= 1 &&
+      isClickedOutside
+    ) {
       this.setState({ isNameInputVisible: false });
       this.handleNameUpdate();
     }
   };
 
   handleNameUpdate = () => {
-    const { name } = this.state;
+    const { nameInput } = this.state;
     const {
       details,
       match: {
@@ -99,24 +104,33 @@ class ListHeader extends PureComponent {
       },
       updateList
     } = this.props;
+    const nameToUpdate = nameInput.trim();
     const { name: previousName } = details;
 
-    if (previousName === name) {
+    if (previousName === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
       return;
     }
 
-    if (name.trim().length >= 1) {
-      this.setState({ pendingForName: true });
-
-      updateList(id, { name }).finally(() =>
-        this.setState({ isNameInputVisible: false, pendingForName: false })
+    if (nameToUpdate.length >= 1) {
+      const delayedPending = setTimeout(
+        () => this.setState({ pendingForName: true }),
+        PENDING_DELAY
       );
+
+      updateList(id, { name: nameToUpdate }).finally(() => {
+        clearTimeout(delayedPending);
+        this.setState({
+          isNameInputVisible: false,
+          nameInput: nameToUpdate,
+          pendingForName: false
+        });
+      });
     }
   };
 
   handleDescriptionUpdate = () => {
-    const { description } = this.state;
+    const { descriptionInput } = this.state;
     const {
       details,
       match: {
@@ -126,35 +140,39 @@ class ListHeader extends PureComponent {
     } = this.props;
     const { description: previousDescription } = details;
 
-    if (previousDescription.trim() === description.trim()) {
-      this.setState({
-        description: description.trim(),
-        isDescriptionTextareaVisible: false
-      });
+    if (previousDescription.trim() === descriptionInput.trim()) {
+      this.setState({ isDescriptionTextareaVisible: false });
       return;
     }
 
-    const updatedDescription = _isEmpty(_trim(description)) ? '' : description;
+    const updatedDescription = _isEmpty(_trim(descriptionInput))
+      ? ''
+      : _trim(descriptionInput);
 
-    this.setState({
-      isDescriptionTextareaVisible: false,
-      pendingForDescription: true
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForDescription: true }),
+      PENDING_DELAY
+    );
+
+    updateList(id, { description: updatedDescription }).finally(() => {
+      clearTimeout(delayedPending);
+      this.setState({
+        isDescriptionTextareaVisible: false,
+        descriptionInput: updatedDescription,
+        pendingForDescription: false
+      });
     });
-
-    updateList(id, { description: updatedDescription })
-      .then(() => this.setState({ description: updatedDescription }))
-      .finally(() => this.setState({ pendingForDescription: false }));
   };
 
   renderDescription = () => {
     const {
-      description,
+      descriptionInput,
       isDescriptionTextareaVisible,
       pendingForDescription
     } = this.state;
 
     const {
-      details: { isOwner }
+      details: { description, isOwner }
     } = this.props;
 
     if (!description && !isOwner) {
@@ -171,7 +189,7 @@ class ListHeader extends PureComponent {
 
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
-        description={description}
+        description={descriptionInput}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
@@ -203,9 +221,9 @@ class ListHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { name, isNameInputVisible, pendingForName } = this.state;
+    const { isNameInputVisible, nameInput, pendingForName } = this.state;
     const {
-      details: { isOwner }
+      details: { isOwner, name }
     } = this.props;
 
     if (pendingForName) {
@@ -214,7 +232,7 @@ class ListHeader extends PureComponent {
 
     return isNameInputVisible ? (
       <NameInput
-        name={name}
+        name={nameInput}
         onClick={this.handleClick}
         onKeyPress={this.handleKeyPress}
         onNameChange={this.handleNameChange}

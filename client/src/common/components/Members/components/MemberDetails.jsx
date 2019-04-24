@@ -17,6 +17,7 @@ import {
 } from 'modules/list/model/actions';
 import { Routes, UserRoles } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -65,9 +66,14 @@ class MemberDetails extends PureComponent {
     const action =
       route === Routes.COHORT ? removeCohortMember : removeListMember;
 
-    this.setState({ pending: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pending: true }),
+      PENDING_DELAY
+    );
 
-    action(id, userId, isOwner).catch(() => this.setState({ pending: false }));
+    action(id, userId, isOwner)
+      .catch(() => this.setState({ pending: false }))
+      .finally(() => clearTimeout(delayedPending));
   };
 
   handleOwnerInfoVisibility = event => {
@@ -92,11 +98,17 @@ class MemberDetails extends PureComponent {
       _id: userId
     } = this.props;
 
-    this.setState({ pending: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pending: true }),
+      PENDING_DELAY
+    );
 
     action(id, userId, selectedRole)
       .then(() => this.setState({ selectedRole }))
-      .finally(() => this.setState({ pending: false }));
+      .finally(() => {
+        clearTimeout(delayedPending);
+        this.setState({ pending: false });
+      });
   };
 
   handleChangingRoles = event => {

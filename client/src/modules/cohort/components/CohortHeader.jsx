@@ -12,6 +12,7 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class CohortHeader extends PureComponent {
   constructor(props) {
@@ -23,10 +24,10 @@ class CohortHeader extends PureComponent {
     const trimmedDescription = description.trim();
 
     this.state = {
-      description: trimmedDescription,
+      descriptionInput: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
-      name,
+      nameInput: name,
       pendingForDescription: false,
       pendingForName: false
     };
@@ -36,7 +37,7 @@ class CohortHeader extends PureComponent {
     const {
       isDescriptionTextareaVisible,
       isNameInputVisible,
-      name
+      nameInput
     } = this.state;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
@@ -45,7 +46,11 @@ class CohortHeader extends PureComponent {
       return;
     }
 
-    if (isNameInputVisible && name.trim().length >= 1 && isClickedOutside) {
+    if (
+      isNameInputVisible &&
+      nameInput.trim().length >= 1 &&
+      isClickedOutside
+    ) {
       this.setState({ isNameInputVisible: false });
       this.handleNameUpdate();
     }
@@ -79,7 +84,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ name: value });
+    this.setState({ nameInput: value });
   };
 
   handleDescriptionChange = event => {
@@ -87,7 +92,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ description: value });
+    this.setState({ descriptionInput: value });
   };
 
   handleNameUpdate = () => {
@@ -98,24 +103,29 @@ class CohortHeader extends PureComponent {
         params: { id }
       }
     } = this.props;
-    const { name } = this.state;
-    const nameToUpdate = name.trim();
+    const { nameInput } = this.state;
+    const nameToUpdate = nameInput.trim();
     const { name: previousName } = details;
 
-    if (previousName === name) {
+    if (previousName === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
       return;
     }
 
     if (nameToUpdate.length >= 1) {
-      this.setState({ pendingForName: true });
+      const delayedPending = setTimeout(
+        () => this.setState({ pendingForName: true }),
+        PENDING_DELAY
+      );
 
-      updateCohort(id, { name }).finally(() =>
+      updateCohort(id, { name: nameToUpdate }).finally(() => {
+        clearTimeout(delayedPending);
         this.setState({
           isNameInputVisible: false,
+          nameInput: nameToUpdate,
           pendingForName: false
-        })
-      );
+        });
+      });
     }
   };
 
@@ -127,43 +137,42 @@ class CohortHeader extends PureComponent {
         params: { id }
       }
     } = this.props;
-    const { description } = this.state;
+    const { descriptionInput } = this.state;
     const { description: previousDescription } = details;
 
-    if (previousDescription.trim() === description.trim()) {
-      this.setState({
-        description: description.trim(),
-        isDescriptionTextareaVisible: false
-      });
+    if (previousDescription.trim() === descriptionInput.trim()) {
+      this.setState({ isDescriptionTextareaVisible: false });
       return;
     }
 
-    const updatedDescription = _isEmpty(_trim(description)) ? '' : description;
+    const updatedDescription = _isEmpty(_trim(descriptionInput))
+      ? ''
+      : _trim(descriptionInput);
 
-    this.setState({
-      isDescriptionTextareaVisible: false,
-      pendingForDescription: true
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForDescription: true }),
+      PENDING_DELAY
+    );
+
+    updateCohort(id, { description: updatedDescription }).finally(() => {
+      clearTimeout(delayedPending);
+      this.setState({
+        isDescriptionTextareaVisible: false,
+        descriptionInput: updatedDescription,
+        pendingForDescription: false
+      });
     });
-
-    updateCohort(id, { description: updatedDescription })
-      .then(() =>
-        this.setState({
-          description: updatedDescription,
-          pendingForDescription: false
-        })
-      )
-      .catch(() => this.setState({ pendingForDescription: false }));
   };
 
   renderDescription = () => {
     const {
-      description,
+      descriptionInput,
       isDescriptionTextareaVisible,
       pendingForDescription
     } = this.state;
 
     const {
-      details: { isOwner }
+      details: { description, isOwner }
     } = this.props;
 
     if (!description && !isOwner) {
@@ -180,7 +189,7 @@ class CohortHeader extends PureComponent {
 
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
-        description={description}
+        description={descriptionInput}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
@@ -212,9 +221,9 @@ class CohortHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { name, isNameInputVisible, pendingForName } = this.state;
+    const { isNameInputVisible, nameInput, pendingForName } = this.state;
     const {
-      details: { isOwner }
+      details: { isOwner, name }
     } = this.props;
 
     if (pendingForName) {
@@ -223,7 +232,7 @@ class CohortHeader extends PureComponent {
 
     return isNameInputVisible ? (
       <NameInput
-        name={name}
+        name={nameInput}
         onClick={this.handleClick}
         onKeyPress={this.handleKeyPress}
         onNameChange={this.handleNameChange}

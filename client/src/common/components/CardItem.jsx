@@ -8,6 +8,7 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 export const CardColorType = {
   BROWN: 'card/BROWN',
@@ -22,8 +23,15 @@ class CardItem extends PureComponent {
 
   handleFavClick = e => {
     const { onFavClick } = this.props;
-    this.setState({ pending: true });
-    onFavClick(e).finally(() => this.setState({ pending: false }));
+    const delayedPending = setTimeout(
+      () => this.setState({ pending: true }),
+      PENDING_DELAY
+    );
+
+    onFavClick(e).finally(() => {
+      clearTimeout(delayedPending);
+      this.setState({ pending: false });
+    });
   };
 
   render() {

@@ -26,6 +26,7 @@ import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
 import Preloader from '../../common/components/Preloader';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class Cohort extends PureComponent {
   state = {
@@ -51,7 +52,10 @@ class Cohort extends PureComponent {
       }
     } = this.props;
 
-    this.setState({ pendingForDetails: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForDetails: true }),
+      PENDING_DELAY
+    );
 
     fetchCohortDetails(id)
       .then(() => {
@@ -59,7 +63,10 @@ class Cohort extends PureComponent {
           return fetchListsMetaData(id);
         }
       })
-      .finally(() => this.setState({ pendingForDetails: false }));
+      .finally(() => {
+        clearTimeout(delayedPending);
+        this.setState({ pendingForDetails: false });
+      });
   };
 
   handleListCreation = (name, description) => {
@@ -74,9 +81,13 @@ class Cohort extends PureComponent {
     const { isListPrivate } = this.state;
     const data = { name, description, userId, cohortId, isListPrivate };
 
-    this.setState({ pendingForListCreation: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForListCreation: true }),
+      PENDING_DELAY
+    );
 
     createList(data).finally(() => {
+      clearTimeout(delayedPending);
       this.setState({ pendingForListCreation: false });
       this.hideDialog();
     });
@@ -85,9 +96,13 @@ class Cohort extends PureComponent {
   handleCohortArchivization = cohortId => () => {
     const { archiveCohort } = this.props;
 
-    this.setState({ pendingForCohortArchivization: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForCohortArchivization: true }),
+      PENDING_DELAY
+    );
 
     archiveCohort(cohortId).finally(() => {
+      clearTimeout(delayedPending);
       this.setState({ pendingForCohortArchivization: false });
       this.hideDialog();
     });
@@ -127,11 +142,15 @@ class Cohort extends PureComponent {
     } = this.props;
 
     if (areArchivedListsVisible) {
-      this.setState({ pendingForArchivedLists: true });
-
-      fetchArchivedListsMetaData().finally(() =>
-        this.setState({ pendingForArchivedLists: false })
+      const delayedPending = setTimeout(
+        () => this.setState({ pendingForArchivedLists: true }),
+        PENDING_DELAY
       );
+
+      fetchArchivedListsMetaData().finally(() => {
+        clearTimeout(delayedPending);
+        this.setState({ pendingForArchivedLists: false });
+      });
     } else {
       removeArchivedListsMetaData();
     }

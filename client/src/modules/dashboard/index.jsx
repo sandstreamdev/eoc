@@ -21,6 +21,7 @@ import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class Dashboard extends Component {
   state = {
@@ -34,11 +35,15 @@ class Dashboard extends Component {
   componentDidMount() {
     const { fetchListsMetaData } = this.props;
 
-    this.setState({ pendingForLists: true });
-
-    fetchListsMetaData().finally(() =>
-      this.setState({ pendingForLists: false })
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForLists: true }),
+      PENDING_DELAY
     );
+
+    fetchListsMetaData().finally(() => {
+      clearTimeout(delayedPending);
+      this.setState({ pendingForLists: false });
+    });
   }
 
   handleDialogVisibility = () =>
@@ -53,9 +58,13 @@ class Dashboard extends Component {
     } = this.props;
     const data = { description, userId, name };
 
-    this.setState({ pendingForListCreation: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForListCreation: true }),
+      PENDING_DELAY
+    );
 
     createList(data).finally(() => {
+      clearTimeout(delayedPending);
       this.setState({ pendingForListCreation: false });
       this.handleDialogVisibility();
     });
@@ -77,11 +86,15 @@ class Dashboard extends Component {
     } = this.props;
 
     if (areArchivedListsVisible) {
-      this.setState({ pendingForArchivedLists: true });
-
-      fetchArchivedListsMetaData().finally(() =>
-        this.setState({ pendingForArchivedLists: false })
+      const delayedPending = setTimeout(
+        () => this.setState({ pendingForArchivedLists: true }),
+        PENDING_DELAY
       );
+
+      fetchArchivedListsMetaData().finally(() => {
+        clearTimeout(delayedPending);
+        this.setState({ pendingForArchivedLists: false });
+      });
     } else {
       removeArchivedListsMetaData();
     }

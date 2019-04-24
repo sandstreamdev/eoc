@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Dialog from 'common/components/Dialog';
 import Preloader from 'common/components/Preloader';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class ArchivedMessage extends PureComponent {
   state = {
@@ -16,21 +17,30 @@ class ArchivedMessage extends PureComponent {
 
   handleDeletion = () => {
     const { onDelete } = this.props;
+    const delayedPending = setTimeout(
+      () => this.setState({ pending: true }),
+      PENDING_DELAY
+    );
 
-    this.setState({ pending: true });
-
-    onDelete().catch(() => {
-      this.setState({ pending: false });
-      this.hideDialog();
-    });
+    onDelete()
+      .catch(() => {
+        this.setState({ pending: false });
+        this.hideDialog();
+      })
+      .finally(() => clearTimeout(delayedPending));
   };
 
   handleRestoring = () => {
     const { onRestore } = this.props;
 
-    this.setState({ pending: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pending: true }),
+      PENDING_DELAY
+    );
 
-    onRestore().catch(() => this.setState({ pending: false }));
+    onRestore()
+      .catch(() => this.setState({ pending: false }))
+      .finally(() => clearTimeout(delayedPending));
   };
 
   render() {

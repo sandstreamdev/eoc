@@ -8,6 +8,7 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class InputBar extends Component {
   constructor(props) {
@@ -49,7 +50,7 @@ class InputBar extends Component {
 
     const delayedPending = setTimeout(
       () => this.setState({ pending: true }),
-      1000
+      PENDING_DELAY
     );
 
     addItem(newItem, id).finally(() => {

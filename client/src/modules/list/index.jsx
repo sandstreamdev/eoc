@@ -17,6 +17,7 @@ import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 export const ListType = Object.freeze({
   LIMITED: 'limited',
@@ -33,10 +34,14 @@ class List extends Component {
 
   componentDidMount() {
     if (this.checkIfArchived()) {
-      this.setState({ pendingForDetails: true });
-      this.fetchData().finally(() =>
-        this.setState({ pendingForDetails: false })
+      const delayedPending = setTimeout(
+        () => this.setState({ pendingForDetails: true }),
+        PENDING_DELAY
       );
+      this.fetchData().finally(() => {
+        clearTimeout(delayedPending);
+        this.setState({ pendingForDetails: false });
+      });
     }
   }
 
@@ -53,8 +58,12 @@ class List extends Component {
   handleListArchivization = listId => () => {
     const { archiveList } = this.props;
 
-    this.setState({ pendingForListArchivization: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForListArchivization: true }),
+      PENDING_DELAY
+    );
     archiveList(listId).finally(() => {
+      clearTimeout(delayedPending);
       this.setState({ pendingForListArchivization: false });
       this.hideDialog();
     });

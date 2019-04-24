@@ -20,6 +20,7 @@ import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class Cohorts extends Component {
   state = {
@@ -33,11 +34,15 @@ class Cohorts extends Component {
   componentDidMount() {
     const { fetchCohortsMetaData } = this.props;
 
-    this.setState({ pendingForCohorts: true });
-
-    fetchCohortsMetaData().finally(() =>
-      this.setState({ pendingForCohorts: false })
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForCohorts: true }),
+      PENDING_DELAY
     );
+
+    fetchCohortsMetaData().finally(() => {
+      clearTimeout(delayedPending);
+      this.setState({ pendingForCohorts: false });
+    });
   }
 
   handleDialogVisibility = () =>
@@ -52,9 +57,13 @@ class Cohorts extends Component {
     } = this.props;
     const data = { description, userId, name };
 
-    this.setState({ pendingForCohortCreation: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForCohortCreation: true }),
+      PENDING_DELAY
+    );
 
     createCohort(data).finally(() => {
+      clearTimeout(delayedPending);
       this.setState({ pendingForCohortCreation: false });
       this.handleDialogVisibility();
     });
@@ -76,11 +85,15 @@ class Cohorts extends Component {
     } = this.props;
 
     if (areArchivedCohortsVisible) {
-      this.setState({ pendingForArchivedCohorts: true });
-
-      fetchArchivedCohortsMetaData().finally(() =>
-        this.setState({ pendingForArchivedCohorts: false })
+      const delayedPending = setTimeout(
+        () => this.setState({ pendingForArchivedCohorts: true }),
+        PENDING_DELAY
       );
+
+      fetchArchivedCohortsMetaData().finally(() => {
+        clearTimeout(delayedPending);
+        this.setState({ pendingForArchivedCohorts: false });
+      });
     } else {
       removeArchivedCohortsMetaData();
     }

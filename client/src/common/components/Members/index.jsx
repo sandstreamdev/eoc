@@ -14,6 +14,7 @@ import MemberButton from './components/MemberButton';
 import { addCohortMember } from 'modules/cohort/model/actions';
 import { addListMember } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class MembersBox extends PureComponent {
   state = {
@@ -56,9 +57,13 @@ class MembersBox extends PureComponent {
 
     const action = route === Routes.COHORT ? addCohortMember : addListMember;
 
-    this.setState({ pending: true });
+    const delayedPending = setTimeout(
+      () => this.setState({ pending: true }),
+      PENDING_DELAY
+    );
 
     action(id, email).finally(() => {
+      clearTimeout(delayedPending);
       this.setState({ pending: false });
       this.hideForm();
     });

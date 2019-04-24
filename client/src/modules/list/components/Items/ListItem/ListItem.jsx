@@ -26,6 +26,7 @@ import Preloader, {
   PreloaderTheme
 } from 'common/components/Preloader';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class ListItem extends PureComponent {
   pendingPromises = [];
@@ -78,7 +79,7 @@ class ListItem extends PureComponent {
           done: !done,
           pendingForToggling: true
         })),
-      1000
+      PENDING_DELAY
     );
     const abortableToggling = makeAbortablePromise(
       toggleItem(authorId, id, isOrdered)
@@ -142,7 +143,7 @@ class ListItem extends PureComponent {
           this.setState({
             pendingForDetails: true
           }),
-        1000
+        PENDING_DELAY
       );
       const abortableDetails = makeAbortablePromise(
         updateItemDetails(listId, itemId, { description, link })
@@ -193,7 +194,7 @@ class ListItem extends PureComponent {
         this.setState({
           pendingForCloning: true
         }),
-      1000
+      PENDING_DELAY
     );
     const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
     this.addPendingPromise(abortableCloning);
@@ -224,7 +225,7 @@ class ListItem extends PureComponent {
     const action = isVoted ? clearVote : setVote;
     const delayedPending = setTimeout(
       () => this.setState({ pendingForVoting: true }),
-      1000
+      PENDING_DELAY
     );
     const abortableVoting = makeAbortablePromise(action(_id, listId));
     this.addPendingPromise(abortableVoting);
