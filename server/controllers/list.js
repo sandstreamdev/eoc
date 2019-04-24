@@ -78,7 +78,7 @@ const getListsMetaData = (req, resp) => {
   } = req;
 
   const query = {
-    $or: [{ ownerIds: userId }, { memberIds: userId }],
+    viewersIds: userId,
     isArchived: false
   };
 
@@ -225,6 +225,8 @@ const getListData = (req, resp) => {
             return memberIds;
           });
       }
+
+      return [];
     })
     .then(cohortMembers => {
       const {
@@ -261,11 +263,14 @@ const getListData = (req, resp) => {
 
       const isOwner = checkRole(ownerIds, req.user._id);
       const items = responseWithItems(userId, list);
+      const isGuest = checkIfGuest(cohortMembersIds, req.user._id);
+
       return resp.status(200).json({
         _id,
         cohortId,
         description,
         isArchived,
+        isGuest,
         isOwner,
         isPrivate,
         items,
@@ -278,7 +283,6 @@ const getListData = (req, resp) => {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
-
       resp.status(400).send({
         message:
           'An error occurred while fetching the list data. Please try again.'

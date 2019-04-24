@@ -107,9 +107,8 @@ const checkRole = (idsArray, userIdFromReq) =>
 const checkIfOwner = (ownerIds, userId) =>
   ownerIds.indexOf(userId.toString()) > -1;
 
-const checkIfGuest = (cohortMembersIds, userId) => {
-  return !cohortMembersIds.some(id => id.equals(userId));
-};
+const checkIfGuest = (cohortMembersIds, userId) =>
+  !cohortMembersIds.some(id => id.equals(userId));
 
 const checkIfMember = (memberIds, userId) =>
   memberIds.indexOf(userId.toString()) > -1;
@@ -191,6 +190,7 @@ const uniqueMembers = (cohortMembers, listMembers) =>
 module.exports = {
   uniqueMembers,
   checkIfCohortMember,
+  checkIfGuest,
   checkRole,
   filter,
   isUserFavourite,

@@ -81,15 +81,6 @@ class List extends Component {
       isMembersBoxVisible: !isMembersBoxVisible
     }));
 
-  isCurrentUserAGuest = () => {
-    const { members, currentUser } = this.props;
-
-    let currentUser2 =
-      members.length > 0 &&
-      members.filter(member => member._id === currentUser.id);
-    console.log(currentUser2);
-  };
-
   render() {
     const {
       dialogContext,
@@ -110,15 +101,15 @@ class List extends Component {
     if (!list) {
       return null;
     }
-    this.isCurrentUserAGuest();
-    const { cohortId, isArchived, isPrivate, name } = list;
+
+    const { cohortId, isArchived, isPrivate, name, isGuest } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
 
     return (
       <Fragment>
         <Toolbar>
-          {cohortId && (
+          {cohortId && !isGuest && (
             <ToolbarLink
               additionalIconSrc={ArrowLeftIcon}
               mainIcon={<CohortIcon />}
