@@ -421,28 +421,12 @@ const addMember = (req, resp) => {
         });
     })
     .then(data => {
-      const { _id: newMemberId, cohort } = data;
+      const { _id: newMemberId, avatarUrl, displayName, cohort } = data;
 
       if (checkIfCohortMember(cohort, newMemberId)) {
         throw new BadRequestException('User is already a member.');
       }
 
-      return List.updateMany(
-        {
-          cohortId,
-          $or: [{ ownerIds: newMemberId }, { memberIds: newMemberId }],
-          isPrivate: false
-        },
-        { $pull: { memberIds: newMemberId } }
-      )
-        .exec()
-        .then(() => data)
-        .catch(() => {
-          throw new BadRequestException('Adding user failed.');
-        });
-    })
-    .then(data => {
-      const { _id: newMemberId, avatarUrl, displayName, cohort } = data;
       cohort.memberIds.push(newMemberId);
       const member = { avatarUrl, newMemberId, displayName };
 
@@ -450,6 +434,12 @@ const addMember = (req, resp) => {
         .save()
         .then(() => {
           const { ownerIds } = cohort;
+
+          /** TODO: TU SKONCZYLEM */
+          List.updateMany(
+            { isPrivate: false, viewersIds: { $nin: [newMemberId] } },
+            { $push: { viewersIds: newMemberId } }
+          );
 
           return resp
             .status(200)

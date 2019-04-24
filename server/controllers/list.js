@@ -8,8 +8,7 @@ const {
   responseWithItems,
   responseWithItem,
   responseWithList,
-  responseWithLists,
-  uniqueMembers
+  responseWithLists
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -37,18 +36,38 @@ const createList = (req, resp) => {
     viewersIds: userId
   });
 
-  list.save((err, doc) => {
-    if (err) {
-      return resp
-        .status(400)
-        .send({ message: 'List not saved. Please try again.' });
-    }
+  if (cohortId && !isListPrivate) {
+    Cohort.findOne({ _id: cohortId }).then(cohort => {
+      const { memberIds } = cohort;
+      list.viewersIds = memberIds;
 
-    resp
-      .status(201)
-      .location(`/lists/${doc._id}`)
-      .send(responseWithList(doc, userId));
-  });
+      return list.save((err, doc) => {
+        if (err) {
+          return resp
+            .status(400)
+            .send({ message: 'List not saved. Please try again.' });
+        }
+
+        resp
+          .status(201)
+          .location(`/lists/${doc._id}`)
+          .send(responseWithList(doc, userId));
+      });
+    });
+  } else {
+    list.save((err, doc) => {
+      if (err) {
+        return resp
+          .status(400)
+          .send({ message: 'List not saved. Please try again.' });
+      }
+
+      resp
+        .status(201)
+        .location(`/lists/${doc._id}`)
+        .send(responseWithList(doc, userId));
+    });
+  }
 };
 
 const deleteListById = (req, resp) => {
@@ -722,12 +741,23 @@ const addViewer = (req, resp) => {
     .exec()
     .then(list => {
       const { cohortId: cohort } = list;
-      const { memberIds: cohortMembers } = cohort;
+      let cohortMembers;
+
+      if (cohort) {
+        const { memberIds } = cohort;
+        cohortMembers = memberIds;
+      }
 
       if (list) {
         return User.findOne({ email })
           .exec()
-          .then(user => ({ user, list, cohortMembers }))
+          .then(user => {
+            if (cohortMembers) {
+              return { user, list, cohortMembers };
+            }
+
+            return { user, list };
+          })
           .catch(() => {
             throw new BadRequestException('User data not found.');
           });
@@ -739,7 +769,6 @@ const addViewer = (req, resp) => {
     })
     .then(data => {
       const {
-        cohortMembers,
         list,
         user,
         user: { _id: newMemberId },
@@ -755,7 +784,14 @@ const addViewer = (req, resp) => {
       return list
         .save()
         .then(() => {
-          const userToSend = responseWithListMember(user, cohortMembers);
+          let userToSend;
+
+          if (data.cohortMembers) {
+            userToSend = responseWithListMember(user, data.cohortMembers);
+          }
+
+          userToSend = responseWithListMember(user, []);
+
           return resp.status(200).json(userToSend);
         })
         .catch(() => {
@@ -771,6 +807,7 @@ const addViewer = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
+      console.log(err);
       resp.status(400).send({
         message: 'An error occurred while adding new viewer. Please try again.'
       });
