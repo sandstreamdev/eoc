@@ -19,6 +19,7 @@ import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { PENDING_DELAY } from 'common/constants/variables';
 
 class ListItem extends PureComponent {
   pendingPromises = [];
@@ -159,7 +160,7 @@ class ListItem extends PureComponent {
 
     const delayedPending = setTimeout(
       () => this.setState({ pending: true }),
-      1000
+      PENDING_DELAY
     );
     const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
     this.addPendingPromise(abortableCloning);
