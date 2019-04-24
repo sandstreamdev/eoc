@@ -145,6 +145,16 @@
     }
   }
 
+  &__icon-preloader {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    right: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    border: 0;
+  }
+
   &__info {
     display: flex;
     justify-content: space-between;

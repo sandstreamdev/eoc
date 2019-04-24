@@ -44,6 +44,7 @@ class ListItem extends PureComponent {
       itemDescription: description,
       link,
       pendingForCloning: false,
+      pendingForToggling: false,
       pendingForVoting: false
     };
   }
@@ -56,7 +57,7 @@ class ListItem extends PureComponent {
     this.pendingPromises.map(promise => promise.abort());
   }
 
-  appendPendingPromise = promise => {
+  addPendingPromise = promise => {
     this.pendingPromises.push(promise);
   };
 
@@ -68,8 +69,31 @@ class ListItem extends PureComponent {
     const { toggleItem } = this.props;
     event.stopPropagation();
 
-    this.setState(({ done }) => ({ done: !done }));
-    toggleItem(authorId, id, isOrdered);
+    const delayedPending = setTimeout(
+      () =>
+        this.setState(({ done }) => ({
+          done: !done,
+          pendingForToggling: true
+        })),
+      1000
+    );
+    const abortableToggling = makeAbortablePromise(
+      toggleItem(authorId, id, isOrdered)
+    );
+    this.addPendingPromise(abortableToggling);
+
+    return abortableToggling.promise
+      .then(() => {
+        this.setState({ pendingForToggling: false });
+        this.removePendingPromise(abortableToggling);
+      })
+      .catch(err => {
+        if (!(err instanceof AbortPromiseException)) {
+          this.setState({ pendingForToggling: false });
+          this.removePendingPromise(abortableToggling);
+        }
+      })
+      .finally(() => clearTimeout(delayedPending));
   };
 
   toggleDetails = () =>
@@ -161,9 +185,15 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setState({ pendingForCloning: true });
+    const delayedPending = setTimeout(
+      () =>
+        this.setState({
+          pendingForCloning: true
+        }),
+      1000
+    );
     const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
-    this.appendPendingPromise(abortableCloning);
+    this.addPendingPromise(abortableCloning);
 
     return abortableCloning.promise
       .then(() => {
@@ -175,7 +205,8 @@ class ListItem extends PureComponent {
           this.setState({ pendingForCloning: false });
           this.removePendingPromise(abortableCloning);
         }
-      });
+      })
+      .finally(() => clearTimeout(delayedPending));
   };
 
   handleVoting = () => {
@@ -189,21 +220,25 @@ class ListItem extends PureComponent {
     } = this.props;
 
     const action = isVoted ? clearVote : setVote;
-    this.setState({ pendingForVoting: true });
-    const abortableCloning = makeAbortablePromise(action(_id, listId));
-    this.appendPendingPromise(abortableCloning);
+    const delayedPending = setTimeout(
+      () => this.setState({ pendingForVoting: true }),
+      1000
+    );
+    const abortableVoting = makeAbortablePromise(action(_id, listId));
+    this.addPendingPromise(abortableVoting);
 
-    return abortableCloning.promise
+    return abortableVoting.promise
       .then(() => {
         this.setState({ pendingForVoting: false });
-        this.removePendingPromise(abortableCloning);
+        this.removePendingPromise(abortableVoting);
       })
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           this.setState({ pendingForCloning: false });
-          this.removePendingPromise(abortableCloning);
+          this.removePendingPromise(abortableVoting);
         }
-      });
+      })
+      .finally(() => clearTimeout(delayedPending));
   };
 
   handleItemLink = value =>
@@ -243,7 +278,6 @@ class ListItem extends PureComponent {
   renderDetails = () => {
     const {
       areFieldsUpdated,
-      isNewCommentVisible,
       isValidationErrorVisible,
       pendingForCloning
     } = this.state;
@@ -295,44 +329,53 @@ class ListItem extends PureComponent {
             </button>
           </div>
         )}
-        <div className="list-item__new-comment">
-          {isNewCommentVisible ? (
-            <NewComment
-              onAddNewComment={this.handleAddNewComment}
-              onEscapePress={this.hideAddNewComment}
-            />
-          ) : (
-            <button
-              className="list-item__add-new-button link-button"
-              onClick={this.showAddNewComment}
-              type="button"
-            >
-              Add comment
-            </button>
-          )}
-        </div>
-        <div className="list-item__comments">{this.renderComments()}</div>
       </Fragment>
+    );
+  };
+
+  renderCommentForm = () => {
+    const { isNewCommentVisible } = this.state;
+
+    return (
+      <div className="list-item__new-comment">
+        {isNewCommentVisible ? (
+          <NewComment
+            onAddNewComment={this.handleAddNewComment}
+            onEscapePress={this.hideAddNewComment}
+          />
+        ) : (
+          <button
+            className="list-item__add-new-button link-button"
+            onClick={this.showAddNewComment}
+            type="button"
+          >
+            Add comment
+          </button>
+        )}
+      </div>
     );
   };
 
   renderComments = () => (
     <Fragment>
-      <h2 className="list-item__heading">Comments</h2>
-      <Comment
-        author="Adam Klepacz"
-        comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!"
-      />
-      <Comment
-        author="Adam Klepacz"
-        comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!"
-      />
+      {this.renderCommentForm()}
+      <div className="list-item__comments">
+        <h2 className="list-item__heading">Comments</h2>
+        <Comment
+          author="Adam Klepacz"
+          comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+                  accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+                  ipsam, molestiae similique optio sint hic!"
+        />
+        <Comment
+          author="Adam Klepacz"
+          comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+                  accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+                  ipsam, molestiae similique optio sint hic!"
+        />
+      </div>
     </Fragment>
   );
 
@@ -340,7 +383,7 @@ class ListItem extends PureComponent {
     const {
       data: { isOrdered, authorId, authorName, _id, name }
     } = this.props;
-    const { done, areDetailsVisible } = this.state;
+    const { done, areDetailsVisible, pendingForToggling } = this.state;
 
     return (
       <li
@@ -371,11 +414,17 @@ class ListItem extends PureComponent {
             </span>
           </label>
           {this.renderVoting()}
-          <button
-            className="list-item__icon z-index-high"
-            onClick={this.handleItemToggling(authorId, _id, isOrdered)}
-            type="button"
-          />
+          {pendingForToggling ? (
+            <div className="list-item__icon-preloader z-index-high">
+              <Preloader size={PreloaderSize.SMALL} />
+            </div>
+          ) : (
+            <button
+              className="list-item__icon z-index-high"
+              onClick={this.handleItemToggling(authorId, _id, isOrdered)}
+              type="button"
+            />
+          )}
         </div>
         {areDetailsVisible && (
           <div className="list-item__details">{this.renderDetails()}</div>

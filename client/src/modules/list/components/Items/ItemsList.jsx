@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import ListItem from 'modules/list/components/Items/ListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { toggle, clearVote, setVote } from './model/actions';
+import { toggle } from './model/actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
@@ -36,20 +36,6 @@ class ItemsList extends Component {
       : toggle(isOrdered, id, listId);
   };
 
-  voteForItem = item => () => {
-    const { _id, isVoted } = item;
-    const {
-      clearVote,
-      setVote,
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-
-    const action = isVoted ? clearVote : setVote;
-    action(_id, listId);
-  };
-
   render() {
     const { items } = this.props;
     const { limit } = this.state;
@@ -67,7 +53,6 @@ class ItemsList extends Component {
                 data={item}
                 key={item._id}
                 toggleItem={this.toggleItem}
-                voteForItem={this.voteForItem(item)}
               />
             ))}
           </ul>
@@ -89,8 +74,6 @@ ItemsList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
-  clearVote: PropTypes.func,
-  setVote: PropTypes.func,
   toggle: PropTypes.func
 };
 
@@ -101,6 +84,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { toggle, clearVote, setVote }
+    { toggle }
   )(ItemsList)
 );
