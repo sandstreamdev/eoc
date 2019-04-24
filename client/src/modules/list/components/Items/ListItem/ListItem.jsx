@@ -19,10 +19,12 @@ import {
   setVote,
   updateItemDetails
 } from '../model/actions';
-import SaveButton from 'common/components/SaveButton';
 import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
-import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import Preloader, {
+  PreloaderSize,
+  PreloaderTheme
+} from 'common/components/Preloader';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 class ListItem extends PureComponent {
@@ -44,6 +46,7 @@ class ListItem extends PureComponent {
       itemDescription: description,
       link,
       pendingForCloning: false,
+      pendingForDetails: false,
       pendingForToggling: false,
       pendingForVoting: false
     };
@@ -83,17 +86,16 @@ class ListItem extends PureComponent {
     this.addPendingPromise(abortableToggling);
 
     return abortableToggling.promise
-      .then(() => {
-        this.setState({ pendingForToggling: false });
-        this.removePendingPromise(abortableToggling);
-      })
+      .then(() => this.setState({ pendingForToggling: false }))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           this.setState({ pendingForToggling: false });
-          this.removePendingPromise(abortableToggling);
         }
       })
-      .finally(() => clearTimeout(delayedPending));
+      .finally(() => {
+        this.removePendingPromise(abortableToggling);
+        clearTimeout(delayedPending);
+      });
   };
 
   toggleDetails = () =>
@@ -110,54 +112,55 @@ class ListItem extends PureComponent {
   };
 
   handleDataUpdate = () => {
-    const { itemDescription, link } = this.state;
+    const { itemDescription: description, link } = this.state;
     const {
-      data: { description: previousDescription, link: previousLink }
+      data: {
+        _id: itemId,
+        description: previousDescription,
+        link: previousLink
+      },
+      match: {
+        params: { id: listId }
+      },
+      updateItemDetails
     } = this.props;
     const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
     const isDescriptionUpdated = !_isEqual(
       _trim(previousDescription),
-      _trim(itemDescription)
+      _trim(description)
     );
 
-    if (isLinkUpdated) {
-      this.handleLinkUpdate();
-    }
-
-    if (isDescriptionUpdated) {
-      this.handleDescriptionUpdate();
-    }
-  };
-
-  handleLinkUpdate = () => {
-    const { link } = this.state;
-    const {
-      updateItemDetails,
-      data: { _id: itemId },
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
     const canBeUpdated = isUrlValid(link) || _isEmpty(_trim(link));
 
-    if (canBeUpdated) {
-      updateItemDetails(listId, itemId, { link });
-    } else if (!isUrlValid(link)) {
-      this.setState({ isValidationErrorVisible: true });
+    if (!canBeUpdated) {
+      return this.setState({ isValidationErrorVisible: true });
     }
-  };
 
-  handleDescriptionUpdate = () => {
-    const { itemDescription: description } = this.state;
-    const {
-      updateItemDetails,
-      data: { _id: itemId },
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
+    if (isLinkUpdated || isDescriptionUpdated) {
+      const delayedPending = setTimeout(
+        () =>
+          this.setState({
+            pendingForDetails: true
+          }),
+        1000
+      );
+      const abortableDetails = makeAbortablePromise(
+        updateItemDetails(listId, itemId, { description, link })
+      );
+      this.addPendingPromise(abortableDetails);
 
-    updateItemDetails(listId, itemId, { description });
+      return abortableDetails.promise
+        .then(() => this.setState({ pendingForDetails: false }))
+        .catch(err => {
+          if (!(err instanceof AbortPromiseException)) {
+            this.setState({ pendingForDetails: false });
+          }
+        })
+        .finally(() => {
+          clearTimeout(delayedPending);
+          this.removePendingPromise(abortableDetails);
+        });
+    }
   };
 
   checkIfFieldsUpdated = () => {
@@ -196,17 +199,16 @@ class ListItem extends PureComponent {
     this.addPendingPromise(abortableCloning);
 
     return abortableCloning.promise
-      .then(() => {
-        this.setState({ pendingForCloning: false });
-        this.removePendingPromise(abortableCloning);
-      })
+      .then(() => this.setState({ pendingForCloning: false }))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           this.setState({ pendingForCloning: false });
-          this.removePendingPromise(abortableCloning);
         }
       })
-      .finally(() => clearTimeout(delayedPending));
+      .finally(() => {
+        clearTimeout(delayedPending);
+        this.removePendingPromise(abortableCloning);
+      });
   };
 
   handleVoting = () => {
@@ -228,17 +230,16 @@ class ListItem extends PureComponent {
     this.addPendingPromise(abortableVoting);
 
     return abortableVoting.promise
-      .then(() => {
-        this.setState({ pendingForVoting: false });
-        this.removePendingPromise(abortableVoting);
-      })
+      .then(() => this.setState({ pendingForVoting: false }))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           this.setState({ pendingForCloning: false });
-          this.removePendingPromise(abortableVoting);
         }
       })
-      .finally(() => clearTimeout(delayedPending));
+      .finally(() => {
+        clearTimeout(delayedPending);
+        this.removePendingPromise(abortableVoting);
+      });
   };
 
   handleItemLink = value =>
@@ -279,7 +280,8 @@ class ListItem extends PureComponent {
     const {
       areFieldsUpdated,
       isValidationErrorVisible,
-      pendingForCloning
+      pendingForCloning,
+      pendingForDetails
     } = this.state;
     const {
       data: { description, isOrdered, link }
@@ -306,11 +308,23 @@ class ListItem extends PureComponent {
                 <ErrorMessage message="Incorrect url." />
               </div>
             )}
-            <SaveButton
-              disabled={!areFieldsUpdated}
-              onClick={this.handleDataUpdate}
-              value="Save data"
-            />
+            {areFieldsUpdated && (
+              <button
+                className="primary-button"
+                disabled={pendingForDetails || isValidationErrorVisible}
+                onClick={this.handleDataUpdate}
+                type="button"
+              >
+                {pendingForDetails ? (
+                  <Preloader
+                    size={PreloaderSize.SMALL}
+                    theme={PreloaderTheme.LIGHT}
+                  />
+                ) : (
+                  <span>Save</span>
+                )}
+              </button>
+            )}
           </div>
         </div>
         {!isOrdered && (
