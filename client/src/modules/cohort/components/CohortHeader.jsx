@@ -41,7 +41,6 @@ class CohortHeader extends PureComponent {
     } = this.state;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
-      this.setState({ isDescriptionTextareaVisible: false });
       this.handleDescriptionUpdate();
       return;
     }
@@ -51,7 +50,6 @@ class CohortHeader extends PureComponent {
       nameInput.trim().length >= 1 &&
       isClickedOutside
     ) {
-      this.setState({ isNameInputVisible: false });
       this.handleNameUpdate();
     }
   };
