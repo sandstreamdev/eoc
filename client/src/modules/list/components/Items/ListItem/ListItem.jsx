@@ -158,10 +158,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pending: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pending: true });
     const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
     this.addPendingPromise(abortableCloning);
 
@@ -175,8 +172,7 @@ class ListItem extends PureComponent {
           this.setState({ pending: false });
           this.removePendingPromise(abortableCloning);
         }
-      })
-      .finally(() => clearTimeout(delayedPending));
+      });
   };
 
   handleItemLink = value =>
