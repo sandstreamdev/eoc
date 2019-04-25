@@ -263,8 +263,8 @@
     margin-bottom: 5px;
   }
 
-  .primary-button {
-    min-width: 58px;
-    min-height: 28px;
+  &__save-details {
+    position: relative;
+    width: 58px;
   }
 }

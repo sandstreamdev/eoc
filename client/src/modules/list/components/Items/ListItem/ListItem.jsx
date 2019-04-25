@@ -26,7 +26,6 @@ import Preloader, {
   PreloaderTheme
 } from 'common/components/Preloader';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { PENDING_DELAY } from 'common/constants/variables';
 
 class ListItem extends PureComponent {
   pendingPromises = [];
