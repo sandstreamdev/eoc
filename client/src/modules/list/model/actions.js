@@ -8,10 +8,7 @@ import {
   postData
 } from 'common/utils/fetchMethods';
 import { ListActionTypes } from './actionTypes';
-import {
-  MessageType as NotificationType,
-  UserRoles
-} from 'common/constants/enums';
+import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 import { ItemActionTypes } from '../components/InputBar/model/actionTypes';

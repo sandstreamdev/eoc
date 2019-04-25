@@ -1,5 +1,3 @@
-import { userInfo } from 'os';
-
 export const MessageType = Object.freeze({
   ERROR: 'error',
   INFO: 'info',

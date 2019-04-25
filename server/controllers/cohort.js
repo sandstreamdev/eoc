@@ -176,7 +176,7 @@ const getCohortDetails = (req, resp) => {
         members
       });
     })
-    .catch(err =>
+    .catch(() =>
       resp.status(400).send({
         message:
           'An error occurred while fetching the cohort data. Please try again.'
@@ -292,51 +292,74 @@ const removeOwner = (req, resp) => {
       ownerIds: { $all: [ownerId, userId] },
       memberIds: { $all: [ownerId, userId] }
     },
-    { $pull: { ownerIds: userId, memberIds: userId } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't remove owner from cohort."
-        });
+    { $pull: { ownerIds: userId, memberIds: userId } }
+  )
+    .then(doc => {
+      if (!doc) {
+        return resp.status(404).send({ message: 'Cohort data not found.' });
       }
 
-      if (doc) {
-        return resp.status(200).send({
-          message: 'Owner successfully removed from cohort.'
-        });
-      }
-
-      resp.status(404).send({ message: 'Cohort data not found.' });
-    }
-  );
+      return List.updateMany(
+        {
+          cohortId,
+          isPrivate: false,
+          viewersIds: { $in: [userId] },
+          memberIds: { $nin: [userId] },
+          ownerIds: { $nin: [userId] }
+        },
+        { $pull: { viewersIds: userId } }
+      ).exec();
+    })
+    .then(() =>
+      resp.status(200).send({
+        message: 'Owner successfully removed from cohort.'
+      })
+    )
+    .catch(() =>
+      resp.status(400).send({ message: "Can't remove owner from cohort." })
+    );
 };
 
 const removeMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: ownerId, memberIds: userId },
-    { $pull: { memberIds: userId } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't remove member from cohort."
-        });
+    { _id: cohortId, ownerIds: currentUserId, memberIds: userId },
+    { $pull: { memberIds: userId } }
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(404).send({ message: 'Cohort data not found.' });
       }
 
-      if (doc) {
-        return resp.status(200).send({
-          message: 'Member successfully removed from cohort.'
-        });
-      }
+      const { _id: cohortId } = doc;
 
-      resp.status(404).send({ message: 'Cohort data not found.' });
-    }
-  );
+      return List.updateMany(
+        {
+          cohortId,
+          isPrivate: false,
+          viewersIds: { $in: [userId] },
+          memberIds: { $nin: [userId] },
+          ownerIds: { $nin: [userId] }
+        },
+        { $pull: { viewersIds: userId } }
+      ).exec();
+    })
+    .then(() => {
+      resp.status(200).send({
+        message: 'Member successfully removed from cohort.'
+      });
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message: "Can't remove member from cohort."
+      })
+    );
 };
 
 const changeToOwner = (req, resp) => {
@@ -373,6 +396,7 @@ const changeToMember = (req, resp) => {
   const {
     user: { _id: ownerId }
   } = req;
+
   Cohort.findOneAndUpdate(
     { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
     { $pull: { ownerIds: userId } },
@@ -408,7 +432,7 @@ const addMember = (req, resp) => {
     .then(cohort => {
       if (!cohort) {
         throw new BadRequestException(
-          "You don't have permission to add new member"
+          "You don't have permission to add new member."
         );
       }
 
@@ -424,23 +448,21 @@ const addMember = (req, resp) => {
 
       currentCohort.memberIds.push(newMemberId);
       newMember = { avatarUrl, newMemberId, displayName };
-      console.log('user', user, 'cohort', currentCohort);
 
       return currentCohort.save();
     })
     .then(() => {
-      console.log('tu jestem');
       const { _id: cohortId } = currentCohort;
       const { newMemberId } = newMember;
 
       return List.updateMany(
-        { cohortId, isPrivate: false },
+        { cohortId, isPrivate: false, viewersIds: { $nin: [newMemberId] } },
         { $push: { viewersIds: newMemberId } }
       ).exec();
     })
     .then(() => {
-      console.log('jestem w drugim kroku');
       const { ownerIds } = currentCohort;
+
       return resp
         .status(200)
         .json(responseWithCohortMember(newMember, ownerIds));
@@ -452,7 +474,6 @@ const addMember = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      console.log(err);
       resp.status(400).send({
         message: 'An error occurred while adding new member. Please try again.'
       });

@@ -150,7 +150,6 @@ const responseWithCohortMember = (data, ownerIds) => {
 const responseWithListMember = (user, cohortMembers) => {
   const { avatarUrl, displayName, _id: newMemberId } = user;
 
-  // TODO: check if is member TODO:
   return {
     _id: newMemberId,
     avatarUrl,

@@ -807,7 +807,6 @@ const addViewer = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      console.log(err);
       resp.status(400).send({
         message: 'An error occurred while adding new viewer. Please try again.'
       });
