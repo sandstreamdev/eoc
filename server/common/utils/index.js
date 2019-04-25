@@ -173,21 +173,7 @@ const responseWithListMembers = (
     isMember: checkIfMember(memberIds, user._doc._id)
   }));
 
-/**
- *  This method returns array with no duplicated user's ids. Duplicates of user's
- *  ids may occur in the cohort's public list case because in that case cohort's
- *  and list's members arrays have to be merged.
- */
-const uniqueMembers = (cohortMembers, listMembers) =>
-  Object.values(
-    [...cohortMembers, ...listMembers].reduce((prev, member) => {
-      prev[member._id] = member; // eslint-disable-line no-param-reassign
-      return prev;
-    }, {})
-  );
-
 module.exports = {
-  uniqueMembers,
   checkIfCohortMember,
   checkIfGuest,
   checkRole,

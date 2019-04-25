@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Switch = ({ checked, label, htmlFor, onChange, value }) => (
+const Switcher = ({ checked, label, htmlFor, onChange, value }) => (
   <div className="ss-switch">
     <label className="ss-switch__label" htmlFor={htmlFor}>
       {label}
@@ -18,7 +18,7 @@ const Switch = ({ checked, label, htmlFor, onChange, value }) => (
   </div>
 );
 
-Switch.propTypes = {
+Switcher.propTypes = {
   checked: PropTypes.bool.isRequired,
   htmlFor: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
@@ -27,4 +27,4 @@ Switch.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 
-export default Switch;
+export default Switcher;

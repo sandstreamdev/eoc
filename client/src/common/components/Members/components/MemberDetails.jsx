@@ -20,7 +20,7 @@ import {
 } from 'modules/list/model/actions';
 import { Routes, UserRoles } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import Switch from 'common/components/Switch';
+import Switcher from 'common/components/Switcher';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -171,7 +171,7 @@ class MemberDetails extends PureComponent {
               <InfoIcon />
             </span>
           </button>
-          <Switch
+          <Switcher
             checked={checked}
             htmlFor={`${label}Role`}
             label={label}
