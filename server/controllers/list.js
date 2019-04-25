@@ -788,9 +788,9 @@ const addViewer = (req, resp) => {
 
           if (data.cohortMembers) {
             userToSend = responseWithListMember(user, data.cohortMembers);
+          } else {
+            userToSend = responseWithListMember(user, []);
           }
-
-          userToSend = responseWithListMember(user, []);
 
           return resp.status(200).json(userToSend);
         })

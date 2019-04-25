@@ -436,10 +436,12 @@ const addMember = (req, resp) => {
           const { ownerIds } = cohort;
 
           /** TODO: TU SKONCZYLEM */
+          console.log('Zaczynam updatowac liste');
           List.updateMany(
             { isPrivate: false, viewersIds: { $nin: [newMemberId] } },
             { $push: { viewersIds: newMemberId } }
           );
+          console.log('skonczylem updateowac liste');
 
           return resp
             .status(200)
