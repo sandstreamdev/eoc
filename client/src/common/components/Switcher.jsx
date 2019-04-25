@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Switcher = ({ checked, label, htmlFor, onChange, value }) => (
+const Switcher = ({ checked, htmlFor, label, onChange, value }) => (
   <div className="ss-switch">
     <label className="ss-switch__label" htmlFor={htmlFor}>
       {label}
       <input
+        checked={checked}
         className="ss-switch__input"
         id={htmlFor}
-        type="checkbox"
-        checked={checked}
-        value={value}
         onChange={onChange}
+        type="checkbox"
+        value={value}
       />
       <span className="ss-switch__slider" />
     </label>

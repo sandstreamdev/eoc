@@ -702,11 +702,17 @@ const removeMemberRole = (req, resp) => {
         throw new BadRequestException("Can't remove member role");
       }
 
-      const { memberIds } = doc;
+      const { memberIds, ownerIds } = doc;
       const userIsMember = memberIds.some(id => id.equals(userId));
 
       if (userIsMember) {
         memberIds.splice(memberIds.indexOf(userId), 1);
+      }
+
+      const userIsOwner = ownerIds.some(id => id.equals(userId));
+
+      if (userIsOwner) {
+        ownerIds.splice(ownerIds.indexOf(userId), 1);
       }
 
       return doc.save();

@@ -45,7 +45,7 @@ class MembersBox extends PureComponent {
     this.setState({ context: null });
   };
 
-  handleAddNewMember = () => email => {
+  handleAddNewViewer = () => email => {
     const { addCohortMember, addListViewer } = this.props;
     const {
       match: {
@@ -129,7 +129,7 @@ class MembersBox extends PureComponent {
           <li className="members-box__list-item">
             {isFormVisible ? (
               <MembersForm
-                onAddNew={this.handleAddNewMember()}
+                onAddNew={this.handleAddNewViewer()}
                 pending={pending}
               />
             ) : (

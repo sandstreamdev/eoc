@@ -102,7 +102,7 @@ class MemberDetails extends PureComponent {
     );
   };
 
-  changeListRole = value => {
+  changeListRole = selectedRole => {
     const {
       addMemberRoleInList,
       addOwnerRoleInList,
@@ -119,14 +119,14 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    if (value === UserRoles.OWNER) {
-      action = !isOwner ? addOwnerRoleInList : removeOwnerRoleInList;
+    if (selectedRole === UserRoles.OWNER) {
+      action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
 
       action(id, userId).finally(() => this.setState({ pending: false }));
     }
 
-    if (value === UserRoles.MEMBER) {
-      action = !isMember ? addMemberRoleInList : removeMemberRoleInList;
+    if (selectedRole === UserRoles.MEMBER) {
+      action = isMember ? removeMemberRoleInList : addMemberRoleInList;
 
       action(id, userId).finally(() => this.setState({ pending: false }));
     }
@@ -135,16 +135,16 @@ class MemberDetails extends PureComponent {
   handleChangingRoles = event => {
     event.stopPropagation();
     const {
-      target: { value }
+      target: { value: selectedRole }
     } = event;
     const { route } = this.props;
 
     switch (route) {
       case Routes.COHORT:
-        this.changeCohortRole(value);
+        this.changeCohortRole(selectedRole);
         break;
       case Routes.LIST:
-        this.changeListRole(value);
+        this.changeListRole(selectedRole);
         break;
       default:
         break;
@@ -237,13 +237,14 @@ class MemberDetails extends PureComponent {
 
   renderHeader = () => {
     const { displayName, isMember, isOwner } = this.props;
-    let roleContent = 'viewer';
+    let roleToDisplay = 'viewer';
 
     if (isMember) {
-      roleContent = 'member';
+      roleToDisplay = 'member';
     }
+
     if (isOwner) {
-      roleContent = 'owner';
+      roleToDisplay = 'owner';
     }
 
     return (
@@ -251,7 +252,7 @@ class MemberDetails extends PureComponent {
         <div className="member-details__avatar">{this.renderAvatar()}</div>
         <div>
           <h3 className="member-details__name">{displayName}</h3>
-          <p className="member-details__role">{roleContent}</p>
+          <p className="member-details__role">{roleToDisplay}</p>
         </div>
       </header>
     );
@@ -261,10 +262,10 @@ class MemberDetails extends PureComponent {
     const { isMemberInfoVisible, isOwnerInfoVisible, pending } = this.state;
     const {
       isGuest,
-      isPrivate: privateList,
-      route,
+      isMember,
       isOwner,
-      isMember
+      isPrivate: privateList,
+      route
     } = this.props;
 
     if (pending) {
@@ -357,9 +358,9 @@ MemberDetails.propTypes = {
   match: RouterMatchPropType.isRequired,
   route: PropTypes.string,
 
-  changeRoleInCohort: PropTypes.func.isRequired,
   addMemberRoleInList: PropTypes.func.isRequired,
   addOwnerRoleInList: PropTypes.func.isRequired,
+  changeRoleInCohort: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   removeCohortMember: PropTypes.func.isRequired,
   removeListMember: PropTypes.func.isRequired,
