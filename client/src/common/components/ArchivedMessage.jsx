@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import Dialog from 'common/components/Dialog';
 import Preloader from 'common/components/Preloader';
-import { PENDING_DELAY } from 'common/constants/variables';
 
 class ArchivedMessage extends PureComponent {
   state = {
@@ -17,30 +16,20 @@ class ArchivedMessage extends PureComponent {
 
   handleDeletion = () => {
     const { onDelete } = this.props;
-    const delayedPending = setTimeout(
-      () => this.setState({ pending: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pending: true });
 
-    onDelete()
-      .catch(() => {
-        this.setState({ pending: false });
-        this.hideDialog();
-      })
-      .finally(() => clearTimeout(delayedPending));
+    onDelete().catch(() => {
+      this.setState({ pending: false });
+      this.hideDialog();
+    });
   };
 
   handleRestoring = () => {
     const { onRestore } = this.props;
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pending: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pending: true });
 
-    onRestore()
-      .catch(() => this.setState({ pending: false }))
-      .finally(() => clearTimeout(delayedPending));
+    onRestore().catch(() => this.setState({ pending: false }));
   };
 
   render() {
@@ -55,28 +44,25 @@ class ArchivedMessage extends PureComponent {
               ? `Restoring "${name}" ${item}...`
               : `The "${name}" ${item} was archived.`}
           </h1>
-          {pending && !isDialogVisible ? (
-            <div className="archived-message__body">
-              <Preloader />
-            </div>
-          ) : (
-            <div className="archived-message__body">
-              <button
-                className="archived-message__button primary-button"
-                onClick={this.showDialog}
-                type="button"
-              >
-                permanently delete
-              </button>
-              <button
-                className="archived-message__button primary-button"
-                type="button"
-                onClick={this.handleRestoring}
-              >
-                restore from archive
-              </button>
-            </div>
-          )}
+          <div className="archived-message__body">
+            <button
+              className="archived-message__button primary-button"
+              disabled={pending}
+              onClick={this.showDialog}
+              type="button"
+            >
+              permanently delete
+            </button>
+            <button
+              className="archived-message__button primary-button"
+              disabled={pending}
+              type="button"
+              onClick={this.handleRestoring}
+            >
+              restore from archive
+            </button>
+            {pending && !isDialogVisible && <Preloader />}
+          </div>
         </div>
         {isDialogVisible && (
           <Dialog

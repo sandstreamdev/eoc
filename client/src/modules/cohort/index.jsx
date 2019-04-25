@@ -26,7 +26,6 @@ import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
 import Preloader from '../../common/components/Preloader';
-import { PENDING_DELAY } from 'common/constants/variables';
 
 class Cohort extends PureComponent {
   state = {
@@ -52,10 +51,7 @@ class Cohort extends PureComponent {
       }
     } = this.props;
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pendingForDetails: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pendingForDetails: true });
 
     fetchCohortDetails(id)
       .then(() => {
@@ -63,10 +59,7 @@ class Cohort extends PureComponent {
           return fetchListsMetaData(id);
         }
       })
-      .finally(() => {
-        clearTimeout(delayedPending);
-        this.setState({ pendingForDetails: false });
-      });
+      .finally(() => this.setState({ pendingForDetails: false }));
   };
 
   handleListCreation = (name, description) => {
@@ -81,13 +74,9 @@ class Cohort extends PureComponent {
     const { isListPrivate } = this.state;
     const data = { name, description, userId, cohortId, isListPrivate };
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pendingForListCreation: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pendingForListCreation: true });
 
     createList(data).finally(() => {
-      clearTimeout(delayedPending);
       this.setState({ pendingForListCreation: false });
       this.hideDialog();
     });
@@ -96,13 +85,9 @@ class Cohort extends PureComponent {
   handleCohortArchivization = cohortId => () => {
     const { archiveCohort } = this.props;
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pendingForCohortArchivization: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pendingForCohortArchivization: true });
 
     archiveCohort(cohortId).finally(() => {
-      clearTimeout(delayedPending);
       this.setState({ pendingForCohortArchivization: false });
       this.hideDialog();
     });
@@ -142,15 +127,11 @@ class Cohort extends PureComponent {
     } = this.props;
 
     if (areArchivedListsVisible) {
-      const delayedPending = setTimeout(
-        () => this.setState({ pendingForArchivedLists: true }),
-        PENDING_DELAY
-      );
+      this.setState({ pendingForArchivedLists: true });
 
-      fetchArchivedListsMetaData().finally(() => {
-        clearTimeout(delayedPending);
-        this.setState({ pendingForArchivedLists: false });
-      });
+      fetchArchivedListsMetaData().finally(() =>
+        this.setState({ pendingForArchivedLists: false })
+      );
     } else {
       removeArchivedListsMetaData();
     }
@@ -217,58 +198,55 @@ class Cohort extends PureComponent {
           <div className="wrapper">
             <div className="cohort">
               <CohortHeader details={cohortDetails} />
-              {pendingForDetails ? (
-                <Preloader />
-              ) : (
-                <Fragment>
-                  <MembersBox
-                    isCurrentUserAnOwner={this.checkIfOwner()}
-                    members={members}
-                    route={Routes.COHORT}
-                  />
-                  <GridList
-                    color={CardColorType.ORANGE}
-                    icon={<ListIcon />}
-                    items={lists}
-                    name="Lists"
-                    onAddNew={this.handleDialogContext(DialogContext.CREATE)}
-                    pending={pendingForDetails}
-                    placeholder={`There are no lists in the ${name} cohort!`}
-                    route={Routes.LIST}
-                  />
-                  {!isArchived && this.checkIfOwner() && (
-                    <button
-                      className="link-button"
-                      onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
-                      type="button"
-                    >
-                      {`Archive the "${name}" cohort`}
-                    </button>
+              <div className="cohort__details">
+                <MembersBox
+                  isCurrentUserAnOwner={this.checkIfOwner()}
+                  members={members}
+                  route={Routes.COHORT}
+                />
+                <GridList
+                  color={CardColorType.ORANGE}
+                  icon={<ListIcon />}
+                  items={lists}
+                  name="Lists"
+                  onAddNew={this.handleDialogContext(DialogContext.CREATE)}
+                  placeholder={`There are no lists in the ${name} cohort!`}
+                  route={Routes.LIST}
+                />
+                {!isArchived && this.checkIfOwner() && (
+                  <button
+                    className="link-button"
+                    onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                    type="button"
+                  >
+                    {`Archive the "${name}" cohort`}
+                  </button>
+                )}
+                <div>
+                  <button
+                    className="link-button"
+                    disabled={pendingForDetails}
+                    onClick={this.handleArchivedListsVisibility(cohortId)}
+                    type="button"
+                  >
+                    {` ${
+                      areArchivedListsVisible ? 'hide' : 'show'
+                    } archived lists`}
+                  </button>
+                  {areArchivedListsVisible && (
+                    <GridList
+                      color={CardColorType.ARCHIVED}
+                      icon={<ListIcon />}
+                      items={archivedLists}
+                      name="Archived lists"
+                      pending={pendingForArchivedLists}
+                      placeholder={`There are no archived lists in the ${name} cohort!`}
+                      route={Routes.LIST}
+                    />
                   )}
-                  <div>
-                    <button
-                      className="link-button"
-                      onClick={this.handleArchivedListsVisibility(cohortId)}
-                      type="button"
-                    >
-                      {` ${
-                        areArchivedListsVisible ? 'hide' : 'show'
-                      } archived lists`}
-                    </button>
-                    {areArchivedListsVisible && (
-                      <GridList
-                        color={CardColorType.ARCHIVED}
-                        icon={<ListIcon />}
-                        items={archivedLists}
-                        name="Archived lists"
-                        pending={pendingForArchivedLists}
-                        placeholder={`There are no archived lists in the ${name} cohort!`}
-                        route={Routes.LIST}
-                      />
-                    )}
-                  </div>
-                </Fragment>
-              )}
+                </div>
+                {pendingForDetails && <Preloader />}
+              </div>
             </div>
           </div>
         )}

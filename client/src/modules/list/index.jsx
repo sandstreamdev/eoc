@@ -17,7 +17,6 @@ import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
-import { PENDING_DELAY } from 'common/constants/variables';
 
 export const ListType = Object.freeze({
   LIMITED: 'limited',
@@ -34,12 +33,9 @@ class List extends Component {
 
   componentDidMount() {
     if (this.checkIfArchived()) {
-      const delayedPending = setTimeout(
-        () => this.setState({ pendingForDetails: true }),
-        PENDING_DELAY
-      );
+      this.setState({ pendingForDetails: true });
+
       this.fetchData().finally(() => {
-        clearTimeout(delayedPending);
         this.setState({ pendingForDetails: false });
       });
     }
@@ -58,12 +54,9 @@ class List extends Component {
   handleListArchivization = listId => () => {
     const { archiveList } = this.props;
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pendingForListArchivization: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pendingForListArchivization: true });
+
     archiveList(listId).finally(() => {
-      clearTimeout(delayedPending);
       this.setState({ pendingForListArchivization: false });
       this.hideDialog();
     });
@@ -132,44 +125,39 @@ class List extends Component {
           <div className="wrapper">
             <div className="list">
               <ListHeader details={list} />
-              {pendingForDetails ? (
-                <Preloader />
-              ) : (
-                <Fragment>
-                  <div className="list__items">
-                    <ItemsContainer items={listItems}>
-                      <InputBar />
-                    </ItemsContainer>
-                    <ItemsContainer archived items={orderedItems} />
-                    {!isArchived && this.checkIfOwner() && (
-                      <button
-                        className="link-button"
-                        onClick={this.handleDialogContext(
-                          DialogContext.ARCHIVE
-                        )}
-                        type="button"
-                      >
-                        {`Archive the "${name}" list`}
-                      </button>
-                    )}
-                  </div>
-                  <button
-                    className="link-button"
-                    onClick={this.handleMembersBoxVisibility}
-                    type="button"
-                  >
-                    {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
-                  </button>
-                  {isMembersBoxVisible && (
-                    <MembersBox
-                      isCurrentUserAnOwner={this.checkIfOwner()}
-                      isPrivate={isPrivate}
-                      members={members}
-                      route={Routes.LIST}
-                    />
+              <div className="list__details">
+                <div className="list__items">
+                  <ItemsContainer items={listItems}>
+                    <InputBar />
+                  </ItemsContainer>
+                  <ItemsContainer archived items={orderedItems} />
+                  {!isArchived && this.checkIfOwner() && (
+                    <button
+                      className="link-button"
+                      onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                      type="button"
+                    >
+                      {`Archive the "${name}" list`}
+                    </button>
                   )}
-                </Fragment>
-              )}
+                </div>
+                <button
+                  className="link-button"
+                  onClick={this.handleMembersBoxVisibility}
+                  type="button"
+                >
+                  {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
+                </button>
+                {isMembersBoxVisible && (
+                  <MembersBox
+                    isCurrentUserAnOwner={this.checkIfOwner()}
+                    isPrivate={isPrivate}
+                    members={members}
+                    route={Routes.LIST}
+                  />
+                )}
+                {pendingForDetails && <Preloader />}
+              </div>
             </div>
           </div>
         )}

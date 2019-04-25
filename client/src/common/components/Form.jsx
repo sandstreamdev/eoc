@@ -53,13 +53,14 @@ class Form extends PureComponent {
 
   render() {
     const { description, name } = this.state;
-    const { onSelect } = this.props;
+    const { onSelect, disabled } = this.props;
 
     return (
       <form className="form" onSubmit={this.handleSubmit}>
         <label className="form__label">
           <input
             className="form__input primary-input"
+            disabled={disabled}
             name="name"
             onChange={this.handleNameChange}
             placeholder="Name"
@@ -71,6 +72,7 @@ class Form extends PureComponent {
         <label className="form__label">
           <textarea
             className="form__textarea primary-textarea"
+            disabled={disabled}
             name="description"
             onChange={this.handleDescriptionChange}
             placeholder="Description"
@@ -81,6 +83,7 @@ class Form extends PureComponent {
         {onSelect && (
           <select
             className="form__select primary-select"
+            disabled={disabled}
             onChange={this.handleSelect}
           >
             <option value={ListType.LIMITED}>{ListType.LIMITED}</option>
@@ -95,6 +98,7 @@ class Form extends PureComponent {
 Form.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
+  disabled: PropTypes.bool.isRequired,
 
   onDescriptionChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,

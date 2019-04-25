@@ -34,10 +34,11 @@ class NameInput extends PureComponent {
   };
 
   render() {
-    const { name, onNameChange } = this.props;
+    const { disabled, name, onNameChange } = this.props;
     return (
       <input
         className="name-input primary-input"
+        disabled={disabled}
         name="name"
         onChange={onNameChange}
         ref={this.nameInput}
@@ -50,6 +51,7 @@ class NameInput extends PureComponent {
 }
 
 NameInput.propTypes = {
+  disabled: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
 
   onClick: PropTypes.func.isRequired,

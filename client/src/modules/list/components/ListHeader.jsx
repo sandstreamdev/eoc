@@ -12,7 +12,6 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { PENDING_DELAY } from 'common/constants/variables';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -111,13 +110,9 @@ class ListHeader extends PureComponent {
     }
 
     if (nameToUpdate.length >= 1) {
-      const delayedPending = setTimeout(
-        () => this.setState({ pendingForName: true }),
-        PENDING_DELAY
-      );
+      this.setState({ pendingForName: true });
 
       updateList(id, { name: nameToUpdate }).finally(() => {
-        clearTimeout(delayedPending);
         this.setState({
           isNameInputVisible: false,
           nameInput: nameToUpdate,
@@ -147,13 +142,9 @@ class ListHeader extends PureComponent {
       ? ''
       : _trim(descriptionInput);
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pendingForDescription: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pendingForDescription: true });
 
     updateList(id, { description: updatedDescription }).finally(() => {
-      clearTimeout(delayedPending);
       this.setState({
         isDescriptionTextareaVisible: false,
         descriptionInput: updatedDescription,
@@ -177,17 +168,10 @@ class ListHeader extends PureComponent {
       return;
     }
 
-    if (pendingForDescription) {
-      return (
-        <div className="list-header__bottom">
-          <Preloader size={PreloaderSize.SMALL} />
-        </div>
-      );
-    }
-
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
         description={descriptionInput}
+        disabled={pendingForDescription}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
@@ -224,12 +208,9 @@ class ListHeader extends PureComponent {
       details: { isOwner, name }
     } = this.props;
 
-    if (pendingForName) {
-      return <Preloader size={PreloaderSize.SMALL} />;
-    }
-
     return isNameInputVisible ? (
       <NameInput
+        disabled={pendingForName}
         name={nameInput}
         onClick={this.handleClick}
         onKeyPress={this.handleKeyPress}
@@ -248,13 +229,19 @@ class ListHeader extends PureComponent {
   };
 
   render() {
+    const { pendingForDescription, pendingForName } = this.state;
+
     return (
       <div className="list-header">
         <div className="list-header__top">
           <ListIcon />
           {this.renderName()}
+          {pendingForName && <Preloader size={PreloaderSize.SMALL} />}
         </div>
-        {this.renderDescription()}
+        <div className="list-header__bottom">
+          {this.renderDescription()}
+          {pendingForDescription && <Preloader size={PreloaderSize.SMALL} />}
+        </div>
       </div>
     );
   }

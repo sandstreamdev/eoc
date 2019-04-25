@@ -63,6 +63,7 @@ class FormDialog extends Component {
         <Form
           defaultDescription={defaultDescription}
           defaultName={defaultName}
+          disabled={pending}
           onDescriptionChange={this.handleDescriptionChange}
           onNameChange={this.handleNameChange}
           onSelect={onSelect}

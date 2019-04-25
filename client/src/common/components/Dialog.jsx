@@ -17,31 +17,28 @@ const Dialog = ({ children, onCancel, onConfirm, pending, title }) => (
       <header className="dialog__header">
         <h2 className="dialog__heading">{title && title}</h2>
       </header>
-      {pending ? (
-        <div className="dialog__body">
-          <Preloader />
+      <div className="dialog__body">
+        {children && <div className="dialog__children">{children}</div>}
+        <div className="dialog__footer">
+          <button
+            className="dialog__button primary-button"
+            disabled={pending}
+            onClick={onConfirm}
+            type="button"
+          >
+            Confirm
+          </button>
+          <button
+            className="dialog__button primary-button"
+            disabled={pending}
+            onClick={onCancel}
+            type="button"
+          >
+            Cancel
+          </button>
         </div>
-      ) : (
-        <Fragment>
-          {children && <div className="dialog__body">{children}</div>}
-          <div className="dialog__footer">
-            <button
-              className="dialog__button primary-button"
-              onClick={onConfirm}
-              type="button"
-            >
-              Confirm
-            </button>
-            <button
-              className="dialog__button primary-button"
-              onClick={onCancel}
-              type="button"
-            >
-              Cancel
-            </button>
-          </div>
-        </Fragment>
-      )}
+        {pending && <Preloader />}
+      </div>
     </div>
   </Fragment>
 );

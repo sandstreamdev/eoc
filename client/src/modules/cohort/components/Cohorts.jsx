@@ -20,7 +20,6 @@ import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
-import { PENDING_DELAY } from 'common/constants/variables';
 
 class Cohorts extends Component {
   state = {
@@ -34,13 +33,9 @@ class Cohorts extends Component {
   componentDidMount() {
     const { fetchCohortsMetaData } = this.props;
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pendingForCohorts: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pendingForCohorts: true });
 
     fetchCohortsMetaData().finally(() => {
-      clearTimeout(delayedPending);
       this.setState({ pendingForCohorts: false });
     });
   }
@@ -57,13 +52,9 @@ class Cohorts extends Component {
     } = this.props;
     const data = { description, userId, name };
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pendingForCohortCreation: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pendingForCohortCreation: true });
 
     createCohort(data).finally(() => {
-      clearTimeout(delayedPending);
       this.setState({ pendingForCohortCreation: false });
       this.handleDialogVisibility();
     });
@@ -85,13 +76,9 @@ class Cohorts extends Component {
     } = this.props;
 
     if (areArchivedCohortsVisible) {
-      const delayedPending = setTimeout(
-        () => this.setState({ pendingForArchivedCohorts: true }),
-        PENDING_DELAY
-      );
+      this.setState({ pendingForArchivedCohorts: true });
 
       fetchArchivedCohortsMetaData().finally(() => {
-        clearTimeout(delayedPending);
         this.setState({ pendingForArchivedCohorts: false });
       });
     } else {

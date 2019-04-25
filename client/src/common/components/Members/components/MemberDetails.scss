@@ -84,6 +84,10 @@
   }
 
   &__panel {
+    position: relative;
+  }
+
+  &__options {
     display: flex;
     flex-direction: column;
     padding: 15px 0 0;
