@@ -400,6 +400,8 @@ const addMember = (req, resp) => {
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
+  let currentCohort;
+  let newMember;
 
   Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUser }] })
     .exec()
@@ -410,46 +412,38 @@ const addMember = (req, resp) => {
         );
       }
 
-      return User.findOne({ email })
-        .exec()
-        .then(user => {
-          const { _id, avatarUrl, displayName } = user;
-          return { _id, avatarUrl, displayName, cohort };
-        })
-        .catch(() => {
-          throw new BadRequestException('User data not found.');
-        });
+      currentCohort = cohort;
+      return User.findOne({ email }).exec();
     })
-    .then(data => {
-      const { _id: newMemberId, avatarUrl, displayName, cohort } = data;
+    .then(user => {
+      const { _id: newMemberId, avatarUrl, displayName } = user;
 
-      if (checkIfCohortMember(cohort, newMemberId)) {
+      if (checkIfCohortMember(currentCohort, newMemberId)) {
         throw new BadRequestException('User is already a member.');
       }
 
-      cohort.memberIds.push(newMemberId);
-      const member = { avatarUrl, newMemberId, displayName };
+      currentCohort.memberIds.push(newMemberId);
+      newMember = { avatarUrl, newMemberId, displayName };
+      console.log('user', user, 'cohort', currentCohort);
 
-      return cohort
-        .save()
-        .then(() => {
-          const { ownerIds } = cohort;
+      return currentCohort.save();
+    })
+    .then(() => {
+      console.log('tu jestem');
+      const { _id: cohortId } = currentCohort;
+      const { newMemberId } = newMember;
 
-          /** TODO: TU SKONCZYLEM */
-          console.log('Zaczynam updatowac liste');
-          List.updateMany(
-            { isPrivate: false, viewersIds: { $nin: [newMemberId] } },
-            { $push: { viewersIds: newMemberId } }
-          );
-          console.log('skonczylem updateowac liste');
-
-          return resp
-            .status(200)
-            .json(responseWithCohortMember(member, ownerIds));
-        })
-        .catch(() => {
-          throw new BadRequestException('Adding user failed.');
-        });
+      return List.updateMany(
+        { cohortId, isPrivate: false },
+        { $push: { viewersIds: newMemberId } }
+      ).exec();
+    })
+    .then(() => {
+      console.log('jestem w drugim kroku');
+      const { ownerIds } = currentCohort;
+      return resp
+        .status(200)
+        .json(responseWithCohortMember(newMember, ownerIds));
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -458,6 +452,7 @@ const addMember = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
+      console.log(err);
       resp.status(400).send({
         message: 'An error occurred while adding new member. Please try again.'
       });
