@@ -31,8 +31,8 @@
     svg {
       height: 12px;
       width: 12px;
-      // min-height: 12px;
-      // min-width: 12px;
+      min-height: 12px;
+      min-width: 12px;
       margin-right: 8px;
 
       path {
@@ -89,12 +89,6 @@
         fill: $text-white;
       }
     }
-  }
-
-  &__preloader {
-    position: relative;
-    right: 10px;
-    top: 10px;
   }
 
   &__data {

@@ -8,7 +8,6 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { PENDING_DELAY } from 'common/constants/variables';
 
 class InputBar extends Component {
   constructor(props) {
@@ -48,13 +47,9 @@ class InputBar extends Component {
       name: itemName
     };
 
-    const delayedPending = setTimeout(
-      () => this.setState({ pending: true }),
-      PENDING_DELAY
-    );
+    this.setState({ pending: true });
 
     addItem(newItem, id).finally(() => {
-      clearTimeout(delayedPending);
       this.setState({ itemName: '', pending: false });
       this.hideForm();
     });
@@ -67,10 +62,6 @@ class InputBar extends Component {
   renderInputBar = () => {
     const { itemName, isFormVisible, pending } = this.state;
 
-    if (pending) {
-      return <Preloader size={PreloaderSize.SMALL} />;
-    }
-
     return isFormVisible ? (
       <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
         <input
@@ -82,6 +73,7 @@ class InputBar extends Component {
           required
           type="text"
           value={itemName}
+          disabled={pending}
         />
         <input className="input-bar__submit" type="submit" />
       </form>
@@ -98,7 +90,13 @@ class InputBar extends Component {
   };
 
   render() {
-    return <div className="input-bar">{this.renderInputBar()}</div>;
+    const { pending } = this.state;
+    return (
+      <div className="input-bar">
+        {this.renderInputBar()}
+        {pending && <Preloader size={PreloaderSize.SMALL} />}
+      </div>
+    );
   }
 }
 
