@@ -723,7 +723,6 @@ const cloneItem = (req, resp) => {
       }
 
       const { description, link, name } = list.items.id(itemId);
-
       const item = new Item({
         authorId: userId,
         authorName: userName,
@@ -746,6 +745,7 @@ const cloneItem = (req, resp) => {
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
+
         return resp.status(status).send({ message });
       }
 

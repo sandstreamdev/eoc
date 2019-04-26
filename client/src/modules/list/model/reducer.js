@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux';
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 
@@ -103,56 +102,4 @@ const lists = (state = {}, action) => {
       return state;
   }
 };
-
-const isFetching = (state = false, action) => {
-  switch (action.type) {
-    case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
-    case ItemActionTypes.ADD_FAILURE:
-    case ItemActionTypes.ADD_SUCCESS:
-    case ItemActionTypes.CLONE_FAILURE:
-    case ItemActionTypes.CLONE_SUCCESS:
-    case ItemActionTypes.TOGGLE_FAILURE:
-    case ItemActionTypes.TOGGLE_SUCCESS:
-    case ItemActionTypes.VOTE_FAILURE:
-    case ItemActionTypes.VOTE_SUCCESS:
-    case ListActionTypes.ARCHIVE_FAILURE:
-    case ListActionTypes.ARCHIVE_SUCCESS:
-    case ListActionTypes.CREATE_FAILURE:
-    case ListActionTypes.CREATE_SUCCESS:
-    case ListActionTypes.DELETE_FAILURE:
-    case ListActionTypes.DELETE_SUCCESS:
-    case ListActionTypes.FAVOURITES_FAILURE:
-    case ListActionTypes.FAVOURITES_SUCCESS:
-    case ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
-    case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
-    case ListActionTypes.FETCH_DATA_FAILURE:
-    case ListActionTypes.FETCH_DATA_SUCCESS:
-    case ListActionTypes.FETCH_META_DATA_FAILURE:
-    case ListActionTypes.FETCH_META_DATA_SUCCESS:
-    case ListActionTypes.RESTORE_FAILURE:
-    case ListActionTypes.RESTORE_SUCCESS:
-    case ListActionTypes.UPDATE_FAILURE:
-    case ListActionTypes.UPDATE_SUCCESS:
-      return false;
-    case ItemActionTypes.UPDATE_DETAILS_FAILURE:
-    case ItemActionTypes.UPDATE_DETAILS_REQUEST:
-    case ItemActionTypes.ADD_REQUEST:
-    case ItemActionTypes.CLONE_REQUEST:
-    case ItemActionTypes.TOGGLE_REQUEST:
-    case ItemActionTypes.VOTE_REQUEST:
-    case ListActionTypes.ARCHIVE_REQUEST:
-    case ListActionTypes.CREATE_REQUEST:
-    case ListActionTypes.DELETE_REQUEST:
-    case ListActionTypes.FAVOURITES_REQUEST:
-    case ListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
-    case ListActionTypes.FETCH_DATA_REQUEST:
-    case ListActionTypes.FETCH_META_DATA_REQUEST:
-    case ListActionTypes.RESTORE_REQUEST:
-    case ListActionTypes.UPDATE_REQUEST:
-      return true;
-    default:
-      return state;
-  }
-};
-
-export default combineReducers({ data: lists, isFetching });
+export default lists;
