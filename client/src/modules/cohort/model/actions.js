@@ -406,7 +406,7 @@ export const addCohortMember = (cohortId, email) => dispatch => {
 
 export const removeCohortMember = (cohortId, userId) => dispatch => {
   dispatch(removeMemberRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-owner`, {
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-member`, {
     userId
   })
     .then(resp => resp.json())
