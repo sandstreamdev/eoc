@@ -162,10 +162,7 @@ const getCohortDetails = (req, resp) => {
       }
 
       const ownerIds = ownersCollection.map(owner => owner.id);
-      const isCurrentUserAnOwner = checkIfArrayContainsUserId(
-        ownerIds,
-        req.user._id
-      );
+      const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
       const members = responseWithCohortMembers(
         [...membersCollection, ...ownersCollection],
         ownersCollection
@@ -173,7 +170,7 @@ const getCohortDetails = (req, resp) => {
 
       resp.status(200).json({
         _id,
-        isOwner: isCurrentUserAnOwner,
+        isOwner,
         isArchived,
         description,
         name,
