@@ -104,6 +104,7 @@ class List extends Component {
     const { cohortId, isArchived, isPrivate, name, isGuest } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
+    const isCohortList = !!cohortId;
 
     return (
       <Fragment>
@@ -153,6 +154,7 @@ class List extends Component {
                   </button>
                   {isMembersBoxVisible && (
                     <MembersBox
+                      isCohortList={isCohortList}
                       isCurrentUserAnOwner={this.checkIfOwner()}
                       isPrivate={isPrivate}
                       members={members}

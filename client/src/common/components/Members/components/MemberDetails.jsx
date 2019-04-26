@@ -121,15 +121,13 @@ class MemberDetails extends PureComponent {
 
     if (selectedRole === UserRoles.OWNER) {
       action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
-
-      action(id, userId).finally(() => this.setState({ pending: false }));
     }
 
     if (selectedRole === UserRoles.MEMBER) {
       action = isMember ? removeMemberRoleInList : addMemberRoleInList;
-
-      action(id, userId).finally(() => this.setState({ pending: false }));
     }
+
+    action(id, userId).finally(() => this.setState({ pending: false }));
   };
 
   handleChangingRoles = event => {
@@ -236,7 +234,13 @@ class MemberDetails extends PureComponent {
   };
 
   renderHeader = () => {
-    const { displayName, isMember, isOwner } = this.props;
+    const {
+      displayName,
+      isMember,
+      isOwner,
+      isGuest,
+      isCohortList
+    } = this.props;
     let roleToDisplay = 'viewer';
 
     if (isMember) {
@@ -252,7 +256,10 @@ class MemberDetails extends PureComponent {
         <div className="member-details__avatar">{this.renderAvatar()}</div>
         <div>
           <h3 className="member-details__name">{displayName}</h3>
-          <p className="member-details__role">{roleToDisplay}</p>
+          <p className="member-details__role">
+            {roleToDisplay}
+            {isGuest && isCohortList && '\n(Guest)'}
+          </p>
         </div>
       </header>
     );
@@ -350,6 +357,7 @@ MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
+  isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool,
   isMember: PropTypes.bool,

@@ -65,11 +65,12 @@ class MembersBox extends PureComponent {
   };
 
   renderDetails = member => {
-    const { isCurrentUserAnOwner, isPrivate, route } = this.props;
+    const { isCurrentUserAnOwner, isPrivate, route, isCohortList } = this.props;
 
     return (
       <MemberDetails
         {...member}
+        isCohortList={isCohortList}
         isCurrentUserAnOwner={isCurrentUserAnOwner}
         isPrivate={isPrivate}
         onClose={this.handleClosingMemberDetails}
