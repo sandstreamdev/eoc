@@ -128,49 +128,49 @@ const updateCohortById = (req, resp) => {
 };
 
 const getCohortDetails = (req, resp) => {
-  if (!isValidMongoId(req.params.id)) {
+  const {
+    params: { id: cohortId },
+    user: { _id: userId }
+  } = req;
+
+  if (!isValidMongoId(cohortId)) {
     return resp
       .status(404)
-      .send({ message: `Data of cohort id: ${req.params.id} not found.` });
+      .send({ message: `Data of cohort id: ${cohortId} not found.` });
   }
-
   Cohort.findOne({
-    _id: req.params.id,
-    $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+    _id: cohortId,
+    memberIds: userId
   })
     .populate('memberIds', 'avatarUrl displayName _id')
-    .populate('ownerIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({
-          message: `Data of cohort id: ${req.params.id} not found.`
-        });
+        throw new NotFoundException(
+          `Data of cohort id: ${cohortId} not found.`
+        );
       }
 
       const {
-        ownerIds: ownersCollection,
         _id,
-        isArchived,
         description,
+        isArchived,
+        memberIds: membersCollection,
         name,
-        memberIds: membersCollection
+        ownerIds
       } = doc;
 
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
 
-      const ownerIds = ownersCollection.map(owner => owner.id);
-      const isCurrentUserAnOwner = checkRole(ownerIds, req.user._id);
-      const members = responseWithCohortMembers(
-        [...membersCollection, ...ownersCollection],
-        ownersCollection
-      );
+      const members = responseWithCohortMembers(membersCollection, ownerIds);
+      const isOwner = checkRole(ownerIds, userId);
 
       resp.status(200).json({
         _id,
-        isOwner: isCurrentUserAnOwner,
+        isMember: true,
+        isOwner,
         isArchived,
         description,
         name,
@@ -282,47 +282,6 @@ const removeFromFavourites = (req, resp) => {
   );
 };
 
-const removeOwner = (req, resp) => {
-  const { id: cohortId } = req.params;
-  const { userId } = req.body;
-  const {
-    user: { _id: ownerId }
-  } = req;
-
-  Cohort.findOneAndUpdate(
-    {
-      _id: cohortId,
-      ownerIds: { $all: [ownerId, userId] },
-      memberIds: { $all: [ownerId, userId] }
-    },
-    { $pull: { ownerIds: userId, memberIds: userId } }
-  )
-    .then(doc => {
-      if (!doc) {
-        return resp.status(404).send({ message: 'Cohort data not found.' });
-      }
-
-      return List.updateMany(
-        {
-          cohortId,
-          isPrivate: false,
-          viewersIds: { $in: [userId] },
-          memberIds: { $nin: [userId] },
-          ownerIds: { $nin: [userId] }
-        },
-        { $pull: { viewersIds: userId } }
-      ).exec();
-    })
-    .then(() =>
-      resp.status(200).send({
-        message: 'Owner successfully removed from cohort.'
-      })
-    )
-    .catch(() =>
-      resp.status(400).send({ message: "Can't remove owner from cohort." })
-    );
-};
-
 const removeMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
@@ -332,15 +291,15 @@ const removeMember = (req, resp) => {
 
   Cohort.findOneAndUpdate(
     { _id: cohortId, ownerIds: currentUserId, memberIds: userId },
-    { $pull: { memberIds: userId } }
+    { $pull: { memberIds: userId, ownerIds: userId } }
   )
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(404).send({ message: 'Cohort data not found.' });
+        throw new BadRequestException(
+          `Data of cohort id: ${cohortId} not found.`
+        );
       }
-
-      const { _id: cohortId } = doc;
 
       return List.updateMany(
         {
@@ -353,16 +312,22 @@ const removeMember = (req, resp) => {
         { $pull: { viewersIds: userId } }
       ).exec();
     })
-    .then(() =>
+    .then(() => {
       resp.status(200).send({
         message: 'Member successfully removed from cohort.'
-      })
-    )
-    .catch(() =>
+      });
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+
+        return resp.status(status).send({ message });
+      }
+
       resp.status(400).send({
         message: "Can't remove member from cohort."
-      })
-    );
+      });
+    });
 };
 
 const changeToOwner = (req, resp) => {
@@ -423,14 +388,14 @@ const changeToMember = (req, resp) => {
 
 const addMember = (req, resp) => {
   const {
-    user: { _id: currentUser }
+    user: { _id: currentUserId }
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
   let currentCohort;
   let newMember;
 
-  Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUser }] })
+  Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUserId }] })
     .exec()
     .then(cohort => {
       if (!cohort) {
@@ -455,7 +420,6 @@ const addMember = (req, resp) => {
       return currentCohort.save();
     })
     .then(() => {
-      const { _id: cohortId } = currentCohort;
       const { newMemberId } = newMember;
 
       return List.updateMany(
@@ -495,6 +459,5 @@ module.exports = {
   getCohortsMetaData,
   removeFromFavourites,
   removeMember,
-  removeOwner,
   updateCohortById
 };

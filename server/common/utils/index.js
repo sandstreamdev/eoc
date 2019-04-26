@@ -121,6 +121,7 @@ const responseWithCohortMembers = (users, ownerIds) =>
 
     return {
       ...user._doc,
+      isMember: true,
       isOwner: checkIfOwner(ownerIds, userId)
     };
   });
@@ -142,8 +143,8 @@ const responseWithCohortMember = (data, ownerIds) => {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isOwner: checkIfOwner(ownerIds, newMemberId),
-    isMember: true
+    isMember: true,
+    isOwner: checkIfOwner(ownerIds, newMemberId)
   };
 };
 

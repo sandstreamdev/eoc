@@ -404,12 +404,11 @@ export const addCohortMember = (cohortId, email) => dispatch => {
     });
 };
 
-export const removeCohortMember = (cohortId, userId, isOwner) => dispatch => {
-  const url = isOwner
-    ? `${ENDPOINT_URL}/cohorts/${cohortId}/remove-owner`
-    : `${ENDPOINT_URL}/cohorts/${cohortId}/remove-member`;
+export const removeCohortMember = (cohortId, userId) => dispatch => {
   dispatch(removeMemberRequest());
-  return patchData(url, { userId })
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-owner`, {
+    userId
+  })
     .then(resp => resp.json())
     .then(json => {
       dispatch(removeMemberSuccess(cohortId, userId));
