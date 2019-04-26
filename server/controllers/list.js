@@ -2,7 +2,7 @@ const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
   checkIfGuest,
-  checkRole,
+  checkIfArrayContainsUserId,
   filter,
   isValidMongoId,
   responseWithItems,
@@ -277,7 +277,7 @@ const getListData = (req, resp) => {
         cohortMembersIds
       );
 
-      const isOwner = checkRole(ownerIds, req.user._id);
+      const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
       const items = responseWithItems(userId, list);
       const isGuest = checkIfGuest(cohortMembersIds, req.user._id);
 

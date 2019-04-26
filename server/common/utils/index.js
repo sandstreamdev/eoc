@@ -101,17 +101,19 @@ const responseWithCohort = (cohort, userId) => {
   };
 };
 
-const checkRole = (idsArray, userIdFromReq) =>
-  idsArray.indexOf(userIdFromReq) !== -1;
+const checkIfArrayContainsUserId = (idsArray, userId) => {
+  const arrayOfStrings = idsArray.map(id => id.toString());
+  const userIdAsString = userId.toString();
 
-const checkIfOwner = (ownerIds, userId) =>
-  ownerIds.indexOf(userId.toString()) > -1;
+  return arrayOfStrings.indexOf(userIdAsString) !== -1;
+};
 
-const checkIfGuest = (cohortMembersIds, userId) =>
-  !cohortMembersIds.some(id => id.equals(userId));
+const checkIfGuest = (cohortMembersIds, userId) => {
+  const idsArray = cohortMembersIds.map(id => id.toString());
+  const userIdAsString = userId.toString();
 
-const checkIfMember = (memberIds, userId) =>
-  memberIds.indexOf(userId.toString()) > -1;
+  return idsArray.indexOf(userIdAsString) === -1;
+};
 
 const responseWithCohortMembers = (users, ownerIds) =>
   users.map(user => {
@@ -121,7 +123,7 @@ const responseWithCohortMembers = (users, ownerIds) =>
 
     return {
       ...user._doc,
-      isOwner: checkIfOwner(ownerIds, userId)
+      isOwner: checkIfArrayContainsUserId(ownerIds, userId)
     };
   });
 
@@ -142,7 +144,7 @@ const responseWithCohortMember = (data, ownerIds) => {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isOwner: checkIfOwner(ownerIds, newMemberId),
+    isOwner: checkIfArrayContainsUserId(ownerIds, newMemberId),
     isMember: true
   };
 };
@@ -168,26 +170,26 @@ const responseWithListMembers = (
 ) =>
   viewers.map(user => ({
     ...user._doc,
-    isOwner: checkIfOwner(ownerIds, user._doc._id),
+    isOwner: checkIfArrayContainsUserId(ownerIds, user._doc._id),
     isGuest: checkIfGuest(cohortMembersIds, user._doc._id),
-    isMember: checkIfMember(memberIds, user._doc._id)
+    isMember: checkIfArrayContainsUserId(memberIds, user._doc._id)
   }));
 
 module.exports = {
+  checkIfArrayContainsUserId,
   checkIfCohortMember,
   checkIfGuest,
-  checkRole,
   filter,
   isUserFavourite,
   isValidMongoId,
   responseWithCohort,
+  responseWithCohortMember,
+  responseWithCohortMembers,
   responseWithCohorts,
   responseWithItem,
   responseWithItems,
   responseWithList,
-  responseWithLists,
-  responseWithCohortMember,
   responseWithListMember,
   responseWithListMembers,
-  responseWithCohortMembers
+  responseWithLists
 };

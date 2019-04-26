@@ -1,6 +1,6 @@
 const Cohort = require('../models/cohort.model');
 const {
-  checkRole,
+  checkIfArrayContainsUserId,
   filter,
   isValidMongoId,
   responseWithCohort,
@@ -162,7 +162,10 @@ const getCohortDetails = (req, resp) => {
       }
 
       const ownerIds = ownersCollection.map(owner => owner.id);
-      const isCurrentUserAnOwner = checkRole(ownerIds, req.user._id);
+      const isCurrentUserAnOwner = checkIfArrayContainsUserId(
+        ownerIds,
+        req.user._id
+      );
       const members = responseWithCohortMembers(
         [...membersCollection, ...ownersCollection],
         ownersCollection
