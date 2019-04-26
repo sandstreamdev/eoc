@@ -1,10 +1,9 @@
-import { combineReducers } from 'redux';
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 
 import { CohortActionTypes } from './actionTypes';
 
-const membersReducer = (state, action) => {
+const membersReducer = (state = [], action) => {
   switch (action.type) {
     case CohortActionTypes.ADD_MEMBER_SUCCESS: {
       const {
@@ -97,49 +96,4 @@ const cohorts = (state = {}, action) => {
   }
 };
 
-const isFetching = (state = false, action) => {
-  switch (action.type) {
-    case CohortActionTypes.ADD_MEMBER_FAILURE:
-    case CohortActionTypes.ADD_MEMBER_SUCCESS:
-    case CohortActionTypes.ARCHIVE_FAILURE:
-    case CohortActionTypes.ARCHIVE_SUCCESS:
-    case CohortActionTypes.CHANGE_ROLE_FAILURE:
-    case CohortActionTypes.CHANGE_ROLE_SUCCESS:
-    case CohortActionTypes.CREATE_FAILURE:
-    case CohortActionTypes.CREATE_SUCCESS:
-    case CohortActionTypes.DELETE_FAILURE:
-    case CohortActionTypes.DELETE_SUCCESS:
-    case CohortActionTypes.FAVOURITES_FAILURE:
-    case CohortActionTypes.FAVOURITES_SUCCESS:
-    case CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE:
-    case CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
-    case CohortActionTypes.FETCH_DETAILS_FAILURE:
-    case CohortActionTypes.FETCH_DETAILS_SUCCESS:
-    case CohortActionTypes.FETCH_META_DATA_FAILURE:
-    case CohortActionTypes.FETCH_META_DATA_SUCCESS:
-    case CohortActionTypes.REMOVE_MEMBER_FAILURE:
-    case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
-    case CohortActionTypes.RESTORE_FAILURE:
-    case CohortActionTypes.RESTORE_SUCCESS:
-    case CohortActionTypes.UPDATE_FAILURE:
-    case CohortActionTypes.UPDATE_SUCCESS:
-      return false;
-    case CohortActionTypes.ADD_MEMBER_REQUEST:
-    case CohortActionTypes.ARCHIVE_REQUEST:
-    case CohortActionTypes.CHANGE_ROLE_REQUEST:
-    case CohortActionTypes.CREATE_REQUEST:
-    case CohortActionTypes.DELETE_REQUEST:
-    case CohortActionTypes.FAVOURITES_REQUEST:
-    case CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST:
-    case CohortActionTypes.FETCH_DETAILS_REQUEST:
-    case CohortActionTypes.FETCH_META_DATA_REQUEST:
-    case CohortActionTypes.REMOVE_MEMBER_REQUEST:
-    case CohortActionTypes.RESTORE_REQUEST:
-    case CohortActionTypes.UPDATE_REQUEST:
-      return true;
-    default:
-      return state;
-  }
-};
-
-export default combineReducers({ data: cohorts, isFetching });
+export default cohorts;

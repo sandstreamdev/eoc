@@ -1,10 +1,10 @@
 import { AuthorizationActionTypes } from './actions';
-import { data } from 'modules/authorization/model/reducer';
+import user from 'modules/authorization/model/reducer';
 
 describe('Authorization reducer', () => {
   it('should store user data upon login', () => {
     expect(
-      data(null, {
+      user(null, {
         type: AuthorizationActionTypes.SET_CURRENT_USER_SUCCESS,
         payload: {
           name: 'John Smith',
@@ -21,7 +21,7 @@ describe('Authorization reducer', () => {
 
   it('should delete user data upon logout', () => {
     expect(
-      data(
+      user(
         {
           name: 'John Smith',
           avatarUrl: 'http://www.example.com',
