@@ -12,20 +12,19 @@ import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import NewComment from 'common/components/Comments/NewComment';
 import Comment from 'common/components/Comments/Comment';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
   clearVote,
   cloneItem,
   setVote,
+  toggle,
   updateItemDetails
 } from '../model/actions';
-import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
+import { isUrlValid } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
-import Preloader, {
-  PreloaderSize,
-  PreloaderTheme
-} from 'common/components/Preloader';
-import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { PreloaderTheme } from 'common/components/Preloader';
+import PendingButton from 'common/components/PendingButton';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class ListItem extends PureComponent {
   pendingPromises = [];
@@ -44,11 +43,7 @@ class ListItem extends PureComponent {
       isNewCommentVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
-      link,
-      pendingForCloning: false,
-      pendingForDetails: false,
-      pendingForToggling: false,
-      pendingForVoting: false
+      link
     };
   }
 
@@ -68,25 +63,22 @@ class ListItem extends PureComponent {
     this.pendingPromises = this.pendingPromises.filter(p => p !== promise);
   };
 
-  handleItemToggling = (authorId, id, isOrdered) => event => {
-    const { toggleItem } = this.props;
-    event.stopPropagation();
+  handleItemToggling = () => {
+    const {
+      currentUser: { name, id: userId },
+      data: { isOrdered, authorId, _id },
+      match: {
+        params: { id: listId }
+      },
+      toggle
+    } = this.props;
+    const isSameAuthor = authorId === userId;
 
-    this.setState(({ done }) => ({ done: !done, pendingForToggling: true }));
+    this.setState(({ done }) => ({ done: !done }));
 
-    const abortableToggling = makeAbortablePromise(
-      toggleItem(authorId, id, isOrdered)
-    );
-    this.addPendingPromise(abortableToggling);
-
-    return abortableToggling.promise
-      .then(() => this.setState({ pendingForToggling: false }))
-      .catch(err => {
-        if (!(err instanceof AbortPromiseException)) {
-          this.setState({ pendingForToggling: false });
-        }
-      })
-      .finally(() => this.removePendingPromise(abortableToggling));
+    return isSameAuthor
+      ? toggle(isOrdered, _id, listId, name)
+      : toggle(isOrdered, _id, listId);
   };
 
   toggleDetails = () =>
@@ -128,21 +120,7 @@ class ListItem extends PureComponent {
     }
 
     if (isLinkUpdated || isDescriptionUpdated) {
-      this.setState({ pendingForDetails: true });
-
-      const abortableDetails = makeAbortablePromise(
-        updateItemDetails(listId, itemId, { description, link })
-      );
-      this.addPendingPromise(abortableDetails);
-
-      return abortableDetails.promise
-        .then(() => this.setState({ pendingForDetails: false }))
-        .catch(err => {
-          if (!(err instanceof AbortPromiseException)) {
-            this.setState({ pendingForDetails: false });
-          }
-        })
-        .finally(() => this.removePendingPromise(abortableDetails));
+      return updateItemDetails(listId, itemId, { description, link });
     }
   };
 
@@ -161,8 +139,7 @@ class ListItem extends PureComponent {
     this.setState({ areFieldsUpdated: isLinkUpdated || isDescriptionUpdated });
   };
 
-  handleItemCloning = event => {
-    event.stopPropagation();
+  handleItemCloning = () => {
     const {
       cloneItem,
       data: { _id: itemId },
@@ -171,18 +148,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setState({ pendingForCloning: true });
-    const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
-    this.addPendingPromise(abortableCloning);
-
-    return abortableCloning.promise
-      .then(() => this.setState({ pendingForCloning: false }))
-      .catch(err => {
-        if (!(err instanceof AbortPromiseException)) {
-          this.setState({ pendingForCloning: false });
-        }
-      })
-      .finally(() => this.removePendingPromise(abortableCloning));
+    return cloneItem(listId, itemId);
   };
 
   handleVoting = () => {
@@ -196,18 +162,8 @@ class ListItem extends PureComponent {
     } = this.props;
 
     const action = isVoted ? clearVote : setVote;
-    this.setState({ pendingForVoting: true });
-    const abortableVoting = makeAbortablePromise(action(_id, listId));
-    this.addPendingPromise(abortableVoting);
 
-    return abortableVoting.promise
-      .then(() => this.setState({ pendingForVoting: false }))
-      .catch(err => {
-        if (!(err instanceof AbortPromiseException)) {
-          this.setState({ pendingForCloning: false });
-        }
-      })
-      .finally(() => this.removePendingPromise(abortableVoting));
+    return action(_id, listId);
   };
 
   handleItemLink = value =>
@@ -219,7 +175,6 @@ class ListItem extends PureComponent {
     const {
       data: { isOrdered, isVoted, votesCount }
     } = this.props;
-    const { pendingForVoting } = this.state;
 
     if (isOrdered) {
       return null;
@@ -229,22 +184,15 @@ class ListItem extends PureComponent {
       <div className="list-item__voting">
         <VotingBox
           isVoted={isVoted}
-          disabled={pendingForVoting}
           onVote={this.handleVoting}
           votesCount={votesCount}
         />
-        {pendingForVoting && <Preloader size={PreloaderSize.SMALL} />}
       </div>
     );
   };
 
   renderDetails = () => {
-    const {
-      areFieldsUpdated,
-      isValidationErrorVisible,
-      pendingForCloning,
-      pendingForDetails
-    } = this.state;
+    const { areFieldsUpdated, isValidationErrorVisible } = this.state;
     const {
       data: { description, isOrdered, link }
     } = this.props;
@@ -272,35 +220,26 @@ class ListItem extends PureComponent {
             )}
             {areFieldsUpdated && (
               <div className="list-item__save-details">
-                <button
+                <PendingButton
                   className="primary-button"
-                  disabled={pendingForDetails || isValidationErrorVisible}
+                  disabled={isValidationErrorVisible}
                   onClick={this.handleDataUpdate}
-                  type="button"
+                  preloaderTheme={PreloaderTheme.LIGHT}
                 >
                   Save
-                </button>
-                {pendingForDetails && (
-                  <Preloader
-                    size={PreloaderSize.SMALL}
-                    theme={PreloaderTheme.LIGHT}
-                  />
-                )}
+                </PendingButton>
               </div>
             )}
           </div>
         </div>
         {!isOrdered && (
           <div className="list-item__cloning">
-            <button
+            <PendingButton
               className="link-button"
-              disabled={pendingForCloning}
               onClick={this.handleItemCloning}
-              type="button"
             >
               Clone Item
-            </button>
-            {pendingForCloning && <Preloader size={PreloaderSize.SMALL} />}
+            </PendingButton>
           </div>
         )}
       </Fragment>
@@ -355,9 +294,9 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { isOrdered, authorId, authorName, _id, name }
+      data: { isOrdered, authorName, _id, name }
     } = this.props;
-    const { done, areDetailsVisible, pendingForToggling } = this.state;
+    const { done, areDetailsVisible } = this.state;
 
     return (
       <li
@@ -388,17 +327,12 @@ class ListItem extends PureComponent {
             </span>
           </label>
           {this.renderVoting()}
-          <button
-            className="list-item__icon z-index-high"
-            disabled={pendingForToggling}
-            onClick={this.handleItemToggling(authorId, _id, isOrdered)}
-            type="button"
-          />
-          {pendingForToggling && (
-            <div className="list-item__icon-preloader z-index-high">
-              <Preloader size={PreloaderSize.SMALL} />
-            </div>
-          )}
+          <div className="list-item__toggle z-index-high">
+            <PendingButton
+              className="list-item__icon"
+              onClick={this.handleItemToggling}
+            />
+          </div>
         </div>
         {areDetailsVisible && (
           <div className="list-item__details">{this.renderDetails()}</div>
@@ -409,6 +343,7 @@ class ListItem extends PureComponent {
 }
 
 ListItem.propTypes = {
+  currentUser: UserPropType.isRequired,
   data: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])
   ),
@@ -417,13 +352,17 @@ ListItem.propTypes = {
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
-  toggleItem: PropTypes.func,
+  toggle: PropTypes.func.isRequired,
   updateItemDetails: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default withRouter(
   connect(
-    null,
-    { clearVote, cloneItem, setVote, updateItemDetails }
+    mapStateToProps,
+    { clearVote, cloneItem, setVote, toggle, updateItemDetails }
   )(ListItem)
 );

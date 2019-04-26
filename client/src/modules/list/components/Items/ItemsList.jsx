@@ -1,39 +1,17 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 
 import ListItem from 'modules/list/components/Items/ListItem';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { toggle } from './model/actions';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
-class ItemsList extends Component {
+class ItemsList extends PureComponent {
   state = {
     limit: DISPLAY_LIMIT
   };
 
   showMore = () => {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
-  };
-
-  toggleItem = (authorId, id, isOrdered) => {
-    const {
-      toggle,
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-    const {
-      currentUser: { name, id: userId }
-    } = this.props;
-    const isSameAuthor = authorId === userId;
-
-    return isSameAuthor
-      ? toggle(isOrdered, id, listId, name)
-      : toggle(isOrdered, id, listId);
   };
 
   render() {
@@ -49,11 +27,7 @@ class ItemsList extends Component {
         ) : (
           <ul className="items-list">
             {items.slice(0, limit).map(item => (
-              <ListItem
-                data={item}
-                key={item._id}
-                toggleItem={this.toggleItem}
-              />
+              <ListItem data={item} key={item._id} />
             ))}
           </ul>
         )}
@@ -70,20 +44,7 @@ class ItemsList extends Component {
 }
 
 ItemsList.propTypes = {
-  currentUser: UserPropType.isRequired,
-  items: PropTypes.arrayOf(PropTypes.object),
-  match: RouterMatchPropType.isRequired,
-
-  toggle: PropTypes.func
+  items: PropTypes.arrayOf(PropTypes.object)
 };
 
-const mapStateToProps = state => ({
-  currentUser: getCurrentUser(state)
-});
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    { toggle }
-  )(ItemsList)
-);
+export default ItemsList;

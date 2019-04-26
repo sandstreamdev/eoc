@@ -14,7 +14,7 @@
   }
 
   &--done {
-    input ~ .list-item__icon {
+    input ~ .list-item__toggle .list-item__icon {
       &:after {
         background-color: $success;
         border-color: $success;
@@ -34,7 +34,7 @@
   }
 
   &--restore {
-    input ~ .list-item__icon {
+    input ~ .list-item__toggle .list-item__icon {
       color: $text-normal;
       &:after {
         background-color: $restore-blue;
@@ -105,6 +105,16 @@
     text-transform: capitalize;
   }
 
+  &__toggle {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    right: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    border: 0;
+  }
+
   &__icon {
     position: absolute;
     right: 0;
@@ -143,16 +153,6 @@
       transition: all 200ms ease-in;
       background-position: center;
     }
-  }
-
-  &__icon-preloader {
-    position: absolute;
-    width: 28px;
-    height: 28px;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -50%);
-    border: 0;
   }
 
   &__info {
