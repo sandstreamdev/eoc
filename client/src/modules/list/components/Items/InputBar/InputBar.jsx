@@ -23,6 +23,7 @@ class InputBar extends Component {
 
   componentDidUpdate() {
     const { isFormVisible, pending } = this.state;
+
     if (isFormVisible && !pending) {
       this.input.current.focus();
     }
@@ -68,6 +69,7 @@ class InputBar extends Component {
       <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
         <input
           className="input-bar__input primary-input"
+          disabled={pending}
           name="item name"
           onChange={this.handleNameChange}
           placeholder="What is missing?"
@@ -75,7 +77,6 @@ class InputBar extends Component {
           required
           type="text"
           value={itemName}
-          disabled={pending}
         />
         <input className="input-bar__submit" type="submit" />
       </form>

@@ -31,15 +31,17 @@ class CardItem extends PureComponent {
   render() {
     const {
       color,
-      description,
-      doneItemsCount,
-      isFavourite,
-      isPrivate,
-      membersCount,
-      name,
+      item: {
+        description,
+        doneItemsCount,
+        isFavourite,
+        isPrivate,
+        membersCount,
+        name,
+        unhandledItemsCount
+      },
       onCardClick,
-      route,
-      unhandledItemsCount
+      route
     } = this.props;
 
     const { pending } = this.state;
@@ -94,14 +96,8 @@ export default CardItem;
 
 CardItem.propTypes = {
   color: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  doneItemsCount: PropTypes.number,
-  isFavourite: PropTypes.bool,
-  isPrivate: PropTypes.bool,
-  membersCount: PropTypes.number,
-  name: PropTypes.string,
+  item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   route: PropTypes.string.isRequired,
-  unhandledItemsCount: PropTypes.number,
 
   onCardClick: PropTypes.func.isRequired,
   onFavClick: PropTypes.func

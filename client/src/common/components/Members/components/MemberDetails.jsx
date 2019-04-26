@@ -300,7 +300,7 @@ MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
-  isCurrentUserAnOwner: PropTypes.bool.isRequired,
+  isCurrentUserAnOwner: PropTypes.bool,
   isGuest: PropTypes.bool,
   isOwner: PropTypes.bool,
   isPrivate: PropTypes.bool,

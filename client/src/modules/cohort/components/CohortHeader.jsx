@@ -23,10 +23,10 @@ class CohortHeader extends PureComponent {
     const trimmedDescription = description.trim();
 
     this.state = {
-      descriptionInput: trimmedDescription,
+      descriptionInputValue: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
-      nameInput: name,
+      nameInputValue: name,
       pendingForDescription: false,
       pendingForName: false
     };
@@ -36,7 +36,7 @@ class CohortHeader extends PureComponent {
     const {
       isDescriptionTextareaVisible,
       isNameInputVisible,
-      nameInput
+      nameInputValue
     } = this.state;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
@@ -46,7 +46,7 @@ class CohortHeader extends PureComponent {
 
     if (
       isNameInputVisible &&
-      nameInput.trim().length >= 1 &&
+      nameInputValue.trim().length >= 1 &&
       isClickedOutside
     ) {
       this.handleNameUpdate();
@@ -81,7 +81,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ nameInput: value });
+    this.setState({ nameInputValue: value });
   };
 
   handleDescriptionChange = event => {
@@ -89,7 +89,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ descriptionInput: value });
+    this.setState({ descriptionInputValue: value });
   };
 
   handleNameUpdate = () => {
@@ -100,8 +100,8 @@ class CohortHeader extends PureComponent {
         params: { id }
       }
     } = this.props;
-    const { nameInput } = this.state;
-    const nameToUpdate = nameInput.trim();
+    const { nameInputValue } = this.state;
+    const nameToUpdate = nameInputValue.trim();
     const { name: previousName } = details;
 
     if (previousName === nameToUpdate) {
@@ -112,13 +112,13 @@ class CohortHeader extends PureComponent {
     if (nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
 
-      updateCohort(id, { name: nameToUpdate }).finally(() => {
+      updateCohort(id, { name: nameToUpdate }).finally(() =>
         this.setState({
           isNameInputVisible: false,
-          nameInput: nameToUpdate,
+          nameInputValue: nameToUpdate,
           pendingForName: false
-        });
-      });
+        })
+      );
     }
   };
 
@@ -130,32 +130,32 @@ class CohortHeader extends PureComponent {
         params: { id }
       }
     } = this.props;
-    const { descriptionInput } = this.state;
+    const { descriptionInputValue } = this.state;
     const { description: previousDescription } = details;
 
-    if (previousDescription.trim() === descriptionInput.trim()) {
+    if (previousDescription.trim() === descriptionInputValue.trim()) {
       this.setState({ isDescriptionTextareaVisible: false });
       return;
     }
 
-    const updatedDescription = _isEmpty(_trim(descriptionInput))
+    const updatedDescription = _isEmpty(_trim(descriptionInputValue))
       ? ''
-      : _trim(descriptionInput);
+      : _trim(descriptionInputValue);
 
     this.setState({ pendingForDescription: true });
 
-    updateCohort(id, { description: updatedDescription }).finally(() => {
+    updateCohort(id, { description: updatedDescription }).finally(() =>
       this.setState({
         isDescriptionTextareaVisible: false,
-        descriptionInput: updatedDescription,
+        descriptionInputValue: updatedDescription,
         pendingForDescription: false
-      });
-    });
+      })
+    );
   };
 
   renderDescription = () => {
     const {
-      descriptionInput,
+      descriptionInputValue,
       isDescriptionTextareaVisible,
       pendingForDescription
     } = this.state;
@@ -170,7 +170,7 @@ class CohortHeader extends PureComponent {
 
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
-        description={descriptionInput}
+        description={descriptionInputValue}
         disabled={pendingForDescription}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
@@ -203,7 +203,7 @@ class CohortHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { isNameInputVisible, nameInput, pendingForName } = this.state;
+    const { isNameInputVisible, nameInputValue, pendingForName } = this.state;
     const {
       details: { isOwner, name }
     } = this.props;
@@ -211,7 +211,7 @@ class CohortHeader extends PureComponent {
     return isNameInputVisible ? (
       <NameInput
         disabled={pendingForName}
-        name={nameInput}
+        name={nameInputValue}
         onClick={this.handleClick}
         onKeyPress={this.handleKeyPress}
         onNameChange={this.handleNameChange}

@@ -98,14 +98,6 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isArchived;
   };
 
-  checkIfOwner = () => {
-    const { cohortDetails } = this.props;
-    if (cohortDetails && cohortDetails.isOwner) {
-      return true;
-    }
-    return false;
-  };
-
   handleDialogContext = context => () =>
     this.setState({ dialogContext: context });
 
@@ -158,7 +150,7 @@ class Cohort extends PureComponent {
       return null;
     }
 
-    const { isArchived, name } = cohortDetails;
+    const { isArchived, isOwner, name } = cohortDetails;
     const {
       areArchivedListsVisible,
       dialogContext,
@@ -200,7 +192,7 @@ class Cohort extends PureComponent {
               <CohortHeader details={cohortDetails} />
               <div className="cohort__details">
                 <MembersBox
-                  isCurrentUserAnOwner={this.checkIfOwner()}
+                  isCurrentUserAnOwner={isOwner}
                   members={members}
                   route={Routes.COHORT}
                 />
@@ -213,7 +205,7 @@ class Cohort extends PureComponent {
                   placeholder={`There are no lists in the ${name} cohort!`}
                   route={Routes.LIST}
                 />
-                {!isArchived && this.checkIfOwner() && (
+                {!isArchived && isOwner && (
                   <button
                     className="link-button"
                     onClick={this.handleDialogContext(DialogContext.ARCHIVE)}

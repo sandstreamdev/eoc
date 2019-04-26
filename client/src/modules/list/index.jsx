@@ -67,11 +67,6 @@ class List extends Component {
     return !list || (list && !list.isArchived);
   };
 
-  checkIfOwner = () => {
-    const { list } = this.props;
-    return list && list.isOwner;
-  };
-
   handleDialogContext = context => () =>
     this.setState({ dialogContext: context });
 
@@ -103,7 +98,7 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, isArchived, isPrivate, name } = list;
+    const { cohortId, isArchived, isOwner, isPrivate, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
 
@@ -131,7 +126,7 @@ class List extends Component {
                     <InputBar />
                   </ItemsContainer>
                   <ItemsContainer archived items={orderedItems} />
-                  {!isArchived && this.checkIfOwner() && (
+                  {!isArchived && isOwner && (
                     <button
                       className="link-button"
                       onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
@@ -150,7 +145,7 @@ class List extends Component {
                 </button>
                 {isMembersBoxVisible && (
                   <MembersBox
-                    isCurrentUserAnOwner={this.checkIfOwner()}
+                    isCurrentUserAnOwner={isOwner}
                     isPrivate={isPrivate}
                     members={members}
                     route={Routes.LIST}

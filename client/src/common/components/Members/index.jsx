@@ -156,7 +156,7 @@ class MembersBox extends PureComponent {
 }
 
 MembersBox.propTypes = {
-  isCurrentUserAnOwner: PropTypes.bool.isRequired,
+  isCurrentUserAnOwner: PropTypes.bool,
   isPrivate: PropTypes.bool,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
   route: PropTypes.string.isRequired,
