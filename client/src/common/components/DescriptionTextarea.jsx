@@ -53,7 +53,7 @@ class DescriptionTextarea extends PureComponent {
 
 DescriptionTextarea.propTypes = {
   description: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
 
   onClick: PropTypes.func.isRequired,
   onDescriptionChange: PropTypes.func.isRequired,

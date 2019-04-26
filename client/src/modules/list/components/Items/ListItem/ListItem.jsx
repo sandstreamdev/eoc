@@ -73,7 +73,6 @@ class ListItem extends PureComponent {
     event.stopPropagation();
 
     this.setState(({ done }) => ({ done: !done, pendingForToggling: true }));
-    // this.setState({ pendingForToggling: true });
 
     const abortableToggling = makeAbortablePromise(
       toggleItem(authorId, id, isOrdered)
@@ -231,7 +230,7 @@ class ListItem extends PureComponent {
         <VotingBox
           isVoted={isVoted}
           disabled={pendingForVoting}
-          onVoting={this.handleVoting}
+          onVote={this.handleVoting}
           votesCount={votesCount}
         />
         {pendingForVoting && <Preloader size={PreloaderSize.SMALL} />}

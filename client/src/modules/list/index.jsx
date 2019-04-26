@@ -35,9 +35,9 @@ class List extends Component {
     if (this.checkIfArchived()) {
       this.setState({ pendingForDetails: true });
 
-      this.fetchData().finally(() => {
-        this.setState({ pendingForDetails: false });
-      });
+      this.fetchData().finally(() =>
+        this.setState({ pendingForDetails: false })
+      );
     }
   }
 

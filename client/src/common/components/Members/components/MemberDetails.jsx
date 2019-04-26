@@ -96,9 +96,7 @@ class MemberDetails extends PureComponent {
 
     action(id, userId, selectedRole)
       .then(() => this.setState({ selectedRole }))
-      .finally(() => {
-        this.setState({ pending: false });
-      });
+      .finally(() => this.setState({ pending: false }));
   };
 
   handleChangingRoles = event => {

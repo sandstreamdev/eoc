@@ -23,7 +23,9 @@ class InputBar extends Component {
 
   componentDidUpdate() {
     const { isFormVisible, pending } = this.state;
-    isFormVisible && !pending && this.input.current.focus();
+    if (isFormVisible && !pending) {
+      this.input.current.focus();
+    }
   }
 
   handleNameChange = event =>

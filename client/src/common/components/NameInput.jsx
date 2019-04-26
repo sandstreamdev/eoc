@@ -51,7 +51,7 @@ class NameInput extends PureComponent {
 }
 
 NameInput.propTypes = {
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
   name: PropTypes.string.isRequired,
 
   onClick: PropTypes.func.isRequired,

@@ -98,7 +98,7 @@ class Form extends PureComponent {
 Form.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
 
   onDescriptionChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,

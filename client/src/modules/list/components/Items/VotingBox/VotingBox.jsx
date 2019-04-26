@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import ThumbIcon from 'assets/images/thumbs-up-solid.svg';
 
-const VotingBox = ({ disabled, isVoted, onVoting, votesCount }) => (
+const VotingBox = ({ disabled, isVoted, onVote, votesCount }) => (
   <button
     className={classNames('voting-box', {
       'voting-box__voted': isVoted
@@ -12,7 +12,7 @@ const VotingBox = ({ disabled, isVoted, onVoting, votesCount }) => (
     disabled={disabled}
     onClick={e => {
       e.stopPropagation();
-      onVoting();
+      onVote();
     }}
     type="button"
   >
@@ -26,11 +26,11 @@ const VotingBox = ({ disabled, isVoted, onVoting, votesCount }) => (
 );
 
 VotingBox.propTypes = {
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
   isVoted: PropTypes.bool.isRequired,
   votesCount: PropTypes.number.isRequired,
 
-  onVoting: PropTypes.func.isRequired
+  onVote: PropTypes.func.isRequired
 };
 
 export default VotingBox;
