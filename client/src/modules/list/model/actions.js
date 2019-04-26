@@ -244,7 +244,7 @@ export const createList = data => dispatch => {
   return postData(`${ENDPOINT_URL}/lists/create`, data)
     .then(resp => resp.json())
     .then(json => dispatch(createListSuccess(json)))
-    .catch(err => {
+    .catch(() => {
       dispatch(createListFailure());
       createNotificationWithTimeout(
         dispatch,
@@ -444,6 +444,11 @@ export const addListViewer = (listId, email) => dispatch => {
     .then(resp => resp.json())
     .then(json => {
       dispatch(addViewerSuccess(json, listId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message || 'Viewer added successfully.'
+      );
     })
     .catch(err => {
       dispatch(addViewerFailure());
@@ -481,7 +486,7 @@ export const removeListMember = (listId, userId, isOwner) => dispatch => {
     });
 };
 
-export const addOwnerRole = (listId, userId, role) => dispatch => {
+export const addOwnerRole = (listId, userId) => dispatch => {
   dispatch(addOwnerRoleRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/add-owner-role`, {
     userId
@@ -505,7 +510,7 @@ export const addOwnerRole = (listId, userId, role) => dispatch => {
     });
 };
 
-export const removeOwnerRole = (listId, userId, role) => dispatch => {
+export const removeOwnerRole = (listId, userId) => dispatch => {
   dispatch(removeOwnerRoleRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/remove-owner-role`, {
     userId

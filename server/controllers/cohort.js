@@ -133,6 +133,7 @@ const getCohortDetails = (req, resp) => {
       .status(404)
       .send({ message: `Data of cohort id: ${req.params.id} not found.` });
   }
+
   Cohort.findOne({
     _id: req.params.id,
     $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
@@ -148,28 +149,28 @@ const getCohortDetails = (req, resp) => {
       }
 
       const {
-        ownerIds: owners,
+        ownerIds: ownersCollection,
         _id,
         isArchived,
         description,
         name,
-        memberIds: membersData
+        memberIds: membersCollection
       } = doc;
 
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
 
-      const ownerIds = owners.map(owner => owner.id);
+      const ownerIds = ownersCollection.map(owner => owner.id);
+      const isCurrentUserAnOwner = checkRole(ownerIds, req.user._id);
       const members = responseWithCohortMembers(
-        [...membersData, ...owners],
-        owners
+        [...membersCollection, ...ownersCollection],
+        ownersCollection
       );
-      const isOwner = checkRole(ownerIds, req.user._id);
 
       resp.status(200).json({
         _id,
-        isOwner,
+        isOwner: isCurrentUserAnOwner,
         isArchived,
         description,
         name,
@@ -186,6 +187,7 @@ const getCohortDetails = (req, resp) => {
 
 const deleteCohortById = (req, resp) => {
   let documentName = '';
+
   Cohort.findOne({ _id: req.params.id, ownerIds: req.user._id })
     .exec()
     .then(doc => {
@@ -199,14 +201,15 @@ const deleteCohortById = (req, resp) => {
       return List.deleteMany({ cohortId: req.params.id }).exec();
     })
     .then(() => Cohort.deleteOne({ _id: req.params.id }).exec())
-    .then(() => {
+    .then(() =>
       resp
         .status(200)
-        .send({ message: `Cohort "${documentName}" successfully deleted.` });
-    })
+        .send({ message: `Cohort "${documentName}" successfully deleted.` })
+    )
     .catch(err => {
       if (err instanceof NotFoundException) {
         const { status, message } = err;
+
         return resp.status(status).send({ message });
       }
 
@@ -350,11 +353,11 @@ const removeMember = (req, resp) => {
         { $pull: { viewersIds: userId } }
       ).exec();
     })
-    .then(() => {
+    .then(() =>
       resp.status(200).send({
         message: 'Member successfully removed from cohort.'
-      });
-    })
+      })
+    )
     .catch(() =>
       resp.status(400).send({
         message: "Can't remove member from cohort."

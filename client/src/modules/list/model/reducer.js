@@ -86,9 +86,7 @@ const membersReducer = (state, action) => {
               isOwner: true,
               isMember: true
             }
-          : {
-              ...member
-            }
+          : member
       );
     }
     case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
@@ -102,9 +100,7 @@ const membersReducer = (state, action) => {
               ...member,
               isOwner: false
             }
-          : {
-              ...member
-            }
+          : member
       );
     }
     case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS: {
@@ -118,9 +114,7 @@ const membersReducer = (state, action) => {
               ...member,
               isMember: true
             }
-          : {
-              ...member
-            }
+          : member
       );
     }
     case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
@@ -135,9 +129,7 @@ const membersReducer = (state, action) => {
               isMember: false,
               isOwner: false
             }
-          : {
-              ...member
-            }
+          : member
       );
     }
     default:

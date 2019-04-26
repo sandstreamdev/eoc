@@ -265,9 +265,6 @@ const getListData = (req, resp) => {
           .status(200)
           .json({ cohortId, _id, isArchived, isPrivate, name });
       }
-      // const allMembers = isPrivate
-      //   ? [...members, ...owners]
-      //   : uniqueMembers(cohortMembers, [...members, ...owners]);
 
       const ownerIds = ownersCollection.map(owner => owner.id);
       const memberIds = membersCollection.map(member => member.id);
@@ -495,7 +492,6 @@ const removeFromFavourites = (req, resp) => {
   );
 };
 
-/** TODO: this method should be now deleted as every owner can be deleted as member by remove member method */
 const removeOwner = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
@@ -738,6 +734,9 @@ const addViewer = (req, resp) => {
   } = req;
   const { id: listId } = req.params;
   const { email } = req.body;
+  let list;
+  let user;
+  let cohortMembers;
 
   List.findOne({
     _id: listId,
@@ -745,66 +744,38 @@ const addViewer = (req, resp) => {
   })
     .populate('cohortId', 'ownerIds memberIds')
     .exec()
-    .then(list => {
-      const { cohortId: cohort } = list;
-      let cohortMembers;
+    .then(doc => {
+      list = doc;
+
+      return User.findOne({ email }).exec();
+    })
+    .then(userData => {
+      const { _id: newMemberId } = userData;
+      const { cohortId: cohort, viewersIds } = list;
+      const userNotExists = !viewersIds.some(id => id.equals(newMemberId));
+      user = userData;
+
+      if (userNotExists) {
+        list.viewersIds.push(newMemberId);
+      }
 
       if (cohort) {
         const { memberIds } = cohort;
         cohortMembers = memberIds;
       }
 
-      if (list) {
-        return User.findOne({ email })
-          .exec()
-          .then(user => {
-            if (cohortMembers) {
-              return { user, list, cohortMembers };
-            }
-
-            return { user, list };
-          })
-          .catch(() => {
-            throw new BadRequestException('User data not found.');
-          });
-      }
-
-      return resp
-        .status(400)
-        .send({ message: "You don't have permission to add new viewer" });
+      return list.save();
     })
-    .then(data => {
-      const {
-        list,
-        user,
-        user: { _id: newMemberId },
-        list: { viewersIds }
-      } = data;
+    .then(() => {
+      let userToSend;
 
-      const userNotExists = !viewersIds.some(id => id.equals(newMemberId));
-
-      if (userNotExists) {
-        list.viewersIds.push(newMemberId);
+      if (cohortMembers) {
+        userToSend = responseWithListMember(user, cohortMembers);
+      } else {
+        userToSend = responseWithListMember(user, []);
       }
 
-      return list
-        .save()
-        .then(() => {
-          let userToSend;
-
-          if (data.cohortMembers) {
-            userToSend = responseWithListMember(user, data.cohortMembers);
-          } else {
-            userToSend = responseWithListMember(user, []);
-          }
-
-          return resp.status(200).json(userToSend);
-        })
-        .catch(() => {
-          throw new BadRequestException(
-            'An error occurred while adding new viewer. Please try again.'
-          );
-        });
+      resp.status(200).json(userToSend);
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
