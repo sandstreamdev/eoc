@@ -11,7 +11,7 @@ import { ListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
-import { ItemActionTypes } from '../components/InputBar/model/actionTypes';
+import { ItemActionTypes } from '../components/Items/model/actionTypes';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -573,31 +573,6 @@ export const removeMemberRole = (listId, userId) => dispatch => {
     })
     .catch(err => {
       dispatch(removeMemberRoleFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message
-      );
-    });
-};
-
-export const updateItemDetails = (listId, itemId, data) => dispatch => {
-  dispatch(updateItemDetailsRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
-    ...data,
-    itemId
-  })
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch(updateItemDetailsSuccess(listId, itemId, data));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
-    .catch(err => {
-      dispatch(updateItemDetailsFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

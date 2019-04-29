@@ -26,7 +26,6 @@
     line-height: 1.2;
     color: $text-light;
     padding: 8px 0 16px;
-    cursor: pointer;
   }
 
   &__heading {
@@ -37,7 +36,6 @@
     font-weight: 700;
     line-height: 1;
     color: $text-normal;
-    cursor: pointer;
   }
 
   &__button {
@@ -46,5 +44,9 @@
 
   &__desc-textarea {
     margin-bottom: 8px;
+  }
+
+  &--clickable {
+    cursor: pointer;
   }
 }
