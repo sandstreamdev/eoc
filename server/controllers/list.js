@@ -40,9 +40,16 @@ const createList = (req, resp) => {
     Cohort.findOne({ _id: cohortId })
       .then(cohort => {
         const { memberIds } = cohort;
-        list.viewersIds = memberIds;
 
-        return list.save();
+        if (checkIfArrayContainsUserId(memberIds, userId)) {
+          list.viewersIds = memberIds;
+
+          return list.save();
+        }
+
+        throw new BadRequestException(
+          'You need to be cohort member to create new lists'
+        );
       })
       .then(() =>
         resp
