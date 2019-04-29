@@ -45,7 +45,7 @@ const getCohortsMetaData = (req, resp) => {
   } = req;
 
   Cohort.find({
-    $or: [{ ownerIds: userId }, { memberIds: userId }],
+    memberIds: userId,
     isArchived: false
   })
     .select('_id name description favIds memberIds ownerIds')
@@ -70,7 +70,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
   } = req;
   Cohort.find(
     {
-      $or: [{ ownerIds: userId }, { memberIds: userId }],
+      memberIds: userId,
       isArchived: true
     },
     '_id name description favIds isArchived memberIds ownerIds',
@@ -97,6 +97,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
 const updateCohortById = (req, resp) => {
   const { description, isArchived, name } = req.body;
   const { id } = req.params;
+  const { _id: ownerId } = req.user;
 
   const dataToUpdate = filter(x => x !== undefined)({
     description,
@@ -107,7 +108,7 @@ const updateCohortById = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: id,
-      $or: [{ ownerIds: req.user._id }]
+      ownerIds: ownerId
     },
     dataToUpdate,
     (err, doc) => {
@@ -186,21 +187,25 @@ const getCohortDetails = (req, resp) => {
 };
 
 const deleteCohortById = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const {
+    user: { _id: ownerId }
+  } = req;
   let documentName = '';
 
-  Cohort.findOne({ _id: req.params.id, ownerIds: req.user._id })
+  Cohort.findOne({ _id: cohortId, ownerIds: ownerId })
     .exec()
     .then(doc => {
       if (!doc) {
         throw new NotFoundException(
-          `Data of cohort id: ${req.params.id} not found.`
+          `Data of cohort id: ${cohortId} not found.`
         );
       }
 
       documentName = doc.name;
-      return List.deleteMany({ cohortId: req.params.id }).exec();
+      return List.deleteMany({ cohortId }).exec();
     })
-    .then(() => Cohort.deleteOne({ _id: req.params.id }).exec())
+    .then(() => Cohort.deleteOne({ _id: cohortId }).exec())
     .then(() =>
       resp
         .status(200)
@@ -399,7 +404,7 @@ const addMember = (req, resp) => {
   let currentCohort;
   let newMember;
 
-  Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUserId }] })
+  Cohort.findOne({ _id: cohortId, ownerIds: currentUserId })
     .exec()
     .then(cohort => {
       if (!cohort) {

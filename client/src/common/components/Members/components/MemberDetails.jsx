@@ -288,15 +288,13 @@ class MemberDetails extends PureComponent {
             isOwner
           )}
         </li>
-        {route === Routes.LIST && (
-          <li className="member-details__option">
-            {this.renderChangeRoleOption(
-              UserRoles.MEMBER,
-              isMemberInfoVisible,
-              isMember
-            )}
-          </li>
-        )}
+        <li className="member-details__option">
+          {this.renderChangeRoleOption(
+            UserRoles.MEMBER,
+            isMemberInfoVisible,
+            isMember
+          )}
+        </li>
         {(route === Routes.COHORT || privateList || isGuest) && (
           <li className="member-details__option member-details__option--removing">
             {this.renderRemoveOption()}
