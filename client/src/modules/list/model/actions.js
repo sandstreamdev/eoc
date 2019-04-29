@@ -159,19 +159,6 @@ const removeMemberSuccess = (listId, userId) => ({
   payload: { listId, userId }
 });
 
-const updateItemDetailsSuccess = (listId, itemId, data) => ({
-  type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
-  payload: { listId, itemId, data }
-});
-
-const updateItemDetailsRequest = () => ({
-  type: ItemActionTypes.UPDATE_DETAILS_REQUEST
-});
-
-const updateItemDetailsFailure = () => ({
-  type: ItemActionTypes.UPDATE_DETAILS_FAILURE
-});
-
 const addOwnerRoleRequest = () => ({
   type: ListActionTypes.ADD_OWNER_ROLE_REQUEST
 });
