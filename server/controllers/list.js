@@ -215,8 +215,6 @@ const getListData = (req, resp) => {
     _id: listId,
     $or: [{ viewersIds: userId }]
   })
-    // .populate('memberIds', 'avatarUrl displayName _id')
-    // .populate('ownerIds', 'avatarUrl displayName _id')
     .populate('viewersIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
@@ -231,14 +229,7 @@ const getListData = (req, resp) => {
         return Cohort.findOne({ _id: cohortId }).exec();
       }
     })
-    .then(cohort => {
-      if (!cohort) {
-        return [];
-      }
-
-      const { memberIds } = cohort;
-      return memberIds;
-    })
+    .then(cohort => (cohort ? cohort.memberIds : []))
     .then(cohortMembers => {
       const {
         _id,
@@ -258,21 +249,16 @@ const getListData = (req, resp) => {
           .json({ cohortId, _id, isArchived, isPrivate, name });
       }
 
-      /** TODO: przenieść mapowanie do wnętrza funkcji */
-      const arrayOfOwnerIds = ownerIds.map(id => id.toString());
-      const arrayOfMemberIds = memberIds.map(id => id.toString());
-      const cohortMembersIds = cohortMembers.map(id => id.toString());
-
       const members = responseWithListMembers(
         viewersCollection,
-        arrayOfMemberIds,
-        arrayOfOwnerIds,
-        cohortMembersIds
+        memberIds,
+        ownerIds,
+        cohortMembers
       );
 
       const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
       const items = responseWithItems(userId, list);
-      const isGuest = checkIfGuest(cohortMembersIds, req.user._id);
+      const isGuest = checkIfGuest(cohortMembers, req.user._id);
 
       return resp.status(200).json({
         _id,
@@ -728,7 +714,7 @@ const addViewer = (req, resp) => {
   const { email } = req.body;
   let list;
   let user;
-  let cohortMembers;
+  let cohortMembers = [];
 
   List.findOne({
     _id: listId,
@@ -767,13 +753,7 @@ const addViewer = (req, resp) => {
       return list.save();
     })
     .then(() => {
-      let userToSend;
-
-      if (cohortMembers) {
-        userToSend = responseWithListMember(user, cohortMembers);
-      } else {
-        userToSend = responseWithListMember(user, []);
-      }
+      const userToSend = responseWithListMember(user, cohortMembers);
 
       resp.status(200).json(userToSend);
     })
