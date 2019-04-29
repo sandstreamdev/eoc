@@ -139,7 +139,6 @@ const getCohortDetails = (req, resp) => {
     $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
   })
     .populate('memberIds', 'avatarUrl displayName _id')
-    .populate('ownerIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -149,7 +148,7 @@ const getCohortDetails = (req, resp) => {
       }
 
       const {
-        ownerIds: ownersCollection,
+        ownerIds,
         _id,
         isArchived,
         description,
@@ -161,11 +160,10 @@ const getCohortDetails = (req, resp) => {
         return resp.status(200).json({ _id, isArchived, name });
       }
 
-      const ownerIds = ownersCollection.map(owner => owner.id);
       const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
       const members = responseWithCohortMembers(
-        [...membersCollection, ...ownersCollection],
-        ownersCollection
+        [...membersCollection],
+        ownerIds
       );
 
       resp.status(200).json({
