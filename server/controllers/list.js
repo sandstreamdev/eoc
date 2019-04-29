@@ -193,7 +193,8 @@ const addItemToList = (req, resp) => {
     { $push: { items: item } },
     { new: true },
     (err, doc) => {
-      const newItem = doc.items.slice(-1)[0];
+      const { items } = doc;
+      const newItem = items && items.slice(-1)[0];
 
       if (err) {
         return resp.status(400).send({
