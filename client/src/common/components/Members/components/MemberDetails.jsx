@@ -158,6 +158,7 @@ class MemberDetails extends PureComponent {
   renderChangeRoleOption = (role, isInfoVisible, checked) => {
     const { route } = this.props;
     const label = role === UserRoles.OWNER ? 'owner' : 'member';
+    const disabled = route === Routes.COHORT && role === UserRoles.MEMBER;
 
     return (
       <Fragment>
@@ -177,8 +178,9 @@ class MemberDetails extends PureComponent {
           </button>
           <SwitchButton
             checked={checked}
+            disabled={disabled}
             label={label}
-            onChange={this.handleChangingRoles}
+            onChange={disabled ? null : this.handleChangingRoles}
             value={role}
           />
         </div>
