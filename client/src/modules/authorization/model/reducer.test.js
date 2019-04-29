@@ -27,9 +27,7 @@ describe('Authorization reducer', () => {
           avatarUrl: 'http://www.example.com',
           id: '12345'
         },
-        {
-          type: AuthorizationActionTypes.LOGOUT_USER_SUCCESS
-        }
+        { type: AuthorizationActionTypes.LOGOUT_USER_SUCCESS }
       )
     ).toEqual(null);
   });

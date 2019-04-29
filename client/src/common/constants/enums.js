@@ -22,5 +22,12 @@ export const Routes = Object.freeze({
 
 export const UserRoles = Object.freeze({
   MEMBER: 'userRoles/MEMBER',
-  OWNER: 'userRoles/OWNER'
+  OWNER: 'userRoles/OWNER',
+  VIEWER: 'userRoles/VIEWER'
+});
+
+export const UserRolesToDisplay = Object.freeze({
+  MEMBER: 'member',
+  OWNER: 'owner',
+  VIEWER: 'viewer'
 });

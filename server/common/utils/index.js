@@ -1,6 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
 const _map = require('lodash/map');
-const _isArray = require('lodash/isArray');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -9,11 +8,6 @@ const filter = f => object =>
   fromEntries(
     Object.entries(object).filter(([key, value]) => f(value, key, object))
   );
-
-const checkRole = (idsArray, userIdFromReq) => {
-  const userId = ObjectId(userIdFromReq);
-  return idsArray.some(id => id.equals(userId));
-};
 
 const isValidMongoId = id => ObjectId.isValid(id);
 
@@ -85,7 +79,7 @@ const responseWithItem = (item, userId) => {
 const responseWithCohorts = (cohorts, userId) =>
   _map(cohorts, ({ _doc }) => {
     const { favIds, memberIds, ownerIds, ...rest } = _doc;
-    const membersCount = [...memberIds, ...ownerIds].length;
+    const membersCount = memberIds.length;
 
     return {
       ...rest,
@@ -95,8 +89,8 @@ const responseWithCohorts = (cohorts, userId) =>
   });
 
 const responseWithCohort = (cohort, userId) => {
-  const { _id, description, favIds, memberIds, name, ownerIds } = cohort;
-  const membersCount = [...memberIds, ...ownerIds].length;
+  const { _id, description, favIds, memberIds, name } = cohort;
+  const membersCount = memberIds.length;
 
   return {
     _id,
@@ -107,8 +101,19 @@ const responseWithCohort = (cohort, userId) => {
   };
 };
 
-const checkIfOwner = (ownerIds, userId) =>
-  ownerIds.indexOf(userId.toString()) > -1;
+const checkIfArrayContainsUserId = (idsArray, userId) => {
+  const arrayOfStrings = idsArray.map(id => id.toString());
+  const userIdAsString = userId.toString();
+
+  return arrayOfStrings.indexOf(userIdAsString) !== -1;
+};
+
+const checkIfGuest = (cohortMembersIds, userId) => {
+  const idsArray = cohortMembersIds.map(id => id.toString());
+  const userIdAsString = userId.toString();
+
+  return idsArray.indexOf(userIdAsString) === -1;
+};
 
 const responseWithCohortMembers = (users, ownerIds) =>
   users.map(user => {
@@ -118,7 +123,8 @@ const responseWithCohortMembers = (users, ownerIds) =>
 
     return {
       ...user._doc,
-      isOwner: checkIfOwner(ownerIds, userId)
+      isMember: true,
+      isOwner: checkIfArrayContainsUserId(ownerIds, userId)
     };
   });
 
@@ -132,74 +138,59 @@ const checkIfCohortMember = (cohort, userId) => {
   return false;
 };
 
-const checkIfGuest = (data, userId) => {
-  if (data) {
-    return _isArray(data)
-      ? !data.some(member => member._id.equals(userId))
-      : ![...data.memberIds, ...data.ownerIds].some(id => id.equals(userId));
-  }
-
-  return true;
-};
-
-const responseWithCohortMember = (data, ownerIds) => {
-  const { avatarUrl, displayName, newMemberId } = data;
+const responseWithCohortMember = (user, ownerIds) => {
+  const { avatarUrl, displayName, newMemberId } = user;
 
   return {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isOwner: checkIfOwner(ownerIds, newMemberId)
+    isOwner: checkIfArrayContainsUserId(ownerIds, newMemberId),
+    isMember: true
   };
 };
 
-const responseWithListMember = (data, ownerIds, cohort) => {
-  const { avatarUrl, displayName, newMemberId } = data;
+const responseWithListMember = (user, cohortMembers) => {
+  const { avatarUrl, displayName, _id: newMemberId } = user;
 
   return {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isGuest: checkIfGuest(cohort, newMemberId),
-    isOwner: checkIfOwner(ownerIds, newMemberId)
+    isGuest: checkIfGuest(cohortMembers, newMemberId),
+    isMember: false,
+    isOwner: false
   };
 };
 
-const responseWithListMembers = (users, ownerIds, cohortMembers) =>
-  users.map(user => ({
+const responseWithListMembers = (
+  viewers,
+  memberIds,
+  ownerIds,
+  cohortMembersIds
+) =>
+  viewers.map(user => ({
     ...user._doc,
-    isOwner: checkIfOwner(ownerIds, user._doc._id),
-    isGuest: checkIfGuest(cohortMembers, user._doc._id)
+    isOwner: checkIfArrayContainsUserId(ownerIds, user._doc._id),
+    isGuest: checkIfGuest(cohortMembersIds, user._doc._id),
+    isMember: checkIfArrayContainsUserId(memberIds, user._doc._id)
   }));
 
-/**
- *  This method returns array with no duplicated user's ids. Duplicates of user's
- *  ids may occur in the cohort's public list case because in that case cohort's
- *  and list's members arrays have to be merged.
- */
-const uniqueMembers = (cohortMembers, listMembers) =>
-  Object.values(
-    [...cohortMembers, ...listMembers].reduce((prev, member) => {
-      prev[member._id] = member; // eslint-disable-line no-param-reassign
-      return prev;
-    }, {})
-  );
-
 module.exports = {
-  uniqueMembers,
+  checkIfArrayContainsUserId,
   checkIfCohortMember,
-  checkRole,
+  checkIfGuest,
   filter,
   isUserFavourite,
   isValidMongoId,
   responseWithCohort,
+  responseWithCohortMember,
+  responseWithCohortMembers,
   responseWithCohorts,
   responseWithItem,
   responseWithItems,
   responseWithList,
-  responseWithLists,
-  responseWithCohortMember,
   responseWithListMember,
   responseWithListMembers,
-  responseWithCohortMembers
+  responseWithLists
 };

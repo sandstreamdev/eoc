@@ -12,11 +12,15 @@ import {
   removeCohortMember
 } from 'modules/cohort/model/actions';
 import {
-  changeRole as changeRoleInList,
+  addOwnerRole as addOwnerRoleInList,
+  removeOwnerRole as removeOwnerRoleInList,
+  addMemberRole as addMemberRoleInList,
+  removeMemberRole as removeMemberRoleInList,
   removeListMember
 } from 'modules/list/model/actions';
-import { Routes, UserRoles } from 'common/constants/enums';
+import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
+import SwitchButton from 'common/components/SwitchButton';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -34,14 +38,12 @@ const infoText = {
 class MemberDetails extends PureComponent {
   constructor(props) {
     super(props);
-    const { isOwner } = props;
 
     this.state = {
       isConfirmationVisible: false,
       isMemberInfoVisible: false,
       isOwnerInfoVisible: false,
-      pending: false,
-      selectedRole: isOwner ? UserRoles.OWNER : UserRoles.MEMBER
+      pending: false
     };
   }
 
@@ -84,50 +86,80 @@ class MemberDetails extends PureComponent {
     }));
   };
 
-  changeRole = (action, selectedRole) => {
+  changeCohortRole = selectedRole => {
     const {
       match: {
         params: { id }
       },
-      _id: userId
+      _id: userId,
+      changeRoleInCohort
     } = this.props;
 
     this.setState({ pending: true });
 
-    action(id, userId, selectedRole)
-      .then(() => this.setState({ selectedRole }))
-      .finally(() => this.setState({ pending: false }));
+    changeRoleInCohort(id, userId, selectedRole).finally(() =>
+      this.setState({ pending: false })
+    );
+  };
+
+  changeListRole = selectedRole => {
+    const {
+      _id: userId,
+      addMemberRoleInList,
+      addOwnerRoleInList,
+      isMember,
+      isOwner,
+      match: {
+        params: { id }
+      },
+      removeMemberRoleInList,
+      removeOwnerRoleInList
+    } = this.props;
+    let action;
+
+    this.setState({ pending: true });
+
+    switch (selectedRole) {
+      case UserRoles.OWNER:
+        action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
+        break;
+      case UserRoles.MEMBER:
+        action = isMember ? removeMemberRoleInList : addMemberRoleInList;
+        break;
+      default:
+        break;
+    }
+
+    action(id, userId).finally(() => this.setState({ pending: false }));
   };
 
   handleChangingRoles = event => {
     event.stopPropagation();
     const {
-      target: { value }
+      target: { value: selectedRole }
     } = event;
-    const { changeRoleInCohort, changeRoleInList, route } = this.props;
+    const { route } = this.props;
 
     switch (route) {
       case Routes.COHORT:
-        this.changeRole(changeRoleInCohort, value);
+        this.changeCohortRole(selectedRole);
         break;
       case Routes.LIST:
-        this.changeRole(changeRoleInList, value);
+        this.changeListRole(selectedRole);
         break;
       default:
         break;
     }
   };
 
-  renderChangeRoleOption = (role, isInfoVisible) => {
-    const { pending, selectedRole } = this.state;
+  renderChangeRoleOption = (role, isInfoVisible, checked) => {
+    const { pending } = this.state;
     const { route } = this.props;
-
     const label = role === UserRoles.OWNER ? 'owner' : 'member';
 
     return (
       <Fragment>
-        <label htmlFor={`${label}Role`}>{`Change to ${label}`}</label>
-        <span>
+        <div className="member-details__option-header">
           <button
             className="member-details__info-button"
             disabled={pending}
@@ -142,16 +174,14 @@ class MemberDetails extends PureComponent {
               <InfoIcon />
             </span>
           </button>
-          <input
-            checked={selectedRole === role}
+          <SwitchButton
+            checked={checked}
             disabled={pending}
-            id={`${label}Role`}
-            name="role"
+            label={label}
             onChange={this.handleChangingRoles}
-            type="radio"
             value={role}
           />
-        </span>
+        </div>
         {isInfoVisible && (
           <p className="member-details__role-description">
             {infoText[route][role]}
@@ -210,15 +240,31 @@ class MemberDetails extends PureComponent {
   };
 
   renderHeader = () => {
-    const { selectedRole } = this.state;
-    const { displayName } = this.props;
+    const {
+      displayName,
+      isCohortList,
+      isGuest,
+      isMember,
+      isOwner
+    } = this.props;
+    let roleToDisplay = UserRolesToDisplay.VIEWER;
+
+    if (isMember) {
+      roleToDisplay = UserRolesToDisplay.MEMBER;
+    }
+
+    if (isOwner) {
+      roleToDisplay = UserRolesToDisplay.OWNER;
+    }
+
     return (
       <header className="member-details__header">
         <div className="member-details__avatar">{this.renderAvatar()}</div>
         <div>
           <h3 className="member-details__name">{displayName}</h3>
           <p className="member-details__role">
-            {`${selectedRole === UserRoles.OWNER ? 'owner' : 'member'}`}
+            {roleToDisplay}
+            {isGuest && isCohortList && '\n(Guest)'}
           </p>
         </div>
       </header>
@@ -227,15 +273,29 @@ class MemberDetails extends PureComponent {
 
   renderDetails = () => {
     const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
-    const { isGuest, isPrivate: privateList, route } = this.props;
+    const {
+      isGuest,
+      isMember,
+      isOwner,
+      isPrivate: privateList,
+      route
+    } = this.props;
 
     return (
       <ul className="member-details__options">
         <li className="member-details__option">
-          {this.renderChangeRoleOption(UserRoles.OWNER, isOwnerInfoVisible)}
+          {this.renderChangeRoleOption(
+            UserRoles.OWNER,
+            isOwnerInfoVisible,
+            isOwner
+          )}
         </li>
         <li className="member-details__option">
-          {this.renderChangeRoleOption(UserRoles.MEMBER, isMemberInfoVisible)}
+          {this.renderChangeRoleOption(
+            UserRoles.MEMBER,
+            isMemberInfoVisible,
+            isMember
+          )}
         </li>
         {(route === Routes.COHORT || privateList || isGuest) && (
           <li className="member-details__option member-details__option--removing">
@@ -278,23 +338,13 @@ class MemberDetails extends PureComponent {
           </button>
           <div className="member-details__details">
             {this.renderHeader()}
-            {/* <div className="member-details__panel">
+            <div className="member-details__panel">
               {isCurrentUserAnOwner &&
                 userId !== currentUserId &&
                 this.renderDetails()}
               {isCurrentUserAnOwner &&
                 userId === currentUserId &&
                 this.renderMessage()}
-              {pending && <Preloader />}
-            </div> */}
-            <div className="member-details__panel">
-              {isCurrentUserAnOwner && (
-                <Fragment>
-                  {userId !== currentUserId
-                    ? this.renderDetails()
-                    : this.renderMessage()}
-                </Fragment>
-              )}
               {pending && <Preloader />}
             </div>
           </div>
@@ -309,18 +359,23 @@ MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
-  isCurrentUserAnOwner: PropTypes.bool,
+  isCohortList: PropTypes.bool,
+  isCurrentUserAnOwner: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool,
+  isMember: PropTypes.bool,
   isOwner: PropTypes.bool,
   isPrivate: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   route: PropTypes.string,
 
+  addMemberRoleInList: PropTypes.func.isRequired,
+  addOwnerRoleInList: PropTypes.func.isRequired,
   changeRoleInCohort: PropTypes.func.isRequired,
-  changeRoleInList: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   removeCohortMember: PropTypes.func.isRequired,
-  removeListMember: PropTypes.func.isRequired
+  removeListMember: PropTypes.func.isRequired,
+  removeMemberRoleInList: PropTypes.func.isRequired,
+  removeOwnerRoleInList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -332,9 +387,12 @@ export default withRouter(
     mapStateToProps,
     {
       changeRoleInCohort,
-      changeRoleInList,
+      addMemberRoleInList,
+      addOwnerRoleInList,
       removeCohortMember,
-      removeListMember
+      removeListMember,
+      removeMemberRoleInList,
+      removeOwnerRoleInList
     }
   )(MemberDetails)
 );

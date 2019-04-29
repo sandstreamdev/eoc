@@ -12,7 +12,7 @@ import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
 import { addCohortMember } from 'modules/cohort/model/actions';
-import { addListMember } from 'modules/list/model/actions';
+import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
 
 class MembersBox extends PureComponent {
@@ -45,8 +45,8 @@ class MembersBox extends PureComponent {
     this.setState({ context: null });
   };
 
-  handleAddNewMember = () => email => {
-    const { addCohortMember, addListMember } = this.props;
+  handleAddMember = () => email => {
+    const { addCohortMember, addListViewer } = this.props;
     const {
       match: {
         params: { id }
@@ -54,7 +54,7 @@ class MembersBox extends PureComponent {
       route
     } = this.props;
 
-    const action = route === Routes.COHORT ? addCohortMember : addListMember;
+    const action = route === Routes.COHORT ? addCohortMember : addListViewer;
 
     this.setState({ pending: true });
 
@@ -65,11 +65,12 @@ class MembersBox extends PureComponent {
   };
 
   renderDetails = member => {
-    const { isCurrentUserAnOwner, isPrivate, route } = this.props;
+    const { isCurrentUserAnOwner, isPrivate, route, isCohortList } = this.props;
 
     return (
       <MemberDetails
         {...member}
+        isCohortList={isCohortList}
         isCurrentUserAnOwner={isCurrentUserAnOwner}
         isPrivate={isPrivate}
         onClose={this.handleClosingMemberDetails}
@@ -129,7 +130,7 @@ class MembersBox extends PureComponent {
           <li className="members-box__list-item">
             {isFormVisible ? (
               <MembersForm
-                onAddNew={this.handleAddNewMember()}
+                onAddNew={this.handleAddMember()}
                 pending={pending}
               />
             ) : (
@@ -162,12 +163,12 @@ MembersBox.propTypes = {
   route: PropTypes.string.isRequired,
 
   addCohortMember: PropTypes.func.isRequired,
-  addListMember: PropTypes.func.isRequired
+  addListViewer: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
     null,
-    { addCohortMember, addListMember }
+    { addCohortMember, addListViewer }
   )(MembersBox)
 );

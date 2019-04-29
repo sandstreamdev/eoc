@@ -1,6 +1,6 @@
 const Cohort = require('../models/cohort.model');
 const {
-  checkRole,
+  checkIfArrayContainsUserId,
   filter,
   isValidMongoId,
   responseWithCohort,
@@ -19,8 +19,9 @@ const {
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
   const cohort = new Cohort({
-    name,
     description,
+    memberIds: userId,
+    name,
     ownerIds: userId
   });
 
@@ -132,12 +133,12 @@ const getCohortDetails = (req, resp) => {
       .status(404)
       .send({ message: `Data of cohort id: ${req.params.id} not found.` });
   }
+
   Cohort.findOne({
     _id: req.params.id,
     $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
   })
     .populate('memberIds', 'avatarUrl displayName _id')
-    .populate('ownerIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -152,19 +153,15 @@ const getCohortDetails = (req, resp) => {
         isArchived,
         description,
         name,
-        memberIds: membersData
+        memberIds: membersCollection
       } = doc;
 
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
 
-      const owners = ownerIds.map(owner => owner.id);
-      const members = responseWithCohortMembers(
-        [...membersData, ...ownerIds],
-        owners
-      );
-      const isOwner = checkRole(ownerIds, req.user._id);
+      const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
+      const members = responseWithCohortMembers(membersCollection, ownerIds);
 
       resp.status(200).json({
         _id,
@@ -175,7 +172,7 @@ const getCohortDetails = (req, resp) => {
         members
       });
     })
-    .catch(err =>
+    .catch(() =>
       resp.status(400).send({
         message:
           'An error occurred while fetching the cohort data. Please try again.'
@@ -185,6 +182,7 @@ const getCohortDetails = (req, resp) => {
 
 const deleteCohortById = (req, resp) => {
   let documentName = '';
+
   Cohort.findOne({ _id: req.params.id, ownerIds: req.user._id })
     .exec()
     .then(doc => {
@@ -198,14 +196,15 @@ const deleteCohortById = (req, resp) => {
       return List.deleteMany({ cohortId: req.params.id }).exec();
     })
     .then(() => Cohort.deleteOne({ _id: req.params.id }).exec())
-    .then(() => {
+    .then(() =>
       resp
         .status(200)
-        .send({ message: `Cohort "${documentName}" successfully deleted.` });
-    })
+        .send({ message: `Cohort "${documentName}" successfully deleted.` })
+    )
     .catch(err => {
       if (err instanceof NotFoundException) {
         const { status, message } = err;
+
         return resp.status(status).send({ message });
       }
 
@@ -286,52 +285,79 @@ const removeOwner = (req, resp) => {
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
-    { $pull: { ownerIds: userId } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't remove owner from cohort."
-        });
+    {
+      _id: cohortId,
+      ownerIds: { $all: [ownerId, userId] },
+      memberIds: { $all: [ownerId, userId] }
+    },
+    { $pull: { ownerIds: userId, memberIds: userId } }
+  )
+    .then(doc => {
+      if (!doc) {
+        return resp.status(404).send({ message: 'Cohort data not found.' });
       }
 
-      if (doc) {
-        return resp.status(200).send({
-          message: 'Owner successfully removed from cohort.'
-        });
-      }
-
-      resp.status(404).send({ message: 'Cohort data not found.' });
-    }
-  );
+      return List.updateMany(
+        {
+          cohortId,
+          isPrivate: false,
+          memberIds: { $nin: [userId] },
+          ownerIds: { $nin: [userId] },
+          viewersIds: { $in: [userId] }
+        },
+        { $pull: { viewersIds: userId } }
+      ).exec();
+    })
+    .then(() =>
+      resp.status(200).send({
+        message: 'Owner successfully removed from cohort.'
+      })
+    )
+    .catch(() =>
+      resp.status(400).send({ message: "Can't remove owner from cohort." })
+    );
 };
 
 const removeMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: ownerId, memberIds: userId },
-    { $pull: { memberIds: userId } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't remove member from cohort."
-        });
+    { _id: cohortId, ownerIds: currentUserId, memberIds: userId },
+    { $pull: { memberIds: userId } }
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(404).send({ message: 'Cohort data not found.' });
       }
 
-      if (doc) {
-        return resp.status(200).send({
-          message: 'Member successfully removed from cohort.'
-        });
-      }
+      const { _id: cohortId } = doc;
 
-      resp.status(404).send({ message: 'Cohort data not found.' });
-    }
-  );
+      return List.updateMany(
+        {
+          cohortId,
+          isPrivate: false,
+          viewersIds: { $in: [userId] },
+          memberIds: { $nin: [userId] },
+          ownerIds: { $nin: [userId] }
+        },
+        { $pull: { viewersIds: userId } }
+      ).exec();
+    })
+    .then(() =>
+      resp.status(200).send({
+        message: 'Member successfully removed from cohort.'
+      })
+    )
+    .catch(() =>
+      resp.status(400).send({
+        message: "Can't remove member from cohort."
+      })
+    );
 };
 
 const changeToOwner = (req, resp) => {
@@ -343,7 +369,7 @@ const changeToOwner = (req, resp) => {
 
   Cohort.findOneAndUpdate(
     { _id: cohortId, ownerIds: ownerId, memberIds: userId },
-    { $push: { ownerIds: userId }, $pull: { memberIds: userId } },
+    { $push: { ownerIds: userId } },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -368,9 +394,10 @@ const changeToMember = (req, resp) => {
   const {
     user: { _id: ownerId }
   } = req;
+
   Cohort.findOneAndUpdate(
     { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
-    { $push: { memberIds: userId }, $pull: { ownerIds: userId } },
+    { $pull: { ownerIds: userId } },
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
@@ -395,64 +422,48 @@ const addMember = (req, resp) => {
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
+  let currentCohort;
+  let newMember;
 
   Cohort.findOne({ _id: cohortId, $or: [{ ownerIds: currentUser }] })
     .exec()
     .then(cohort => {
       if (!cohort) {
         throw new BadRequestException(
-          "You don't have permission to add new member"
+          "You don't have permission to add new member."
         );
       }
 
-      return User.findOne({ email })
-        .exec()
-        .then(user => {
-          const { _id, avatarUrl, displayName } = user;
-          return { _id, avatarUrl, displayName, cohort };
-        })
-        .catch(() => {
-          throw new BadRequestException('User data not found.');
-        });
+      currentCohort = cohort;
+      return User.findOne({ email }).exec();
     })
-    .then(data => {
-      const { _id: newMemberId, cohort } = data;
+    .then(user => {
+      const { _id: newMemberId, avatarUrl, displayName } = user;
 
-      if (checkIfCohortMember(cohort, newMemberId)) {
+      if (checkIfCohortMember(currentCohort, newMemberId)) {
         throw new BadRequestException('User is already a member.');
       }
 
-      return List.updateMany(
-        {
-          cohortId,
-          $or: [{ ownerIds: newMemberId }, { memberIds: newMemberId }],
-          isPrivate: false
-        },
-        { $pull: { memberIds: newMemberId } }
-      )
-        .exec()
-        .then(() => data)
-        .catch(() => {
-          throw new BadRequestException('Adding user failed.');
-        });
+      currentCohort.memberIds.push(newMemberId);
+      newMember = { avatarUrl, newMemberId, displayName };
+
+      return currentCohort.save();
     })
-    .then(data => {
-      const { _id: newMemberId, avatarUrl, displayName, cohort } = data;
-      cohort.memberIds.push(newMemberId);
-      const member = { avatarUrl, newMemberId, displayName };
+    .then(() => {
+      const { _id: cohortId } = currentCohort;
+      const { newMemberId } = newMember;
 
-      return cohort
-        .save()
-        .then(() => {
-          const { ownerIds } = cohort;
+      return List.updateMany(
+        { cohortId, isPrivate: false, viewersIds: { $nin: [newMemberId] } },
+        { $push: { viewersIds: newMemberId } }
+      ).exec();
+    })
+    .then(() => {
+      const { ownerIds } = currentCohort;
 
-          return resp
-            .status(200)
-            .json(responseWithCohortMember(member, ownerIds));
-        })
-        .catch(() => {
-          throw new BadRequestException('Adding user failed.');
-        });
+      return resp
+        .status(200)
+        .json(responseWithCohortMember(newMember, ownerIds));
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

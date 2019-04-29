@@ -89,10 +89,8 @@ export const toggle = (
 ) => dispatch => {
   dispatch(toggleItemRequest());
   return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
-    authorName: updatedAuthor,
     itemId,
-    isOrdered: !isOrdered,
-    listId
+    isOrdered: !isOrdered
   })
     .then(resp => resp.json())
     .then(item =>
@@ -171,12 +169,12 @@ export const cloneItem = (listId, itemId) => dispatch => {
     itemId
   })
     .then(resp => resp.json())
-    .then(data => {
-      dispatch(cloneItemSuccess(listId, data.item));
+    .then(json => {
+      dispatch(cloneItemSuccess(listId, json.item));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        data.message
+        json.message
       );
     })
     .catch(err => {

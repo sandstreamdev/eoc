@@ -98,14 +98,15 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, isArchived, isOwner, isPrivate, name } = list;
+    const { cohortId, isArchived, isGuest, isOwner, isPrivate, name } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
+    const isCohortList = cohortId !== null;
 
     return (
       <Fragment>
         <Toolbar>
-          {cohortId && (
+          {cohortId && !isGuest && (
             <ToolbarLink
               additionalIconSrc={ArrowLeftIcon}
               mainIcon={<CohortIcon />}
@@ -141,10 +142,11 @@ class List extends Component {
                   onClick={this.handleMembersBoxVisibility}
                   type="button"
                 >
-                  {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
+                  {`${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
                 </button>
                 {isMembersBoxVisible && (
                   <MembersBox
+                    isCohortList={isCohortList}
                     isCurrentUserAnOwner={isOwner}
                     isPrivate={isPrivate}
                     members={members}

@@ -3,10 +3,10 @@ const express = require('express');
 const router = express.Router();
 const {
   addItemToList,
-  addMember,
+  addMemberRole,
+  addOwnerRole,
   addToFavourites,
-  changeToMember,
-  changeToOwner,
+  addViewer,
   clearVote,
   cloneItem,
   createList,
@@ -16,9 +16,11 @@ const {
   getListsMetaData,
   removeFromFavourites,
   removeMember,
+  removeMemberRole,
   removeOwner,
   updateItemDetails,
   updateListById,
+  removeOwnerRole,
   updateListItem,
   voteForItem
 } = require('../controllers/list');
@@ -38,9 +40,11 @@ router.patch('/:id/add-to-fav', authorize, addToFavourites);
 router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
 router.patch('/:id/remove-owner', authorize, removeOwner);
 router.patch('/:id/remove-member', authorize, removeMember);
-router.patch('/:id/change-to-owner', authorize, changeToOwner);
-router.patch('/:id/change-to-member', authorize, changeToMember);
-router.patch('/:id/add-member', authorize, addMember);
+router.patch('/:id/add-owner-role', authorize, addOwnerRole);
+router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);
+router.patch('/:id/add-member-role', authorize, addMemberRole);
+router.patch('/:id/remove-member-role', authorize, removeMemberRole);
+router.patch('/:id/add-viewer', authorize, addViewer);
 router.patch('/:id/update-item-details', authorize, updateItemDetails);
 router.patch('/:id/clone-item', authorize, cloneItem);
 
