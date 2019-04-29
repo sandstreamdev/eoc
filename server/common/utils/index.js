@@ -138,8 +138,8 @@ const checkIfCohortMember = (cohort, userId) => {
   return false;
 };
 
-const responseWithCohortMember = (data, ownerIds) => {
-  const { avatarUrl, displayName, newMemberId } = data;
+const responseWithCohortMember = (user, ownerIds) => {
+  const { avatarUrl, displayName, newMemberId } = user;
 
   return {
     _id: newMemberId,

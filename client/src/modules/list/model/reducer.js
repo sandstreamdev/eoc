@@ -60,7 +60,7 @@ const items = (state, action) => {
   }
 };
 
-const membersReducer = (state, action) => {
+const membersReducer = (state = [], action) => {
   switch (action.type) {
     case ListActionTypes.ADD_VIEWER_SUCCESS: {
       const {

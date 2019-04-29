@@ -37,36 +37,34 @@ const createList = (req, resp) => {
   });
 
   if (cohortId && !isListPrivate) {
-    Cohort.findOne({ _id: cohortId }).then(cohort => {
-      const { memberIds } = cohort;
-      list.viewersIds = memberIds;
+    Cohort.findOne({ _id: cohortId })
+      .then(cohort => {
+        const { memberIds } = cohort;
+        list.viewersIds = memberIds;
 
-      return list.save((err, doc) => {
-        if (err) {
-          return resp
-            .status(400)
-            .send({ message: 'List not saved. Please try again.' });
-        }
-
+        return list.save();
+      })
+      .then(() =>
         resp
           .status(201)
-          .location(`/lists/${doc._id}`)
-          .send(responseWithList(doc, userId));
-      });
-    });
+          .location(`/lists/${list._id}`)
+          .send(responseWithList(list, userId))
+      )
+      .catch(() =>
+        resp.status(400).send({ message: 'List not saved. Please try again.' })
+      );
   } else {
-    list.save((err, doc) => {
-      if (err) {
-        return resp
-          .status(400)
-          .send({ message: 'List not saved. Please try again.' });
-      }
-
-      resp
-        .status(201)
-        .location(`/lists/${doc._id}`)
-        .send(responseWithList(doc, userId));
-    });
+    list
+      .save()
+      .then(() =>
+        resp
+          .status(201)
+          .location(`/lists/${list._id}`)
+          .send(responseWithList(list, userId))
+      )
+      .catch(() =>
+        resp.status(400).send({ message: 'List not saved. Please try again.' })
+      );
   }
 };
 
@@ -215,10 +213,10 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: listId,
-    $or: [{ ownerIds: userId }, { memberIds: userId }, { viewersIds: userId }]
+    $or: [{ viewersIds: userId }]
   })
-    .populate('memberIds', 'avatarUrl displayName _id')
-    .populate('ownerIds', 'avatarUrl displayName _id')
+    // .populate('memberIds', 'avatarUrl displayName _id')
+    // .populate('ownerIds', 'avatarUrl displayName _id')
     .populate('viewersIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
@@ -230,22 +228,16 @@ const getListData = (req, resp) => {
       const { cohortId } = list;
 
       if (cohortId) {
-        return Cohort.findOne({ _id: cohortId })
-          .populate('memberIds', 'avatarUrl displayName _id')
-          .exec()
-          .then(cohort => {
-            if (!cohort || cohort.isArchived) {
-              throw new NotFoundException(
-                `Data of list id: ${listId} not found.`
-              );
-            }
-
-            const { memberIds } = cohort;
-            return memberIds;
-          });
+        return Cohort.findOne({ _id: cohortId }).exec();
+      }
+    })
+    .then(cohort => {
+      if (!cohort) {
+        return [];
       }
 
-      return [];
+      const { memberIds } = cohort;
+      return memberIds;
     })
     .then(cohortMembers => {
       const {
@@ -254,10 +246,10 @@ const getListData = (req, resp) => {
         description,
         isArchived,
         isPrivate,
-        memberIds: membersCollection,
+        memberIds,
         name,
-        ownerIds: ownersCollection,
-        viewersIds: viewers
+        ownerIds,
+        viewersIds: viewersCollection
       } = list;
 
       if (isArchived) {
@@ -266,14 +258,15 @@ const getListData = (req, resp) => {
           .json({ cohortId, _id, isArchived, isPrivate, name });
       }
 
-      const ownerIds = ownersCollection.map(owner => owner.id);
-      const memberIds = membersCollection.map(member => member.id);
-      const cohortMembersIds = cohortMembers.map(member => member._id);
+      /** TODO: przenieść mapowanie do wnętrza funkcji */
+      const arrayOfOwnerIds = ownerIds.map(id => id.toString());
+      const arrayOfMemberIds = memberIds.map(id => id.toString());
+      const cohortMembersIds = cohortMembers.map(id => id.toString());
 
       const members = responseWithListMembers(
-        viewers,
-        memberIds,
-        ownerIds,
+        viewersCollection,
+        arrayOfMemberIds,
+        arrayOfOwnerIds,
         cohortMembersIds
       );
 
@@ -563,14 +556,14 @@ const addOwnerRole = (req, resp) => {
       if (!doc) {
         throw new BadRequestException("Can't set user as a list's owner.");
       }
-
-      const userIsNotAnOwner = !doc.ownerIds.some(id => id.equals(userId));
+      const { memberIds, ownerIds } = doc;
+      const userIsNotAnOwner = !checkIfArrayContainsUserId(ownerIds, userId);
 
       if (userIsNotAnOwner) {
         doc.ownerIds.push(userId);
       }
 
-      const userIsNotAMember = !doc.memberIds.some(id => id.equals(userId));
+      const userIsNotAMember = !checkIfArrayContainsUserId(memberIds, userId);
 
       if (userIsNotAMember) {
         doc.memberIds.push(userId);
@@ -602,17 +595,17 @@ const removeOwnerRole = (req, resp) => {
   } = req;
 
   List.findOne({ _id: listId, ownerIds: ownerId })
-    .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
       if (!doc) {
         throw new BadRequestException("Can't remove owner role.");
       }
 
-      const userIsOwner = doc.ownerIds.some(id => id.equals(userId));
+      const { ownerIds } = doc;
+      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
 
       if (userIsOwner) {
-        doc.ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
+        ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
       }
 
       return doc.save();
@@ -643,7 +636,6 @@ const addMemberRole = (req, resp) => {
     _id: listId,
     ownerIds: { $in: [ownerId] }
   })
-    .populate('cohortId', 'memberIds ownerIds viewersIds')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -651,13 +643,13 @@ const addMemberRole = (req, resp) => {
       }
 
       const { ownerIds, memberIds } = doc;
-      const userIsNotAMember = !memberIds.some(id => id.equals(userId));
+      const userIsNotAMember = !checkIfArrayContainsUserId(memberIds, userId);
 
       if (userIsNotAMember) {
         memberIds.push(userId);
       }
 
-      const userIsOwner = ownerIds.some(id => id.equals(userId));
+      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
 
       if (userIsOwner) {
         ownerIds.splice(ownerIds.indexOf(userId), 1);
@@ -699,13 +691,13 @@ const removeMemberRole = (req, resp) => {
       }
 
       const { memberIds, ownerIds } = doc;
-      const userIsMember = memberIds.some(id => id.equals(userId));
+      const userIsMember = checkIfArrayContainsUserId(memberIds, userId);
 
       if (userIsMember) {
         memberIds.splice(memberIds.indexOf(userId), 1);
       }
 
-      const userIsOwner = ownerIds.some(id => id.equals(userId));
+      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
 
       if (userIsOwner) {
         ownerIds.splice(ownerIds.indexOf(userId), 1);
@@ -750,9 +742,17 @@ const addViewer = (req, resp) => {
       return User.findOne({ email }).exec();
     })
     .then(userData => {
+      if (!userData) {
+        throw new BadRequestException(`There is no user of email: ${email}`);
+      }
+
       const { _id: newMemberId } = userData;
       const { cohortId: cohort, viewersIds } = list;
-      const userNotExists = !viewersIds.some(id => id.equals(newMemberId));
+      const userNotExists = !checkIfArrayContainsUserId(
+        viewersIds,
+        newMemberId
+      );
+
       user = userData;
 
       if (userNotExists) {

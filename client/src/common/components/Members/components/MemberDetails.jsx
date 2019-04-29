@@ -19,9 +19,9 @@ import {
   removeMemberRole as removeMemberRoleInList,
   removeListMember
 } from 'modules/list/model/actions';
-import { Routes, UserRoles } from 'common/constants/enums';
+import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import Switcher from 'common/components/Switcher';
+import SwitchButton from 'common/components/SwitchButton';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -122,17 +122,18 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    if (selectedRole === UserRoles.OWNER) {
-      action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
-
-      action(id, userId).finally(() => this.setState({ pending: false }));
+    switch (selectedRole) {
+      case UserRoles.OWNER:
+        action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
+        break;
+      case UserRoles.MEMBER:
+        action = isMember ? removeMemberRoleInList : addMemberRoleInList;
+        break;
+      default:
+        break;
     }
 
-    if (selectedRole === UserRoles.MEMBER) {
-      action = isMember ? removeMemberRoleInList : addMemberRoleInList;
-
-      action(id, userId).finally(() => this.setState({ pending: false }));
-    }
+    action(id, userId).finally(() => this.setState({ pending: false }));
   };
 
   handleChangingRoles = event => {
@@ -174,9 +175,8 @@ class MemberDetails extends PureComponent {
               <InfoIcon />
             </span>
           </button>
-          <Switcher
+          <SwitchButton
             checked={checked}
-            htmlFor={`${label}Role`}
             label={label}
             onChange={this.handleChangingRoles}
             value={role}
@@ -239,15 +239,21 @@ class MemberDetails extends PureComponent {
   };
 
   renderHeader = () => {
-    const { displayName, isMember, isOwner } = this.props;
-    let roleToDisplay = 'viewer';
+    const {
+      displayName,
+      isMember,
+      isOwner,
+      isGuest,
+      isCohortList
+    } = this.props;
+    let roleToDisplay = UserRolesToDisplay.VIEWER;
 
     if (isMember) {
-      roleToDisplay = 'member';
+      roleToDisplay = UserRolesToDisplay.MEMBER;
     }
 
     if (isOwner) {
-      roleToDisplay = 'owner';
+      roleToDisplay = UserRolesToDisplay.OWNER;
     }
 
     return (
@@ -255,7 +261,10 @@ class MemberDetails extends PureComponent {
         <div className="member-details__avatar">{this.renderAvatar()}</div>
         <div>
           <h3 className="member-details__name">{displayName}</h3>
-          <p className="member-details__role">{roleToDisplay}</p>
+          <p className="member-details__role">
+            {roleToDisplay}
+            {isGuest && isCohortList && '\n(Guest)'}
+          </p>
         </div>
       </header>
     );
@@ -353,6 +362,7 @@ MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
+  isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool,
   isMember: PropTypes.bool,

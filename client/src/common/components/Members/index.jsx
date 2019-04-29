@@ -45,7 +45,7 @@ class MembersBox extends PureComponent {
     this.setState({ context: null });
   };
 
-  handleAddNewViewer = () => email => {
+  handleAddMember = () => email => {
     const { addCohortMember, addListViewer } = this.props;
     const {
       match: {
@@ -65,11 +65,12 @@ class MembersBox extends PureComponent {
   };
 
   renderDetails = member => {
-    const { isCurrentUserAnOwner, isPrivate, route } = this.props;
+    const { isCurrentUserAnOwner, isPrivate, route, isCohortList } = this.props;
 
     return (
       <MemberDetails
         {...member}
+        isCohortList={isCohortList}
         isCurrentUserAnOwner={isCurrentUserAnOwner}
         isPrivate={isPrivate}
         onClose={this.handleClosingMemberDetails}
@@ -129,7 +130,7 @@ class MembersBox extends PureComponent {
           <li className="members-box__list-item">
             {isFormVisible ? (
               <MembersForm
-                onAddNew={this.handleAddNewViewer()}
+                onAddNew={this.handleAddMember()}
                 pending={pending}
               />
             ) : (

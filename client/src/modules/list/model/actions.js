@@ -460,7 +460,6 @@ export const addListViewer = (listId, email) => dispatch => {
     });
 };
 
-/** TODO: This probably could done under one URL  */
 export const removeListMember = (listId, userId, isOwner) => dispatch => {
   const url = isOwner
     ? `${ENDPOINT_URL}/lists/${listId}/remove-owner`
