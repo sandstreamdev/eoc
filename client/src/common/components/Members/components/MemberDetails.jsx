@@ -18,9 +18,9 @@ import {
   removeMemberRole as removeMemberRoleInList,
   removeListMember
 } from 'modules/list/model/actions';
-import { Routes, UserRoles } from 'common/constants/enums';
+import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import Switcher from 'common/components/Switcher';
+import SwitchButton from 'common/components/SwitchButton';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -119,12 +119,15 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    if (selectedRole === UserRoles.OWNER) {
-      action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
-    }
-
-    if (selectedRole === UserRoles.MEMBER) {
-      action = isMember ? removeMemberRoleInList : addMemberRoleInList;
+    switch (selectedRole) {
+      case UserRoles.OWNER:
+        action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
+        break;
+      case UserRoles.MEMBER:
+        action = isMember ? removeMemberRoleInList : addMemberRoleInList;
+        break;
+      default:
+        break;
     }
 
     action(id, userId).finally(() => this.setState({ pending: false }));
@@ -169,9 +172,8 @@ class MemberDetails extends PureComponent {
               <InfoIcon />
             </span>
           </button>
-          <Switcher
+          <SwitchButton
             checked={checked}
-            htmlFor={`${label}Role`}
             label={label}
             onChange={this.handleChangingRoles}
             value={role}
@@ -241,14 +243,14 @@ class MemberDetails extends PureComponent {
       isGuest,
       isCohortList
     } = this.props;
-    let roleToDisplay = 'viewer';
+    let roleToDisplay = UserRolesToDisplay.VIEWER;
 
     if (isMember) {
-      roleToDisplay = 'member';
+      roleToDisplay = UserRolesToDisplay.MEMBER;
     }
 
     if (isOwner) {
-      roleToDisplay = 'owner';
+      roleToDisplay = UserRolesToDisplay.OWNER;
     }
 
     return (

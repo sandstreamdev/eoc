@@ -595,7 +595,6 @@ const removeOwnerRole = (req, resp) => {
   } = req;
 
   List.findOne({ _id: listId, ownerIds: ownerId })
-    .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -637,7 +636,6 @@ const addMemberRole = (req, resp) => {
     _id: listId,
     ownerIds: { $in: [ownerId] }
   })
-    .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -744,6 +742,10 @@ const addViewer = (req, resp) => {
       return User.findOne({ email }).exec();
     })
     .then(userData => {
+      if (!userData) {
+        throw new BadRequestException(`There is no user of email: ${email}`);
+      }
+
       const { _id: newMemberId } = userData;
       const { cohortId: cohort, viewersIds } = list;
       const userNotExists = !checkIfArrayContainsUserId(

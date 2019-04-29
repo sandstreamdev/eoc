@@ -25,3 +25,9 @@ export const UserRoles = Object.freeze({
   OWNER: 'userRoles/OWNER',
   VIEWER: 'userRoles/VIEWER'
 });
+
+export const UserRolesToDisplay = Object.freeze({
+  MEMBER: 'member',
+  OWNER: 'owner',
+  VIEWER: 'viewer'
+});
