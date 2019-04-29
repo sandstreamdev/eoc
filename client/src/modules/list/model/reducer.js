@@ -6,9 +6,9 @@ import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
 
-const membersReducer = (state, action) => {
+const membersReducer = (state = [], action) => {
   switch (action.type) {
-    case ListActionTypes.ADD_MEMBER_SUCCESS: {
+    case ListActionTypes.ADD_VIEWER_SUCCESS: {
       const {
         payload: { data }
       } = action;
@@ -20,15 +20,60 @@ const membersReducer = (state, action) => {
       } = action;
       return state.filter(member => member._id !== userId);
     }
-    case ListActionTypes.CHANGE_ROLE_SUCCESS: {
+    case ListActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
-        payload: { userId, isOwner }
+        payload: { userId }
       } = action;
+
       return state.map(member =>
         member._id === userId
           ? {
               ...member,
-              isOwner
+              isOwner: true,
+              isMember: true
+            }
+          : member
+      );
+    }
+    case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isOwner: false
+            }
+          : member
+      );
+    }
+    case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isMember: true
+            }
+          : member
+      );
+    }
+    case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isMember: false,
+              isOwner: false
             }
           : member
       );
@@ -86,9 +131,12 @@ const lists = (state = {}, action) => {
       const currentList = state[action.payload.listId];
       return { ...state, [action.payload.listId]: items(currentList, action) };
     }
-    case ListActionTypes.ADD_MEMBER_SUCCESS:
-    case ListActionTypes.CHANGE_ROLE_SUCCESS:
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case ListActionTypes.ADD_VIEWER_SUCCESS:
+    case ListActionTypes.ADD_OWNER_ROLE_SUCCESS:
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
+    case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS:
+    case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS:
+    case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
       const {
         payload: { listId }
       } = action;

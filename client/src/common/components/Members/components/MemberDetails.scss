@@ -112,6 +112,11 @@
     }
   }
 
+  &__option-header {
+    display: flex;
+    width: 100%;
+  }
+
   &__info-button {
     font-size: 14px;
     width: 36px;
