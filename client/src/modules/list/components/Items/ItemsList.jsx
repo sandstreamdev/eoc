@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import ListItem from 'modules/list/components/ListItem';
+import ListItem from 'modules/list/components/Items/ListItem';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { toggle, clearVote, setVote } from './actions';
+import { toggle, clearVote, setVote } from './model/actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
@@ -19,7 +19,7 @@ class ItemsList extends Component {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
-  toggleItem = (author, id, isOrdered) => {
+  toggleItem = (authorId, id, isOrdered) => {
     const {
       toggle,
       match: {
@@ -27,17 +27,13 @@ class ItemsList extends Component {
       }
     } = this.props;
     const {
-      currentUser: { name }
+      currentUser: { name, id: userId }
     } = this.props;
-    const isSameAuthor = author === name;
+    const isSameAuthor = authorId === userId;
 
-    if (isOrdered) {
-      isSameAuthor
-        ? toggle(isOrdered, id, listId)
-        : toggle(isOrdered, id, listId, name);
-    } else {
-      toggle(isOrdered, id, listId);
-    }
+    return isSameAuthor
+      ? toggle(isOrdered, id, listId, name)
+      : toggle(isOrdered, id, listId);
   };
 
   voteForItem = item => () => {

@@ -1,1 +1,1 @@
-export const getCurrentUser = state => state.currentUser.data;
+export const getCurrentUser = state => state.currentUser;

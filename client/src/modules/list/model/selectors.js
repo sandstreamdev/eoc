@@ -4,8 +4,7 @@ import _keyBy from 'lodash/keyBy';
 import { createSelector } from 'reselect';
 import _sortBy from 'lodash/sortBy';
 
-export const getList = (state, listId) =>
-  _pick(state.lists.data, listId)[listId];
+export const getList = (state, listId) => _pick(state.lists, listId)[listId];
 
 export const getItems = createSelector(
   [getList],
@@ -22,7 +21,7 @@ export const getItems = createSelector(
   }
 );
 
-export const getLists = state => state.lists.data;
+export const getLists = state => state.lists;
 
 export const getActiveLists = createSelector(
   getLists,
@@ -51,8 +50,6 @@ export const getCohortLists = createSelector(
   getActiveLists,
   lists => _keyBy(_filter(lists, list => list.cohortId), '_id')
 );
-
-export const getIsFetchingLists = state => state.lists.isFetching;
 
 export const getMembers = createSelector(
   getList,

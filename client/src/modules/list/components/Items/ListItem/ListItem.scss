@@ -153,6 +153,15 @@
     padding-bottom: 16px;
   }
 
+  &__cloning {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 45px;
+    border-bottom: 1px solid $border-light;
+  }
+
   &__top {
     position: relative;
 

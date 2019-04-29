@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import { addItemToList } from './model/actions';
+import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 
 class InputBar extends Component {
@@ -32,7 +32,7 @@ class InputBar extends Component {
   handleFormSubmit = e => {
     e.preventDefault();
     const {
-      addItemToList,
+      addItem,
       currentUser,
       match: {
         params: { id }
@@ -45,7 +45,7 @@ class InputBar extends Component {
       name: itemName
     };
 
-    addItemToList(newItem, id);
+    addItem(newItem, id);
 
     this.setState({
       itemName: ''
@@ -94,7 +94,7 @@ InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
   match: RouterMatchPropType.isRequired,
 
-  addItemToList: PropTypes.func.isRequired
+  addItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -104,6 +104,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { addItemToList }
+    { addItem }
   )(InputBar)
 );

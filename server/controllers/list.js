@@ -40,9 +40,16 @@ const createList = (req, resp) => {
     Cohort.findOne({ _id: cohortId })
       .then(cohort => {
         const { memberIds } = cohort;
-        list.viewersIds = memberIds;
 
-        return list.save();
+        if (checkIfArrayContainsUserId(memberIds, userId)) {
+          list.viewersIds = memberIds;
+
+          return list.save();
+        }
+
+        throw new BadRequestException(
+          'You need to be cohort member to create new lists'
+        );
       })
       .then(() =>
         resp
@@ -50,9 +57,14 @@ const createList = (req, resp) => {
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId))
       )
-      .catch(() =>
-        resp.status(400).send({ message: 'List not saved. Please try again.' })
-      );
+      .catch(err => {
+        if (err instanceof BadRequestException) {
+          const { status, message } = err;
+
+          return resp.status(status).send({ message });
+        }
+        resp.status(400).send({ message: 'List not saved. Please try again.' });
+      });
   } else {
     list
       .save()
@@ -62,9 +74,9 @@ const createList = (req, resp) => {
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId))
       )
-      .catch(() =>
-        resp.status(400).send({ message: 'List not saved. Please try again.' })
-      );
+      .catch(() => {
+        resp.status(400).send({ message: 'List not saved. Please try again.' });
+      });
   }
 };
 
@@ -213,10 +225,8 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: listId,
-    $or: [{ viewersIds: userId }]
+    viewersIds: userId
   })
-    // .populate('memberIds', 'avatarUrl displayName _id')
-    // .populate('ownerIds', 'avatarUrl displayName _id')
     .populate('viewersIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
@@ -231,14 +241,7 @@ const getListData = (req, resp) => {
         return Cohort.findOne({ _id: cohortId }).exec();
       }
     })
-    .then(cohort => {
-      if (!cohort) {
-        return [];
-      }
-
-      const { memberIds } = cohort;
-      return memberIds;
-    })
+    .then(cohort => (cohort ? cohort.memberIds : []))
     .then(cohortMembers => {
       const {
         _id,
@@ -258,21 +261,16 @@ const getListData = (req, resp) => {
           .json({ cohortId, _id, isArchived, isPrivate, name });
       }
 
-      /** TODO: przenieść mapowanie do wnętrza funkcji */
-      const arrayOfOwnerIds = ownerIds.map(id => id.toString());
-      const arrayOfMemberIds = memberIds.map(id => id.toString());
-      const cohortMembersIds = cohortMembers.map(id => id.toString());
-
       const members = responseWithListMembers(
         viewersCollection,
-        arrayOfMemberIds,
-        arrayOfOwnerIds,
-        cohortMembersIds
+        memberIds,
+        ownerIds,
+        cohortMembers
       );
 
       const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
       const items = responseWithItems(userId, list);
-      const isGuest = checkIfGuest(cohortMembersIds, req.user._id);
+      const isGuest = checkIfGuest(cohortMembers, req.user._id);
 
       return resp.status(200).json({
         _id,
@@ -728,11 +726,11 @@ const addViewer = (req, resp) => {
   const { email } = req.body;
   let list;
   let user;
-  let cohortMembers;
+  let cohortMembers = [];
 
   List.findOne({
     _id: listId,
-    $or: [{ ownerIds: currentUserId }]
+    ownerIds: currentUserId
   })
     .populate('cohortId', 'ownerIds memberIds')
     .exec()
@@ -767,13 +765,7 @@ const addViewer = (req, resp) => {
       return list.save();
     })
     .then(() => {
-      let userToSend;
-
-      if (cohortMembers) {
-        userToSend = responseWithListMember(user, cohortMembers);
-      } else {
-        userToSend = responseWithListMember(user, []);
-      }
+      const userToSend = responseWithListMember(user, cohortMembers);
 
       resp.status(200).json(userToSend);
     })
@@ -820,6 +812,54 @@ const updateItemDetails = (req, resp) => {
   );
 };
 
+const cloneItem = (req, resp) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const { _id: userId, displayName: userName } = req.user;
+  let newItemId;
+
+  List.findOne({
+    _id: listId,
+    'items._id': itemId,
+    $or: [{ ownerIds: userId }, { memberIds: userId }]
+  })
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException('List data not found.');
+      }
+
+      const { description, link, name } = list.items.id(itemId);
+      const item = new Item({
+        authorId: userId,
+        authorName: userName,
+        description,
+        link,
+        name
+      });
+
+      newItemId = item._id;
+      list.items.push(item);
+
+      return list.save();
+    })
+    .then(list =>
+      resp.status(200).send({
+        message: 'Item successfully cloned.',
+        item: responseWithItem(list.items.id(newItemId))
+      })
+    )
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
@@ -827,6 +867,7 @@ module.exports = {
   addToFavourites,
   addViewer,
   clearVote,
+  cloneItem,
   createList,
   deleteListById,
   getArchivedListsMetaData,

@@ -19,10 +19,10 @@ const {
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
   const cohort = new Cohort({
-    name,
     description,
-    ownerIds: userId,
-    memberIds: userId
+    memberIds: userId,
+    name,
+    ownerIds: userId
   });
 
   cohort.save((err, doc) => {

@@ -8,6 +8,7 @@ const {
   addToFavourites,
   addViewer,
   clearVote,
+  cloneItem,
   createList,
   deleteListById,
   getArchivedListsMetaData,
@@ -45,5 +46,6 @@ router.patch('/:id/add-member-role', authorize, addMemberRole);
 router.patch('/:id/remove-member-role', authorize, removeMemberRole);
 router.patch('/:id/add-viewer', authorize, addViewer);
 router.patch('/:id/update-item-details', authorize, updateItemDetails);
+router.patch('/:id/clone-item', authorize, cloneItem);
 
 module.exports = app => app.use('/lists', router);

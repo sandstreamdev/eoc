@@ -1,4 +1,4 @@
-import { ItemActionTypes } from 'modules/list/components/InputBar/model/actionTypes';
+import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { ListActionTypes } from './actionTypes';
 import lists from './reducer';
 import {
