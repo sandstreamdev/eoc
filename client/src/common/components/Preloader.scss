@@ -44,8 +44,8 @@
     }
   }
 
-  &__shape1,
-  &__shape2 {
+  &__spinner1,
+  &__spinner2 {
     width: 100%;
     height: 100%;
     border-radius: 50%;
@@ -65,7 +65,7 @@
     }
   }
 
-  &__shape2 {
+  &__spinner2 {
     animation-delay: -1s;
   }
 

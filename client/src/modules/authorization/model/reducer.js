@@ -1,6 +1,6 @@
 import { AuthorizationActionTypes } from './actions';
 
-const user = (state = null, action) => {
+const currentUser = (state = null, action) => {
   switch (action.type) {
     case AuthorizationActionTypes.SET_CURRENT_USER_SUCCESS:
       return action.payload;
@@ -11,4 +11,4 @@ const user = (state = null, action) => {
   }
 };
 
-export default user;
+export default currentUser;

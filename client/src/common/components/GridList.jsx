@@ -70,36 +70,34 @@ class GridList extends PureComponent {
           {name}
         </h2>
         <div className="grid-list__body">
-          <Fragment>
-            <ul className="grid-list__list">
-              {onAddNew && (
-                <li className="grid-list__item">
-                  <button
-                    className="grid-list__button"
-                    onClick={onAddNew}
-                    type="button"
-                  >
-                    <CardPlus />
-                  </button>
-                </li>
-              )}
-              {_map(items, item => (
-                <li className="grid-list__item" key={item._id}>
-                  <CardItem
-                    color={color}
-                    item={item}
-                    onCardClick={this.handleCardClick(route, item._id)}
-                    onFavClick={this.handleFavClick(item._id, item.isFavourite)}
-                    route={route}
-                  />
-                </li>
-              ))}
-            </ul>
-            {pending && <Preloader />}
-            {_isEmpty(items) && !pending && (
-              <MessageBox message={placeholder} type={MessageType.INFO} />
+          <ul className="grid-list__list">
+            {onAddNew && (
+              <li className="grid-list__item">
+                <button
+                  className="grid-list__button"
+                  onClick={onAddNew}
+                  type="button"
+                >
+                  <CardPlus />
+                </button>
+              </li>
             )}
-          </Fragment>
+            {_map(items, item => (
+              <li className="grid-list__item" key={item._id}>
+                <CardItem
+                  color={color}
+                  item={item}
+                  onCardClick={this.handleCardClick(route, item._id)}
+                  onFavClick={this.handleFavClick(item._id, item.isFavourite)}
+                  route={route}
+                />
+              </li>
+            ))}
+          </ul>
+          {pending && <Preloader />}
+          {_isEmpty(items) && !pending && (
+            <MessageBox message={placeholder} type={MessageType.INFO} />
+          )}
         </div>
       </div>
     );

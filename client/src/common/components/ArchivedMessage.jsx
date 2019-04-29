@@ -16,6 +16,7 @@ class ArchivedMessage extends PureComponent {
 
   handleDeletion = () => {
     const { onDelete } = this.props;
+
     this.setState({ pending: true });
 
     onDelete().catch(() => {

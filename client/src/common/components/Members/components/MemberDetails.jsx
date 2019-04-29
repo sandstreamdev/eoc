@@ -259,7 +259,6 @@ class MemberDetails extends PureComponent {
       isCurrentUserAnOwner,
       onClose
     } = this.props;
-
     const { pending } = this.state;
 
     return (
@@ -279,13 +278,23 @@ class MemberDetails extends PureComponent {
           </button>
           <div className="member-details__details">
             {this.renderHeader()}
-            <div className="member-details__panel">
+            {/* <div className="member-details__panel">
               {isCurrentUserAnOwner &&
                 userId !== currentUserId &&
                 this.renderDetails()}
               {isCurrentUserAnOwner &&
                 userId === currentUserId &&
                 this.renderMessage()}
+              {pending && <Preloader />}
+            </div> */}
+            <div className="member-details__panel">
+              {isCurrentUserAnOwner && (
+                <Fragment>
+                  {userId !== currentUserId
+                    ? this.renderDetails()
+                    : this.renderMessage()}
+                </Fragment>
+              )}
               {pending && <Preloader />}
             </div>
           </div>

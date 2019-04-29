@@ -20,12 +20,12 @@ class CardItem extends PureComponent {
     pending: false
   };
 
-  handleFavClick = e => {
+  handleFavClick = event => {
     const { onFavClick } = this.props;
 
     this.setState({ pending: true });
 
-    onFavClick(e).finally(() => this.setState({ pending: false }));
+    onFavClick(event).finally(() => this.setState({ pending: false }));
   };
 
   render() {
@@ -96,7 +96,7 @@ export default CardItem;
 
 CardItem.propTypes = {
   color: PropTypes.string.isRequired,
-  item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   route: PropTypes.string.isRequired,
 
   onCardClick: PropTypes.func.isRequired,

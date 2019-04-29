@@ -221,7 +221,7 @@ class Cohort extends PureComponent {
                     onClick={this.handleArchivedListsVisibility(cohortId)}
                     type="button"
                   >
-                    {` ${
+                    {`${
                       areArchivedListsVisible ? 'hide' : 'show'
                     } archived lists`}
                   </button>

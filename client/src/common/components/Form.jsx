@@ -53,7 +53,7 @@ class Form extends PureComponent {
 
   render() {
     const { description, name } = this.state;
-    const { onSelect, disabled } = this.props;
+    const { disabled, onSelect } = this.props;
 
     return (
       <form className="form" onSubmit={this.handleSubmit}>

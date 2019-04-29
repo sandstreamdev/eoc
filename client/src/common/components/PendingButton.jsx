@@ -28,7 +28,6 @@ class PendingButton extends PureComponent {
     this.setState({ pending: true });
 
     this.pendingPromise = makeAbortablePromise(onClick());
-
     this.pendingPromise.promise
       .then(() => this.setState({ pending: false }))
       .catch(err => {
@@ -48,6 +47,7 @@ class PendingButton extends PureComponent {
       preloaderTheme,
       value
     } = this.props;
+
     return (
       <Fragment>
         <button

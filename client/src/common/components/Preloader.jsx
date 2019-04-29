@@ -54,15 +54,15 @@ class Preloader extends PureComponent {
             })}
           >
             <div
-              className={classNames('preloader__shape1', {
-                'preloader__shape1--dark': theme === PreloaderTheme.DARK,
-                'preloader__shape1--light': theme === PreloaderTheme.LIGHT
+              className={classNames('preloader__spinner1', {
+                'preloader__spinner1--dark': theme === PreloaderTheme.DARK,
+                'preloader__spinner1--light': theme === PreloaderTheme.LIGHT
               })}
             />
             <div
-              className={classNames('preloader__shape2', {
-                'preloader__shape2--dark': theme === PreloaderTheme.DARK,
-                'preloader__shape2--light': theme === PreloaderTheme.LIGHT
+              className={classNames('preloader__spinner2', {
+                'preloader__spinner2--dark': theme === PreloaderTheme.DARK,
+                'preloader__spinner2--light': theme === PreloaderTheme.LIGHT
               })}
             />
           </div>

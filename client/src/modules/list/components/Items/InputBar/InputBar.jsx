@@ -34,8 +34,8 @@ class InputBar extends Component {
       itemName: event.target.value
     });
 
-  handleFormSubmit = e => {
-    e.preventDefault();
+  handleFormSubmit = event => {
+    event.preventDefault();
     const {
       addItem,
       currentUser,

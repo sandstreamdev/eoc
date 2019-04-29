@@ -85,7 +85,7 @@ class ListHeader extends PureComponent {
 
     if (
       isNameInputVisible &&
-      nameInputValue.trim().length >= 1 &&
+      _trim(nameInputValue).length >= 1 &&
       isClickedOutside
     ) {
       this.handleNameUpdate();
@@ -93,7 +93,6 @@ class ListHeader extends PureComponent {
   };
 
   handleNameUpdate = () => {
-    const { nameInputValue } = this.state;
     const {
       details,
       match: {
@@ -101,10 +100,11 @@ class ListHeader extends PureComponent {
       },
       updateList
     } = this.props;
-    const nameToUpdate = nameInputValue.trim();
+    const { nameInputValue } = this.state;
+    const nameToUpdate = _trim(nameInputValue);
     const { name: previousName } = details;
 
-    if (previousName === nameToUpdate) {
+    if (_trim(previousName) === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
       return;
     }
@@ -123,7 +123,6 @@ class ListHeader extends PureComponent {
   };
 
   handleDescriptionUpdate = () => {
-    const { descriptionInputValue } = this.state;
     const {
       details,
       match: {
@@ -131,16 +130,18 @@ class ListHeader extends PureComponent {
       },
       updateList
     } = this.props;
+    const { descriptionInputValue } = this.state;
+    const descriptionToUpdate = _trim(descriptionInputValue);
     const { description: previousDescription } = details;
 
-    if (previousDescription.trim() === descriptionInputValue.trim()) {
+    if (_trim(previousDescription) === descriptionToUpdate) {
       this.setState({ isDescriptionTextareaVisible: false });
       return;
     }
 
-    const updatedDescription = _isEmpty(_trim(descriptionInputValue))
+    const updatedDescription = _isEmpty(descriptionToUpdate)
       ? ''
-      : _trim(descriptionInputValue);
+      : descriptionToUpdate;
 
     this.setState({ pendingForDescription: true });
 
