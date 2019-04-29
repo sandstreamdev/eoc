@@ -6,3 +6,4 @@ export const PLACEHOLDER_URL =
   'http://localhost:3000/client/src/assets/images/placeholder.png';
 export const PROJECT_NAME = 'EOC';
 export const NOTIFICATION_TIMEOUT = 5000;
+export const PENDING_DELAY = 1000;

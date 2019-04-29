@@ -8,6 +8,7 @@ const {
   changeToMember,
   changeToOwner,
   clearVote,
+  cloneItem,
   createList,
   deleteListById,
   getArchivedListsMetaData,
@@ -41,5 +42,6 @@ router.patch('/:id/change-to-owner', authorize, changeToOwner);
 router.patch('/:id/change-to-member', authorize, changeToMember);
 router.patch('/:id/add-member', authorize, addMember);
 router.patch('/:id/update-item-details', authorize, updateItemDetails);
+router.patch('/:id/clone-item', authorize, cloneItem);
 
 module.exports = app => app.use('/lists', router);

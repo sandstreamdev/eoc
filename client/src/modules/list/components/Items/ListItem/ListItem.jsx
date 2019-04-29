@@ -7,18 +7,22 @@ import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import _isEqual from 'lodash/isEqual';
 
-import VotingBox from 'modules/list/components/VotingBox';
+import VotingBox from 'modules/list/components/Items/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
-import NewComment from '../../../common/components/Comments/NewComment';
-import Comment from '../../../common/components/Comments/Comment';
+import NewComment from 'common/components/Comments/NewComment';
+import Comment from 'common/components/Comments/Comment';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { updateItemDetails } from '../model/actions';
+import { cloneItem, updateItemDetails } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
-import { isUrlValid } from 'common/utils/helpers';
+import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 class ListItem extends PureComponent {
+  pendingPromises = [];
+
   constructor(props) {
     super(props);
 
@@ -33,13 +37,24 @@ class ListItem extends PureComponent {
       isNewCommentVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
-      link
+      link,
+      pending: false
     };
   }
 
   componentDidUpdate() {
     this.checkIfFieldsUpdated();
   }
+
+  componentWillUnmount() {
+    this.pendingPromises.map(promise => promise.abort());
+  }
+
+  addPendingPromise = promise => this.pendingPromises.push(promise);
+
+  removePendingPromise = promise => {
+    this.pendingPromises = this.pendingPromises.filter(p => p !== promise);
+  };
 
   handleItemToggling = (authorId, id, isOrdered) => event => {
     const { toggleItem } = this.props;
@@ -130,6 +145,35 @@ class ListItem extends PureComponent {
 
   handleItemDescription = value => this.setState({ itemDescription: value });
 
+  handleItemCloning = event => {
+    event.stopPropagation();
+    const {
+      cloneItem,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    this.setState({ pending: true });
+
+    const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
+
+    this.addPendingPromise(abortableCloning);
+
+    return abortableCloning.promise
+      .then(() => {
+        this.setState({ pending: false });
+        this.removePendingPromise(abortableCloning);
+      })
+      .catch(err => {
+        if (!(err instanceof AbortPromiseException)) {
+          this.setState({ pending: false });
+          this.removePendingPromise(abortableCloning);
+        }
+      });
+  };
+
   handleItemLink = value =>
     this.setState({ link: value, isValidationErrorVisible: false });
 
@@ -137,10 +181,11 @@ class ListItem extends PureComponent {
     const {
       areFieldsUpdated,
       isNewCommentVisible,
-      isValidationErrorVisible
+      isValidationErrorVisible,
+      pending
     } = this.state;
     const {
-      data: { description, link }
+      data: { description, isOrdered, link }
     } = this.props;
 
     return (
@@ -171,6 +216,22 @@ class ListItem extends PureComponent {
             />
           </div>
         </div>
+        {!isOrdered && (
+          <div className="list-item__cloning">
+            <button
+              className="link-button"
+              disabled={pending}
+              onClick={this.handleItemCloning}
+              type="button"
+            >
+              {pending ? (
+                <Preloader size={PreloaderSize.SMALL} />
+              ) : (
+                <span>Clone Item</span>
+              )}
+            </button>
+          </div>
+        )}
         <div className="list-item__new-comment">
           {isNewCommentVisible ? (
             <NewComment
@@ -274,6 +335,7 @@ ListItem.propTypes = {
   ),
   match: RouterMatchPropType.isRequired,
 
+  cloneItem: PropTypes.func.isRequired,
   toggleItem: PropTypes.func,
   updateItemDetails: PropTypes.func.isRequired,
   voteForItem: PropTypes.func
@@ -282,6 +344,6 @@ ListItem.propTypes = {
 export default withRouter(
   connect(
     null,
-    { updateItemDetails }
+    { cloneItem, updateItemDetails }
   )(ListItem)
 );
