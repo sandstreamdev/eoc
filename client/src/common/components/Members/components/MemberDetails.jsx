@@ -104,16 +104,16 @@ class MemberDetails extends PureComponent {
 
   changeListRole = selectedRole => {
     const {
+      _id: userId,
       addMemberRoleInList,
       addOwnerRoleInList,
-      removeMemberRoleInList,
-      removeOwnerRoleInList,
+      isMember,
+      isOwner,
       match: {
         params: { id }
       },
-      _id: userId,
-      isMember,
-      isOwner
+      removeMemberRoleInList,
+      removeOwnerRoleInList
     } = this.props;
     let action;
 
@@ -238,10 +238,10 @@ class MemberDetails extends PureComponent {
   renderHeader = () => {
     const {
       displayName,
-      isMember,
-      isOwner,
+      isCohortList,
       isGuest,
-      isCohortList
+      isMember,
+      isOwner
     } = this.props;
     let roleToDisplay = UserRolesToDisplay.VIEWER;
 

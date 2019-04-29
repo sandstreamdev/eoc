@@ -213,7 +213,7 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: listId,
-    $or: [{ viewersIds: userId }]
+    viewersIds: userId
   })
     .populate('viewersIds', 'avatarUrl displayName _id')
     .exec()
@@ -718,7 +718,7 @@ const addViewer = (req, resp) => {
 
   List.findOne({
     _id: listId,
-    $or: [{ ownerIds: currentUserId }]
+    ownerIds: currentUserId
   })
     .populate('cohortId', 'ownerIds memberIds')
     .exec()

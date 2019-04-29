@@ -19,10 +19,10 @@ const {
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
   const cohort = new Cohort({
-    name,
     description,
-    ownerIds: userId,
-    memberIds: userId
+    memberIds: userId,
+    name,
+    ownerIds: userId
   });
 
   cohort.save((err, doc) => {
@@ -161,10 +161,7 @@ const getCohortDetails = (req, resp) => {
       }
 
       const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
-      const members = responseWithCohortMembers(
-        [...membersCollection],
-        ownerIds
-      );
+      const members = responseWithCohortMembers(membersCollection, ownerIds);
 
       resp.status(200).json({
         _id,
@@ -304,9 +301,9 @@ const removeOwner = (req, resp) => {
         {
           cohortId,
           isPrivate: false,
-          viewersIds: { $in: [userId] },
           memberIds: { $nin: [userId] },
-          ownerIds: { $nin: [userId] }
+          ownerIds: { $nin: [userId] },
+          viewersIds: { $in: [userId] }
         },
         { $pull: { viewersIds: userId } }
       ).exec();
