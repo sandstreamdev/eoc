@@ -8,8 +8,9 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { CloseIcon, InfoIcon, UserIcon } from 'assets/images/icons';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
-  changeRole as changeRoleInCohort,
-  removeCohortMember
+  addOwnerRole as addOwnerRoleInCohort,
+  removeCohortMember,
+  removeOwnerRole as removeOwnerRoleInCohort
 } from 'modules/cohort/model/actions';
 import {
   addOwnerRole as addOwnerRoleInList,
@@ -86,20 +87,22 @@ class MemberDetails extends PureComponent {
     }));
   };
 
-  changeCohortRole = selectedRole => {
+  changeCohortRole = () => {
     const {
+      _id: userId,
+      addOwnerRoleInCohort,
+      isOwner,
       match: {
         params: { id }
       },
-      _id: userId,
-      changeRoleInCohort
+      removeOwnerRoleInCohort
     } = this.props;
 
     this.setState({ pending: true });
 
-    changeRoleInCohort(id, userId, selectedRole).finally(() =>
-      this.setState({ pending: false })
-    );
+    const action = isOwner ? removeOwnerRoleInCohort : addOwnerRoleInCohort;
+
+    action(id, userId).finally(() => this.setState({ pending: false }));
   };
 
   changeListRole = selectedRole => {
@@ -141,7 +144,7 @@ class MemberDetails extends PureComponent {
 
     switch (route) {
       case Routes.COHORT:
-        this.changeCohortRole(selectedRole);
+        this.changeCohortRole();
         break;
       case Routes.LIST:
         this.changeListRole(selectedRole);
@@ -285,13 +288,15 @@ class MemberDetails extends PureComponent {
             isOwner
           )}
         </li>
-        <li className="member-details__option">
-          {this.renderChangeRoleOption(
-            UserRoles.MEMBER,
-            isMemberInfoVisible,
-            isMember
-          )}
-        </li>
+        {route === Routes.LIST && (
+          <li className="member-details__option">
+            {this.renderChangeRoleOption(
+              UserRoles.MEMBER,
+              isMemberInfoVisible,
+              isMember
+            )}
+          </li>
+        )}
         {(route === Routes.COHORT || privateList || isGuest) && (
           <li className="member-details__option member-details__option--removing">
             {this.renderRemoveOption()}
@@ -359,13 +364,14 @@ MemberDetails.propTypes = {
   route: PropTypes.string,
 
   addMemberRoleInList: PropTypes.func.isRequired,
+  addOwnerRoleInCohort: PropTypes.func.isRequired,
   addOwnerRoleInList: PropTypes.func.isRequired,
-  changeRoleInCohort: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   removeCohortMember: PropTypes.func.isRequired,
   removeListMember: PropTypes.func.isRequired,
   removeMemberRoleInList: PropTypes.func.isRequired,
-  removeOwnerRoleInList: PropTypes.func.isRequired
+  removeOwnerRoleInList: PropTypes.func.isRequired,
+  removeOwnerRoleInCohort: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -376,12 +382,13 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
-      changeRoleInCohort,
       addMemberRoleInList,
+      addOwnerRoleInCohort,
       addOwnerRoleInList,
       removeCohortMember,
       removeListMember,
       removeMemberRoleInList,
+      removeOwnerRoleInCohort,
       removeOwnerRoleInList
     }
   )(MemberDetails)

@@ -4,9 +4,8 @@ const router = express.Router();
 
 const {
   addMember,
+  addOwnerRole,
   addToFavourites,
-  changeToMember,
-  changeToOwner,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
@@ -14,6 +13,7 @@ const {
   getCohortsMetaData,
   removeFromFavourites,
   removeMember,
+  removeOwnerRole,
   updateCohortById
 } = require('../controllers/cohort');
 const { authorize } = require('../middleware/authorize');
@@ -27,8 +27,8 @@ router.delete('/:id/delete', authorize, deleteCohortById);
 router.patch('/:id/add-to-fav', authorize, addToFavourites);
 router.patch('/:id/remove-from-fav', authorize, removeFromFavourites);
 router.patch('/:id/remove-member', authorize, removeMember);
-router.patch('/:id/change-to-owner', authorize, changeToOwner);
-router.patch('/:id/change-to-member', authorize, changeToMember);
+router.patch('/:id/add-owner-role', authorize, addOwnerRole);
+router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);
 router.patch('/:id/add-member', authorize, addMember);
 
 module.exports = app => app.use('/cohorts', router);

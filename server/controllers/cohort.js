@@ -330,7 +330,7 @@ const removeMember = (req, resp) => {
     });
 };
 
-const changeToOwner = (req, resp) => {
+const addOwnerRole = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
@@ -338,7 +338,11 @@ const changeToOwner = (req, resp) => {
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: ownerId, memberIds: userId },
+    {
+      _id: cohortId,
+      ownerIds: { $in: [ownerId], $nin: [userId] },
+      memberIds: userId
+    },
     { $push: { ownerIds: userId } },
     (err, doc) => {
       if (err) {
@@ -353,12 +357,12 @@ const changeToOwner = (req, resp) => {
         });
       }
 
-      resp.status(404).send({ message: 'Cohort data not found.' });
+      resp.status(400).send({ message: 'Cohort data not found.' });
     }
   );
 };
 
-const changeToMember = (req, resp) => {
+const removeOwnerRole = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
@@ -371,17 +375,17 @@ const changeToMember = (req, resp) => {
     (err, doc) => {
       if (err) {
         return resp.status(400).send({
-          message: "Can't set user as a cohort's member."
+          message: "Can't remove owner role."
         });
       }
 
       if (doc) {
         return resp.status(200).send({
-          message: "User has been successfully set as a cohort's member."
+          message: 'User has no owner role.'
         });
       }
 
-      resp.status(404).send({ message: 'Cohort data not found.' });
+      resp.status(400).send({ message: 'Cohort data not found.' });
     }
   );
 };
@@ -408,6 +412,10 @@ const addMember = (req, resp) => {
       return User.findOne({ email }).exec();
     })
     .then(user => {
+      if (!user) {
+        throw new BadRequestException(`There is no user of email: ${email}`);
+      }
+
       const { _id: newMemberId, avatarUrl, displayName } = user;
 
       if (checkIfCohortMember(currentCohort, newMemberId)) {
@@ -450,8 +458,8 @@ const addMember = (req, resp) => {
 module.exports = {
   addMember,
   addToFavourites,
-  changeToMember,
-  changeToOwner,
+  addOwnerRole,
+  removeOwnerRole,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
