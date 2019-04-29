@@ -57,9 +57,14 @@ const createList = (req, resp) => {
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId))
       )
-      .catch(() =>
-        resp.status(400).send({ message: 'List not saved. Please try again.' })
-      );
+      .catch(err => {
+        if (err instanceof BadRequestException) {
+          const { status, message } = err;
+
+          return resp.status(status).send({ message });
+        }
+        resp.status(400).send({ message: 'List not saved. Please try again.' });
+      });
   } else {
     list
       .save()
@@ -69,9 +74,9 @@ const createList = (req, resp) => {
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId))
       )
-      .catch(() =>
-        resp.status(400).send({ message: 'List not saved. Please try again.' })
-      );
+      .catch(() => {
+        resp.status(400).send({ message: 'List not saved. Please try again.' });
+      });
   }
 };
 
