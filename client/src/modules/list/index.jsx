@@ -104,7 +104,7 @@ class List extends Component {
     const { cohortId, isArchived, isPrivate, name, isGuest } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
-    const isCohortList = !!cohortId;
+    const isCohortList = cohortId !== null;
 
     return (
       <Fragment>
