@@ -22,6 +22,7 @@ const membersReducer = (state, action) => {
       const {
         payload: { userId }
       } = action;
+
       return state.map(member =>
         member._id === userId
           ? {

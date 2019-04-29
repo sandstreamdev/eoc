@@ -317,11 +317,11 @@ const removeMember = (req, resp) => {
         { $pull: { viewersIds: userId } }
       ).exec();
     })
-    .then(() => {
+    .then(() =>
       resp.status(200).send({
         message: 'Member successfully removed from cohort.'
-      });
-    })
+      })
+    )
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;

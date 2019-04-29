@@ -380,8 +380,8 @@ MemberDetails.propTypes = {
   removeCohortMember: PropTypes.func.isRequired,
   removeListMember: PropTypes.func.isRequired,
   removeMemberRoleInList: PropTypes.func.isRequired,
-  removeOwnerRoleInList: PropTypes.func.isRequired,
-  removeOwnerRoleInCohort: PropTypes.func.isRequired
+  removeOwnerRoleInCohort: PropTypes.func.isRequired,
+  removeOwnerRoleInList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
