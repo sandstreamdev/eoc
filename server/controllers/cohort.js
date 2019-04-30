@@ -159,17 +159,22 @@ const getCohortDetails = (req, resp) => {
       if (isArchived) {
         return resp.status(200).json({ _id, isArchived, name });
       }
-
+      const arrayOfMemberIds = membersCollection.map(member => member._id);
       const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
+      const isMember = checkIfArrayContainsUserId(
+        arrayOfMemberIds,
+        req.user._id
+      );
       const members = responseWithCohortMembers(membersCollection, ownerIds);
 
       resp.status(200).json({
         _id,
-        isOwner,
-        isArchived,
         description,
-        name,
-        members
+        isArchived,
+        isMember,
+        isOwner,
+        members,
+        name
       });
     })
     .catch(() =>
