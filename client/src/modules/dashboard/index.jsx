@@ -15,8 +15,6 @@ import {
   getCohortLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { UserPropType } from 'common/constants/propTypes';
 import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
@@ -47,11 +45,8 @@ class Dashboard extends Component {
     }));
 
   handleConfirm = (name, description) => {
-    const {
-      createList,
-      currentUser: { id: userId }
-    } = this.props;
-    const data = { description, userId, name };
+    const { createList } = this.props;
+    const data = { description, name };
 
     this.setState({ pendingForListCreation: true });
 
@@ -157,7 +152,6 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
-  currentUser: UserPropType.isRequired,
   privateLists: PropTypes.objectOf(PropTypes.object),
 
   createList: PropTypes.func.isRequired,
@@ -169,7 +163,6 @@ Dashboard.propTypes = {
 const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
   cohortLists: getCohortLists(state),
-  currentUser: getCurrentUser(state),
   privateLists: getPrivateLists(state)
 });
 

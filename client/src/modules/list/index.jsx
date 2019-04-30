@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getList, getItems, getMembers } from 'modules/list/model/selectors';
-import InputBar from 'modules/list/components/InputBar';
+import InputBar from 'modules/list/components/Items/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import { CohortIcon } from 'assets/images/icons';
@@ -101,14 +101,15 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, isArchived, isPrivate, name } = list;
+    const { cohortId, isArchived, isPrivate, name, isGuest } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
+    const isCohortList = cohortId !== null;
 
     return (
       <Fragment>
         <Toolbar>
-          {cohortId && (
+          {cohortId && !isGuest && (
             <ToolbarLink
               additionalIconSrc={ArrowLeftIcon}
               mainIcon={<CohortIcon />}
@@ -153,6 +154,7 @@ class List extends Component {
                   </button>
                   {isMembersBoxVisible && (
                     <MembersBox
+                      isCohortList={isCohortList}
                       isCurrentUserAnOwner={this.checkIfOwner()}
                       isPrivate={isPrivate}
                       members={members}

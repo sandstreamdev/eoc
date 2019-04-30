@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
+import classNames from 'classnames';
 
 import { ListIcon } from 'assets/images/icons';
 import { updateList } from 'modules/list/model/actions';
@@ -166,8 +167,20 @@ class ListHeader extends PureComponent {
       pendingForDescription
     } = this.state;
 
+    const {
+      details: { isOwner }
+    } = this.props;
+
+    if (!description && !isOwner) {
+      return;
+    }
+
     if (pendingForDescription) {
-      return <Preloader size={PreloaderSize.SMALL} />;
+      return (
+        <div className="list-header__bottom">
+          <Preloader size={PreloaderSize.SMALL} />
+        </div>
+      );
     }
 
     return isDescriptionTextareaVisible ? (
@@ -179,15 +192,18 @@ class ListHeader extends PureComponent {
       />
     ) : (
       <Fragment>
-        {description ? (
+        {description && (
           <p
-            className="list-header__description"
+            className={classNames('list-header__description', {
+              'list-header--clickable': isOwner
+            })}
             data-id="description"
-            onClick={this.handleDescriptionTextareaVisibility}
+            onClick={isOwner && this.handleDescriptionTextareaVisibility}
           >
             {description}
           </p>
-        ) : (
+        )}
+        {isOwner && !description && (
           <button
             className="list-header__button link-button"
             onClick={this.handleDescriptionTextareaVisibility}
@@ -202,6 +218,9 @@ class ListHeader extends PureComponent {
 
   renderName = () => {
     const { name, isNameInputVisible, pendingForName } = this.state;
+    const {
+      details: { isOwner }
+    } = this.props;
 
     if (pendingForName) {
       return <Preloader size={PreloaderSize.SMALL} />;
@@ -216,8 +235,10 @@ class ListHeader extends PureComponent {
       />
     ) : (
       <h1
-        className="list-header__heading"
-        onClick={this.handleNameInputVisibility}
+        className={classNames('list-header__heading', {
+          'list-header--clickable': isOwner
+        })}
+        onClick={isOwner && this.handleNameInputVisibility}
       >
         {name}
       </h1>
@@ -261,7 +282,7 @@ class ListHeader extends PureComponent {
           {this.renderName()}
           {this.renderListType()}
         </div>
-        <div className="list-header__bottom">{this.renderDescription()}</div>
+        {this.renderDescription()}
       </div>
     );
   }
