@@ -219,7 +219,7 @@ class Cohort extends PureComponent {
                     items={lists}
                     name="Lists"
                     onAddNew={this.handleDialogContext(DialogContext.CREATE)}
-                    pending={false}
+                    pending={pendingForDetails}
                     placeholder={`There are no lists in the ${name} cohort!`}
                     route={Routes.LIST}
                   />
