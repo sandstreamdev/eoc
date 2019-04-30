@@ -60,15 +60,11 @@ class InputBar extends Component {
 
   render() {
     const { itemName, isFormVisible } = this.state;
-    const { isMember } = this.props;
 
     return (
       <div className="input-bar">
         {isFormVisible ? (
-          <form
-            className="input-bar__form"
-            onSubmit={isMember ? this.handleFormSubmit : undefined}
-          >
+          <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
             <input
               className="input-bar__input primary-input"
               name="item name"
@@ -84,7 +80,7 @@ class InputBar extends Component {
         ) : (
           <button
             className="input-bar__button"
-            onClick={isMember ? this.showForm : undefined}
+            onClick={this.showForm}
             type="button"
           >
             <PlusIcon />

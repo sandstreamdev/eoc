@@ -421,6 +421,7 @@ const clearVote = (req, resp) => {
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
+
         return resp.status(status).send({ message });
       }
 
@@ -472,7 +473,7 @@ const addToFavourites = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [{ ownerIds: userId }, { memberIds: userId }]
+      viewersIds: userId
     },
     {
       $push: { favIds: userId }
@@ -502,7 +503,7 @@ const removeFromFavourites = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: listId,
-      $or: [{ ownerIds: userId }, { memberIds: userId }]
+      viewersIds: userId
     },
     {
       $pull: { favIds: req.user._id }
@@ -760,7 +761,7 @@ const addViewer = (req, resp) => {
 
   List.findOne({
     _id: listId,
-    $or: [{ ownerIds: currentUserId }, { memberIds: currentUserId }]
+    memberIds: currentUserId
   })
     .populate('cohortId', 'ownerIds memberIds')
     .exec()

@@ -172,7 +172,7 @@ class ListHeader extends PureComponent {
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
         description={description}
-        onClick={isOwner ? this.handleClick : undefined}
+        onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
       />

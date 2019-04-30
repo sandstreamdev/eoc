@@ -57,8 +57,8 @@ class ListItem extends PureComponent {
   };
 
   handleItemToggling = (authorId, id, isOrdered) => event => {
-    const { isMember, toggleItem } = this.props;
     event.stopPropagation();
+    const { isMember, toggleItem } = this.props;
 
     if (isMember) {
       this.setState(({ done }) => ({ done: !done }));
@@ -197,13 +197,14 @@ class ListItem extends PureComponent {
       data: { description, isOrdered, link },
       isMember
     } = this.props;
+    const isFieldDisabled = isMember;
 
     return (
       <Fragment>
         <div className="list-item__info">
           <div className="list-item__info-textarea">
             <Textarea
-              disabled={isMember}
+              disabled={isFieldDisabled}
               initialValue={description}
               onChange={this.handleItemDescription}
               placeholder="Description"
@@ -211,7 +212,7 @@ class ListItem extends PureComponent {
           </div>
           <div className="list-item__info-details">
             <TextInput
-              disabled={isMember}
+              disabled={isFieldDisabled}
               initialValue={link}
               onChange={this.handleItemLink}
               placeholder="Link"
