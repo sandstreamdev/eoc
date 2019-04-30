@@ -716,7 +716,7 @@ const removeMemberRole = (req, resp) => {
   } = req;
 
   List.findOne({ _id: listId, ownerIds: ownerId })
-    .populate('cohortId', 'memberIds ownerIds viewersIds')
+    .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
       if (!doc) {
