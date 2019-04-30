@@ -70,7 +70,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
   } = req;
   Cohort.find(
     {
-      memberIds: userId,
+      ownerIds: userId,
       isArchived: true
     },
     '_id name description favIds isArchived memberIds ownerIds',
@@ -291,11 +291,11 @@ const removeMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: currentUserId }
+    user: { _id: ownerId }
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: currentUserId, memberIds: userId },
+    { _id: cohortId, ownerIds: ownerId, memberIds: userId },
     { $pull: { memberIds: userId, ownerIds: userId } }
   )
     .exec()
@@ -397,14 +397,14 @@ const removeOwnerRole = (req, resp) => {
 
 const addMember = (req, resp) => {
   const {
-    user: { _id: currentUserId }
+    user: { _id: ownerId }
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
   let currentCohort;
   let newMember;
 
-  Cohort.findOne({ _id: cohortId, ownerIds: currentUserId })
+  Cohort.findOne({ _id: cohortId, ownerIds: ownerId })
     .exec()
     .then(cohort => {
       if (!cohort) {

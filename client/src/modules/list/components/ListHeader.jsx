@@ -184,7 +184,7 @@ class ListHeader extends PureComponent {
               'list-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner && this.handleDescriptionTextareaVisibility}
+            onClick={isOwner ? this.handleDescriptionTextareaVisibility : null}
           >
             {description}
           </p>
@@ -224,7 +224,7 @@ class ListHeader extends PureComponent {
         className={classNames('list-header__heading', {
           'list-header--clickable': isOwner
         })}
-        onClick={isOwner && this.handleNameInputVisibility}
+        onClick={isOwner ? this.handleNameInputVisibility : null}
       >
         {name}
       </h1>
