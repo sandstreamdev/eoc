@@ -339,12 +339,13 @@ class MemberDetails extends PureComponent {
           <div className="member-details__details">
             {this.renderHeader()}
             <div className="member-details__panel">
-              {isCurrentUserAnOwner &&
-                userId !== currentUserId &&
-                this.renderDetails()}
-              {isCurrentUserAnOwner &&
-                userId === currentUserId &&
-                this.renderMessage()}
+              {isCurrentUserAnOwner && (
+                <Fragment>
+                  {userId !== currentUserId
+                    ? this.renderDetails()
+                    : this.renderMessage()}
+                </Fragment>
+              )}
               {pending && <Preloader />}
             </div>
           </div>
