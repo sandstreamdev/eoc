@@ -172,7 +172,7 @@ class ListHeader extends PureComponent {
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
         description={description}
-        onClick={this.handleClick}
+        onClick={isOwner ? this.handleClick : undefined}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
       />
@@ -184,7 +184,9 @@ class ListHeader extends PureComponent {
               'list-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner && this.handleDescriptionTextareaVisibility}
+            onClick={
+              isOwner ? this.handleDescriptionTextareaVisibility : undefined
+            }
           >
             {description}
           </p>
@@ -215,7 +217,7 @@ class ListHeader extends PureComponent {
     return isNameInputVisible ? (
       <NameInput
         name={name}
-        onClick={this.handleClick}
+        onClick={isOwner ? this.handleClick : undefined}
         onKeyPress={this.handleKeyPress}
         onNameChange={this.handleNameChange}
       />
@@ -224,7 +226,7 @@ class ListHeader extends PureComponent {
         className={classNames('list-header__heading', {
           'list-header--clickable': isOwner
         })}
-        onClick={isOwner && this.handleNameInputVisibility}
+        onClick={isOwner ? this.handleNameInputVisibility : undefined}
       >
         {name}
       </h1>

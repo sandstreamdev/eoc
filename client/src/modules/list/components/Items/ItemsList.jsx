@@ -21,6 +21,7 @@ class ItemsList extends Component {
 
   toggleItem = (authorId, id, isOrdered) => {
     const {
+      isMember,
       toggle,
       match: {
         params: { id: listId }
@@ -29,29 +30,35 @@ class ItemsList extends Component {
     const {
       currentUser: { name, id: userId }
     } = this.props;
-    const isSameAuthor = authorId === userId;
 
-    return isSameAuthor
-      ? toggle(isOrdered, id, listId, name)
-      : toggle(isOrdered, id, listId);
+    if (isMember) {
+      const isSameAuthor = authorId === userId;
+
+      isSameAuthor
+        ? toggle(isOrdered, id, listId, name)
+        : toggle(isOrdered, id, listId);
+    }
   };
 
   voteForItem = item => () => {
     const { _id, isVoted } = item;
     const {
       clearVote,
+      isMember,
       setVote,
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    const action = isVoted ? clearVote : setVote;
-    action(_id, listId);
+    if (isMember) {
+      const action = isVoted ? clearVote : setVote;
+      action(_id, listId);
+    }
   };
 
   render() {
-    const { items } = this.props;
+    const { isMember, items } = this.props;
     const { limit } = this.state;
 
     return (
@@ -65,6 +72,7 @@ class ItemsList extends Component {
             {items.slice(0, limit).map(item => (
               <ListItem
                 data={item}
+                isMember={isMember}
                 key={item._id}
                 toggleItem={this.toggleItem}
                 voteForItem={this.voteForItem(item)}
@@ -86,6 +94,7 @@ class ItemsList extends Component {
 
 ItemsList.propTypes = {
   currentUser: UserPropType.isRequired,
+  isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 

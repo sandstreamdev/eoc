@@ -57,11 +57,13 @@ class ListItem extends PureComponent {
   };
 
   handleItemToggling = (authorId, id, isOrdered) => event => {
-    const { toggleItem } = this.props;
+    const { isMember, toggleItem } = this.props;
     event.stopPropagation();
 
-    this.setState(({ done }) => ({ done: !done }));
-    toggleItem(authorId, id, isOrdered);
+    if (isMember) {
+      this.setState(({ done }) => ({ done: !done }));
+      toggleItem(authorId, id, isOrdered);
+    }
   };
 
   toggleDetails = () =>
@@ -100,15 +102,16 @@ class ListItem extends PureComponent {
   handleLinkUpdate = () => {
     const { link } = this.state;
     const {
-      updateItemDetails,
       data: { _id: itemId },
+      isMember,
       match: {
         params: { id: listId }
-      }
+      },
+      updateItemDetails
     } = this.props;
     const canBeUpdated = isUrlValid(link) || _isEmpty(_trim(link));
 
-    if (canBeUpdated) {
+    if (canBeUpdated && isMember) {
       updateItemDetails(listId, itemId, { link });
     } else if (!isUrlValid(link)) {
       this.setState({ isValidationErrorVisible: true });
@@ -118,14 +121,17 @@ class ListItem extends PureComponent {
   handleDescriptionUpdate = () => {
     const { itemDescription: description } = this.state;
     const {
-      updateItemDetails,
       data: { _id: itemId },
+      isMember,
       match: {
         params: { id: listId }
-      }
+      },
+      updateItemDetails
     } = this.props;
 
-    updateItemDetails(listId, itemId, { description });
+    if (isMember) {
+      updateItemDetails(listId, itemId, { description });
+    }
   };
 
   checkIfFieldsUpdated = () => {
@@ -150,28 +156,31 @@ class ListItem extends PureComponent {
     const {
       cloneItem,
       data: { _id: itemId },
+      isMember,
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    this.setState({ pending: true });
+    if (isMember) {
+      this.setState({ pending: true });
 
-    const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
+      const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
 
-    this.addPendingPromise(abortableCloning);
+      this.addPendingPromise(abortableCloning);
 
-    return abortableCloning.promise
-      .then(() => {
-        this.setState({ pending: false });
-        this.removePendingPromise(abortableCloning);
-      })
-      .catch(err => {
-        if (!(err instanceof AbortPromiseException)) {
+      return abortableCloning.promise
+        .then(() => {
           this.setState({ pending: false });
           this.removePendingPromise(abortableCloning);
-        }
-      });
+        })
+        .catch(err => {
+          if (!(err instanceof AbortPromiseException)) {
+            this.setState({ pending: false });
+            this.removePendingPromise(abortableCloning);
+          }
+        });
+    }
   };
 
   handleItemLink = value =>
@@ -185,7 +194,8 @@ class ListItem extends PureComponent {
       pending
     } = this.state;
     const {
-      data: { description, isOrdered, link }
+      data: { description, isOrdered, link },
+      isMember
     } = this.props;
 
     return (
@@ -193,6 +203,7 @@ class ListItem extends PureComponent {
         <div className="list-item__info">
           <div className="list-item__info-textarea">
             <Textarea
+              disabled={isMember}
               initialValue={description}
               onChange={this.handleItemDescription}
               placeholder="Description"
@@ -200,6 +211,7 @@ class ListItem extends PureComponent {
           </div>
           <div className="list-item__info-details">
             <TextInput
+              disabled={isMember}
               initialValue={link}
               onChange={this.handleItemLink}
               placeholder="Link"
@@ -209,14 +221,16 @@ class ListItem extends PureComponent {
                 <ErrorMessage message="Incorrect url." />
               </div>
             )}
-            <SaveButton
-              disabled={!areFieldsUpdated}
-              onClick={this.handleDataUpdate}
-              value="Save data"
-            />
+            {isMember && (
+              <SaveButton
+                disabled={!areFieldsUpdated}
+                onClick={this.handleDataUpdate}
+                value="Save data"
+              />
+            )}
           </div>
         </div>
-        {!isOrdered && (
+        {!isOrdered && isMember && (
           <div className="list-item__cloning">
             <button
               className="link-button"
@@ -232,22 +246,24 @@ class ListItem extends PureComponent {
             </button>
           </div>
         )}
-        <div className="list-item__new-comment">
-          {isNewCommentVisible ? (
-            <NewComment
-              onAddNewComment={this.handleAddNewComment}
-              onEscapePress={this.hideAddNewComment}
-            />
-          ) : (
-            <button
-              className="list-item__add-new-button link-button"
-              onClick={this.showAddNewComment}
-              type="button"
-            >
-              Add comment
-            </button>
-          )}
-        </div>
+        {isMember && (
+          <div className="list-item__new-comment">
+            {isNewCommentVisible ? (
+              <NewComment
+                onAddNewComment={this.handleAddNewComment}
+                onEscapePress={this.hideAddNewComment}
+              />
+            ) : (
+              <button
+                className="list-item__add-new-button link-button"
+                onClick={this.showAddNewComment}
+                type="button"
+              >
+                Add comment
+              </button>
+            )}
+          </div>
+        )}
         <div className="list-item__comments">{this.renderComments()}</div>
       </Fragment>
     );
@@ -276,6 +292,7 @@ class ListItem extends PureComponent {
   render() {
     const {
       data: { isOrdered, authorId, authorName, _id, isVoted, name, votesCount },
+      isMember,
       voteForItem
     } = this.props;
     const { done, areDetailsVisible } = this.state;
@@ -308,18 +325,20 @@ class ListItem extends PureComponent {
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
-          {!isOrdered && (
+          {!isOrdered && isMember && (
             <VotingBox
               isVoted={isVoted}
               voteForItem={voteForItem}
               votesCount={votesCount}
             />
           )}
-          <button
-            className="list-item__icon z-index-high"
-            onClick={this.handleItemToggling(authorId, _id, isOrdered)}
-            type="button"
-          />
+          {isMember && (
+            <button
+              className="list-item__icon z-index-high"
+              onClick={this.handleItemToggling(authorId, _id, isOrdered)}
+              type="button"
+            />
+          )}
         </div>
         {areDetailsVisible && (
           <div className="list-item__details">{this.renderDetails()}</div>
@@ -333,6 +352,7 @@ ListItem.propTypes = {
   data: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])
   ),
+  isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
   cloneItem: PropTypes.func.isRequired,

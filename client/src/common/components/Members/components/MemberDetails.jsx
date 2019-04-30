@@ -154,7 +154,10 @@ class MemberDetails extends PureComponent {
 
   renderChangeRoleOption = (role, isInfoVisible, checked) => {
     const { route } = this.props;
-    const label = role === UserRoles.OWNER ? 'owner' : 'member';
+    const label =
+      role === UserRoles.OWNER
+        ? UserRolesToDisplay.OWNER
+        : UserRolesToDisplay.MEMBER;
 
     return (
       <Fragment>

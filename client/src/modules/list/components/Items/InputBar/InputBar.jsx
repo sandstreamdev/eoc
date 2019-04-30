@@ -29,11 +29,12 @@ class InputBar extends Component {
       itemName: event.target.value
     });
 
-  handleFormSubmit = e => {
-    e.preventDefault();
+  handleFormSubmit = event => {
+    event.preventDefault();
     const {
       addItem,
       currentUser,
+      isMember,
       match: {
         params: { id }
       }
@@ -45,12 +46,12 @@ class InputBar extends Component {
       name: itemName
     };
 
-    addItem(newItem, id);
+    if (isMember) {
+      addItem(newItem, id);
 
-    this.setState({
-      itemName: ''
-    });
-    this.hideForm();
+      this.setState({ itemName: '' });
+      this.hideForm();
+    }
   };
 
   showForm = () => this.setState({ isFormVisible: true });
@@ -59,10 +60,15 @@ class InputBar extends Component {
 
   render() {
     const { itemName, isFormVisible } = this.state;
+    const { isMember } = this.props;
+
     return (
       <div className="input-bar">
         {isFormVisible ? (
-          <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
+          <form
+            className="input-bar__form"
+            onSubmit={isMember ? this.handleFormSubmit : undefined}
+          >
             <input
               className="input-bar__input primary-input"
               name="item name"
@@ -78,7 +84,7 @@ class InputBar extends Component {
         ) : (
           <button
             className="input-bar__button"
-            onClick={this.showForm}
+            onClick={isMember ? this.showForm : undefined}
             type="button"
           >
             <PlusIcon />
@@ -92,6 +98,7 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
+  isMember: PropTypes.bool.isRequired,
   match: RouterMatchPropType.isRequired,
 
   addItem: PropTypes.func.isRequired
