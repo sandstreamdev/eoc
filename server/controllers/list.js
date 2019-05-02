@@ -863,46 +863,58 @@ const cloneItem = (req, resp) => {
 const changePrivacy = (req, resp) => {
   const { isListPrivate } = req.body;
   const { id: listId } = req.params;
-  const { _id: ownerId } = req.user;
+  const { _id: currentUserId } = req.user;
   let cohortMembers;
 
-  List.findOne({ _id: listId, ownerIds: ownerId })
+  List.findOneAndUpdate(
+    { _id: listId, ownerIds: currentUserId },
+    { isPrivate: isListPrivate },
+    { new: true }
+  )
     .populate('cohortId', 'memberIds')
     .exec()
     .then(list => {
       if (!list) {
         throw new BadRequestException('List data not found.');
       }
-      const { viewerIds, memberIds, cohortId } = list;
-      cohortMembers = cohortId;
-      const updatedViewerIds = isListPrivate
-        ? viewerIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
+      const {
+        isPrivate,
+        memberIds,
+        viewersIds,
+        cohortId: { memberIds: cohortMembersCollection }
+      } = list;
+
+      cohortMembers = cohortMembersCollection;
+
+      const updatedViewersIds = isPrivate
+        ? viewersIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
         : [
-            ...viewerIds,
+            ...viewersIds,
             ...cohortMembers.filter(
-              id => !checkIfArrayContainsUserId(viewerIds, id)
+              id => !checkIfArrayContainsUserId(viewersIds, id)
             )
           ];
 
-      return list.update({
-        isPrivate: isListPrivate,
-        viewerIds: updatedViewerIds
-      });
+      return List.findOneAndUpdate(
+        { _id: listId, ownerIds: currentUserId },
+        { viewersIds: updatedViewersIds },
+        { new: true }
+      )
+        .populate('viewersIds', 'avatarUrl displayName _id')
+        .exec();
     })
-    .then(list =>
-      list.populate('viewerIds', 'avatarUrl displayName _id').execPopulate()
-    )
     .then(list => {
       const {
         isPrivate,
         name,
-        viewerIds: viewersCollection,
+        viewersIds: viewersCollection,
         memberIds,
         ownerIds
       } = list;
       const message = `List "${name}" change to ${
         isPrivate ? 'limited' : 'shared'
       }.`;
+
       const members = responseWithListMembers(
         viewersCollection,
         memberIds,
