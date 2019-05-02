@@ -15,11 +15,18 @@
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+  }
+
+  &__name {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   &__bottom {
     position: relative;
-    min-height: 35px;
   }
 
   &__heading {
@@ -66,11 +73,19 @@
   }
 
   &__select {
-    margin-left: 36px;
+    position: relative;
     box-sizing: border-box;
     height: 40px;
     padding: 0 30px 0 15px;
     font-size: $font-size;
+  }
+
+  .primary-select {
+    box-shadow: none;
+  }
+
+  &__type {
+    position: relative;
   }
 
   &--clickable {

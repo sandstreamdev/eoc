@@ -29,7 +29,8 @@ class ListHeader extends PureComponent {
       isNameInputVisible: false,
       nameInputValue: name,
       pendingForDescription: false,
-      pendingForName: false
+      pendingForName: false,
+      pendingForType: false
     };
   }
 
@@ -155,7 +156,7 @@ class ListHeader extends PureComponent {
     );
   };
 
-  handlePrivacyChange = event => {
+  handleChangingType = event => {
     const {
       target: { value }
     } = event;
@@ -169,7 +170,11 @@ class ListHeader extends PureComponent {
 
     const isListPrivate = value === ListType.LIMITED;
 
-    changePrivacy(listId, isListPrivate);
+    this.setState({ pendingForType: true });
+
+    changePrivacy(listId, isListPrivate).finally(() =>
+      this.setState({ pendingForType: false })
+    );
   };
 
   renderDescription = () => {
@@ -252,11 +257,14 @@ class ListHeader extends PureComponent {
       details: { isPrivate }
     } = this.props;
 
+    const { pendingForType } = this.state;
+
     return (
       <select
         className="list-header__select primary-select"
         defaultValue={isPrivate ? ListType.LIMITED : ListType.SHARED}
-        onChange={this.handlePrivacyChange}
+        disabled={pendingForType}
+        onChange={this.handleChangingType}
       >
         <option className="list-header__option" value={ListType.LIMITED}>
           {ListType.LIMITED}
@@ -269,16 +277,30 @@ class ListHeader extends PureComponent {
   };
 
   render() {
-    const { details: isOwner, isCohortList } = this.props;
-    const { pendingForDescription, pendingForName } = this.state;
+    const {
+      details: { isOwner },
+      isCohortList
+    } = this.props;
+    const {
+      pendingForDescription,
+      pendingForName,
+      pendingForType
+    } = this.state;
 
     return (
       <div className="list-header">
         <div className="list-header__top">
-          <ListIcon />
-          {this.renderName()}
+          <div className="list-header__name">
+            <ListIcon />
+            {this.renderName()}
+          </div>
           {pendingForName && <Preloader size={PreloaderSize.SMALL} />}
-          {isCohortList && isOwner && this.renderListType()}
+          {isCohortList && isOwner && (
+            <div className="list-header__type">
+              {this.renderListType()}
+              {pendingForType && <Preloader size={PreloaderSize.SMALL} />}
+            </div>
+          )}
         </div>
         <div className="list-header__bottom">
           {this.renderDescription()}
