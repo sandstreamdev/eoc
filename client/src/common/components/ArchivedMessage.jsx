@@ -45,28 +45,25 @@ class ArchivedMessage extends PureComponent {
               ? `Restoring "${name}" ${item}...`
               : `The "${name}" ${item} was archived.`}
           </h1>
-          {pending && !isDialogVisible ? (
-            <div className="archived-message__body">
-              <Preloader />
-            </div>
-          ) : (
-            <div className="archived-message__body">
-              <button
-                className="archived-message__button primary-button"
-                onClick={this.showDialog}
-                type="button"
-              >
-                permanently delete
-              </button>
-              <button
-                className="archived-message__button primary-button"
-                type="button"
-                onClick={this.handleRestoring}
-              >
-                restore from archive
-              </button>
-            </div>
-          )}
+          <div className="archived-message__body">
+            <button
+              className="archived-message__button primary-button"
+              disabled={pending}
+              onClick={this.showDialog}
+              type="button"
+            >
+              permanently delete
+            </button>
+            <button
+              className="archived-message__button primary-button"
+              disabled={pending}
+              type="button"
+              onClick={this.handleRestoring}
+            >
+              restore from archive
+            </button>
+            {pending && !isDialogVisible && <Preloader />}
+          </div>
         </div>
         {isDialogVisible && (
           <Dialog

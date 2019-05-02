@@ -100,7 +100,7 @@ const lists = (state = {}, action) => {
       const updatedList = {
         ...prevList,
         name: action.payload.name || prevList.name,
-        description: action.payload.description || prevList.description
+        description: action.payload.description
       };
       return { ...state, [action.payload.listId]: updatedList };
     }
@@ -150,4 +150,5 @@ const lists = (state = {}, action) => {
       return state;
   }
 };
+
 export default lists;

@@ -1,13 +1,35 @@
 .preloader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   position: absolute;
-  z-index: 4;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: not-allowed;
+
+  &--dark {
+    background-color: rgba($white, 0.75);
+  }
+
+  &--light {
+    background-color: $dark-orange;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   &__spinner {
     position: relative;
@@ -22,8 +44,8 @@
     }
   }
 
-  &__shape1,
-  &__shape2 {
+  &__spinner1,
+  &__spinner2 {
     width: 100%;
     height: 100%;
     border-radius: 50%;
@@ -43,7 +65,7 @@
     }
   }
 
-  &__shape2 {
+  &__spinner2 {
     animation-delay: -1s;
   }
 

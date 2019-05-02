@@ -3,6 +3,10 @@
   height: 100%;
   min-height: 100%;
 
+  &__details {
+    position: relative;
+  }
+
   &__items {
     margin: 20px 0 0;
     display: flex;

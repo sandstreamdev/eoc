@@ -3,7 +3,7 @@ import _keyBy from 'lodash/keyBy';
 
 import { CohortActionTypes } from './actionTypes';
 
-const membersReducer = (state, action) => {
+const membersReducer = (state = [], action) => {
   switch (action.type) {
     case CohortActionTypes.ADD_MEMBER_SUCCESS: {
       const {
@@ -43,7 +43,7 @@ const cohorts = (state = {}, action) => {
       const prevCohort = state[action.payload.cohortId];
       const updatedCohort = {
         ...prevCohort,
-        name: action.payload.name,
+        name: action.payload.name || prevCohort.name,
         description: action.payload.description
       };
       return { ...state, [action.payload.cohortId]: updatedCohort };

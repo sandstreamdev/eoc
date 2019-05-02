@@ -58,6 +58,7 @@ class MembersForm extends PureComponent {
       <form className="members-form" onSubmit={this.handleSubmit}>
         <input
           className="members-form__input primary-input"
+          disabled={pending}
           onChange={this.handleInputChange}
           placeholder="Enter email"
           ref={this.input}
@@ -70,13 +71,12 @@ class MembersForm extends PureComponent {
           onClick={this.handleAddNew}
           type="button"
         >
-          {pending ? (
+          Add
+          {pending && (
             <Preloader
               size={PreloaderSize.SMALL}
               theme={PreloaderTheme.LIGHT}
             />
-          ) : (
-            <span>Add new</span>
           )}
         </button>
       </form>
