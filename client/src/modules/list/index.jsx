@@ -123,7 +123,7 @@ class List extends Component {
         ) : (
           <div className="wrapper">
             <div className="list">
-              <ListHeader details={list} />
+              <ListHeader details={list} isCohortList={isCohortList} />
               {pendingForDetails ? (
                 <Preloader />
               ) : (

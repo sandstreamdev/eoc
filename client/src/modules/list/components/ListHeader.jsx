@@ -7,7 +7,7 @@ import _trim from 'lodash/trim';
 import classNames from 'classnames';
 
 import { ListIcon } from 'assets/images/icons';
-import { updateList } from 'modules/list/model/actions';
+import { updateList, changePrivacy } from 'modules/list/model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
@@ -19,7 +19,7 @@ class ListHeader extends PureComponent {
     super(props);
 
     const {
-      details: { isPrivate, description, name }
+      details: { description, name }
     } = this.props;
     const trimmedDescription = description.trim();
 
@@ -27,7 +27,6 @@ class ListHeader extends PureComponent {
       description: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
-      isPrivate,
       name,
       pendingForDescription: false,
       pendingForName: false
@@ -148,16 +147,21 @@ class ListHeader extends PureComponent {
       .finally(() => this.setState({ pendingForDescription: false }));
   };
 
-  handleSelect = event => {
+  handlePrivacyChange = event => {
     const {
       target: { value }
     } = event;
 
-    if (value === ListType.SHARED) {
-      console.log('zmien liste na publiczna');
-      return;
-    }
-    console.log('zmien liste na prywatna');
+    const {
+      changePrivacy,
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    const isListPrivate = value === ListType.LIMITED;
+
+    changePrivacy(listId, isListPrivate);
   };
 
   renderDescription = () => {
@@ -198,7 +202,7 @@ class ListHeader extends PureComponent {
               'list-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner && this.handleDescriptionTextareaVisibility}
+            onClick={isOwner ? this.handleDescriptionTextareaVisibility : null}
           >
             {description}
           </p>
@@ -238,7 +242,7 @@ class ListHeader extends PureComponent {
         className={classNames('list-header__heading', {
           'list-header--clickable': isOwner
         })}
-        onClick={isOwner && this.handleNameInputVisibility}
+        onClick={isOwner ? this.handleNameInputVisibility : null}
       >
         {name}
       </h1>
@@ -254,20 +258,12 @@ class ListHeader extends PureComponent {
       <select
         className="list-header__select primary-select"
         defaultValue={isPrivate ? ListType.LIMITED : ListType.SHARED}
-        onChange={this.handleSelect}
+        onChange={this.handlePrivacyChange}
       >
-        <option
-          className="list-header__option"
-          value={ListType.LIMITED}
-          // selected={isPrivate}
-        >
+        <option className="list-header__option" value={ListType.LIMITED}>
           {ListType.LIMITED}
         </option>
-        <option
-          className="list-header__option"
-          value={ListType.SHARED}
-          // selected={!isPrivate}
-        >
+        <option className="list-header__option" value={ListType.SHARED}>
           {ListType.SHARED}
         </option>
       </select>
@@ -275,12 +271,13 @@ class ListHeader extends PureComponent {
   };
 
   render() {
+    const { details: isOwner, isCohortList } = this.props;
     return (
       <div className="list-header">
         <div className="list-header__top">
           <ListIcon />
           {this.renderName()}
-          {this.renderListType()}
+          {isCohortList && isOwner && this.renderListType()}
         </div>
         {this.renderDescription()}
       </div>
@@ -290,14 +287,16 @@ class ListHeader extends PureComponent {
 
 ListHeader.propTypes = {
   details: PropTypes.objectOf(PropTypes.any).isRequired,
+  isCohortList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
+  changePrivacy: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
     null,
-    { updateList }
+    { changePrivacy, updateList }
   )(ListHeader)
 );

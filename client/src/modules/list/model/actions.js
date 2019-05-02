@@ -210,6 +210,19 @@ const removeMemberRoleFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_FAILURE
 });
 
+const changePrivacySuccess = (listId, data) => ({
+  type: ListActionTypes.CHANGE_PRIVACY_SUCCESS,
+  payload: { listId, data }
+});
+
+const changePrivacyRequest = () => ({
+  type: ListActionTypes.CHANGE_PRIVACY_REQUEST
+});
+
+const changePrivacyFailure = () => ({
+  type: ListActionTypes.CHANGE_PRIVACY_FAILURE
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
@@ -559,6 +572,30 @@ export const removeMemberRole = (listId, userId) => dispatch => {
     })
     .catch(err => {
       dispatch(removeMemberRoleFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changePrivacy = (listId, isListPrivate) => dispatch => {
+  dispatch(changePrivacyRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-privacy`, {
+    isListPrivate
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(changePrivacySuccess(listId, json.data));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changePrivacyFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

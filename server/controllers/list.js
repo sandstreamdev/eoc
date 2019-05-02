@@ -860,12 +860,76 @@ const cloneItem = (req, resp) => {
     });
 };
 
+const changePrivacy = (req, resp) => {
+  const { isListPrivate } = req.body;
+  const { id: listId } = req.params;
+  const { _id: ownerId } = req.user;
+  let cohortMembers;
+
+  List.findOne({ _id: listId, ownerIds: ownerId })
+    .populate('cohortId', 'memberIds')
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException('List data not found.');
+      }
+      const { viewerIds, memberIds, cohortId } = list;
+      cohortMembers = cohortId;
+      const updatedViewerIds = isListPrivate
+        ? viewerIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
+        : [
+            ...viewerIds,
+            ...cohortMembers.filter(
+              id => !checkIfArrayContainsUserId(viewerIds, id)
+            )
+          ];
+
+      return list.update({
+        isPrivate: isListPrivate,
+        viewerIds: updatedViewerIds
+      });
+    })
+    .then(list =>
+      list.populate('viewerIds', 'avatarUrl displayName _id').execPopulate()
+    )
+    .then(list => {
+      const {
+        isPrivate,
+        name,
+        viewerIds: viewersCollection,
+        memberIds,
+        ownerIds
+      } = list;
+      const message = `List "${name}" change to ${
+        isPrivate ? 'limited' : 'shared'
+      }.`;
+      const members = responseWithListMembers(
+        viewersCollection,
+        memberIds,
+        ownerIds,
+        cohortMembers
+      );
+
+      resp.status(200).send({ message, data: { isPrivate, members } });
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
   addOwnerRole,
   addToFavourites,
   addViewer,
+  changePrivacy,
   clearVote,
   cloneItem,
   createList,
