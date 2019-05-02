@@ -17,15 +17,30 @@ const membersReducer = (state = [], action) => {
       } = action;
       return state.filter(member => member._id !== userId);
     }
-    case CohortActionTypes.CHANGE_ROLE_SUCCESS: {
+    case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
-        payload: { isOwner, userId }
+        payload: { userId }
       } = action;
+
       return state.map(member =>
         member._id === userId
           ? {
               ...member,
-              isOwner
+              isOwner: true
+            }
+          : member
+      );
+    }
+    case CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+
+      return state.map(member =>
+        member._id === userId
+          ? {
+              ...member,
+              isOwner: false
             }
           : member
       );
@@ -77,8 +92,9 @@ const cohorts = (state = {}, action) => {
       return { ...state, [cohortId]: { ...state[cohortId], isFavourite } };
     }
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
-    case CohortActionTypes.CHANGE_ROLE_SUCCESS:
-    case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS:
+    case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
+    case CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
         payload: { cohortId }
       } = action;

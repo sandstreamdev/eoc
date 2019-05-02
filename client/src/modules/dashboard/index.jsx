@@ -12,7 +12,7 @@ import {
 } from 'modules/list/model/actions';
 import {
   getArchivedLists,
-  getCohortLists,
+  getCohortsLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
 import GridList from 'common/components/GridList';
@@ -162,7 +162,7 @@ Dashboard.propTypes = {
 
 const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
-  cohortLists: getCohortLists(state),
+  cohortLists: getCohortsLists(state),
   privateLists: getPrivateLists(state)
 });
 

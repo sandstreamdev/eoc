@@ -26,6 +26,14 @@
         left: 4px;
         transform: translateX(36px);
       }
+
+      &--disabled {
+        cursor: not-allowed;
+        background-color: $switch-slider-disabled;
+        &:before {
+          background-color: $switch-dot-disabled;
+        }
+      }
     }
   }
 

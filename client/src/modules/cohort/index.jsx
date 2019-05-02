@@ -5,7 +5,10 @@ import { withRouter } from 'react-router-dom';
 
 import { CardColorType } from 'common/components/CardItem';
 import Toolbar from 'common/components/Toolbar';
-import { getActiveLists, getArchivedLists } from 'modules/list/model/selectors';
+import {
+  getCohortActiveLists,
+  getCohortArchivedLists
+} from 'modules/list/model/selectors';
 import {
   createList,
   fetchArchivedListsMetaData,
@@ -115,16 +118,16 @@ class Cohort extends PureComponent {
     const { areArchivedListsVisible } = this.state;
     const {
       fetchArchivedListsMetaData,
-      removeArchivedListsMetaData,
       match: {
-        params: { id }
-      }
+        params: { id: cohortId }
+      },
+      removeArchivedListsMetaData
     } = this.props;
 
     if (areArchivedListsVisible) {
       this.setState({ pendingForArchivedLists: true });
 
-      fetchArchivedListsMetaData(id).finally(() =>
+      fetchArchivedListsMetaData(cohortId).finally(() =>
         this.setState({ pendingForArchivedLists: false })
       );
     } else {
@@ -277,10 +280,10 @@ const mapStateToProps = (state, ownProps) => {
     }
   } = ownProps;
   return {
-    archivedLists: getArchivedLists(state),
+    archivedLists: getCohortArchivedLists(state, id),
     cohortDetails: getCohortDetails(state, id),
     currentUser: getCurrentUser(state),
-    lists: getActiveLists(state),
+    lists: getCohortActiveLists(state, id),
     members: getMembers(state, id)
   };
 };
