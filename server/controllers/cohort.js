@@ -238,7 +238,7 @@ const addToFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ ownerIds: userId }, { memberIds: userId }]
+      memberIds: userId
     },
     {
       $push: { favIds: userId }
@@ -270,7 +270,7 @@ const removeFromFavourites = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      $or: [{ ownerIds: userId }, { memberIds: userId }]
+      memberIds: userId
     },
     {
       $pull: { favIds: userId }
@@ -281,6 +281,7 @@ const removeFromFavourites = (req, resp) => {
       if (!doc) {
         resp.status(400).send({ message: 'Cohort data not found.' });
       }
+
       return resp.status(200).send({
         message: `Cohort "${doc.name}" successfully removed from favourites.`
       });
@@ -344,6 +345,7 @@ const removeMember = (req, resp) => {
 const addOwnerRole = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
+  const sanitizedUserId = sanitize(userId);
   const {
     user: { _id: currentUserId }
   } = req;
@@ -351,8 +353,8 @@ const addOwnerRole = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      ownerIds: { $in: [currentUserId], $nin: [userId] },
-      memberIds: sanitize(userId)
+      ownerIds: { $in: [currentUserId], $nin: [sanitizedUserId] },
+      memberIds: sanitizedUserId
     },
     { $push: { ownerIds: userId } }
   )
@@ -404,14 +406,14 @@ const removeOwnerRole = (req, resp) => {
 
 const addMember = (req, resp) => {
   const {
-    user: { _id: ownerId }
+    user: { _id: userId }
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
   let currentCohort;
   let newMember;
 
-  Cohort.findOne({ _id: cohortId, ownerIds: ownerId })
+  Cohort.findOne({ _id: cohortId, ownerIds: userId })
     .exec()
     .then(cohort => {
       if (!cohort) {
@@ -421,7 +423,7 @@ const addMember = (req, resp) => {
       }
 
       currentCohort = cohort;
-      return User.findOne({ email }).exec();
+      return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {
       if (!user) {
