@@ -12,13 +12,19 @@ import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import NewComment from 'common/components/Comments/NewComment';
 import Comment from 'common/components/Comments/Comment';
-import { RouterMatchPropType } from 'common/constants/propTypes';
-import { cloneItem, updateItemDetails } from '../model/actions';
-import SaveButton from 'common/components/SaveButton';
-import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  clearVote,
+  cloneItem,
+  setVote,
+  toggle,
+  updateItemDetails
+} from '../model/actions';
+import { isUrlValid } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
-import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { PreloaderTheme } from 'common/components/Preloader';
+import PendingButton from 'common/components/PendingButton';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class ListItem extends PureComponent {
   pendingPromises = [];
@@ -37,8 +43,7 @@ class ListItem extends PureComponent {
       isNewCommentVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
-      link,
-      pending: false
+      link
     };
   }
 
@@ -56,12 +61,22 @@ class ListItem extends PureComponent {
     this.pendingPromises = this.pendingPromises.filter(p => p !== promise);
   };
 
-  handleItemToggling = (authorId, id, isOrdered) => event => {
-    const { toggleItem } = this.props;
-    event.stopPropagation();
+  handleItemToggling = () => {
+    const {
+      currentUser: { name, id: userId },
+      data: { isOrdered, authorId, _id },
+      match: {
+        params: { id: listId }
+      },
+      toggle
+    } = this.props;
+    const isSameAuthor = authorId === userId;
 
     this.setState(({ done }) => ({ done: !done }));
-    toggleItem(authorId, id, isOrdered);
+
+    return isSameAuthor
+      ? toggle(isOrdered, _id, listId, name)
+      : toggle(isOrdered, _id, listId);
   };
 
   toggleDetails = () =>
@@ -78,54 +93,33 @@ class ListItem extends PureComponent {
   };
 
   handleDataUpdate = () => {
-    const { itemDescription, link } = this.state;
+    const { itemDescription: description, link } = this.state;
     const {
-      data: { description: previousDescription, link: previousLink }
+      data: {
+        _id: itemId,
+        description: previousDescription,
+        link: previousLink
+      },
+      match: {
+        params: { id: listId }
+      },
+      updateItemDetails
     } = this.props;
     const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
     const isDescriptionUpdated = !_isEqual(
       _trim(previousDescription),
-      _trim(itemDescription)
+      _trim(description)
     );
 
-    if (isLinkUpdated) {
-      this.handleLinkUpdate();
-    }
-
-    if (isDescriptionUpdated) {
-      this.handleDescriptionUpdate();
-    }
-  };
-
-  handleLinkUpdate = () => {
-    const { link } = this.state;
-    const {
-      updateItemDetails,
-      data: { _id: itemId },
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
     const canBeUpdated = isUrlValid(link) || _isEmpty(_trim(link));
 
-    if (canBeUpdated) {
-      updateItemDetails(listId, itemId, { link });
-    } else if (!isUrlValid(link)) {
-      this.setState({ isValidationErrorVisible: true });
+    if (!canBeUpdated) {
+      return this.setState({ isValidationErrorVisible: true });
     }
-  };
 
-  handleDescriptionUpdate = () => {
-    const { itemDescription: description } = this.state;
-    const {
-      updateItemDetails,
-      data: { _id: itemId },
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-
-    updateItemDetails(listId, itemId, { description });
+    if (isLinkUpdated || isDescriptionUpdated) {
+      return updateItemDetails(listId, itemId, { description, link });
+    }
   };
 
   checkIfFieldsUpdated = () => {
@@ -143,10 +137,7 @@ class ListItem extends PureComponent {
     this.setState({ areFieldsUpdated: isLinkUpdated || isDescriptionUpdated });
   };
 
-  handleItemDescription = value => this.setState({ itemDescription: value });
-
-  handleItemCloning = event => {
-    event.stopPropagation();
+  handleItemCloning = () => {
     const {
       cloneItem,
       data: { _id: itemId },
@@ -155,35 +146,51 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setState({ pending: true });
+    return cloneItem(listId, itemId);
+  };
 
-    const abortableCloning = makeAbortablePromise(cloneItem(listId, itemId));
+  handleVoting = () => {
+    const {
+      clearVote,
+      data: { _id, isVoted },
+      setVote,
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
 
-    this.addPendingPromise(abortableCloning);
+    const action = isVoted ? clearVote : setVote;
 
-    return abortableCloning.promise
-      .then(() => {
-        this.setState({ pending: false });
-        this.removePendingPromise(abortableCloning);
-      })
-      .catch(err => {
-        if (!(err instanceof AbortPromiseException)) {
-          this.setState({ pending: false });
-          this.removePendingPromise(abortableCloning);
-        }
-      });
+    return action(_id, listId);
   };
 
   handleItemLink = value =>
     this.setState({ link: value, isValidationErrorVisible: false });
 
-  renderDetails = () => {
+  handleItemDescription = value => this.setState({ itemDescription: value });
+
+  renderVoting = () => {
     const {
-      areFieldsUpdated,
-      isNewCommentVisible,
-      isValidationErrorVisible,
-      pending
-    } = this.state;
+      data: { isOrdered, isVoted, votesCount }
+    } = this.props;
+
+    if (isOrdered) {
+      return null;
+    }
+
+    return (
+      <div className="list-item__voting">
+        <VotingBox
+          isVoted={isVoted}
+          onVote={this.handleVoting}
+          votesCount={votesCount}
+        />
+      </div>
+    );
+  };
+
+  renderDetails = () => {
+    const { areFieldsUpdated, isValidationErrorVisible } = this.state;
     const {
       data: { description, isOrdered, link }
     } = this.props;
@@ -209,74 +216,83 @@ class ListItem extends PureComponent {
                 <ErrorMessage message="Incorrect url." />
               </div>
             )}
-            <SaveButton
-              disabled={!areFieldsUpdated}
-              onClick={this.handleDataUpdate}
-              value="Save data"
-            />
+            {areFieldsUpdated && (
+              <div className="list-item__save-details">
+                <PendingButton
+                  className="primary-button"
+                  disabled={isValidationErrorVisible}
+                  onClick={this.handleDataUpdate}
+                  preloaderTheme={PreloaderTheme.LIGHT}
+                >
+                  Save
+                </PendingButton>
+              </div>
+            )}
           </div>
         </div>
         {!isOrdered && (
           <div className="list-item__cloning">
-            <button
+            <PendingButton
               className="link-button"
-              disabled={pending}
               onClick={this.handleItemCloning}
-              type="button"
             >
-              {pending ? (
-                <Preloader size={PreloaderSize.SMALL} />
-              ) : (
-                <span>Clone Item</span>
-              )}
-            </button>
+              Clone Item
+            </PendingButton>
           </div>
         )}
-        <div className="list-item__new-comment">
-          {isNewCommentVisible ? (
-            <NewComment
-              onAddNewComment={this.handleAddNewComment}
-              onEscapePress={this.hideAddNewComment}
-            />
-          ) : (
-            <button
-              className="list-item__add-new-button link-button"
-              onClick={this.showAddNewComment}
-              type="button"
-            >
-              Add comment
-            </button>
-          )}
-        </div>
-        <div className="list-item__comments">{this.renderComments()}</div>
       </Fragment>
+    );
+  };
+
+  renderCommentForm = () => {
+    const { isNewCommentVisible } = this.state;
+
+    return (
+      <div className="list-item__new-comment">
+        {isNewCommentVisible ? (
+          <NewComment
+            onAddNewComment={this.handleAddNewComment}
+            onEscapePress={this.hideAddNewComment}
+          />
+        ) : (
+          <button
+            className="list-item__add-new-button link-button"
+            onClick={this.showAddNewComment}
+            type="button"
+          >
+            Add comment
+          </button>
+        )}
+      </div>
     );
   };
 
   renderComments = () => (
     <Fragment>
-      <h2 className="list-item__heading">Comments</h2>
-      <Comment
-        author="Adam Klepacz"
-        comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!"
-      />
-      <Comment
-        author="Adam Klepacz"
-        comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                ipsam, molestiae similique optio sint hic!"
-      />
+      {this.renderCommentForm()}
+      <div className="list-item__comments">
+        <h2 className="list-item__heading">Comments</h2>
+        <Comment
+          author="Adam Klepacz"
+          comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+                  accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+                  ipsam, molestiae similique optio sint hic!"
+        />
+        <Comment
+          author="Adam Klepacz"
+          comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Excepturi voluptatem vitae qui nihil reprehenderit quia nam
+                  accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
+                  ipsam, molestiae similique optio sint hic!"
+        />
+      </div>
     </Fragment>
   );
 
   render() {
     const {
-      data: { isOrdered, authorId, authorName, _id, isVoted, name, votesCount },
-      voteForItem
+      data: { isOrdered, authorName, _id, name }
     } = this.props;
     const { done, areDetailsVisible } = this.state;
 
@@ -308,18 +324,13 @@ class ListItem extends PureComponent {
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
-          {!isOrdered && (
-            <VotingBox
-              isVoted={isVoted}
-              voteForItem={voteForItem}
-              votesCount={votesCount}
+          {this.renderVoting()}
+          <div className="list-item__toggle z-index-high">
+            <PendingButton
+              className="list-item__icon"
+              onClick={this.handleItemToggling}
             />
-          )}
-          <button
-            className="list-item__icon z-index-high"
-            onClick={this.handleItemToggling(authorId, _id, isOrdered)}
-            type="button"
-          />
+          </div>
         </div>
         {areDetailsVisible && (
           <div className="list-item__details">{this.renderDetails()}</div>
@@ -330,20 +341,26 @@ class ListItem extends PureComponent {
 }
 
 ListItem.propTypes = {
+  currentUser: UserPropType.isRequired,
   data: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])
   ),
   match: RouterMatchPropType.isRequired,
 
+  clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
-  toggleItem: PropTypes.func,
-  updateItemDetails: PropTypes.func.isRequired,
-  voteForItem: PropTypes.func
+  setVote: PropTypes.func.isRequired,
+  toggle: PropTypes.func.isRequired,
+  updateItemDetails: PropTypes.func.isRequired
 };
+
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
 
 export default withRouter(
   connect(
-    null,
-    { cloneItem, updateItemDetails }
+    mapStateToProps,
+    { clearVote, cloneItem, setVote, toggle, updateItemDetails }
   )(ListItem)
 );

@@ -84,7 +84,6 @@ const membersReducer = (state = [], action) => {
           data: { members }
         }
       } = action;
-
       return members;
     }
     default:
@@ -109,7 +108,7 @@ const lists = (state = {}, action) => {
       const updatedList = {
         ...prevList,
         name: action.payload.name || prevList.name,
-        description: action.payload.description || prevList.description
+        description: action.payload.description
       };
       return { ...state, [action.payload.listId]: updatedList };
     }
@@ -152,16 +151,14 @@ const lists = (state = {}, action) => {
       const { members } = state[listId];
       return {
         ...state,
-        [listId]: {
-          members: membersReducer(members, action)
-        }
+        [listId]: { ...state[listId], members: membersReducer(members, action) }
       };
     }
     case ListActionTypes.CHANGE_PRIVACY_SUCCESS: {
       const {
         payload: {
-          listId,
-          data: { isPrivate }
+          data: { isPrivate },
+          listId
         }
       } = action;
       const { members } = state[listId];
@@ -178,4 +175,5 @@ const lists = (state = {}, action) => {
       return state;
   }
 };
+
 export default lists;

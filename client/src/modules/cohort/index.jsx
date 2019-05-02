@@ -98,14 +98,6 @@ class Cohort extends PureComponent {
     return cohortDetails && cohortDetails.isArchived;
   };
 
-  checkIfOwner = () => {
-    const { cohortDetails } = this.props;
-    if (cohortDetails && cohortDetails.isOwner) {
-      return true;
-    }
-    return false;
-  };
-
   handleDialogContext = context => () =>
     this.setState({ dialogContext: context });
 
@@ -161,7 +153,7 @@ class Cohort extends PureComponent {
       return null;
     }
 
-    const { isArchived, name } = cohortDetails;
+    const { isArchived, isOwner, name } = cohortDetails;
     const {
       areArchivedListsVisible,
       dialogContext,
@@ -201,58 +193,55 @@ class Cohort extends PureComponent {
           <div className="wrapper">
             <div className="cohort">
               <CohortHeader details={cohortDetails} />
-              {pendingForDetails ? (
-                <Preloader />
-              ) : (
-                <Fragment>
-                  <MembersBox
-                    isCurrentUserAnOwner={this.checkIfOwner()}
-                    members={members}
-                    route={Routes.COHORT}
-                  />
-                  <GridList
-                    color={CardColorType.ORANGE}
-                    icon={<ListIcon />}
-                    items={lists}
-                    name="Lists"
-                    onAddNew={this.handleDialogContext(DialogContext.CREATE)}
-                    pending={pendingForDetails}
-                    placeholder={`There are no lists in the ${name} cohort!`}
-                    route={Routes.LIST}
-                  />
-                  {!isArchived && this.checkIfOwner() && (
-                    <button
-                      className="link-button"
-                      onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
-                      type="button"
-                    >
-                      {`Archive the "${name}" cohort`}
-                    </button>
+              <div className="cohort__details">
+                <MembersBox
+                  isCurrentUserAnOwner={isOwner}
+                  members={members}
+                  route={Routes.COHORT}
+                />
+                <GridList
+                  color={CardColorType.ORANGE}
+                  icon={<ListIcon />}
+                  items={lists}
+                  name="Lists"
+                  onAddNew={this.handleDialogContext(DialogContext.CREATE)}
+                  placeholder={`There are no lists in the ${name} cohort!`}
+                  route={Routes.LIST}
+                />
+                {!isArchived && isOwner && (
+                  <button
+                    className="link-button"
+                    onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                    type="button"
+                  >
+                    {`Archive the "${name}" cohort`}
+                  </button>
+                )}
+                <div>
+                  <button
+                    className="link-button"
+                    disabled={pendingForDetails}
+                    onClick={this.handleArchivedListsVisibility(cohortId)}
+                    type="button"
+                  >
+                    {`${
+                      areArchivedListsVisible ? 'hide' : 'show'
+                    } archived lists`}
+                  </button>
+                  {areArchivedListsVisible && (
+                    <GridList
+                      color={CardColorType.ARCHIVED}
+                      icon={<ListIcon />}
+                      items={archivedLists}
+                      name="Archived lists"
+                      pending={pendingForArchivedLists}
+                      placeholder={`There are no archived lists in the ${name} cohort!`}
+                      route={Routes.LIST}
+                    />
                   )}
-                  <div>
-                    <button
-                      className="link-button"
-                      onClick={this.handleArchivedListsVisibility(cohortId)}
-                      type="button"
-                    >
-                      {` ${
-                        areArchivedListsVisible ? 'hide' : 'show'
-                      } archived lists`}
-                    </button>
-                    {areArchivedListsVisible && (
-                      <GridList
-                        color={CardColorType.ARCHIVED}
-                        icon={<ListIcon />}
-                        items={archivedLists}
-                        name="Archived lists"
-                        pending={pendingForArchivedLists}
-                        placeholder={`There are no archived lists in the ${name} cohort!`}
-                        route={Routes.LIST}
-                      />
-                    )}
-                  </div>
-                </Fragment>
-              )}
+                </div>
+                {pendingForDetails && <Preloader />}
+              </div>
             </div>
           </div>
         )}

@@ -36,10 +36,11 @@ class DescriptionTextarea extends PureComponent {
   };
 
   render() {
-    const { description, onDescriptionChange } = this.props;
+    const { description, disabled, onDescriptionChange } = this.props;
     return (
       <textarea
         className="desc-textarea primary-textarea"
+        disabled={disabled}
         name="description"
         onChange={onDescriptionChange}
         ref={this.descriptionTextarea}
@@ -52,6 +53,7 @@ class DescriptionTextarea extends PureComponent {
 
 DescriptionTextarea.propTypes = {
   description: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
 
   onClick: PropTypes.func.isRequired,
   onDescriptionChange: PropTypes.func.isRequired,

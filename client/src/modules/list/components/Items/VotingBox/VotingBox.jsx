@@ -3,17 +3,14 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import ThumbIcon from 'assets/images/thumbs-up-solid.svg';
+import PendingButton from 'common/components/PendingButton';
 
-const VotingBox = ({ isVoted, voteForItem, votesCount }) => (
-  <button
+const VotingBox = ({ isVoted, onVote, votesCount }) => (
+  <PendingButton
     className={classNames('voting-box', {
       'voting-box__voted': isVoted
     })}
-    onClick={e => {
-      e.stopPropagation();
-      voteForItem();
-    }}
-    type="button"
+    onClick={onVote}
   >
     <img
       alt={`${isVoted ? 'remove your vote' : 'vote'}`}
@@ -21,14 +18,14 @@ const VotingBox = ({ isVoted, voteForItem, votesCount }) => (
       src={ThumbIcon}
     />
     {votesCount}
-  </button>
+  </PendingButton>
 );
 
 VotingBox.propTypes = {
   isVoted: PropTypes.bool.isRequired,
   votesCount: PropTypes.number.isRequired,
 
-  voteForItem: PropTypes.func.isRequired
+  onVote: PropTypes.func.isRequired
 };
 
 export default VotingBox;

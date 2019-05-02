@@ -23,10 +23,10 @@ class CohortHeader extends PureComponent {
     const trimmedDescription = description.trim();
 
     this.state = {
-      description: trimmedDescription,
+      descriptionInputValue: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
-      name,
+      nameInputValue: name,
       pendingForDescription: false,
       pendingForName: false
     };
@@ -36,17 +36,19 @@ class CohortHeader extends PureComponent {
     const {
       isDescriptionTextareaVisible,
       isNameInputVisible,
-      name
+      nameInputValue
     } = this.state;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
-      this.setState({ isDescriptionTextareaVisible: false });
       this.handleDescriptionUpdate();
       return;
     }
 
-    if (isNameInputVisible && name.trim().length >= 1 && isClickedOutside) {
-      this.setState({ isNameInputVisible: false });
+    if (
+      isNameInputVisible &&
+      nameInputValue.trim().length >= 1 &&
+      isClickedOutside
+    ) {
       this.handleNameUpdate();
     }
   };
@@ -79,7 +81,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ name: value });
+    this.setState({ nameInputValue: value });
   };
 
   handleDescriptionChange = event => {
@@ -87,22 +89,22 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ description: value });
+    this.setState({ descriptionInputValue: value });
   };
 
   handleNameUpdate = () => {
     const {
-      updateCohort,
       details,
       match: {
         params: { id }
-      }
+      },
+      updateCohort
     } = this.props;
-    const { name } = this.state;
-    const nameToUpdate = name.trim();
+    const { nameInputValue } = this.state;
+    const nameToUpdate = _trim(nameInputValue);
     const { name: previousName } = details;
 
-    if (previousName === name) {
+    if (_trim(previousName) === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
       return;
     }
@@ -110,9 +112,10 @@ class CohortHeader extends PureComponent {
     if (nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
 
-      updateCohort(id, { name }).finally(() =>
+      updateCohort(id, { name: nameToUpdate }).finally(() =>
         this.setState({
           isNameInputVisible: false,
+          nameInputValue: nameToUpdate,
           pendingForName: false
         })
       );
@@ -127,60 +130,49 @@ class CohortHeader extends PureComponent {
         params: { id }
       }
     } = this.props;
-    const { description } = this.state;
+    const { descriptionInputValue } = this.state;
+    const descriptionToUpdate = _trim(descriptionInputValue);
     const { description: previousDescription } = details;
 
-    if (previousDescription.trim() === description.trim()) {
-      this.setState({
-        description: description.trim(),
-        isDescriptionTextareaVisible: false
-      });
+    if (_trim(previousDescription) === descriptionToUpdate) {
+      this.setState({ isDescriptionTextareaVisible: false });
       return;
     }
 
-    const updatedDescription = _isEmpty(_trim(description)) ? '' : description;
+    const updatedDescription = _isEmpty(descriptionToUpdate)
+      ? ''
+      : descriptionToUpdate;
 
-    this.setState({
-      isDescriptionTextareaVisible: false,
-      pendingForDescription: true
-    });
+    this.setState({ pendingForDescription: true });
 
-    updateCohort(id, { description: updatedDescription })
-      .then(() =>
-        this.setState({
-          description: updatedDescription,
-          pendingForDescription: false
-        })
-      )
-      .catch(() => this.setState({ pendingForDescription: false }));
+    updateCohort(id, { description: updatedDescription }).finally(() =>
+      this.setState({
+        isDescriptionTextareaVisible: false,
+        descriptionInputValue: updatedDescription,
+        pendingForDescription: false
+      })
+    );
   };
 
   renderDescription = () => {
     const {
-      description,
+      descriptionInputValue,
       isDescriptionTextareaVisible,
       pendingForDescription
     } = this.state;
 
     const {
-      details: { isOwner }
+      details: { description, isOwner }
     } = this.props;
 
     if (!description && !isOwner) {
       return;
     }
 
-    if (pendingForDescription) {
-      return (
-        <div className="cohort-header__bottom">
-          <Preloader size={PreloaderSize.SMALL} />
-        </div>
-      );
-    }
-
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
-        description={description}
+        description={descriptionInputValue}
+        disabled={pendingForDescription}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
@@ -212,18 +204,15 @@ class CohortHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { name, isNameInputVisible, pendingForName } = this.state;
+    const { isNameInputVisible, nameInputValue, pendingForName } = this.state;
     const {
-      details: { isOwner }
+      details: { isOwner, name }
     } = this.props;
-
-    if (pendingForName) {
-      return <Preloader size={PreloaderSize.SMALL} />;
-    }
 
     return isNameInputVisible ? (
       <NameInput
-        name={name}
+        disabled={pendingForName}
+        name={nameInputValue}
         onClick={this.handleClick}
         onKeyPress={this.handleKeyPress}
         onNameChange={this.handleNameChange}
@@ -241,13 +230,19 @@ class CohortHeader extends PureComponent {
   };
 
   render() {
+    const { pendingForDescription, pendingForName } = this.state;
+
     return (
       <header className="cohort-header">
         <div className="cohort-header__top">
           <CohortIcon />
           {this.renderName()}
+          {pendingForName && <Preloader size={PreloaderSize.SMALL} />}
         </div>
-        {this.renderDescription()}
+        <div className="list-header__bottom">
+          {this.renderDescription()}
+          {pendingForDescription && <Preloader size={PreloaderSize.SMALL} />}
+        </div>
       </header>
     );
   }

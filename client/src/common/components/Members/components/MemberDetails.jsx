@@ -153,6 +153,7 @@ class MemberDetails extends PureComponent {
   };
 
   renderChangeRoleOption = (role, isInfoVisible, checked) => {
+    const { pending } = this.state;
     const { route } = this.props;
     const label = role === UserRoles.OWNER ? 'owner' : 'member';
 
@@ -161,6 +162,7 @@ class MemberDetails extends PureComponent {
         <div className="member-details__option-header">
           <button
             className="member-details__info-button"
+            disabled={pending}
             onClick={
               role === UserRoles.OWNER
                 ? this.handleOwnerInfoVisibility
@@ -174,6 +176,7 @@ class MemberDetails extends PureComponent {
           </button>
           <SwitchButton
             checked={checked}
+            disabled={pending}
             label={label}
             onChange={this.handleChangingRoles}
             value={role}
@@ -189,7 +192,7 @@ class MemberDetails extends PureComponent {
   };
 
   renderRemoveOption = () => {
-    const { isConfirmationVisible } = this.state;
+    const { isConfirmationVisible, pending } = this.state;
     const { displayName } = this.props;
 
     return isConfirmationVisible ? (
@@ -213,6 +216,7 @@ class MemberDetails extends PureComponent {
     ) : (
       <button
         className="member-details__button primary-button"
+        disabled={pending}
         onClick={this.handleConfirmationVisibility}
         type="button"
       >
@@ -268,7 +272,7 @@ class MemberDetails extends PureComponent {
   };
 
   renderDetails = () => {
-    const { isMemberInfoVisible, isOwnerInfoVisible, pending } = this.state;
+    const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
     const {
       isGuest,
       isMember,
@@ -277,16 +281,8 @@ class MemberDetails extends PureComponent {
       route
     } = this.props;
 
-    if (pending) {
-      return (
-        <div className="member-details__preloader">
-          <Preloader />
-        </div>
-      );
-    }
-
     return (
-      <ul className="member-details__panel">
+      <ul className="member-details__options">
         <li className="member-details__option">
           {this.renderChangeRoleOption(
             UserRoles.OWNER,
@@ -323,6 +319,7 @@ class MemberDetails extends PureComponent {
       isCurrentUserAnOwner,
       onClose
     } = this.props;
+    const { pending } = this.state;
 
     return (
       <Fragment>
@@ -341,12 +338,16 @@ class MemberDetails extends PureComponent {
           </button>
           <div className="member-details__details">
             {this.renderHeader()}
-            {isCurrentUserAnOwner &&
-              userId !== currentUserId &&
-              this.renderDetails()}
-            {isCurrentUserAnOwner &&
-              userId === currentUserId &&
-              this.renderMessage()}
+            <div className="member-details__panel">
+              {isCurrentUserAnOwner && (
+                <Fragment>
+                  {userId !== currentUserId
+                    ? this.renderDetails()
+                    : this.renderMessage()}
+                </Fragment>
+              )}
+              {pending && <Preloader />}
+            </div>
           </div>
         </div>
       </Fragment>
