@@ -41,19 +41,16 @@ const createCohort = (req, resp) => {
 
 const getCohortsMetaData = (req, resp) => {
   const {
-    user: { _id: userId }
+    user: { _id: currentUserId }
   } = req;
 
-  Cohort.find({
-    memberIds: userId,
-    isArchived: false
-  })
+  Cohort.find({ memberIds: currentUserId, isArchived: false })
     .select('_id name description favIds memberIds ownerIds')
     .sort({ createdAt: -1 })
     .exec()
     .then(docs =>
       docs
-        ? resp.status(200).send(responseWithCohorts(docs, userId))
+        ? resp.status(200).send(responseWithCohorts(docs, currentUserId))
         : resp.status(404).send({ message: 'No cohorts data found.' })
     )
     .catch(err =>
@@ -97,7 +94,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
 const updateCohortById = (req, resp) => {
   const { description, isArchived, name } = req.body;
   const { id } = req.params;
-  const { _id: ownerId } = req.user;
+  const { _id: currentUserId } = req.user;
 
   const dataToUpdate = filter(x => x !== undefined)({
     description,
@@ -108,7 +105,7 @@ const updateCohortById = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: id,
-      ownerIds: ownerId
+      ownerIds: currentUserId
     },
     dataToUpdate,
     (err, doc) => {
@@ -131,7 +128,7 @@ const updateCohortById = (req, resp) => {
 const getCohortDetails = (req, resp) => {
   const {
     params: { id: cohortId },
-    user: { _id: userId }
+    user: { _id: currentUserId }
   } = req;
 
   if (!isValidMongoId(cohortId)) {
@@ -139,10 +136,7 @@ const getCohortDetails = (req, resp) => {
       .status(404)
       .send({ message: `Data of cohort id: ${cohortId} not found.` });
   }
-  Cohort.findOne({
-    _id: cohortId,
-    memberIds: userId
-  })
+  Cohort.findOne({ _id: cohortId, memberIds: currentUserId })
     .populate('memberIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
@@ -166,7 +160,7 @@ const getCohortDetails = (req, resp) => {
       }
 
       const members = responseWithCohortMembers(membersCollection, ownerIds);
-      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
+      const isOwner = checkIfArrayContainsUserId(ownerIds, currentUserId);
 
       resp.status(200).json({
         _id,
@@ -189,11 +183,11 @@ const getCohortDetails = (req, resp) => {
 const deleteCohortById = (req, resp) => {
   const { id: cohortId } = req.params;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
   let documentName = '';
 
-  Cohort.findOne({ _id: cohortId, ownerIds: ownerId })
+  Cohort.findOne({ _id: cohortId, ownerIds: currentUserId })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -339,13 +333,13 @@ const addOwnerRole = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
 
   Cohort.findOneAndUpdate(
     {
       _id: cohortId,
-      ownerIds: { $in: [ownerId], $nin: [userId] },
+      ownerIds: { $in: [currentUserId], $nin: [userId] },
       memberIds: userId
     },
     { $push: { ownerIds: userId } },
@@ -371,11 +365,11 @@ const removeOwnerRole = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: { $all: [ownerId, userId] } },
+    { _id: cohortId, ownerIds: { $all: [currentUserId, userId] } },
     { $pull: { ownerIds: userId } },
     (err, doc) => {
       if (err) {
@@ -384,13 +378,13 @@ const removeOwnerRole = (req, resp) => {
         });
       }
 
-      if (doc) {
-        return resp.status(200).send({
-          message: 'User has no owner role.'
+      if (!doc) {
+        return resp.status(400).send({
+          message: 'Cohort data not found.'
         });
       }
 
-      resp.status(400).send({ message: 'Cohort data not found.' });
+      resp.status(200).send({ message: 'User has no owner role.' });
     }
   );
 };
