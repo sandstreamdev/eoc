@@ -58,7 +58,7 @@ class Textarea extends PureComponent {
         )}
         <textarea
           className="ss-textarea__textarea"
-          disabled={!disabled}
+          disabled={disabled}
           name={placeholder}
           onBlur={this.handleBlur}
           onChange={this.handleOnChange}

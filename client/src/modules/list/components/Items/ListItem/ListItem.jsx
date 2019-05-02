@@ -197,7 +197,7 @@ class ListItem extends PureComponent {
       data: { description, isOrdered, link },
       isMember
     } = this.props;
-    const isFieldDisabled = isMember;
+    const isFieldDisabled = !isMember;
 
     return (
       <Fragment>

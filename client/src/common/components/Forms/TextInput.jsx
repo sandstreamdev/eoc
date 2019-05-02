@@ -58,7 +58,7 @@ class TextInput extends PureComponent {
         )}
         <input
           className="ss-text-input__input"
-          disabled={!disabled}
+          disabled={disabled}
           name={placeholder}
           onBlur={this.handleBlur}
           onChange={this.handleOnChange}
