@@ -145,8 +145,8 @@ const responseWithCohortMember = (user, ownerIds) => {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isOwner: checkIfArrayContainsUserId(ownerIds, newMemberId),
-    isMember: true
+    isMember: true,
+    isOwner: checkIfArrayContainsUserId(ownerIds, newMemberId)
   };
 };
 

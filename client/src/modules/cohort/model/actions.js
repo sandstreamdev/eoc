@@ -8,10 +8,7 @@ import {
   patchData,
   postData
 } from 'common/utils/fetchMethods';
-import {
-  MessageType as NotificationType,
-  UserRoles
-} from 'common/constants/enums';
+import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 
@@ -164,17 +161,30 @@ const removeMemberSuccess = (cohortId, userId) => ({
   payload: { cohortId, userId }
 });
 
-const changeRoleRequest = () => ({
-  type: CohortActionTypes.CHANGE_ROLE_REQUEST
+const addOwnerRoleRequest = () => ({
+  type: CohortActionTypes.ADD_OWNER_ROLE_REQUEST
 });
 
-const changeRoleFailure = () => ({
-  type: CohortActionTypes.CHANGE_ROLE_FAILURE
+const addOwnerRoleFailure = () => ({
+  type: CohortActionTypes.ADD_OWNER_ROLE_FAILURE
 });
 
-const changeRoleSuccess = (cohortId, userId, isOwner) => ({
-  type: CohortActionTypes.CHANGE_ROLE_SUCCESS,
-  payload: { cohortId, userId, isOwner }
+const addOwnerRoleSuccess = (cohortId, userId) => ({
+  type: CohortActionTypes.ADD_OWNER_ROLE_SUCCESS,
+  payload: { cohortId, userId }
+});
+
+const removeOwnerRoleRequest = () => ({
+  type: CohortActionTypes.REMOVE_OWNER_ROLE_REQUEST
+});
+
+const removeOwnerRoleFailure = () => ({
+  type: CohortActionTypes.REMOVE_OWNER_ROLE_FAILURE
+});
+
+const removeOwnerRoleSuccess = (cohortId, userId) => ({
+  type: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
+  payload: { cohortId, userId }
 });
 
 export const removeArchivedCohortsMetaData = () => ({
@@ -404,12 +414,11 @@ export const addCohortMember = (cohortId, email) => dispatch => {
     });
 };
 
-export const removeCohortMember = (cohortId, userId, isOwner) => dispatch => {
-  const url = isOwner
-    ? `${ENDPOINT_URL}/cohorts/${cohortId}/remove-owner`
-    : `${ENDPOINT_URL}/cohorts/${cohortId}/remove-member`;
+export const removeCohortMember = (cohortId, userId) => dispatch => {
   dispatch(removeMemberRequest());
-  return patchData(url, { userId })
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-member`, {
+    userId
+  })
     .then(resp => resp.json())
     .then(json => {
       dispatch(removeMemberSuccess(cohortId, userId));
@@ -429,16 +438,14 @@ export const removeCohortMember = (cohortId, userId, isOwner) => dispatch => {
     });
 };
 
-export const changeRole = (cohortId, userId, role) => dispatch => {
-  const isOwner = role === UserRoles.OWNER;
-  const url = isOwner
-    ? `${ENDPOINT_URL}/cohorts/${cohortId}/change-to-owner`
-    : `${ENDPOINT_URL}/cohorts/${cohortId}/change-to-member`;
-  dispatch(changeRoleRequest());
-  return patchData(url, { userId })
+export const addOwnerRole = (cohortId, userId) => dispatch => {
+  dispatch(addOwnerRoleRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-owner-role`, {
+    userId
+  })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(changeRoleSuccess(cohortId, userId, isOwner));
+      dispatch(addOwnerRoleSuccess(cohortId, userId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -446,7 +453,31 @@ export const changeRole = (cohortId, userId, role) => dispatch => {
       );
     })
     .catch(err => {
-      dispatch(changeRoleFailure());
+      dispatch(addOwnerRoleFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const removeOwnerRole = (cohortId, userId) => dispatch => {
+  dispatch(removeOwnerRoleRequest());
+  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-owner-role`, {
+    userId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(removeOwnerRoleSuccess(cohortId, userId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(removeOwnerRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
