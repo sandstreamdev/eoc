@@ -1,5 +1,7 @@
 .input-bar {
+  position: relative;
   width: 100%;
+  min-height: 50px;
 
   &__submit {
     display: none;

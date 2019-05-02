@@ -7,6 +7,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
 
 class InputBar extends Component {
   constructor(props) {
@@ -14,14 +15,18 @@ class InputBar extends Component {
 
     this.state = {
       isFormVisible: false,
-      itemName: ''
+      itemName: '',
+      pending: false
     };
     this.input = React.createRef();
   }
 
   componentDidUpdate() {
-    const { isFormVisible } = this.state;
-    isFormVisible && this.input.current.focus();
+    const { isFormVisible, pending } = this.state;
+
+    if (isFormVisible && !pending) {
+      this.input.current.focus();
+    }
   }
 
   handleNameChange = event =>
@@ -29,8 +34,8 @@ class InputBar extends Component {
       itemName: event.target.value
     });
 
-  handleFormSubmit = e => {
-    e.preventDefault();
+  handleFormSubmit = event => {
+    event.preventDefault();
     const {
       addItem,
       currentUser,
@@ -45,46 +50,54 @@ class InputBar extends Component {
       name: itemName
     };
 
-    addItem(newItem, id);
+    this.setState({ pending: true });
 
-    this.setState({
-      itemName: ''
+    addItem(newItem, id).finally(() => {
+      this.setState({ itemName: '', pending: false });
+      this.hideForm();
     });
-    this.hideForm();
   };
 
   showForm = () => this.setState({ isFormVisible: true });
 
   hideForm = () => this.setState({ isFormVisible: false });
 
+  renderInputBar = () => {
+    const { itemName, isFormVisible, pending } = this.state;
+
+    return isFormVisible ? (
+      <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
+        <input
+          className="input-bar__input primary-input"
+          disabled={pending}
+          name="item name"
+          onChange={this.handleNameChange}
+          placeholder="What is missing?"
+          ref={this.input}
+          required
+          type="text"
+          value={itemName}
+        />
+        <input className="input-bar__submit" type="submit" />
+      </form>
+    ) : (
+      <button
+        className="input-bar__button"
+        onClick={this.showForm}
+        type="button"
+      >
+        <PlusIcon />
+        Add new item
+      </button>
+    );
+  };
+
   render() {
-    const { itemName, isFormVisible } = this.state;
+    const { pending } = this.state;
     return (
       <div className="input-bar">
-        {isFormVisible ? (
-          <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
-            <input
-              className="input-bar__input primary-input"
-              name="item name"
-              onChange={this.handleNameChange}
-              placeholder="What is missing?"
-              ref={this.input}
-              required
-              type="text"
-              value={itemName}
-            />
-            <input className="input-bar__submit" type="submit" />
-          </form>
-        ) : (
-          <button
-            className="input-bar__button"
-            onClick={this.showForm}
-            type="button"
-          >
-            <PlusIcon />
-            Add new item
-          </button>
-        )}
+        {this.renderInputBar()}
+        {pending && <Preloader size={PreloaderSize.SMALL} />}
       </div>
     );
   }

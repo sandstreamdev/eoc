@@ -20,24 +20,28 @@ class CardItem extends PureComponent {
     pending: false
   };
 
-  handleFavClick = e => {
+  handleFavClick = event => {
     const { onFavClick } = this.props;
+
     this.setState({ pending: true });
-    onFavClick(e).finally(() => this.setState({ pending: false }));
+
+    onFavClick(event).finally(() => this.setState({ pending: false }));
   };
 
   render() {
     const {
       color,
-      description,
-      doneItemsCount,
-      isFavourite,
-      isPrivate,
-      membersCount,
-      name,
+      item: {
+        description,
+        doneItemsCount,
+        isFavourite,
+        isPrivate,
+        membersCount,
+        name,
+        unhandledItemsCount
+      },
       onCardClick,
-      route,
-      unhandledItemsCount
+      route
     } = this.props;
 
     const { pending } = this.state;
@@ -63,17 +67,14 @@ class CardItem extends PureComponent {
           onClick={this.handleFavClick}
           type="button"
         >
-          {pending ? (
+          {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
+          {pending && (
             <div className="card-item__preloader">
               <Preloader
                 size={PreloaderSize.SMALL}
                 theme={PreloaderTheme.LIGHT}
               />
             </div>
-          ) : (
-            <Fragment>
-              {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
-            </Fragment>
           )}
         </button>
         <div className="card-item__data">
@@ -95,14 +96,8 @@ export default CardItem;
 
 CardItem.propTypes = {
   color: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  doneItemsCount: PropTypes.number,
-  isFavourite: PropTypes.bool,
-  isPrivate: PropTypes.bool,
-  membersCount: PropTypes.number,
-  name: PropTypes.string,
+  item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   route: PropTypes.string.isRequired,
-  unhandledItemsCount: PropTypes.number,
 
   onCardClick: PropTypes.func.isRequired,
   onFavClick: PropTypes.func

@@ -123,6 +123,7 @@ const responseWithCohortMembers = (users, ownerIds) =>
 
     return {
       ...user._doc,
+      isMember: true,
       isOwner: checkIfArrayContainsUserId(ownerIds, userId)
     };
   });

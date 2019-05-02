@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import _map from 'lodash/map';
@@ -70,47 +70,33 @@ class GridList extends PureComponent {
           {name}
         </h2>
         <div className="grid-list__body">
-          {pending ? (
-            <Preloader />
-          ) : (
-            <Fragment>
-              <ul className="grid-list__list">
-                {onAddNew && (
-                  <li className="grid-list__item">
-                    <button
-                      className="grid-list__button"
-                      onClick={onAddNew}
-                      type="button"
-                    >
-                      <CardPlus />
-                    </button>
-                  </li>
-                )}
-                {_map(items, item => (
-                  <li className="grid-list__item" key={item._id}>
-                    <CardItem
-                      color={color}
-                      description={item.description}
-                      doneItemsCount={item.doneItemsCount}
-                      isFavourite={item.isFavourite}
-                      isPrivate={item.isPrivate}
-                      membersCount={item.membersCount}
-                      name={item.name}
-                      onCardClick={this.handleCardClick(route, item._id)}
-                      onFavClick={this.handleFavClick(
-                        item._id,
-                        item.isFavourite
-                      )}
-                      route={route}
-                      unhandledItemsCount={item.unhandledItemsCount}
-                    />
-                  </li>
-                ))}
-              </ul>
-              {_isEmpty(items) && (
-                <MessageBox message={placeholder} type={MessageType.INFO} />
-              )}
-            </Fragment>
+          <ul className="grid-list__list">
+            {onAddNew && (
+              <li className="grid-list__item">
+                <button
+                  className="grid-list__button"
+                  onClick={onAddNew}
+                  type="button"
+                >
+                  <CardPlus />
+                </button>
+              </li>
+            )}
+            {_map(items, item => (
+              <li className="grid-list__item" key={item._id}>
+                <CardItem
+                  color={color}
+                  item={item}
+                  onCardClick={this.handleCardClick(route, item._id)}
+                  onFavClick={this.handleFavClick(item._id, item.isFavourite)}
+                  route={route}
+                />
+              </li>
+            ))}
+          </ul>
+          {pending && <Preloader />}
+          {_isEmpty(items) && !pending && (
+            <MessageBox message={placeholder} type={MessageType.INFO} />
           )}
         </div>
       </div>
@@ -126,7 +112,7 @@ GridList.propTypes = {
   icon: PropTypes.node.isRequired,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   name: PropTypes.string.isRequired,
-  pending: PropTypes.bool.isRequired,
+  pending: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
 

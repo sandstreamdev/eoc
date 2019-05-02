@@ -5,6 +5,7 @@ import _keyBy from 'lodash/keyBy';
 import { createSelector } from 'reselect';
 
 export const getCohorts = state => state.cohorts;
+
 export const getCohortDetails = (state, cohortId) => {
   const cohort = _head(
     _filter(getCohorts(state), (_, key) => key === cohortId)

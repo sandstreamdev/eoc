@@ -3,6 +3,10 @@
   border: 0;
   background-color: $bg-color;
 
+  &__details {
+    position: relative;
+  }
+
   &__header {
     border-bottom: 1px solid $border-light;
     margin-bottom: 8px;
