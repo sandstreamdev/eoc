@@ -169,8 +169,10 @@
     justify-content: flex-start;
     align-items: center;
     min-height: 45px;
-    border-bottom: 1px solid $border-light;
-    margin-bottom: 16px;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $border-light;
+    }
   }
 
   &__top {

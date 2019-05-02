@@ -46,9 +46,30 @@ export const getPrivateLists = createSelector(
   lists => _keyBy(_filter(lists, list => !list.cohortId), '_id')
 );
 
-export const getCohortLists = createSelector(
+export const getCohortsLists = createSelector(
   getActiveLists,
   lists => _keyBy(_filter(lists, list => list.cohortId), '_id')
+);
+
+const getCohortLists = (state, id) =>
+  _filter(state.lists, list => list.cohortId === id);
+
+export const getCohortActiveLists = createSelector(
+  getCohortLists,
+  lists =>
+    _keyBy(
+      _sortBy(_filter(lists, list => !list.isArchived), el => !el.isFavourite),
+      '_id'
+    )
+);
+
+export const getCohortArchivedLists = createSelector(
+  getCohortLists,
+  lists =>
+    _keyBy(
+      _sortBy(_filter(lists, list => list.isArchived), el => !el.isFavourite),
+      '_id'
+    )
 );
 
 export const getMembers = createSelector(
