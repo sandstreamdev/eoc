@@ -3,7 +3,7 @@
   display: block;
   position: relative;
   border-bottom: 1px solid $item-border;
-  padding: 0 16px;
+  padding: 0 16px 0;
 
   &:first-child {
     margin-top: 0;
@@ -170,6 +170,7 @@
     align-items: center;
     min-height: 45px;
     border-bottom: 1px solid $border-light;
+    margin-bottom: 16px;
   }
 
   &__top {
