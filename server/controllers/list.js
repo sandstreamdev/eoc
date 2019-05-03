@@ -18,7 +18,7 @@ const {
   responseWithListMember,
   responseWithListMembers
 } = require('../common/utils/index');
-const { updateSubdocumentFields } = require('../common/utils/helpers');
+const { updateSubdocumentFields } = require('../common/utils');
 
 const createList = (req, resp) => {
   const { description, isListPrivate, name, cohortId } = req.body;

@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 const _map = require('lodash/map');
+const _pickBy = require('lodash/pickBy');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -176,6 +177,27 @@ const responseWithListMembers = (
     isMember: checkIfArrayContainsUserId(memberIds, user._doc._id)
   }));
 
+/**
+ * @param {*} subdocumentName - name of nested collection
+ * @param {*} data - object of properties to update, properties
+ * name need to match subdocument model
+ * eg. To update description field within items collection
+ * you need to generate {'items.$.description'} object.
+ * You can do it like so: updateSubdocumentFields('items', {description});
+ */
+const updateSubdocumentFields = (subdocumentName, data) => {
+  const filteredObject = _pickBy(data, el => el !== undefined);
+
+  const dataToUpdate = {};
+  for (let i = 0; i < Object.keys(filteredObject).length; i += 1) {
+    dataToUpdate[
+      `${subdocumentName}.$.${Object.keys(filteredObject)[i]}`
+    ] = Object.values(filteredObject)[i];
+  }
+
+  return dataToUpdate;
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -192,5 +214,6 @@ module.exports = {
   responseWithList,
   responseWithListMember,
   responseWithListMembers,
-  responseWithLists
+  responseWithLists,
+  updateSubdocumentFields
 };
