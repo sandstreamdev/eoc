@@ -201,6 +201,7 @@ const updateSubdocumentFields = (subdocumentName, data) => {
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  checkIfCurrentUserVoted,
   checkIfGuest,
   filter,
   isUserFavourite,
