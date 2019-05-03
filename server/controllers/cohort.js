@@ -51,7 +51,7 @@ const getCohortsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(404).send({ message: 'No cohorts data found.' });
+        return resp.status(400).send({ message: 'No cohorts data found.' });
       }
 
       return resp.status(200).send(responseWithCohorts(docs, currentUserId));
