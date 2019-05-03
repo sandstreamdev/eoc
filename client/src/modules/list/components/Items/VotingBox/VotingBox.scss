@@ -18,4 +18,12 @@
   &:hover {
     box-shadow: 0 0 3px rgba($shadow-color, 0.3);
   }
+
+  &__disabled {
+    cursor: not-allowed;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
 }

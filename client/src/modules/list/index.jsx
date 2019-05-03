@@ -141,7 +141,7 @@ class List extends Component {
                 <Fragment>
                   <div className="list__items">
                     <ItemsContainer isMember={isMember} items={listItems}>
-                      {isMember && <InputBar isMember={isMember} />}
+                      {isMember && <InputBar />}
                     </ItemsContainer>
                     <ItemsContainer
                       archived

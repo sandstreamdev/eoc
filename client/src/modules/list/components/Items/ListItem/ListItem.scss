@@ -143,6 +143,15 @@
       transition: all 200ms ease-in;
       background-position: center;
     }
+
+    &--disabled {
+      cursor: not-allowed;
+      outline: 0;
+
+      &::after {
+        cursor: not-allowed;
+      }
+    }
   }
 
   &__info {

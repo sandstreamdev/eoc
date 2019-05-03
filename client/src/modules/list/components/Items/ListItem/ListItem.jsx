@@ -66,6 +66,8 @@ class ListItem extends PureComponent {
     }
   };
 
+  handleItemEvent = event => event.stopPropagation();
+
   toggleDetails = () =>
     this.setState(({ areDetailsVisible }) => ({
       areDetailsVisible: !areDetailsVisible
@@ -206,7 +208,7 @@ class ListItem extends PureComponent {
             <Textarea
               disabled={isFieldDisabled}
               initialValue={description}
-              onChange={this.handleItemDescription}
+              onChange={isMember ? this.handleItemDescription : null}
               placeholder="Description"
             />
           </div>
@@ -214,7 +216,7 @@ class ListItem extends PureComponent {
             <TextInput
               disabled={isFieldDisabled}
               initialValue={link}
-              onChange={this.handleItemLink}
+              onChange={isMember ? this.handleItemLink : null}
               placeholder="Link"
             />
             {isValidationErrorVisible && (
@@ -326,20 +328,25 @@ class ListItem extends PureComponent {
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
-          {!isOrdered && isMember && (
+          {!isOrdered && (
             <VotingBox
+              isMember={isMember}
               isVoted={isVoted}
-              voteForItem={voteForItem}
+              voteForItem={isMember ? voteForItem : null}
               votesCount={votesCount}
             />
           )}
-          {isMember && (
-            <button
-              className="list-item__icon z-index-high"
-              onClick={this.handleItemToggling(authorId, _id, isOrdered)}
-              type="button"
-            />
-          )}
+          <button
+            className={classNames('list-item__icon z-index-high', {
+              'list-item__icon--disabled': !isMember
+            })}
+            onClick={
+              isMember
+                ? this.handleItemToggling(authorId, _id, isOrdered)
+                : this.handleItemEvent
+            }
+            type="button"
+          />
         </div>
         {areDetailsVisible && (
           <div className="list-item__details">{this.renderDetails()}</div>

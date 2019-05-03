@@ -34,7 +34,6 @@ class InputBar extends Component {
     const {
       addItem,
       currentUser,
-      isMember,
       match: {
         params: { id }
       }
@@ -46,12 +45,10 @@ class InputBar extends Component {
       name: itemName
     };
 
-    if (isMember) {
-      addItem(newItem, id);
+    addItem(newItem, id);
 
-      this.setState({ itemName: '' });
-      this.hideForm();
-    }
+    this.setState({ itemName: '' });
+    this.hideForm();
   };
 
   showForm = () => this.setState({ isFormVisible: true });
@@ -94,7 +91,6 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
-  isMember: PropTypes.bool.isRequired,
   match: RouterMatchPropType.isRequired,
 
   addItem: PropTypes.func.isRequired
