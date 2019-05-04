@@ -4,6 +4,7 @@ const {
   checkIfCurrentUserVoted,
   isUserFavourite,
   isValidMongoId,
+  responseWithItems,
   responseWithList,
   responseWithLists
 } = require('./index');
@@ -13,6 +14,10 @@ const {
   expectedListProperties,
   listMock
 } = require('../../tests/__mocks__/listMock');
+const {
+  expectedItemProperties,
+  itemsMock
+} = require('../../tests/__mocks__/itemsMock');
 
 describe('testing __isValidMongoId__ function', () => {
   it('should return true', () => {
@@ -67,36 +72,6 @@ describe('testing __isUserFavourite__ function', () => {
   });
 });
 
-describe('testing __checkIfCurrentUserVoted__ function', () => {
-  it('should be true', () => {
-    const userId = '123';
-    const item = {
-      voterIds: ['123', '345', '678']
-    };
-    const result = checkIfCurrentUserVoted(item, userId);
-
-    expect(result).toBe(true);
-  });
-
-  it('should be true', () => {
-    const userId = ObjectId();
-    const item = { voterIds: ['123', '345', '678'] };
-    item.voterIds.push(userId);
-
-    const result = checkIfCurrentUserVoted(item, userId);
-
-    expect(result).toBe(true);
-  });
-
-  it('should be false', () => {
-    const userId = ObjectId();
-    const item = { voterIds: ['123', '345', '678'] };
-    const result = checkIfCurrentUserVoted(item, userId);
-
-    expect(result).toBe(false);
-  });
-});
-
 describe('test __responseWithList__ function', () => {
   const list = listMock[0];
   const userId = ObjectId();
@@ -142,5 +117,51 @@ describe('test __responseWithLists__ function', () => {
     lists.map(list =>
       notExpected.map(property => expect(list).not.toHaveProperty(property))
     );
+  });
+});
+
+describe('testing __checkIfCurrentUserVoted__ function', () => {
+  it('should be true', () => {
+    const userId = '123';
+    const item = {
+      voterIds: ['123', '345', '678']
+    };
+    const result = checkIfCurrentUserVoted(item, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('should be true', () => {
+    const userId = ObjectId();
+    const item = { voterIds: ['123', '345', '678'] };
+    item.voterIds.push(userId);
+
+    const result = checkIfCurrentUserVoted(item, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('should be false', () => {
+    const userId = ObjectId();
+    const item = { voterIds: ['123', '345', '678'] };
+    const result = checkIfCurrentUserVoted(item, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('testing __responseWithItems__', () => {
+  const userId = ObjectId();
+  const result = responseWithItems(userId, listMock[0]);
+
+  it('should return items with desired properties', () => {
+    expectedItemProperties.map(property => {
+      result.map(item => expect(item).toHaveProperty(property));
+    });
+  });
+
+  const notExpected = 'voterIds';
+  it('should return items without voterIds property', () => {
+    result.map(item => expect(item).not.toHaveProperty(notExpected));
   });
 });
