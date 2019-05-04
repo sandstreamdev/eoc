@@ -4,6 +4,7 @@ const {
   checkIfCurrentUserVoted,
   isUserFavourite,
   isValidMongoId,
+  responseWithItem,
   responseWithItems,
   responseWithList,
   responseWithLists
@@ -14,10 +15,8 @@ const {
   expectedListProperties,
   listMock
 } = require('../../tests/__mocks__/listMock');
-const {
-  expectedItemProperties,
-  itemsMock
-} = require('../../tests/__mocks__/itemsMock');
+const { expectedItemProperties } = require('../../tests/__mocks__/itemsMock');
+const { singleItemMock } = require('../../tests/__mocks__/singleItemMock');
 
 describe('testing __isValidMongoId__ function', () => {
   it('should return true', () => {
@@ -72,7 +71,7 @@ describe('testing __isUserFavourite__ function', () => {
   });
 });
 
-describe('test __responseWithList__ function', () => {
+describe('testing __responseWithList__ function', () => {
   const list = listMock[0];
   const userId = ObjectId();
 
@@ -99,7 +98,7 @@ describe('test __responseWithList__ function', () => {
   });
 });
 
-describe('test __responseWithLists__ function', () => {
+describe('testing __responseWithLists__ function', () => {
   const userId = ObjectId();
   const lists = responseWithLists(listMock, userId);
 
@@ -150,18 +149,36 @@ describe('testing __checkIfCurrentUserVoted__ function', () => {
   });
 });
 
-describe('testing __responseWithItems__', () => {
+describe('testing __responseWithItems__ function ', () => {
   const userId = ObjectId();
   const result = responseWithItems(userId, listMock[0]);
 
   it('should return items with desired properties', () => {
-    expectedItemProperties.map(property => {
-      result.map(item => expect(item).toHaveProperty(property));
-    });
+    expectedItemProperties.map(property =>
+      result.map(item => expect(item).toHaveProperty(property))
+    );
   });
 
   const notExpected = 'voterIds';
   it('should return items without voterIds property', () => {
     result.map(item => expect(item).not.toHaveProperty(notExpected));
+  });
+});
+
+describe('testing __responseWithItem__function ', () => {
+  const item = singleItemMock[0];
+  const userId = ObjectId();
+  const result = responseWithItem(item, userId);
+
+  it('should return single item with desired properties', () => {
+    expectedItemProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
+  });
+
+  const notExpected = 'voterIds';
+
+  it('should return single item without voterIds property', () => {
+    expect(result).not.toHaveProperty(notExpected);
   });
 });

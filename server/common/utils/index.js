@@ -91,10 +91,29 @@ const responseWithItems = (userId, list) => {
 };
 
 const responseWithItem = (item, userId) => {
-  const { voterIds, ...rest } = item.toObject();
+  const {
+    _id,
+    authorId,
+    authorName,
+    createdAt,
+    description,
+    isOrdered,
+    link,
+    name,
+    updatedAt,
+    voterIds
+  } = item;
 
   return {
-    ...rest,
+    _id,
+    authorId,
+    authorName,
+    createdAt,
+    description,
+    isOrdered,
+    link,
+    name,
+    updatedAt,
     isVoted: checkIfCurrentUserVoted(item, userId),
     votesCount: voterIds.length
   };
