@@ -38,14 +38,18 @@ const responseWithList = (list, userId) => {
 
 const responseWithLists = (lists, userId) =>
   _map(lists, list => {
-    const { favIds, items, ...rest } = list._doc;
+    const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
     const doneItemsCount = items.filter(item => item.isOrdered).length;
     const unhandledItemsCount = items.length - doneItemsCount;
 
     return {
-      ...rest,
+      _id,
+      cohortId,
+      description,
       doneItemsCount,
       isFavourite: isUserFavourite(favIds, userId),
+      isPrivate,
+      name,
       unhandledItemsCount
     };
   });
