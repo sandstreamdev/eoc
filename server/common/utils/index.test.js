@@ -2,6 +2,7 @@ const { ObjectId } = require('mongoose').Types;
 
 const {
   checkIfArrayContainsUserId,
+  checkIfCohortMember,
   checkIfCurrentUserVoted,
   checkIfGuest,
   isUserFavourite,
@@ -49,7 +50,7 @@ describe('testing __isValidMongoId__ function', () => {
 });
 
 describe('testing __isUserFavourite__ function', () => {
-  it('should be true', () => {
+  it('should return true', () => {
     const favIds = ['123', '456', '789'];
     const userId = '123';
 
@@ -57,7 +58,7 @@ describe('testing __isUserFavourite__ function', () => {
     expect(result).toBe(true);
   });
 
-  it('should be true', () => {
+  it('should return true', () => {
     const newId = ObjectId();
     const favIds = ['123', '456', '789'];
 
@@ -67,7 +68,7 @@ describe('testing __isUserFavourite__ function', () => {
     expect(result).toBe(true);
   });
 
-  it('should be false', () => {
+  it('should return false', () => {
     const userId = '999';
     const favIds = ['123', '456', '789'];
 
@@ -75,7 +76,7 @@ describe('testing __isUserFavourite__ function', () => {
     expect(result).toBe(false);
   });
 
-  it('should be false', () => {
+  it('should return false', () => {
     const userId = '999';
     const favIds = [];
 
@@ -143,7 +144,7 @@ describe('testing __checkIfCurrentUserVoted__ function', () => {
     expect(result).toBe(true);
   });
 
-  it('should be true', () => {
+  it('should return true', () => {
     const userId = ObjectId();
     const item = { voterIds: ['123', '345', '678'] };
     item.voterIds.push(userId);
@@ -153,7 +154,7 @@ describe('testing __checkIfCurrentUserVoted__ function', () => {
     expect(result).toBe(true);
   });
 
-  it('should be false', () => {
+  it('should return false', () => {
     const userId = ObjectId();
     const item = { voterIds: ['123', '345', '678'] };
     const result = checkIfCurrentUserVoted(item, userId);
@@ -236,21 +237,21 @@ describe('testing __responseWithCohort___ function', () => {
 describe('testing __checkIfArrayContainsUserId__', () => {
   const idsArray = ['123', '456', '789'];
 
-  it('should be true', () => {
+  it('should return true', () => {
     const userId = '123';
     const result = checkIfArrayContainsUserId(idsArray, userId);
 
     expect(result).toBe(true);
   });
 
-  it('should be false', () => {
+  it('should return false', () => {
     const userId = '999';
     const result = checkIfArrayContainsUserId(idsArray, userId);
 
     expect(result).toBe(false);
   });
 
-  it('should be false', () => {
+  it('should return false', () => {
     const userId = ObjectId();
     const idsArray = [ObjectId(), ObjectId(), ObjectId()];
     const result = checkIfArrayContainsUserId(idsArray, userId);
@@ -262,14 +263,14 @@ describe('testing __checkIfArrayContainsUserId__', () => {
 describe('testing __checkIfGuest__ function', () => {
   const memberIds = ['123', '456', '789'];
 
-  it('should return false', () => {
+  it('should return true', () => {
     const userId = ObjectId();
     const result = checkIfGuest(memberIds, userId);
 
     expect(result).toBe(true);
   });
 
-  it('should return true', () => {
+  it('should return false', () => {
     const userId = '123';
     const result = checkIfGuest(memberIds, userId);
 
@@ -281,7 +282,7 @@ describe('testing __responseWithCohortMembers__ function', () => {
   const ownerIds = ['123', '456', '789'];
   const members = responseWithCohortMembers(usersMock, ownerIds);
 
-  it('shoudl return objects with desired properties', () => {
+  it('should return objects with desired properties', () => {
     expectedUsersProperties.map(property =>
       members.map(member => expect(member).toHaveProperty(property))
     );
@@ -293,5 +294,32 @@ describe('testing __responseWithCohortMembers__ function', () => {
     notExpectedUserProperties.map(property =>
       members.map(member => expect(member).not.toHaveProperty(property))
     );
+  });
+});
+
+describe('testing __checkIfCohortMember__ function', () => {
+  const cohort = cohortsMock[0];
+
+  it('should return false', () => {
+    const userId = ObjectId();
+    const result = checkIfCohortMember(cohort, userId);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false', () => {
+    const userId = 'dsad134sa';
+    const result = checkIfCohortMember(cohort, userId);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return true', () => {
+    const userId = ObjectId();
+    cohort.memberIds.push(userId);
+
+    const result = checkIfCohortMember(cohort, userId);
+
+    expect(result).toBe(true);
   });
 });

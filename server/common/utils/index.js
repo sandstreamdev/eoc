@@ -177,8 +177,13 @@ const responseWithCohortMembers = (users, ownerIds) =>
 const checkIfCohortMember = (cohort, userId) => {
   if (cohort) {
     const { memberIds, ownerIds } = cohort;
-    const convertedUserId = ObjectId(userId);
-    return [...memberIds, ...ownerIds].some(id => id.equals(convertedUserId));
+    const userIdAsString = userId.toString();
+
+    return (
+      [...memberIds, ...ownerIds]
+        .map(id => id.toString())
+        .indexOf(userIdAsString) !== -1
+    );
   }
 
   return false;
