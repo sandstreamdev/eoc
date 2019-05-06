@@ -1,9 +1,13 @@
 const { ObjectId } = require('mongoose').Types;
 
 const {
+  checkIfArrayContainsUserId,
   checkIfCurrentUserVoted,
+  checkIfGuest,
   isUserFavourite,
   isValidMongoId,
+  responseWithCohort,
+  responseWithCohorts,
   responseWithItem,
   responseWithItems,
   responseWithList,
@@ -17,6 +21,11 @@ const {
 } = require('../../tests/__mocks__/listMock');
 const { expectedItemProperties } = require('../../tests/__mocks__/itemsMock');
 const { singleItemMock } = require('../../tests/__mocks__/singleItemMock');
+const {
+  cohortsMock,
+  expectedCohortDetailsProperties,
+  expectedCohortMetaDataProperties
+} = require('../../tests/__mocks__/cohortsMock');
 
 describe('testing __isValidMongoId__ function', () => {
   it('should return true', () => {
@@ -181,4 +190,72 @@ describe('testing __responseWithItem__function ', () => {
   it('should return single item without voterIds property', () => {
     expect(result).not.toHaveProperty(notExpected);
   });
+});
+
+describe('testing __responseWithCohorts__ function', () => {
+  const userId = ObjectId();
+  const result = responseWithCohorts(cohortsMock, userId);
+
+  it('should return cohorts meta data with desired properties', () => {
+    expectedCohortMetaDataProperties.map(property =>
+      result.map(cohort => expect(cohort).toHaveProperty(property))
+    );
+  });
+
+  const notExpected = ['favIds', 'ownerIds', 'memberIds'];
+
+  it('should return cohorts meta data without favIds, ownerIds, memberIds properties', () => {
+    notExpected.map(property =>
+      result.map(cohort => expect(cohort).not.toHaveProperty(property))
+    );
+  });
+});
+
+describe('testing __responseWithCohort___ function', () => {
+  const userId = ObjectId();
+  const cohort = cohortsMock[0];
+  const result = responseWithCohort(cohort, userId);
+
+  it('should return cohort data with desired properties', () => {
+    expectedCohortMetaDataProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
+  });
+
+  const notExpected = ['favIds', 'ownerIds', 'memberIds'];
+
+  it('should return cohort data without favIds, memberIds, ownerIds', () => {
+    notExpected.map(property => expect(result).not.toHaveProperty(property));
+  });
+});
+
+describe('testing __checkIfArrayContainsUserId__', () => {
+  const idsArray = ['123', '456', '789'];
+
+  it('should be true', () => {
+    const userId = '123';
+    const result = checkIfArrayContainsUserId(idsArray, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('should be false', () => {
+    const userId = '999';
+    const result = checkIfArrayContainsUserId(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+
+  it('should be false', () => {
+    const userId = ObjectId();
+    const idsArray = [ObjectId(), ObjectId(), ObjectId()];
+    const result = checkIfArrayContainsUserId(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('test __checkIfGuest__ function', () => {
+  const memberIds = ['123', '456', '789'];
+  const userId = ObjectId();
 });

@@ -111,33 +111,37 @@ const responseWithItem = (item, userId) => {
     createdAt,
     description,
     isOrdered,
+    isVoted: checkIfCurrentUserVoted(item, userId),
     link,
     name,
     updatedAt,
-    isVoted: checkIfCurrentUserVoted(item, userId),
     votesCount: voterIds.length
   };
 };
 
 const responseWithCohorts = (cohorts, userId) =>
-  _map(cohorts, ({ _doc }) => {
-    const { favIds, memberIds, ownerIds, ...rest } = _doc;
+  _map(cohorts, cohort => {
+    const { _id, description, favIds, isArchived, memberIds, name } = cohort;
     const membersCount = memberIds.length;
 
     return {
-      ...rest,
+      _id,
+      description,
+      isArchived,
       isFavourite: isUserFavourite(favIds, userId),
-      membersCount
+      membersCount,
+      name
     };
   });
 
 const responseWithCohort = (cohort, userId) => {
-  const { _id, description, favIds, memberIds, name } = cohort;
+  const { _id, description, favIds, memberIds, name, isArchived } = cohort;
   const membersCount = memberIds.length;
 
   return {
     _id,
     description,
+    isArchived,
     isFavourite: isUserFavourite(favIds, userId),
     membersCount,
     name
