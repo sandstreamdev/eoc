@@ -152,6 +152,7 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
   const arrayOfStrings = idsArray.map(id => id.toString());
   const userIdAsString = userId.toString();
 
+  console.log(userId);
   return arrayOfStrings.indexOf(userIdAsString) !== -1;
 };
 
@@ -162,17 +163,18 @@ const checkIfGuest = (cohortMembersIds, userId) => {
   return idsArray.indexOf(userIdAsString) === -1;
 };
 
-const responseWithCohortMembers = (users, ownerIds) =>
-  users.map(user => {
-    const { _id: userId, avatarUrl, displayName } = user;
+const responseWithCohortMembers = (users, ownerIds) => {
+  return _map(users, user => {
+    const { _id, avatarUrl, displayName } = user;
 
     return {
       avatarUrl,
       displayName,
       isMember: true,
-      isOwner: checkIfArrayContainsUserId(ownerIds, userId)
+      isOwner: checkIfArrayContainsUserId(ownerIds, _id)
     };
   });
+};
 
 const checkIfCohortMember = (cohort, userId) => {
   if (cohort) {

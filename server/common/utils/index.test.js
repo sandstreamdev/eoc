@@ -8,6 +8,7 @@ const {
   isUserFavourite,
   isValidMongoId,
   responseWithCohort,
+  responseWithCohortMember,
   responseWithCohortMembers,
   responseWithCohorts,
   responseWithItem,
@@ -321,5 +322,18 @@ describe('testing __checkIfCohortMember__ function', () => {
     const result = checkIfCohortMember(cohort, userId);
 
     expect(result).toBe(true);
+  });
+});
+
+describe('testing __responseWithCohortMember__ function', () => {
+  const user = usersMock[0];
+  const ownerIds = ['123', '456', '789'];
+
+  const result = responseWithCohortMember(user, ownerIds);
+
+  it('should return user object with desired properties', () => {
+    expectedUsersProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
   });
 });
