@@ -8,6 +8,7 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
+import { ListType } from 'modules/list';
 
 export const CardColorType = {
   BROWN: 'card/BROWN',
@@ -35,9 +36,9 @@ class CardItem extends PureComponent {
         description,
         doneItemsCount,
         isFavourite,
-        isPrivate,
         membersCount,
         name,
+        type,
         unhandledItemsCount
       },
       onCardClick,
@@ -57,7 +58,7 @@ class CardItem extends PureComponent {
         role="figure"
       >
         <header className="card-item__header">
-          {isPrivate && <LockIcon />}
+          {type === ListType.LIMITED && <LockIcon />}
           <h3 className="card-item__heading">{name}</h3>
         </header>
         <p className="card-item__description">{description}</p>

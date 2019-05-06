@@ -7,7 +7,7 @@ const {
   addOwnerRole,
   addToFavourites,
   addViewer,
-  changePrivacy,
+  changeType,
   clearVote,
   cloneItem,
   createList,
@@ -48,6 +48,6 @@ router.patch('/:id/remove-member-role', authorize, removeMemberRole);
 router.patch('/:id/add-viewer', authorize, addViewer);
 router.patch('/:id/update-item-details', authorize, updateItemDetails);
 router.patch('/:id/clone-item', authorize, cloneItem);
-router.patch('/:id/change-privacy', authorize, changePrivacy);
+router.patch('/:id/change-type', authorize, changeType);
 
 module.exports = app => app.use('/lists', router);

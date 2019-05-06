@@ -15,6 +15,7 @@ const {
   responseWithCohortMember,
   responseWithCohortMembers
 } = require('../common/utils/index');
+const { ListType } = require('../common/variables');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
@@ -303,7 +304,7 @@ const removeMember = (req, resp) => {
       return List.updateMany(
         {
           cohortId,
-          isPrivate: false,
+          type: ListType.SHARED,
           viewersIds: { $in: [userId] },
           memberIds: { $nin: [userId] },
           ownerIds: { $nin: [userId] }
@@ -430,7 +431,11 @@ const addMember = (req, resp) => {
       const { newMemberId } = newMember;
 
       return List.updateMany(
-        { cohortId, isPrivate: false, viewersIds: { $nin: [newMemberId] } },
+        {
+          cohortId,
+          type: ListType.SHARED,
+          viewersIds: { $nin: [newMemberId] }
+        },
         { $push: { viewersIds: newMemberId } }
       ).exec();
     })

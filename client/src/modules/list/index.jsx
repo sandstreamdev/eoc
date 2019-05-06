@@ -98,7 +98,7 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, isArchived, isGuest, isOwner, isPrivate, name } = list;
+    const { cohortId, isArchived, isGuest, isOwner, name, type } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
     const isCohortList = cohortId !== null;
@@ -148,7 +148,7 @@ class List extends Component {
                   <MembersBox
                     isCohortList={isCohortList}
                     isCurrentUserAnOwner={isOwner}
-                    isPrivate={isPrivate}
+                    type={type}
                     members={members}
                     route={Routes.LIST}
                   />

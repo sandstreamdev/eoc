@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 const ItemSchema = require('./item.model').schema;
+const { ListType } = require('../common/variables');
 
 const ListSchema = new Schema(
   {
@@ -10,11 +11,11 @@ const ListSchema = new Schema(
     description: { type: String },
     favIds: [ObjectId],
     isArchived: { type: Boolean, default: false },
-    isPrivate: { type: Boolean, default: true },
     items: [ItemSchema],
     memberIds: [{ type: ObjectId, ref: 'User' }],
     name: { type: String, required: true },
     ownerIds: [{ type: ObjectId, ref: 'User' }],
+    type: { type: String, default: ListType.LIMITED },
     viewersIds: [{ type: ObjectId, ref: 'User' }],
     visibility: { type: String }
   },

@@ -19,9 +19,10 @@ const {
   responseWithListMembers
 } = require('../common/utils/index');
 const { updateSubdocumentFields } = require('../common/utils/helpers');
+const { ListType } = require('../common/variables');
 
 const createList = (req, resp) => {
-  const { description, isListPrivate, name, cohortId } = req.body;
+  const { cohortId, description, name, type } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -29,15 +30,16 @@ const createList = (req, resp) => {
   const list = new List({
     cohortId,
     description,
-    isPrivate: isListPrivate,
     memberIds: userId,
     name,
     ownerIds: userId,
+    type,
     viewersIds: userId
   });
 
-  if (cohortId && !isListPrivate) {
+  if (cohortId && type === ListType.SHARED) {
     Cohort.findOne({ _id: cohortId })
+      .exec()
       .then(cohort => {
         const { memberIds } = cohort;
 
@@ -117,7 +119,7 @@ const getListsMetaData = (req, resp) => {
 
   List.find(
     query,
-    '_id name description isPrivate items favIds cohortId',
+    '_id name description type items favIds cohortId',
     { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
@@ -151,7 +153,7 @@ const getArchivedListsMetaData = (req, resp) => {
 
   List.find(
     query,
-    `_id name description isPrivate items favIds isArchived ${
+    `_id name description type items favIds isArchived ${
       cohortId ? 'cohortId' : ''
     }`,
     { sort: { created_at: -1 } },
@@ -248,17 +250,15 @@ const getListData = (req, resp) => {
         cohortId,
         description,
         isArchived,
-        isPrivate,
         memberIds,
         name,
         ownerIds,
+        type,
         viewersIds: viewersCollection
       } = list;
 
       if (isArchived) {
-        return resp
-          .status(200)
-          .json({ cohortId, _id, isArchived, isPrivate, name });
+        return resp.status(200).json({ cohortId, _id, isArchived, name, type });
       }
 
       const members = responseWithListMembers(
@@ -279,10 +279,10 @@ const getListData = (req, resp) => {
         isArchived,
         isGuest,
         isOwner,
-        isPrivate,
         items,
         members,
-        name
+        name,
+        type
       });
     })
     .catch(err => {
@@ -860,15 +860,15 @@ const cloneItem = (req, resp) => {
     });
 };
 
-const changePrivacy = (req, resp) => {
-  const { isListPrivate } = req.body;
+const changeType = (req, resp) => {
+  const { type } = req.body;
   const { id: listId } = req.params;
   const { _id: currentUserId } = req.user;
   let cohortMembers;
 
   List.findOneAndUpdate(
     { _id: listId, ownerIds: currentUserId },
-    { isPrivate: isListPrivate },
+    { type },
     { new: true }
   )
     .populate('cohortId', 'memberIds')
@@ -878,22 +878,23 @@ const changePrivacy = (req, resp) => {
         throw new BadRequestException('List data not found.');
       }
       const {
-        isPrivate,
+        cohortId: { memberIds: cohortMembersCollection },
         memberIds,
-        viewersIds,
-        cohortId: { memberIds: cohortMembersCollection }
+        type,
+        viewersIds
       } = list;
 
       cohortMembers = cohortMembersCollection;
 
-      const updatedViewersIds = isPrivate
-        ? viewersIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
-        : [
-            ...viewersIds,
-            ...cohortMembers.filter(
-              id => !checkIfArrayContainsUserId(viewersIds, id)
-            )
-          ];
+      const updatedViewersIds =
+        type === ListType.LIMITED
+          ? viewersIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
+          : [
+              ...viewersIds,
+              ...cohortMembers.filter(
+                id => !checkIfArrayContainsUserId(viewersIds, id)
+              )
+            ];
 
       return List.findOneAndUpdate(
         { _id: listId, ownerIds: currentUserId },
@@ -905,15 +906,13 @@ const changePrivacy = (req, resp) => {
     })
     .then(list => {
       const {
-        isPrivate,
-        name,
-        viewersIds: viewersCollection,
         memberIds,
-        ownerIds
+        name,
+        ownerIds,
+        type,
+        viewersIds: viewersCollection
       } = list;
-      const message = `List "${name}" change to ${
-        isPrivate ? 'limited' : 'shared'
-      }.`;
+      const message = `"${name}" list's type change to ${type}.`;
 
       const members = responseWithListMembers(
         viewersCollection,
@@ -922,7 +921,7 @@ const changePrivacy = (req, resp) => {
         cohortMembers
       );
 
-      resp.status(200).send({ message, data: { isPrivate, members } });
+      resp.status(200).send({ message, data: { members, type } });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -941,7 +940,7 @@ module.exports = {
   addOwnerRole,
   addToFavourites,
   addViewer,
-  changePrivacy,
+  changeType,
   clearVote,
   cloneItem,
   createList,

@@ -22,6 +22,7 @@ import {
 import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
+import { ListType } from 'modules/list';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -277,13 +278,10 @@ class MemberDetails extends PureComponent {
 
   renderDetails = () => {
     const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
-    const {
-      isGuest,
-      isMember,
-      isOwner,
-      isPrivate: privateList,
-      route
-    } = this.props;
+    const { isGuest, isMember, isOwner, route, type } = this.props;
+
+    const isRemoveOptionVisible =
+      route === Routes.COHORT || type === ListType.LIMITED || isGuest;
 
     return (
       <ul className="member-details__options">
@@ -301,7 +299,7 @@ class MemberDetails extends PureComponent {
             isMember
           )}
         </li>
-        {(route === Routes.COHORT || privateList || isGuest) && (
+        {isRemoveOptionVisible && (
           <li className="member-details__option member-details__option--removing">
             {this.renderRemoveOption()}
           </li>
@@ -369,9 +367,9 @@ MemberDetails.propTypes = {
   isGuest: PropTypes.bool,
   isMember: PropTypes.bool,
   isOwner: PropTypes.bool,
-  isPrivate: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   route: PropTypes.string,
+  type: PropTypes.string,
 
   addMemberRoleInList: PropTypes.func.isRequired,
   addOwnerRoleInCohort: PropTypes.func.isRequired,

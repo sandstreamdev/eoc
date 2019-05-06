@@ -78,7 +78,7 @@ const membersReducer = (state = [], action) => {
           : member
       );
     }
-    case ListActionTypes.CHANGE_PRIVACY_SUCCESS: {
+    case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
         payload: {
           data: { members }
@@ -154,10 +154,10 @@ const lists = (state = {}, action) => {
         [listId]: { ...state[listId], members: membersReducer(members, action) }
       };
     }
-    case ListActionTypes.CHANGE_PRIVACY_SUCCESS: {
+    case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
         payload: {
-          data: { isPrivate },
+          data: { type },
           listId
         }
       } = action;
@@ -166,7 +166,7 @@ const lists = (state = {}, action) => {
         ...state,
         [listId]: {
           ...state[listId],
-          isPrivate,
+          type,
           members: membersReducer(members, action)
         }
       };

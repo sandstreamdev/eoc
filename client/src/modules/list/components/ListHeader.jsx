@@ -7,7 +7,7 @@ import _trim from 'lodash/trim';
 import classNames from 'classnames';
 
 import { ListIcon } from 'assets/images/icons';
-import { updateList, changePrivacy } from 'modules/list/model/actions';
+import { updateList, changeType } from 'modules/list/model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
@@ -162,17 +162,15 @@ class ListHeader extends PureComponent {
     } = event;
 
     const {
-      changePrivacy,
+      changeType,
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    const isListPrivate = value === ListType.LIMITED;
-
     this.setState({ pendingForType: true });
 
-    changePrivacy(listId, isListPrivate).finally(() =>
+    changeType(listId, value).finally(() =>
       this.setState({ pendingForType: false })
     );
   };
@@ -254,7 +252,7 @@ class ListHeader extends PureComponent {
 
   renderListType = () => {
     const {
-      details: { isPrivate }
+      details: { type }
     } = this.props;
 
     const { pendingForType } = this.state;
@@ -262,7 +260,7 @@ class ListHeader extends PureComponent {
     return (
       <select
         className="list-header__select primary-select"
-        defaultValue={isPrivate ? ListType.LIMITED : ListType.SHARED}
+        defaultValue={type}
         disabled={pendingForType}
         onChange={this.handleChangingType}
       >
@@ -316,13 +314,13 @@ ListHeader.propTypes = {
   isCohortList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
-  changePrivacy: PropTypes.func.isRequired,
+  changeType: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
     null,
-    { changePrivacy, updateList }
+    { changeType, updateList }
   )(ListHeader)
 );
