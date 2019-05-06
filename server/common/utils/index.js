@@ -164,12 +164,11 @@ const checkIfGuest = (cohortMembersIds, userId) => {
 
 const responseWithCohortMembers = (users, ownerIds) =>
   users.map(user => {
-    const {
-      _doc: { _id: userId }
-    } = user;
+    const { _id: userId, avatarUrl, displayName } = user;
 
     return {
-      ...user._doc,
+      avatarUrl,
+      displayName,
       isMember: true,
       isOwner: checkIfArrayContainsUserId(ownerIds, userId)
     };

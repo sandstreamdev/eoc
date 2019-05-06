@@ -7,6 +7,7 @@ const {
   isUserFavourite,
   isValidMongoId,
   responseWithCohort,
+  responseWithCohortMembers,
   responseWithCohorts,
   responseWithItem,
   responseWithItems,
@@ -23,9 +24,12 @@ const { expectedItemProperties } = require('../../tests/__mocks__/itemsMock');
 const { singleItemMock } = require('../../tests/__mocks__/singleItemMock');
 const {
   cohortsMock,
-  expectedCohortDetailsProperties,
   expectedCohortMetaDataProperties
 } = require('../../tests/__mocks__/cohortsMock');
+const {
+  expectedUsersProperties,
+  usersMock
+} = require('../../tests/__mocks__/usersMock');
 
 describe('testing __isValidMongoId__ function', () => {
   it('should return true', () => {
@@ -255,7 +259,39 @@ describe('testing __checkIfArrayContainsUserId__', () => {
   });
 });
 
-describe('test __checkIfGuest__ function', () => {
+describe('testing __checkIfGuest__ function', () => {
   const memberIds = ['123', '456', '789'];
-  const userId = ObjectId();
+
+  it('should return false', () => {
+    const userId = ObjectId();
+    const result = checkIfGuest(memberIds, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('should return true', () => {
+    const userId = '123';
+    const result = checkIfGuest(memberIds, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('testing __responseWithCohortMembers__ function', () => {
+  const ownerIds = ['123', '456', '789'];
+  const members = responseWithCohortMembers(usersMock, ownerIds);
+
+  it('shoudl return objects with desired properties', () => {
+    expectedUsersProperties.map(property =>
+      members.map(member => expect(member).toHaveProperty(property))
+    );
+  });
+
+  it('should return user objects without sensitive data like _id and email', () => {
+    const notExpectedUserProperties = ['_id', 'email'];
+
+    notExpectedUserProperties.map(property =>
+      members.map(member => expect(member).not.toHaveProperty(property))
+    );
+  });
 });
