@@ -77,6 +77,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
     '_id name description favIds isArchived memberIds ownerIds',
     { sort: { created_at: -1 } }
   )
+    .exec()
     .then(docs => {
       if (!docs) {
         return resp
@@ -116,7 +117,7 @@ const updateCohortById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Cohort  not found.' });
+        return resp.status(400).send({ message: 'Cohort not found.' });
       }
 
       return resp

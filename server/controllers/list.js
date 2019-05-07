@@ -321,7 +321,7 @@ const updateListItem = (req, resp) => {
     {
       _id: sanitize(listId),
       'items._id': sanitize(itemId),
-      $or: [{ ownerIds: userId }, { memberIds: userId }]
+      memberIds: userId
     },
     {
       $set: dataToUpdate
