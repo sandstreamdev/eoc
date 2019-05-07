@@ -15,7 +15,11 @@ import Comment from 'common/components/Comments/Comment';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { cloneItem, updateItemDetails } from '../model/actions';
 import SaveButton from 'common/components/SaveButton';
-import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
+import {
+  handleEventPropagation,
+  isUrlValid,
+  makeAbortablePromise
+} from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
@@ -65,8 +69,6 @@ class ListItem extends PureComponent {
       toggleItem(authorId, id, isOrdered);
     }
   };
-
-  handleItemEvent = event => event.stopPropagation();
 
   toggleDetails = () =>
     this.setState(({ areDetailsVisible }) => ({
@@ -343,7 +345,7 @@ class ListItem extends PureComponent {
             onClick={
               isMember
                 ? this.handleItemToggling(authorId, _id, isOrdered)
-                : this.handleItemEvent
+                : handleEventPropagation
             }
             type="button"
           />

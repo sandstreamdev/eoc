@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import ThumbIcon from 'assets/images/thumbs-up-solid.svg';
+import { handleEventPropagation } from 'common/utils/helpers';
 
 class VotingBox extends PureComponent {
   handleOnClick = event => {
@@ -11,8 +12,6 @@ class VotingBox extends PureComponent {
 
     voteForItem();
   };
-
-  handleEventPropagation = event => event.stopPropagation();
 
   render() {
     const { isMember, isVoted, votesCount } = this.props;
@@ -23,7 +22,7 @@ class VotingBox extends PureComponent {
           'voting-box__voted': isVoted,
           'voting-box__disabled': !isMember
         })}
-        onClick={isMember ? this.handleOnClick : this.handleEventPropagation}
+        onClick={isMember ? this.handleOnClick : handleEventPropagation}
         type="button"
       >
         <img

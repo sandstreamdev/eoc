@@ -28,3 +28,5 @@ export const makeAbortablePromise = promise => {
     }
   };
 };
+
+export const handleEventPropagation = event => event.stopPropagation();
