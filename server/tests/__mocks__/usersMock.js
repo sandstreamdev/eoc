@@ -46,6 +46,7 @@ const usersMock = [
 ];
 
 const expectedUsersProperties = [
+  '_id',
   'avatarUrl',
   'displayName',
   'isMember',

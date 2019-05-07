@@ -152,7 +152,6 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
   const arrayOfStrings = idsArray.map(id => id.toString());
   const userIdAsString = userId.toString();
 
-  console.log(userId);
   return arrayOfStrings.indexOf(userIdAsString) !== -1;
 };
 
@@ -168,6 +167,7 @@ const responseWithCohortMembers = (users, ownerIds) => {
     const { _id, avatarUrl, displayName } = user;
 
     return {
+      _id,
       avatarUrl,
       displayName,
       isMember: true,
@@ -192,25 +192,25 @@ const checkIfCohortMember = (cohort, userId) => {
 };
 
 const responseWithCohortMember = (user, ownerIds) => {
-  const { avatarUrl, displayName, newMemberId } = user;
+  const { avatarUrl, displayName, _id } = user;
 
   return {
-    _id: newMemberId,
+    _id,
     avatarUrl,
     displayName,
     isMember: true,
-    isOwner: checkIfArrayContainsUserId(ownerIds, newMemberId)
+    isOwner: checkIfArrayContainsUserId(ownerIds, _id)
   };
 };
 
-const responseWithListMember = (user, cohortMembers) => {
+const responseWithListMember = (user, cohortMembersIds) => {
   const { avatarUrl, displayName, _id: newMemberId } = user;
 
   return {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isGuest: checkIfGuest(cohortMembers, newMemberId),
+    isGuest: checkIfGuest(cohortMembersIds, newMemberId),
     isMember: false,
     isOwner: false
   };
@@ -222,12 +222,18 @@ const responseWithListMembers = (
   ownerIds,
   cohortMembersIds
 ) =>
-  viewers.map(user => ({
-    ...user._doc,
-    isOwner: checkIfArrayContainsUserId(ownerIds, user._doc._id),
-    isGuest: checkIfGuest(cohortMembersIds, user._doc._id),
-    isMember: checkIfArrayContainsUserId(memberIds, user._doc._id)
-  }));
+  viewers.map(user => {
+    const { _id, avatarUrl, displayName } = user;
+
+    return {
+      _id,
+      avatarUrl,
+      displayName,
+      isOwner: checkIfArrayContainsUserId(ownerIds, _id),
+      isGuest: checkIfGuest(cohortMembersIds, _id),
+      isMember: checkIfArrayContainsUserId(memberIds, _id)
+    };
+  });
 
 /**
  * @param {*} subdocumentName - name of nested collection

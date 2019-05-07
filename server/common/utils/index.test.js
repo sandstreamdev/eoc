@@ -14,6 +14,8 @@ const {
   responseWithItem,
   responseWithItems,
   responseWithList,
+  responseWithListMember,
+  responseWithListMembers,
   responseWithLists
 } = require('./index');
 const {
@@ -289,8 +291,8 @@ describe('testing __responseWithCohortMembers__ function', () => {
     );
   });
 
-  it('should return user objects without sensitive data like _id and email', () => {
-    const notExpectedUserProperties = ['_id', 'email'];
+  it('should return user objects without sensitive data like  email', () => {
+    const notExpectedUserProperties = ['email'];
 
     notExpectedUserProperties.map(property =>
       members.map(member => expect(member).not.toHaveProperty(property))
@@ -335,5 +337,55 @@ describe('testing __responseWithCohortMember__ function', () => {
     expectedUsersProperties.map(property =>
       expect(result).toHaveProperty(property)
     );
+  });
+
+  it('should return user object without sensitive data like email', () => {
+    const notExpected = 'email';
+
+    expect(result).not.toHaveProperty(notExpected);
+  });
+});
+
+describe('testing __responseWithListMember__ function', () => {
+  const cohortMembersIds = ['123', '456', '789'];
+  const user = usersMock[0];
+  const result = responseWithListMember(user, cohortMembersIds);
+
+  it('should return object with desired properties', () => {
+    expectedUsersProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
+  });
+
+  it('should return object without sensitive data', () => {
+    const notExpected = 'email';
+
+    expect(result).not.toHaveProperty(notExpected);
+  });
+});
+
+describe('testing __responseWithListMembers__ function', () => {
+  const viewers = usersMock;
+  const memberIds = ['123', '234'];
+  const ownerIds = ['345', '456'];
+  const cohortMembersIds = ['567', '678'];
+
+  const result = responseWithListMembers(
+    viewers,
+    memberIds,
+    ownerIds,
+    cohortMembersIds
+  );
+
+  it('should return objects with desired properties', () => {
+    expectedUsersProperties.map(property =>
+      result.map(user => expect(user).toHaveProperty(property))
+    );
+  });
+
+  it('shoudl return objects without sensitve data', () => {
+    const notExpected = 'email';
+
+    result.map(user => expect(user).not.toHaveProperty(notExpected));
   });
 });

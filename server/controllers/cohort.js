@@ -415,19 +415,19 @@ const addMember = (req, resp) => {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 
-      const { _id: newMemberId, avatarUrl, displayName } = user;
+      const { _id, avatarUrl, displayName } = user;
 
-      if (checkIfCohortMember(currentCohort, newMemberId)) {
+      if (checkIfCohortMember(currentCohort, _id)) {
         throw new BadRequestException('User is already a member.');
       }
 
-      currentCohort.memberIds.push(newMemberId);
-      newMember = { avatarUrl, newMemberId, displayName };
+      currentCohort.memberIds.push(_id);
+      newMember = { avatarUrl, _id, displayName };
 
       return currentCohort.save();
     })
     .then(() => {
-      const { newMemberId } = newMember;
+      const { _id: newMemberId } = newMember;
 
       return List.updateMany(
         { cohortId, isPrivate: false, viewersIds: { $nin: [newMemberId] } },
