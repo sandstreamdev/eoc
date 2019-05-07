@@ -740,7 +740,7 @@ const addViewer = (req, resp) => {
       return User.findOne({ email }).exec();
     })
     .then(userData => {
-      if (!userData) {
+      if (!userData || userData._id.toString() === process.env.DEMO_USER_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 

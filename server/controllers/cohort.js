@@ -411,7 +411,7 @@ const addMember = (req, resp) => {
       return User.findOne({ email }).exec();
     })
     .then(user => {
-      if (!user) {
+      if (!user || user._id.toString() === process.env.DEMO_USER_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 
