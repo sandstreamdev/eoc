@@ -108,7 +108,7 @@ const updateCohortById = (req, resp) => {
 
   Cohort.findOneAndUpdate(
     {
-      _id: cohortId,
+      _id: sanitize(cohortId),
       ownerIds: userId
     },
     dataToUpdate
@@ -144,7 +144,7 @@ const getCohortDetails = (req, resp) => {
   }
 
   Cohort.findOne({
-    _id: cohortId,
+    _id: sanitize(cohortId),
     memberIds: userId
   })
     .populate('memberIds', 'avatarUrl displayName _id')
@@ -196,8 +196,9 @@ const deleteCohortById = (req, resp) => {
     user: { _id: userId }
   } = req;
   let documentName = '';
+  const sanitizedCohortId = sanitize(cohortId);
 
-  Cohort.findOne({ _id: cohortId, ownerIds: userId })
+  Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -207,9 +208,9 @@ const deleteCohortById = (req, resp) => {
       }
 
       documentName = doc.name;
-      return List.deleteMany({ cohortId }).exec();
+      return List.deleteMany({ cohortId: sanitizedCohortId }).exec();
     })
-    .then(() => Cohort.deleteOne({ _id: cohortId }).exec())
+    .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
     .then(() =>
       resp
         .status(200)
@@ -237,7 +238,7 @@ const addToFavourites = (req, resp) => {
 
   Cohort.findOneAndUpdate(
     {
-      _id: cohortId,
+      _id: sanitize(cohortId),
       memberIds: userId
     },
     {
@@ -269,7 +270,7 @@ const removeFromFavourites = (req, resp) => {
 
   Cohort.findOneAndUpdate(
     {
-      _id: cohortId,
+      _id: sanitize(cohortId),
       memberIds: userId
     },
     {
@@ -297,12 +298,17 @@ const removeMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const sanitizedUserId = sanitize(userId);
+  const sanitizedCohortId = sanitize(cohortId);
   const {
     user: { _id: currentUserId }
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: currentUserId, memberIds: sanitizedUserId },
+    {
+      _id: sanitizedCohortId,
+      ownerIds: currentUserId,
+      memberIds: sanitizedUserId
+    },
     { $pull: { memberIds: userId, ownerIds: userId } }
   )
     .exec()
@@ -315,7 +321,7 @@ const removeMember = (req, resp) => {
 
       return List.updateMany(
         {
-          cohortId,
+          cohortId: sanitizedCohortId,
           isPrivate: false,
           viewersIds: { $in: [sanitizedUserId] },
           memberIds: { $nin: [sanitizedUserId] },
@@ -352,7 +358,7 @@ const addOwnerRole = (req, resp) => {
 
   Cohort.findOneAndUpdate(
     {
-      _id: cohortId,
+      _id: sanitize(cohortId),
       ownerIds: { $in: [currentUserId], $nin: [sanitizedUserId] },
       memberIds: sanitizedUserId
     },
@@ -384,7 +390,10 @@ const removeOwnerRole = (req, resp) => {
   } = req;
 
   Cohort.findOneAndUpdate(
-    { _id: cohortId, ownerIds: { $all: [currentUserId, sanitizedUserId] } },
+    {
+      _id: sanitize(cohortId),
+      ownerIds: { $all: [currentUserId, sanitizedUserId] }
+    },
     { $pull: { ownerIds: userId } }
   )
     .exec()
@@ -412,8 +421,9 @@ const addMember = (req, resp) => {
   const { email } = req.body;
   let currentCohort;
   let newMember;
+  const sanitizedCohortId = sanitize(cohortId);
 
-  Cohort.findOne({ _id: cohortId, ownerIds: userId })
+  Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
     .then(cohort => {
       if (!cohort) {
@@ -445,7 +455,11 @@ const addMember = (req, resp) => {
       const { newMemberId } = newMember;
 
       return List.updateMany(
-        { cohortId, isPrivate: false, viewersIds: { $nin: [newMemberId] } },
+        {
+          cohortId: sanitizedCohortId,
+          isPrivate: false,
+          viewersIds: { $nin: [newMemberId] }
+        },
         { $push: { viewersIds: newMemberId } }
       ).exec();
     })

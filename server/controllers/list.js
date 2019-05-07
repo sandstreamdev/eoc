@@ -88,7 +88,7 @@ const deleteListById = (req, resp) => {
     params: { id: listId }
   } = req;
 
-  List.findOneAndDelete({ _id: listId, ownerIds: userId })
+  List.findOneAndDelete({ _id: sanitize(listId), ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -118,7 +118,7 @@ const getListsMetaData = (req, resp) => {
   };
 
   if (cohortId) {
-    query.cohortId = cohortId;
+    query.cohortId = sanitize(cohortId);
   }
 
   List.find(query, '_id name description isPrivate items favIds cohortId', {
@@ -152,7 +152,7 @@ const getArchivedListsMetaData = (req, resp) => {
   };
 
   if (cohortId) {
-    query.cohortId = cohortId;
+    query.cohortId = sanitize(cohortId);
   }
 
   List.find(
@@ -225,6 +225,7 @@ const getListData = (req, resp) => {
     params: { id: listId },
     user: { _id: userId }
   } = req;
+  const sanitizedListId = sanitize(listId);
 
   if (!isValidMongoId(listId)) {
     return resp
@@ -235,7 +236,7 @@ const getListData = (req, resp) => {
   let list;
 
   List.findOne({
-    _id: listId,
+    _id: sanitizedListId,
     viewersIds: userId
   })
     .populate('viewersIds', 'avatarUrl displayName _id')
@@ -318,7 +319,7 @@ const updateListItem = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
+      _id: sanitize(listId),
       'items._id': sanitize(itemId),
       $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
@@ -355,7 +356,7 @@ const voteForItem = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
+      _id: sanitize(listId),
       'items._id': sanitize(itemId),
       $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
@@ -389,7 +390,7 @@ const clearVote = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
+      _id: sanitize(listId),
       'items._id': sanitize(itemId),
       $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
@@ -428,7 +429,7 @@ const updateListById = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
+      _id: sanitize(listId),
       $or: [{ ownerIds: userId }]
     },
     dataToUpdate
@@ -459,7 +460,7 @@ const addToFavourites = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
+      _id: sanitize(listId),
       $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     {
@@ -491,7 +492,7 @@ const removeFromFavourites = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
+      _id: sanitize(listId),
       $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     {
@@ -523,7 +524,10 @@ const removeOwner = (req, resp) => {
   } = req;
 
   List.findOneAndUpdate(
-    { _id: listId, ownerIds: { $all: [currentUserId, sanitize(userId)] } },
+    {
+      _id: sanitize(listId),
+      ownerIds: { $all: [currentUserId, sanitize(userId)] }
+    },
     { $pull: { ownerIds: userId, memberIds: userId, viewersIds: userId } }
   )
     .exec()
@@ -552,7 +556,11 @@ const removeMember = (req, resp) => {
   const sanitizedUserId = sanitize(userId);
 
   List.findOneAndUpdate(
-    { _id: listId, ownerIds: currentUserId, viewersIds: sanitizedUserId },
+    {
+      _id: sanitize(listId),
+      ownerIds: currentUserId,
+      viewersIds: sanitizedUserId
+    },
     {
       $pull: {
         viewersIds: sanitizedUserId,
@@ -585,7 +593,7 @@ const addOwnerRole = (req, resp) => {
     user: { _id: currentUserId }
   } = req;
 
-  List.findOne({ _id: listId, ownerIds: currentUserId })
+  List.findOne({ _id: sanitize(listId), ownerIds: currentUserId })
     .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
@@ -630,7 +638,7 @@ const removeOwnerRole = (req, resp) => {
     user: { _id: ownerId }
   } = req;
 
-  List.findOne({ _id: listId, ownerIds: ownerId })
+  List.findOne({ _id: sanitize(listId), ownerIds: ownerId })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -668,7 +676,7 @@ const addMemberRole = (req, resp) => {
     user: { _id: currentUserId }
   } = req;
 
-  List.findOne({ _id: listId, ownerIds: { $in: [currentUserId] } })
+  List.findOne({ _id: sanitize(listId), ownerIds: { $in: [currentUserId] } })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -712,7 +720,7 @@ const removeMemberRole = (req, resp) => {
     user: { _id: currentUserId }
   } = req;
 
-  List.findOne({ _id: listId, ownerIds: { $in: [currentUserId] } })
+  List.findOne({ _id: sanitize(listId), ownerIds: { $in: [currentUserId] } })
     .populate('cohortId', 'memberIds ownerIds viewersIds')
     .exec()
     .then(doc => {
@@ -757,7 +765,7 @@ const addViewer = (req, resp) => {
   let cohortMembers = [];
 
   List.findOne({
-    _id: listId,
+    _id: sanitize(listId),
     ownerIds: currentUserId
   })
     .populate('cohortId', 'ownerIds memberIds')
@@ -820,7 +828,7 @@ const updateItemDetails = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
+      _id: sanitize(listId),
       'items._id': sanitize(itemId),
       $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
@@ -850,7 +858,7 @@ const cloneItem = (req, resp) => {
   let newItemId;
 
   List.findOne({
-    _id: listId,
+    _id: sanitize(listId),
     'items._id': sanitize(itemId),
     $or: [{ ownerIds: userId }, { memberIds: userId }]
   })
