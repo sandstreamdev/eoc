@@ -10,7 +10,7 @@ class VotingBox extends PureComponent {
     event.stopPropagation();
     const { voteForItem } = this.props;
 
-    voteForItem();
+    voteForItem && voteForItem();
   };
 
   render() {
