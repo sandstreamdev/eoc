@@ -118,7 +118,7 @@ const getListsMetaData = (req, resp) => {
   List.find(
     query,
     '_id name description isPrivate items favIds cohortId',
-    { sort: { created_at: -1 }, new: true },
+    { sort: { created_at: -1 } },
     (err, docs) => {
       if (err) {
         return resp.status(400).send({

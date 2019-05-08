@@ -162,8 +162,8 @@ const checkIfGuest = (cohortMembersIds, userId) => {
   return idsArray.indexOf(userIdAsString) === -1;
 };
 
-const responseWithCohortMembers = (users, ownerIds) => {
-  return _map(users, user => {
+const responseWithCohortMembers = (users, ownerIds) =>
+  _map(users, user => {
     const { _id, avatarUrl, displayName } = user;
 
     return {
@@ -174,7 +174,6 @@ const responseWithCohortMembers = (users, ownerIds) => {
       isOwner: checkIfArrayContainsUserId(ownerIds, _id)
     };
   });
-};
 
 const checkIfCohortMember = (cohort, userId) => {
   if (cohort) {

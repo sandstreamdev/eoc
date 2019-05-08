@@ -35,7 +35,7 @@ export const getArchivedCohorts = createSelector(
     _keyBy(
       _sortBy(
         _filter(cohorts, cohort => cohort.isArchived),
-        el => !el.isFavouritezastanawia
+        el => !el.isFavourite
       ),
       '_id'
     )
