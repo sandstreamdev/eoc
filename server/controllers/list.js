@@ -28,6 +28,7 @@ const createList = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
+  const isSharedList = type === ListType.SHARED;
 
   const list = new List({
     cohortId,
@@ -38,8 +39,6 @@ const createList = (req, resp) => {
     type,
     viewersIds: userId
   });
-
-  const isSharedList = type === ListType.SHARED;
 
   if (cohortId && isSharedList) {
     Cohort.findOne({ _id: sanitize(cohortId) })

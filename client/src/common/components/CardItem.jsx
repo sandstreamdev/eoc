@@ -44,7 +44,6 @@ class CardItem extends PureComponent {
       onCardClick,
       route
     } = this.props;
-
     const { pending } = this.state;
     const isLimitedList = type === ListType.LIMITED;
 
