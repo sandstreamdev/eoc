@@ -56,22 +56,52 @@ const responseWithItems = (userId, list) => {
   const { items } = list;
 
   return _map(items, item => {
-    const { voterIds, ...rest } = item.toObject();
+    const {
+      _id,
+      authorId,
+      authorName,
+      description,
+      isOrdered,
+      link,
+      name,
+      voterIds
+    } = item.toObject();
 
     return {
-      ...rest,
+      _id,
+      authorId,
+      authorName,
+      description,
+      isOrdered,
       isVoted: checkIfCurrentUserVoted(item, userId),
+      link,
+      name,
       votesCount: voterIds.length
     };
   });
 };
 
 const responseWithItem = (item, userId) => {
-  const { voterIds, ...rest } = item.toObject();
+  const {
+    _id,
+    authorId,
+    authorName,
+    description,
+    isOrdered,
+    link,
+    name,
+    voterIds
+  } = item.toObject();
 
   return {
-    ...rest,
+    _id,
+    authorId,
+    authorName,
+    description,
+    isOrdered,
     isVoted: checkIfCurrentUserVoted(item, userId),
+    link,
+    name,
     votesCount: voterIds.length
   };
 };
@@ -176,6 +206,19 @@ const responseWithListMembers = (
     isMember: checkIfArrayContainsUserId(memberIds, user._doc._id)
   }));
 
+const responseWithComment = (comment, avatarUrl, displayName) => {
+  const { _id, authorId, createdAt, text } = comment.toObject();
+
+  return {
+    _id,
+    authorAvatarUrl: avatarUrl,
+    authorId,
+    authorName: displayName,
+    createdAt,
+    text
+  };
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -187,6 +230,7 @@ module.exports = {
   responseWithCohortMember,
   responseWithCohortMembers,
   responseWithCohorts,
+  responseWithComment,
   responseWithItem,
   responseWithItems,
   responseWithList,

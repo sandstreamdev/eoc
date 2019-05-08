@@ -14,6 +14,7 @@ import NewComment from 'common/components/Comments/NewComment';
 import Comment from 'common/components/Comments/Comment';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
+  addComment,
   clearVote,
   cloneItem,
   setVote,
@@ -27,8 +28,6 @@ import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class ListItem extends PureComponent {
-  pendingPromises = [];
-
   constructor(props) {
     super(props);
 
@@ -50,16 +49,6 @@ class ListItem extends PureComponent {
   componentDidUpdate() {
     this.checkIfFieldsUpdated();
   }
-
-  componentWillUnmount() {
-    this.pendingPromises.map(promise => promise.abort());
-  }
-
-  addPendingPromise = promise => this.pendingPromises.push(promise);
-
-  removePendingPromise = promise => {
-    this.pendingPromises = this.pendingPromises.filter(p => p !== promise);
-  };
 
   handleItemToggling = () => {
     const {
@@ -84,12 +73,20 @@ class ListItem extends PureComponent {
       areDetailsVisible: !areDetailsVisible
     }));
 
-  showAddNewComment = () => this.setState({ isNewCommentVisible: true });
+  showAddComment = () => this.setState({ isNewCommentVisible: true });
 
-  hideAddNewComment = () => this.setState({ isNewCommentVisible: false });
+  hideAddComment = () => this.setState({ isNewCommentVisible: false });
 
-  handleAddNewComment = comment => {
-    // Adding new comment will be handled in next tasks
+  handleAddComment = comment => {
+    const {
+      addComment,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    return addComment(comment, itemId, listId);
   };
 
   handleDataUpdate = () => {
@@ -240,6 +237,7 @@ class ListItem extends PureComponent {
             </PendingButton>
           </div>
         )}
+        {this.renderComments()}
       </Fragment>
     );
   };
@@ -251,13 +249,13 @@ class ListItem extends PureComponent {
       <div className="list-item__new-comment">
         {isNewCommentVisible ? (
           <NewComment
-            onAddNewComment={this.handleAddNewComment}
-            onEscapePress={this.hideAddNewComment}
+            onAddComment={this.handleAddComment}
+            onEscapePress={this.hideAddComment}
           />
         ) : (
           <button
             className="list-item__add-new-button link-button"
-            onClick={this.showAddNewComment}
+            onClick={this.showAddComment}
             type="button"
           >
             Add comment
@@ -347,6 +345,7 @@ ListItem.propTypes = {
   ),
   match: RouterMatchPropType.isRequired,
 
+  addComment: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
@@ -361,6 +360,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { clearVote, cloneItem, setVote, toggle, updateItemDetails }
+    { addComment, clearVote, cloneItem, setVote, toggle, updateItemDetails }
   )(ListItem)
 );

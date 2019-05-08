@@ -66,6 +66,19 @@ const cloneItemFailure = () => ({
   type: ItemActionTypes.CLONE_FAILURE
 });
 
+const addCommentSuccess = (comment, itemId, listId) => ({
+  type: ItemActionTypes.CLONE_SUCCESS,
+  payload: { comment, itemId, listId }
+});
+
+const addCommentRequest = () => ({
+  type: ItemActionTypes.CLONE_REQUEST
+});
+
+const addCommentFailure = () => ({
+  type: ItemActionTypes.CLONE_FAILURE
+});
+
 export const addItem = (item, listId) => dispatch => {
   dispatch(addItemRequest());
   return postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
@@ -179,6 +192,32 @@ export const cloneItem = (listId, itemId) => dispatch => {
     })
     .catch(err => {
       dispatch(cloneItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const addComment = (text, listId, itemId) => dispatch => {
+  return console.log(text, itemId, listId);
+  dispatch(addCommentRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-comment`, {
+    text,
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(addCommentSuccess(comment, itemId, listId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(addCommentFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
