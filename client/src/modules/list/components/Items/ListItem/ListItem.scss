@@ -148,10 +148,16 @@
       position: absolute;
       right: 0;
       top: 50%;
-      transform: translateY(-50%);
       cursor: pointer;
+      transform: translateY(-50%);
       transition: all 200ms ease-in;
       background-position: center;
+    }
+
+    &:disabled {
+      &:after {
+        cursor: not-allowed;
+      }
     }
   }
 

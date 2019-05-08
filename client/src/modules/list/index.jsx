@@ -48,22 +48,29 @@ class List extends Component {
         params: { id }
       }
     } = this.props;
+
     return fetchListData(id);
   };
 
   handleListArchivization = listId => () => {
-    const { archiveList } = this.props;
+    const {
+      archiveList,
+      list: { isOwner }
+    } = this.props;
 
-    this.setState({ pendingForListArchivization: true });
+    if (isOwner) {
+      this.setState({ pendingForListArchivization: true });
 
-    archiveList(listId).finally(() => {
-      this.setState({ pendingForListArchivization: false });
-      this.hideDialog();
-    });
+      archiveList(listId).finally(() => {
+        this.setState({ pendingForListArchivization: false });
+        this.hideDialog();
+      });
+    }
   };
 
   checkIfArchived = () => {
     const { list } = this.props;
+
     return !list || (list && !list.isArchived);
   };
 
@@ -98,7 +105,15 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, isArchived, isGuest, isOwner, name, type } = list;
+    const {
+      cohortId,
+      isArchived,
+      isGuest,
+      isMember,
+      isOwner,
+      name,
+      type
+    } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
     const isCohortList = cohortId !== null;
@@ -123,10 +138,14 @@ class List extends Component {
               <ListHeader details={list} isCohortList={isCohortList} />
               <div className="list__details">
                 <div className="list__items">
-                  <ItemsContainer items={listItems}>
-                    <InputBar />
+                  <ItemsContainer isMember={isMember} items={listItems}>
+                    {isMember && <InputBar />}
                   </ItemsContainer>
-                  <ItemsContainer archived items={orderedItems} />
+                  <ItemsContainer
+                    archived
+                    isMember={isMember}
+                    items={orderedItems}
+                  />
                   {!isArchived && isOwner && (
                     <button
                       className="link-button"
@@ -142,13 +161,14 @@ class List extends Component {
                   onClick={this.handleMembersBoxVisibility}
                   type="button"
                 >
-                  {`${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
+                  {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
                 </button>
                 {isMembersBoxVisible && (
                   <MembersBox
                     isCohortList={isCohortList}
                     isCurrentUserAnOwner={isOwner}
                     type={type}
+                    isMember={isMember}
                     members={members}
                     route={Routes.LIST}
                   />

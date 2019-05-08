@@ -232,7 +232,7 @@ class ListHeader extends PureComponent {
       <NameInput
         disabled={pendingForName}
         name={nameInputValue}
-        onClick={this.handleClick}
+        onClick={isOwner ? this.handleClick : null}
         onKeyPress={this.handleKeyPress}
         onNameChange={this.handleNameChange}
       />
