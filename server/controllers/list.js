@@ -123,7 +123,7 @@ const getListsMetaData = (req, resp) => {
     query.cohortId = sanitize(cohortId);
   }
 
-  List.find(query, '_id name description isPrivate items favIds cohortId', {
+  List.find(query, '_id name description items favIds cohortId type', {
     sort: { created_at: -1 }
   })
     .exec()
