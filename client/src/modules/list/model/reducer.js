@@ -78,6 +78,14 @@ const membersReducer = (state = [], action) => {
           : member
       );
     }
+    case ListActionTypes.CHANGE_TYPE_SUCCESS: {
+      const {
+        payload: {
+          data: { members }
+        }
+      } = action;
+      return members;
+    }
     default:
       return state;
   }
@@ -144,6 +152,24 @@ const lists = (state = {}, action) => {
       return {
         ...state,
         [listId]: { ...state[listId], members: membersReducer(members, action) }
+      };
+    }
+    case ListActionTypes.CHANGE_TYPE_SUCCESS: {
+      const {
+        payload: {
+          data: { type },
+          listId
+        }
+      } = action;
+      const { members } = state[listId];
+
+      return {
+        ...state,
+        [listId]: {
+          ...state[listId],
+          type,
+          members: membersReducer(members, action)
+        }
       };
     }
     default:

@@ -1,3 +1,5 @@
+const sanitize = require('mongo-sanitize');
+
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
@@ -19,9 +21,10 @@ const {
   responseWithListMembers
 } = require('../common/utils/index');
 const { updateSubdocumentFields } = require('../common/utils/helpers');
+const { ListType } = require('../common/variables');
 
 const createList = (req, resp) => {
-  const { description, isListPrivate, name, cohortId } = req.body;
+  const { cohortId, description, name, type } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -29,15 +32,16 @@ const createList = (req, resp) => {
   const list = new List({
     cohortId,
     description,
-    isPrivate: isListPrivate,
     memberIds: userId,
     name,
     ownerIds: userId,
+    type,
     viewersIds: userId
   });
 
-  if (cohortId && !isListPrivate) {
-    Cohort.findOne({ _id: cohortId })
+  if (cohortId && type === ListType.SHARED) {
+    Cohort.findOne({ _id: sanitize(cohortId) })
+      .exec()
       .then(cohort => {
         const { memberIds } = cohort;
 
@@ -81,23 +85,27 @@ const createList = (req, resp) => {
 };
 
 const deleteListById = (req, resp) => {
-  List.findOneAndDelete(
-    { _id: req.params.id, ownerIds: req.user._id },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while deleting the list. Please try again.'
-        });
+  const {
+    user: { _id: userId },
+    params: { id: listId }
+  } = req;
+
+  List.findOneAndDelete({ _id: sanitize(listId), ownerIds: userId })
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(400).send({ message: 'List not found.' });
       }
 
-      doc
-        ? resp.status(200).send({
-            message: `List "${doc.name}" successfully deleted.`
-          })
-        : resp.status(404).send({ message: 'List not found.' });
-    }
-  );
+      return resp.status(200).send({
+        message: `List "${doc.name}" successfully deleted.`
+      });
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message: 'An error occurred while deleting the list. Please try again.'
+      })
+    );
 };
 
 const getListsMetaData = (req, resp) => {
@@ -112,26 +120,26 @@ const getListsMetaData = (req, resp) => {
   };
 
   if (cohortId) {
-    query.cohortId = cohortId;
+    query.cohortId = sanitize(cohortId);
   }
 
-  List.find(
-    query,
-    '_id name description isPrivate items favIds cohortId',
-    { sort: { created_at: -1 } },
-    (err, docs) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while fetching the lists data. Please try again.'
-        });
+  List.find(query, '_id name description items favIds cohortId type', {
+    sort: { created_at: -1 }
+  })
+    .exec()
+    .then(docs => {
+      if (!docs) {
+        return resp.status(400).send({ message: 'No lists data found.' });
       }
 
-      docs
-        ? resp.status(200).json(responseWithLists(docs, userId))
-        : resp.status(404).send({ message: 'No lists data found.' });
-    }
-  );
+      return resp.status(200).json(responseWithLists(docs, userId));
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message:
+          'An error occurred while fetching the lists data. Please try again.'
+      })
+    );
 };
 
 const getArchivedListsMetaData = (req, resp) => {
@@ -146,28 +154,32 @@ const getArchivedListsMetaData = (req, resp) => {
   };
 
   if (cohortId) {
-    query.cohortId = cohortId;
+    query.cohortId = sanitize(cohortId);
   }
 
   List.find(
     query,
-    `_id name description isPrivate items favIds isArchived ${
+    `_id name description type items favIds isArchived ${
       cohortId ? 'cohortId' : ''
     }`,
-    { sort: { created_at: -1 } },
-    (err, docs) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while fetching the archived lists data. Please try again.'
-        });
+    { sort: { created_at: -1 } }
+  )
+    .exec()
+    .then(docs => {
+      if (!docs) {
+        return resp
+          .status(400)
+          .send({ message: 'No archived lists data found.' });
       }
 
-      docs
-        ? resp.status(200).json(responseWithLists(docs, userId))
-        : resp.status(404).send({ message: 'No archived lists data found.' });
-    }
-  );
+      return resp.status(200).json(responseWithLists(docs, userId));
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message:
+          'An error occurred while fetching the archived lists data. Please try again.'
+      })
+    );
 };
 
 const addItemToList = (req, resp) => {
@@ -187,26 +199,27 @@ const addItemToList = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
-      $or: [{ ownerIds: userId }, { memberIds: userId }]
+      _id: sanitize(listId),
+      memberIds: userId
     },
     { $push: { items: item } },
-    { new: true },
-    (err, doc) => {
-      const newItem = doc.items.slice(-1)[0];
-
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while adding a new item. Please try again.'
-        });
+    { new: true }
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(400).send({ message: 'List  not found.' });
       }
 
-      doc
-        ? resp.status(200).send(responseWithItem(newItem, userId))
-        : resp.status(404).send({ message: 'List  not found.' });
-    }
-  );
+      const newItem = doc.items.slice(-1)[0];
+
+      return resp.status(200).send(responseWithItem(newItem, userId));
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message: 'An error occurred while adding a new item. Please try again.'
+      })
+    );
 };
 
 const getListData = (req, resp) => {
@@ -214,6 +227,7 @@ const getListData = (req, resp) => {
     params: { id: listId },
     user: { _id: userId }
   } = req;
+  const sanitizedListId = sanitize(listId);
 
   if (!isValidMongoId(listId)) {
     return resp
@@ -224,7 +238,7 @@ const getListData = (req, resp) => {
   let list;
 
   List.findOne({
-    _id: listId,
+    _id: sanitizedListId,
     viewersIds: userId
   })
     .populate('viewersIds', 'avatarUrl displayName _id')
@@ -248,17 +262,15 @@ const getListData = (req, resp) => {
         cohortId,
         description,
         isArchived,
-        isPrivate,
         memberIds,
         name,
         ownerIds,
+        type,
         viewersIds: viewersCollection
       } = list;
 
       if (isArchived) {
-        return resp
-          .status(200)
-          .json({ cohortId, _id, isArchived, isPrivate, name });
+        return resp.status(200).json({ cohortId, _id, isArchived, name, type });
       }
 
       const members = responseWithListMembers(
@@ -268,9 +280,10 @@ const getListData = (req, resp) => {
         cohortMembers
       );
 
-      const isOwner = checkIfArrayContainsUserId(ownerIds, req.user._id);
+      const isGuest = checkIfGuest(cohortMembers, userId);
+      const isMember = checkIfArrayContainsUserId(memberIds, userId);
+      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const items = responseWithItems(userId, list);
-      const isGuest = checkIfGuest(cohortMembers, req.user._id);
 
       return resp.status(200).json({
         _id,
@@ -278,11 +291,12 @@ const getListData = (req, resp) => {
         description,
         isArchived,
         isGuest,
+        isMember,
         isOwner,
-        isPrivate,
         items,
         members,
-        name
+        name,
+        type
       });
     })
     .catch(err => {
@@ -307,30 +321,32 @@ const updateListItem = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
-      'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      _id: sanitize(listId),
+      'items._id': sanitize(itemId),
+      $or: [{ ownerIds: userId }, { memberIds: userId }]
     },
     {
       $set: dataToUpdate
     },
-    { new: true },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while updating the list data. Please try again.'
-        });
+    { new: true }
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(400).send({ message: 'List data not found.' });
       }
 
       const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
       const item = doc.items[itemIndex];
 
-      doc
-        ? resp.status(200).json(responseWithItem(item, userId))
-        : resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      return resp.status(200).json(responseWithItem(item, userId));
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message:
+          'An error occurred while updating the list data. Please try again.'
+      })
+    );
 };
 
 const voteForItem = (req, resp) => {
@@ -340,29 +356,38 @@ const voteForItem = (req, resp) => {
     user: { _id: userId }
   } = req;
 
-  List.findOneAndUpdate(
-    {
-      _id: listId,
-      'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
-    },
-    { $push: { 'items.$.voterIds': req.user._id } },
-    { new: true },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: 'An error occurred while voting. Please try again.'
-        });
+  List.findOne({
+    _id: sanitize(listId),
+    memberIds: userId,
+    'items._id': sanitize(itemId)
+  })
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException('List data not found.');
       }
 
-      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
-      const item = doc.items[itemIndex];
+      const { items } = list;
+      const item = items.id(itemId);
 
-      doc
-        ? resp.status(200).json(responseWithItem(item, userId))
-        : resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      item.voterIds.push(userId);
+
+      return list.save();
+    })
+    .then(list => {
+      const { items } = list;
+      const updatedItem = items.id(itemId);
+
+      resp.status(200).json(responseWithItem(updatedItem, userId));
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
 };
 
 const clearVote = (req, resp) => {
@@ -372,33 +397,47 @@ const clearVote = (req, resp) => {
     user: { _id: userId }
   } = req;
 
-  List.findOneAndUpdate(
-    {
-      _id: listId,
-      'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
-    },
-    { $pull: { 'items.$.voterIds': req.user._id } },
-    { new: true },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: 'An error occurred while voting. Please try again.'
-        });
+  List.findOne({
+    _id: sanitize(listId),
+    memberIds: userId,
+    'items._id': sanitize(itemId)
+  })
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException('List data not found.');
       }
 
-      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
-      const item = doc.items[itemIndex];
+      const { items } = list;
+      const item = items.id(itemId);
+      const voterIdIndex = item.voterIds.indexOf(userId);
 
-      doc
-        ? resp.status(200).json(responseWithItem(item, userId))
-        : resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      item.voterIds.splice(voterIdIndex, 1);
+
+      return list.save();
+    })
+    .then(list => {
+      const { items } = list;
+      const updatedItem = items.id(itemId);
+
+      resp.status(200).json(responseWithItem(updatedItem, userId));
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
 };
 
 const updateListById = (req, resp) => {
   const { description, isArchived, name } = req.body;
+  const {
+    user: { _id: userId }
+  } = req;
   const { id: listId } = req.params;
   const dataToUpdate = filter(x => x !== undefined)({
     description,
@@ -408,146 +447,171 @@ const updateListById = (req, resp) => {
 
   List.findOneAndUpdate(
     {
-      _id: listId,
-      $or: [{ ownerIds: req.user._id }]
+      _id: sanitize(listId),
+      ownerIds: userId
     },
-    dataToUpdate,
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message:
-            'An error occurred while updating the list data. Please try again.'
-        });
+    dataToUpdate
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(400).send({ message: 'List data not found.' });
       }
 
-      doc
-        ? resp
-            .status(200)
-            .send({ message: `List "${doc.name}" successfully updated.` })
-        : resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      return resp
+        .status(200)
+        .send({ message: `List "${doc.name}" successfully updated.` });
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message:
+          'An error occurred while updating the list data. Please try again.'
+      })
+    );
 };
 
 const addToFavourites = (req, resp) => {
   const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   List.findOneAndUpdate(
     {
-      _id: listId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      _id: sanitize(listId),
+      viewersIds: userId
     },
     {
-      $push: { favIds: req.user._id }
-    },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't mark list as favourite. Please try again."
-        });
+      $push: { favIds: userId }
+    }
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(400).send({ message: 'List data not found.' });
       }
 
-      doc
-        ? resp.status(200).send({
-            message: `List "${doc.name}" successfully marked as favourite.`
-          })
-        : resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      return resp.status(200).send({
+        message: `List "${doc.name}" successfully marked as favourite.`
+      });
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message: "Can't mark list as favourite. Please try again."
+      })
+    );
 };
 
 const removeFromFavourites = (req, resp) => {
   const { id: listId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
 
   List.findOneAndUpdate(
     {
-      _id: listId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
+      _id: sanitize(listId),
+      viewersIds: userId
     },
     {
-      $pull: { favIds: req.user._id }
-    },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't remove list from favourites. Please try again."
-        });
+      $pull: { favIds: userId }
+    }
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(400).send({ message: 'List data not found.' });
       }
 
-      doc
-        ? resp.status(200).send({
-            message: `List "${doc.name}" successfully removed from favourites.`
-          })
-        : resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      return resp.status(200).send({
+        message: `List "${doc.name}" successfully removed from favourites.`
+      });
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message: "Can't remove list from favourites. Please try again."
+      })
+    );
 };
 
 const removeOwner = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
 
   List.findOneAndUpdate(
-    { _id: listId, ownerIds: { $all: [ownerId, userId] } },
-    { $pull: { ownerIds: userId, memberIds: userId, viewersIds: userId } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't remove owner from list."
-        });
+    {
+      _id: sanitize(listId),
+      ownerIds: { $all: [currentUserId, sanitize(userId)] }
+    },
+    { $pull: { ownerIds: userId, memberIds: userId, viewersIds: userId } }
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(400).send({ message: 'List data not found.' });
       }
 
-      if (doc) {
-        return resp.status(200).send({
-          message: 'Owner successfully removed from list.'
-        });
-      }
-
-      resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      return resp.status(200).send({
+        message: 'Owner successfully removed from list.'
+      });
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message: "Can't remove owner from list."
+      })
+    );
 };
 
 const removeMember = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
+  const sanitizedUserId = sanitize(userId);
 
   List.findOneAndUpdate(
-    { _id: listId, ownerIds: ownerId, viewersIds: userId },
-    { $pull: { viewersIds: userId, memberIds: userId, ownerIds: userId } },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: "Can't remove member from list."
-        });
+    {
+      _id: sanitize(listId),
+      ownerIds: currentUserId,
+      viewersIds: sanitizedUserId
+    },
+    {
+      $pull: {
+        viewersIds: sanitizedUserId,
+        memberIds: sanitizedUserId,
+        ownerIds: sanitizedUserId
       }
-
-      if (doc) {
-        return resp.status(200).send({
-          message: 'Member successfully removed from list.'
-        });
-      }
-
-      resp.status(404).send({ message: 'List data not found.' });
     }
-  );
+  )
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        return resp.status(400).send({ message: 'List data not found.' });
+      }
+
+      return resp.status(200).send({
+        message: 'Member successfully removed from list.'
+      });
+    })
+    .catch(() =>
+      resp.status(400).send({
+        message: "Can't remove member from list."
+      })
+    );
 };
 
 const addOwnerRole = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
-
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
 
-  List.findOne({ _id: listId, ownerIds: ownerId })
+  List.findOne({ _id: sanitize(listId), ownerIds: currentUserId })
     .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
@@ -592,7 +656,7 @@ const removeOwnerRole = (req, resp) => {
     user: { _id: ownerId }
   } = req;
 
-  List.findOne({ _id: listId, ownerIds: ownerId })
+  List.findOne({ _id: sanitize(listId), ownerIds: ownerId })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -627,13 +691,10 @@ const addMemberRole = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
 
-  List.findOne({
-    _id: listId,
-    ownerIds: { $in: [ownerId] }
-  })
+  List.findOne({ _id: sanitize(listId), ownerIds: { $in: [currentUserId] } })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -674,14 +735,11 @@ const removeMemberRole = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: currentUserId }
   } = req;
 
-  List.findOne({
-    _id: listId,
-    ownerIds: { $in: [ownerId] }
-  })
-    .populate('cohortId', 'memberIds ownerIds viewersIds')
+  List.findOne({ _id: sanitize(listId), ownerIds: { $in: [currentUserId] } })
+    .populate('cohortId', 'memberIds ownerIds')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -703,11 +761,7 @@ const removeMemberRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: 'User has no member role'
-      })
-    )
+    .then(() => resp.status(200).send({ message: 'User has no member role' }))
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
@@ -729,15 +783,15 @@ const addViewer = (req, resp) => {
   let cohortMembers = [];
 
   List.findOne({
-    _id: listId,
-    ownerIds: currentUserId
+    _id: sanitize(listId),
+    memberIds: currentUserId
   })
     .populate('cohortId', 'ownerIds memberIds')
     .exec()
     .then(doc => {
       list = doc;
 
-      return User.findOne({ email }).exec();
+      return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(userData => {
       if (!userData) {
@@ -784,32 +838,47 @@ const addViewer = (req, resp) => {
 
 const updateItemDetails = (req, resp) => {
   const { description, link, itemId } = req.body;
+  const {
+    user: { _id: userId }
+  } = req;
   const { id: listId } = req.params;
-  const dataToUpdate = updateSubdocumentFields('items', { description, link });
 
-  List.findOneAndUpdate(
-    {
-      _id: listId,
-      'items._id': itemId,
-      $or: [{ ownerIds: req.user._id }, { memberIds: req.user._id }]
-    },
-    { $set: dataToUpdate },
-    (err, doc) => {
-      if (err) {
-        return resp.status(400).send({
-          message: 'An error occurred while updating details. Please try again.'
-        });
+  List.findOne({
+    _id: listId,
+    'items._id': itemId,
+    memberIds: userId
+  })
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException('List data not found.');
       }
 
-      if (doc) {
-        return resp
-          .status(200)
-          .send({ message: 'Item details successfully updated' });
+      const { items } = list;
+      const itemToUpdate = items.id(itemId);
+
+      if (description) {
+        itemToUpdate.description = description;
       }
 
-      resp.status(404).send({ message: 'List data not found.' });
-    }
-  );
+      if (link) {
+        itemToUpdate.link = link;
+      }
+
+      return list.save();
+    })
+    .then(() =>
+      resp.status(200).send({ message: 'Item details successfully updated' })
+    )
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
 };
 
 const cloneItem = (req, resp) => {
@@ -819,9 +888,9 @@ const cloneItem = (req, resp) => {
   let newItemId;
 
   List.findOne({
-    _id: listId,
-    'items._id': itemId,
-    $or: [{ ownerIds: userId }, { memberIds: userId }]
+    _id: sanitize(listId),
+    'items._id': sanitize(itemId),
+    memberIds: userId
   })
     .exec()
     .then(list => {
@@ -860,12 +929,88 @@ const cloneItem = (req, resp) => {
     });
 };
 
+const changeType = (req, resp) => {
+  const { type } = req.body;
+  const { id: listId } = req.params;
+  const { _id: currentUserId } = req.user;
+  let cohortMembers;
+
+  List.findOneAndUpdate(
+    { _id: listId, ownerIds: currentUserId },
+    { type },
+    { new: true }
+  )
+    .populate('cohortId', 'memberIds')
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException('List data not found.');
+      }
+      const {
+        cohortId: { memberIds: cohortMembersCollection },
+        memberIds,
+        type,
+        viewersIds
+      } = list;
+
+      cohortMembers = cohortMembersCollection;
+
+      const updatedViewersIds =
+        type === ListType.LIMITED
+          ? viewersIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
+          : [
+              ...viewersIds,
+              ...cohortMembers.filter(
+                id => !checkIfArrayContainsUserId(viewersIds, id)
+              )
+            ];
+
+      return List.findOneAndUpdate(
+        { _id: listId, ownerIds: currentUserId },
+        { viewersIds: updatedViewersIds },
+        { new: true }
+      )
+        .populate('viewersIds', 'avatarUrl displayName _id')
+        .exec();
+    })
+    .then(list => {
+      const {
+        memberIds,
+        name,
+        ownerIds,
+        type,
+        viewersIds: viewersCollection
+      } = list;
+      const members = responseWithListMembers(
+        viewersCollection,
+        memberIds,
+        ownerIds,
+        cohortMembers
+      );
+
+      resp.status(200).send({
+        message: `"${name}" list's type change to ${type}.`,
+        data: { members, type }
+      });
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
   addOwnerRole,
   addToFavourites,
   addViewer,
+  changeType,
   clearVote,
   cloneItem,
   createList,

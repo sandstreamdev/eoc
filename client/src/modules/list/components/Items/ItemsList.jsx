@@ -15,7 +15,7 @@ class ItemsList extends PureComponent {
   };
 
   render() {
-    const { items } = this.props;
+    const { isMember, items } = this.props;
     const { limit } = this.state;
 
     return (
@@ -27,7 +27,7 @@ class ItemsList extends PureComponent {
         ) : (
           <ul className="items-list">
             {items.slice(0, limit).map(item => (
-              <ListItem data={item} key={item._id} />
+              <ListItem data={item} isMember={isMember} key={item._id} />
             ))}
           </ul>
         )}
@@ -44,6 +44,7 @@ class ItemsList extends PureComponent {
 }
 
 ItemsList.propTypes = {
+  isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object)
 };
 

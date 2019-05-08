@@ -53,7 +53,7 @@ class PendingButton extends PureComponent {
         <button
           className={className}
           disabled={pending || disabled}
-          onClick={this.handleOnClick}
+          onClick={disabled ? null : this.handleOnClick}
           type="button"
           value={value}
         >

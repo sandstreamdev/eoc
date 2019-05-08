@@ -17,10 +17,9 @@ import {
 } from 'modules/list/model/actions';
 import { ListIcon } from 'assets/images/icons';
 import { getCohortDetails, getMembers } from './model/selectors';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import { archiveCohort, fetchCohortDetails } from './model/actions';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList from 'common/components/GridList';
@@ -31,15 +30,19 @@ import CohortHeader from './components/CohortHeader';
 import Preloader from '../../common/components/Preloader';
 
 class Cohort extends PureComponent {
-  state = {
-    areArchivedListsVisible: false,
-    dialogContext: null,
-    isListPrivate: true,
-    pendingForArchivedLists: false,
-    pendingForDetails: false,
-    pendingForListCreation: false,
-    pendingForCohortArchivization: false
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      areArchivedListsVisible: false,
+      dialogContext: null,
+      pendingForArchivedLists: false,
+      pendingForDetails: false,
+      pendingForListCreation: false,
+      pendingForCohortArchivization: false,
+      type: ListType.LIMITED
+    };
+  }
 
   componentDidMount() {
     this.fetchData();
@@ -68,14 +71,13 @@ class Cohort extends PureComponent {
   handleListCreation = (name, description) => {
     const {
       createList,
-      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       }
     } = this.props;
 
-    const { isListPrivate } = this.state;
-    const data = { name, description, userId, cohortId, isListPrivate };
+    const { type } = this.state;
+    const data = { name, description, cohortId, type };
 
     this.setState({ pendingForListCreation: true });
 
@@ -85,12 +87,17 @@ class Cohort extends PureComponent {
     });
   };
 
-  handleCohortArchivization = cohortId => () => {
+  handleCohortArchivization = () => () => {
     const { archiveCohort } = this.props;
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props;
 
     this.setState({ pendingForCohortArchivization: true });
 
-    archiveCohort(cohortId).finally(() => {
+    archiveCohort(id).finally(() => {
       this.setState({ pendingForCohortArchivization: false });
       this.hideDialog();
     });
@@ -106,7 +113,7 @@ class Cohort extends PureComponent {
 
   hideDialog = () => this.handleDialogContext(null)();
 
-  handleArchivedListsVisibility = id => () =>
+  handleArchivedListsVisibility = () => () =>
     this.setState(
       ({ areArchivedListsVisible }) => ({
         areArchivedListsVisible: !areArchivedListsVisible
@@ -114,7 +121,7 @@ class Cohort extends PureComponent {
       () => this.handleArchivedListsData()
     );
 
-  handleArchivedListsData = id => {
+  handleArchivedListsData = () => {
     const { areArchivedListsVisible } = this.state;
     const {
       fetchArchivedListsMetaData,
@@ -135,11 +142,7 @@ class Cohort extends PureComponent {
     }
   };
 
-  handleListType = isPrivate =>
-    this.setState({ isListPrivate: isPrivate === ListType.LIMITED });
-
-  handleListType = isPrivate =>
-    this.setState({ isListPrivate: isPrivate === ListType.LIMITED });
+  handleListType = type => this.setState({ type });
 
   render() {
     const {
@@ -172,7 +175,7 @@ class Cohort extends PureComponent {
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
             onCancel={this.handleDialogContext(null)}
-            onConfirm={this.handleCohortArchivization(cohortId)}
+            onConfirm={this.handleCohortArchivization()}
             pending={pendingForCohortArchivization}
             title={
               pendingForCohortArchivization
@@ -261,7 +264,6 @@ Cohort.propTypes = {
     name: PropTypes.string
   }),
   createList: PropTypes.func.isRequired,
-  currentUser: UserPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
@@ -282,7 +284,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     archivedLists: getCohortArchivedLists(state, id),
     cohortDetails: getCohortDetails(state, id),
-    currentUser: getCurrentUser(state),
     lists: getCohortActiveLists(state, id),
     members: getMembers(state, id)
   };

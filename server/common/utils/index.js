@@ -14,7 +14,7 @@ const isValidMongoId = id => ObjectId.isValid(id);
 const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
 
 const responseWithList = (list, userId) => {
-  const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
+  const { _id, cohortId, description, favIds, items, name, type } = list;
   const doneItemsCount = items.filter(item => item.isOrdered).length;
   const unhandledItemsCount = items.length - doneItemsCount;
 
@@ -23,8 +23,8 @@ const responseWithList = (list, userId) => {
     description,
     doneItemsCount,
     isFavourite: isUserFavourite(favIds, userId),
-    isPrivate,
     name,
+    type,
     unhandledItemsCount
   };
 
