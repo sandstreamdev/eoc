@@ -8,6 +8,10 @@
   border: 0;
   cursor: pointer;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   &__icon {
     display: inline-block;
     margin-right: 10px;
@@ -16,6 +20,10 @@
 
   &:hover {
     box-shadow: 0 0 3px rgba($shadow-color, 0.3);
+
+    &:disabled {
+      box-shadow: none;
+    }
   }
 
   &__disabled {
