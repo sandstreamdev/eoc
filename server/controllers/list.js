@@ -39,7 +39,9 @@ const createList = (req, resp) => {
     viewersIds: userId
   });
 
-  if (cohortId && type === ListType.SHARED) {
+  const isSharedList = type === ListType.SHARED;
+
+  if (cohortId && isSharedList) {
     Cohort.findOne({ _id: sanitize(cohortId) })
       .exec()
       .then(cohort => {
