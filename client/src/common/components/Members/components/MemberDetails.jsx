@@ -279,7 +279,6 @@ class MemberDetails extends PureComponent {
   renderDetails = () => {
     const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
     const { isGuest, isMember, isOwner, route, type } = this.props;
-
     const isRemoveOptionVisible =
       route === Routes.COHORT || type === ListType.LIMITED || isGuest;
 

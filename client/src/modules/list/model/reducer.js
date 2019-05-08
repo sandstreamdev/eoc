@@ -162,6 +162,7 @@ const lists = (state = {}, action) => {
         }
       } = action;
       const { members } = state[listId];
+
       return {
         ...state,
         [listId]: {

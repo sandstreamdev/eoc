@@ -912,8 +912,6 @@ const changeType = (req, resp) => {
         type,
         viewersIds: viewersCollection
       } = list;
-      const message = `"${name}" list's type change to ${type}.`;
-
       const members = responseWithListMembers(
         viewersCollection,
         memberIds,
@@ -921,7 +919,10 @@ const changeType = (req, resp) => {
         cohortMembers
       );
 
-      resp.status(200).send({ message, data: { members, type } });
+      resp.status(200).send({
+        message: `"${name}" list's type change to ${type}.`,
+        data: { members, type }
+      });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

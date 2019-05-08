@@ -160,7 +160,6 @@ class ListHeader extends PureComponent {
     const {
       target: { value }
     } = event;
-
     const {
       changeType,
       match: {
@@ -181,7 +180,6 @@ class ListHeader extends PureComponent {
       isDescriptionTextareaVisible,
       pendingForDescription
     } = this.state;
-
     const {
       details: { description, isOwner }
     } = this.props;
@@ -254,7 +252,6 @@ class ListHeader extends PureComponent {
     const {
       details: { type }
     } = this.props;
-
     const { pendingForType } = this.state;
 
     return (

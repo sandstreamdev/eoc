@@ -32,6 +32,7 @@ import Preloader from '../../common/components/Preloader';
 class Cohort extends PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
       areArchivedListsVisible: false,
       dialogContext: null,
