@@ -35,7 +35,7 @@ const {
   usersMock
 } = require('../../tests/__mocks__/usersMock');
 
-describe('testing __isValidMongoId__ function', () => {
+describe('function isValidMongoId', () => {
   it('should return true', () => {
     const id = ObjectId();
     const result = isValidMongoId(id);
@@ -52,7 +52,7 @@ describe('testing __isValidMongoId__ function', () => {
   });
 });
 
-describe('testing __isUserFavourite__ function', () => {
+describe('function isUserFavourite', () => {
   it('should return true', () => {
     const favIds = ['123', '456', '789'];
     const userId = '123';
@@ -88,7 +88,7 @@ describe('testing __isUserFavourite__ function', () => {
   });
 });
 
-describe('testing __responseWithList__ function', () => {
+describe('function responseWithList', () => {
   const list = listMock[0];
   const userId = ObjectId();
 
@@ -115,7 +115,7 @@ describe('testing __responseWithList__ function', () => {
   });
 });
 
-describe('testing __responseWithLists__ function', () => {
+describe('function responseWithLists', () => {
   const userId = ObjectId();
   const lists = responseWithLists(listMock, userId);
 
@@ -136,7 +136,7 @@ describe('testing __responseWithLists__ function', () => {
   });
 });
 
-describe('testing __checkIfCurrentUserVoted__ function', () => {
+describe('function checkIfCurrentUserVoted', () => {
   it('should be true', () => {
     const userId = '123';
     const item = {
@@ -166,7 +166,7 @@ describe('testing __checkIfCurrentUserVoted__ function', () => {
   });
 });
 
-describe('testing __responseWithItems__ function ', () => {
+describe('funtion responseWithItems ', () => {
   const userId = ObjectId();
   const result = responseWithItems(userId, listMock[0]);
 
@@ -182,7 +182,7 @@ describe('testing __responseWithItems__ function ', () => {
   });
 });
 
-describe('testing __responseWithItem__function ', () => {
+describe('function responseWithItem', () => {
   const item = singleItemMock[0];
   const userId = ObjectId();
   const result = responseWithItem(item, userId);
@@ -200,7 +200,7 @@ describe('testing __responseWithItem__function ', () => {
   });
 });
 
-describe('testing __responseWithCohorts__ function', () => {
+describe('function responseWithCohorts', () => {
   const userId = ObjectId();
   const result = responseWithCohorts(cohortsMock, userId);
 
@@ -219,7 +219,7 @@ describe('testing __responseWithCohorts__ function', () => {
   });
 });
 
-describe('testing __responseWithCohort___ function', () => {
+describe('function responseWithCohort', () => {
   const userId = ObjectId();
   const cohort = cohortsMock[0];
   const result = responseWithCohort(cohort, userId);
@@ -237,7 +237,7 @@ describe('testing __responseWithCohort___ function', () => {
   });
 });
 
-describe('testing __checkIfArrayContainsUserId__', () => {
+describe('function checkIfArrayContainsUserId', () => {
   const idsArray = ['123', '456', '789'];
 
   it('should return true', () => {
@@ -263,7 +263,7 @@ describe('testing __checkIfArrayContainsUserId__', () => {
   });
 });
 
-describe('testing __checkIfGuest__ function', () => {
+describe('function checkIfGuest', () => {
   const memberIds = ['123', '456', '789'];
 
   it('should return true', () => {
@@ -281,7 +281,7 @@ describe('testing __checkIfGuest__ function', () => {
   });
 });
 
-describe('testing __responseWithCohortMembers__ function', () => {
+describe('function responseWithCohortMembers', () => {
   const ownerIds = ['123', '456', '789'];
   const members = responseWithCohortMembers(usersMock, ownerIds);
 
@@ -300,7 +300,7 @@ describe('testing __responseWithCohortMembers__ function', () => {
   });
 });
 
-describe('testing __checkIfCohortMember__ function', () => {
+describe('function checkIfCohortMember', () => {
   const cohort = cohortsMock[0];
 
   it('should return false', () => {
@@ -327,7 +327,7 @@ describe('testing __checkIfCohortMember__ function', () => {
   });
 });
 
-describe('testing __responseWithCohortMember__ function', () => {
+describe('function responseWithCohortMember', () => {
   const user = usersMock[0];
   const ownerIds = ['123', '456', '789'];
 
@@ -346,7 +346,7 @@ describe('testing __responseWithCohortMember__ function', () => {
   });
 });
 
-describe('testing __responseWithListMember__ function', () => {
+describe('function responseWithListMember', () => {
   const cohortMembersIds = ['123', '456', '789'];
   const user = usersMock[0];
   const result = responseWithListMember(user, cohortMembersIds);
@@ -364,7 +364,7 @@ describe('testing __responseWithListMember__ function', () => {
   });
 });
 
-describe('testing __responseWithListMembers__ function', () => {
+describe('function responseWithListMembers', () => {
   const viewers = usersMock;
   const memberIds = ['123', '234'];
   const ownerIds = ['345', '456'];
@@ -383,7 +383,7 @@ describe('testing __responseWithListMembers__ function', () => {
     );
   });
 
-  it('shoudl return objects without sensitve data', () => {
+  it('should return objects without sensitive data', () => {
     const notExpected = 'email';
 
     result.map(user => expect(user).not.toHaveProperty(notExpected));

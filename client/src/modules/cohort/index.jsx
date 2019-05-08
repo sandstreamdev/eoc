@@ -165,7 +165,7 @@ class Cohort extends PureComponent {
       pendingForDetails,
       pendingForListCreation
     } = this.state;
-    console.log(members);
+
     return (
       <Fragment>
         <Toolbar />
