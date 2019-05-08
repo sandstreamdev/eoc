@@ -87,12 +87,17 @@ class Cohort extends PureComponent {
     });
   };
 
-  handleCohortArchivization = cohortId => () => {
+  handleCohortArchivization = () => () => {
     const { archiveCohort } = this.props;
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props;
 
     this.setState({ pendingForCohortArchivization: true });
 
-    archiveCohort(cohortId).finally(() => {
+    archiveCohort(id).finally(() => {
       this.setState({ pendingForCohortArchivization: false });
       this.hideDialog();
     });
@@ -170,7 +175,7 @@ class Cohort extends PureComponent {
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
             onCancel={this.handleDialogContext(null)}
-            onConfirm={this.handleCohortArchivization(cohortId)}
+            onConfirm={this.handleCohortArchivization()}
             pending={pendingForCohortArchivization}
             title={
               pendingForCohortArchivization
