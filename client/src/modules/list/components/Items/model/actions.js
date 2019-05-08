@@ -66,9 +66,9 @@ const cloneItemFailure = () => ({
   type: ItemActionTypes.CLONE_FAILURE
 });
 
-const addCommentSuccess = (comment, itemId, listId) => ({
+const addCommentSuccess = (text, itemId, listId) => ({
   type: ItemActionTypes.CLONE_SUCCESS,
-  payload: { comment, itemId, listId }
+  payload: { text, itemId, listId }
 });
 
 const addCommentRequest = () => ({
@@ -201,15 +201,15 @@ export const cloneItem = (listId, itemId) => dispatch => {
 };
 
 export const addComment = (text, listId, itemId) => dispatch => {
-  return console.log(text, itemId, listId);
   dispatch(addCommentRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-comment`, {
-    text,
-    itemId
+  return patchData(`${ENDPOINT_URL}/comments/add-comment`, {
+    itemId,
+    listId,
+    text
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(addCommentSuccess(comment, itemId, listId));
+      dispatch(addCommentSuccess(text, itemId, listId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
