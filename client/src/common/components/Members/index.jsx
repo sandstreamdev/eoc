@@ -118,8 +118,10 @@ class MembersBox extends PureComponent {
 
   render() {
     const { isFormVisible, context, isMobile, pending } = this.state;
-    const { isCurrentUserAnOwner, members } = this.props;
+    const { isCurrentUserAnOwner, isMember, members, route } = this.props;
     const currentUser = members[context];
+    const isAddMemberVisible =
+      isCurrentUserAnOwner || (isMember && route === Routes.LIST);
 
     return (
       <div className="members-box">
@@ -127,7 +129,7 @@ class MembersBox extends PureComponent {
           <h2 className="members-box__heading">Members</h2>
         </header>
         <ul className="members-box__list">
-          {isCurrentUserAnOwner && (
+          {isAddMemberVisible && (
             <li className="members-box__list-item">
               {isFormVisible ? (
                 <MembersForm
@@ -160,6 +162,7 @@ class MembersBox extends PureComponent {
 
 MembersBox.propTypes = {
   isCurrentUserAnOwner: PropTypes.bool,
+  isMember: PropTypes.bool,
   isPrivate: PropTypes.bool,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
   route: PropTypes.string.isRequired,

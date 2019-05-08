@@ -164,12 +164,12 @@ const getCohortDetails = (req, resp) => {
 
       resp.status(200).json({
         _id,
+        description,
+        isArchived,
         isMember: true,
         isOwner,
-        isArchived,
-        description,
-        name,
-        members
+        members,
+        name
       });
     })
     .catch(() =>

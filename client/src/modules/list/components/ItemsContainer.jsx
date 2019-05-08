@@ -85,7 +85,7 @@ class ItemsContainer extends Component {
   };
 
   render() {
-    const { archived, children, items } = this.props;
+    const { archived, children, isMember, items } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterItems(items, filterBy);
     const sortedList = this.sortItems(filteredList, sortBy, sortOrder);
@@ -114,7 +114,11 @@ class ItemsContainer extends Component {
         </header>
         {children}
         <div className="items__body">
-          <ItemsList archived={archived} items={sortedList} />
+          <ItemsList
+            archived={archived}
+            isMember={isMember}
+            items={sortedList}
+          />
         </div>
       </div>
     );
@@ -125,6 +129,7 @@ ItemsContainer.propTypes = {
   archived: PropTypes.bool,
   children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
+  isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object)
 };
 

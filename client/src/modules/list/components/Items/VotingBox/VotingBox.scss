@@ -6,6 +6,7 @@
   color: $gray4;
   font-size: 14px;
   border: 0;
+  cursor: pointer;
 
   &__icon {
     display: inline-block;
@@ -15,5 +16,13 @@
 
   &:hover {
     box-shadow: 0 0 3px rgba($shadow-color, 0.3);
+  }
+
+  &__disabled {
+    cursor: not-allowed;
+
+    &:hover {
+      box-shadow: none;
+    }
   }
 }

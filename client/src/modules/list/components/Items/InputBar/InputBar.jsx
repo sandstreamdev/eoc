@@ -94,6 +94,7 @@ class InputBar extends Component {
 
   render() {
     const { pending } = this.state;
+
     return (
       <div className="input-bar">
         {this.renderInputBar()}
