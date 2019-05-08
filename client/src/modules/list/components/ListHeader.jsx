@@ -273,7 +273,7 @@ class ListHeader extends PureComponent {
 
   render() {
     const {
-      details: { isOwner },
+      details: { isOwner, type },
       isCohortList
     } = this.props;
     const {
@@ -290,10 +290,16 @@ class ListHeader extends PureComponent {
             {this.renderName()}
           </div>
           {pendingForName && <Preloader size={PreloaderSize.SMALL} />}
-          {isCohortList && isOwner && (
+          {isCohortList && (
             <div className="list-header__type">
-              {this.renderListType()}
-              {pendingForType && <Preloader size={PreloaderSize.SMALL} />}
+              {isOwner ? (
+                <Fragment>
+                  {this.renderListType()}
+                  {pendingForType && <Preloader size={PreloaderSize.SMALL} />}
+                </Fragment>
+              ) : (
+                type
+              )}
             </div>
           )}
         </div>
