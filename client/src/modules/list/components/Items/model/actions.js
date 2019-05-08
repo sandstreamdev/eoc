@@ -208,14 +208,7 @@ export const addComment = (text, listId, itemId) => dispatch => {
     text
   })
     .then(resp => resp.json())
-    .then(json => {
-      dispatch(addCommentSuccess(text, itemId, listId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
+    .then(json => dispatch(addCommentSuccess(json)))
     .catch(err => {
       dispatch(addCommentFailure());
       createNotificationWithTimeout(
