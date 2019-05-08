@@ -2,7 +2,6 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  addComment,
   addItemToList,
   addMemberRole,
   addOwnerRole,
@@ -48,6 +47,5 @@ router.patch('/:id/remove-member-role', authorize, removeMemberRole);
 router.patch('/:id/add-viewer', authorize, addViewer);
 router.patch('/:id/update-item-details', authorize, updateItemDetails);
 router.patch('/:id/clone-item', authorize, cloneItem);
-router.patch('/:id/add-comment', authorize, addComment);
 
 module.exports = app => app.use('/lists', router);

@@ -5,7 +5,6 @@ const {
   checkIfArrayContainsUserId,
   filter,
   isValidMongoId,
-  responseWithComment,
   responseWithItems,
   responseWithItem,
   responseWithList,
@@ -20,7 +19,6 @@ const {
   responseWithListMembers
 } = require('../common/utils/index');
 const { updateSubdocumentFields } = require('../common/utils/helpers');
-const Comment = require('../models/comment.model');
 
 const createList = (req, resp) => {
   const { description, isListPrivate, name, cohortId } = req.body;
@@ -862,50 +860,7 @@ const cloneItem = (req, resp) => {
     });
 };
 
-const addComment = (req, resp) => {
-  const { text, itemId } = req.body;
-  const { id: listId } = req.params;
-  const { _id: userId, avatarUrl, displayName } = req.user;
-  let newCommentId;
-
-  List.findOne({ _id: listId, 'items._id': itemId, memberIds: userId })
-    .exec()
-    .then(list => {
-      if (!list) {
-        throw new BadRequestException('List data not found.');
-      }
-
-      const newComment = new Comment({ authorId: userId, text });
-
-      newCommentId = newComment._id;
-
-      list.items.id(itemId).comments.push(newComment);
-
-      return list.save();
-    })
-    .then(list =>
-      resp.status(200).send({
-        message: 'Comment successfully saved.',
-        item: responseWithComment(
-          list.items.id(itemId).comments.id(newCommentId),
-          avatarUrl,
-          displayName
-        )
-      })
-    )
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({ message: 'List data not found' });
-    });
-};
-
 module.exports = {
-  addComment,
   addItemToList,
   addMemberRole,
   addOwnerRole,
