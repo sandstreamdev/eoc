@@ -111,8 +111,8 @@ class List extends Component {
       isGuest,
       isMember,
       isOwner,
-      isPrivate,
-      name
+      name,
+      type
     } = list;
     const orderedItems = items ? items.filter(item => item.isOrdered) : [];
     const listItems = items ? items.filter(item => !item.isOrdered) : [];
@@ -135,7 +135,7 @@ class List extends Component {
         ) : (
           <div className="wrapper">
             <div className="list">
-              <ListHeader details={list} />
+              <ListHeader details={list} isCohortList={isCohortList} />
               <div className="list__details">
                 <div className="list__items">
                   <ItemsContainer isMember={isMember} items={listItems}>
@@ -167,8 +167,8 @@ class List extends Component {
                   <MembersBox
                     isCohortList={isCohortList}
                     isCurrentUserAnOwner={isOwner}
+                    type={type}
                     isMember={isMember}
-                    isPrivate={isPrivate}
                     members={members}
                     route={Routes.LIST}
                   />

@@ -21,25 +21,28 @@ const {
   responseWithListMembers
 } = require('../common/utils/index');
 const { updateSubdocumentFields } = require('../common/utils/helpers');
+const { ListType } = require('../common/variables');
 
 const createList = (req, resp) => {
-  const { description, isListPrivate, name, cohortId } = req.body;
+  const { cohortId, description, name, type } = req.body;
   const {
     user: { _id: userId }
   } = req;
+  const isSharedList = type === ListType.SHARED;
 
   const list = new List({
     cohortId,
     description,
-    isPrivate: isListPrivate,
     memberIds: userId,
     name,
     ownerIds: userId,
+    type,
     viewersIds: userId
   });
 
-  if (cohortId && !isListPrivate) {
+  if (cohortId && isSharedList) {
     Cohort.findOne({ _id: sanitize(cohortId) })
+      .exec()
       .then(cohort => {
         const { memberIds } = cohort;
 
@@ -121,7 +124,7 @@ const getListsMetaData = (req, resp) => {
     query.cohortId = sanitize(cohortId);
   }
 
-  List.find(query, '_id name description isPrivate items favIds cohortId', {
+  List.find(query, '_id name description items favIds cohortId type', {
     sort: { created_at: -1 }
   })
     .exec()
@@ -157,7 +160,7 @@ const getArchivedListsMetaData = (req, resp) => {
 
   List.find(
     query,
-    `_id name description isPrivate items favIds isArchived ${
+    `_id name description type items favIds isArchived ${
       cohortId ? 'cohortId' : ''
     }`,
     { sort: { created_at: -1 } }
@@ -260,17 +263,15 @@ const getListData = (req, resp) => {
         cohortId,
         description,
         isArchived,
-        isPrivate,
         memberIds,
         name,
         ownerIds,
+        type,
         viewersIds: viewersCollection
       } = list;
 
       if (isArchived) {
-        return resp
-          .status(200)
-          .json({ cohortId, _id, isArchived, isPrivate, name });
+        return resp.status(200).json({ cohortId, _id, isArchived, name, type });
       }
 
       const members = responseWithListMembers(
@@ -293,10 +294,10 @@ const getListData = (req, resp) => {
         isGuest,
         isMember,
         isOwner,
-        isPrivate,
         items,
         members,
-        name
+        name,
+        type
       });
     })
     .catch(err => {
@@ -929,12 +930,88 @@ const cloneItem = (req, resp) => {
     });
 };
 
+const changeType = (req, resp) => {
+  const { type } = req.body;
+  const { id: listId } = req.params;
+  const { _id: currentUserId } = req.user;
+  let cohortMembers;
+
+  List.findOneAndUpdate(
+    { _id: listId, ownerIds: currentUserId },
+    { type },
+    { new: true }
+  )
+    .populate('cohortId', 'memberIds')
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException('List data not found.');
+      }
+      const {
+        cohortId: { memberIds: cohortMembersCollection },
+        memberIds,
+        type,
+        viewersIds
+      } = list;
+
+      cohortMembers = cohortMembersCollection;
+
+      const updatedViewersIds =
+        type === ListType.LIMITED
+          ? viewersIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
+          : [
+              ...viewersIds,
+              ...cohortMembers.filter(
+                id => !checkIfArrayContainsUserId(viewersIds, id)
+              )
+            ];
+
+      return List.findOneAndUpdate(
+        { _id: listId, ownerIds: currentUserId },
+        { viewersIds: updatedViewersIds },
+        { new: true }
+      )
+        .populate('viewersIds', 'avatarUrl displayName _id')
+        .exec();
+    })
+    .then(list => {
+      const {
+        memberIds,
+        name,
+        ownerIds,
+        type,
+        viewersIds: viewersCollection
+      } = list;
+      const members = responseWithListMembers(
+        viewersCollection,
+        memberIds,
+        ownerIds,
+        cohortMembers
+      );
+
+      resp.status(200).send({
+        message: `"${name}" list's type change to ${type}.`,
+        data: { members, type }
+      });
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'List data not found' });
+    });
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
   addOwnerRole,
   addToFavourites,
   addViewer,
+  changeType,
   clearVote,
   cloneItem,
   createList,

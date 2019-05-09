@@ -7,10 +7,11 @@ import _trim from 'lodash/trim';
 import classNames from 'classnames';
 
 import { ListIcon } from 'assets/images/icons';
-import { updateList } from 'modules/list/model/actions';
+import { updateList, changeType } from 'modules/list/model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
+import { ListType } from '../index';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 
 class ListHeader extends PureComponent {
@@ -28,7 +29,8 @@ class ListHeader extends PureComponent {
       isNameInputVisible: false,
       nameInputValue: name,
       pendingForDescription: false,
-      pendingForName: false
+      pendingForName: false,
+      pendingForType: false
     };
   }
 
@@ -154,13 +156,30 @@ class ListHeader extends PureComponent {
     );
   };
 
+  handleChangingType = event => {
+    const {
+      target: { value }
+    } = event;
+    const {
+      changeType,
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    this.setState({ pendingForType: true });
+
+    changeType(listId, value).finally(() =>
+      this.setState({ pendingForType: false })
+    );
+  };
+
   renderDescription = () => {
     const {
       descriptionInputValue,
       isDescriptionTextareaVisible,
       pendingForDescription
     } = this.state;
-
     const {
       details: { description, isOwner }
     } = this.props;
@@ -229,15 +248,60 @@ class ListHeader extends PureComponent {
     );
   };
 
+  renderListType = () => {
+    const {
+      details: { type }
+    } = this.props;
+    const { pendingForType } = this.state;
+
+    return (
+      <select
+        className="list-header__select primary-select"
+        defaultValue={type}
+        disabled={pendingForType}
+        onChange={this.handleChangingType}
+      >
+        <option className="list-header__option" value={ListType.LIMITED}>
+          {ListType.LIMITED}
+        </option>
+        <option className="list-header__option" value={ListType.SHARED}>
+          {ListType.SHARED}
+        </option>
+      </select>
+    );
+  };
+
   render() {
-    const { pendingForDescription, pendingForName } = this.state;
+    const {
+      details: { isOwner, type },
+      isCohortList
+    } = this.props;
+    const {
+      pendingForDescription,
+      pendingForName,
+      pendingForType
+    } = this.state;
 
     return (
       <div className="list-header">
         <div className="list-header__top">
-          <ListIcon />
-          {this.renderName()}
+          <div className="list-header__name">
+            <ListIcon />
+            {this.renderName()}
+          </div>
           {pendingForName && <Preloader size={PreloaderSize.SMALL} />}
+          {isCohortList && (
+            <div className="list-header__type">
+              {isOwner ? (
+                <Fragment>
+                  {this.renderListType()}
+                  {pendingForType && <Preloader size={PreloaderSize.SMALL} />}
+                </Fragment>
+              ) : (
+                type
+              )}
+            </div>
+          )}
         </div>
         <div className="list-header__bottom">
           {this.renderDescription()}
@@ -250,14 +314,16 @@ class ListHeader extends PureComponent {
 
 ListHeader.propTypes = {
   details: PropTypes.objectOf(PropTypes.any).isRequired,
+  isCohortList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
+  changeType: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
     null,
-    { updateList }
+    { changeType, updateList }
   )(ListHeader)
 );
