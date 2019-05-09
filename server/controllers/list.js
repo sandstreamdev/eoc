@@ -22,6 +22,7 @@ const {
 } = require('../common/utils/index');
 const { updateSubdocumentFields } = require('../common/utils/helpers');
 const { ListType } = require('../common/variables');
+const Comment = require('../models/comment.model');
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -89,23 +90,33 @@ const deleteListById = (req, resp) => {
     user: { _id: userId },
     params: { id: listId }
   } = req;
+  let listName;
 
   List.findOneAndDelete({ _id: sanitize(listId), ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'List not found.' });
+        throw new BadRequestException('List data not found.');
       }
 
-      return resp.status(200).send({
-        message: `List "${doc.name}" successfully deleted.`
-      });
+      listName = doc.name;
+
+      return Comment.deleteMany({ listId }).exec();
     })
-    .catch(() =>
+    .then(() =>
+      resp.status(200).send({
+        message: `List "${listName}" successfully deleted.`
+      })
+    )
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
       resp.status(400).send({
         message: 'An error occurred while deleting the list. Please try again.'
-      })
-    );
+      });
+    });
 };
 
 const getListsMetaData = (req, resp) => {
