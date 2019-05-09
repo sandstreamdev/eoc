@@ -63,7 +63,7 @@ class ItemsContainer extends Component {
         });
         break;
       case SortOptionType.VOTES:
-        result.sort((a, b) => a.voterIds.length - b.voterIds.length);
+        result.sort((a, b) => a.votesCount - b.votesCount);
         break;
       default:
         break;
