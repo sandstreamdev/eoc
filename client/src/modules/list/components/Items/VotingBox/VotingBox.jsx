@@ -5,11 +5,12 @@ import classNames from 'classnames';
 import ThumbIcon from 'assets/images/thumbs-up-solid.svg';
 import PendingButton from 'common/components/PendingButton';
 
-const VotingBox = ({ isVoted, onVote, votesCount }) => (
+const VotingBox = ({ isMember, isVoted, onVote, votesCount }) => (
   <PendingButton
     className={classNames('voting-box', {
       'voting-box__voted': isVoted
     })}
+    disabled={!isMember}
     onClick={onVote}
   >
     <img
@@ -22,6 +23,7 @@ const VotingBox = ({ isVoted, onVote, votesCount }) => (
 );
 
 VotingBox.propTypes = {
+  isMember: PropTypes.bool.isRequired,
   isVoted: PropTypes.bool.isRequired,
   votesCount: PropTypes.number.isRequired,
 
