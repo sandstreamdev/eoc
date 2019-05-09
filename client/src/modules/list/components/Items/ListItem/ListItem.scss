@@ -246,6 +246,10 @@
 
   &__comments {
     position: relative;
+
+    &:nth-child(2) {
+      margin-top: 16px;
+    }
   }
 
   &__new-comment {

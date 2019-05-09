@@ -10,28 +10,22 @@ import _isEqual from 'lodash/isEqual';
 import VotingBox from 'modules/list/components/Items/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
-import NewComment from 'common/components/Comments/NewComment';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
-  addComment,
   clearVote,
   cloneItem,
-  fetchComments,
   setVote,
   toggle,
   updateItemDetails
 } from '../model/actions';
-import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
+import { isUrlValid } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
-import Preloader, { PreloaderTheme } from 'common/components/Preloader';
+import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import CommentList from 'common/components/Comments/CommentsList';
+import CommentsList from 'common/components/Comments/CommentsList';
 
 class ListItem extends PureComponent {
-  pendingPromise = null;
-
   constructor(props) {
     super(props);
 
@@ -43,22 +37,14 @@ class ListItem extends PureComponent {
       areDetailsVisible: false,
       areFieldsUpdated: false,
       done: isOrdered,
-      isNewCommentVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
-      link,
-      pending: false
+      link
     };
   }
 
   componentDidUpdate() {
     this.checkIfFieldsUpdated();
-  }
-
-  componentWillUnmount() {
-    if (this.pendingPromise) {
-      this.pendingPromise.abort();
-    }
   }
 
   handleItemToggling = () => {
@@ -85,54 +71,9 @@ class ListItem extends PureComponent {
   };
 
   handleDetailsVisibility = () =>
-    this.setState(
-      ({ areDetailsVisible }) => ({
-        areDetailsVisible: !areDetailsVisible
-      }),
-      () => this.handleFetchComments()
-    );
-
-  handleFetchComments = () => {
-    const {
-      fetchComments,
-      data: { _id: itemId },
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-
-    this.setState({ pending: true });
-
-    this.pendingPromise = makeAbortablePromise(fetchComments(listId, itemId));
-    this.pendingPromise.promise
-      .then(() => this.setState({ pending: false }))
-      .catch(err => {
-        if (!(err instanceof AbortPromiseException)) {
-          this.setState({ pending: false });
-        }
-      });
-
-    return fetchComments(listId, itemId);
-  };
-
-  showAddComment = () => this.setState({ isNewCommentVisible: true });
-
-  hideAddComment = () => this.setState({ isNewCommentVisible: false });
-
-  handleAddComment = comment => {
-    const {
-      addComment,
-      data: { _id: itemId },
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-    const action = addComment(listId, itemId, comment);
-
-    action.then(() => this.hideAddComment());
-
-    return action;
-  };
+    this.setState(({ areDetailsVisible }) => ({
+      areDetailsVisible: !areDetailsVisible
+    }));
 
   handleDataUpdate = () => {
     const { itemDescription: description, link } = this.state;
@@ -244,7 +185,7 @@ class ListItem extends PureComponent {
   renderDetails = () => {
     const { areFieldsUpdated, isValidationErrorVisible } = this.state;
     const {
-      data: { description, isOrdered, link },
+      data: { _id: itemId, comments, description, isOrdered, link },
       isMember
     } = this.props;
     const isFieldDisabled = !isMember;
@@ -297,47 +238,12 @@ class ListItem extends PureComponent {
             </PendingButton>
           </div>
         )}
-        {this.renderComments()}
-      </Fragment>
-    );
-  };
-
-  renderCommentForm = () => {
-    const { isNewCommentVisible } = this.state;
-
-    return (
-      <div className="list-item__new-comment">
-        {isNewCommentVisible ? (
-          <NewComment
-            onAddComment={this.handleAddComment}
-            onEscapePress={this.hideAddComment}
-          />
-        ) : (
-          <button
-            className="list-item__add-new-button link-button"
-            onClick={this.showAddComment}
-            type="button"
-          >
-            Add comment
-          </button>
-        )}
-      </div>
-    );
-  };
-
-  renderComments = () => {
-    const {
-      data: { comments },
-      isMember
-    } = this.props;
-    const { pending } = this.state;
-
-    return (
-      <Fragment>
-        {isMember && this.renderCommentForm()}
         <div className="list-item__comments">
-          <CommentList comments={comments} />
-          {pending && <Preloader />}
+          <CommentsList
+            comments={comments}
+            isFormAccessible={isMember && !isOrdered}
+            itemId={itemId}
+          />
         </div>
       </Fragment>
     );
@@ -407,10 +313,8 @@ ListItem.propTypes = {
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
-  addComment: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
-  fetchComments: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired,
   updateItemDetails: PropTypes.func.isRequired
@@ -424,10 +328,8 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
-      addComment,
       clearVote,
       cloneItem,
-      fetchComments,
       setVote,
       toggle,
       updateItemDetails

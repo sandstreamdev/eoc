@@ -1,9 +1,17 @@
 .comments {
+  position: relative;
+
   &__heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__header {
     color: $text-normal;
     font-size: 16px;
     text-align: left;
+    padding: 16px 0;
     line-height: 1.2;
-    margin-bottom: 8px;
   }
 }
