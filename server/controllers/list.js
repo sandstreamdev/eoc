@@ -800,7 +800,7 @@ const addViewer = (req, resp) => {
 };
 
 const updateItemDetails = (req, resp) => {
-  const { isOrdered, description, link, itemId } = req.body;
+  const { description, isOrdered, link, itemId } = req.body;
   const {
     user: { _id: userId }
   } = req;
