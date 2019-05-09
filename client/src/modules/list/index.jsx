@@ -217,8 +217,8 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
 
   return {
-    list: getList(state, id),
     doneItems: getDoneItems(state, id),
+    list: getList(state, id),
     members: getMembers(state, id),
     undoneItems: getUndoneItems(state, id)
   };

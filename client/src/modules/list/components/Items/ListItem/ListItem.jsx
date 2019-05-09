@@ -196,7 +196,7 @@ class ListItem extends PureComponent {
           <div className="list-item__info-textarea">
             <Textarea
               disabled={isFieldDisabled}
-              value={description}
+              initialValue={description}
               onChange={isMember ? this.handleItemDescription : null}
               placeholder="Description"
             />
@@ -255,6 +255,7 @@ class ListItem extends PureComponent {
       isMember
     } = this.props;
     const { done, areDetailsVisible } = this.state;
+
     return (
       <li
         className={classNames('list-item', {
@@ -327,12 +328,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    {
-      clearVote,
-      cloneItem,
-      setVote,
-      toggle,
-      updateItemDetails
-    }
+    { clearVote, cloneItem, setVote, toggle, updateItemDetails }
   )(ListItem)
 );

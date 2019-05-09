@@ -14,11 +14,15 @@ const addComment = (req, resp) => {
     user: { _id: userId, avatarUrl, displayName }
   } = req;
 
-  List.findOne({
-    _id: sanitize(listId),
-    memberIds: userId,
-    'items._id': sanitize(itemId)
-  })
+  List.findOne(
+    {
+      _id: sanitize(listId),
+      memberIds: userId,
+      'items._id': sanitize(itemId),
+      'items.isOrdered': true
+    },
+    { items: { $elemMatch: { isOrdered: true } } }
+  )
     .exec()
     .then(list => {
       if (!list) {
