@@ -1,6 +1,9 @@
 import { ENDPOINT_URL } from 'common/constants/variables';
-import { patchData, postData } from 'common/utils/fetchMethods';
-import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
+import { getData, patchData, postData } from 'common/utils/fetchMethods';
+import {
+  CommentActionTypes,
+  ItemActionTypes
+} from 'modules/list/components/Items/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
@@ -16,9 +19,9 @@ const addItemRequest = () => ({
   type: ItemActionTypes.ADD_REQUEST
 });
 
-const toggleItemSuccess = (item, listId) => ({
+const toggleItemSuccess = (item, itemId, listId) => ({
   type: ItemActionTypes.TOGGLE_SUCCESS,
-  payload: { item, listId }
+  payload: { item, itemId, listId }
 });
 const toggleItemRequest = () => ({
   type: ItemActionTypes.TOGGLE_REQUEST
@@ -28,9 +31,9 @@ const toggleItemFailure = errMessage => ({
   payload: errMessage
 });
 
-const voteForItemSuccess = (item, listId) => ({
+const voteForItemSuccess = (item, itemId, listId) => ({
   type: ItemActionTypes.VOTE_SUCCESS,
-  payload: { item, listId }
+  payload: { item, itemId, listId }
 });
 const voteForItemRequest = () => ({
   type: ItemActionTypes.VOTE_REQUEST
@@ -66,17 +69,30 @@ const cloneItemFailure = () => ({
   type: ItemActionTypes.CLONE_FAILURE
 });
 
-const addCommentSuccess = (text, itemId, listId) => ({
-  type: ItemActionTypes.CLONE_SUCCESS,
-  payload: { text, itemId, listId }
+const addCommentSuccess = (listId, itemId, comment) => ({
+  type: CommentActionTypes.ADD_SUCCESS,
+  payload: { comment, itemId, listId }
 });
 
 const addCommentRequest = () => ({
-  type: ItemActionTypes.CLONE_REQUEST
+  type: CommentActionTypes.ADD_REQUEST
 });
 
 const addCommentFailure = () => ({
-  type: ItemActionTypes.CLONE_FAILURE
+  type: CommentActionTypes.ADD_FAILURE
+});
+
+const fetchCommentsSuccess = (listId, itemId, comments) => ({
+  type: CommentActionTypes.FETCH_SUCCESS,
+  payload: { comments, itemId, listId }
+});
+
+const fetchCommentsRequest = () => ({
+  type: CommentActionTypes.FETCH_REQUEST
+});
+
+const fetchCommentsFailure = () => ({
+  type: CommentActionTypes.FETCH_FAILURE
 });
 
 export const addItem = (item, listId) => dispatch => {
@@ -107,7 +123,7 @@ export const toggle = (
   })
     .then(resp => resp.json())
     .then(item =>
-      setTimeout(() => dispatch(toggleItemSuccess(item, listId)), 600)
+      setTimeout(() => dispatch(toggleItemSuccess(item, itemId, listId)), 600)
     )
     .catch(err => {
       dispatch(toggleItemFailure());
@@ -124,7 +140,7 @@ export const setVote = (itemId, listId) => dispatch => {
 
   return patchData(`${ENDPOINT_URL}/lists/${listId}/set-vote`, { itemId })
     .then(resp => resp.json())
-    .then(item => dispatch(voteForItemSuccess(item, listId)))
+    .then(item => dispatch(voteForItemSuccess(item, itemId, listId)))
     .catch(err => {
       dispatch(voteForItemFailure());
       createNotificationWithTimeout(
@@ -140,7 +156,7 @@ export const clearVote = (itemId, listId) => dispatch => {
 
   return patchData(`${ENDPOINT_URL}/lists/${listId}/clear-vote`, { itemId })
     .then(resp => resp.json())
-    .then(item => dispatch(voteForItemSuccess(item, listId)))
+    .then(item => dispatch(voteForItemSuccess(item, itemId, listId)))
     .catch(err => {
       dispatch(voteForItemFailure());
       createNotificationWithTimeout(
@@ -200,17 +216,36 @@ export const cloneItem = (listId, itemId) => dispatch => {
     });
 };
 
-export const addComment = (text, listId, itemId) => dispatch => {
+export const addComment = (listId, itemId, text) => dispatch => {
   dispatch(addCommentRequest());
-  return patchData(`${ENDPOINT_URL}/comments/add-comment`, {
+  return postData(`${ENDPOINT_URL}/comments/add-comment`, {
     itemId,
     listId,
     text
   })
     .then(resp => resp.json())
-    .then(json => dispatch(addCommentSuccess(json)))
+    .then(json => {
+      dispatch(addCommentSuccess(listId, itemId, json));
+    })
     .catch(err => {
       dispatch(addCommentFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const fetchComments = (listId, itemId) => dispatch => {
+  dispatch(fetchCommentsRequest());
+  return getData(`${ENDPOINT_URL}/comments/${listId}/${itemId}/data`)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(fetchCommentsSuccess(listId, itemId, json));
+    })
+    .catch(err => {
+      dispatch(fetchCommentsFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

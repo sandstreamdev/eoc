@@ -8,6 +8,9 @@
 
   &__body {
     text-align: left;
+    width: calc(100% - 56px);
+    display: flex;
+    flex-direction: column;
   }
 
   &__author {
@@ -17,19 +20,29 @@
     font-weight: 700;
   }
 
-  &__content {
+  &__date {
+    color: $text-normal;
     font-size: 14px;
+    margin-top: 6px;
+  }
+
+  &__content {
+    font-size: 16px;
     line-height: 1.2;
+    margin-top: 16px;
     color: $text-normal;
   }
 
   &__avatar {
-    width: 10%;
     margin-right: 16px;
+
+    img {
+      width: 40px;
+    }
   }
 
   svg {
-    height: 16px;
+    height: 40px;
 
     path {
       fill: $text-normal;

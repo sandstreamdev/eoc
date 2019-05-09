@@ -18,7 +18,6 @@ class NewComment extends PureComponent {
     super(props);
 
     this.state = { comment: '', pending: false };
-    this.commentArea = React.createRef();
   }
 
   componentDidMount() {
@@ -65,7 +64,7 @@ class NewComment extends PureComponent {
     const { comment, pending } = this.state;
     return (
       <div className="new-comment">
-        <div className="new-comment__wrapper" ref={this.commentArea}>
+        <div className="new-comment__wrapper">
           <Textarea
             disabled={pending}
             onChange={this.handleCommentChange}

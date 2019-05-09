@@ -3,26 +3,29 @@ import PropTypes from 'prop-types';
 
 import { UserIcon } from 'assets/images/icons';
 
-const Comment = ({ author, comment, avatar }) => (
-  <div className="comment">
-    <div className="comment__avatar">
-      {avatar ? (
-        <img src={avatar} alt={`${author} avatar`} name={`${author} avatar`} />
-      ) : (
-        <UserIcon />
-      )}
+const Comment = ({ comment }) => {
+  const { authorName, authorAvatarUrl, createdAt, text } = comment;
+
+  return (
+    <div className="comment">
+      <div className="comment__avatar">
+        {authorAvatarUrl ? (
+          <img src={authorAvatarUrl} alt={`${authorName} avatar`} />
+        ) : (
+          <UserIcon />
+        )}
+      </div>
+      <div className="comment__body">
+        <span className="comment__author">{authorName}</span>
+        <span className="comment__date">{createdAt}</span>
+        <p className="comment__content">{text}</p>
+      </div>
     </div>
-    <div className="comment__body">
-      <span className="comment__author">{author}</span>
-      <p className="comment__content">{comment}</p>
-    </div>
-  </div>
-);
+  );
+};
 
 Comment.propTypes = {
-  author: PropTypes.string.isRequired,
-  avatar: PropTypes.node,
-  comment: PropTypes.string.isRequired
+  comment: PropTypes.objectOf(PropTypes.string).isRequired
 };
 
 export default Comment;

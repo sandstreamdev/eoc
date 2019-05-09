@@ -11,23 +11,27 @@ import VotingBox from 'modules/list/components/Items/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import NewComment from 'common/components/Comments/NewComment';
-import Comment from 'common/components/Comments/Comment';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
   addComment,
   clearVote,
   cloneItem,
+  fetchComments,
   setVote,
   toggle,
   updateItemDetails
 } from '../model/actions';
-import { isUrlValid } from 'common/utils/helpers';
+import { isUrlValid, makeAbortablePromise } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
-import { PreloaderTheme } from 'common/components/Preloader';
+import Preloader, { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import CommentList from 'common/components/Comments/CommentsList';
 
 class ListItem extends PureComponent {
+  pendingPromise = null;
+
   constructor(props) {
     super(props);
 
@@ -42,12 +46,19 @@ class ListItem extends PureComponent {
       isNewCommentVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
-      link
+      link,
+      pending: false
     };
   }
 
   componentDidUpdate() {
     this.checkIfFieldsUpdated();
+  }
+
+  componentWillUnmount() {
+    if (this.pendingPromise) {
+      this.pendingPromise.abort();
+    }
   }
 
   handleItemToggling = () => {
@@ -73,10 +84,36 @@ class ListItem extends PureComponent {
       : toggle(isOrdered, _id, listId);
   };
 
-  toggleDetails = () =>
-    this.setState(({ areDetailsVisible }) => ({
-      areDetailsVisible: !areDetailsVisible
-    }));
+  handleDetailsVisibility = () =>
+    this.setState(
+      ({ areDetailsVisible }) => ({
+        areDetailsVisible: !areDetailsVisible
+      }),
+      () => this.handleFetchComments()
+    );
+
+  handleFetchComments = () => {
+    const {
+      fetchComments,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    this.setState({ pending: true });
+
+    this.pendingPromise = makeAbortablePromise(fetchComments(listId, itemId));
+    this.pendingPromise.promise
+      .then(() => this.setState({ pending: false }))
+      .catch(err => {
+        if (!(err instanceof AbortPromiseException)) {
+          this.setState({ pending: false });
+        }
+      });
+
+    return fetchComments(listId, itemId);
+  };
 
   showAddComment = () => this.setState({ isNewCommentVisible: true });
 
@@ -90,8 +127,11 @@ class ListItem extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
+    const action = addComment(listId, itemId, comment);
 
-    return addComment(comment, itemId, listId);
+    action.then(() => this.hideAddComment());
+
+    return action;
   };
 
   handleDataUpdate = () => {
@@ -215,7 +255,7 @@ class ListItem extends PureComponent {
           <div className="list-item__info-textarea">
             <Textarea
               disabled={isFieldDisabled}
-              initialValue={description}
+              value={description}
               onChange={isMember ? this.handleItemDescription : null}
               placeholder="Description"
             />
@@ -285,28 +325,23 @@ class ListItem extends PureComponent {
     );
   };
 
-  renderComments = () => (
-    <Fragment>
-      {this.renderCommentForm()}
-      <div className="list-item__comments">
-        <h2 className="list-item__heading">Comments</h2>
-        <Comment
-          author="Adam Klepacz"
-          comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                  accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                  ipsam, molestiae similique optio sint hic!"
-        />
-        <Comment
-          author="Adam Klepacz"
-          comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                  accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                  ipsam, molestiae similique optio sint hic!"
-        />
-      </div>
-    </Fragment>
-  );
+  renderComments = () => {
+    const {
+      data: { comments },
+      isMember
+    } = this.props;
+    const { pending } = this.state;
+
+    return (
+      <Fragment>
+        {isMember && this.renderCommentForm()}
+        <div className="list-item__comments">
+          <CommentList comments={comments} />
+          {pending && <Preloader />}
+        </div>
+      </Fragment>
+    );
+  };
 
   render() {
     const {
@@ -314,7 +349,6 @@ class ListItem extends PureComponent {
       isMember
     } = this.props;
     const { done, areDetailsVisible } = this.state;
-
     return (
       <li
         className={classNames('list-item', {
@@ -328,7 +362,7 @@ class ListItem extends PureComponent {
             'list-item__top--details-visible': areDetailsVisible,
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
-          onClick={this.toggleDetails}
+          onClick={this.handleDetailsVisibility}
           role="listitem"
         >
           <input
@@ -363,7 +397,12 @@ class ListItem extends PureComponent {
 ListItem.propTypes = {
   currentUser: UserPropType.isRequired,
   data: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])
+    PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.bool,
+      PropTypes.number,
+      PropTypes.object
+    ])
   ),
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
@@ -371,6 +410,7 @@ ListItem.propTypes = {
   addComment: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
+  fetchComments: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired,
   updateItemDetails: PropTypes.func.isRequired
@@ -383,6 +423,14 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { addComment, clearVote, cloneItem, setVote, toggle, updateItemDetails }
+    {
+      addComment,
+      clearVote,
+      cloneItem,
+      fetchComments,
+      setVote,
+      toggle,
+      updateItemDetails
+    }
   )(ListItem)
 );

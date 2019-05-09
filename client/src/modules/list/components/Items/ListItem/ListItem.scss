@@ -244,18 +244,14 @@
     }
   }
 
+  &__comments {
+    position: relative;
+  }
+
   &__new-comment {
     text-align: left;
     border-bottom: 1px solid $item-border;
     margin-bottom: 16px;
-  }
-
-  &__heading {
-    color: $text-normal;
-    font-size: 16px;
-    text-align: left;
-    line-height: 1.2;
-    margin-bottom: 8px;
   }
 
   &__voting {

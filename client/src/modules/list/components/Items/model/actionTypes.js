@@ -1,3 +1,12 @@
+export const CommentActionTypes = Object.freeze({
+  ADD_FAILURE: 'comment/ADD_FAILURE',
+  ADD_REQUEST: 'comment/ADD_REQUEST',
+  ADD_SUCCESS: 'comment/ADD_SUCCESS',
+  FETCH_FAILURE: 'comment/FETCH_FAILURE',
+  FETCH_REQUEST: 'comment/FETCH_REQUEST',
+  FETCH_SUCCESS: 'comment/FETCH_SUCCESS'
+});
+
 export const ItemActionTypes = Object.freeze({
   ADD_FAILURE: 'item/ADD_FAILURE',
   ADD_REQUEST: 'item/ADD_REQUEST',

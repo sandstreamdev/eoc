@@ -1,33 +1,62 @@
-import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
+import {
+  CommentActionTypes,
+  ItemActionTypes
+} from 'modules/list/components/Items/model/actionTypes';
 
-const items = (state, action) => {
+const comments = (state = {}, action) => {
+  switch (action.type) {
+    case CommentActionTypes.ADD_SUCCESS: {
+      const {
+        payload: { comment }
+      } = action;
+
+      return { [comment._id]: comment, ...state };
+    }
+    case CommentActionTypes.FETCH_SUCCESS: {
+      const {
+        payload: { comments }
+      } = action;
+
+      return { ...comments };
+    }
+    default:
+      return state;
+  }
+};
+
+const items = (state = {}, action) => {
   switch (action.type) {
     case ItemActionTypes.ADD_SUCCESS:
-    case ItemActionTypes.CLONE_SUCCESS:
-      return { ...state, items: [action.payload.item, ...state.items] };
-    case ItemActionTypes.TOGGLE_SUCCESS:
+    case ItemActionTypes.CLONE_SUCCESS: {
+      const {
+        payload: { item }
+      } = action;
+
+      return { [item._id]: item, ...state };
+    }
+    case ItemActionTypes.TOGGLE_SUCCESS: {
+      const {
+        payload: { itemId, item }
+      } = action;
+
       return {
         ...state,
-        items: state.items.map(item =>
-          item._id === action.payload.item._id
-            ? {
-                ...action.payload.item,
-                isOrdered: action.payload.item.isOrdered
-              }
-            : item
-        )
+        [itemId]: {
+          ...state[itemId],
+          isOrdered: item.isOrdered
+        }
       };
-    case ItemActionTypes.VOTE_SUCCESS:
+    }
+    case ItemActionTypes.VOTE_SUCCESS: {
+      const {
+        payload: { itemId, item }
+      } = action;
+
       return {
         ...state,
-        items: state.items.map(item =>
-          item._id === action.payload.item._id
-            ? {
-                ...action.payload.item
-              }
-            : item
-        )
+        [itemId]: { ...item }
       };
+    }
     case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {
       const {
         payload: {
@@ -35,18 +64,27 @@ const items = (state, action) => {
           itemId
         }
       } = action;
+      const prevItem = state[itemId];
 
       return {
         ...state,
-        items: state.items.map(item =>
-          item._id === itemId
-            ? {
-                ...item,
-                description: description || item.description,
-                link: link || item.link
-              }
-            : item
-        )
+        [itemId]: {
+          ...prevItem,
+          description: description || prevItem.description,
+          link: link || prevItem.link
+        }
+      };
+    }
+    case CommentActionTypes.ADD_SUCCESS:
+    case CommentActionTypes.FETCH_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+      const { comments: prevComments } = state[itemId];
+
+      return {
+        ...state,
+        [itemId]: { ...state[itemId], comments: comments(prevComments, action) }
       };
     }
     default:

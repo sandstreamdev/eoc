@@ -5,7 +5,12 @@ import { withRouter } from 'react-router-dom';
 
 import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
-import { getList, getItems, getMembers } from 'modules/list/model/selectors';
+import {
+  getDoneItems,
+  getList,
+  getMembers,
+  getUndoneItems
+} from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/Items/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
@@ -91,14 +96,14 @@ class List extends Component {
       pendingForDetails,
       pendingForListArchivization
     } = this.state;
-
     const {
-      items,
+      doneItems,
       match: {
         params: { id: listId }
       },
       list,
-      members
+      members,
+      undoneItems
     } = this.props;
 
     if (!list) {
@@ -114,8 +119,6 @@ class List extends Component {
       name,
       type
     } = list;
-    const orderedItems = items ? items.filter(item => item.isOrdered) : [];
-    const listItems = items ? items.filter(item => !item.isOrdered) : [];
     const isCohortList = cohortId !== null;
 
     return (
@@ -138,13 +141,13 @@ class List extends Component {
               <ListHeader details={list} isCohortList={isCohortList} />
               <div className="list__details">
                 <div className="list__items">
-                  <ItemsContainer isMember={isMember} items={listItems}>
+                  <ItemsContainer isMember={isMember} items={undoneItems}>
                     {isMember && <InputBar />}
                   </ItemsContainer>
                   <ItemsContainer
                     archived
                     isMember={isMember}
-                    items={orderedItems}
+                    items={doneItems}
                   />
                   {!isArchived && isOwner && (
                     <button
@@ -196,10 +199,11 @@ class List extends Component {
 }
 
 List.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.object),
+  doneItems: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
+  undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired
@@ -214,8 +218,9 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     list: getList(state, id),
-    items: getItems(state, id),
-    members: getMembers(state, id)
+    doneItems: getDoneItems(state, id),
+    members: getMembers(state, id),
+    undoneItems: getUndoneItems(state, id)
   };
 };
 

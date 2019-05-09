@@ -60,6 +60,7 @@ const responseWithItems = (userId, list) => {
       _id,
       authorId,
       authorName,
+      createdAt,
       description,
       isOrdered,
       link,
@@ -71,6 +72,7 @@ const responseWithItems = (userId, list) => {
       _id,
       authorId,
       authorName,
+      createdAt,
       description,
       isOrdered,
       isVoted: checkIfCurrentUserVoted(item, userId),
@@ -86,6 +88,7 @@ const responseWithItem = (item, userId) => {
     _id,
     authorId,
     authorName,
+    createdAt,
     description,
     isOrdered,
     link,
@@ -97,6 +100,7 @@ const responseWithItem = (item, userId) => {
     _id,
     authorId,
     authorName,
+    createdAt,
     description,
     isOrdered,
     isVoted: checkIfCurrentUserVoted(item, userId),
@@ -219,6 +223,25 @@ const responseWithComment = (comment, avatarUrl, displayName) => {
   };
 };
 
+const responseWithComments = comments =>
+  _map(comments, comment => {
+    const {
+      authorId: {
+        _id: authorId,
+        displayName: authorName,
+        avatarUrl: authorAvatarUrl
+      },
+      ...rest
+    } = comment;
+
+    return {
+      authorAvatarUrl,
+      authorId,
+      authorName,
+      ...rest
+    };
+  });
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -231,6 +254,7 @@ module.exports = {
   responseWithCohortMembers,
   responseWithCohorts,
   responseWithComment,
+  responseWithComments,
   responseWithItem,
   responseWithItems,
   responseWithList,
