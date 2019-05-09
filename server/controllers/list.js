@@ -8,7 +8,7 @@ const {
   responseWithItems,
   responseWithItem,
   responseWithList,
-  responseWithLists
+  responseWithListsMetaData
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -128,7 +128,7 @@ const getListsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).json(responseWithLists(docs, userId))
+        ? resp.status(200).json(responseWithListsMetaData(docs, userId))
         : resp.status(404).send({ message: 'No lists data found.' });
     }
   );
@@ -164,7 +164,7 @@ const getArchivedListsMetaData = (req, resp) => {
       }
 
       docs
-        ? resp.status(200).json(responseWithLists(docs, userId))
+        ? resp.status(200).json(responseWithListsMetaData(docs, userId))
         : resp.status(404).send({ message: 'No archived lists data found.' });
     }
   );

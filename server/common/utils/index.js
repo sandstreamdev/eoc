@@ -1,6 +1,6 @@
 const {
   updateSubdocumentFields,
-  responseWithLists,
+  responseWithListsMetaData,
   responseWithListMembers,
   responseWithListMember,
   responseWithList,
@@ -36,6 +36,6 @@ module.exports = {
   responseWithList,
   responseWithListMember,
   responseWithListMembers,
-  responseWithLists,
+  responseWithListsMetaData,
   updateSubdocumentFields
 };

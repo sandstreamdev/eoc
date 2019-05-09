@@ -36,7 +36,7 @@ const responseWithList = (list, userId) => {
   return listToSend;
 };
 
-const responseWithLists = (lists, userId) =>
+const responseWithListsMetaData = (lists, userId) =>
   _map(lists, list => {
     const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
     const doneItemsCount = items.filter(item => item.isOrdered).length;
@@ -272,6 +272,6 @@ module.exports = {
   responseWithList,
   responseWithListMember,
   responseWithListMembers,
-  responseWithLists,
+  responseWithListsMetaData,
   updateSubdocumentFields
 };
