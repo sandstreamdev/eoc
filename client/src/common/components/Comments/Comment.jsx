@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { UserIcon } from 'assets/images/icons';
+import { formatDate } from 'common/utils/helpers';
 
 const Comment = ({ comment }) => {
   const { authorName, authorAvatarUrl, createdAt, text } = comment;
@@ -17,7 +18,7 @@ const Comment = ({ comment }) => {
       </div>
       <div className="comment__body">
         <span className="comment__author">{authorName}</span>
-        <span className="comment__date">{createdAt}</span>
+        <span className="comment__date">{formatDate(createdAt)}</span>
         <p className="comment__content">{text}</p>
       </div>
     </div>
