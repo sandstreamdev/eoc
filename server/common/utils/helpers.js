@@ -61,29 +61,10 @@ const responseWithItems = (userId, list) => {
   const { items } = list;
 
   return _map(items, item => {
-    const {
-      _id,
-      authorId,
-      authorName,
-      createdAt,
-      description,
-      isOrdered,
-      link,
-      name,
-      updatedAt,
-      voterIds
-    } = item;
+    const { voterIds, ...rest } = item;
 
     return {
-      _id,
-      authorId,
-      authorName,
-      createdAt,
-      description,
-      isOrdered,
-      link,
-      name,
-      updatedAt,
+      ...rest,
       isVoted: checkIfCurrentUserVoted(item, userId),
       votesCount: voterIds.length
     };
@@ -91,30 +72,11 @@ const responseWithItems = (userId, list) => {
 };
 
 const responseWithItem = (item, userId) => {
-  const {
-    _id,
-    authorId,
-    authorName,
-    createdAt,
-    description,
-    isOrdered,
-    link,
-    name,
-    updatedAt,
-    voterIds
-  } = item;
+  const { voterIds, ...rest } = item;
 
   return {
-    _id,
-    authorId,
-    authorName,
-    createdAt,
-    description,
-    isOrdered,
+    ...rest,
     isVoted: checkIfCurrentUserVoted(item, userId),
-    link,
-    name,
-    updatedAt,
     votesCount: voterIds.length
   };
 };

@@ -227,6 +227,7 @@ const getListData = (req, resp) => {
     _id: listId,
     viewersIds: userId
   })
+    .lean()
     .populate('viewersIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
