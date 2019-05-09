@@ -38,18 +38,14 @@ const responseWithList = (list, userId) => {
 
 const responseWithListsMetaData = (lists, userId) =>
   _map(lists, list => {
-    const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
+    const { favIds, items, ...rest } = list;
     const doneItemsCount = items.filter(item => item.isOrdered).length;
     const unhandledItemsCount = items.length - doneItemsCount;
 
     return {
-      _id,
-      cohortId,
-      description,
+      ...rest,
       doneItemsCount,
       isFavourite: isUserFavourite(favIds, userId),
-      isPrivate,
-      name,
       unhandledItemsCount
     };
   });
@@ -83,16 +79,13 @@ const responseWithItem = (item, userId) => {
 
 const responseWithCohorts = (cohorts, userId) =>
   _map(cohorts, cohort => {
-    const { _id, description, favIds, isArchived, memberIds, name } = cohort;
+    const { favIds, memberIds, ownerIds, ...rest } = cohort;
     const membersCount = memberIds.length;
 
     return {
-      _id,
-      description,
-      isArchived,
+      ...rest,
       isFavourite: isUserFavourite(favIds, userId),
-      membersCount,
-      name
+      membersCount
     };
   });
 
@@ -115,13 +108,6 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
   const userIdAsString = userId.toString();
 
   return arrayOfStrings.indexOf(userIdAsString) !== -1;
-};
-
-const checkIfGuest = (cohortMembersIds, userId) => {
-  const idsArray = cohortMembersIds.map(id => id.toString());
-  const userIdAsString = userId.toString();
-
-  return idsArray.indexOf(userIdAsString) === -1;
 };
 
 const responseWithCohortMembers = (users, ownerIds) =>
@@ -171,7 +157,7 @@ const responseWithListMember = (user, cohortMembersIds) => {
     _id: newMemberId,
     avatarUrl,
     displayName,
-    isGuest: checkIfGuest(cohortMembersIds, newMemberId),
+    isGuest: !checkIfArrayContainsUserId(cohortMembersIds, newMemberId),
     isMember: false,
     isOwner: false
   };
@@ -191,7 +177,7 @@ const responseWithListMembers = (
       avatarUrl,
       displayName,
       isOwner: checkIfArrayContainsUserId(ownerIds, _id),
-      isGuest: checkIfGuest(cohortMembersIds, _id),
+      isGuest: !checkIfArrayContainsUserId(cohortMembersIds, _id),
       isMember: checkIfArrayContainsUserId(memberIds, _id)
     };
   });
@@ -221,7 +207,6 @@ module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   checkIfCurrentUserVoted,
-  checkIfGuest,
   filter,
   isUserFavourite,
   isValidMongoId,

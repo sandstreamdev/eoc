@@ -4,7 +4,6 @@ const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   checkIfCurrentUserVoted,
-  checkIfGuest,
   isUserFavourite,
   isValidMongoId,
   responseWithCohort,
@@ -258,24 +257,6 @@ describe('function checkIfArrayContainsUserId', () => {
     const userId = ObjectId();
     const idsArray = [ObjectId(), ObjectId(), ObjectId()];
     const result = checkIfArrayContainsUserId(idsArray, userId);
-
-    expect(result).toBe(false);
-  });
-});
-
-describe('function checkIfGuest', () => {
-  const memberIds = ['123', '456', '789'];
-
-  it('checks if the passed array does not contain user id', () => {
-    const userId = ObjectId();
-    const result = checkIfGuest(memberIds, userId);
-
-    expect(result).toBe(true);
-  });
-
-  it('checks if the passed array does contain user id', () => {
-    const userId = '123';
-    const result = checkIfGuest(memberIds, userId);
 
     expect(result).toBe(false);
   });

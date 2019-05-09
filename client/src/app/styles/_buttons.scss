@@ -14,8 +14,7 @@
 }
 
 .disabled-button {
-  pointer-events: none;
-  background-color: $button-disabled;
+  cursor: not-allowed;
 }
 
 .disabled-google-button {

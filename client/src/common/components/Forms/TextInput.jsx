@@ -40,7 +40,7 @@ class TextInput extends PureComponent {
   };
 
   render() {
-    const { placeholder } = this.props;
+    const { disabled, placeholder } = this.props;
     const { isEnlarged, value } = this.state;
     return (
       <div className="ss-text-input">
@@ -58,6 +58,7 @@ class TextInput extends PureComponent {
         )}
         <input
           className="ss-text-input__input"
+          disabled={disabled}
           name={placeholder}
           onBlur={this.handleBlur}
           onChange={this.handleOnChange}
@@ -73,6 +74,7 @@ class TextInput extends PureComponent {
 }
 
 TextInput.propTypes = {
+  disabled: PropTypes.bool,
   initialValue: PropTypes.string,
   placeholder: PropTypes.string.isRequired,
 
