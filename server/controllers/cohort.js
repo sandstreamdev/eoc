@@ -18,6 +18,7 @@ const {
   responseWithCohortMembers
 } = require('../common/utils/index');
 const { ListType } = require('../common/variables');
+const Comment = require('../models/comment.model');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
@@ -210,8 +211,17 @@ const deleteCohortById = (req, resp) => {
       }
 
       documentName = doc.name;
-      return List.deleteMany({ cohortId: sanitizedCohortId }).exec();
+      return List.find({ cohortId: sanitizedCohortId }, '_id')
+        .lean()
+        .exec();
     })
+    .then(lists => {
+      if (lists) {
+        const listsIds = lists.map(lists => lists._id);
+        return Comment.deleteMany({ listId: { $in: listsIds } });
+      }
+    })
+    .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
     .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
     .then(() =>
       resp
