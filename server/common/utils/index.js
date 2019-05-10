@@ -56,56 +56,26 @@ const responseWithItems = (userId, list) => {
   const { items } = list;
 
   return _map(items, item => {
-    const {
-      _id,
-      authorId,
-      authorName,
-      createdAt,
-      description,
-      isOrdered,
-      link,
-      name,
-      voterIds
-    } = item.toObject();
+    const { authorId: author, updatedAt, voterIds, ...rest } = item;
+    const { _id: authorId, displayName: authorName } = author;
 
     return {
-      _id,
+      ...rest,
       authorId,
       authorName,
-      createdAt,
-      description,
-      isOrdered,
       isVoted: checkIfCurrentUserVoted(item, userId),
-      link,
-      name,
       votesCount: voterIds.length
     };
   });
 };
 
-const responseWithItem = (item, userId) => {
-  const {
-    _id,
-    authorId,
-    authorName,
-    createdAt,
-    description,
-    isOrdered,
-    link,
-    name,
-    voterIds
-  } = item.toObject();
+const responseWithItem = (item, displayName, userId) => {
+  const { voterIds, updatedAt, ...rest } = item;
 
   return {
-    _id,
-    authorId,
-    authorName,
-    createdAt,
-    description,
-    isOrdered,
+    ...rest,
+    authorName: displayName,
     isVoted: checkIfCurrentUserVoted(item, userId),
-    link,
-    name,
     votesCount: voterIds.length
   };
 };
@@ -203,12 +173,16 @@ const responseWithListMembers = (
   ownerIds,
   cohortMembersIds
 ) =>
-  viewers.map(user => ({
-    ...user._doc,
-    isOwner: checkIfArrayContainsUserId(ownerIds, user._doc._id),
-    isGuest: checkIfGuest(cohortMembersIds, user._doc._id),
-    isMember: checkIfArrayContainsUserId(memberIds, user._doc._id)
-  }));
+  viewers.map(user => {
+    const { _id } = user;
+
+    return {
+      ...user,
+      isOwner: checkIfArrayContainsUserId(ownerIds, _id),
+      isGuest: checkIfGuest(cohortMembersIds, _id),
+      isMember: checkIfArrayContainsUserId(memberIds, _id)
+    };
+  });
 
 const responseWithComment = (comment, avatarUrl, displayName) => {
   const { _id, authorId, createdAt, text } = comment.toObject();

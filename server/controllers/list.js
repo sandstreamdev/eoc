@@ -195,15 +195,14 @@ const getArchivedListsMetaData = (req, resp) => {
 
 const addItemToList = (req, resp) => {
   const {
-    item: { name, authorName, authorId },
+    item: { name, authorId },
     listId
   } = req.body;
   const {
-    user: { _id: userId }
+    user: { _id: userId, displayName }
   } = req;
 
   const item = new Item({
-    authorName,
     authorId,
     name
   });
@@ -216,6 +215,7 @@ const addItemToList = (req, resp) => {
     { $push: { items: item } },
     { new: true }
   )
+    .lean()
     .exec()
     .then(doc => {
       if (!doc) {
@@ -224,7 +224,9 @@ const addItemToList = (req, resp) => {
 
       const newItem = doc.items.slice(-1)[0];
 
-      return resp.status(200).send(responseWithItem(newItem, userId));
+      return resp
+        .status(200)
+        .send(responseWithItem(newItem, displayName, userId));
     })
     .catch(() =>
       resp.status(400).send({
@@ -252,13 +254,14 @@ const getListData = (req, resp) => {
     _id: sanitizedListId,
     viewersIds: userId
   })
+    .lean()
     .populate('viewersIds', 'avatarUrl displayName _id')
+    .populate('items.authorId', 'displayName')
     .exec()
     .then(doc => {
       if (!doc) {
         throw new NotFoundException(`Data of list id: ${listId} not found.`);
       }
-
       list = doc;
       const { cohortId } = list;
 
@@ -816,10 +819,13 @@ const updateItemDetails = (req, resp) => {
   } = req;
   const { id: listId } = req.params;
 
+  const sanitizeItemId = sanitize(itemId);
+  const sanitizeUserId = sanitize(userId);
+
   List.findOne({
-    _id: listId,
-    'items._id': itemId,
-    memberIds: userId
+    _id: sanitize(listId),
+    'items._id': sanitizeItemId,
+    memberIds: sanitizeUserId
   })
     .exec()
     .then(list => {
@@ -828,7 +834,7 @@ const updateItemDetails = (req, resp) => {
       }
 
       const { items } = list;
-      const itemToUpdate = items.id(itemId);
+      const itemToUpdate = items.id(sanitizeItemId);
 
       if (description) {
         itemToUpdate.description = description;
@@ -839,16 +845,15 @@ const updateItemDetails = (req, resp) => {
       }
 
       if (isOrdered !== null) {
+        itemToUpdate.authorId = sanitizeUserId;
         itemToUpdate.isOrdered = isOrdered;
       }
 
       return list.save();
     })
-    .then(list => {
-      const item = list.items.id(itemId);
-
-      return resp.status(200).json(responseWithItem(item, userId));
-    })
+    .then(() =>
+      resp.status(200).json({ message: 'Item updated successfully.' })
+    )
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
@@ -949,6 +954,7 @@ const changeType = (req, resp) => {
         { viewersIds: updatedViewersIds },
         { new: true }
       )
+        .lean()
         .populate('viewersIds', 'avatarUrl displayName _id')
         .exec();
     })

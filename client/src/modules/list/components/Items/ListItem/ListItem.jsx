@@ -57,7 +57,7 @@ class ListItem extends PureComponent {
       },
       toggle
     } = this.props;
-    const isSameAuthor = authorId === userId;
+    const isNotSameAuthor = authorId !== userId;
 
     if (!isMember) {
       return;
@@ -65,9 +65,11 @@ class ListItem extends PureComponent {
 
     this.setState(({ done }) => ({ done: !done }));
 
-    return isSameAuthor
-      ? toggle(isOrdered, _id, listId, name)
-      : toggle(isOrdered, _id, listId);
+    const shouldChangeAuthor = isNotSameAuthor && !isOrdered;
+
+    return shouldChangeAuthor
+      ? toggle(isOrdered, _id, listId)
+      : toggle(isOrdered, _id, listId, userId, name);
   };
 
   handleDetailsVisibility = () =>

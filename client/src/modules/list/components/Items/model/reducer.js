@@ -36,14 +36,17 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.TOGGLE_SUCCESS: {
       const {
-        payload: { itemId, item }
+        payload: { authorId, authorName, itemId }
       } = action;
+      const prevItem = state[itemId];
 
       return {
         ...state,
         [itemId]: {
           ...state[itemId],
-          isOrdered: item.isOrdered
+          authorId: authorId || prevItem.authorId,
+          authorName: authorName || prevItem.authorName,
+          isOrdered: !state[itemId].isOrdered
         }
       };
     }
