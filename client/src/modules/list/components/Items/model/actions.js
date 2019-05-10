@@ -11,21 +11,17 @@ const addItemFailure = errorMessage => ({
   type: ItemActionTypes.ADD_FAILURE,
   payload: errorMessage
 });
+
 const addItemSuccess = (item, listId) => ({
   type: ItemActionTypes.ADD_SUCCESS,
   payload: { item, listId }
-});
-const addItemRequest = () => ({
-  type: ItemActionTypes.ADD_REQUEST
 });
 
 const toggleItemSuccess = (item, itemId, listId) => ({
   type: ItemActionTypes.TOGGLE_SUCCESS,
   payload: { item, itemId, listId }
 });
-const toggleItemRequest = () => ({
-  type: ItemActionTypes.TOGGLE_REQUEST
-});
+
 const toggleItemFailure = errMessage => ({
   type: ItemActionTypes.TOGGLE_FAILURE,
   payload: errMessage
@@ -35,9 +31,7 @@ const voteForItemSuccess = (item, itemId, listId) => ({
   type: ItemActionTypes.VOTE_SUCCESS,
   payload: { item, itemId, listId }
 });
-const voteForItemRequest = () => ({
-  type: ItemActionTypes.VOTE_REQUEST
-});
+
 const voteForItemFailure = errMessage => ({
   type: ItemActionTypes.VOTE_FAILURE,
   payload: errMessage
@@ -46,10 +40,6 @@ const voteForItemFailure = errMessage => ({
 const updateItemDetailsSuccess = (listId, itemId, data) => ({
   type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
   payload: { listId, itemId, data }
-});
-
-const updateItemDetailsRequest = () => ({
-  type: ItemActionTypes.UPDATE_DETAILS_REQUEST
 });
 
 const updateItemDetailsFailure = () => ({
@@ -61,10 +51,6 @@ const cloneItemSuccess = (listId, item) => ({
   payload: { listId, item }
 });
 
-const cloneItemRequest = () => ({
-  type: ItemActionTypes.CLONE_REQUEST
-});
-
 const cloneItemFailure = () => ({
   type: ItemActionTypes.CLONE_FAILURE
 });
@@ -72,10 +58,6 @@ const cloneItemFailure = () => ({
 const addCommentSuccess = (listId, itemId, comment) => ({
   type: CommentActionTypes.ADD_SUCCESS,
   payload: { comment, itemId, listId }
-});
-
-const addCommentRequest = () => ({
-  type: CommentActionTypes.ADD_REQUEST
 });
 
 const addCommentFailure = () => ({
@@ -87,17 +69,12 @@ const fetchCommentsSuccess = (listId, itemId, comments) => ({
   payload: { comments, itemId, listId }
 });
 
-const fetchCommentsRequest = () => ({
-  type: CommentActionTypes.FETCH_REQUEST
-});
-
 const fetchCommentsFailure = () => ({
   type: CommentActionTypes.FETCH_FAILURE
 });
 
-export const addItem = (item, listId) => dispatch => {
-  dispatch(addItemRequest());
-  return postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
+export const addItem = (item, listId) => dispatch =>
+  postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json, listId)))
     .catch(err => {
@@ -108,16 +85,9 @@ export const addItem = (item, listId) => dispatch => {
         err.message || "Oops, we're sorry, adding item failed..."
       );
     });
-};
 
-export const toggle = (
-  isOrdered,
-  itemId,
-  listId,
-  updatedAuthor
-) => dispatch => {
-  dispatch(toggleItemRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
+export const toggle = (isOrdered, itemId, listId, updatedAuthor) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
     itemId,
     isOrdered: !isOrdered
   })
@@ -133,12 +103,9 @@ export const toggle = (
         err.message || "Oops, we're sorry, changing item's status failed..."
       );
     });
-};
 
-export const setVote = (itemId, listId) => dispatch => {
-  dispatch(voteForItemRequest());
-
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/set-vote`, { itemId })
+export const setVote = (itemId, listId) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/set-vote`, { itemId })
     .then(resp => resp.json())
     .then(item => dispatch(voteForItemSuccess(item, itemId, listId)))
     .catch(err => {
@@ -149,12 +116,9 @@ export const setVote = (itemId, listId) => dispatch => {
         err.message || "Oops, we're sorry, voting failed...."
       );
     });
-};
 
-export const clearVote = (itemId, listId) => dispatch => {
-  dispatch(voteForItemRequest());
-
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/clear-vote`, { itemId })
+export const clearVote = (itemId, listId) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/clear-vote`, { itemId })
     .then(resp => resp.json())
     .then(item => dispatch(voteForItemSuccess(item, itemId, listId)))
     .catch(err => {
@@ -165,11 +129,9 @@ export const clearVote = (itemId, listId) => dispatch => {
         err.message || "Oops, we're sorry, voting failed...."
       );
     });
-};
 
-export const updateItemDetails = (listId, itemId, data) => dispatch => {
-  dispatch(updateItemDetailsRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
+export const updateItemDetails = (listId, itemId, data) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
     ...data,
     itemId
   })
@@ -190,11 +152,9 @@ export const updateItemDetails = (listId, itemId, data) => dispatch => {
         err.message
       );
     });
-};
 
-export const cloneItem = (listId, itemId) => dispatch => {
-  dispatch(cloneItemRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/clone-item`, {
+export const cloneItem = (listId, itemId) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/clone-item`, {
     itemId
   })
     .then(resp => resp.json())
@@ -214,11 +174,9 @@ export const cloneItem = (listId, itemId) => dispatch => {
         err.message
       );
     });
-};
 
-export const addComment = (listId, itemId, text) => dispatch => {
-  dispatch(addCommentRequest());
-  return postData(`${ENDPOINT_URL}/comments/add-comment`, {
+export const addComment = (listId, itemId, text) => dispatch =>
+  postData(`${ENDPOINT_URL}/comments/add-comment`, {
     itemId,
     listId,
     text
@@ -235,11 +193,9 @@ export const addComment = (listId, itemId, text) => dispatch => {
         err.message
       );
     });
-};
 
-export const fetchComments = (listId, itemId) => dispatch => {
-  dispatch(fetchCommentsRequest());
-  return getData(`${ENDPOINT_URL}/comments/${listId}/${itemId}/data`)
+export const fetchComments = (listId, itemId) => dispatch =>
+  getData(`${ENDPOINT_URL}/comments/${listId}/${itemId}/data`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(fetchCommentsSuccess(listId, itemId, json));
@@ -252,4 +208,3 @@ export const fetchComments = (listId, itemId) => dispatch => {
         err.message
       );
     });
-};

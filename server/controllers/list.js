@@ -216,6 +216,7 @@ const addItemToList = (req, resp) => {
     { $push: { items: item } },
     { new: true }
   )
+    .lean()
     .exec()
     .then(doc => {
       if (!doc) {
@@ -252,6 +253,7 @@ const getListData = (req, resp) => {
     _id: sanitizedListId,
     viewersIds: userId
   })
+    .lean()
     .populate('viewersIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
@@ -981,6 +983,7 @@ const changeType = (req, resp) => {
         { viewersIds: updatedViewersIds },
         { new: true }
       )
+        .lean()
         .populate('viewersIds', 'avatarUrl displayName _id')
         .exec();
     })
