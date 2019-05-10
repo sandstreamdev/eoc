@@ -9,6 +9,8 @@ const {
   responseWithCohortMember,
   responseWithCohortMembers,
   responseWithCohorts,
+  responseWithComment,
+  responseWithComments,
   responseWithItem,
   responseWithItems,
   responseWithList,
@@ -32,6 +34,11 @@ const {
   expectedUsersProperties,
   usersMock
 } = require('../../tests/__mocks__/usersMock');
+const {
+  commentMock,
+  commentsMock,
+  expectedCommentProperties
+} = require('../../tests/__mocks__/commentMock');
 
 describe('function isValidMongoId', () => {
   it('returns true if passed ID is a valid mongo id', () => {
@@ -337,5 +344,28 @@ describe('function responseWithListMembers', () => {
     const notExpected = 'email';
 
     result.map(user => expect(user).not.toHaveProperty(notExpected));
+  });
+});
+
+describe('function responseWithComments ', () => {
+  const result = responseWithComments(commentsMock);
+
+  it('returns comments with desired properties', () => {
+    expectedCommentProperties.map(property =>
+      result.map(comment => expect(comment).toHaveProperty(property))
+    );
+  });
+});
+
+describe('function responseWithComment', () => {
+  const comment = commentMock;
+  const { avatarUrl, displayName } = usersMock[0];
+
+  const result = responseWithComment(comment, avatarUrl, displayName);
+
+  it('returns comment with desired properties', () => {
+    expectedCommentProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
   });
 });

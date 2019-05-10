@@ -71,9 +71,13 @@ const getComments = (req, resp) => {
         throw new BadRequestException('List data not found.');
       }
 
-      return Comment.find({ itemId: sanitizedItemId }, '_id createdAt text', {
-        sort: { createdAt: -1 }
-      })
+      return Comment.find(
+        { itemId: sanitizedItemId },
+        '_id itemId createdAt text',
+        {
+          sort: { createdAt: -1 }
+        }
+      )
         .populate('authorId', '_id avatarUrl displayName')
         .lean()
         .exec();
