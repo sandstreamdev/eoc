@@ -35,7 +35,7 @@
       font-size: 14px;
     }
 
-    @include breakpoint($large) {
+    @include breakpoint($medium) {
       border-bottom: 0;
     }
   }

@@ -12,6 +12,10 @@ body {
 #root {
   min-height: 100vh;
   position: relative;
-  padding-bottom: 54px;
+  padding-bottom: 149px;
   box-sizing: border-box;
+
+  @include breakpoint($large) {
+    padding-bottom: 54px;
+  }
 }
