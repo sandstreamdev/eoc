@@ -117,7 +117,7 @@ export const toggle = (
   updatedAuthor
 ) => dispatch => {
   dispatch(toggleItemRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
     itemId,
     isOrdered: !isOrdered
   })
@@ -179,7 +179,7 @@ export const updateItemDetails = (listId, itemId, data) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        json.message || 'Item details updated successfully.'
       );
     })
     .catch(err => {
