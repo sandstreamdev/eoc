@@ -19,7 +19,6 @@ const {
   responseWithListMember,
   responseWithListMembers
 } = require('../common/utils/index');
-const { updateSubdocumentFields } = require('../common/utils');
 const { ListType } = require('../common/variables');
 
 const createList = (req, resp) => {
@@ -312,44 +311,6 @@ const getListData = (req, resp) => {
           'An error occurred while fetching the list data. Please try again.'
       });
     });
-};
-
-const updateListItem = (req, resp) => {
-  const { isOrdered, itemId } = req.body;
-  const { id: listId } = req.params;
-  const {
-    user: { _id: userId }
-  } = req;
-  const dataToUpdate = updateSubdocumentFields('items', { isOrdered });
-
-  List.findOneAndUpdate(
-    {
-      _id: sanitize(listId),
-      'items._id': sanitize(itemId),
-      $or: [{ ownerIds: userId }, { memberIds: userId }]
-    },
-    {
-      $set: dataToUpdate
-    },
-    { new: true }
-  )
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.status(400).send({ message: 'List data not found.' });
-      }
-
-      const itemIndex = doc.items.findIndex(item => item._id.equals(itemId));
-      const item = doc.items[itemIndex];
-
-      return resp.status(200).json(responseWithItem(item, userId));
-    })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while updating the list data. Please try again.'
-      })
-    );
 };
 
 const voteForItem = (req, resp) => {
@@ -840,7 +801,7 @@ const addViewer = (req, resp) => {
 };
 
 const updateItemDetails = (req, resp) => {
-  const { description, link, itemId } = req.body;
+  const { description, isOrdered, link, itemId } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -868,11 +829,17 @@ const updateItemDetails = (req, resp) => {
         itemToUpdate.link = link;
       }
 
+      if (isOrdered !== null) {
+        itemToUpdate.isOrdered = isOrdered;
+      }
+
       return list.save();
     })
-    .then(() =>
-      resp.status(200).send({ message: 'Item details successfully updated' })
-    )
+    .then(list => {
+      const item = list.items.id(itemId);
+
+      return resp.status(200).json(responseWithItem(item, userId));
+    })
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
@@ -1028,6 +995,5 @@ module.exports = {
   removeOwnerRole,
   updateItemDetails,
   updateListById,
-  updateListItem,
   voteForItem
 };
