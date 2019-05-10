@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import _isEqual from 'lodash/isEqual';
+import isURL from 'validator/lib/isURL';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
@@ -20,7 +21,6 @@ import {
   toggle,
   updateItemDetails
 } from '../model/actions';
-import { isUrlValid } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -117,11 +117,12 @@ class ListItem extends PureComponent {
     }
 
     const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
-    const canBeUpdated = isUrlValid(link) || _isEmpty(_trim(link));
     const isDescriptionUpdated = !_isEqual(
       _trim(previousDescription),
       _trim(description)
     );
+
+    const canBeUpdated = isURL(link) || _isEmpty(_trim(link));
 
     if (!canBeUpdated) {
       return this.setState({ isValidationErrorVisible: true });

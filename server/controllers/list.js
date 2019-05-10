@@ -3,14 +3,13 @@ const sanitize = require('mongo-sanitize');
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
-  checkIfGuest,
   checkIfArrayContainsUserId,
   filter,
   isValidMongoId,
   responseWithItems,
   responseWithItem,
   responseWithList,
-  responseWithLists
+  responseWithListsMetaData
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -20,7 +19,7 @@ const {
   responseWithListMember,
   responseWithListMembers
 } = require('../common/utils/index');
-const { updateSubdocumentFields } = require('../common/utils/helpers');
+const { updateSubdocumentFields } = require('../common/utils');
 const { ListType } = require('../common/variables');
 
 const createList = (req, resp) => {
@@ -56,7 +55,7 @@ const createList = (req, resp) => {
           'You need to be cohort member to create new lists'
         );
       })
-      .then(() =>
+      .then(listData =>
         resp
           .status(201)
           .location(`/lists/${list._id}`)
@@ -127,13 +126,14 @@ const getListsMetaData = (req, resp) => {
   List.find(query, '_id name description items favIds cohortId type', {
     sort: { created_at: -1 }
   })
+    .lean()
     .exec()
     .then(docs => {
       if (!docs) {
         return resp.status(400).send({ message: 'No lists data found.' });
       }
 
-      return resp.status(200).json(responseWithLists(docs, userId));
+      return resp.status(200).json(responseWithListsMetaData(docs, userId));
     })
     .catch(() =>
       resp.status(400).send({
@@ -165,6 +165,7 @@ const getArchivedListsMetaData = (req, resp) => {
     }`,
     { sort: { created_at: -1 } }
   )
+    .lean()
     .exec()
     .then(docs => {
       if (!docs) {
@@ -173,7 +174,7 @@ const getArchivedListsMetaData = (req, resp) => {
           .send({ message: 'No archived lists data found.' });
       }
 
-      return resp.status(200).json(responseWithLists(docs, userId));
+      return resp.status(200).json(responseWithListsMetaData(docs, userId));
     })
     .catch(() =>
       resp.status(400).send({
@@ -242,6 +243,7 @@ const getListData = (req, resp) => {
     _id: sanitizedListId,
     viewersIds: userId
   })
+    .lean()
     .populate('viewersIds', 'avatarUrl displayName _id')
     .exec()
     .then(doc => {
@@ -281,7 +283,7 @@ const getListData = (req, resp) => {
         cohortMembers
       );
 
-      const isGuest = checkIfGuest(cohortMembers, userId);
+      const isGuest = !checkIfArrayContainsUserId(cohortMembers, userId);
       const isMember = checkIfArrayContainsUserId(memberIds, userId);
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const items = responseWithItems(userId, list);

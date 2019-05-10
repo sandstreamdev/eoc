@@ -1,4 +1,4 @@
-const User = require('../models/user.model');
+const User = require('../../models/user.model');
 
 // Find or create user
 const findOrCreateUser = (user, doneCallback) => {
