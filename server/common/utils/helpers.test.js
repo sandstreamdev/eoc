@@ -78,7 +78,7 @@ describe('function isUserFavourite', () => {
     expect(result).toBe(false);
   });
 
-  it('returns false if user is not inside favIds array', () => {
+  it('returns false if user is not inside favIds empty array', () => {
     const userId = '999';
     const favIds = [];
 
@@ -128,7 +128,7 @@ describe('function responseWithListsMetaData', () => {
 
   const notExpected = ['favIds', 'items'];
 
-  it('returned list objects should not have items and favIds properties', () => {
+  it('returns list objects should not have items and favIds properties', () => {
     lists.map(list =>
       notExpected.map(property => expect(list).not.toHaveProperty(property))
     );
@@ -140,14 +140,14 @@ describe('function checkIfCurrentUserVoted', () => {
     voterIds: ['123', '345', '678']
   };
 
-  it('returns true if current user id is inside voterIds array', () => {
+  it('returns true if current user id as string is inside voterIds array', () => {
     const userId = '123';
     const result = checkIfCurrentUserVoted(item, userId);
 
     expect(result).toBe(true);
   });
 
-  it('returns true if current user id is inside voterIds array', () => {
+  it('returns true if current user id as ObjectId is inside voterIds array', () => {
     const userId = ObjectId();
     item.voterIds.push(userId);
 
@@ -156,7 +156,7 @@ describe('function checkIfCurrentUserVoted', () => {
     expect(result).toBe(true);
   });
 
-  it('returns false if current user id is not inside voterIds array', () => {
+  it('returns false if current user id as ObjectId is not inside voterIds array', () => {
     const userId = ObjectId();
     const result = checkIfCurrentUserVoted(item, userId);
 
@@ -245,14 +245,14 @@ describe('function checkIfArrayContainsUserId', () => {
     expect(result).toBe(true);
   });
 
-  it('returns false if the passed array does not contain the user id', () => {
+  it('returns false if the passed array does not contain the user id as string', () => {
     const userId = '999';
     const result = checkIfArrayContainsUserId(idsArray, userId);
 
     expect(result).toBe(false);
   });
 
-  it('returns false if the passed array does not contain the user id', () => {
+  it('returns false if the passed array does not contain the user id as ObjectId', () => {
     const userId = ObjectId();
     const idsArray = [ObjectId(), ObjectId(), ObjectId()];
     const result = checkIfArrayContainsUserId(idsArray, userId);
@@ -271,7 +271,7 @@ describe('function responseWithCohortMembers', () => {
     );
   });
 
-  it('returns user objects without sensitive data like email', () => {
+  it('returns object without sensitive data', () => {
     const notExpectedUserProperties = ['email'];
 
     notExpectedUserProperties.map(property =>
@@ -290,14 +290,14 @@ describe('function checkIfCohortMember', () => {
     expect(result).toBe(false);
   });
 
-  it('returns false if passed user id is not a cohort member', () => {
+  it('returns false if passed user id as string is not a cohort member', () => {
     const userId = 'dsad134sa';
     const result = checkIfCohortMember(cohort, userId);
 
     expect(result).toBe(false);
   });
 
-  it('returns true if passed user id is a cohort member', () => {
+  it('returns true if passed user id as ObjectId is a cohort member', () => {
     const userId = ObjectId();
     cohort.memberIds.push(userId);
 
@@ -319,7 +319,7 @@ describe('function responseWithCohortMember', () => {
     );
   });
 
-  it('returns user object without sensitive data like email', () => {
+  it('returns object without sensitive data', () => {
     const notExpected = 'email';
 
     expect(result).not.toHaveProperty(notExpected);
