@@ -16,4 +16,4 @@ export const makeAbortablePromise = promise => {
   };
 };
 
-export const formatDate = string => new Date(string).toLocaleString();
+export const dateFromString = string => new Date(string).toLocaleString();

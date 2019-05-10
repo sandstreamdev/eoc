@@ -214,6 +214,7 @@ const deleteCohortById = (req, resp) => {
       }
 
       documentName = doc.name;
+
       return List.find({ cohortId: sanitizedCohortId }, '_id')
         .lean()
         .exec();

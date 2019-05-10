@@ -14,15 +14,12 @@ const addComment = (req, resp) => {
     user: { _id: userId, avatarUrl, displayName }
   } = req;
 
-  List.findOne(
-    {
-      _id: sanitize(listId),
-      memberIds: userId,
-      'items._id': sanitize(itemId),
-      'items.isOrdered': false
-    },
-    { items: { $elemMatch: { isOrdered: true } } }
-  )
+  List.findOne({
+    _id: sanitize(listId),
+    memberIds: userId,
+    'items._id': sanitize(itemId),
+    'items.isOrdered': false
+  })
     .exec()
     .then(list => {
       if (!list) {
@@ -94,6 +91,7 @@ const getComments = (req, resp) => {
 
         return resp.status(status).send({ message });
       }
+
       resp.status(400).send({
         message:
           'An error occurred while fetching the comments. Please try again.'

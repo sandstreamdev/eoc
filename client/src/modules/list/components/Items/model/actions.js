@@ -1,3 +1,5 @@
+import _keyBy from 'lodash/keyBy';
+
 import { ENDPOINT_URL } from 'common/constants/variables';
 import { getData, patchData, postData } from 'common/utils/fetchMethods';
 import {
@@ -192,9 +194,7 @@ export const addComment = (listId, itemId, text) => dispatch =>
     text
   })
     .then(resp => resp.json())
-    .then(json => {
-      dispatch(addCommentSuccess(listId, itemId, json));
-    })
+    .then(json => dispatch(addCommentSuccess(listId, itemId, json)))
     .catch(err => {
       dispatch(addCommentFailure());
       createNotificationWithTimeout(
@@ -208,7 +208,8 @@ export const fetchComments = (listId, itemId) => dispatch =>
   getData(`${ENDPOINT_URL}/comments/${listId}/${itemId}/data`)
     .then(resp => resp.json())
     .then(json => {
-      dispatch(fetchCommentsSuccess(listId, itemId, json));
+      const comments = _keyBy(json, '_id');
+      dispatch(fetchCommentsSuccess(listId, itemId, comments));
     })
     .catch(err => {
       dispatch(fetchCommentsFailure());

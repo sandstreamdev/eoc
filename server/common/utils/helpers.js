@@ -201,7 +201,7 @@ const updateSubdocumentFields = (subdocumentName, data) => {
 };
 
 const responseWithComment = (comment, avatarUrl, displayName) => {
-  const { _id, authorId, createdAt, text } = comment.toObject();
+  const { _id, authorId, createdAt, text } = comment;
 
   return {
     _id,

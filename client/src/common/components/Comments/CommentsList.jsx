@@ -78,7 +78,7 @@ class CommentsList extends PureComponent {
 
     return (
       <div className="comments">
-        <div className="comments__heading">
+        <header>
           <h2 className="comments__header">Comments</h2>
           {isFormAccessible && !isNewCommentVisible && (
             <button
@@ -89,7 +89,7 @@ class CommentsList extends PureComponent {
               Add comment
             </button>
           )}
-        </div>
+        </header>
         {isNewCommentVisible && (
           <NewComment
             onAddComment={this.handleAddComment}

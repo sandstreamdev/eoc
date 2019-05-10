@@ -17,7 +17,7 @@ const comments = (state = {}, action) => {
         payload: { comments }
       } = action;
 
-      return { ...comments };
+      return comments;
     }
     default:
       return state;

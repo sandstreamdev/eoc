@@ -43,11 +43,12 @@ class NewComment extends PureComponent {
   handleAddComment = () => {
     const { onAddComment } = this.props;
     const { comment } = this.state;
+    const commentToSave = _trim(comment);
 
-    if (!_isEmpty(_trim(comment))) {
+    if (!_isEmpty(commentToSave)) {
       this.setState({ pending: true });
 
-      this.pendingPromise = makeAbortablePromise(onAddComment(comment));
+      this.pendingPromise = makeAbortablePromise(onAddComment(commentToSave));
       this.pendingPromise.promise
         .then(() => this.setState({ comment: '', pending: false }))
         .catch(err => {
@@ -62,6 +63,7 @@ class NewComment extends PureComponent {
 
   render() {
     const { comment, pending } = this.state;
+
     return (
       <div className="new-comment">
         <div className="new-comment__wrapper">
