@@ -5,7 +5,8 @@ const commentMock = {
   listId: '5ccd610f4663533f995b1755',
   text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   updatedAt: { $date: { $numberLong: '1556963603400' } },
-  createdAt: { $date: { $numberLong: '1556963603400' } }
+  createdAt: { $date: { $numberLong: '1556963603400' } },
+  __v: { $numberInt: '0' }
 };
 
 const commentsMock = [

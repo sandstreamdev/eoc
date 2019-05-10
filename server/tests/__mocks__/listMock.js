@@ -4,7 +4,7 @@ const listMock = [
     cohortId: null,
     favIds: [],
     isArchived: false,
-    isPrivate: true,
+    type: 'limited',
     memberIds: [{ $oid: '5c9dc5a619ae7924074940f4' }],
     ownerIds: [{ $oid: '5c9dc5a619ae7924074940f4' }],
     viewersIds: [{ $oid: '5c9dc5a619ae7924074940f4' }],
@@ -71,8 +71,8 @@ const expectedListProperties = [
   'description',
   'doneItemsCount',
   'isFavourite',
-  'isPrivate',
   'name',
+  'type',
   'unhandledItemsCount'
 ];
 
@@ -82,8 +82,8 @@ const expectedCohortListProperties = [
   'description',
   'doneItemsCount',
   'isFavourite',
-  'isPrivate',
   'name',
+  'type',
   'unhandledItemsCount'
 ];
 
@@ -93,8 +93,8 @@ const expectedListMetaDataProperties = [
   'description',
   'doneItemsCount',
   'isFavourite',
-  'isPrivate',
   'name',
+  'type',
   'unhandledItemsCount'
 ];
 

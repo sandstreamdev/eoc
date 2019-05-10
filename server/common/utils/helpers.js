@@ -15,7 +15,7 @@ const isValidMongoId = id => ObjectId.isValid(id);
 const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
 
 const responseWithList = (list, userId) => {
-  const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
+  const { _id, cohortId, description, favIds, items, name, type } = list;
   const doneItemsCount = items.filter(item => item.isOrdered).length;
   const unhandledItemsCount = items.length - doneItemsCount;
 
@@ -24,7 +24,7 @@ const responseWithList = (list, userId) => {
     description,
     doneItemsCount,
     isFavourite: isUserFavourite(favIds, userId),
-    isPrivate,
+    type,
     name,
     unhandledItemsCount
   };
@@ -38,16 +38,22 @@ const responseWithList = (list, userId) => {
 
 const responseWithListsMetaData = (lists, userId) =>
   _map(lists, list => {
-    const { favIds, items, ...rest } = list;
+    const { cohortId, favIds, items, ...rest } = list;
     const doneItemsCount = items.filter(item => item.isOrdered).length;
     const unhandledItemsCount = items.length - doneItemsCount;
 
-    return {
+    const listToSend = {
       ...rest,
       doneItemsCount,
       isFavourite: isUserFavourite(favIds, userId),
       unhandledItemsCount
     };
+
+    if (cohortId) {
+      listToSend.cohortId = cohortId;
+    }
+
+    return listToSend;
   });
 
 const checkIfArrayContainsUserId = (idsArray, userId) => {

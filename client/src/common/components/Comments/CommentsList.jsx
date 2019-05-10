@@ -96,19 +96,21 @@ class CommentsList extends PureComponent {
             onEscapePress={this.hideAddComment}
           />
         )}
-        {!_isEmpty(comments) ? (
-          <ul className="comments__list">
-            {_map(comments, comment => (
-              <Comment comment={comment} key={comment._id} />
-            ))}
-          </ul>
-        ) : (
-          <MessageBox
-            message="There are no comments!"
-            type={MessageType.INFO}
-          />
-        )}
-        {pending && <Preloader />}
+        <div className="comments__container">
+          {!_isEmpty(comments) ? (
+            <ul className="comments__list">
+              {_map(comments, comment => (
+                <Comment comment={comment} key={comment._id} />
+              ))}
+            </ul>
+          ) : (
+            <MessageBox
+              message="There are no comments!"
+              type={MessageType.INFO}
+            />
+          )}
+          {pending && <Preloader />}
+        </div>
       </div>
     );
   }
