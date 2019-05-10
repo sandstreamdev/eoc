@@ -94,7 +94,7 @@ class Dashboard extends Component {
 
     return (
       <Fragment>
-        <Toolbar isHomePage />
+        <Toolbar />
         <div className="wrapper">
           <div className="dashboard">
             <GridList
