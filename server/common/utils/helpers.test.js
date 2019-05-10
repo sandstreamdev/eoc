@@ -35,7 +35,7 @@ const {
 } = require('../../tests/__mocks__/usersMock');
 
 describe('function isValidMongoId', () => {
-  it('returns true is passed ID is a valid mongo id', () => {
+  it('returns true if passed ID is a valid mongo id', () => {
     const id = ObjectId();
     const result = isValidMongoId(id);
 
@@ -43,7 +43,7 @@ describe('function isValidMongoId', () => {
     expect(result).toBe(true);
   });
 
-  it('returns false passed ID is an invalid mongo id', () => {
+  it('returns false if passed ID is an invalid mongo id', () => {
     const id = '1243sb3';
     const result = isValidMongoId(id);
 
@@ -52,7 +52,7 @@ describe('function isValidMongoId', () => {
 });
 
 describe('function isUserFavourite', () => {
-  it('returns true  if user is inside favIds array', () => {
+  it('returns true if user is inside favIds array', () => {
     const favIds = ['123', '456', '789'];
     const userId = '123';
 
@@ -101,7 +101,7 @@ describe('function responseWithList', () => {
     );
   });
 
-  it('returns list object without favIds property', () => {
+  it('returns list object without sensitive data', () => {
     const notExpected = 'favIds';
 
     expect(result).not.toHaveProperty(notExpected);
@@ -128,7 +128,7 @@ describe('function responseWithListsMetaData', () => {
 
   const notExpected = ['favIds', 'items'];
 
-  it('returns list objects should not have items and favIds properties', () => {
+  it('returns list objects without sensitive data', () => {
     lists.map(list =>
       notExpected.map(property => expect(list).not.toHaveProperty(property))
     );
@@ -175,7 +175,7 @@ describe('function responseWithItems ', () => {
   });
 
   const notExpected = 'voterIds';
-  it('returns items without voterIds property', () => {
+  it('returns items without sensitive data', () => {
     result.map(item => expect(item).not.toHaveProperty(notExpected));
   });
 });
@@ -193,7 +193,7 @@ describe('function responseWithItem', () => {
 
   const notExpected = 'voterIds';
 
-  it('returns item without voterIds property', () => {
+  it('returns item without sensitive data', () => {
     expect(result).not.toHaveProperty(notExpected);
   });
 });
@@ -210,7 +210,7 @@ describe('function responseWithCohorts', () => {
 
   const notExpected = ['favIds', 'ownerIds', 'memberIds'];
 
-  it('returns cohorts meta data without favIds, ownerIds, memberIds properties', () => {
+  it('returns cohorts meta data without sensitive data', () => {
     notExpected.map(property =>
       result.map(cohort => expect(cohort).not.toHaveProperty(property))
     );
@@ -230,7 +230,7 @@ describe('function responseWithCohort', () => {
 
   const notExpected = ['favIds', 'ownerIds', 'memberIds'];
 
-  it('returns cohort data without favIds, memberIds, ownerIds', () => {
+  it('returns cohort data without sensitive data', () => {
     notExpected.map(property => expect(result).not.toHaveProperty(property));
   });
 });
