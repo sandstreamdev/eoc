@@ -31,6 +31,22 @@
         background-position: center;
       }
     }
+
+    input ~ .list-item__toggle .list-item__icon--pending {
+      &:after {
+        background-color: $bg-color;
+        border-color: $border-color;
+      }
+    }
+
+    .list-item__icon--pending {
+      &::before {
+        background-color: $bg-color;
+      }
+      &::after {
+        background-image: 0;
+      }
+    }
   }
 
   &--restore {
@@ -49,6 +65,24 @@
 
       &::after {
         background-image: url('../../assets/images/undo-alt-solid.svg');
+        background-size: 18px;
+        background-position: center;
+      }
+    }
+
+    input ~ .list-item__toggle .list-item__icon--pending {
+      &:after {
+        background-color: $success;
+        border-color: $success;
+      }
+    }
+
+    .list-item__icon--pending {
+      &::before {
+        background-color: $success-bg;
+      }
+      &::after {
+        background-image: url('../../assets/images/check-solid.svg');
         background-size: 18px;
         background-position: center;
       }
