@@ -9,20 +9,35 @@
   margin-bottom: 20px;
   text-align: center;
   min-height: 300px;
+  flex-direction: column;
+  height: 300px;
+
+  @include breakpoint($large) {
+    flex-direction: row;
+  }
 
   &__left {
-    width: 50%;
+    width: auto;
+    height: 50%;
     padding: 26px;
     background: url('/client/src/assets/images/auth-intro.jpg') center;
-    position: relative;
+
+    @include breakpoint($large) {
+      width: 50%;
+      height: auto;
+    }
   }
 
   &__right {
-    width: 50%;
+    width: auto;
     padding: 26px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    @include breakpoint($large) {
+      width: 50%;
+    }
   }
 
   &__heading {
