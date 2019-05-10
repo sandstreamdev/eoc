@@ -834,8 +834,7 @@ const updateItemDetails = (req, resp) => {
       return list.save();
     })
     .then(list => {
-      const itemIndex = list.items.findIndex(item => item._id.equals(itemId));
-      const item = list.items[itemIndex];
+      const item = list.items.id(itemId);
 
       return resp.status(200).json(responseWithItem(item, userId));
     })
