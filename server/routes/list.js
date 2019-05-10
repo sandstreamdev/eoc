@@ -22,7 +22,6 @@ const {
   updateItemDetails,
   updateListById,
   removeOwnerRole,
-  updateListItem,
   voteForItem
 } = require('../controllers/list');
 const { authorize } = require('../middleware/authorize');
@@ -34,7 +33,6 @@ router.post('/add-item', authorize, addItemToList);
 router.delete('/:id/delete', authorize, deleteListById);
 router.patch('/:id/update', authorize, updateListById);
 router.get('/:id/data', authorize, getListData);
-router.patch('/:id/update-item', authorize, updateListItem);
 router.patch('/:id/set-vote', authorize, voteForItem);
 router.patch('/:id/clear-vote', authorize, clearVote);
 router.patch('/:id/add-to-fav', authorize, addToFavourites);

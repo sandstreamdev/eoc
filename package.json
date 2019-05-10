@@ -16,7 +16,7 @@
     "lint:client": "eslint -c .eslintrc --ext \".jsx,.js\" \"client/\" --fix",
     "lint:server": "eslint -c .eslintrc --ext \".js\" \"server/\" --fix",
     "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js && prettier --config .prettierrc --write landing/**/*.css",
-    "test": "jest -runInBand",
+    "test": "jest -runInBand --verbose",
     "seed": "node server/seed/seedDb.js",
     "stylelint": "stylelint --fix client/src/**/*.scss"
   },
@@ -48,7 +48,8 @@
     "react-router-dom": "4.3.1",
     "redux": "4.0.1",
     "redux-thunk": "2.3.0",
-    "reselect": "4.0.0"
+    "reselect": "4.0.0",
+    "validator": "10.11.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
@@ -78,6 +79,7 @@
     "husky": "1.2.0",
     "identity-obj-proxy": "3.0.0",
     "jest": "24.0.0",
+    "jest-cli": "24.8.0",
     "jest-enzyme": "7.0.1",
     "jest-fetch-mock": "2.1.0",
     "lint-staged": "8.1.0",

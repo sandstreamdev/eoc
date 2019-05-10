@@ -36,25 +36,49 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.TOGGLE_SUCCESS: {
       const {
-        payload: { itemId, item }
+        payload: { itemId }
       } = action;
+
+      const prevItem = state[itemId];
 
       return {
         ...state,
         [itemId]: {
           ...state[itemId],
-          isOrdered: item.isOrdered
+          isOrdered: !prevItem.isOrdered
         }
       };
     }
-    case ItemActionTypes.VOTE_SUCCESS: {
+    case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
-        payload: { itemId, item }
+        payload: { itemId }
       } = action;
+
+      const prevItem = state[itemId];
 
       return {
         ...state,
-        [itemId]: { ...item }
+        [itemId]: {
+          ...prevItem,
+          isVoted: true,
+          votesCount: prevItem.votesCount + 1
+        }
+      };
+    }
+    case ItemActionTypes.CLEAR_VOTE_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+
+      const prevItem = state[itemId];
+
+      return {
+        ...state,
+        [itemId]: {
+          ...prevItem,
+          isVoted: false,
+          votesCount: prevItem.votesCount - 1
+        }
       };
     }
     case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {

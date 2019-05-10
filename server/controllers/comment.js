@@ -19,7 +19,7 @@ const addComment = (req, resp) => {
       _id: sanitize(listId),
       memberIds: userId,
       'items._id': sanitize(itemId),
-      'items.isOrdered': true
+      'items.isOrdered': false
     },
     { items: { $elemMatch: { isOrdered: true } } }
   )

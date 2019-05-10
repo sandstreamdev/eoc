@@ -1,4 +1,183 @@
+const { ObjectId } = require('mongoose').Types;
+const _map = require('lodash/map');
 const _pickBy = require('lodash/pickBy');
+
+const fromEntries = convertedArray =>
+  convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+const filter = f => object =>
+  fromEntries(
+    Object.entries(object).filter(([key, value]) => f(value, key, object))
+  );
+
+const isValidMongoId = id => ObjectId.isValid(id);
+
+const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
+
+const responseWithList = (list, userId) => {
+  const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
+  const doneItemsCount = items.filter(item => item.isOrdered).length;
+  const unhandledItemsCount = items.length - doneItemsCount;
+
+  const listToSend = {
+    _id,
+    description,
+    doneItemsCount,
+    isFavourite: isUserFavourite(favIds, userId),
+    isPrivate,
+    name,
+    unhandledItemsCount
+  };
+
+  if (cohortId) {
+    listToSend.cohortId = cohortId;
+  }
+
+  return listToSend;
+};
+
+const responseWithListsMetaData = (lists, userId) =>
+  _map(lists, list => {
+    const { favIds, items, ...rest } = list;
+    const doneItemsCount = items.filter(item => item.isOrdered).length;
+    const unhandledItemsCount = items.length - doneItemsCount;
+
+    return {
+      ...rest,
+      doneItemsCount,
+      isFavourite: isUserFavourite(favIds, userId),
+      unhandledItemsCount
+    };
+  });
+
+const checkIfArrayContainsUserId = (idsArray, userId) => {
+  const arrayOfStrings = idsArray.map(id => id.toString());
+  const userIdAsString = userId.toString();
+
+  return arrayOfStrings.indexOf(userIdAsString) !== -1;
+};
+
+const responseWithItems = (userId, list) => {
+  const { items } = list;
+
+  return _map(items, item => {
+    const { voterIds, ...rest } = item;
+
+    return {
+      ...rest,
+      isVoted: checkIfArrayContainsUserId(voterIds, userId),
+      votesCount: voterIds.length
+    };
+  });
+};
+
+const responseWithItem = (item, userId) => {
+  const { voterIds, ...rest } = item;
+
+  return {
+    ...rest,
+    isVoted: checkIfArrayContainsUserId(voterIds, userId),
+    votesCount: voterIds.length
+  };
+};
+
+const responseWithCohorts = (cohorts, userId) =>
+  _map(cohorts, cohort => {
+    const { favIds, memberIds, ownerIds, ...rest } = cohort;
+    const membersCount = memberIds.length;
+
+    return {
+      ...rest,
+      isFavourite: isUserFavourite(favIds, userId),
+      membersCount
+    };
+  });
+
+const responseWithCohort = (cohort, userId) => {
+  const { _id, description, favIds, memberIds, name, isArchived } = cohort;
+  const membersCount = memberIds.length;
+
+  return {
+    _id,
+    description,
+    isArchived,
+    isFavourite: isUserFavourite(favIds, userId),
+    membersCount,
+    name
+  };
+};
+
+const responseWithCohortMembers = (users, ownerIds) =>
+  _map(users, user => {
+    const { _id, avatarUrl, displayName } = user;
+
+    return {
+      _id,
+      avatarUrl,
+      displayName,
+      isMember: true,
+      isOwner: checkIfArrayContainsUserId(ownerIds, _id)
+    };
+  });
+
+const checkIfCohortMember = (cohort, userId) => {
+  if (cohort) {
+    const { memberIds, ownerIds } = cohort;
+    const userIdAsString = userId.toString();
+
+    return (
+      [...memberIds, ...ownerIds]
+        .map(id => id.toString())
+        .indexOf(userIdAsString) !== -1
+    );
+  }
+
+  return false;
+};
+
+const responseWithCohortMember = (user, ownerIds) => {
+  const { avatarUrl, displayName, _id } = user;
+
+  return {
+    _id,
+    avatarUrl,
+    displayName,
+    isMember: true,
+    isOwner: checkIfArrayContainsUserId(ownerIds, _id)
+  };
+};
+
+const responseWithListMember = (user, cohortMembersIds) => {
+  const { avatarUrl, displayName, _id: newMemberId } = user;
+
+  return {
+    _id: newMemberId,
+    avatarUrl,
+    displayName,
+    isGuest: !checkIfArrayContainsUserId(cohortMembersIds, newMemberId),
+    isMember: false,
+    isOwner: false
+  };
+};
+
+const responseWithListMembers = (
+  viewers,
+  memberIds,
+  ownerIds,
+  cohortMembersIds
+) =>
+  viewers.map(user => {
+    const { _id, avatarUrl, displayName } = user;
+
+    return {
+      _id,
+      avatarUrl,
+      displayName,
+      isOwner: checkIfArrayContainsUserId(ownerIds, _id),
+      isGuest: !checkIfArrayContainsUserId(cohortMembersIds, _id),
+      isMember: checkIfArrayContainsUserId(memberIds, _id)
+    };
+  });
 
 /**
  * @param {*} subdocumentName - name of nested collection
@@ -21,4 +200,55 @@ const updateSubdocumentFields = (subdocumentName, data) => {
   return dataToUpdate;
 };
 
-module.exports = { updateSubdocumentFields };
+const responseWithComment = (comment, avatarUrl, displayName) => {
+  const { _id, authorId, createdAt, text } = comment.toObject();
+
+  return {
+    _id,
+    authorAvatarUrl: avatarUrl,
+    authorId,
+    authorName: displayName,
+    createdAt,
+    text
+  };
+};
+
+const responseWithComments = comments =>
+  _map(comments, comment => {
+    const {
+      authorId: {
+        _id: authorId,
+        displayName: authorName,
+        avatarUrl: authorAvatarUrl
+      },
+      ...rest
+    } = comment;
+
+    return {
+      authorAvatarUrl,
+      authorId,
+      authorName,
+      ...rest
+    };
+  });
+
+module.exports = {
+  checkIfArrayContainsUserId,
+  checkIfCohortMember,
+  filter,
+  isUserFavourite,
+  isValidMongoId,
+  responseWithCohort,
+  responseWithCohortMember,
+  responseWithCohortMembers,
+  responseWithCohorts,
+  responseWithComment,
+  responseWithComments,
+  responseWithItem,
+  responseWithItems,
+  responseWithList,
+  responseWithListMember,
+  responseWithListMembers,
+  responseWithListsMetaData,
+  updateSubdocumentFields
+};

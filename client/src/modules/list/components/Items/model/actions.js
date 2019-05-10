@@ -17,9 +17,9 @@ const addItemSuccess = (item, listId) => ({
   payload: { item, listId }
 });
 
-const toggleItemSuccess = (item, itemId, listId) => ({
+const toggleItemSuccess = (itemId, listId) => ({
   type: ItemActionTypes.TOGGLE_SUCCESS,
-  payload: { item, itemId, listId }
+  payload: { itemId, listId }
 });
 
 const toggleItemFailure = errMessage => ({
@@ -27,13 +27,23 @@ const toggleItemFailure = errMessage => ({
   payload: errMessage
 });
 
-const voteForItemSuccess = (item, itemId, listId) => ({
-  type: ItemActionTypes.VOTE_SUCCESS,
-  payload: { item, itemId, listId }
+const setVoteSuccess = (itemId, listId) => ({
+  type: ItemActionTypes.SET_VOTE_SUCCESS,
+  payload: { itemId, listId }
 });
 
-const voteForItemFailure = errMessage => ({
-  type: ItemActionTypes.VOTE_FAILURE,
+const setVoteFailure = errMessage => ({
+  type: ItemActionTypes.SET_VOTE_FAILURE,
+  payload: errMessage
+});
+
+const clearVoteSuccess = (itemId, listId) => ({
+  type: ItemActionTypes.CLEAR_VOTE_SUCCESS,
+  payload: { itemId, listId }
+});
+
+const clearVoteFailure = errMessage => ({
+  type: ItemActionTypes.CLEAR_VOTE_FAILURE,
   payload: errMessage
 });
 
@@ -87,13 +97,13 @@ export const addItem = (item, listId) => dispatch =>
     });
 
 export const toggle = (isOrdered, itemId, listId, updatedAuthor) => dispatch =>
-  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
+  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
     itemId,
     isOrdered: !isOrdered
   })
     .then(resp => resp.json())
-    .then(item =>
-      setTimeout(() => dispatch(toggleItemSuccess(item, itemId, listId)), 600)
+    .then(json =>
+      setTimeout(() => dispatch(toggleItemSuccess(itemId, listId)), 600)
     )
     .catch(err => {
       dispatch(toggleItemFailure());
@@ -107,9 +117,9 @@ export const toggle = (isOrdered, itemId, listId, updatedAuthor) => dispatch =>
 export const setVote = (itemId, listId) => dispatch =>
   patchData(`${ENDPOINT_URL}/lists/${listId}/set-vote`, { itemId })
     .then(resp => resp.json())
-    .then(item => dispatch(voteForItemSuccess(item, itemId, listId)))
+    .then(json => dispatch(setVoteSuccess(itemId, listId)))
     .catch(err => {
-      dispatch(voteForItemFailure());
+      dispatch(setVoteFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
@@ -120,9 +130,9 @@ export const setVote = (itemId, listId) => dispatch =>
 export const clearVote = (itemId, listId) => dispatch =>
   patchData(`${ENDPOINT_URL}/lists/${listId}/clear-vote`, { itemId })
     .then(resp => resp.json())
-    .then(item => dispatch(voteForItemSuccess(item, itemId, listId)))
+    .then(json => dispatch(clearVoteSuccess(itemId, listId)))
     .catch(err => {
-      dispatch(voteForItemFailure());
+      dispatch(clearVoteFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
@@ -141,7 +151,7 @@ export const updateItemDetails = (listId, itemId, data) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        json.message || 'Item details updated successfully.'
       );
     })
     .catch(err => {
