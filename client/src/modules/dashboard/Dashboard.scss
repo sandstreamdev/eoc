@@ -1,0 +1,7 @@
+.dashboard {
+  padding-bottom: 100px;
+
+  @include breakpoint($large) {
+    padding: 30px;
+  }
+}
