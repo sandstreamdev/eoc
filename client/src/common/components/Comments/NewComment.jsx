@@ -33,23 +33,27 @@ class NewComment extends PureComponent {
 
   handleKeyPress = event => {
     const { code } = event;
-    const { onEscapePress } = this.props;
+    const { onClose } = this.props;
 
     if (code === 'Escape') {
-      onEscapePress();
+      onClose();
     }
   };
 
   handleAddComment = () => {
-    const { onAddComment } = this.props;
+    const { onAddComment, onClose } = this.props;
     const { comment } = this.state;
+    const commentToSave = _trim(comment);
 
-    if (!_isEmpty(_trim(comment))) {
+    if (!_isEmpty(commentToSave)) {
       this.setState({ pending: true });
 
-      this.pendingPromise = makeAbortablePromise(onAddComment(comment));
+      this.pendingPromise = makeAbortablePromise(onAddComment(commentToSave));
       this.pendingPromise.promise
-        .then(() => this.setState({ comment: '', pending: false }))
+        .then(() => {
+          this.setState({ comment: '', pending: false });
+          onClose();
+        })
         .catch(err => {
           if (!(err instanceof AbortPromiseException)) {
             this.setState({ pending: false });
@@ -62,6 +66,7 @@ class NewComment extends PureComponent {
 
   render() {
     const { comment, pending } = this.state;
+
     return (
       <div className="new-comment">
         <div className="new-comment__wrapper">
@@ -94,7 +99,7 @@ class NewComment extends PureComponent {
 
 NewComment.propTypes = {
   onAddComment: PropTypes.func,
-  onEscapePress: PropTypes.func
+  onClose: PropTypes.func
 };
 
 export default NewComment;

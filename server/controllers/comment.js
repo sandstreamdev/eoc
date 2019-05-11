@@ -14,15 +14,12 @@ const addComment = (req, resp) => {
     user: { _id: userId, avatarUrl, displayName }
   } = req;
 
-  List.findOne(
-    {
-      _id: sanitize(listId),
-      memberIds: userId,
-      'items._id': sanitize(itemId),
-      'items.isOrdered': true
-    },
-    { items: { $elemMatch: { isOrdered: true } } }
-  )
+  List.findOne({
+    _id: sanitize(listId),
+    memberIds: userId,
+    'items._id': sanitize(itemId),
+    'items.isOrdered': false
+  })
     .exec()
     .then(list => {
       if (!list) {
@@ -74,9 +71,13 @@ const getComments = (req, resp) => {
         throw new BadRequestException('List data not found.');
       }
 
-      return Comment.find({ itemId: sanitizedItemId }, '_id createdAt text', {
-        sort: { createdAt: -1 }
-      })
+      return Comment.find(
+        { itemId: sanitizedItemId },
+        '_id itemId createdAt text',
+        {
+          sort: { createdAt: -1 }
+        }
+      )
         .populate('authorId', '_id avatarUrl displayName')
         .lean()
         .exec();
@@ -94,6 +95,7 @@ const getComments = (req, resp) => {
 
         return resp.status(status).send({ message });
       }
+
       resp.status(400).send({
         message:
           'An error occurred while fetching the comments. Please try again.'

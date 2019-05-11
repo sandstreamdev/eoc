@@ -65,11 +65,8 @@ class CommentsList extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
-    const action = addComment(listId, itemId, comment);
 
-    action.then(() => this.hideAddComment());
-
-    return action;
+    return addComment(listId, itemId, comment);
   };
 
   render() {
@@ -78,7 +75,7 @@ class CommentsList extends PureComponent {
 
     return (
       <div className="comments">
-        <div className="comments__heading">
+        <header>
           <h2 className="comments__header">Comments</h2>
           {isFormAccessible && !isNewCommentVisible && (
             <button
@@ -89,26 +86,28 @@ class CommentsList extends PureComponent {
               Add comment
             </button>
           )}
-        </div>
+        </header>
         {isNewCommentVisible && (
           <NewComment
             onAddComment={this.handleAddComment}
-            onEscapePress={this.hideAddComment}
+            onClose={this.hideAddComment}
           />
         )}
-        {!_isEmpty(comments) ? (
-          <ul className="comments__list">
-            {_map(comments, comment => (
-              <Comment comment={comment} key={comment._id} />
-            ))}
-          </ul>
-        ) : (
-          <MessageBox
-            message="There are no comments!"
-            type={MessageType.INFO}
-          />
-        )}
-        {pending && <Preloader />}
+        <div className="comments__container">
+          {!_isEmpty(comments) ? (
+            <ul className="comments__list">
+              {_map(comments, comment => (
+                <Comment comment={comment} key={comment._id} />
+              ))}
+            </ul>
+          ) : (
+            <MessageBox
+              message="There are no comments!"
+              type={MessageType.INFO}
+            />
+          )}
+          {pending && <Preloader />}
+        </div>
       </div>
     );
   }

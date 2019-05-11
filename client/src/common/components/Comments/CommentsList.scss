@@ -1,7 +1,7 @@
 .comments {
   position: relative;
 
-  &__heading {
+  header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -13,5 +13,9 @@
     text-align: left;
     padding: 16px 0;
     line-height: 1.2;
+  }
+
+  &__container {
+    position: relative;
   }
 }

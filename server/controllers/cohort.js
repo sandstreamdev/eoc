@@ -50,6 +50,7 @@ const getCohortsMetaData = (req, resp) => {
   Cohort.find({ memberIds: currentUserId, isArchived: false })
     .select('_id name description favIds memberIds ownerIds')
     .sort({ createdAt: -1 })
+    .lean()
     .exec()
     .then(docs => {
       if (!docs) {
@@ -79,6 +80,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
     '_id name description favIds isArchived memberIds ownerIds',
     { sort: { created_at: -1 } }
   )
+    .lean()
     .exec()
     .then(docs => {
       if (!docs) {
@@ -151,6 +153,7 @@ const getCohortDetails = (req, resp) => {
     memberIds: userId
   })
     .populate('memberIds', 'avatarUrl displayName _id')
+    .lean()
     .exec()
     .then(doc => {
       if (!doc) {
@@ -211,6 +214,7 @@ const deleteCohortById = (req, resp) => {
       }
 
       documentName = doc.name;
+
       return List.find({ cohortId: sanitizedCohortId }, '_id')
         .lean()
         .exec();
@@ -452,19 +456,19 @@ const addMember = (req, resp) => {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 
-      const { _id: newMemberId, avatarUrl, displayName } = user;
+      const { _id, avatarUrl, displayName } = user;
 
-      if (checkIfCohortMember(currentCohort, newMemberId)) {
+      if (checkIfCohortMember(currentCohort, _id)) {
         throw new BadRequestException('User is already a member.');
       }
 
-      currentCohort.memberIds.push(newMemberId);
-      newMember = { avatarUrl, newMemberId, displayName };
+      currentCohort.memberIds.push(_id);
+      newMember = { avatarUrl, _id, displayName };
 
       return currentCohort.save();
     })
     .then(() => {
-      const { newMemberId } = newMember;
+      const { _id: newMemberId } = newMember;
 
       return List.updateMany(
         {

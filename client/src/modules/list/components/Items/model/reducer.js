@@ -17,7 +17,7 @@ const comments = (state = {}, action) => {
         payload: { comments }
       } = action;
 
-      return { ...comments };
+      return comments;
     }
     default:
       return state;
@@ -46,18 +46,40 @@ const items = (state = {}, action) => {
           ...state[itemId],
           authorId: authorId || prevItem.authorId,
           authorName: authorName || prevItem.authorName,
-          isOrdered: !state[itemId].isOrdered
+          isOrdered: !prevItem.isOrdered
         }
       };
     }
-    case ItemActionTypes.VOTE_SUCCESS: {
+    case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
-        payload: { itemId, item }
+        payload: { itemId }
       } = action;
+
+      const prevItem = state[itemId];
 
       return {
         ...state,
-        [itemId]: { ...item }
+        [itemId]: {
+          ...prevItem,
+          isVoted: true,
+          votesCount: prevItem.votesCount + 1
+        }
+      };
+    }
+    case ItemActionTypes.CLEAR_VOTE_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+
+      const prevItem = state[itemId];
+
+      return {
+        ...state,
+        [itemId]: {
+          ...prevItem,
+          isVoted: false,
+          votesCount: prevItem.votesCount - 1
+        }
       };
     }
     case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {

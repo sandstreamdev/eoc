@@ -2,10 +2,12 @@ const userId = process.env.USER_ID;
 
 const generateLists = cohortId => [
   {
-    ownerIds: [userId],
+    _id: '5c9a1299341674ba31ff6aas',
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
+    favIds: [userId],
     isArchived: false,
+    ownerIds: [userId],
     items: [
       {
         _id: '5c9a123b074ce3b9ff43ce30',
@@ -45,6 +47,7 @@ const generateLists = cohortId => [
     ownerIds: [userId],
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
+    favIds: [userId],
     isArchived: false,
     items: [],
     name: 'Private list 2'
@@ -54,6 +57,7 @@ const generateLists = cohortId => [
     ownerIds: [userId],
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
+    favIds: [userId],
     isArchived: true,
     items: [],
     name: 'Private list 3'
@@ -63,6 +67,7 @@ const generateLists = cohortId => [
     ownerIds: [userId],
     cohortId,
     description: '',
+    favIds: [],
     isArchived: false,
     items: [],
     name: 'List 1 in cohort 2'
@@ -72,6 +77,7 @@ const generateLists = cohortId => [
     ownerIds: [userId],
     cohortId,
     description: '',
+    favIds: [],
     isArchived: false,
     items: [],
     name: 'List 2 in cohort 2'
@@ -81,6 +87,7 @@ const generateLists = cohortId => [
     ownerIds: [userId],
     cohortId,
     description: '',
+    favIds: [],
     isArchived: true,
     items: [],
     name: 'Archived list 3 in cohort 2'
