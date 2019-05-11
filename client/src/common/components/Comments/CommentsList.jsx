@@ -65,11 +65,8 @@ class CommentsList extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
-    const action = addComment(listId, itemId, comment);
 
-    action.then(() => this.hideAddComment());
-
-    return action;
+    return addComment(listId, itemId, comment);
   };
 
   render() {
@@ -93,7 +90,7 @@ class CommentsList extends PureComponent {
         {isNewCommentVisible && (
           <NewComment
             onAddComment={this.handleAddComment}
-            onEscapePress={this.hideAddComment}
+            onClose={this.hideAddComment}
           />
         )}
         <div className="comments__container">
