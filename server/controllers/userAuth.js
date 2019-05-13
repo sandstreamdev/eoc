@@ -8,6 +8,9 @@ const setUserAndSession = (req, res) => {
       name: req.user.displayName
     })
   );
+  if (req.user.idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
+    res.cookie('demo', true);
+  }
   res.redirect('/');
 };
 
@@ -17,6 +20,7 @@ const logout = (req, res) => {
 
     res.clearCookie('connect.sid');
     res.clearCookie('user');
+    res.clearCookie('demo');
     res.redirect('/');
   });
 };

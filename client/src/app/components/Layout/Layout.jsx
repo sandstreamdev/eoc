@@ -7,7 +7,10 @@ import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import AuthBox from 'modules/authorization/AuthBox';
-import { setCurrentUser } from 'modules/authorization/model/actions';
+import {
+  setCurrentUser,
+  logoutCurrentUser
+} from 'modules/authorization/model/actions';
 import { UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
@@ -16,10 +19,15 @@ import Page404 from 'common/components/Page404';
 import About from 'modules/about';
 import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
+import { checkIfCookieSet } from '../../../common/utils/cookie';
 
 export class Layout extends Component {
   componentDidMount() {
     this.setAuthenticationState();
+    if (checkIfCookieSet('demo')) {
+      window.addEventListener('beforeunload', this.handleUnload);
+      // window.addEventListener('unload', this.handleUnload2);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -35,14 +43,30 @@ export class Layout extends Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.handleUnload);
+    window.removeEventListener('hashchange', this.handleUnload2);
+  }
+
   setAuthenticationState = () => {
     const { setCurrentUser } = this.props;
     setCurrentUser();
   };
 
+  handleUnload2 = () => {
+    // if (!window.location.href.match(/localhost/)) {
+    //   const { logoutCurrentUser } = this.props;
+    //   logoutCurrentUser();
+    // }
+  };
+
+  handleUnload = () => {
+    const { logoutCurrentUser } = this.props;
+    logoutCurrentUser();
+  };
+
   render() {
     const { currentUser } = this.props;
-
     return !currentUser ? (
       <Switch>
         <Route component={AuthBox} exact path="/" />
@@ -74,6 +98,7 @@ Layout.propTypes = {
     push: PropTypes.func
   }),
 
+  logoutCurrentUser: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired
 };
 
@@ -84,6 +109,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { setCurrentUser }
+    { setCurrentUser, logoutCurrentUser }
   )(Layout)
 );
