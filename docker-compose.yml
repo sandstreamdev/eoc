@@ -4,6 +4,7 @@ services:
     container_name: eoc_server_container
     restart: always
     build: .
+    image: "${BRANCH_NAME}:${BUILD_NUMBER}"
     ports:
       - '8080:8080'
     links:
