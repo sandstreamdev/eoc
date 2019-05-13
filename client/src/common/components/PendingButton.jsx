@@ -1,5 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
@@ -51,9 +52,11 @@ class PendingButton extends PureComponent {
     return (
       <Fragment>
         <button
-          className={className}
+          className={classNames(className, {
+            [`${className}--pending`]: pending
+          })}
           disabled={pending || disabled}
-          onClick={this.handleOnClick}
+          onClick={disabled ? null : this.handleOnClick}
           type="button"
           value={value}
         >

@@ -2,7 +2,10 @@ import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 
 import { ListActionTypes } from './actionTypes';
-import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
+import {
+  CommentActionTypes,
+  ItemActionTypes
+} from 'modules/list/components/Items/model/actionTypes';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
 
@@ -78,6 +81,14 @@ const membersReducer = (state = [], action) => {
           : member
       );
     }
+    case ListActionTypes.CHANGE_TYPE_SUCCESS: {
+      const {
+        payload: {
+          data: { members }
+        }
+      } = action;
+      return members;
+    }
     default:
       return state;
   }
@@ -115,21 +126,11 @@ const lists = (state = {}, action) => {
       return { ...state, [action.payload.listId]: action.payload.data };
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
-    case CohortActionTypes.ARCHIVE_SUCCESS:
-      return {};
     case ListActionTypes.FAVOURITES_SUCCESS: {
       const {
         payload: { listId, isFavourite }
       } = action;
       return { ...state, [listId]: { ...state[listId], isFavourite } };
-    }
-    case ItemActionTypes.ADD_SUCCESS:
-    case ItemActionTypes.CLONE_SUCCESS:
-    case ItemActionTypes.TOGGLE_SUCCESS:
-    case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
-    case ItemActionTypes.VOTE_SUCCESS: {
-      const currentList = state[action.payload.listId];
-      return { ...state, [action.payload.listId]: items(currentList, action) };
     }
     case ListActionTypes.ADD_VIEWER_SUCCESS:
     case ListActionTypes.ADD_OWNER_ROLE_SUCCESS:
@@ -144,6 +145,44 @@ const lists = (state = {}, action) => {
       return {
         ...state,
         [listId]: { ...state[listId], members: membersReducer(members, action) }
+      };
+    }
+    case ListActionTypes.CHANGE_TYPE_SUCCESS: {
+      const {
+        payload: {
+          data: { type },
+          listId
+        }
+      } = action;
+      const { members } = state[listId];
+
+      return {
+        ...state,
+        [listId]: {
+          ...state[listId],
+          type,
+          members: membersReducer(members, action)
+        }
+      };
+    }
+    case CohortActionTypes.ARCHIVE_SUCCESS:
+      return {};
+    case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.CLONE_SUCCESS:
+    case ItemActionTypes.TOGGLE_SUCCESS:
+    case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
+    case ItemActionTypes.SET_VOTE_SUCCESS:
+    case ItemActionTypes.CLEAR_VOTE_SUCCESS:
+    case CommentActionTypes.ADD_SUCCESS:
+    case CommentActionTypes.FETCH_SUCCESS: {
+      const {
+        payload: { listId }
+      } = action;
+      const { items: prevItems } = state[listId];
+
+      return {
+        ...state,
+        [listId]: { ...state[listId], items: items(prevItems, action) }
       };
     }
     default:

@@ -3,9 +3,6 @@
   margin-right: 8px;
 
   &__icon-link {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 38px;
     width: 38px;
     border: 0;
@@ -13,6 +10,8 @@
     z-index: 1;
     cursor: pointer;
     background: transparent;
+    text-decoration: none;
+
     svg {
       height: 16px;
       path {

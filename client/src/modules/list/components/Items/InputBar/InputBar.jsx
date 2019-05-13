@@ -45,7 +45,6 @@ class InputBar extends Component {
     } = this.props;
     const { itemName } = this.state;
     const newItem = {
-      authorName: currentUser.name,
       authorId: currentUser.id,
       name: itemName
     };
@@ -94,6 +93,7 @@ class InputBar extends Component {
 
   render() {
     const { pending } = this.state;
+
     return (
       <div className="input-bar">
         {this.renderInputBar()}

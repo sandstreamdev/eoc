@@ -6,12 +6,11 @@ import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import _isEqual from 'lodash/isEqual';
+import isURL from 'validator/lib/isURL';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
 import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
-import NewComment from 'common/components/Comments/NewComment';
-import Comment from 'common/components/Comments/Comment';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
   clearVote,
@@ -20,15 +19,13 @@ import {
   toggle,
   updateItemDetails
 } from '../model/actions';
-import { isUrlValid } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import CommentsList from 'common/components/Comments/CommentsList';
 
 class ListItem extends PureComponent {
-  pendingPromises = [];
-
   constructor(props) {
     super(props);
 
@@ -40,7 +37,6 @@ class ListItem extends PureComponent {
       areDetailsVisible: false,
       areFieldsUpdated: false,
       done: isOrdered,
-      isNewCommentVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
       link
@@ -51,46 +47,35 @@ class ListItem extends PureComponent {
     this.checkIfFieldsUpdated();
   }
 
-  componentWillUnmount() {
-    this.pendingPromises.map(promise => promise.abort());
-  }
-
-  addPendingPromise = promise => this.pendingPromises.push(promise);
-
-  removePendingPromise = promise => {
-    this.pendingPromises = this.pendingPromises.filter(p => p !== promise);
-  };
-
   handleItemToggling = () => {
     const {
       currentUser: { name, id: userId },
       data: { isOrdered, authorId, _id },
+      isMember,
       match: {
         params: { id: listId }
       },
       toggle
     } = this.props;
-    const isSameAuthor = authorId === userId;
+    const isNotSameAuthor = authorId !== userId;
+
+    if (!isMember) {
+      return;
+    }
 
     this.setState(({ done }) => ({ done: !done }));
 
-    return isSameAuthor
-      ? toggle(isOrdered, _id, listId, name)
+    const shouldChangeAuthor = isNotSameAuthor && isOrdered;
+
+    return shouldChangeAuthor
+      ? toggle(isOrdered, _id, listId, userId, name)
       : toggle(isOrdered, _id, listId);
   };
 
-  toggleDetails = () =>
+  handleDetailsVisibility = () =>
     this.setState(({ areDetailsVisible }) => ({
       areDetailsVisible: !areDetailsVisible
     }));
-
-  showAddNewComment = () => this.setState({ isNewCommentVisible: true });
-
-  hideAddNewComment = () => this.setState({ isNewCommentVisible: false });
-
-  handleAddNewComment = comment => {
-    // Adding new comment will be handled in next tasks
-  };
 
   handleDataUpdate = () => {
     const { itemDescription: description, link } = this.state;
@@ -100,18 +85,24 @@ class ListItem extends PureComponent {
         description: previousDescription,
         link: previousLink
       },
+      isMember,
       match: {
         params: { id: listId }
       },
       updateItemDetails
     } = this.props;
+
+    if (!isMember) {
+      return;
+    }
+
     const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
     const isDescriptionUpdated = !_isEqual(
       _trim(previousDescription),
       _trim(description)
     );
 
-    const canBeUpdated = isUrlValid(link) || _isEmpty(_trim(link));
+    const canBeUpdated = isURL(link) || _isEmpty(_trim(link));
 
     if (!canBeUpdated) {
       return this.setState({ isValidationErrorVisible: true });
@@ -141,12 +132,15 @@ class ListItem extends PureComponent {
     const {
       cloneItem,
       data: { _id: itemId },
+      isMember,
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    return cloneItem(listId, itemId);
+    if (isMember) {
+      return cloneItem(listId, itemId);
+    }
   };
 
   handleVoting = () => {
@@ -171,7 +165,8 @@ class ListItem extends PureComponent {
 
   renderVoting = () => {
     const {
-      data: { isOrdered, isVoted, votesCount }
+      data: { isOrdered, isVoted, votesCount },
+      isMember
     } = this.props;
 
     if (isOrdered) {
@@ -181,6 +176,7 @@ class ListItem extends PureComponent {
     return (
       <div className="list-item__voting">
         <VotingBox
+          isMember={isMember}
           isVoted={isVoted}
           onVote={this.handleVoting}
           votesCount={votesCount}
@@ -192,23 +188,27 @@ class ListItem extends PureComponent {
   renderDetails = () => {
     const { areFieldsUpdated, isValidationErrorVisible } = this.state;
     const {
-      data: { description, isOrdered, link }
+      data: { _id: itemId, comments, description, isOrdered, link },
+      isMember
     } = this.props;
+    const isFieldDisabled = !isMember;
 
     return (
       <Fragment>
         <div className="list-item__info">
           <div className="list-item__info-textarea">
             <Textarea
+              disabled={isFieldDisabled}
               initialValue={description}
-              onChange={this.handleItemDescription}
+              onChange={isMember ? this.handleItemDescription : null}
               placeholder="Description"
             />
           </div>
           <div className="list-item__info-details">
             <TextInput
+              disabled={isFieldDisabled}
               initialValue={link}
-              onChange={this.handleItemLink}
+              onChange={isMember ? this.handleItemLink : null}
               placeholder="Link"
             />
             {isValidationErrorVisible && (
@@ -216,11 +216,11 @@ class ListItem extends PureComponent {
                 <ErrorMessage message="Incorrect url." />
               </div>
             )}
-            {areFieldsUpdated && (
+            {areFieldsUpdated && isMember && (
               <div className="list-item__save-details">
                 <PendingButton
                   className="primary-button"
-                  disabled={isValidationErrorVisible}
+                  disabled={isValidationErrorVisible || !isMember}
                   onClick={this.handleDataUpdate}
                   preloaderTheme={PreloaderTheme.LIGHT}
                 >
@@ -230,69 +230,32 @@ class ListItem extends PureComponent {
             )}
           </div>
         </div>
-        {!isOrdered && (
+        {!isOrdered && isMember && (
           <div className="list-item__cloning">
             <PendingButton
               className="link-button"
+              disabled={!isMember}
               onClick={this.handleItemCloning}
             >
               Clone Item
             </PendingButton>
           </div>
         )}
+        <div className="list-item__comments">
+          <CommentsList
+            comments={comments}
+            isFormAccessible={isMember && !isOrdered}
+            itemId={itemId}
+          />
+        </div>
       </Fragment>
     );
   };
 
-  renderCommentForm = () => {
-    const { isNewCommentVisible } = this.state;
-
-    return (
-      <div className="list-item__new-comment">
-        {isNewCommentVisible ? (
-          <NewComment
-            onAddNewComment={this.handleAddNewComment}
-            onEscapePress={this.hideAddNewComment}
-          />
-        ) : (
-          <button
-            className="list-item__add-new-button link-button"
-            onClick={this.showAddNewComment}
-            type="button"
-          >
-            Add comment
-          </button>
-        )}
-      </div>
-    );
-  };
-
-  renderComments = () => (
-    <Fragment>
-      {this.renderCommentForm()}
-      <div className="list-item__comments">
-        <h2 className="list-item__heading">Comments</h2>
-        <Comment
-          author="Adam Klepacz"
-          comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                  accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                  ipsam, molestiae similique optio sint hic!"
-        />
-        <Comment
-          author="Adam Klepacz"
-          comment="  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Excepturi voluptatem vitae qui nihil reprehenderit quia nam
-                  accusantium nobis. Culpa ducimus aspernatur ea libero! Nobis
-                  ipsam, molestiae similique optio sint hic!"
-        />
-      </div>
-    </Fragment>
-  );
-
   render() {
     const {
-      data: { isOrdered, authorName, _id, name }
+      data: { isOrdered, authorName, _id, name },
+      isMember
     } = this.props;
     const { done, areDetailsVisible } = this.state;
 
@@ -309,7 +272,7 @@ class ListItem extends PureComponent {
             'list-item__top--details-visible': areDetailsVisible,
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
-          onClick={this.toggleDetails}
+          onClick={this.handleDetailsVisibility}
           role="listitem"
         >
           <input
@@ -328,6 +291,7 @@ class ListItem extends PureComponent {
           <div className="list-item__toggle z-index-high">
             <PendingButton
               className="list-item__icon"
+              disabled={!isMember}
               onClick={this.handleItemToggling}
             />
           </div>
@@ -343,8 +307,14 @@ class ListItem extends PureComponent {
 ListItem.propTypes = {
   currentUser: UserPropType.isRequired,
   data: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])
+    PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.bool,
+      PropTypes.number,
+      PropTypes.object
+    ])
   ),
+  isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
   clearVote: PropTypes.func.isRequired,

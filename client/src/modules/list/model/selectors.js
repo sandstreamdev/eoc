@@ -3,6 +3,8 @@ import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 import { createSelector } from 'reselect';
 import _sortBy from 'lodash/sortBy';
+import _map from 'lodash/map';
+import _orderBy from 'lodash/orderBy';
 
 export const getList = (state, listId) => _pick(state.lists, listId)[listId];
 
@@ -10,15 +12,35 @@ export const getItems = createSelector(
   [getList],
   list => {
     if (list) {
-      const { items = [] } = list;
+      const { items = {} } = list;
 
-      return items.sort((a, b) =>
-        new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
-          ? 1
-          : -1
+      return _orderBy(
+        _map(items, item => ({
+          ...item,
+          comments: _keyBy(
+            _orderBy(
+              item.comments,
+              comment => new Date(comment.createdAt).getTime(),
+              ['desc']
+            ),
+            '_id'
+          )
+        })),
+        el => new Date(el.createdAt).getTime(),
+        ['desc']
       );
     }
   }
+);
+
+export const getDoneItems = createSelector(
+  [getItems],
+  items => _filter(items, item => item.isOrdered)
+);
+
+export const getUndoneItems = createSelector(
+  [getItems],
+  items => _filter(items, item => !item.isOrdered)
 );
 
 export const getLists = state => state.lists;

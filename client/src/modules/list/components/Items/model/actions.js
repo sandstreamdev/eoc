@@ -1,6 +1,11 @@
+import _keyBy from 'lodash/keyBy';
+
 import { ENDPOINT_URL } from 'common/constants/variables';
-import { patchData, postData } from 'common/utils/fetchMethods';
-import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
+import { getData, patchData, postData } from 'common/utils/fetchMethods';
+import {
+  CommentActionTypes,
+  ItemActionTypes
+} from 'modules/list/components/Items/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
@@ -8,45 +13,45 @@ const addItemFailure = errorMessage => ({
   type: ItemActionTypes.ADD_FAILURE,
   payload: errorMessage
 });
+
 const addItemSuccess = (item, listId) => ({
   type: ItemActionTypes.ADD_SUCCESS,
   payload: { item, listId }
 });
-const addItemRequest = () => ({
-  type: ItemActionTypes.ADD_REQUEST
+
+const toggleItemSuccess = (authorId, authorName, itemId, listId) => ({
+  type: ItemActionTypes.TOGGLE_SUCCESS,
+  payload: { authorId, authorName, itemId, listId }
 });
 
-const toggleItemSuccess = (item, listId) => ({
-  type: ItemActionTypes.TOGGLE_SUCCESS,
-  payload: { item, listId }
-});
-const toggleItemRequest = () => ({
-  type: ItemActionTypes.TOGGLE_REQUEST
-});
 const toggleItemFailure = errMessage => ({
   type: ItemActionTypes.TOGGLE_FAILURE,
   payload: errMessage
 });
 
-const voteForItemSuccess = (item, listId) => ({
-  type: ItemActionTypes.VOTE_SUCCESS,
-  payload: { item, listId }
+const setVoteSuccess = (itemId, listId) => ({
+  type: ItemActionTypes.SET_VOTE_SUCCESS,
+  payload: { itemId, listId }
 });
-const voteForItemRequest = () => ({
-  type: ItemActionTypes.VOTE_REQUEST
+
+const setVoteFailure = errMessage => ({
+  type: ItemActionTypes.SET_VOTE_FAILURE,
+  payload: errMessage
 });
-const voteForItemFailure = errMessage => ({
-  type: ItemActionTypes.VOTE_FAILURE,
+
+const clearVoteSuccess = (itemId, listId) => ({
+  type: ItemActionTypes.CLEAR_VOTE_SUCCESS,
+  payload: { itemId, listId }
+});
+
+const clearVoteFailure = errMessage => ({
+  type: ItemActionTypes.CLEAR_VOTE_FAILURE,
   payload: errMessage
 });
 
 const updateItemDetailsSuccess = (listId, itemId, data) => ({
   type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
   payload: { listId, itemId, data }
-});
-
-const updateItemDetailsRequest = () => ({
-  type: ItemActionTypes.UPDATE_DETAILS_REQUEST
 });
 
 const updateItemDetailsFailure = () => ({
@@ -58,17 +63,30 @@ const cloneItemSuccess = (listId, item) => ({
   payload: { listId, item }
 });
 
-const cloneItemRequest = () => ({
-  type: ItemActionTypes.CLONE_REQUEST
-});
-
 const cloneItemFailure = () => ({
   type: ItemActionTypes.CLONE_FAILURE
 });
 
-export const addItem = (item, listId) => dispatch => {
-  dispatch(addItemRequest());
-  return postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
+const addCommentSuccess = (listId, itemId, comment) => ({
+  type: CommentActionTypes.ADD_SUCCESS,
+  payload: { comment, itemId, listId }
+});
+
+const addCommentFailure = () => ({
+  type: CommentActionTypes.ADD_FAILURE
+});
+
+const fetchCommentsSuccess = (listId, itemId, comments) => ({
+  type: CommentActionTypes.FETCH_SUCCESS,
+  payload: { comments, itemId, listId }
+});
+
+const fetchCommentsFailure = () => ({
+  type: CommentActionTypes.FETCH_FAILURE
+});
+
+export const addItem = (item, listId) => dispatch =>
+  postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json, listId)))
     .catch(err => {
@@ -79,23 +97,31 @@ export const addItem = (item, listId) => dispatch => {
         err.message || "Oops, we're sorry, adding item failed..."
       );
     });
-};
 
 export const toggle = (
   isOrdered,
   itemId,
   listId,
-  updatedAuthor
-) => dispatch => {
-  dispatch(toggleItemRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item`, {
-    itemId,
-    isOrdered: !isOrdered
+  authorId,
+  authorName
+) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
+    authorId,
+    isOrdered: !isOrdered,
+    itemId
   })
     .then(resp => resp.json())
-    .then(item =>
-      setTimeout(() => dispatch(toggleItemSuccess(item, listId)), 600)
-    )
+    .then(json => {
+      setTimeout(
+        () => dispatch(toggleItemSuccess(authorId, authorName, itemId, listId)),
+        600
+      );
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message || 'Item details updated successfully.'
+      );
+    })
     .catch(err => {
       dispatch(toggleItemFailure());
       createNotificationWithTimeout(
@@ -104,43 +130,35 @@ export const toggle = (
         err.message || "Oops, we're sorry, changing item's status failed..."
       );
     });
-};
 
-export const setVote = (itemId, listId) => dispatch => {
-  dispatch(voteForItemRequest());
-
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/set-vote`, { itemId })
+export const setVote = (itemId, listId) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/set-vote`, { itemId })
     .then(resp => resp.json())
-    .then(item => dispatch(voteForItemSuccess(item, listId)))
+    .then(json => dispatch(setVoteSuccess(itemId, listId)))
     .catch(err => {
-      dispatch(voteForItemFailure());
+      dispatch(setVoteFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, voting failed...."
       );
     });
-};
 
-export const clearVote = (itemId, listId) => dispatch => {
-  dispatch(voteForItemRequest());
-
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/clear-vote`, { itemId })
+export const clearVote = (itemId, listId) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/clear-vote`, { itemId })
     .then(resp => resp.json())
-    .then(item => dispatch(voteForItemSuccess(item, listId)))
+    .then(json => dispatch(clearVoteSuccess(itemId, listId)))
     .catch(err => {
-      dispatch(voteForItemFailure());
+      dispatch(clearVoteFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, voting failed...."
       );
     });
-};
 
-export const updateItemDetails = (listId, itemId, data) => dispatch => {
-  dispatch(updateItemDetailsRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
+export const updateItemDetails = (listId, itemId, data) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
     ...data,
     itemId
   })
@@ -150,7 +168,7 @@ export const updateItemDetails = (listId, itemId, data) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        json.message || 'Item details updated successfully.'
       );
     })
     .catch(err => {
@@ -161,11 +179,9 @@ export const updateItemDetails = (listId, itemId, data) => dispatch => {
         err.message
       );
     });
-};
 
-export const cloneItem = (listId, itemId) => dispatch => {
-  dispatch(cloneItemRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/clone-item`, {
+export const cloneItem = (listId, itemId) => dispatch =>
+  patchData(`${ENDPOINT_URL}/lists/${listId}/clone-item`, {
     itemId
   })
     .then(resp => resp.json())
@@ -185,4 +201,36 @@ export const cloneItem = (listId, itemId) => dispatch => {
         err.message
       );
     });
-};
+
+export const addComment = (listId, itemId, text) => dispatch =>
+  postData(`${ENDPOINT_URL}/comments/add-comment`, {
+    itemId,
+    listId,
+    text
+  })
+    .then(resp => resp.json())
+    .then(json => dispatch(addCommentSuccess(listId, itemId, json)))
+    .catch(err => {
+      dispatch(addCommentFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+
+export const fetchComments = (listId, itemId) => dispatch =>
+  getData(`${ENDPOINT_URL}/comments/${listId}/${itemId}/data`)
+    .then(resp => resp.json())
+    .then(json => {
+      const comments = _keyBy(json, '_id');
+      dispatch(fetchCommentsSuccess(listId, itemId, comments));
+    })
+    .catch(err => {
+      dispatch(fetchCommentsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });

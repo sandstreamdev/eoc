@@ -210,11 +210,27 @@ const removeMemberRoleFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_FAILURE
 });
 
+const changeTypeSuccess = (listId, data) => ({
+  type: ListActionTypes.CHANGE_TYPE_SUCCESS,
+  payload: { listId, data }
+});
+
+const changeTypeRequest = () => ({
+  type: ListActionTypes.CHANGE_TYPE_REQUEST
+});
+
+const changeTypeFailure = () => ({
+  type: ListActionTypes.CHANGE_TYPE_FAILURE
+});
+
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
     .then(resp => resp.json())
-    .then(json => dispatch(fetchListDataSuccess(json, listId)))
+    .then(json => {
+      const listData = { ...json, items: _keyBy(json.items, '_id') };
+      dispatch(fetchListDataSuccess(listData, listId));
+    })
     .catch(err => {
       dispatch(fetchListDataFailure());
       createNotificationWithTimeout(
@@ -559,6 +575,30 @@ export const removeMemberRole = (listId, userId) => dispatch => {
     })
     .catch(err => {
       dispatch(removeMemberRoleFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+};
+
+export const changeType = (listId, type) => dispatch => {
+  dispatch(changeTypeRequest());
+  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-type`, {
+    type
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(changeTypeSuccess(listId, json.data));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message
+      );
+    })
+    .catch(err => {
+      dispatch(changeTypeFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

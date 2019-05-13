@@ -40,7 +40,7 @@ class Textarea extends PureComponent {
   };
 
   render() {
-    const { placeholder } = this.props;
+    const { disabled, placeholder } = this.props;
     const { isEnlarged, value } = this.state;
     return (
       <div className="ss-textarea">
@@ -58,6 +58,7 @@ class Textarea extends PureComponent {
         )}
         <textarea
           className="ss-textarea__textarea"
+          disabled={disabled}
           name={placeholder}
           onBlur={this.handleBlur}
           onChange={this.handleOnChange}
@@ -72,6 +73,7 @@ class Textarea extends PureComponent {
 }
 
 Textarea.propTypes = {
+  disabled: PropTypes.bool,
   initialValue: PropTypes.string,
   placeholder: PropTypes.string.isRequired,
 
