@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Linkify from 'react-linkify';
 
 import { UserIcon } from 'assets/images/icons';
 import { dateFromString } from 'common/utils/helpers';
@@ -20,7 +21,13 @@ const Comment = ({ comment }) => {
       <div className="comment__body">
         <span className="comment__author">{authorName}</span>
         <span className="comment__date">{date}</span>
-        <p className="comment__content">{text}</p>
+        <p className="comment__content">
+          <Linkify
+            properties={{ target: '_blank', className: 'comment__link' }}
+          >
+            {text}
+          </Linkify>
+        </p>
       </div>
     </div>
   );
