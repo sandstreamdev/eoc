@@ -31,6 +31,16 @@
     color: $text-normal;
   }
 
+  &__link {
+    font-style: italic;
+    text-decoration: underline;
+    color: $link-color;
+
+    &:visited {
+      color: $text-normal;
+    }
+  }
+
   &__avatar {
     margin-right: 16px;
 
