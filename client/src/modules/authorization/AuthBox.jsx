@@ -5,6 +5,7 @@ import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import { checkIfCookieSet } from 'common/utils/cookie';
 import CookieConsentBox from 'common/components/CookieConsentBox';
+import GoogleButtonImg from '../../assets/images/google-btn.png';
 
 class AuthBox extends PureComponent {
   state = {
@@ -45,7 +46,7 @@ class AuthBox extends PureComponent {
                 <img
                   alt="Sign in with Google"
                   className="google-button__img"
-                  src="client/src/assets/images/google-btn.png"
+                  src={GoogleButtonImg}
                 />
               </a>
             </div>

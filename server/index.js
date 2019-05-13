@@ -1,4 +1,6 @@
 const app = require('./app');
 
+const PORT = 8080;
+
 // eslint-disable-next-line no-console
-app.listen(8080, () => console.info('Listening on port 8080!'));
+app.listen(PORT, () => console.info(`EOC server running on port ${PORT}`));
