@@ -1,27 +1,20 @@
 version: '3'
 services:
-  client:
-    restart: always
-    build:
-      context: .
-      dockerfile: client/Dockerfile
-    ports:
-      - '3000:3000'
-    links:
-      - server
   server:
+    container_name: eoc_server_container
     restart: always
-    build:
-      context: .
-      dockerfile: server/Dockerfile
+    build: .
     ports:
       - '8080:8080'
-    environment:
-      DB_URL: mongodb://mongo:27017
     links:
       - mongo
+    environment:
+      DB_URL: mongodb://mongo:27017
   mongo:
+    container_name: mongo_container
     image: mongo
     restart: always
+    volumes:
+      - /data/db:/data/db
     ports:
       - '27017:27017'

@@ -66,6 +66,3 @@ typings/staticFiles
 #others
 dist
 .DS_Store
-package-lock.json
-
-
