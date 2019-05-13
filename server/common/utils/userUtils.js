@@ -17,8 +17,7 @@ const findOrCreateUser = (user, doneCallback) => {
       }
 
       if (
-        currentUser.idFromProvider.toString() ===
-        process.env.DEMO_USER_ID_FROM_PROVIDER
+        currentUser.idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER
       ) {
         try {
           await mongoose.connection.close();
