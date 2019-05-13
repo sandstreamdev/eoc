@@ -4,20 +4,20 @@
   "description": "EOC APP. End of Coffee app to track office inventory that is running out.",
   "main": "server/index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.production.js",
-    "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "docker:build:client": "docker build client",
-    "docker:build:server": "docker build server",
-    "lint": "npm run lint:client && npm run lint:server",
-    "lint:client": "eslint -c .eslintrc --ext \".jsx,.js\" \"client/\" --fix",
-    "lint:server": "eslint -c .eslintrc --ext \".js\" \"server/\" --fix",
-    "prettier": "prettier --config .prettierrc --write client/**/*.js && prettier --config .prettierrc --write client/**/*.scss && prettier --config .prettierrc --write server/**/*.js && prettier --config .prettierrc --write landing/**/*.css",
+    "check": "npm-run-all lint format stylelint",
+    "build:dev": "webpack --progress",
+    "build:prod": "webpack --config webpack.config.production.js",
+    "dev": "npm-run-all -p start:server:dev start:client:dev",
+    "format": "prettier --check \"{client,server}/**/*.{js,jsx}\"",
+    "format:fix": "prettier --write \"{client,server}/**/*.{js,jsx}\"",
+    "lint": "eslint ./ --ext \".js,.jsx\" --max-warnings=0 --cache",
+    "lint:fix": "eslint ./ --ext \".js,.jsx\" --max-warnings=0 --cache --fix",
     "seed": "node server/seed/seedDb.js",
-    "server": "nodemon server/index.js",
-    "server-prod": "node server/index.js",
-    "start": "npm run build && node server/index.js",
-    "stylelint": "stylelint --fix client/src/**/*.scss",
+    "start:client:dev": "webpack-dev-server --mode development --devtool inline-source-map --hot",
+    "start:server:dev": "nodemon server/index.js",
+    "start:server:prod": "node server/index.js",
+    "stylelint": "stylelint client/**/*.scss --cache",
+    "stylelint:fix": "stylelint client/src/**/*.scss --cache --fix",
     "test": "jest -runInBand --verbose"
   },
   "author": "Sandstream Development",
@@ -62,7 +62,6 @@
     "babel-loader": "8.0.0",
     "babel-plugin-jsx-remove-data-test-id": "2.0.0",
     "clean-webpack-plugin": "2.0.2",
-    "concurrently": "4.0.0",
     "css-loader": "1.0.0",
     "enzyme": "3.8.0",
     "enzyme-adapter-react-16": "1.8.0",
@@ -87,8 +86,9 @@
     "mini-css-extract-plugin": "0.4.5",
     "node-sass": "4.12.0",
     "nodemon": "1.17.3",
+    "npm-run-all": "4.1.5",
     "optimize-css-assets-webpack-plugin": "5.0.1",
-    "prettier": "1.15.2",
+    "prettier": "1.17.0",
     "redux-devtools-extension": "2.13.7",
     "redux-mock-store": "1.5.3",
     "sass-loader": "7.1.0",
@@ -105,8 +105,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run lint"
+      "pre-commit": "lint-staged && npm run test",
+      "pre-push": "npm run check && npm run test"
     }
   },
   "lint-staged": {
@@ -124,11 +124,6 @@
         "stylelint --syntax scss",
         "git add"
       ]
-    }
-  },
-  "proxy": {
-    "/auth/google**": {
-      "target": "http://localhost:8080"
     }
   },
   "jest": {

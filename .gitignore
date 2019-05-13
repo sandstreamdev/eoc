@@ -66,3 +66,4 @@ typings/staticFiles
 #others
 dist
 .DS_Store
+.stylelintcache

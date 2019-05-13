@@ -1,7 +1,9 @@
 const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  mode: 'development',
   entry: ['babel-polyfill', './client/src/app/index.jsx'],
   output: {
     path: path.join(__dirname, 'dist'),
@@ -62,6 +64,7 @@ module.exports = {
     historyApiFallback: true
   },
   plugins: [
+    new CleanWebpackPlugin({ verbose: true }),
     new HtmlWebpackPlugin({
       template: './client/public/index.html'
     })
