@@ -6,8 +6,13 @@ const cors = require('cors');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const path = require('path');
 
-const { DB_URL, FRONTEND_URL } = require('./common/variables');
+const { DB_URL } = require('./common/variables');
+const authRouter = require('./routes/authorization');
+const commentsRouter = require('./routes/comment');
+const cohortsRouter = require('./routes/cohort');
+const listsRouter = require('./routes/list');
 
 const app = express();
 
@@ -15,6 +20,8 @@ const app = express();
 const dbUrl = DB_URL;
 mongoose.connect(dbUrl);
 mongoose.set('useCreateIndex', true);
+
+app.use(cors());
 app.use(cookieParser());
 app.use(
   session({
@@ -26,27 +33,15 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: false, credentials: true }));
 app.use(bodyParser.json());
-app.use(
-  cors({
-    origin: FRONTEND_URL,
-    credentials: true
-  })
-);
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static('../../dist'));
+app.use(express.static(path.resolve('dist')));
 
-// Routes handlers
-require('./routes/authorization')(app);
-require('./routes/list')(app);
-require('./routes/cohort')(app);
-require('./routes/comment')(app);
+app.use('/auth', authRouter);
+app.use('/api/comments', commentsRouter);
+app.use('/api/cohorts', cohortsRouter);
+app.use('/api/lists', listsRouter);
 
-app.use((req, res, next) => {
-  res.status(404).send({ message: 'Resource not found' });
-});
-
-// Root endpoint
-app.get('/', (req, resp) => resp.status(200).send('Hello World'));
+app.use('*', (_, res) => res.sendFile(path.resolve('dist/index.html')));
 
 module.exports = app;

@@ -1,6 +1,5 @@
 import _keyBy from 'lodash/keyBy';
 
-import { ENDPOINT_URL } from 'common/constants/variables';
 import { getData, patchData, postData } from 'common/utils/fetchMethods';
 import {
   CommentActionTypes,
@@ -86,7 +85,7 @@ const fetchCommentsFailure = () => ({
 });
 
 export const addItem = (item, listId) => dispatch =>
-  postData(`${ENDPOINT_URL}/lists/add-item`, { item, listId })
+  postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json, listId)))
     .catch(err => {
@@ -105,7 +104,7 @@ export const toggle = (
   authorId,
   authorName
 ) => dispatch =>
-  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
+  patchData(`/api/lists/${listId}/update-item-details`, {
     authorId,
     isOrdered: !isOrdered,
     itemId
@@ -132,7 +131,7 @@ export const toggle = (
     });
 
 export const setVote = (itemId, listId) => dispatch =>
-  patchData(`${ENDPOINT_URL}/lists/${listId}/set-vote`, { itemId })
+  patchData(`/api/lists/${listId}/set-vote`, { itemId })
     .then(resp => resp.json())
     .then(json => dispatch(setVoteSuccess(itemId, listId)))
     .catch(err => {
@@ -145,7 +144,7 @@ export const setVote = (itemId, listId) => dispatch =>
     });
 
 export const clearVote = (itemId, listId) => dispatch =>
-  patchData(`${ENDPOINT_URL}/lists/${listId}/clear-vote`, { itemId })
+  patchData(`/api/lists/${listId}/clear-vote`, { itemId })
     .then(resp => resp.json())
     .then(json => dispatch(clearVoteSuccess(itemId, listId)))
     .catch(err => {
@@ -158,7 +157,7 @@ export const clearVote = (itemId, listId) => dispatch =>
     });
 
 export const updateItemDetails = (listId, itemId, data) => dispatch =>
-  patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
+  patchData(`/api/lists/${listId}/update-item-details`, {
     ...data,
     itemId
   })
@@ -181,7 +180,7 @@ export const updateItemDetails = (listId, itemId, data) => dispatch =>
     });
 
 export const cloneItem = (listId, itemId) => dispatch =>
-  patchData(`${ENDPOINT_URL}/lists/${listId}/clone-item`, {
+  patchData(`/api/lists/${listId}/clone-item`, {
     itemId
   })
     .then(resp => resp.json())
@@ -203,7 +202,7 @@ export const cloneItem = (listId, itemId) => dispatch =>
     });
 
 export const addComment = (listId, itemId, text) => dispatch =>
-  postData(`${ENDPOINT_URL}/comments/add-comment`, {
+  postData('/api/comments/add-comment', {
     itemId,
     listId,
     text
@@ -220,7 +219,7 @@ export const addComment = (listId, itemId, text) => dispatch =>
     });
 
 export const fetchComments = (listId, itemId) => dispatch =>
-  getData(`${ENDPOINT_URL}/comments/${listId}/${itemId}/data`)
+  getData(`/api/comments/${listId}/${itemId}/data`)
     .then(resp => resp.json())
     .then(json => {
       const comments = _keyBy(json, '_id');

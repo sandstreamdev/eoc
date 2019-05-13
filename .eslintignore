@@ -2,3 +2,4 @@
 *.scss
 *.min.js
 landing/js/*.js
+dist/*

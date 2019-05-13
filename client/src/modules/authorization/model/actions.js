@@ -1,5 +1,4 @@
 import { checkIfCookieSet } from 'common/utils/cookie';
-import { ENDPOINT_URL } from 'common/constants/variables';
 import { postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
@@ -36,7 +35,7 @@ export const setCurrentUser = () => dispatch => {
 
 export const logoutCurrentUser = () => dispatch => {
   dispatch(logoutUserRequest());
-  return postRequest(`${ENDPOINT_URL}/logout`)
+  return postRequest('/auth/logout')
     .then(() => dispatch(logoutUserSuccess()))
     .catch(err => {
       dispatch(logoutUserFailure(err.message));

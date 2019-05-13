@@ -1,6 +1,5 @@
 import _keyBy from 'lodash/keyBy';
 
-import { ENDPOINT_URL } from 'common/constants/variables';
 import { CohortActionTypes } from './actionTypes';
 import {
   deleteData,
@@ -193,7 +192,7 @@ export const removeArchivedCohortsMetaData = () => ({
 
 export const createCohort = data => dispatch => {
   dispatch(createCohortRequest());
-  return postData(`${ENDPOINT_URL}/cohorts/create`, data)
+  return postData('/api/cohorts/create', data)
     .then(resp => resp.json())
     .then(json => dispatch(createCohortSuccess(json)))
     .catch(err => {
@@ -208,7 +207,7 @@ export const createCohort = data => dispatch => {
 
 export const fetchCohortsMetaData = () => dispatch => {
   dispatch(fetchCohortsMetaDataRequest());
-  return getData(`${ENDPOINT_URL}/cohorts/meta-data`)
+  return getData('/api/cohorts/meta-data')
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
@@ -226,7 +225,7 @@ export const fetchCohortsMetaData = () => dispatch => {
 
 export const fetchArchivedCohortsMetaData = () => dispatch => {
   dispatch(fetchArchivedCohortsMetaDataRequest());
-  return getData(`${ENDPOINT_URL}/cohorts/archived`)
+  return getData('/api/cohorts/archived')
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
@@ -244,7 +243,7 @@ export const fetchArchivedCohortsMetaData = () => dispatch => {
 
 export const updateCohort = (cohortId, data) => dispatch => {
   dispatch(updateCohortRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/update`, data)
+  return patchData(`/api/cohorts/${cohortId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
       dispatch(updateCohortSuccess({ ...data, cohortId }));
@@ -266,7 +265,7 @@ export const updateCohort = (cohortId, data) => dispatch => {
 
 export const deleteCohort = cohortId => dispatch => {
   dispatch(deleteCohortRequest());
-  return deleteData(`${ENDPOINT_URL}/cohorts/${cohortId}/delete`)
+  return deleteData(`/api/cohorts/${cohortId}/delete`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(deleteCohortSuccess(cohortId));
@@ -290,7 +289,7 @@ export const deleteCohort = cohortId => dispatch => {
 
 export const archiveCohort = cohortId => dispatch => {
   dispatch(archiveCohortRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/update`, {
+  return patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: true
   })
     .then(resp => resp.json())
@@ -314,10 +313,10 @@ export const archiveCohort = cohortId => dispatch => {
 
 export const restoreCohort = cohortId => dispatch => {
   dispatch(restoreCohortRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/update`, {
+  return patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: false
   })
-    .then(() => getData(`${ENDPOINT_URL}/cohorts/${cohortId}/data`))
+    .then(() => getData(`/api/cohorts/${cohortId}/data`))
     .then(resp => resp.json())
     .then(json => {
       dispatch(restoreCohortSuccess(json, cohortId));
@@ -339,7 +338,7 @@ export const restoreCohort = cohortId => dispatch => {
 
 export const fetchCohortDetails = cohortId => dispatch => {
   dispatch(fetchCohortDetailsRequest());
-  return getData(`${ENDPOINT_URL}/cohorts/${cohortId}/data`)
+  return getData(`/api/cohorts/${cohortId}/data`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchCohortDetailsSuccess(json, cohortId)))
     .catch(err => {
@@ -355,7 +354,7 @@ export const fetchCohortDetails = cohortId => dispatch => {
 
 export const addCohortToFavourites = cohortId => dispatch => {
   dispatch(favouritesRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-to-fav`)
+  return patchData(`/api/cohorts/${cohortId}/add-to-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ cohortId, isFavourite: true }));
@@ -377,7 +376,7 @@ export const addCohortToFavourites = cohortId => dispatch => {
 
 export const removeCohortFromFavourites = cohortId => dispatch => {
   dispatch(favouritesRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-from-fav`)
+  return patchData(`/api/cohorts/${cohortId}/remove-from-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ cohortId, isFavourite: false }));
@@ -399,7 +398,7 @@ export const removeCohortFromFavourites = cohortId => dispatch => {
 
 export const addCohortMember = (cohortId, email) => dispatch => {
   dispatch(addMemberRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-member`, {
+  return patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })
     .then(resp => resp.json())
@@ -416,7 +415,7 @@ export const addCohortMember = (cohortId, email) => dispatch => {
 
 export const removeCohortMember = (cohortId, userId) => dispatch => {
   dispatch(removeMemberRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-member`, {
+  return patchData(`/api/cohorts/${cohortId}/remove-member`, {
     userId
   })
     .then(resp => resp.json())
@@ -440,7 +439,7 @@ export const removeCohortMember = (cohortId, userId) => dispatch => {
 
 export const addOwnerRole = (cohortId, userId) => dispatch => {
   dispatch(addOwnerRoleRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/add-owner-role`, {
+  return patchData(`/api/cohorts/${cohortId}/add-owner-role`, {
     userId
   })
     .then(resp => resp.json())
@@ -464,7 +463,7 @@ export const addOwnerRole = (cohortId, userId) => dispatch => {
 
 export const removeOwnerRole = (cohortId, userId) => dispatch => {
   dispatch(removeOwnerRoleRequest());
-  return patchData(`${ENDPOINT_URL}/cohorts/${cohortId}/remove-owner-role`, {
+  return patchData(`/api/cohorts/${cohortId}/remove-owner-role`, {
     userId
   })
     .then(resp => resp.json())
