@@ -3,7 +3,7 @@ COPY package.json .
 COPY package-lock.json .
 RUN npm ci
 COPY . .
-RUN npm run build
-CMD ["npm", "run", "server-prod"]
+RUN npm run build:prod
+CMD ["npm", "run", "start:server:prod"]
 EXPOSE 8080
 
