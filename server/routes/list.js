@@ -48,4 +48,4 @@ router.patch('/:id/update-item-details', authorize, updateItemDetails);
 router.patch('/:id/clone-item', authorize, cloneItem);
 router.patch('/:id/change-type', authorize, changeType);
 
-module.exports = app => app.use('/lists', router);
+module.exports = router;

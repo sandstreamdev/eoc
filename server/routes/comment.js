@@ -8,4 +8,4 @@ const router = express.Router();
 router.post('/add-comment', authorize, addComment);
 router.get('/:listId/:itemId/data', authorize, getComments);
 
-module.exports = app => app.use('/comments', router);
+module.exports = router;
