@@ -45,7 +45,6 @@ class InputBar extends Component {
     } = this.props;
     const { itemName } = this.state;
     const newItem = {
-      authorName: currentUser.name,
       authorId: currentUser.id,
       name: itemName
     };

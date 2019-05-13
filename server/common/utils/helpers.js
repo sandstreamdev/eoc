@@ -63,25 +63,28 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
   return arrayOfStrings.indexOf(userIdAsString) !== -1;
 };
 
-const responseWithItems = (userId, list) => {
-  const { items } = list;
-
-  return _map(items, item => {
-    const { voterIds, ...rest } = item;
+const responseWithItems = (userId, items) =>
+  _map(items, item => {
+    const { authorId: author, voterIds, ...rest } = item;
+    const { _id: authorId, displayName: authorName } = author;
 
     return {
       ...rest,
+      authorId,
+      authorName,
       isVoted: checkIfArrayContainsUserId(voterIds, userId),
       votesCount: voterIds.length
     };
   });
-};
 
 const responseWithItem = (item, userId) => {
-  const { voterIds, ...rest } = item;
+  const { authorId: author, voterIds, ...rest } = item;
+  const { _id: authorId, displayName: authorName } = author;
 
   return {
     ...rest,
+    authorId,
+    authorName,
     isVoted: checkIfArrayContainsUserId(voterIds, userId),
     votesCount: voterIds.length
   };

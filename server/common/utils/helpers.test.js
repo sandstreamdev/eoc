@@ -24,8 +24,10 @@ const {
   expectedListProperties,
   listMock
 } = require('../../tests/__mocks__/listMock');
-const { expectedItemProperties } = require('../../tests/__mocks__/itemsMock');
-const { singleItemMock } = require('../../tests/__mocks__/singleItemMock');
+const {
+  expectedItemProperties,
+  itemsMock
+} = require('../../tests/__mocks__/itemsMock');
 const {
   cohortsMock,
   expectedCohortMetaDataProperties
@@ -143,7 +145,7 @@ describe('function responseWithListsMetaData', () => {
 
 describe('function responseWithItems ', () => {
   const userId = ObjectId();
-  const result = responseWithItems(userId, listMock[0]);
+  const result = responseWithItems(userId, itemsMock);
 
   it('returns items with desired properties', () => {
     expectedItemProperties.map(property =>
@@ -158,7 +160,7 @@ describe('function responseWithItems ', () => {
 });
 
 describe('function responseWithItem', () => {
-  const item = singleItemMock[0];
+  const item = itemsMock[0];
   const userId = ObjectId();
   const result = responseWithItem(item, userId);
 

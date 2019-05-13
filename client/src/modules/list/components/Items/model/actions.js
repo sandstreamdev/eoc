@@ -19,9 +19,9 @@ const addItemSuccess = (item, listId) => ({
   payload: { item, listId }
 });
 
-const toggleItemSuccess = (itemId, listId) => ({
+const toggleItemSuccess = (authorId, authorName, itemId, listId) => ({
   type: ItemActionTypes.TOGGLE_SUCCESS,
-  payload: { itemId, listId }
+  payload: { authorId, authorName, itemId, listId }
 });
 
 const toggleItemFailure = errMessage => ({
@@ -98,15 +98,30 @@ export const addItem = (item, listId) => dispatch =>
       );
     });
 
-export const toggle = (isOrdered, itemId, listId, updatedAuthor) => dispatch =>
+export const toggle = (
+  isOrdered,
+  itemId,
+  listId,
+  authorId,
+  authorName
+) => dispatch =>
   patchData(`${ENDPOINT_URL}/lists/${listId}/update-item-details`, {
-    itemId,
-    isOrdered: !isOrdered
+    authorId,
+    isOrdered: !isOrdered,
+    itemId
   })
     .then(resp => resp.json())
-    .then(json =>
-      setTimeout(() => dispatch(toggleItemSuccess(itemId, listId)), 600)
-    )
+    .then(json => {
+      setTimeout(
+        () => dispatch(toggleItemSuccess(authorId, authorName, itemId, listId)),
+        600
+      );
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message || 'Item details updated successfully.'
+      );
+    })
     .catch(err => {
       dispatch(toggleItemFailure());
       createNotificationWithTimeout(

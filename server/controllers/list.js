@@ -196,7 +196,7 @@ const getArchivedListsMetaData = (req, resp) => {
 
 const addItemToList = (req, resp) => {
   const {
-    item: { name, authorName, authorId },
+    item: { name, authorId },
     listId
   } = req.body;
   const {
@@ -204,7 +204,6 @@ const addItemToList = (req, resp) => {
   } = req;
 
   const item = new Item({
-    authorName,
     authorId,
     name
   });
@@ -218,6 +217,7 @@ const addItemToList = (req, resp) => {
     { new: true }
   )
     .lean()
+    .populate('items.authorId', 'displayName')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -256,12 +256,12 @@ const getListData = (req, resp) => {
   })
     .lean()
     .populate('viewersIds', 'avatarUrl displayName _id')
+    .populate('items.authorId', 'displayName')
     .exec()
     .then(doc => {
       if (!doc) {
         throw new NotFoundException(`Data of list id: ${listId} not found.`);
       }
-
       list = doc;
       const { cohortId } = list;
 
@@ -297,7 +297,7 @@ const getListData = (req, resp) => {
       const isGuest = !checkIfArrayContainsUserId(cohortMembers, userId);
       const isMember = checkIfArrayContainsUserId(memberIds, userId);
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
-      const items = responseWithItems(userId, list);
+      const items = responseWithItems(userId, list.items);
 
       return resp.status(200).json({
         _id,
@@ -814,7 +814,7 @@ const addViewer = (req, resp) => {
 };
 
 const updateItemDetails = (req, resp) => {
-  const { description, isOrdered, link, itemId } = req.body;
+  const { authorId, description, isOrdered, link, itemId } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -845,6 +845,9 @@ const updateItemDetails = (req, resp) => {
       }
 
       if (isOrdered !== null) {
+        if (!isOrdered) {
+          itemToUpdate.authorId = authorId;
+        }
         itemToUpdate.isOrdered = isOrdered;
       }
 
@@ -869,8 +872,7 @@ const updateItemDetails = (req, resp) => {
 const cloneItem = (req, resp) => {
   const { itemId } = req.body;
   const { id: listId } = req.params;
-  const { _id: userId, displayName: userName } = req.user;
-  let newItemId;
+  const { _id: userId } = req.user;
 
   List.findOne({
     _id: sanitize(listId),
@@ -884,25 +886,40 @@ const cloneItem = (req, resp) => {
       }
 
       const { description, link, name } = list.items.id(itemId);
+
       const item = new Item({
         authorId: userId,
-        authorName: userName,
         description,
         link,
         name
       });
 
-      newItemId = item._id;
-      list.items.push(item);
-
-      return list.save();
+      return List.findByIdAndUpdate(
+        {
+          _id: sanitize(listId),
+          memberIds: userId
+        },
+        { $push: { items: item } },
+        { new: true }
+      )
+        .lean()
+        .populate('items.authorId', 'displayName')
+        .exec();
     })
-    .then(list =>
+    .then(list => {
+      if (!list) {
+        return resp.status(400).send({
+          message: 'An error occurred while cloning the item. Please try again.'
+        });
+      }
+
+      const newItem = list.items.slice(-1)[0];
+
       resp.status(200).send({
         message: 'Item successfully cloned.',
-        item: responseWithItem(list.items.id(newItemId)._doc, userId)
-      })
-    )
+        item: responseWithItem(newItem, userId)
+      });
+    })
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
