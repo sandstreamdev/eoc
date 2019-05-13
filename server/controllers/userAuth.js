@@ -1,5 +1,3 @@
-const { FRONTEND_URL } = require('../common/variables');
-
 const setUserAndSession = (req, res) => {
   // Set user cookies
   res.cookie(
@@ -10,7 +8,7 @@ const setUserAndSession = (req, res) => {
       name: req.user.displayName
     })
   );
-  res.redirect(FRONTEND_URL);
+  res.redirect('/');
 };
 
 const logout = (req, res) => {
@@ -19,7 +17,7 @@ const logout = (req, res) => {
 
     res.clearCookie('connect.sid');
     res.clearCookie('user');
-    res.redirect(FRONTEND_URL);
+    res.redirect('/');
   });
 };
 

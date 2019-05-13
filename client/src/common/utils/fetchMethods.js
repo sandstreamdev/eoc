@@ -1,13 +1,10 @@
-import {
-  FRONTEND_URL,
-  NOTIFICATION_TIMEOUT
-} from 'common/constants/variables/';
+import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 
 const handleFetchErrors = resp => {
   if (resp.status === 403) {
     setTimeout(() => {
-      window.location = FRONTEND_URL;
+      window.location = '/';
     }, NOTIFICATION_TIMEOUT);
   }
 

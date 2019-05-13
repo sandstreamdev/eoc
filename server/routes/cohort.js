@@ -31,4 +31,4 @@ router.patch('/:id/add-owner-role', authorize, addOwnerRole);
 router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);
 router.patch('/:id/add-member', authorize, addMember);
 
-module.exports = app => app.use('/cohorts', router);
+module.exports = router;
