@@ -172,7 +172,7 @@
   &__cloning {
     position: relative;
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     align-items: center;
     min-height: 45px;
 
@@ -244,18 +244,18 @@
     }
   }
 
+  &__comments {
+    position: relative;
+
+    &:nth-child(2) {
+      margin-top: 16px;
+    }
+  }
+
   &__new-comment {
     text-align: left;
     border-bottom: 1px solid $item-border;
     margin-bottom: 16px;
-  }
-
-  &__heading {
-    color: $text-normal;
-    font-size: 16px;
-    text-align: left;
-    line-height: 1.2;
-    margin-bottom: 8px;
   }
 
   &__voting {

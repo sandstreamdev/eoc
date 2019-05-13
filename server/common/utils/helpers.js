@@ -15,7 +15,7 @@ const isValidMongoId = id => ObjectId.isValid(id);
 const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
 
 const responseWithList = (list, userId) => {
-  const { _id, cohortId, description, favIds, isPrivate, items, name } = list;
+  const { _id, cohortId, description, favIds, items, name, type } = list;
   const doneItemsCount = items.filter(item => item.isOrdered).length;
   const unhandledItemsCount = items.length - doneItemsCount;
 
@@ -24,7 +24,7 @@ const responseWithList = (list, userId) => {
     description,
     doneItemsCount,
     isFavourite: isUserFavourite(favIds, userId),
-    isPrivate,
+    type,
     name,
     unhandledItemsCount
   };
@@ -38,20 +38,30 @@ const responseWithList = (list, userId) => {
 
 const responseWithListsMetaData = (lists, userId) =>
   _map(lists, list => {
-    const { favIds, items, ...rest } = list;
+    const { cohortId, favIds, items, ...rest } = list;
     const doneItemsCount = items.filter(item => item.isOrdered).length;
     const unhandledItemsCount = items.length - doneItemsCount;
 
-    return {
+    const listToSend = {
       ...rest,
       doneItemsCount,
       isFavourite: isUserFavourite(favIds, userId),
       unhandledItemsCount
     };
+
+    if (cohortId) {
+      listToSend.cohortId = cohortId;
+    }
+
+    return listToSend;
   });
 
-const checkIfCurrentUserVoted = (item, userId) =>
-  item.voterIds.indexOf(userId) > -1;
+const checkIfArrayContainsUserId = (idsArray, userId) => {
+  const arrayOfStrings = idsArray.map(id => id.toString());
+  const userIdAsString = userId.toString();
+
+  return arrayOfStrings.indexOf(userIdAsString) !== -1;
+};
 
 const responseWithItems = (userId, list) => {
   const { items } = list;
@@ -61,7 +71,7 @@ const responseWithItems = (userId, list) => {
 
     return {
       ...rest,
-      isVoted: checkIfCurrentUserVoted(item, userId),
+      isVoted: checkIfArrayContainsUserId(voterIds, userId),
       votesCount: voterIds.length
     };
   });
@@ -72,7 +82,7 @@ const responseWithItem = (item, userId) => {
 
   return {
     ...rest,
-    isVoted: checkIfCurrentUserVoted(item, userId),
+    isVoted: checkIfArrayContainsUserId(voterIds, userId),
     votesCount: voterIds.length
   };
 };
@@ -101,13 +111,6 @@ const responseWithCohort = (cohort, userId) => {
     membersCount,
     name
   };
-};
-
-const checkIfArrayContainsUserId = (idsArray, userId) => {
-  const arrayOfStrings = idsArray.map(id => id.toString());
-  const userIdAsString = userId.toString();
-
-  return arrayOfStrings.indexOf(userIdAsString) !== -1;
 };
 
 const responseWithCohortMembers = (users, ownerIds) =>
@@ -203,10 +206,42 @@ const updateSubdocumentFields = (subdocumentName, data) => {
   return dataToUpdate;
 };
 
+const responseWithComment = (comment, avatarUrl, displayName) => {
+  const { _id, authorId, createdAt, itemId, text } = comment;
+
+  return {
+    _id,
+    authorAvatarUrl: avatarUrl,
+    authorId,
+    authorName: displayName,
+    createdAt,
+    itemId,
+    text
+  };
+};
+
+const responseWithComments = comments =>
+  _map(comments, comment => {
+    const {
+      authorId: {
+        _id: authorId,
+        displayName: authorName,
+        avatarUrl: authorAvatarUrl
+      },
+      ...rest
+    } = comment;
+
+    return {
+      authorAvatarUrl,
+      authorId,
+      authorName,
+      ...rest
+    };
+  });
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
-  checkIfCurrentUserVoted,
   filter,
   isUserFavourite,
   isValidMongoId,
@@ -214,6 +249,8 @@ module.exports = {
   responseWithCohortMember,
   responseWithCohortMembers,
   responseWithCohorts,
+  responseWithComment,
+  responseWithComments,
   responseWithItem,
   responseWithItems,
   responseWithList,

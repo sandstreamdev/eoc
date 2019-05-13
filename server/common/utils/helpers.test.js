@@ -3,13 +3,14 @@ const { ObjectId } = require('mongoose').Types;
 const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
-  checkIfCurrentUserVoted,
   isUserFavourite,
   isValidMongoId,
   responseWithCohort,
   responseWithCohortMember,
   responseWithCohortMembers,
   responseWithCohorts,
+  responseWithComment,
+  responseWithComments,
   responseWithItem,
   responseWithItems,
   responseWithList,
@@ -33,6 +34,11 @@ const {
   expectedUsersProperties,
   usersMock
 } = require('../../tests/__mocks__/usersMock');
+const {
+  commentMock,
+  commentsMock,
+  expectedCommentProperties
+} = require('../../tests/__mocks__/commentMock');
 
 describe('function isValidMongoId', () => {
   it('returns true if passed ID is a valid mongo id', () => {
@@ -132,35 +138,6 @@ describe('function responseWithListsMetaData', () => {
     lists.map(list =>
       notExpected.map(property => expect(list).not.toHaveProperty(property))
     );
-  });
-});
-
-describe('function checkIfCurrentUserVoted', () => {
-  const item = {
-    voterIds: ['123', '345', '678']
-  };
-
-  it('returns true if current user id as string is inside voterIds array', () => {
-    const userId = '123';
-    const result = checkIfCurrentUserVoted(item, userId);
-
-    expect(result).toBe(true);
-  });
-
-  it('returns true if current user id as ObjectId is inside voterIds array', () => {
-    const userId = ObjectId();
-    item.voterIds.push(userId);
-
-    const result = checkIfCurrentUserVoted(item, userId);
-
-    expect(result).toBe(true);
-  });
-
-  it('returns false if current user id as ObjectId is not inside voterIds array', () => {
-    const userId = ObjectId();
-    const result = checkIfCurrentUserVoted(item, userId);
-
-    expect(result).toBe(false);
   });
 });
 
@@ -367,5 +344,28 @@ describe('function responseWithListMembers', () => {
     const notExpected = 'email';
 
     result.map(user => expect(user).not.toHaveProperty(notExpected));
+  });
+});
+
+describe('function responseWithComments ', () => {
+  const result = responseWithComments(commentsMock);
+
+  it('returns comments with desired properties', () => {
+    expectedCommentProperties.map(property =>
+      result.map(comment => expect(comment).toHaveProperty(property))
+    );
+  });
+});
+
+describe('function responseWithComment', () => {
+  const comment = commentMock;
+  const { avatarUrl, displayName } = usersMock[0];
+
+  const result = responseWithComment(comment, avatarUrl, displayName);
+
+  it('returns comment with desired properties', () => {
+    expectedCommentProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
   });
 });

@@ -15,3 +15,5 @@ export const makeAbortablePromise = promise => {
     }
   };
 };
+
+export const dateFromString = string => new Date(string).toLocaleString();

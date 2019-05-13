@@ -227,7 +227,10 @@ export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
   return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
     .then(resp => resp.json())
-    .then(json => dispatch(fetchListDataSuccess(json, listId)))
+    .then(json => {
+      const listData = { ...json, items: _keyBy(json.items, '_id') };
+      dispatch(fetchListDataSuccess(listData, listId));
+    })
     .catch(err => {
       dispatch(fetchListDataFailure());
       createNotificationWithTimeout(
