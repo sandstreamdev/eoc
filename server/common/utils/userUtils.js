@@ -1,4 +1,7 @@
 const User = require('../../models/user.model');
+const List = require('../../models/list.model');
+const Cohort = require('../../models/cohort.model');
+const Comment = require('../../models/comment.model');
 const { seedDemoData } = require('../../seed/demoSeed/seedDemoData');
 
 // Find or create user
@@ -16,13 +19,13 @@ const findOrCreateUser = (user, doneCallback) => {
     if (currentUser.idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
       return new User({ ...user })
         .save()
-        .then(newUser => {
-          seedDemoData(newUser._id).catch(err => {
-            throw err;
-          });
+        .then(async newUser => {
+          await seedDemoData(newUser._id);
           return doneCallback(null, newUser);
         })
-        .catch(err => doneCallback(null, false, { message: err.message }));
+        .catch(err => {
+          doneCallback(null, false, { message: err.message });
+        });
     }
 
     return doneCallback(null, currentUser);
@@ -46,7 +49,40 @@ const extractUserProfile = (profile, accessToken) => {
   };
 };
 
+const removeDemoUserData = async id => {
+  try {
+    const lists = await List.find(
+      {
+        $or: [{ ownerIds: id }, { memberIds: id }, { viewersIds: id }]
+      },
+      '_id'
+    )
+      .lean()
+      .exec();
+
+    if (lists) {
+      const listsIds = lists.map(lists => lists._id);
+      await Comment.deleteMany({ listId: { $in: listsIds } });
+    }
+
+    await List.deleteMany({
+      $or: [{ ownerIds: id }, { memberIds: id }, { viewersIds: id }]
+    }).exec();
+
+    await Cohort.deleteMany({
+      $or: [{ ownerIds: id }, { memberIds: id }]
+    }).exec();
+
+    await User.deleteOne({ _id: id }).exec();
+
+    await User.deleteMany({ provider: `demo-${id}` }).exec();
+  } catch (err) {
+    throw err;
+  }
+};
+
 module.exports = {
   extractUserProfile,
-  findOrCreateUser
+  findOrCreateUser,
+  removeDemoUserData
 };
