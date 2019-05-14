@@ -1,18 +1,27 @@
 const User = require('../../models/user.model');
+const { seedDemoData } = require('../../seed/demoSeed/seedDemoData');
 
 // Find or create user
 const findOrCreateUser = (user, doneCallback) => {
   User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
     if (err) return doneCallback(null, false);
 
-    const createNewUser =
-      !currentUser ||
-      currentUser.idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER;
-
-    if (createNewUser) {
+    if (!currentUser) {
       return new User({ ...user })
         .save()
         .then(newUser => doneCallback(null, newUser))
+        .catch(err => doneCallback(null, false, { message: err.message }));
+    }
+
+    if (currentUser.idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
+      return new User({ ...user })
+        .save()
+        .then(newUser => {
+          seedDemoData(newUser._id).catch(err => {
+            throw err;
+          });
+          return doneCallback(null, newUser);
+        })
         .catch(err => doneCallback(null, false, { message: err.message }));
     }
 
