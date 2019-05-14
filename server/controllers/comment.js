@@ -62,7 +62,7 @@ const getComments = (req, resp) => {
 
   List.findOne({
     _id: sanitize(listId),
-    memberIds: userId,
+    viewersIds: userId,
     'items._id': sanitizedItemId
   })
     .exec()
