@@ -26,7 +26,6 @@ export class Layout extends Component {
     this.setAuthenticationState();
     if (checkIfCookieSet('demo')) {
       window.addEventListener('beforeunload', this.handleUnload);
-      // window.addEventListener('unload', this.handleUnload2);
     }
   }
 
@@ -51,13 +50,6 @@ export class Layout extends Component {
   setAuthenticationState = () => {
     const { setCurrentUser } = this.props;
     setCurrentUser();
-  };
-
-  handleUnload2 = () => {
-    // if (!window.location.href.match(/localhost/)) {
-    //   const { logoutCurrentUser } = this.props;
-    //   logoutCurrentUser();
-    // }
   };
 
   handleUnload = () => {

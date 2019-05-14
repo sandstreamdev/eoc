@@ -751,13 +751,19 @@ const removeMemberRole = (req, resp) => {
 
 const addViewer = (req, resp) => {
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, idFromProvider }
   } = req;
   const { id: listId } = req.params;
   const { email } = req.body;
   let list;
   let user;
   let cohortMembers = [];
+
+  if (idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
+    return resp
+      .status(401)
+      .send({ message: 'Adding members is disabled for demo purposes.' });
+  }
 
   List.findOne({
     _id: sanitize(listId),

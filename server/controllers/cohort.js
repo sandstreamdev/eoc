@@ -431,13 +431,19 @@ const removeOwnerRole = (req, resp) => {
 
 const addMember = (req, resp) => {
   const {
-    user: { _id: userId }
+    user: { _id: userId, idFromProvider }
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
   let currentCohort;
   let newMember;
   const sanitizedCohortId = sanitize(cohortId);
+
+  if (idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
+    return resp
+      .status(401)
+      .send({ message: 'Adding members is disabled for demo purposes.' });
+  }
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
