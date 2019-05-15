@@ -7,10 +7,7 @@ import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import AuthBox from 'modules/authorization/AuthBox';
-import {
-  setCurrentUser,
-  logoutCurrentUser
-} from 'modules/authorization/model/actions';
+import { setCurrentUser } from 'modules/authorization/model/actions';
 import { UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
@@ -19,14 +16,10 @@ import Page404 from 'common/components/Page404';
 import About from 'modules/about';
 import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
-import { checkIfCookieSet } from '../../../common/utils/cookie';
 
 export class Layout extends Component {
   componentDidMount() {
     this.setAuthenticationState();
-    if (checkIfCookieSet('demo')) {
-      window.addEventListener('beforeunload', this.handleUnload);
-    }
   }
 
   componentDidUpdate(prevProps) {
@@ -42,18 +35,9 @@ export class Layout extends Component {
     }
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.handleUnload);
-  }
-
   setAuthenticationState = () => {
     const { setCurrentUser } = this.props;
     setCurrentUser();
-  };
-
-  handleUnload = () => {
-    const { logoutCurrentUser } = this.props;
-    logoutCurrentUser();
   };
 
   render() {
@@ -88,8 +72,10 @@ Layout.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func
   }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  }),
 
-  logoutCurrentUser: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired
 };
 
@@ -100,6 +86,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { setCurrentUser, logoutCurrentUser }
+    { setCurrentUser }
   )(Layout)
 );
