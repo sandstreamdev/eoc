@@ -44,7 +44,6 @@ export class Layout extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.handleUnload);
-    window.removeEventListener('hashchange', this.handleUnload2);
   }
 
   setAuthenticationState = () => {

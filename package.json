@@ -5,6 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "build": "webpack --mode production",
+    "clear-demo": "node server/tasks/clearDemoData.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "docker:build:client": "docker build client",

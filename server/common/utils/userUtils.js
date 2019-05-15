@@ -7,7 +7,13 @@ const { seedDemoData } = require('../../seed/demoSeed/seedDemoData');
 // Find or create user
 const findOrCreateUser = (user, doneCallback) => {
   User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
-    if (err) return doneCallback(null, false);
+    if (
+      err ||
+      (!currentUser &&
+        user.idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER)
+    ) {
+      return doneCallback(null, false);
+    }
 
     if (!currentUser) {
       return new User({ ...user })

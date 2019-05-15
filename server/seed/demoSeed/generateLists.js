@@ -132,7 +132,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     isArchived: false,
     items: generateItems(demoUserId, userIds),
     memberIds: [demoUserId],
-    name: 'Private list example - owner',
+    name: 'Cohort list example - owner',
     ownerIds: [demoUserId],
     type: 'limited',
     viewersIds: [demoUserId, userIds[0], userIds[1]]
