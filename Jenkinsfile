@@ -1,17 +1,31 @@
 pipeline {
   agent any
 
+  environment { 
+    TAG = "${BRANCH_NAME}:${BUILD_NUMBER}"
+    TAG_TEST = "${TAG}-test"
+    TAG_TEST_STATIC = "${TAG}-test-static"
+  }
+
   stages {
     stage('Build') {
       steps {
         echo 'Building..'
-        sh 'docker-compose build'
+        sh 'docker build -t $TAG -f Dockerfile.production .'
       }
     }
-    stage('Test') {
+    stage('QA: static code analysis') {
+      steps {
+        echo 'Testing static..'
+        sh 'docker build -t $TAG_TEST_STATIC --build-arg APP_IMAGE=$TAG -f Dockerfile.test-static .'
+        sh 'docker run --rm $TAG_TEST_STATIC'
+      }
+    }
+    stage('QA: unit & integration tests') {
       steps {
         echo 'Testing..'
-        sh 'npm run test'
+        sh 'docker build -t $TAG_TEST --build-arg APP_IMAGE=$TAG -f Dockerfile.test .'
+        sh 'docker run --rm $TAG_TEST'
       }
     }
     stage('Deploy') {
@@ -23,6 +37,9 @@ pipeline {
       }
       steps {
         echo 'Deploying....'
+        sh 'docker-compose build'
+        sh 'docker-compose stop'
+        sh 'docker-compose up -d'
       }
     }
   }

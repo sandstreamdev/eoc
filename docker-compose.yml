@@ -3,14 +3,18 @@ services:
   server:
     container_name: eoc_server_container
     restart: always
-    build: .
-    image: "${BRANCH_NAME}:${BUILD_NUMBER}"
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.production
     ports:
-      - '8080:8080'
+      - '80:80'
     links:
       - mongo
     environment:
-      DB_URL: mongodb://mongo:27017
+      DB_URL: mongodb://mongo/eoc
+      GOOGLE_CLIENT_ID:
+      GOOGLE_CLIENT_SECRET:
+      EXPRESS_SESSION_KEY:
   mongo:
     container_name: mongo_container
     image: mongo
@@ -18,4 +22,4 @@ services:
     volumes:
       - /data/db:/data/db
     ports:
-      - '27017:27017'
+      - '127.0.0.1:38128:27017'
