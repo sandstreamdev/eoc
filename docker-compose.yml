@@ -1,4 +1,8 @@
 version: '3'
+
+networks:
+  privatenetwork:
+
 services:
   server:
     container_name: eoc_server_container
@@ -8,6 +12,8 @@ services:
       dockerfile: ./Dockerfile.production
     ports:
       - '80:8080'
+    networks:
+      - privatenetwork
     links:
       - mongo
     environment:
@@ -22,4 +28,6 @@ services:
     volumes:
       - /data/db:/data/db
     ports:
-      - '127.0.0.1:38128:27017'
+      - '27017'
+    networks:
+      - privatenetwork
