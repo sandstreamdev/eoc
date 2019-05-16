@@ -9,7 +9,10 @@ const dbUrl = DB_URL;
 
 const connectDatabase = () =>
   mongoose
-    .connect(dbUrl, { useNewUrlParser: true })
+    .connect(
+      dbUrl,
+      { useNewUrlParser: true }
+    )
     .then(() => console.info('Connected to db... ✅'))
     .catch(() => process.exit(1));
 

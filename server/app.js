@@ -18,7 +18,10 @@ const app = express();
 
 // Set up mongodb connection
 const dbUrl = DB_URL;
-mongoose.connect(dbUrl, { useNewUrlParser: true });
+mongoose.connect(
+  dbUrl,
+  { useNewUrlParser: true }
+);
 mongoose.set('useCreateIndex', true);
 
 app.use(cors());
