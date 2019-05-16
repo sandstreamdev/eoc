@@ -68,6 +68,23 @@
   &__link {
     text-decoration: none;
   }
+
+  &__button-wrapper {
+    position: relative;
+  }
+
+  &__demo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__demo-button {
+    width: 100%;
+    font-weight: 400;
+    font-size: 16px;
+    text-transform: capitalize;
+  }
 }
 
 .google-button {

@@ -1,31 +1,29 @@
-const setUserAndSession = (req, res) => {
-  // Set user cookies
-  res.cookie(
-    'user',
-    JSON.stringify({
-      avatarUrl: req.user.avatarUrl,
-      id: req.user.id,
-      name: req.user.displayName
-    })
-  );
-  if (req.user.idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
-    res.cookie('demo', true);
-  }
-  res.redirect('/');
+const sendUser = (req, resp) => {
+  const { avatarUrl, _id: id, displayName: name } = req.user;
+  resp.cookie('user', JSON.stringify({ avatarUrl, id, name }));
+  resp.redirect('/');
 };
 
-const logout = (req, res) => {
+const logout = (req, resp) => {
   req.session.destroy(() => {
     req.logout();
 
-    res.clearCookie('connect.sid');
-    res.clearCookie('user');
-    res.clearCookie('demo');
-    res.redirect('/');
+    resp.clearCookie('connect.sid');
+    resp.clearCookie('user');
+    resp.clearCookie('demo');
+    resp.redirect('/');
   });
+};
+
+const sendDemoUser = (req, resp) => {
+  const { avatarUrl, _id: id, displayName: name } = req.user;
+  resp.cookie('user', JSON.stringify({ avatarUrl, id, name }));
+  resp.cookie('demo', true);
+  resp.redirect('/');
 };
 
 module.exports = {
   logout,
-  setUserAndSession
+  sendDemoUser,
+  sendUser
 };

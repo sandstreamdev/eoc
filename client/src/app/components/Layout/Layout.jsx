@@ -7,7 +7,7 @@ import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import AuthBox from 'modules/authorization/AuthBox';
-import { setCurrentUser } from 'modules/authorization/model/actions';
+import { loginUser } from 'modules/authorization/model/actions';
 import { UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
@@ -36,8 +36,8 @@ export class Layout extends Component {
   }
 
   setAuthenticationState = () => {
-    const { setCurrentUser } = this.props;
-    setCurrentUser();
+    const { loginUser } = this.props;
+    loginUser();
   };
 
   render() {
@@ -72,11 +72,8 @@ Layout.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func
   }),
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }),
 
-  setCurrentUser: PropTypes.func.isRequired
+  loginUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -86,6 +83,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { setCurrentUser }
+    { loginUser }
   )(Layout)
 );

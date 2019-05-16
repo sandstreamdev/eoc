@@ -16,7 +16,17 @@
   }
 
   &--light {
-    background-color: $dark-orange;
+    // background-color: $dark-orange;
+    background-color: rgba($dark-orange, 0.75);
+  }
+
+  &--google {
+    background-color: rgba($google-blue, 0.75);
+    border-radius: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 8px);
+    left: 2px;
+    top: 2px;
   }
 
   &__wrapper {
@@ -60,7 +70,8 @@
       background-color: $dark-orange;
     }
 
-    &--light {
+    &--light,
+    &--google {
       background-color: $bg-color;
     }
   }
