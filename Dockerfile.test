@@ -1,8 +1,4 @@
 ARG APP_IMAGE=eoc_server-test/latest
 FROM $APP_IMAGE
 
-ENV NODE_ENV dev
-
-RUN npm update
-
 CMD ["npm", "run", "test"]

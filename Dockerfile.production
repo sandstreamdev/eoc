@@ -2,11 +2,13 @@ FROM node:10.13.0-alpine
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-RUN npm ci
+ENV NODE_ENV production
 
-COPY . .
+COPY package*.json ./
+RUN npm ci --dev
+
+COPY . /usr/src/app
 RUN npm run build:prod
 
-CMD ["npm", "run", "start:server:prod"]
+CMD npm prune --production && npm run start:server:prod
 EXPOSE 8080
