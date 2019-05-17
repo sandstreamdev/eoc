@@ -1,3 +1,5 @@
+def COLOR_MAP = ['SUCCESS': 'good', 'FAILURE': 'danger', 'UNSTABLE': 'danger', 'ABORTED': 'danger']
+
 pipeline {
   agent any
 
@@ -8,6 +10,11 @@ pipeline {
   }
 
   stages {
+    stage('Start') {
+        steps {
+            slackSend (color: '#F0E68C', message: "*STARTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}")
+        }
+    }
     stage('Build') {
       steps {
         echo 'Building..'
@@ -41,6 +48,12 @@ pipeline {
         sh 'docker-compose stop'
         sh 'docker-compose up -d'
       }
+    }
+  }
+
+  post {
+    always {
+        slackSend (color: COLOR_MAP[currentBuild.currentResult], message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}")
     }
   }
 }
