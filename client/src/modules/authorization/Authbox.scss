@@ -71,6 +71,8 @@
 
   &__button-wrapper {
     position: relative;
+    display: flex;
+    justify-content: center;
   }
 
   &__demo {
@@ -81,6 +83,7 @@
 
   &__demo-button {
     width: 100%;
+    max-width: 166px;
     font-weight: 400;
     font-size: 16px;
     text-transform: capitalize;
