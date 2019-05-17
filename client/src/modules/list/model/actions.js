@@ -1,6 +1,5 @@
 import _keyBy from 'lodash/keyBy';
 
-import { ENDPOINT_URL } from 'common/constants/variables';
 import {
   deleteData,
   getData,
@@ -225,9 +224,12 @@ const changeTypeFailure = () => ({
 
 export const fetchListData = listId => dispatch => {
   dispatch(fetchListDataRequest());
-  return getData(`${ENDPOINT_URL}/lists/${listId}/data`)
+  return getData(`/api/lists/${listId}/data`)
     .then(resp => resp.json())
-    .then(json => dispatch(fetchListDataSuccess(json, listId)))
+    .then(json => {
+      const listData = { ...json, items: _keyBy(json.items, '_id') };
+      dispatch(fetchListDataSuccess(listData, listId));
+    })
     .catch(err => {
       dispatch(fetchListDataFailure());
       createNotificationWithTimeout(
@@ -240,7 +242,7 @@ export const fetchListData = listId => dispatch => {
 
 export const createList = data => dispatch => {
   dispatch(createListRequest());
-  return postData(`${ENDPOINT_URL}/lists/create`, data)
+  return postData('/api/lists/create', data)
     .then(resp => resp.json())
     .then(json => dispatch(createListSuccess(json)))
     .catch(() => {
@@ -255,8 +257,8 @@ export const createList = data => dispatch => {
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
-    ? `${ENDPOINT_URL}/lists/meta-data/${cohortId}`
-    : `${ENDPOINT_URL}/lists/meta-data`;
+    ? `/api/lists/meta-data/${cohortId}`
+    : '/api/lists/meta-data';
   dispatch(fetchListsMetaDataRequest());
   return getData(url)
     .then(resp => resp.json())
@@ -276,8 +278,8 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
 
 export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
-    ? `${ENDPOINT_URL}/lists/archived/${cohortId}`
-    : `${ENDPOINT_URL}/lists/archived`;
+    ? `/api/lists/archived/${cohortId}`
+    : '/api/lists/archived';
   dispatch(fetchArchivedListsMetaDataRequest());
   return getData(url)
     .then(resp => resp.json())
@@ -297,7 +299,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
 
 export const deleteList = id => dispatch => {
   dispatch(deleteListRequest());
-  return deleteData(`${ENDPOINT_URL}/lists/${id}/delete`)
+  return deleteData(`/api/lists/${id}/delete`)
     .then(resp =>
       resp.json().then(json => {
         dispatch(deleteListSuccess(id));
@@ -322,7 +324,7 @@ export const deleteList = id => dispatch => {
 
 export const updateList = (listId, data) => dispatch => {
   dispatch(updateListRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, data)
+  return patchData(`/api/lists/${listId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
       dispatch(updateListSuccess({ ...data, listId }));
@@ -344,7 +346,7 @@ export const updateList = (listId, data) => dispatch => {
 
 export const archiveList = listId => dispatch => {
   dispatch(archiveListRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, {
+  return patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
     .then(resp => resp.json())
@@ -368,10 +370,10 @@ export const archiveList = listId => dispatch => {
 
 export const restoreList = listId => dispatch => {
   dispatch(restoreListRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/update`, {
+  return patchData(`/api/lists/${listId}/update`, {
     isArchived: false
   })
-    .then(() => getData(`${ENDPOINT_URL}/lists/${listId}/data`))
+    .then(() => getData(`/api/lists/${listId}/data`))
     .then(resp => resp.json())
     .then(json => {
       dispatch(restoreListSuccess(json, listId));
@@ -393,7 +395,7 @@ export const restoreList = listId => dispatch => {
 
 export const addListToFavourites = listId => dispatch => {
   dispatch(favouritesRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-to-fav`)
+  return patchData(`/api/lists/${listId}/add-to-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ listId, isFavourite: true }));
@@ -415,7 +417,7 @@ export const addListToFavourites = listId => dispatch => {
 
 export const removeListFromFavourites = listId => dispatch => {
   dispatch(favouritesRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/remove-from-fav`)
+  return patchData(`/api/lists/${listId}/remove-from-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ listId, isFavourite: false }));
@@ -437,7 +439,7 @@ export const removeListFromFavourites = listId => dispatch => {
 
 export const addListViewer = (listId, email) => dispatch => {
   dispatch(addViewerRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-viewer`, {
+  return patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
     .then(resp => resp.json())
@@ -461,8 +463,8 @@ export const addListViewer = (listId, email) => dispatch => {
 
 export const removeListMember = (listId, userId, isOwner) => dispatch => {
   const url = isOwner
-    ? `${ENDPOINT_URL}/lists/${listId}/remove-owner`
-    : `${ENDPOINT_URL}/lists/${listId}/remove-member`;
+    ? `/api/lists/${listId}/remove-owner`
+    : `/api/lists/${listId}/remove-member`;
   dispatch(removeMemberRequest());
   return patchData(url, { userId })
     .then(resp => resp.json())
@@ -486,7 +488,7 @@ export const removeListMember = (listId, userId, isOwner) => dispatch => {
 
 export const addOwnerRole = (listId, userId) => dispatch => {
   dispatch(addOwnerRoleRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-owner-role`, {
+  return patchData(`/api/lists/${listId}/add-owner-role`, {
     userId
   })
     .then(resp => resp.json())
@@ -510,7 +512,7 @@ export const addOwnerRole = (listId, userId) => dispatch => {
 
 export const removeOwnerRole = (listId, userId) => dispatch => {
   dispatch(removeOwnerRoleRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/remove-owner-role`, {
+  return patchData(`/api/lists/${listId}/remove-owner-role`, {
     userId
   })
     .then(resp => resp.json())
@@ -534,7 +536,7 @@ export const removeOwnerRole = (listId, userId) => dispatch => {
 
 export const addMemberRole = (listId, userId) => dispatch => {
   dispatch(addMemberRoleRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/add-member-role`, {
+  return patchData(`/api/lists/${listId}/add-member-role`, {
     userId
   })
     .then(resp => resp.json())
@@ -558,7 +560,7 @@ export const addMemberRole = (listId, userId) => dispatch => {
 
 export const removeMemberRole = (listId, userId) => dispatch => {
   dispatch(removeMemberRoleRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/remove-member-role`, {
+  return patchData(`/api/lists/${listId}/remove-member-role`, {
     userId
   })
     .then(resp => resp.json())
@@ -582,7 +584,7 @@ export const removeMemberRole = (listId, userId) => dispatch => {
 
 export const changeType = (listId, type) => dispatch => {
   dispatch(changeTypeRequest());
-  return patchData(`${ENDPOINT_URL}/lists/${listId}/change-type`, {
+  return patchData(`/api/lists/${listId}/change-type`, {
     type
   })
     .then(resp => resp.json())

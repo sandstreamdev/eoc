@@ -1,28 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Linkify from 'react-linkify';
 
 import { UserIcon } from 'assets/images/icons';
+import { dateFromString } from 'common/utils/helpers';
 
-const Comment = ({ author, comment, avatar }) => (
-  <div className="comment">
-    <div className="comment__avatar">
-      {avatar ? (
-        <img src={avatar} alt={`${author} avatar`} name={`${author} avatar`} />
-      ) : (
-        <UserIcon />
-      )}
+const Comment = ({ comment }) => {
+  const { authorName, authorAvatarUrl, createdAt, text } = comment;
+  const date = dateFromString(createdAt);
+
+  return (
+    <div className="comment">
+      <div className="comment__avatar">
+        {authorAvatarUrl ? (
+          <img alt={`${authorName} avatar`} src={authorAvatarUrl} />
+        ) : (
+          <UserIcon />
+        )}
+      </div>
+      <div className="comment__body">
+        <span className="comment__author">{authorName}</span>
+        <span className="comment__date">{date}</span>
+        <p className="comment__content">
+          <Linkify
+            properties={{ target: '_blank', className: 'comment__link' }}
+          >
+            {text}
+          </Linkify>
+        </p>
+      </div>
     </div>
-    <div className="comment__body">
-      <span className="comment__author">{author}</span>
-      <p className="comment__content">{comment}</p>
-    </div>
-  </div>
-);
+  );
+};
 
 Comment.propTypes = {
-  author: PropTypes.string.isRequired,
-  avatar: PropTypes.node,
-  comment: PropTypes.string.isRequired
+  comment: PropTypes.objectOf(PropTypes.string).isRequired
 };
 
 export default Comment;

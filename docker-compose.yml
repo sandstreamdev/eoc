@@ -1,27 +1,33 @@
 version: '3'
+
+networks:
+  privatenetwork:
+
 services:
-  client:
-    restart: always
-    build:
-      context: .
-      dockerfile: client/Dockerfile
-    ports:
-      - '3000:3000'
-    links:
-      - server
   server:
+    container_name: eoc_server_container
     restart: always
     build:
-      context: .
-      dockerfile: server/Dockerfile
+      context: ./
+      dockerfile: ./Dockerfile.production
     ports:
-      - '8080:8080'
-    environment:
-      DB_URL: mongodb://mongo:27017
+      - '80:8080'
+    networks:
+      - privatenetwork
     links:
       - mongo
+    environment:
+      DB_URL: mongodb://mongo/eoc
+      GOOGLE_CLIENT_ID:
+      GOOGLE_CLIENT_SECRET:
+      EXPRESS_SESSION_KEY:
   mongo:
+    container_name: mongo_container
     image: mongo
     restart: always
+    volumes:
+      - /data/db:/data/db
     ports:
-      - '27017:27017'
+      - '27017'
+    networks:
+      - privatenetwork

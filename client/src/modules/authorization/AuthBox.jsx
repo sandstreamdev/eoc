@@ -2,9 +2,10 @@ import React, { Fragment, PureComponent } from 'react';
 import classNames from 'classnames';
 
 import AppLogo from 'common/components/AppLogo';
-import { COMPANY_PAGE_URL, ENDPOINT_URL } from 'common/constants/variables';
+import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import { checkIfCookieSet } from 'common/utils/cookie';
 import CookieConsentBox from 'common/components/CookieConsentBox';
+import GoogleButtonImg from '../../assets/images/google-btn.png';
 
 class AuthBox extends PureComponent {
   state = {
@@ -39,13 +40,13 @@ class AuthBox extends PureComponent {
                 className={classNames('google-button', {
                   'disabled-google-button': !isCookieSet
                 })}
-                href={`${ENDPOINT_URL}/auth/google`}
+                href="/auth/google"
                 tabIndex={!isCookieSet ? '-1' : '1'}
               >
                 <img
                   alt="Sign in with Google"
                   className="google-button__img"
-                  src="client/src/assets/images/google-btn.png"
+                  src={GoogleButtonImg}
                 />
               </a>
             </div>

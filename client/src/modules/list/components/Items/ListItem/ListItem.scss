@@ -31,6 +31,22 @@
         background-position: center;
       }
     }
+
+    input ~ .list-item__toggle .list-item__icon--pending {
+      &:after {
+        background-color: $bg-color;
+        border-color: $border-color;
+      }
+    }
+
+    .list-item__icon--pending {
+      &::before {
+        background-color: $bg-color;
+      }
+      &::after {
+        background-image: 0;
+      }
+    }
   }
 
   &--restore {
@@ -49,6 +65,24 @@
 
       &::after {
         background-image: url('../../assets/images/undo-alt-solid.svg');
+        background-size: 18px;
+        background-position: center;
+      }
+    }
+
+    input ~ .list-item__toggle .list-item__icon--pending {
+      &:after {
+        background-color: $success;
+        border-color: $success;
+      }
+    }
+
+    .list-item__icon--pending {
+      &::before {
+        background-color: $success-bg;
+      }
+      &::after {
+        background-image: url('../../assets/images/check-solid.svg');
         background-size: 18px;
         background-position: center;
       }
@@ -172,7 +206,7 @@
   &__cloning {
     position: relative;
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     align-items: center;
     min-height: 45px;
 
@@ -244,18 +278,18 @@
     }
   }
 
+  &__comments {
+    position: relative;
+
+    &:nth-child(2) {
+      margin-top: 16px;
+    }
+  }
+
   &__new-comment {
     text-align: left;
     border-bottom: 1px solid $item-border;
     margin-bottom: 16px;
-  }
-
-  &__heading {
-    color: $text-normal;
-    font-size: 16px;
-    text-align: left;
-    line-height: 1.2;
-    margin-bottom: 8px;
   }
 
   &__voting {

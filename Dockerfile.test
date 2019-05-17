@@ -1,0 +1,4 @@
+ARG APP_IMAGE=eoc_server-test/latest
+FROM $APP_IMAGE
+
+CMD ["npm", "run", "test"]
