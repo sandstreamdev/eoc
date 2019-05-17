@@ -204,7 +204,7 @@ class ListItem extends PureComponent {
               placeholder="Description"
             />
           </div>
-          <div className="list-item__info-details">
+          <div className="list-item__info-link">
             <TextInput
               disabled={isFieldDisabled}
               initialValue={link}
@@ -216,19 +216,19 @@ class ListItem extends PureComponent {
                 <ErrorMessage message="Incorrect url." />
               </div>
             )}
-            {areFieldsUpdated && isMember && (
-              <div className="list-item__save-details">
-                <PendingButton
-                  className="primary-button"
-                  disabled={isValidationErrorVisible || !isMember}
-                  onClick={this.handleDataUpdate}
-                  preloaderTheme={PreloaderTheme.LIGHT}
-                >
-                  Save
-                </PendingButton>
-              </div>
-            )}
           </div>
+          {areFieldsUpdated && isMember && (
+            <div className="list-item__save-details">
+              <PendingButton
+                className="primary-button"
+                disabled={isValidationErrorVisible || !isMember}
+                onClick={this.handleDataUpdate}
+                preloaderTheme={PreloaderTheme.LIGHT}
+              >
+                Save
+              </PendingButton>
+            </div>
+          )}
         </div>
         {!isOrdered && isMember && (
           <div className="list-item__cloning">
@@ -287,13 +287,15 @@ class ListItem extends PureComponent {
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
-          {this.renderVoting()}
-          <div className="list-item__toggle z-index-high">
-            <PendingButton
-              className="list-item__icon"
-              disabled={!isMember}
-              onClick={this.handleItemToggling}
-            />
+          <div className="list-item__buttons">
+            {this.renderVoting()}
+            <div className="list-item__toggle">
+              <PendingButton
+                className="list-item__icon"
+                disabled={!isMember}
+                onClick={this.handleItemToggling}
+              />
+            </div>
           </div>
         </div>
         {areDetailsVisible && (

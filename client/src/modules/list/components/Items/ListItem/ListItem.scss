@@ -14,7 +14,7 @@
   }
 
   &--done {
-    input ~ .list-item__toggle .list-item__icon {
+    input ~ .list-item__buttons .list-item__toggle .list-item__icon {
       &:after {
         background-color: $success;
         border-color: $success;
@@ -32,7 +32,7 @@
       }
     }
 
-    input ~ .list-item__toggle .list-item__icon--pending {
+    input ~ .list-item__buttons .list-item__toggle .list-item__icon--pending {
       &:after {
         background-color: $bg-color;
         border-color: $border-color;
@@ -50,7 +50,7 @@
   }
 
   &--restore {
-    input ~ .list-item__toggle .list-item__icon {
+    input ~ .list-item__buttons .list-item__toggle .list-item__icon {
       color: $text-normal;
       &:after {
         background-color: $restore-blue;
@@ -70,7 +70,7 @@
       }
     }
 
-    input ~ .list-item__toggle .list-item__icon--pending {
+    input ~ .list-item__buttons .list-item__toggle .list-item__icon--pending {
       &:after {
         background-color: $success;
         border-color: $success;
@@ -110,8 +110,7 @@
 
   &__label {
     box-sizing: border-box;
-    padding: 7px 0;
-    width: 100%;
+    padding: 12px 0;
     display: flex;
     align-items: center;
     text-align: left;
@@ -127,44 +126,47 @@
   &__data {
     display: flex;
     flex-direction: column;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.2;
   }
 
   &__author {
-    font-size: 11px;
+    font-size: 14px;
     line-height: 1.2;
     color: $text-light;
     margin-top: 5px;
     text-transform: capitalize;
+    text-overflow: ellipsis;
+  }
+
+  &__buttons {
+    display: flex;
   }
 
   &__toggle {
-    position: absolute;
-    width: 28px;
-    height: 28px;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -50%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 0;
+    width: 40px;
     border: 0;
   }
 
   &__icon {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -50%);
+    position: relative;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
     border: 0;
+    padding: 0;
+    cursor: pointer;
 
     &:before {
-      width: 10px;
-      height: 10px;
       border-radius: 100%;
       content: '';
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) scale3d(1, 1, 1);
       transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
       z-index: -1;
@@ -178,12 +180,7 @@
       background-color: $bg-color;
       background-repeat: no-repeat;
       border-radius: 100%;
-      z-index: 2;
-      position: absolute;
-      right: 0;
-      top: 50%;
       cursor: pointer;
-      transform: translateY(-50%);
       transition: all 200ms ease-in;
       background-position: center;
     }
@@ -198,6 +195,7 @@
   &__info {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     align-items: stretch;
     border-bottom: 1px solid $item-border;
     padding-bottom: 16px;
@@ -217,6 +215,8 @@
 
   &__top {
     position: relative;
+    display: flex;
+    justify-content: space-between;
 
     &::before {
       position: absolute;
@@ -253,8 +253,9 @@
   }
 
   &__info-textarea {
-    width: 60%;
+    width: 100%;
     padding-right: 16px;
+    margin-bottom: 16px;
 
     textarea {
       height: 100%;
@@ -266,12 +267,11 @@
     }
   }
 
-  &__info-details {
-    width: 40%;
+  &__info-link {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
+    margin-bottom: 16px;
 
     .ss-number-input {
       margin-bottom: 8px;
@@ -293,13 +293,12 @@
   }
 
   &__voting {
-    position: absolute;
-    height: 40px;
-    min-width: 50px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 40px;
+    margin-right: 16px;
     z-index: 3;
-    right: 55px;
-    top: 50%;
-    transform: translateY(-50%);
   }
 
   &__validation-error {
@@ -308,6 +307,11 @@
 
   &__save-details {
     position: relative;
-    width: 58px;
+    width: 100%;
+    .primary-button {
+      font-size: $font-size;
+      width: 100%;
+      height: 44px;
+    }
   }
 }

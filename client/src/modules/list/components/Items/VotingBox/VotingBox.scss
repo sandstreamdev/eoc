@@ -1,6 +1,7 @@
 .voting-box {
   height: 40px;
-  padding: 0 10px;
+  min-width: 40px;
+  padding: 0;
   background-color: $bg-color;
   outline: none;
   color: $gray4;

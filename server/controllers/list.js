@@ -845,10 +845,11 @@ const updateItemDetails = (req, resp) => {
       }
 
       if (isOrdered !== null) {
-        if (!isOrdered) {
-          itemToUpdate.authorId = authorId;
-        }
         itemToUpdate.isOrdered = isOrdered;
+      }
+
+      if (authorId) {
+        itemToUpdate.authorId = authorId;
       }
 
       return list.save();
