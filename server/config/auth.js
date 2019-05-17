@@ -27,6 +27,7 @@ passport.use(
 // Use LocalStrategy for demo purposes
 passport.use(
   new LocalStrategy((username, password, done) => {
+    let newUser;
     User.findOne({
       idFromProvider: process.env.DEMO_USER_ID_FROM_PROVIDER
     })
@@ -36,10 +37,11 @@ passport.use(
         const { _id, ...rest } = user;
         return new User({ ...rest }).save();
       })
-      .then(async newUser => {
-        await seedDemoData(newUser._id);
-        return done(null, newUser);
+      .then(user => {
+        newUser = user;
+        seedDemoData(newUser._id);
       })
+      .then(() => done(null, newUser))
       .catch(err => done(null, false, { message: err.message }));
   })
 );
@@ -48,15 +50,12 @@ passport.serializeUser((user, done) => {
   done(null, user._id);
 });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id)
-      .lean()
-      .exec();
-    done(null, user);
-  } catch (err) {
-    done(null, false, { message: err.message });
-  }
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+    .lean()
+    .exec()
+    .then(user => done(null, user))
+    .catch(err => done(null, false, { message: err.message }));
 });
 
 const setDemoUser = passport.authenticate('local', {

@@ -1,20 +1,12 @@
-/* eslint-disable no-await-in-loop */
 const User = require('../../models/user.model');
 const { generateUsers } = require('./generateUsers');
 
-const seedUsers = async demoUserId => {
+const seedUsers = demoUserId => {
   const users = generateUsers(demoUserId);
 
-  // eslint-disable-next-line no-unused-vars
-  let counter = 0;
-  // eslint-disable-next-line no-restricted-syntax
-  for (const user of users) {
-    const newUser = new User(user);
+  const pendingUsers = users.map(user => new User(user).save());
 
-    await newUser.save();
-    counter += 1;
-  }
-  return users;
+  return Promise.all(pendingUsers).then(() => users);
 };
 
 module.exports = { seedUsers };

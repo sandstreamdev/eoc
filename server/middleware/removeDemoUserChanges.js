@@ -8,15 +8,11 @@ const removeDemoUserChanges = async (req, res, next) => {
   const { _id: currentUserId, idFromProvider } = req.user;
 
   if (idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
-    try {
-      await removeDemoUserData(currentUserId);
-
-      return next();
-    } catch (err) {
-      return res
-        .status(400)
-        .send({ message: 'Logout failed. Please try again.' });
-    }
+    return removeDemoUserData(currentUserId)
+      .then(() => next())
+      .catch(() =>
+        res.status(400).send({ message: 'Logout failed. Please try again.' })
+      );
   }
 
   return next();

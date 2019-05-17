@@ -34,37 +34,33 @@ const extractUserProfile = (profile, accessToken) => {
   };
 };
 
-const removeDemoUserData = async id => {
-  try {
-    const lists = await List.find(
-      {
-        $or: [{ ownerIds: id }, { memberIds: id }, { viewersIds: id }]
-      },
-      '_id'
-    )
-      .lean()
-      .exec();
-
-    if (lists) {
-      const listsIds = lists.map(lists => lists._id);
-      await Comment.deleteMany({ listId: { $in: listsIds } });
-    }
-
-    await List.deleteMany({
+const removeDemoUserData = id =>
+  List.find(
+    {
       $or: [{ ownerIds: id }, { memberIds: id }, { viewersIds: id }]
-    }).exec();
-
-    await Cohort.deleteMany({
-      $or: [{ ownerIds: id }, { memberIds: id }]
-    }).exec();
-
-    await User.deleteOne({ _id: id }).exec();
-
-    await User.deleteMany({ provider: `demo-${id}` }).exec();
-  } catch (err) {
-    throw err;
-  }
-};
+    },
+    '_id'
+  )
+    .lean()
+    .exec()
+    .then(lists => {
+      if (lists) {
+        const listsIds = lists.map(lists => lists._id);
+        return Comment.deleteMany({ listId: { $in: listsIds } }).exec();
+      }
+    })
+    .then(() =>
+      List.deleteMany({
+        $or: [{ ownerIds: id }, { memberIds: id }, { viewersIds: id }]
+      }).exec()
+    )
+    .then(() =>
+      Cohort.deleteMany({
+        $or: [{ ownerIds: id }, { memberIds: id }]
+      }).exec()
+    )
+    .then(() => User.deleteOne({ _id: id }).exec())
+    .then(() => User.deleteMany({ provider: `demo-${id}` }).exec());
 
 module.exports = {
   extractUserProfile,
