@@ -1,13 +1,12 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-
-const outputDirectory = 'dist';
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  mode: 'development',
   entry: ['babel-polyfill', './client/src/app/index.jsx'],
   output: {
-    path: path.join(__dirname, outputDirectory),
+    path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
     publicPath: '/'
   },
@@ -40,8 +39,12 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        test: /\.(woff|woff2|eot|ttf|svg)$/,
         loader: 'url-loader?limit=100000'
+      },
+      {
+        test: /\.(png|jpg)$/,
+        use: 'file-loader'
       }
     ]
   },
@@ -61,7 +64,7 @@ module.exports = {
     historyApiFallback: true
   },
   plugins: [
-    new CleanWebpackPlugin([outputDirectory]),
+    new CleanWebpackPlugin({ verbose: true }),
     new HtmlWebpackPlugin({
       template: './client/public/index.html'
     })
