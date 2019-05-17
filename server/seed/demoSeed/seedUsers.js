@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
 const User = require('../../models/user.model');
-// require('dotenv').config();
 const { generateUsers } = require('./generateUsers');
 
 const seedUsers = async demoUserId => {

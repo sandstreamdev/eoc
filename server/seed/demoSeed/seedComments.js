@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
 const Comment = require('../../models/comment.model');
-// require('dotenv').config();
 const { generateComments } = require('./generateComments');
 
 const seedComments = async listData => {

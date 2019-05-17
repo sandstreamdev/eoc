@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
 const List = require('../../models/list.model');
-// require('dotenv').config();
 const { generateLists } = require('./generateLists');
 
 const seedLists = async (demoUserId, userIds, cohortIds) => {

@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
 const Cohort = require('../../models/cohort.model');
-// require('dotenv').config();
 const { generateCohorts } = require('./generateCohorts');
 
 const seedCohorts = async (demoUserId, userIds) => {
