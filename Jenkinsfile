@@ -47,8 +47,7 @@ pipeline {
   post {
     always {
       echo 'This will always run'
-      SUMMARY = "${currentBuild} ${currentBuild.result} (${env.BUILD_URL})"
-      slackSend(color: 'good', message: summary)
+      slackSend color: 'good', message: "${currentBuild} ${currentBuild.result} (${env.BUILD_URL})"
     }
     success {
       echo 'This will run only if successful'
