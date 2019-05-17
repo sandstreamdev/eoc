@@ -47,7 +47,7 @@ pipeline {
   post {
     always {
       echo 'This will always run'
-      def summary = "${subject} (${env.BUILD_URL})"
+      SUMMARY = "${currentBuild} ${currentBuild.result} (${env.BUILD_URL})"
       slackSend(color: 'good', message: summary)
     }
     success {
