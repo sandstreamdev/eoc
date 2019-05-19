@@ -49,6 +49,8 @@
   }
 
   &__main {
+    position: relative;
+    top: -1px;
     background: $orange-bg;
     padding: 0 0 32px;
     box-shadow: 0px 5px 5px $orange-bg;
@@ -86,7 +88,7 @@
       padding-bottom: 0;
     }
 
-    @include breakpoint($medium) {
+    @include breakpoint($large) {
       margin-bottom: 50px;
     }
 
@@ -110,6 +112,7 @@
   &__cta-heading {
     font-size: 24px;
     line-height: 1.2;
+    text-align: center;
     color: $text-normal;
     margin-bottom: 16px;
   }
