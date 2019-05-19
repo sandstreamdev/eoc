@@ -3,16 +3,10 @@
   background: $bg-color;
   display: flex;
   flex-direction: column;
-  min-width: 195px;
   box-sizing: border-box;
 
   &__label {
     margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
 
     &:last-child {
       margin-bottom: 0;

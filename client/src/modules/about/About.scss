@@ -38,7 +38,7 @@
     font-weight: 400;
     color: $text-light;
     text-align: center;
-    font-size: $font-size;
+    font-size: $m-font;
     line-height: 1.5;
     margin: 20px 0 0;
 
@@ -63,7 +63,7 @@
   }
 
   &__content {
-    font-size: $font-size;
+    font-size: $m-font;
     line-height: 1.2;
     color: $text-white;
     letter-spacing: 0.3px;

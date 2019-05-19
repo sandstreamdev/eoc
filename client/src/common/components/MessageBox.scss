@@ -11,17 +11,18 @@
   overflow: hidden;
   background: $bg-color;
   margin: 20px 0;
-  font-size: 14px;
+  font-size: $s-font;
   font-weight: 700;
   line-height: 1.2;
 
   span {
     position: relative;
+    display: block;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20px;
-    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     border-radius: 50%;
     margin-right: 10px;
     box-sizing: border-box;

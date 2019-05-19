@@ -6,7 +6,7 @@ import { Manager, Reference } from 'react-popper';
 import { withRouter } from 'react-router-dom';
 import _debounce from 'lodash/debounce';
 
-import { DotsIcon, PlusIcon } from 'assets/images/icons';
+import { PlusIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
@@ -23,15 +23,19 @@ class MembersBox extends PureComponent {
     pending: false
   };
 
+  handleResize = _debounce(
+    () => this.setState({ isMobile: window.innerWidth < 400 }),
+    100
+  );
+
   componentDidMount() {
-    window.addEventListener('resize', _debounce(this.handleResize, 100));
+    window.addEventListener('resize', this.handleResize);
   }
 
   componentWillUnmount() {
+    this.handleResize.cancel();
     window.removeEventListener('resize', this.handleResize);
   }
-
-  handleResize = () => this.setState({ isMobile: window.innerWidth < 400 });
 
   showForm = () => this.setState({ isFormVisible: true });
 
@@ -148,11 +152,6 @@ class MembersBox extends PureComponent {
             </li>
           )}
           {this.renderMemberList()}
-          <li className="members-box__list-item">
-            <button className="members-box__member" type="button">
-              <DotsIcon />
-            </button>
-          </li>
         </ul>
         {isMobile && currentUser && this.renderDetails(currentUser)}
       </div>

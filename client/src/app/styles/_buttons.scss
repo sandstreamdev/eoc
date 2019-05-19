@@ -3,7 +3,7 @@
   position: relative;
   font-weight: 500;
   color: $text-white;
-  font-size: 14px;
+  font-size: $m-font;
   text-transform: uppercase;
   padding: 8px 16px;
   line-height: 1.2;
@@ -11,10 +11,11 @@
   display: block;
   background: $button-bg;
   border: 0;
+  height: 40px;
   cursor: pointer;
 
   @include breakpoint($medium) {
-    font-size: 10px;
+    font-size: $s-font;
   }
 }
 
@@ -31,7 +32,7 @@
   background: 0;
   border: 0;
   outline: 0;
-  font-size: $font-size;
+  font-size: $m-font;
   color: $text-light;
   cursor: pointer;
   padding: 12px 0 12px 0;
@@ -40,9 +41,5 @@
 
   &:hover {
     color: $text-orange;
-  }
-
-  @include breakpoint($medium) {
-    font-style: 14px;
   }
 }
