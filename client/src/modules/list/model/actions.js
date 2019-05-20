@@ -130,9 +130,9 @@ const addOwnerRoleFailure = () => ({
   type: ListActionTypes.ADD_OWNER_ROLE_FAILURE
 });
 
-const removeOwnerRoleSuccess = (listId, userId, isCurrentUserAnOwner) => ({
+const removeOwnerRoleSuccess = (listId, userId, isCurrentUserRoleChanging) => ({
   type: ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  payload: { isCurrentUserAnOwner, listId, userId }
+  payload: { isCurrentUserRoleChanging, listId, userId }
 });
 
 const removeOwnerRoleFailure = () => ({
@@ -148,9 +148,13 @@ const addMemberRoleFailure = () => ({
   type: ListActionTypes.ADD_MEMBER_ROLE_FAILURE
 });
 
-const removeMemberRoleSuccess = (listId, userId, isCurrentUserAnOwner) => ({
+const removeMemberRoleSuccess = (
+  listId,
+  userId,
+  isCurrentUserRoleChanging
+) => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS,
-  payload: { listId, userId, isCurrentUserAnOwner }
+  payload: { listId, userId, isCurrentUserRoleChanging }
 });
 
 const removeMemberRoleFailure = () => ({
@@ -437,14 +441,16 @@ export const addOwnerRole = (listId, userId) => dispatch =>
 export const removeOwnerRole = (
   listId,
   userId,
-  isCurrentUserAnOwner
+  isCurrentUserRoleChanging
 ) => dispatch =>
   patchData(`/api/lists/${listId}/remove-owner-role`, {
     userId
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(removeOwnerRoleSuccess(listId, userId, isCurrentUserAnOwner));
+      dispatch(
+        removeOwnerRoleSuccess(listId, userId, isCurrentUserRoleChanging)
+      );
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,

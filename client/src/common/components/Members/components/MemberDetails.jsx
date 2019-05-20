@@ -111,7 +111,7 @@ class MemberDetails extends PureComponent {
       _id: userId,
       addMemberRoleInList,
       addOwnerRoleInList,
-      isCurrentUserAnOwner,
+      currentUser: { id: currentUserId },
       isMember,
       isOwner,
       match: {
@@ -120,6 +120,7 @@ class MemberDetails extends PureComponent {
       removeMemberRoleInList,
       removeOwnerRoleInList
     } = this.props;
+    const isCurrentUserRoleChanging = currentUserId === userId;
     let action;
 
     this.setState({ pending: true });
@@ -135,7 +136,7 @@ class MemberDetails extends PureComponent {
         break;
     }
 
-    action(id, userId, isCurrentUserAnOwner).finally(() =>
+    action(id, userId, isCurrentUserRoleChanging).finally(() =>
       this.setState({ pending: false })
     );
   };

@@ -147,7 +147,7 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
-        payload: { isCurrentUserAnOwner, listId }
+        payload: { isCurrentUserRoleChanging, listId }
       } = action;
       const { members } = state[listId];
       const list = {
@@ -155,7 +155,7 @@ const lists = (state = {}, action) => {
         members: membersReducer(members, action)
       };
 
-      if (isCurrentUserAnOwner) {
+      if (isCurrentUserRoleChanging) {
         list.isOwner = false;
       }
 
@@ -163,7 +163,7 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
       const {
-        payload: { isCurrentUserAnOwner, listId }
+        payload: { isCurrentUserRoleChanging, listId }
       } = action;
       const { members } = state[listId];
       const list = {
@@ -171,7 +171,7 @@ const lists = (state = {}, action) => {
         members: membersReducer(members, action)
       };
 
-      if (isCurrentUserAnOwner) {
+      if (isCurrentUserRoleChanging) {
         list.isMember = false;
         list.isOwner = false;
       }
