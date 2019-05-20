@@ -281,9 +281,18 @@ class MemberDetails extends PureComponent {
 
   renderDetails = () => {
     const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
-    const { isGuest, isMember, isOwner, route, type } = this.props;
+    const {
+      _id: userId,
+      currentUser: { id: currentUserId },
+      isGuest,
+      isMember,
+      isOwner,
+      route,
+      type
+    } = this.props;
     const isRemoveOptionVisible =
-      route === Routes.COHORT || type === ListType.LIMITED || isGuest;
+      (route === Routes.COHORT || type === ListType.LIMITED || isGuest) &&
+      userId !== currentUserId;
 
     return (
       <ul className="member-details__options">
@@ -294,13 +303,15 @@ class MemberDetails extends PureComponent {
             isOwner
           )}
         </li>
-        <li className="member-details__option">
-          {this.renderChangeRoleOption(
-            UserRoles.MEMBER,
-            isMemberInfoVisible,
-            isMember
-          )}
-        </li>
+        {route === Routes.LIST && (
+          <li className="member-details__option">
+            {this.renderChangeRoleOption(
+              UserRoles.MEMBER,
+              isMemberInfoVisible,
+              isMember
+            )}
+          </li>
+        )}
         {isRemoveOptionVisible && (
           <li className="member-details__option member-details__option--removing">
             {this.renderRemoveOption()}
@@ -318,8 +329,8 @@ class MemberDetails extends PureComponent {
 
   render() {
     const {
-      _id: userId,
-      currentUser: { id: currentUserId },
+      // _id: userId,
+      // currentUser: { id: currentUserId },
       isCurrentUserAnOwner,
       onClose
     } = this.props;
@@ -343,13 +354,14 @@ class MemberDetails extends PureComponent {
           <div className="member-details__details">
             {this.renderHeader()}
             <div className="member-details__panel">
-              {isCurrentUserAnOwner && (
+              {isCurrentUserAnOwner && this.renderDetails()}
+              {/* {isCurrentUserAnOwner && (
                 <Fragment>
                   {userId !== currentUserId
                     ? this.renderDetails()
                     : this.renderMessage()}
                 </Fragment>
-              )}
+              )} */}
               {pending && <Preloader />}
             </div>
           </div>
