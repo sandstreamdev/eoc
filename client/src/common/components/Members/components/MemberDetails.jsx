@@ -294,13 +294,15 @@ class MemberDetails extends PureComponent {
             isOwner
           )}
         </li>
-        <li className="member-details__option">
-          {this.renderChangeRoleOption(
-            UserRoles.MEMBER,
-            isMemberInfoVisible,
-            isMember
-          )}
-        </li>
+        {route === Routes.LIST && (
+          <li className="member-details__option">
+            {this.renderChangeRoleOption(
+              UserRoles.MEMBER,
+              isMemberInfoVisible,
+              isMember
+            )}
+          </li>
+        )}
         {isRemoveOptionVisible && (
           <li className="member-details__option member-details__option--removing">
             {this.renderRemoveOption()}
