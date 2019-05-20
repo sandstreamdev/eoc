@@ -777,14 +777,15 @@ const addViewer = (req, resp) => {
 
       const { _id: newMemberId } = userData;
       const { cohortId: cohort, viewersIds } = list;
-      const userNotExists = !checkIfArrayContainsUserId(
-        viewersIds,
-        newMemberId
-      );
+      const userExists = checkIfArrayContainsUserId(viewersIds, newMemberId);
+
+      if (userExists) {
+        throw new BadRequestException('User is already a member.');
+      }
 
       user = userData;
 
-      if (userNotExists) {
+      if (!userExists) {
         list.viewersIds.push(newMemberId);
       }
 
