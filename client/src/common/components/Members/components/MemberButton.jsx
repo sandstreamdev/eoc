@@ -6,19 +6,19 @@ import UserIconPlaceholder from 'assets/images/user.svg';
 
 class MemberButton extends PureComponent {
   state = {
-    isError: false
+    isAvatarError: false
   };
 
-  handleError = () => this.setState({ isError: true });
+  handleError = () => this.setState({ isAvatarError: true });
 
   render() {
     const { onDisplayDetails, member, popperRef } = this.props;
-    const { isError } = this.state;
+    const { isAvatarError } = this.state;
 
     return (
       <button
         className={classNames('member-button', {
-          'member-button--error': isError
+          'member-button--error': isAvatarError
         })}
         ref={popperRef}
         title={member.displayName}
@@ -29,7 +29,7 @@ class MemberButton extends PureComponent {
           className="member-button__avatar"
           onClick={onDisplayDetails}
           onError={this.handleError}
-          src={isError ? UserIconPlaceholder : member.avatarUrl}
+          src={isAvatarError ? UserIconPlaceholder : member.avatarUrl}
           title={member.displayName}
         />
       </button>
