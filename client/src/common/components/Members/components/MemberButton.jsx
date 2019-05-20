@@ -12,7 +12,7 @@ class MemberButton extends PureComponent {
   handleError = () => this.setState({ isAvatarError: true });
 
   render() {
-    const { onDisplayDetails, member, popperRef } = this.props;
+    const { member, onDisplayDetails, popperRef } = this.props;
     const { isAvatarError } = this.state;
 
     return (
