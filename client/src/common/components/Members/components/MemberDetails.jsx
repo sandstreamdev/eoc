@@ -92,18 +92,22 @@ class MemberDetails extends PureComponent {
     const {
       _id: userId,
       addOwnerRoleInCohort,
+      currentUser: { id: currentUserId },
       isOwner,
       match: {
         params: { id }
       },
       removeOwnerRoleInCohort
     } = this.props;
+    const isCurrentUserRoleChanging = currentUserId === userId;
 
     this.setState({ pending: true });
 
     const action = isOwner ? removeOwnerRoleInCohort : addOwnerRoleInCohort;
 
-    action(id, userId).finally(() => this.setState({ pending: false }));
+    action(id, userId, isCurrentUserRoleChanging).finally(() =>
+      this.setState({ pending: false })
+    );
   };
 
   changeListRole = selectedRole => {

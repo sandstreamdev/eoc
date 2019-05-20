@@ -405,28 +405,41 @@ const removeOwnerRole = (req, resp) => {
     user: { _id: currentUserId }
   } = req;
 
-  Cohort.findOneAndUpdate(
-    {
-      _id: sanitize(cohortId),
-      ownerIds: { $all: [currentUserId, sanitizedUserId] }
-    },
-    { $pull: { ownerIds: userId } }
-  )
+  Cohort.findOne({
+    _id: sanitize(cohortId),
+    ownerIds: { $all: [currentUserId, sanitizedUserId] }
+  })
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Cohort data not found.' });
+        throw new BadRequestException("Can't remove owner role.");
       }
 
-      return resp.status(200).send({
-        message: "User has been successfully set as a cohort's member."
-      });
+      const { name, ownerIds } = doc;
+
+      if (ownerIds.length < 2) {
+        throw new BadRequestException(
+          `You can not remove the owner role from yourself because you are the only owner in the "${name}" cohort.`
+        );
+      }
+
+      ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
+
+      return doc.save();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't set user as a cohort's member."
+    .then(() =>
+      resp.status(200).send({
+        message: 'User has no owner role.'
       })
-    );
+    )
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'Cohort data not found.' });
+    });
 };
 
 const addMember = (req, resp) => {
