@@ -41,8 +41,8 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     background-color: $bg-color;
     border: 0;
     z-index: 1;
@@ -79,7 +79,7 @@
 
   &__role {
     font-weight: 400;
-    font-size: 14px;
+    font-size: $s-font;
     padding: 0 15px 0 10px;
   }
 
@@ -122,7 +122,7 @@
   }
 
   &__info-button {
-    font-size: 14px;
+    font-size: $s-font;
     width: 36px;
     height: 36px;
     background-color: transparent;
@@ -166,7 +166,7 @@
     width: 100%;
     font-weight: 400;
     color: $text-normal;
-    font-size: 14px;
+    font-size: $s-font;
     line-height: 1.25;
     padding: 5px 0 0;
   }

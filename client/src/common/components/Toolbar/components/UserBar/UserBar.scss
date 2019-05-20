@@ -7,7 +7,7 @@
     cursor: pointer;
     position: relative;
     color: $text-white;
-    font-size: 14px;
+    font-size: $s-font;
     line-height: 1.2;
     text-decoration: none;
     outline: none;
@@ -57,7 +57,7 @@
     height: 44px;
     padding: 4px 0;
     color: $text-normal;
-    font-size: 14px;
+    font-size: $s-font;
     line-height: 1.2;
     display: flex;
     justify-content: space-between;
@@ -100,7 +100,7 @@
     border: 0;
     padding: 0;
     color: $text-normal;
-    font-size: 14px;
+    font-size: $s-font;
     line-height: 1.2;
     width: 100%;
     height: 100%;

@@ -2,7 +2,6 @@
   box-sizing: border-box;
   display: block;
   height: 96px;
-  width: 180px;
   background: url('../../assets/images/card-placeholder.png') center;
   border: 0;
   color: $text-normal;
@@ -10,6 +9,11 @@
   padding: 8px;
   position: relative;
   cursor: pointer;
+  width: 100%;
+
+  @include breakpoint($medium) {
+    width: 180px;
+  }
 
   &--orange {
     background: $card-color-1;
@@ -95,7 +99,7 @@
     right: 8px;
     bottom: 8px;
     position: absolute;
-    font-size: 14px;
+    font-size: $s-font;
     text-align: right;
     color: $text-white;
 

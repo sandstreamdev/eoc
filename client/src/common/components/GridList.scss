@@ -39,15 +39,22 @@
   }
 
   &__list {
-    margin: 0 -10px 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 200px);
-    grid-gap: 20px 10px;
+    margin: 0;
+
+    @include breakpoint($medium) {
+      margin: 0 -10px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 200px);
+      grid-gap: 20px 10px;
+    }
   }
 
   &__item {
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 20px;
+
+    @include breakpoint($medium) {
+      margin: 0 auto 0;
+    }
 
     a {
       text-decoration: none;

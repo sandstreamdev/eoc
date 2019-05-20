@@ -1,12 +1,16 @@
 .archived-message {
   display: table;
   position: relative;
-  width: auto;
+  width: 70%;
   margin: 50px auto;
   text-align: center;
   background: $bg-color;
   padding: 20px 25px;
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+
+  @include breakpoint($xsmall) {
+    width: auto;
+  }
 
   &__body {
     position: relative;

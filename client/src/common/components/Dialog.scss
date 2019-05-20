@@ -7,22 +7,26 @@
   background-color: $bg-color;
   box-shadow: 0px 0px 5px rgba($shadow-color, 0.15);
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex-wrap: wrap;
-  min-width: 320px;
+  width: 90%;
   max-width: 600px;
   z-index: 10;
+
+  @include breakpoint($xsmall) {
+    min-width: 320px;
+  }
 
   &__header {
     padding: 10px;
     color: $text-normal;
-    font-size: 14px;
+    font-size: $m-font;
     letter-spacing: 0.2px;
     font-weight: 400;
     line-height: 1.2;
     border-bottom: 1px solid $border-light;
+
+    @include breakpoint($xsmall) {
+      font-size: 18px;
+    }
   }
 
   &__body {
@@ -40,12 +44,17 @@
   &__footer {
     padding: 15px;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    flex-direction: column;
+
+    @include breakpoint($xxsmall) {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+    }
   }
 
   &__heading {
-    width: 100%;
     font-weight: 700;
     text-align: center;
     text-transform: uppercase;
@@ -53,7 +62,11 @@
 
   &__button {
     &:first-of-type {
-      margin-right: 20px;
+      margin: 0 0 15px;
+
+      @include breakpoint($xxsmall) {
+        margin: 0 20px 0 0;
+      }
     }
   }
 }

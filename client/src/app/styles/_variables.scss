@@ -1,4 +1,5 @@
 // Screen sizes
+$xxsmall: 320px;
 $xsmall: 360px;
 $small: 640px;
 $medium: 800px;
@@ -6,4 +7,12 @@ $large: 1024px;
 $xlarge: 1200px;
 $xxlarge: 1440px;
 
-$font-size: 16px;
+// fonts
+$font-family: 'Montserrat', sans-serif;
+// fonts sizes
+$s-font: 14px;
+$m-font: 16px;
+$l-font: 18px;
+$xl-font: 20px;
+$xxl-font: 24px;
+$xxxl-font: 32px;

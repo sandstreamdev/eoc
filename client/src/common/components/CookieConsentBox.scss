@@ -32,7 +32,7 @@
 
   &__content {
     color: $text-normal;
-    font-size: 14px;
+    font-size: $s-font;
     line-height: 1.2;
     z-index: 11;
     margin: 0 16px 16px;
@@ -41,7 +41,6 @@
       margin: 0 16px 0;
     }
   }
-
 
   &__link {
     font-style: italic;

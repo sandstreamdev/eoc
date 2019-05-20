@@ -11,14 +11,33 @@
     display: flex;
     justify-content: space-between;
     position: relative;
+    flex-direction: column;
+
+    @include breakpoint($medium) {
+      flex-direction: row;
+    }
   }
 
   &__text {
-    font-size: 12px;
+    padding: 10px 0;
+    font-size: 16px;
     font-weight: 400;
     line-height: 1.2;
     color: $text-normal;
     text-decoration: none;
+    border-bottom: 1px solid $border-color;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    @include breakpoint($medium) {
+      font-size: $s-font;
+    }
+
+    @include breakpoint($medium) {
+      border-bottom: 0;
+    }
   }
 
   &__link {
@@ -28,9 +47,11 @@
   }
 
   &__copyrights {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    @include breakpoint($medium) {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 }
