@@ -134,10 +134,8 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.ADD_VIEWER_SUCCESS:
     case ListActionTypes.ADD_OWNER_ROLE_SUCCESS:
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
-    case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS:
     case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS:
-    case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { listId }
       } = action;
@@ -146,6 +144,39 @@ const lists = (state = {}, action) => {
         ...state,
         [listId]: { ...state[listId], members: membersReducer(members, action) }
       };
+    }
+    case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
+      const {
+        payload: { isCurrentUserAnOwner, listId }
+      } = action;
+      const { members } = state[listId];
+      const list = {
+        ...state[listId],
+        members: membersReducer(members, action)
+      };
+
+      if (isCurrentUserAnOwner) {
+        list.isOwner = false;
+      }
+
+      return { ...state, [listId]: list };
+    }
+    case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
+      const {
+        payload: { isCurrentUserAnOwner, listId }
+      } = action;
+      const { members } = state[listId];
+      const list = {
+        ...state[listId],
+        members: membersReducer(members, action)
+      };
+
+      if (isCurrentUserAnOwner) {
+        list.isMember = false;
+        list.isOwner = false;
+      }
+
+      return { ...state, [listId]: list };
     }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {

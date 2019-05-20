@@ -111,6 +111,7 @@ class MemberDetails extends PureComponent {
       _id: userId,
       addMemberRoleInList,
       addOwnerRoleInList,
+      isCurrentUserAnOwner,
       isMember,
       isOwner,
       match: {
@@ -134,7 +135,9 @@ class MemberDetails extends PureComponent {
         break;
     }
 
-    action(id, userId).finally(() => this.setState({ pending: false }));
+    action(id, userId, isCurrentUserAnOwner).finally(() =>
+      this.setState({ pending: false })
+    );
   };
 
   handleChangingRoles = event => {

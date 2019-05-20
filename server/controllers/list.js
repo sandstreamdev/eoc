@@ -640,7 +640,13 @@ const removeOwnerRole = (req, resp) => {
         throw new BadRequestException("Can't remove owner role.");
       }
 
-      const { ownerIds } = doc;
+      const { name, ownerIds } = doc;
+
+      if (ownerIds.length < 2) {
+        throw new BadRequestException(
+          `You can not remove the owner role from yourself because you are the only owner in the "${name}" list.`
+        );
+      }
       const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
 
       if (userIsOwner) {
@@ -723,7 +729,14 @@ const removeMemberRole = (req, resp) => {
         throw new BadRequestException("Can't remove member role");
       }
 
-      const { memberIds, ownerIds } = doc;
+      const { memberIds, name, ownerIds } = doc;
+
+      if (ownerIds.length < 2) {
+        throw new BadRequestException(
+          `You can not remove the member and owner role from yourself because you are the only owner in the "${name}" list.`
+        );
+      }
+
       const userIsMember = checkIfArrayContainsUserId(memberIds, userId);
 
       if (userIsMember) {
