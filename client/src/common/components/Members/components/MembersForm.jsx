@@ -11,7 +11,8 @@ class MembersForm extends PureComponent {
     super(props);
 
     this.state = {
-      inputValue: ''
+      inputValue: '',
+      isFocused: false
     };
 
     this.input = React.createRef();
@@ -35,8 +36,9 @@ class MembersForm extends PureComponent {
 
   handleEnterPress = event => {
     const { code } = event;
+    const { isFocused } = this.state;
 
-    if (code === 'Enter') {
+    if (code === 'Enter' && isFocused) {
       this.handleAddNew();
     }
   };
@@ -50,6 +52,10 @@ class MembersForm extends PureComponent {
 
   handleSubmit = event => event.preventDefault();
 
+  handleFocus = () => this.setState({ isFocused: true });
+
+  handleBlur = () => this.setState({ isFocused: false });
+
   render() {
     const { inputValue } = this.state;
     const { pending } = this.props;
@@ -59,7 +65,9 @@ class MembersForm extends PureComponent {
         <input
           className="members-form__input primary-input"
           disabled={pending}
+          onBlur={this.handleBlur}
           onChange={this.handleInputChange}
+          onFocus={this.handleFocus}
           placeholder="Enter email"
           ref={this.input}
           type="email"
