@@ -11,7 +11,7 @@
   display: block;
   background: $button-bg;
   border: 0;
-  height: 40px;
+  min-height: 40px;
   cursor: pointer;
 
   @include breakpoint($medium) {
