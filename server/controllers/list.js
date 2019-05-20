@@ -731,7 +731,9 @@ const removeMemberRole = (req, resp) => {
 
       const { memberIds, name, ownerIds } = doc;
 
-      if (ownerIds.length < 2) {
+      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
+
+      if (userIsOwner && ownerIds.length < 2) {
         throw new BadRequestException(
           `You can not remove the member and owner role from yourself because you are the only owner in the "${name}" list.`
         );
@@ -742,8 +744,6 @@ const removeMemberRole = (req, resp) => {
       if (userIsMember) {
         memberIds.splice(memberIds.indexOf(userId), 1);
       }
-
-      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
 
       if (userIsOwner) {
         ownerIds.splice(ownerIds.indexOf(userId), 1);

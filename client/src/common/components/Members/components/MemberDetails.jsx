@@ -49,6 +49,9 @@ class MemberDetails extends PureComponent {
     };
   }
 
+  removingRole = (isCurrentUserRoleChanging, method) => (id, userId) =>
+    method(id, userId, isCurrentUserRoleChanging);
+
   handleConfirmationVisibility = () =>
     this.setState(({ isConfirmationVisible }) => ({
       isConfirmationVisible: !isConfirmationVisible
@@ -103,11 +106,11 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    const action = isOwner ? removeOwnerRoleInCohort : addOwnerRoleInCohort;
+    const action = isOwner
+      ? this.removingRole(isCurrentUserRoleChanging, removeOwnerRoleInCohort)
+      : addOwnerRoleInCohort;
 
-    action(id, userId, isCurrentUserRoleChanging).finally(() =>
-      this.setState({ pending: false })
-    );
+    action(id, userId).finally(() => this.setState({ pending: false }));
   };
 
   changeListRole = selectedRole => {
@@ -131,18 +134,20 @@ class MemberDetails extends PureComponent {
 
     switch (selectedRole) {
       case UserRoles.OWNER:
-        action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
+        action = isOwner
+          ? this.removingRole(isCurrentUserRoleChanging, removeOwnerRoleInList)
+          : addOwnerRoleInList;
         break;
       case UserRoles.MEMBER:
-        action = isMember ? removeMemberRoleInList : addMemberRoleInList;
+        action = isMember
+          ? this.removingRole(isCurrentUserRoleChanging, removeMemberRoleInList)
+          : addMemberRoleInList;
         break;
       default:
         break;
     }
 
-    action(id, userId, isCurrentUserRoleChanging).finally(() =>
-      this.setState({ pending: false })
-    );
+    action(id, userId).finally(() => this.setState({ pending: false }));
   };
 
   handleChangingRoles = event => {
@@ -363,13 +368,6 @@ class MemberDetails extends PureComponent {
             {this.renderHeader()}
             <div className="member-details__panel">
               {isCurrentUserAnOwner && this.renderDetails()}
-              {/* {isCurrentUserAnOwner && (
-                <Fragment>
-                  {userId !== currentUserId
-                    ? this.renderDetails()
-                    : this.renderMessage()}
-                </Fragment>
-              )} */}
               {pending && <Preloader />}
             </div>
           </div>
