@@ -37,11 +37,13 @@ export class Layout extends Component {
 
   setAuthenticationState = () => {
     const { loginUser } = this.props;
+
     loginUser();
   };
 
   render() {
     const { currentUser } = this.props;
+
     return !currentUser ? (
       <Switch>
         <Route component={AuthBox} exact path="/" />

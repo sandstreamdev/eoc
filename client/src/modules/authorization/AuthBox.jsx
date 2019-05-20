@@ -34,7 +34,7 @@ class AuthBox extends PureComponent {
 
   handleCookieAccept = () => this.setState({ isCookieSet: true });
 
-  handleDisablingLink = event => event.preventDefault();
+  handleLogin = () => this.setState({ pending: true });
 
   render() {
     const { isCookieSet, pending } = this.state;
@@ -59,7 +59,7 @@ class AuthBox extends PureComponent {
                   className={classNames('google-button', {
                     'disabled-google-button': !isCookieSet || pending
                   })}
-                  onClick={() => this.setState({ pending: true })}
+                  onClick={this.handleLogin}
                   href="/auth/google"
                   tabIndex={!isCookieSet ? '-1' : '1'}
                 >
@@ -82,7 +82,7 @@ class AuthBox extends PureComponent {
               <div className="authbox__button-wrapper">
                 <PendingButton
                   className="primary-button authbox__demo-button"
-                  disable={pending}
+                  disable={!isCookieSet || pending}
                   onClick={this.handleLaunchingDemo}
                   preloaderTheme={PreloaderTheme.LIGHT}
                 >
