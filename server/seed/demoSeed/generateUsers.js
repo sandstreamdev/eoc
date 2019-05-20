@@ -4,10 +4,7 @@ const {
   Types: { ObjectId }
 } = mongoose;
 
-const {
-  DEMO_USER_ID_FROM_PROVIDER: idFromProvider,
-  DEMO_USER_ID: userId
-} = process.env;
+const { DEMO_MODE_ID: idFromProvider, DEMO_USER_ID: userId } = process.env;
 
 const createDemoUser = () => ({
   _id: userId,

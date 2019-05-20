@@ -755,12 +755,12 @@ const addViewer = (req, resp) => {
   } = req;
   const { id: listId } = req.params;
   const { email } = req.body;
-  const { DEMO_USER_ID_FROM_PROVIDER } = process.env;
+  const { DEMO_MODE_ID } = process.env;
   let list;
   let user;
   let cohortMembers = [];
 
-  if (idFromProvider === DEMO_USER_ID_FROM_PROVIDER) {
+  if (idFromProvider === DEMO_MODE_ID) {
     return resp
       .status(401)
       .send({ message: 'Adding members is disabled for demo purposes.' });
@@ -778,9 +778,9 @@ const addViewer = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(userData => {
-      const { DEMO_USER_ID_FROM_PROVIDER } = process.env;
+      const { DEMO_MODE_ID } = process.env;
 
-      if (!userData || userData.idFromProvider === DEMO_USER_ID_FROM_PROVIDER) {
+      if (!userData || userData.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 

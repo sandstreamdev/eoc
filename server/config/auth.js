@@ -30,10 +30,10 @@ passport.use(
   new LocalStrategy((username, password, done) => {
     let newUser;
 
-    const { DEMO_USER_ID_FROM_PROVIDER } = process.env;
+    const { DEMO_MODE_ID } = process.env;
 
     User.findOne({
-      idFromProvider: DEMO_USER_ID_FROM_PROVIDER
+      idFromProvider: DEMO_MODE_ID
     })
       .lean()
       .exec()

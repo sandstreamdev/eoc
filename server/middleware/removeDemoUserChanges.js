@@ -8,9 +8,9 @@ const removeDemoUserChanges = (req, res, next) => {
   }
 
   const { _id: currentUserId, idFromProvider } = req.user;
-  const { DEMO_USER_ID_FROM_PROVIDER } = process.env;
+  const { DEMO_MODE_ID } = process.env;
 
-  if (idFromProvider === DEMO_USER_ID_FROM_PROVIDER) {
+  if (idFromProvider === DEMO_MODE_ID) {
     return removeDemoUserData(currentUserId)
       .then(() => next())
       .catch(() =>
