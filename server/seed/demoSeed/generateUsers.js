@@ -4,7 +4,22 @@ const {
   Types: { ObjectId }
 } = mongoose;
 
-const { DEMO_USER_ID_FROM_PROVIDER: idFromProvider } = process.env;
+const {
+  DEMO_USER_ID_FROM_PROVIDER: idFromProvider,
+  DEMO_USER_ID: userId
+} = process.env;
+
+const createDemoUser = () => ({
+  _id: userId,
+  accessToken: '012346789',
+  avatarUrl: 'https://i.pravatar.cc/40?img=1',
+  displayName: 'Demo',
+  email: 'demo@example.com',
+  idFromProvider,
+  name: 'Demo',
+  provider: `demo-${userId}`,
+  surname: 'User'
+});
 
 const generateUsers = demoUserId => [
   {
@@ -53,4 +68,4 @@ const generateUsers = demoUserId => [
   }
 ];
 
-module.exports = { generateUsers };
+module.exports = { createDemoUser, generateUsers };

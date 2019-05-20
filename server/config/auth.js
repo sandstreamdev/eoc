@@ -2,6 +2,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 
+const { createDemoUser } = require('../seed/demoSeed/generateUsers');
 const { seedDemoData } = require('../seed/demoSeed/seedDemoData');
 const {
   extractUserProfile,
@@ -37,9 +38,34 @@ passport.use(
       .lean()
       .exec()
       .then(user => {
-        const { _id, ...rest } = user;
+        if (!user) {
+          return new User({ ...createDemoUser() }).save();
+        }
 
-        return new User({ ...rest }).save();
+        return user;
+      })
+      .then(user => {
+        const {
+          accessToken,
+          avatarUrl,
+          displayName,
+          email,
+          idFromProvider,
+          name,
+          provider,
+          surname
+        } = user;
+
+        return new User({
+          accessToken,
+          avatarUrl,
+          displayName,
+          email,
+          idFromProvider,
+          name,
+          provider,
+          surname
+        }).save();
       })
       .then(user => {
         newUser = user;
