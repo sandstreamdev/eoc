@@ -49,9 +49,6 @@ class MemberDetails extends PureComponent {
     };
   }
 
-  removingRole = (isCurrentUserRoleChanging, method) => (id, userId) =>
-    method(id, userId, isCurrentUserRoleChanging);
-
   handleConfirmationVisibility = () =>
     this.setState(({ isConfirmationVisible }) => ({
       isConfirmationVisible: !isConfirmationVisible
@@ -91,6 +88,9 @@ class MemberDetails extends PureComponent {
     }));
   };
 
+  removeRole = (isCurrentUserRoleChanging, removeRoleAction) => (id, userId) =>
+    removeRoleAction(id, userId, isCurrentUserRoleChanging);
+
   changeCohortRole = () => {
     const {
       _id: userId,
@@ -107,7 +107,7 @@ class MemberDetails extends PureComponent {
     this.setState({ pending: true });
 
     const action = isOwner
-      ? this.removingRole(isCurrentUserRoleChanging, removeOwnerRoleInCohort)
+      ? this.removeRole(isCurrentUserRoleChanging, removeOwnerRoleInCohort)
       : addOwnerRoleInCohort;
 
     action(id, userId).finally(() => this.setState({ pending: false }));
@@ -135,12 +135,12 @@ class MemberDetails extends PureComponent {
     switch (selectedRole) {
       case UserRoles.OWNER:
         action = isOwner
-          ? this.removingRole(isCurrentUserRoleChanging, removeOwnerRoleInList)
+          ? this.removeRole(isCurrentUserRoleChanging, removeOwnerRoleInList)
           : addOwnerRoleInList;
         break;
       case UserRoles.MEMBER:
         action = isMember
-          ? this.removingRole(isCurrentUserRoleChanging, removeMemberRoleInList)
+          ? this.removeRole(isCurrentUserRoleChanging, removeMemberRoleInList)
           : addMemberRoleInList;
         break;
       default:
@@ -334,19 +334,8 @@ class MemberDetails extends PureComponent {
     );
   };
 
-  renderMessage = () => (
-    <p className="member-details__notice">
-      You cannot edit your own settings here.
-    </p>
-  );
-
   render() {
-    const {
-      // _id: userId,
-      // currentUser: { id: currentUserId },
-      isCurrentUserAnOwner,
-      onClose
-    } = this.props;
+    const { isCurrentUserAnOwner, onClose } = this.props;
     const { pending } = this.state;
 
     return (
