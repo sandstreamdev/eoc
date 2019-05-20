@@ -1,13 +1,16 @@
 const { removeDemoUserData } = require('../common/utils/userUtils');
 
-const removeDemoUserChanges = async (req, res, next) => {
-  if (!req.user) {
+const removeDemoUserChanges = (req, res, next) => {
+  const { user } = req;
+
+  if (!user) {
     return next();
   }
 
   const { _id: currentUserId, idFromProvider } = req.user;
+  const { DEMO_USER_ID_FROM_PROVIDER } = process.env;
 
-  if (idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
+  if (idFromProvider === DEMO_USER_ID_FROM_PROVIDER) {
     return removeDemoUserData(currentUserId)
       .then(() => next())
       .catch(() =>

@@ -6,9 +6,13 @@ const Comment = require('../../models/comment.model');
 // Find or create user
 const findOrCreateUser = (user, doneCallback) => {
   User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
-    if (err) return doneCallback(null, false);
+    if (err) {
+      return doneCallback(null, false);
+    }
 
-    if (currentUser) return doneCallback(null, currentUser);
+    if (currentUser) {
+      return doneCallback(null, currentUser);
+    }
 
     return new User({ ...user })
       .save()
@@ -37,7 +41,7 @@ const extractUserProfile = (profile, accessToken) => {
 const removeDemoUserData = id =>
   List.find(
     {
-      $or: [{ ownerIds: id }, { memberIds: id }, { viewersIds: id }]
+      viewersIds: id
     },
     '_id'
   )
@@ -46,19 +50,12 @@ const removeDemoUserData = id =>
     .then(lists => {
       if (lists) {
         const listsIds = lists.map(lists => lists._id);
+
         return Comment.deleteMany({ listId: { $in: listsIds } }).exec();
       }
     })
-    .then(() =>
-      List.deleteMany({
-        $or: [{ ownerIds: id }, { memberIds: id }, { viewersIds: id }]
-      }).exec()
-    )
-    .then(() =>
-      Cohort.deleteMany({
-        $or: [{ ownerIds: id }, { memberIds: id }]
-      }).exec()
-    )
+    .then(() => List.deleteMany({ viewersIds: id }).exec())
+    .then(() => Cohort.deleteMany({ memberIds: id }).exec())
     .then(() => User.deleteOne({ _id: id }).exec())
     .then(() => User.deleteMany({ provider: `demo-${id}` }).exec());
 

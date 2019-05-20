@@ -438,8 +438,9 @@ const addMember = (req, resp) => {
   let currentCohort;
   let newMember;
   const sanitizedCohortId = sanitize(cohortId);
+  const { DEMO_USER_ID_FROM_PROVIDER } = process.env;
 
-  if (idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER) {
+  if (idFromProvider === DEMO_USER_ID_FROM_PROVIDER) {
     return resp
       .status(401)
       .send({ message: 'Adding members is disabled for demo purposes.' });
@@ -458,10 +459,8 @@ const addMember = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {
-      if (
-        !user ||
-        user.idFromProvider === process.env.DEMO_USER_ID_FROM_PROVIDER
-      ) {
+      const { DEMO_USER_ID_FROM_PROVIDER } = process.env;
+      if (!user || user.idFromProvider === DEMO_USER_ID_FROM_PROVIDER) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 

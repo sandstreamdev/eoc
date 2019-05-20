@@ -29,6 +29,7 @@ const loginFailure = () => ({
 
 export const setCurrentUser = () => {
   const user = JSON.parse(decodeURIComponent(checkIfCookieSet('user')));
+
   return typeof user === 'object' ? user : null;
 };
 

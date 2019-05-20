@@ -1,5 +1,6 @@
 const sendUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
+
   resp.cookie('user', JSON.stringify({ avatarUrl, id, name }));
   resp.redirect('/');
 };
@@ -17,6 +18,7 @@ const logout = (req, resp) => {
 
 const sendDemoUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
+
   resp.cookie('user', JSON.stringify({ avatarUrl, id, name }));
   resp.cookie('demo', true);
   resp.redirect('/');

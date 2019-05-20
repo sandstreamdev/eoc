@@ -28,18 +28,23 @@ passport.use(
 passport.use(
   new LocalStrategy((username, password, done) => {
     let newUser;
+
+    const { DEMO_USER_ID_FROM_PROVIDER } = process.env;
+
     User.findOne({
-      idFromProvider: process.env.DEMO_USER_ID_FROM_PROVIDER
+      idFromProvider: DEMO_USER_ID_FROM_PROVIDER
     })
       .lean()
       .exec()
       .then(user => {
         const { _id, ...rest } = user;
+
         return new User({ ...rest }).save();
       })
       .then(user => {
         newUser = user;
-        seedDemoData(newUser._id);
+
+        return seedDemoData(newUser._id);
       })
       .then(() => done(null, newUser))
       .catch(err => done(null, false, { message: err.message }));
@@ -47,7 +52,8 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user._id);
+  const { _id } = user;
+  done(null, _id);
 });
 
 passport.deserializeUser((id, done) => {

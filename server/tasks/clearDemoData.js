@@ -21,8 +21,8 @@ const disconnectDatabase = () =>
     .catch(() => process.exit(1));
 
 const clearDemoData = () => {
-  const idFromProvider = process.env.DEMO_USER_ID_FROM_PROVIDER;
-  const mainDemoUserId = process.env.DEMO_USER_ID;
+  const { DEMO_USER_ID_FROM_PROVIDER: idFromProvider } = process.env;
+  const { DEMO_USER_ID: mainDemoUserId } = process.env;
 
   connectDatabase()
     .then(() =>

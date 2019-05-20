@@ -6,8 +6,12 @@ const {
 
 const generateComments = listData => {
   const comments = [];
-  for (let i = 0; i < listData.length; i += 1) {
-    for (let j = 0; j < listData[i].itemIds.length; j += 1) {
+  const listsCount = listData.length;
+
+  for (let i = 0; i < listsCount; i += 1) {
+    const itemsCount = listData[i].itemIds.length;
+
+    for (let j = 0; j < itemsCount; j += 1) {
       comments.push({
         _id: ObjectId(),
         authorId: listData[i].memberIds[0],

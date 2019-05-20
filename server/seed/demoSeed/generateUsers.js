@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const {
   Types: { ObjectId }
 } = mongoose;
-const idFromProvider = process.env.DEMO_USER_ID_FROM_PROVIDER;
+
+const { DEMO_USER_ID_FROM_PROVIDER: idFromProvider } = process.env;
 
 const generateUsers = demoUserId => [
   {

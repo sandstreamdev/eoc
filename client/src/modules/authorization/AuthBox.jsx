@@ -59,8 +59,8 @@ class AuthBox extends PureComponent {
                   className={classNames('google-button', {
                     'disabled-google-button': !isCookieSet || pending
                   })}
-                  onClick={this.handleLogin}
                   href="/auth/google"
+                  onClick={this.handleLogin}
                   tabIndex={!isCookieSet ? '-1' : '1'}
                 >
                   <img
