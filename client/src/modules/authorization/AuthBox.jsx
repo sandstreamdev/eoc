@@ -13,7 +13,7 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
-import GoogleButtonImg from '../../assets/images/google-btn.png';
+import GoogleButtonImg from 'assets/images/google-btn.png';
 
 class AuthBox extends PureComponent {
   state = {
@@ -86,7 +86,7 @@ class AuthBox extends PureComponent {
                   onClick={this.handleLaunchingDemo}
                   preloaderTheme={PreloaderTheme.LIGHT}
                 >
-                  Demo
+                  Live Demo
                 </PendingButton>
               </div>
             </div>

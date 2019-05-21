@@ -763,7 +763,7 @@ const addViewer = (req, resp) => {
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
       .status(401)
-      .send({ message: 'Adding members is disabled for demo purposes.' });
+      .send({ message: 'Adding members is disabled in demo mode.' });
   }
 
   List.findOne({
