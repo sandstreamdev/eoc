@@ -20,10 +20,6 @@ const fetchListDataSuccess = (data, listId) => ({
   payload: { data, listId }
 });
 
-const fetchListDataRequest = () => ({
-  type: ListActionTypes.FETCH_DATA_REQUEST
-});
-
 const createListSuccess = data => ({
   type: ListActionTypes.CREATE_SUCCESS,
   payload: data
@@ -32,10 +28,6 @@ const createListSuccess = data => ({
 const createListFailure = errMessage => ({
   type: ListActionTypes.CREATE_FAILURE,
   payload: errMessage
-});
-
-const createListRequest = () => ({
-  type: ListActionTypes.CREATE_REQUEST
 });
 
 const deleteListSuccess = id => ({
@@ -48,10 +40,6 @@ const deleteListFailure = errMessage => ({
   payload: errMessage
 });
 
-const deleteListRequest = () => ({
-  type: ListActionTypes.DELETE_REQUEST
-});
-
 const updateListSuccess = data => ({
   type: ListActionTypes.UPDATE_SUCCESS,
   payload: data
@@ -62,64 +50,48 @@ const updateListFailure = errMessage => ({
   payload: errMessage
 });
 
-const updateListRequest = () => ({
-  type: ListActionTypes.UPDATE_REQUEST
-});
-
 const fetchListsMetaDataSuccess = data => ({
   type: ListActionTypes.FETCH_META_DATA_SUCCESS,
   payload: data
 });
+
 const fetchListsMetaDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_META_DATA_FAILURE,
   payload: errMessage
-});
-const fetchListsMetaDataRequest = () => ({
-  type: ListActionTypes.FETCH_META_DATA_REQUEST
 });
 
 const fetchArchivedListsMetaDataSuccess = data => ({
   type: ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
   payload: data
 });
+
 const fetchArchivedListsMetaDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
   payload: errMessage
-});
-const fetchArchivedListsMetaDataRequest = () => ({
-  type: ListActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST
 });
 
 const archiveListSuccess = data => ({
   type: ListActionTypes.ARCHIVE_SUCCESS,
   payload: data
 });
+
 const archiveListFailure = errMessage => ({
   type: ListActionTypes.ARCHIVE_FAILURE,
   payload: errMessage
-});
-const archiveListRequest = () => ({
-  type: ListActionTypes.ARCHIVE_REQUEST
 });
 
 const restoreListSuccess = (data, listId) => ({
   type: ListActionTypes.RESTORE_SUCCESS,
   payload: { data, listId }
 });
+
 const restoreListFailure = errMessage => ({
   type: ListActionTypes.RESTORE_FAILURE,
   payload: errMessage
 });
-const restoreListRequest = () => ({
-  type: ListActionTypes.RESTORE_REQUEST
-});
 
 export const removeArchivedListsMetaData = () => ({
   type: ListActionTypes.REMOVE_ARCHIVED_META_DATA
-});
-
-const favouritesRequest = () => ({
-  type: ListActionTypes.FAVOURITES_REQUEST
 });
 
 const favouritesSuccess = data => ({
@@ -131,10 +103,6 @@ const favouritesFailure = () => ({
   type: ListActionTypes.FAVOURITES_FAILURE
 });
 
-const addViewerRequest = () => ({
-  type: ListActionTypes.ADD_VIEWER_REQUEST
-});
-
 const addViewerSuccess = (data, listId) => ({
   type: ListActionTypes.ADD_VIEWER_SUCCESS,
   payload: { listId, data }
@@ -142,10 +110,6 @@ const addViewerSuccess = (data, listId) => ({
 
 const addViewerFailure = () => ({
   type: ListActionTypes.ADD_VIEWER_FAILURE
-});
-
-const removeMemberRequest = () => ({
-  type: ListActionTypes.REMOVE_MEMBER_REQUEST
 });
 
 const removeMemberFailure = () => ({
@@ -157,10 +121,6 @@ const removeMemberSuccess = (listId, userId) => ({
   payload: { listId, userId }
 });
 
-const addOwnerRoleRequest = () => ({
-  type: ListActionTypes.ADD_OWNER_ROLE_REQUEST
-});
-
 const addOwnerRoleSuccess = (listId, userId) => ({
   type: ListActionTypes.ADD_OWNER_ROLE_SUCCESS,
   payload: { listId, userId }
@@ -170,13 +130,9 @@ const addOwnerRoleFailure = () => ({
   type: ListActionTypes.ADD_OWNER_ROLE_FAILURE
 });
 
-const removeOwnerRoleRequest = () => ({
-  type: ListActionTypes.REMOVE_OWNER_ROLE_REQUEST
-});
-
-const removeOwnerRoleSuccess = (listId, userId) => ({
+const removeOwnerRoleSuccess = (listId, userId, isCurrentUserRoleChanging) => ({
   type: ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  payload: { listId, userId }
+  payload: { isCurrentUserRoleChanging, listId, userId }
 });
 
 const removeOwnerRoleFailure = () => ({
@@ -188,21 +144,17 @@ const addMemberRoleSuccess = (listId, userId) => ({
   payload: { listId, userId }
 });
 
-const addMemberRoleRequest = () => ({
-  type: ListActionTypes.ADD_MEMBER_ROLE_REQUEST
-});
-
 const addMemberRoleFailure = () => ({
   type: ListActionTypes.ADD_MEMBER_ROLE_FAILURE
 });
 
-const removeMemberRoleSuccess = (listId, userId) => ({
+const removeMemberRoleSuccess = (
+  listId,
+  userId,
+  isCurrentUserRoleChanging
+) => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS,
-  payload: { listId, userId }
-});
-
-const removeMemberRoleRequest = () => ({
-  type: ListActionTypes.REMOVE_MEMBER_ROLE_REQUEST
+  payload: { listId, userId, isCurrentUserRoleChanging }
 });
 
 const removeMemberRoleFailure = () => ({
@@ -214,17 +166,12 @@ const changeTypeSuccess = (listId, data) => ({
   payload: { listId, data }
 });
 
-const changeTypeRequest = () => ({
-  type: ListActionTypes.CHANGE_TYPE_REQUEST
-});
-
 const changeTypeFailure = () => ({
   type: ListActionTypes.CHANGE_TYPE_FAILURE
 });
 
-export const fetchListData = listId => dispatch => {
-  dispatch(fetchListDataRequest());
-  return getData(`/api/lists/${listId}/data`)
+export const fetchListData = listId => dispatch =>
+  getData(`/api/lists/${listId}/data`)
     .then(resp => resp.json())
     .then(json => {
       const listData = { ...json, items: _keyBy(json.items, '_id') };
@@ -238,11 +185,9 @@ export const fetchListData = listId => dispatch => {
         err.message || "Oops, we're sorry, fetching data failed..."
       );
     });
-};
 
-export const createList = data => dispatch => {
-  dispatch(createListRequest());
-  return postData('/api/lists/create', data)
+export const createList = data => dispatch =>
+  postData('/api/lists/create', data)
     .then(resp => resp.json())
     .then(json => dispatch(createListSuccess(json)))
     .catch(() => {
@@ -253,13 +198,12 @@ export const createList = data => dispatch => {
         "Oops, we're sorry, creating new sack failed..."
       );
     });
-};
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
     ? `/api/lists/meta-data/${cohortId}`
     : '/api/lists/meta-data';
-  dispatch(fetchListsMetaDataRequest());
+
   return getData(url)
     .then(resp => resp.json())
     .then(json => {
@@ -280,7 +224,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
     ? `/api/lists/archived/${cohortId}`
     : '/api/lists/archived';
-  dispatch(fetchArchivedListsMetaDataRequest());
+
   return getData(url)
     .then(resp => resp.json())
     .then(json => {
@@ -297,9 +241,8 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const deleteList = id => dispatch => {
-  dispatch(deleteListRequest());
-  return deleteData(`/api/lists/${id}/delete`)
+export const deleteList = id => dispatch =>
+  deleteData(`/api/lists/${id}/delete`)
     .then(resp =>
       resp.json().then(json => {
         dispatch(deleteListSuccess(id));
@@ -320,11 +263,9 @@ export const deleteList = id => dispatch => {
       );
       throw new Error();
     });
-};
 
-export const updateList = (listId, data) => dispatch => {
-  dispatch(updateListRequest());
-  return patchData(`/api/lists/${listId}/update`, data)
+export const updateList = (listId, data) => dispatch =>
+  patchData(`/api/lists/${listId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
       dispatch(updateListSuccess({ ...data, listId }));
@@ -342,11 +283,9 @@ export const updateList = (listId, data) => dispatch => {
         err.message || "Oops, we're sorry, updating sack failed..."
       );
     });
-};
 
-export const archiveList = listId => dispatch => {
-  dispatch(archiveListRequest());
-  return patchData(`/api/lists/${listId}/update`, {
+export const archiveList = listId => dispatch =>
+  patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
     .then(resp => resp.json())
@@ -366,11 +305,9 @@ export const archiveList = listId => dispatch => {
         err.message || "Oops, we're sorry, archiving sack failed..."
       );
     });
-};
 
-export const restoreList = listId => dispatch => {
-  dispatch(restoreListRequest());
-  return patchData(`/api/lists/${listId}/update`, {
+export const restoreList = listId => dispatch =>
+  patchData(`/api/lists/${listId}/update`, {
     isArchived: false
   })
     .then(() => getData(`/api/lists/${listId}/data`))
@@ -391,11 +328,9 @@ export const restoreList = listId => dispatch => {
         err.message || "Oops, we're sorry, restoring sack failed..."
       );
     });
-};
 
-export const addListToFavourites = listId => dispatch => {
-  dispatch(favouritesRequest());
-  return patchData(`/api/lists/${listId}/add-to-fav`)
+export const addListToFavourites = listId => dispatch =>
+  patchData(`/api/lists/${listId}/add-to-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ listId, isFavourite: true }));
@@ -413,11 +348,9 @@ export const addListToFavourites = listId => dispatch => {
         err.message
       );
     });
-};
 
-export const removeListFromFavourites = listId => dispatch => {
-  dispatch(favouritesRequest());
-  return patchData(`/api/lists/${listId}/remove-from-fav`)
+export const removeListFromFavourites = listId => dispatch =>
+  patchData(`/api/lists/${listId}/remove-from-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ listId, isFavourite: false }));
@@ -435,11 +368,9 @@ export const removeListFromFavourites = listId => dispatch => {
         err.message
       );
     });
-};
 
-export const addListViewer = (listId, email) => dispatch => {
-  dispatch(addViewerRequest());
-  return patchData(`/api/lists/${listId}/add-viewer`, {
+export const addListViewer = (listId, email) => dispatch =>
+  patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
     .then(resp => resp.json())
@@ -459,13 +390,12 @@ export const addListViewer = (listId, email) => dispatch => {
         err.message || "Oops, we're sorry, adding new viewer failed..."
       );
     });
-};
 
 export const removeListMember = (listId, userId, isOwner) => dispatch => {
   const url = isOwner
     ? `/api/lists/${listId}/remove-owner`
     : `/api/lists/${listId}/remove-member`;
-  dispatch(removeMemberRequest());
+
   return patchData(url, { userId })
     .then(resp => resp.json())
     .then(json => {
@@ -486,9 +416,8 @@ export const removeListMember = (listId, userId, isOwner) => dispatch => {
     });
 };
 
-export const addOwnerRole = (listId, userId) => dispatch => {
-  dispatch(addOwnerRoleRequest());
-  return patchData(`/api/lists/${listId}/add-owner-role`, {
+export const addOwnerRole = (listId, userId) => dispatch =>
+  patchData(`/api/lists/${listId}/add-owner-role`, {
     userId
   })
     .then(resp => resp.json())
@@ -508,16 +437,20 @@ export const addOwnerRole = (listId, userId) => dispatch => {
         err.message
       );
     });
-};
 
-export const removeOwnerRole = (listId, userId) => dispatch => {
-  dispatch(removeOwnerRoleRequest());
-  return patchData(`/api/lists/${listId}/remove-owner-role`, {
+export const removeOwnerRole = (
+  listId,
+  userId,
+  isCurrentUserRoleChanging
+) => dispatch =>
+  patchData(`/api/lists/${listId}/remove-owner-role`, {
     userId
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(removeOwnerRoleSuccess(listId, userId));
+      dispatch(
+        removeOwnerRoleSuccess(listId, userId, isCurrentUserRoleChanging)
+      );
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -532,16 +465,18 @@ export const removeOwnerRole = (listId, userId) => dispatch => {
         err.message
       );
     });
-};
 
-export const addMemberRole = (listId, userId) => dispatch => {
-  dispatch(addMemberRoleRequest());
-  return patchData(`/api/lists/${listId}/add-member-role`, {
+export const addMemberRole = (
+  listId,
+  userId,
+  isCurrentUserAnOwner
+) => dispatch =>
+  patchData(`/api/lists/${listId}/add-member-role`, {
     userId
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(addMemberRoleSuccess(listId, userId));
+      dispatch(addMemberRoleSuccess(listId, userId, isCurrentUserAnOwner));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -556,16 +491,18 @@ export const addMemberRole = (listId, userId) => dispatch => {
         err.message
       );
     });
-};
 
-export const removeMemberRole = (listId, userId) => dispatch => {
-  dispatch(removeMemberRoleRequest());
-  return patchData(`/api/lists/${listId}/remove-member-role`, {
+export const removeMemberRole = (
+  listId,
+  userId,
+  isCurrentUserAnOwner
+) => dispatch =>
+  patchData(`/api/lists/${listId}/remove-member-role`, {
     userId
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(removeMemberRoleSuccess(listId, userId));
+      dispatch(removeMemberRoleSuccess(listId, userId, isCurrentUserAnOwner));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -580,11 +517,9 @@ export const removeMemberRole = (listId, userId) => dispatch => {
         err.message
       );
     });
-};
 
-export const changeType = (listId, type) => dispatch => {
-  dispatch(changeTypeRequest());
-  return patchData(`/api/lists/${listId}/change-type`, {
+export const changeType = (listId, type) => dispatch =>
+  patchData(`/api/lists/${listId}/change-type`, {
     type
   })
     .then(resp => resp.json())
@@ -604,4 +539,3 @@ export const changeType = (listId, type) => dispatch => {
         err.message
       );
     });
-};

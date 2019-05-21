@@ -1,10 +1,19 @@
 const User = require('../../models/user.model');
+const List = require('../../models/list.model');
+const Cohort = require('../../models/cohort.model');
+const Comment = require('../../models/comment.model');
 
 // Find or create user
 const findOrCreateUser = (user, doneCallback) => {
   User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
-    if (err) return doneCallback(null, false);
-    if (currentUser) return doneCallback(null, currentUser);
+    if (err) {
+      return doneCallback(null, false);
+    }
+
+    if (currentUser) {
+      return doneCallback(null, currentUser);
+    }
+
     return new User({ ...user })
       .save()
       .then(newUser => doneCallback(null, newUser))
@@ -29,7 +38,29 @@ const extractUserProfile = (profile, accessToken) => {
   };
 };
 
+const removeDemoUserData = id =>
+  List.find(
+    {
+      viewersIds: id
+    },
+    '_id'
+  )
+    .lean()
+    .exec()
+    .then(lists => {
+      if (lists) {
+        const listsIds = lists.map(lists => lists._id);
+
+        return Comment.deleteMany({ listId: { $in: listsIds } }).exec();
+      }
+    })
+    .then(() => List.deleteMany({ viewersIds: id }).exec())
+    .then(() => Cohort.deleteMany({ memberIds: id }).exec())
+    .then(() => User.deleteOne({ _id: id }).exec())
+    .then(() => User.deleteMany({ provider: `demo-${id}` }).exec());
+
 module.exports = {
   extractUserProfile,
-  findOrCreateUser
+  findOrCreateUser,
+  removeDemoUserData
 };

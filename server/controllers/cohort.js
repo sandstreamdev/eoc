@@ -405,39 +405,60 @@ const removeOwnerRole = (req, resp) => {
     user: { _id: currentUserId }
   } = req;
 
-  Cohort.findOneAndUpdate(
-    {
-      _id: sanitize(cohortId),
-      ownerIds: { $all: [currentUserId, sanitizedUserId] }
-    },
-    { $pull: { ownerIds: userId } }
-  )
+  Cohort.findOne({
+    _id: sanitize(cohortId),
+    ownerIds: { $all: [currentUserId, sanitizedUserId] }
+  })
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Cohort data not found.' });
+        throw new BadRequestException("Can't remove owner role.");
       }
 
-      return resp.status(200).send({
-        message: "User has been successfully set as a cohort's member."
-      });
+      const { name, ownerIds } = doc;
+
+      if (ownerIds.length < 2) {
+        throw new BadRequestException(
+          `You can not remove the owner role from yourself because you are the only owner in the "${name}" cohort.`
+        );
+      }
+
+      ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
+
+      return doc.save();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't set user as a cohort's member."
+    .then(() =>
+      resp.status(200).send({
+        message: 'User has no owner role.'
       })
-    );
+    )
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { status, message } = err;
+
+        return resp.status(status).send({ message });
+      }
+
+      resp.status(400).send({ message: 'Cohort data not found.' });
+    });
 };
 
 const addMember = (req, resp) => {
   const {
-    user: { _id: userId }
+    user: { _id: userId, idFromProvider }
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
   let currentCohort;
   let newMember;
   const sanitizedCohortId = sanitize(cohortId);
+  const { DEMO_MODE_ID } = process.env;
+
+  if (idFromProvider === DEMO_MODE_ID) {
+    return resp
+      .status(401)
+      .send({ message: 'Adding members is disabled in demo mode.' });
+  }
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
@@ -452,7 +473,8 @@ const addMember = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {
-      if (!user) {
+      const { DEMO_MODE_ID } = process.env;
+      if (!user || user.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 

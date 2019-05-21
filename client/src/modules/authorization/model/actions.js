@@ -1,48 +1,71 @@
 import { checkIfCookieSet } from 'common/utils/cookie';
-import { postRequest } from 'common/utils/fetchMethods';
+import { postData, postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
 export const AuthorizationActionTypes = Object.freeze({
-  LOGOUT_USER_FAILURE: 'LOGOUT_USER_FAILURE',
-  LOGOUT_USER_REQUEST: 'LOGOUT_USER_REQUEST',
-  LOGOUT_USER_SUCCESS: 'LOGOUT_USER_SUCCESS',
-  SET_CURRENT_USER_SUCCESS: 'SET_CURRENT_USER_SUCCESS'
+  LOGIN_FAILURE: 'LOGIN_FAILURE',
+  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  LOGOUT_FAILURE: 'LOGOUT_FAILURE',
+  LOGOUT_SUCCESS: 'LOGOUT_SUCCESS'
 });
 
-const setCurrentUserSuccess = user => ({
-  type: AuthorizationActionTypes.SET_CURRENT_USER_SUCCESS,
-  payload: user
+const logoutFailure = () => ({
+  type: AuthorizationActionTypes.LOGOUT_FAILURE
 });
 
-const logoutUserFailure = errorMessage => ({
-  type: AuthorizationActionTypes.LOGOUT_USER_FAILURE,
-  errorMessage
-});
-const logoutUserSuccess = () => ({
-  type: AuthorizationActionTypes.LOGOUT_USER_SUCCESS
-});
-const logoutUserRequest = () => ({
-  type: AuthorizationActionTypes.LOGOUT_USER_REQUEST
+const logoutSuccess = () => ({
+  type: AuthorizationActionTypes.LOGOUT_SUCCESS
 });
 
-export const setCurrentUser = () => dispatch => {
+const loginSuccess = data => ({
+  type: AuthorizationActionTypes.LOGIN_SUCCESS,
+  payload: data
+});
+
+const loginFailure = () => ({
+  type: AuthorizationActionTypes.LOGIN_FAILURE
+});
+
+export const setCurrentUser = () => {
   const user = JSON.parse(decodeURIComponent(checkIfCookieSet('user')));
-  const payload = typeof user === 'object' ? user : null;
 
-  dispatch(setCurrentUserSuccess(payload));
+  return typeof user === 'object' ? user : null;
 };
 
-export const logoutCurrentUser = () => dispatch => {
-  dispatch(logoutUserRequest());
-  return postRequest('/auth/logout')
-    .then(() => dispatch(logoutUserSuccess()))
+export const loginUser = () => dispatch =>
+  dispatch(loginSuccess(setCurrentUser()));
+
+export const logoutCurrentUser = () => dispatch =>
+  postRequest('/auth/logout')
+    .then(() => dispatch(logoutSuccess()))
     .catch(err => {
-      dispatch(logoutUserFailure(err.message));
+      dispatch(logoutFailure(err.message));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
         "Oops, we're sorry, logout failed..."
       );
     });
-};
+
+export const loginDemoUser = () => dispatch =>
+  postData('/auth/demo', {
+    username: 'demo',
+    password: 'demo'
+  })
+    .then(() => {
+      dispatch(loginSuccess(setCurrentUser()));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        'Login success'
+      );
+    })
+    .catch(err => {
+      dispatch(loginFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        'Login failed'
+      );
+    });

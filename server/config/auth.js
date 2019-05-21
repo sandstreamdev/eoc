@@ -1,10 +1,14 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 
+const { createDemoUser } = require('../seed/demoSeed/generateUsers');
+const { seedDemoData } = require('../seed/demoSeed/seedDemoData');
 const {
   extractUserProfile,
   findOrCreateUser
 } = require('../common/utils/userUtils');
+const User = require('../models/user.model');
 
 // Use GoogleStrategy to authenticate user
 passport.use(
@@ -21,12 +25,73 @@ passport.use(
   )
 );
 
+// Use LocalStrategy for demo purposes
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    let newUser;
+
+    const { DEMO_MODE_ID } = process.env;
+
+    User.findOne({
+      idFromProvider: DEMO_MODE_ID
+    })
+      .lean()
+      .exec()
+      .then(user => {
+        if (!user) {
+          return new User({ ...createDemoUser() }).save();
+        }
+
+        return user;
+      })
+      .then(user => {
+        const {
+          accessToken,
+          avatarUrl,
+          displayName,
+          email,
+          idFromProvider,
+          name,
+          provider,
+          surname
+        } = user;
+
+        return new User({
+          accessToken,
+          avatarUrl,
+          displayName,
+          email,
+          idFromProvider,
+          name,
+          provider,
+          surname
+        }).save();
+      })
+      .then(user => {
+        newUser = user;
+
+        return seedDemoData(newUser._id);
+      })
+      .then(() => done(null, newUser))
+      .catch(err => done(null, false, { message: err.message }));
+  })
+);
+
 passport.serializeUser((user, done) => {
-  done(null, user);
+  const { _id } = user;
+  done(null, _id);
 });
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+    .lean()
+    .exec()
+    .then(user => done(null, user))
+    .catch(err => done(null, false, { message: err.message }));
+});
+
+const setDemoUser = passport.authenticate('local', {
+  failureRedirect: '/'
 });
 
 const authenticate = passport.authenticate('google', {
@@ -37,4 +102,8 @@ const authenticateCallback = passport.authenticate('google', {
   failureRedirect: '/'
 });
 
-module.exports = { authenticate, authenticateCallback };
+module.exports = {
+  authenticate,
+  authenticateCallback,
+  setDemoUser
+};
