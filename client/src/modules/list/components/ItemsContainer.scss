@@ -6,7 +6,7 @@
   width: 100%;
 
   @include breakpoint($medium) {
-    width: 45%;
+    width: 46%;
   }
 
   &__header {
@@ -24,7 +24,7 @@
       flex-direction: column;
       justify-content: left;
     }
-    @include breakpoint($xlarge) {
+    @include breakpoint($large) {
       flex-direction: row;
       justify-content: space-between;
     }
@@ -33,17 +33,24 @@
   &__header-controls {
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 90px;
+    align-content: space-between;
+
+    @include breakpoint($xsmall) {
+      width: auto;
+      height: auto;
+      flex-direction: row;
+      justify-content: center;
+    }
     @include breakpoint($small) {
-      width: 50%;
       justify-content: flex-end;
     }
     @include breakpoint($medium) {
-      width: 100%;
       justify-content: center;
     }
-    @include breakpoint($xlarge) {
-      width: 50%;
+    @include breakpoint($large) {
       justify-content: flex-end;
     }
   }
@@ -54,20 +61,23 @@
 
   &__heading {
     width: 100%;
-    font-size: 16px;
+    font-size: $l-font;
     line-height: 1.2;
-    font-weight: 500;
+    font-weight: 600;
     color: $text-normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     margin: 4px 0;
 
     @include breakpoint($small) {
-      width: 50%;
+      width: auto;
     }
     @include breakpoint($medium) {
       width: 100%;
     }
-    @include breakpoint($xlarge) {
-      width: 50%;
+    @include breakpoint($large) {
+      width: auto;
     }
 
     &--left {
