@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import UserIconPlaceholder from 'assets/images/user.svg';
+import UserIconPlaceholder from '../../../../assets/images/user.svg';
 
 class MemberButton extends PureComponent {
   state = {

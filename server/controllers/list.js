@@ -784,10 +784,7 @@ const addViewer = (req, resp) => {
       }
 
       user = userData;
-
-      if (!userExists) {
-        list.viewersIds.push(newMemberId);
-      }
+      list.viewersIds.push(newMemberId);
 
       if (cohort) {
         const { memberIds } = cohort;
