@@ -320,7 +320,7 @@ const getListData = (req, resp) => {
       }
       resp.status(400).send({
         message:
-          'An error occurred while fetching the list data. Please try again.'
+          'An error occurred while fetching the sack data. Please try again.'
       });
     });
 };
@@ -340,7 +340,7 @@ const voteForItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('List data not found.');
+        throw new BadRequestException('Sack data not found.');
       }
 
       const { items } = list;
@@ -361,7 +361,7 @@ const voteForItem = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'List data not found' });
+      resp.status(400).send({ message: 'Sack data not found' });
     });
 };
 
@@ -380,7 +380,7 @@ const clearVote = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('List data not found.');
+        throw new BadRequestException('Sack data not found.');
       }
 
       const { items } = list;
@@ -406,7 +406,7 @@ const clearVote = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'List data not found' });
+      resp.status(400).send({ message: 'Sack data not found' });
     });
 };
 
@@ -432,17 +432,17 @@ const updateListById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'List data not found.' });
+        return resp.status(400).send({ message: 'Sack data not found.' });
       }
 
       return resp
         .status(200)
-        .send({ message: `List "${doc.name}" successfully updated.` });
+        .send({ message: `Sack "${doc.name}" successfully updated.` });
     })
     .catch(() =>
       resp.status(400).send({
         message:
-          'An error occurred while updating the list data. Please try again.'
+          'An error occurred while updating the sack data. Please try again.'
       })
     );
 };
@@ -465,16 +465,16 @@ const addToFavourites = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'List data not found.' });
+        return resp.status(400).send({ message: 'Sack data not found.' });
       }
 
       return resp.status(200).send({
-        message: `List "${doc.name}" successfully marked as favourite.`
+        message: `Sack "${doc.name}" successfully marked as favourite.`
       });
     })
     .catch(() =>
       resp.status(400).send({
-        message: "Can't mark list as favourite. Please try again."
+        message: "Can't mark sack as favourite. Please try again."
       })
     );
 };
@@ -497,16 +497,16 @@ const removeFromFavourites = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'List data not found.' });
+        return resp.status(400).send({ message: 'Sack data not found.' });
       }
 
       return resp.status(200).send({
-        message: `List "${doc.name}" successfully removed from favourites.`
+        message: `Sack "${doc.name}" successfully removed from favourites.`
       });
     })
     .catch(() =>
       resp.status(400).send({
-        message: "Can't remove list from favourites. Please try again."
+        message: "Can't remove sack from favourites. Please try again."
       })
     );
 };
@@ -528,16 +528,16 @@ const removeOwner = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'List data not found.' });
+        return resp.status(400).send({ message: 'Sack data not found.' });
       }
 
       return resp.status(200).send({
-        message: 'Owner successfully removed from list.'
+        message: 'Owner successfully removed from sack.'
       });
     })
     .catch(() =>
       resp.status(400).send({
-        message: "Can't remove owner from list."
+        message: "Can't remove owner from sack."
       })
     );
 };
@@ -567,16 +567,16 @@ const removeMember = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'List data not found.' });
+        return resp.status(400).send({ message: 'Sack data not found.' });
       }
 
       return resp.status(200).send({
-        message: 'Member successfully removed from list.'
+        message: 'Member successfully removed from sack.'
       });
     })
     .catch(() =>
       resp.status(400).send({
-        message: "Can't remove member from list."
+        message: "Can't remove member from sack."
       })
     );
 };
@@ -593,7 +593,7 @@ const addOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't set user as a list's owner.");
+        throw new BadRequestException("Can't set user as a sack's owner.");
       }
       const { memberIds, ownerIds } = doc;
       const userIsNotAnOwner = !checkIfArrayContainsUserId(ownerIds, userId);
@@ -612,7 +612,7 @@ const addOwnerRole = (req, resp) => {
     })
     .then(() =>
       resp.status(200).send({
-        message: "User has been successfully set as a list's owner."
+        message: "User has been successfully set as a sack's owner."
       })
     )
     .catch(err => {
@@ -621,7 +621,7 @@ const addOwnerRole = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'List data not found' });
+      resp.status(400).send({ message: 'Sack data not found' });
     });
 };
 
@@ -644,7 +644,7 @@ const removeOwnerRole = (req, resp) => {
 
       if (ownerIds.length < 2) {
         throw new BadRequestException(
-          `You can not remove the owner role from yourself because you are the only owner in the "${name}" list.`
+          `You can not remove the owner role from yourself because you are the only owner in the "${name}" sack.`
         );
       }
       const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
@@ -666,7 +666,7 @@ const removeOwnerRole = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'List data not found' });
+      resp.status(400).send({ message: 'Sack data not found' });
     });
 };
 
@@ -681,7 +681,7 @@ const addMemberRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't set user as a list's member.");
+        throw new BadRequestException("Can't set user as a sack's member.");
       }
 
       const { ownerIds, memberIds } = doc;
@@ -701,7 +701,7 @@ const addMemberRole = (req, resp) => {
     })
     .then(() =>
       resp.status(200).send({
-        message: "User has been successfully set as a list's member."
+        message: "User has been successfully set as a sack's member."
       })
     )
     .catch(err => {
@@ -710,7 +710,7 @@ const addMemberRole = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'List data not found' });
+      resp.status(400).send({ message: 'Sack data not found' });
     });
 };
 
@@ -735,7 +735,7 @@ const removeMemberRole = (req, resp) => {
 
       if (userIsOwner && ownerIds.length < 2) {
         throw new BadRequestException(
-          `You can not remove the member and owner role from yourself because you are the only owner in the "${name}" list.`
+          `You can not remove the member and owner role from yourself because you are the only owner in the "${name}" sack.`
         );
       }
 
@@ -758,7 +758,7 @@ const removeMemberRole = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'List data not found' });
+      resp.status(400).send({ message: 'Sack data not found' });
     });
 };
 
@@ -852,7 +852,7 @@ const updateItemDetails = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('List data not found.');
+        throw new BadRequestException('Sack data not found.');
       }
 
       const { items } = list;
@@ -905,7 +905,7 @@ const cloneItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('List data not found.');
+        throw new BadRequestException('Sack data not found.');
       }
 
       const { description, link, name } = list.items.id(itemId);
@@ -971,7 +971,7 @@ const changeType = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('List data not found.');
+        throw new BadRequestException('Sack data not found.');
       }
       const {
         cohortId: { memberIds: cohortMembersCollection },
@@ -1017,7 +1017,7 @@ const changeType = (req, resp) => {
       );
 
       resp.status(200).send({
-        message: `"${name}" list's type change to ${type}.`,
+        message: `"${name}" sack's type change to ${type}.`,
         data: { members, type }
       });
     })
@@ -1028,7 +1028,7 @@ const changeType = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'List data not found' });
+      resp.status(400).send({ message: 'Sack data not found' });
     });
 };
 
