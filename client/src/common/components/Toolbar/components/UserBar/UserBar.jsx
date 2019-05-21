@@ -9,7 +9,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { LogoutIcon, UserIcon, CohortIcon } from 'assets/images/icons';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
-import UserIconPlaceholder from '../../../../../assets/images/user.svg';
+import UserIconPlaceholder from 'assets/images/user.svg';
 
 class UserBar extends Component {
   state = {

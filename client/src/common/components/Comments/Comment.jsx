@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import { UserIcon } from 'assets/images/icons';
 import { dateFromString } from 'common/utils/helpers';
-import UserIconPlaceholder from '../../../assets/images/user.svg';
+import UserIconPlaceholder from 'assets/images/user.svg';
 
 class Comment extends PureComponent {
   state = {
