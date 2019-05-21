@@ -435,6 +435,7 @@ const removeOwnerRole = (req, resp) => {
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
+
         return resp.status(status).send({ message });
       }
 
