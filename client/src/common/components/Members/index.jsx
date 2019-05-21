@@ -1,6 +1,5 @@
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
-import _map from 'lodash/map';
 import PropTypes from 'prop-types';
 import { Manager, Reference } from 'react-popper';
 import { withRouter } from 'react-router-dom';
@@ -15,13 +14,20 @@ import { addCohortMember } from 'modules/cohort/model/actions';
 import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
 
+const MEMBERS_DISPLAY_LIMIT = 10;
+
 class MembersBox extends PureComponent {
-  state = {
-    context: null,
-    isFormVisible: false,
-    isMobile: window.outerWidth < 400,
-    pending: false
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      context: null,
+      isFormVisible: false,
+      isMobile: window.outerWidth < 400,
+      membersDisplayLimit: MEMBERS_DISPLAY_LIMIT,
+      pending: false
+    };
+  }
 
   handleResize = _debounce(
     () => this.setState({ isMobile: window.innerWidth < 400 }),
@@ -68,6 +74,16 @@ class MembersBox extends PureComponent {
     });
   };
 
+  handleShowMoreMembers = () => {
+    const { members } = this.props;
+    const membersLength = Object.keys(members).length;
+
+    this.setState(({ membersDisplayLimit }) => ({
+      membersDisplayLimit:
+        membersDisplayLimit + (membersLength - MEMBERS_DISPLAY_LIMIT)
+    }));
+  };
+
   renderDetails = member => {
     const { isCohortList, isCurrentUserAnOwner, route, type } = this.props;
 
@@ -85,9 +101,10 @@ class MembersBox extends PureComponent {
 
   renderMemberList = () => {
     const { members } = this.props;
-    const { isMobile, context } = this.state;
+    const { isMobile, context, membersDisplayLimit } = this.state;
+    const membersList = Object.values(members);
 
-    return _map(members, member => (
+    return membersList.slice(0, membersDisplayLimit).map(member => (
       <li
         className="members-box__list-item"
         key={member.avatarUrl}
@@ -120,12 +137,62 @@ class MembersBox extends PureComponent {
     ));
   };
 
-  render() {
-    const { isFormVisible, context, isMobile, pending } = this.state;
-    const { isCurrentUserAnOwner, isMember, members, route } = this.props;
-    const currentUser = members[context];
+  renderShowMoreUsers = () => {
+    const { members } = this.props;
+    const { membersDisplayLimit } = this.state;
+    const membersLength = Object.keys(members).length;
+
+    return (
+      <Fragment>
+        {membersDisplayLimit < membersLength && (
+          <li className="members-box__list-item">
+            <button
+              className="members-box__member"
+              onClick={this.handleShowMoreMembers}
+              type="button"
+            >
+              <DotsIcon />
+            </button>
+          </li>
+        )}
+      </Fragment>
+    );
+  };
+
+  renderAddNewUserForm = () => {
+    const { isCurrentUserAnOwner, isMember, route } = this.props;
+    const { isFormVisible, pending } = this.state;
     const isAddMemberVisible =
       isCurrentUserAnOwner || (isMember && route === Routes.LIST);
+
+    return (
+      <Fragment>
+        {isAddMemberVisible && (
+          <li className="members-box__list-item">
+            {isFormVisible ? (
+              <MembersForm
+                onAddNew={this.handleAddMember()}
+                pending={pending}
+              />
+            ) : (
+              <button
+                className="members-box__member"
+                onClick={this.showForm}
+                type="button"
+              >
+                <PlusIcon />
+              </button>
+            )}
+          </li>
+        )}
+      </Fragment>
+    );
+  };
+
+  render() {
+    const { context, isMobile } = this.state;
+    const { members } = this.props;
+    const currentUser = members[context];
 
     return (
       <div className="members-box">
@@ -133,25 +200,9 @@ class MembersBox extends PureComponent {
           <h2 className="members-box__heading">Members</h2>
         </header>
         <ul className="members-box__list">
-          {isAddMemberVisible && (
-            <li className="members-box__list-item">
-              {isFormVisible ? (
-                <MembersForm
-                  onAddNew={this.handleAddMember()}
-                  pending={pending}
-                />
-              ) : (
-                <button
-                  className="members-box__member"
-                  onClick={this.showForm}
-                  type="button"
-                >
-                  <PlusIcon />
-                </button>
-              )}
-            </li>
-          )}
+          {this.renderAddNewUserForm()}
           {this.renderMemberList()}
+          {this.renderShowMoreUsers()}
         </ul>
         {isMobile && currentUser && this.renderDetails(currentUser)}
       </div>
