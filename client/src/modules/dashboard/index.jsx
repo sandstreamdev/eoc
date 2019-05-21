@@ -19,6 +19,11 @@ import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
+import Breadcrumbs from 'common/components/Breadcrumbs';
+
+const breadcrumbs = {
+  path: ['dashboard']
+};
 
 class Dashboard extends Component {
   state = {
@@ -37,6 +42,8 @@ class Dashboard extends Component {
     fetchListsMetaData().finally(() =>
       this.setState({ pendingForLists: false })
     );
+
+    console.log(breadcrumbs.path);
   }
 
   handleDialogVisibility = () =>
@@ -96,6 +103,7 @@ class Dashboard extends Component {
       <Fragment>
         <Toolbar />
         <div className="wrapper">
+          <Breadcrumbs breadcrumbs={breadcrumbs} />
           <div className="dashboard">
             <GridList
               color={CardColorType.ORANGE}

@@ -29,6 +29,10 @@ import { Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
 import Preloader from '../../common/components/Preloader';
 
+const breadcrumbs = {
+  path: ['cohorts']
+};
+
 class Cohort extends PureComponent {
   constructor(props) {
     super(props);
@@ -45,7 +49,11 @@ class Cohort extends PureComponent {
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData().then(() => this.handleBreadcrumbs());
+  }
+
+  componentWillUnmount() {
+    breadcrumbs.path = ['cohorts'];
   }
 
   fetchData = () => {
@@ -59,13 +67,23 @@ class Cohort extends PureComponent {
 
     this.setState({ pendingForDetails: true });
 
-    fetchCohortDetails(id)
+    return fetchCohortDetails(id)
       .then(() => {
         if (!this.checkIfArchived()) {
           return fetchListsMetaData(id);
         }
       })
       .finally(() => this.setState({ pendingForDetails: false }));
+  };
+
+  handleBreadcrumbs = () => {
+    const {
+      cohortDetails: { name }
+    } = this.props;
+
+    breadcrumbs.path.push(name);
+
+    console.log(breadcrumbs.path);
   };
 
   handleListCreation = (name, description) => {

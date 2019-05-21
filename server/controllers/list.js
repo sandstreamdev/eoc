@@ -269,8 +269,11 @@ const getListData = (req, resp) => {
         return Cohort.findOne({ _id: cohortId }).exec();
       }
     })
-    .then(cohort => (cohort ? cohort.memberIds : []))
-    .then(cohortMembers => {
+    .then(cohort => cohort || [])
+    .then(cohort => {
+      const { memberIds: cohortMemberIds, name: cohortName } = cohort;
+      const cohortMembers = cohortMemberIds || [];
+
       const {
         _id,
         cohortId,
@@ -302,6 +305,7 @@ const getListData = (req, resp) => {
       return resp.status(200).json({
         _id,
         cohortId,
+        cohortName,
         description,
         isArchived,
         isGuest,

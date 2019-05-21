@@ -21,6 +21,10 @@ import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
 
+const breadcrumbs = {
+  path: ['cohorts']
+};
+
 class Cohorts extends Component {
   state = {
     areArchivedCohortsVisible: false,
@@ -38,6 +42,8 @@ class Cohorts extends Component {
     fetchCohortsMetaData().finally(() =>
       this.setState({ pendingForCohorts: false })
     );
+
+    console.log(breadcrumbs.path);
   }
 
   handleDialogVisibility = () =>

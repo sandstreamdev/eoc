@@ -22,11 +22,17 @@ import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
+import Breadcrumbs from 'common/components/Breadcrumbs';
 
 export const ListType = Object.freeze({
   LIMITED: 'limited',
   SHARED: 'shared'
 });
+
+const breadcrumbs = {
+  path: [],
+  cohortId: ''
+};
 
 class List extends Component {
   state = {
@@ -40,11 +46,33 @@ class List extends Component {
     if (this.checkIfArchived()) {
       this.setState({ pendingForDetails: true });
 
-      this.fetchData().finally(() =>
-        this.setState({ pendingForDetails: false })
-      );
+      this.fetchData().finally(() => {
+        this.setState({ pendingForDetails: false });
+        this.handleBreadcrumbs();
+      });
     }
   }
+
+  componentWillUnmount() {
+    breadcrumbs.path = [];
+    breadcrumbs.cohortId = '';
+  }
+
+  handleBreadcrumbs = () => {
+    const { list } = this.props;
+    const { cohortId, cohortName, name } = list;
+
+    if (cohortId) {
+      breadcrumbs.cohortId = cohortId;
+      breadcrumbs.path.push('cohorts', cohortName, name);
+      console.log(breadcrumbs.path);
+      return;
+    }
+
+    breadcrumbs.path.push('dashboard', name);
+
+    console.log(breadcrumbs.path);
+  };
 
   fetchData = () => {
     const {
@@ -133,6 +161,7 @@ class List extends Component {
             />
           )}
         </Toolbar>
+        <Breadcrumbs breadcrumbs={breadcrumbs} />
         {isArchived ? (
           <ArchivedList listId={listId} name={name} />
         ) : (
