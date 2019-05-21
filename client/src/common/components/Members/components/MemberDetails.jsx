@@ -27,13 +27,13 @@ import { ListType } from 'modules/list';
 const infoText = {
   [Routes.COHORT]: {
     [UserRoles.OWNER]:
-      "Can edit, archive and delete this cohort. Can add, edit list's items and mark them as done. Can add, edit, archive and delete lists. Can add, remove members, and change their roles.",
-    [UserRoles.MEMBER]: "Can view lists, add and edit list's items."
+      "Can edit, archive and delete this cohort. Can add, edit sack's items and mark them as done. Can add, edit, archive and delete sacks. Can add, remove members, and change their roles.",
+    [UserRoles.MEMBER]: "Can view sacks, add and edit sack's items."
   },
   [Routes.LIST]: {
     [UserRoles.OWNER]:
-      "Can edit, archive and delete this list. Can add, edit list's items and mark them as done. Can add, remove members, and change their roles.",
-    [UserRoles.MEMBER]: "Can view, add and edit list's items."
+      "Can edit, archive and delete this sack. Can add, edit sack's items and mark them as done. Can add, remove members, and change their roles.",
+    [UserRoles.MEMBER]: "Can view, add and edit sack's items."
   }
 };
 
