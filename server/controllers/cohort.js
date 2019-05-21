@@ -17,7 +17,7 @@ const {
   responseWithCohortMember,
   responseWithCohortMembers
 } = require('../common/utils/index');
-const { ListType } = require('../common/variables');
+const { ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
 
 const createCohort = (req, resp) => {
@@ -452,7 +452,6 @@ const addMember = (req, resp) => {
   let currentCohort;
   let newMember;
   const sanitizedCohortId = sanitize(cohortId);
-  const { DEMO_MODE_ID } = process.env;
 
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
@@ -473,7 +472,6 @@ const addMember = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {
-      const { DEMO_MODE_ID } = process.env;
       if (!user || user.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }

@@ -3,5 +3,7 @@ const ListType = Object.freeze({
   LIMITED: 'limited',
   SHARED: 'shared'
 });
+const DEMO_MODE_ID = '5ce2e16d7d8999071560c9ae';
+const DEMO_USER_ID = '5ce283fee76a2e02c79d8f55';
 
-module.exports = { DB_URL, ListType };
+module.exports = { DB_URL, DEMO_MODE_ID, DEMO_USER_ID, ListType };

@@ -1,4 +1,5 @@
 const { removeDemoUserData } = require('../common/utils/userUtils');
+const { DEMO_MODE_ID } = require('../common/variables');
 
 const removeDemoUserChanges = (req, res, next) => {
   const { user } = req;
@@ -8,7 +9,6 @@ const removeDemoUserChanges = (req, res, next) => {
   }
 
   const { _id: currentUserId, idFromProvider } = req.user;
-  const { DEMO_MODE_ID } = process.env;
 
   if (idFromProvider === DEMO_MODE_ID) {
     return removeDemoUserData(currentUserId)
