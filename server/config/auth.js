@@ -9,6 +9,7 @@ const {
   findOrCreateUser
 } = require('../common/utils/userUtils');
 const User = require('../models/user.model');
+const { DEMO_MODE_ID } = require('../common/variables');
 
 // Use GoogleStrategy to authenticate user
 passport.use(
@@ -29,8 +30,6 @@ passport.use(
 passport.use(
   new LocalStrategy((username, password, done) => {
     let newUser;
-
-    const { DEMO_MODE_ID } = process.env;
 
     User.findOne({
       idFromProvider: DEMO_MODE_ID

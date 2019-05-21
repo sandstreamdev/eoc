@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 
 const {
+  DEMO_MODE_ID: idFromProvider,
+  DEMO_USER_ID: userId
+} = require('../../common/variables');
+
+const {
   Types: { ObjectId }
 } = mongoose;
-
-const { DEMO_MODE_ID: idFromProvider, DEMO_USER_ID: userId } = process.env;
 
 const createDemoUser = () => ({
   _id: userId,

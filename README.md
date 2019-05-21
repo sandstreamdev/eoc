@@ -36,10 +36,6 @@ Seeding is not working? Probably USER_ID in your database is not matching with U
 
 Before running the app remember to add the Google client id key, Client secret key and Express session key to .env file.
 
-### Demo
-
-To make demo mode working add DEMO_USER_ID and DEMO MODE_ID constants to .env file. Both should be Hexadecimal Strings with 24 characters. They will be used to generate and remove data for demo purposes.
-
 ### Webpack Development mode
 
 In the development mode, we will have 2 servers running. The front end code will be served by the [webpack dev server](https://webpack.js.org/configuration/dev-server/) which helps with hot and live reloading. The server side Express code will be served by a node server using [nodemon](https://nodemon.io/) which helps in automatically restarting the server whenever server side code changes.

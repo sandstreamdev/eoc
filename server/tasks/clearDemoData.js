@@ -1,8 +1,11 @@
 /* eslint-disable no-console */
 const mongoose = require('mongoose');
 
-require('dotenv').config();
-const { DB_URL } = require('../common/variables');
+const {
+  DB_URL,
+  DEMO_MODE_ID: idFromProvider,
+  DEMO_USER_ID: mainDemoUserId
+} = require('../common/variables');
 const { removeDemoUserData } = require('../common/utils/userUtils');
 const User = require('../models/user.model');
 
@@ -21,9 +24,6 @@ const disconnectDatabase = () =>
     .catch(() => process.exit(1));
 
 const clearDemoData = () => {
-  const { DEMO_MODE_ID: idFromProvider } = process.env;
-  const { DEMO_USER_ID: mainDemoUserId } = process.env;
-
   connectDatabase()
     .then(() =>
       User.find({ idFromProvider, _id: { $ne: mainDemoUserId } }, '_id')
