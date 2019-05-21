@@ -1,22 +1,41 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-const MemberButton = ({ onDisplayDetails, member, popperRef }) => (
-  <button
-    className="member-button"
-    ref={popperRef}
-    title={member.displayName}
-    type="button"
-  >
-    <img
-      alt={`${member.displayName} avatar`}
-      className="member-button__avatar"
-      onClick={onDisplayDetails}
-      src={member.avatarUrl}
-      title={member.displayName}
-    />
-  </button>
-);
+import UserIconPlaceholder from 'assets/images/user.svg';
+
+class MemberButton extends PureComponent {
+  state = {
+    isAvatarError: false
+  };
+
+  handleError = () => this.setState({ isAvatarError: true });
+
+  render() {
+    const { member, onDisplayDetails, popperRef } = this.props;
+    const { isAvatarError } = this.state;
+
+    return (
+      <button
+        className={classNames('member-button', {
+          'member-button--error': isAvatarError
+        })}
+        ref={popperRef}
+        title={member.displayName}
+        type="button"
+      >
+        <img
+          alt={`${member.displayName} avatar`}
+          className="member-button__avatar"
+          onClick={onDisplayDetails}
+          onError={this.handleError}
+          src={isAvatarError ? UserIconPlaceholder : member.avatarUrl}
+          title={member.displayName}
+        />
+      </button>
+    );
+  }
+}
 
 MemberButton.propTypes = {
   member: PropTypes.objectOf(

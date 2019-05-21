@@ -30,6 +30,10 @@
         fill: $text-normal;
       }
     }
+
+    &--error {
+      padding: 5px;
+    }
   }
 
   &__image {
