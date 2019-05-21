@@ -47,6 +47,12 @@
     img {
       width: 40px;
     }
+
+    &--error {
+      .comment__image {
+        height: 22px;
+      }
+    }
   }
 
   svg {
