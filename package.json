@@ -5,6 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "check": "npm-run-all lint format stylelint",
+    "clear-demo": "node server/tasks/clearDemoData.js",
     "build:dev": "webpack --progress",
     "build:prod": "webpack --config webpack.config.production.js",
     "dev": "npm-run-all -p start:server:dev start:client:dev",
@@ -39,6 +40,7 @@
     "mongoose": "5.3.13",
     "passport": "0.4.0",
     "passport-google-oauth": "1.0.0",
+    "passport-local": "1.0.0",
     "prop-types": "15.6.2",
     "react": "16.5.2",
     "react-cookie-consent": "2.2.2",

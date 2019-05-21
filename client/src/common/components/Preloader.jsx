@@ -6,7 +6,8 @@ import { PENDING_DELAY } from 'common/constants/variables';
 
 export const PreloaderTheme = {
   DARK: 'preloader/DARK',
-  LIGHT: 'preloader/LIGHT'
+  LIGHT: 'preloader/LIGHT',
+  GOOGLE: 'preloader/GOOGLE'
 };
 
 export const PreloaderSize = {
@@ -43,7 +44,8 @@ class Preloader extends PureComponent {
       <div
         className={classNames('preloader', {
           'preloader--dark': theme === PreloaderTheme.DARK,
-          'preloader--light': theme === PreloaderTheme.LIGHT
+          'preloader--light': theme === PreloaderTheme.LIGHT,
+          'preloader--google': theme === PreloaderTheme.GOOGLE
         })}
       >
         <div className="preloader-wrapper">
@@ -56,13 +58,15 @@ class Preloader extends PureComponent {
             <div
               className={classNames('preloader__spinner1', {
                 'preloader__spinner1--dark': theme === PreloaderTheme.DARK,
-                'preloader__spinner1--light': theme === PreloaderTheme.LIGHT
+                'preloader__spinner1--light': theme === PreloaderTheme.LIGHT,
+                'preloader__spinner1--google': theme === PreloaderTheme.GOOGLE
               })}
             />
             <div
               className={classNames('preloader__spinner2', {
                 'preloader__spinner2--dark': theme === PreloaderTheme.DARK,
-                'preloader__spinner2--light': theme === PreloaderTheme.LIGHT
+                'preloader__spinner2--light': theme === PreloaderTheme.LIGHT,
+                'preloader__spinner2--google': theme === PreloaderTheme.GOOGLE
               })}
             />
           </div>

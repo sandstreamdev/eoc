@@ -10,7 +10,6 @@
   text-align: center;
   min-height: 300px;
   flex-direction: column;
-  height: 300px;
 
   @include breakpoint($large) {
     flex-direction: row;
@@ -83,6 +82,33 @@
 
   &__link {
     text-decoration: none;
+  }
+
+  &__button-wrapper {
+    position: relative;
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+    max-width: 166px;
+  }
+
+  &__demo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+
+    @include breakpoint($large) {
+      margin-top: 0px;
+    }
+  }
+
+  &__demo-button {
+    width: 100%;
+    width: 166px;
+    font-weight: 400;
+    font-size: 16px;
+    text-transform: capitalize;
   }
 }
 

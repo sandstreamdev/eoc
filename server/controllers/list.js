@@ -751,13 +751,20 @@ const removeMemberRole = (req, resp) => {
 
 const addViewer = (req, resp) => {
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, idFromProvider }
   } = req;
   const { id: listId } = req.params;
   const { email } = req.body;
+  const { DEMO_MODE_ID } = process.env;
   let list;
   let user;
   let cohortMembers = [];
+
+  if (idFromProvider === DEMO_MODE_ID) {
+    return resp
+      .status(401)
+      .send({ message: 'Adding members is disabled in demo mode.' });
+  }
 
   List.findOne({
     _id: sanitize(listId),
@@ -771,7 +778,9 @@ const addViewer = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(userData => {
-      if (!userData) {
+      const { DEMO_MODE_ID } = process.env;
+
+      if (!userData || userData.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 

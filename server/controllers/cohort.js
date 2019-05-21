@@ -431,13 +431,20 @@ const removeOwnerRole = (req, resp) => {
 
 const addMember = (req, resp) => {
   const {
-    user: { _id: userId }
+    user: { _id: userId, idFromProvider }
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
   let currentCohort;
   let newMember;
   const sanitizedCohortId = sanitize(cohortId);
+  const { DEMO_MODE_ID } = process.env;
+
+  if (idFromProvider === DEMO_MODE_ID) {
+    return resp
+      .status(401)
+      .send({ message: 'Adding members is disabled in demo mode.' });
+  }
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
@@ -452,7 +459,8 @@ const addMember = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {
-      if (!user) {
+      const { DEMO_MODE_ID } = process.env;
+      if (!user || user.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 
