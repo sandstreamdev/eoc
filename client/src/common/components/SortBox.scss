@@ -38,12 +38,12 @@
     border: 0;
     background-color: transparent;
     display: flex;
-
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 40px;
     width: 40px;
+    cursor: pointer;
 
     img {
       width: 14px;

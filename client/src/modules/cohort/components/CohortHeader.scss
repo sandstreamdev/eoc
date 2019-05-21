@@ -21,9 +21,9 @@
   }
 
   &__description {
-    font-size: 16px;
+    font-size: $m-font;
     line-height: 1.2;
-    color: $text-light;
+    color: $text-normal;
     padding: 8px 0 16px;
   }
 
@@ -31,7 +31,7 @@
     padding: 8px 0;
     display: inline-flex;
     align-items: center;
-    font-size: 20px;
+    font-size: $xxl-font;
     font-weight: 700;
     line-height: 1;
     color: $text-normal;

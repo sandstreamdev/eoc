@@ -64,10 +64,6 @@
     align-items: center;
     border-bottom: 1px solid $border-color;
 
-    &:first-child {
-      color: $text-light;
-    }
-
     &:last-child {
       border-bottom: 0;
     }
