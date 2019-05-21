@@ -19,7 +19,7 @@ const {
   responseWithListMember,
   responseWithListMembers
 } = require('../common/utils/index');
-const { ListType } = require('../common/variables');
+const { DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 
 const createList = (req, resp) => {
@@ -768,7 +768,6 @@ const addViewer = (req, resp) => {
   } = req;
   const { id: listId } = req.params;
   const { email } = req.body;
-  const { DEMO_MODE_ID } = process.env;
   let list;
   let user;
   let cohortMembers = [];
@@ -791,8 +790,6 @@ const addViewer = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(userData => {
-      const { DEMO_MODE_ID } = process.env;
-
       if (!userData || userData.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
