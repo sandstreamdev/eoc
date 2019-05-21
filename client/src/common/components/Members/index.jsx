@@ -5,7 +5,7 @@ import { Manager, Reference } from 'react-popper';
 import { withRouter } from 'react-router-dom';
 import _debounce from 'lodash/debounce';
 
-import { PlusIcon } from 'assets/images/icons';
+import { PlusIcon, DotsIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
@@ -17,6 +17,11 @@ import { Routes } from 'common/constants/enums';
 const MEMBERS_DISPLAY_LIMIT = 10;
 
 class MembersBox extends PureComponent {
+  handleResize = _debounce(
+    () => this.setState({ isMobile: window.innerWidth < 400 }),
+    100
+  );
+
   constructor(props) {
     super(props);
 
@@ -28,11 +33,6 @@ class MembersBox extends PureComponent {
       pending: false
     };
   }
-
-  handleResize = _debounce(
-    () => this.setState({ isMobile: window.innerWidth < 400 }),
-    100
-  );
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
