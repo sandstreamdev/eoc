@@ -21,10 +21,6 @@ const createCohortFailure = errMessage => ({
   errMessage
 });
 
-const createCohortRequest = () => ({
-  type: CohortActionTypes.CREATE_REQUEST
-});
-
 const fetchCohortsMetaDataSuccess = data => ({
   type: CohortActionTypes.FETCH_META_DATA_SUCCESS,
   payload: data
@@ -33,14 +29,6 @@ const fetchCohortsMetaDataSuccess = data => ({
 const fetchCohortsMetaDataFailure = errMessage => ({
   type: CohortActionTypes.FETCH_META_DATA_FAILURE,
   errMessage
-});
-
-const fetchCohortsMetaDataRequest = () => ({
-  type: CohortActionTypes.FETCH_META_DATA_REQUEST
-});
-
-const updateCohortRequest = () => ({
-  type: CohortActionTypes.UPDATE_REQUEST
 });
 
 const updateCohortSuccess = data => ({
@@ -63,10 +51,6 @@ const archiveCohortFailure = errMessage => ({
   payload: errMessage
 });
 
-const archiveCohortRequest = () => ({
-  type: CohortActionTypes.ARCHIVE_REQUEST
-});
-
 const restoreCohortSuccess = (data, _id) => ({
   type: CohortActionTypes.RESTORE_SUCCESS,
   payload: { data, _id }
@@ -75,10 +59,6 @@ const restoreCohortSuccess = (data, _id) => ({
 const restoreCohortFailure = errMessage => ({
   type: CohortActionTypes.RESTORE_FAILURE,
   payload: errMessage
-});
-
-const restoreCohortRequest = () => ({
-  type: CohortActionTypes.RESTORE_REQUEST
 });
 
 const deleteCohortSuccess = _id => ({
@@ -91,10 +71,6 @@ const deleteCohortFailure = errMessage => ({
   payload: errMessage
 });
 
-const deleteCohortRequest = () => ({
-  type: CohortActionTypes.DELETE_REQUEST
-});
-
 const fetchCohortDetailsFailure = errMessage => ({
   type: CohortActionTypes.FETCH_DETAILS_FAILURE,
   payload: errMessage
@@ -105,24 +81,14 @@ const fetchCohortDetailsSuccess = (data, _id) => ({
   payload: { data, _id }
 });
 
-const fetchCohortDetailsRequest = () => ({
-  type: CohortActionTypes.FETCH_DETAILS_REQUEST
-});
-
 const fetchArchivedCohortsMetaDataSuccess = data => ({
   type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
   payload: data
 });
+
 const fetchArchivedCohortsMetaDataFailure = errMessage => ({
   type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
   payload: errMessage
-});
-const fetchArchivedCohortsMetaDataRequest = () => ({
-  type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_REQUEST
-});
-
-const favouritesRequest = () => ({
-  type: CohortActionTypes.FAVOURITES_REQUEST
 });
 
 const favouritesSuccess = data => ({
@@ -134,10 +100,6 @@ const favouritesFailure = () => ({
   type: CohortActionTypes.FAVOURITES_FAILURE
 });
 
-const addMemberRequest = () => ({
-  type: CohortActionTypes.ADD_MEMBER_REQUEST
-});
-
 const addMemberSuccess = (data, cohortId) => ({
   type: CohortActionTypes.ADD_MEMBER_SUCCESS,
   payload: { cohortId, data }
@@ -145,10 +107,6 @@ const addMemberSuccess = (data, cohortId) => ({
 
 const addMemberFailure = () => ({
   type: CohortActionTypes.ADD_MEMBER_FAILURE
-});
-
-const removeMemberRequest = () => ({
-  type: CohortActionTypes.REMOVE_MEMBER_REQUEST
 });
 
 const removeMemberFailure = () => ({
@@ -160,10 +118,6 @@ const removeMemberSuccess = (cohortId, userId) => ({
   payload: { cohortId, userId }
 });
 
-const addOwnerRoleRequest = () => ({
-  type: CohortActionTypes.ADD_OWNER_ROLE_REQUEST
-});
-
 const addOwnerRoleFailure = () => ({
   type: CohortActionTypes.ADD_OWNER_ROLE_FAILURE
 });
@@ -173,26 +127,25 @@ const addOwnerRoleSuccess = (cohortId, userId) => ({
   payload: { cohortId, userId }
 });
 
-const removeOwnerRoleRequest = () => ({
-  type: CohortActionTypes.REMOVE_OWNER_ROLE_REQUEST
-});
-
 const removeOwnerRoleFailure = () => ({
   type: CohortActionTypes.REMOVE_OWNER_ROLE_FAILURE
 });
 
-const removeOwnerRoleSuccess = (cohortId, userId) => ({
+const removeOwnerRoleSuccess = (
+  cohortId,
+  userId,
+  isCurrentUserRoleChanging
+) => ({
   type: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  payload: { cohortId, userId }
+  payload: { cohortId, isCurrentUserRoleChanging, userId }
 });
 
 export const removeArchivedCohortsMetaData = () => ({
   type: CohortActionTypes.REMOVE_ARCHIVED_META_DATA
 });
 
-export const createCohort = data => dispatch => {
-  dispatch(createCohortRequest());
-  return postData('/api/cohorts/create', data)
+export const createCohort = data => dispatch =>
+  postData('/api/cohorts/create', data)
     .then(resp => resp.json())
     .then(json => dispatch(createCohortSuccess(json)))
     .catch(err => {
@@ -203,11 +156,9 @@ export const createCohort = data => dispatch => {
         err.message || "Oops, we're sorry, creating new cohort failed..."
       );
     });
-};
 
-export const fetchCohortsMetaData = () => dispatch => {
-  dispatch(fetchCohortsMetaDataRequest());
-  return getData('/api/cohorts/meta-data')
+export const fetchCohortsMetaData = () => dispatch =>
+  getData('/api/cohorts/meta-data')
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
@@ -221,11 +172,9 @@ export const fetchCohortsMetaData = () => dispatch => {
         err.message || "Oops, we're sorry, fetching cohorts meta data failed..."
       );
     });
-};
 
-export const fetchArchivedCohortsMetaData = () => dispatch => {
-  dispatch(fetchArchivedCohortsMetaDataRequest());
-  return getData('/api/cohorts/archived')
+export const fetchArchivedCohortsMetaData = () => dispatch =>
+  getData('/api/cohorts/archived')
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
@@ -239,11 +188,9 @@ export const fetchArchivedCohortsMetaData = () => dispatch => {
         err.message || "Oops, we're sorry, fetching cohorts failed..."
       );
     });
-};
 
-export const updateCohort = (cohortId, data) => dispatch => {
-  dispatch(updateCohortRequest());
-  return patchData(`/api/cohorts/${cohortId}/update`, data)
+export const updateCohort = (cohortId, data) => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
       dispatch(updateCohortSuccess({ ...data, cohortId }));
@@ -261,11 +208,9 @@ export const updateCohort = (cohortId, data) => dispatch => {
         err.message || "Oops, we're sorry, updating cohort failed..."
       );
     });
-};
 
-export const deleteCohort = cohortId => dispatch => {
-  dispatch(deleteCohortRequest());
-  return deleteData(`/api/cohorts/${cohortId}/delete`)
+export const deleteCohort = cohortId => dispatch =>
+  deleteData(`/api/cohorts/${cohortId}/delete`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(deleteCohortSuccess(cohortId));
@@ -285,11 +230,9 @@ export const deleteCohort = cohortId => dispatch => {
       );
       throw err;
     });
-};
 
-export const archiveCohort = cohortId => dispatch => {
-  dispatch(archiveCohortRequest());
-  return patchData(`/api/cohorts/${cohortId}/update`, {
+export const archiveCohort = cohortId => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: true
   })
     .then(resp => resp.json())
@@ -309,11 +252,9 @@ export const archiveCohort = cohortId => dispatch => {
         err.message || "Oops, we're sorry, archiving cohort failed..."
       );
     });
-};
 
-export const restoreCohort = cohortId => dispatch => {
-  dispatch(restoreCohortRequest());
-  return patchData(`/api/cohorts/${cohortId}/update`, {
+export const restoreCohort = cohortId => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: false
   })
     .then(() => getData(`/api/cohorts/${cohortId}/data`))
@@ -334,11 +275,9 @@ export const restoreCohort = cohortId => dispatch => {
         err.message || "Oops, we're sorry, restoring cohort failed..."
       );
     });
-};
 
-export const fetchCohortDetails = cohortId => dispatch => {
-  dispatch(fetchCohortDetailsRequest());
-  return getData(`/api/cohorts/${cohortId}/data`)
+export const fetchCohortDetails = cohortId => dispatch =>
+  getData(`/api/cohorts/${cohortId}/data`)
     .then(resp => resp.json())
     .then(json => dispatch(fetchCohortDetailsSuccess(json, cohortId)))
     .catch(err => {
@@ -350,11 +289,9 @@ export const fetchCohortDetails = cohortId => dispatch => {
       );
       throw err;
     });
-};
 
-export const addCohortToFavourites = cohortId => dispatch => {
-  dispatch(favouritesRequest());
-  return patchData(`/api/cohorts/${cohortId}/add-to-fav`)
+export const addCohortToFavourites = cohortId => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/add-to-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ cohortId, isFavourite: true }));
@@ -372,11 +309,9 @@ export const addCohortToFavourites = cohortId => dispatch => {
         err.message
       );
     });
-};
 
-export const removeCohortFromFavourites = cohortId => dispatch => {
-  dispatch(favouritesRequest());
-  return patchData(`/api/cohorts/${cohortId}/remove-from-fav`)
+export const removeCohortFromFavourites = cohortId => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/remove-from-fav`)
     .then(resp => resp.json())
     .then(json => {
       dispatch(favouritesSuccess({ cohortId, isFavourite: false }));
@@ -394,11 +329,9 @@ export const removeCohortFromFavourites = cohortId => dispatch => {
         err.message
       );
     });
-};
 
-export const addCohortMember = (cohortId, email) => dispatch => {
-  dispatch(addMemberRequest());
-  return patchData(`/api/cohorts/${cohortId}/add-member`, {
+export const addCohortMember = (cohortId, email) => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })
     .then(resp => resp.json())
@@ -411,11 +344,9 @@ export const addCohortMember = (cohortId, email) => dispatch => {
         err.message || "Oops, we're sorry, adding new member failed..."
       );
     });
-};
 
-export const removeCohortMember = (cohortId, userId) => dispatch => {
-  dispatch(removeMemberRequest());
-  return patchData(`/api/cohorts/${cohortId}/remove-member`, {
+export const removeCohortMember = (cohortId, userId) => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/remove-member`, {
     userId
   })
     .then(resp => resp.json())
@@ -435,11 +366,9 @@ export const removeCohortMember = (cohortId, userId) => dispatch => {
         err.message
       );
     });
-};
 
-export const addOwnerRole = (cohortId, userId) => dispatch => {
-  dispatch(addOwnerRoleRequest());
-  return patchData(`/api/cohorts/${cohortId}/add-owner-role`, {
+export const addOwnerRole = (cohortId, userId) => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/add-owner-role`, {
     userId
   })
     .then(resp => resp.json())
@@ -459,16 +388,20 @@ export const addOwnerRole = (cohortId, userId) => dispatch => {
         err.message
       );
     });
-};
 
-export const removeOwnerRole = (cohortId, userId) => dispatch => {
-  dispatch(removeOwnerRoleRequest());
-  return patchData(`/api/cohorts/${cohortId}/remove-owner-role`, {
+export const removeOwnerRole = (
+  cohortId,
+  userId,
+  isCurrentUserRoleChanging
+) => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/remove-owner-role`, {
     userId
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(removeOwnerRoleSuccess(cohortId, userId));
+      dispatch(
+        removeOwnerRoleSuccess(cohortId, userId, isCurrentUserRoleChanging)
+      );
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -483,4 +416,3 @@ export const removeOwnerRole = (cohortId, userId) => dispatch => {
         err.message
       );
     });
-};

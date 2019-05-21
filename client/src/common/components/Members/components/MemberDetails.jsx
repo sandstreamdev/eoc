@@ -88,20 +88,27 @@ class MemberDetails extends PureComponent {
     }));
   };
 
+  removeRole = (isCurrentUserRoleChanging, removeRoleAction) => (id, userId) =>
+    removeRoleAction(id, userId, isCurrentUserRoleChanging);
+
   changeCohortRole = () => {
     const {
       _id: userId,
       addOwnerRoleInCohort,
+      currentUser: { id: currentUserId },
       isOwner,
       match: {
         params: { id }
       },
       removeOwnerRoleInCohort
     } = this.props;
+    const isCurrentUserRoleChanging = currentUserId === userId;
 
     this.setState({ pending: true });
 
-    const action = isOwner ? removeOwnerRoleInCohort : addOwnerRoleInCohort;
+    const action = isOwner
+      ? this.removeRole(isCurrentUserRoleChanging, removeOwnerRoleInCohort)
+      : addOwnerRoleInCohort;
 
     action(id, userId).finally(() => this.setState({ pending: false }));
   };
@@ -111,6 +118,7 @@ class MemberDetails extends PureComponent {
       _id: userId,
       addMemberRoleInList,
       addOwnerRoleInList,
+      currentUser: { id: currentUserId },
       isMember,
       isOwner,
       match: {
@@ -119,16 +127,21 @@ class MemberDetails extends PureComponent {
       removeMemberRoleInList,
       removeOwnerRoleInList
     } = this.props;
+    const isCurrentUserRoleChanging = currentUserId === userId;
     let action;
 
     this.setState({ pending: true });
 
     switch (selectedRole) {
       case UserRoles.OWNER:
-        action = isOwner ? removeOwnerRoleInList : addOwnerRoleInList;
+        action = isOwner
+          ? this.removeRole(isCurrentUserRoleChanging, removeOwnerRoleInList)
+          : addOwnerRoleInList;
         break;
       case UserRoles.MEMBER:
-        action = isMember ? removeMemberRoleInList : addMemberRoleInList;
+        action = isMember
+          ? this.removeRole(isCurrentUserRoleChanging, removeMemberRoleInList)
+          : addMemberRoleInList;
         break;
       default:
         break;
@@ -281,9 +294,18 @@ class MemberDetails extends PureComponent {
 
   renderDetails = () => {
     const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
-    const { isGuest, isMember, isOwner, route, type } = this.props;
+    const {
+      _id: userId,
+      currentUser: { id: currentUserId },
+      isGuest,
+      isMember,
+      isOwner,
+      route,
+      type
+    } = this.props;
     const isRemoveOptionVisible =
-      route === Routes.COHORT || type === ListType.LIMITED || isGuest;
+      (route === Routes.COHORT || type === ListType.LIMITED || isGuest) &&
+      userId !== currentUserId;
 
     return (
       <ul className="member-details__options">
@@ -312,19 +334,8 @@ class MemberDetails extends PureComponent {
     );
   };
 
-  renderMessage = () => (
-    <p className="member-details__notice">
-      You cannot edit your own settings here.
-    </p>
-  );
-
   render() {
-    const {
-      _id: userId,
-      currentUser: { id: currentUserId },
-      isCurrentUserAnOwner,
-      onClose
-    } = this.props;
+    const { isCurrentUserAnOwner, onClose } = this.props;
     const { pending } = this.state;
 
     return (
@@ -345,13 +356,7 @@ class MemberDetails extends PureComponent {
           <div className="member-details__details">
             {this.renderHeader()}
             <div className="member-details__panel">
-              {isCurrentUserAnOwner && (
-                <Fragment>
-                  {userId !== currentUserId
-                    ? this.renderDetails()
-                    : this.renderMessage()}
-                </Fragment>
-              )}
+              {isCurrentUserAnOwner && this.renderDetails()}
               {pending && <Preloader />}
             </div>
           </div>
