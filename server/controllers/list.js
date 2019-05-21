@@ -52,7 +52,7 @@ const createList = (req, resp) => {
         }
 
         throw new BadRequestException(
-          'You need to be cohort member to create new lists'
+          'You need to be cohort member to create new sacks'
         );
       })
       .then(listData =>
@@ -67,7 +67,7 @@ const createList = (req, resp) => {
 
           return resp.status(status).send({ message });
         }
-        resp.status(400).send({ message: 'List not saved. Please try again.' });
+        resp.status(400).send({ message: 'Sack not saved. Please try again.' });
       });
   } else {
     list
@@ -79,7 +79,7 @@ const createList = (req, resp) => {
           .send(responseWithList(list, userId))
       )
       .catch(() => {
-        resp.status(400).send({ message: 'List not saved. Please try again.' });
+        resp.status(400).send({ message: 'Sack not saved. Please try again.' });
       });
   }
 };
@@ -95,7 +95,7 @@ const deleteListById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException('List data not found.');
+        throw new BadRequestException('Sack data not found.');
       }
 
       listName = doc.name;
@@ -104,7 +104,7 @@ const deleteListById = (req, resp) => {
     })
     .then(() =>
       resp.status(200).send({
-        message: `List "${listName}" successfully deleted.`
+        message: `Sack "${listName}" successfully deleted.`
       })
     )
     .catch(err => {
@@ -113,7 +113,7 @@ const deleteListById = (req, resp) => {
         return resp.status(status).send({ message });
       }
       resp.status(400).send({
-        message: 'An error occurred while deleting the list. Please try again.'
+        message: 'An error occurred while deleting the sack. Please try again.'
       });
     });
 };
@@ -140,7 +140,7 @@ const getListsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(400).send({ message: 'No lists data found.' });
+        return resp.status(400).send({ message: 'No sacks data found.' });
       }
 
       return resp.status(200).json(responseWithListsMetaData(docs, userId));
@@ -148,7 +148,7 @@ const getListsMetaData = (req, resp) => {
     .catch(() =>
       resp.status(400).send({
         message:
-          'An error occurred while fetching the lists data. Please try again.'
+          'An error occurred while fetching the sacks data. Please try again.'
       })
     );
 };
@@ -181,7 +181,7 @@ const getArchivedListsMetaData = (req, resp) => {
       if (!docs) {
         return resp
           .status(400)
-          .send({ message: 'No archived lists data found.' });
+          .send({ message: 'No archived sacks data found.' });
       }
 
       return resp.status(200).json(responseWithListsMetaData(docs, userId));
@@ -189,7 +189,7 @@ const getArchivedListsMetaData = (req, resp) => {
     .catch(() =>
       resp.status(400).send({
         message:
-          'An error occurred while fetching the archived lists data. Please try again.'
+          'An error occurred while fetching the archived sacks data. Please try again.'
       })
     );
 };
@@ -221,7 +221,7 @@ const addItemToList = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'List  not found.' });
+        return resp.status(400).send({ message: 'Sack not found.' });
       }
 
       const newItem = doc.items.slice(-1)[0];
@@ -245,7 +245,7 @@ const getListData = (req, resp) => {
   if (!isValidMongoId(listId)) {
     return resp
       .status(404)
-      .send({ message: `Data of list id: ${listId} not found.` });
+      .send({ message: `Data of sack id: ${listId} not found.` });
   }
 
   let list;
@@ -260,7 +260,7 @@ const getListData = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new NotFoundException(`Data of list id: ${listId} not found.`);
+        throw new NotFoundException(`Data of sack id: ${listId} not found.`);
       }
       list = doc;
       const { cohortId } = list;
