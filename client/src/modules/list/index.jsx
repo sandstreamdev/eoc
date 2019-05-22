@@ -160,16 +160,7 @@ class List extends Component {
 
     return (
       <Fragment>
-        <Toolbar>
-          {cohortId && !isGuest && (
-            <ToolbarLink
-              additionalIconSrc={ArrowLeftIcon}
-              mainIcon={<CohortIcon />}
-              path={`/cohort/${cohortId}`}
-              title="Go back to cohort"
-            />
-          )}
-        </Toolbar>
+        <Toolbar />
         {this.renderBreadcrumbs()}
         {isArchived ? (
           <ArchivedList listId={listId} name={name} />
