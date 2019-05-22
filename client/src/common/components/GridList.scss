@@ -8,7 +8,7 @@
     align-items: center;
     font-size: $l-font;
     line-height: 1;
-    color: $text-normal;
+    color: $text-dark;
     border-bottom: 1px solid $border-light;
     text-transform: uppercase;
     font-weight: 700;
@@ -19,7 +19,7 @@
       margin-right: 8px;
 
       path {
-        fill: $text-normal;
+        fill: $text-dark;
       }
     }
   }
@@ -30,14 +30,22 @@
     min-height: 100px;
   }
 
+  &__description {
+    font-size: 12px;
+    line-height: 1.2;
+    color: $text-normal;
+    padding: 16px 0 0;
+    max-width: 360px;
+  }
+
   &__list {
     margin: 0;
 
     @include breakpoint($medium) {
       margin: 0 -10px 0;
       display: grid;
-      grid-template-columns: repeat(auto-fill, 216px);
-      grid-gap: 20px 20px;
+      grid-template-columns: repeat(auto-fill, 228px);
+      grid-gap: 28px 10px;
     }
   }
 

@@ -12,7 +12,7 @@
   width: 100%;
 
   @include breakpoint($medium) {
-    width: 216px;
+    width: 210px;
   }
 
   &--orange {
@@ -33,10 +33,10 @@
     border-bottom: 1px solid $text-white;
     padding: 0 20px 8px 0;
     svg {
-      height: 16px;
-      width: 16px;
-      min-height: 16px;
-      min-width: 16px;
+      height: 12px;
+      width: 12px;
+      min-height: 12px;
+      min-width: 12px;
       margin-right: 8px;
 
       path {
@@ -49,9 +49,9 @@
     color: $text-white;
     font-size: $m-font;
     line-height: 1;
-    text-transform: uppercase;
+    text-transform: capitalize;
     word-break: break-word;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.2px;
     text-decoration: none;
     text-overflow: ellipsis;
@@ -84,7 +84,7 @@
     padding: 3px;
     position: absolute;
     right: 5px;
-    top: 2px;
+    top: 5px;
 
     svg {
       height: 16px;

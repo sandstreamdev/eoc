@@ -6,7 +6,7 @@
     margin-right: 12px;
 
     path {
-      fill: $text-normal;
+      fill: $text-dark;
     }
   }
 
@@ -31,10 +31,10 @@
     padding: 8px 0;
     display: inline-flex;
     align-items: center;
-    font-size: $xxl-font;
+    font-size: $xl-font;
     font-weight: 700;
     line-height: 1;
-    color: $text-normal;
+    color: $text-dark;
   }
 
   &__button {

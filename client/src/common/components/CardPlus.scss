@@ -13,12 +13,12 @@
   width: 100%;
 
   @include breakpoint($medium) {
-    width: 216px;
+    width: 210px;
   }
 
   &__heading {
-    color: $text-normal;
-    font-size: $m-font;
+    color: $text-dark;
+    font-size: $s-font;
     font-weight: 700;
     font-family: $font-family;
     letter-spacing: 0.2px;
@@ -32,7 +32,7 @@
   svg {
     height: 24px;
     path {
-      fill: $text-normal;
+      fill: $text-dark;
     }
   }
 }

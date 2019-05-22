@@ -24,7 +24,7 @@
       flex-direction: column;
       justify-content: left;
     }
-    @include breakpoint($large) {
+    @include breakpoint($xlarge) {
       flex-direction: row;
       justify-content: space-between;
     }
@@ -50,7 +50,7 @@
     @include breakpoint($medium) {
       justify-content: center;
     }
-    @include breakpoint($large) {
+    @include breakpoint($xlarge) {
       justify-content: flex-end;
     }
   }
@@ -63,8 +63,8 @@
     width: 100%;
     font-size: $l-font;
     line-height: 1.2;
-    font-weight: 600;
-    color: $text-normal;
+    font-weight: 500;
+    color: $text-dark;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -76,7 +76,7 @@
     @include breakpoint($medium) {
       width: 100%;
     }
-    @include breakpoint($large) {
+    @include breakpoint($xlarge) {
       width: auto;
     }
 
@@ -96,7 +96,7 @@
 
   &__show-more {
     background: transparent;
-    color: $text-light;
+    color: $text-normal;
     width: 36px;
     height: 36px;
     border: 2px solid $border-color;

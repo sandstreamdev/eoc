@@ -7,7 +7,7 @@
     margin-right: 12px;
 
     path {
-      fill: $text-normal;
+      fill: $text-dark;
     }
   }
 
@@ -33,17 +33,17 @@
     padding: 8px 0;
     display: flex;
     align-items: center;
-    font-size: $xxl-font;
+    font-size: $xl-font;
     font-weight: 700;
     line-height: 1;
-    color: $text-normal;
+    color: $text-dark;
 
     svg {
       height: 20px;
       margin-right: 12px;
 
       path {
-        fill: $text-normal;
+        fill: $text-dark;
       }
     }
   }
@@ -54,14 +54,6 @@
     color: $text-normal;
     padding: 8px 0 16px;
     max-width: 360px;
-  }
-
-  &__name-input {
-    font-size: $xxl-font;
-    font-weight: 700;
-    line-height: 1;
-    color: #646c73;
-    margin-bottom: 8px;
   }
 
   &__button {
