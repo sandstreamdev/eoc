@@ -145,15 +145,7 @@ class List extends Component {
       return null;
     }
 
-    const {
-      cohortId,
-      isArchived,
-      isGuest,
-      isMember,
-      isOwner,
-      name,
-      type
-    } = list;
+    const { cohortId, isArchived, isMember, isOwner, name, type } = list;
     const isCohortList = cohortId !== null;
 
     return (
