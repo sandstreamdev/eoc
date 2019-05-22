@@ -31,27 +31,19 @@ import Preloader from '../../common/components/Preloader';
 import Breadcrumbs from '../../common/components/Breadcrumbs';
 
 class Cohort extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      areArchivedListsVisible: false,
-      breadcrumbs: [],
-      dialogContext: null,
-      pendingForArchivedLists: false,
-      pendingForDetails: false,
-      pendingForListCreation: false,
-      pendingForCohortArchivization: false,
-      type: ListType.LIMITED
-    };
-  }
+  state = {
+    areArchivedListsVisible: false,
+    breadcrumbs: [],
+    dialogContext: null,
+    pendingForArchivedLists: false,
+    pendingForDetails: false,
+    pendingForListCreation: false,
+    pendingForCohortArchivization: false,
+    type: ListType.LIMITED
+  };
 
   componentDidMount() {
     this.fetchData().then(() => this.handleBreadcrumbs());
-  }
-
-  componentWillUnmount() {
-    this.setState({ breadcrumbs: [] });
   }
 
   fetchData = () => {

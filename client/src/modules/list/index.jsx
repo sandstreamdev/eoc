@@ -49,10 +49,6 @@ class List extends Component {
     });
   }
 
-  componentWillUnmount() {
-    this.setState({ breadcrumbs: [] });
-  }
-
   handleBreadcrumbs = () => {
     const { list } = this.props;
     const { cohortId, cohortName, name, _id: listId } = list;
