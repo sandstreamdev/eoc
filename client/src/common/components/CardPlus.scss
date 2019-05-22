@@ -7,18 +7,18 @@
   color: $text-normal;
   display: flex;
   flex-direction: column;
-  height: 96px;
+  height: 120px;
   justify-content: center;
   padding: 8px;
   width: 100%;
 
   @include breakpoint($medium) {
-    width: 180px;
+    width: 216px;
   }
 
   &__heading {
     color: $text-normal;
-    font-size: $s-font;
+    font-size: $m-font;
     font-weight: 700;
     font-family: $font-family;
     letter-spacing: 0.2px;

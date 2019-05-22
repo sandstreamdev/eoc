@@ -12,7 +12,7 @@
 
   &__intro-subheading {
     font-weight: 400;
-    color: $text-light;
+    color: $text-normal;
     text-align: center;
     font-size: $s-font;
     line-height: 1.5;
@@ -36,7 +36,7 @@
 
   &__header {
     font-weight: 500;
-    font-size: 30px;
+    font-size: $xxxl-font;
     padding: 0 0 10px 0;
   }
 

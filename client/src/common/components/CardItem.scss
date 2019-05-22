@@ -1,7 +1,7 @@
 .card-item {
   box-sizing: border-box;
   display: block;
-  height: 96px;
+  height: 120px;
   background: url('../../assets/images/card-placeholder.png') center;
   border: 0;
   color: $text-normal;
@@ -12,7 +12,7 @@
   width: 100%;
 
   @include breakpoint($medium) {
-    width: 180px;
+    width: 216px;
   }
 
   &--orange {
@@ -33,10 +33,10 @@
     border-bottom: 1px solid $text-white;
     padding: 0 20px 8px 0;
     svg {
-      height: 12px;
-      width: 12px;
-      min-height: 12px;
-      min-width: 12px;
+      height: 16px;
+      width: 16px;
+      min-height: 16px;
+      min-width: 16px;
       margin-right: 8px;
 
       path {
@@ -47,7 +47,7 @@
 
   &__heading {
     color: $text-white;
-    font-size: 11px;
+    font-size: $m-font;
     line-height: 1;
     text-transform: uppercase;
     word-break: break-word;
@@ -62,7 +62,7 @@
   &__description {
     display: block;
     color: $text-white;
-    font-size: 12px;
+    font-size: $m-font;
     line-height: 1.2;
     text-decoration: none;
     text-overflow: ellipsis;
@@ -99,14 +99,15 @@
     right: 8px;
     bottom: 8px;
     position: absolute;
-    font-size: $s-font;
+    font-size: $m-font;
+    font-weight: 500;
     text-align: right;
     color: $text-white;
 
     span {
       display: block;
       &:first-child {
-        margin-bottom: 3px;
+        margin-bottom: 5px;
       }
     }
   }
