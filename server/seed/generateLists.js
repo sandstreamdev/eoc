@@ -40,7 +40,7 @@ const generateLists = cohortId => [
         voterIds: [userId]
       }
     ],
-    name: 'Private list 1'
+    name: 'Private sack 1'
   },
   {
     _id: '5c9a1299341674ba31ff6aa7',
@@ -50,7 +50,7 @@ const generateLists = cohortId => [
     favIds: [userId],
     isArchived: false,
     items: [],
-    name: 'Private list 2'
+    name: 'Private sack 2'
   },
   {
     _id: '5c9a1299341674ba31ff6aa8',
@@ -60,7 +60,7 @@ const generateLists = cohortId => [
     favIds: [userId],
     isArchived: true,
     items: [],
-    name: 'Private list 3'
+    name: 'Private sack 3'
   },
   {
     _id: '5c9a130146e555ba24992a2e',
@@ -70,7 +70,7 @@ const generateLists = cohortId => [
     favIds: [],
     isArchived: false,
     items: [],
-    name: 'List 1 in cohort 2'
+    name: 'Sack 1 in cohort 2'
   },
   {
     _id: '5c9a130746e555ba24992a2f',
@@ -80,7 +80,7 @@ const generateLists = cohortId => [
     favIds: [],
     isArchived: false,
     items: [],
-    name: 'List 2 in cohort 2'
+    name: 'Sack 2 in cohort 2'
   },
   {
     _id: '5c9a131346e555ba24992a30',
@@ -90,7 +90,7 @@ const generateLists = cohortId => [
     favIds: [],
     isArchived: true,
     items: [],
-    name: 'Archived list 3 in cohort 2'
+    name: 'Archived sack 3 in cohort 2'
   }
 ];
 

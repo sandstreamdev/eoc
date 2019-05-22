@@ -195,7 +195,7 @@ export const createList = data => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, creating new list failed..."
+        "Oops, we're sorry, creating new sack failed..."
       );
     });
 
@@ -215,7 +215,7 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching lists failed..."
+        err.message || "Oops, we're sorry, fetching sacks failed..."
       );
     });
 };
@@ -236,7 +236,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching lists failed..."
+        err.message || "Oops, we're sorry, fetching sacks failed..."
       );
     });
 };
@@ -259,7 +259,7 @@ export const deleteList = id => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, deleting list failed..."
+        err.message || "Oops, we're sorry, deleting sack failed..."
       );
       throw new Error();
     });
@@ -280,7 +280,7 @@ export const updateList = (listId, data) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, updating list failed..."
+        err.message || "Oops, we're sorry, updating sack failed..."
       );
     });
 
@@ -294,7 +294,7 @@ export const archiveList = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'List was successfully archived!' || json.message
+        'Sack was successfully archived!' || json.message
       );
     })
     .catch(err => {
@@ -302,7 +302,7 @@ export const archiveList = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, archiving list failed..."
+        err.message || "Oops, we're sorry, archiving sack failed..."
       );
     });
 
@@ -317,7 +317,7 @@ export const restoreList = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'List was successfully restored!' || json.message
+        'Sack was successfully restored!' || json.message
       );
     })
     .catch(err => {
@@ -325,7 +325,7 @@ export const restoreList = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, restoring list failed..."
+        err.message || "Oops, we're sorry, restoring sack failed..."
       );
     });
 

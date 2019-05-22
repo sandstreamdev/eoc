@@ -101,18 +101,18 @@ class Dashboard extends Component {
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
               items={privateLists}
-              name="Private Lists"
+              name="Private Sacks"
               onAddNew={this.handleDialogVisibility}
               pending={pendingForLists}
-              placeholder="There are no lists yet!"
+              placeholder="There are no sacks yet!"
               route={Routes.LIST}
             />
             <GridList
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
               items={cohortLists}
-              name="Cohorts' Lists"
-              placeholder="There are no lists yet!"
+              name="Cohorts' Sacks"
+              placeholder="There are no sacks yet!"
               pending={pendingForLists}
               route={Routes.LIST}
             />
@@ -121,7 +121,7 @@ class Dashboard extends Component {
               onClick={this.handleArchivedListsVisibility}
               type="button"
             >
-              {` ${areArchivedListsVisible ? 'hide' : 'show'} archived lists`}
+              {` ${areArchivedListsVisible ? 'hide' : 'show'} archived sacks`}
             </button>
             {areArchivedListsVisible && (
               <GridList
@@ -129,8 +129,8 @@ class Dashboard extends Component {
                 icon={<ListIcon />}
                 pending={pendingForArchivedLists}
                 items={archivedLists}
-                name="Archived lists"
-                placeholder="You have no archived lists!"
+                name="Archived Sacks"
+                placeholder="You have no archived sacks!"
                 route={Routes.LIST}
               />
             )}
@@ -141,7 +141,7 @@ class Dashboard extends Component {
             onCancel={this.handleDialogVisibility}
             onConfirm={this.handleConfirm}
             pending={pendingForListCreation}
-            title={`${pendingForListCreation ? 'Adding' : 'Add'} new list`}
+            title={`${pendingForListCreation ? 'Adding' : 'Add'} new sack`}
           />
         )}
       </Fragment>

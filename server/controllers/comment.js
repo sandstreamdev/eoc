@@ -23,7 +23,7 @@ const addComment = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('List data not found.');
+        throw new BadRequestException('Sack data not found.');
       }
 
       const comment = new Comment({
@@ -68,7 +68,7 @@ const getComments = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('List data not found.');
+        throw new BadRequestException('Sack data not found.');
       }
 
       return Comment.find(
