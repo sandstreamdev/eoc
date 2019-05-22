@@ -29,56 +29,54 @@ export const ListType = Object.freeze({
   SHARED: 'shared'
 });
 
-const breadcrumbs = {
-  path: [],
-  cohortId: ''
-};
-
 class List extends Component {
-  state = {
-    breadcrumbs: {
-      path: breadcrumbs.path,
-      cohortId: breadcrumbs.cohortId
-    },
-    dialogContext: null,
-    isMembersBoxVisible: false,
-    pendingForDetails: false,
-    pendingForListArchivization: false
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      breadcrumbs: [],
+      dialogContext: null,
+      isMembersBoxVisible: false,
+      pendingForDetails: false,
+      pendingForListArchivization: false
+    };
+  }
 
   componentDidMount() {
-    if (this.checkIfArchived()) {
-      this.setState({ pendingForDetails: true });
+    this.setState({ pendingForDetails: true });
 
-      this.fetchData().finally(() => {
-        this.setState({ pendingForDetails: false });
-        this.handleBreadcrumbs();
-      });
-    }
+    this.fetchData().finally(() => {
+      this.setState({ pendingForDetails: false });
+      this.handleBreadcrumbs();
+    });
   }
 
   componentWillUnmount() {
-    breadcrumbs.path = [];
-    breadcrumbs.cohortId = '';
+    this.setState({ breadcrumbs: [] });
   }
 
   handleBreadcrumbs = () => {
     const { list } = this.props;
-    const { cohortId, cohortName, name } = list;
+    const { cohortId, cohortName, name, _id: listId } = list;
 
     if (cohortId) {
-      const {
-        breadcrumbs: { path, cohortId }
-      } = this.state;
-
       this.setState({
-        breadcrumbs: { path: [...path, 'cohorts', cohortName, name], cohortId }
+        breadcrumbs: [
+          { name: 'cohorts', path: '/cohorts' },
+          { name: cohortName, path: `/cohort/${cohortId}` },
+          { name, path: `/list/${listId}` }
+        ]
       });
 
       return;
     }
 
-    this.setState({ breadcrumbs: { path: ['dashboard', name] } });
+    this.setState({
+      breadcrumbs: [
+        { name: 'dashboard', path: '/dashboard' },
+        { name, path: `/list/${listId}` }
+      ]
+    });
   };
 
   fetchData = () => {
@@ -106,12 +104,6 @@ class List extends Component {
         this.hideDialog();
       });
     }
-  };
-
-  checkIfArchived = () => {
-    const { list } = this.props;
-
-    return !list || (list && !list.isArchived);
   };
 
   handleDialogContext = context => () =>

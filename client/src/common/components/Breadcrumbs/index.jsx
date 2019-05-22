@@ -1,6 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { ChevronRight } from 'assets/images/icons';
 
@@ -11,9 +11,11 @@ class Breadcrumbs extends PureComponent {
     return (
       <nav className="breadcrumbs">
         <ol className="breadcrumbs__list">
-          {breadcrumbs.path.map(breadcrumb => (
-            <Fragment key={breadcrumb}>
-              <li className="breadcrumbs__list-item">{breadcrumb}</li>
+          {breadcrumbs.map(breadcrumb => (
+            <Fragment key={breadcrumb.name}>
+              <li className="breadcrumbs__list-item">
+                <Link to={`${breadcrumb.path}`}>{breadcrumb.name}</Link>
+              </li>
               <li className="breadcrumbs__list-item">
                 <ChevronRight />
               </li>
@@ -26,10 +28,7 @@ class Breadcrumbs extends PureComponent {
 }
 
 Breadcrumbs.propTypes = {
-  breadcrumbs: PropTypes.shape({
-    path: PropTypes.arrayOf(PropTypes.string).isRequired,
-    cohortId: PropTypes.string
-  })
+  breadcrumbs: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default withRouter(Breadcrumbs);
+export default Breadcrumbs;

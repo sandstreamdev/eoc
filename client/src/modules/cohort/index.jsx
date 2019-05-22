@@ -30,20 +30,13 @@ import CohortHeader from './components/CohortHeader';
 import Preloader from '../../common/components/Preloader';
 import Breadcrumbs from '../../common/components/Breadcrumbs';
 
-const breadcrumbs = {
-  path: ['cohorts']
-};
-
 class Cohort extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
       areArchivedListsVisible: false,
-      breadcrumbs: {
-        path: breadcrumbs.path,
-        cohortId: ''
-      },
+      breadcrumbs: [],
       dialogContext: null,
       pendingForArchivedLists: false,
       pendingForDetails: false,
@@ -58,7 +51,7 @@ class Cohort extends PureComponent {
   }
 
   componentWillUnmount() {
-    breadcrumbs.path = ['cohorts'];
+    this.setState({ breadcrumbs: [] });
   }
 
   fetchData = () => {
@@ -88,12 +81,12 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
-    const {
-      breadcrumbs: { path }
-    } = this.state;
 
     this.setState({
-      breadcrumbs: { path: [...path, name], cohortId }
+      breadcrumbs: [
+        { name: 'cohorts', path: '/cohorts' },
+        { name, path: `/cohort/${cohortId}` }
+      ]
     });
   };
 

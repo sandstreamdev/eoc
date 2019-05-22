@@ -21,9 +21,7 @@ import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 
-const breadcrumbs = {
-  path: ['dashboard']
-};
+const breadcrumbs = [{ name: 'dashboard', path: '/dashboard' }];
 
 class Dashboard extends Component {
   state = {

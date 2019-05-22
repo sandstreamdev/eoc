@@ -22,9 +22,7 @@ import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
 import Breadcrumbs from '../../../common/components/Breadcrumbs';
 
-const breadcrumbs = {
-  path: ['cohorts']
-};
+const breadcrumbs = [{ name: 'cohorts', path: '/cohorts' }];
 
 class Cohorts extends Component {
   state = {
