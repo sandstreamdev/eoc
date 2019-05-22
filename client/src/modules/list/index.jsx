@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
+import Toolbar from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
   getDoneItems,
@@ -14,10 +14,8 @@ import {
 import InputBar from 'modules/list/components/Items/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
-import { CohortIcon } from 'assets/images/icons';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
