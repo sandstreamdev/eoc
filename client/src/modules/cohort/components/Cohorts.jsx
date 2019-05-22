@@ -20,6 +20,7 @@ import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
+import Breadcrumbs from '../../../common/components/Breadcrumbs';
 
 const breadcrumbs = {
   path: ['cohorts']
@@ -42,8 +43,6 @@ class Cohorts extends Component {
     fetchCohortsMetaData().finally(() =>
       this.setState({ pendingForCohorts: false })
     );
-
-    console.log(breadcrumbs.path);
   }
 
   handleDialogVisibility = () =>
@@ -92,6 +91,12 @@ class Cohorts extends Component {
     }
   };
 
+  renderBreadcrumbs = () => (
+    <div className="wrapper">
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
+    </div>
+  );
+
   render() {
     const { archivedCohorts, cohorts } = this.props;
     const {
@@ -105,6 +110,7 @@ class Cohorts extends Component {
     return (
       <Fragment>
         <Toolbar />
+        {this.renderBreadcrumbs()}
         <div className="wrapper">
           <div className="dashboard">
             <GridList

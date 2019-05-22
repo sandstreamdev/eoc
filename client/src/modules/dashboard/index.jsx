@@ -42,8 +42,6 @@ class Dashboard extends Component {
     fetchListsMetaData().finally(() =>
       this.setState({ pendingForLists: false })
     );
-
-    console.log(breadcrumbs.path);
   }
 
   handleDialogVisibility = () =>

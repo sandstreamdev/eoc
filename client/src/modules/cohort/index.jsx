@@ -28,6 +28,7 @@ import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
 import Preloader from '../../common/components/Preloader';
+import Breadcrumbs from '../../common/components/Breadcrumbs';
 
 const breadcrumbs = {
   path: ['cohorts']
@@ -39,6 +40,10 @@ class Cohort extends PureComponent {
 
     this.state = {
       areArchivedListsVisible: false,
+      breadcrumbs: {
+        path: breadcrumbs.path,
+        cohortId: ''
+      },
       dialogContext: null,
       pendingForArchivedLists: false,
       pendingForDetails: false,
@@ -78,12 +83,18 @@ class Cohort extends PureComponent {
 
   handleBreadcrumbs = () => {
     const {
-      cohortDetails: { name }
+      cohortDetails: { name },
+      match: {
+        params: { id: cohortId }
+      }
     } = this.props;
+    const {
+      breadcrumbs: { path }
+    } = this.state;
 
-    breadcrumbs.path.push(name);
-
-    console.log(breadcrumbs.path);
+    this.setState({
+      breadcrumbs: { path: [...path, name], cohortId }
+    });
   };
 
   handleListCreation = (name, description) => {
@@ -162,6 +173,16 @@ class Cohort extends PureComponent {
 
   handleListType = type => this.setState({ type });
 
+  renderBreadcrumbs = () => {
+    const { breadcrumbs } = this.state;
+
+    return (
+      <div className="wrapper">
+        <Breadcrumbs breadcrumbs={breadcrumbs} />
+      </div>
+    );
+  };
+
   render() {
     const {
       archivedLists,
@@ -190,6 +211,7 @@ class Cohort extends PureComponent {
     return (
       <Fragment>
         <Toolbar />
+        {this.renderBreadcrumbs()}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
             onCancel={this.handleDialogContext(null)}

@@ -1,20 +1,24 @@
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { ChevronRight } from 'assets/images/icons';
 
 class Breadcrumbs extends PureComponent {
   render() {
-    const { match } = this.props;
     const { breadcrumbs } = this.props;
 
-    console.log(breadcrumbs);
     return (
       <nav className="breadcrumbs">
         <ol className="breadcrumbs__list">
-          <li className="breadcrumbs__list-item">{match.path}</li>
-          <li className="breadcrumbs__list-item">/</li>
+          {breadcrumbs.path.map(breadcrumb => (
+            <Fragment key={breadcrumb}>
+              <li className="breadcrumbs__list-item">{breadcrumb}</li>
+              <li className="breadcrumbs__list-item">
+                <ChevronRight />
+              </li>
+            </Fragment>
+          ))}
         </ol>
       </nav>
     );
@@ -25,8 +29,7 @@ Breadcrumbs.propTypes = {
   breadcrumbs: PropTypes.shape({
     path: PropTypes.arrayOf(PropTypes.string).isRequired,
     cohortId: PropTypes.string
-  }),
-  match: RouterMatchPropType.isRequired
+  })
 };
 
 export default withRouter(Breadcrumbs);

@@ -17,8 +17,19 @@
   }
 
   &__list-item {
+    display: flex;
+    align-items: center;
+    text-transform: capitalize;
     &:nth-child(2n) {
-      margin: 0 5px;
+      margin: 0 10px;
+    }
+
+    &:last-child {
+      display: none;
+    }
+
+    svg {
+      width: 8px;
     }
   }
 }

@@ -36,6 +36,10 @@ const breadcrumbs = {
 
 class List extends Component {
   state = {
+    breadcrumbs: {
+      path: breadcrumbs.path,
+      cohortId: breadcrumbs.cohortId
+    },
     dialogContext: null,
     isMembersBoxVisible: false,
     pendingForDetails: false,
@@ -63,15 +67,18 @@ class List extends Component {
     const { cohortId, cohortName, name } = list;
 
     if (cohortId) {
-      breadcrumbs.cohortId = cohortId;
-      breadcrumbs.path.push('cohorts', cohortName, name);
-      console.log(breadcrumbs.path);
+      const {
+        breadcrumbs: { path, cohortId }
+      } = this.state;
+
+      this.setState({
+        breadcrumbs: { path: [...path, 'cohorts', cohortName, name], cohortId }
+      });
+
       return;
     }
 
-    breadcrumbs.path.push('dashboard', name);
-
-    console.log(breadcrumbs.path);
+    this.setState({ breadcrumbs: { path: ['dashboard', name] } });
   };
 
   fetchData = () => {
@@ -117,6 +124,16 @@ class List extends Component {
       isMembersBoxVisible: !isMembersBoxVisible
     }));
 
+  renderBreadcrumbs = () => {
+    const { breadcrumbs } = this.state;
+
+    return (
+      <div className="wrapper">
+        <Breadcrumbs breadcrumbs={breadcrumbs} />
+      </div>
+    );
+  };
+
   render() {
     const {
       dialogContext,
@@ -161,7 +178,7 @@ class List extends Component {
             />
           )}
         </Toolbar>
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
+        {this.renderBreadcrumbs()}
         {isArchived ? (
           <ArchivedList listId={listId} name={name} />
         ) : (
