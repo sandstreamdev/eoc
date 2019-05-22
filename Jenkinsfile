@@ -4,7 +4,7 @@ pipeline {
   agent any
 
   environment { 
-    TAG = "${BRANCH_NAME}:${BUILD_NUMBER}"
+    TAG = "${BRANCH_NAME}:${BUILD_NUMBER}".toLowerCase()
     TAG_TEST = "${TAG}-test"
     TAG_TEST_STATIC = "${TAG}-test-static"
   }

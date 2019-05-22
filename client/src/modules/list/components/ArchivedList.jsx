@@ -23,7 +23,7 @@ class ArchivedList extends PureComponent {
 
     return (
       <ArchivedMessage
-        item="list"
+        item="sack"
         name={name}
         onDelete={this.handleListDeletion(listId)}
         onRestore={this.handleListRestoring(listId)}

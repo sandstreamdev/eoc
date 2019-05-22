@@ -35,13 +35,13 @@ const About = () => (
                 product.
               </p>
               <p className="about__content">
-                The main functionality of the application are the lists on which
+                The main functionality of the application are the sacks on which
                 we can place products that are currently missing in the company.
-                Depending on the role of the user on the list, he can add new
+                Depending on the role of the user on the sack, he can add new
                 products, vote for them, mark them as ordered and comment. As
                 part of the application, you can also create cohorts that can
-                help you organize and group your lists. The visibility of lists
-                within a cohort depends on the list of members of a given team.
+                help you organize and group your sacks. The visibility of sacks
+                within a cohort depends on the sack of members of a given team.
                 In the future, we plan to make the application an open-source
                 project and anyone who wants to contribute to the project.
               </p>
