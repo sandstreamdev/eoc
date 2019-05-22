@@ -28,17 +28,13 @@ export const ListType = Object.freeze({
 });
 
 class List extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      breadcrumbs: [],
-      dialogContext: null,
-      isMembersBoxVisible: false,
-      pendingForDetails: false,
-      pendingForListArchivization: false
-    };
-  }
+  state = {
+    breadcrumbs: [],
+    dialogContext: null,
+    isMembersBoxVisible: false,
+    pendingForDetails: false,
+    pendingForListArchivization: false
+  };
 
   componentDidMount() {
     this.setState({ pendingForDetails: true });
@@ -50,8 +46,9 @@ class List extends Component {
   }
 
   handleBreadcrumbs = () => {
-    const { list } = this.props;
-    const { cohortId, cohortName, name, _id: listId } = list;
+    const {
+      list: { cohortId, cohortName, name, _id: listId }
+    } = this.props;
 
     if (cohortId) {
       this.setState({
