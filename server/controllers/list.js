@@ -287,7 +287,9 @@ const getListData = (req, resp) => {
       } = list;
 
       if (isArchived) {
-        return resp.status(200).json({ cohortId, _id, isArchived, name, type });
+        return resp
+          .status(200)
+          .json({ cohortId, cohortName, _id, isArchived, name, type });
       }
 
       const members = responseWithListMembers(
