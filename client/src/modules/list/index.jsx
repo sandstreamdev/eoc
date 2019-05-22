@@ -62,7 +62,6 @@ class List extends Component {
       return;
     }
 
-    console.log('dsadasd');
     this.setState({
       breadcrumbs: [
         { name: 'dashboard', path: '/dashboard' },
