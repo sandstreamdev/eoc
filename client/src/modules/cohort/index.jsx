@@ -223,7 +223,10 @@ class Cohort extends PureComponent {
         ) : (
           <div className="wrapper">
             <div className="cohort">
-              <CohortHeader details={cohortDetails} />
+              <CohortHeader
+                details={cohortDetails}
+                updateBreadcrumbs={this.handleBreadcrumbs}
+              />
               <div className="cohort__details">
                 <MembersBox
                   isCurrentUserAnOwner={isOwner}

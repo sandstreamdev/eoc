@@ -62,6 +62,7 @@ class List extends Component {
       return;
     }
 
+    console.log('dsadasd');
     this.setState({
       breadcrumbs: [
         { name: 'dashboard', path: '/dashboard' },
@@ -150,7 +151,11 @@ class List extends Component {
         ) : (
           <div className="wrapper">
             <div className="list">
-              <ListHeader details={list} isCohortList={isCohortList} />
+              <ListHeader
+                details={list}
+                isCohortList={isCohortList}
+                updateBreadcrumbs={this.handleBreadcrumbs}
+              />
               <div className="list__details">
                 <div className="list__items">
                   <ItemsContainer isMember={isMember} items={undoneItems}>
