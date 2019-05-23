@@ -2,8 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
-import { ListIcon, ListModeIcon, TilesModeIcon } from 'assets/images/icons';
+import { ListIcon } from 'assets/images/icons';
 import {
   createList,
   fetchArchivedListsMetaData,
@@ -82,13 +81,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const {
-      archivedLists,
-      cohortLists,
-      listMode,
-      onListModeChange,
-      privateLists
-    } = this.props;
+    const { archivedLists, cohortLists, listMode, privateLists } = this.props;
     const {
       areArchivedListsVisible,
       isDialogVisible,
@@ -99,13 +92,6 @@ class Dashboard extends Component {
 
     return (
       <Fragment>
-        <Toolbar>
-          <ToolbarItem
-            mainIcon={listMode ? <TilesModeIcon /> : <ListModeIcon />}
-            onClick={onListModeChange}
-            title={`Change to ${listMode ? 'tiles' : 'list'} view`}
-          />
-        </Toolbar>
         <div className="wrapper">
           <div className="dashboard">
             <CollectionView
@@ -172,7 +158,6 @@ Dashboard.propTypes = {
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
-  onListModeChange: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 

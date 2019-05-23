@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import Toolbar from 'common/components/Toolbar';
 import {
   getCohortActiveLists,
   getCohortArchivedLists
@@ -171,7 +170,6 @@ class Cohort extends PureComponent {
 
     return (
       <Fragment>
-        <Toolbar />
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
             onCancel={this.handleDialogContext(null)}

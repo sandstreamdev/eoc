@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Toolbar from 'common/components/Toolbar';
 import { CohortIcon } from 'assets/images/icons';
 import {
   createCohort,
@@ -97,7 +96,6 @@ class Cohorts extends Component {
 
     return (
       <Fragment>
-        <Toolbar />
         <div className="wrapper">
           <div className="dashboard">
             <CollectionView

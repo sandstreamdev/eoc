@@ -16,6 +16,8 @@ import Page404 from 'common/components/Page404';
 import About from 'modules/about';
 import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
+import Toolbar, { ToolbarItem } from './Toolbar';
+import { ListModeIcon, TilesModeIcon } from 'assets/images/icons';
 
 export class Layout extends PureComponent {
   state = {
@@ -45,7 +47,7 @@ export class Layout extends PureComponent {
     loginUser();
   };
 
-  onListModeChange = () =>
+  handleListModeChange = () =>
     this.setState(({ listMode }) => ({ listMode: !listMode }));
 
   render() {
@@ -61,27 +63,22 @@ export class Layout extends PureComponent {
     ) : (
       <Fragment>
         <Notifications />
+        <Toolbar>
+          <ToolbarItem
+            mainIcon={listMode ? <TilesModeIcon /> : <ListModeIcon />}
+            onClick={this.handleListModeChange}
+            title={`Change to ${listMode ? 'tiles' : 'list'} view`}
+          />
+        </Toolbar>
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
           <Route
             path="/dashboard"
-            render={props => (
-              <Dashboard
-                {...props}
-                listMode={listMode}
-                onListModeChange={this.onListModeChange}
-              />
-            )}
+            render={props => <Dashboard {...props} listMode={listMode} />}
           />
           <Route
             path="/cohort/:id(\w+)"
-            render={props => (
-              <Cohort
-                {...props}
-                listMode={listMode}
-                onListModeChange={this.onListModeChange}
-              />
-            )}
+            render={props => <Cohort {...props} listMode={listMode} />}
           />
           <Route component={List} path="/sack/:id(\w+)" />
           <Route component={About} path="/about" />
