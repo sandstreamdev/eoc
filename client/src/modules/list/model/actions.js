@@ -373,14 +373,28 @@ export const addListViewer = (listId, email) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
-    .then(resp => resp.json())
+    .then(resp => {
+      if (resp.status === 200) {
+        return resp.json();
+      }
+
+      if (resp.status === 204) {
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          `User with email ${email} have no account. Would you like to invite via email?`
+        );
+      }
+    })
     .then(json => {
-      dispatch(addViewerSuccess(json, listId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message || 'Viewer added successfully.'
-      );
+      if (json) {
+        dispatch(addViewerSuccess(json, listId));
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          json.message || 'Viewer added successfully.'
+        );
+      }
     })
     .catch(err => {
       dispatch(addViewerFailure());
