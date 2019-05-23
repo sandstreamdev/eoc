@@ -20,7 +20,7 @@ import {
 import Preloader from 'common/components/Preloader';
 import ListModeItem from 'common/components/ListModeItem';
 
-class Elements extends PureComponent {
+class GridList extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
     const {
@@ -128,7 +128,7 @@ class Elements extends PureComponent {
   }
 }
 
-Elements.propTypes = {
+GridList.propTypes = {
   color: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
@@ -157,5 +157,5 @@ export default withRouter(
       removeCohortFromFavourites,
       removeListFromFavourites
     }
-  )(Elements)
+  )(GridList)
 );
