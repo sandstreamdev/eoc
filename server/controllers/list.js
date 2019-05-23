@@ -799,7 +799,7 @@ const addViewer = (req, resp, next) => {
       if (!userData) {
         return;
       }
-      
+
       if (userData.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
