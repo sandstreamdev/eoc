@@ -98,6 +98,7 @@ class CohortHeader extends PureComponent {
       match: {
         params: { id }
       },
+      updateBreadcrumbs,
       updateCohort
     } = this.props;
     const { nameInputValue } = this.state;
@@ -112,13 +113,15 @@ class CohortHeader extends PureComponent {
     if (nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
 
-      updateCohort(id, { name: nameToUpdate }).finally(() =>
+      updateCohort(id, { name: nameToUpdate }).finally(() => {
         this.setState({
           isNameInputVisible: false,
           nameInputValue: nameToUpdate,
           pendingForName: false
-        })
-      );
+        });
+
+        updateBreadcrumbs();
+      });
     }
   };
 
@@ -252,6 +255,7 @@ CohortHeader.propTypes = {
   details: PropTypes.objectOf(PropTypes.any).isRequired,
   match: RouterMatchPropType.isRequired,
 
+  updateBreadcrumbs: PropTypes.func.isRequired,
   updateCohort: PropTypes.func.isRequired
 };
 

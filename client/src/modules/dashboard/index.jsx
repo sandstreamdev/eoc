@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Toolbar from 'common/components/Toolbar';
 import { ListIcon } from 'assets/images/icons';
 import {
   createList,
@@ -19,6 +18,12 @@ import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
+import Breadcrumbs from 'common/components/Breadcrumbs';
+
+export const DashboardBreadcrumbs = Object.freeze({
+  NAME: 'dashboard',
+  PATH: '/dashboard'
+});
 
 class Dashboard extends Component {
   state = {
@@ -91,10 +96,13 @@ class Dashboard extends Component {
       pendingForListCreation,
       pendingForLists
     } = this.state;
+    const breadcrumbs = [
+      { name: DashboardBreadcrumbs.NAME, path: DashboardBreadcrumbs.PATH }
+    ];
 
     return (
       <Fragment>
-        <Toolbar />
+        <Breadcrumbs breadcrumbs={breadcrumbs} />
         <div className="wrapper">
           <div className="dashboard">
             <GridList
