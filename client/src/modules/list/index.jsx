@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import Toolbar from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
   getDoneItems,
@@ -150,7 +149,6 @@ class List extends Component {
 
     return (
       <Fragment>
-        <Toolbar />
         {this.renderBreadcrumbs()}
         {isArchived ? (
           <ArchivedList listId={listId} name={name} />

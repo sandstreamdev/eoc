@@ -16,6 +16,7 @@ import Page404 from 'common/components/Page404';
 import About from 'modules/about';
 import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
+import Toolbar from 'common/components/Toolbar';
 
 export class Layout extends Component {
   componentDidMount() {
@@ -53,6 +54,7 @@ export class Layout extends Component {
     ) : (
       <Fragment>
         <Notifications />
+        <Toolbar />
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
           <Route component={Dashboard} path="/dashboard" />

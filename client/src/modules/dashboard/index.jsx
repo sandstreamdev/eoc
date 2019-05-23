@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Toolbar from 'common/components/Toolbar';
 import { ListIcon } from 'assets/images/icons';
 import {
   createList,
@@ -103,7 +102,6 @@ class Dashboard extends Component {
 
     return (
       <Fragment>
-        <Toolbar />
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <div className="wrapper">
           <div className="dashboard">

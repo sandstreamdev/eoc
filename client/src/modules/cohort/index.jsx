@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { CardColorType } from 'common/components/CardItem';
-import Toolbar from 'common/components/Toolbar';
 import {
   getCohortActiveLists,
   getCohortArchivedLists
@@ -200,7 +199,6 @@ class Cohort extends PureComponent {
 
     return (
       <Fragment>
-        <Toolbar />
         {this.renderBreadcrumbs()}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
