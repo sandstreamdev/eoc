@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
@@ -17,7 +17,11 @@ import About from 'modules/about';
 import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
 
-export class Layout extends Component {
+export class Layout extends PureComponent {
+  state = {
+    listMode: true
+  };
+
   componentDidMount() {
     this.setAuthenticationState();
   }
@@ -41,8 +45,12 @@ export class Layout extends Component {
     loginUser();
   };
 
+  onListModeChange = () =>
+    this.setState(({ listMode }) => ({ listMode: !listMode }));
+
   render() {
     const { currentUser } = this.props;
+    const { listMode } = this.state;
 
     return !currentUser ? (
       <Switch>
@@ -55,8 +63,26 @@ export class Layout extends Component {
         <Notifications />
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
-          <Route component={Dashboard} path="/dashboard" />
-          <Route component={Cohort} path="/cohort/:id(\w+)" />
+          <Route
+            path="/dashboard"
+            render={props => (
+              <Dashboard
+                {...props}
+                listMode={listMode}
+                onListModeChange={this.onListModeChange}
+              />
+            )}
+          />
+          <Route
+            path="/cohort/:id(\w+)"
+            render={props => (
+              <Cohort
+                {...props}
+                listMode={listMode}
+                onListModeChange={this.onListModeChange}
+              />
+            )}
+          />
           <Route component={List} path="/sack/:id(\w+)" />
           <Route component={About} path="/about" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />

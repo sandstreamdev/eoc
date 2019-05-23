@@ -2,8 +2,8 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Toolbar from 'common/components/Toolbar';
-import { ListIcon } from 'assets/images/icons';
+import Toolbar, { ToolbarItem } from 'common/components/Toolbar';
+import { ListIcon, ListModeIcon, TilesModeIcon } from 'assets/images/icons';
 import {
   createList,
   fetchArchivedListsMetaData,
@@ -15,10 +15,11 @@ import {
   getCohortsLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
-import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
+import Items from 'common/components/Items';
+import GridList from 'common/components/GridList';
 
 class Dashboard extends Component {
   state = {
@@ -83,7 +84,13 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { archivedLists, cohortLists, privateLists } = this.props;
+    const {
+      archivedLists,
+      cohortLists,
+      listMode,
+      onListModeChange,
+      privateLists
+    } = this.props;
     const {
       areArchivedListsVisible,
       isDialogVisible,
@@ -94,13 +101,20 @@ class Dashboard extends Component {
 
     return (
       <Fragment>
-        <Toolbar />
+        <Toolbar>
+          <ToolbarItem
+            mainIcon={listMode ? <TilesModeIcon /> : <ListModeIcon />}
+            onClick={onListModeChange}
+            title={`Change to ${listMode ? 'tiles' : 'list'} view`}
+          />
+        </Toolbar>
         <div className="wrapper">
           <div className="dashboard">
             <GridList
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
               items={privateLists}
+              listMode={listMode}
               name="Private Sacks"
               onAddNew={this.handleDialogVisibility}
               pending={pendingForLists}
@@ -111,9 +125,10 @@ class Dashboard extends Component {
               color={CardColorType.ORANGE}
               icon={<ListIcon />}
               items={cohortLists}
+              listMode={listMode}
               name="Cohorts' Sacks"
-              placeholder="There are no sacks yet!"
               pending={pendingForLists}
+              placeholder="There are no sacks yet!"
               route={Routes.LIST}
             />
             <button
@@ -124,12 +139,13 @@ class Dashboard extends Component {
               {` ${areArchivedListsVisible ? 'hide' : 'show'} archived sacks`}
             </button>
             {areArchivedListsVisible && (
-              <GridList
+              <Items
                 color={CardColorType.ARCHIVED}
                 icon={<ListIcon />}
-                pending={pendingForArchivedLists}
                 items={archivedLists}
+                listMode={listMode}
                 name="Archived Sacks"
+                pending={pendingForArchivedLists}
                 placeholder="You have no archived sacks!"
                 route={Routes.LIST}
               />
@@ -152,11 +168,13 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
+  listMode: PropTypes.bool,
   privateLists: PropTypes.objectOf(PropTypes.object),
 
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
+  onListModeChange: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
