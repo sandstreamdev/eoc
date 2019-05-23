@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  server:
+  eoc-server:
     container_name: eoc_server_container
     restart: always
     build:
@@ -16,12 +16,16 @@ services:
       GOOGLE_CLIENT_ID:
       GOOGLE_CLIENT_SECRET:
       EXPRESS_SESSION_KEY:
-  nginx-setup:
-    build:
-      context: ./nginx
-      dockerfile: ./Dockerfile
+  nginx-production:
+    container_name: eoc_nginx_production
+    restart: always
+    build: ./nginx
+    ports:
+      - '81:80'
+    volumes:
+      -  /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
     links:
-      - nginx
+      - eoc-server
   mongo:
     container_name: mongo_container
     image: mongo
@@ -30,10 +34,3 @@ services:
       - /data/db:/data/db
     ports:
       - '27017'
-  nginx:
-    image: nginx:latest
-    container_name: production_nginx
-    volumes:
-      -  /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
-    ports:
-      - 80:80

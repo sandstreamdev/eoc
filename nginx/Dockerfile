@@ -1,2 +1,3 @@
 FROM nginx
-COPY eoc.conf /etc/nginx/sites-enabled
+RUN rm /etc/nginx/conf.d/default.conf
+COPY eoc.conf /etc/nginx/conf.d
