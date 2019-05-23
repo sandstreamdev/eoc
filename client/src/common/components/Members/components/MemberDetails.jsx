@@ -22,7 +22,7 @@ import {
 import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
-import { ListType } from 'modules/list';
+import { ListType } from 'modules/list/consts';
 import UserIconPlaceholder from 'assets/images/user.svg';
 
 const infoText = {
