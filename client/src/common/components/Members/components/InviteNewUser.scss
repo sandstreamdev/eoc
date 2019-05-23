@@ -1,0 +1,26 @@
+.invite-user {
+  box-shadow: 0 0px 5px rgba($shadow-color, 0.15);
+  box-sizing: border-box;
+  padding: 15px 15px;
+  margin: 0;
+  width: 100%;
+  text-align: left;
+  color: $text-normal;
+  font-size: $m-font;
+  line-height: 1.2;
+  max-width: 285px;
+
+  &__email {
+    font-weight: 700;
+  }
+
+  &__message {
+    margin-bottom: 16px;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

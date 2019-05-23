@@ -13,6 +13,8 @@ import MemberButton from './components/MemberButton';
 import { addCohortMember } from 'modules/cohort/model/actions';
 import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
+import { UserCreationStatus } from './const';
+import InviteNewUser from './components/InviteNewUser';
 
 const MEMBERS_DISPLAY_LIMIT = 10;
 
@@ -27,6 +29,8 @@ class MembersBox extends PureComponent {
 
     this.state = {
       context: null,
+      email: '',
+      inviteNewUser: false,
       isFormVisible: false,
       isMobile: window.outerWidth < 400,
       membersDisplayLimit: MEMBERS_DISPLAY_LIMIT,
@@ -67,10 +71,15 @@ class MembersBox extends PureComponent {
     const action = route === Routes.COHORT ? addCohortMember : addListViewer;
 
     this.setState({ pending: true });
+    action(id, email).then(resp => {
+      if (resp === UserCreationStatus.CREATED) {
+        this.setState({ pending: false });
+        this.hideForm();
+      }
 
-    action(id, email).finally(() => {
-      this.setState({ pending: false });
-      this.hideForm();
+      if (resp === UserCreationStatus.NO_USER) {
+        this.setState({ email, pending: false, inviteNewUser: true });
+      }
     });
   };
 
@@ -82,6 +91,15 @@ class MembersBox extends PureComponent {
       membersDisplayLimit:
         membersDisplayLimit + (membersLength - MEMBERS_DISPLAY_LIMIT)
     }));
+  };
+
+  handleInvite = () => {
+    // ... send request to backend right here
+  };
+
+  handleCancel = () => {
+    this.hideForm();
+    this.setState({ inviteNewUser: false });
   };
 
   renderDetails = member => {
@@ -190,7 +208,7 @@ class MembersBox extends PureComponent {
   };
 
   render() {
-    const { context, isMobile } = this.state;
+    const { context, email, inviteNewUser, isMobile } = this.state;
     const { members } = this.props;
     const currentUser = members[context];
 
@@ -204,6 +222,13 @@ class MembersBox extends PureComponent {
           {this.renderMemberList()}
           {this.renderShowMoreUsers()}
         </ul>
+        {inviteNewUser && (
+          <InviteNewUser
+            email={email}
+            onInvite={this.handleInvite}
+            onCancel={this.handleCancel}
+          />
+        )}
         {isMobile && currentUser && this.renderDetails(currentUser)}
       </div>
     );
