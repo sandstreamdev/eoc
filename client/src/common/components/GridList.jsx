@@ -5,7 +5,7 @@ import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 
-import CardItem from 'common/components/CardItem';
+import TilesModeItem from 'common/components/TilesModeItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType, Routes } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
@@ -85,7 +85,7 @@ class GridList extends PureComponent {
 
     return _map(items, item => (
       <li className="elements__element" key={item._id}>
-        <CardItem
+        <TilesModeItem
           color={color}
           item={item}
           onCardClick={this.handleCardClick(route, item._id)}
