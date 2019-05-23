@@ -109,10 +109,13 @@ class List extends Component {
 
   renderBreadcrumbs = () => {
     const { breadcrumbs } = this.state;
+    const {
+      list: { isGuest }
+    } = this.props;
 
     return (
       <div className="wrapper">
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
+        <Breadcrumbs breadcrumbs={breadcrumbs} isGuest={isGuest} />
       </div>
     );
   };

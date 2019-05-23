@@ -22,8 +22,6 @@ import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
 import Breadcrumbs from '../../../common/components/Breadcrumbs';
 
-const breadcrumbs = [{ name: 'cohorts', path: '/cohorts' }];
-
 class Cohorts extends Component {
   state = {
     areArchivedCohortsVisible: false,
@@ -89,11 +87,15 @@ class Cohorts extends Component {
     }
   };
 
-  renderBreadcrumbs = () => (
-    <div className="wrapper">
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
-    </div>
-  );
+  renderBreadcrumbs = () => {
+    const breadcrumbs = [{ name: 'cohorts', path: '/cohorts' }];
+
+    return (
+      <div className="wrapper">
+        <Breadcrumbs breadcrumbs={breadcrumbs} />
+      </div>
+    );
+  };
 
   render() {
     const { archivedCohorts, cohorts } = this.props;

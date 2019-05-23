@@ -14,6 +14,17 @@
     align-items: center;
     font-size: $s-font;
     line-height: 1;
+
+    /* --cohort-disabled class is disabling clicking ability
+    ** for guest in the cohort list, to prevent him to go back
+    ** to cohort
+    */
+    &--cohort-disabled {
+      .breadcrumbs__list-item:nth-child(3) a {
+        cursor: default;
+        pointer-events: none;
+      }
+    }
   }
 
   &__list-item {

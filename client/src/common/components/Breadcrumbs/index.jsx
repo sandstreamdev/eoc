@@ -1,12 +1,17 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 
 import { ChevronRight } from 'assets/images/icons';
 
-const Breadcrumbs = ({ breadcrumbs }) => (
+const Breadcrumbs = ({ breadcrumbs, isGuest }) => (
   <nav className="breadcrumbs">
-    <ol className="breadcrumbs__list">
+    <ol
+      className={classNames('breadcrumbs__list', {
+        'breadcrumbs__list--cohort-disabled': isGuest
+      })}
+    >
       {breadcrumbs.map(breadcrumb => (
         <Fragment key={breadcrumb.name}>
           <li className="breadcrumbs__list-item">
@@ -22,7 +27,8 @@ const Breadcrumbs = ({ breadcrumbs }) => (
 );
 
 Breadcrumbs.propTypes = {
-  breadcrumbs: PropTypes.arrayOf(PropTypes.object)
+  breadcrumbs: PropTypes.arrayOf(PropTypes.object),
+  isGuest: PropTypes.bool
 };
 
 export default Breadcrumbs;
