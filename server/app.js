@@ -13,6 +13,7 @@ const authRouter = require('./routes/authorization');
 const commentsRouter = require('./routes/comment');
 const cohortsRouter = require('./routes/cohort');
 const listsRouter = require('./routes/list');
+const mailerRouter = require('./routes/mailer');
 
 const app = express();
 
@@ -41,7 +42,7 @@ app.use('/auth', authRouter);
 app.use('/api/comments', commentsRouter);
 app.use('/api/cohorts', cohortsRouter);
 app.use('/api/lists', listsRouter);
-
+app.use('/api', mailerRouter);
 app.use('*', (_, res) => res.sendFile(path.resolve('dist/index.html')));
 
 module.exports = app;

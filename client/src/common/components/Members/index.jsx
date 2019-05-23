@@ -15,6 +15,7 @@ import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
 import { UserCreationStatus } from './const';
 import InviteNewUser from './components/InviteNewUser';
+import { patchData } from 'common/utils/fetchMethods';
 
 const MEMBERS_DISPLAY_LIMIT = 10;
 
@@ -95,6 +96,11 @@ class MembersBox extends PureComponent {
 
   handleInvite = () => {
     // ... send request to backend right here
+    const { email } = this.state;
+
+    patchData('/api/send-invitation', { email }).then(resp => {
+      // console.log(resp)
+    });
   };
 
   handleCancel = () => {

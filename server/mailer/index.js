@@ -1,3 +1,5 @@
-const sendEmail = (req, resp) => {};
+const sendInvitation = (req, resp) => {
+  //  console.log(req, resp);
+};
 
-module.exports = { sendEmail };
+module.exports = { sendInvitation };
