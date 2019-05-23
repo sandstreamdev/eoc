@@ -3,7 +3,7 @@
   align-items: center;
 
   &__desc {
-    font-size: 14px;
+    font-size: $s-font;
     line-height: 1.2;
     font-weight: 400;
     color: $text-normal;
@@ -12,7 +12,7 @@
   }
 
   &__select {
-    font-size: 16px;
+    font-size: $m-font;
     font-family: $font-family;
     font-weight: 500;
     color: $text-normal;
