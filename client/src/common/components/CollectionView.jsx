@@ -20,7 +20,7 @@ import {
 import Preloader from 'common/components/Preloader';
 import ListModeItem from 'common/components/ListModeItem';
 
-class GridList extends PureComponent {
+class CollectionView extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
     const {
@@ -56,8 +56,8 @@ class GridList extends PureComponent {
     const { onAddNew } = this.props;
 
     return (
-      <li className="elements__element">
-        <button className="elements__button" onClick={onAddNew} type="button">
+      <li className="collection__item">
+        <button className="collection__button" onClick={onAddNew} type="button">
           <CardPlus />
         </button>
       </li>
@@ -68,7 +68,7 @@ class GridList extends PureComponent {
     const { color, items, route } = this.props;
 
     return _map(items, item => (
-      <li className="elements__element" key={item._id}>
+      <li className="collection__item" key={item._id}>
         <ListModeItem
           color={color}
           item={item}
@@ -84,7 +84,7 @@ class GridList extends PureComponent {
     const { color, items, route } = this.props;
 
     return _map(items, item => (
-      <li className="elements__element" key={item._id}>
+      <li className="collection__item" key={item._id}>
         <TilesModeItem
           color={color}
           item={item}
@@ -108,13 +108,13 @@ class GridList extends PureComponent {
     } = this.props;
 
     return (
-      <div className="elements">
-        <h2 className="elements__heading">
+      <div className="collection">
+        <h2 className="collection__heading">
           {icon}
           {name}
         </h2>
-        <div className="elements__body">
-          <ul className={listMode ? 'elements__list' : 'elements__tiles'}>
+        <div className="collection__body">
+          <ul className={listMode ? 'collection__list' : 'collection__tiles'}>
             {onAddNew && this.renderAddNew()}
             {listMode ? this.renderListMode() : this.renderTilesMode()}
           </ul>
@@ -128,7 +128,7 @@ class GridList extends PureComponent {
   }
 }
 
-GridList.propTypes = {
+CollectionView.propTypes = {
   color: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
@@ -157,5 +157,5 @@ export default withRouter(
       removeCohortFromFavourites,
       removeListFromFavourites
     }
-  )(GridList)
+  )(CollectionView)
 );

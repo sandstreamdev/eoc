@@ -21,7 +21,7 @@ import FormDialog from 'common/components/FormDialog';
 import { archiveCohort, fetchCohortDetails } from './model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
-import GridList from '../../common/components/GridList';
+import CollectionView from '../../common/components/CollectionView';
 import { ListType } from 'modules/list';
 import MembersBox from 'common/components/Members';
 import { ColorType, Routes } from 'common/constants/enums';
@@ -205,7 +205,7 @@ class Cohort extends PureComponent {
                   members={members}
                   route={Routes.COHORT}
                 />
-                <GridList
+                <CollectionView
                   color={ColorType.ORANGE}
                   icon={<ListIcon />}
                   items={lists}
@@ -236,7 +236,7 @@ class Cohort extends PureComponent {
                     } archived sacks`}
                   </button>
                   {areArchivedListsVisible && (
-                    <GridList
+                    <CollectionView
                       color={ColorType.GRAY}
                       icon={<ListIcon />}
                       items={archivedLists}

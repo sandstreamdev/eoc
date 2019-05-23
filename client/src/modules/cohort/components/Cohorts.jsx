@@ -16,7 +16,7 @@ import {
 } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import GridList from 'common/components/GridList';
+import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import { ColorType, Routes } from 'common/constants/enums';
 
@@ -100,7 +100,7 @@ class Cohorts extends Component {
         <Toolbar />
         <div className="wrapper">
           <div className="dashboard">
-            <GridList
+            <CollectionView
               color={ColorType.BROWN}
               icon={<CohortIcon />}
               items={cohorts}
@@ -120,7 +120,7 @@ class Cohorts extends Component {
               } archived cohorts`}
             </button>
             {areArchivedCohortsVisible && (
-              <GridList
+              <CollectionView
                 color={ColorType.GRAY}
                 icon={<CohortIcon />}
                 items={archivedCohorts}

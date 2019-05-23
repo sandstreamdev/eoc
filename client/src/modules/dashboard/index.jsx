@@ -15,7 +15,7 @@ import {
   getCohortsLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
-import GridList from 'common/components/GridList';
+import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import { ColorType, Routes } from 'common/constants/enums';
 
@@ -108,7 +108,7 @@ class Dashboard extends Component {
         </Toolbar>
         <div className="wrapper">
           <div className="dashboard">
-            <GridList
+            <CollectionView
               color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={privateLists}
@@ -119,7 +119,7 @@ class Dashboard extends Component {
               placeholder="There are no sacks yet!"
               route={Routes.LIST}
             />
-            <GridList
+            <CollectionView
               color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={cohortLists}
@@ -137,7 +137,7 @@ class Dashboard extends Component {
               {` ${areArchivedListsVisible ? 'hide' : 'show'} archived sacks`}
             </button>
             {areArchivedListsVisible && (
-              <GridList
+              <CollectionView
                 color={ColorType.GRAY}
                 icon={<ListIcon />}
                 items={archivedLists}

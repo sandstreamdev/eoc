@@ -1,4 +1,4 @@
-.elements {
+.collection {
   width: 100%;
   margin: 16px 0 25px 0;
   border: 0;
@@ -29,7 +29,7 @@
     padding: 16px 0 0;
   }
 
-  &__element {
+  &__item {
     width: 100%;
     margin: 0 auto 20px;
 
@@ -39,7 +39,7 @@
   }
 
   &__list {
-    .elements__element {
+    .collection__item {
       height: 130px;
 
       @include breakpoint($small) {
@@ -55,7 +55,7 @@
       grid-gap: 30px 30px;
     }
 
-    .elements__element {
+    .collection__item {
       height: 96px;
 
       @include breakpoint($small) {
