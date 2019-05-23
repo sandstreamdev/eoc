@@ -40,7 +40,7 @@
 
   &__list {
     .collection__item {
-      height: 130px;
+      height: 110px;
 
       @include breakpoint($small) {
         height: 80px;

@@ -93,11 +93,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    margin-top: 10px;
-
-    @include breakpoint($small) {
-      margin-top: 5px;
-    }
+    margin-top: 5px;
   }
 
   &:hover {
@@ -151,15 +147,9 @@
     justify-content: flex-end;
     line-height: 1.2;
 
-    @include breakpoint($xxsmall) {
+    @include breakpoint($xsmall) {
       font-size: $m-font;
-    }
-
-    @include breakpoint($small) {
-      height: 100%;
       flex-direction: row;
-      align-items: center;
-      width: 190px;
 
       span:first-child {
         margin-right: 10px;
@@ -168,6 +158,12 @@
           content: ',';
         }
       }
+    }
+
+    @include breakpoint($small) {
+      height: 100%;
+      align-items: center;
+      width: 190px;
     }
   }
 }
