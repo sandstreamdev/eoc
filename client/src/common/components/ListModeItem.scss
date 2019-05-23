@@ -1,0 +1,173 @@
+.list-mode-item {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  border: 0;
+  color: $text-normal;
+  box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: stretch;
+
+  &__lock {
+    height: 100%;
+    width: 44px;
+    min-width: 44px;
+    background-color: $orange;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      height: 16px;
+      width: 16px;
+
+      path {
+        fill: $text-white;
+      }
+    }
+
+    &--orange {
+      background: $orange;
+    }
+
+    &--archived {
+      background: $gray4;
+    }
+  }
+
+  &__details {
+    box-sizing: border-box;
+    width: calc(100% - 88px);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @include breakpoint($small) {
+      flex-direction: row;
+    }
+  }
+
+  &__header {
+    width: 100%;
+    margin-bottom: 16px;
+
+    @include breakpoint($small) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0;
+      width: calc(100% - 190px);
+      justify-content: center;
+    }
+  }
+
+  &__heading {
+    color: $text-normal;
+    font-size: $m-font;
+    line-height: 1;
+    text-transform: uppercase;
+    word-break: break-word;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    @include breakpoint($small) {
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      justify-content: flex-start;
+    }
+  }
+
+  &__description {
+    color: $text-normal;
+    font-size: $s-font;
+    line-height: 1.2;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: 10px;
+
+    @include breakpoint($small) {
+      margin-top: 5px;
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 3px 4px rgba($shadow-color, 0.35);
+  }
+
+  &__star {
+    background: transparent;
+    box-sizing: border-box;
+    position: relative;
+    padding: 0;
+    border: 0;
+    box-shadow: 0;
+    cursor: pointer;
+    display: block;
+    top: 0;
+    bottom: 0;
+    width: 44px;
+    min-width: 44px;
+    height: 100%;
+    z-index: 5;
+
+    svg {
+      height: 20px;
+
+      path {
+        fill: $orange;
+      }
+    }
+
+    &--orange {
+      svg path {
+        fill: $orange;
+      }
+    }
+
+    &--archived {
+      svg path {
+        fill: $gray4;
+      }
+    }
+  }
+
+  &__data {
+    font-size: $s-font;
+    text-align: right;
+    color: $text-normal;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    line-height: 1.2;
+
+    @include breakpoint($xxsmall) {
+      font-size: $m-font;
+    }
+
+    @include breakpoint($small) {
+      height: 100%;
+      flex-direction: row;
+      align-items: center;
+      width: 190px;
+
+      span:first-child {
+        margin-right: 10px;
+
+        &:after {
+          content: ',';
+        }
+      }
+    }
+  }
+}

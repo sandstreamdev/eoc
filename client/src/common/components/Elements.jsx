@@ -2,10 +2,11 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
 
 import GridList from 'common/components/GridList';
 import ListMode from 'common/components/ListMode';
-import { Routes } from 'common/constants/enums';
+import { MessageType, Routes } from 'common/constants/enums';
 import {
   addListToFavourites,
   removeListFromFavourites
@@ -14,8 +15,10 @@ import {
   addCohortToFavourites,
   removeCohortFromFavourites
 } from 'modules/cohort/model/actions';
+import MessageBox from 'common/components/MessageBox';
+import Preloader from 'common/components/Preloader';
 
-class Items extends PureComponent {
+class Elements extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
     const {
@@ -61,12 +64,12 @@ class Items extends PureComponent {
     } = this.props;
 
     return (
-      <div className="items">
-        <h2 className="items__heading">
+      <div className="elements">
+        <h2 className="elements__heading">
           {icon}
           {name}
         </h2>
-        <div className="items__body">
+        <div className="elements__body">
           {listMode ? (
             <ListMode
               color={color}
@@ -90,13 +93,17 @@ class Items extends PureComponent {
               route={route}
             />
           )}
+          {pending && <Preloader />}
+          {_isEmpty(items) && !pending && (
+            <MessageBox message={placeholder} type={MessageType.INFO} />
+          )}
         </div>
       </div>
     );
   }
 }
 
-Items.propTypes = {
+Elements.propTypes = {
   color: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
@@ -125,5 +132,5 @@ export default withRouter(
       removeCohortFromFavourites,
       removeListFromFavourites
     }
-  )(Items)
+  )(Elements)
 );

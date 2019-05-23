@@ -3,18 +3,12 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
-import { Routes } from 'common/constants/enums';
+import { ColorType, Routes } from 'common/constants/enums';
 import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
 import { ListType } from 'modules/list';
-
-export const CardColorType = {
-  BROWN: 'card/BROWN',
-  ARCHIVED: 'card/GRAY',
-  ORANGE: 'card/ORANGE'
-};
 
 class CardItem extends PureComponent {
   state = {
@@ -50,9 +44,9 @@ class CardItem extends PureComponent {
     return (
       <div
         className={classNames('card-item', {
-          'card-item--orange': color === CardColorType.ORANGE,
-          'card-item--archived': color === CardColorType.ARCHIVED,
-          'card-item--brown': color === CardColorType.BROWN
+          'card-item--orange': color === ColorType.ORANGE,
+          'card-item--archived': color === ColorType.GRAY,
+          'card-item--brown': color === ColorType.BROWN
         })}
         onClick={onCardClick}
         role="figure"

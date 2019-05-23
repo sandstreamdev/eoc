@@ -15,11 +15,9 @@ import {
   getCohortsLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
-import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
-import { Routes } from 'common/constants/enums';
-import Items from 'common/components/Items';
-import GridList from 'common/components/GridList';
+import { ColorType, Routes } from 'common/constants/enums';
+import Elements from 'common/components/Elements';
 
 class Dashboard extends Component {
   state = {
@@ -110,8 +108,8 @@ class Dashboard extends Component {
         </Toolbar>
         <div className="wrapper">
           <div className="dashboard">
-            <GridList
-              color={CardColorType.ORANGE}
+            <Elements
+              color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={privateLists}
               listMode={listMode}
@@ -121,8 +119,8 @@ class Dashboard extends Component {
               placeholder="There are no sacks yet!"
               route={Routes.LIST}
             />
-            <GridList
-              color={CardColorType.ORANGE}
+            <Elements
+              color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={cohortLists}
               listMode={listMode}
@@ -139,8 +137,8 @@ class Dashboard extends Component {
               {` ${areArchivedListsVisible ? 'hide' : 'show'} archived sacks`}
             </button>
             {areArchivedListsVisible && (
-              <Items
-                color={CardColorType.ARCHIVED}
+              <Elements
+                color={ColorType.GRAY}
                 icon={<ListIcon />}
                 items={archivedLists}
                 listMode={listMode}

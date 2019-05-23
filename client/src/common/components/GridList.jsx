@@ -1,137 +1,48 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import _map from 'lodash/map';
-import _isEmpty from 'lodash/isEmpty';
-import { connect } from 'react-redux';
 
 import CardItem from 'common/components/CardItem';
-import MessageBox from 'common/components/MessageBox';
-import { MessageType, Routes } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
-import {
-  addListToFavourites,
-  removeListFromFavourites
-} from 'modules/list/model/actions';
-import {
-  addCohortToFavourites,
-  removeCohortFromFavourites
-} from 'modules/cohort/model/actions';
-import Preloader from 'common/components/Preloader';
 
-class GridList extends PureComponent {
-  handleFavClick = (itemId, isFavourite) => event => {
-    event.stopPropagation();
-    const {
-      addCohortToFavourites,
-      addListToFavourites,
-      removeCohortFromFavourites,
-      removeListFromFavourites,
-      route
-    } = this.props;
-
-    let action;
-    switch (route) {
-      case Routes.LIST:
-        action = isFavourite ? removeListFromFavourites : addListToFavourites;
-        break;
-      case Routes.COHORT:
-        action = isFavourite
-          ? removeCohortFromFavourites
-          : addCohortToFavourites;
-        break;
-      default:
-        break;
-    }
-    return action(itemId);
-  };
-
-  handleCardClick = (route, itemId) => () => {
-    const { history } = this.props;
-    history.push(`/${route}/${itemId}`);
-  };
-
-  render() {
-    const {
-      color,
-      icon,
-      items,
-      name,
-      onAddNew,
-      pending,
-      placeholder,
-      route
-    } = this.props;
-
-    return (
-      <div className="grid-list">
-        <h2 className="grid-list__heading">
-          {icon}
-          {name}
-        </h2>
-        <div className="grid-list__body">
-          <ul className="grid-list__list">
-            {onAddNew && (
-              <li className="grid-list__item">
-                <button
-                  className="grid-list__button"
-                  onClick={onAddNew}
-                  type="button"
-                >
-                  <CardPlus />
-                </button>
-              </li>
-            )}
-            {_map(items, item => (
-              <li className="grid-list__item" key={item._id}>
-                <CardItem
-                  color={color}
-                  item={item}
-                  onCardClick={this.handleCardClick(route, item._id)}
-                  onFavClick={this.handleFavClick(item._id, item.isFavourite)}
-                  route={route}
-                />
-              </li>
-            ))}
-          </ul>
-          {pending && <Preloader />}
-          {_isEmpty(items) && !pending && (
-            <MessageBox message={placeholder} type={MessageType.INFO} />
-          )}
-        </div>
-      </div>
-    );
-  }
-}
+const GridList = ({
+  color,
+  items,
+  onAddNew,
+  onCardClick,
+  onFavClick,
+  route
+}) => (
+  <ul className="tiles-mode">
+    {onAddNew && (
+      <li className="tiles-mode__item">
+        <button className="tiles-mode__button" onClick={onAddNew} type="button">
+          <CardPlus />
+        </button>
+      </li>
+    )}
+    {_map(items, item => (
+      <li className="tiles-mode__item" key={item._id}>
+        <CardItem
+          color={color}
+          item={item}
+          onCardClick={onCardClick(route, item._id)}
+          onFavClick={onFavClick(item._id, item.isFavourite)}
+          route={route}
+        />
+      </li>
+    ))}
+  </ul>
+);
 
 GridList.propTypes = {
   color: PropTypes.string.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func
-  }),
-  icon: PropTypes.node.isRequired,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  listMode: PropTypes.bool,
-  name: PropTypes.string.isRequired,
-  pending: PropTypes.bool,
-  placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
 
-  addCohortToFavourites: PropTypes.func,
-  addListToFavourites: PropTypes.func,
   onAddNew: PropTypes.func,
-  removeCohortFromFavourites: PropTypes.func,
-  removeListFromFavourites: PropTypes.func
+  onCardClick: PropTypes.func.isRequired,
+  onFavClick: PropTypes.func.isRequired
 };
 
-export default withRouter(
-  connect(
-    null,
-    {
-      addCohortToFavourites,
-      addListToFavourites,
-      removeCohortFromFavourites,
-      removeListFromFavourites
-    }
-  )(GridList)
-);
+export default GridList;

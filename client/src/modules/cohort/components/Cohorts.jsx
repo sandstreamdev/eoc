@@ -16,10 +16,9 @@ import {
 } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import GridList from 'common/components/GridList';
-import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
-import { Routes } from 'common/constants/enums';
+import { ColorType, Routes } from 'common/constants/enums';
+import Elements from 'common/components/Elements';
 
 class Cohorts extends Component {
   state = {
@@ -101,8 +100,8 @@ class Cohorts extends Component {
         <Toolbar />
         <div className="wrapper">
           <div className="dashboard">
-            <GridList
-              color={CardColorType.BROWN}
+            <Elements
+              color={ColorType.BROWN}
               icon={<CohortIcon />}
               items={cohorts}
               name="Cohorts"
@@ -121,8 +120,8 @@ class Cohorts extends Component {
               } archived cohorts`}
             </button>
             {areArchivedCohortsVisible && (
-              <GridList
-                color={CardColorType.ARCHIVED}
+              <Elements
+                color={ColorType.GRAY}
                 icon={<CohortIcon />}
                 items={archivedCohorts}
                 name="Archived cohorts"

@@ -31,3 +31,9 @@ export const UserRolesToDisplay = Object.freeze({
   OWNER: 'owner',
   VIEWER: 'viewer'
 });
+
+export const ColorType = {
+  BROWN: 'element/BROWN',
+  GRAY: 'element/GRAY',
+  ORANGE: 'element/ORANGE'
+};
