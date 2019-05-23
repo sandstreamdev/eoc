@@ -21,10 +21,18 @@ import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
+import { CohortsBreadcrumbs } from 'modules/cohort/components/Cohorts';
+import { CohortBreadcrumbs } from 'modules/cohort';
+import { DashboardBreadcrumbs } from 'modules/dashboard';
 
 export const ListType = Object.freeze({
   LIMITED: 'limited',
   SHARED: 'shared'
+});
+
+const ListBreadcrumbs = Object.freeze({
+  NAME: 'list',
+  PATH: '/list/'
 });
 
 class List extends Component {
@@ -53,9 +61,9 @@ class List extends Component {
     if (cohortId) {
       this.setState({
         breadcrumbs: [
-          { name: 'cohorts', path: '/cohorts' },
-          { name: cohortName, path: `/cohort/${cohortId}` },
-          { name, path: `/list/${listId}` }
+          { name: CohortsBreadcrumbs.NAME, path: CohortsBreadcrumbs.PATH },
+          { name: cohortName, path: `${CohortBreadcrumbs.PATH}${cohortId}` },
+          { name, path: `${ListBreadcrumbs.PATH}${listId}` }
         ]
       });
 
@@ -64,8 +72,8 @@ class List extends Component {
 
     this.setState({
       breadcrumbs: [
-        { name: 'dashboard', path: '/dashboard' },
-        { name, path: `/list/${listId}` }
+        { name: DashboardBreadcrumbs.NAME, path: DashboardBreadcrumbs.PATH },
+        { name, path: `${ListBreadcrumbs.PATH}${listId}` }
       ]
     });
   };
@@ -113,11 +121,7 @@ class List extends Component {
       list: { isGuest }
     } = this.props;
 
-    return (
-      <div className="wrapper">
-        <Breadcrumbs breadcrumbs={breadcrumbs} isGuest={isGuest} />
-      </div>
-    );
+    return <Breadcrumbs breadcrumbs={breadcrumbs} isGuest={isGuest} />;
   };
 
   render() {

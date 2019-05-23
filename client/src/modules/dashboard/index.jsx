@@ -21,6 +21,11 @@ import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 
+export const DashboardBreadcrumbs = Object.freeze({
+  NAME: 'dashboard',
+  PATH: '/dashboard'
+});
+
 class Dashboard extends Component {
   state = {
     areArchivedListsVisible: false,
@@ -92,13 +97,15 @@ class Dashboard extends Component {
       pendingForListCreation,
       pendingForLists
     } = this.state;
-    const breadcrumbs = [{ name: 'dashboard', path: '/dashboard' }];
+    const breadcrumbs = [
+      { name: DashboardBreadcrumbs.NAME, path: DashboardBreadcrumbs.PATH }
+    ];
 
     return (
       <Fragment>
         <Toolbar />
+        <Breadcrumbs breadcrumbs={breadcrumbs} />
         <div className="wrapper">
-          <Breadcrumbs breadcrumbs={breadcrumbs} />
           <div className="dashboard">
             <GridList
               color={CardColorType.ORANGE}
