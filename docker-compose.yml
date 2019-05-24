@@ -1,12 +1,10 @@
-version: '3'
+version: '3.5'
 
 services:
   eoc-server:
     container_name: eoc_server_container
     restart: always
-    build:
-      context: ./
-      dockerfile: ./Dockerfile.production
+    build: .
     ports:
       - '8080'
     links:

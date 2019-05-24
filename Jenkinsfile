@@ -3,10 +3,13 @@ def COLOR_MAP = ['SUCCESS': 'good', 'FAILURE': 'danger', 'UNSTABLE': 'danger', '
 pipeline {
   agent any
 
-  environment { 
-    TAG = "${BRANCH_NAME}:${BUILD_NUMBER}".toLowerCase()
+  environment {
+    DOCKER_BUILDKIT = 1
+    TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase()
+    TAG_INIT = "${TAG}-init"
+    TAG_BUILD = "${TAG}-build"
     TAG_TEST = "${TAG}-test"
-    TAG_TEST_STATIC = "${TAG}-test-static"
+    TAG_TEST_STATIC = "${TAG_TEST}-static"
   }
 
   stages {
@@ -15,24 +18,28 @@ pipeline {
             slackSend (color: '#F0E68C', message: "*STARTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}")
         }
     }
-    stage('Build') {
+    stage('Warmup') {
       steps {
-        echo 'Building..'
-        sh 'docker build -t $TAG -f Dockerfile.production .'
+        echo 'Warming up...'
+        sh 'docker build --target init -t $TAG_INIT .'
       }
     }
     stage('QA: static code analysis') {
       steps {
         echo 'Testing static..'
-        sh 'docker build -t $TAG_TEST_STATIC --build-arg APP_IMAGE=$TAG -f Dockerfile.test-static .'
-        sh 'docker run --rm $TAG_TEST_STATIC'
+        sh 'docker build --target test-static -t $TAG_TEST_STATIC .'
+      }
+    }
+    stage('Build') {
+      steps {
+        echo 'Building..'
+        sh 'docker build --target build -t $TAG_BUILD .'
       }
     }
     stage('QA: unit & integration tests') {
       steps {
         echo 'Testing..'
-        sh 'docker build -t $TAG_TEST --build-arg APP_IMAGE=$TAG -f Dockerfile.test .'
-        sh 'docker run --rm $TAG_TEST'
+        sh 'docker build --target test -t $TAG_TEST .'
       }
     }
     stage('Deploy') {
@@ -47,6 +54,12 @@ pipeline {
         sh 'docker-compose build'
         sh 'docker-compose stop'
         sh 'docker-compose up -d'
+      }
+    }
+    stage('Cleanup Docker') {
+      steps {
+        echo 'Cleaning up...'
+        sh 'docker rmi $(docker images --filter=reference="$TAG*" -q)'
       }
     }
   }
