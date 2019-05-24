@@ -8,12 +8,17 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  // height: 120px;
   justify-content: center;
   padding: 8px;
   width: 100%;
 
+  // @include breakpoint($medium) {
+  //   width: 210px;
+  // }
+
   &__heading {
-    color: $text-normal;
+    color: $text-dark;
     font-size: $s-font;
     font-weight: 700;
     font-family: $font-family;
@@ -28,7 +33,7 @@
   svg {
     height: 24px;
     path {
-      fill: $text-normal;
+      fill: $text-dark;
     }
   }
 }

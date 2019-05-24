@@ -7,9 +7,9 @@
     padding: 8px 0;
     display: flex;
     align-items: center;
-    font-size: 16px;
+    font-size: $l-font;
     line-height: 1;
-    color: $text-normal;
+    color: $text-dark;
     border-bottom: 1px solid $border-light;
     text-transform: uppercase;
     font-weight: 700;
@@ -20,7 +20,7 @@
       margin-right: 8px;
 
       path {
-        fill: $text-normal;
+        fill: $text-dark;
       }
     }
   }
@@ -53,12 +53,12 @@
   &__tiles {
     @include breakpoint($small) {
       display: grid;
-      grid-template-columns: repeat(auto-fill, 180px);
-      grid-gap: 30px 30px;
+      grid-template-columns: repeat(auto-fill, 210px);
+      grid-gap: 25px 25px;
     }
 
     .collection__item {
-      height: 96px;
+      height: 120px;
 
       @include breakpoint($small) {
         margin: 0 auto 0;

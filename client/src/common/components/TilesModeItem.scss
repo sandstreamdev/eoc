@@ -10,10 +10,6 @@
   cursor: pointer;
   width: 100%;
 
-  @include breakpoint($medium) {
-    width: 180px;
-  }
-
   &--orange {
     background: $card-color-1;
   }
@@ -46,11 +42,11 @@
 
   &__heading {
     color: $text-white;
-    font-size: 11px;
+    font-size: $m-font;
     line-height: 1;
-    text-transform: uppercase;
+    text-transform: capitalize;
     word-break: break-word;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.2px;
     text-decoration: none;
     text-overflow: ellipsis;
@@ -61,7 +57,7 @@
   &__description {
     display: block;
     color: $text-white;
-    font-size: 12px;
+    font-size: $m-font;
     line-height: 1.2;
     text-decoration: none;
     text-overflow: ellipsis;
@@ -83,7 +79,7 @@
     padding: 3px;
     position: absolute;
     right: 5px;
-    top: 2px;
+    top: 5px;
 
     svg {
       height: 16px;
@@ -98,14 +94,15 @@
     right: 8px;
     bottom: 8px;
     position: absolute;
-    font-size: $s-font;
+    font-size: $m-font;
+    font-weight: 500;
     text-align: right;
     color: $text-white;
 
     span {
       display: block;
       &:first-child {
-        margin-bottom: 3px;
+        margin-bottom: 5px;
       }
     }
   }

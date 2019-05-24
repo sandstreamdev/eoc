@@ -2,6 +2,8 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import ListItem from 'modules/list/components/Items/ListItem';
+import MessageBox from 'common/components/MessageBox';
+import { MessageType } from 'common/constants/enums';
 
 const DISPLAY_LIMIT = 3;
 
@@ -21,9 +23,7 @@ class ItemsList extends PureComponent {
     return (
       <Fragment>
         {!items.length ? (
-          <div className="items__message">
-            <p>There are no items!</p>
-          </div>
+          <MessageBox message="There are no items!" type={MessageType.INFO} />
         ) : (
           <ul className="items-list">
             {items.slice(0, limit).map(item => (

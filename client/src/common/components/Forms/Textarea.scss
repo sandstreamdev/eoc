@@ -24,7 +24,7 @@
     color: $text-normal;
     display: block;
     font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
+    font-size: $m-font;
     line-height: 1.2;
     min-height: 65px;
     outline: 0;
@@ -48,7 +48,8 @@
     left: 12px;
     top: 12px;
     font-size: $s-font;
-    color: $text-light;
+    color: $text-normal;
+    font-family: 'Montserrat', sans-serif;
     background: transparent;
     border: 0;
     padding: 0;

@@ -34,7 +34,7 @@ class SortBox extends Component {
 
     return (
       <div className="sort-box">
-        <span className="sort-box__desc">{label}</span>
+        <label className="sort-box__desc">{label}</label>
         <select
           className="sort-box__select"
           onChange={this.handleSortByChange}

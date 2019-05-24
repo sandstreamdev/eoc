@@ -46,6 +46,7 @@ class PendingButton extends PureComponent {
       disabled,
       preloaderSize,
       preloaderTheme,
+      title,
       value
     } = this.props;
 
@@ -57,6 +58,7 @@ class PendingButton extends PureComponent {
           })}
           disabled={pending || disabled}
           onClick={pending || disabled ? null : this.handleOnClick}
+          title={title}
           type="button"
           value={value}
         >
@@ -79,6 +81,7 @@ PendingButton.propTypes = {
   disabled: PropTypes.bool,
   preloaderSize: PropTypes.string,
   preloaderTheme: PropTypes.string,
+  title: PropTypes.string,
   value: PropTypes.string,
 
   onClick: PropTypes.func.isRequired
