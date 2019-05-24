@@ -378,14 +378,6 @@ export const addListViewer = (listId, email) => dispatch =>
       if (resp.status === 200) {
         return resp.json();
       }
-
-      // if (resp.status === 204) {
-      //   createNotificationWithTimeout(
-      //     dispatch,
-      //     NotificationType.SUCCESS,
-      //     `User with email ${email} have no account. Would you like to invite via email?`
-      //   );
-      // }
     })
     .then(json => {
       if (json) {

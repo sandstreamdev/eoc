@@ -768,7 +768,7 @@ const removeMemberRole = (req, resp) => {
     });
 };
 
-const addViewer = (req, resp, next) => {
+const addViewer = (req, resp) => {
   const {
     user: { _id: currentUserId, idFromProvider }
   } = req;
