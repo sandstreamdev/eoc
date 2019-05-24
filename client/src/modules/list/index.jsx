@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 
-import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
   getDoneItems,
