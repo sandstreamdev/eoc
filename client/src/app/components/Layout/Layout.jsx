@@ -112,7 +112,7 @@ Layout.propTypes = {
     push: PropTypes.func
   }),
   location: PropTypes.shape({
-    pathname: PropTypes.string
+    pathname: PropTypes.string.isRequired
   }),
 
   loginUser: PropTypes.func.isRequired

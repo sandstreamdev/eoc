@@ -8,7 +8,7 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
-import { ListType } from 'modules/list';
+import { ListType } from 'modules/list/consts';
 
 class CardItem extends PureComponent {
   state = {

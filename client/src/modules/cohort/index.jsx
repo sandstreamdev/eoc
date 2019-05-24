@@ -21,7 +21,7 @@ import { archiveCohort, fetchCohortDetails } from './model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import CollectionView from '../../common/components/CollectionView';
-import { ListType } from 'modules/list';
+import { ListType } from 'modules/list/consts';
 import MembersBox from 'common/components/Members';
 import { ColorType, Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';

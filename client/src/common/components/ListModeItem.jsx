@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { ListType } from 'modules/list';
+import { ListType } from 'modules/list/consts';
 import { ColorType } from 'common/constants/enums';
 
 class ListModeItem extends PureComponent {

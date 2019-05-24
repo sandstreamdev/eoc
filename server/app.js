@@ -7,6 +7,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+const MongoStore = require('connect-mongo')(session);
 
 const { DB_URL } = require('./common/variables');
 const authRouter = require('./routes/authorization');
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(
   session({
     secret: process.env.EXPRESS_SESSION_KEY,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
     unset: 'destroy',
     saveUninitialized: false,
     resave: false

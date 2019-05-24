@@ -20,11 +20,6 @@ import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 
-export const ListType = Object.freeze({
-  LIMITED: 'limited',
-  SHARED: 'shared'
-});
-
 class List extends Component {
   state = {
     dialogContext: null,
