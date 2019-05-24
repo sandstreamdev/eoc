@@ -15,7 +15,6 @@ import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
 import { UserCreationStatus } from './const';
 import InviteNewUser from './components/InviteNewUser';
-import { patchData } from 'common/utils/fetchMethods';
 import { inviteUser } from './model/actions';
 
 const MEMBERS_DISPLAY_LIMIT = 10;
