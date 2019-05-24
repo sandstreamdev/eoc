@@ -21,7 +21,7 @@ pipeline {
     stage('Warmup') {
       steps {
         echo 'Warming up...'
-        sh 'docker build --target build -t $TAG_INIT .'
+        sh 'docker build --target init -t $TAG_INIT .'
       }
     }
     stage('QA: static code analysis') {
