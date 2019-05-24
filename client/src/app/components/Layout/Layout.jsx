@@ -18,6 +18,7 @@ import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
 import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListModeIcon, TilesModeIcon } from 'assets/images/icons';
+import { Routes } from 'common/constants/enums';
 
 export class Layout extends PureComponent {
   state = {
@@ -47,6 +48,17 @@ export class Layout extends PureComponent {
     loginUser();
   };
 
+  displayModeSwitch = () => {
+    const {
+      location: { pathname }
+    } = this.props;
+
+    return (
+      pathname.includes(`${Routes.COHORT}/`) ||
+      pathname.includes(Routes.DASHBOARD)
+    );
+  };
+
   handleListModeChange = () =>
     this.setState(({ listMode }) => ({ listMode: !listMode }));
 
@@ -64,11 +76,13 @@ export class Layout extends PureComponent {
       <Fragment>
         <Notifications />
         <Toolbar>
-          <ToolbarItem
-            mainIcon={listMode ? <TilesModeIcon /> : <ListModeIcon />}
-            onClick={this.handleListModeChange}
-            title={`Change to ${listMode ? 'tiles' : 'list'} view`}
-          />
+          {this.displayModeSwitch() && (
+            <ToolbarItem
+              mainIcon={listMode ? <TilesModeIcon /> : <ListModeIcon />}
+              onClick={this.handleListModeChange}
+              title={`Change to ${listMode ? 'tiles' : 'list'} view`}
+            />
+          )}
         </Toolbar>
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
@@ -96,6 +110,9 @@ Layout.propTypes = {
   currentUser: UserPropType,
   history: PropTypes.shape({
     push: PropTypes.func
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string
   }),
 
   loginUser: PropTypes.func.isRequired
