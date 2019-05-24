@@ -6,9 +6,9 @@
     padding: 8px 0;
     display: flex;
     align-items: center;
-    font-size: 16px;
+    font-size: $l-font;
     line-height: 1;
-    color: $text-normal;
+    color: $text-dark;
     border-bottom: 1px solid $border-light;
     text-transform: uppercase;
     font-weight: 700;
@@ -19,7 +19,7 @@
       margin-right: 8px;
 
       path {
-        fill: $text-normal;
+        fill: $text-dark;
       }
     }
   }
@@ -33,7 +33,7 @@
   &__description {
     font-size: 12px;
     line-height: 1.2;
-    color: $text-light;
+    color: $text-normal;
     padding: 16px 0 0;
     max-width: 360px;
   }
@@ -44,8 +44,8 @@
     @include breakpoint($medium) {
       margin: 0 -10px 0;
       display: grid;
-      grid-template-columns: repeat(auto-fill, 200px);
-      grid-gap: 20px 10px;
+      grid-template-columns: repeat(auto-fill, 228px);
+      grid-gap: 28px 10px;
     }
   }
 

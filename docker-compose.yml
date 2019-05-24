@@ -1,19 +1,14 @@
 version: '3'
 
-networks:
-  privatenetwork:
-
 services:
-  server:
+  eoc-server:
     container_name: eoc_server_container
     restart: always
     build:
       context: ./
       dockerfile: ./Dockerfile.production
     ports:
-      - '80:8080'
-    networks:
-      - privatenetwork
+      - '8080'
     links:
       - mongo
     environment:
@@ -21,6 +16,16 @@ services:
       GOOGLE_CLIENT_ID:
       GOOGLE_CLIENT_SECRET:
       EXPRESS_SESSION_KEY:
+  nginx-production:
+    container_name: eoc_nginx_production
+    restart: always
+    build: ./nginx
+    ports:
+      - '80:80'
+    volumes:
+      -  /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
+    links:
+      - eoc-server
   mongo:
     container_name: mongo_container
     image: mongo
@@ -29,5 +34,3 @@ services:
       - /data/db:/data/db
     ports:
       - '27017'
-    networks:
-      - privatenetwork

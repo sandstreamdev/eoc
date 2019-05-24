@@ -17,7 +17,7 @@ export const StatusType = Object.freeze({
 
 export const Routes = Object.freeze({
   COHORT: 'cohort',
-  LIST: 'list'
+  LIST: 'sack'
 });
 
 export const UserRoles = Object.freeze({

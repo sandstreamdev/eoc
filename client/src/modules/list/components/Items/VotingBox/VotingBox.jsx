@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import ThumbIcon from 'assets/images/thumbs-up-solid.svg';
+import { ThumbIcon } from 'assets/images/icons';
 import PendingButton from 'common/components/PendingButton';
 
 const VotingBox = ({ isMember, isVoted, onVote, votesCount }) => (
@@ -12,12 +12,9 @@ const VotingBox = ({ isMember, isVoted, onVote, votesCount }) => (
     })}
     disabled={!isMember}
     onClick={onVote}
+    title={`${isVoted ? 'remove your vote' : 'vote'}`}
   >
-    <img
-      alt={`${isVoted ? 'remove your vote' : 'vote'}`}
-      className="voting-box__icon"
-      src={ThumbIcon}
-    />
+    <ThumbIcon />
     {votesCount}
   </PendingButton>
 );

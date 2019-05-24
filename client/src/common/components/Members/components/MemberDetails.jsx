@@ -22,19 +22,19 @@ import {
 import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
-import { ListType } from 'modules/list';
+import { ListType } from 'modules/list/consts';
 import UserIconPlaceholder from 'assets/images/user.svg';
 
 const infoText = {
   [Routes.COHORT]: {
     [UserRoles.OWNER]:
-      "Can edit, archive and delete this cohort. Can add, edit list's items and mark them as done. Can add, edit, archive and delete lists. Can add, remove members, and change their roles.",
-    [UserRoles.MEMBER]: "Can view lists, add and edit list's items."
+      "Can edit, archive and delete this cohort. Can add, edit sack's items and mark them as done. Can add, edit, archive and delete sacks. Can add, remove members, and change their roles.",
+    [UserRoles.MEMBER]: "Can view sacks, add and edit sack's items."
   },
   [Routes.LIST]: {
     [UserRoles.OWNER]:
-      "Can edit, archive and delete this list. Can add, edit list's items and mark them as done. Can add, remove members, and change their roles.",
-    [UserRoles.MEMBER]: "Can view, add and edit list's items."
+      "Can edit, archive and delete this sack. Can add, edit sack's items and mark them as done. Can add, remove members, and change their roles.",
+    [UserRoles.MEMBER]: "Can view, add and edit sack's items."
   }
 };
 

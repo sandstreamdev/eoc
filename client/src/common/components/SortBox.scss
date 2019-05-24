@@ -3,7 +3,7 @@
   align-items: center;
 
   &__desc {
-    font-size: 10px;
+    font-size: $s-font;
     line-height: 1.2;
     font-weight: 400;
     color: $text-normal;
@@ -12,10 +12,12 @@
   }
 
   &__select {
-    font-size: 12px;
+    font-size: $m-font;
+    font-family: $font-family;
+    font-weight: 500;
     color: $text-normal;
     background-color: $bg-color;
-    padding: 6px 20px 6px 8px;
+    padding: 11px 20px 11px 8px;
     border: 0;
     border-radius: 0;
     background-image: url('../../assets/images/chevron-down-solid.svg');
@@ -36,15 +38,15 @@
     border: 0;
     background-color: transparent;
     display: flex;
-
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: auto;
-    width: auto;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
 
     img {
-      width: 12px;
+      width: 14px;
     }
 
     &--obverse {

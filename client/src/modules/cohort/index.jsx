@@ -22,7 +22,7 @@ import { archiveCohort, fetchCohortDetails } from './model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList from 'common/components/GridList';
-import { ListType } from 'modules/list';
+import { ListType } from 'modules/list/consts';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
@@ -217,7 +217,7 @@ class Cohort extends PureComponent {
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleListCreation}
             pending={pendingForListCreation}
-            title={`${pendingForListCreation ? 'Adding' : 'Add'} new list`}
+            title={`${pendingForListCreation ? 'Adding' : 'Add'} new sack`}
             onSelect={this.handleListType}
           />
         )}
@@ -240,9 +240,9 @@ class Cohort extends PureComponent {
                   color={CardColorType.ORANGE}
                   icon={<ListIcon />}
                   items={lists}
-                  name="Lists"
+                  name="Sacks"
                   onAddNew={this.handleDialogContext(DialogContext.CREATE)}
-                  placeholder={`There are no lists in the ${name} cohort!`}
+                  placeholder={`There are no sacks in the ${name} cohort!`}
                   route={Routes.LIST}
                 />
                 {!isArchived && isOwner && (
@@ -263,16 +263,16 @@ class Cohort extends PureComponent {
                   >
                     {`${
                       areArchivedListsVisible ? 'hide' : 'show'
-                    } archived lists`}
+                    } archived sacks`}
                   </button>
                   {areArchivedListsVisible && (
                     <GridList
                       color={CardColorType.ARCHIVED}
                       icon={<ListIcon />}
                       items={archivedLists}
-                      name="Archived lists"
+                      name="Archived Sacks"
                       pending={pendingForArchivedLists}
-                      placeholder={`There are no archived lists in the ${name} cohort!`}
+                      placeholder={`There are no archived sacks in the ${name} cohort!`}
                       route={Routes.LIST}
                     />
                   )}

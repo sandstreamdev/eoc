@@ -59,7 +59,7 @@ export class Layout extends Component {
           <Redirect from="/" exact to="/dashboard" />
           <Route component={Dashboard} path="/dashboard" />
           <Route component={Cohort} path="/cohort/:id(\w+)" />
-          <Route component={List} path="/list/:id(\w+)" />
+          <Route component={List} path="/sack/:id(\w+)" />
           <Route component={About} path="/about" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={Cohorts} path="/cohorts" />
@@ -75,6 +75,9 @@ Layout.propTypes = {
   currentUser: UserPropType,
   history: PropTypes.shape({
     push: PropTypes.func
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
   }),
 
   loginUser: PropTypes.func.isRequired

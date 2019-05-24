@@ -24,11 +24,6 @@ import { CohortsBreadcrumbs } from 'modules/cohort/components/Cohorts';
 import { CohortBreadcrumbs } from 'modules/cohort';
 import { DashboardBreadcrumbs } from 'modules/dashboard';
 
-export const ListType = Object.freeze({
-  LIMITED: 'limited',
-  SHARED: 'shared'
-});
-
 const ListBreadcrumbs = Object.freeze({
   NAME: 'list',
   PATH: '/list/'
@@ -176,7 +171,7 @@ class List extends Component {
                       onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
                       type="button"
                     >
-                      {`Archive the "${name}" list`}
+                      {`Archive the "${name}" sack`}
                     </button>
                   )}
                 </div>
@@ -185,7 +180,7 @@ class List extends Component {
                   onClick={this.handleMembersBoxVisibility}
                   type="button"
                 >
-                  {` ${isMembersBoxVisible ? 'hide' : 'show'} list's members`}
+                  {` ${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
                 </button>
                 {isMembersBoxVisible && (
                   <MembersBox
@@ -209,8 +204,8 @@ class List extends Component {
             pending={pendingForListArchivization}
             title={
               pendingForListArchivization
-                ? `"${name}" list archivization...`
-                : `Do you really want to archive the "${name}" list?`
+                ? `"${name}" sack archivization...`
+                : `Do you really want to archive the "${name}" sack?`
             }
           />
         )}
