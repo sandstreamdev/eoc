@@ -99,7 +99,7 @@ class MembersBox extends PureComponent {
     const { email } = this.state;
     const { inviteUser } = this.props;
 
-    inviteUser(email).then(() => {
+    return inviteUser(email).then(() => {
       this.hideForm();
       this.setState({ inviteNewUser: false });
     });

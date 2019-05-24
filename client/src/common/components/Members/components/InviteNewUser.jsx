@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
+import PendingButton from 'common/components/PendingButton';
+import { PreloaderTheme } from 'common/components/Preloader';
+
 class InviteNewUser extends PureComponent {
   render() {
     const { email, onCancel, onInvite } = this.props;
@@ -13,9 +16,15 @@ class InviteNewUser extends PureComponent {
           has no account in EOC app. Would you like to invite via email?
         </p>
         <footer className="invite-user__footer">
-          <button className="primary-button" type="button" onClick={onInvite}>
+          <PendingButton
+            className="primary-button"
+            onClick={onInvite}
+            preloaderTheme={PreloaderTheme.LIGHT}
+            value="Invite user"
+            title="Invite user"
+          >
             Invite User
-          </button>
+          </PendingButton>
           <button className="primary-button" type="button" onClick={onCancel}>
             Cancel
           </button>
