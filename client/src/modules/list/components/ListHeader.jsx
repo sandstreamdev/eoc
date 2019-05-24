@@ -11,7 +11,7 @@ import { updateList, changeType } from 'modules/list/model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
-import { ListType } from '../index';
+import { ListType } from '../consts';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 
 class ListHeader extends PureComponent {

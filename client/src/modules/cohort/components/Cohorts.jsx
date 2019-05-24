@@ -21,11 +21,6 @@ import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 
-export const CohortsBreadcrumbs = Object.freeze({
-  NAME: 'cohorts',
-  PATH: '/cohorts'
-});
-
 class Cohorts extends Component {
   state = {
     areArchivedCohortsVisible: false,
@@ -92,9 +87,7 @@ class Cohorts extends Component {
   };
 
   renderBreadcrumbs = () => {
-    const breadcrumbs = [
-      { name: CohortsBreadcrumbs.NAME, path: CohortsBreadcrumbs.PATH }
-    ];
+    const breadcrumbs = [{ name: Routes.COHORTS, path: `/${Routes.COHORTS}` }];
 
     return <Breadcrumbs breadcrumbs={breadcrumbs} />;
   };

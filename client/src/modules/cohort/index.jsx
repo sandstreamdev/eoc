@@ -22,18 +22,12 @@ import { archiveCohort, fetchCohortDetails } from './model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import GridList from 'common/components/GridList';
-import { ListType } from 'modules/list';
+import { ListType } from 'modules/list/consts';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
-import { CohortsBreadcrumbs } from './components/Cohorts';
-
-export const CohortBreadcrumbs = Object.freeze({
-  NAME: 'cohort',
-  PATH: '/cohort/'
-});
 
 class Cohort extends PureComponent {
   state = {
@@ -81,10 +75,10 @@ class Cohort extends PureComponent {
 
     this.setState({
       breadcrumbs: [
-        { name: CohortsBreadcrumbs.NAME, path: CohortsBreadcrumbs.PATH },
+        { name: Routes.COHORTS, path: `/${Routes.COHORTS}` },
         {
           name,
-          path: `${CohortBreadcrumbs.PATH}${cohortId}`
+          path: `/${Routes.COHORT}/${cohortId}`
         }
       ]
     });

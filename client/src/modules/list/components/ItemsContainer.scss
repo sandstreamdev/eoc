@@ -6,7 +6,7 @@
   width: 100%;
 
   @include breakpoint($medium) {
-    width: 45%;
+    width: 46%;
   }
 
   &__header {
@@ -33,17 +33,24 @@
   &__header-controls {
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 90px;
+    align-content: space-between;
+
+    @include breakpoint($xsmall) {
+      width: auto;
+      height: auto;
+      flex-direction: row;
+      justify-content: center;
+    }
     @include breakpoint($small) {
-      width: 50%;
       justify-content: flex-end;
     }
     @include breakpoint($medium) {
-      width: 100%;
       justify-content: center;
     }
     @include breakpoint($xlarge) {
-      width: 50%;
       justify-content: flex-end;
     }
   }
@@ -54,20 +61,23 @@
 
   &__heading {
     width: 100%;
-    font-size: 16px;
+    font-size: $l-font;
     line-height: 1.2;
     font-weight: 500;
-    color: $text-normal;
+    color: $text-dark;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     margin: 4px 0;
 
     @include breakpoint($small) {
-      width: 50%;
+      width: auto;
     }
     @include breakpoint($medium) {
       width: 100%;
     }
     @include breakpoint($xlarge) {
-      width: 50%;
+      width: auto;
     }
 
     &--left {
@@ -86,7 +96,7 @@
 
   &__show-more {
     background: transparent;
-    color: $text-light;
+    color: $text-normal;
     width: 36px;
     height: 36px;
     border: 2px solid $border-color;

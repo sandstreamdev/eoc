@@ -64,10 +64,6 @@
     align-items: center;
     border-bottom: 1px solid $border-color;
 
-    &:first-child {
-      color: $text-light;
-    }
-
     &:last-child {
       border-bottom: 0;
     }
@@ -115,10 +111,6 @@
     color: $text-normal;
     margin-right: 8px;
     margin-bottom: 3px;
-
-    &:first-child {
-      color: $text-light;
-    }
 
     &:nth-child(2) {
       margin-bottom: 0;

@@ -130,10 +130,13 @@
     line-height: 1.2;
   }
 
+  &__name {
+    font-weight: 500;
+    color: $text-dark;
+  }
+
   &__author {
     font-size: $s-font;
-    line-height: 1.2;
-    color: $text-light;
     margin-top: 5px;
     text-transform: capitalize;
     text-overflow: ellipsis;

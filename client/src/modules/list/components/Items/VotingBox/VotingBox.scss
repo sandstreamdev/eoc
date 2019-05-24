@@ -4,7 +4,7 @@
   padding: 0;
   background-color: $bg-color;
   outline: none;
-  color: $gray4;
+  color: $text-normal;
   font-family: 'Montserrat', sans-serif;
   font-size: $m-font;
   border: 0;
@@ -33,6 +33,15 @@
 
     &:hover {
       box-shadow: none;
+    }
+  }
+
+  svg {
+    margin-right: 10px;
+    height: 14px;
+
+    path {
+      fill: $text-normal;
     }
   }
 }
