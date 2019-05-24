@@ -100,6 +100,7 @@ class ListHeader extends PureComponent {
       match: {
         params: { id }
       },
+      updateBreadcrumbs,
       updateList
     } = this.props;
     const { nameInputValue } = this.state;
@@ -114,13 +115,15 @@ class ListHeader extends PureComponent {
     if (nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
 
-      updateList(id, { name: nameToUpdate }).finally(() =>
+      updateList(id, { name: nameToUpdate }).finally(() => {
         this.setState({
           isNameInputVisible: false,
           nameInputValue: nameToUpdate,
           pendingForName: false
-        })
-      );
+        });
+
+        updateBreadcrumbs();
+      });
     }
   };
 
@@ -318,6 +321,7 @@ ListHeader.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   changeType: PropTypes.func.isRequired,
+  updateBreadcrumbs: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired
 };
 

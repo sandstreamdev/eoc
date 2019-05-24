@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { CardColorType } from 'common/components/CardItem';
-import Toolbar from 'common/components/Toolbar';
 import {
   getCohortActiveLists,
   getCohortArchivedLists
@@ -27,25 +26,23 @@ import { ListType } from 'modules/list/consts';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
-import Preloader from '../../common/components/Preloader';
+import Preloader from 'common/components/Preloader';
+import Breadcrumbs from 'common/components/Breadcrumbs';
 
 class Cohort extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      areArchivedListsVisible: false,
-      dialogContext: null,
-      pendingForArchivedLists: false,
-      pendingForDetails: false,
-      pendingForListCreation: false,
-      pendingForCohortArchivization: false,
-      type: ListType.LIMITED
-    };
-  }
+  state = {
+    areArchivedListsVisible: false,
+    breadcrumbs: [],
+    dialogContext: null,
+    pendingForArchivedLists: false,
+    pendingForDetails: false,
+    pendingForListCreation: false,
+    pendingForCohortArchivization: false,
+    type: ListType.LIMITED
+  };
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData().then(() => this.handleBreadcrumbs());
   }
 
   fetchData = () => {
@@ -59,13 +56,32 @@ class Cohort extends PureComponent {
 
     this.setState({ pendingForDetails: true });
 
-    fetchCohortDetails(id)
+    return fetchCohortDetails(id)
       .then(() => {
         if (!this.checkIfArchived()) {
           return fetchListsMetaData(id);
         }
       })
       .finally(() => this.setState({ pendingForDetails: false }));
+  };
+
+  handleBreadcrumbs = () => {
+    const {
+      cohortDetails: { name },
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
+    this.setState({
+      breadcrumbs: [
+        { name: Routes.COHORTS, path: `/${Routes.COHORTS}` },
+        {
+          name,
+          path: `/${Routes.COHORT}/${cohortId}`
+        }
+      ]
+    });
   };
 
   handleListCreation = (name, description) => {
@@ -144,6 +160,12 @@ class Cohort extends PureComponent {
 
   handleListType = type => this.setState({ type });
 
+  renderBreadcrumbs = () => {
+    const { breadcrumbs } = this.state;
+
+    return <Breadcrumbs breadcrumbs={breadcrumbs} />;
+  };
+
   render() {
     const {
       archivedLists,
@@ -171,7 +193,7 @@ class Cohort extends PureComponent {
 
     return (
       <Fragment>
-        <Toolbar />
+        {this.renderBreadcrumbs()}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
             onCancel={this.handleDialogContext(null)}
@@ -198,7 +220,10 @@ class Cohort extends PureComponent {
         ) : (
           <div className="wrapper">
             <div className="cohort">
-              <CohortHeader details={cohortDetails} />
+              <CohortHeader
+                details={cohortDetails}
+                updateBreadcrumbs={this.handleBreadcrumbs}
+              />
               <div className="cohort__details">
                 <MembersBox
                   isCurrentUserAnOwner={isOwner}

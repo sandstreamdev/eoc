@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Toolbar from 'common/components/Toolbar';
 import { CohortIcon } from 'assets/images/icons';
 import {
   createCohort,
@@ -20,6 +19,7 @@ import GridList from 'common/components/GridList';
 import { CardColorType } from 'common/components/CardItem';
 import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
+import Breadcrumbs from 'common/components/Breadcrumbs';
 
 class Cohorts extends Component {
   state = {
@@ -86,6 +86,12 @@ class Cohorts extends Component {
     }
   };
 
+  renderBreadcrumbs = () => {
+    const breadcrumbs = [{ name: Routes.COHORTS, path: `/${Routes.COHORTS}` }];
+
+    return <Breadcrumbs breadcrumbs={breadcrumbs} />;
+  };
+
   render() {
     const { archivedCohorts, cohorts } = this.props;
     const {
@@ -98,7 +104,7 @@ class Cohorts extends Component {
 
     return (
       <Fragment>
-        <Toolbar />
+        {this.renderBreadcrumbs()}
         <div className="wrapper">
           <div className="dashboard">
             <GridList

@@ -17,6 +17,8 @@ export const StatusType = Object.freeze({
 
 export const Routes = Object.freeze({
   COHORT: 'cohort',
+  COHORTS: 'cohorts',
+  DASHBOARD: 'dashboard',
   LIST: 'sack'
 });
 

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import Toolbar, { ToolbarLink } from 'common/components/Toolbar';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
   getDoneItems,
@@ -14,17 +13,17 @@ import {
 import InputBar from 'modules/list/components/Items/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
-import { CohortIcon } from 'assets/images/icons';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import ArrowLeftIcon from 'assets/images/arrow-left-solid.svg';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
+import Breadcrumbs from 'common/components/Breadcrumbs';
 
 class List extends Component {
   state = {
+    breadcrumbs: [],
     dialogContext: null,
     isMembersBoxVisible: false,
     pendingForDetails: false,
@@ -32,14 +31,38 @@ class List extends Component {
   };
 
   componentDidMount() {
-    if (this.checkIfArchived()) {
-      this.setState({ pendingForDetails: true });
+    this.setState({ pendingForDetails: true });
 
-      this.fetchData().finally(() =>
-        this.setState({ pendingForDetails: false })
-      );
-    }
+    this.fetchData().finally(() => {
+      this.setState({ pendingForDetails: false });
+      this.handleBreadcrumbs();
+    });
   }
+
+  handleBreadcrumbs = () => {
+    const {
+      list: { cohortId, cohortName, name, _id: listId }
+    } = this.props;
+
+    if (cohortId) {
+      this.setState({
+        breadcrumbs: [
+          { name: Routes.COHORTS, path: `/${Routes.COHORTS}` },
+          { name: cohortName, path: `/${Routes.COHORT}/${cohortId}` },
+          { name, path: `/${Routes.LIST}/${listId}` }
+        ]
+      });
+
+      return;
+    }
+
+    this.setState({
+      breadcrumbs: [
+        { name: Routes.DASHBOARD, path: `/${Routes.DASHBOARD}` },
+        { name, path: `/${Routes.LIST}/${listId}` }
+      ]
+    });
+  };
 
   fetchData = () => {
     const {
@@ -68,12 +91,6 @@ class List extends Component {
     }
   };
 
-  checkIfArchived = () => {
-    const { list } = this.props;
-
-    return !list || (list && !list.isArchived);
-  };
-
   handleDialogContext = context => () =>
     this.setState({ dialogContext: context });
 
@@ -83,6 +100,15 @@ class List extends Component {
     this.setState(({ isMembersBoxVisible }) => ({
       isMembersBoxVisible: !isMembersBoxVisible
     }));
+
+  renderBreadcrumbs = () => {
+    const { breadcrumbs } = this.state;
+    const {
+      list: { isGuest }
+    } = this.props;
+
+    return <Breadcrumbs breadcrumbs={breadcrumbs} isGuest={isGuest} />;
+  };
 
   render() {
     const {
@@ -105,35 +131,22 @@ class List extends Component {
       return null;
     }
 
-    const {
-      cohortId,
-      isArchived,
-      isGuest,
-      isMember,
-      isOwner,
-      name,
-      type
-    } = list;
+    const { cohortId, isArchived, isMember, isOwner, name, type } = list;
     const isCohortList = cohortId !== null;
 
     return (
       <Fragment>
-        <Toolbar>
-          {cohortId && !isGuest && (
-            <ToolbarLink
-              additionalIconSrc={ArrowLeftIcon}
-              mainIcon={<CohortIcon />}
-              path={`/cohort/${cohortId}`}
-              title="Go back to cohort"
-            />
-          )}
-        </Toolbar>
+        {this.renderBreadcrumbs()}
         {isArchived ? (
           <ArchivedList listId={listId} name={name} />
         ) : (
           <div className="wrapper">
             <div className="list">
-              <ListHeader details={list} isCohortList={isCohortList} />
+              <ListHeader
+                details={list}
+                isCohortList={isCohortList}
+                updateBreadcrumbs={this.handleBreadcrumbs}
+              />
               <div className="list__details">
                 <div className="list__items">
                   <ItemsContainer isMember={isMember} items={undoneItems}>
