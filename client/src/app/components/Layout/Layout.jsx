@@ -74,6 +74,9 @@ Layout.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func
   }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
+  }),
 
   loginUser: PropTypes.func.isRequired
 };

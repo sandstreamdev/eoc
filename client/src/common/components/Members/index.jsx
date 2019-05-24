@@ -5,6 +5,7 @@ import { Manager, Reference } from 'react-popper';
 import { withRouter } from 'react-router-dom';
 import _debounce from 'lodash/debounce';
 
+import { RouterMatchPropType } from 'common/constants/propTypes';
 import { PlusIcon, DotsIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberBox from './components/MemberBox';
@@ -211,8 +212,10 @@ class MembersBox extends PureComponent {
 }
 
 MembersBox.propTypes = {
+  isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool,
   isMember: PropTypes.bool,
+  match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
   route: PropTypes.string.isRequired,
   type: PropTypes.string,
