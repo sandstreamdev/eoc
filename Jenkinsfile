@@ -59,7 +59,7 @@ pipeline {
     stage('Cleanup Docker') {
       steps {
         echo 'Cleaning up...'
-        sh 'docker rmi $(docker images --filter=reference="$TAG*" -q)'
+        sh 'docker image prune -a -f'
       }
     }
   }
