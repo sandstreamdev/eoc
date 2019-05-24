@@ -80,7 +80,11 @@ class MembersBox extends PureComponent {
       }
 
       if (resp === UserCreationStatus.NO_USER) {
-        this.setState({ email, pending: false, inviteNewUser: true });
+        this.setState({
+          email,
+          pending: false,
+          inviteNewUser: true
+        });
       }
     });
   };
@@ -187,7 +191,7 @@ class MembersBox extends PureComponent {
 
   renderAddNewUserForm = () => {
     const { isCurrentUserAnOwner, isMember, route } = this.props;
-    const { isFormVisible, pending } = this.state;
+    const { inviteNewUser, isFormVisible, pending } = this.state;
     const isAddMemberVisible =
       isCurrentUserAnOwner || (isMember && route === Routes.LIST);
 
@@ -197,6 +201,7 @@ class MembersBox extends PureComponent {
           <li className="members-box__list-item">
             {isFormVisible ? (
               <MembersForm
+                disabled={inviteNewUser || pending}
                 onAddNew={this.handleAddMember()}
                 pending={pending}
               />

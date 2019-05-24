@@ -17,6 +17,11 @@
   @include breakpoint($medium) {
     font-size: $s-font;
   }
+
+  &--disabled {
+    cursor: not-allowed;
+    background: $button-disabled;
+  }
 }
 
 .disabled-button {

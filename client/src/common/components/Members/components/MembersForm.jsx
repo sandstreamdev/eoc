@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import Preloader, {
   PreloaderSize,
@@ -58,13 +59,15 @@ class MembersForm extends PureComponent {
 
   render() {
     const { inputValue } = this.state;
-    const { pending } = this.props;
+    const { disabled, pending } = this.props;
 
     return (
       <form className="members-form" onSubmit={this.handleSubmit}>
         <input
-          className="members-form__input primary-input"
-          disabled={pending}
+          className={classNames('members-form__input primary-input', {
+            'members-form__input--disabled': disabled
+          })}
+          disabled={disabled}
           onBlur={this.handleBlur}
           onChange={this.handleInputChange}
           onFocus={this.handleFocus}
@@ -74,8 +77,10 @@ class MembersForm extends PureComponent {
           value={inputValue}
         />
         <button
-          className="primary-button"
-          disabled={pending}
+          className={classNames('primary-button', {
+            'primary-button--disabled': disabled
+          })}
+          disabled={disabled}
           onClick={this.handleAddNew}
           type="button"
         >
@@ -93,6 +98,7 @@ class MembersForm extends PureComponent {
 }
 
 MembersForm.propTypes = {
+  disabled: PropTypes.bool,
   pending: PropTypes.bool.isRequired,
 
   onAddNew: PropTypes.func.isRequired
