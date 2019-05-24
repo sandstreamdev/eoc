@@ -5,7 +5,7 @@ pipeline {
 
   environment {
     DOCKER_BUILDKIT = 1
-    TAG = "${BRANCH_NAME}:${BUILD_NUMBER}".toLowerCase()
+    TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase()
     TAG_TEST = "${TAG}-test"
     TAG_TEST_STATIC = "${TAG}-test-static"
   }
@@ -20,23 +20,18 @@ pipeline {
       steps {
         echo 'Building..'
         sh 'docker build --target build -t $TAG .'
-        // sh 'docker build . -t $TAG --target==build'
       }
     }
     stage('QA: static code analysis') {
       steps {
         echo 'Testing static..'
         sh 'docker build --target test-static -t $TAG_TEST_STATIC .'
-        // sh 'docker build -t $TAG_TEST_STATIC --build-arg APP_IMAGE=$TAG -f Dockerfile.test-static .'
-        // sh 'docker run --rm $TAG_TEST_STATIC'
       }
     }
     stage('QA: unit & integration tests') {
       steps {
         echo 'Testing..'
         sh 'docker build --target test -t $TAG_TEST .'
-        // sh 'docker build -t $TAG_TEST --build-arg APP_IMAGE=$TAG -f Dockerfile.test .'
-        // sh 'docker run --rm $TAG_TEST'
       }
     }
     stage('Deploy') {
@@ -51,6 +46,12 @@ pipeline {
         sh 'docker-compose build'
         sh 'docker-compose stop'
         sh 'docker-compose up -d'
+      }
+    }
+    stage('Cleanup Docker') {
+      steps {
+        echo 'Cleaning up...'
+        sh 'docker rmi $(docker images --filter=reference="$TAG*" -q)'
       }
     }
   }
