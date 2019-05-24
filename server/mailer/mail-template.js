@@ -1,72 +1,76 @@
 const { TEMP_DEV } = require('../common/variables');
 
 const mailTemplate = (receiver, sender) => {
-  const date = new Date().toUTCString();
-
   return `
       <!DOCTYPE html>
       <html>
-        <body style="background-color: #E9ECF2;">
+        <body style="background-color: #E9ECF2; 
+                     padding-top: 20px;">
           <center>
             <table
-              style="color: #627085;
-                        font-family: 'ProximaNova-Regular', Helvetica, Arial, sans-serif;
-                        max-width:500px;"
-            >
-              <tr>
-                <td style="width:80%;" align="left">EOC App</td>
-                <td align="right">${date}</td>
-              </tr>
-            </table>
-            <table
               style="background-color: #fff;
-                          font-family: 'ProximaNova-Regular', Helvetica, Arial, sans-serif;
-                          font-size: 0.9rem;
-                          color: #627085;
-                          max-width:500px;
-                          border-radius:4px;
-                          margin: 5px 20px 20px 20px;
-                          padding: 40px;
-                          box-shadow:0 1px 3px #B7C0CC, 0 1px 2px #B7C0CC;"
+                     font-family: 'ProximaNova-Regular', Helvetica, Arial, sans-serif;
+                     font-size: 14px;
+                     color: #627085;
+                     max-width:500px;
+                     border-radius:4px;
+                     margin: 20px 20px 20px 20px;
+                     padding: 40px;
+                     box-shadow:0 1px 3px #B7C0CC, 0 1px 2px #B7C0CC;"
             >
-              <tr>
+              <tr style="width:100%;">
+                <td style="width:100%;"
+                    align="left"
+                >
+                  EOC App
+                </td>
+              <tr style="width:100%;"> 
                 <td
-                  style="font-size: 1.4rem;
-                padding-top:20px;padding-bottom:0px;"
+                  style="font-size: 22px;
+                         padding-top:20px;
+                         padding-bottom:0px;
+                         width:100%;"
                 >
                  Join EOC today!
                 </td>
               </tr>
-              <tr>
+              <tr style="width:100%;">
                 <td
-                  style="padding-top:20px;
-                        padding-bottom:10px;"
+                  style="padding: 20px 0 10px 0;
+                         width:100%"
                 >
                   Hey ${receiver},
                 </td>
               </tr>
-              <tr style="padding-top:5px;padding-bottom:20px;">
-                <td>Would you like to join me in amazing EOC app?</td>
+              <tr style="padding-top:5px;
+                         padding-bottom:20px;
+                         width:100%;"
+              >
+                <td style="width=100%;">Would you like to join me in amazing EOC app?</td>
               </tr>
-              <tr style="padding-top:40px;padding-bottom:0px;">
-                <td>Sincerely,</td>
+              <tr style="padding-top:40px;
+                         padding-bottom:0px;
+                         width:100%;"
+              >
+                <td style="width:100%;">Sincerely,</td>
               </tr>
-              <tr>
-                <td>${sender}</td>
+              <tr style="width:100%;">
+                <td style="width:100%;">${sender}</td>
               </tr>
-              <tr>
-                <td style="padding-top:40px;">
-                  <a href="${TEMP_DEV}"
-                    ><input
+              <tr style="width:100%;">
+                <td style="padding-top:40px;
+                           width:100%;">
+                  <a href="${TEMP_DEV}">
+                    <input
                       value="JOIN EOC"
                       type="button"
                       style="background: #ef9b1f;
-                padding: 8px 16px;
-                line-height: 1.2;
-                font-weight: 500;
-                border: 0;
-                color:#fff;
-                font-size: 14px"
+                      padding: 8px 16px;
+                      line-height: 1.2;
+                      font-weight: 500;
+                      border: 0;
+                      color:#fff;
+                      font-size: 14px"
                     />
                   </a>
                 </td>
