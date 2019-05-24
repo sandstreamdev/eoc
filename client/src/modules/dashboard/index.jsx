@@ -20,11 +20,6 @@ import FormDialog from 'common/components/FormDialog';
 import { Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 
-export const DashboardBreadcrumbs = Object.freeze({
-  NAME: 'dashboard',
-  PATH: '/dashboard'
-});
-
 class Dashboard extends Component {
   state = {
     areArchivedListsVisible: false,
@@ -97,7 +92,7 @@ class Dashboard extends Component {
       pendingForLists
     } = this.state;
     const breadcrumbs = [
-      { name: DashboardBreadcrumbs.NAME, path: DashboardBreadcrumbs.PATH }
+      { name: Routes.DASHBOARD, path: `/${Routes.DASHBOARD}` }
     ];
 
     return (
