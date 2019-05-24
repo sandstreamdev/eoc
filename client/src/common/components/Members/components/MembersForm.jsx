@@ -67,7 +67,7 @@ class MembersForm extends PureComponent {
           className={classNames('members-form__input primary-input', {
             'members-form__input--disabled': disabled
           })}
-          disabled={disabled}
+          disabled={disabled || pending}
           onBlur={this.handleBlur}
           onChange={this.handleInputChange}
           onFocus={this.handleFocus}

@@ -20,12 +20,12 @@ class InviteNewUser extends PureComponent {
             className="primary-button"
             onClick={onInvite}
             preloaderTheme={PreloaderTheme.LIGHT}
-            value="Invite user"
             title="Invite user"
+            value="Invite user"
           >
             Invite User
           </PendingButton>
-          <button className="primary-button" type="button" onClick={onCancel}>
+          <button className="primary-button" onClick={onCancel} type="button">
             Cancel
           </button>
         </footer>
@@ -35,7 +35,7 @@ class InviteNewUser extends PureComponent {
 }
 
 InviteNewUser.propTypes = {
-  email: PropTypes.string,
+  email: PropTypes.string.isRequired,
 
   onCancel: PropTypes.func.isRequired,
   onInvite: PropTypes.func.isRequired

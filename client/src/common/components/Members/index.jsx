@@ -32,7 +32,7 @@ class MembersBox extends PureComponent {
     this.state = {
       context: null,
       email: '',
-      inviteNewUser: false,
+      isInvitationBoxVisible: false,
       isFormVisible: false,
       isMobile: window.outerWidth < 400,
       membersDisplayLimit: MEMBERS_DISPLAY_LIMIT,
@@ -52,6 +52,10 @@ class MembersBox extends PureComponent {
   showForm = () => this.setState({ isFormVisible: true });
 
   hideForm = () => this.setState({ isFormVisible: false });
+
+  hideInvitationBox = () => this.setState({ isInvitationBoxVisible: false });
+
+  showInvitationBox = () => this.setState({ isInvitationBoxVisible: true });
 
   handleDisplayingMemberDetails = id => () => {
     this.setState({ context: id });
@@ -82,9 +86,9 @@ class MembersBox extends PureComponent {
       if (resp === UserCreationStatus.NO_USER) {
         this.setState({
           email,
-          pending: false,
-          inviteNewUser: true
+          pending: false
         });
+        this.showInvitationBox();
       }
     });
   };
@@ -105,13 +109,13 @@ class MembersBox extends PureComponent {
 
     return inviteUser(email).then(() => {
       this.hideForm();
-      this.setState({ inviteNewUser: false });
+      this.hideInvitationBox();
     });
   };
 
   handleCancel = () => {
     this.hideForm();
-    this.setState({ inviteNewUser: false });
+    this.hideInvitationBox();
   };
 
   renderDetails = member => {
@@ -191,7 +195,7 @@ class MembersBox extends PureComponent {
 
   renderAddNewUserForm = () => {
     const { isCurrentUserAnOwner, isMember, route } = this.props;
-    const { inviteNewUser, isFormVisible, pending } = this.state;
+    const { isInvitationBoxVisible, isFormVisible, pending } = this.state;
     const isAddMemberVisible =
       isCurrentUserAnOwner || (isMember && route === Routes.LIST);
 
@@ -201,7 +205,7 @@ class MembersBox extends PureComponent {
           <li className="members-box__list-item">
             {isFormVisible ? (
               <MembersForm
-                disabled={inviteNewUser || pending}
+                disabled={isInvitationBoxVisible || pending}
                 onAddNew={this.handleAddMember()}
                 pending={pending}
               />
@@ -221,7 +225,7 @@ class MembersBox extends PureComponent {
   };
 
   render() {
-    const { context, email, inviteNewUser, isMobile } = this.state;
+    const { context, email, isInvitationBoxVisible, isMobile } = this.state;
     const { members } = this.props;
     const currentUser = members[context];
 
@@ -235,7 +239,7 @@ class MembersBox extends PureComponent {
           {this.renderMemberList()}
           {this.renderShowMoreUsers()}
         </ul>
-        {inviteNewUser && (
+        {isInvitationBoxVisible && (
           <InviteNewUser
             email={email}
             onInvite={this.handleInvite}
