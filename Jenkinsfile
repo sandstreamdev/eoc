@@ -7,7 +7,7 @@ pipeline {
     DOCKER_BUILDKIT = 1
     TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase()
     TAG_TEST = "${TAG}-test"
-    TAG_TEST_STATIC = "${TAG}-test-static"
+    TAG_TEST_STATIC = "${TAG_TEST}-static"
   }
 
   stages {
@@ -16,16 +16,16 @@ pipeline {
             slackSend (color: '#F0E68C', message: "*STARTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}")
         }
     }
-    stage('Build') {
-      steps {
-        echo 'Building..'
-        sh 'docker build --target build -t $TAG .'
-      }
-    }
     stage('QA: static code analysis') {
       steps {
         echo 'Testing static..'
         sh 'docker build --target test-static -t $TAG_TEST_STATIC .'
+      }
+    }
+    stage('Build') {
+      steps {
+        echo 'Building..'
+        sh 'docker build --target build -t $TAG .'
       }
     }
     stage('QA: unit & integration tests') {
