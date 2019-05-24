@@ -19,14 +19,14 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building..'
-        sh 'docker build --target build .'
+        sh 'docker build --target build -t $TAG .'
         // sh 'docker build . -t $TAG --target==build'
       }
     }
     stage('QA: static code analysis') {
       steps {
         echo 'Testing static..'
-        sh 'docker build --target test-static .'
+        sh 'docker build --target test-static -t $TAG_TEST_STATIC .'
         // sh 'docker build -t $TAG_TEST_STATIC --build-arg APP_IMAGE=$TAG -f Dockerfile.test-static .'
         // sh 'docker run --rm $TAG_TEST_STATIC'
       }
@@ -34,7 +34,7 @@ pipeline {
     stage('QA: unit & integration tests') {
       steps {
         echo 'Testing..'
-        sh 'docker build --target test'
+        sh 'docker build --target test -t $TAG_TEST .'
         // sh 'docker build -t $TAG_TEST --build-arg APP_IMAGE=$TAG -f Dockerfile.test .'
         // sh 'docker run --rm $TAG_TEST'
       }
