@@ -829,9 +829,7 @@ const addViewer = (req, resp) => {
         return resp.status(200).json(userToSend);
       }
 
-      resp.status(204).send({
-        message: `User with ${email} email doesn't have an account yet.Would you like to invite via email?`
-      });
+      resp.status(204).send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

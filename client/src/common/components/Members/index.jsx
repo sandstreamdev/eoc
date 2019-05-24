@@ -32,8 +32,8 @@ class MembersBox extends PureComponent {
     this.state = {
       context: null,
       email: '',
-      isInvitationBoxVisible: false,
       isFormVisible: false,
+      isInvitationBoxVisible: false,
       isMobile: window.outerWidth < 400,
       membersDisplayLimit: MEMBERS_DISPLAY_LIMIT,
       pending: false
@@ -242,8 +242,8 @@ class MembersBox extends PureComponent {
         {isInvitationBoxVisible && (
           <InviteNewUser
             email={email}
-            onInvite={this.handleInvite}
             onCancel={this.handleCancel}
+            onInvite={this.handleInvite}
           />
         )}
         {isMobile && currentUser && this.renderDetails(currentUser)}

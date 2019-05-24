@@ -2,7 +2,9 @@ const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
 
-SendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
+const { SENDGRID_API_KEY } = process.env;
+
+SendGridMail.setApiKey(SENDGRID_API_KEY);
 
 const sendInvitation = (req, resp) => {
   const { email: receiver } = req.body;
