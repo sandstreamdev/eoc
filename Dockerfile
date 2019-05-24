@@ -15,6 +15,6 @@ FROM init AS build
 RUN npm run build:prod
 RUN npm prune --production
 
-FROM builder
+FROM build
 CMD npm run start:server:prod
 EXPOSE 8080
