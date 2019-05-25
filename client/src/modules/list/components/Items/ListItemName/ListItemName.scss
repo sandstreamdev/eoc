@@ -1,8 +1,17 @@
 .list-item-name {
-  border: 0;
-  color: $text-dark;
-  font-size: $l-font;
-  font-weight: 500;
-  line-height: 1.2;
-  margin-bottom: 3px;
+  position: relative;
+
+  &__input {
+    border: 0;
+    color: $text-dark;
+    font-size: $l-font;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 3px;
+
+    &--disabled {
+      color: $button-disabled;
+      border-color: $button-disabled;
+    }
+  }
 }

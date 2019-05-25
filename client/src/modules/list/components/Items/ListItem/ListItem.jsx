@@ -25,6 +25,7 @@ import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
 import ListItemName from '../ListItemName';
+import { preventDefault } from 'common/utils/helpers';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -38,6 +39,7 @@ class ListItem extends PureComponent {
       areDetailsVisible: false,
       areFieldsUpdated: false,
       done: isOrdered,
+      isNameEdited: false,
       isValidationErrorVisible: false,
       itemDescription: description,
       link
@@ -186,6 +188,12 @@ class ListItem extends PureComponent {
     );
   };
 
+  preventDefault = event => preventDefault(event);
+
+  handleNameFocus = () => this.setState({ isNameEdited: true });
+
+  handleNameBlur = () => this.setState({ isNameEdited: false });
+
   renderDetails = () => {
     const { areFieldsUpdated, isValidationErrorVisible } = this.state;
     const {
@@ -258,7 +266,7 @@ class ListItem extends PureComponent {
       data: { isOrdered, authorName, _id, name },
       isMember
     } = this.props;
-    const { areDetailsVisible, done } = this.state;
+    const { areDetailsVisible, done, isNameEdited } = this.state;
 
     return (
       <li
@@ -273,7 +281,7 @@ class ListItem extends PureComponent {
             'list-item__top--details-visible': areDetailsVisible,
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
-          onClick={this.handleDetailsVisibility}
+          onClick={isNameEdited ? null : this.handleDetailsVisibility}
           role="listitem"
         >
           <input
@@ -284,7 +292,13 @@ class ListItem extends PureComponent {
           />
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
-              <ListItemName name={name} isMember={isMember} itemId={_id} />
+              <ListItemName
+                isMember={isMember}
+                itemId={_id}
+                name={name}
+                onBlur={this.handleNameBlur}
+                onFocus={this.handleNameFocus}
+              />
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>

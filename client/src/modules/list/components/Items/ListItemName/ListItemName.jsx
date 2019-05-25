@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
 import { stopPropagation } from 'common/utils/helpers';
+import Preloader from 'common/components/Preloader';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -17,14 +18,16 @@ class ListItemName extends PureComponent {
 
     this.state = {
       isNameInputFocused: false,
-      name
+      isTipVisible: false,
+      name,
+      pending: false
     };
 
     this.nameInput = React.createRef();
   }
 
   componentDidUpdate() {
-    const { isNameInputFocused } = this.state;
+    const { isNameInputFocused, name } = this.state;
 
     if (isNameInputFocused) {
       document.addEventListener('keydown', this.handleKeyPress);
@@ -32,6 +35,10 @@ class ListItemName extends PureComponent {
 
     if (!isNameInputFocused) {
       document.removeEventListener('keydown', this.handleKeyPress);
+    }
+
+    if (name.length === 0) {
+      this.nameInput.current.focus();
     }
   }
 
@@ -54,12 +61,23 @@ class ListItemName extends PureComponent {
       updateListItem
     } = this.props;
     const isNameUpdated = updatedName !== name;
+    const canBeUpdated = updatedName.trim().length > 1;
 
-    if (isNameUpdated) {
-      updateListItem(listId, itemId, { name: updatedName });
+    if (canBeUpdated && isNameUpdated) {
+      this.setState({ pending: true });
 
-      this.setState({ isNameInputFocused: false });
-      this.nameInput.current.blur();
+      updateListItem(listId, itemId, { name: updatedName }).then(() => {
+        this.setState({
+          pending: false,
+          isTipVisible: false
+        });
+
+        this.handleNameInputBlur();
+      });
+    }
+
+    if (!canBeUpdated) {
+      this.setState({ isTipVisible: true });
     }
   };
 
@@ -68,34 +86,56 @@ class ListItemName extends PureComponent {
       target: { value }
     } = event;
 
-    if (value.length > 0) {
-      this.setState({ name: value });
-    }
+    this.setState({ name: value });
   };
 
-  handleNameInputFocus = () => this.setState({ isNameInputFocused: true });
+  renderTip = () => (
+    <span className="error-message">
+      Please fill this field. Name can not be empty.
+    </span>
+  );
 
-  handleNameInputBlur = () => this.setState({ isNameInputFocused: false });
+  handleNameInputFocus = () => {
+    const { onFocus } = this.props;
+
+    onFocus();
+    this.setState({ isNameInputFocused: true });
+  };
+
+  handleNameInputBlur = () => {
+    const { onBlur } = this.props;
+
+    onBlur();
+    this.nameInput.current.blur();
+    this.setState({ isNameInputFocused: false });
+  };
 
   handleOnClick = event => stopPropagation(event);
 
   render() {
-    const { isNameInputFocused, name } = this.state;
+    const { isNameInputFocused, isTipVisible, name, pending } = this.state;
     const { isMember } = this.props;
     return (
-      <input
-        className={classNames('list-item-name', {
-          'primary-input': isNameInputFocused
-        })}
-        disabled={!isMember}
-        onBlur={this.handleNameInputBlur}
-        onChange={this.handleNameChange}
-        onClick={this.handleOnClick}
-        onFocus={this.handleNameInputFocus}
-        ref={this.nameInput}
-        type="text"
-        value={name}
-      />
+      <Fragment>
+        <div className="list-item-name">
+          <input
+            className={classNames('list-item-name__input', {
+              'primary-input': isNameInputFocused,
+              'list-item-name__input--disabled': pending
+            })}
+            disabled={!isMember || pending}
+            onBlur={this.handleNameInputBlur}
+            onChange={this.handleNameChange}
+            onClick={this.handleOnClick}
+            onFocus={this.handleNameInputFocus}
+            ref={this.nameInput}
+            type="text"
+            value={name}
+          />
+          {pending && <Preloader />}
+        </div>
+        {isTipVisible && this.renderTip()}
+      </Fragment>
     );
   }
 }
@@ -106,6 +146,8 @@ ListItemName.propTypes = {
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
 
+  onBlur: PropTypes.func.isRequired,
+  onFocus: PropTypes.func.isRequired,
   updateListItem: PropTypes.func.isRequired
 };
 
