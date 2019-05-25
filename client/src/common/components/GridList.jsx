@@ -18,10 +18,12 @@ import {
   removeCohortFromFavourites
 } from 'modules/cohort/model/actions';
 import Preloader from 'common/components/Preloader';
+import { stopPropagation } from 'common/utils/helpers';
 
 class GridList extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
-    event.stopPropagation();
+    stopPropagation(event);
+
     const {
       addCohortToFavourites,
       addListToFavourites,

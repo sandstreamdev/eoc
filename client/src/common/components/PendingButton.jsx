@@ -8,6 +8,7 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
+import { stopPropagation } from 'common/utils/helpers';
 
 class PendingButton extends PureComponent {
   pendingPromise = null;
@@ -23,7 +24,7 @@ class PendingButton extends PureComponent {
   }
 
   handleOnClick = event => {
-    event.stopPropagation();
+    stopPropagation(event);
     const { onClick } = this.props;
 
     this.setState({ pending: true });

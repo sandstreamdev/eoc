@@ -29,8 +29,13 @@ class FormDialog extends Component {
     document.removeEventListener('keypress', this.handleEnterKeypress);
   }
 
-  handleEnterKeypress = event =>
-    event.code === KeyCodes.ENTER && this.handleConfirm();
+  handleEnterKeypress = event => {
+    const { code } = event;
+
+    if (code === KeyCodes.ENTER) {
+      this.handleConfirm();
+    }
+  };
 
   handleDescriptionChange = description => this.setState({ description });
 

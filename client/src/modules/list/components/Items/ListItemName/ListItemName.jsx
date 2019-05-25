@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
+import { stopPropagation } from 'common/utils/helpers';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -76,7 +77,7 @@ class ListItemName extends PureComponent {
 
   handleNameInputBlur = () => this.setState({ isNameInputFocused: false });
 
-  handleOnClick = event => event.stopPropagation();
+  handleOnClick = event => stopPropagation(event);
 
   render() {
     const { isNameInputFocused, name } = this.state;

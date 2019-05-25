@@ -31,11 +31,10 @@ class ListItem extends PureComponent {
     super(props);
 
     const {
-      data: { isOrdered, description, link, name }
+      data: { isOrdered, description, link }
     } = this.props;
 
     this.state = {
-      itemName: name,
       areDetailsVisible: false,
       areFieldsUpdated: false,
       done: isOrdered,
@@ -256,10 +255,10 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { isOrdered, authorName, _id },
+      data: { isOrdered, authorName, _id, name },
       isMember
     } = this.props;
-    const { areDetailsVisible, done, itemName } = this.state;
+    const { areDetailsVisible, done } = this.state;
 
     return (
       <li
@@ -285,7 +284,7 @@ class ListItem extends PureComponent {
           />
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
-              <ListItemName name={itemName} isMember={isMember} itemId={_id} />
+              <ListItemName name={name} isMember={isMember} itemId={_id} />
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
