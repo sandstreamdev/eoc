@@ -285,7 +285,7 @@ class ListItem extends PureComponent {
           />
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
-              <ListItemName name={itemName} />
+              <ListItemName name={itemName} isMember={isMember} itemId={_id} />
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
