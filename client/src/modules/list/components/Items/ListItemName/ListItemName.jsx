@@ -47,15 +47,15 @@ class ListItemName extends PureComponent {
     const { name: updatedName } = this.state;
     const {
       itemId,
-      updateListItem,
-      name,
       match: {
         params: { id: listId }
-      }
+      },
+      name,
+      updateListItem
     } = this.props;
-    const isNameUpdate = updatedName !== name;
+    const isNameUpdated = updatedName !== name;
 
-    if (isNameUpdate) {
+    if (isNameUpdated) {
       updateListItem(listId, itemId, { name: updatedName });
 
       this.setState({ isNameInputFocused: false });
@@ -84,17 +84,17 @@ class ListItemName extends PureComponent {
     const { isMember } = this.props;
     return (
       <input
-        disabled={!isMember}
-        type="text"
         className={classNames('list-item-name', {
           'primary-input': isNameInputFocused
         })}
-        value={name}
-        onClick={this.handleOnClick}
-        onFocus={this.handleNameInputFocus}
+        disabled={!isMember}
         onBlur={this.handleNameInputBlur}
         onChange={this.handleNameChange}
+        onClick={this.handleOnClick}
+        onFocus={this.handleNameInputFocus}
         ref={this.nameInput}
+        type="text"
+        value={name}
       />
     );
   }
@@ -103,8 +103,8 @@ class ListItemName extends PureComponent {
 ListItemName.propTypes = {
   isMember: PropTypes.bool.isRequired,
   itemId: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
+  name: PropTypes.string.isRequired,
 
   updateListItem: PropTypes.func.isRequired
 };

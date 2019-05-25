@@ -837,7 +837,7 @@ const addViewer = (req, resp) => {
 };
 
 const updateListItem = (req, resp) => {
-  const { authorId, description, isOrdered, link, itemId, name } = req.body;
+  const { authorId, description, isOrdered, itemId, link, name } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -1056,7 +1056,7 @@ module.exports = {
   removeMemberRole,
   removeOwner,
   removeOwnerRole,
-  updateListItem,
   updateListById,
+  updateListItem,
   voteForItem
 };

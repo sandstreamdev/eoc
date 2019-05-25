@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise } from 'common/utils/helpers';
+import { makeAbortablePromise, stopPropagation } from 'common/utils/helpers';
 import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
-import { stopPropagation } from 'common/utils/helpers';
 
 class PendingButton extends PureComponent {
   pendingPromise = null;

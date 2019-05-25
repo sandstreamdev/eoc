@@ -19,9 +19,9 @@ const {
   removeMember,
   removeMemberRole,
   removeOwner,
-  updateListItem,
-  updateListById,
   removeOwnerRole,
+  updateListById,
+  updateListItem,
   voteForItem
 } = require('../controllers/list');
 const { authorize } = require('../middleware/authorize');
