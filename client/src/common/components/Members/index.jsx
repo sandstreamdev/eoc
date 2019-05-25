@@ -14,11 +14,9 @@ import MemberButton from './components/MemberButton';
 import { addCohortMember } from 'modules/cohort/model/actions';
 import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
-import { UserCreationStatus } from './const';
+import { UserCreationStatus, MEMBERS_DISPLAY_LIMIT } from './const';
 import InviteNewUser from './components/InviteNewUser';
 import { inviteUser } from './model/actions';
-
-const MEMBERS_DISPLAY_LIMIT = 10;
 
 class MembersBox extends PureComponent {
   handleResize = _debounce(
