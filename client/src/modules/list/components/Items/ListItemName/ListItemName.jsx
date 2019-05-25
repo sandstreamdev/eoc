@@ -24,6 +24,7 @@ class ListItemName extends PureComponent {
     };
 
     this.nameInput = React.createRef();
+    this.listItemName = React.createRef();
   }
 
   componentDidUpdate() {
@@ -31,10 +32,12 @@ class ListItemName extends PureComponent {
 
     if (isNameInputFocused) {
       document.addEventListener('keydown', this.handleKeyPress);
+      document.addEventListener('mousedown', this.handleClickOutside);
     }
 
     if (!isNameInputFocused) {
       document.removeEventListener('keydown', this.handleKeyPress);
+      document.removeEventListener('mousedown', this.handleClickOutside);
     }
 
     if (name.length === 0) {
@@ -90,9 +93,7 @@ class ListItemName extends PureComponent {
   };
 
   renderTip = () => (
-    <span className="error-message">
-      Please fill this field. Name can not be empty.
-    </span>
+    <span className="error-message">Name can not be empty.</span>
   );
 
   handleNameInputFocus = () => {
@@ -112,11 +113,19 @@ class ListItemName extends PureComponent {
 
   handleOnClick = event => stopPropagation(event);
 
+  handleClickOutside = event => {
+    const { target } = event;
+
+    if (this.listItemName && !this.listItemName.current.contains(target)) {
+      this.handleNameUpdate();
+    }
+  };
+
   render() {
     const { isNameInputFocused, isTipVisible, name, pending } = this.state;
     const { isMember } = this.props;
     return (
-      <Fragment>
+      <div ref={this.listItemName}>
         <div className="list-item-name">
           <input
             className={classNames('list-item-name__input', {
@@ -135,7 +144,7 @@ class ListItemName extends PureComponent {
           {pending && <Preloader />}
         </div>
         {isTipVisible && this.renderTip()}
-      </Fragment>
+      </div>
     );
   }
 }
