@@ -24,16 +24,18 @@ import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
+import ListItemName from '../ListItemName';
 
 class ListItem extends PureComponent {
   constructor(props) {
     super(props);
 
     const {
-      data: { isOrdered, description, link }
+      data: { isOrdered, description, link, name }
     } = this.props;
 
     this.state = {
+      itemName: name,
       areDetailsVisible: false,
       areFieldsUpdated: false,
       done: isOrdered,
@@ -254,10 +256,10 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { isOrdered, authorName, _id, name },
+      data: { isOrdered, authorName, _id },
       isMember
     } = this.props;
-    const { done, areDetailsVisible } = this.state;
+    const { areDetailsVisible, done, itemName } = this.state;
 
     return (
       <li
@@ -283,7 +285,7 @@ class ListItem extends PureComponent {
           />
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
-              <span className="list-item__name">{name}</span>
+              <ListItemName name={itemName} />
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
