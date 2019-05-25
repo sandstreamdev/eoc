@@ -25,7 +25,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            plugins: ['babel-plugin-jsx-remove-data-test-id'] // TODO: Do we need this?
+            plugins: ['babel-plugin-jsx-remove-data-test-id']
           }
         }
       },

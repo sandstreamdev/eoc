@@ -5,6 +5,7 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
+import { KeyCodes } from 'common/constants/enums';
 
 class MembersForm extends PureComponent {
   constructor(props) {
@@ -38,7 +39,7 @@ class MembersForm extends PureComponent {
     const { code } = event;
     const { isFocused } = this.state;
 
-    if (code === 'Enter' && isFocused) {
+    if (code === KeyCodes.ENTER && isFocused) {
       this.handleAddNew();
     }
   };

@@ -33,3 +33,8 @@ export const UserRolesToDisplay = Object.freeze({
   OWNER: 'owner',
   VIEWER: 'viewer'
 });
+
+export const KeyCodes = Object.freeze({
+  ENTER: 'Enter',
+  ESCAPE: 'Escape'
+});

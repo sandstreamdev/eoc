@@ -10,6 +10,7 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
+import { KeyCodes } from 'common/constants/enums';
 
 class NewComment extends PureComponent {
   pendingPromise = null;
@@ -35,7 +36,7 @@ class NewComment extends PureComponent {
     const { code } = event;
     const { onClose } = this.props;
 
-    if (code === 'Escape') {
+    if (code === KeyCodes.ESCAPE) {
       onClose();
     }
   };

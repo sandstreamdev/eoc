@@ -17,7 +17,7 @@ import {
   cloneItem,
   setVote,
   toggle,
-  updateItemDetails
+  updateListItem
 } from '../model/actions';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import { PreloaderTheme } from 'common/components/Preloader';
@@ -91,7 +91,7 @@ class ListItem extends PureComponent {
       match: {
         params: { id: listId }
       },
-      updateItemDetails
+      updateListItem
     } = this.props;
 
     if (!isMember) {
@@ -111,7 +111,7 @@ class ListItem extends PureComponent {
     }
 
     if (isLinkUpdated || isDescriptionUpdated) {
-      return updateItemDetails(listId, itemId, { description, link });
+      return updateListItem(listId, itemId, { description, link });
     }
   };
 
@@ -325,7 +325,7 @@ ListItem.propTypes = {
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired,
-  updateItemDetails: PropTypes.func.isRequired
+  updateListItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -335,6 +335,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { clearVote, cloneItem, setVote, toggle, updateItemDetails }
+    { clearVote, cloneItem, setVote, toggle, updateListItem }
   )(ListItem)
 );

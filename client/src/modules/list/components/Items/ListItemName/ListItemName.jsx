@@ -4,8 +4,9 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { updateItemDetails } from '../model/actions';
+import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
+import { KeyCodes } from 'common/constants/enums';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -36,8 +37,7 @@ class ListItemName extends PureComponent {
   handleKeyPress = event => {
     const { code } = event;
 
-    // Turn this into ENUM somewhere and change it everywhere across the project
-    if (code === 'Enter' || code === 'Escape') {
+    if (code === KeyCodes.ENTER || code === KeyCodes.ESCAPE) {
       this.handleNameUpdate();
     }
   };
@@ -46,7 +46,7 @@ class ListItemName extends PureComponent {
     const { name: updatedName } = this.state;
     const {
       itemId,
-      updateItemDetails,
+      updateListItem,
       name,
       match: {
         params: { id: listId }
@@ -55,7 +55,7 @@ class ListItemName extends PureComponent {
     const isNameUpdate = updatedName !== name;
 
     if (isNameUpdate) {
-      updateItemDetails(listId, itemId, { name: updatedName });
+      updateListItem(listId, itemId, { name: updatedName });
 
       this.setState({ isNameInputFocused: false });
       this.nameInput.current.blur();
@@ -105,12 +105,12 @@ ListItemName.propTypes = {
   name: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
 
-  updateItemDetails: PropTypes.func.isRequired
+  updateListItem: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
     null,
-    { updateItemDetails }
+    { updateListItem }
   )(ListItemName)
 );

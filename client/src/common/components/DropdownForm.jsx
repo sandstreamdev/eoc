@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Form from 'common/components/Form';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
+import { KeyCodes } from 'common/constants/enums';
 
 class DropdownForm extends Component {
   constructor(props) {
@@ -35,7 +36,7 @@ class DropdownForm extends Component {
   escapeListener = event => {
     const { code } = event;
     const { onHide } = this.props;
-    if (code === 'Escape') {
+    if (code === KeyCodes.ESCAPE) {
       onHide && onHide();
     }
   };
