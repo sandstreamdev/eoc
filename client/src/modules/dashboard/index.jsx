@@ -81,7 +81,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { archivedLists, cohortLists, listMode, privateLists } = this.props;
+    const { archivedLists, cohortLists, privateLists, viewType } = this.props;
     const {
       areArchivedListsVisible,
       isDialogVisible,
@@ -98,22 +98,22 @@ class Dashboard extends Component {
               color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={privateLists}
-              listMode={listMode}
               name="Private Sacks"
               onAddNew={this.handleDialogVisibility}
               pending={pendingForLists}
               placeholder="There are no sacks yet!"
               route={Routes.LIST}
+              viewType={viewType}
             />
             <CollectionView
               color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={cohortLists}
-              listMode={listMode}
               name="Cohorts' Sacks"
               pending={pendingForLists}
               placeholder="There are no sacks yet!"
               route={Routes.LIST}
+              viewType={viewType}
             />
             <button
               className="link-button"
@@ -127,11 +127,11 @@ class Dashboard extends Component {
                 color={ColorType.GRAY}
                 icon={<ListIcon />}
                 items={archivedLists}
-                listMode={listMode}
                 name="Archived Sacks"
                 pending={pendingForArchivedLists}
                 placeholder="You have no archived sacks!"
                 route={Routes.LIST}
+                viewType={viewType}
               />
             )}
           </div>
@@ -152,8 +152,8 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
-  listMode: PropTypes.bool,
   privateLists: PropTypes.objectOf(PropTypes.object),
+  viewType: PropTypes.string.isRequired,
 
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,

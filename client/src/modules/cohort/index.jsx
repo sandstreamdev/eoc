@@ -147,11 +147,11 @@ class Cohort extends PureComponent {
       archivedLists,
       cohortDetails,
       lists,
-      listMode,
       match: {
         params: { id: cohortId }
       },
-      members
+      members,
+      viewType
     } = this.props;
 
     if (!cohortDetails) {
@@ -207,11 +207,11 @@ class Cohort extends PureComponent {
                   color={ColorType.ORANGE}
                   icon={<ListIcon />}
                   items={lists}
-                  listMode={listMode}
                   name="Sacks"
                   onAddNew={this.handleDialogContext(DialogContext.CREATE)}
                   placeholder={`There are no sacks in the ${name} cohort!`}
                   route={Routes.LIST}
+                  viewType={viewType}
                 />
                 {!isArchived && isOwner && (
                   <button
@@ -238,11 +238,11 @@ class Cohort extends PureComponent {
                       color={ColorType.GRAY}
                       icon={<ListIcon />}
                       items={archivedLists}
-                      listMode={listMode}
                       name="Archived Sacks"
                       pending={pendingForArchivedLists}
                       placeholder={`There are no archived sacks in the ${name} cohort!`}
                       route={Routes.LIST}
+                      viewType={viewType}
                     />
                   )}
                 </div>
@@ -264,10 +264,10 @@ Cohort.propTypes = {
     name: PropTypes.string
   }),
   createList: PropTypes.func.isRequired,
-  listMode: PropTypes.bool,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
+  viewType: PropTypes.string.isRequired,
 
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,

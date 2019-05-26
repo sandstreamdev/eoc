@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import TilesViewItem from 'common/components/TilesViewItem';
 import MessageBox from 'common/components/MessageBox';
-import { MessageType, Routes } from 'common/constants/enums';
+import { MessageType, Routes, ViewType } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
 import {
   addListToFavourites,
@@ -108,11 +108,11 @@ class CollectionView extends PureComponent {
     const {
       icon,
       items,
-      listMode,
       name,
       onAddNew,
       pending,
-      placeholder
+      placeholder,
+      viewType
     } = this.props;
 
     return (
@@ -122,9 +122,17 @@ class CollectionView extends PureComponent {
           {name}
         </h2>
         <div className="collection__body">
-          <ul className={listMode ? 'collection__list' : 'collection__tiles'}>
+          <ul
+            className={
+              viewType === ViewType.LIST
+                ? 'collection__list'
+                : 'collection__tiles'
+            }
+          >
             {onAddNew && this.renderAddNew()}
-            {listMode ? this.renderAsList() : this.renderAsTiles()}
+            {viewType === ViewType.LIST
+              ? this.renderAsList()
+              : this.renderAsTiles()}
           </ul>
           {pending && <Preloader />}
           {_isEmpty(items) && !pending && (
@@ -143,11 +151,11 @@ CollectionView.propTypes = {
   }),
   icon: PropTypes.node.isRequired,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  listMode: PropTypes.bool,
   name: PropTypes.string.isRequired,
   pending: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
+  viewType: PropTypes.string.isRequired,
 
   addCohortToFavourites: PropTypes.func,
   addListToFavourites: PropTypes.func,

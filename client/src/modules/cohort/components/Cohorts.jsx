@@ -17,7 +17,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
-import { ColorType, Routes } from 'common/constants/enums';
+import { ColorType, Routes, ViewType } from 'common/constants/enums';
 
 class Cohorts extends Component {
   state = {
@@ -107,6 +107,7 @@ class Cohorts extends Component {
               pending={pendingForCohorts}
               placeholder="There are no cohorts yet!"
               route={Routes.COHORT}
+              viewType={ViewType.TILES}
             />
             <button
               className="link-button"
@@ -126,6 +127,7 @@ class Cohorts extends Component {
                 pending={pendingForArchivedCohorts}
                 placeholder="You have no archived cohorts!"
                 route={Routes.COHORT}
+                viewType={ViewType.TILES}
               />
             )}
           </div>

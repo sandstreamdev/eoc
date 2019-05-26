@@ -18,12 +18,16 @@ import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
 import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListModeIcon, TilesModeIcon } from 'assets/images/icons';
-import { Routes } from 'common/constants/enums';
+import { Routes, ViewType } from 'common/constants/enums';
 
 export class Layout extends PureComponent {
-  state = {
-    listMode: true
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      viewType: ViewType.LIST
+    };
+  }
 
   componentDidMount() {
     this.setAuthenticationState();
@@ -48,7 +52,7 @@ export class Layout extends PureComponent {
     loginUser();
   };
 
-  displayModeSwitch = () => {
+  isViewTypeSwitchDisplayed = () => {
     const {
       location: { pathname }
     } = this.props;
@@ -59,12 +63,24 @@ export class Layout extends PureComponent {
     );
   };
 
-  handleListModeChange = () =>
-    this.setState(({ listMode }) => ({ listMode: !listMode }));
+  isListView = () => {
+    const { viewType: currentViewType } = this.state;
+
+    return currentViewType === ViewType.LIST;
+  };
+
+  handleSwitchToListView = () => this.setState({ viewType: ViewType.LIST });
+
+  handleSwitchToTilesView = () => this.setState({ viewType: ViewType.TILES });
+
+  handleViewTypeChange = () =>
+    this.isListView()
+      ? this.handleSwitchToTilesView
+      : this.handleSwitchToListView;
 
   render() {
     const { currentUser } = this.props;
-    const { listMode } = this.state;
+    const { viewType } = this.state;
 
     return !currentUser ? (
       <Switch>
@@ -76,11 +92,13 @@ export class Layout extends PureComponent {
       <Fragment>
         <Notifications />
         <Toolbar>
-          {this.displayModeSwitch() && (
+          {this.isViewTypeSwitchDisplayed() && (
             <ToolbarItem
-              mainIcon={listMode ? <TilesModeIcon /> : <ListModeIcon />}
-              onClick={this.handleListModeChange}
-              title={`Change to ${listMode ? 'tiles' : 'list'} view`}
+              mainIcon={
+                this.isListView() ? <TilesModeIcon /> : <ListModeIcon />
+              }
+              onClick={this.handleViewTypeChange()}
+              title={`Change to ${this.isListView() ? 'tiles' : 'list'} view`}
             />
           )}
         </Toolbar>
@@ -88,11 +106,11 @@ export class Layout extends PureComponent {
           <Redirect from="/" exact to="/dashboard" />
           <Route
             path="/dashboard"
-            render={props => <Dashboard {...props} listMode={listMode} />}
+            render={props => <Dashboard {...props} viewType={viewType} />}
           />
           <Route
             path="/cohort/:id(\w+)"
-            render={props => <Cohort {...props} listMode={listMode} />}
+            render={props => <Cohort {...props} viewType={viewType} />}
           />
           <Route component={List} path="/sack/:id(\w+)" />
           <Route component={About} path="/about" />

@@ -38,3 +38,8 @@ export const ColorType = {
   GRAY: 'element/GRAY',
   ORANGE: 'element/ORANGE'
 };
+
+export const ViewType = {
+  LIST: 'viewType/LIST',
+  TILES: 'viewType/TILES'
+};
