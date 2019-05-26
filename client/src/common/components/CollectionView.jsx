@@ -5,7 +5,7 @@ import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 
-import TilesModeItem from 'common/components/TilesModeItem';
+import TilesViewItem from 'common/components/TilesViewItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType, Routes } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
@@ -18,7 +18,7 @@ import {
   removeCohortFromFavourites
 } from 'modules/cohort/model/actions';
 import Preloader from 'common/components/Preloader';
-import ListModeItem from 'common/components/ListModeItem';
+import ListViewItem from 'common/components/ListViewItem';
 
 class CollectionView extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
@@ -72,7 +72,7 @@ class CollectionView extends PureComponent {
 
       return (
         <li className="collection__item" key={_id}>
-          <ListModeItem
+          <ListViewItem
             color={color}
             item={item}
             onCardClick={this.handleCardClick(route, _id)}
@@ -92,7 +92,7 @@ class CollectionView extends PureComponent {
 
       return (
         <li className="collection__item" key={_id}>
-          <TilesModeItem
+          <TilesViewItem
             color={color}
             item={item}
             onCardClick={this.handleCardClick(route, _id)}

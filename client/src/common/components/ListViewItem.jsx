@@ -37,31 +37,31 @@ class ListViewItem extends PureComponent {
     const isLimitedList = type === ListType.LIMITED;
 
     return (
-      <div className="list_view-item" onClick={onCardClick} role="figure">
+      <div className="list-view-item" onClick={onCardClick} role="figure">
         <div
-          className={classNames('list_view-item__lock', {
-            'list_view-item__lock--orange': color === ColorType.ORANGE,
-            'list_view-item__lock--gray': color === ColorType.GRAY
+          className={classNames('list-view-item__lock', {
+            'list-view-item__lock--orange': color === ColorType.ORANGE,
+            'list-view-item__lock--gray': color === ColorType.GRAY
           })}
         >
           {isLimitedList && <LockIcon />}
         </div>
-        <div className="list_view-item__details">
-          <header className="list_view-item__header">
-            <h3 className="list_view-item__heading">{name}</h3>
+        <div className="list-view-item__details">
+          <header className="list-view-item__header">
+            <h3 className="list-view-item__heading">{name}</h3>
             {description && (
-              <p className="list_view-item__description">{description}</p>
+              <p className="list-view-item__description">{description}</p>
             )}
           </header>
-          <div className="list_view-item__data">
+          <div className="list-view-item__data">
             <span>{`Done: ${doneItemsCount}`}</span>
             <span>{`Unhandled: ${unhandledItemsCount}`}</span>
           </div>
         </div>
         <button
-          className={classNames('list_view-item__star', {
-            'list_view-item__star--orange': color === ColorType.ORANGE,
-            'list_view-item__star--gray': color === ColorType.GRAY
+          className={classNames('list-view-item__star', {
+            'list-view-item__star--orange': color === ColorType.ORANGE,
+            'list-view-item__star--gray': color === ColorType.GRAY
           })}
           disabled={pending}
           onClick={this.handleFavClick}
@@ -69,7 +69,7 @@ class ListViewItem extends PureComponent {
         >
           {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
           {pending && (
-            <div className="list_view-item__preloader">
+            <div className="list-view-item__preloader">
               <Preloader size={PreloaderSize.SMALL} />
             </div>
           )}
