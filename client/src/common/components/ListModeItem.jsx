@@ -7,7 +7,7 @@ import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { ListType } from 'modules/list/consts';
 import { ColorType } from 'common/constants/enums';
 
-class ListModeItem extends PureComponent {
+class ListViewItem extends PureComponent {
   state = {
     pending: false
   };
@@ -37,31 +37,31 @@ class ListModeItem extends PureComponent {
     const isLimitedList = type === ListType.LIMITED;
 
     return (
-      <div className="list-mode-item" onClick={onCardClick} role="figure">
+      <div className="list_view-item" onClick={onCardClick} role="figure">
         <div
-          className={classNames('list-mode-item__lock', {
-            'list-mode-item__lock--orange': color === ColorType.ORANGE,
-            'list-mode-item__lock--archived': color === ColorType.GRAY
+          className={classNames('list_view-item__lock', {
+            'list_view-item__lock--orange': color === ColorType.ORANGE,
+            'list_view-item__lock--gray': color === ColorType.GRAY
           })}
         >
           {isLimitedList && <LockIcon />}
         </div>
-        <div className="list-mode-item__details">
-          <header className="list-mode-item__header">
-            <h3 className="list-mode-item__heading">{name}</h3>
+        <div className="list_view-item__details">
+          <header className="list_view-item__header">
+            <h3 className="list_view-item__heading">{name}</h3>
             {description && (
-              <p className="list-mode-item__description">{description}</p>
+              <p className="list_view-item__description">{description}</p>
             )}
           </header>
-          <div className="list-mode-item__data">
+          <div className="list_view-item__data">
             <span>{`Done: ${doneItemsCount}`}</span>
             <span>{`Unhandled: ${unhandledItemsCount}`}</span>
           </div>
         </div>
         <button
-          className={classNames('list-mode-item__star', {
-            'list-mode-item__star--orange': color === ColorType.ORANGE,
-            'list-mode-item__star--archived': color === ColorType.GRAY
+          className={classNames('list_view-item__star', {
+            'list_view-item__star--orange': color === ColorType.ORANGE,
+            'list_view-item__star--gray': color === ColorType.GRAY
           })}
           disabled={pending}
           onClick={this.handleFavClick}
@@ -69,7 +69,7 @@ class ListModeItem extends PureComponent {
         >
           {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
           {pending && (
-            <div className="list-mode-item__preloader">
+            <div className="list_view-item__preloader">
               <Preloader size={PreloaderSize.SMALL} />
             </div>
           )}
@@ -79,7 +79,7 @@ class ListModeItem extends PureComponent {
   }
 }
 
-ListModeItem.propTypes = {
+ListViewItem.propTypes = {
   color: PropTypes.string.isRequired,
   item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 
@@ -87,4 +87,4 @@ ListModeItem.propTypes = {
   onFavClick: PropTypes.func
 };
 
-export default ListModeItem;
+export default ListViewItem;

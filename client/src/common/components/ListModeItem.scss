@@ -1,4 +1,4 @@
-.list-mode-item {
+.list-view-item {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
@@ -32,7 +32,7 @@
       background: $orange;
     }
 
-    &--archived {
+    &--gray {
       background: $gray4;
     }
   }
@@ -130,7 +130,7 @@
       }
     }
 
-    &--archived {
+    &--gray {
       svg path {
         fill: $gray4;
       }

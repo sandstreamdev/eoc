@@ -1,4 +1,4 @@
-.card-item {
+.tiles-view-item {
   box-sizing: border-box;
   display: block;
   height: 100%;
@@ -18,7 +18,7 @@
     background: $brown;
   }
 
-  &--archived {
+  &--gray {
     background: $gray4;
   }
 

@@ -10,7 +10,7 @@ import Preloader, {
 } from 'common/components/Preloader';
 import { ListType } from 'modules/list/consts';
 
-class CardItem extends PureComponent {
+class TilesViewItem extends PureComponent {
   state = {
     pending: false
   };
@@ -43,28 +43,28 @@ class CardItem extends PureComponent {
 
     return (
       <div
-        className={classNames('card-item', {
-          'card-item--orange': color === ColorType.ORANGE,
-          'card-item--archived': color === ColorType.GRAY,
-          'card-item--brown': color === ColorType.BROWN
+        className={classNames('tiles-view-item', {
+          'tiles-view-item--orange': color === ColorType.ORANGE,
+          'tiles-view-item--gray': color === ColorType.GRAY,
+          'tiles-view-item--brown': color === ColorType.BROWN
         })}
         onClick={onCardClick}
         role="figure"
       >
-        <header className="card-item__header">
+        <header className="tiles-view-item__header">
           {isLimitedList && <LockIcon />}
-          <h3 className="card-item__heading">{name}</h3>
+          <h3 className="tiles-view-item__heading">{name}</h3>
         </header>
-        <p className="card-item__description">{description}</p>
+        <p className="tiles-view-item__description">{description}</p>
         <button
-          className="card-item__star"
+          className="tiles-view-item__star"
           disabled={pending}
           onClick={this.handleFavClick}
           type="button"
         >
           {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
           {pending && (
-            <div className="card-item__preloader">
+            <div className="tiles-view-item__preloader">
               <Preloader
                 size={PreloaderSize.SMALL}
                 theme={PreloaderTheme.LIGHT}
@@ -72,7 +72,7 @@ class CardItem extends PureComponent {
             </div>
           )}
         </button>
-        <div className="card-item__data">
+        <div className="tiles-view-item__data">
           {route === Routes.LIST ? (
             <Fragment>
               <span>{`Done: ${doneItemsCount}`}</span>
@@ -87,9 +87,7 @@ class CardItem extends PureComponent {
   }
 }
 
-export default CardItem;
-
-CardItem.propTypes = {
+TilesViewItem.propTypes = {
   color: PropTypes.string.isRequired,
   item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   route: PropTypes.string.isRequired,
@@ -97,3 +95,5 @@ CardItem.propTypes = {
   onCardClick: PropTypes.func.isRequired,
   onFavClick: PropTypes.func
 };
+
+export default TilesViewItem;

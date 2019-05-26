@@ -64,36 +64,44 @@ class CollectionView extends PureComponent {
     );
   };
 
-  renderListMode = () => {
+  renderAsList = () => {
     const { color, items, route } = this.props;
 
-    return _map(items, item => (
-      <li className="collection__item" key={item._id}>
-        <ListModeItem
-          color={color}
-          item={item}
-          onCardClick={this.handleCardClick(route, item._id)}
-          onFavClick={this.handleFavClick(item._id, item.isFavourite)}
-          route={route}
-        />
-      </li>
-    ));
+    return _map(items, item => {
+      const { _id, isFavourite } = item;
+
+      return (
+        <li className="collection__item" key={_id}>
+          <ListModeItem
+            color={color}
+            item={item}
+            onCardClick={this.handleCardClick(route, _id)}
+            onFavClick={this.handleFavClick(_id, isFavourite)}
+            route={route}
+          />
+        </li>
+      );
+    });
   };
 
-  renderTilesMode = () => {
+  renderAsTiles = () => {
     const { color, items, route } = this.props;
 
-    return _map(items, item => (
-      <li className="collection__item" key={item._id}>
-        <TilesModeItem
-          color={color}
-          item={item}
-          onCardClick={this.handleCardClick(route, item._id)}
-          onFavClick={this.handleFavClick(item._id, item.isFavourite)}
-          route={route}
-        />
-      </li>
-    ));
+    return _map(items, item => {
+      const { _id, isFavourite } = item;
+
+      return (
+        <li className="collection__item" key={_id}>
+          <TilesModeItem
+            color={color}
+            item={item}
+            onCardClick={this.handleCardClick(route, _id)}
+            onFavClick={this.handleFavClick(_id, isFavourite)}
+            route={route}
+          />
+        </li>
+      );
+    });
   };
 
   render() {
@@ -116,7 +124,7 @@ class CollectionView extends PureComponent {
         <div className="collection__body">
           <ul className={listMode ? 'collection__list' : 'collection__tiles'}>
             {onAddNew && this.renderAddNew()}
-            {listMode ? this.renderListMode() : this.renderTilesMode()}
+            {listMode ? this.renderAsList() : this.renderAsTiles()}
           </ul>
           {pending && <Preloader />}
           {_isEmpty(items) && !pending && (

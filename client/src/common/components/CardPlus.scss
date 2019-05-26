@@ -8,14 +8,9 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  // height: 120px;
   justify-content: center;
   padding: 8px;
   width: 100%;
-
-  // @include breakpoint($medium) {
-  //   width: 210px;
-  // }
 
   &__heading {
     color: $text-dark;

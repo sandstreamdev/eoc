@@ -20,12 +20,12 @@ import FormDialog from 'common/components/FormDialog';
 import { archiveCohort, fetchCohortDetails } from './model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
-import CollectionView from '../../common/components/CollectionView';
+import CollectionView from 'common/components/CollectionView';
 import { ListType } from 'modules/list/consts';
 import MembersBox from 'common/components/Members';
 import { ColorType, Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
-import Preloader from '../../common/components/Preloader';
+import Preloader from 'common/components/Preloader';
 
 class Cohort extends PureComponent {
   constructor(props) {
