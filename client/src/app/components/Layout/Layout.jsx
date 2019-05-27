@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
@@ -16,9 +16,19 @@ import Page404 from 'common/components/Page404';
 import About from 'modules/about';
 import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
-import Toolbar from 'common/components/Toolbar';
+import Toolbar, { ToolbarItem } from './Toolbar';
+import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
+import { Routes, ViewType } from 'common/constants/enums';
 
-export class Layout extends Component {
+export class Layout extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      viewType: ViewType.LIST
+    };
+  }
+
   componentDidMount() {
     this.setAuthenticationState();
   }
@@ -42,8 +52,32 @@ export class Layout extends Component {
     loginUser();
   };
 
+  isListsView = () => {
+    const {
+      location: { pathname }
+    } = this.props;
+
+    return (
+      pathname.includes(`${Routes.COHORT}/`) ||
+      pathname.includes(Routes.DASHBOARD)
+    );
+  };
+
+  handleSwitchToListView = () => this.setState({ viewType: ViewType.LIST });
+
+  handleSwitchToTilesView = () => this.setState({ viewType: ViewType.TILES });
+
+  handleViewTypeChange = () => {
+    const { viewType } = this.state;
+
+    return viewType === ViewType.LIST
+      ? this.handleSwitchToTilesView
+      : this.handleSwitchToListView;
+  };
+
   render() {
     const { currentUser } = this.props;
+    const { viewType } = this.state;
 
     return !currentUser ? (
       <Switch>
@@ -54,11 +88,33 @@ export class Layout extends Component {
     ) : (
       <Fragment>
         <Notifications />
-        <Toolbar />
+        <Toolbar>
+          {this.isListsView() && (
+            <ToolbarItem
+              mainIcon={
+                viewType === ViewType.LIST ? (
+                  <TilesViewIcon />
+                ) : (
+                  <ListViewIcon />
+                )
+              }
+              onClick={this.handleViewTypeChange()}
+              title={`Change to ${
+                viewType === ViewType.LIST ? 'tiles' : 'list'
+              } view`}
+            />
+          )}
+        </Toolbar>
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
-          <Route component={Dashboard} path="/dashboard" />
-          <Route component={Cohort} path="/cohort/:id(\w+)" />
+          <Route
+            path="/dashboard"
+            render={props => <Dashboard {...props} viewType={viewType} />}
+          />
+          <Route
+            path="/cohort/:id(\w+)"
+            render={props => <Cohort {...props} viewType={viewType} />}
+          />
           <Route component={List} path="/sack/:id(\w+)" />
           <Route component={About} path="/about" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />

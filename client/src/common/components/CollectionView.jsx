@@ -5,9 +5,9 @@ import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 
-import CardItem from 'common/components/CardItem';
+import TilesViewItem from 'common/components/TilesViewItem';
 import MessageBox from 'common/components/MessageBox';
-import { MessageType, Routes } from 'common/constants/enums';
+import { MessageType, Routes, ViewType } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
 import {
   addListToFavourites,
@@ -18,8 +18,9 @@ import {
   removeCohortFromFavourites
 } from 'modules/cohort/model/actions';
 import Preloader from 'common/components/Preloader';
+import ListViewItem from 'common/components/ListViewItem';
 
-class GridList extends PureComponent {
+class CollectionView extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
     const {
@@ -51,48 +52,87 @@ class GridList extends PureComponent {
     history.push(`/${route}/${itemId}`);
   };
 
+  renderAddNew = () => {
+    const { onAddNew } = this.props;
+
+    return (
+      <li className="collection__item">
+        <button className="collection__button" onClick={onAddNew} type="button">
+          <CardPlus />
+        </button>
+      </li>
+    );
+  };
+
+  renderAsList = () => {
+    const { color, items, route } = this.props;
+
+    return _map(items, item => {
+      const { _id, isFavourite } = item;
+
+      return (
+        <li className="collection__item" key={_id}>
+          <ListViewItem
+            color={color}
+            item={item}
+            onCardClick={this.handleCardClick(route, _id)}
+            onFavClick={this.handleFavClick(_id, isFavourite)}
+            route={route}
+          />
+        </li>
+      );
+    });
+  };
+
+  renderAsTiles = () => {
+    const { color, items, route } = this.props;
+
+    return _map(items, item => {
+      const { _id, isFavourite } = item;
+
+      return (
+        <li className="collection__item" key={_id}>
+          <TilesViewItem
+            color={color}
+            item={item}
+            onCardClick={this.handleCardClick(route, _id)}
+            onFavClick={this.handleFavClick(_id, isFavourite)}
+            route={route}
+          />
+        </li>
+      );
+    });
+  };
+
   render() {
     const {
-      color,
       icon,
       items,
       name,
       onAddNew,
       pending,
       placeholder,
-      route
+      viewType
     } = this.props;
 
     return (
-      <div className="grid-list">
-        <h2 className="grid-list__heading">
+      <div className="collection">
+        <h2 className="collection__heading">
           {icon}
           {name}
         </h2>
-        <div className="grid-list__body">
-          <ul className="grid-list__list">
-            {onAddNew && (
-              <li className="grid-list__item">
-                <button
-                  className="grid-list__button"
-                  onClick={onAddNew}
-                  type="button"
-                >
-                  <CardPlus />
-                </button>
-              </li>
-            )}
-            {_map(items, item => (
-              <li className="grid-list__item" key={item._id}>
-                <CardItem
-                  color={color}
-                  item={item}
-                  onCardClick={this.handleCardClick(route, item._id)}
-                  onFavClick={this.handleFavClick(item._id, item.isFavourite)}
-                  route={route}
-                />
-              </li>
-            ))}
+        <div className="collection__body">
+          <ul
+            className={
+              viewType === ViewType.LIST
+                ? 'collection__list'
+                : 'collection__tiles'
+            }
+          >
+            {onAddNew && this.renderAddNew()}
+            {viewType === ViewType.LIST
+              ? this.renderAsList()
+              : this.renderAsTiles()}
           </ul>
           {pending && <Preloader />}
           {_isEmpty(items) && !pending && (
@@ -104,7 +144,7 @@ class GridList extends PureComponent {
   }
 }
 
-GridList.propTypes = {
+CollectionView.propTypes = {
   color: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
@@ -115,6 +155,7 @@ GridList.propTypes = {
   pending: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
   route: PropTypes.string.isRequired,
+  viewType: PropTypes.string.isRequired,
 
   addCohortToFavourites: PropTypes.func,
   addListToFavourites: PropTypes.func,
@@ -132,5 +173,5 @@ export default withRouter(
       removeCohortFromFavourites,
       removeListFromFavourites
     }
-  )(GridList)
+  )(CollectionView)
 );

@@ -7,7 +7,6 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { checkIfCookieSet } from 'common/utils/cookie';
 import CookieConsentBox from 'common/components/CookieConsentBox';
-import Toolbar from 'common/components/Toolbar';
 
 class PrivacyPolicy extends PureComponent {
   state = {
@@ -27,7 +26,6 @@ class PrivacyPolicy extends PureComponent {
 
     return (
       <Fragment>
-        {currentUser && <Toolbar />}
         <div className="privacy-policy">
           <h1 className="privacy-policy__intro-heading">
             Privacy <span>& Terms</span>
@@ -131,8 +129,10 @@ class PrivacyPolicy extends PureComponent {
           </div>
           {!currentUser && (
             <div className="privacy-policy__links">
-              <Link className="primary-button" to="/">
-                Login page
+              <Link to="/">
+                <button className="primary-button" type="button">
+                  Login page
+                </button>
               </Link>
             </div>
           )}

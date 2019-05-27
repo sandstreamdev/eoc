@@ -14,10 +14,9 @@ import {
   getCohortsLists,
   getPrivateLists
 } from 'modules/list/model/selectors';
-import GridList from 'common/components/GridList';
-import { CardColorType } from 'common/components/CardItem';
+import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
-import { Routes } from 'common/constants/enums';
+import { ColorType, Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 
 class Dashboard extends Component {
@@ -83,7 +82,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { archivedLists, cohortLists, privateLists } = this.props;
+    const { archivedLists, cohortLists, privateLists, viewType } = this.props;
     const {
       areArchivedListsVisible,
       isDialogVisible,
@@ -100,8 +99,8 @@ class Dashboard extends Component {
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <div className="wrapper">
           <div className="dashboard">
-            <GridList
-              color={CardColorType.ORANGE}
+            <CollectionView
+              color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={privateLists}
               name="Private Sacks"
@@ -109,15 +108,17 @@ class Dashboard extends Component {
               pending={pendingForLists}
               placeholder="There are no sacks yet!"
               route={Routes.LIST}
+              viewType={viewType}
             />
-            <GridList
-              color={CardColorType.ORANGE}
+            <CollectionView
+              color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={cohortLists}
               name="Cohorts' Sacks"
-              placeholder="There are no sacks yet!"
               pending={pendingForLists}
+              placeholder="There are no sacks yet!"
               route={Routes.LIST}
+              viewType={viewType}
             />
             <button
               className="link-button"
@@ -127,14 +128,15 @@ class Dashboard extends Component {
               {` ${areArchivedListsVisible ? 'hide' : 'show'} archived sacks`}
             </button>
             {areArchivedListsVisible && (
-              <GridList
-                color={CardColorType.ARCHIVED}
+              <CollectionView
+                color={ColorType.GRAY}
                 icon={<ListIcon />}
-                pending={pendingForArchivedLists}
                 items={archivedLists}
                 name="Archived Sacks"
+                pending={pendingForArchivedLists}
                 placeholder="You have no archived sacks!"
                 route={Routes.LIST}
+                viewType={viewType}
               />
             )}
           </div>
@@ -156,6 +158,7 @@ Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
   privateLists: PropTypes.objectOf(PropTypes.object),
+  viewType: PropTypes.string.isRequired,
 
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
