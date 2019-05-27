@@ -1,6 +1,10 @@
 .toolbar {
   background: $bg-color;
   box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 9;
 
   &__wrapper {
     display: flex;
@@ -10,7 +14,8 @@
     position: relative;
   }
 
-  &__left, &__right {
+  &__left,
+  &__right {
     display: flex;
     align-items: center;
   }
