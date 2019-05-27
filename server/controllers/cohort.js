@@ -246,70 +246,6 @@ const deleteCohortById = (req, resp) => {
     });
 };
 
-const addToFavourites = (req, resp) => {
-  const { id: cohortId } = req.params;
-  const {
-    user: { _id: userId }
-  } = req;
-
-  Cohort.findOneAndUpdate(
-    {
-      _id: sanitize(cohortId),
-      memberIds: userId
-    },
-    {
-      $push: { favIds: userId }
-    }
-  )
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.status(400).send({ message: 'Cohort data not found.' });
-      }
-
-      return resp.status(200).send({
-        message: `Cohort "${doc.name}" successfully marked as favourite.`
-      });
-    })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't mark cohort as favourite. Please try again."
-      })
-    );
-};
-
-const removeFromFavourites = (req, resp) => {
-  const { id: cohortId } = req.params;
-  const {
-    user: { _id: userId }
-  } = req;
-
-  Cohort.findOneAndUpdate(
-    {
-      _id: sanitize(cohortId),
-      memberIds: userId
-    },
-    {
-      $pull: { favIds: userId }
-    }
-  )
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        resp.status(400).send({ message: 'Cohort data not found.' });
-      }
-
-      return resp.status(200).send({
-        message: `Cohort "${doc.name}" successfully removed from favourites.`
-      });
-    })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't remove cohort from favourites. Please try again."
-      })
-    );
-};
-
 const removeMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
@@ -521,7 +457,6 @@ const addMember = (req, resp) => {
 
 module.exports = {
   addMember,
-  addToFavourites,
   addOwnerRole,
   removeOwnerRole,
   createCohort,
@@ -529,7 +464,6 @@ module.exports = {
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
-  removeFromFavourites,
   removeMember,
   updateCohortById
 };

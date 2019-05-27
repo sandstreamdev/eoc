@@ -85,12 +85,6 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.RESTORE_SUCCESS:
     case CohortActionTypes.FETCH_DETAILS_SUCCESS:
       return { ...state, [action.payload._id]: action.payload.data };
-    case CohortActionTypes.FAVOURITES_SUCCESS: {
-      const {
-        payload: { cohortId, isFavourite }
-      } = action;
-      return { ...state, [cohortId]: { ...state[cohortId], isFavourite } };
-    }
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS:
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {

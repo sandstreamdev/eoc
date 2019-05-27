@@ -13,10 +13,6 @@ import {
   addListToFavourites,
   removeListFromFavourites
 } from 'modules/list/model/actions';
-import {
-  addCohortToFavourites,
-  removeCohortFromFavourites
-} from 'modules/cohort/model/actions';
 import Preloader from 'common/components/Preloader';
 import ListViewItem from 'common/components/ListViewItem';
 
