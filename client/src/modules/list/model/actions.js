@@ -10,7 +10,7 @@ import { ListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
-import { UserCreationStatus } from 'common/components/Members/const';
+import { UserAddingStatus } from 'common/components/Members/const';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -388,10 +388,10 @@ export const addListViewer = (listId, email) => dispatch =>
           json.message || 'Viewer added successfully.'
         );
 
-        return UserCreationStatus.CREATED;
+        return UserAddingStatus.ADDED;
       }
 
-      return UserCreationStatus.NO_USER;
+      return UserAddingStatus.NO_USER;
     })
     .catch(err => {
       dispatch(addViewerFailure());

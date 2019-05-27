@@ -11,12 +11,15 @@ const sendInvitation = (req, resp) => {
   const {
     user: { email: sender }
   } = req;
+  const { protocol } = req;
+  const host = req.get('host');
+  const url = `${protocol}://${host}`;
 
   const message = {
     to: receiver,
     from: sender,
     subject: 'Join EOC!',
-    html: mailTemplate(receiver, sender)
+    html: mailTemplate(receiver, sender, url)
   };
 
   SendGridMail.send(message)

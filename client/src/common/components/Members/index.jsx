@@ -14,7 +14,7 @@ import MemberButton from './components/MemberButton';
 import { addCohortMember } from 'modules/cohort/model/actions';
 import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
-import { UserCreationStatus, MEMBERS_DISPLAY_LIMIT } from './const';
+import { UserAddingStatus, MEMBERS_DISPLAY_LIMIT } from './const';
 import InviteNewUser from './components/InviteNewUser';
 import { inviteUser } from './model/actions';
 
@@ -76,12 +76,12 @@ class MembersBox extends PureComponent {
 
     this.setState({ pending: true });
     action(id, email).then(resp => {
-      if (resp === UserCreationStatus.CREATED) {
+      if (resp === UserAddingStatus.ADDED) {
         this.setState({ pending: false });
         this.hideForm();
       }
 
-      if (resp === UserCreationStatus.NO_USER) {
+      if (resp === UserAddingStatus.NO_USER) {
         this.setState({
           email,
           pending: false
@@ -114,6 +114,7 @@ class MembersBox extends PureComponent {
   handleCancel = () => {
     this.hideForm();
     this.hideInvitationBox();
+    this.setState({ email: '' });
   };
 
   renderDetails = member => {

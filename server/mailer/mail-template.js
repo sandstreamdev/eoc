@@ -1,6 +1,4 @@
-const { TEMP_DEV } = require('../common/variables');
-
-const mailTemplate = (receiver, sender) => {
+const mailTemplate = (receiver, sender, hostUrl) => {
   return `
       <!DOCTYPE html>
       <html>
@@ -60,17 +58,17 @@ const mailTemplate = (receiver, sender) => {
               <tr style="width:100%;">
                 <td style="padding-top:40px;
                            width:100%;">
-                  <a href="${TEMP_DEV}">
-                    <input
-                      value="JOIN EOC"
-                      type="button"
-                      style="background: #ef9b1f;
-                      padding: 8px 16px;
-                      line-height: 1.2;
-                      font-weight: 500;
+                  <a href="${hostUrl}">
+                    <input style="
+                      background: #ef9b1f;
                       border: 0;
                       color:#fff;
-                      font-size: 14px"
+                      font-size: 14px;
+                      font-weight: 500;
+                      line-height: 1.2;
+                      padding: 8px 16px;"
+                      type="button";
+                      value="JOIN EOC"
                     />
                   </a>
                 </td>
