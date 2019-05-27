@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { CardColorType } from 'common/components/CardItem';
 import {
   getCohortActiveLists,
   getCohortArchivedLists
@@ -21,10 +20,10 @@ import FormDialog from 'common/components/FormDialog';
 import { archiveCohort, fetchCohortDetails } from './model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
-import GridList from 'common/components/GridList';
+import CollectionView from 'common/components/CollectionView';
 import { ListType } from 'modules/list/consts';
 import MembersBox from 'common/components/Members';
-import { Routes } from 'common/constants/enums';
+import { ColorType, Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
@@ -174,7 +173,8 @@ class Cohort extends PureComponent {
       match: {
         params: { id: cohortId }
       },
-      members
+      members,
+      viewType
     } = this.props;
 
     if (!cohortDetails) {
@@ -230,14 +230,15 @@ class Cohort extends PureComponent {
                   members={members}
                   route={Routes.COHORT}
                 />
-                <GridList
-                  color={CardColorType.ORANGE}
+                <CollectionView
+                  color={ColorType.ORANGE}
                   icon={<ListIcon />}
                   items={lists}
                   name="Sacks"
                   onAddNew={this.handleDialogContext(DialogContext.CREATE)}
                   placeholder={`There are no sacks in the ${name} cohort!`}
                   route={Routes.LIST}
+                  viewType={viewType}
                 />
                 {!isArchived && isOwner && (
                   <button
@@ -260,14 +261,15 @@ class Cohort extends PureComponent {
                     } archived sacks`}
                   </button>
                   {areArchivedListsVisible && (
-                    <GridList
-                      color={CardColorType.ARCHIVED}
+                    <CollectionView
+                      color={ColorType.GRAY}
                       icon={<ListIcon />}
                       items={archivedLists}
                       name="Archived Sacks"
                       pending={pendingForArchivedLists}
                       placeholder={`There are no archived sacks in the ${name} cohort!`}
                       route={Routes.LIST}
+                      viewType={viewType}
                     />
                   )}
                 </div>
@@ -292,6 +294,7 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
+  viewType: PropTypes.string.isRequired,
 
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,

@@ -15,11 +15,10 @@ import {
 } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
-import GridList from 'common/components/GridList';
-import { CardColorType } from 'common/components/CardItem';
+import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
-import { Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
+import { ColorType, Routes, ViewType } from 'common/constants/enums';
 
 class Cohorts extends Component {
   state = {
@@ -107,8 +106,8 @@ class Cohorts extends Component {
         {this.renderBreadcrumbs()}
         <div className="wrapper">
           <div className="dashboard">
-            <GridList
-              color={CardColorType.BROWN}
+            <CollectionView
+              color={ColorType.BROWN}
               icon={<CohortIcon />}
               items={cohorts}
               name="Cohorts"
@@ -116,6 +115,7 @@ class Cohorts extends Component {
               pending={pendingForCohorts}
               placeholder="There are no cohorts yet!"
               route={Routes.COHORT}
+              viewType={ViewType.TILES}
             />
             <button
               className="link-button"
@@ -127,14 +127,15 @@ class Cohorts extends Component {
               } archived cohorts`}
             </button>
             {areArchivedCohortsVisible && (
-              <GridList
-                color={CardColorType.ARCHIVED}
+              <CollectionView
+                color={ColorType.GRAY}
                 icon={<CohortIcon />}
                 items={archivedCohorts}
                 name="Archived cohorts"
                 pending={pendingForArchivedCohorts}
                 placeholder="You have no archived cohorts!"
                 route={Routes.COHORT}
+                viewType={ViewType.TILES}
               />
             )}
           </div>

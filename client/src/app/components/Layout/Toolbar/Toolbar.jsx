@@ -18,9 +18,9 @@ const Toolbar = ({ children }) => (
           path="/dashboard"
           title="Go back to dashboard"
         />
-        {children}
       </div>
       <div className="toolbar__right">
+        {children}
         <ToolbarItem
           mainIcon={<BellIcon />}
           onClick={() => {}}
