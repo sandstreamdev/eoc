@@ -34,11 +34,6 @@ class ListItemName extends PureComponent {
       document.addEventListener('mousedown', this.handleClickOutside);
     }
 
-    if (!isNameInputFocused) {
-      document.removeEventListener('keydown', this.handleKeyPress);
-      document.removeEventListener('mousedown', this.handleClickOutside);
-    }
-
     if (name.length === 0) {
       this.nameInput.current.focus();
     }
@@ -108,6 +103,8 @@ class ListItemName extends PureComponent {
     onBlur();
     this.nameInput.current.blur();
     this.setState({ isNameInputFocused: false });
+    document.removeEventListener('keydown', this.handleKeyPress);
+    document.removeEventListener('mousedown', this.handleClickOutside);
   };
 
   handleOnClick = event => event.stopPropagation();
