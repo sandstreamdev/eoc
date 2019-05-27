@@ -52,7 +52,7 @@ export class Layout extends PureComponent {
     loginUser();
   };
 
-  isViewTypeSwitchDisplayed = () => {
+  isListsView = () => {
     const {
       location: { pathname }
     } = this.props;
@@ -63,20 +63,17 @@ export class Layout extends PureComponent {
     );
   };
 
-  isListView = () => {
-    const { viewType: currentViewType } = this.state;
-
-    return currentViewType === ViewType.LIST;
-  };
-
   handleSwitchToListView = () => this.setState({ viewType: ViewType.LIST });
 
   handleSwitchToTilesView = () => this.setState({ viewType: ViewType.TILES });
 
-  handleViewTypeChange = () =>
-    this.isListView()
+  handleViewTypeChange = () => {
+    const { viewType } = this.state;
+
+    return viewType === ViewType.LIST
       ? this.handleSwitchToTilesView
       : this.handleSwitchToListView;
+  };
 
   render() {
     const { currentUser } = this.props;
@@ -92,13 +89,19 @@ export class Layout extends PureComponent {
       <Fragment>
         <Notifications />
         <Toolbar>
-          {this.isViewTypeSwitchDisplayed() && (
+          {this.isListsView() && (
             <ToolbarItem
               mainIcon={
-                this.isListView() ? <TilesViewIcon /> : <ListViewIcon />
+                viewType === ViewType.LIST ? (
+                  <TilesViewIcon />
+                ) : (
+                  <ListViewIcon />
+                )
               }
               onClick={this.handleViewTypeChange()}
-              title={`Change to ${this.isListView() ? 'tiles' : 'list'} view`}
+              title={`Change to ${
+                viewType === ViewType.LIST ? 'tiles' : 'list'
+              } view`}
             />
           )}
         </Toolbar>
