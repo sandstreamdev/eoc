@@ -54,8 +54,10 @@
   }
 
   &__links {
-    max-width: 100px;
+    max-width: 150px;
     margin: 0 auto 100px;
+    text-align: center;
+    height: 40px;
 
     @include breakpoint($small) {
       margin: 0 auto 70px;
@@ -63,6 +65,10 @@
 
     @include breakpoint($large) {
       margin: 0 auto 50px;
+    }
+
+    a {
+      text-decoration: none;
     }
   }
 

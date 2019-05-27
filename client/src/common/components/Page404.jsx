@@ -1,11 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import Toolbar from 'common/components/Toolbar';
-
 const Page404 = () => (
   <div className="page-404">
-    <Toolbar />
     <div className="page-404__wrapper">
       <h1 className="page-404__heading">Oops!</h1>
       <p className="page-404__error">Error code: 404 (page not found)</p>
