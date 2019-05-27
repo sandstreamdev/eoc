@@ -37,6 +37,7 @@ class ListItem extends PureComponent {
       areDetailsVisible: false,
       areFieldsUpdated: false,
       done: isOrdered,
+      isConfirmationVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
       link
@@ -163,6 +164,13 @@ class ListItem extends PureComponent {
 
   handleItemDescription = value => this.setState({ itemDescription: value });
 
+  handleConfirmationVisibility = () =>
+    this.setState(({ isConfirmationVisible }) => ({
+      isConfirmationVisible: !isConfirmationVisible
+    }));
+
+  handleArchiveItem = () => {};
+
   renderVoting = () => {
     const {
       data: { isOrdered, isVoted, votesCount },
@@ -181,6 +189,59 @@ class ListItem extends PureComponent {
           onVote={this.handleVoting}
           votesCount={votesCount}
         />
+      </div>
+    );
+  };
+
+  renderItemFeatures = () => {
+    const { isConfirmationVisible } = this.state;
+    const {
+      data: { isOrdered, name },
+      isMember
+    } = this.props;
+
+    return (
+      <div className="list-item__features">
+        <div className="list-item__feature-buttons">
+          <button
+            className="link-button"
+            disabled={!isMember || isConfirmationVisible}
+            onClick={this.handleConfirmationVisibility}
+            type="button"
+          >
+            Archive Item
+          </button>
+          {!isOrdered && (
+            <PendingButton
+              className="link-button"
+              disabled={!isMember || isConfirmationVisible}
+              onClick={this.handleItemCloning}
+            >
+              Clone Item
+            </PendingButton>
+          )}
+        </div>
+        {isConfirmationVisible && (
+          <div className="list-item__confirmation">
+            <h4>{`Do you really want to archive "${name}" item?`}</h4>
+            <PendingButton
+              className="primary-button"
+              disabled={!isMember}
+              onClick={this.handleArchiveItem}
+              type="button"
+            >
+              Confirm
+            </PendingButton>
+            <button
+              className="primary-button"
+              disabled={!isMember}
+              onClick={this.handleConfirmationVisibility}
+              type="button"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
     );
   };
@@ -230,17 +291,7 @@ class ListItem extends PureComponent {
             </div>
           )}
         </div>
-        {!isOrdered && isMember && (
-          <div className="list-item__cloning">
-            <PendingButton
-              className="link-button"
-              disabled={!isMember}
-              onClick={this.handleItemCloning}
-            >
-              Clone Item
-            </PendingButton>
-          </div>
-        )}
+        {isMember && this.renderItemFeatures()}
         <div className="list-item__comments">
           <CommentsList
             comments={comments}
