@@ -13,6 +13,7 @@ import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
+  archiveItem,
   clearVote,
   cloneItem,
   setVote,
@@ -169,7 +170,17 @@ class ListItem extends PureComponent {
       isConfirmationVisible: !isConfirmationVisible
     }));
 
-  handleArchiveItem = () => {};
+  handleArchiveItem = () => {
+    const {
+      archiveItem,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    return archiveItem(listId, itemId);
+  };
 
   renderVoting = () => {
     const {
@@ -370,6 +381,7 @@ ListItem.propTypes = {
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
+  archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
@@ -384,6 +396,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { clearVote, cloneItem, setVote, toggle, updateItemDetails }
+    { archiveItem, clearVote, cloneItem, setVote, toggle, updateItemDetails }
   )(ListItem)
 );

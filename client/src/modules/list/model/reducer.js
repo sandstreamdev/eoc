@@ -199,6 +199,7 @@ const lists = (state = {}, action) => {
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
     case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.ARCHIVE_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS:
     case ItemActionTypes.TOGGLE_SUCCESS:
     case ItemActionTypes.UPDATE_DETAILS_SUCCESS:

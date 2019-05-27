@@ -837,11 +837,19 @@ const addViewer = (req, resp) => {
 };
 
 const updateItemDetails = (req, resp) => {
-  const { authorId, description, isOrdered, link, itemId } = req.body;
+  const {
+    authorId,
+    description,
+    isArchived,
+    isOrdered,
+    link,
+    itemId
+  } = req.body;
   const {
     user: { _id: userId }
   } = req;
   const { id: listId } = req.params;
+  let updateMessage;
 
   const sanitizeItemId = sanitize(itemId);
 
@@ -858,6 +866,9 @@ const updateItemDetails = (req, resp) => {
 
       const { items } = list;
       const itemToUpdate = items.id(sanitizeItemId);
+      const { name: itemName } = itemToUpdate;
+
+      updateMessage = `Item "${itemName}" successfully updated.`;
 
       if (description) {
         itemToUpdate.description = description;
@@ -869,17 +880,21 @@ const updateItemDetails = (req, resp) => {
 
       if (isOrdered !== null) {
         itemToUpdate.isOrdered = isOrdered;
+        updateMessage = `Item "${itemName}" successfully ordered.`;
       }
 
       if (authorId) {
         itemToUpdate.authorId = authorId;
       }
 
+      if (isArchived !== null) {
+        itemToUpdate.isArchived = isArchived;
+        updateMessage = `Item "${itemName}" successfully archived.`;
+      }
+
       return list.save();
     })
-    .then(() =>
-      resp.status(200).json({ message: 'Item successfully updated.' })
-    )
+    .then(() => resp.status(200).json({ message: updateMessage }))
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;

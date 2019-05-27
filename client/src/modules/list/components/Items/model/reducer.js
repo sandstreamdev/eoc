@@ -100,6 +100,13 @@ const items = (state = {}, action) => {
         }
       };
     }
+    case ItemActionTypes.ARCHIVE_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+      const { [itemId]: removed, ...rest } = state;
+      return rest;
+    }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {

@@ -85,12 +85,12 @@ const fetchCommentsFailure = () => ({
 });
 
 const archiveItemSuccess = (listId, itemId) => ({
-  type: CommentActionTypes.ARCHIVE_SUCCESS,
+  type: ItemActionTypes.ARCHIVE_SUCCESS,
   payload: { itemId, listId }
 });
 
 const archiveItemFailure = () => ({
-  type: CommentActionTypes.ARCHIVE_FAILURE
+  type: ItemActionTypes.ARCHIVE_FAILURE
 });
 
 export const addItem = (item, listId) => dispatch =>
@@ -243,8 +243,8 @@ export const fetchComments = (listId, itemId) => dispatch =>
       );
     });
 
-export const archiveItem = (listId, itemId) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item-details`, {
+export const archiveItem = (listId, itemId) => dispatch => {
+  return patchData(`/api/lists/${listId}/update-item-details`, {
     isArchived: true,
     itemId
   })
@@ -265,3 +265,4 @@ export const archiveItem = (listId, itemId) => dispatch =>
         err.message
       );
     });
+};
