@@ -7,7 +7,6 @@ import { withRouter } from 'react-router-dom';
 import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
-import { stopPropagation } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
 
 class ListItemName extends PureComponent {
@@ -69,7 +68,7 @@ class ListItemName extends PureComponent {
     if (canBeUpdated && isNameUpdated) {
       this.setState({ pending: true });
 
-      updateListItem(listId, itemId, { name: updatedName }).then(() => {
+      updateListItem(listId, itemId, { name: updatedName }).finally(() => {
         this.setState({
           pending: false,
           isTipVisible: false
@@ -111,7 +110,7 @@ class ListItemName extends PureComponent {
     this.setState({ isNameInputFocused: false });
   };
 
-  handleOnClick = event => stopPropagation(event);
+  handleOnClick = event => event.stopPropagation();
 
   handleClickOutside = event => {
     const { target } = event;

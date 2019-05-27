@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise, stopPropagation } from 'common/utils/helpers';
+import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader, {
   PreloaderSize,
   PreloaderTheme
@@ -23,7 +23,8 @@ class PendingButton extends PureComponent {
   }
 
   handleOnClick = event => {
-    stopPropagation(event);
+    event.stopPropagation();
+
     const { onClick } = this.props;
 
     this.setState({ pending: true });

@@ -24,7 +24,6 @@ import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
 import UserIconPlaceholder from 'assets/images/user.svg';
-import { stopPropagation } from 'common/utils/helpers';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -78,14 +77,16 @@ class MemberDetails extends PureComponent {
   };
 
   handleOwnerInfoVisibility = event => {
-    stopPropagation(event);
+    event.stopPropagation();
+
     this.setState(({ isOwnerInfoVisible }) => ({
       isOwnerInfoVisible: !isOwnerInfoVisible
     }));
   };
 
   handleMemberInfoVisibility = event => {
-    stopPropagation(event);
+    event.stopPropagation();
+
     this.setState(({ isMemberInfoVisible }) => ({
       isMemberInfoVisible: !isMemberInfoVisible
     }));
@@ -154,7 +155,8 @@ class MemberDetails extends PureComponent {
   };
 
   handleChangingRoles = event => {
-    stopPropagation(event);
+    event.stopPropagation();
+
     const {
       target: { value: selectedRole }
     } = event;

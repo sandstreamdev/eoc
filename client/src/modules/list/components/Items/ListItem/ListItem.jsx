@@ -25,7 +25,6 @@ import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
 import ListItemName from '../ListItemName';
-import { preventDefault } from 'common/utils/helpers';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -188,7 +187,7 @@ class ListItem extends PureComponent {
     );
   };
 
-  preventDefault = event => preventDefault(event);
+  preventDefault = event => event.preventDefault();
 
   handleNameFocus = () => this.setState({ isNameEdited: true });
 
