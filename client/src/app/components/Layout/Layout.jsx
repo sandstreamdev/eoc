@@ -17,7 +17,7 @@ import About from 'modules/about';
 import PrivacyPolicy from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
 import Toolbar, { ToolbarItem } from './Toolbar';
-import { ListModeIcon, TilesModeIcon } from 'assets/images/icons';
+import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 
 export class Layout extends PureComponent {
@@ -95,7 +95,7 @@ export class Layout extends PureComponent {
           {this.isViewTypeSwitchDisplayed() && (
             <ToolbarItem
               mainIcon={
-                this.isListView() ? <TilesModeIcon /> : <ListModeIcon />
+                this.isListView() ? <TilesViewIcon /> : <ListViewIcon />
               }
               onClick={this.handleViewTypeChange()}
               title={`Change to ${this.isListView() ? 'tiles' : 'list'} view`}

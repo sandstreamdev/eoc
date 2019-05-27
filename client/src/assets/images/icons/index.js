@@ -369,7 +369,7 @@ export const ThumbIcon = () => (
   </svg>
 );
 
-export const TilesModeIcon = () => (
+export const TilesViewIcon = () => (
   <svg
     aria-hidden="true"
     className="svg-inline--fa fa-th fa-w-16"
@@ -386,7 +386,7 @@ export const TilesModeIcon = () => (
   </svg>
 );
 
-export const ListModeIcon = () => (
+export const ListViewIcon = () => (
   <svg
     aria-hidden="true"
     className="svg-inline--fa fa-list fa-w-16"
