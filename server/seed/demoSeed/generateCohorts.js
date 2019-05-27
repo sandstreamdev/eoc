@@ -8,7 +8,6 @@ const generateCohorts = (demoUserId, userIds) => [
   {
     _id: ObjectId(),
     description: 'You are the owner of this cohort.',
-    favIds: [],
     isArchived: false,
     memberIds: [demoUserId, ...userIds],
     name: 'Cohort example - owner',
@@ -17,7 +16,6 @@ const generateCohorts = (demoUserId, userIds) => [
   {
     _id: ObjectId(),
     description: 'You are a member of this cohort.',
-    favIds: [],
     isArchived: false,
     memberIds: [demoUserId, ...userIds],
     name: 'Cohort example - member',
@@ -26,7 +24,6 @@ const generateCohorts = (demoUserId, userIds) => [
   {
     _id: ObjectId(),
     description: 'You are a member of this cohort.',
-    favIds: [],
     isArchived: true,
     memberIds: [demoUserId],
     name: 'Archived cohort example',

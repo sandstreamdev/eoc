@@ -90,27 +90,25 @@ const responseWithItem = (item, userId) => {
   };
 };
 
-const responseWithCohorts = (cohorts, userId) =>
+const responseWithCohorts = cohorts =>
   _map(cohorts, cohort => {
-    const { favIds, memberIds, ownerIds, ...rest } = cohort;
+    const { memberIds, ownerIds, ...rest } = cohort;
     const membersCount = memberIds.length;
 
     return {
       ...rest,
-      isFavourite: isUserFavourite(favIds, userId),
       membersCount
     };
   });
 
-const responseWithCohort = (cohort, userId) => {
-  const { _id, description, favIds, memberIds, name, isArchived } = cohort;
+const responseWithCohort = cohort => {
+  const { _id, description, memberIds, name, isArchived } = cohort;
   const membersCount = memberIds.length;
 
   return {
     _id,
     description,
     isArchived,
-    isFavourite: isUserFavourite(favIds, userId),
     membersCount,
     name
   };

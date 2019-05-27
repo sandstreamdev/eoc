@@ -48,7 +48,7 @@ const getCohortsMetaData = (req, resp) => {
   } = req;
 
   Cohort.find({ memberIds: currentUserId, isArchived: false })
-    .select('_id name description favIds memberIds ownerIds')
+    .select('_id name description memberIds ownerIds')
     .sort({ createdAt: -1 })
     .lean()
     .exec()
@@ -57,7 +57,7 @@ const getCohortsMetaData = (req, resp) => {
         return resp.status(400).send({ message: 'No cohorts data found.' });
       }
 
-      return resp.status(200).send(responseWithCohorts(docs, currentUserId));
+      return resp.status(200).send(responseWithCohorts(docs));
     })
     .catch(() =>
       resp.status(400).send({
@@ -77,7 +77,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
       ownerIds: userId,
       isArchived: true
     },
-    '_id name description favIds isArchived memberIds ownerIds',
+    '_id name description isArchived memberIds ownerIds',
     { sort: { created_at: -1 } }
   )
     .lean()
@@ -89,7 +89,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
           .send({ message: 'No archived cohorts data found.' });
       }
 
-      return resp.status(200).send(responseWithCohorts(docs, userId));
+      return resp.status(200).send(responseWithCohorts(docs));
     })
     .catch(() =>
       resp.status(400).send({
