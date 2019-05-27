@@ -16,8 +16,8 @@ import {
 } from 'modules/list/model/selectors';
 import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
-import Breadcrumbs from 'common/components/Breadcrumbs';
 import { ColorType, Routes } from 'common/constants/enums';
+import Breadcrumbs from 'common/components/Breadcrumbs';
 
 class Dashboard extends Component {
   state = {
