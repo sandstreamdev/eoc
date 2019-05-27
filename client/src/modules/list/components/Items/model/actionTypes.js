@@ -8,6 +8,8 @@ export const CommentActionTypes = Object.freeze({
 export const ItemActionTypes = Object.freeze({
   ADD_FAILURE: 'item/ADD_FAILURE',
   ADD_SUCCESS: 'item/ADD_SUCCESS',
+  ARCHIVE_FAILURE: 'item/ARCHIVE_FAILURE',
+  ARCHIVE_SUCCESS: 'item/ARCHIVE_SUCCESS',
   CLEAR_VOTE_FAILURE: 'item/CLEAR_VOTE_FAILURE',
   CLEAR_VOTE_SUCCESS: 'item/CLEAR_VOTE_SUCCESS',
   CLONE_FAILURE: 'item/CLONE_FAILURE',

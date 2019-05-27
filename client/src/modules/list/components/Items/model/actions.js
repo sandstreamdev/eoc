@@ -84,6 +84,15 @@ const fetchCommentsFailure = () => ({
   type: CommentActionTypes.FETCH_FAILURE
 });
 
+const archiveItemSuccess = (listId, itemId) => ({
+  type: CommentActionTypes.ARCHIVE_SUCCESS,
+  payload: { itemId, listId }
+});
+
+const archiveItemFailure = () => ({
+  type: CommentActionTypes.ARCHIVE_FAILURE
+});
+
 export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
@@ -227,6 +236,29 @@ export const fetchComments = (listId, itemId) => dispatch =>
     })
     .catch(err => {
       dispatch(fetchCommentsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+
+export const archiveItem = (listId, itemId) => dispatch =>
+  patchData(`/api/lists/${listId}/update-item-details`, {
+    isArchived: true,
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(archiveItemSuccess(listId, itemId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message || 'Item successfully archived.'
+      );
+    })
+    .catch(err => {
+      dispatch(archiveItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
