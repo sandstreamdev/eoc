@@ -116,7 +116,7 @@ class ListHeader extends PureComponent {
     if (nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
 
-      updateList(id, { name: nameToUpdate }).finally(() => {
+      updateList(id, { name: nameToUpdate }, previousName).finally(() => {
         this.setState({
           isNameInputVisible: false,
           nameInputValue: nameToUpdate,
@@ -138,7 +138,7 @@ class ListHeader extends PureComponent {
     } = this.props;
     const { descriptionInputValue } = this.state;
     const descriptionToUpdate = _trim(descriptionInputValue);
-    const { description: previousDescription } = details;
+    const { description: previousDescription, name } = details;
 
     if (_trim(previousDescription) === descriptionToUpdate) {
       this.setState({ isDescriptionTextareaVisible: false });
@@ -151,7 +151,7 @@ class ListHeader extends PureComponent {
 
     this.setState({ pendingForDescription: true });
 
-    updateList(id, { description: updatedDescription }).finally(() =>
+    updateList(id, { description: updatedDescription }, name).finally(() =>
       this.setState({
         isDescriptionTextareaVisible: false,
         descriptionInputValue: updatedDescription,

@@ -58,6 +58,7 @@ class MemberDetails extends PureComponent {
 
   handleMemberRemoving = () => {
     const {
+      displayName,
       isOwner,
       match: {
         params: { id }
@@ -73,7 +74,9 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    action(id, userId, isOwner).catch(() => this.setState({ pending: false }));
+    action(id, displayName, userId, isOwner).catch(() =>
+      this.setState({ pending: false })
+    );
   };
 
   handleOwnerInfoVisibility = event => {

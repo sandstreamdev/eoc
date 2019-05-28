@@ -345,7 +345,7 @@ export const addCohortMember = (cohortId, email) => dispatch =>
       );
     });
 
-export const removeCohortMember = (cohortId, userId) => dispatch =>
+export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/remove-member`, {
     userId
   })

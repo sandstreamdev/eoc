@@ -189,7 +189,14 @@ export const fetchListData = listId => dispatch =>
 export const createList = data => dispatch =>
   postData('/api/lists/create', data)
     .then(resp => resp.json())
-    .then(json => dispatch(createListSuccess(json)))
+    .then(json => {
+      dispatch(createListSuccess(json));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        `Sack "${json.name}" successfully created. `
+      );
+    })
     .catch(() => {
       dispatch(createListFailure());
       createNotificationWithTimeout(
@@ -241,7 +248,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const deleteList = id => dispatch =>
+export const deleteList = (id, listName) => dispatch =>
   deleteData(`/api/lists/${id}/delete`)
     .then(resp =>
       resp.json().then(json => {
@@ -249,7 +256,7 @@ export const deleteList = id => dispatch =>
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          json.message
+          `Sack: "${listName}" successfully deleted.`
         );
         history.replace('/dashboard');
       })
@@ -264,7 +271,7 @@ export const deleteList = id => dispatch =>
       throw new Error();
     });
 
-export const updateList = (listId, data) => dispatch =>
+export const updateList = (listId, data, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, data)
     .then(resp => resp.json())
     .then(json => {
@@ -272,7 +279,7 @@ export const updateList = (listId, data) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Sack: "${listName}" successfully updated.`
       );
     })
     .catch(err => {
@@ -284,7 +291,7 @@ export const updateList = (listId, data) => dispatch =>
       );
     });
 
-export const archiveList = listId => dispatch =>
+export const archiveList = (listId, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
@@ -294,7 +301,7 @@ export const archiveList = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Sack was successfully archived!'
+        `Sack: "${listName}" was successfully archived!`
       );
     })
     .catch(err => {
@@ -306,7 +313,7 @@ export const archiveList = listId => dispatch =>
       );
     });
 
-export const restoreList = listId => dispatch =>
+export const restoreList = (listId, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: false
   })
@@ -317,7 +324,7 @@ export const restoreList = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        `Sack ${json.name} was successfully restored!`
+        `Sack "${listName}" was successfully restored!`
       );
     })
     .catch(err => {
@@ -379,7 +386,7 @@ export const addListViewer = (listId, email) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Viewer added successfully.'
+        json.message || `"${json.displayName}" added as viewer successfully.`
       );
     })
     .catch(err => {
@@ -391,7 +398,12 @@ export const addListViewer = (listId, email) => dispatch =>
       );
     });
 
-export const removeListMember = (listId, userId, isOwner) => dispatch => {
+export const removeListMember = (
+  listId,
+  userName,
+  userId,
+  isOwner
+) => dispatch => {
   const url = isOwner
     ? `/api/lists/${listId}/remove-owner`
     : `/api/lists/${listId}/remove-member`;
@@ -403,7 +415,7 @@ export const removeListMember = (listId, userId, isOwner) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" successfully removed.`
       );
     })
     .catch(err => {
