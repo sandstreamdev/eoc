@@ -844,6 +844,7 @@ const updateListItem = (req, resp) => {
   const { id: listId } = req.params;
 
   const sanitizeItemId = sanitize(itemId);
+  let itemName;
 
   List.findOne({
     _id: sanitize(listId),
@@ -858,6 +859,8 @@ const updateListItem = (req, resp) => {
 
       const { items } = list;
       const itemToUpdate = items.id(sanitizeItemId);
+      const { name: listItemName } = itemToUpdate;
+      itemName = listItemName;
 
       if (description) {
         itemToUpdate.description = description;
@@ -882,7 +885,9 @@ const updateListItem = (req, resp) => {
       return list.save();
     })
     .then(() =>
-      resp.status(200).json({ message: 'Item successfully updated.' })
+      resp
+        .status(200)
+        .json({ message: `Item: "${itemName}" successfully updated.` })
     )
     .catch(err => {
       if (err instanceof BadRequestException) {
