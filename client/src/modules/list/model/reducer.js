@@ -203,8 +203,8 @@ const lists = (state = {}, action) => {
     case ItemActionTypes.CLEAR_VOTE_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS:
     case ItemActionTypes.DELETE_SUCCESS:
-    case ItemActionTypes.FETCH_ARCHIVED_ITEMS_SUCCESS:
-    case ItemActionTypes.REMOVE_ARCHIVED_ITEMS:
+    case ItemActionTypes.FETCH_ARCHIVED_SUCCESS:
+    case ItemActionTypes.REMOVE_ARCHIVED:
     case ItemActionTypes.RESTORE_SUCCESS:
     case ItemActionTypes.SET_VOTE_SUCCESS:
     case ItemActionTypes.TOGGLE_SUCCESS:

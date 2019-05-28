@@ -16,7 +16,7 @@ import Preloader from 'common/components/Preloader';
 class ArchivedItemsContainer extends PureComponent {
   state = {
     areArchivedItemsVisible: false,
-    pendingForArchivedItems: false
+    pending: false
   };
 
   handleArchivedItemsVisibility = () =>
@@ -39,10 +39,10 @@ class ArchivedItemsContainer extends PureComponent {
     } = this.props;
 
     if (areArchivedItemsVisible) {
-      this.setState({ pendingForArchivedItems: true });
+      this.setState({ pending: true });
 
       fetchArchivedItems(listId, name).finally(() =>
-        this.setState({ pendingForArchivedItems: false })
+        this.setState({ pending: false })
       );
     } else {
       removeArchivedItems(listId);
@@ -50,7 +50,7 @@ class ArchivedItemsContainer extends PureComponent {
   };
 
   render() {
-    const { areArchivedItemsVisible, pendingForArchivedItems } = this.state;
+    const { areArchivedItemsVisible, pending } = this.state;
     const { archivedItems, isMember } = this.props;
 
     return (
@@ -60,12 +60,12 @@ class ArchivedItemsContainer extends PureComponent {
           onClick={this.handleArchivedItemsVisibility}
           type="button"
         >
-          {` ${areArchivedItemsVisible ? 'hide' : 'show'} archived items`}
+          {`${areArchivedItemsVisible ? 'hide' : 'show'} archived items`}
         </button>
         {areArchivedItemsVisible && (
           <div
             className={classNames('archived-items__items', {
-              'archived-items__items--visible': areArchivedItemsVisible
+              'archived-items__items--with-border': areArchivedItemsVisible
             })}
           >
             <ItemsContainer
@@ -73,7 +73,7 @@ class ArchivedItemsContainer extends PureComponent {
               isMember={isMember}
               items={archivedItems}
             />
-            {pendingForArchivedItems && <Preloader />}
+            {pending && <Preloader />}
           </div>
         )}
       </div>
@@ -94,12 +94,12 @@ ArchivedItemsContainer.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   const {
     match: {
-      params: { id }
+      params: { id: listId }
     }
   } = ownProps;
 
   return {
-    archivedItems: getArchivedItems(state, id)
+    archivedItems: getArchivedItems(state, listId)
   };
 };
 

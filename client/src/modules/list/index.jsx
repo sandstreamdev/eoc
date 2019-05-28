@@ -179,17 +179,16 @@ class List extends Component {
                     onClick={this.handleMembersBoxVisibility}
                     type="button"
                   >
-                    {` ${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
+                    {`${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
                   </button>
-
                   {isMembersBoxVisible && (
                     <MembersBox
                       isCohortList={isCohortList}
                       isCurrentUserAnOwner={isOwner}
-                      type={type}
                       isMember={isMember}
                       members={members}
                       route={Routes.LIST}
+                      type={type}
                     />
                   )}
                 </div>

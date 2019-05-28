@@ -112,16 +112,16 @@ const deleteItemFailure = () => ({
 });
 
 const fetchArchivedItemsSuccess = (listId, data) => ({
-  type: ItemActionTypes.FETCH_ARCHIVED_ITEMS_SUCCESS,
+  type: ItemActionTypes.FETCH_ARCHIVED_SUCCESS,
   payload: { listId, data }
 });
 
 const fetchArchivedItemsFailure = () => ({
-  type: ItemActionTypes.FETCH_ARCHIVE_ITEMS_FAILURE
+  type: ItemActionTypes.FETCH_ARCHIVE_FAILURE
 });
 
 export const removeArchivedItems = listId => ({
-  type: ItemActionTypes.REMOVE_ARCHIVED_ITEMS,
+  type: ItemActionTypes.REMOVE_ARCHIVED,
   payload: { listId }
 });
 
@@ -275,7 +275,7 @@ export const fetchComments = (listId, itemId) => dispatch =>
       );
     });
 
-export const archiveItem = (listId, itemId) => dispatch =>
+export const archiveItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/update-item-details`, {
     isArchived: true,
     itemId
@@ -286,7 +286,7 @@ export const archiveItem = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Item successfully archived.'
+        `Item "${name}" successfully archived.`
       );
     })
     .catch(err => {
@@ -294,11 +294,11 @@ export const archiveItem = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Item "${name}" archivization failed. Please try again.`
       );
     });
 
-export const fetchArchivedItems = listId => dispatch =>
+export const fetchArchivedItems = (listId, name) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
     .then(resp => resp.json())
     .then(json => {
@@ -310,7 +310,7 @@ export const fetchArchivedItems = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching items failed..."
+        `Fetching archived items of list "${name}" failed. Please try again.`
       );
     });
 

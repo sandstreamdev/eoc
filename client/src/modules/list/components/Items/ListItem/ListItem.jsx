@@ -174,13 +174,13 @@ class ListItem extends PureComponent {
   handleArchiveItem = () => {
     const {
       archiveItem,
-      data: { _id: itemId },
+      data: { _id: itemId, name },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    return archiveItem(listId, itemId);
+    return archiveItem(listId, itemId, name);
   };
 
   renderVoting = () => {
@@ -201,6 +201,36 @@ class ListItem extends PureComponent {
           onVote={this.handleVoting}
           votesCount={votesCount}
         />
+      </div>
+    );
+  };
+
+  renderConfirmation = () => {
+    const {
+      data: { name },
+      isMember
+    } = this.props;
+
+    return (
+      <div className="list-item__confirmation">
+        <h4>{`Do you really want to archive "${name}" item?`}</h4>
+        <PendingButton
+          className="primary-button"
+          disabled={!isMember}
+          onClick={this.handleArchiveItem}
+          type="button"
+          preloaderTheme={PreloaderTheme.LIGHT}
+        >
+          Confirm
+        </PendingButton>
+        <button
+          className="primary-button"
+          disabled={!isMember}
+          onClick={this.handleConfirmationVisibility}
+          type="button"
+        >
+          Cancel
+        </button>
       </div>
     );
   };

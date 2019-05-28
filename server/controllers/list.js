@@ -859,7 +859,6 @@ const updateItemDetails = (req, resp) => {
     user: { _id: userId }
   } = req;
   const { id: listId } = req.params;
-  let updateMessage;
 
   const sanitizeItemId = sanitize(itemId);
 
@@ -876,9 +875,6 @@ const updateItemDetails = (req, resp) => {
 
       const { items } = list;
       const itemToUpdate = items.id(sanitizeItemId);
-      const { name: itemName } = itemToUpdate;
-
-      updateMessage = `Item "${itemName}" successfully updated.`;
 
       if (description) {
         itemToUpdate.description = description;
@@ -890,7 +886,6 @@ const updateItemDetails = (req, resp) => {
 
       if (isOrdered !== undefined) {
         itemToUpdate.isOrdered = isOrdered;
-        updateMessage = `Item "${itemName}" successfully ordered.`;
       }
 
       if (authorId) {
@@ -899,14 +894,13 @@ const updateItemDetails = (req, resp) => {
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
-        updateMessage = `Item "${itemName}" successfully ${
-          isArchived ? 'archived' : 'restored'
-        }.`;
       }
 
       return list.save();
     })
-    .then(() => resp.status(200).json({ message: updateMessage }))
+    .then(() =>
+      resp.status(200).json({ message: 'Item successfully updated.' })
+    )
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
@@ -1063,7 +1057,6 @@ const changeType = (req, resp) => {
 const getArchivedItems = (req, resp) => {
   const { id: listId } = req.params;
   const { _id: userId } = req.user;
-  let listName;
 
   List.findOne(
     {
@@ -1077,12 +1070,11 @@ const getArchivedItems = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.status(400);
       }
 
-      const { items, name } = list;
+      const { items } = list;
       const archivedItems = items.filter(item => item.isArchived);
-      listName = name;
 
       resp.status(200).send(responseWithItems(userId, archivedItems));
     })
