@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import MenuIcon from 'assets/images/ellipsis-v-solid.svg';
+import { KeyCodes } from 'common/constants/enums';
 
 class DropdownMenu extends Component {
   state = {
@@ -21,7 +22,13 @@ class DropdownMenu extends Component {
     document.addEventListener('keydown', this.onPressEscape);
   };
 
-  onPressEscape = e => (e.code === 'Escape' ? this.hideMenu() : null);
+  onPressEscape = event => {
+    const { code } = event;
+
+    if (code === KeyCodes.ESCAPE) {
+      this.hideMenu();
+    }
+  };
 
   toggleMenuVisibility = () => {
     const { hideMenu } = this.state;

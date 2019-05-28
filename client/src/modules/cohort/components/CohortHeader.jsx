@@ -12,6 +12,7 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { KeyCodes } from 'common/constants/enums';
 
 class CohortHeader extends PureComponent {
   constructor(props) {
@@ -57,7 +58,7 @@ class CohortHeader extends PureComponent {
     const { isDescriptionTextareaVisible } = this.state;
     const { code } = event;
 
-    if (code === 'Enter' || code === 'Escape') {
+    if (code === KeyCodes.ENTER || code === KeyCodes.ESCAPE) {
       const action = isDescriptionTextareaVisible
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;

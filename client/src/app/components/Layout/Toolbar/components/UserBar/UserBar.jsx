@@ -10,6 +10,7 @@ import { UserPropType } from 'common/constants/propTypes';
 import { LogoutIcon, UserIcon, CohortIcon } from 'assets/images/icons';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import UserIconPlaceholder from 'assets/images/user.svg';
+import { KeyCodes } from 'common/constants/enums';
 
 class UserBar extends Component {
   state = {
@@ -27,7 +28,8 @@ class UserBar extends Component {
 
   escapeListener = event => {
     const { code } = event;
-    if (code === 'Escape') {
+
+    if (code === KeyCodes.ESCAPE) {
       this.setState({
         isVisible: false
       });

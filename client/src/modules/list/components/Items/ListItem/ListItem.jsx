@@ -17,13 +17,14 @@ import {
   cloneItem,
   setVote,
   toggle,
-  updateItemDetails
+  updateListItem
 } from '../model/actions';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
+import ListItemName from '../ListItemName';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -37,6 +38,7 @@ class ListItem extends PureComponent {
       areDetailsVisible: false,
       areFieldsUpdated: false,
       done: isOrdered,
+      isNameEdited: false,
       isValidationErrorVisible: false,
       itemDescription: description,
       link
@@ -89,7 +91,7 @@ class ListItem extends PureComponent {
       match: {
         params: { id: listId }
       },
-      updateItemDetails
+      updateListItem
     } = this.props;
 
     if (!isMember) {
@@ -109,7 +111,7 @@ class ListItem extends PureComponent {
     }
 
     if (isLinkUpdated || isDescriptionUpdated) {
-      return updateItemDetails(listId, itemId, { description, link });
+      return updateListItem(listId, itemId, { description, link });
     }
   };
 
@@ -185,6 +187,12 @@ class ListItem extends PureComponent {
     );
   };
 
+  preventDefault = event => event.preventDefault();
+
+  handleNameFocus = () => this.setState({ isNameEdited: true });
+
+  handleNameBlur = () => this.setState({ isNameEdited: false });
+
   renderDetails = () => {
     const { areFieldsUpdated, isValidationErrorVisible } = this.state;
     const {
@@ -257,7 +265,7 @@ class ListItem extends PureComponent {
       data: { isOrdered, authorName, _id, name },
       isMember
     } = this.props;
-    const { done, areDetailsVisible } = this.state;
+    const { areDetailsVisible, done, isNameEdited } = this.state;
 
     return (
       <li
@@ -272,7 +280,7 @@ class ListItem extends PureComponent {
             'list-item__top--details-visible': areDetailsVisible,
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
-          onClick={this.handleDetailsVisibility}
+          onClick={isNameEdited ? null : this.handleDetailsVisibility}
           role="listitem"
         >
           <input
@@ -283,7 +291,13 @@ class ListItem extends PureComponent {
           />
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
-              <span className="list-item__name">{name}</span>
+              <ListItemName
+                isMember={isMember}
+                itemId={_id}
+                name={name}
+                onBlur={this.handleNameBlur}
+                onFocus={this.handleNameFocus}
+              />
               <span className="list-item__author">{`Added by: ${authorName}`}</span>
             </span>
           </label>
@@ -323,7 +337,7 @@ ListItem.propTypes = {
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired,
-  updateItemDetails: PropTypes.func.isRequired
+  updateListItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -333,6 +347,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { clearVote, cloneItem, setVote, toggle, updateItemDetails }
+    { clearVote, cloneItem, setVote, toggle, updateListItem }
   )(ListItem)
 );
