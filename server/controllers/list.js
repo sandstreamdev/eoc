@@ -900,7 +900,7 @@ const updateItemDetails = (req, resp) => {
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
         updateMessage = `Item "${itemName}" successfully ${
-          isArchived ? 'restored' : 'archived'
+          isArchived ? 'archived' : 'restored'
         }.`;
       }
 
