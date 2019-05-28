@@ -335,7 +335,14 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     email
   })
     .then(resp => resp.json())
-    .then(json => dispatch(addMemberSuccess(json, cohortId)))
+    .then(json => {
+      dispatch(addMemberSuccess(json, cohortId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message || `"${json.displayName}" added as member successfully.`
+      );
+    })
     .catch(err => {
       dispatch(addMemberFailure());
       createNotificationWithTimeout(
@@ -350,7 +357,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
     userId
   })
     .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(removeMemberSuccess(cohortId, userId));
       createNotificationWithTimeout(
         dispatch,
