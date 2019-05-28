@@ -16,6 +16,7 @@
 
   &:disabled {
     cursor: not-allowed;
+    background: $button-disabled;
   }
 
   @include breakpoint($medium) {
@@ -56,6 +57,7 @@
 
   &:disabled {
     cursor: not-allowed;
+    text-decoration: none;
 
     &:hover {
       color: $text-normal;

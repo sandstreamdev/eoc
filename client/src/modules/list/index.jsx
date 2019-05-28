@@ -161,7 +161,9 @@ class List extends Component {
                     ordered
                   />
                 </div>
-                {isMember && <ArchivedItemsContainer isMember={isMember} />}
+                {isMember && (
+                  <ArchivedItemsContainer isMember={isMember} name={name} />
+                )}
                 {!isArchived && isOwner && (
                   <button
                     className="link-button"
@@ -183,10 +185,10 @@ class List extends Component {
                     <MembersBox
                       isCohortList={isCohortList}
                       isCurrentUserAnOwner={isOwner}
-                      type={type}
                       isMember={isMember}
                       members={members}
                       route={Routes.LIST}
+                      type={type}
                     />
                   )}
                 </div>

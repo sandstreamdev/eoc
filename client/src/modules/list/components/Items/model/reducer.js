@@ -107,7 +107,6 @@ const items = (state = {}, action) => {
       const {
         payload: { itemId }
       } = action;
-
       const prevItem = state[itemId];
 
       return {
@@ -118,14 +117,14 @@ const items = (state = {}, action) => {
         }
       };
     }
-    case ItemActionTypes.FETCH_ARCHIVED_ITEMS_SUCCESS: {
+    case ItemActionTypes.FETCH_ARCHIVED_SUCCESS: {
       const {
         payload: { data }
       } = action;
 
       return { ...state, ...data };
     }
-    case ItemActionTypes.REMOVE_ARCHIVED_ITEMS:
+    case ItemActionTypes.REMOVE_ARCHIVED:
       return _keyBy(_filter(state, item => !item.isArchived), '_id');
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {

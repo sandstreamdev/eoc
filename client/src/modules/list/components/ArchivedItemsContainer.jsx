@@ -16,7 +16,7 @@ import Preloader from 'common/components/Preloader';
 class ArchivedItemsContainer extends PureComponent {
   state = {
     areArchivedItemsVisible: false,
-    pendingForArchivedItems: false
+    pending: false
   };
 
   handleArchivedItemsVisibility = () =>
@@ -32,24 +32,25 @@ class ArchivedItemsContainer extends PureComponent {
     const {
       fetchArchivedItems,
       match: {
-        params: { id }
+        params: { id: listId }
       },
+      name,
       removeArchivedItems
     } = this.props;
 
     if (areArchivedItemsVisible) {
-      this.setState({ pendingForArchivedItems: true });
+      this.setState({ pending: true });
 
-      fetchArchivedItems(id).finally(() =>
-        this.setState({ pendingForArchivedItems: false })
+      fetchArchivedItems(listId, name).finally(() =>
+        this.setState({ pending: false })
       );
     } else {
-      removeArchivedItems(id);
+      removeArchivedItems(listId);
     }
   };
 
   render() {
-    const { areArchivedItemsVisible, pendingForArchivedItems } = this.state;
+    const { areArchivedItemsVisible, pending } = this.state;
     const { archivedItems, isMember } = this.props;
 
     return (
@@ -64,7 +65,7 @@ class ArchivedItemsContainer extends PureComponent {
         {areArchivedItemsVisible && (
           <div
             className={classNames('archived-items__items', {
-              'archived-items__items--visible': areArchivedItemsVisible
+              'archived-items__items--with-border': areArchivedItemsVisible
             })}
           >
             <ItemsContainer
@@ -72,7 +73,7 @@ class ArchivedItemsContainer extends PureComponent {
               isMember={isMember}
               items={archivedItems}
             />
-            {pendingForArchivedItems && <Preloader />}
+            {pending && <Preloader />}
           </div>
         )}
       </div>
@@ -84,6 +85,7 @@ ArchivedItemsContainer.propTypes = {
   archivedItems: PropTypes.arrayOf(PropTypes.object),
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
+  name: PropTypes.string.isRequired,
 
   fetchArchivedItems: PropTypes.func.isRequired,
   removeArchivedItems: PropTypes.func.isRequired
@@ -92,12 +94,12 @@ ArchivedItemsContainer.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   const {
     match: {
-      params: { id }
+      params: { id: listId }
     }
   } = ownProps;
 
   return {
-    archivedItems: getArchivedItems(state, id)
+    archivedItems: getArchivedItems(state, listId)
   };
 };
 
