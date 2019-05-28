@@ -78,7 +78,6 @@ class MemberDetails extends PureComponent {
 
   handleOwnerInfoVisibility = event => {
     event.stopPropagation();
-
     this.setState(({ isOwnerInfoVisible }) => ({
       isOwnerInfoVisible: !isOwnerInfoVisible
     }));
@@ -86,7 +85,6 @@ class MemberDetails extends PureComponent {
 
   handleMemberInfoVisibility = event => {
     event.stopPropagation();
-
     this.setState(({ isMemberInfoVisible }) => ({
       isMemberInfoVisible: !isMemberInfoVisible
     }));
@@ -156,7 +154,6 @@ class MemberDetails extends PureComponent {
 
   handleChangingRoles = event => {
     event.stopPropagation();
-
     const {
       target: { value: selectedRole }
     } = event;

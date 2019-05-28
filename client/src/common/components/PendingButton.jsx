@@ -24,7 +24,6 @@ class PendingButton extends PureComponent {
 
   handleOnClick = event => {
     event.stopPropagation();
-
     const { onClick } = this.props;
 
     this.setState({ pending: true });

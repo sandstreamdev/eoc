@@ -22,7 +22,6 @@ import Preloader from 'common/components/Preloader';
 class GridList extends PureComponent {
   handleFavClick = (itemId, isFavourite) => event => {
     event.stopPropagation();
-
     const {
       addCohortToFavourites,
       addListToFavourites,
