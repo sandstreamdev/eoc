@@ -1,6 +1,5 @@
 import _filter from 'lodash/filter';
 import _head from 'lodash/head';
-import _sortBy from 'lodash/sortBy';
 import _keyBy from 'lodash/keyBy';
 import { createSelector } from 'reselect';
 
@@ -26,26 +25,12 @@ export const getCohortDetails = (state, cohortId) => {
 
 export const getActiveCohorts = createSelector(
   getCohorts,
-  cohorts =>
-    _keyBy(
-      _sortBy(
-        _filter(cohorts, cohort => !cohort.isArchived),
-        el => !el.isFavourite
-      ),
-      '_id'
-    )
+  cohorts => _keyBy(_filter(cohorts, cohort => !cohort.isArchived), '_id')
 );
 
 export const getArchivedCohorts = createSelector(
   getCohorts,
-  cohorts =>
-    _keyBy(
-      _sortBy(
-        _filter(cohorts, cohort => cohort.isArchived),
-        el => !el.isFavourite
-      ),
-      '_id'
-    )
+  cohorts => _keyBy(_filter(cohorts, cohort => cohort.isArchived), '_id')
 );
 
 export const getMembers = createSelector(

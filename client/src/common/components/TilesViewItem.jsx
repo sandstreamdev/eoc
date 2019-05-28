@@ -56,22 +56,24 @@ class TilesViewItem extends PureComponent {
           <h3 className="tiles-view-item__heading">{name}</h3>
         </header>
         <p className="tiles-view-item__description">{description}</p>
-        <button
-          className="tiles-view-item__star"
-          disabled={pending}
-          onClick={this.handleFavClick}
-          type="button"
-        >
-          {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
-          {pending && (
-            <div className="tiles-view-item__preloader">
-              <Preloader
-                size={PreloaderSize.SMALL}
-                theme={PreloaderTheme.LIGHT}
-              />
-            </div>
-          )}
-        </button>
+        {route !== Routes.COHORT && (
+          <button
+            className="tiles-view-item__star"
+            disabled={pending}
+            onClick={this.handleFavClick}
+            type="button"
+          >
+            {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
+            {pending && (
+              <div className="tiles-view-item__preloader">
+                <Preloader
+                  size={PreloaderSize.SMALL}
+                  theme={PreloaderTheme.LIGHT}
+                />
+              </div>
+            )}
+          </button>
+        )}
         <div className="tiles-view-item__data">
           {route === Routes.LIST ? (
             <Fragment>

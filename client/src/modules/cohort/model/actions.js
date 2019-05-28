@@ -10,6 +10,7 @@ import {
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
+import { UserAddingStatus } from 'common/components/Members/const';
 
 const createCohortSuccess = data => ({
   type: CohortActionTypes.CREATE_SUCCESS,
@@ -89,15 +90,6 @@ const fetchArchivedCohortsMetaDataSuccess = data => ({
 const fetchArchivedCohortsMetaDataFailure = errMessage => ({
   type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
   payload: errMessage
-});
-
-const favouritesSuccess = data => ({
-  type: CohortActionTypes.FAVOURITES_SUCCESS,
-  payload: data
-});
-
-const favouritesFailure = () => ({
-  type: CohortActionTypes.FAVOURITES_FAILURE
 });
 
 const addMemberSuccess = (data, cohortId) => ({
@@ -290,52 +282,24 @@ export const fetchCohortDetails = cohortId => dispatch =>
       throw err;
     });
 
-export const addCohortToFavourites = cohortId => dispatch =>
-  patchData(`/api/cohorts/${cohortId}/add-to-fav`)
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch(favouritesSuccess({ cohortId, isFavourite: true }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
-    .catch(err => {
-      dispatch(favouritesFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message
-      );
-    });
-
-export const removeCohortFromFavourites = cohortId => dispatch =>
-  patchData(`/api/cohorts/${cohortId}/remove-from-fav`)
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch(favouritesSuccess({ cohortId, isFavourite: false }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
-    .catch(err => {
-      dispatch(favouritesFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message
-      );
-    });
-
 export const addCohortMember = (cohortId, email) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })
-    .then(resp => resp.json())
-    .then(json => dispatch(addMemberSuccess(json, cohortId)))
+    .then(resp => {
+      if (resp.status === 200) {
+        return resp.json();
+      }
+    })
+    .then(json => {
+      if (json) {
+        dispatch(addMemberSuccess(json, cohortId));
+
+        return UserAddingStatus.ADDED;
+      }
+
+      return UserAddingStatus.NO_USER;
+    })
     .catch(err => {
       dispatch(addMemberFailure());
       createNotificationWithTimeout(

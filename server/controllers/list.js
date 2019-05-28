@@ -798,7 +798,11 @@ const addViewer = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(userData => {
-      if (!userData || userData.idFromProvider === DEMO_MODE_ID) {
+      if (!userData) {
+        return;
+      }
+
+      if (userData.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 
@@ -821,9 +825,13 @@ const addViewer = (req, resp) => {
       return list.save();
     })
     .then(() => {
-      const userToSend = responseWithListMember(user, cohortMembers);
+      if (user) {
+        const userToSend = responseWithListMember(user, cohortMembers);
 
-      resp.status(200).json(userToSend);
+        return resp.status(200).json(userToSend);
+      }
+
+      resp.status(204).send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

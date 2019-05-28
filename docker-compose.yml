@@ -1,6 +1,12 @@
 version: '3.5'
 
 services:
+  eoc-landing:
+    container_name: eoc_landing_container
+    restart: always
+    build: ./landing
+    ports:
+      - '80'
   eoc-server:
     container_name: eoc_server_container
     restart: always
@@ -25,6 +31,7 @@ services:
       -  /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
     links:
       - eoc-server
+      - eoc-landing
   mongo:
     container_name: mongo_container
     image: mongo

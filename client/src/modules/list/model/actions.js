@@ -10,6 +10,7 @@ import { ListActionTypes } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
+import { UserAddingStatus } from 'common/components/Members/const';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -373,14 +374,24 @@ export const addListViewer = (listId, email) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
-    .then(resp => resp.json())
+    .then(resp => {
+      if (resp.status === 200) {
+        return resp.json();
+      }
+    })
     .then(json => {
-      dispatch(addViewerSuccess(json, listId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message || 'Viewer added successfully.'
-      );
+      if (json) {
+        dispatch(addViewerSuccess(json, listId));
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          json.message || 'Viewer added successfully.'
+        );
+
+        return UserAddingStatus.ADDED;
+      }
+
+      return UserAddingStatus.NO_USER;
     })
     .catch(err => {
       dispatch(addViewerFailure());
