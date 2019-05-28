@@ -27,8 +27,11 @@ services:
     build: ./nginx
     ports:
       - '80:80'
+      - '443:443'
     volumes:
-      -  /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
+      - /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
+      - /data/certbot/conf:/etc/letsencrypt
+      - /data/certbot/www:/var/www/certbot
     links:
       - eoc-server
       - eoc-landing
@@ -40,3 +43,12 @@ services:
       - /data/db:/data/db
     ports:
       - '27017'
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - /data/certbot/conf:/etc/letsencrypt
+      - /data/certbot/www:/var/www/certbot
+    depends_on:
+      - nginx-production
+    command: certonly --webroot -w /var/www/certbot --email marek.rozmus@sandstream.pl --agree-tos --no-eff-email --staging --rsa-key-size 4096 -d eoc.sanddev.com

@@ -3,6 +3,8 @@ def COLOR_MAP = ['SUCCESS': 'good', 'FAILURE': 'danger', 'UNSTABLE': 'danger', '
 pipeline {
   agent any
 
+  options { disableConcurrentBuilds() }
+
   environment {
     DOCKER_BUILDKIT = 1
     TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase()
