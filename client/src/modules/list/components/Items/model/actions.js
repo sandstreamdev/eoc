@@ -276,7 +276,7 @@ export const archiveItem = (listId, itemId, name) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Item "${name}" archivization failed. Please try again.`
+        `Archivization "${name}" item failed. Please try again.`
       );
     });
 };

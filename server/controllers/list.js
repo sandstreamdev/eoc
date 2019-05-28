@@ -1070,7 +1070,7 @@ const getArchivedItems = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        return resp.status(400);
+        return resp.status(400).send();
       }
 
       const { items } = list;
@@ -1078,7 +1078,7 @@ const getArchivedItems = (req, resp) => {
 
       resp.status(200).send(responseWithItems(userId, archivedItems));
     })
-    .catch(err => resp.status(400));
+    .catch(err => resp.status(400).send());
 };
 
 module.exports = {
