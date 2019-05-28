@@ -37,13 +37,16 @@ class ItemsList extends PureComponent {
   };
 
   render() {
-    const { items } = this.props;
+    const { archived, items } = this.props;
     const { limit } = this.state;
 
     return (
       <Fragment>
         {!items.length ? (
-          <MessageBox message="There are no items!" type={MessageType.INFO} />
+          <MessageBox
+            message={`There are no ${archived && 'archived '}items!`}
+            type={MessageType.INFO}
+          />
         ) : (
           this.renderItems()
         )}
