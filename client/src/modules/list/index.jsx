@@ -179,7 +179,6 @@ class List extends Component {
                   >
                     {` ${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
                   </button>
-
                   {isMembersBoxVisible && (
                     <MembersBox
                       isCohortList={isCohortList}

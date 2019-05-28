@@ -19,14 +19,12 @@ class ArchivedItemsContainer extends PureComponent {
     pendingForArchivedItems: false
   };
 
-  componentDidMount() {}
-
   handleArchivedItemsVisibility = () =>
     this.setState(
       ({ areArchivedItemsVisible }) => ({
         areArchivedItemsVisible: !areArchivedItemsVisible
       }),
-      () => this.handleArchivedItemsData()
+      this.handleArchivedItemsData
     );
 
   handleArchivedItemsData = () => {
@@ -61,7 +59,7 @@ class ArchivedItemsContainer extends PureComponent {
           onClick={this.handleArchivedItemsVisibility}
           type="button"
         >
-          {` ${areArchivedItemsVisible ? 'hide' : 'show'} archived items`}
+          {`${areArchivedItemsVisible ? 'hide' : 'show'} archived items`}
         </button>
         {areArchivedItemsVisible && (
           <div
