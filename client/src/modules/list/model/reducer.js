@@ -111,7 +111,7 @@ const lists = (state = {}, action) => {
       const updatedList = {
         ...prevList,
         name: action.payload.name || prevList.name,
-        description: action.payload.description
+        description: action.payload.description || prevList.description
       };
       return { ...state, [action.payload.listId]: updatedList };
     }
