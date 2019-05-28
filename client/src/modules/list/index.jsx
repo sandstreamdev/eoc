@@ -2,9 +2,11 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import classNames from 'classnames';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
+  getArchivedItems,
   getDoneItems,
   getList,
   getMembers,
@@ -12,6 +14,10 @@ import {
 } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/Items/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
+import {
+  fetchArchivedItems,
+  removeArchivedItems
+} from 'modules/list/components/Items/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
@@ -23,9 +29,11 @@ import Breadcrumbs from 'common/components/Breadcrumbs';
 
 class List extends Component {
   state = {
+    areArchivedItemsVisible: false,
     breadcrumbs: [],
     dialogContext: null,
     isMembersBoxVisible: false,
+    pendingForArchivedItems: false,
     pendingForDetails: false,
     pendingForListArchivization: false
   };
@@ -85,7 +93,10 @@ class List extends Component {
       this.setState({ pendingForListArchivization: true });
 
       archiveList(listId).finally(() => {
-        this.setState({ pendingForListArchivization: false });
+        this.setState({
+          pendingForListArchivization: false,
+          areArchivedItemsVisible: false
+        });
         this.hideDialog();
       });
     }
@@ -110,14 +121,46 @@ class List extends Component {
     return <Breadcrumbs breadcrumbs={breadcrumbs} isGuest={isGuest} />;
   };
 
+  handleArchivedItemsVisibility = () =>
+    this.setState(
+      ({ areArchivedItemsVisible }) => ({
+        areArchivedItemsVisible: !areArchivedItemsVisible
+      }),
+      () => this.handleArchivedItemsData()
+    );
+
+  handleArchivedItemsData = () => {
+    const { areArchivedItemsVisible } = this.state;
+    const {
+      fetchArchivedItems,
+      match: {
+        params: { id }
+      },
+      removeArchivedItems
+    } = this.props;
+
+    if (areArchivedItemsVisible) {
+      this.setState({ pendingForArchivedItems: true });
+
+      fetchArchivedItems(id).finally(() =>
+        this.setState({ pendingForArchivedItems: false })
+      );
+    } else {
+      removeArchivedItems(id);
+    }
+  };
+
   render() {
     const {
+      areArchivedItemsVisible,
       dialogContext,
       isMembersBoxVisible,
+      pendingForArchivedItems,
       pendingForDetails,
       pendingForListArchivization
     } = this.state;
     const {
+      archivedItems,
       doneItems,
       match: {
         params: { id: listId }
@@ -153,37 +196,67 @@ class List extends Component {
                     {isMember && <InputBar />}
                   </ItemsContainer>
                   <ItemsContainer
-                    archived
                     isMember={isMember}
                     items={doneItems}
+                    ordered
                   />
-                  {!isArchived && isOwner && (
+                </div>
+                {isMember && (
+                  <div className="list__archived-items">
                     <button
                       className="link-button"
-                      onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                      onClick={this.handleArchivedItemsVisibility}
                       type="button"
                     >
-                      {`Archive the "${name}" sack`}
+                      {` ${
+                        areArchivedItemsVisible ? 'hide' : 'show'
+                      } archived items`}
                     </button>
+                    {areArchivedItemsVisible && (
+                      <div
+                        className={classNames('list__items', {
+                          'list__items--visible': areArchivedItemsVisible
+                        })}
+                      >
+                        <ItemsContainer
+                          archived
+                          isMember={isMember}
+                          items={archivedItems}
+                        />
+                        {pendingForArchivedItems && <Preloader />}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {!isArchived && isOwner && (
+                  <button
+                    className="link-button"
+                    onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
+                    type="button"
+                  >
+                    {`Archive the "${name}" sack`}
+                  </button>
+                )}
+                <div className="list__members">
+                  <button
+                    className="link-button"
+                    onClick={this.handleMembersBoxVisibility}
+                    type="button"
+                  >
+                    {` ${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
+                  </button>
+
+                  {isMembersBoxVisible && (
+                    <MembersBox
+                      isCohortList={isCohortList}
+                      isCurrentUserAnOwner={isOwner}
+                      type={type}
+                      isMember={isMember}
+                      members={members}
+                      route={Routes.LIST}
+                    />
                   )}
                 </div>
-                <button
-                  className="link-button"
-                  onClick={this.handleMembersBoxVisibility}
-                  type="button"
-                >
-                  {` ${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
-                </button>
-                {isMembersBoxVisible && (
-                  <MembersBox
-                    isCohortList={isCohortList}
-                    isCurrentUserAnOwner={isOwner}
-                    type={type}
-                    isMember={isMember}
-                    members={members}
-                    route={Routes.LIST}
-                  />
-                )}
                 {pendingForDetails && <Preloader />}
               </div>
             </div>
@@ -207,6 +280,7 @@ class List extends Component {
 }
 
 List.propTypes = {
+  archivedItems: PropTypes.arrayOf(PropTypes.object),
   doneItems: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
@@ -214,7 +288,9 @@ List.propTypes = {
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   archiveList: PropTypes.func.isRequired,
-  fetchListData: PropTypes.func.isRequired
+  fetchArchivedItems: PropTypes.func.isRequired,
+  fetchListData: PropTypes.func.isRequired,
+  removeArchivedItems: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -225,6 +301,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
 
   return {
+    archivedItems: getArchivedItems(state, id),
     doneItems: getDoneItems(state, id),
     list: getList(state, id),
     members: getMembers(state, id),
@@ -235,6 +312,11 @@ const mapStateToProps = (state, ownProps) => {
 export default withRouter(
   connect(
     mapStateToProps,
-    { archiveList, fetchListData }
+    {
+      archiveList,
+      fetchArchivedItems,
+      fetchListData,
+      removeArchivedItems
+    }
   )(List)
 );

@@ -33,13 +33,23 @@ export const getItems = createSelector(
   }
 );
 
-export const getDoneItems = createSelector(
+const getActiveItems = createSelector(
   [getItems],
+  items => _filter(items, item => !item.isArchived)
+);
+
+export const getArchivedItems = createSelector(
+  [getItems],
+  items => _filter(items, item => item.isArchived)
+);
+
+export const getDoneItems = createSelector(
+  [getActiveItems],
   items => _filter(items, item => item.isOrdered)
 );
 
 export const getUndoneItems = createSelector(
-  [getItems],
+  [getActiveItems],
   items => _filter(items, item => !item.isOrdered)
 );
 

@@ -1,0 +1,65 @@
+.list-archived-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid $item-border;
+  padding: 16px;
+  color: $text-normal;
+  flex-direction: column;
+
+  &:hover {
+    box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
+  }
+
+  @include breakpoint($xsmall) {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &__data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: $m-font;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  &__name {
+    font-weight: 500;
+    color: $text-dark;
+  }
+
+  &__author {
+    font-size: $s-font;
+    margin-top: 5px;
+    text-transform: capitalize;
+    text-overflow: ellipsis;
+  }
+
+  &__features {
+    button:not(:last-of-type) {
+      margin-right: 16px;
+    }
+
+    @include breakpoint($xsmall) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @include breakpoint($small) {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  &__details {
+    display: flex;
+    justify-content: space-between;
+    font-size: $s-font;
+    margin-top: 5px;
+
+    span:not(:last-of-type) {
+      margin-right: 16px;
+    }
+  }
+}

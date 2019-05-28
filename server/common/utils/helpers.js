@@ -1,7 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 const _map = require('lodash/map');
 const _pickBy = require('lodash/pickBy');
-const _filter = require('lodash/filter');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -40,8 +39,9 @@ const responseWithList = (list, userId) => {
 const responseWithListsMetaData = (lists, userId) =>
   _map(lists, list => {
     const { cohortId, favIds, items, ...rest } = list;
-    const doneItemsCount = items.filter(item => item.isOrdered).length;
-    const unhandledItemsCount = items.length - doneItemsCount;
+    const activeItems = items.filter(item => !item.isArchived);
+    const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
+    const unhandledItemsCount = activeItems.length - doneItemsCount;
 
     const listToSend = {
       ...rest,
@@ -65,8 +65,8 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
 };
 
 const responseWithItems = (userId, items) =>
-  _map(_filter(items, item => !item.isArchived), el => {
-    const { authorId: author, isArchived, voterIds, ...rest } = el;
+  _map(items, item => {
+    const { authorId: author, isArchived, voterIds, ...rest } = item;
     const { _id: authorId, displayName: authorName } = author;
 
     return {

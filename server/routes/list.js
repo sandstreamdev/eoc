@@ -12,6 +12,7 @@ const {
   cloneItem,
   createList,
   deleteListById,
+  getArchivedItems,
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
@@ -47,5 +48,6 @@ router.patch('/:id/add-viewer', authorize, addViewer);
 router.patch('/:id/update-item-details', authorize, updateItemDetails);
 router.patch('/:id/clone-item', authorize, cloneItem);
 router.patch('/:id/change-type', authorize, changeType);
+router.get('/:id/archived-items', authorize, getArchivedItems);
 
 module.exports = router;

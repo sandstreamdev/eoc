@@ -8,9 +8,26 @@
   }
 
   &__items {
+    position: relative;
     margin: 20px 0 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+
+    &--visible {
+      border-top: 1px solid $item-border;
+    }
+  }
+
+  &__archived-items {
+    width: 100%;
+
+    &--visible {
+      border-top: 1px solid $item-border;
+    }
+  }
+
+  &__members {
+    width: 100%;
   }
 }

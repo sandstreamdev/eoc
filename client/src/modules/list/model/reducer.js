@@ -200,11 +200,13 @@ const lists = (state = {}, action) => {
       return {};
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.ARCHIVE_SUCCESS:
+    case ItemActionTypes.CLEAR_VOTE_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS:
+    case ItemActionTypes.FETCH_ARCHIVED_ITEMS_SUCCESS:
+    case ItemActionTypes.REMOVE_ARCHIVED_ITEMS:
+    case ItemActionTypes.SET_VOTE_SUCCESS:
     case ItemActionTypes.TOGGLE_SUCCESS:
     case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
-    case ItemActionTypes.SET_VOTE_SUCCESS:
-    case ItemActionTypes.CLEAR_VOTE_SUCCESS:
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {

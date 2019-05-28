@@ -1,3 +1,6 @@
+import _filter from 'lodash/filter';
+import _keyBy from 'lodash/keyBy';
+
 import {
   CommentActionTypes,
   ItemActionTypes
@@ -104,9 +107,26 @@ const items = (state = {}, action) => {
       const {
         payload: { itemId }
       } = action;
-      const { [itemId]: removed, ...rest } = state;
-      return rest;
+
+      const prevItem = state[itemId];
+
+      return {
+        ...state,
+        [itemId]: {
+          ...prevItem,
+          isArchived: true
+        }
+      };
     }
+    case ItemActionTypes.FETCH_ARCHIVED_ITEMS_SUCCESS: {
+      const {
+        payload: { data }
+      } = action;
+
+      return { ...state, ...data };
+    }
+    case ItemActionTypes.REMOVE_ARCHIVED_ITEMS:
+      return _keyBy(_filter(state, item => !item.isArchived), '_id');
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {

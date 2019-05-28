@@ -2,6 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import ListItem from 'modules/list/components/Items/ListItem';
+import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 
@@ -16,8 +17,27 @@ class ItemsList extends PureComponent {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
+  renderItems = () => {
+    const { archived, isMember, items } = this.props;
+    const { limit } = this.state;
+
+    return archived ? (
+      <ul className="items-list">
+        {items.slice(0, limit).map(item => (
+          <ListArchivedItem data={item} key={item._id} />
+        ))}
+      </ul>
+    ) : (
+      <ul className="items-list">
+        {items.slice(0, limit).map(item => (
+          <ListItem data={item} isMember={isMember} key={item._id} />
+        ))}
+      </ul>
+    );
+  };
+
   render() {
-    const { isMember, items } = this.props;
+    const { items } = this.props;
     const { limit } = this.state;
 
     return (
@@ -25,11 +45,7 @@ class ItemsList extends PureComponent {
         {!items.length ? (
           <MessageBox message="There are no items!" type={MessageType.INFO} />
         ) : (
-          <ul className="items-list">
-            {items.slice(0, limit).map(item => (
-              <ListItem data={item} isMember={isMember} key={item._id} />
-            ))}
-          </ul>
+          this.renderItems()
         )}
         {limit < items.length && (
           <button
@@ -44,6 +60,7 @@ class ItemsList extends PureComponent {
 }
 
 ItemsList.propTypes = {
+  archived: PropTypes.bool,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object)
 };

@@ -93,6 +93,20 @@ const archiveItemFailure = () => ({
   type: ItemActionTypes.ARCHIVE_FAILURE
 });
 
+const fetchArchivedItemsSuccess = (listId, data) => ({
+  type: ItemActionTypes.FETCH_ARCHIVED_ITEMS_SUCCESS,
+  payload: { listId, data }
+});
+
+const fetchArchivedItemsFailure = () => ({
+  type: ItemActionTypes.FETCH_ARCHIVE_ITEMS_FAILURE
+});
+
+export const removeArchivedItems = listId => ({
+  type: ItemActionTypes.REMOVE_ARCHIVED_ITEMS,
+  payload: { listId }
+});
+
 export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
@@ -266,3 +280,19 @@ export const archiveItem = (listId, itemId) => dispatch => {
       );
     });
 };
+
+export const fetchArchivedItems = listId => dispatch =>
+  getData(`/api/lists/${listId}/archived-items`)
+    .then(resp => resp.json())
+    .then(json => {
+      const dataMap = _keyBy(json, '_id');
+      dispatch(fetchArchivedItemsSuccess(listId, dataMap));
+    })
+    .catch(err => {
+      dispatch(fetchArchivedItemsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message || "Oops, we're sorry, fetching items failed..."
+      );
+    });

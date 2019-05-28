@@ -240,6 +240,7 @@ class ListItem extends PureComponent {
               disabled={!isMember}
               onClick={this.handleArchiveItem}
               type="button"
+              preloaderTheme={PreloaderTheme.LIGHT}
             >
               Confirm
             </PendingButton>
