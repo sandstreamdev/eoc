@@ -2,11 +2,9 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import classNames from 'classnames';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
-  getArchivedItems,
   getDoneItems,
   getList,
   getMembers,
@@ -14,10 +12,6 @@ import {
 } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/Items/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
-import {
-  fetchArchivedItems,
-  removeArchivedItems
-} from 'modules/list/components/Items/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import { RouterMatchPropType } from 'common/constants/propTypes';
@@ -26,14 +20,13 @@ import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
+import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
 
 class List extends Component {
   state = {
-    areArchivedItemsVisible: false,
     breadcrumbs: [],
     dialogContext: null,
     isMembersBoxVisible: false,
-    pendingForArchivedItems: false,
     pendingForDetails: false,
     pendingForListArchivization: false
   };
@@ -94,8 +87,7 @@ class List extends Component {
 
       archiveList(listId).finally(() => {
         this.setState({
-          pendingForListArchivization: false,
-          areArchivedItemsVisible: false
+          pendingForListArchivization: false
         });
         this.hideDialog();
       });
@@ -121,46 +113,14 @@ class List extends Component {
     return <Breadcrumbs breadcrumbs={breadcrumbs} isGuest={isGuest} />;
   };
 
-  handleArchivedItemsVisibility = () =>
-    this.setState(
-      ({ areArchivedItemsVisible }) => ({
-        areArchivedItemsVisible: !areArchivedItemsVisible
-      }),
-      () => this.handleArchivedItemsData()
-    );
-
-  handleArchivedItemsData = () => {
-    const { areArchivedItemsVisible } = this.state;
-    const {
-      fetchArchivedItems,
-      match: {
-        params: { id }
-      },
-      removeArchivedItems
-    } = this.props;
-
-    if (areArchivedItemsVisible) {
-      this.setState({ pendingForArchivedItems: true });
-
-      fetchArchivedItems(id).finally(() =>
-        this.setState({ pendingForArchivedItems: false })
-      );
-    } else {
-      removeArchivedItems(id);
-    }
-  };
-
   render() {
     const {
-      areArchivedItemsVisible,
       dialogContext,
       isMembersBoxVisible,
-      pendingForArchivedItems,
       pendingForDetails,
       pendingForListArchivization
     } = this.state;
     const {
-      archivedItems,
       doneItems,
       match: {
         params: { id: listId }
@@ -201,33 +161,7 @@ class List extends Component {
                     ordered
                   />
                 </div>
-                {isMember && (
-                  <div className="list__archived-items">
-                    <button
-                      className="link-button"
-                      onClick={this.handleArchivedItemsVisibility}
-                      type="button"
-                    >
-                      {` ${
-                        areArchivedItemsVisible ? 'hide' : 'show'
-                      } archived items`}
-                    </button>
-                    {areArchivedItemsVisible && (
-                      <div
-                        className={classNames('list__items', {
-                          'list__items--visible': areArchivedItemsVisible
-                        })}
-                      >
-                        <ItemsContainer
-                          archived
-                          isMember={isMember}
-                          items={archivedItems}
-                        />
-                        {pendingForArchivedItems && <Preloader />}
-                      </div>
-                    )}
-                  </div>
-                )}
+                {isMember && <ArchivedItemsContainer isMember={isMember} />}
                 {!isArchived && isOwner && (
                   <button
                     className="link-button"
@@ -280,7 +214,6 @@ class List extends Component {
 }
 
 List.propTypes = {
-  archivedItems: PropTypes.arrayOf(PropTypes.object),
   doneItems: PropTypes.arrayOf(PropTypes.object),
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
@@ -288,9 +221,7 @@ List.propTypes = {
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   archiveList: PropTypes.func.isRequired,
-  fetchArchivedItems: PropTypes.func.isRequired,
-  fetchListData: PropTypes.func.isRequired,
-  removeArchivedItems: PropTypes.func.isRequired
+  fetchListData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -301,7 +232,6 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
 
   return {
-    archivedItems: getArchivedItems(state, id),
     doneItems: getDoneItems(state, id),
     list: getList(state, id),
     members: getMembers(state, id),
@@ -314,9 +244,7 @@ export default withRouter(
     mapStateToProps,
     {
       archiveList,
-      fetchArchivedItems,
-      fetchListData,
-      removeArchivedItems
+      fetchListData
     }
   )(List)
 );
