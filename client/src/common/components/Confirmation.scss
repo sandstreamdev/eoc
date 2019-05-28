@@ -1,0 +1,20 @@
+.confirmation {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 20px 0;
+
+  h4 {
+    width: 100%;
+    color: $text-dark;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0 0 16px;
+  }
+
+  button:first-of-type {
+    margin-right: 20px;
+  }
+}

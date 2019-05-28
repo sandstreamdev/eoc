@@ -235,7 +235,6 @@ class ListItem extends PureComponent {
         </div>
         {isConfirmationVisible && (
           <Confirmation
-            className="list-item__confirmation"
             disabled={!isMember}
             onCancel={this.handleConfirmationVisibility}
             onConfirm={this.handleArchiveItem}

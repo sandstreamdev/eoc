@@ -899,7 +899,9 @@ const updateItemDetails = (req, resp) => {
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
-        updateMessage = `Item "${itemName}" successfully archived.`;
+        updateMessage = `Item "${itemName}" successfully ${
+          isArchived ? 'restored' : 'archived'
+        }.`;
       }
 
       return list.save();
@@ -1086,7 +1088,43 @@ const getArchivedItems = (req, resp) => {
     })
     .catch(err =>
       resp.status(400).send({
-        message: `Fetching archived items of list "${listName}" failed. Please try again.`
+        message: `Fetching archived items from the "${listName}" list failed. Please try again.`
+      })
+    );
+};
+
+const deleteItem = (req, resp) => {
+  const { id: listId, itemId } = req.params;
+  const { _id: userId } = req.user;
+  const sanitizeItemId = sanitize(itemId);
+  let itemName;
+  let listName;
+
+  List.findByIdAndUpdate(
+    {
+      _id: sanitize(listId),
+      memberIds: userId,
+      'items._id': sanitizeItemId
+    },
+    { $pull: { items: { _id: sanitizeItemId } } }
+  )
+    .exec()
+    .then(list => {
+      if (!list) {
+        return resp.status(400).send({ message: 'Sack data not found.' });
+      }
+
+      const { items, name } = list;
+      listName = name;
+      itemName = items.id(sanitizeItemId).name;
+
+      resp.status(200).send({
+        message: `Item "${itemName}" successfully deleted from "${listName}" list.`
+      });
+    })
+    .catch(err =>
+      resp.status(400).send({
+        message: `Deleting item "${itemName}" from the "${listName}" list failed. Please try again.`
       })
     );
 };
@@ -1101,6 +1139,7 @@ module.exports = {
   clearVote,
   cloneItem,
   createList,
+  deleteItem,
   deleteListById,
   getArchivedItems,
   getArchivedListsMetaData,

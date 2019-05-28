@@ -17,11 +17,15 @@ class ListArchivedItem extends PureComponent {
   };
 
   handleRestoringItem = () => {
-    // TO DO
-  };
+    const {
+      restoreItem,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
 
-  handleDeletingItem = () => {
-    // TO DO
+    return restoreItem(listId, itemId);
   };
 
   handleConfirmationVisibility = () =>
@@ -29,7 +33,7 @@ class ListArchivedItem extends PureComponent {
       isConfirmationVisible: !isConfirmationVisible
     }));
 
-  handleDeleteItem = () => {
+  handleDeletingItem = () => {
     const {
       deleteItem,
       data: { _id: itemId },
@@ -50,37 +54,38 @@ class ListArchivedItem extends PureComponent {
 
     return (
       <li className="list-archived-item">
-        <div className="list-archived-item__data">
-          <span className="list-archived-item__name">{name}</span>
-          <span className="list-archived-item__author">{`Added by: ${authorName}`}</span>
-          <div className="list-archived-item__details">
-            <span>archived</span>
-            <span>{`votes: ${votesCount}`}</span>
-            <span>{isOrdered ? 'Done' : 'Unhandled'}</span>
+        <div className="list-archived-item__wrapper">
+          <div className="list-archived-item__data">
+            <span className="list-archived-item__name">{name}</span>
+            <span className="list-archived-item__author">{`Added by: ${authorName}`}</span>
+            <div className="list-archived-item__details">
+              <span>archived</span>
+              <span>{`votes: ${votesCount}`}</span>
+              <span>{isOrdered ? 'Done' : 'Unhandled'}</span>
+            </div>
           </div>
-        </div>
-        <div className="list-archived-item__features">
-          <PendingButton
-            className="link-button"
-            onClick={this.handleRestoringItem}
-            type="button"
-          >
-            restore
-          </PendingButton>
-          <button
-            className="link-button"
-            onClick={this.handleConfirmationVisibility}
-            type="button"
-          >
-            delete
-          </button>
+          <div className="list-archived-item__features">
+            <PendingButton
+              className="link-button"
+              onClick={this.handleRestoringItem}
+              type="button"
+            >
+              restore
+            </PendingButton>
+            <button
+              className="link-button"
+              onClick={this.handleConfirmationVisibility}
+              type="button"
+            >
+              delete
+            </button>
+          </div>
         </div>
         {isConfirmationVisible && (
           <Confirmation
-            className="list-archived-item__confirmation"
             disabled={!isMember}
             onCancel={this.handleConfirmationVisibility}
-            onConfirm={this.handleDeleteItem}
+            onConfirm={this.handleDeletingItem}
             title={`Do you really want to delete "${name}" item?`}
           />
         )}

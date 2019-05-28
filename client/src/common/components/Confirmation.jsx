@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 
 const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
-  <div className={className}>
+  <div className={classNames('confirmation', { className })}>
     <h4>{title}</h4>
     <PendingButton
       className="primary-button"
@@ -28,7 +29,7 @@ const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
 );
 
 Confirmation.propTypes = {
-  className: PropTypes.string.isRequired,
+  className: PropTypes.string,
   disabled: PropTypes.bool,
   title: PropTypes.string.isRequired,
 

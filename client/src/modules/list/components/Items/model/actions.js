@@ -93,6 +93,24 @@ const archiveItemFailure = () => ({
   type: ItemActionTypes.ARCHIVE_FAILURE
 });
 
+const restoreItemSuccess = (listId, itemId) => ({
+  type: ItemActionTypes.RESTORE_SUCCESS,
+  payload: { itemId, listId }
+});
+
+const restoreItemFailure = () => ({
+  type: ItemActionTypes.RESTORE_FAILURE
+});
+
+const deleteItemSuccess = (listId, itemId) => ({
+  type: ItemActionTypes.DELETE_SUCCESS,
+  payload: { itemId, listId }
+});
+
+const deleteItemFailure = () => ({
+  type: ItemActionTypes.DELETE_FAILURE
+});
+
 const fetchArchivedItemsSuccess = (listId, data) => ({
   type: ItemActionTypes.FETCH_ARCHIVED_ITEMS_SUCCESS,
   payload: { listId, data }
@@ -257,8 +275,8 @@ export const fetchComments = (listId, itemId) => dispatch =>
       );
     });
 
-export const archiveItem = (listId, itemId) => dispatch => {
-  return patchData(`/api/lists/${listId}/update-item-details`, {
+export const archiveItem = (listId, itemId) => dispatch =>
+  patchData(`/api/lists/${listId}/update-item-details`, {
     isArchived: true,
     itemId
   })
@@ -279,7 +297,6 @@ export const archiveItem = (listId, itemId) => dispatch => {
         err.message
       );
     });
-};
 
 export const fetchArchivedItems = listId => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
@@ -294,5 +311,48 @@ export const fetchArchivedItems = listId => dispatch =>
         dispatch,
         NotificationType.ERROR,
         err.message || "Oops, we're sorry, fetching items failed..."
+      );
+    });
+
+export const restoreItem = (listId, itemId) => dispatch =>
+  patchData(`/api/lists/${listId}/update-item-details`, {
+    isArchived: false,
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(restoreItemSuccess(listId, itemId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message || 'Item successfully restored.'
+      );
+    })
+    .catch(err => {
+      dispatch(restoreItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
+      );
+    });
+
+export const deleteItem = (listId, itemId) => dispatch =>
+  patchData(`/api/lists/${listId}/delete-item/${itemId}`)
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(deleteItemSuccess(listId, itemId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        json.message || 'Item successfully deleted.'
+      );
+    })
+    .catch(err => {
+      dispatch(deleteItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        err.message
       );
     });
