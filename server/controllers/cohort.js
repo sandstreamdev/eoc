@@ -472,7 +472,11 @@ const addMember = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {
-      if (!user || user.idFromProvider === DEMO_MODE_ID) {
+      if (!user) {
+        return;
+      }
+
+      if (user.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 
@@ -488,23 +492,29 @@ const addMember = (req, resp) => {
       return currentCohort.save();
     })
     .then(() => {
-      const { _id: newMemberId } = newMember;
+      if (newMember) {
+        const { _id: newMemberId } = newMember;
 
-      return List.updateMany(
-        {
-          cohortId: sanitizedCohortId,
-          type: ListType.SHARED,
-          viewersIds: { $nin: [newMemberId] }
-        },
-        { $push: { viewersIds: newMemberId } }
-      ).exec();
+        return List.updateMany(
+          {
+            cohortId: sanitizedCohortId,
+            type: ListType.SHARED,
+            viewersIds: { $nin: [newMemberId] }
+          },
+          { $push: { viewersIds: newMemberId } }
+        ).exec();
+      }
     })
     .then(() => {
-      const { ownerIds } = currentCohort;
+      if (newMember) {
+        const { ownerIds } = currentCohort;
 
-      return resp
-        .status(200)
-        .json(responseWithCohortMember(newMember, ownerIds));
+        return resp
+          .status(200)
+          .json(responseWithCohortMember(newMember, ownerIds));
+      }
+
+      resp.status(204).send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
