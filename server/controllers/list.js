@@ -438,7 +438,9 @@ const updateListById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp
+          .status(400)
+          .send({ message: `Sack: "${doc.name}" data not found.` });
       }
 
       return resp

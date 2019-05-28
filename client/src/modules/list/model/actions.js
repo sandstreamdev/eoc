@@ -294,7 +294,7 @@ export const archiveList = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'Sack was successfully archived!' || json.message
+        json.message || 'Sack was successfully archived!'
       );
     })
     .catch(err => {
@@ -317,7 +317,7 @@ export const restoreList = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'Sack was successfully restored!' || json.message
+        `Sack ${json.name} was successfully restored!`
       );
     })
     .catch(err => {
