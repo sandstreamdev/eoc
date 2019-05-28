@@ -1,9 +1,21 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import PendingButton from 'common/components/PendingButton';
+import { RouterMatchPropType } from 'common/constants/propTypes';
+import {
+  deleteItem,
+  restoreItem
+} from 'modules/list/components/Items/model/actions';
+import Confirmation from 'common/components/Confirmation';
 
 class ListArchivedItem extends PureComponent {
+  state = {
+    isConfirmationVisible: false
+  };
+
   handleRestoringItem = () => {
     // TO DO
   };
@@ -12,10 +24,29 @@ class ListArchivedItem extends PureComponent {
     // TO DO
   };
 
+  handleConfirmationVisibility = () =>
+    this.setState(({ isConfirmationVisible }) => ({
+      isConfirmationVisible: !isConfirmationVisible
+    }));
+
+  handleDeleteItem = () => {
+    const {
+      deleteItem,
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    return deleteItem(listId, itemId);
+  };
+
   render() {
     const {
-      data: { isOrdered, authorName, name, votesCount }
+      data: { authorName, name, isOrdered, votesCount },
+      isMember
     } = this.props;
+    const { isConfirmationVisible } = this.state;
 
     return (
       <li className="list-archived-item">
@@ -36,10 +67,23 @@ class ListArchivedItem extends PureComponent {
           >
             restore
           </PendingButton>
-          <button className="link-button" type="button">
+          <button
+            className="link-button"
+            onClick={this.handleConfirmationVisibility}
+            type="button"
+          >
             delete
           </button>
         </div>
+        {isConfirmationVisible && (
+          <Confirmation
+            className="list-archived-item__confirmation"
+            disabled={!isMember}
+            onCancel={this.handleConfirmationVisibility}
+            onConfirm={this.handleDeleteItem}
+            title={`Do you really want to delete "${name}" item?`}
+          />
+        )}
       </li>
     );
   }
@@ -53,7 +97,17 @@ ListArchivedItem.propTypes = {
       PropTypes.number,
       PropTypes.object
     ])
-  )
+  ),
+  isMember: PropTypes.bool,
+  match: RouterMatchPropType.isRequired,
+
+  deleteItem: PropTypes.func.isRequired,
+  restoreItem: PropTypes.func.isRequired
 };
 
-export default ListArchivedItem;
+export default withRouter(
+  connect(
+    null,
+    { deleteItem, restoreItem }
+  )(ListArchivedItem)
+);

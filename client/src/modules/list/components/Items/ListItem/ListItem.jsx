@@ -25,6 +25,7 @@ import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
+import Confirmation from 'common/components/Confirmation';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -233,26 +234,13 @@ class ListItem extends PureComponent {
           )}
         </div>
         {isConfirmationVisible && (
-          <div className="list-item__confirmation">
-            <h4>{`Do you really want to archive "${name}" item?`}</h4>
-            <PendingButton
-              className="primary-button"
-              disabled={!isMember}
-              onClick={this.handleArchiveItem}
-              type="button"
-              preloaderTheme={PreloaderTheme.LIGHT}
-            >
-              Confirm
-            </PendingButton>
-            <button
-              className="primary-button"
-              disabled={!isMember}
-              onClick={this.handleConfirmationVisibility}
-              type="button"
-            >
-              Cancel
-            </button>
-          </div>
+          <Confirmation
+            className="list-item__confirmation"
+            disabled={!isMember}
+            onCancel={this.handleConfirmationVisibility}
+            onConfirm={this.handleArchiveItem}
+            title={`Do you really want to archive "${name}" item?`}
+          />
         )}
       </div>
     );
