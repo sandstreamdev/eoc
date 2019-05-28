@@ -280,8 +280,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
     isArchived: true,
     itemId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(resp => {
       dispatch(archiveItemSuccess(listId, itemId));
       createNotificationWithTimeout(
         dispatch,
@@ -294,7 +293,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Item "${name}" archivization failed. Please try again.`
+        `Archivization "${name}" item failed. Please try again.`
       );
     });
 
@@ -314,18 +313,17 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
       );
     });
 
-export const restoreItem = (listId, itemId) => dispatch =>
+export const restoreItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/update-item-details`, {
     isArchived: false,
     itemId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(resp => {
       dispatch(restoreItemSuccess(listId, itemId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Item successfully restored.'
+        `Item "${name}" successfully restored.`
       );
     })
     .catch(err => {
@@ -333,19 +331,18 @@ export const restoreItem = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Restoring "${name}" item failed. Please try again.`
       );
     });
 
-export const deleteItem = (listId, itemId) => dispatch =>
+export const deleteItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/delete-item/${itemId}`)
-    .then(resp => resp.json())
-    .then(json => {
+    .then(resp => {
       dispatch(deleteItemSuccess(listId, itemId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Item successfully deleted.'
+        `Item "${name}" successfully deleted.`
       );
     })
     .catch(err => {
@@ -353,6 +350,6 @@ export const deleteItem = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Deleting "${name}" item failed. Please try again.`
       );
     });
