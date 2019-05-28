@@ -137,11 +137,11 @@ class ItemsContainer extends Component {
 
 ItemsContainer.propTypes = {
   archived: PropTypes.bool,
-  ordered: PropTypes.bool,
   children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
   isMember: PropTypes.bool,
-  items: PropTypes.arrayOf(PropTypes.object)
+  items: PropTypes.arrayOf(PropTypes.object),
+  ordered: PropTypes.bool
 };
 
 const mapStateToProps = state => ({

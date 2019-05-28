@@ -177,7 +177,7 @@ class List extends Component {
                     onClick={this.handleMembersBoxVisibility}
                     type="button"
                   >
-                    {` ${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
+                    {`${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
                   </button>
                   {isMembersBoxVisible && (
                     <MembersBox
