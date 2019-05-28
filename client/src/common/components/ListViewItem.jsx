@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { ListType } from 'modules/list/consts';
-import { ColorType } from 'common/constants/enums';
+import { ColorType, Routes } from 'common/constants/enums';
 
 class ListViewItem extends PureComponent {
   state = {
@@ -31,7 +31,8 @@ class ListViewItem extends PureComponent {
         type,
         unhandledItemsCount
       },
-      onCardClick
+      onCardClick,
+      route
     } = this.props;
     const { pending } = this.state;
     const isLimitedList = type === ListType.LIMITED;
@@ -58,22 +59,24 @@ class ListViewItem extends PureComponent {
             <span>{`Unhandled: ${unhandledItemsCount}`}</span>
           </div>
         </div>
-        <button
-          className={classNames('list-view-item__star', {
-            'list-view-item__star--orange': color === ColorType.ORANGE,
-            'list-view-item__star--gray': color === ColorType.GRAY
-          })}
-          disabled={pending}
-          onClick={this.handleFavClick}
-          type="button"
-        >
-          {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
-          {pending && (
-            <div className="list-view-item__preloader">
-              <Preloader size={PreloaderSize.SMALL} />
-            </div>
-          )}
-        </button>
+        {route !== Routes.COHORT && (
+          <button
+            className={classNames('list-view-item__star', {
+              'list-view-item__star--orange': color === ColorType.ORANGE,
+              'list-view-item__star--gray': color === ColorType.GRAY
+            })}
+            disabled={pending}
+            onClick={this.handleFavClick}
+            type="button"
+          >
+            {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
+            {pending && (
+              <div className="list-view-item__preloader">
+                <Preloader size={PreloaderSize.SMALL} />
+              </div>
+            )}
+          </button>
+        )}
       </div>
     );
   }
@@ -82,6 +85,7 @@ class ListViewItem extends PureComponent {
 ListViewItem.propTypes = {
   color: PropTypes.string.isRequired,
   item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  route: PropTypes.string.isRequired,
 
   onCardClick: PropTypes.func.isRequired,
   onFavClick: PropTypes.func

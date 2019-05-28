@@ -92,15 +92,6 @@ const fetchArchivedCohortsMetaDataFailure = errMessage => ({
   payload: errMessage
 });
 
-const favouritesSuccess = data => ({
-  type: CohortActionTypes.FAVOURITES_SUCCESS,
-  payload: data
-});
-
-const favouritesFailure = () => ({
-  type: CohortActionTypes.FAVOURITES_FAILURE
-});
-
 const addMemberSuccess = (data, cohortId) => ({
   type: CohortActionTypes.ADD_MEMBER_SUCCESS,
   payload: { cohortId, data }
@@ -289,46 +280,6 @@ export const fetchCohortDetails = cohortId => dispatch =>
         err.message || "Oops, we're sorry, fetching data failed..."
       );
       throw err;
-    });
-
-export const addCohortToFavourites = cohortId => dispatch =>
-  patchData(`/api/cohorts/${cohortId}/add-to-fav`)
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch(favouritesSuccess({ cohortId, isFavourite: true }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
-    .catch(err => {
-      dispatch(favouritesFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message
-      );
-    });
-
-export const removeCohortFromFavourites = cohortId => dispatch =>
-  patchData(`/api/cohorts/${cohortId}/remove-from-fav`)
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch(favouritesSuccess({ cohortId, isFavourite: false }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        json.message
-      );
-    })
-    .catch(err => {
-      dispatch(favouritesFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message
-      );
     });
 
 export const addCohortMember = (cohortId, email) => dispatch =>

@@ -178,8 +178,7 @@ describe('function responseWithItem', () => {
 });
 
 describe('function responseWithCohorts', () => {
-  const userId = ObjectId();
-  const result = responseWithCohorts(cohortsMock, userId);
+  const result = responseWithCohorts(cohortsMock);
 
   it('returns cohorts meta data with desired properties', () => {
     expectedCohortMetaDataProperties.map(property =>
@@ -197,9 +196,8 @@ describe('function responseWithCohorts', () => {
 });
 
 describe('function responseWithCohort', () => {
-  const userId = ObjectId();
   const cohort = cohortsMock[0];
-  const result = responseWithCohort(cohort, userId);
+  const result = responseWithCohort(cohort);
 
   it('returns cohort data with desired properties', () => {
     expectedCohortMetaDataProperties.map(property =>
