@@ -1,6 +1,7 @@
 const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
+const { PROJECT_NAME } = require('../common/variables');
 
 const { SENDGRID_API_KEY } = process.env;
 
@@ -18,7 +19,7 @@ const sendInvitation = (req, resp) => {
   const message = {
     to: receiver,
     from: sender,
-    subject: 'Join EOC!',
+    subject: `Join ${PROJECT_NAME}!`,
     html: mailTemplate(receiver, sender, url)
   };
 

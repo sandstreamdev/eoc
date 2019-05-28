@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
+import { PROJECT_NAME } from 'common/constants/variables';
 
 const InviteNewUser = ({ email, onCancel, onInvite }) => (
   <div className="invite-user">
     <p className="invite-user__message">
       User
       <span className="invite-user__email">{` ${email} `}</span>
-      has no account in EOC app. Would you like to invite via email?
+      {`has no account in ${PROJECT_NAME} app. Would you like to send invite via email?`}
     </p>
     <footer className="invite-user__footer">
       <PendingButton
