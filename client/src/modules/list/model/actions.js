@@ -428,7 +428,7 @@ export const removeListMember = (
     });
 };
 
-export const addOwnerRole = (listId, userId) => dispatch =>
+export const addOwnerRole = (listId, userId, userName) => dispatch =>
   patchData(`/api/lists/${listId}/add-owner-role`, {
     userId
   })
@@ -438,7 +438,7 @@ export const addOwnerRole = (listId, userId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" has member role.`
       );
     })
     .catch(err => {
@@ -453,6 +453,7 @@ export const addOwnerRole = (listId, userId) => dispatch =>
 export const removeOwnerRole = (
   listId,
   userId,
+  userName,
   isCurrentUserRoleChanging
 ) => dispatch =>
   patchData(`/api/lists/${listId}/remove-owner-role`, {
@@ -466,7 +467,7 @@ export const removeOwnerRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" has no owner role.`
       );
     })
     .catch(err => {
@@ -481,6 +482,7 @@ export const removeOwnerRole = (
 export const addMemberRole = (
   listId,
   userId,
+  userName,
   isCurrentUserAnOwner
 ) => dispatch =>
   patchData(`/api/lists/${listId}/add-member-role`, {
@@ -492,7 +494,7 @@ export const addMemberRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" has member role.`
       );
     })
     .catch(err => {
@@ -507,6 +509,7 @@ export const addMemberRole = (
 export const removeMemberRole = (
   listId,
   userId,
+  userName,
   isCurrentUserAnOwner
 ) => dispatch =>
   patchData(`/api/lists/${listId}/remove-member-role`, {
@@ -518,7 +521,7 @@ export const removeMemberRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" has no member role.`
       );
     })
     .catch(err => {

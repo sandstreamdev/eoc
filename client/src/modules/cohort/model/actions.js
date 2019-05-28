@@ -355,7 +355,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" successfully removed.`
       );
     })
     .catch(err => {
@@ -367,7 +367,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
       );
     });
 
-export const addOwnerRole = (cohortId, userId) => dispatch =>
+export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-owner-role`, {
     userId
   })
@@ -377,7 +377,7 @@ export const addOwnerRole = (cohortId, userId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" has owner role.`
       );
     })
     .catch(err => {
@@ -392,6 +392,7 @@ export const addOwnerRole = (cohortId, userId) => dispatch =>
 export const removeOwnerRole = (
   cohortId,
   userId,
+  userName,
   isCurrentUserRoleChanging
 ) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/remove-owner-role`, {
@@ -405,7 +406,7 @@ export const removeOwnerRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" has no owner role.`
       );
     })
     .catch(err => {
