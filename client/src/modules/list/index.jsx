@@ -161,7 +161,9 @@ class List extends Component {
                     ordered
                   />
                 </div>
-                {isMember && <ArchivedItemsContainer isMember={isMember} />}
+                {isMember && (
+                  <ArchivedItemsContainer isMember={isMember} name={name} />
+                )}
                 {!isArchived && isOwner && (
                   <button
                     className="link-button"

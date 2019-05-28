@@ -19,13 +19,13 @@ class ListArchivedItem extends PureComponent {
   handleRestoringItem = () => {
     const {
       restoreItem,
-      data: { _id: itemId },
+      data: { _id: itemId, name },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    return restoreItem(listId, itemId);
+    return restoreItem(listId, itemId, name);
   };
 
   handleConfirmationVisibility = () =>
@@ -36,13 +36,13 @@ class ListArchivedItem extends PureComponent {
   handleDeletingItem = () => {
     const {
       deleteItem,
-      data: { _id: itemId },
+      data: { _id: itemId, name },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    return deleteItem(listId, itemId);
+    return deleteItem(listId, itemId, name);
   };
 
   render() {

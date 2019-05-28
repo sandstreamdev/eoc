@@ -32,19 +32,20 @@ class ArchivedItemsContainer extends PureComponent {
     const {
       fetchArchivedItems,
       match: {
-        params: { id }
+        params: { id: listId }
       },
+      name,
       removeArchivedItems
     } = this.props;
 
     if (areArchivedItemsVisible) {
       this.setState({ pendingForArchivedItems: true });
 
-      fetchArchivedItems(id).finally(() =>
+      fetchArchivedItems(listId, name).finally(() =>
         this.setState({ pendingForArchivedItems: false })
       );
     } else {
-      removeArchivedItems(id);
+      removeArchivedItems(listId);
     }
   };
 
@@ -84,6 +85,7 @@ ArchivedItemsContainer.propTypes = {
   archivedItems: PropTypes.arrayOf(PropTypes.object),
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
+  name: PropTypes.string.isRequired,
 
   fetchArchivedItems: PropTypes.func.isRequired,
   removeArchivedItems: PropTypes.func.isRequired
