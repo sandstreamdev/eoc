@@ -56,6 +56,7 @@ pipeline {
         echo 'Deploying....'
         sh 'docker-compose build'
         sh 'docker-compose stop'
+        sh 'chmod +x init-letsencrypt.sh'
         sh 'init-letsencrypt.sh'
         sh 'docker-compose up -d'
       }

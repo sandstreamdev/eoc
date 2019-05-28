@@ -1,3 +1,6 @@
+    
+#!/bin/bash
+
 domains=(eoc.sanddev.com app.eoc.sanndev.com)
 data_path="/data/certbot"
 
