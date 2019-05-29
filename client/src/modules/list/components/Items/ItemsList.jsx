@@ -44,7 +44,7 @@ class ItemsList extends PureComponent {
       <Fragment>
         {!items.length ? (
           <MessageBox
-            message={`There are no ${archived && 'archived '}items!`}
+            message={`There are no ${archived ? 'archived ' : ''}items!`}
             type={MessageType.INFO}
           />
         ) : (
