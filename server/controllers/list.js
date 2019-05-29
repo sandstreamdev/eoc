@@ -51,11 +51,9 @@ const createList = (req, resp) => {
           return list.save();
         }
 
-        throw new BadRequestException(
-          'You need to be cohort member to create new sacks'
-        );
+        throw new BadRequestException();
       })
-      .then(listData =>
+      .then(() =>
         resp
           .status(201)
           .location(`/lists/${list._id}`)
@@ -63,11 +61,11 @@ const createList = (req, resp) => {
       )
       .catch(err => {
         if (err instanceof BadRequestException) {
-          const { status, message } = err;
+          const { status } = err;
 
-          return resp.status(status).send({ message });
+          return resp.status(status).send();
         }
-        resp.status(400).send({ message: 'Sack not saved. Please try again.' });
+        resp.status(400).send();
       });
   } else {
     list
@@ -79,7 +77,7 @@ const createList = (req, resp) => {
           .send(responseWithList(list, userId))
       )
       .catch(() => {
-        resp.status(400).send({ message: 'Sack not saved. Please try again.' });
+        resp.status(400).send();
       });
   }
 };
@@ -179,19 +177,12 @@ const getArchivedListsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp
-          .status(400)
-          .send({ message: 'No archived sacks data found.' });
+        return resp.status(400).send();
       }
 
       return resp.status(200).json(responseWithListsMetaData(docs, userId));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the archived sacks data. Please try again.'
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const addItemToList = (req, resp) => {
@@ -243,9 +234,7 @@ const getListData = (req, resp) => {
   const sanitizedListId = sanitize(listId);
 
   if (!isValidMongoId(listId)) {
-    return resp
-      .status(404)
-      .send({ message: `Data of sack id: ${listId} not found.` });
+    return resp.status(404).send();
   }
 
   let list;
@@ -260,7 +249,7 @@ const getListData = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new NotFoundException(`Data of sack id: ${listId} not found.`);
+        throw new NotFoundException();
       }
       list = doc;
       const { cohortId } = list;
@@ -321,13 +310,11 @@ const getListData = (req, resp) => {
     })
     .catch(err => {
       if (err instanceof NotFoundException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
+        const { status } = err;
+        return resp.status(status).send();
       }
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the sack data. Please try again.'
-      });
+
+      resp.status(400).send();
     });
 };
 

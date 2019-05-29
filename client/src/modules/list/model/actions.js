@@ -177,12 +177,12 @@ export const fetchListData = listId => dispatch =>
       const listData = { ...json, items: _keyBy(json.items, '_id') };
       dispatch(fetchListDataSuccess(listData, listId));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchListDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching data failed..."
+        'Fetching data failed. Please try again.'
       );
     });
 
@@ -194,7 +194,7 @@ export const createList = data => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        `Sack "${json.name}" successfully created. `
+        `Sack "${data.name}" successfully created. `
       );
     })
     .catch(() => {
@@ -202,7 +202,7 @@ export const createList = data => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        "Oops, we're sorry, creating new sack failed..."
+        `Creating sack "${data.name}" failed. Please try again.`
       );
     });
 
@@ -217,12 +217,12 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchListsMetaDataSuccess(dataMap));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchListsMetaDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching sacks failed..."
+        'Fetching sacks failed. Please try again.'
       );
     });
 };
@@ -238,12 +238,12 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedListsMetaDataSuccess(dataMap));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchArchivedListsMetaDataFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching sacks failed..."
+        'Fetching archived sacks failed. Please try again.'
       );
     });
 };
