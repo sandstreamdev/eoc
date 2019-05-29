@@ -4,7 +4,7 @@ domains=(eoc.sanddev.com app.eoc.sanddev.com)
 data_path="/data/certbot"
 staging=1
 
-if [ -e "$data_path/conf/live/${domains[0]}/privkey.pem" ] || [ -e "$data_path/conf/live/${domains[1]}/privkey.pem" ]; then
+if [ -e "$data_path/conf/live/$domains" ]; then
   echo "Certificates exists, skipping init";
   exit;
 fi
@@ -17,29 +17,25 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
   echo
 fi
 
-for domain in "${domains[@]}"; do
-  echo "### Creating dummy certificate for $domain ..."
-  sudo mkdir -p "$data_path/conf/live/$domain"
-  conatiner_path="/etc/letsencrypt/live/$domain"
-  docker-compose run --rm --entrypoint "\
-    openssl req -x509 -nodes -newkey rsa:1024 -days 1\
-      -keyout '$conatiner_path/privkey.pem' \
-      -out '$conatiner_path/fullchain.pem' \
-      -subj '/CN=localhost'" certbot
-done
+echo "### Creating dummy certificate for $domains ..."
+mkdir -p "$data_path/conf/live/$domains"
+conatiner_path="/etc/letsencrypt/live/$domains"
+docker-compose run --rm --entrypoint "\
+  openssl req -x509 -nodes -newkey rsa:1024 -days 1\
+    -keyout '$conatiner_path/privkey.pem' \
+    -out '$conatiner_path/fullchain.pem' \
+    -subj '/CN=localhost'" certbot
 
 echo "### Starting nginx ..."
-docker-compose up --force-recreate -d nginx-production
+docker-compose up --force-recreate -d --no-deps nginx-production
 echo
 
-for domain in "${domains[@]}"; do
-  echo "### Deleting dummy certificate for $domain ..."
-  docker-compose run --rm --entrypoint "\
-    rm -Rf /etc/letsencrypt/live/$domain && \
-    rm -Rf /etc/letsencrypt/archive/$domain && \
-    rm -Rf /etc/letsencrypt/renewal/$domain.conf" certbot
-  echo
-done
+echo "### Deleting dummy certificate for $domains ..."
+docker-compose run --rm --entrypoint "\
+  rm -Rf /etc/letsencrypt/live/$domains && \
+  rm -Rf /etc/letsencrypt/archive/$domains && \
+  rm -Rf /etc/letsencrypt/renewal/$domains.conf" certbot
+echo
 
 echo "### Requesting Let's Encrypt certificate for $domains ..."
 #Join $domains to -d args
