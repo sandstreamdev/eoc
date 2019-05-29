@@ -1,10 +1,10 @@
-    
 #!/bin/bash
 
-domains=(eoc.sanddev.com app.eoc.sanndev.com)
+domains=(eoc.sanddev.com app.eoc.sanddev.com)
 data_path="/data/certbot"
+staging=1
 
-if [ -e "$data_path/conf/live/${domains[0]}/privkey.pem" ] || if [ -e "$data_path/conf/live/${domains[1]}/privkey.pem" ]; then
+if [ -e "$data_path/conf/live/${domains[0]}/privkey.pem" ] || [ -e "$data_path/conf/live/${domains[1]}/privkey.pem" ]; then
   echo "Certificates exists, skipping init";
   exit;
 fi
@@ -17,8 +17,8 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
   echo
 fi
 
-echo "### Creating dummy certificate for $domains ..."
 for domain in "${domains[@]}"; do
+  echo "### Creating dummy certificate for $domain ..."
   sudo mkdir -p "$data_path/conf/live/$domain"
   conatiner_path="/etc/letsencrypt/live/$domain"
   docker-compose run --rm --entrypoint "\
@@ -41,17 +41,24 @@ for domain in "${domains[@]}"; do
   echo
 done
 
+echo "### Requesting Let's Encrypt certificate for $domains ..."
+#Join $domains to -d args
+domain_args=""
+for domain in "${domains[@]}"; do
+  domain_args="$domain_args -d $domain"
+done
+
+# Enable staging mode if needed
+if [ $staging != "0" ]; then staging_arg="--staging"; fi
+
 docker-compose run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
-    --staging \
+    $staging_arg \
     --email marek.rozmus@sandstream.pl --agree-tos --no-eff-email \
-    -d ${domains[0]} -d ${domains[1]} \
+    $domain_args \
     --rsa-key-size 4096 \
-    --agree-tos \
     --force-renewal" certbot
 echo
-
-command: certonly --webroot -w /var/www/certbot  --staging --rsa-key-size 4096 -d eoc.sanddev.com
 
 echo "### Reloading nginx ..."
 docker-compose exec nginx-production nginx -s reload
