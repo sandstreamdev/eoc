@@ -2,7 +2,7 @@
 
 domains=(eoc.sanddev.com app.eoc.sanddev.com)
 data_path="/data/certbot"
-staging=1
+staging=0
 
 if [ -e "$data_path/conf/live/$domains" ]; then
   echo "Certificates exists, skipping init";
