@@ -1,0 +1,19 @@
+.archived-items {
+  width: 100%;
+
+  &--visible {
+    border-top: 1px solid $item-border;
+  }
+
+  &__items {
+    position: relative;
+    margin: 20px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    &--with-border {
+      border-top: 1px solid $item-border;
+    }
+  }
+}

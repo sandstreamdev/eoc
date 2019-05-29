@@ -199,15 +199,43 @@
     padding-bottom: 16px;
   }
 
-  &__cloning {
+  &__features {
+    &:not(:last-child) {
+      border-bottom: 1px solid $border-light;
+    }
+  }
+
+  &__feature-buttons {
     position: relative;
     display: flex;
     justify-content: flex-end;
+    width: 100%;
     align-items: center;
     min-height: 45px;
 
-    &:not(:last-child) {
-      border-bottom: 1px solid $border-light;
+    button:not(:last-of-type) {
+      margin-right: 16px;
+    }
+  }
+
+  &__confirmation {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px 0;
+
+    h4 {
+      width: 100%;
+      color: $text-dark;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+      padding: 0 0 16px;
+    }
+
+    button:first-of-type {
+      margin-right: 20px;
     }
   }
 

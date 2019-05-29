@@ -84,6 +84,16 @@ class ItemsContainer extends Component {
       : items;
   };
 
+  renderHeadingText = () => {
+    const { archived, ordered } = this.props;
+
+    if (archived) {
+      return 'Archived Items';
+    }
+
+    return ordered ? 'Done' : ' Unhandled';
+  };
+
   render() {
     const { archived, children, isMember, items } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
@@ -94,7 +104,7 @@ class ItemsContainer extends Component {
       <div className="items">
         <header className="items__header">
           <h2 className="items__heading items__heading--left">
-            {archived ? 'Done' : 'Unhandled'}
+            {this.renderHeadingText()}
           </h2>
           <div className="items__header-controls">
             <FilterBox
@@ -130,7 +140,8 @@ ItemsContainer.propTypes = {
   children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
   isMember: PropTypes.bool,
-  items: PropTypes.arrayOf(PropTypes.object)
+  items: PropTypes.arrayOf(PropTypes.object),
+  ordered: PropTypes.bool
 };
 
 const mapStateToProps = state => ({

@@ -13,6 +13,7 @@ import Textarea from 'common/components/Forms/Textarea';
 import TextInput from 'common/components/Forms/TextInput';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
+  archiveItem,
   clearVote,
   cloneItem,
   setVote,
@@ -39,6 +40,7 @@ class ListItem extends PureComponent {
       areFieldsUpdated: false,
       done: isOrdered,
       isNameEdited: false,
+      isConfirmationVisible: false,
       isValidationErrorVisible: false,
       itemDescription: description,
       link
@@ -165,6 +167,23 @@ class ListItem extends PureComponent {
 
   handleItemDescription = value => this.setState({ itemDescription: value });
 
+  handleConfirmationVisibility = () =>
+    this.setState(({ isConfirmationVisible }) => ({
+      isConfirmationVisible: !isConfirmationVisible
+    }));
+
+  handleArchiveItem = () => {
+    const {
+      archiveItem,
+      data: { _id: itemId, name },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    return archiveItem(listId, itemId, name);
+  };
+
   renderVoting = () => {
     const {
       data: { isOrdered, isVoted, votesCount },
@@ -192,6 +211,69 @@ class ListItem extends PureComponent {
   handleNameFocus = () => this.setState({ isNameEdited: true });
 
   handleNameBlur = () => this.setState({ isNameEdited: false });
+
+  renderConfirmation = () => {
+    const {
+      data: { name },
+      isMember
+    } = this.props;
+
+    return (
+      <div className="list-item__confirmation">
+        <h4>{`Do you really want to archive "${name}" item?`}</h4>
+        <PendingButton
+          className="primary-button"
+          disabled={!isMember}
+          onClick={this.handleArchiveItem}
+          type="button"
+          preloaderTheme={PreloaderTheme.LIGHT}
+        >
+          Confirm
+        </PendingButton>
+        <button
+          className="primary-button"
+          disabled={!isMember}
+          onClick={this.handleConfirmationVisibility}
+          type="button"
+        >
+          Cancel
+        </button>
+      </div>
+    );
+  };
+
+  renderItemFeatures = () => {
+    const { isConfirmationVisible } = this.state;
+    const {
+      data: { isOrdered },
+      isMember
+    } = this.props;
+
+    return (
+      <div className="list-item__features">
+        <div className="list-item__feature-buttons">
+          <button
+            className="link-button"
+            disabled={!isMember || isConfirmationVisible}
+            onClick={this.handleConfirmationVisibility}
+            type="button"
+          >
+            Archive Item
+          </button>
+          {!isOrdered && (
+            <PendingButton
+              className="link-button"
+              disabled={!isMember || isConfirmationVisible}
+              onClick={this.handleItemCloning}
+            >
+              Clone Item
+            </PendingButton>
+          )}
+        </div>
+        {isConfirmationVisible && this.renderConfirmation()}
+      </div>
+    );
+  };
 
   renderDetails = () => {
     const { areFieldsUpdated, isValidationErrorVisible } = this.state;
@@ -238,17 +320,7 @@ class ListItem extends PureComponent {
             </div>
           )}
         </div>
-        {!isOrdered && isMember && (
-          <div className="list-item__cloning">
-            <PendingButton
-              className="link-button"
-              disabled={!isMember}
-              onClick={this.handleItemCloning}
-            >
-              Clone Item
-            </PendingButton>
-          </div>
-        )}
+        {isMember && this.renderItemFeatures()}
         <div className="list-item__comments">
           <CommentsList
             comments={comments}
@@ -333,6 +405,7 @@ ListItem.propTypes = {
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
+  archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
@@ -347,6 +420,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { clearVote, cloneItem, setVote, toggle, updateListItem }
+    { archiveItem, clearVote, cloneItem, setVote, toggle, updateListItem }
   )(ListItem)
 );

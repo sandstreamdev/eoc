@@ -279,6 +279,7 @@ const getListData = (req, resp) => {
         cohortId,
         description,
         isArchived,
+        items: listItems,
         memberIds,
         name,
         ownerIds,
@@ -292,6 +293,7 @@ const getListData = (req, resp) => {
           .json({ cohortId, cohortName, _id, isArchived, name, type });
       }
 
+      const activeItems = listItems.filter(item => !item.isArchived);
       const members = responseWithListMembers(
         viewersCollection,
         memberIds,
@@ -302,7 +304,7 @@ const getListData = (req, resp) => {
       const isGuest = !checkIfArrayContainsUserId(cohortMembers, userId);
       const isMember = checkIfArrayContainsUserId(memberIds, userId);
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
-      const items = responseWithItems(userId, list.items);
+      const items = responseWithItems(userId, activeItems);
 
       return resp.status(200).json({
         _id,
@@ -845,7 +847,16 @@ const addViewer = (req, resp) => {
 };
 
 const updateListItem = (req, resp) => {
-  const { authorId, description, isOrdered, itemId, link, name } = req.body;
+  const {
+    authorId,
+    description,
+    isArchived,
+    isOrdered,
+    link,
+    itemId,
+    name
+  } = req.body;
+
   const {
     user: { _id: userId }
   } = req;
@@ -875,7 +886,7 @@ const updateListItem = (req, resp) => {
         itemToUpdate.link = link;
       }
 
-      if (isOrdered !== null) {
+      if (isOrdered !== undefined) {
         itemToUpdate.isOrdered = isOrdered;
       }
 
@@ -885,6 +896,10 @@ const updateListItem = (req, resp) => {
 
       if (name) {
         itemToUpdate.name = name;
+      }
+
+      if (isArchived !== undefined) {
+        itemToUpdate.isArchived = isArchived;
       }
 
       return list.save();
@@ -1045,6 +1060,33 @@ const changeType = (req, resp) => {
     });
 };
 
+const getArchivedItems = (req, resp) => {
+  const { id: listId } = req.params;
+  const { _id: userId } = req.user;
+
+  List.findOne(
+    {
+      _id: sanitize(listId),
+      memberIds: userId
+    },
+    'items name'
+  )
+    .lean()
+    .populate('items.authorId', 'displayName')
+    .exec()
+    .then(list => {
+      if (!list) {
+        return resp.status(400).send();
+      }
+
+      const { items } = list;
+      const archivedItems = items.filter(item => item.isArchived);
+
+      resp.status(200).send(responseWithItems(userId, archivedItems));
+    })
+    .catch(err => resp.status(400).send());
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
@@ -1056,6 +1098,7 @@ module.exports = {
   cloneItem,
   createList,
   deleteListById,
+  getArchivedItems,
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,

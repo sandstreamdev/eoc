@@ -39,8 +39,9 @@ const responseWithList = (list, userId) => {
 const responseWithListsMetaData = (lists, userId) =>
   _map(lists, list => {
     const { cohortId, favIds, items, ...rest } = list;
-    const doneItemsCount = items.filter(item => item.isOrdered).length;
-    const unhandledItemsCount = items.length - doneItemsCount;
+    const activeItems = items.filter(item => !item.isArchived);
+    const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
+    const unhandledItemsCount = activeItems.length - doneItemsCount;
 
     const listToSend = {
       ...rest,
@@ -65,26 +66,28 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
 
 const responseWithItems = (userId, items) =>
   _map(items, item => {
-    const { authorId: author, voterIds, ...rest } = item;
+    const { authorId: author, isArchived, voterIds, ...rest } = item;
     const { _id: authorId, displayName: authorName } = author;
 
     return {
       ...rest,
       authorId,
       authorName,
+      isArchived,
       isVoted: checkIfArrayContainsUserId(voterIds, userId),
       votesCount: voterIds.length
     };
   });
 
 const responseWithItem = (item, userId) => {
-  const { authorId: author, voterIds, ...rest } = item;
+  const { authorId: author, isArchived, voterIds, ...rest } = item;
   const { _id: authorId, displayName: authorName } = author;
 
   return {
     ...rest,
     authorId,
     authorName,
+    isArchived,
     isVoted: checkIfArrayContainsUserId(voterIds, userId),
     votesCount: voterIds.length
   };

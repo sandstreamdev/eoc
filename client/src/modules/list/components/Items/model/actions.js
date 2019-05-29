@@ -84,6 +84,29 @@ const fetchCommentsFailure = () => ({
   type: CommentActionTypes.FETCH_FAILURE
 });
 
+const archiveItemSuccess = (listId, itemId) => ({
+  type: ItemActionTypes.ARCHIVE_SUCCESS,
+  payload: { itemId, listId }
+});
+
+const archiveItemFailure = () => ({
+  type: ItemActionTypes.ARCHIVE_FAILURE
+});
+
+const fetchArchivedItemsSuccess = (listId, data) => ({
+  type: ItemActionTypes.FETCH_ARCHIVED_SUCCESS,
+  payload: { listId, data }
+});
+
+const fetchArchivedItemsFailure = () => ({
+  type: ItemActionTypes.FETCH_ARCHIVE_FAILURE
+});
+
+export const removeArchivedItems = listId => ({
+  type: ItemActionTypes.REMOVE_ARCHIVED,
+  payload: { listId }
+});
+
 export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
@@ -231,5 +254,45 @@ export const fetchComments = (listId, itemId) => dispatch =>
         dispatch,
         NotificationType.ERROR,
         err.message
+      );
+    });
+
+export const archiveItem = (listId, itemId, name) => dispatch => {
+  return patchData(`/api/lists/${listId}/update-item`, {
+    isArchived: true,
+    itemId
+  })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(archiveItemSuccess(listId, itemId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        `Item "${name}" successfully archived.`
+      );
+    })
+    .catch(err => {
+      dispatch(archiveItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        `Archivization "${name}" item failed. Please try again.`
+      );
+    });
+};
+
+export const fetchArchivedItems = (listId, name) => dispatch =>
+  getData(`/api/lists/${listId}/archived-items`)
+    .then(resp => resp.json())
+    .then(json => {
+      const dataMap = _keyBy(json, '_id');
+      dispatch(fetchArchivedItemsSuccess(listId, dataMap));
+    })
+    .catch(err => {
+      dispatch(fetchArchivedItemsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        `Fetching archived items of list "${name}" failed. Please try again.`
       );
     });
