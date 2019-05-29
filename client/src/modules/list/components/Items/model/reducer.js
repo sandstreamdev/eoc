@@ -117,6 +117,20 @@ const items = (state = {}, action) => {
         }
       };
     }
+    case ItemActionTypes.RESTORE_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+      const prevItem = state[itemId];
+
+      return {
+        ...state,
+        [itemId]: {
+          ...prevItem,
+          isArchived: false
+        }
+      };
+    }
     case ItemActionTypes.FETCH_ARCHIVED_SUCCESS: {
       const {
         payload: { data }
@@ -126,6 +140,14 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.REMOVE_ARCHIVED:
       return _keyBy(_filter(state, item => !item.isArchived), '_id');
+    case ItemActionTypes.DELETE_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+      const { [itemId]: deleted, ...rest } = state;
+
+      return rest;
+    }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {

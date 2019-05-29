@@ -24,7 +24,7 @@ class ItemsList extends PureComponent {
     return archived ? (
       <ul className="items-list">
         {items.slice(0, limit).map(item => (
-          <ListArchivedItem data={item} key={item._id} />
+          <ListArchivedItem data={item} isMember={isMember} key={item._id} />
         ))}
       </ul>
     ) : (

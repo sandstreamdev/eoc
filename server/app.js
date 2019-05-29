@@ -22,6 +22,7 @@ const app = express();
 const dbUrl = DB_URL;
 mongoose.connect(dbUrl, { useNewUrlParser: true });
 mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 
 app.use(cors());
 app.use(cookieParser());

@@ -93,6 +93,24 @@ const archiveItemFailure = () => ({
   type: ItemActionTypes.ARCHIVE_FAILURE
 });
 
+const restoreItemSuccess = (listId, itemId) => ({
+  type: ItemActionTypes.RESTORE_SUCCESS,
+  payload: { itemId, listId }
+});
+
+const restoreItemFailure = () => ({
+  type: ItemActionTypes.RESTORE_FAILURE
+});
+
+const deleteItemSuccess = (listId, itemId) => ({
+  type: ItemActionTypes.DELETE_SUCCESS,
+  payload: { itemId, listId }
+});
+
+const deleteItemFailure = () => ({
+  type: ItemActionTypes.DELETE_FAILURE
+});
+
 const fetchArchivedItemsSuccess = (listId, data) => ({
   type: ItemActionTypes.FETCH_ARCHIVED_SUCCESS,
   payload: { listId, data }
@@ -257,13 +275,12 @@ export const fetchComments = (listId, itemId) => dispatch =>
       );
     });
 
-export const archiveItem = (listId, itemId, name) => dispatch => {
-  return patchData(`/api/lists/${listId}/update-item`, {
+export const archiveItem = (listId, itemId, name) => dispatch =>
+  patchData(`/api/lists/${listId}/update-item`, {
     isArchived: true,
     itemId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(archiveItemSuccess(listId, itemId));
       createNotificationWithTimeout(
         dispatch,
@@ -271,7 +288,7 @@ export const archiveItem = (listId, itemId, name) => dispatch => {
         `Item "${name}" successfully archived.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(archiveItemFailure());
       createNotificationWithTimeout(
         dispatch,
@@ -279,7 +296,6 @@ export const archiveItem = (listId, itemId, name) => dispatch => {
         `Archivization "${name}" item failed. Please try again.`
       );
     });
-};
 
 export const fetchArchivedItems = (listId, name) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
@@ -288,11 +304,52 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedItemsSuccess(listId, dataMap));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchArchivedItemsFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
         `Fetching archived items of list "${name}" failed. Please try again.`
+      );
+    });
+
+export const restoreItem = (listId, itemId, name) => dispatch =>
+  patchData(`/api/lists/${listId}/update-item`, {
+    isArchived: false,
+    itemId
+  })
+    .then(() => {
+      dispatch(restoreItemSuccess(listId, itemId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        `Item "${name}" successfully restored.`
+      );
+    })
+    .catch(() => {
+      dispatch(restoreItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        `Restoring "${name}" item failed. Please try again.`
+      );
+    });
+
+export const deleteItem = (listId, itemId, name) => dispatch =>
+  patchData(`/api/lists/${listId}/delete-item/${itemId}`)
+    .then(() => {
+      dispatch(deleteItemSuccess(listId, itemId));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        `Item "${name}" successfully deleted.`
+      );
+    })
+    .catch(() => {
+      dispatch(deleteItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        `Deleting "${name}" item failed. Please try again.`
       );
     });

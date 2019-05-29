@@ -1084,7 +1084,31 @@ const getArchivedItems = (req, resp) => {
 
       resp.status(200).send(responseWithItems(userId, archivedItems));
     })
-    .catch(err => resp.status(400).send());
+    .catch(() => resp.status(400).send());
+};
+
+const deleteItem = (req, resp) => {
+  const { id: listId, itemId } = req.params;
+  const { _id: userId } = req.user;
+  const sanitizeItemId = sanitize(itemId);
+
+  List.findOneAndUpdate(
+    {
+      _id: sanitize(listId),
+      memberIds: userId,
+      'items._id': sanitizeItemId
+    },
+    { $pull: { items: { _id: sanitizeItemId } } }
+  )
+    .exec()
+    .then(list => {
+      if (!list) {
+        return resp.status(400).send();
+      }
+
+      resp.status(200).send();
+    })
+    .catch(() => resp.status(400).send());
 };
 
 module.exports = {
@@ -1097,6 +1121,7 @@ module.exports = {
   clearVote,
   cloneItem,
   createList,
+  deleteItem,
   deleteListById,
   getArchivedItems,
   getArchivedListsMetaData,
