@@ -280,7 +280,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
     isArchived: true,
     itemId
   })
-    .then(resp => {
+    .then(() => {
       dispatch(archiveItemSuccess(listId, itemId));
       createNotificationWithTimeout(
         dispatch,
@@ -288,7 +288,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
         `Item "${name}" successfully archived.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(archiveItemFailure());
       createNotificationWithTimeout(
         dispatch,
@@ -304,7 +304,7 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedItemsSuccess(listId, dataMap));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchArchivedItemsFailure());
       createNotificationWithTimeout(
         dispatch,
@@ -318,7 +318,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
     isArchived: false,
     itemId
   })
-    .then(resp => {
+    .then(() => {
       dispatch(restoreItemSuccess(listId, itemId));
       createNotificationWithTimeout(
         dispatch,
@@ -326,7 +326,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
         `Item "${name}" successfully restored.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(restoreItemFailure());
       createNotificationWithTimeout(
         dispatch,
@@ -337,7 +337,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
 
 export const deleteItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/delete-item/${itemId}`)
-    .then(resp => {
+    .then(() => {
       dispatch(deleteItemSuccess(listId, itemId));
       createNotificationWithTimeout(
         dispatch,
@@ -345,7 +345,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
         `Item "${name}" successfully deleted.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(deleteItemFailure());
       createNotificationWithTimeout(
         dispatch,

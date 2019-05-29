@@ -1084,7 +1084,7 @@ const getArchivedItems = (req, resp) => {
 
       resp.status(200).send(responseWithItems(userId, archivedItems));
     })
-    .catch(err => resp.status(400).send());
+    .catch(() => resp.status(400).send());
 };
 
 const deleteItem = (req, resp) => {
@@ -1108,7 +1108,7 @@ const deleteItem = (req, resp) => {
 
       resp.status(200).send();
     })
-    .catch(err => resp.status(400).send());
+    .catch(() => resp.status(400).send());
 };
 
 module.exports = {

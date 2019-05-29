@@ -12,8 +12,8 @@ const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
       className="primary-button"
       disabled={disabled}
       onClick={onConfirm}
-      type="button"
       preloaderTheme={PreloaderTheme.LIGHT}
+      type="button"
     >
       Confirm
     </PendingButton>

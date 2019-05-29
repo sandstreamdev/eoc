@@ -121,7 +121,6 @@ const items = (state = {}, action) => {
       const {
         payload: { itemId }
       } = action;
-
       const prevItem = state[itemId];
 
       return {
