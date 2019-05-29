@@ -87,32 +87,23 @@ const deleteListById = (req, resp) => {
     user: { _id: userId },
     params: { id: listId }
   } = req;
-  let listName;
 
   List.findOneAndDelete({ _id: sanitize(listId), ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
-
-      listName = doc.name;
 
       return Comment.deleteMany({ listId }).exec();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: `Sack "${listName}" successfully deleted.`
-      })
-    )
+    .then(() => resp.status(200).send())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
+        const { status } = err;
+        return resp.status(status).send();
       }
-      resp.status(400).send({
-        message: 'An error occurred while deleting the sack. Please try again.'
-      });
+      resp.status(400).send();
     });
 };
 
@@ -425,19 +416,12 @@ const updateListById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.status(400).send();
       }
 
-      return resp
-        .status(200)
-        .send({ message: `Sack "${doc.name}" successfully updated.` });
+      return resp.status(200).send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while updating the sack data. Please try again.'
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const addToFavourites = (req, resp) => {
@@ -458,18 +442,12 @@ const addToFavourites = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.status(400).send();
       }
 
-      return resp.status(200).send({
-        message: `Sack "${doc.name}" successfully marked as favourite.`
-      });
+      return resp.status(200).send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't mark sack as favourite. Please try again."
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const removeFromFavourites = (req, resp) => {

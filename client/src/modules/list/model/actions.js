@@ -250,31 +250,28 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
 
 export const deleteList = (id, listName) => dispatch =>
   deleteData(`/api/lists/${id}/delete`)
-    .then(resp =>
-      resp.json().then(json => {
-        dispatch(deleteListSuccess(id));
-        createNotificationWithTimeout(
-          dispatch,
-          NotificationType.SUCCESS,
-          `Sack: "${listName}" successfully deleted.`
-        );
-        history.replace('/dashboard');
-      })
-    )
-    .catch(err => {
+    .then(() => {
+      dispatch(deleteListSuccess(id));
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        `Sack: "${listName}" successfully deleted.`
+      );
+      history.replace('/dashboard');
+    })
+    .catch(() => {
       dispatch(deleteListFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, deleting sack failed..."
+        `Deleting sack: "${listName}" failed. Please try again.`
       );
       throw new Error();
     });
 
 export const updateList = (listId, data, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, data)
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(updateListSuccess({ ...data, listId }));
       createNotificationWithTimeout(
         dispatch,
@@ -282,12 +279,12 @@ export const updateList = (listId, data, listName) => dispatch =>
         `Sack: "${listName}" successfully updated.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(updateListFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, updating sack failed..."
+        `Updating sack: "${listName}" failed. Please try again.`
       );
     });
 
@@ -295,8 +292,7 @@ export const archiveList = (listId, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(archiveListSuccess({ isArchived: true, listId }));
       createNotificationWithTimeout(
         dispatch,
@@ -309,7 +305,7 @@ export const archiveList = (listId, listName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, archiving sack failed..."
+        `Archiving sack: "${listName}" failed. Please try again.`
       );
     });
 
@@ -327,24 +323,23 @@ export const restoreList = (listId, listName) => dispatch =>
         `Sack "${listName}" was successfully restored!`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(restoreListFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, restoring sack failed..."
+        `Restoring sack: "${listName}" failed. Please try again.`
       );
     });
 
-export const addListToFavourites = listId => dispatch =>
+export const addListToFavourites = (listId, listName) => dispatch =>
   patchData(`/api/lists/${listId}/add-to-fav`)
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(favouritesSuccess({ listId, isFavourite: true }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Sack: "${listName}" marked as favourite.`
       );
     })
     .catch(err => {
@@ -352,7 +347,7 @@ export const addListToFavourites = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to mark sack: ${listName} as favourite. Please try again.`
       );
     });
 
