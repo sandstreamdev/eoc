@@ -844,8 +844,8 @@ const addViewer = (req, resp) => {
     });
 };
 
-const updateItemDetails = (req, resp) => {
-  const { authorId, description, isOrdered, link, itemId } = req.body;
+const updateListItem = (req, resp) => {
+  const { authorId, description, isOrdered, itemId, link, name } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -881,6 +881,10 @@ const updateItemDetails = (req, resp) => {
 
       if (authorId) {
         itemToUpdate.authorId = authorId;
+      }
+
+      if (name) {
+        itemToUpdate.name = name;
       }
 
       return list.save();
@@ -1060,7 +1064,7 @@ module.exports = {
   removeMemberRole,
   removeOwner,
   removeOwnerRole,
-  updateItemDetails,
   updateListById,
+  updateListItem,
   voteForItem
 };

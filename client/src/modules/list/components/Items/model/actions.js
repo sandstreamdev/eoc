@@ -48,12 +48,12 @@ const clearVoteFailure = errMessage => ({
   payload: errMessage
 });
 
-const updateItemDetailsSuccess = (listId, itemId, data) => ({
+const updateListItemSuccess = (listId, itemId, data) => ({
   type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
   payload: { listId, itemId, data }
 });
 
-const updateItemDetailsFailure = () => ({
+const updateListItemFailure = () => ({
   type: ItemActionTypes.UPDATE_DETAILS_FAILURE
 });
 
@@ -104,7 +104,7 @@ export const toggle = (
   authorId,
   authorName
 ) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item-details`, {
+  patchData(`/api/lists/${listId}/update-item`, {
     authorId,
     isOrdered: !isOrdered,
     itemId
@@ -156,14 +156,14 @@ export const clearVote = (itemId, listId) => dispatch =>
       );
     });
 
-export const updateItemDetails = (listId, itemId, data) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item-details`, {
+export const updateListItem = (listId, itemId, data) => dispatch =>
+  patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(updateItemDetailsSuccess(listId, itemId, data));
+      dispatch(updateListItemSuccess(listId, itemId, data));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
@@ -171,7 +171,7 @@ export const updateItemDetails = (listId, itemId, data) => dispatch =>
       );
     })
     .catch(err => {
-      dispatch(updateItemDetailsFailure());
+      dispatch(updateListItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

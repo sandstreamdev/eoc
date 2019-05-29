@@ -13,6 +13,7 @@ import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import { ListType } from '../consts';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { KeyCodes } from 'common/constants/enums';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -64,7 +65,7 @@ class ListHeader extends PureComponent {
     const { isDescriptionTextareaVisible } = this.state;
     const { code } = event;
 
-    if (code === 'Enter' || code === 'Escape') {
+    if (code === KeyCodes.ENTER || code === KeyCodes.ESCAPE) {
       const action = isDescriptionTextareaVisible
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
