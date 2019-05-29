@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Form from 'common/components/Form';
 import Dialog from 'common/components/Dialog';
+import { KeyCodes } from 'common/constants/enums';
 
 export const FormDialogContext = Object.freeze({
   CREATE_COHORT: 'formDialog/CREATE_COHORT',
@@ -28,7 +29,13 @@ class FormDialog extends Component {
     document.removeEventListener('keypress', this.handleEnterKeypress);
   }
 
-  handleEnterKeypress = event => event.code === 'Enter' && this.handleConfirm();
+  handleEnterKeypress = event => {
+    const { code } = event;
+
+    if (code === KeyCodes.ENTER) {
+      this.handleConfirm();
+    }
+  };
 
   handleDescriptionChange = description => this.setState({ description });
 

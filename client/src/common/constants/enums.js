@@ -44,3 +44,7 @@ export const ViewType = {
   LIST: 'viewType/LIST',
   TILES: 'viewType/TILES'
 };
+export const KeyCodes = Object.freeze({
+  ENTER: 'Enter',
+  ESCAPE: 'Escape'
+});
