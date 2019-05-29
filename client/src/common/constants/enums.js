@@ -44,7 +44,13 @@ export const ViewType = {
   LIST: 'viewType/LIST',
   TILES: 'viewType/TILES'
 };
+
 export const KeyCodes = Object.freeze({
   ENTER: 'Enter',
   ESCAPE: 'Escape'
+});
+
+export const ErrorStatus = Object.freeze({
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401
 });

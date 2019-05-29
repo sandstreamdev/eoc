@@ -7,7 +7,10 @@ import {
   postData
 } from 'common/utils/fetchMethods';
 import { ListActionTypes } from './actionTypes';
-import { MessageType as NotificationType } from 'common/constants/enums';
+import {
+  MessageType as NotificationType,
+  ErrorStatus
+} from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 
@@ -351,23 +354,22 @@ export const addListToFavourites = (listId, listName) => dispatch =>
       );
     });
 
-export const removeListFromFavourites = listId => dispatch =>
+export const removeListFromFavourites = (listId, listName) => dispatch =>
   patchData(`/api/lists/${listId}/remove-from-fav`)
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(favouritesSuccess({ listId, isFavourite: false }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Sack: "${listName}" removed from favourites.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(favouritesFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to remove sack: "${listName}" from favourites.`
       );
     });
 
@@ -381,15 +383,25 @@ export const addListViewer = (listId, email) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || `"${json.displayName}" added as viewer successfully.`
+        json.message || `${json.displayName} added as viewer successfully.`
       );
     })
     .catch(err => {
       dispatch(addViewerFailure());
+      const { status } = err;
+
+      if (status === ErrorStatus.UNAUTHORIZED) {
+        return createNotificationWithTimeout(
+          dispatch,
+          NotificationType.ERROR,
+          'Adding viewers in DEMO mode is disabled.'
+        );
+      }
+
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, adding new viewer failed..."
+        err.message || `Failed to add: "${email}" as viewer. Please try again.`
       );
     });
 

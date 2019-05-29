@@ -468,18 +468,12 @@ const removeFromFavourites = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.status(400).send();
       }
 
-      return resp.status(200).send({
-        message: `Sack "${doc.name}" successfully removed from favourites.`
-      });
+      return resp.status(200).send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't remove sack from favourites. Please try again."
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const removeOwner = (req, resp) => {
@@ -744,9 +738,7 @@ const addViewer = (req, resp) => {
   let cohortMembers = [];
 
   if (idFromProvider === DEMO_MODE_ID) {
-    return resp
-      .status(401)
-      .send({ message: 'Adding members is disabled in demo mode.' });
+    return resp.status(401).send();
   }
 
   List.findOne({
