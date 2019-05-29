@@ -157,4 +157,4 @@ This project uses:
 
 - FontAwesome Free. Check [license]('https://fontawesome.com/license').,
 - Google [Trademark Logo]('https://www.google.com/permissions/logos-trademarks/') : ©2018 Google LLC All rights reserved. Google and the Google logo are registered trademarks of Google LLC.
-- Avatars project [project page](https://avatars.dicebear.com/). Avatars project is distributed under MIT license [license](https://github.com/DiceBear/avatars/blob/master/LICENSE).
+- [Pravatar API](https://pravatar.cc/). It is published under [CC0 license](https://creativecommons.org/share-your-work/public-domain/cc0/). Pravatar uses photos from [Pexels](https://www.pexels.com/).
