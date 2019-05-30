@@ -145,7 +145,7 @@ export const createCohort = data => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, creating new cohort failed..."
+        `Failed to create new cohort: "${data.name}".`
       );
     });
 

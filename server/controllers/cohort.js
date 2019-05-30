@@ -37,9 +37,7 @@ const createCohort = (req, resp) => {
         .status(201)
         .send(responseWithCohort(doc, userId))
     )
-    .catch(() =>
-      resp.status(400).send({ message: 'Cohort not saved. Please try again.' })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const getCohortsMetaData = (req, resp) => {
