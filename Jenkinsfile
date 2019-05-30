@@ -5,10 +5,6 @@ pipeline {
 
   options { disableConcurrentBuilds() }
 
-  environment {
-    DOCKER_BUILDKIT = 1
-  }
-
   stages {
     stage('Start') {
         steps {
@@ -18,26 +14,25 @@ pipeline {
     stage('Warmup') {
       steps {
         echo 'Warming up...'
-        sh 'docker build --target init .'
-        sh 'docker build --target content .'
+        sh 'docker build --target init -f Dockerfile.ci .'
       }
     }
     stage('QA: static code analysis') {
       steps {
         echo 'Testing static..'
-        sh 'docker build --target test-static .'
+        sh 'docker build --target test-static -f Dockerfile.ci .'
+      }
+    }
+    stage('QA: unit tests') {
+      steps {
+        echo 'Testing..'
+        sh 'docker build --target test -f Dockerfile.ci .'
       }
     }
     stage('Build') {
       steps {
         echo 'Building..'
-        sh 'docker build --target build .'
-      }
-    }
-    stage('QA: unit & integration tests') {
-      steps {
-        echo 'Testing..'
-        sh 'docker build --target test .'
+        sh 'docker build --target build -f Dockerfile.ci .'
       }
     }
     stage('Deploy') {

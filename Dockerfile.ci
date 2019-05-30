@@ -1,0 +1,17 @@
+FROM node:10.15.3-alpine AS init
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY package*.json /usr/src/app/
+RUN cd /usr/src/app && npm ci --dev
+
+FROM init AS content
+COPY . /usr/src/app
+
+FROM content AS test-static
+RUN npm run check
+
+FROM content AS test
+RUN npm run test
+
+FROM init AS build
+RUN npm run build:prod
