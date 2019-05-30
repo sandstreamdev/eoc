@@ -151,7 +151,7 @@ class ListItem extends PureComponent {
   handleVoting = () => {
     const {
       clearVote,
-      data: { _id, isVoted },
+      data: { _id, isVoted, name },
       setVote,
       match: {
         params: { id: listId }
@@ -160,7 +160,7 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    return action(_id, listId);
+    return action(_id, listId, name);
   };
 
   handleItemLink = value =>

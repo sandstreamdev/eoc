@@ -171,16 +171,15 @@ export const toggle = (
       );
     });
 
-export const setVote = (itemId, listId) => dispatch =>
+export const setVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/set-vote`, { itemId })
-    .then(resp => resp.json())
-    .then(json => dispatch(setVoteSuccess(itemId, listId)))
-    .catch(err => {
+    .then(() => dispatch(setVoteSuccess(itemId, listId)))
+    .catch(() => {
       dispatch(setVoteFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, voting failed...."
+        `Failed while voting for: "${itemName}".`
       );
     });
 

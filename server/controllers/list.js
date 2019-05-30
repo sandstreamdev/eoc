@@ -322,28 +322,24 @@ const voteForItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       const { items } = list;
       const item = items.id(itemId);
 
-      if (checkIfArrayContainsUserId(item.voterIds, userId)) {
-        throw new BadRequestException('You have already voted.');
-      }
-
       item.voterIds.push(userId);
 
       return list.save();
     })
-    .then(() => resp.status(200).json({ message: 'Vote saved.' }))
+    .then(() => resp.status(200).json())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
+        const { status } = err;
+        return resp.status(status).send();
       }
 
-      resp.status(400).send({ message: 'Sack data not found' });
+      resp.status(400).send();
     });
 };
 
