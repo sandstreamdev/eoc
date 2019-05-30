@@ -8,14 +8,16 @@ import ArchivedMessage from 'common/components/ArchivedMessage';
 
 class ArchivedCohort extends PureComponent {
   handleCohortRestoring = cohortId => () => {
-    const { fetchListsMetaData, restoreCohort } = this.props;
+    const { fetchListsMetaData, restoreCohort, name } = this.props;
 
-    return restoreCohort(cohortId).then(() => fetchListsMetaData(cohortId));
+    return restoreCohort(cohortId, name).then(() =>
+      fetchListsMetaData(cohortId)
+    );
   };
 
   handleCohortDeletion = cohortId => () => {
-    const { deleteCohort } = this.props;
-    return deleteCohort(cohortId);
+    const { deleteCohort, name } = this.props;
+    return deleteCohort(cohortId, name);
   };
 
   render() {

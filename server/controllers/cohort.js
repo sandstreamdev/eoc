@@ -180,19 +180,14 @@ const deleteCohortById = (req, resp) => {
     params: { id: cohortId },
     user: { _id: userId }
   } = req;
-  let documentName = '';
   const sanitizedCohortId = sanitize(cohortId);
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new NotFoundException(
-          `Data of cohort id: ${cohortId} not found.`
-        );
+        throw new NotFoundException();
       }
-
-      documentName = doc.name;
 
       return List.find({ cohortId: sanitizedCohortId }, '_id')
         .lean()
@@ -206,22 +201,15 @@ const deleteCohortById = (req, resp) => {
     })
     .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
     .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
-    .then(() =>
-      resp
-        .status(200)
-        .send({ message: `Cohort "${documentName}" successfully deleted.` })
-    )
+    .then(() => resp.status(200).send())
     .catch(err => {
       if (err instanceof NotFoundException) {
-        const { status, message } = err;
+        const { status } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(status).send();
       }
 
-      resp.status(400).send({
-        message:
-          'An error occurred while deleting the cohort. Please try again.'
-      });
+      resp.status(400).send();
     });
 };
 
