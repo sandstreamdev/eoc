@@ -183,43 +183,41 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
       );
     });
 
-export const clearVote = (itemId, listId) => dispatch =>
+export const clearVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
-    .then(resp => resp.json())
-    .then(json => dispatch(clearVoteSuccess(itemId, listId)))
+    .then(() => dispatch(clearVoteSuccess(itemId, listId)))
     .catch(err => {
       dispatch(clearVoteFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, voting failed...."
+        `Failed while clearing vote for item: "${itemName}"`
       );
     });
 
-export const updateListItem = (listId, itemId, data) => dispatch =>
+export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(updateListItemSuccess(listId, itemId, data));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Item details updated successfully.'
+        `Item: "${itemName}" updated successfully.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(updateListItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to update "${itemName}" item.`
       );
     });
 
-export const cloneItem = (listId, itemId) => dispatch =>
+export const cloneItem = (itemName, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
     itemId
   })
@@ -229,7 +227,7 @@ export const cloneItem = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Successfully cloned item: "${itemName}".`
       );
     })
     .catch(err => {
@@ -237,7 +235,7 @@ export const cloneItem = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed while cloning item: "${itemName}".`
       );
     });
 

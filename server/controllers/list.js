@@ -358,33 +358,26 @@ const clearVote = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       const { items } = list;
       const item = items.id(itemId);
-
-      if (!checkIfArrayContainsUserId(item.voterIds, userId)) {
-        throw new BadRequestException(
-          'You have not voted yet, so you can not removed your vote.'
-        );
-      }
-
       const voterIdIndex = item.voterIds.indexOf(userId);
 
       item.voterIds.splice(voterIdIndex, 1);
 
       return list.save();
     })
-    .then(() => resp.status(200).json({ message: 'Vote removed.' }))
+    .then(() => resp.status(200).send())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { status } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(status).send();
       }
 
-      resp.status(400).send({ message: 'Sack data not found' });
+      resp.status(400).send();
     });
 };
 
@@ -858,7 +851,7 @@ const cloneItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       const { description, link, name } = list.items.id(itemId);
@@ -884,28 +877,23 @@ const cloneItem = (req, resp) => {
     })
     .then(list => {
       if (!list) {
-        return resp.status(400).send({
-          message: 'An error occurred while cloning the item. Please try again.'
-        });
+        return resp.status(400).send();
       }
 
       const newItem = list.items.slice(-1)[0];
 
-      resp.status(200).send({
-        message: 'Item successfully cloned.',
+      resp.status(200).json({
         item: responseWithItem(newItem, userId)
       });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { status } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(status).send();
       }
 
-      resp.status(400).send({
-        message: 'An error occurred while cloning the item. Please try again.'
-      });
+      resp.status(400).send();
     });
 };
 

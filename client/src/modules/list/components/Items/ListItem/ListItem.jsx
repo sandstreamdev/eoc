@@ -88,7 +88,8 @@ class ListItem extends PureComponent {
       data: {
         _id: itemId,
         description: previousDescription,
-        link: previousLink
+        link: previousLink,
+        name: itemName
       },
       isMember,
       match: {
@@ -114,7 +115,7 @@ class ListItem extends PureComponent {
     }
 
     if (isLinkUpdated || isDescriptionUpdated) {
-      return updateListItem(listId, itemId, { description, link });
+      return updateListItem(itemName, listId, itemId, { description, link });
     }
   };
 
@@ -136,7 +137,7 @@ class ListItem extends PureComponent {
   handleItemCloning = () => {
     const {
       cloneItem,
-      data: { _id: itemId },
+      data: { _id: itemId, name },
       isMember,
       match: {
         params: { id: listId }
@@ -144,7 +145,7 @@ class ListItem extends PureComponent {
     } = this.props;
 
     if (isMember) {
-      return cloneItem(listId, itemId);
+      return cloneItem(name, listId, itemId);
     }
   };
 
