@@ -705,7 +705,9 @@ const addViewer = (req, resp) => {
   let cohortMembers = [];
 
   if (idFromProvider === DEMO_MODE_ID) {
-    return resp.status(401).send();
+    return resp
+      .status(400)
+      .send({ message: 'Adding viewers in DEMO mode is disabled.' });
   }
 
   List.findOne({

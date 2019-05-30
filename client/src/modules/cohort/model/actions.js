@@ -161,7 +161,7 @@ export const fetchCohortsMetaData = () => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching cohorts meta data failed..."
+        'Failed to fetch cohorts data. Please try again.'
       );
     });
 
@@ -177,19 +177,18 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching cohorts failed..."
+        'Failed to fetch cohorts data. Please try again.'
       );
     });
 
-export const updateCohort = (cohortId, data) => dispatch =>
+export const updateCohort = (cohortName, cohortId, data) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, data)
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(updateCohortSuccess({ ...data, cohortId }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Cohort: "${cohortName}" successfully updated.`
       );
     })
     .catch(err => {
@@ -197,7 +196,7 @@ export const updateCohort = (cohortId, data) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, updating cohort failed..."
+        `Failed to update: "${cohortName}" cohort.`
       );
     });
 

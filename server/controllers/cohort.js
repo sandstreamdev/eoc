@@ -52,17 +52,12 @@ const getCohortsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(400).send({ message: 'No cohorts data found.' });
+        return resp.status(400).send();
       }
 
       return resp.status(200).send(responseWithCohorts(docs));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the cohorts data. Please try again.'
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const getArchivedCohortsMetaData = (req, resp) => {
@@ -82,19 +77,12 @@ const getArchivedCohortsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp
-          .status(400)
-          .send({ message: 'No archived cohorts data found.' });
+        return resp.status(400).send();
       }
 
       return resp.status(200).send(responseWithCohorts(docs));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the archived cohorts data. Please try again.'
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const updateCohortById = (req, resp) => {
@@ -119,19 +107,12 @@ const updateCohortById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Cohort not found.' });
+        return resp.status(400).send();
       }
 
-      return resp
-        .status(200)
-        .send({ message: `Cohort "${doc.name}" successfully updated.` });
+      return resp.status(200).send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while updating the cohort. Please try again.'
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const getCohortDetails = (req, resp) => {
@@ -141,9 +122,7 @@ const getCohortDetails = (req, resp) => {
   } = req;
 
   if (!isValidMongoId(cohortId)) {
-    return resp
-      .status(404)
-      .send({ message: `Data of cohort id: ${cohortId} not found.` });
+    return resp.status(404).send();
   }
 
   Cohort.findOne({
@@ -155,9 +134,7 @@ const getCohortDetails = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new NotFoundException(
-          `Data of cohort id: ${cohortId} not found.`
-        );
+        throw new NotFoundException();
       }
 
       const {
@@ -186,12 +163,17 @@ const getCohortDetails = (req, resp) => {
         name
       });
     })
-    .catch(() =>
+    .catch(err => {
+      if (err instanceof NotFoundException) {
+        const { status } = err;
+        return resp.status(404).send();
+      }
+
       resp.status(400).send({
         message:
           'An error occurred while fetching the cohort data. Please try again.'
-      })
-    );
+      });
+    });
 };
 
 const deleteCohortById = (req, resp) => {

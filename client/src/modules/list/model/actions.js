@@ -399,16 +399,6 @@ export const addListViewer = (listId, email) => dispatch =>
     })
     .catch(err => {
       dispatch(addViewerFailure());
-      const { status } = err;
-
-      if (status === ServerCode.UNAUTHORIZED) {
-        return createNotificationWithTimeout(
-          dispatch,
-          NotificationType.ERROR,
-          'Adding viewers in DEMO mode is disabled.'
-        );
-      }
-
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
