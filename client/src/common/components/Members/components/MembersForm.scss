@@ -3,6 +3,11 @@
 
   &__input {
     margin-right: 8px;
+
+    &--disabled {
+      cursor: not-allowed;
+      color: $button-disabled;
+    }
   }
 
   span {

@@ -1,7 +1,6 @@
 const cohortsMock = [
   {
     _id: { $oid: '5ccfe9631ad8a35fee6fbc75' },
-    favIds: [],
     isArchived: false,
     memberIds: ['5c9dc5a619ae7924074940f4'],
     ownerIds: ['5c9dc5a619ae7924074940f4'],
@@ -13,7 +12,6 @@ const cohortsMock = [
   },
   {
     _id: { $oid: '5ccfe96a1ad8a35fee6fbc76' },
-    favIds: [],
     isArchived: false,
     memberIds: ['5c9dc5a619ae7924074940f4'],
     ownerIds: ['5c9dc5a619ae7924074940f4'],

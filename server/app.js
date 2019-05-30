@@ -14,6 +14,7 @@ const authRouter = require('./routes/authorization');
 const commentsRouter = require('./routes/comment');
 const cohortsRouter = require('./routes/cohort');
 const listsRouter = require('./routes/list');
+const mailerRouter = require('./routes/mailer');
 
 const app = express();
 
@@ -21,6 +22,7 @@ const app = express();
 const dbUrl = DB_URL;
 mongoose.connect(dbUrl, { useNewUrlParser: true });
 mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 
 app.use(cors());
 app.use(cookieParser());
@@ -43,7 +45,7 @@ app.use('/auth', authRouter);
 app.use('/api/comments', commentsRouter);
 app.use('/api/cohorts', cohortsRouter);
 app.use('/api/lists', listsRouter);
-
+app.use('/api', mailerRouter);
 app.use('*', (_, res) => res.sendFile(path.resolve('dist/index.html')));
 
 module.exports = app;

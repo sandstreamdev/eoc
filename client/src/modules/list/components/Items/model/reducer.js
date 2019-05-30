@@ -1,3 +1,6 @@
+import _filter from 'lodash/filter';
+import _keyBy from 'lodash/keyBy';
+
 import {
   CommentActionTypes,
   ItemActionTypes
@@ -99,6 +102,51 @@ const items = (state = {}, action) => {
           link: link || prevItem.link
         }
       };
+    }
+    case ItemActionTypes.ARCHIVE_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+      const prevItem = state[itemId];
+
+      return {
+        ...state,
+        [itemId]: {
+          ...prevItem,
+          isArchived: true
+        }
+      };
+    }
+    case ItemActionTypes.RESTORE_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+      const prevItem = state[itemId];
+
+      return {
+        ...state,
+        [itemId]: {
+          ...prevItem,
+          isArchived: false
+        }
+      };
+    }
+    case ItemActionTypes.FETCH_ARCHIVED_SUCCESS: {
+      const {
+        payload: { data }
+      } = action;
+
+      return { ...state, ...data };
+    }
+    case ItemActionTypes.REMOVE_ARCHIVED:
+      return _keyBy(_filter(state, item => !item.isArchived), '_id');
+    case ItemActionTypes.DELETE_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+      const { [itemId]: deleted, ...rest } = state;
+
+      return rest;
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {

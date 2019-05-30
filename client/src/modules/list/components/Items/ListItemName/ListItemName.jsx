@@ -27,12 +27,7 @@ class ListItemName extends PureComponent {
   }
 
   componentDidUpdate() {
-    const { isNameInputFocused, name } = this.state;
-
-    if (isNameInputFocused) {
-      document.addEventListener('keydown', this.handleKeyPress);
-      document.addEventListener('mousedown', this.handleClickOutside);
-    }
+    const { name } = this.state;
 
     if (name.length === 0) {
       this.nameInput.current.focus();
@@ -95,6 +90,8 @@ class ListItemName extends PureComponent {
 
     onFocus();
     this.setState({ isNameInputFocused: true });
+    document.addEventListener('keydown', this.handleKeyPress);
+    document.addEventListener('mousedown', this.handleClickOutside);
   };
 
   handleNameInputBlur = () => {

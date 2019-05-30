@@ -39,8 +39,9 @@ const responseWithList = (list, userId) => {
 const responseWithListsMetaData = (lists, userId) =>
   _map(lists, list => {
     const { cohortId, favIds, items, ...rest } = list;
-    const doneItemsCount = items.filter(item => item.isOrdered).length;
-    const unhandledItemsCount = items.length - doneItemsCount;
+    const activeItems = items.filter(item => !item.isArchived);
+    const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
+    const unhandledItemsCount = activeItems.length - doneItemsCount;
 
     const listToSend = {
       ...rest,
@@ -65,52 +66,52 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
 
 const responseWithItems = (userId, items) =>
   _map(items, item => {
-    const { authorId: author, voterIds, ...rest } = item;
+    const { authorId: author, isArchived, voterIds, ...rest } = item;
     const { _id: authorId, displayName: authorName } = author;
 
     return {
       ...rest,
       authorId,
       authorName,
+      isArchived,
       isVoted: checkIfArrayContainsUserId(voterIds, userId),
       votesCount: voterIds.length
     };
   });
 
 const responseWithItem = (item, userId) => {
-  const { authorId: author, voterIds, ...rest } = item;
+  const { authorId: author, isArchived, voterIds, ...rest } = item;
   const { _id: authorId, displayName: authorName } = author;
 
   return {
     ...rest,
     authorId,
     authorName,
+    isArchived,
     isVoted: checkIfArrayContainsUserId(voterIds, userId),
     votesCount: voterIds.length
   };
 };
 
-const responseWithCohorts = (cohorts, userId) =>
+const responseWithCohorts = cohorts =>
   _map(cohorts, cohort => {
-    const { favIds, memberIds, ownerIds, ...rest } = cohort;
+    const { memberIds, ownerIds, ...rest } = cohort;
     const membersCount = memberIds.length;
 
     return {
       ...rest,
-      isFavourite: isUserFavourite(favIds, userId),
       membersCount
     };
   });
 
-const responseWithCohort = (cohort, userId) => {
-  const { _id, description, favIds, memberIds, name, isArchived } = cohort;
+const responseWithCohort = cohort => {
+  const { _id, description, memberIds, name, isArchived } = cohort;
   const membersCount = memberIds.length;
 
   return {
     _id,
     description,
     isArchived,
-    isFavourite: isUserFavourite(favIds, userId),
     membersCount,
     name
   };

@@ -63,8 +63,8 @@ class PendingButton extends PureComponent {
           value={value}
         >
           {children}
+          {pending && <Preloader size={preloaderSize} theme={preloaderTheme} />}
         </button>
-        {pending && <Preloader size={preloaderSize} theme={preloaderTheme} />}
       </Fragment>
     );
   }

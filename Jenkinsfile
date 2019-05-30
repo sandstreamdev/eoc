@@ -3,6 +3,8 @@ def COLOR_MAP = ['SUCCESS': 'good', 'FAILURE': 'danger', 'UNSTABLE': 'danger', '
 pipeline {
   agent any
 
+  options { disableConcurrentBuilds() }
+
   environment {
     DOCKER_BUILDKIT = 1
     TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase()
@@ -55,6 +57,8 @@ pipeline {
         sh 'docker-compose build'
         sh 'docker-compose stop'
         sh 'docker-compose up -d'
+        sh 'chmod +x init-letsencrypt.sh'
+        sh './init-letsencrypt.sh'
       }
     }
     stage('Cleanup Docker') {

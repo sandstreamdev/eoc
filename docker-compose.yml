@@ -27,11 +27,15 @@ services:
     build: ./nginx
     ports:
       - '80:80'
+      - '443:443'
     volumes:
-      -  /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
+      - /etc/nginx/.htpasswd:/etc/nginx/.htpasswd
+      - /data/certbot/conf:/etc/letsencrypt
+      - /data/certbot/www:/var/www/certbot
     links:
       - eoc-server
       - eoc-landing
+    command: "/bin/sh -c 'while :; do sleep 24h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   mongo:
     container_name: mongo_container
     image: mongo
@@ -40,3 +44,10 @@ services:
       - /data/db:/data/db
     ports:
       - '27017'
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - /data/certbot/conf:/etc/letsencrypt
+      - /data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 24h & wait $${!}; done;'"

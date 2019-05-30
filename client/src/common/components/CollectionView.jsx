@@ -7,43 +7,22 @@ import { connect } from 'react-redux';
 
 import TilesViewItem from 'common/components/TilesViewItem';
 import MessageBox from 'common/components/MessageBox';
-import { MessageType, Routes, ViewType } from 'common/constants/enums';
+import { MessageType, ViewType } from 'common/constants/enums';
 import CardPlus from 'common/components/CardPlus';
 import {
   addListToFavourites,
   removeListFromFavourites
 } from 'modules/list/model/actions';
-import {
-  addCohortToFavourites,
-  removeCohortFromFavourites
-} from 'modules/cohort/model/actions';
 import Preloader from 'common/components/Preloader';
 import ListViewItem from 'common/components/ListViewItem';
 
 class CollectionView extends PureComponent {
   handleFavClick = (itemId, isFavourite, listName) => event => {
     event.stopPropagation();
-    const {
-      addCohortToFavourites,
-      addListToFavourites,
-      removeCohortFromFavourites,
-      removeListFromFavourites,
-      route
-    } = this.props;
+    const { addListToFavourites, removeListFromFavourites } = this.props;
 
-    let action;
-    switch (route) {
-      case Routes.LIST:
-        action = isFavourite ? removeListFromFavourites : addListToFavourites;
-        break;
-      case Routes.COHORT:
-        action = isFavourite
-          ? removeCohortFromFavourites
-          : addCohortToFavourites;
-        break;
-      default:
-        break;
-    }
+    const action = isFavourite ? removeListFromFavourites : addListToFavourites;
+
     return action(itemId, listName);
   };
 
@@ -157,10 +136,8 @@ CollectionView.propTypes = {
   route: PropTypes.string.isRequired,
   viewType: PropTypes.string.isRequired,
 
-  addCohortToFavourites: PropTypes.func,
   addListToFavourites: PropTypes.func,
   onAddNew: PropTypes.func,
-  removeCohortFromFavourites: PropTypes.func,
   removeListFromFavourites: PropTypes.func
 };
 
@@ -168,9 +145,7 @@ export default withRouter(
   connect(
     null,
     {
-      addCohortToFavourites,
       addListToFavourites,
-      removeCohortFromFavourites,
       removeListFromFavourites
     }
   )(CollectionView)

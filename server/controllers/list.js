@@ -259,6 +259,7 @@ const getListData = (req, resp) => {
         cohortId,
         description,
         isArchived,
+        items: listItems,
         memberIds,
         name,
         ownerIds,
@@ -272,6 +273,7 @@ const getListData = (req, resp) => {
           .json({ cohortId, cohortName, _id, isArchived, name, type });
       }
 
+      const activeItems = listItems.filter(item => !item.isArchived);
       const members = responseWithListMembers(
         viewersCollection,
         memberIds,
@@ -282,7 +284,7 @@ const getListData = (req, resp) => {
       const isGuest = !checkIfArrayContainsUserId(cohortMembers, userId);
       const isMember = checkIfArrayContainsUserId(memberIds, userId);
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
-      const items = responseWithItems(userId, list.items);
+      const items = responseWithItems(userId, activeItems);
 
       return resp.status(200).json({
         _id,
@@ -753,7 +755,11 @@ const addViewer = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(userData => {
-      if (!userData || userData.idFromProvider === DEMO_MODE_ID) {
+      if (!userData) {
+        return;
+      }
+
+      if (userData.idFromProvider === DEMO_MODE_ID) {
         throw new BadRequestException(`There is no user of email: ${email}`);
       }
 
@@ -776,9 +782,13 @@ const addViewer = (req, resp) => {
       return list.save();
     })
     .then(() => {
-      const userToSend = responseWithListMember(user, cohortMembers);
+      if (user) {
+        const userToSend = responseWithListMember(user, cohortMembers);
 
-      resp.status(200).json(userToSend);
+        return resp.status(200).json(userToSend);
+      }
+
+      resp.status(204).send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -794,7 +804,16 @@ const addViewer = (req, resp) => {
 };
 
 const updateListItem = (req, resp) => {
-  const { authorId, description, isOrdered, itemId, link, name } = req.body;
+  const {
+    authorId,
+    description,
+    isArchived,
+    isOrdered,
+    link,
+    itemId,
+    name
+  } = req.body;
+
   const {
     user: { _id: userId }
   } = req;
@@ -827,7 +846,7 @@ const updateListItem = (req, resp) => {
         itemToUpdate.link = link;
       }
 
-      if (isOrdered !== null) {
+      if (isOrdered !== undefined) {
         itemToUpdate.isOrdered = isOrdered;
       }
 
@@ -837,6 +856,10 @@ const updateListItem = (req, resp) => {
 
       if (name) {
         itemToUpdate.name = name;
+      }
+
+      if (isArchived !== undefined) {
+        itemToUpdate.isArchived = isArchived;
       }
 
       return list.save();
@@ -999,6 +1022,57 @@ const changeType = (req, resp) => {
     });
 };
 
+const getArchivedItems = (req, resp) => {
+  const { id: listId } = req.params;
+  const { _id: userId } = req.user;
+
+  List.findOne(
+    {
+      _id: sanitize(listId),
+      memberIds: userId
+    },
+    'items name'
+  )
+    .lean()
+    .populate('items.authorId', 'displayName')
+    .exec()
+    .then(list => {
+      if (!list) {
+        return resp.status(400).send();
+      }
+
+      const { items } = list;
+      const archivedItems = items.filter(item => item.isArchived);
+
+      resp.status(200).send(responseWithItems(userId, archivedItems));
+    })
+    .catch(() => resp.status(400).send());
+};
+
+const deleteItem = (req, resp) => {
+  const { id: listId, itemId } = req.params;
+  const { _id: userId } = req.user;
+  const sanitizeItemId = sanitize(itemId);
+
+  List.findOneAndUpdate(
+    {
+      _id: sanitize(listId),
+      memberIds: userId,
+      'items._id': sanitizeItemId
+    },
+    { $pull: { items: { _id: sanitizeItemId } } }
+  )
+    .exec()
+    .then(list => {
+      if (!list) {
+        return resp.status(400).send();
+      }
+
+      resp.status(200).send();
+    })
+    .catch(() => resp.status(400).send());
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
@@ -1009,7 +1083,9 @@ module.exports = {
   clearVote,
   cloneItem,
   createList,
+  deleteItem,
   deleteListById,
+  getArchivedItems,
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,

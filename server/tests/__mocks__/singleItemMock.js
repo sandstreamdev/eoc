@@ -9,6 +9,7 @@ const singleItemMock = [
       _id: '5c9dc5a619ae7924074940f4',
       displayName: 'John Doe'
     },
+    isArchived: false,
     name: 'Coffee',
     updatedAt: { $date: { $numberLong: '1556963607250' } },
     createdAt: { $date: { $numberLong: '1556963607250' } }

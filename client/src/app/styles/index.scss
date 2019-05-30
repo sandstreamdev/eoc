@@ -26,7 +26,7 @@
 @import '../../modules/authorization/Authbox.scss';
 @import '../../common/components/MessageBox.scss';
 @import '../../common/components/Preloader.scss';
-@import '../../modules/list/components/ItemsContainer';
+@import '../../modules/list/components/ItemsContainer.scss';
 @import '../../modules/list/components/Items/InputBar/InputBar.scss';
 @import '../../app/components/Layout/Toolbar/components/UserBar/UserBar.scss';
 @import '../../common/components/DropdownMenu.scss';
@@ -71,4 +71,8 @@
 @import '../../modules/dashboard/Dashboard.scss';
 @import '../../common/components/Breadcrumbs/Breadcrumbs.scss';
 @import '../../common/components/ListViewItem.scss';
+@import '../../modules/list/components/Items/ListArchivedItem/ListArchivedItem.scss';
+@import '../../modules/list/components/ArchivedItemsContainer.scss';
+@import '../../common/components/Members/components/InviteNewUser.scss';
+@import '../../common/components/Confirmation.scss';
 @import '../../modules/list/components/Items/ListItemName/ListItemName.scss';

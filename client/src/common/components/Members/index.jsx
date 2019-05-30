@@ -14,8 +14,9 @@ import MemberButton from './components/MemberButton';
 import { addCohortMember } from 'modules/cohort/model/actions';
 import { addListViewer } from 'modules/list/model/actions';
 import { Routes } from 'common/constants/enums';
-
-const MEMBERS_DISPLAY_LIMIT = 10;
+import { UserAddingStatus, MEMBERS_DISPLAY_LIMIT } from './const';
+import InviteNewUser from './components/InviteNewUser';
+import { inviteUser } from './model/actions';
 
 class MembersBox extends PureComponent {
   handleResize = _debounce(
@@ -28,7 +29,9 @@ class MembersBox extends PureComponent {
 
     this.state = {
       context: null,
+      email: '',
       isFormVisible: false,
+      isInvitationBoxVisible: false,
       isMobile: window.outerWidth < 400,
       membersDisplayLimit: MEMBERS_DISPLAY_LIMIT,
       pending: false
@@ -47,6 +50,10 @@ class MembersBox extends PureComponent {
   showForm = () => this.setState({ isFormVisible: true });
 
   hideForm = () => this.setState({ isFormVisible: false });
+
+  hideInvitationBox = () => this.setState({ isInvitationBoxVisible: false });
+
+  showInvitationBox = () => this.setState({ isInvitationBoxVisible: true });
 
   handleDisplayingMemberDetails = id => () => {
     this.setState({ context: id });
@@ -68,10 +75,19 @@ class MembersBox extends PureComponent {
     const action = route === Routes.COHORT ? addCohortMember : addListViewer;
 
     this.setState({ pending: true });
+    action(id, email).then(resp => {
+      if (resp === UserAddingStatus.ADDED) {
+        this.setState({ pending: false });
+        this.hideForm();
+      }
 
-    action(id, email).finally(() => {
-      this.setState({ pending: false });
-      this.hideForm();
+      if (resp === UserAddingStatus.NO_USER) {
+        this.setState({
+          email,
+          pending: false
+        });
+        this.showInvitationBox();
+      }
     });
   };
 
@@ -83,6 +99,22 @@ class MembersBox extends PureComponent {
       membersDisplayLimit:
         membersDisplayLimit + (membersLength - MEMBERS_DISPLAY_LIMIT)
     }));
+  };
+
+  handleInvite = () => {
+    const { email } = this.state;
+    const { inviteUser } = this.props;
+
+    return inviteUser(email).then(() => {
+      this.hideForm();
+      this.hideInvitationBox();
+    });
+  };
+
+  handleCancel = () => {
+    this.hideForm();
+    this.hideInvitationBox();
+    this.setState({ email: '' });
   };
 
   renderDetails = member => {
@@ -162,7 +194,7 @@ class MembersBox extends PureComponent {
 
   renderAddNewUserForm = () => {
     const { isCurrentUserAnOwner, isMember, route } = this.props;
-    const { isFormVisible, pending } = this.state;
+    const { isInvitationBoxVisible, isFormVisible, pending } = this.state;
     const isAddMemberVisible =
       isCurrentUserAnOwner || (isMember && route === Routes.LIST);
 
@@ -172,6 +204,7 @@ class MembersBox extends PureComponent {
           <li className="members-box__list-item">
             {isFormVisible ? (
               <MembersForm
+                disabled={isInvitationBoxVisible || pending}
                 onAddNew={this.handleAddMember()}
                 pending={pending}
               />
@@ -191,7 +224,7 @@ class MembersBox extends PureComponent {
   };
 
   render() {
-    const { context, isMobile } = this.state;
+    const { context, email, isInvitationBoxVisible, isMobile } = this.state;
     const { members } = this.props;
     const currentUser = members[context];
 
@@ -205,6 +238,13 @@ class MembersBox extends PureComponent {
           {this.renderMemberList()}
           {this.renderShowMoreUsers()}
         </ul>
+        {isInvitationBoxVisible && (
+          <InviteNewUser
+            email={email}
+            onCancel={this.handleCancel}
+            onInvite={this.handleInvite}
+          />
+        )}
         {isMobile && currentUser && this.renderDetails(currentUser)}
       </div>
     );
@@ -221,12 +261,13 @@ MembersBox.propTypes = {
   type: PropTypes.string,
 
   addCohortMember: PropTypes.func.isRequired,
-  addListViewer: PropTypes.func.isRequired
+  addListViewer: PropTypes.func.isRequired,
+  inviteUser: PropTypes.func.isRequired
 };
 
 export default withRouter(
   connect(
     null,
-    { addCohortMember, addListViewer }
+    { addCohortMember, addListViewer, inviteUser }
   )(MembersBox)
 );
