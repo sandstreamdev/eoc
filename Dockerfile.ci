@@ -2,7 +2,7 @@ FROM node:10.15.3-alpine AS init
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY package*.json /usr/src/app/
-RUN cd /usr/src/app && npm ci --dev
+RUN npm ci --dev
 
 FROM init AS content
 COPY . /usr/src/app
