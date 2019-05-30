@@ -13,5 +13,5 @@ RUN npm run check
 FROM content AS test
 RUN npm run test
 
-FROM init AS build
+FROM content AS build
 RUN npm run build:prod
