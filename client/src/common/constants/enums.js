@@ -50,7 +50,8 @@ export const KeyCodes = Object.freeze({
   ESCAPE: 'Escape'
 });
 
-export const ErrorStatus = Object.freeze({
+export const ServerCode = Object.freeze({
   BAD_REQUEST: 400,
-  UNAUTHORIZED: 401
+  UNAUTHORIZED: 401,
+  OK: 200
 });

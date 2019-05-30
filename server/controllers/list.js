@@ -203,18 +203,14 @@ const addItemToList = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack not found.' });
+        return resp.status(400).send();
       }
 
       const newItem = doc.items.slice(-1)[0];
 
       return resp.status(200).send(responseWithItem(newItem, userId));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: 'An error occurred while adding a new item. Please try again.'
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const getListData = (req, resp) => {
@@ -495,18 +491,12 @@ const removeOwner = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.status(400).send();
       }
 
-      return resp.status(200).send({
-        message: 'Owner successfully removed from sack.'
-      });
+      return resp.status(200).send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't remove owner from sack."
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const removeMember = (req, resp) => {
@@ -534,18 +524,12 @@ const removeMember = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.status(400).send();
       }
 
-      return resp.status(200).send({
-        message: 'Member successfully removed from sack.'
-      });
+      return resp.status(200).send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't remove member from sack."
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
 const addOwnerRole = (req, resp) => {
@@ -560,7 +544,7 @@ const addOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't set user as a sack's owner.");
+        throw new BadRequestException();
       }
       const { memberIds, ownerIds } = doc;
       const userIsNotAnOwner = !checkIfArrayContainsUserId(ownerIds, userId);
@@ -577,18 +561,14 @@ const addOwnerRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: "User has been successfully set as a sack's owner."
-      })
-    )
+    .then(() => resp.status(200).send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'Sack data not found' });
+      resp.status(400).send();
     });
 };
 
@@ -648,7 +628,7 @@ const addMemberRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't set user as a sack's member.");
+        throw new BadRequestException();
       }
 
       const { ownerIds, memberIds } = doc;
@@ -666,18 +646,14 @@ const addMemberRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: "User has been successfully set as a sack's member."
-      })
-    )
+    .then(() => resp.status(200).send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'Sack data not found' });
+      resp.status(400).send();
     });
 };
 
@@ -718,7 +694,7 @@ const removeMemberRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => resp.status(200).send({ message: 'User has no member role' }))
+    .then(() => resp.status(200).send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
@@ -820,7 +796,6 @@ const updateListItem = (req, resp) => {
   const { id: listId } = req.params;
 
   const sanitizeItemId = sanitize(itemId);
-  let itemName;
 
   List.findOne({
     _id: sanitize(listId),
@@ -830,13 +805,11 @@ const updateListItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       const { items } = list;
       const itemToUpdate = items.id(sanitizeItemId);
-      const { name: listItemName } = itemToUpdate;
-      itemName = listItemName;
 
       if (description) {
         itemToUpdate.description = description;
@@ -864,11 +837,7 @@ const updateListItem = (req, resp) => {
 
       return list.save();
     })
-    .then(() =>
-      resp
-        .status(200)
-        .json({ message: `Item: "${itemName}" successfully updated.` })
-    )
+    .then(() => resp.status(200).json())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
@@ -876,9 +845,7 @@ const updateListItem = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({
-        message: 'An error occurred while updating the item. Please try again.'
-      });
+      resp.status(400).send();
     });
 };
 
@@ -961,7 +928,7 @@ const changeType = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
       const {
         cohortId: { memberIds: cohortMembersCollection },
@@ -992,13 +959,7 @@ const changeType = (req, resp) => {
         .exec();
     })
     .then(list => {
-      const {
-        memberIds,
-        name,
-        ownerIds,
-        type,
-        viewersIds: viewersCollection
-      } = list;
+      const { memberIds, ownerIds, type, viewersIds: viewersCollection } = list;
       const members = responseWithListMembers(
         viewersCollection,
         memberIds,
@@ -1007,18 +968,17 @@ const changeType = (req, resp) => {
       );
 
       resp.status(200).send({
-        message: `"${name}" sack's type change to ${type}.`,
         data: { members, type }
       });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { status } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(status).send();
       }
 
-      resp.status(400).send({ message: 'Sack data not found' });
+      resp.status(400).send();
     });
 };
 

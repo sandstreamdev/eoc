@@ -129,16 +129,17 @@ export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json, listId)))
-    .catch(err => {
+    .catch(() => {
       dispatch(addItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, adding item failed..."
+        `Failed while adding: "${item.name}". Please try again.`
       );
     });
 
 export const toggle = (
+  itemName,
   isOrdered,
   itemId,
   listId,
@@ -150,8 +151,7 @@ export const toggle = (
     isOrdered: !isOrdered,
     itemId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       setTimeout(
         () => dispatch(toggleItemSuccess(authorId, authorName, itemId, listId)),
         600
@@ -159,15 +159,15 @@ export const toggle = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Item details updated successfully.'
+        `Item: "${itemName}" updated successfully.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(toggleItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, changing item's status failed..."
+        `Failed to update item: "${itemName}".`
       );
     });
 

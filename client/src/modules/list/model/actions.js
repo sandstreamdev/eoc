@@ -9,7 +9,7 @@ import {
 import { ListActionTypes } from './actionTypes';
 import {
   MessageType as NotificationType,
-  ErrorStatus
+  ServerCode
 } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
@@ -379,7 +379,7 @@ export const addListViewer = (listId, email) => dispatch =>
     email
   })
     .then(resp => {
-      if (resp.status === 200) {
+      if (resp.status === ServerCode.OK) {
         return resp.json();
       }
     })
@@ -389,7 +389,7 @@ export const addListViewer = (listId, email) => dispatch =>
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          json.message || 'Viewer added successfully.'
+          `Viewer: "${json.displayName}" added successfully.`
         );
 
         return UserAddingStatus.ADDED;
@@ -401,7 +401,7 @@ export const addListViewer = (listId, email) => dispatch =>
       dispatch(addViewerFailure());
       const { status } = err;
 
-      if (status === ErrorStatus.UNAUTHORIZED) {
+      if (status === ServerCode.UNAUTHORIZED) {
         return createNotificationWithTimeout(
           dispatch,
           NotificationType.ERROR,
@@ -427,8 +427,7 @@ export const removeListMember = (
     : `/api/lists/${listId}/remove-member`;
 
   return patchData(url, { userId })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(removeMemberSuccess(listId, userId));
       createNotificationWithTimeout(
         dispatch,
@@ -436,12 +435,12 @@ export const removeListMember = (
         `"${userName}" successfully removed.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(removeMemberFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to remove "${userName}".`
       );
     });
 };
@@ -450,21 +449,20 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
   patchData(`/api/lists/${listId}/add-owner-role`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(addOwnerRoleSuccess(listId, userId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        `"${userName}" has member role.`
+        `"${userName}" has owner role.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(addOwnerRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to add: "${userName}" owner role.`
       );
     });
 
@@ -477,8 +475,7 @@ export const removeOwnerRole = (
   patchData(`/api/lists/${listId}/remove-owner-role`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(
         removeOwnerRoleSuccess(listId, userId, isCurrentUserRoleChanging)
       );
@@ -493,7 +490,7 @@ export const removeOwnerRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        err.message || `Failed to remove: "${userName}" from owners.`
       );
     });
 
@@ -506,8 +503,7 @@ export const addMemberRole = (
   patchData(`/api/lists/${listId}/add-member-role`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(addMemberRoleSuccess(listId, userId, isCurrentUserAnOwner));
       createNotificationWithTimeout(
         dispatch,
@@ -515,12 +511,12 @@ export const addMemberRole = (
         `"${userName}" has member role.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(addMemberRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to add: "${userName}" as member.`
       );
     });
 
@@ -533,8 +529,7 @@ export const removeMemberRole = (
   patchData(`/api/lists/${listId}/remove-member-role`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(removeMemberRoleSuccess(listId, userId, isCurrentUserAnOwner));
       createNotificationWithTimeout(
         dispatch,
@@ -551,7 +546,7 @@ export const removeMemberRole = (
       );
     });
 
-export const changeType = (listId, type) => dispatch =>
+export const changeType = (listId, listName, type) => dispatch =>
   patchData(`/api/lists/${listId}/change-type`, {
     type
   })
@@ -561,7 +556,7 @@ export const changeType = (listId, type) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Sack: "${listName}" changed to ${type}.`
       );
     })
     .catch(err => {
@@ -569,6 +564,6 @@ export const changeType = (listId, type) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to change: "${listName}" type.`
       );
     });

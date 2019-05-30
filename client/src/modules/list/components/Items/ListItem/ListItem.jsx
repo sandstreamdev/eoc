@@ -55,7 +55,7 @@ class ListItem extends PureComponent {
   handleItemToggling = () => {
     const {
       currentUser: { name, id: userId },
-      data: { isOrdered, authorId, _id },
+      data: { isOrdered, authorId, _id, name: itemName },
       isMember,
       match: {
         params: { id: listId }
@@ -73,8 +73,8 @@ class ListItem extends PureComponent {
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     return shouldChangeAuthor
-      ? toggle(isOrdered, _id, listId, userId, name)
-      : toggle(isOrdered, _id, listId);
+      ? toggle(itemName, isOrdered, _id, listId, userId, name)
+      : toggle(itemName, isOrdered, _id, listId);
   };
 
   handleDetailsVisibility = () =>

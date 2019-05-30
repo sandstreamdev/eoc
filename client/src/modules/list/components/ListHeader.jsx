@@ -166,6 +166,7 @@ class ListHeader extends PureComponent {
     } = event;
     const {
       changeType,
+      details: { name },
       match: {
         params: { id: listId }
       }
@@ -173,7 +174,7 @@ class ListHeader extends PureComponent {
 
     this.setState({ pendingForType: true });
 
-    changeType(listId, value).finally(() =>
+    changeType(listId, name, value).finally(() =>
       this.setState({ pendingForType: false })
     );
   };
