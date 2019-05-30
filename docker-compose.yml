@@ -10,7 +10,9 @@ services:
   eoc-server:
     container_name: eoc_server_container
     restart: always
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.cd
     ports:
       - '8080'
     links:

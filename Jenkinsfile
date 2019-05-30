@@ -5,15 +5,6 @@ pipeline {
 
   options { disableConcurrentBuilds() }
 
-  environment {
-    DOCKER_BUILDKIT = 1
-    TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase()
-    TAG_INIT = "${TAG}-init"
-    TAG_BUILD = "${TAG}-build"
-    TAG_TEST = "${TAG}-test"
-    TAG_TEST_STATIC = "${TAG_TEST}-static"
-  }
-
   stages {
     stage('Start') {
         steps {
@@ -23,25 +14,25 @@ pipeline {
     stage('Warmup') {
       steps {
         echo 'Warming up...'
-        sh 'docker build --target init -t $TAG_INIT .'
+        sh 'docker build --target init -f Dockerfile.ci .'
       }
     }
     stage('QA: static code analysis') {
       steps {
         echo 'Testing static..'
-        sh 'docker build --target test-static -t $TAG_TEST_STATIC .'
+        sh 'docker build --target test-static -f Dockerfile.ci .'
+      }
+    }
+    stage('QA: unit tests') {
+      steps {
+        echo 'Testing..'
+        sh 'docker build --target test -f Dockerfile.ci .'
       }
     }
     stage('Build') {
       steps {
         echo 'Building..'
-        sh 'docker build --target build -t $TAG_BUILD .'
-      }
-    }
-    stage('QA: unit & integration tests') {
-      steps {
-        echo 'Testing..'
-        sh 'docker build --target test -t $TAG_TEST .'
+        sh 'docker build --target build -f Dockerfile.ci .'
       }
     }
     stage('Deploy') {
