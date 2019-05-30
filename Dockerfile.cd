@@ -1,7 +1,7 @@
 FROM node:10.15.3-alpine AS init
 WORKDIR /usr/src/app
 ENV NODE_ENV production
-COPY package*.json .
+COPY package*.json ./
 RUN npm ci --dev
 
 FROM init AS build
