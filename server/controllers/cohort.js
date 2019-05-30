@@ -165,7 +165,6 @@ const getCohortDetails = (req, resp) => {
     })
     .catch(err => {
       if (err instanceof NotFoundException) {
-        const { status } = err;
         return resp.status(404).send();
       }
 
