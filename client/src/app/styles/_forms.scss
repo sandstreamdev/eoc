@@ -69,3 +69,8 @@
   padding: 6px 25px 6px 8px;
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
 }
+
+input:disabled,
+textarea:disabled {
+  background: transparent;
+}
