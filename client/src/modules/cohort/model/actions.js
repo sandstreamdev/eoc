@@ -256,7 +256,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
         `Cohort: "${cohortName}" was successfully restored.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(restoreCohortFailure());
       createNotificationWithTimeout(
         dispatch,
@@ -274,7 +274,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching data failed..."
+        'Failed to fetch cohort data. Please try again.'
       );
       throw err;
     });
@@ -302,7 +302,7 @@ export const addCohortMember = (cohortId, email) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, adding new member failed..."
+        err.message || `Failed to add: "${email}" as member. Please try again.`
       );
     });
 
@@ -310,7 +310,6 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/remove-member`, {
     userId
   })
-    .then(resp => resp.json())
     .then(() => {
       dispatch(removeMemberSuccess(cohortId, userId));
       createNotificationWithTimeout(
@@ -324,7 +323,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to remove "${userName}". Please try again.`
       );
     });
 
@@ -332,8 +331,7 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-owner-role`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(addOwnerRoleSuccess(cohortId, userId));
       createNotificationWithTimeout(
         dispatch,
@@ -341,15 +339,16 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
         `"${userName}" has owner role.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(addOwnerRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to set: "${userName}" as owner. Please try again.`
       );
     });
 
+/* TODO: Start here */
 export const removeOwnerRole = (
   cohortId,
   userId,

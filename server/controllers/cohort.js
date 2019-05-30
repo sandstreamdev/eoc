@@ -168,10 +168,7 @@ const getCohortDetails = (req, resp) => {
         return resp.status(404).send();
       }
 
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the cohort data. Please try again.'
-      });
+      resp.status(400).send();
     });
 };
 
@@ -233,9 +230,7 @@ const removeMember = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException(
-          `Data of cohort id: ${cohortId} not found.`
-        );
+        throw new BadRequestException();
       }
 
       return List.updateMany(
@@ -249,21 +244,15 @@ const removeMember = (req, resp) => {
         { $pull: { viewersIds: userId } }
       ).exec();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: 'Member successfully removed from cohort.'
-      })
-    )
+    .then(() => resp.status(200).send())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { status } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(status).send();
       }
 
-      resp.status(400).send({
-        message: "Can't remove member from cohort."
-      });
+      resp.status(400).send();
     });
 };
 
@@ -286,20 +275,15 @@ const addOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Cohort data not found.' });
+        return resp.status(400).send();
       }
 
-      return resp.status(200).send({
-        message: "User has been successfully set as a cohort's owner."
-      });
+      return resp.status(200).send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't set user as a cohort's owner."
-      })
-    );
+    .catch(() => resp.status(400).send());
 };
 
+/* TODO: start here */
 const removeOwnerRole = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
@@ -426,9 +410,7 @@ const addMember = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({
-        message: 'An error occurred while adding new member. Please try again.'
-      });
+      resp.status(400).send();
     });
 };
 
