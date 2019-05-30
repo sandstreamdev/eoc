@@ -23,7 +23,7 @@ const addComment = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       const comment = new Comment({
@@ -43,13 +43,11 @@ const addComment = (req, resp) => {
     )
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { status } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(status).send();
       }
-      resp
-        .status(400)
-        .send({ message: 'Comment not saved. Please try again.' });
+      resp.status(400).send();
     });
 };
 
@@ -68,7 +66,7 @@ const getComments = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       return Comment.find(
@@ -84,7 +82,7 @@ const getComments = (req, resp) => {
     })
     .then(comments => {
       if (!comments) {
-        return resp.status(400).send({ message: 'There are no comments yet.' });
+        return resp.status(400).send();
       }
 
       resp.status(200).json(responseWithComments(comments));
@@ -96,10 +94,7 @@ const getComments = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the comments. Please try again.'
-      });
+      resp.status(400).send();
     });
 };
 

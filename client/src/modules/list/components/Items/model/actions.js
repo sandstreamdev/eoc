@@ -247,16 +247,16 @@ export const addComment = (listId, itemId, text) => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => dispatch(addCommentSuccess(listId, itemId, json)))
-    .catch(err => {
+    .catch(() => {
       dispatch(addCommentFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed do add comment: "${text}".`
       );
     });
 
-export const fetchComments = (listId, itemId) => dispatch =>
+export const fetchComments = (itemName, listId, itemId) => dispatch =>
   getData(`/api/comments/${listId}/${itemId}/data`)
     .then(resp => resp.json())
     .then(json => {
@@ -268,7 +268,7 @@ export const fetchComments = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to fetch comments for "${itemName}" item.`
       );
     });
 
@@ -294,7 +294,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       );
     });
 
-export const fetchArchivedItems = (listId, name) => dispatch =>
+export const fetchArchivedItems = (listId, listName) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
     .then(resp => resp.json())
     .then(json => {
@@ -306,7 +306,7 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Fetching archived items of list "${name}" failed. Please try again.`
+        `Fetching archived items of sack: "${listName}" failed. Please try again.`
       );
     });
 

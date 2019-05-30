@@ -287,7 +287,7 @@ class ListItem extends PureComponent {
   renderDetails = () => {
     const { areFieldsUpdated, isValidationErrorVisible } = this.state;
     const {
-      data: { _id: itemId, comments, description, isOrdered, link },
+      data: { _id: itemId, comments, description, isOrdered, link, name },
       isMember
     } = this.props;
     const isFieldDisabled = !isMember;
@@ -335,6 +335,7 @@ class ListItem extends PureComponent {
             comments={comments}
             isFormAccessible={isMember && !isOrdered}
             itemId={itemId}
+            itemName={name}
           />
         </div>
       </Fragment>
