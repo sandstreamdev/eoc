@@ -17,6 +17,7 @@ class ArchivedCohort extends PureComponent {
 
   handleCohortDeletion = cohortId => () => {
     const { deleteCohort, name } = this.props;
+
     return deleteCohort(cohortId, name);
   };
 

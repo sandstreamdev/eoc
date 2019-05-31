@@ -167,7 +167,7 @@ export const toggle = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to update item: "${itemName}".`
+        `Failed to update item: "${itemName}".  Please try again.`
       );
     });
 
@@ -179,7 +179,7 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed while voting for: "${itemName}".`
+        `Failed while voting for: "${itemName}". Please try again.`
       );
     });
 
@@ -191,7 +191,7 @@ export const clearVote = (itemId, listId, itemName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed while clearing vote for item: "${itemName}"`
+        `Failed while clearing vote for item: "${itemName}"  Please try again.`
       );
     });
 
@@ -213,7 +213,7 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to update "${itemName}" item.`
+        `Failed to update "${itemName}" item.  Please try again.`
       );
     });
 
@@ -235,7 +235,7 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed while cloning item: "${itemName}".`
+        `Failed while cloning item: "${itemName}".  Please try again.`
       );
     });
 
@@ -252,7 +252,7 @@ export const addComment = (listId, itemId, text) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed do add comment: "${text}".`
+        `Failed do add comment: "${text}".  Please try again.`
       );
     });
 
@@ -268,7 +268,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to fetch comments for "${itemName}" item.`
+        `Failed to fetch comments for "${itemName}" item.  Please try again.`
       );
     });
 

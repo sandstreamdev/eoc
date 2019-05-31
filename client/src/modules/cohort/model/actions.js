@@ -145,7 +145,7 @@ export const createCohort = data => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to create new cohort: "${data.name}".`
+        `Failed to create new cohort: "${data.name}". Please try again.`
       );
     });
 
@@ -372,6 +372,7 @@ export const removeOwnerRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || `Failed to remove owner role from: "${userName}".`
+        err.message ||
+          `Failed to remove owner role from: "${userName}".  Please try again.`
       );
     });

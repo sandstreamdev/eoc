@@ -1,19 +1,20 @@
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
+import { ServerCode } from 'common/constants/enums';
 
 const handleFetchErrors = resp => {
-  if (resp.status === 403) {
+  if (resp.status === ServerCode.FORBIDDEN) {
     setTimeout(() => {
       window.location = '/';
     }, NOTIFICATION_TIMEOUT);
   }
 
-  if (resp.status === 404) {
+  if (resp.status === ServerCode.NOT_FOUND) {
     history.replace('/page-not-found');
     throw new Error();
   }
 
-  if (resp.status >= 400 && resp.status < 600) {
+  if (resp.status >= ServerCode.BAD_REQUEST && resp.status < 600) {
     throw new Error();
   }
   return resp;
