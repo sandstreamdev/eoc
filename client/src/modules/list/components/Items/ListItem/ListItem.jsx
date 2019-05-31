@@ -77,6 +77,9 @@ class ListItem extends PureComponent {
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
+    /* setState method has to be called 100ms after toggle action is resolved
+     ** otherwise we will have can'tCallSetState on unmounted component error
+     */
     if (shouldChangeAuthor) {
       return toggle(isOrdered, _id, listId, userId, name).finally(() => {
         setTimeout(
