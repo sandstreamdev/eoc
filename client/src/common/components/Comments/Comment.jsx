@@ -41,13 +41,11 @@ class Comment extends PureComponent {
         <div className="comment__body">
           <span className="comment__author">{authorName}</span>
           <span className="comment__date">{date}</span>
-          <p className="comment__content">
-            <Linkify
-              properties={{ target: '_blank', className: 'comment__link' }}
-            >
-              {text}
-            </Linkify>
-          </p>
+          <Linkify
+            properties={{ target: '_blank', className: 'comment__link' }}
+          >
+            <p className="comment__content">{text}</p>
+          </Linkify>
         </div>
       </div>
     );
