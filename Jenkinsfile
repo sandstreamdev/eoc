@@ -5,34 +5,38 @@ pipeline {
 
   options { disableConcurrentBuilds() }
 
+  environment {
+    TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase()
+    TAG_INIT = "${TAG}-init"
+    TAG_BUILD = "${TAG}-build"
+    TAG_TEST = "${TAG}-test"
+    TAG_TEST_STATIC = "${TAG_TEST}-static"
+  }
+
   stages {
-    stage('Start') {
-        steps {
-            slackSend (color: '#F0E68C', message: "*STARTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}")
-        }
-    }
-    stage('Warmup') {
+    stage('Init') {
       steps {
-        echo 'Warming up...'
-        sh 'docker build --target init -f Dockerfile.ci .'
+        echo 'Init..'
+        slackSend (color: '#F0E68C', message: "*STARTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}")
+        sh 'docker build --target init -t $TAG_INIT -f Dockerfile.ci .'
       }
     }
     stage('QA: static code analysis') {
       steps {
         echo 'Testing static..'
-        sh 'docker build --target test-static -f Dockerfile.ci .'
+        sh 'docker build --target test-static -t $TAG_TEST_STATIC -f Dockerfile.ci .'
       }
     }
     stage('QA: unit tests') {
       steps {
         echo 'Testing..'
-        sh 'docker build --target test -f Dockerfile.ci .'
+        sh 'docker build --target test -t $TAG_TEST -f Dockerfile.ci .'
       }
     }
     stage('Build') {
       steps {
         echo 'Building..'
-        sh 'docker build --target build -f Dockerfile.ci .'
+        sh 'docker build --target build -t $TAG_BUILD -f Dockerfile.ci .'
       }
     }
     stage('Deploy') {
@@ -50,12 +54,6 @@ pipeline {
         sh 'docker-compose up -d'
         sh 'chmod +x init-letsencrypt.sh'
         sh './init-letsencrypt.sh'
-      }
-    }
-    stage('Cleanup Docker') {
-      steps {
-        echo 'Cleaning up...'
-        sh 'docker image prune -a -f'
       }
     }
   }
