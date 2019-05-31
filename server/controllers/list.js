@@ -65,7 +65,7 @@ const createList = (req, resp) => {
 
           return resp.status(status).send();
         }
-        resp.status(400).send();
+        resp.sendStatus(400);
       });
   } else {
     list
@@ -77,7 +77,7 @@ const createList = (req, resp) => {
           .send(responseWithList(list, userId))
       )
       .catch(() => {
-        resp.status(400).send();
+        resp.sendStatus(400);
       });
   }
 };
@@ -97,13 +97,13 @@ const deleteListById = (req, resp) => {
 
       return Comment.deleteMany({ listId }).exec();
     })
-    .then(() => resp.status(200).send())
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status } = err;
         return resp.status(status).send();
       }
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -168,12 +168,12 @@ const getArchivedListsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
       return resp.status(200).json(responseWithListsMetaData(docs, userId));
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const addItemToList = (req, resp) => {
@@ -203,14 +203,14 @@ const addItemToList = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
       const newItem = doc.items.slice(-1)[0];
 
-      return resp.status(200).send(responseWithItem(newItem, userId));
+      return resp.send(responseWithItem(newItem, userId));
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const getListData = (req, resp) => {
@@ -303,7 +303,7 @@ const getListData = (req, resp) => {
         return resp.status(status).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -339,7 +339,7 @@ const voteForItem = (req, resp) => {
         return resp.status(status).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -369,7 +369,7 @@ const clearVote = (req, resp) => {
 
       return list.save();
     })
-    .then(() => resp.status(200).send())
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status } = err;
@@ -377,7 +377,7 @@ const clearVote = (req, resp) => {
         return resp.status(status).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -403,12 +403,12 @@ const updateListById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send();
+      return resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const addToFavourites = (req, resp) => {
@@ -429,12 +429,12 @@ const addToFavourites = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send();
+      return resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeFromFavourites = (req, resp) => {
@@ -455,12 +455,12 @@ const removeFromFavourites = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send();
+      return resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeOwner = (req, resp) => {
@@ -480,12 +480,12 @@ const removeOwner = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send();
+      return resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeMember = (req, resp) => {
@@ -513,12 +513,12 @@ const removeMember = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send();
+      return resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const addOwnerRole = (req, resp) => {
@@ -550,14 +550,14 @@ const addOwnerRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => resp.status(200).send())
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -592,7 +592,7 @@ const removeOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() =>
-      resp.status(200).send({
+      resp.send({
         message: 'User has no owner role.'
       })
     )
@@ -635,14 +635,14 @@ const addMemberRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => resp.status(200).send())
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -683,14 +683,14 @@ const removeMemberRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => resp.status(200).send())
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -836,7 +836,7 @@ const updateListItem = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -879,7 +879,7 @@ const cloneItem = (req, resp) => {
     })
     .then(list => {
       if (!list) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
       const newItem = list.items.slice(-1)[0];
@@ -895,7 +895,7 @@ const cloneItem = (req, resp) => {
         return resp.status(status).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -953,7 +953,7 @@ const changeType = (req, resp) => {
         cohortMembers
       );
 
-      resp.status(200).send({
+      resp.send({
         data: { members, type }
       });
     })
@@ -964,7 +964,7 @@ const changeType = (req, resp) => {
         return resp.status(status).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -984,15 +984,15 @@ const getArchivedItems = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
       const { items } = list;
       const archivedItems = items.filter(item => item.isArchived);
 
-      resp.status(200).send(responseWithItems(userId, archivedItems));
+      resp.send(responseWithItems(userId, archivedItems));
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const deleteItem = (req, resp) => {
@@ -1011,12 +1011,12 @@ const deleteItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      resp.status(200).send();
+      resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = {

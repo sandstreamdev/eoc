@@ -17,6 +17,7 @@ const handleFetchErrors = resp => {
   if (resp.status >= ServerCode.BAD_REQUEST && resp.status < 600) {
     throw new Error();
   }
+
   return resp;
 };
 

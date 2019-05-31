@@ -47,7 +47,7 @@ const addComment = (req, resp) => {
 
         return resp.status(status).send();
       }
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -82,7 +82,7 @@ const getComments = (req, resp) => {
     })
     .then(comments => {
       if (!comments) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
       resp.status(200).json(responseWithComments(comments));
@@ -94,7 +94,7 @@ const getComments = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 

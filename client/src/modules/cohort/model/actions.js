@@ -177,7 +177,7 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        'Failed to fetch cohorts data. Please try again.'
+        'Failed to fetch archived cohorts data. Please try again.'
       );
     });
 
@@ -373,6 +373,6 @@ export const removeOwnerRole = (
         dispatch,
         NotificationType.ERROR,
         err.message ||
-          `Failed to remove owner role from: "${userName}".  Please try again.`
+          `Failed to remove owner role from: "${userName}". Please try again.`
       );
     });

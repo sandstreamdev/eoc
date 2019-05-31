@@ -37,7 +37,7 @@ const createCohort = (req, resp) => {
         .status(201)
         .send(responseWithCohort(doc, userId))
     )
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const getCohortsMetaData = (req, resp) => {
@@ -52,12 +52,12 @@ const getCohortsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send(responseWithCohorts(docs));
+      return resp.send(responseWithCohorts(docs));
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const getArchivedCohortsMetaData = (req, resp) => {
@@ -77,12 +77,12 @@ const getArchivedCohortsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send(responseWithCohorts(docs));
+      return resp.send(responseWithCohorts(docs));
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const updateCohortById = (req, resp) => {
@@ -107,12 +107,12 @@ const updateCohortById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send();
+      return resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const getCohortDetails = (req, resp) => {
@@ -168,7 +168,7 @@ const getCohortDetails = (req, resp) => {
         return resp.status(404).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -198,7 +198,7 @@ const deleteCohortById = (req, resp) => {
     })
     .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
     .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
-    .then(() => resp.status(200).send())
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof NotFoundException) {
         const { status } = err;
@@ -206,7 +206,7 @@ const deleteCohortById = (req, resp) => {
         return resp.status(status).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -244,7 +244,7 @@ const removeMember = (req, resp) => {
         { $pull: { viewersIds: userId } }
       ).exec();
     })
-    .then(() => resp.status(200).send())
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status } = err;
@@ -252,7 +252,7 @@ const removeMember = (req, resp) => {
         return resp.status(status).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -275,12 +275,12 @@ const addOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send();
+      return resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeOwnerRole = (req, resp) => {
@@ -313,11 +313,7 @@ const removeOwnerRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: 'User has no owner role.'
-      })
-    )
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status } = err;
@@ -325,7 +321,7 @@ const removeOwnerRole = (req, resp) => {
         return resp.status(status).send();
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
@@ -409,7 +405,7 @@ const addMember = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send();
+      resp.sendStatus(400);
     });
 };
 
