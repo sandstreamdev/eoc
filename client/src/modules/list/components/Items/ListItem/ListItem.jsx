@@ -28,6 +28,7 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import { ITEM_TOGGLE_TIME } from './constants';
+import { noOp } from 'common/utils/noOp';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -64,12 +65,9 @@ class ListItem extends PureComponent {
       },
       toggle
     } = this.props;
-    const { isToggleInProgress } = this.state;
     const isNotSameAuthor = authorId !== userId;
 
-    this.setState({ isToggleInProgress: true });
-
-    if (!isMember || isToggleInProgress) {
+    if (!isMember) {
       return;
     }
 
@@ -81,20 +79,24 @@ class ListItem extends PureComponent {
      ** otherwise we will have can'tCallSetState on unmounted component error
      */
     if (shouldChangeAuthor) {
-      return toggle(isOrdered, _id, listId, userId, name).finally(() => {
+      return toggle(isOrdered, _id, listId, userId, name)
+        .finally(() => {
+          setTimeout(
+            () => this.setState({ disableToggleButton: false }),
+            ITEM_TOGGLE_TIME - 100
+          );
+        })
+        .catch(() => noOp());
+    }
+
+    toggle(isOrdered, _id, listId)
+      .finally(() => {
         setTimeout(
           () => this.setState({ disableToggleButton: false }),
           ITEM_TOGGLE_TIME - 100
         );
-      });
-    }
-
-    toggle(isOrdered, _id, listId).finally(() => {
-      setTimeout(
-        () => this.setState({ disableToggleButton: false }),
-        ITEM_TOGGLE_TIME - 100
-      );
-    });
+      })
+      .catch(() => noOp());
   };
 
   handleDetailsVisibility = () =>
