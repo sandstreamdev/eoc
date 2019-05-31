@@ -228,7 +228,6 @@ class ListItem extends PureComponent {
         <ListItemDescription
           description={description}
           disabled={isFieldDisabled}
-          isOrdered={isOrdered}
           itemId={itemId}
           name={name}
         />

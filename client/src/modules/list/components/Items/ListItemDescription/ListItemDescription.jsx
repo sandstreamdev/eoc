@@ -28,28 +28,29 @@ class ListItemDescription extends PureComponent {
     const trimmedDescription = description.trim();
 
     this.state = {
-      areDescriptionUpdated: false,
+      isDescriptionUpdated: false,
       descriptionInputValue: trimmedDescription,
-      isEdited: false,
+      isDescriptionEdited: false,
       isFocused: false,
       pending: false
     };
+
     this.descriptionTextarea = React.createRef();
   }
 
   componentDidUpdate(prevProps, prevState) {
     this.checkIfDescriptionUpdated();
-    const { isEdited: prevIsEdited } = prevState;
-    const { isEdited } = this.state;
+    const { isDescriptionEdited: previousIsDescriptionEdited } = prevState;
+    const { isDescriptionEdited } = this.state;
 
-    if (!prevIsEdited && isEdited) {
+    if (!previousIsDescriptionEdited && isDescriptionEdited) {
       this.descriptionTextarea.current.focus();
       this.handleFocus();
       document.addEventListener('keydown', this.handleKeyPress);
       document.addEventListener('mousedown', this.handleClickOutside);
     }
 
-    if (prevIsEdited && !isEdited) {
+    if (previousIsDescriptionEdited && !isDescriptionEdited) {
       document.removeEventListener('keydown', this.handleKeyPress);
       document.removeEventListener('mousedown', this.handleClickOutside);
     }
@@ -73,9 +74,7 @@ class ListItemDescription extends PureComponent {
     }
   };
 
-  handleFocus = () => {
-    this.setState({ isFocused: true });
-  };
+  handleFocus = () => this.setState({ isFocused: true });
 
   handleBlur = () => this.setState({ isFocused: false });
 
@@ -91,30 +90,17 @@ class ListItemDescription extends PureComponent {
   };
 
   handleStartEditing = () => {
-    this.setState({ isEdited: true });
+    this.setState({ isDescriptionEdited: true });
   };
 
   handleStopEditing = () => {
-    this.setState({ isEdited: false });
+    this.setState({ isDescriptionEdited: false });
   };
 
   handleDescriptionVisibility = () =>
     this.setState(({ isDescriptionVisible }) => ({
       isDescriptionVisible: !isDescriptionVisible
     }));
-
-  checkIfDescriptionUpdated = () => {
-    const { description: previousDescription } = this.props;
-
-    const { descriptionInputValue } = this.state;
-
-    const isDescriptionUpdated = !_isEqual(
-      _trim(previousDescription),
-      _trim(descriptionInputValue)
-    );
-
-    this.setState({ areDescriptionUpdated: isDescriptionUpdated });
-  };
 
   handleDescriptionUpdate = () => {
     const { descriptionInputValue: description } = this.state;
@@ -159,6 +145,101 @@ class ListItemDescription extends PureComponent {
     }
   };
 
+  checkIfDescriptionUpdated = () => {
+    const { description: previousDescription } = this.props;
+
+    const { descriptionInputValue } = this.state;
+
+    const isDescriptionUpdated = !_isEqual(
+      _trim(previousDescription),
+      _trim(descriptionInputValue)
+    );
+
+    this.setState({ isDescriptionUpdated });
+  };
+
+  renderSaveButton = () => {
+    const { disabled } = this.props;
+    const { pending } = this.state;
+
+    return (
+      <div className="list-item-description__save-button">
+        <button
+          className="primary-button"
+          disabled={disabled || pending}
+          onClick={this.handleDescriptionUpdate}
+          type="button"
+        >
+          Save
+          {pending && (
+            <Preloader
+              size={PreloaderSize.SMALL}
+              theme={PreloaderTheme.LIGHT}
+            />
+          )}
+        </button>
+      </div>
+    );
+  };
+
+  renderDescription = () => {
+    const { description, disabled } = this.props;
+    const { pending } = this.state;
+
+    return (
+      <Linkify
+        properties={{
+          target: '_blank',
+          className: 'list-item-description__link'
+        }}
+      >
+        <div
+          className={classNames('list-item-description__description', {
+            'list-item-description__description--disabled': disabled || pending
+          })}
+        >
+          {description}
+        </div>
+      </Linkify>
+    );
+  };
+
+  renderAddButton = () => {
+    const { disabled } = this.props;
+
+    return (
+      <button
+        className="list-item-description__add-button"
+        disabled={disabled}
+        onClick={this.handleStartEditing}
+        type="button"
+      >
+        Add Description
+      </button>
+    );
+  };
+
+  renderTextarea = () => {
+    const { descriptionInputValue, pending } = this.state;
+    const { disabled } = this.props;
+
+    return (
+      <Textarea
+        className="list-item-description__edit-field"
+        disabled={disabled || pending}
+        maxRows={5}
+        minRows={1}
+        name="description"
+        onChange={disabled ? null : this.handleDescriptionChange}
+        onBlur={this.handleBlur}
+        onFocus={this.handleFocus}
+        inputRef={this.descriptionTextarea}
+        type="text"
+        value={descriptionInputValue}
+      />
+    );
+  };
+
   handleDescriptionChange = event => {
     const {
       target: { value }
@@ -168,85 +249,27 @@ class ListItemDescription extends PureComponent {
   };
 
   render() {
-    const {
-      areDescriptionUpdated,
-      descriptionInputValue,
-      isEdited,
-      pending
-    } = this.state;
+    const { isDescriptionUpdated, isDescriptionEdited } = this.state;
     const { description, disabled } = this.props;
+
+    const isSaveButtonVisible = isDescriptionUpdated && !disabled;
+    const isTitleVisible = description || isDescriptionEdited;
 
     return (
       <Fragment>
         <div onClick={disabled ? null : this.handleStartEditing}>
-          {(description || isEdited) && (
+          {isTitleVisible && (
             <h2 className="list-item-description__title">Description</h2>
           )}
-          {isEdited ? (
-            <Textarea
-              className="list-item-description__edit-field"
-              disabled={disabled || pending}
-              maxRows={5}
-              minRows={1}
-              name="description"
-              onChange={disabled ? null : this.handleDescriptionChange}
-              onBlur={this.handleBlur}
-              onFocus={this.handleFocus}
-              inputRef={this.descriptionTextarea}
-              type="text"
-              value={descriptionInputValue}
-            />
+          {isDescriptionEdited ? (
+            this.renderTextarea()
           ) : (
             <Fragment>
-              {description ? (
-                <Linkify
-                  properties={{
-                    target: '_blank',
-                    className: 'list-item-description__link'
-                  }}
-                >
-                  <div
-                    className={classNames(
-                      'list-item-description__description',
-                      {
-                        'list-item-description__description--disabled': disabled
-                      }
-                    )}
-                  >
-                    {description}
-                  </div>
-                </Linkify>
-              ) : (
-                <button
-                  className="list-item-description__add-button"
-                  disabled={disabled}
-                  onClick={this.handleStartEditing}
-                  type="button"
-                >
-                  Add Description
-                </button>
-              )}
+              {description ? this.renderDescription() : this.renderAddButton()}
             </Fragment>
           )}
         </div>
-        {areDescriptionUpdated && !disabled && (
-          <div className="list-item-description__save-button">
-            <button
-              className="primary-button"
-              disabled={disabled || pending}
-              onClick={this.handleDescriptionUpdate}
-              type="button"
-            >
-              Save
-              {pending && (
-                <Preloader
-                  size={PreloaderSize.SMALL}
-                  theme={PreloaderTheme.LIGHT}
-                />
-              )}
-            </button>
-          </div>
-        )}
+        {isSaveButtonVisible && this.renderSaveButton()}
       </Fragment>
     );
   }
@@ -255,7 +278,6 @@ class ListItemDescription extends PureComponent {
 ListItemDescription.propTypes = {
   description: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
-  isOrdered: PropTypes.bool,
   itemId: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
