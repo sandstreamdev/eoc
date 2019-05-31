@@ -188,6 +188,10 @@
         cursor: not-allowed;
       }
     }
+
+    &--pending {
+      cursor: not-allowed;
+    }
   }
 
   &__info {

@@ -27,6 +27,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
+import { ITEM_TOGGLE_TIME } from './constants';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -39,6 +40,7 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       areFieldsUpdated: false,
+      disableToggleButton: false,
       done: isOrdered,
       isNameEdited: false,
       isConfirmationVisible: false,
@@ -62,19 +64,34 @@ class ListItem extends PureComponent {
       },
       toggle
     } = this.props;
+    const { isToggleInProgress } = this.state;
     const isNotSameAuthor = authorId !== userId;
 
-    if (!isMember) {
+    this.setState({ isToggleInProgress: true });
+
+    if (!isMember || isToggleInProgress) {
       return;
     }
 
-    this.setState(({ done }) => ({ done: !done }));
+    this.setState(({ done }) => ({ done: !done, disableToggleButton: true }));
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
-    return shouldChangeAuthor
-      ? toggle(isOrdered, _id, listId, userId, name)
-      : toggle(isOrdered, _id, listId);
+    if (shouldChangeAuthor) {
+      return toggle(isOrdered, _id, listId, userId, name).finally(() => {
+        setTimeout(
+          () => this.setState({ disableToggleButton: false }),
+          ITEM_TOGGLE_TIME - 100
+        );
+      });
+    }
+
+    toggle(isOrdered, _id, listId).finally(() => {
+      setTimeout(
+        () => this.setState({ disableToggleButton: false }),
+        ITEM_TOGGLE_TIME - 100
+      );
+    });
   };
 
   handleDetailsVisibility = () =>
@@ -345,7 +362,12 @@ class ListItem extends PureComponent {
       data: { isOrdered, authorName, _id, name },
       isMember
     } = this.props;
-    const { areDetailsVisible, done, isNameEdited } = this.state;
+    const {
+      areDetailsVisible,
+      done,
+      isNameEdited,
+      disableToggleButton
+    } = this.state;
 
     return (
       <li
@@ -386,7 +408,7 @@ class ListItem extends PureComponent {
             <div className="list-item__toggle">
               <PendingButton
                 className="list-item__icon"
-                disabled={!isMember}
+                disabled={disableToggleButton || !isMember}
                 onClick={this.handleItemToggling}
               />
             </div>
