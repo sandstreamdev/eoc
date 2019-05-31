@@ -208,7 +208,7 @@ const lists = (state = {}, action) => {
     case ItemActionTypes.RESTORE_SUCCESS:
     case ItemActionTypes.SET_VOTE_SUCCESS:
     case ItemActionTypes.TOGGLE_SUCCESS:
-    case ItemActionTypes.UPDATE_DETAILS_SUCCESS:
+    case ItemActionTypes.UPDATE_SUCCESS:
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {

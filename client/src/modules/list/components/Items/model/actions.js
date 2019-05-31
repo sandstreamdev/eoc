@@ -49,12 +49,12 @@ const clearVoteFailure = errMessage => ({
 });
 
 const updateListItemSuccess = (listId, itemId, data) => ({
-  type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
+  type: ItemActionTypes.UPDATE_SUCCESS,
   payload: { listId, itemId, data }
 });
 
 const updateListItemFailure = () => ({
-  type: ItemActionTypes.UPDATE_DETAILS_FAILURE
+  type: ItemActionTypes.UPDATE_FAILURE
 });
 
 const cloneItemSuccess = (listId, item) => ({
@@ -197,26 +197,25 @@ export const clearVote = (itemId, listId) => dispatch =>
       );
     });
 
-export const updateListItem = (listId, itemId, data) => dispatch =>
+export const updateListItem = (listId, itemId, data, name) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(updateListItemSuccess(listId, itemId, data));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Item details updated successfully.'
+        `Item "${name}" successfully updated.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(updateListItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Updating "${name}" item failed. Please try again.`
       );
     });
 
