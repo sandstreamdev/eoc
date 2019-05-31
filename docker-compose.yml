@@ -39,7 +39,7 @@ services:
       - eoc-landing
     command: "/bin/sh -c 'while :; do sleep 24h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   mongo:
-    container_name: mongo_container
+    container_name: eoc_mongo_container
     image: mongo
     restart: always
     volumes:
@@ -47,6 +47,7 @@ services:
     ports:
       - '27017'
   certbot:
+    container_name: eoc_certbot_container
     image: certbot/certbot
     restart: unless-stopped
     volumes:
