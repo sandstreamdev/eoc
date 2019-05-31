@@ -9,7 +9,7 @@ import {
 import { ListActionTypes } from './actionTypes';
 import {
   MessageType as NotificationType,
-  ServerCode
+  ResponseStatusCode
 } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
@@ -379,7 +379,7 @@ export const addListViewer = (listId, email) => dispatch =>
     email
   })
     .then(resp => {
-      if (resp.status === ServerCode.OK) {
+      if (resp.status === ResponseStatusCode.OK) {
         return resp.json();
       }
     })

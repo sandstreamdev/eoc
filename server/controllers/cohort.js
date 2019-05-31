@@ -134,7 +134,7 @@ const getCohortDetails = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new NotFoundException();
+        return resp.sendStatus(400);
       }
 
       const {
