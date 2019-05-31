@@ -348,7 +348,6 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
       );
     });
 
-/* TODO: Start here */
 export const removeOwnerRole = (
   cohortId,
   userId,
@@ -358,8 +357,7 @@ export const removeOwnerRole = (
   patchData(`/api/cohorts/${cohortId}/remove-owner-role`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(
         removeOwnerRoleSuccess(cohortId, userId, isCurrentUserRoleChanging)
       );
@@ -374,6 +372,6 @@ export const removeOwnerRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        err.message || `Failed to remove owner role from: "${userName}".`
       );
     });

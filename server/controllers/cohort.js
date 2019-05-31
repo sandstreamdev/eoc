@@ -283,7 +283,6 @@ const addOwnerRole = (req, resp) => {
     .catch(() => resp.status(400).send());
 };
 
-/* TODO: start here */
 const removeOwnerRole = (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
@@ -299,7 +298,7 @@ const removeOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't remove owner role.");
+        throw new BadRequestException();
       }
 
       const { name, ownerIds } = doc;
@@ -321,12 +320,12 @@ const removeOwnerRole = (req, resp) => {
     )
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { status } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(status).send();
       }
 
-      resp.status(400).send({ message: 'Cohort data not found.' });
+      resp.status(400).send();
     });
 };
 
