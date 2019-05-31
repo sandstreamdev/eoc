@@ -2,7 +2,6 @@ const itemsMock = [
   {
     description: '',
     isOrdered: false,
-    link: '',
     voterIds: [],
     _id: { $oid: '5ccd61134663533f995b1756' },
     authorId: {
@@ -17,7 +16,6 @@ const itemsMock = [
   {
     description: '',
     isOrdered: false,
-    link: '',
     voterIds: [],
     _id: { $oid: '5ccd61174663533f995b1758' },
     authorId: {
@@ -32,7 +30,6 @@ const itemsMock = [
   {
     description: '',
     isOrdered: false,
-    link: '',
     voterIds: [],
     _id: { $oid: '5ccd611a4663533f995b175a' },
     authorId: {
@@ -47,7 +44,6 @@ const itemsMock = [
   {
     description: '',
     isOrdered: false,
-    link: '',
     voterIds: [],
     _id: { $oid: '5ccd611e4663533f995b175c' },
     authorId: '5c9dc5a619ae7924074940f4',
@@ -66,7 +62,6 @@ const expectedItemProperties = [
   'description',
   'isArchived',
   'isOrdered',
-  'link',
   'name',
   'updatedAt'
 ];

@@ -15,7 +15,6 @@ const generateLists = cohortId => [
         authorName: 'Adam',
         description: '',
         isOrdered: true,
-        link: '',
         name: 'item 1',
         voterIds: []
       },
@@ -25,7 +24,6 @@ const generateLists = cohortId => [
         authorName: 'Adam',
         description: '',
         isOrdered: false,
-        link: '',
         name: 'item 2',
         voterIds: []
       },
@@ -35,7 +33,6 @@ const generateLists = cohortId => [
         authorName: 'Adam',
         description: '',
         isOrdered: false,
-        link: '',
         name: 'item 3',
         voterIds: [userId]
       }
