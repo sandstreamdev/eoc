@@ -60,13 +60,6 @@ pipeline {
         sh './init-letsencrypt.sh'
       }
     }
-    stage('Cleanup Docker') {
-      when { branch 'master' }
-      steps {
-        echo 'Cleaning up...'
-        sh 'docker system prune -a -f'
-      }
-    }
   }
 
   post {
