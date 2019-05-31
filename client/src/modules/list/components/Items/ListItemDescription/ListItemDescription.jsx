@@ -46,13 +46,10 @@ class ListItemDescription extends PureComponent {
     if (!previousIsDescriptionEdited && isDescriptionEdited) {
       this.descriptionTextarea.current.focus();
       this.handleFocus();
-      document.addEventListener('keydown', this.handleKeyPress);
-      document.addEventListener('mousedown', this.handleClickOutside);
     }
 
     if (previousIsDescriptionEdited && !isDescriptionEdited) {
-      document.removeEventListener('keydown', this.handleKeyPress);
-      document.removeEventListener('mousedown', this.handleClickOutside);
+      this.handleBlur();
     }
   }
 
@@ -60,9 +57,6 @@ class ListItemDescription extends PureComponent {
     if (this.pendingPromise) {
       this.pendingPromise.abort();
     }
-
-    document.removeEventListener('keydown', this.handleKeyPress);
-    document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   handleKeyPress = event => {
@@ -70,23 +64,19 @@ class ListItemDescription extends PureComponent {
     const { isFocused } = this.state;
 
     if (isFocused && code === KeyCodes.ESCAPE) {
-      this.handleDescriptionUpdate();
+      this.handleBlur();
     }
   };
 
-  handleFocus = () => this.setState({ isFocused: true });
+  handleFocus = () => {
+    this.setState({ isFocused: true });
+    document.addEventListener('keydown', this.handleKeyPress);
+  };
 
-  handleBlur = () => this.setState({ isFocused: false });
-
-  handleClickOutside = event => {
-    const { target } = event;
-
-    if (
-      this.descriptionTextarea &&
-      !this.descriptionTextarea.current.contains(target)
-    ) {
-      this.handleDescriptionUpdate();
-    }
+  handleBlur = () => {
+    this.setState({ isFocused: false });
+    document.removeEventListener('keydown', this.handleKeyPress);
+    this.handleDescriptionUpdate();
   };
 
   handleStartEditing = () => {
