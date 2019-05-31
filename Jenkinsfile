@@ -14,14 +14,10 @@ pipeline {
   }
 
   stages {
-    stage('Start') {
-        steps {
-            slackSend (color: '#F0E68C', message: "*STARTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}")
-        }
-    }
-    stage('Warmup') {
+    stage('Init') {
       steps {
-        echo 'Warming up...'
+        echo 'Init..'
+        slackSend (color: '#F0E68C', message: "*STARTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}")
         sh 'docker build --target init -t $TAG_INIT -f Dockerfile.ci .'
       }
     }
