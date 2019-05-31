@@ -58,14 +58,16 @@ class ListItemName extends PureComponent {
     if (canBeUpdated && isNameUpdated) {
       this.setState({ pending: true });
 
-      updateListItem(listId, itemId, { name: updatedName }).finally(() => {
-        this.setState({
-          pending: false,
-          isTipVisible: false
-        });
+      updateListItem(listId, itemId, { name: updatedName }, name).finally(
+        () => {
+          this.setState({
+            pending: false,
+            isTipVisible: false
+          });
 
-        this.handleNameInputBlur();
-      });
+          this.handleNameInputBlur();
+        }
+      );
     }
 
     if (!canBeUpdated) {

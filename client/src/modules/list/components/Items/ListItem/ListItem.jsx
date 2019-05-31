@@ -3,53 +3,38 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import _isEmpty from 'lodash/isEmpty';
-import _trim from 'lodash/trim';
-import _isEqual from 'lodash/isEqual';
-import isURL from 'validator/lib/isURL';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
-import Textarea from 'common/components/Forms/Textarea';
-import TextInput from 'common/components/Forms/TextInput';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
   archiveItem,
   clearVote,
   cloneItem,
   setVote,
-  toggle,
-  updateListItem
+  toggle
 } from '../model/actions';
-import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
+import ListItemDescription from '../ListItemDescription';
 
 class ListItem extends PureComponent {
   constructor(props) {
     super(props);
 
     const {
-      data: { isOrdered, description, link }
+      data: { isOrdered }
     } = this.props;
 
     this.state = {
       areDetailsVisible: false,
-      areFieldsUpdated: false,
       done: isOrdered,
       isNameEdited: false,
-      isConfirmationVisible: false,
-      isValidationErrorVisible: false,
-      itemDescription: description,
-      link
+      isConfirmationVisible: false
     };
-  }
-
-  componentDidUpdate() {
-    this.checkIfFieldsUpdated();
   }
 
   handleItemToggling = () => {
@@ -82,57 +67,6 @@ class ListItem extends PureComponent {
       areDetailsVisible: !areDetailsVisible
     }));
 
-  handleDataUpdate = () => {
-    const { itemDescription: description, link } = this.state;
-    const {
-      data: {
-        _id: itemId,
-        description: previousDescription,
-        link: previousLink
-      },
-      isMember,
-      match: {
-        params: { id: listId }
-      },
-      updateListItem
-    } = this.props;
-
-    if (!isMember) {
-      return;
-    }
-
-    const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
-    const isDescriptionUpdated = !_isEqual(
-      _trim(previousDescription),
-      _trim(description)
-    );
-
-    const canBeUpdated = isURL(link) || _isEmpty(_trim(link));
-
-    if (!canBeUpdated) {
-      return this.setState({ isValidationErrorVisible: true });
-    }
-
-    if (isLinkUpdated || isDescriptionUpdated) {
-      return updateListItem(listId, itemId, { description, link });
-    }
-  };
-
-  checkIfFieldsUpdated = () => {
-    const {
-      data: { description: previousDescription, link: previousLink }
-    } = this.props;
-    const { itemDescription, link } = this.state;
-
-    const isLinkUpdated = !_isEqual(_trim(previousLink), _trim(link));
-    const isDescriptionUpdated = !_isEqual(
-      _trim(previousDescription),
-      _trim(itemDescription)
-    );
-
-    this.setState({ areFieldsUpdated: isLinkUpdated || isDescriptionUpdated });
-  };
-
   handleItemCloning = () => {
     const {
       cloneItem,
@@ -162,11 +96,6 @@ class ListItem extends PureComponent {
 
     return action(_id, listId);
   };
-
-  handleItemLink = value =>
-    this.setState({ link: value, isValidationErrorVisible: false });
-
-  handleItemDescription = value => this.setState({ itemDescription: value });
 
   handleConfirmationVisibility = () =>
     this.setState(({ isConfirmationVisible }) => ({
@@ -283,51 +212,39 @@ class ListItem extends PureComponent {
     );
   };
 
-  renderDetails = () => {
-    const { areFieldsUpdated, isValidationErrorVisible } = this.state;
+  renderDescription = () => {
     const {
-      data: { _id: itemId, comments, description, isOrdered, link },
+      data: { _id: itemId, description, isOrdered, name },
       isMember
     } = this.props;
-    const isFieldDisabled = !isMember;
+    const isFieldDisabled = !isMember || isOrdered;
+
+    if (!description && (isOrdered || !isMember)) {
+      return;
+    }
+
+    return (
+      <div className="list-item__description">
+        <ListItemDescription
+          description={description}
+          disabled={isFieldDisabled}
+          isOrdered={isOrdered}
+          itemId={itemId}
+          name={name}
+        />
+      </div>
+    );
+  };
+
+  renderDetails = () => {
+    const {
+      data: { _id: itemId, comments, isOrdered },
+      isMember
+    } = this.props;
 
     return (
       <Fragment>
-        <div className="list-item__info">
-          <div className="list-item__info-textarea">
-            <Textarea
-              disabled={isFieldDisabled}
-              initialValue={description}
-              onChange={isMember ? this.handleItemDescription : null}
-              placeholder="Description"
-            />
-          </div>
-          <div className="list-item__info-link">
-            <TextInput
-              disabled={isFieldDisabled}
-              initialValue={link}
-              onChange={isMember ? this.handleItemLink : null}
-              placeholder="Link"
-            />
-            {isValidationErrorVisible && (
-              <div className="list-item__validation-error">
-                <ErrorMessage message="Incorrect url." />
-              </div>
-            )}
-          </div>
-          {areFieldsUpdated && isMember && (
-            <div className="list-item__save-details">
-              <PendingButton
-                className="primary-button"
-                disabled={isValidationErrorVisible || !isMember}
-                onClick={this.handleDataUpdate}
-                preloaderTheme={PreloaderTheme.LIGHT}
-              >
-                Save
-              </PendingButton>
-            </div>
-          )}
-        </div>
+        {this.renderDescription()}
         {isMember && this.renderItemFeatures()}
         <div className="list-item__comments">
           <CommentsList
@@ -417,8 +334,7 @@ ListItem.propTypes = {
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired,
-  updateListItem: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -428,6 +344,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { archiveItem, clearVote, cloneItem, setVote, toggle, updateListItem }
+    { archiveItem, clearVote, cloneItem, setVote, toggle }
   )(ListItem)
 );
