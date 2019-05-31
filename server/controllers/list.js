@@ -658,7 +658,7 @@ const removeMemberRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't remove member role");
+        throw new BadRequestException();
       }
 
       const { memberIds, name, ownerIds } = doc;
@@ -690,7 +690,7 @@ const removeMemberRole = (req, resp) => {
         return resp.status(status).send({ message });
       }
 
-      resp.status(400).send({ message: 'Sack data not found' });
+      resp.status(400).send();
     });
 };
 

@@ -370,7 +370,7 @@ export const removeListFromFavourites = (listId, listName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to remove sack: "${listName}" from favourites.`
+        `Failed to remove sack: "${listName}" from favourites. Please try again.`
       );
     });
 
@@ -430,7 +430,7 @@ export const removeListMember = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to remove "${userName}".`
+        `Failed to remove "${userName}". Please try again.`
       );
     });
 };
@@ -452,7 +452,7 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to add: "${userName}" owner role.`
+        `Failed to add owner role for: "${userName}". Please try again.`
       );
     });
 
@@ -480,7 +480,8 @@ export const removeOwnerRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || `Failed to remove: "${userName}" from owners.`
+        err.message ||
+          `Failed to remove owner role from: "${userName}". Please try again.`
       );
     });
 
@@ -506,7 +507,7 @@ export const addMemberRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to add: "${userName}" as member.`
+        `Failed to add: "${userName}" as member. Please try again.`
       );
     });
 
@@ -532,7 +533,8 @@ export const removeMemberRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        err.message ||
+          `Failed to remove owner role from: "${userName}". Please try again.`
       );
     });
 
@@ -554,6 +556,6 @@ export const changeType = (listId, listName, type) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to change: "${listName}" type.`
+        `Failed to change: "${listName}" type. Please try again.`
       );
     });
