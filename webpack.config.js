@@ -35,6 +35,7 @@ module.exports = {
         use: [
           'style-loader', // creates style nodes from JS strings
           'css-loader', // translates CSS into CommonJS
+          'postcss-loader', // for autoprefixer use
           'sass-loader' // compiles Sass to CSS, using Node Sass by default
         ]
       },
