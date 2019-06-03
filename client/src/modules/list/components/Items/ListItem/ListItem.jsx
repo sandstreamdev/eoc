@@ -27,8 +27,6 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
-import { ITEM_TOGGLE_TIME } from './constants';
-import { noOp } from 'common/utils/noOp';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -75,28 +73,11 @@ class ListItem extends PureComponent {
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
-    /* setState method has to be called 100ms after toggle action is resolved
-     ** otherwise we will have can'tCallSetState on unmounted component error
-     */
     if (shouldChangeAuthor) {
-      return toggle(isOrdered, _id, listId, userId, name)
-        .finally(() => {
-          setTimeout(
-            () => this.setState({ disableToggleButton: false }),
-            ITEM_TOGGLE_TIME - 100
-          );
-        })
-        .catch(() => noOp());
+      return toggle(isOrdered, _id, listId, userId, name);
     }
 
-    toggle(isOrdered, _id, listId)
-      .finally(() => {
-        setTimeout(
-          () => this.setState({ disableToggleButton: false }),
-          ITEM_TOGGLE_TIME - 100
-        );
-      })
-      .catch(() => noOp());
+    toggle(isOrdered, _id, listId);
   };
 
   handleDetailsVisibility = () =>
