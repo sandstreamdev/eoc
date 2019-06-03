@@ -30,7 +30,7 @@ class ListItemDescription extends PureComponent {
     this.state = {
       isDescriptionUpdated: false,
       descriptionInputValue: trimmedDescription,
-      isDescriptionEdited: false,
+      isTextareaVisible: false,
       isFocused: false,
       pending: false
     };
@@ -40,15 +40,15 @@ class ListItemDescription extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     this.isDescriptionUpdated();
-    const { isDescriptionEdited: isPreviousDescriptionEdited } = prevState;
-    const { isDescriptionEdited } = this.state;
+    const { isTextareaVisible: previousIsTextareaVisible } = prevState;
+    const { isTextareaVisible } = this.state;
 
-    if (!isPreviousDescriptionEdited && isDescriptionEdited) {
+    if (!previousIsTextareaVisible && isTextareaVisible) {
       this.descriptionTextarea.current.focus();
       this.handleFocus();
     }
 
-    if (isPreviousDescriptionEdited && !isDescriptionEdited) {
+    if (previousIsTextareaVisible && !isTextareaVisible) {
       this.handleBlur();
     }
   }
@@ -79,9 +79,9 @@ class ListItemDescription extends PureComponent {
     this.handleDescriptionUpdate();
   };
 
-  handleStartEditing = () => this.setState({ isDescriptionEdited: true });
+  handleShowTextarea = () => this.setState({ isTextareaVisible: true });
 
-  handleStopEditing = () => this.setState({ isDescriptionEdited: false });
+  handleHideTextarea = () => this.setState({ isTextareaVisible: false });
 
   handleDescriptionVisibility = () =>
     this.setState(({ isDescriptionVisible }) => ({
@@ -116,7 +116,7 @@ class ListItemDescription extends PureComponent {
       this.pendingPromise.promise
         .then(() => {
           this.setState({ pending: false });
-          this.handleStopEditing();
+          this.handleHideTextarea();
         })
         .catch(err => {
           if (!(err instanceof AbortPromiseException)) {
@@ -124,7 +124,7 @@ class ListItemDescription extends PureComponent {
           }
         });
     } else {
-      this.handleStopEditing();
+      this.handleHideTextarea();
     }
   };
 
@@ -193,7 +193,7 @@ class ListItemDescription extends PureComponent {
       <button
         className="list-item-description__add-button"
         disabled={disabled}
-        onClick={this.handleStartEditing}
+        onClick={this.handleShowTextarea}
         type="button"
       >
         Add Description
@@ -231,19 +231,19 @@ class ListItemDescription extends PureComponent {
   };
 
   render() {
-    const { isDescriptionUpdated, isDescriptionEdited } = this.state;
+    const { isDescriptionUpdated, isTextareaVisible } = this.state;
     const { description, disabled } = this.props;
 
     const isSaveButtonVisible = isDescriptionUpdated && !disabled;
-    const isTitleVisible = description || isDescriptionEdited;
+    const isTitleVisible = description || isTextareaVisible;
 
     return (
       <Fragment>
-        <div onClick={disabled ? null : this.handleStartEditing}>
+        <div onClick={disabled ? null : this.handleShowTextarea}>
           {isTitleVisible && (
             <h2 className="list-item-description__title">Description</h2>
           )}
-          {isDescriptionEdited ? (
+          {isTextareaVisible ? (
             this.renderTextarea()
           ) : (
             <Fragment>
