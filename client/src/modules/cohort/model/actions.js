@@ -216,7 +216,7 @@ export const deleteCohort = (cohortId, cohortName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed while deleting cohort: "${cohortName}". Please try again.`
+        `Failed to delete cohort: "${cohortName}". Please try again.`
       );
       throw err;
     });
@@ -233,12 +233,12 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
         `Cohort: "${cohortName}" was successfully archived!`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(archiveCohortFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed while archiving cohort: "${cohortName}". Please try again.`
+        `Failed to archive cohort: "${cohortName}". Please try again.`
       );
     });
 

@@ -221,7 +221,7 @@ const getListData = (req, resp) => {
   const sanitizedListId = sanitize(listId);
 
   if (!isValidMongoId(listId)) {
-    return resp.status(404).send();
+    return resp.sendStatus(404);
   }
 
   let list;
@@ -332,7 +332,7 @@ const voteForItem = (req, resp) => {
 
       return list.save();
     })
-    .then(() => resp.status(200).json())
+    .then(() => resp.sendStatus(200))
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status } = err;
@@ -755,7 +755,7 @@ const addViewer = (req, resp) => {
         return resp.status(200).json(userToSend);
       }
 
-      resp.status(200).send({ _id: null });
+      resp.send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -828,7 +828,7 @@ const updateListItem = (req, resp) => {
 
       return list.save();
     })
-    .then(() => resp.status(200).json())
+    .then(() => resp.sendStatus(200))
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;

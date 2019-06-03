@@ -122,7 +122,7 @@ const getCohortDetails = (req, resp) => {
   } = req;
 
   if (!isValidMongoId(cohortId)) {
-    return resp.status(404).send();
+    return resp.sendStatus(404);
   }
 
   Cohort.findOne({
@@ -163,13 +163,9 @@ const getCohortDetails = (req, resp) => {
         name
       });
     })
-    .catch(err => {
-      if (err instanceof NotFoundException) {
-        return resp.status(404).send();
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err =>
+      resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
+    );
 };
 
 const deleteCohortById = (req, resp) => {

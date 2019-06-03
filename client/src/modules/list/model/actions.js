@@ -203,7 +203,7 @@ export const createList = data => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Creating sack "${data.name}" failed. Please try again.`
+        `Failed to create sack: "${data.name}". Please try again.`
       );
     });
 
@@ -223,7 +223,7 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        'Fetching sacks failed. Please try again.'
+        'Failed to fetch sacks. Please try again.'
       );
     });
 };
@@ -244,7 +244,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        'Fetching archived sacks failed. Please try again.'
+        'Failed to fetch archived sacks. Please try again.'
       );
     });
 };
@@ -265,7 +265,7 @@ export const deleteList = (id, listName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Deleting sack: "${listName}" failed. Please try again.`
+        `Failed to delete sack: "${listName}". Please try again.`
       );
       throw new Error();
     });
@@ -285,7 +285,7 @@ export const updateList = (listId, data, listName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Updating sack: "${listName}" failed. Please try again.`
+        `Failed to update sack: "${listName}". Please try again.`
       );
     });
 
@@ -306,7 +306,7 @@ export const archiveList = (listId, listName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Archiving sack: "${listName}" failed. Please try again.`
+        `Failed to archive sack: "${listName}". Please try again.`
       );
     });
 
@@ -329,7 +329,7 @@ export const restoreList = (listId, listName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Restoring sack: "${listName}" failed. Please try again.`
+        `Failed to restore sack: "${listName}". Please try again.`
       );
     });
 
