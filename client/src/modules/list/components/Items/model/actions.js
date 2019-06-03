@@ -215,7 +215,7 @@ export const updateListItem = (listId, itemId, data, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Updating "${name}" item failed. Please try again.`
+        `Failed to update "${name}" item. Please try again.`
       );
     });
 

@@ -219,7 +219,7 @@ class ListItem extends PureComponent {
     } = this.props;
     const isFieldDisabled = !isMember || isOrdered;
 
-    if (!description && (isOrdered || !isMember)) {
+    if (!description && isFieldDisabled) {
       return;
     }
 

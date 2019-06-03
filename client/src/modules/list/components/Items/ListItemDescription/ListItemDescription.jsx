@@ -79,13 +79,9 @@ class ListItemDescription extends PureComponent {
     this.handleDescriptionUpdate();
   };
 
-  handleStartEditing = () => {
-    this.setState({ isDescriptionEdited: true });
-  };
+  handleStartEditing = () => this.setState({ isDescriptionEdited: true });
 
-  handleStopEditing = () => {
-    this.setState({ isDescriptionEdited: false });
-  };
+  handleStopEditing = () => this.setState({ isDescriptionEdited: false });
 
   handleDescriptionVisibility = () =>
     this.setState(({ isDescriptionVisible }) => ({
