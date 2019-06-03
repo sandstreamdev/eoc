@@ -59,7 +59,11 @@ const createList = (req, resp) => {
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId))
       )
-      .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+      .catch(err => {
+        if (err instanceof BadRequestException) {
+          resp.sendStatus(400);
+        }
+      });
   } else {
     list
       .save()
@@ -92,7 +96,6 @@ const deleteListById = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-// TODO: tu skonczylem usuwac BadRequestException
 const getListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
   const {
@@ -115,17 +118,12 @@ const getListsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(400).send({ message: 'No sacks data found.' });
+        return resp.sendStatus(400);
       }
 
       return resp.send(responseWithListsMetaData(docs, userId));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the sacks data. Please try again.'
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const getArchivedListsMetaData = (req, resp) => {
@@ -301,7 +299,7 @@ const voteForItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException();
+        return resp.sendStatus(400);
       }
 
       const { items } = list;
@@ -312,7 +310,7 @@ const voteForItem = (req, resp) => {
       return list.save();
     })
     .then(() => resp.send())
-    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const clearVote = (req, resp) => {
@@ -330,7 +328,7 @@ const clearVote = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException();
+        return resp.sendStatus(400);
       }
 
       const { items } = list;
@@ -342,7 +340,7 @@ const clearVote = (req, resp) => {
       return list.save();
     })
     .then(() => resp.send())
-    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const updateListById = (req, resp) => {
@@ -497,7 +495,7 @@ const addOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException('dsadasd');
+        throw new BadRequestException();
       }
       const { memberIds, ownerIds } = doc;
       const userIsNotAnOwner = !checkIfArrayContainsUserId(ownerIds, userId);
@@ -515,9 +513,7 @@ const addOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() => resp.send())
-    .catch(err =>
-      resp.sendStatus(err instanceof BadRequestException ? 400 : 400)
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeOwnerRole = (req, resp) => {
@@ -595,7 +591,7 @@ const addMemberRole = (req, resp) => {
       return doc.save();
     })
     .then(() => resp.send())
-    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeMemberRole = (req, resp) => {
@@ -781,15 +777,7 @@ const updateListItem = (req, resp) => {
       return list.save();
     })
     .then(() => resp.send())
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { message } = err;
-
-        return resp.status(400).send({ message });
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 const cloneItem = (req, resp) => {
@@ -840,7 +828,7 @@ const cloneItem = (req, resp) => {
         item: responseWithItem(newItem, userId)
       });
     })
-    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const changeType = (req, resp) => {
@@ -901,7 +889,7 @@ const changeType = (req, resp) => {
         data: { members, type }
       });
     })
-    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const getArchivedItems = (req, resp) => {
