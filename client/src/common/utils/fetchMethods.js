@@ -1,6 +1,11 @@
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
-import { ResponseStatusCode } from 'common/constants/enums';
+
+export const ResponseStatusCode = Object.freeze({
+  BAD_REQUEST: 400,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404
+});
 
 const handleFetchErrors = resp => {
   if (resp.status === ResponseStatusCode.FORBIDDEN) {

@@ -49,10 +49,3 @@ export const KeyCodes = Object.freeze({
   ENTER: 'Enter',
   ESCAPE: 'Escape'
 });
-
-export const ResponseStatusCode = Object.freeze({
-  BAD_REQUEST: 400,
-  FORBIDDEN: 403,
-  NOT_FOUND: 404,
-  OK: 200
-});
