@@ -40,15 +40,15 @@ class ListItemDescription extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     this.isDescriptionUpdated();
-    const { isDescriptionEdited: isPreviousIsDescriptionEdited } = prevState;
+    const { isDescriptionEdited: isPreviousDescriptionEdited } = prevState;
     const { isDescriptionEdited } = this.state;
 
-    if (!isPreviousIsDescriptionEdited && isDescriptionEdited) {
+    if (!isPreviousDescriptionEdited && isDescriptionEdited) {
       this.descriptionTextarea.current.focus();
       this.handleFocus();
     }
 
-    if (isPreviousIsDescriptionEdited && !isDescriptionEdited) {
+    if (isPreviousDescriptionEdited && !isDescriptionEdited) {
       this.handleBlur();
     }
   }
