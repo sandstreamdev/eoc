@@ -41,7 +41,7 @@ const addComment = (req, resp) => {
         .status(201)
         .send(responseWithComment(comment, avatarUrl, displayName))
     )
-    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const getComments = (req, resp) => {
@@ -80,7 +80,7 @@ const getComments = (req, resp) => {
 
       resp.send(responseWithComments(comments));
     })
-    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = {
