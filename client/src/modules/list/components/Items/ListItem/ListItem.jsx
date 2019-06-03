@@ -39,6 +39,7 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       areFieldsUpdated: false,
+      disableToggleButton: false,
       done: isOrdered,
       isNameEdited: false,
       isConfirmationVisible: false,
@@ -68,13 +69,15 @@ class ListItem extends PureComponent {
       return;
     }
 
-    this.setState(({ done }) => ({ done: !done }));
+    this.setState(({ done }) => ({ done: !done, disableToggleButton: true }));
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
-    return shouldChangeAuthor
-      ? toggle(isOrdered, _id, listId, userId, name)
-      : toggle(isOrdered, _id, listId);
+    if (shouldChangeAuthor) {
+      return toggle(isOrdered, _id, listId, userId, name);
+    }
+
+    toggle(isOrdered, _id, listId);
   };
 
   handleDetailsVisibility = () =>
@@ -345,7 +348,12 @@ class ListItem extends PureComponent {
       data: { isOrdered, authorName, _id, name },
       isMember
     } = this.props;
-    const { areDetailsVisible, done, isNameEdited } = this.state;
+    const {
+      areDetailsVisible,
+      done,
+      isNameEdited,
+      disableToggleButton
+    } = this.state;
 
     return (
       <li
@@ -386,7 +394,7 @@ class ListItem extends PureComponent {
             <div className="list-item__toggle">
               <PendingButton
                 className="list-item__icon"
-                disabled={!isMember}
+                disabled={disableToggleButton || !isMember}
                 onClick={this.handleItemToggling}
               />
             </div>

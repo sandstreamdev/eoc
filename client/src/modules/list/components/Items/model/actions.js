@@ -7,6 +7,7 @@ import {
 } from 'modules/list/components/Items/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+import { ITEM_TOGGLE_TIME } from '../ListItem/constants';
 
 const addItemFailure = errorMessage => ({
   type: ItemActionTypes.ADD_FAILURE,
@@ -154,7 +155,7 @@ export const toggle = (
     .then(json => {
       setTimeout(
         () => dispatch(toggleItemSuccess(authorId, authorName, itemId, listId)),
-        600
+        ITEM_TOGGLE_TIME
       );
       createNotificationWithTimeout(
         dispatch,
