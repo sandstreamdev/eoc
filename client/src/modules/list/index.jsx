@@ -79,16 +79,14 @@ class List extends Component {
   handleListArchivization = listId => () => {
     const {
       archiveList,
-      list: { isOwner }
+      list: { isOwner, name }
     } = this.props;
 
     if (isOwner) {
       this.setState({ pendingForListArchivization: true });
 
-      archiveList(listId).finally(() => {
-        this.setState({
-          pendingForListArchivization: false
-        });
+      archiveList(listId, name).finally(() => {
+        this.setState({ pendingForListArchivization: false });
         this.hideDialog();
       });
     }

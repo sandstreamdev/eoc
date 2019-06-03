@@ -1,25 +1,28 @@
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 
+export const ResponseStatusCode = Object.freeze({
+  BAD_REQUEST: 400,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404
+});
+
 const handleFetchErrors = resp => {
-  if (resp.status === 403) {
+  if (resp.status === ResponseStatusCode.FORBIDDEN) {
     setTimeout(() => {
       window.location = '/';
     }, NOTIFICATION_TIMEOUT);
   }
 
-  if (resp.status === 404) {
-    return resp.json().then(json => {
-      history.replace('/page-not-found');
-      throw new Error(json.message);
-    });
+  if (resp.status === ResponseStatusCode.NOT_FOUND) {
+    history.replace('/page-not-found');
+    throw new Error();
   }
 
-  if (resp.status >= 400 && resp.status < 600) {
-    return resp.json().then(json => {
-      throw new Error(json.message);
-    });
+  if (resp.status >= ResponseStatusCode.BAD_REQUEST && resp.status < 600) {
+    throw new Error();
   }
+
   return resp;
 };
 

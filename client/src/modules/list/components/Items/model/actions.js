@@ -130,16 +130,17 @@ export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
     .then(json => dispatch(addItemSuccess(json, listId)))
-    .catch(err => {
+    .catch(() => {
       dispatch(addItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, adding item failed..."
+        `Failed while adding: "${item.name}". Please try again.`
       );
     });
 
 export const toggle = (
+  itemName,
   isOrdered,
   itemId,
   listId,
@@ -151,8 +152,7 @@ export const toggle = (
     isOrdered: !isOrdered,
     itemId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       setTimeout(
         () => dispatch(toggleItemSuccess(authorId, authorName, itemId, listId)),
         ITEM_TOGGLE_TIME
@@ -160,68 +160,65 @@ export const toggle = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Item details updated successfully.'
+        `Item: "${itemName}" updated successfully.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(toggleItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, changing item's status failed..."
+        `Failed to update item: "${itemName}". Please try again.`
       );
     });
 
-export const setVote = (itemId, listId) => dispatch =>
+export const setVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/set-vote`, { itemId })
-    .then(resp => resp.json())
-    .then(json => dispatch(setVoteSuccess(itemId, listId)))
-    .catch(err => {
+    .then(() => dispatch(setVoteSuccess(itemId, listId)))
+    .catch(() => {
       dispatch(setVoteFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, voting failed...."
+        `Failed while voting for: "${itemName}". Please try again.`
       );
     });
 
-export const clearVote = (itemId, listId) => dispatch =>
+export const clearVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
-    .then(resp => resp.json())
-    .then(json => dispatch(clearVoteSuccess(itemId, listId)))
+    .then(() => dispatch(clearVoteSuccess(itemId, listId)))
     .catch(err => {
       dispatch(clearVoteFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, voting failed...."
+        `Failed while clearing vote for item: "${itemName}". Please try again.`
       );
     });
 
-export const updateListItem = (listId, itemId, data) => dispatch =>
+export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(updateListItemSuccess(listId, itemId, data));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message || 'Item details updated successfully.'
+        `Item: "${itemName}" updated successfully.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(updateListItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to update "${itemName}" item. Please try again.`
       );
     });
 
-export const cloneItem = (listId, itemId) => dispatch =>
+export const cloneItem = (itemName, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
     itemId
   })
@@ -231,7 +228,7 @@ export const cloneItem = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Successfully cloned item: "${itemName}".`
       );
     })
     .catch(err => {
@@ -239,7 +236,7 @@ export const cloneItem = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed while cloning item: "${itemName}". Please try again.`
       );
     });
 
@@ -251,16 +248,16 @@ export const addComment = (listId, itemId, text) => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => dispatch(addCommentSuccess(listId, itemId, json)))
-    .catch(err => {
+    .catch(() => {
       dispatch(addCommentFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed do add comment: "${text}". Please try again.`
       );
     });
 
-export const fetchComments = (listId, itemId) => dispatch =>
+export const fetchComments = (itemName, listId, itemId) => dispatch =>
   getData(`/api/comments/${listId}/${itemId}/data`)
     .then(resp => resp.json())
     .then(json => {
@@ -272,7 +269,7 @@ export const fetchComments = (listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to fetch comments for "${itemName}" item. Please try again.`
       );
     });
 
@@ -298,7 +295,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       );
     });
 
-export const fetchArchivedItems = (listId, name) => dispatch =>
+export const fetchArchivedItems = (listId, listName) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
     .then(resp => resp.json())
     .then(json => {
@@ -310,7 +307,7 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Fetching archived items of list "${name}" failed. Please try again.`
+        `Fetching archived items of sack: "${listName}" failed. Please try again.`
       );
     });
 

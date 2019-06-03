@@ -58,6 +58,7 @@ class MemberDetails extends PureComponent {
 
   handleMemberRemoving = () => {
     const {
+      displayName,
       isOwner,
       match: {
         params: { id }
@@ -73,7 +74,9 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    action(id, userId, isOwner).catch(() => this.setState({ pending: false }));
+    action(id, displayName, userId, isOwner).catch(() =>
+      this.setState({ pending: false })
+    );
   };
 
   handleOwnerInfoVisibility = event => {
@@ -90,14 +93,17 @@ class MemberDetails extends PureComponent {
     }));
   };
 
-  removeRole = (isCurrentUserRoleChanging, removeRoleAction) => (id, userId) =>
-    removeRoleAction(id, userId, isCurrentUserRoleChanging);
+  removeRole = (isCurrentUserRoleChanging, removeRoleAction, userName) => (
+    id,
+    userId
+  ) => removeRoleAction(id, userId, userName, isCurrentUserRoleChanging);
 
   changeCohortRole = () => {
     const {
       _id: userId,
       addOwnerRoleInCohort,
       currentUser: { id: currentUserId },
+      displayName,
       isOwner,
       match: {
         params: { id }
@@ -109,10 +115,16 @@ class MemberDetails extends PureComponent {
     this.setState({ pending: true });
 
     const action = isOwner
-      ? this.removeRole(isCurrentUserRoleChanging, removeOwnerRoleInCohort)
+      ? this.removeRole(
+          isCurrentUserRoleChanging,
+          removeOwnerRoleInCohort,
+          displayName
+        )
       : addOwnerRoleInCohort;
 
-    action(id, userId).finally(() => this.setState({ pending: false }));
+    action(id, userId, displayName).finally(() =>
+      this.setState({ pending: false })
+    );
   };
 
   changeListRole = selectedRole => {
@@ -121,6 +133,7 @@ class MemberDetails extends PureComponent {
       addMemberRoleInList,
       addOwnerRoleInList,
       currentUser: { id: currentUserId },
+      displayName,
       isMember,
       isOwner,
       match: {
@@ -137,19 +150,29 @@ class MemberDetails extends PureComponent {
     switch (selectedRole) {
       case UserRoles.OWNER:
         action = isOwner
-          ? this.removeRole(isCurrentUserRoleChanging, removeOwnerRoleInList)
+          ? this.removeRole(
+              isCurrentUserRoleChanging,
+              removeOwnerRoleInList,
+              displayName
+            )
           : addOwnerRoleInList;
         break;
       case UserRoles.MEMBER:
         action = isMember
-          ? this.removeRole(isCurrentUserRoleChanging, removeMemberRoleInList)
+          ? this.removeRole(
+              isCurrentUserRoleChanging,
+              removeMemberRoleInList,
+              displayName
+            )
           : addMemberRoleInList;
         break;
       default:
         break;
     }
 
-    action(id, userId).finally(() => this.setState({ pending: false }));
+    action(id, userId, displayName).finally(() =>
+      this.setState({ pending: false })
+    );
   };
 
   handleChangingRoles = event => {

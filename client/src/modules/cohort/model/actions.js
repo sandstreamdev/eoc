@@ -145,7 +145,7 @@ export const createCohort = data => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, creating new cohort failed..."
+        `Failed to create new cohort: "${data.name}". Please try again.`
       );
     });
 
@@ -161,7 +161,7 @@ export const fetchCohortsMetaData = () => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching cohorts meta data failed..."
+        'Failed to fetch cohorts data. Please try again.'
       );
     });
 
@@ -177,19 +177,18 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching cohorts failed..."
+        'Failed to fetch archived cohorts data. Please try again.'
       );
     });
 
-export const updateCohort = (cohortId, data) => dispatch =>
+export const updateCohort = (cohortName, cohortId, data) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, data)
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(updateCohortSuccess({ ...data, cohortId }));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Cohort: "${cohortName}" successfully updated.`
       );
     })
     .catch(err => {
@@ -197,19 +196,18 @@ export const updateCohort = (cohortId, data) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, updating cohort failed..."
+        `Failed to update: "${cohortName}" cohort. Please try again.`
       );
     });
 
-export const deleteCohort = cohortId => dispatch =>
+export const deleteCohort = (cohortId, cohortName) => dispatch =>
   deleteData(`/api/cohorts/${cohortId}/delete`)
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(deleteCohortSuccess(cohortId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `Successfully deleted cohort: "${cohortName}".`
       );
       history.replace('/cohorts');
     })
@@ -218,22 +216,21 @@ export const deleteCohort = cohortId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, deleting cohort failed..."
+        `Failed while deleting cohort: "${cohortName}". Please try again.`
       );
       throw err;
     });
 
-export const archiveCohort = cohortId => dispatch =>
+export const archiveCohort = (cohortId, cohortName) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: true
   })
-    .then(resp => resp.json())
     .then(() => {
       dispatch(archiveCohortSuccess(cohortId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'Cohort was successfully archived!'
+        `Cohort: "${cohortName}" was successfully archived!`
       );
     })
     .catch(err => {
@@ -241,11 +238,11 @@ export const archiveCohort = cohortId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, archiving cohort failed..."
+        `Failed while archiving cohort: "${cohortName}". Please try again.`
       );
     });
 
-export const restoreCohort = cohortId => dispatch =>
+export const restoreCohort = (cohortId, cohortName) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: false
   })
@@ -256,15 +253,15 @@ export const restoreCohort = cohortId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        'Cohort was successfully restored!'
+        `Cohort: "${cohortName}" was successfully restored.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(restoreCohortFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, restoring cohort failed..."
+        `Failed to restore cohort: "${cohortName}". Please try again.`
       );
     });
 
@@ -277,7 +274,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, fetching data failed..."
+        'Failed to fetch cohort data. Please try again.'
       );
       throw err;
     });
@@ -286,13 +283,9 @@ export const addCohortMember = (cohortId, email) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })
-    .then(resp => {
-      if (resp.status === 200) {
-        return resp.json();
-      }
-    })
+    .then(resp => resp.json())
     .then(json => {
-      if (json) {
+      if (json._id) {
         dispatch(addMemberSuccess(json, cohortId));
 
         return UserAddingStatus.ADDED;
@@ -305,21 +298,20 @@ export const addCohortMember = (cohortId, email) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message || "Oops, we're sorry, adding new member failed..."
+        err.message || `Failed to add: "${email}" as member. Please try again.`
       );
     });
 
-export const removeCohortMember = (cohortId, userId) => dispatch =>
+export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/remove-member`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(removeMemberSuccess(cohortId, userId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" successfully removed.`
       );
     })
     .catch(err => {
@@ -327,49 +319,48 @@ export const removeCohortMember = (cohortId, userId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to remove "${userName}". Please try again.`
       );
     });
 
-export const addOwnerRole = (cohortId, userId) => dispatch =>
+export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-owner-role`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(addOwnerRoleSuccess(cohortId, userId));
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" has owner role.`
       );
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(addOwnerRoleFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        `Failed to set: "${userName}" as owner. Please try again.`
       );
     });
 
 export const removeOwnerRole = (
   cohortId,
   userId,
+  userName,
   isCurrentUserRoleChanging
 ) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/remove-owner-role`, {
     userId
   })
-    .then(resp => resp.json())
-    .then(json => {
+    .then(() => {
       dispatch(
         removeOwnerRoleSuccess(cohortId, userId, isCurrentUserRoleChanging)
       );
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        json.message
+        `"${userName}" has no owner role.`
       );
     })
     .catch(err => {
@@ -377,6 +368,7 @@ export const removeOwnerRole = (
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        err.message
+        err.message ||
+          `Failed to remove owner role from: "${userName}". Please try again.`
       );
     });

@@ -56,7 +56,7 @@ class ListItem extends PureComponent {
   handleItemToggling = () => {
     const {
       currentUser: { name, id: userId },
-      data: { isOrdered, authorId, _id },
+      data: { isOrdered, authorId, _id, name: itemName },
       isMember,
       match: {
         params: { id: listId }
@@ -74,10 +74,10 @@ class ListItem extends PureComponent {
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
-      return toggle(isOrdered, _id, listId, userId, name);
+      return toggle(itemName, isOrdered, _id, listId, userId, name);
     }
 
-    toggle(isOrdered, _id, listId);
+    toggle(itemName, isOrdered, _id, listId);
   };
 
   handleDetailsVisibility = () =>
@@ -91,7 +91,8 @@ class ListItem extends PureComponent {
       data: {
         _id: itemId,
         description: previousDescription,
-        link: previousLink
+        link: previousLink,
+        name: itemName
       },
       isMember,
       match: {
@@ -117,7 +118,7 @@ class ListItem extends PureComponent {
     }
 
     if (isLinkUpdated || isDescriptionUpdated) {
-      return updateListItem(listId, itemId, { description, link });
+      return updateListItem(itemName, listId, itemId, { description, link });
     }
   };
 
@@ -139,7 +140,7 @@ class ListItem extends PureComponent {
   handleItemCloning = () => {
     const {
       cloneItem,
-      data: { _id: itemId },
+      data: { _id: itemId, name },
       isMember,
       match: {
         params: { id: listId }
@@ -147,14 +148,14 @@ class ListItem extends PureComponent {
     } = this.props;
 
     if (isMember) {
-      return cloneItem(listId, itemId);
+      return cloneItem(name, listId, itemId);
     }
   };
 
   handleVoting = () => {
     const {
       clearVote,
-      data: { _id, isVoted },
+      data: { _id, isVoted, name },
       setVote,
       match: {
         params: { id: listId }
@@ -163,7 +164,7 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    return action(_id, listId);
+    return action(_id, listId, name);
   };
 
   handleItemLink = value =>
@@ -289,7 +290,7 @@ class ListItem extends PureComponent {
   renderDetails = () => {
     const { areFieldsUpdated, isValidationErrorVisible } = this.state;
     const {
-      data: { _id: itemId, comments, description, isOrdered, link },
+      data: { _id: itemId, comments, description, isOrdered, link, name },
       isMember
     } = this.props;
     const isFieldDisabled = !isMember;
@@ -337,6 +338,7 @@ class ListItem extends PureComponent {
             comments={comments}
             isFormAccessible={isMember && !isOrdered}
             itemId={itemId}
+            itemName={name}
           />
         </div>
       </Fragment>
