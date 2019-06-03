@@ -39,16 +39,16 @@ class ListItemDescription extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.checkIfDescriptionUpdated();
-    const { isDescriptionEdited: previousIsDescriptionEdited } = prevState;
+    this.isDescriptionUpdated();
+    const { isDescriptionEdited: isPreviousIsDescriptionEdited } = prevState;
     const { isDescriptionEdited } = this.state;
 
-    if (!previousIsDescriptionEdited && isDescriptionEdited) {
+    if (!isPreviousIsDescriptionEdited && isDescriptionEdited) {
       this.descriptionTextarea.current.focus();
       this.handleFocus();
     }
 
-    if (previousIsDescriptionEdited && !isDescriptionEdited) {
+    if (isPreviousIsDescriptionEdited && !isDescriptionEdited) {
       this.handleBlur();
     }
   }
@@ -93,9 +93,11 @@ class ListItemDescription extends PureComponent {
     }));
 
   handleDescriptionUpdate = () => {
-    const { descriptionInputValue: description } = this.state;
     const {
-      description: previousDescription,
+      descriptionInputValue: description,
+      isDescriptionUpdated
+    } = this.state;
+    const {
       disabled,
       itemId,
       match: {
@@ -108,11 +110,6 @@ class ListItemDescription extends PureComponent {
     if (disabled) {
       return;
     }
-
-    const isDescriptionUpdated = !_isEqual(
-      _trim(previousDescription),
-      _trim(description)
-    );
 
     if (isDescriptionUpdated) {
       this.setState({ pending: true });
@@ -135,9 +132,8 @@ class ListItemDescription extends PureComponent {
     }
   };
 
-  checkIfDescriptionUpdated = () => {
+  isDescriptionUpdated = () => {
     const { description: previousDescription } = this.props;
-
     const { descriptionInputValue } = this.state;
 
     const isDescriptionUpdated = !_isEqual(
@@ -183,13 +179,13 @@ class ListItemDescription extends PureComponent {
           className: 'list-item-description__link'
         }}
       >
-        <div
+        <p
           className={classNames('list-item-description__description', {
             'list-item-description__description--disabled': disabled || pending
           })}
         >
           {description}
-        </div>
+        </p>
       </Linkify>
     );
   };
@@ -217,13 +213,13 @@ class ListItemDescription extends PureComponent {
       <Textarea
         className="list-item-description__edit-field"
         disabled={disabled || pending}
+        inputRef={this.descriptionTextarea}
         maxRows={5}
         minRows={1}
         name="description"
-        onChange={disabled ? null : this.handleDescriptionChange}
         onBlur={this.handleBlur}
+        onChange={disabled ? null : this.handleDescriptionChange}
         onFocus={this.handleFocus}
-        inputRef={this.descriptionTextarea}
         type="text"
         value={descriptionInputValue}
       />
@@ -275,11 +271,9 @@ ListItemDescription.propTypes = {
   updateListItem: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({});
-
 export default withRouter(
   connect(
-    mapStateToProps,
+    null,
     { updateListItem }
   )(ListItemDescription)
 );
