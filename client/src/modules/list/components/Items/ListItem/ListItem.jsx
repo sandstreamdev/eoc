@@ -219,20 +219,18 @@ class ListItem extends PureComponent {
     } = this.props;
     const isFieldDisabled = !isMember || isOrdered;
 
-    if (!description && isFieldDisabled) {
-      return;
+    if (description || !isFieldDisabled) {
+      return (
+        <div className="list-item__description">
+          <ListItemDescription
+            description={description}
+            disabled={isFieldDisabled}
+            itemId={itemId}
+            name={name}
+          />
+        </div>
+      );
     }
-
-    return (
-      <div className="list-item__description">
-        <ListItemDescription
-          description={description}
-          disabled={isFieldDisabled}
-          itemId={itemId}
-          name={name}
-        />
-      </div>
-    );
   };
 
   renderDetails = () => {
