@@ -235,7 +235,7 @@ const removeMember = (req, resp) => {
       ).exec();
     })
     .then(() => resp.send())
-    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const addOwnerRole = (req, resp) => {
