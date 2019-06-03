@@ -755,7 +755,7 @@ const addViewer = (req, resp) => {
         return resp.status(200).json(userToSend);
       }
 
-      resp.status(204).send();
+      resp.status(200).send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

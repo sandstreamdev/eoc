@@ -7,10 +7,7 @@ import {
   postData
 } from 'common/utils/fetchMethods';
 import { ListActionTypes } from './actionTypes';
-import {
-  MessageType as NotificationType,
-  ResponseStatusCode
-} from 'common/constants/enums';
+import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
@@ -378,13 +375,9 @@ export const addListViewer = (listId, email) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
-    .then(resp => {
-      if (resp.status === ResponseStatusCode.OK) {
-        return resp.json();
-      }
-    })
+    .then(resp => resp.json())
     .then(json => {
-      if (json) {
+      if (json._id) {
         dispatch(addViewerSuccess(json, listId));
         createNotificationWithTimeout(
           dispatch,

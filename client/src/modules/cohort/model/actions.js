@@ -283,13 +283,9 @@ export const addCohortMember = (cohortId, email) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })
-    .then(resp => {
-      if (resp.status === 200) {
-        return resp.json();
-      }
-    })
+    .then(resp => resp.json())
     .then(json => {
-      if (json) {
+      if (json._id) {
         dispatch(addMemberSuccess(json, cohortId));
 
         return UserAddingStatus.ADDED;

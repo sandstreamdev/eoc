@@ -396,7 +396,7 @@ const addMember = (req, resp) => {
           .json(responseWithCohortMember(newMember, ownerIds));
       }
 
-      resp.status(204).send();
+      resp.status(200).send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
