@@ -59,14 +59,7 @@ const createList = (req, resp) => {
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId))
       )
-      .catch(err => {
-        if (err instanceof BadRequestException) {
-          const { status } = err;
-
-          return resp.status(status).send();
-        }
-        resp.sendStatus(400);
-      });
+      .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
   } else {
     list
       .save()
@@ -90,21 +83,16 @@ const deleteListById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException();
+        return resp.sendStatus(400);
       }
 
       return Comment.deleteMany({ listId }).exec();
     })
     .then(() => resp.send())
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status } = err;
-        return resp.status(status).send();
-      }
-      resp.sendStatus(400);
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
+// TODO: tu skonczylem usuwac BadRequestException
 const getListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
   const {
@@ -130,7 +118,7 @@ const getListsMetaData = (req, resp) => {
         return resp.status(400).send({ message: 'No sacks data found.' });
       }
 
-      return resp.send().json(responseWithListsMetaData(docs, userId));
+      return resp.send(responseWithListsMetaData(docs, userId));
     })
     .catch(() =>
       resp.status(400).send({
@@ -169,7 +157,7 @@ const getArchivedListsMetaData = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      return resp.send().json(responseWithListsMetaData(docs, userId));
+      return resp.send(responseWithListsMetaData(docs, userId));
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -262,9 +250,7 @@ const getListData = (req, resp) => {
       } = list;
 
       if (isArchived) {
-        return resp
-          .send()
-          .json({ cohortId, cohortName, _id, isArchived, name, type });
+        return resp.send({ cohortId, cohortName, _id, isArchived, name, type });
       }
 
       const activeItems = listItems.filter(item => !item.isArchived);
@@ -280,7 +266,7 @@ const getListData = (req, resp) => {
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const items = responseWithItems(userId, activeItems);
 
-      return resp.send().json({
+      return resp.send({
         _id,
         cohortId,
         cohortName,
@@ -295,14 +281,9 @@ const getListData = (req, resp) => {
         type
       });
     })
-    .catch(err => {
-      if (err instanceof NotFoundException) {
-        const { status } = err;
-        return resp.status(status).send();
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err =>
+      resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
+    );
 };
 
 const voteForItem = (req, resp) => {
@@ -331,14 +312,7 @@ const voteForItem = (req, resp) => {
       return list.save();
     })
     .then(() => resp.send())
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status } = err;
-        return resp.status(status).send();
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
 };
 
 const clearVote = (req, resp) => {
@@ -368,15 +342,7 @@ const clearVote = (req, resp) => {
       return list.save();
     })
     .then(() => resp.send())
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status } = err;
-
-        return resp.status(status).send();
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
 };
 
 const updateListById = (req, resp) => {
@@ -531,7 +497,7 @@ const addOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException();
+        throw new BadRequestException('dsadasd');
       }
       const { memberIds, ownerIds } = doc;
       const userIsNotAnOwner = !checkIfArrayContainsUserId(ownerIds, userId);
@@ -549,14 +515,9 @@ const addOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() => resp.send())
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err =>
+      resp.sendStatus(err instanceof BadRequestException ? 400 : 400)
+    );
 };
 
 const removeOwnerRole = (req, resp) => {
@@ -596,8 +557,8 @@ const removeOwnerRole = (req, resp) => {
     )
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
+        const { message } = err;
+        return resp.status(400).send({ message });
       }
 
       resp.status(400).send({ message: 'Sack data not found' });
@@ -634,14 +595,7 @@ const addMemberRole = (req, resp) => {
       return doc.save();
     })
     .then(() => resp.send())
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
 };
 
 const removeMemberRole = (req, resp) => {
@@ -684,8 +638,8 @@ const removeMemberRole = (req, resp) => {
     .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
+        const { message } = err;
+        return resp.status(400).send({ message });
       }
 
       resp.sendStatus(400);
@@ -750,16 +704,16 @@ const addViewer = (req, resp) => {
       if (user) {
         const userToSend = responseWithListMember(user, cohortMembers);
 
-        return resp.send().json(userToSend);
+        return resp.send(userToSend);
       }
 
       resp.send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { message } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(400).send({ message });
       }
 
       resp.status(400).send({
@@ -829,9 +783,9 @@ const updateListItem = (req, resp) => {
     .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { message } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(400).send({ message });
       }
 
       resp.sendStatus(400);
@@ -882,19 +836,11 @@ const cloneItem = (req, resp) => {
 
       const newItem = list.items.slice(-1)[0];
 
-      resp.send().json({
+      resp.send({
         item: responseWithItem(newItem, userId)
       });
     })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status } = err;
-
-        return resp.status(status).send();
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
 };
 
 const changeType = (req, resp) => {
@@ -955,15 +901,7 @@ const changeType = (req, resp) => {
         data: { members, type }
       });
     })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status } = err;
-
-        return resp.status(status).send();
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
 };
 
 const getArchivedItems = (req, resp) => {

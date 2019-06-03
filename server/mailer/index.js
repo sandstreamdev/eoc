@@ -25,7 +25,7 @@ const sendInvitation = (req, resp) => {
 
   SendGridMail.send(message)
     .then(() =>
-      resp.send().send({
+      resp.send({
         message: `Invitation to ${receiver} has been sent.`
       })
     )

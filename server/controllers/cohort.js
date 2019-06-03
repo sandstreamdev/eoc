@@ -147,13 +147,13 @@ const getCohortDetails = (req, resp) => {
       } = doc;
 
       if (isArchived) {
-        return resp.send().json({ _id, isArchived, name });
+        return resp.send({ _id, isArchived, name });
       }
 
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const members = responseWithCohortMembers(membersCollection, ownerIds);
 
-      resp.send().json({
+      resp.send({
         _id,
         description,
         isArchived,
@@ -195,15 +195,9 @@ const deleteCohortById = (req, resp) => {
     .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
     .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
     .then(() => resp.send())
-    .catch(err => {
-      if (err instanceof NotFoundException) {
-        const { status } = err;
-
-        return resp.status(status).send();
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err =>
+      resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
+    );
 };
 
 const removeMember = (req, resp) => {
@@ -241,15 +235,7 @@ const removeMember = (req, resp) => {
       ).exec();
     })
     .then(() => resp.send())
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status } = err;
-
-        return resp.status(status).send();
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
 };
 
 const addOwnerRole = (req, resp) => {
@@ -312,9 +298,9 @@ const removeOwnerRole = (req, resp) => {
     .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status } = err;
+        const { message } = err;
 
-        return resp.status(status).send();
+        return resp.status(400).send({ message });
       }
 
       resp.sendStatus(400);
@@ -387,16 +373,16 @@ const addMember = (req, resp) => {
       if (newMember) {
         const { ownerIds } = currentCohort;
 
-        return resp.send().json(responseWithCohortMember(newMember, ownerIds));
+        return resp.send(responseWithCohortMember(newMember, ownerIds));
       }
 
       resp.send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { message } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(400).send({ message });
       }
 
       resp.sendStatus(400);

@@ -41,14 +41,7 @@ const addComment = (req, resp) => {
         .status(201)
         .send(responseWithComment(comment, avatarUrl, displayName))
     )
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status } = err;
-
-        return resp.status(status).send();
-      }
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
 };
 
 const getComments = (req, resp) => {
@@ -85,17 +78,9 @@ const getComments = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send().json(responseWithComments(comments));
+      resp.send(responseWithComments(comments));
     })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.sendStatus(err instanceof BadRequestException && 400));
 };
 
 module.exports = {
