@@ -76,9 +76,7 @@ const createList = (req, resp) => {
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId))
       )
-      .catch(() => {
-        resp.sendStatus(400);
-      });
+      .catch(() => resp.sendStatus(400));
   }
 };
 
@@ -132,7 +130,7 @@ const getListsMetaData = (req, resp) => {
         return resp.status(400).send({ message: 'No sacks data found.' });
       }
 
-      return resp.status(200).json(responseWithListsMetaData(docs, userId));
+      return resp.send().json(responseWithListsMetaData(docs, userId));
     })
     .catch(() =>
       resp.status(400).send({
@@ -171,7 +169,7 @@ const getArchivedListsMetaData = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      return resp.status(200).json(responseWithListsMetaData(docs, userId));
+      return resp.send().json(responseWithListsMetaData(docs, userId));
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -265,7 +263,7 @@ const getListData = (req, resp) => {
 
       if (isArchived) {
         return resp
-          .status(200)
+          .send()
           .json({ cohortId, cohortName, _id, isArchived, name, type });
       }
 
@@ -282,7 +280,7 @@ const getListData = (req, resp) => {
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const items = responseWithItems(userId, activeItems);
 
-      return resp.status(200).json({
+      return resp.send().json({
         _id,
         cohortId,
         cohortName,
@@ -332,7 +330,7 @@ const voteForItem = (req, resp) => {
 
       return list.save();
     })
-    .then(() => resp.sendStatus(200))
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status } = err;
@@ -752,7 +750,7 @@ const addViewer = (req, resp) => {
       if (user) {
         const userToSend = responseWithListMember(user, cohortMembers);
 
-        return resp.status(200).json(userToSend);
+        return resp.send().json(userToSend);
       }
 
       resp.send({ _id: null });
@@ -828,7 +826,7 @@ const updateListItem = (req, resp) => {
 
       return list.save();
     })
-    .then(() => resp.sendStatus(200))
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { status, message } = err;
@@ -884,7 +882,7 @@ const cloneItem = (req, resp) => {
 
       const newItem = list.items.slice(-1)[0];
 
-      resp.status(200).json({
+      resp.send().json({
         item: responseWithItem(newItem, userId)
       });
     })

@@ -183,7 +183,7 @@ export const fetchListData = listId => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        'Fetching data failed. Please try again.'
+        'Failed to fetch sack data. Please try again.'
       );
     });
 

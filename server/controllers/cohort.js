@@ -147,13 +147,13 @@ const getCohortDetails = (req, resp) => {
       } = doc;
 
       if (isArchived) {
-        return resp.status(200).json({ _id, isArchived, name });
+        return resp.send().json({ _id, isArchived, name });
       }
 
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const members = responseWithCohortMembers(membersCollection, ownerIds);
 
-      resp.status(200).json({
+      resp.send().json({
         _id,
         description,
         isArchived,
@@ -387,12 +387,10 @@ const addMember = (req, resp) => {
       if (newMember) {
         const { ownerIds } = currentCohort;
 
-        return resp
-          .status(200)
-          .json(responseWithCohortMember(newMember, ownerIds));
+        return resp.send().json(responseWithCohortMember(newMember, ownerIds));
       }
 
-      resp.status(200).send({ _id: null });
+      resp.send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

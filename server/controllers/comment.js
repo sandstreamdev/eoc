@@ -85,7 +85,7 @@ const getComments = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.status(200).json(responseWithComments(comments));
+      resp.send().json(responseWithComments(comments));
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
