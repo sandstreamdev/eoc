@@ -67,7 +67,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     _id: ObjectId(),
     cohortId: cohortIds[0],
     description:
-      "You are the owner of this cohort's limited sack. You can modify and archive the sack, add items and modify them, add members and change their permissions.",
+      "You are the owner of this cohort's limited sack. You can modify and archive the sack, add items and modify them, add members and change their permissions. This sack is limited, so it means that you have to add members manually.",
     favIds: [demoUserId],
     isArchived: false,
     items: generateItems(demoUserId, userIds),
@@ -81,7 +81,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     _id: ObjectId(),
     cohortId: cohortIds[0],
     description:
-      "You are the owner of this cohort's shared sack. You can modify and archive the sack, add items and modify them, add members and change their permissions.",
+      "You are the owner of this cohort's shared sack. You can modify and archive the sack, add items and modify them, add members and change their permissions. This sack is shared, so it means that here are all cohort members.",
     favIds: [],
     isArchived: false,
     items: generateItems(demoUserId, userIds),
@@ -95,7 +95,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     _id: ObjectId(),
     cohortId: cohortIds[0],
     description:
-      "You are the member of this cohort's limited sack. You can add and modify items, add members. You can not modify and archive sack, change members permissions.",
+      "You are the member of this cohort's limited sack. You can add and modify items, add members. You can not modify and archive sack, change members permissions. This sack is limited, so it means that you have to add members manually.",
     favIds: [],
     isArchived: false,
     items: generateItems(demoUserId, userIds),
@@ -109,7 +109,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     _id: ObjectId(),
     cohortId: cohortIds[0],
     description:
-      "You are the viewer of this cohort's limited sack. You can only view sack, items and members. You can not modify sack, items or members.",
+      "You are the viewer of this cohort's limited sack. You can only view sack, items and members. You can not modify sack, items or members. This sack is limited, so it means that here are only members that were added.",
     favIds: [],
     isArchived: false,
     items: generateItems(demoUserId, userIds),
@@ -123,7 +123,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     _id: ObjectId(),
     cohortId: cohortIds[0],
     description:
-      "You are the viewer of this cohort's shared sack. You can only view sack, items and members. You can not modify sack, items or members.",
+      "You are the viewer of this cohort's shared sack. You can only view sack, items and members. You can not modify sack, items or members. This sack is shared, so it means that here are all cohort members.",
     favIds: [],
     isArchived: false,
     items: generateItems(demoUserId, userIds),
@@ -137,7 +137,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     _id: ObjectId(),
     cohortId: cohortIds[1],
     description:
-      'You are the owner of this private sack. You can modify and archive the sack, add items and modify them, add members and change their permissions.',
+      'You are the owner of this private sack. You can modify and archive the sack, add items and modify them, add members and change their permissions. This sack is limited, so it means that you have to add members manually.',
     favIds: [],
     isArchived: false,
     items: generateItems(demoUserId, userIds),
