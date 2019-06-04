@@ -72,23 +72,4 @@
       }
     }
   }
-
-  &__add-button {
-    font-family: $font-family;
-    font-size: $m-font;
-    color: $text-normal;
-    line-height: 1.2;
-    display: block;
-    width: 100%;
-    text-align: left;
-    border: 0;
-    outline: 0;
-    padding: 11px;
-    margin-bottom: 16px;
-
-    &:hover {
-      background-color: $gray-bg2;
-      color: $text-dark;
-    }
-  }
 }

@@ -29,7 +29,7 @@ class ListItemDescription extends PureComponent {
 
     this.state = {
       isDescriptionUpdated: false,
-      descriptionInputValue: trimmedDescription,
+      descriptionTextareaValue: trimmedDescription,
       isTextareaVisible: false,
       isFocused: false,
       pending: false
@@ -40,15 +40,15 @@ class ListItemDescription extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     this.isDescriptionUpdated();
-    const { isTextareaVisible: previousIsTextareaVisible } = prevState;
+    const { isTextareaVisible: isPreviousIsTextareaVisible } = prevState;
     const { isTextareaVisible } = this.state;
 
-    if (!previousIsTextareaVisible && isTextareaVisible) {
+    if (!isPreviousIsTextareaVisible && isTextareaVisible) {
       this.descriptionTextarea.current.focus();
       this.handleFocus();
     }
 
-    if (previousIsTextareaVisible && !isTextareaVisible) {
+    if (isPreviousIsTextareaVisible && !isTextareaVisible) {
       this.handleBlur();
     }
   }
@@ -90,7 +90,7 @@ class ListItemDescription extends PureComponent {
 
   handleDescriptionUpdate = () => {
     const {
-      descriptionInputValue: description,
+      descriptionTextareaValue: description,
       isDescriptionUpdated
     } = this.state;
     const {
@@ -113,7 +113,7 @@ class ListItemDescription extends PureComponent {
       this.pendingPromise = makeAbortablePromise(
         updateListItem(listId, itemId, { description }, name)
       );
-      this.pendingPromise.promise
+      return this.pendingPromise.promise
         .then(() => {
           this.setState({ pending: false });
           this.handleHideTextarea();
@@ -123,18 +123,17 @@ class ListItemDescription extends PureComponent {
             this.setState({ pending: false });
           }
         });
-    } else {
-      this.handleHideTextarea();
     }
+    this.handleHideTextarea();
   };
 
   isDescriptionUpdated = () => {
     const { description: previousDescription } = this.props;
-    const { descriptionInputValue } = this.state;
+    const { descriptionTextareaValue } = this.state;
 
     const isDescriptionUpdated = !_isEqual(
       _trim(previousDescription),
-      _trim(descriptionInputValue)
+      _trim(descriptionTextareaValue)
     );
 
     this.setState({ isDescriptionUpdated });
@@ -191,7 +190,7 @@ class ListItemDescription extends PureComponent {
 
     return (
       <button
-        className="list-item-description__add-button"
+        className="link-button"
         disabled={disabled}
         onClick={this.handleShowTextarea}
         type="button"
@@ -202,7 +201,7 @@ class ListItemDescription extends PureComponent {
   };
 
   renderTextarea = () => {
-    const { descriptionInputValue, pending } = this.state;
+    const { descriptionTextareaValue, pending } = this.state;
     const { disabled } = this.props;
 
     return (
@@ -217,7 +216,7 @@ class ListItemDescription extends PureComponent {
         onChange={disabled ? null : this.handleDescriptionChange}
         onFocus={this.handleFocus}
         type="text"
-        value={descriptionInputValue}
+        value={descriptionTextareaValue}
       />
     );
   };
@@ -227,7 +226,7 @@ class ListItemDescription extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ descriptionInputValue: value });
+    this.setState({ descriptionTextareaValue: value });
   };
 
   render() {
