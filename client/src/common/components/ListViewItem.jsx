@@ -48,7 +48,11 @@ class ListViewItem extends PureComponent {
           {isLimitedList && <LockIcon />}
         </div>
         <div className="list-view-item__details">
-          <header className="list-view-item__header">
+          <header
+            className={classNames('list-view-item__header', {
+              'list-view-item__header--no-description': !description
+            })}
+          >
             <h3 className="list-view-item__heading">{name}</h3>
             {description && (
               <p className="list-view-item__description">{description}</p>

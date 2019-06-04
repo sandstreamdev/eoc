@@ -19,14 +19,13 @@
     font-family: $font-family;
     letter-spacing: 0.2px;
     line-height: 1.2;
-    margin-bottom: 8px;
-    padding-bottom: 4px;
+    margin-bottom: 4px;
     text-transform: uppercase;
     word-break: break-word;
   }
 
   svg {
-    height: 24px;
+    height: 20px;
     path {
       fill: $text-dark;
     }
