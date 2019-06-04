@@ -1,5 +1,21 @@
-@mixin breakpoint($width){
+@mixin breakpoint($width) {
   @media only screen and (min-width: $width) {
     @content;
+  }
+}
+
+@mixin show-for($width) {
+  display: none;
+
+  @media only screen and (min-width: $width) {
+    display: block;
+  }
+}
+
+@mixin hide-for($width) {
+  display: block;
+
+  @media only screen and (min-width: $width) {
+    display: none;
   }
 }

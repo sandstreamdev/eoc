@@ -1,3 +1,7 @@
+.hidden {
+  display: none;
+}
+
 .wrapper {
   max-width: 1440px;
   padding: 0 20px;
@@ -6,25 +10,4 @@
 
 .z-index-high {
   z-index: 9;
-}
-
-// Visibility classes
-.hidden {
-  display: none;
-}
-
-.show-for-large {
-  display: none;
-
-  @include breakpoint($large) {
-    display: block;
-  }
-}
-
-.hide-for-large {
-  display: block;
-
-  @include breakpoint($large) {
-    display: none;
-  }
 }

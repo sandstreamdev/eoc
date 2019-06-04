@@ -17,9 +17,7 @@
       background: $gray2;
     }
 
-    @include breakpoint($large) {
-      display: none;
-    }
+    @include hide-for($large);
   }
 
   &__form {

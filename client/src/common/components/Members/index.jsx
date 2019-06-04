@@ -127,13 +127,13 @@ class MembersBox extends PureComponent {
         key={member.avatarUrl}
         title={member.displayName}
       >
-        <div className="hide-for-large">
+        <div className="members-box__button-mobile">
           <MemberButton
             member={member}
             onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
           />
         </div>
-        <div className="show-for-large">
+        <div className="members-box__button-desktop">
           <Manager>
             <Reference>
               {({ ref }) => (
