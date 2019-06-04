@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Manager, Reference } from 'react-popper';
 import { withRouter } from 'react-router-dom';
-import _debounce from 'lodash/debounce';
 
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { PlusIcon, DotsIcon } from 'assets/images/icons';
@@ -27,25 +26,10 @@ class MembersBox extends PureComponent {
       email: '',
       isFormVisible: false,
       isInvitationBoxVisible: false,
-      isMobile: window.outerWidth < 400,
       membersDisplayLimit: MEMBERS_DISPLAY_LIMIT,
       pending: false
     };
   }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
-
-  handleResize = () =>
-    _debounce(
-      () => this.setState({ isMobile: window.innerWidth < 400 }),
-      100
-    )();
 
   showForm = () => this.setState({ isFormVisible: true });
 
@@ -134,7 +118,7 @@ class MembersBox extends PureComponent {
 
   renderMemberList = () => {
     const { members } = this.props;
-    const { isMobile, context, membersDisplayLimit } = this.state;
+    const { context, membersDisplayLimit } = this.state;
     const membersList = Object.values(members);
 
     return membersList.slice(0, membersDisplayLimit).map(member => (
@@ -143,12 +127,13 @@ class MembersBox extends PureComponent {
         key={member.avatarUrl}
         title={member.displayName}
       >
-        {isMobile ? (
+        <div className="hide-for-large">
           <MemberButton
             member={member}
             onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
           />
-        ) : (
+        </div>
+        <div className="show-for-large">
           <Manager>
             <Reference>
               {({ ref }) => (
@@ -165,7 +150,7 @@ class MembersBox extends PureComponent {
               <MemberBox>{this.renderDetails(member)}</MemberBox>
             )}
           </Manager>
-        )}
+        </div>
       </li>
     ));
   };
@@ -224,7 +209,7 @@ class MembersBox extends PureComponent {
   };
 
   render() {
-    const { context, email, isInvitationBoxVisible, isMobile } = this.state;
+    const { context, email, isInvitationBoxVisible } = this.state;
     const { members } = this.props;
     const currentUser = members[context];
 
@@ -245,7 +230,9 @@ class MembersBox extends PureComponent {
             onInvite={this.handleInvite}
           />
         )}
-        {isMobile && currentUser && this.renderDetails(currentUser)}
+        <div className="hide-for-large">
+          {currentUser && this.renderDetails(currentUser)}
+        </div>
       </div>
     );
   }
