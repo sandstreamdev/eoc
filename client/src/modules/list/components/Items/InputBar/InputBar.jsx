@@ -78,19 +78,17 @@ class InputBar extends Component {
     this.setState({ isButtonDisabled: true });
   };
 
-  hideTipAfterTimeout = () =>
-    setTimeout(() => this.setState({ isTipVisible: false }), 5000);
-
   handleTipVisibility = () => {
     const { itemName } = this.state;
+    const isItemNameEmpty = !_trim(itemName);
 
-    if (_trim(itemName)) {
-      this.setState({ isTipVisible: false });
-      return;
+    if (isItemNameEmpty) {
+      this.setState({ isTipVisible: true });
     }
-
-    this.setState({ isTipVisible: true });
   };
+
+  hideTipAfterTimeout = () =>
+    setTimeout(() => this.setState({ isTipVisible: false }), 5000);
 
   handleFormSubmit = event => {
     event.preventDefault();
