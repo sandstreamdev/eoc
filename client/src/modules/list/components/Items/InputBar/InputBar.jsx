@@ -56,9 +56,13 @@ class InputBar extends Component {
     )();
 
   handleNameChange = event => {
+    const {
+      target: { value }
+    } = event;
+
     this.setState(
       {
-        itemName: event.target.value
+        itemName: value
       },
       () => {
         this.handleAddButtonStatus();
@@ -72,6 +76,7 @@ class InputBar extends Component {
 
     if (itemName) {
       this.setState({ isButtonDisabled: false });
+
       return;
     }
 
