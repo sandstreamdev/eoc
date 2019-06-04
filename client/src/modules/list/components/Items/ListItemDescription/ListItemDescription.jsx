@@ -28,10 +28,10 @@ class ListItemDescription extends PureComponent {
     const trimmedDescription = description.trim();
 
     this.state = {
-      isDescriptionUpdated: false,
       descriptionTextareaValue: trimmedDescription,
-      isTextareaVisible: false,
+      isDescriptionUpdated: false,
       isFocused: false,
+      isTextareaVisible: false,
       pending: false
     };
 
@@ -59,7 +59,7 @@ class ListItemDescription extends PureComponent {
     }
   }
 
-  handleKeyPress = event => {
+  handleEscapePress = event => {
     const { code } = event;
     const { isFocused } = this.state;
 
@@ -70,12 +70,12 @@ class ListItemDescription extends PureComponent {
 
   handleFocus = () => {
     this.setState({ isFocused: true });
-    document.addEventListener('keydown', this.handleKeyPress);
+    document.addEventListener('keydown', this.handleEscapePress);
   };
 
   handleBlur = () => {
     this.setState({ isFocused: false });
-    document.removeEventListener('keydown', this.handleKeyPress);
+    document.removeEventListener('keydown', this.handleEscapePress);
     this.handleDescriptionUpdate();
   };
 
@@ -170,8 +170,8 @@ class ListItemDescription extends PureComponent {
     return (
       <Linkify
         properties={{
-          target: '_blank',
-          className: 'list-item-description__link'
+          className: 'list-item-description__link',
+          target: '_blank'
         }}
       >
         <p
