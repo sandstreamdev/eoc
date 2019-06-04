@@ -724,7 +724,6 @@ const updateListItem = (req, resp) => {
     description,
     isArchived,
     isOrdered,
-    link,
     itemId,
     name
   } = req.body;
@@ -750,12 +749,8 @@ const updateListItem = (req, resp) => {
       const { items } = list;
       const itemToUpdate = items.id(sanitizeItemId);
 
-      if (description) {
+      if (description !== undefined) {
         itemToUpdate.description = description;
-      }
-
-      if (link) {
-        itemToUpdate.link = link;
       }
 
       if (isOrdered !== undefined) {

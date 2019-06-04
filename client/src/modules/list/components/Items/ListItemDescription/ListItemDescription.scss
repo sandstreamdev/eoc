@@ -1,0 +1,75 @@
+.list-item-description {
+  &__title {
+    text-align: left;
+    font-size: $m-font;
+    color: $text-normal;
+    font-weight: 500;
+    margin-top: 5px;
+  }
+
+  &__description {
+    font-size: $m-font;
+    color: $text-normal;
+    padding: 8px 0 10px 0;
+    line-height: 1.2;
+    text-align: left;
+    margin: 0 0 16px 0;
+    overflow-wrap: break-word;
+    cursor: pointer;
+
+    &--disabled {
+      cursor: default;
+
+      a {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__edit-field {
+    font-family: $font-family;
+    font-size: $m-font;
+    color: $text-normal;
+    line-height: 1.2;
+    text-align: left;
+    width: 100%;
+    cursor: text;
+    border: 0;
+    outline: 0;
+    padding: 8px 0 10px 0;
+    margin: 0 0 16px 0;
+    background: transparent;
+    resize: none;
+
+    &:focus {
+      border-bottom: 1px solid $orange;
+      padding-bottom: 5px;
+    }
+  }
+
+  &__save-button {
+    position: relative;
+    width: 100%;
+    margin-bottom: 16px;
+
+    .primary-button {
+      font-size: $m-font;
+      width: 100%;
+      height: 44px;
+    }
+  }
+
+  &__link {
+    font-style: italic;
+    text-decoration: underline;
+    color: $link-color;
+
+    &:visited {
+      color: $text-normal;
+
+      &:hover {
+        color: $text-orange;
+      }
+    }
+  }
+}

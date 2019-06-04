@@ -50,12 +50,12 @@ const clearVoteFailure = errMessage => ({
 });
 
 const updateListItemSuccess = (listId, itemId, data) => ({
-  type: ItemActionTypes.UPDATE_DETAILS_SUCCESS,
+  type: ItemActionTypes.UPDATE_SUCCESS,
   payload: { listId, itemId, data }
 });
 
 const updateListItemFailure = () => ({
-  type: ItemActionTypes.UPDATE_DETAILS_FAILURE
+  type: ItemActionTypes.UPDATE_FAILURE
 });
 
 const cloneItemSuccess = (listId, item) => ({

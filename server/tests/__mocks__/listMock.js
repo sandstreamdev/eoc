@@ -14,7 +14,6 @@ const listMock = [
       {
         description: '',
         isOrdered: false,
-        link: '',
         voterIds: [],
         _id: { $oid: '5ccd61134663533f995b1756' },
         authorName: 'Adam Klepacz',
@@ -27,7 +26,6 @@ const listMock = [
       {
         description: '',
         isOrdered: false,
-        link: '',
         voterIds: [],
         _id: { $oid: '5ccd61174663533f995b1758' },
         authorName: 'Adam Klepacz',
@@ -40,7 +38,6 @@ const listMock = [
       {
         description: '',
         isOrdered: false,
-        link: '',
         voterIds: [],
         _id: { $oid: '5ccd611a4663533f995b175a' },
         authorName: 'Adam Klepacz',
@@ -53,7 +50,6 @@ const listMock = [
       {
         description: '',
         isOrdered: false,
-        link: '',
         voterIds: [],
         _id: { $oid: '5ccd611e4663533f995b175c' },
         authorName: 'Adam Klepacz',

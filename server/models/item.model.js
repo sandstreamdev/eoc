@@ -9,7 +9,6 @@ const ItemSchema = new Schema(
     description: { type: String, default: '' },
     isArchived: { type: Boolean, default: false },
     isOrdered: { type: Boolean, default: false },
-    link: { type: String, default: '' },
     name: { type: String, required: true },
     purchaserId: { type: String },
     status: { type: String },

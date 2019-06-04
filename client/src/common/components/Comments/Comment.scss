@@ -9,6 +9,7 @@
     text-align: left;
     display: flex;
     flex-direction: column;
+    min-width: 0;
   }
 
   &__author {
@@ -29,6 +30,7 @@
     line-height: 1.2;
     margin-top: 16px;
     color: $text-normal;
+    overflow-wrap: break-word;
   }
 
   &__link {

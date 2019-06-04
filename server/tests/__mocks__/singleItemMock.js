@@ -2,7 +2,6 @@ const singleItemMock = [
   {
     description: '',
     isOrdered: false,
-    link: '',
     voterIds: [],
     _id: { $oid: '5ccd61174663533f995b1758' },
     authorId: {

@@ -85,10 +85,10 @@ const items = (state = {}, action) => {
         }
       };
     }
-    case ItemActionTypes.UPDATE_DETAILS_SUCCESS: {
+    case ItemActionTypes.UPDATE_SUCCESS: {
       const {
         payload: {
-          data: { description, link },
+          data: { description },
           itemId
         }
       } = action;
@@ -98,8 +98,7 @@ const items = (state = {}, action) => {
         ...state,
         [itemId]: {
           ...prevItem,
-          description: description || prevItem.description,
-          link: link || prevItem.link
+          description
         }
       };
     }
