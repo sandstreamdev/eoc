@@ -2,7 +2,6 @@ import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import _debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import _trim from 'lodash/trim';
 
@@ -11,7 +10,6 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { LARGE_VIEW } from './consts';
 
 class InputBar extends Component {
   constructor(props) {
@@ -20,17 +18,12 @@ class InputBar extends Component {
     this.state = {
       isButtonDisabled: true,
       isFormVisible: false,
-      isMobile: window.outerWidth < LARGE_VIEW,
       isTipVisible: false,
       itemName: '',
       pending: false
     };
 
     this.input = React.createRef();
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
   }
 
   componentDidUpdate() {
@@ -44,16 +37,6 @@ class InputBar extends Component {
       this.hideTipAfterTimeout();
     }
   }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
-
-  handleResize = () =>
-    _debounce(
-      () => this.setState({ isMobile: window.outerWidth < LARGE_VIEW }),
-      100
-    )();
 
   handleNameChange = event => {
     const {
@@ -131,7 +114,6 @@ class InputBar extends Component {
       itemName,
       isFormVisible,
       pending,
-      isMobile,
       isButtonDisabled,
       isTipVisible
     } = this.state;
@@ -152,7 +134,6 @@ class InputBar extends Component {
           />
           <input
             className={classNames('input-bar__submit primary-button', {
-              'input-bar__submit--visible': isMobile,
               'input-bar__submit--disabled': isButtonDisabled
             })}
             disabled={isButtonDisabled}

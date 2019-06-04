@@ -4,21 +4,21 @@
   min-height: 50px;
 
   &__submit {
-    display: none;
-
-    &--visible {
-      display: block;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: auto;
-      text-transform: uppercase;
-    }
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+    text-transform: uppercase;
 
     &--disabled {
       cursor: not-allowed;
       background: $gray2;
+    }
+
+    @include breakpoint($large) {
+      display: none;
     }
   }
 
