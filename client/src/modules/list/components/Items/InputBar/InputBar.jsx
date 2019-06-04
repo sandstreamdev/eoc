@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import _debounce from 'lodash/debounce';
 import classNames from 'classnames';
+import _trim from 'lodash/trim';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
@@ -17,11 +18,14 @@ class InputBar extends Component {
     super(props);
 
     this.state = {
+      isButtonDisabled: true,
       isFormVisible: false,
-      itemName: '',
       isMobile: window.outerWidth < LARGE_VIEW,
+      isTipVisible: false,
+      itemName: '',
       pending: false
     };
+
     this.input = React.createRef();
   }
 
@@ -30,10 +34,14 @@ class InputBar extends Component {
   }
 
   componentDidUpdate() {
-    const { isFormVisible, pending } = this.state;
+    const { isFormVisible, pending, isTipVisible } = this.state;
 
     if (isFormVisible && !pending) {
       this.input.current.focus();
+    }
+
+    if (isTipVisible) {
+      this.hideTipAfterTimeout();
     }
   }
 
@@ -47,10 +55,42 @@ class InputBar extends Component {
       100
     )();
 
-  handleNameChange = event =>
-    this.setState({
-      itemName: event.target.value
-    });
+  handleNameChange = event => {
+    this.setState(
+      {
+        itemName: event.target.value
+      },
+      () => {
+        this.handleAddButtonStatus();
+        this.handleTipVisibility();
+      }
+    );
+  };
+
+  handleAddButtonStatus = () => {
+    const { itemName } = this.state;
+
+    if (itemName) {
+      this.setState({ isButtonDisabled: false });
+      return;
+    }
+
+    this.setState({ isButtonDisabled: true });
+  };
+
+  hideTipAfterTimeout = () =>
+    setTimeout(() => this.setState({ isTipVisible: false }), 5000);
+
+  handleTipVisibility = () => {
+    const { itemName } = this.state;
+
+    if (_trim(itemName)) {
+      this.setState({ isTipVisible: false });
+      return;
+    }
+
+    this.setState({ isTipVisible: true });
+  };
 
   handleFormSubmit = event => {
     event.preventDefault();
@@ -67,12 +107,16 @@ class InputBar extends Component {
       name: itemName
     };
 
-    this.setState({ pending: true });
+    if (_trim(itemName)) {
+      this.setState({ pending: true });
 
-    addItem(newItem, id).finally(() => {
-      this.setState({ itemName: '', pending: false });
-      this.hideForm();
-    });
+      return addItem(newItem, id).finally(() => {
+        this.setState({ itemName: '', pending: false });
+        this.hideForm();
+      });
+    }
+
+    this.handleTipVisibility();
   };
 
   showForm = () => this.setState({ isFormVisible: true });
@@ -80,29 +124,41 @@ class InputBar extends Component {
   hideForm = () => this.setState({ isFormVisible: false });
 
   renderInputBar = () => {
-    const { itemName, isFormVisible, pending, isMobile } = this.state;
+    const {
+      itemName,
+      isFormVisible,
+      pending,
+      isMobile,
+      isButtonDisabled,
+      isTipVisible
+    } = this.state;
 
     return isFormVisible ? (
-      <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
-        <input
-          className="input-bar__input primary-input"
-          disabled={pending}
-          name="item name"
-          onChange={this.handleNameChange}
-          placeholder="What is missing?"
-          ref={this.input}
-          required
-          type="text"
-          value={itemName}
-        />
-        <input
-          className={classNames('input-bar__submit primary-button', {
-            'input-bar__submit--visible': isMobile
-          })}
-          type="submit"
-          value="add"
-        />
-      </form>
+      <Fragment>
+        <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
+          <input
+            className="input-bar__input primary-input"
+            disabled={pending}
+            name="item name"
+            onChange={this.handleNameChange}
+            placeholder="What is missing?"
+            ref={this.input}
+            required
+            type="text"
+            value={itemName}
+          />
+          <input
+            className={classNames('input-bar__submit primary-button', {
+              'input-bar__submit--visible': isMobile,
+              'input-bar__submit--disabled': isButtonDisabled
+            })}
+            disabled={isButtonDisabled}
+            type="submit"
+            value="add"
+          />
+        </form>
+        {isTipVisible && <p className="error-message">Name can not be empty</p>}
+      </Fragment>
     ) : (
       <button
         className="input-bar__button"
