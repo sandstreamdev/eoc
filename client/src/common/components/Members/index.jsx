@@ -19,11 +19,6 @@ import InviteNewUser from './components/InviteNewUser';
 import { inviteUser } from './model/actions';
 
 class MembersBox extends PureComponent {
-  handleResize = _debounce(
-    () => this.setState({ isMobile: window.innerWidth < 400 }),
-    100
-  );
-
   constructor(props) {
     super(props);
 
@@ -43,9 +38,14 @@ class MembersBox extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.handleResize.cancel();
     window.removeEventListener('resize', this.handleResize);
   }
+
+  handleResize = () =>
+    _debounce(
+      () => this.setState({ isMobile: window.innerWidth < 400 }),
+      100
+    )();
 
   showForm = () => this.setState({ isFormVisible: true });
 

@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import _debounce from 'lodash/debounce';
+import classNames from 'classnames';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { LARGE_VIEW } from './consts';
 
 class InputBar extends Component {
   constructor(props) {
@@ -16,9 +19,14 @@ class InputBar extends Component {
     this.state = {
       isFormVisible: false,
       itemName: '',
+      isMobile: window.outerWidth < LARGE_VIEW,
       pending: false
     };
     this.input = React.createRef();
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
   }
 
   componentDidUpdate() {
@@ -28,6 +36,16 @@ class InputBar extends Component {
       this.input.current.focus();
     }
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () =>
+    _debounce(
+      () => this.setState({ isMobile: window.outerWidth < LARGE_VIEW }),
+      100
+    )();
 
   handleNameChange = event =>
     this.setState({
@@ -62,7 +80,7 @@ class InputBar extends Component {
   hideForm = () => this.setState({ isFormVisible: false });
 
   renderInputBar = () => {
-    const { itemName, isFormVisible, pending } = this.state;
+    const { itemName, isFormVisible, pending, isMobile } = this.state;
 
     return isFormVisible ? (
       <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
@@ -77,7 +95,13 @@ class InputBar extends Component {
           type="text"
           value={itemName}
         />
-        <input className="input-bar__submit" type="submit" />
+        <input
+          className={classNames('input-bar__submit primary-button', {
+            'input-bar__submit--visible': isMobile
+          })}
+          type="submit"
+          value="add"
+        />
       </form>
     ) : (
       <button
