@@ -30,6 +30,7 @@ class CommentsList extends PureComponent {
     const {
       fetchComments,
       itemId,
+      itemName,
       match: {
         params: { id: listId }
       }
@@ -37,7 +38,9 @@ class CommentsList extends PureComponent {
 
     this.setState({ pending: true });
 
-    this.pendingPromise = makeAbortablePromise(fetchComments(listId, itemId));
+    this.pendingPromise = makeAbortablePromise(
+      fetchComments(itemName, listId, itemId)
+    );
     this.pendingPromise.promise
       .then(() => this.setState({ pending: false }))
       .catch(err => {
@@ -117,6 +120,7 @@ CommentsList.propTypes = {
   comments: PropTypes.objectOf(PropTypes.object),
   isFormAccessible: PropTypes.bool,
   itemId: PropTypes.string.isRequired,
+  itemName: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
 
   addComment: PropTypes.func.isRequired,

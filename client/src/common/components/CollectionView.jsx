@@ -17,13 +17,13 @@ import Preloader from 'common/components/Preloader';
 import ListViewItem from 'common/components/ListViewItem';
 
 class CollectionView extends PureComponent {
-  handleFavClick = (itemId, isFavourite) => event => {
+  handleFavClick = (itemId, isFavourite, listName) => event => {
     event.stopPropagation();
     const { addListToFavourites, removeListFromFavourites } = this.props;
 
     const action = isFavourite ? removeListFromFavourites : addListToFavourites;
 
-    return action(itemId);
+    return action(itemId, listName);
   };
 
   handleCardClick = (route, itemId) => () => {
@@ -47,7 +47,7 @@ class CollectionView extends PureComponent {
     const { color, items, route } = this.props;
 
     return _map(items, item => {
-      const { _id, isFavourite } = item;
+      const { _id, isFavourite, name } = item;
 
       return (
         <li className="collection__item" key={_id}>
@@ -55,7 +55,7 @@ class CollectionView extends PureComponent {
             color={color}
             item={item}
             onCardClick={this.handleCardClick(route, _id)}
-            onFavClick={this.handleFavClick(_id, isFavourite)}
+            onFavClick={this.handleFavClick(_id, isFavourite, name)}
             route={route}
           />
         </li>

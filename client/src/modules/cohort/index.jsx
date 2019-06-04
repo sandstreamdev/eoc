@@ -105,6 +105,7 @@ class Cohort extends PureComponent {
   handleCohortArchivization = () => () => {
     const { archiveCohort } = this.props;
     const {
+      cohortDetails: { name },
       match: {
         params: { id }
       }
@@ -112,7 +113,7 @@ class Cohort extends PureComponent {
 
     this.setState({ pendingForCohortArchivization: true });
 
-    archiveCohort(id).finally(() => {
+    archiveCohort(id, name).finally(() => {
       this.setState({ pendingForCohortArchivization: false });
       this.hideDialog();
     });

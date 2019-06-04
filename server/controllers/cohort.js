@@ -37,9 +37,7 @@ const createCohort = (req, resp) => {
         .status(201)
         .send(responseWithCohort(doc, userId))
     )
-    .catch(() =>
-      resp.status(400).send({ message: 'Cohort not saved. Please try again.' })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const getCohortsMetaData = (req, resp) => {
@@ -54,17 +52,12 @@ const getCohortsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(400).send({ message: 'No cohorts data found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send(responseWithCohorts(docs));
+      return resp.send(responseWithCohorts(docs));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the cohorts data. Please try again.'
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const getArchivedCohortsMetaData = (req, resp) => {
@@ -84,19 +77,12 @@ const getArchivedCohortsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp
-          .status(400)
-          .send({ message: 'No archived cohorts data found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send(responseWithCohorts(docs));
+      return resp.send(responseWithCohorts(docs));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the archived cohorts data. Please try again.'
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const updateCohortById = (req, resp) => {
@@ -121,19 +107,12 @@ const updateCohortById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Cohort not found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp
-        .status(200)
-        .send({ message: `Cohort "${doc.name}" successfully updated.` });
+      return resp.send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while updating the cohort. Please try again.'
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const getCohortDetails = (req, resp) => {
@@ -143,9 +122,7 @@ const getCohortDetails = (req, resp) => {
   } = req;
 
   if (!isValidMongoId(cohortId)) {
-    return resp
-      .status(404)
-      .send({ message: `Data of cohort id: ${cohortId} not found.` });
+    return resp.sendStatus(404);
   }
 
   Cohort.findOne({
@@ -157,9 +134,7 @@ const getCohortDetails = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new NotFoundException(
-          `Data of cohort id: ${cohortId} not found.`
-        );
+        return resp.sendStatus(400);
       }
 
       const {
@@ -172,13 +147,13 @@ const getCohortDetails = (req, resp) => {
       } = doc;
 
       if (isArchived) {
-        return resp.status(200).json({ _id, isArchived, name });
+        return resp.send({ _id, isArchived, name });
       }
 
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const members = responseWithCohortMembers(membersCollection, ownerIds);
 
-      resp.status(200).json({
+      resp.send({
         _id,
         description,
         isArchived,
@@ -188,11 +163,8 @@ const getCohortDetails = (req, resp) => {
         name
       });
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the cohort data. Please try again.'
-      })
+    .catch(err =>
+      resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
     );
 };
 
@@ -201,19 +173,14 @@ const deleteCohortById = (req, resp) => {
     params: { id: cohortId },
     user: { _id: userId }
   } = req;
-  let documentName = '';
   const sanitizedCohortId = sanitize(cohortId);
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new NotFoundException(
-          `Data of cohort id: ${cohortId} not found.`
-        );
+        throw new NotFoundException();
       }
-
-      documentName = doc.name;
 
       return List.find({ cohortId: sanitizedCohortId }, '_id')
         .lean()
@@ -227,23 +194,10 @@ const deleteCohortById = (req, resp) => {
     })
     .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
     .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
-    .then(() =>
-      resp
-        .status(200)
-        .send({ message: `Cohort "${documentName}" successfully deleted.` })
-    )
-    .catch(err => {
-      if (err instanceof NotFoundException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({
-        message:
-          'An error occurred while deleting the cohort. Please try again.'
-      });
-    });
+    .then(() => resp.send())
+    .catch(err =>
+      resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
+    );
 };
 
 const removeMember = (req, resp) => {
@@ -266,9 +220,7 @@ const removeMember = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException(
-          `Data of cohort id: ${cohortId} not found.`
-        );
+        throw new BadRequestException();
       }
 
       return List.updateMany(
@@ -282,22 +234,8 @@ const removeMember = (req, resp) => {
         { $pull: { viewersIds: userId } }
       ).exec();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: 'Member successfully removed from cohort.'
-      })
-    )
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({
-        message: "Can't remove member from cohort."
-      });
-    });
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 const addOwnerRole = (req, resp) => {
@@ -319,18 +257,12 @@ const addOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Cohort data not found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send({
-        message: "User has been successfully set as a cohort's owner."
-      });
+      return resp.send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't set user as a cohort's owner."
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeOwnerRole = (req, resp) => {
@@ -348,7 +280,7 @@ const removeOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't remove owner role.");
+        throw new BadRequestException();
       }
 
       const { name, ownerIds } = doc;
@@ -363,19 +295,15 @@ const removeOwnerRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: 'User has no owner role.'
-      })
-    )
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { message } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(400).send({ message });
       }
 
-      resp.status(400).send({ message: 'Cohort data not found.' });
+      resp.sendStatus(400);
     });
 };
 
@@ -445,23 +373,19 @@ const addMember = (req, resp) => {
       if (newMember) {
         const { ownerIds } = currentCohort;
 
-        return resp
-          .status(200)
-          .json(responseWithCohortMember(newMember, ownerIds));
+        return resp.send(responseWithCohortMember(newMember, ownerIds));
       }
 
-      resp.status(204).send();
+      resp.send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { message } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(400).send({ message });
       }
 
-      resp.status(400).send({
-        message: 'An error occurred while adding new member. Please try again.'
-      });
+      resp.sendStatus(400);
     });
 };
 

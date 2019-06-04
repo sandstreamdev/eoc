@@ -114,7 +114,7 @@ class CohortHeader extends PureComponent {
     if (nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
 
-      updateCohort(id, { name: nameToUpdate }).finally(() => {
+      updateCohort(previousName, id, { name: nameToUpdate }).finally(() => {
         this.setState({
           isNameInputVisible: false,
           nameInputValue: nameToUpdate,
@@ -136,7 +136,7 @@ class CohortHeader extends PureComponent {
     } = this.props;
     const { descriptionInputValue } = this.state;
     const descriptionToUpdate = _trim(descriptionInputValue);
-    const { description: previousDescription } = details;
+    const { description: previousDescription, name: previousName } = details;
 
     if (_trim(previousDescription) === descriptionToUpdate) {
       this.setState({ isDescriptionTextareaVisible: false });
@@ -149,12 +149,13 @@ class CohortHeader extends PureComponent {
 
     this.setState({ pendingForDescription: true });
 
-    updateCohort(id, { description: updatedDescription }).finally(() =>
-      this.setState({
-        isDescriptionTextareaVisible: false,
-        descriptionInputValue: updatedDescription,
-        pendingForDescription: false
-      })
+    updateCohort(previousName, id, { description: updatedDescription }).finally(
+      () =>
+        this.setState({
+          isDescriptionTextareaVisible: false,
+          descriptionInputValue: updatedDescription,
+          pendingForDescription: false
+        })
     );
   };
 

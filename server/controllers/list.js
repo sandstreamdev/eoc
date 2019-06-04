@@ -51,11 +51,9 @@ const createList = (req, resp) => {
           return list.save();
         }
 
-        throw new BadRequestException(
-          'You need to be cohort member to create new sacks'
-        );
+        throw new BadRequestException();
       })
-      .then(listData =>
+      .then(() =>
         resp
           .status(201)
           .location(`/lists/${list._id}`)
@@ -63,11 +61,8 @@ const createList = (req, resp) => {
       )
       .catch(err => {
         if (err instanceof BadRequestException) {
-          const { status, message } = err;
-
-          return resp.status(status).send({ message });
+          resp.sendStatus(400);
         }
-        resp.status(400).send({ message: 'Sack not saved. Please try again.' });
       });
   } else {
     list
@@ -78,9 +73,7 @@ const createList = (req, resp) => {
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId))
       )
-      .catch(() => {
-        resp.status(400).send({ message: 'Sack not saved. Please try again.' });
-      });
+      .catch(() => resp.sendStatus(400));
   }
 };
 
@@ -89,33 +82,18 @@ const deleteListById = (req, resp) => {
     user: { _id: userId },
     params: { id: listId }
   } = req;
-  let listName;
 
   List.findOneAndDelete({ _id: sanitize(listId), ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException('Sack data not found.');
+        return resp.sendStatus(400);
       }
-
-      listName = doc.name;
 
       return Comment.deleteMany({ listId }).exec();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: `Sack "${listName}" successfully deleted.`
-      })
-    )
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
-      }
-      resp.status(400).send({
-        message: 'An error occurred while deleting the sack. Please try again.'
-      });
-    });
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 const getListsMetaData = (req, resp) => {
@@ -140,17 +118,12 @@ const getListsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp.status(400).send({ message: 'No sacks data found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).json(responseWithListsMetaData(docs, userId));
+      return resp.send(responseWithListsMetaData(docs, userId));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the sacks data. Please try again.'
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const getArchivedListsMetaData = (req, resp) => {
@@ -179,19 +152,12 @@ const getArchivedListsMetaData = (req, resp) => {
     .exec()
     .then(docs => {
       if (!docs) {
-        return resp
-          .status(400)
-          .send({ message: 'No archived sacks data found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).json(responseWithListsMetaData(docs, userId));
+      return resp.send(responseWithListsMetaData(docs, userId));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the archived sacks data. Please try again.'
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const addItemToList = (req, resp) => {
@@ -221,18 +187,14 @@ const addItemToList = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack not found.' });
+        return resp.sendStatus(400);
       }
 
       const newItem = doc.items.slice(-1)[0];
 
-      return resp.status(200).send(responseWithItem(newItem, userId));
+      return resp.send(responseWithItem(newItem, userId));
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: 'An error occurred while adding a new item. Please try again.'
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const getListData = (req, resp) => {
@@ -243,9 +205,7 @@ const getListData = (req, resp) => {
   const sanitizedListId = sanitize(listId);
 
   if (!isValidMongoId(listId)) {
-    return resp
-      .status(404)
-      .send({ message: `Data of sack id: ${listId} not found.` });
+    return resp.sendStatus(404);
   }
 
   let list;
@@ -260,7 +220,7 @@ const getListData = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new NotFoundException(`Data of sack id: ${listId} not found.`);
+        throw new NotFoundException();
       }
       list = doc;
       const { cohortId } = list;
@@ -288,9 +248,7 @@ const getListData = (req, resp) => {
       } = list;
 
       if (isArchived) {
-        return resp
-          .status(200)
-          .json({ cohortId, cohortName, _id, isArchived, name, type });
+        return resp.send({ cohortId, cohortName, _id, isArchived, name, type });
       }
 
       const activeItems = listItems.filter(item => !item.isArchived);
@@ -306,7 +264,7 @@ const getListData = (req, resp) => {
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const items = responseWithItems(userId, activeItems);
 
-      return resp.status(200).json({
+      return resp.send({
         _id,
         cohortId,
         cohortName,
@@ -321,16 +279,9 @@ const getListData = (req, resp) => {
         type
       });
     })
-    .catch(err => {
-      if (err instanceof NotFoundException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
-      }
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the sack data. Please try again.'
-      });
-    });
+    .catch(err =>
+      resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
+    );
 };
 
 const voteForItem = (req, resp) => {
@@ -348,29 +299,18 @@ const voteForItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        return resp.sendStatus(400);
       }
 
       const { items } = list;
       const item = items.id(itemId);
 
-      if (checkIfArrayContainsUserId(item.voterIds, userId)) {
-        throw new BadRequestException('You have already voted.');
-      }
-
       item.voterIds.push(userId);
 
       return list.save();
     })
-    .then(() => resp.status(200).json({ message: 'Vote saved.' }))
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({ message: 'Sack data not found' });
-    });
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 const clearVote = (req, resp) => {
@@ -388,34 +328,19 @@ const clearVote = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        return resp.sendStatus(400);
       }
 
       const { items } = list;
       const item = items.id(itemId);
-
-      if (!checkIfArrayContainsUserId(item.voterIds, userId)) {
-        throw new BadRequestException(
-          'You have not voted yet, so you can not removed your vote.'
-        );
-      }
-
       const voterIdIndex = item.voterIds.indexOf(userId);
 
       item.voterIds.splice(voterIdIndex, 1);
 
       return list.save();
     })
-    .then(() => resp.status(200).json({ message: 'Vote removed.' }))
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({ message: 'Sack data not found' });
-    });
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 const updateListById = (req, resp) => {
@@ -440,19 +365,12 @@ const updateListById = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp
-        .status(200)
-        .send({ message: `Sack "${doc.name}" successfully updated.` });
+      return resp.send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message:
-          'An error occurred while updating the sack data. Please try again.'
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const addToFavourites = (req, resp) => {
@@ -473,18 +391,12 @@ const addToFavourites = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send({
-        message: `Sack "${doc.name}" successfully marked as favourite.`
-      });
+      return resp.send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't mark sack as favourite. Please try again."
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeFromFavourites = (req, resp) => {
@@ -505,18 +417,12 @@ const removeFromFavourites = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send({
-        message: `Sack "${doc.name}" successfully removed from favourites.`
-      });
+      return resp.send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't remove sack from favourites. Please try again."
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeOwner = (req, resp) => {
@@ -536,18 +442,12 @@ const removeOwner = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send({
-        message: 'Owner successfully removed from sack.'
-      });
+      return resp.send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't remove owner from sack."
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeMember = (req, resp) => {
@@ -575,18 +475,12 @@ const removeMember = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.status(400).send({ message: 'Sack data not found.' });
+        return resp.sendStatus(400);
       }
 
-      return resp.status(200).send({
-        message: 'Member successfully removed from sack.'
-      });
+      return resp.send();
     })
-    .catch(() =>
-      resp.status(400).send({
-        message: "Can't remove member from sack."
-      })
-    );
+    .catch(() => resp.sendStatus(400));
 };
 
 const addOwnerRole = (req, resp) => {
@@ -601,7 +495,7 @@ const addOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't set user as a sack's owner.");
+        throw new BadRequestException();
       }
       const { memberIds, ownerIds } = doc;
       const userIsNotAnOwner = !checkIfArrayContainsUserId(ownerIds, userId);
@@ -618,19 +512,8 @@ const addOwnerRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: "User has been successfully set as a sack's owner."
-      })
-    )
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({ message: 'Sack data not found' });
-    });
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeOwnerRole = (req, resp) => {
@@ -664,14 +547,14 @@ const removeOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() =>
-      resp.status(200).send({
+      resp.send({
         message: 'User has no owner role.'
       })
     )
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
+        const { message } = err;
+        return resp.status(400).send({ message });
       }
 
       resp.status(400).send({ message: 'Sack data not found' });
@@ -689,7 +572,7 @@ const addMemberRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't set user as a sack's member.");
+        throw new BadRequestException();
       }
 
       const { ownerIds, memberIds } = doc;
@@ -707,19 +590,8 @@ const addMemberRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() =>
-      resp.status(200).send({
-        message: "User has been successfully set as a sack's member."
-      })
-    )
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({ message: 'Sack data not found' });
-    });
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 const removeMemberRole = (req, resp) => {
@@ -734,7 +606,7 @@ const removeMemberRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't remove member role");
+        throw new BadRequestException();
       }
 
       const { memberIds, name, ownerIds } = doc;
@@ -759,14 +631,14 @@ const removeMemberRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => resp.status(200).send({ message: 'User has no member role' }))
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
-        return resp.status(status).send({ message });
+        const { message } = err;
+        return resp.status(400).send({ message });
       }
 
-      resp.status(400).send({ message: 'Sack data not found' });
+      resp.sendStatus(400);
     });
 };
 
@@ -782,8 +654,8 @@ const addViewer = (req, resp) => {
 
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
-      .status(401)
-      .send({ message: 'Adding members is disabled in demo mode.' });
+      .status(400)
+      .send({ message: 'Adding viewers in DEMO mode is disabled.' });
   }
 
   List.findOne({
@@ -828,16 +700,16 @@ const addViewer = (req, resp) => {
       if (user) {
         const userToSend = responseWithListMember(user, cohortMembers);
 
-        return resp.status(200).json(userToSend);
+        return resp.send(userToSend);
       }
 
-      resp.status(204).send();
+      resp.send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
-        const { status, message } = err;
+        const { message } = err;
 
-        return resp.status(status).send({ message });
+        return resp.status(400).send({ message });
       }
 
       resp.status(400).send({
@@ -872,7 +744,7 @@ const updateListItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       const { items } = list;
@@ -904,20 +776,8 @@ const updateListItem = (req, resp) => {
 
       return list.save();
     })
-    .then(() =>
-      resp.status(200).json({ message: 'Item successfully updated.' })
-    )
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({
-        message: 'An error occurred while updating the item. Please try again.'
-      });
-    });
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 const cloneItem = (req, resp) => {
@@ -933,7 +793,7 @@ const cloneItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       const { description, link, name } = list.items.id(itemId);
@@ -959,29 +819,16 @@ const cloneItem = (req, resp) => {
     })
     .then(list => {
       if (!list) {
-        return resp.status(400).send({
-          message: 'An error occurred while cloning the item. Please try again.'
-        });
+        return resp.sendStatus(400);
       }
 
       const newItem = list.items.slice(-1)[0];
 
-      resp.status(200).send({
-        message: 'Item successfully cloned.',
+      resp.send({
         item: responseWithItem(newItem, userId)
       });
     })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({
-        message: 'An error occurred while cloning the item. Please try again.'
-      });
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 const changeType = (req, resp) => {
@@ -999,7 +846,7 @@ const changeType = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
       const {
         cohortId: { memberIds: cohortMembersCollection },
@@ -1030,13 +877,7 @@ const changeType = (req, resp) => {
         .exec();
     })
     .then(list => {
-      const {
-        memberIds,
-        name,
-        ownerIds,
-        type,
-        viewersIds: viewersCollection
-      } = list;
+      const { memberIds, ownerIds, type, viewersIds: viewersCollection } = list;
       const members = responseWithListMembers(
         viewersCollection,
         memberIds,
@@ -1044,20 +885,11 @@ const changeType = (req, resp) => {
         cohortMembers
       );
 
-      resp.status(200).send({
-        message: `"${name}" sack's type change to ${type}.`,
+      resp.send({
         data: { members, type }
       });
     })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({ message: 'Sack data not found' });
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 const getArchivedItems = (req, resp) => {
@@ -1076,15 +908,15 @@ const getArchivedItems = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
       const { items } = list;
       const archivedItems = items.filter(item => item.isArchived);
 
-      resp.status(200).send(responseWithItems(userId, archivedItems));
+      resp.send(responseWithItems(userId, archivedItems));
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const deleteItem = (req, resp) => {
@@ -1103,12 +935,12 @@ const deleteItem = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        return resp.status(400).send();
+        return resp.sendStatus(400);
       }
 
-      resp.status(200).send();
+      resp.send();
     })
-    .catch(() => resp.status(400).send());
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = {

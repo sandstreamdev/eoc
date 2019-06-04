@@ -23,7 +23,7 @@ const addComment = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       const comment = new Comment({
@@ -41,16 +41,7 @@ const addComment = (req, resp) => {
         .status(201)
         .send(responseWithComment(comment, avatarUrl, displayName))
     )
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-      resp
-        .status(400)
-        .send({ message: 'Comment not saved. Please try again.' });
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 const getComments = (req, resp) => {
@@ -68,7 +59,7 @@ const getComments = (req, resp) => {
     .exec()
     .then(list => {
       if (!list) {
-        throw new BadRequestException('Sack data not found.');
+        throw new BadRequestException();
       }
 
       return Comment.find(
@@ -84,23 +75,12 @@ const getComments = (req, resp) => {
     })
     .then(comments => {
       if (!comments) {
-        return resp.status(400).send({ message: 'There are no comments yet.' });
+        return resp.sendStatus(400);
       }
 
-      resp.status(200).json(responseWithComments(comments));
+      resp.send(responseWithComments(comments));
     })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { status, message } = err;
-
-        return resp.status(status).send({ message });
-      }
-
-      resp.status(400).send({
-        message:
-          'An error occurred while fetching the comments. Please try again.'
-      });
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = {
