@@ -74,7 +74,7 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    action(id, displayName, userId, isOwner).catch(() =>
+    action(id, displayName, userId, isOwner).finally(() =>
       this.setState({ pending: false })
     );
   };

@@ -40,7 +40,7 @@
   &__details {
     box-sizing: border-box;
     width: calc(100% - 88px);
-    padding: 16px;
+    padding: 6px 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -52,7 +52,6 @@
 
   &__header {
     width: 100%;
-    margin-bottom: 16px;
 
     @include breakpoint($small) {
       height: 100%;
@@ -61,6 +60,14 @@
       margin-bottom: 0;
       width: calc(100% - 190px);
       justify-content: center;
+    }
+
+    &--no-description {
+      padding-top: 12px;
+
+      @include breakpoint($small) {
+        padding-top: 0;
+      }
     }
   }
 
@@ -93,7 +100,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    margin-top: 5px;
   }
 
   &:hover {
@@ -148,7 +154,6 @@
     line-height: 1.2;
 
     @include breakpoint($xsmall) {
-      font-size: $m-font;
       flex-direction: row;
 
       span:first-child {
@@ -161,6 +166,7 @@
     }
 
     @include breakpoint($small) {
+      font-size: $m-font;
       height: 100%;
       align-items: center;
       width: 190px;
