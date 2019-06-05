@@ -105,11 +105,11 @@ class InputBar extends Component {
 
   renderInputBar = () => {
     const {
-      itemName,
-      isFormVisible,
-      pending,
       isButtonDisabled,
-      isTipVisible
+      isFormVisible,
+      isTipVisible,
+      itemName,
+      pending
     } = this.state;
 
     return isFormVisible ? (
