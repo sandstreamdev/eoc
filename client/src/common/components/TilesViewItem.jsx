@@ -61,6 +61,7 @@ class TilesViewItem extends PureComponent {
             className="tiles-view-item__star"
             disabled={pending}
             onClick={this.handleFavClick}
+            title="Add to favourites"
             type="button"
           >
             {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
