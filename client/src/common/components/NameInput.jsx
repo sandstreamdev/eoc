@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 class NameInput extends PureComponent {
   constructor(props) {
@@ -36,16 +37,26 @@ class NameInput extends PureComponent {
   render() {
     const { disabled, name, onNameChange } = this.props;
     return (
-      <input
-        className="name-input primary-input"
-        disabled={disabled}
-        name="name"
-        onChange={onNameChange}
-        ref={this.nameInput}
-        type="text"
-        value={name}
-        required
-      />
+      <div className="name-input">
+        <input
+          className="name-input__input primary-input"
+          disabled={disabled}
+          name="name"
+          onChange={onNameChange}
+          ref={this.nameInput}
+          type="text"
+          value={name}
+          required
+        />
+        <input
+          className={classNames('name-input__submit primary-button', {
+            'name-input__submit--disabled': disabled
+          })}
+          disabled={disabled}
+          type="submit"
+          value="save"
+        />
+      </div>
     );
   }
 }
