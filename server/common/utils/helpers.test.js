@@ -3,7 +3,6 @@ const { ObjectId } = require('mongoose').Types;
 const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
-  isUserFavourite,
   isValidMongoId,
   responseWithCohort,
   responseWithCohortMember,
@@ -55,42 +54,6 @@ describe('function isValidMongoId', () => {
     const id = '1243sb3';
     const result = isValidMongoId(id);
 
-    expect(result).toBe(false);
-  });
-});
-
-describe('function isUserFavourite', () => {
-  it('returns true if user is inside favIds array', () => {
-    const favIds = ['123', '456', '789'];
-    const userId = '123';
-
-    const result = isUserFavourite(favIds, userId);
-    expect(result).toBe(true);
-  });
-
-  it('returns true if user is inside favIds array', () => {
-    const newId = ObjectId();
-    const favIds = ['123', '456', '789'];
-
-    favIds.push(newId);
-
-    const result = isUserFavourite(favIds, newId);
-    expect(result).toBe(true);
-  });
-
-  it('returns false if user is not inside favIds array', () => {
-    const userId = '999';
-    const favIds = ['123', '456', '789'];
-
-    const result = isUserFavourite(favIds, userId);
-    expect(result).toBe(false);
-  });
-
-  it('returns false if user is not inside favIds empty array', () => {
-    const userId = '999';
-    const favIds = [];
-
-    const result = isUserFavourite(favIds, userId);
     expect(result).toBe(false);
   });
 });
