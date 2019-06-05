@@ -57,13 +57,7 @@ class InputBar extends Component {
   handleAddButtonStatus = () => {
     const { itemName } = this.state;
 
-    if (itemName) {
-      this.setState({ isButtonDisabled: false });
-
-      return;
-    }
-
-    this.setState({ isButtonDisabled: true });
+    this.setState({ isButtonDisabled: !itemName });
   };
 
   handleTipVisibility = () => {
