@@ -1,13 +1,11 @@
 import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Manager, Reference } from 'react-popper';
 import { withRouter } from 'react-router-dom';
 
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { PlusIcon, DotsIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
-import MemberBox from './components/MemberBox';
 import MemberDetails from './components/MemberDetails';
 import MemberButton from './components/MemberButton';
 import { addCohortMember } from 'modules/cohort/model/actions';
@@ -118,7 +116,7 @@ class MembersBox extends PureComponent {
 
   renderMemberList = () => {
     const { members } = this.props;
-    const { context, membersDisplayLimit } = this.state;
+    const { membersDisplayLimit } = this.state;
     const membersList = Object.values(members);
 
     return membersList.slice(0, membersDisplayLimit).map(member => (
@@ -132,24 +130,6 @@ class MembersBox extends PureComponent {
             member={member}
             onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
           />
-        </div>
-        <div className="members-box__button-desktop">
-          <Manager>
-            <Reference>
-              {({ ref }) => (
-                <MemberButton
-                  member={member}
-                  onDisplayDetails={this.handleDisplayingMemberDetails(
-                    member._id
-                  )}
-                  popperRef={ref}
-                />
-              )}
-            </Reference>
-            {context === member._id && (
-              <MemberBox>{this.renderDetails(member)}</MemberBox>
-            )}
-          </Manager>
         </div>
       </li>
     ));
@@ -230,9 +210,7 @@ class MembersBox extends PureComponent {
             onInvite={this.handleInvite}
           />
         )}
-        <div className="hide-for-large">
-          {currentUser && this.renderDetails(currentUser)}
-        </div>
+        {currentUser && this.renderDetails(currentUser)}
       </div>
     );
   }

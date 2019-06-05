@@ -49,9 +49,9 @@
     }
   }
 
-  &__button-mobile {
-    @include hide-for($large);
-  }
+  // &__button-mobile {
+  //   @include hide-for($large);
+  // }
 
   &__button-desktop {
     @include show-for($large);
