@@ -27,10 +27,19 @@ class CohortHeader extends PureComponent {
       descriptionInputValue: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
+      isTipVisible: false,
       nameInputValue: name,
       pendingForDescription: false,
       pendingForName: false
     };
+  }
+
+  componentDidUpdate() {
+    const { isTipVisible, nameInputValue } = this.state;
+
+    if (isTipVisible && nameInputValue) {
+      this.hideTipAfterTimeout();
+    }
   }
 
   handleClick = (event, isClickedOutside) => {
@@ -82,7 +91,9 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ nameInputValue: value });
+    this.setState({ nameInputValue: value }, () => {
+      this.handleTipVisibility();
+    });
   };
 
   handleDescriptionChange = event => {
@@ -159,6 +170,17 @@ class CohortHeader extends PureComponent {
     );
   };
 
+  handleTipVisibility = () => {
+    const { nameInputValue } = this.state;
+    const isItemNameEmpty = !_trim(nameInputValue);
+
+    if (isItemNameEmpty) {
+      this.setState({ isTipVisible: true });
+    }
+  };
+
+  hideTipAfterTimeout = () => this.setState({ isTipVisible: false });
+
   renderDescription = () => {
     const {
       descriptionInputValue,
@@ -209,19 +231,27 @@ class CohortHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { isNameInputVisible, nameInputValue, pendingForName } = this.state;
+    const {
+      isNameInputVisible,
+      isTipVisible,
+      nameInputValue,
+      pendingForName
+    } = this.state;
     const {
       details: { isOwner, name }
     } = this.props;
 
     return isNameInputVisible ? (
-      <NameInput
-        disabled={pendingForName}
-        name={nameInputValue}
-        onClick={this.handleClick}
-        onKeyPress={this.handleKeyPress}
-        onNameChange={this.handleNameChange}
-      />
+      <div>
+        <NameInput
+          disabled={pendingForName}
+          name={nameInputValue}
+          onClick={this.handleClick}
+          onKeyPress={this.handleKeyPress}
+          onNameChange={this.handleNameChange}
+        />
+        {isTipVisible && <p className="error-message">Name can not be empty</p>}
+      </div>
     ) : (
       <h1
         className={classNames('cohort-header__heading', {

@@ -52,7 +52,7 @@ class NameInput extends PureComponent {
           className={classNames('name-input__submit primary-button', {
             'name-input__submit--disabled': disabled
           })}
-          disabled={disabled}
+          disabled={disabled || !name}
           type="submit"
           value="save"
         />
