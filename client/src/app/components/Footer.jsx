@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 import { COMPANY_NAME, COMPANY_PAGE_URL } from 'common/constants/variables';
 
@@ -8,15 +9,22 @@ const Footer = () => (
     <div className="wrapper footer__wrapper">
       <span className="footer__text">
         <Link className="footer__text footer__link" to="/about">
-          About
+          <FormattedMessage id="footer.about" defaultMessage="About" />
         </Link>
         <span className="footer__text-divider"> | </span>
         <Link className="footer__text footer__link" to="/privacy-policy">
-          Privacy & Terms
+          <FormattedMessage
+            id="footer.privacy"
+            defaultMessage="Privacy & Terms"
+          />
         </Link>
       </span>
       <span className="footer__text footer__copyrights">
-        &copy; Copyrights 2019
+        &copy;
+        <FormattedMessage
+          id="footer.copyrights"
+          defaultMessage="Copyrights 2019"
+        />
       </span>
       <a
         className="footer__text footer__link"
