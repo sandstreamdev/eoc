@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import classNames from 'classnames';
+import _trim from 'lodash/trim';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
@@ -14,25 +16,61 @@ class InputBar extends Component {
     super(props);
 
     this.state = {
+      isButtonDisabled: true,
       isFormVisible: false,
+      isTipVisible: false,
       itemName: '',
       pending: false
     };
+
     this.input = React.createRef();
   }
 
   componentDidUpdate() {
-    const { isFormVisible, pending } = this.state;
+    const { isFormVisible, pending, isTipVisible } = this.state;
 
     if (isFormVisible && !pending) {
       this.input.current.focus();
     }
+
+    if (isTipVisible) {
+      this.hideTipAfterTimeout();
+    }
   }
 
-  handleNameChange = event =>
-    this.setState({
-      itemName: event.target.value
-    });
+  handleNameChange = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState(
+      {
+        itemName: value
+      },
+      () => {
+        this.handleAddButtonStatus();
+        this.handleTipVisibility();
+      }
+    );
+  };
+
+  handleAddButtonStatus = () => {
+    const { itemName } = this.state;
+
+    this.setState({ isButtonDisabled: !itemName });
+  };
+
+  handleTipVisibility = () => {
+    const { itemName } = this.state;
+    const isItemNameEmpty = !_trim(itemName);
+
+    if (isItemNameEmpty) {
+      this.setState({ isTipVisible: true });
+    }
+  };
+
+  hideTipAfterTimeout = () =>
+    setTimeout(() => this.setState({ isTipVisible: false }), 5000);
 
   handleFormSubmit = event => {
     event.preventDefault();
@@ -49,12 +87,16 @@ class InputBar extends Component {
       name: itemName
     };
 
-    this.setState({ pending: true });
+    if (_trim(itemName)) {
+      this.setState({ pending: true });
 
-    addItem(newItem, id).finally(() => {
-      this.setState({ itemName: '', pending: false });
-      this.hideForm();
-    });
+      return addItem(newItem, id).finally(() => {
+        this.setState({ itemName: '', pending: false });
+        this.hideForm();
+      });
+    }
+
+    this.handleTipVisibility();
   };
 
   showForm = () => this.setState({ isFormVisible: true });
@@ -62,23 +104,39 @@ class InputBar extends Component {
   hideForm = () => this.setState({ isFormVisible: false });
 
   renderInputBar = () => {
-    const { itemName, isFormVisible, pending } = this.state;
+    const {
+      isButtonDisabled,
+      isFormVisible,
+      isTipVisible,
+      itemName,
+      pending
+    } = this.state;
 
     return isFormVisible ? (
-      <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
-        <input
-          className="input-bar__input primary-input"
-          disabled={pending}
-          name="item name"
-          onChange={this.handleNameChange}
-          placeholder="What is missing?"
-          ref={this.input}
-          required
-          type="text"
-          value={itemName}
-        />
-        <input className="input-bar__submit" type="submit" />
-      </form>
+      <Fragment>
+        <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
+          <input
+            className="input-bar__input primary-input"
+            disabled={pending}
+            name="item name"
+            onChange={this.handleNameChange}
+            placeholder="What is missing?"
+            ref={this.input}
+            required
+            type="text"
+            value={itemName}
+          />
+          <input
+            className={classNames('input-bar__submit primary-button', {
+              'input-bar__submit--disabled': isButtonDisabled
+            })}
+            disabled={isButtonDisabled}
+            type="submit"
+            value="add"
+          />
+        </form>
+        {isTipVisible && <p className="error-message">Name can not be empty</p>}
+      </Fragment>
     ) : (
       <button
         className="input-bar__button"

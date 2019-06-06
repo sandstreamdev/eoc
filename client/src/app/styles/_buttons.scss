@@ -13,6 +13,7 @@
   border: 0;
   min-height: 40px;
   cursor: pointer;
+  width: auto;
 
   &:disabled {
     cursor: not-allowed;
