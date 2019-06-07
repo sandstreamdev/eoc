@@ -27,7 +27,6 @@
     width: 250px;
     padding: 4px 16px;
     background: $bg-color;
-    position: absolute;
     top: 50px;
     right: 0;
     filter: drop-shadow(0 2px 2px $shadow-color-light);
@@ -43,23 +42,6 @@
       border-left: 15px solid transparent;
       border-right: 15px solid transparent;
       border-bottom: 15px solid $bg-color;
-    }
-  }
-
-  &__menu-item {
-    cursor: initial;
-    height: 44px;
-    padding: 4px 0;
-    color: $text-normal;
-    font-size: $s-font;
-    line-height: 1.2;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid $border-color;
-
-    &:last-child {
-      border-bottom: 0;
     }
   }
 }

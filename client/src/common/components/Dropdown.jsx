@@ -1,99 +1,101 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
-import MenuIcon from 'assets/images/ellipsis-v-solid.svg';
 import { KeyCodes } from 'common/constants/enums';
 
-class DropdownMenu extends Component {
-  state = {
-    hideMenu: true
-  };
+class Dropdown extends PureComponent {
+  constructor(props) {
+    super(props);
 
-  hideMenu = () => {
-    this.setState({ hideMenu: true });
-    document.removeEventListener('click', this.hideMenu);
-    document.removeEventListener('keydown', this.onPressEscape);
-  };
+    this.state = {
+      isVisible: false
+    };
 
-  showMenu = () => {
-    this.setState({ hideMenu: false });
-    document.addEventListener('click', this.hideMenu);
-    document.addEventListener('keydown', this.onPressEscape);
-  };
+    this.dropdown = React.createRef();
+  }
 
-  onPressEscape = event => {
+  componentDidUpdate() {
+    const { isVisible } = this.state;
+
+    if (isVisible) {
+      document.addEventListener('keydown', this.handleEscapePress);
+      document.addEventListener('click', this.handleClickOutside);
+    } else {
+      document.removeEventListener('keydown', this.handleEscapePress);
+      document.removeEventListener('click', this.handleClickOutside);
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleEscapePress);
+    document.removeEventListener('click', this.handleClickOutside);
+  }
+
+  handleEscapePress = event => {
     const { code } = event;
 
     if (code === KeyCodes.ESCAPE) {
-      this.hideMenu();
+      this.setState({
+        isVisible: false
+      });
     }
   };
 
-  toggleMenuVisibility = () => {
-    const { hideMenu } = this.state;
-    hideMenu ? this.showMenu() : this.hideMenu();
+  handleClickOutside = event => {
+    const isClickedOutside = !this.dropdown.current.contains(event.target);
+
+    if (isClickedOutside) {
+      this.setState({ isVisible: false });
+    }
   };
 
+  handleDropdownVisibility = () =>
+    this.setState(({ isVisible }) => ({ isVisible: !isVisible }));
+
   render() {
-    const { hideMenu } = this.state;
-    const { children, menuItems } = this.props;
-    const menuButton = children || (
-      <div className="dropdown__wrapper">
-        <img alt="Menu" className="dropdown__menu-icon" src={MenuIcon} />
-      </div>
-    );
+    const { isVisible } = this.state;
+    const {
+      buttonClassName,
+      buttonContent,
+      children,
+      dropdownClassName,
+      dropdownName
+    } = this.props;
 
     return (
       <div className="dropdown">
         <button
-          className="dropdown__button"
+          className={classNames(buttonClassName)}
+          onClick={this.handleDropdownVisibility}
           type="button"
-          onClick={this.toggleMenuVisibility}
+          title={
+            dropdownName && `${isVisible ? 'Hide' : 'Show'} ${dropdownName}`
+          }
         >
-          {menuButton}
+          {buttonContent}
         </button>
         <div
-          className={classNames('dropdown__menu-wrapper', {
-            hidden: hideMenu
+          className={classNames('dropdown__wrapper', {
+            hidden: !isVisible,
+            [dropdownClassName]: dropdownClassName
           })}
+          ref={this.dropdown}
         >
-          <ul className="dropdown__menu">
-            {menuItems.map(item => (
-              <li className="dropdown__menu-item" key={item.label}>
-                <button
-                  className="dropdown__menu-button"
-                  onClick={item.onClick}
-                  type="button"
-                >
-                  {item.label}
-                  {item.iconSrc && (
-                    <img
-                      alt={`${item.label} icon`}
-                      className="dropdown__menu-icon"
-                      src={item.iconSrc}
-                    />
-                  )}
-                </button>
-              </li>
-            ))}
-          </ul>
+          {children}
         </div>
       </div>
     );
   }
 }
 
-DropdownMenu.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
-  menuItems: PropTypes.arrayOf(
-    PropTypes.shape({
-      iconSrc: PropTypes.string,
-      label: PropTypes.string.isRequired,
-
-      onClick: PropTypes.func.isRequired
-    })
-  ).isRequired
+Dropdown.propTypes = {
+  buttonClassName: PropTypes.string,
+  buttonContent: PropTypes.oneOfType([PropTypes.node, PropTypes.string])
+    .isRequired,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
+  dropdownClassName: PropTypes.string,
+  dropdownName: PropTypes.string
 };
 
-export default DropdownMenu;
+export default Dropdown;
