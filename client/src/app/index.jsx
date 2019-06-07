@@ -14,15 +14,15 @@ import history from 'common/utils/history';
 
 addLocaleData([...en, ...pl]);
 const store = configureStore();
-const englishMessages = localeData.en;
+const englishMessages = localeData.pl;
 
 ReactDOM.render(
-  <IntlProvider locale="en" messages={englishMessages}>
-    <Provider store={store}>
+  <Provider store={store}>
+    <IntlProvider locale="pl" messages={englishMessages}>
       <Router history={history}>
         <Layout />
       </Router>
-    </Provider>
-  </IntlProvider>,
+    </IntlProvider>
+  </Provider>,
   document.getElementById('root')
 );

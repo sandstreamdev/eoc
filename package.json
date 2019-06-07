@@ -8,6 +8,7 @@
     "clear-demo": "node server/tasks/clearDemoData.js",
     "build:dev": "npm run build:langs && webpack --progress",
     "build:prod": "npm run build:langs && webpack --config webpack.config.production.js",
+    "build:langs": "NODE_ENV='production' babel-node client/locale/translate.js",
     "dev": "npm-run-all -p start:server:dev start:client:dev",
     "format": "prettier --check \"{client,server}/**/*.{js,jsx}\"",
     "format:fix": "prettier --write \"{client,server}/**/*.{js,jsx}\"",
@@ -20,8 +21,7 @@
     "start:server:prod": "node server/index.js",
     "stylelint": "stylelint client/**/*.scss --cache",
     "stylelint:fix": "stylelint client/src/**/*.scss --cache --fix",
-    "test": "jest -runInBand --verbose",
-    "build:langs": "NODE_ENV='production' babel-node client/locale/translate.js"
+    "test": "jest -runInBand --verbose"
   },
   "author": "Sandstream Development",
   "license": "MIT",
