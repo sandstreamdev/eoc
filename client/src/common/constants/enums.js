@@ -49,3 +49,8 @@ export const KeyCodes = Object.freeze({
   ENTER: 'Enter',
   ESCAPE: 'Escape'
 });
+
+export const ActivityType = Object.freeze({
+  ITEM_ADD: 'activity.item.add',
+  ITEM_DELETE: 'activity.item.delete'
+});

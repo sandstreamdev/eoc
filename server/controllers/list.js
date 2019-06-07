@@ -19,7 +19,7 @@ const {
   responseWithListMember,
   responseWithListMembers
 } = require('../common/utils/index');
-const { DEMO_MODE_ID, ListType } = require('../common/variables');
+const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveItemActivity } = require('./activity');
 
@@ -195,7 +195,7 @@ const addItemToList = (req, resp) => {
 
       resp.send(responseWithItem(newItem, userId));
 
-      saveItemActivity('item.add', userId, newItem._id, listId);
+      saveItemActivity(ActivityType.ITEM_ADD, userId, newItem._id, listId);
     })
     .catch(() => resp.sendStatus(400));
 };
