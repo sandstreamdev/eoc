@@ -1,18 +1,25 @@
-const Activity = require('../models/activity.model');
+const ItemActivity = require('../models/activity.model');
 const List = require('../models/list.model');
 
-const saveActivity = activityData => {
-  const newActivity = new Activity({
-    ...activityData
+const saveItemActivity = (actionType, actorId, itemId, listId) => {
+  const newActivity = new ItemActivity({
+    actionType,
+    actorId,
+    itemId,
+    listId
   });
 
-  newActivity
-    .save()
-    .then(() =>
-      List.find({ viewersIds: '5ce3bf74b556531f936d3d6a' }, '_id')
-        .lean()
-        .exec()
-    )
+  newActivity.save();
+};
+
+const getActivities = (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+
+  List.find({ viewersIds: userId }, '_id')
+    .lean()
+    .exec()
     .then(lists => {
       if (!lists) {
         throw new Error();
@@ -20,13 +27,8 @@ const saveActivity = activityData => {
       return lists.map(list => list._id);
     })
     .then(listIds =>
-      Activity.find(
-        { listId: { $in: listIds } },
-        {
-          sort: { createdAt: -1 }
-        }
-      )
-        .lean()
+      ItemActivity.find({ listId: { $in: listIds } })
+        .sort({ createdAt: -1 })
         .populate('actorId', '_id avatarUrl displayName')
         .populate({
           path: 'listId',
@@ -43,58 +45,33 @@ const saveActivity = activityData => {
       if (!docs) {
         throw new Error();
       }
-      console.log('***********************************');
-      console.log(docs[0]);
 
       const activities = docs.map(doc => {
-        const { _id: actorId, avatarUrl, displayName } = doc.actor;
-        const { cohortId: cohort, name: listName, items } = doc.listId;
-        const { _id, itemId, listId, createdAt, activityType } = doc;
+        const { itemId, createdAt, activityType } = doc;
+        const { _id: actorId, avatarUrl, displayName } = doc.actorId;
+        const {
+          _id: listId,
+          cohortId: cohort,
+          name: listName,
+          items
+        } = doc.listId;
         const itemName = items.id(itemId).name;
 
         return {
           activityType,
           actor: { actorId, avatarUrl, displayName },
           cohort: cohort
-            ? { cohortId: cohort._id, name: cohort.cohortName }
+            ? { cohortId: cohort._id, cohortName: cohort.name }
             : null,
           createdAt,
+          item: { itemId, itemName },
           list: { listId, listName }
         };
       });
+
+      resp.send(activities);
     })
-    .catch(err => console.log(err));
+    .catch(err => resp.sendStatus(400));
 };
 
-const getItemActivities = (req, resp) => {
-  const {
-    user: { _id: userId }
-  } = req;
-
-  List.find({ viewersIds: userId }, '_id')
-    .lean()
-    .exec()
-    .then(lists => lists.map(list => list._id))
-    .then(listIds =>
-      Activity.find(
-        { listId: { $in: listIds } },
-        {
-          sort: { createdAt: -1 }
-        }
-      )
-        .lean()
-        .populate('actorId', '_id avatarUrl displayName')
-        .populate({
-          path: 'listId',
-          select: {
-            _id: 1,
-            name: 1,
-            items: 1
-          },
-          populate: { path: 'cohortId', select: '_id name' }
-        })
-        .exec()
-    );
-};
-
-module.exports = { getItemActivities, saveActivity };
+module.exports = { getActivities, saveItemActivity };
