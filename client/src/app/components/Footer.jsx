@@ -9,21 +9,21 @@ const Footer = () => (
     <div className="wrapper footer__wrapper">
       <span className="footer__text">
         <Link className="footer__text footer__link" to="/about">
-          <FormattedMessage id="footer.about" defaultMessage="About" />
+          <FormattedMessage defaultMessage="About" id="footer.about" />
         </Link>
         <span className="footer__text-divider"> | </span>
         <Link className="footer__text footer__link" to="/privacy-policy">
           <FormattedMessage
-            id="footer.privacy"
             defaultMessage="Privacy & Terms"
+            id="footer.privacy"
           />
         </Link>
       </span>
       <span className="footer__text footer__copyrights">
         &copy;
         <FormattedMessage
-          id="footer.copyrights"
           defaultMessage="Copyrights 2019"
+          id="footer.copyrights"
         />
       </span>
       <a

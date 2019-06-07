@@ -3,4 +3,4 @@
 *.min.js
 landing/*
 dist/*
-client/src/locales/*
+
