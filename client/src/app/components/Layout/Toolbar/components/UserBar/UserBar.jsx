@@ -77,7 +77,7 @@ class UserBar extends Component {
           >
             <ul className="user-bar__menu">
               <li className="user-bar__menu-item">
-                {`Logges as: ${name}`}
+                {`Logged as: ${name}`}
                 <UserIcon />
               </li>
               <li className="user-bar__menu-item">
