@@ -1,0 +1,6 @@
+[
+  {
+    "id": "user-bar.logged-as",
+    "defaultMessage": "Logged as: {name}"
+  }
+]

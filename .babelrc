@@ -4,7 +4,7 @@
     [
       "react-intl",
       {
-        "messagesDir": "./client/public/messages/"
+        "messagesDir": "./client/src/locales/messages/"
       }
     ],
     "@babel/plugin-proposal-class-properties"

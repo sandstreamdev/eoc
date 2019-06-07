@@ -7,6 +7,9 @@
   "pl": {
     "footer.about": "O nas",
     "footer.privacy": "Polityka prywatności",
-    "footer.copyrights": "Prawa autorskie 2019"
+    "footer.copyrights": "Prawa autorskie 2019",
+    "user-bar.my-cohort": "Moje cohorty",
+    "user-bar.logout": "Wyloguj",
+    "user-bar.logged-as": "Zalogowany jako: {name}"
   }
 }
