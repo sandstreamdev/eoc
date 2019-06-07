@@ -47,8 +47,12 @@ const getActivities = (req, resp) => {
       }
 
       const activities = docs.map(doc => {
-        const { itemId, createdAt, activityType } = doc;
-        const { _id: actorId, avatarUrl, displayName } = doc.actorId;
+        const { _id, itemId, createdAt, activityType } = doc;
+        const {
+          _id: actorId,
+          avatarUrl: actorAvatarUrl,
+          actorName
+        } = doc.actorId;
         const {
           _id: listId,
           cohortId: cohort,
@@ -58,8 +62,9 @@ const getActivities = (req, resp) => {
         const itemName = items.id(itemId).name;
 
         return {
+          _id,
           activityType,
-          actor: { actorId, avatarUrl, displayName },
+          actor: { actorId, actorAvatarUrl, actorName },
           cohort: cohort
             ? { cohortId: cohort._id, cohortName: cohort.name }
             : null,

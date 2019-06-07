@@ -1,26 +1,18 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 
 import { BellIcon } from 'assets/images/icons';
 import Dropdown from 'common/components/Dropdown';
+import ActivitiesList from './components/activitiesList';
 
-class Activities extends PureComponent {
-  render() {
-    return (
-      <Dropdown
-        buttonClassName="activities__button"
-        buttonContent={<BellIcon />}
-        dropdownClassName="activities__wrapper"
-        dropdownName="activities"
-      >
-        <ul className="activities__menu">
-          <li className="activities__menu-item">My cohorts</li>
-          <li className="activities__menu-item">Logout</li>
-        </ul>
-      </Dropdown>
-    );
-  }
-}
-
-Activities.propTypes = {};
+const Activities = () => (
+  <Dropdown
+    buttonClassName="activities__button"
+    buttonContent={<BellIcon />}
+    dropdownClassName="activities__wrapper"
+    dropdownName="activities"
+  >
+    <ActivitiesList />
+  </Dropdown>
+);
 
 export default Activities;
