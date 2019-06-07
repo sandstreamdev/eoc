@@ -1,10 +1,10 @@
 const express = require('express');
 
+const router = express.Router();
+
 const { authorize } = require('../middleware/authorize');
 const { getActivities } = require('../controllers/activity');
 
-const router = express.Router();
-
-router.post('/activities', authorize, getActivities);
+router.get('/data', authorize, getActivities);
 
 module.exports = router;

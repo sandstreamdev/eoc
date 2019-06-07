@@ -13,7 +13,7 @@ const fetchActivitiesFailure = () => ({
 });
 
 export const fetchActivities = () => dispatch =>
-  getData('/api/activities')
+  getData('/api/activities/data')
     .then(resp => resp.json())
     .then(json => dispatch(fetchActivitiesSuccess(json)))
     .catch(err => {

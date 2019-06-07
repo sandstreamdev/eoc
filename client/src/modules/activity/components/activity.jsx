@@ -1,9 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
-import { ActivityType } from 'common/constants/enums';
 import { dateFromString } from 'common/utils/helpers';
 import UserIconPlaceholder from 'assets/images/user.svg';
 import { UserIcon } from 'assets/images/icons';
@@ -15,13 +14,29 @@ class Activity extends PureComponent {
 
   handleAvatarError = () => this.setState({ isAvatarError: true });
 
+  renderCohortInfo = () => {
+    const {
+      activity: { cohort }
+    } = this.props;
+
+    if (cohort) {
+      const { cohortId, cohortName } = cohort;
+      return (
+        <Fragment>
+          {' in '}
+          <Link to={`/cohort/${cohortId}`}>{cohortName}</Link>
+          {' cohort'}
+        </Fragment>
+      );
+    }
+  };
+
   render() {
     const {
       activity: {
-        activityType,
         actor: { actorAvatarUrl, actorName },
         createdAt,
-        item: { itemId, itemName },
+        item: { itemName },
         list: { listId, listName }
       }
     } = this.props;
@@ -46,15 +61,23 @@ class Activity extends PureComponent {
             <UserIcon />
           )}
         </div>
-        <div className="activity__message" />
-        <p />
+        <div className="activity__message">
+          <p className="activity__action">
+            {`${actorName} added "${itemName}" item to `}
+            <Link to={`/sack/${listId}`}>{listName}</Link>
+            {' sack'}
+            {this.renderCohortInfo()}
+            {'.'}
+          </p>
+          <p className="activity__date">{date}</p>
+        </div>
       </div>
     );
   }
 }
 
 Activity.propTypes = {
-  activity: PropTypes.shapeOf({
+  activity: PropTypes.shape({
     activityType: PropTypes.string.isRequired,
     actor: PropTypes.objectOf(PropTypes.string).isRequired,
     cohort: PropTypes.objectOf(PropTypes.string),

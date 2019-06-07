@@ -14,9 +14,10 @@ class ActivitiesList extends PureComponent {
 
   componentDidMount() {
     const { fetchActivities } = this.props;
+
     this.setState({ pending: false });
 
-    fetchActivities();
+    fetchActivities().finally(this.setState({ pending: false }));
   }
 
   render() {

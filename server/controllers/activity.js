@@ -51,7 +51,7 @@ const getActivities = (req, resp) => {
         const {
           _id: actorId,
           avatarUrl: actorAvatarUrl,
-          actorName
+          displayName: actorName
         } = doc.actorId;
         const {
           _id: listId,

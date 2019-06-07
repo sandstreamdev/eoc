@@ -75,15 +75,16 @@ class Dropdown extends PureComponent {
         >
           {buttonContent}
         </button>
-        <div
-          className={classNames('dropdown__wrapper', {
-            hidden: !isVisible,
-            [dropdownClassName]: dropdownClassName
-          })}
-          ref={this.dropdown}
-        >
-          {children}
-        </div>
+        {isVisible && (
+          <div
+            className={classNames('dropdown__wrapper', {
+              [dropdownClassName]: dropdownClassName
+            })}
+            ref={this.dropdown}
+          >
+            {children}
+          </div>
+        )}
       </div>
     );
   }
