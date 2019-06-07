@@ -28,7 +28,6 @@ class UserBar extends Component {
 
   escapeListener = event => {
     const { code } = event;
-
     if (code === KeyCodes.ESCAPE) {
       this.setState({
         isVisible: false
