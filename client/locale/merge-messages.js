@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { sync as globSync } from 'glob';
 import { sync as mkdirpSync } from 'mkdirp';
 import last from 'lodash/last';
+import * as path from 'path';
 
 const MESSAGES_PATTERN = './client/public/messages/**/*.json';
 const LANG_DIR = './client/public/locales/';
@@ -9,7 +10,7 @@ const LANG_PATTERN = './client/public/locales/*.json';
 
 // Try to delete current json files from public/locales
 try {
-  fs.unlinkSync('./public/locales/*.json');
+  fs.unlinkSync('./client/public/locales/data.json');
 } catch (error) {
   console.log(error);
 }
