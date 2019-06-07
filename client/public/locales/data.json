@@ -2,11 +2,21 @@
   "en": {
     "footer.about": "About",
     "footer.privacy": "Privacy & Terms",
-    "footer.copyrights": "Copyrights 2019"
+    "footer.copyrights": "Copyrights 2019",
+    "user-bar.user-name": "Logged as: {name}",
+    "user-bar.my-cohorts": "My cohorts",
+    "user-bar.logout": "Logout"
   },
   "pl": {
     "footer.about": "O nas",
     "footer.privacy": "Polityka prywatności",
-    "footer.copyrights": "Prawa autorskie 2019"
+    "footer.copyrights": "Prawa autorskie 2019",
+    "user-bar.user-name": "Zalogowany jako: {name}",
+    "user-bar.my-cohorts": "Moje kohorty",
+    "user-bar.logout": "Wyloguj",
+    "toolbar.go-back-dashboard": "Wróć do dashboardu",
+    "toolbar.notification": "Powiadomienia",
+    "layout.change-to-tiles": "Zmień na widok kafelek",
+    "layout.change-to-list": "Zmień na widok listy"
   }
 }

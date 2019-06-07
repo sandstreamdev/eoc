@@ -14,7 +14,7 @@ import history from 'common/utils/history';
 
 addLocaleData([...en, ...pl]);
 const store = configureStore();
-const englishMessages = localeData.en;
+const englishMessages = localeData.pl;
 
 ReactDOM.render(
   <Provider store={store}>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 import { logoutCurrentUser } from 'modules/authorization/model/actions';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
@@ -77,12 +78,21 @@ class UserBar extends Component {
           >
             <ul className="user-bar__menu">
               <li className="user-bar__menu-item">
-                {`Logged as:  ${name}`}
+                <FormattedMessage
+                  defaultMessage="Logged as: {name}"
+                  id="user-bar.user-name"
+                  values={{
+                    name
+                  }}
+                />
                 <UserIcon />
               </li>
               <li className="user-bar__menu-item">
                 <Link to="/cohorts">
-                  My cohorts
+                  <FormattedMessage
+                    defaultMessage="My cohorts"
+                    id="user-bar.my-cohorts"
+                  />
                   <CohortIcon />
                 </Link>
               </li>
@@ -92,7 +102,10 @@ class UserBar extends Component {
                   onClick={this.handleLogOut}
                   type="button"
                 >
-                  Logout
+                  <FormattedMessage
+                    defaultMessage="Logout"
+                    id="user-bar.logout"
+                  />
                   <LogoutIcon />
                 </button>
               </li>

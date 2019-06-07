@@ -2,13 +2,14 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 
 import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import AuthBox from 'modules/authorization/AuthBox';
 import { loginUser } from 'modules/authorization/model/actions';
-import { UserPropType } from 'common/constants/propTypes';
+import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
 import Notifications from 'modules/notification';
@@ -76,7 +77,10 @@ export class Layout extends PureComponent {
   };
 
   render() {
-    const { currentUser } = this.props;
+    const {
+      currentUser,
+      intl: { formatMessage }
+    } = this.props;
     const { viewType } = this.state;
 
     return !currentUser ? (
@@ -99,9 +103,17 @@ export class Layout extends PureComponent {
                 )
               }
               onClick={this.handleViewTypeChange()}
-              title={`Change to ${
-                viewType === ViewType.LIST ? 'tiles' : 'list'
-              } view`}
+              title={
+                viewType === ViewType.LIST
+                  ? formatMessage({
+                      defaultMessage: 'Change to list view',
+                      id: 'layout.change-to-list'
+                    })
+                  : formatMessage({
+                      defaultMessage: 'Change to tiles view',
+                      id: 'layout.change-to-tiles'
+                    })
+              }
             />
           )}
         </Toolbar>
@@ -132,6 +144,7 @@ Layout.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func
   }),
+  intl: IntlPropType,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired
   }),
@@ -143,9 +156,11 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    { loginUser }
-  )(Layout)
+export default injectIntl(
+  withRouter(
+    connect(
+      mapStateToProps,
+      { loginUser }
+    )(Layout)
+  )
 );

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "user-bar.user-name",
+    "defaultMessage": "Logged as: {name}"
+  },
+  {
+    "id": "user-bar.my-cohorts",
+    "defaultMessage": "My cohorts"
+  },
+  {
+    "id": "user-bar.logout",
+    "defaultMessage": "Logout"
+  }
+]
