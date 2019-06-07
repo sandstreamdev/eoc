@@ -937,6 +937,8 @@ const deleteItem = (req, resp) => {
       }
 
       resp.send();
+
+      saveItemActivity(ActivityType.ITEM_DELETE, userId, itemId, listId);
     })
     .catch(() => resp.sendStatus(400));
 };
