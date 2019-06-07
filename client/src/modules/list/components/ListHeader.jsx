@@ -40,7 +40,7 @@ class ListHeader extends PureComponent {
     const { isTipVisible, nameInputValue } = this.state;
 
     if (isTipVisible && nameInputValue) {
-      this.hideTipAfterTimeout();
+      this.hideTip();
     }
   }
 
@@ -199,7 +199,7 @@ class ListHeader extends PureComponent {
     }
   };
 
-  hideTipAfterTimeout = () => this.setState({ isTipVisible: false });
+  hideTip = () => this.setState({ isTipVisible: false });
 
   renderDescription = () => {
     const {

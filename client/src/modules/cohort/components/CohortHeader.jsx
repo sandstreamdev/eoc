@@ -38,7 +38,7 @@ class CohortHeader extends PureComponent {
     const { isTipVisible, nameInputValue } = this.state;
 
     if (isTipVisible && nameInputValue) {
-      this.hideTipAfterTimeout();
+      this.hideTip();
     }
   }
 
@@ -179,7 +179,7 @@ class CohortHeader extends PureComponent {
     }
   };
 
-  hideTipAfterTimeout = () => this.setState({ isTipVisible: false });
+  hideTip = () => this.setState({ isTipVisible: false });
 
   renderDescription = () => {
     const {
