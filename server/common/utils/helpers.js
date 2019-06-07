@@ -12,7 +12,12 @@ const filter = f => object =>
 
 const isValidMongoId = id => ObjectId.isValid(id);
 
-const isUserFavourite = (favIds, userId) => favIds.indexOf(userId) > -1;
+const checkIfArrayContainsUserId = (idsArray, userId) => {
+  const arrayOfStrings = idsArray.map(id => id.toString());
+  const userIdAsString = userId.toString();
+
+  return arrayOfStrings.indexOf(userIdAsString) !== -1;
+};
 
 const responseWithList = (list, userId) => {
   const { _id, cohortId, description, favIds, items, name, type } = list;
@@ -23,7 +28,7 @@ const responseWithList = (list, userId) => {
     _id,
     description,
     doneItemsCount,
-    isFavourite: isUserFavourite(favIds, userId),
+    isFavourite: checkIfArrayContainsUserId(favIds, userId),
     type,
     name,
     unhandledItemsCount
@@ -46,7 +51,7 @@ const responseWithListsMetaData = (lists, userId) =>
     const listToSend = {
       ...rest,
       doneItemsCount,
-      isFavourite: isUserFavourite(favIds, userId),
+      isFavourite: checkIfArrayContainsUserId(favIds, userId),
       unhandledItemsCount
     };
 
@@ -56,13 +61,6 @@ const responseWithListsMetaData = (lists, userId) =>
 
     return listToSend;
   });
-
-const checkIfArrayContainsUserId = (idsArray, userId) => {
-  const arrayOfStrings = idsArray.map(id => id.toString());
-  const userIdAsString = userId.toString();
-
-  return arrayOfStrings.indexOf(userIdAsString) !== -1;
-};
 
 const responseWithItems = (userId, items) =>
   _map(items, item => {
@@ -247,7 +245,6 @@ module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   filter,
-  isUserFavourite,
   isValidMongoId,
   responseWithCohort,
   responseWithCohortMember,

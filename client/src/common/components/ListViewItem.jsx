@@ -71,6 +71,7 @@ class ListViewItem extends PureComponent {
             })}
             disabled={pending}
             onClick={this.handleFavClick}
+            title={`${isFavourite ? 'Remove from' : 'Add to'} favourites`}
             type="button"
           >
             {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
