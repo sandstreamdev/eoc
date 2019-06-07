@@ -8,7 +8,7 @@
     "clear-demo": "node server/tasks/clearDemoData.js",
     "build:dev": "npm run merge-langs && webpack --progress",
     "build:prod": "npm run merge-langs && webpack --config webpack.config.production.js",
-    "merge-langs": "NODE_ENV='production' babel-node client/locale/merge-messages.js",
+    "merge-langs": "NODE_ENV='production' babel-node client/src/locales/merge-messages.js",
     "dev": "npm-run-all -p start:server:dev start:client:dev",
     "format": "prettier --check \"{client,server}/**/*.{js,jsx}\"",
     "format:fix": "prettier --write \"{client,server}/**/*.{js,jsx}\"",
