@@ -54,7 +54,7 @@ class Activity extends PureComponent {
         >
           {actorAvatarUrl ? (
             <img
-              alt={`${actorName} avatar`}
+              alt={`${actorName || 'user'} avatar`}
               className="activity__image"
               onError={this.handleAvatarError}
               src={isAvatarError ? UserIconPlaceholder : actorAvatarUrl}
@@ -65,7 +65,7 @@ class Activity extends PureComponent {
         </div>
         <div className="activity__message">
           <p className="activity__action">
-            {`${actorName} added "${itemName}" item to `}
+            {`${actorName} added ${itemName ? `"${itemName}"` : ''} item to `}
             <Link className="activity__link" to={`/sack/${listId}`}>
               {listName}
             </Link>
