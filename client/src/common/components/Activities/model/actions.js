@@ -1,5 +1,5 @@
 import { getData } from 'common/utils/fetchMethods';
-import { ActivityActionTypes } from 'modules/activity/model/actionTypes';
+import { ActivityActionTypes } from './actionTypes';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { MessageType as NotificationType } from 'common/constants/enums';
 

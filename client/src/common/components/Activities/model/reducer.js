@@ -1,4 +1,4 @@
-import { ActivityActionTypes } from 'modules/activity/model/actionTypes';
+import { ActivityActionTypes } from './actionTypes';
 
 const activities = (state = [], action) => {
   switch (action.type) {

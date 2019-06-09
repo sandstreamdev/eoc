@@ -8,7 +8,7 @@ import AppLogo from 'common/components/AppLogo';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import ToolbarLink from './components/ToolbarLink';
 import ToolbarItem from './components/ToolbarItem';
-import Activities from 'modules/activity';
+import Activities from 'common/components/Activities';
 
 const Toolbar = ({ children }) => (
   <div className="toolbar">
