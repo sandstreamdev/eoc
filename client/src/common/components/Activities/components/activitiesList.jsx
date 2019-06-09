@@ -6,6 +6,8 @@ import Activity from './activity';
 import Preloader from 'common/components/Preloader';
 import { fetchActivities } from '../model/actions';
 import { getActivities } from '../model/selectors';
+import MessageBox from 'common/components/MessageBox';
+import { MessageType } from 'common/constants/enums';
 
 class ActivitiesList extends PureComponent {
   state = {
@@ -24,14 +26,22 @@ class ActivitiesList extends PureComponent {
     const { activities } = this.props;
     const { pending } = this.state;
     return (
-      <div>
-        <ul>
-          {activities.map(activity => (
-            <li key={activity._id}>
-              <Activity activity={activity} />
-            </li>
-          ))}
-        </ul>
+      <div className="activities-list">
+        <h2 className="activities-list__heading">Activities</h2>
+        {activities.length ? (
+          <ul className="activities-list__list">
+            {activities.map(activity => (
+              <li key={activity._id}>
+                <Activity activity={activity} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <MessageBox
+            message="There are no activities."
+            type={MessageType.INFO}
+          />
+        )}
         {pending && <Preloader />}
       </div>
     );

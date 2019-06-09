@@ -1,0 +1,20 @@
+.activities-list {
+  &__heading {
+    color: $text-normal;
+    font-size: $m-font;
+    margin-bottom: 16px;
+  }
+
+  &__list {
+    max-height: 150px;
+    overflow: auto;
+
+    @include height-breakpoint($small) {
+      max-height: 500px;
+    }
+  }
+
+  li:not(:last-of-type) {
+    margin-bottom: 16px;
+  }
+}

@@ -1,9 +1,9 @@
 const ItemActivity = require('../models/activity.model');
 const List = require('../models/list.model');
 
-const saveItemActivity = (actionType, actorId, itemId, listId) => {
+const saveItemActivity = (activityType, actorId, itemId, listId) => {
   const newActivity = new ItemActivity({
-    actionType,
+    activityType,
     actorId,
     itemId,
     listId
@@ -24,6 +24,7 @@ const getActivities = (req, resp) => {
       if (!lists) {
         throw new Error();
       }
+
       return lists.map(list => list._id);
     })
     .then(listIds =>

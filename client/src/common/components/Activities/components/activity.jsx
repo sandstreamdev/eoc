@@ -24,7 +24,9 @@ class Activity extends PureComponent {
       return (
         <Fragment>
           {' in '}
-          <Link to={`/cohort/${cohortId}`}>{cohortName}</Link>
+          <Link className="activity__link" to={`/cohort/${cohortId}`}>
+            {cohortName}
+          </Link>
           {' cohort'}
         </Fragment>
       );
@@ -46,14 +48,14 @@ class Activity extends PureComponent {
     return (
       <div className="activity">
         <div
-          className={classNames('activity', {
-            'activity--error': isAvatarError
+          className={classNames('activity__avatar', {
+            'activity--avatar--error': isAvatarError
           })}
         >
           {actorAvatarUrl ? (
             <img
               alt={`${actorName} avatar`}
-              className="activity_image"
+              className="activity__image"
               onError={this.handleAvatarError}
               src={isAvatarError ? UserIconPlaceholder : actorAvatarUrl}
             />
@@ -64,7 +66,9 @@ class Activity extends PureComponent {
         <div className="activity__message">
           <p className="activity__action">
             {`${actorName} added "${itemName}" item to `}
-            <Link to={`/sack/${listId}`}>{listName}</Link>
+            <Link className="activity__link" to={`/sack/${listId}`}>
+              {listName}
+            </Link>
             {' sack'}
             {this.renderCohortInfo()}
             {'.'}

@@ -1,5 +1,11 @@
-@mixin breakpoint($width){
+@mixin breakpoint($width) {
   @media only screen and (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin height-breakpoint($height) {
+  @media only screen and (min-height: $height) {
     @content;
   }
 }
