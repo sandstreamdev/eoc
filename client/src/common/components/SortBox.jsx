@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 
 import ArrowIcon from 'assets/images/arrow-up-solid.svg';
-import { SortOrderPropType } from '../constants/propTypes';
+import { SortOrderPropType, IntlPropType } from '../constants/propTypes';
 import { SortOrderType } from '../constants/enums';
 
 class SortBox extends Component {
@@ -26,7 +27,13 @@ class SortBox extends Component {
   };
 
   render() {
-    const { label, options, sortBy, sortOrder } = this.props;
+    const {
+      label,
+      options,
+      sortBy,
+      sortOrder,
+      intl: { formatMessage }
+    } = this.props;
 
     const orderButtonClass = classNames('sort-box__button', {
       'sort-box__button--obverse': sortOrder === SortOrderType.ASCENDING
@@ -53,7 +60,15 @@ class SortBox extends Component {
             onClick={this.handleSortOrderChange}
             type="button"
           >
-            <img alt={`sort ${sortOrder}`} src={ArrowIcon} />
+            <img
+              alt={formatMessage(
+                {
+                  id: 'common.sort-box.sort'
+                },
+                { sortOrder }
+              )}
+              src={ArrowIcon}
+            />
           </button>
         </div>
       </div>
@@ -62,6 +77,7 @@ class SortBox extends Component {
 }
 
 SortBox.propTypes = {
+  intl: IntlPropType.isRequired,
   label: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.object),
   sortBy: PropTypes.string.isRequired,
@@ -70,4 +86,4 @@ SortBox.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 
-export default SortBox;
+export default injectIntl(SortBox);
