@@ -7,6 +7,7 @@ import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { ListType } from 'modules/list/consts';
 import { ColorType, Routes } from 'common/constants/enums';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class ListViewItem extends PureComponent {
   state = {
@@ -105,6 +106,7 @@ class ListViewItem extends PureComponent {
 
 ListViewItem.propTypes = {
   color: PropTypes.string.isRequired,
+  intl: IntlPropType.isRequried,
   item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   route: PropTypes.string.isRequired,
 
