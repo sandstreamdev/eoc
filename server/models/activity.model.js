@@ -3,14 +3,17 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
-const ItemActivitySchema = new Schema(
+const ActivitySchema = new Schema(
   {
     actorId: { type: ObjectId, ref: 'User', required: true },
     activityType: { type: String, required: true },
-    itemId: { type: ObjectId },
+    cohortId: { type: ObjectId, ref: 'Cohort' },
+    editedUserId: { type: ObjectId, ref: 'User' },
+    editedValue: { type: String },
+    itemId: { type: ObjectId, ref: 'Item' },
     listId: { type: ObjectId, ref: 'List' }
   },
-  { timestamps: true, collection: 'itemActivities' }
+  { timestamps: true, collection: 'activities' }
 );
 
-module.exports = mongoose.model('ItemActivity', ItemActivitySchema);
+module.exports = mongoose.model('Activity', ActivitySchema);

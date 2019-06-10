@@ -33,13 +33,29 @@ class Activity extends PureComponent {
     }
   };
 
+  renderListInfo = () => {
+    const {
+      activity: { list }
+    } = this.props;
+
+    if (list) {
+      const { listId, listName } = list;
+      return (
+        <Fragment>
+          <Link className="activity__link" to={`/sack/${listId}`}>
+            {listName}
+          </Link>
+        </Fragment>
+      );
+    }
+  };
+
   render() {
     const {
       activity: {
         actor: { actorAvatarUrl, actorName },
         createdAt,
-        item: { itemName },
-        list: { listId, listName }
+        item: { itemName }
       }
     } = this.props;
     const { isAvatarError } = this.state;
@@ -66,9 +82,7 @@ class Activity extends PureComponent {
         <div className="activity__message">
           <p className="activity__action">
             {`${actorName} added ${itemName ? `"${itemName}"` : ''} item to `}
-            <Link className="activity__link" to={`/sack/${listId}`}>
-              {listName}
-            </Link>
+            {this.renderListInfo()}
             {' sack'}
             {this.renderCohortInfo()}
             {'.'}
@@ -86,8 +100,10 @@ Activity.propTypes = {
     actor: PropTypes.objectOf(PropTypes.string).isRequired,
     cohort: PropTypes.objectOf(PropTypes.string),
     createdAt: PropTypes.string.isRequired,
-    item: PropTypes.objectOf(PropTypes.string).isRequired,
-    list: PropTypes.objectOf(PropTypes.string).isRequired
+    editedValue: PropTypes.string,
+    editedUser: PropTypes.objectOf(PropTypes.string),
+    item: PropTypes.objectOf(PropTypes.string),
+    list: PropTypes.objectOf(PropTypes.string)
   })
 };
 

@@ -21,7 +21,7 @@ const {
 } = require('../common/utils/index');
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
-const { saveItemActivity } = require('./activity');
+const { saveActivity } = require('./activity');
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -191,11 +191,18 @@ const addItemToList = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const newItem = doc.items.slice(-1)[0];
+      const { cohortId, items } = doc;
+      const newItem = items.slice(-1)[0];
 
       resp.send(responseWithItem(newItem, userId));
 
-      saveItemActivity(ActivityType.ITEM_ADD, userId, newItem._id, listId);
+      saveActivity(
+        ActivityType.ITEM_ADD,
+        userId,
+        newItem._id,
+        listId,
+        cohortId
+      );
     })
     .catch(() => resp.sendStatus(400));
 };
