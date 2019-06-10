@@ -1,8 +1,22 @@
 .desc-textarea {
-  font-size: $m-font;
-  line-height: 1.2;
-  color: $text-normal;
-  padding: 8px 16px;
   cursor: pointer;
   margin-bottom: 8px;
+  display: flex;
+  align-items: stretch;
+
+  &__textarea {
+    resize: none;
+    font-size: $m-font;
+    line-height: 1.2;
+    color: $text-normal;
+    cursor: text;
+  }
+
+  &__submit {
+    &--disabled {
+      cursor: not-allowed;
+      background: $gray2;
+    }
+    @include hide-for($large);
+  }
 }

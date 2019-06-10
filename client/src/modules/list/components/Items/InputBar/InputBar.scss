@@ -4,10 +4,24 @@
   min-height: 50px;
 
   &__submit {
-    display: none;
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+    text-transform: uppercase;
+
+    &--disabled {
+      cursor: not-allowed;
+      background: $gray2;
+    }
+
+    @include hide-for($large);
   }
 
   &__form {
+    position: relative;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -37,5 +51,9 @@
       background: $gray-bg2;
       color: $text-dark;
     }
+  }
+
+  .error-message {
+    margin-bottom: 8px;
   }
 }
