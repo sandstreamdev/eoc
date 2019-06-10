@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Activity from './activity';
+import Activity from './Activity';
 import Preloader from 'common/components/Preloader';
 import { fetchActivities } from '../model/actions';
 import { getActivities } from '../model/selectors';

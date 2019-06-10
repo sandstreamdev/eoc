@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ActivitiesIcon } from 'assets/images/icons';
 import Dropdown from 'common/components/Dropdown';
-import ActivitiesList from './components/activitiesList';
+import ActivitiesList from './components/ActivitiesList';
 
 const Activities = () => (
   <Dropdown
