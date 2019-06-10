@@ -58,7 +58,7 @@ class CohortHeader extends PureComponent {
     }
 
     if (isNameInputVisible && isClickedOutside) {
-      if (_trim(nameInputValue).length >= 1) {
+      if (_trim(nameInputValue).length > 0) {
         return this.handleNameUpdate();
       }
       this.setState({ isNameInputVisible: false, nameInputValue: name });
@@ -74,7 +74,7 @@ class CohortHeader extends PureComponent {
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
 
-      action();
+      return action();
     }
 
     if (code === KeyCodes.ENTER) {
