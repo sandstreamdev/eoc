@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
@@ -23,6 +24,7 @@ class ListViewItem extends PureComponent {
   render() {
     const {
       color,
+      intl: { formatMessage },
       item: {
         description,
         doneItemsCount,
@@ -59,8 +61,14 @@ class ListViewItem extends PureComponent {
             )}
           </header>
           <div className="list-view-item__data">
-            <span>{`Done: ${doneItemsCount}`}</span>
-            <span>{`Unhandled: ${unhandledItemsCount}`}</span>
+            <FormattedMessage
+              id="common.list-view-item.done"
+              values={{ doneItemsCount }}
+            />
+            <FormattedMessage
+              id="common.list-view-item.unhandled"
+              values={{ unhandledItemsCount }}
+            />
           </div>
         </div>
         {route !== Routes.COHORT && (
@@ -71,7 +79,15 @@ class ListViewItem extends PureComponent {
             })}
             disabled={pending}
             onClick={this.handleFavClick}
-            title={`${isFavourite ? 'Remove from' : 'Add to'} favourites`}
+            title={
+              isFavourite
+                ? formatMessage({
+                    id: 'common.list-view-item.remove-fav'
+                  })
+                : formatMessage({
+                    id: 'common.list-view-item.add-fav'
+                  })
+            }
             type="button"
           >
             {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
@@ -96,4 +112,4 @@ ListViewItem.propTypes = {
   onFavClick: PropTypes.func
 };
 
-export default ListViewItem;
+export default injectIntl(ListViewItem);

@@ -91,6 +91,10 @@
     font-weight: 400;
     font-size: $s-font;
     padding: 0 15px 0 10px;
+
+    span:nth-child(2) {
+      margin-left: 4px;
+    }
   }
 
   &__panel {

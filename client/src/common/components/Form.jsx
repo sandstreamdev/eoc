@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import { ListType } from 'modules/list/consts';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class Form extends PureComponent {
   constructor(props) {
@@ -53,7 +55,11 @@ class Form extends PureComponent {
 
   render() {
     const { description, name } = this.state;
-    const { disabled, onSelect } = this.props;
+    const {
+      disabled,
+      onSelect,
+      intl: { formatMessage }
+    } = this.props;
 
     return (
       <form className="form" onSubmit={this.handleSubmit}>
@@ -63,7 +69,7 @@ class Form extends PureComponent {
             disabled={disabled}
             name="name"
             onChange={this.handleNameChange}
-            placeholder="Name"
+            placeholder={formatMessage({ id: 'common.form.name' })}
             ref={this.input}
             type="text"
             value={name}
@@ -75,7 +81,7 @@ class Form extends PureComponent {
             disabled={disabled}
             name="description"
             onChange={this.handleDescriptionChange}
-            placeholder="Description"
+            placeholder={formatMessage({ id: 'common.form.description' })}
             type="text"
             value={description}
           />
@@ -99,10 +105,11 @@ Form.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
   disabled: PropTypes.bool,
+  intl: IntlPropType.isRequired,
 
   onDescriptionChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,
   onSelect: PropTypes.func
 };
 
-export default Form;
+export default injectIntl(Form);
