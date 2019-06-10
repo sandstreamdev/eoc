@@ -9,22 +9,16 @@ const Footer = () => (
     <div className="wrapper footer__wrapper">
       <span className="footer__text">
         <Link className="footer__text footer__link" to="/about">
-          <FormattedMessage id="footer.about" defaultMessage="About" />
+          <FormattedMessage id="footer.about" />
         </Link>
         <span className="footer__text-divider"> | </span>
         <Link className="footer__text footer__link" to="/privacy-policy">
-          <FormattedMessage
-            id="footer.privacy"
-            defaultMessage="Privacy & Terms"
-          />
+          <FormattedMessage id="footer.privacy" />
         </Link>
       </span>
       <span className="footer__text footer__copyrights">
         &copy;
-        <FormattedMessage
-          id="footer.copyrights"
-          defaultMessage="Copyrights 2019"
-        />
+        <FormattedMessage id="footer.copyrights" />
       </span>
       <a
         className="footer__text footer__link"

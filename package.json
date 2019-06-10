@@ -6,9 +6,8 @@
   "scripts": {
     "check": "npm-run-all lint format stylelint",
     "clear-demo": "node server/tasks/clearDemoData.js",
-    "build:dev": "npm run merge-langs && webpack --progress",
-    "build:prod": "npm run merge-langs && webpack --config webpack.config.production.js",
-    "merge-langs": "NODE_ENV='production' babel-node client/locale/merge-messages.js",
+    "build:dev": "webpack --progress",
+    "build:prod": "webpack --config webpack.config.production.js",
     "dev": "npm-run-all -p start:server:dev start:client:dev",
     "format": "prettier --check \"{client,server}/**/*.{js,jsx}\"",
     "format:fix": "prettier --write \"{client,server}/**/*.{js,jsx}\"",
@@ -27,7 +26,6 @@
   "repository": "github:sandstreamdev/eoc",
   "dependencies": {
     "@sendgrid/mail": "6.4.0",
-    "babel-plugin-react-intl": "3.2.0",
     "babel-polyfill": "6.26.0",
     "body-parser": "1.19.0",
     "classnames": "2.2.6",
@@ -62,7 +60,6 @@
   "devDependencies": {
     "@babel/cli": "7.4.4",
     "@babel/core": "7.4.5",
-    "@babel/node": "7.4.5",
     "@babel/plugin-proposal-class-properties": "7.4.4",
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
