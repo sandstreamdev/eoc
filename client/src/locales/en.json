@@ -61,5 +61,17 @@
   "about.try-cta": "Try End of coffee app today!",
   "about.cta-button": "Go to app",
   "about.intro-heading": "End of coffee Office inventory tracking app",
-  "about.intro-subheading": "End of coffee helps you track all the office inventory you need!"
+  "about.intro-subheading": "End of coffee helps you track all the office inventory you need!",
+  "authorization.auth-box.heading": "End of coffee",
+  "authorization.auth-box.description": "The best app to track your office inventory.",
+  "authorization.auth-box.sign-in": "Sign in with:",
+  "authorization.auth-box.cta": "Try it out:",
+  "authorization.auth-box.demo-button": "Live demo",
+  "cohort.cohort-header.add-description": "Add description",
+  "cohort.cohorts.placeholder-1": "There are no cohorts yet!",
+  "cohort.cohorts.placeholder-2": "You have no archived cohorts!",
+  "cohort.cohorts.hide-archived": "Hide archived cohorts",
+  "cohort.cohorts.show-archived": "Show archived cohorts",
+  "cohort.cohorts.adding": "Adding new cohort",
+  "cohort.cohorts.add": "Add new cohort"
 }

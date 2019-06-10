@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 import { CohortIcon } from 'assets/images/icons';
 import {
@@ -14,7 +15,7 @@ import {
   getArchivedCohorts
 } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { UserPropType } from 'common/constants/propTypes';
+import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import Breadcrumbs from 'common/components/Breadcrumbs';
@@ -92,7 +93,11 @@ class Cohorts extends Component {
   };
 
   render() {
-    const { archivedCohorts, cohorts } = this.props;
+    const {
+      archivedCohorts,
+      cohorts,
+      intl: { formatMessage }
+    } = this.props;
     const {
       areArchivedCohortsVisible,
       isDialogVisible,
@@ -113,7 +118,9 @@ class Cohorts extends Component {
               name="Cohorts"
               onAddNew={this.handleDialogVisibility}
               pending={pendingForCohorts}
-              placeholder="There are no cohorts yet!"
+              placeholder={formatMessage({
+                id: 'cohort.cohorts.placeholder-1'
+              })}
               route={Routes.COHORT}
               viewType={ViewType.TILES}
             />
@@ -122,9 +129,11 @@ class Cohorts extends Component {
               onClick={this.handleArchivedCohortsVisibility}
               type="button"
             >
-              {` ${
-                areArchivedCohortsVisible ? 'hide' : 'show'
-              } archived cohorts`}
+              {areArchivedCohortsVisible ? (
+                <FormattedMessage id="cohort.cohorts.hide-archived" />
+              ) : (
+                <FormattedMessage id="cohort.cohorts.show-archived" />
+              )}
             </button>
             {areArchivedCohortsVisible && (
               <CollectionView
@@ -133,7 +142,9 @@ class Cohorts extends Component {
                 items={archivedCohorts}
                 name="Archived cohorts"
                 pending={pendingForArchivedCohorts}
-                placeholder="You have no archived cohorts!"
+                placeholder={formatMessage({
+                  id: 'cohort.cohorts.placeholder-2'
+                })}
                 route={Routes.COHORT}
                 viewType={ViewType.TILES}
               />
@@ -145,7 +156,11 @@ class Cohorts extends Component {
             onCancel={this.handleDialogVisibility}
             onConfirm={this.handleConfirm}
             pending={pendingForCohortCreation}
-            title={`${pendingForCohortCreation ? 'Adding' : 'Add'} new cohort`}
+            title={
+              pendingForCohortCreation
+                ? formatMessage({ id: 'cohort.cohorts.adding' })
+                : formatMessage({ id: 'cohort.cohorts.add' })
+            }
           />
         )}
       </Fragment>
@@ -157,6 +172,7 @@ Cohorts.propTypes = {
   archivedCohorts: PropTypes.objectOf(PropTypes.object),
   cohorts: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
+  intl: IntlPropType.isRequired,
 
   createCohort: PropTypes.func.isRequired,
   fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
@@ -170,12 +186,14 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    createCohort,
-    fetchArchivedCohortsMetaData,
-    fetchCohortsMetaData,
-    removeArchivedCohortsMetaData
-  }
-)(Cohorts);
+export default injectIntl(
+  connect(
+    mapStateToProps,
+    {
+      createCohort,
+      fetchArchivedCohortsMetaData,
+      fetchCohortsMetaData,
+      removeArchivedCohortsMetaData
+    }
+  )(Cohorts)
+);
