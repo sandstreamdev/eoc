@@ -1,8 +1,10 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import Dialog from 'common/components/Dialog';
 import Preloader from 'common/components/Preloader';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class ArchivedMessage extends PureComponent {
   state = {
@@ -35,15 +37,27 @@ class ArchivedMessage extends PureComponent {
 
   render() {
     const { isDialogVisible, pending } = this.state;
-    const { item, name } = this.props;
+    const {
+      item,
+      name,
+      intl: { formatMessage }
+    } = this.props;
 
     return (
       <Fragment>
         <div className="archived-message">
           <h1 className="archived-message__header">
-            {pending && !isDialogVisible
-              ? `Restoring "${name}" ${item}...`
-              : `The "${name}" ${item} was archived.`}
+            {pending && !isDialogVisible ? (
+              <FormattedMessage
+                id="common.archived-message.restoring"
+                values={{ name, item }}
+              />
+            ) : (
+              <FormattedMessage
+                id="common.archived-message.was-archived"
+                values={{ name, item }}
+              />
+            )}
           </h1>
           <div className="archived-message__body">
             <button
@@ -52,7 +66,7 @@ class ArchivedMessage extends PureComponent {
               onClick={this.showDialog}
               type="button"
             >
-              permanently delete
+              <FormattedMessage id="common.archived-message.delete-button" />
             </button>
             <button
               className="archived-message__button primary-button"
@@ -60,7 +74,7 @@ class ArchivedMessage extends PureComponent {
               type="button"
               onClick={this.handleRestoring}
             >
-              restore from archive
+              <FormattedMessage id="common.archived-message.restore-button" />
             </button>
             {pending && !isDialogVisible && <Preloader />}
           </div>
@@ -69,8 +83,14 @@ class ArchivedMessage extends PureComponent {
           <Dialog
             title={
               pending
-                ? `Deleting "${name}" ${item}...`
-                : `Do you really want to permanently delete the "${name}" ${item}?`
+                ? formatMessage(
+                    { id: 'common.archived-message.deleting' },
+                    { name, item }
+                  )
+                : formatMessage(
+                    { id: 'common.archived-message.perm-delete' },
+                    { name, item }
+                  )
             }
             pending={pending}
             onCancel={this.hideDialog}
@@ -83,6 +103,7 @@ class ArchivedMessage extends PureComponent {
 }
 
 ArchivedMessage.propTypes = {
+  intl: IntlPropType.isRequired,
   item: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 
@@ -90,4 +111,4 @@ ArchivedMessage.propTypes = {
   onRestore: PropTypes.func.isRequired
 };
 
-export default ArchivedMessage;
+export default injectIntl(ArchivedMessage);

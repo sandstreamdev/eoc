@@ -106,12 +106,10 @@ export class Layout extends PureComponent {
               title={
                 viewType === ViewType.LIST
                   ? formatMessage({
-                      defaultMessage: 'Change to list view',
-                      id: 'layout.change-to-list'
+                      id: 'app.layout.list-view'
                     })
                   : formatMessage({
-                      defaultMessage: 'Change to tiles view',
-                      id: 'layout.change-to-tiles'
+                      id: 'app.layout.tile-view'
                     })
               }
             />

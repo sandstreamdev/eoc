@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
@@ -19,16 +20,14 @@ const CookieConsentBox = ({ isAuthPage, onAccept }) => (
       location="bottom"
       onAccept={onAccept}
     >
-      We use cookies to ensure you get the best experience. By using this
-      website, you consent to use of these cookies.
+      <FormattedMessage id="common.cookie-consent.message" />
       {isAuthPage && (
         <Fragment>
           <br />
-          {'For more information, please see our '}
+          <FormattedHTMLMessage id="common.cookie-consent.privacy-1" />
           <Link className="cookie-consent__link" to="/privacy-policy">
-            privacy policy
+            <FormattedHTMLMessage id="common.cookie-consent.privacy-2" />
           </Link>
-          {'.'}
         </Fragment>
       )}
     </CookieConsent>

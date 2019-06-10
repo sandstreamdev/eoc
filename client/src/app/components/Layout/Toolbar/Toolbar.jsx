@@ -19,8 +19,7 @@ const Toolbar = ({ children, intl: { formatMessage } }) => (
           mainIcon={<AppLogo />}
           path="/dashboard"
           title={formatMessage({
-            defaultMessage: 'Go back to dashboard',
-            id: 'toolbar.go-back-dashboard'
+            id: 'app.toolbar.dashboard'
           })}
         />
       </div>
@@ -30,8 +29,7 @@ const Toolbar = ({ children, intl: { formatMessage } }) => (
           mainIcon={<BellIcon />}
           onClick={() => {}}
           title={formatMessage({
-            defaultMessage: 'Set notifications up',
-            id: 'toolbar.notification'
+            id: 'app.toolbar.notification'
           })}
         />
         <UserBar />

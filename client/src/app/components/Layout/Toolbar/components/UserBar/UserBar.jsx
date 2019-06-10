@@ -79,8 +79,7 @@ class UserBar extends Component {
             <ul className="user-bar__menu">
               <li className="user-bar__menu-item">
                 <FormattedMessage
-                  defaultMessage="Logged as: {name}"
-                  id="user-bar.user-name"
+                  id="app.user-bar.user-name"
                   values={{
                     name
                   }}
@@ -89,10 +88,7 @@ class UserBar extends Component {
               </li>
               <li className="user-bar__menu-item">
                 <Link to="/cohorts">
-                  <FormattedMessage
-                    defaultMessage="My cohorts"
-                    id="user-bar.my-cohorts"
-                  />
+                  <FormattedMessage id="app.user-bar.my-cohorts" />
                   <CohortIcon />
                 </Link>
               </li>
@@ -102,10 +98,7 @@ class UserBar extends Component {
                   onClick={this.handleLogOut}
                   type="button"
                 >
-                  <FormattedMessage
-                    defaultMessage="Logout"
-                    id="user-bar.logout"
-                  />
+                  <FormattedMessage id="app.user-bar.logout" />
                   <LogoutIcon />
                 </button>
               </li>

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
@@ -15,7 +16,7 @@ const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
       preloaderTheme={PreloaderTheme.LIGHT}
       type="button"
     >
-      Confirm
+      <FormattedMessage id="common.confirmation.confirm" />
     </PendingButton>
     <button
       className="primary-button"
@@ -23,7 +24,7 @@ const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
       onClick={onCancel}
       type="button"
     >
-      Cancel
+      <FormattedMessage id="common.confirmation.cancel" />
     </button>
   </div>
 );

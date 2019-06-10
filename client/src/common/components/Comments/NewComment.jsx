@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Textarea from 'common/components/Forms/Textarea';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
@@ -11,6 +12,7 @@ import Preloader, {
   PreloaderTheme
 } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class NewComment extends PureComponent {
   pendingPromise = null;
@@ -67,6 +69,9 @@ class NewComment extends PureComponent {
 
   render() {
     const { comment, pending } = this.state;
+    const {
+      intl: { formatMessage }
+    } = this.props;
 
     return (
       <div className="new-comment">
@@ -74,7 +79,7 @@ class NewComment extends PureComponent {
           <Textarea
             disabled={pending}
             onChange={this.handleCommentChange}
-            placeholder="Add comment"
+            placeholder={formatMessage({ id: 'common.new-comment.add' })}
           />
           {comment && (
             <button
@@ -83,7 +88,7 @@ class NewComment extends PureComponent {
               onClick={this.handleAddComment}
               type="button"
             >
-              Save
+              <FormattedMessage id="common.new-comment.save" />
               {pending && (
                 <Preloader
                   size={PreloaderSize.SMALL}
@@ -99,8 +104,10 @@ class NewComment extends PureComponent {
 }
 
 NewComment.propTypes = {
+  intl: IntlPropType.isRequired,
+
   onAddComment: PropTypes.func,
   onClose: PropTypes.func
 };
 
-export default NewComment;
+export default injectIntl(NewComment);
