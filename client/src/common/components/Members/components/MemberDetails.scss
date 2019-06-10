@@ -27,19 +27,6 @@
     width: 36px;
     height: 36px;
     padding: 0;
-
-    svg {
-      height: 18px;
-      width: 18px;
-
-      path {
-        fill: $text-normal;
-      }
-    }
-
-    &--error {
-      padding: 5px;
-    }
   }
 
   &__image {

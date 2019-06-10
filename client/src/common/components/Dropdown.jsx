@@ -36,9 +36,7 @@ class Dropdown extends PureComponent {
     const { code } = event;
 
     if (code === KeyCodes.ESCAPE) {
-      this.setState({
-        isVisible: false
-      });
+      this.setState({ isVisible: false });
     }
   };
 

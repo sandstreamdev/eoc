@@ -1,15 +1,15 @@
 import { getData } from 'common/utils/fetchMethods';
-import { ActivityActionTypes } from './actionTypes';
+import { ActivitiesActionTypes } from './actionTypes';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { MessageType as NotificationType } from 'common/constants/enums';
 
 const fetchActivitiesSuccess = activities => ({
-  type: ActivityActionTypes.FETCH_SUCCESS,
+  type: ActivitiesActionTypes.FETCH_SUCCESS,
   payload: activities
 });
 
 const fetchActivitiesFailure = () => ({
-  type: ActivityActionTypes.FETCH_FAILURE
+  type: ActivitiesActionTypes.FETCH_FAILURE
 });
 
 export const fetchActivities = () => dispatch =>

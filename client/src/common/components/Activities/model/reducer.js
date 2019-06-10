@@ -1,11 +1,11 @@
-import { ActivityActionTypes } from './actionTypes';
+import { ActivitiesActionTypes } from './actionTypes';
 
 const activities = (state = [], action) => {
   switch (action.type) {
-    case ActivityActionTypes.FETCH_SUCCESS: {
+    case ActivitiesActionTypes.FETCH_SUCCESS: {
       const { payload } = action;
 
-      return [...payload];
+      return payload;
     }
     default:
       return state;

@@ -1,19 +1,11 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import { dateFromString } from 'common/utils/helpers';
-import UserIconPlaceholder from 'assets/images/user.svg';
-import { UserIcon } from 'assets/images/icons';
+import Avatar from 'common/components/Avatar';
 
 class Activity extends PureComponent {
-  state = {
-    isAvatarError: false
-  };
-
-  handleAvatarError = () => this.setState({ isAvatarError: true });
-
   renderCohortInfo = () => {
     const {
       activity: { cohort }
@@ -58,26 +50,16 @@ class Activity extends PureComponent {
         item: { itemName }
       }
     } = this.props;
-    const { isAvatarError } = this.state;
     const date = dateFromString(createdAt);
 
     return (
       <div className="activity">
-        <div
-          className={classNames('activity__avatar', {
-            'activity--avatar--error': isAvatarError
-          })}
-        >
-          {actorAvatarUrl ? (
-            <img
-              alt={`${actorName || 'user'} avatar`}
-              className="activity__image"
-              onError={this.handleAvatarError}
-              src={isAvatarError ? UserIconPlaceholder : actorAvatarUrl}
-            />
-          ) : (
-            <UserIcon />
-          )}
+        <div className="activity__avatar">
+          <Avatar
+            avatarUrl={actorAvatarUrl}
+            className="activity__image"
+            name={actorName}
+          />
         </div>
         <div className="activity__message">
           <p className="activity__action">

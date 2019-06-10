@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
-import { CloseIcon, InfoIcon, UserIcon } from 'assets/images/icons';
+import { CloseIcon, InfoIcon } from 'assets/images/icons';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
   addOwnerRole as addOwnerRoleInCohort,
@@ -23,7 +23,7 @@ import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
-import UserIconPlaceholder from 'assets/images/user.svg';
+import Avatar from 'common/components/Avatar';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -43,7 +43,6 @@ class MemberDetails extends PureComponent {
     super(props);
 
     this.state = {
-      isAvatarError: false,
       isConfirmationVisible: false,
       isMemberInfoVisible: false,
       isOwnerInfoVisible: false,
@@ -271,21 +270,14 @@ class MemberDetails extends PureComponent {
     );
   };
 
-  handleAvatarError = () => this.setState({ isAvatarError: true });
-
   renderAvatar = () => {
     const { avatarUrl, displayName } = this.props;
-    const { isAvatarError } = this.state;
-
-    return avatarUrl ? (
-      <img
-        alt={`${displayName} avatar`}
+    return (
+      <Avatar
+        avatarUrl={avatarUrl}
         className="member-details__image"
-        onError={this.handleAvatarError}
-        src={isAvatarError ? UserIconPlaceholder : avatarUrl}
+        name={displayName}
       />
-    ) : (
-      <UserIcon />
     );
   };
 
@@ -297,7 +289,6 @@ class MemberDetails extends PureComponent {
       isMember,
       isOwner
     } = this.props;
-    const { isAvatarError } = this.state;
     let roleToDisplay = UserRolesToDisplay.VIEWER;
 
     if (isMember) {
@@ -310,13 +301,7 @@ class MemberDetails extends PureComponent {
 
     return (
       <header className="member-details__header">
-        <div
-          className={classNames('member-details__avatar', {
-            'member-details__avatar--error': isAvatarError
-          })}
-        >
-          {this.renderAvatar()}
-        </div>
+        <div className="member-details__avatar">{this.renderAvatar()}</div>
         <div>
           <h3 className="member-details__name">{displayName}</h3>
           <p className="member-details__role">

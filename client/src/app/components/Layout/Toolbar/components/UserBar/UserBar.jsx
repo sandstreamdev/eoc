@@ -9,12 +9,11 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { LogoutIcon, UserIcon, CohortIcon } from 'assets/images/icons';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
-import UserIconPlaceholder from 'assets/images/user.svg';
 import { KeyCodes } from 'common/constants/enums';
+import Avatar from 'common/components/Avatar';
 
 class UserBar extends Component {
   state = {
-    isAvatarError: false,
     isVisible: false
   };
 
@@ -43,14 +42,12 @@ class UserBar extends Component {
   toggleMenu = () =>
     this.setState(({ isVisible: prevValue }) => ({ isVisible: !prevValue }));
 
-  handleError = () => this.setState({ isAvatarError: true });
-
   render() {
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
 
-    const { isAvatarError, isVisible } = this.state;
+    const { isVisible } = this.state;
 
     return (
       <Fragment>
@@ -62,11 +59,10 @@ class UserBar extends Component {
             onClick={this.toggleMenu}
             type="button"
           >
-            <img
-              alt={`${name} avatar`}
+            <Avatar
+              avatarUrl={avatarUrl}
               className="user-bar__avatar"
-              onError={this.handleError}
-              src={isAvatarError ? UserIconPlaceholder : avatarUrl}
+              name={name}
             />
           </button>
           <div

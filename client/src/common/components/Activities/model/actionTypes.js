@@ -1,4 +1,4 @@
-export const ActivityActionTypes = Object.freeze({
-  FETCH_SUCCESS: 'activity/FETCH_SUCCESS',
-  FETCH_FAILURE: 'activity/FETCH_FAILURE'
+export const ActivitiesActionTypes = Object.freeze({
+  FETCH_SUCCESS: 'activities/FETCH_SUCCESS',
+  FETCH_FAILURE: 'activities/FETCH_FAILURE'
 });
