@@ -9,12 +9,21 @@
     max-height: 150px;
     overflow: auto;
 
+    @include height-breakpoint($xsmall) {
+      max-height: 200px;
+    }
+
     @include height-breakpoint($small) {
       max-height: 500px;
     }
   }
 
+  li {
+    padding-bottom: 16px;
+  }
+
   li:not(:last-of-type) {
     margin-bottom: 16px;
+    border-bottom: 1px solid $border-color;
   }
 }
