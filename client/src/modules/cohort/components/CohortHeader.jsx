@@ -82,12 +82,12 @@ class CohortHeader extends PureComponent {
     }
   };
 
-  handleShowNameInput = () =>
+  showNameInput = () =>
     this.setState({
       isNameInputVisible: true
     });
 
-  handleShowDescriptionTextarea = () =>
+  showDescriptionTextarea = () =>
     this.setState({
       isDescriptionTextareaVisible: true
     });
@@ -218,7 +218,7 @@ class CohortHeader extends PureComponent {
               'cohort-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner ? this.handleShowDescriptionTextarea : null}
+            onClick={isOwner ? this.showDescriptionTextarea : null}
           >
             {description}
           </p>
@@ -226,7 +226,7 @@ class CohortHeader extends PureComponent {
         {isOwner && !description && (
           <button
             className="cohort-header__button link-button"
-            onClick={this.handleShowDescriptionTextarea}
+            onClick={this.showDescriptionTextarea}
             type="button"
           >
             Add description
@@ -263,7 +263,7 @@ class CohortHeader extends PureComponent {
         className={classNames('cohort-header__heading', {
           'cohort-header--clickable': isOwner
         })}
-        onClick={isOwner ? this.handleShowNameInput : null}
+        onClick={isOwner ? this.showNameInput : null}
       >
         {name}
       </h1>

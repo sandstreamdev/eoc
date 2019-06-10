@@ -44,12 +44,12 @@ class ListHeader extends PureComponent {
     }
   }
 
-  handleShowNameInput = () =>
+  showNameInput = () =>
     this.setState({
       isNameInputVisible: true
     });
 
-  handleShowDescriptionTextarea = () =>
+  showDescriptionTextarea = () =>
     this.setState({
       isDescriptionTextareaVisible: true
     });
@@ -237,7 +237,7 @@ class ListHeader extends PureComponent {
               'list-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner ? this.handleShowDescriptionTextarea : null}
+            onClick={isOwner ? this.showDescriptionTextarea : null}
           >
             {description}
           </p>
@@ -245,7 +245,7 @@ class ListHeader extends PureComponent {
         {isOwner && !description && (
           <button
             className="list-header__button link-button"
-            onClick={this.handleShowDescriptionTextarea}
+            onClick={this.showDescriptionTextarea}
             type="button"
           >
             Add description
@@ -282,7 +282,7 @@ class ListHeader extends PureComponent {
         className={classNames('list-header__heading', {
           'list-header--clickable': isOwner
         })}
-        onClick={isOwner ? this.handleShowNameInput : null}
+        onClick={isOwner ? this.showNameInput : null}
       >
         {name}
       </h1>
