@@ -23,10 +23,7 @@ const handleFetchErrors = resp => {
     const contentType = resp.headers.get('content-type');
     if (contentType.includes('application/json')) {
       return resp.json().then(json => {
-        if (json.message) {
-          throw new Error(json.message);
-        }
-        throw new Error();
+        throw new Error(json.message || '');
       });
     }
 
