@@ -15,6 +15,7 @@ const commentsRouter = require('./routes/comment');
 const cohortsRouter = require('./routes/cohort');
 const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
+const activitiesRouter = require('./routes/activity');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use(passport.session());
 app.use(express.static(path.resolve('dist')));
 
 app.use('/auth', authRouter);
+app.use('/api/activities', activitiesRouter);
 app.use('/api/comments', commentsRouter);
 app.use('/api/cohorts', cohortsRouter);
 app.use('/api/lists', listsRouter);

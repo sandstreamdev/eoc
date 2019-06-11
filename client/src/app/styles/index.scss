@@ -29,7 +29,7 @@
 @import '../../modules/list/components/ItemsContainer.scss';
 @import '../../modules/list/components/Items/InputBar/InputBar.scss';
 @import '../../app/components/Layout/Toolbar/components/UserBar/UserBar.scss';
-@import '../../common/components/DropdownMenu.scss';
+@import '../../common/components/Dropdown.scss';
 @import '../../common/components/SortBox.scss';
 @import '../../modules/list/components/Items/VotingBox/VotingBox.scss';
 @import '../../modules/list/components/FilterBox.scss';
@@ -77,3 +77,7 @@
 @import '../../common/components/Confirmation.scss';
 @import '../../modules/list/components/Items/ListItemName/ListItemName.scss';
 @import '../../modules/list/components/Items/ListItemDescription/ListItemDescription.scss';
+@import '../../common/components/Activities/Activities.scss';
+@import '../../common/components/Activities/components/ActivitiesList.scss';
+@import '../../common/components/Activities/components/Activity.scss';
+@import '../../common/components/Avatar.scss';

@@ -10,21 +10,8 @@
   height: 40px;
   padding: 0;
 
-  svg {
-    height: 50%;
-    width: 50%;
-
-    path {
-      fill: $text-normal;
-    }
-  }
-
   &__avatar {
-    height: 100%;
     width: 100%;
-  }
-
-  &--error {
-    padding: 5px;
+    height: 100%;
   }
 }
