@@ -63,7 +63,7 @@ class MembersBox extends PureComponent {
         this.hideForm();
       }
 
-      if (resp === UserAddingStatus.NO_USER) {
+      if (email && resp === UserAddingStatus.NO_USER) {
         this.setState({
           email,
           pending: false
