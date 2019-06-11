@@ -16,7 +16,7 @@ export const fetchActivities = () => dispatch =>
   getData('/api/activities/data')
     .then(resp => resp.json())
     .then(json => dispatch(fetchActivitiesSuccess(json)))
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchActivitiesFailure());
       createNotificationWithTimeout(
         dispatch,
