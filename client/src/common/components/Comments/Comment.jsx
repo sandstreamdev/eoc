@@ -16,7 +16,7 @@ class Comment extends PureComponent {
         <div className="comment__avatar">
           <Avatar
             avatarUrl={authorAvatarUrl}
-            className="activity__image"
+            className="comment__image"
             name={authorName}
           />
         </div>

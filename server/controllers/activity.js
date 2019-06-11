@@ -118,7 +118,7 @@ const getActivities = (req, resp) => {
 
       resp.send(activities);
     })
-    .catch(err => resp.sendStatus(400));
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = { getActivities, saveActivity };

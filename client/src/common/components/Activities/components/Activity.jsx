@@ -13,6 +13,7 @@ class Activity extends PureComponent {
 
     if (cohort) {
       const { cohortId, cohortName } = cohort;
+
       return (
         <Fragment>
           {' in '}
@@ -32,6 +33,7 @@ class Activity extends PureComponent {
 
     if (list) {
       const { listId, listName } = list;
+
       return (
         <Fragment>
           <Link className="activity__link" to={`/sack/${listId}`}>
