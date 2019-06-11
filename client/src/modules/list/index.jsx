@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
@@ -14,7 +15,7 @@ import InputBar from 'modules/list/components/Items/InputBar';
 import { archiveList, fetchListData } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedList from 'modules/list/components/ArchivedList';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
@@ -120,6 +121,7 @@ class List extends Component {
     } = this.state;
     const {
       doneItems,
+      intl: { formatMessage },
       match: {
         params: { id: listId }
       },
@@ -168,7 +170,10 @@ class List extends Component {
                     onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
                     type="button"
                   >
-                    {`Archive the "${name}" sack`}
+                    <FormattedMessage
+                      id="list.index.arch-sack"
+                      values={{ name }}
+                    />
                   </button>
                 )}
                 <div className="list__members">
@@ -177,7 +182,11 @@ class List extends Component {
                     onClick={this.handleMembersBoxVisibility}
                     type="button"
                   >
-                    {`${isMembersBoxVisible ? 'hide' : 'show'} sack's members`}
+                    {isMembersBoxVisible ? (
+                      <FormattedMessage id="list.index.hide-members" />
+                    ) : (
+                      <FormattedMessage id="list.index.show-members" />
+                    )}
                   </button>
                   {isMembersBoxVisible && (
                     <MembersBox
@@ -202,8 +211,18 @@ class List extends Component {
             pending={pendingForListArchivization}
             title={
               pendingForListArchivization
-                ? `"${name}" sack archivization...`
-                : `Do you really want to archive the "${name}" sack?`
+                ? formatMessage(
+                    {
+                      id: 'list.index.archivization'
+                    },
+                    { name }
+                  )
+                : formatMessage(
+                    {
+                      id: 'list.index.question'
+                    },
+                    { name }
+                  )
             }
           />
         )}
@@ -214,6 +233,7 @@ class List extends Component {
 
 List.propTypes = {
   doneItems: PropTypes.arrayOf(PropTypes.object),
+  intl: IntlPropType.isRequired,
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
@@ -238,12 +258,14 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    {
-      archiveList,
-      fetchListData
-    }
-  )(List)
+export default injectIntl(
+  withRouter(
+    connect(
+      mapStateToProps,
+      {
+        archiveList,
+        fetchListData
+      }
+    )(List)
+  )
 );

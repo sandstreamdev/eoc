@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
 import { ListIcon } from 'assets/images/icons';
 import { updateList, changeType } from 'modules/list/model/actions';
@@ -220,7 +221,7 @@ class ListHeader extends PureComponent {
             onClick={this.handleDescriptionTextareaVisibility}
             type="button"
           >
-            Add description
+            <FormattedMessage id="list.list-header.add-button" />
           </button>
         )}
       </Fragment>

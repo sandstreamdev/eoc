@@ -106,7 +106,7 @@ class ListViewItem extends PureComponent {
 
 ListViewItem.propTypes = {
   color: PropTypes.string.isRequired,
-  intl: IntlPropType.isRequried,
+  intl: IntlPropType.isRequired,
   item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   route: PropTypes.string.isRequired,
 

@@ -3,9 +3,14 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  RouterMatchPropType,
+  UserPropType,
+  IntlPropType
+} from 'common/constants/propTypes';
 import {
   archiveItem,
   clearVote,
@@ -152,7 +157,9 @@ class ListItem extends PureComponent {
 
     return (
       <div className="list-item__confirmation">
-        <h4>{`Do you really want to archive "${name}" item?`}</h4>
+        <h4>
+          <FormattedMessage id="list.list-item.header" values={{ name }} />
+        </h4>
         <PendingButton
           className="primary-button"
           disabled={!isMember}
@@ -160,7 +167,7 @@ class ListItem extends PureComponent {
           type="button"
           preloaderTheme={PreloaderTheme.LIGHT}
         >
-          Confirm
+          <FormattedMessage id="list.list-item.confirm" />
         </PendingButton>
         <button
           className="primary-button"
@@ -168,7 +175,7 @@ class ListItem extends PureComponent {
           onClick={this.handleConfirmationVisibility}
           type="button"
         >
-          Cancel
+          <FormattedMessage id="list.list-item.cancel" />
         </button>
       </div>
     );
@@ -178,6 +185,7 @@ class ListItem extends PureComponent {
     const { isConfirmationVisible } = this.state;
     const {
       data: { isOrdered, name },
+      intl: { formatMessage },
       isMember
     } = this.props;
 
@@ -190,7 +198,7 @@ class ListItem extends PureComponent {
             onClick={this.handleConfirmationVisibility}
             type="button"
           >
-            Archive Item
+            <FormattedMessage id="list.list-item.archive" />
           </button>
           {!isOrdered && (
             <PendingButton
@@ -198,7 +206,7 @@ class ListItem extends PureComponent {
               disabled={!isMember || isConfirmationVisible}
               onClick={this.handleItemCloning}
             >
-              Clone Item
+              <FormattedMessage id="list.list-item.clone" />
             </PendingButton>
           )}
         </div>
@@ -207,7 +215,12 @@ class ListItem extends PureComponent {
             disabled={!isMember}
             onCancel={this.handleConfirmationVisibility}
             onConfirm={this.handleArchiveItem}
-            title={`Do you really want to archive "${name}" item?`}
+            title={formatMessage(
+              {
+                id: 'list.list-item.confirmation'
+              },
+              { name }
+            )}
           />
         )}
       </div>
@@ -300,7 +313,12 @@ class ListItem extends PureComponent {
                 onBlur={this.handleNameBlur}
                 onFocus={this.handleNameFocus}
               />
-              <span className="list-item__author">{`Added by: ${authorName}`}</span>
+              <span className="list-item__author">
+                <FormattedMessage
+                  id="list.list-item.author"
+                  values={{ authorName }}
+                />
+              </span>
             </span>
           </label>
           <div className="list-item__buttons">
@@ -332,6 +350,7 @@ ListItem.propTypes = {
       PropTypes.object
     ])
   ),
+  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
@@ -346,9 +365,11 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    { archiveItem, clearVote, cloneItem, setVote, toggle }
-  )(ListItem)
+export default injectIntl(
+  withRouter(
+    connect(
+      mapStateToProps,
+      { archiveItem, clearVote, cloneItem, setVote, toggle }
+    )(ListItem)
+  )
 );

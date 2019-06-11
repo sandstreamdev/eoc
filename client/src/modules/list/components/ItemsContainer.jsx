@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _sortBy from 'lodash/sortBy';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 import ItemsList from 'modules/list/components/Items';
 import SortBox from 'common/components/SortBox';
 import { SortOrderType } from 'common/constants/enums';
 import FilterBox from 'modules/list/components/FilterBox';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { IntlPropType } from 'common/constants/propTypes';
 
 const SortOptionType = Object.freeze({
   NAME: 'name',
@@ -88,14 +90,24 @@ class ItemsContainer extends Component {
     const { archived, ordered } = this.props;
 
     if (archived) {
-      return 'Archived Items';
+      return <FormattedMessage id="list.items-container.arch-items" />;
     }
 
-    return ordered ? 'Done' : ' Unhandled';
+    return ordered ? (
+      <FormattedMessage id="list.items-container.done" />
+    ) : (
+      <FormattedMessage id="list.items-container.unhandled" />
+    );
   };
 
   render() {
-    const { archived, children, isMember, items } = this.props;
+    const {
+      archived,
+      children,
+      isMember,
+      items,
+      intl: { formatMessage }
+    } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterItems(items, filterBy);
     const sortedList = this.sortItems(filteredList, sortBy, sortOrder);
@@ -109,12 +121,12 @@ class ItemsContainer extends Component {
           <div className="items__header-controls">
             <FilterBox
               filterBy={filterBy}
-              label="Filter by:"
+              label={formatMessage({ id: 'list.items-container.filter-box' })}
               onChange={this.onFilterChange}
               options={filterOptions}
             />
             <SortBox
-              label="Sort by:"
+              label={formatMessage({ id: 'list.items-container.sort-box' })}
               onChange={this.onSortChange}
               options={sortOptions}
               sortBy={sortBy}
@@ -139,6 +151,7 @@ ItemsContainer.propTypes = {
   archived: PropTypes.bool,
   children: PropTypes.node,
   currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
+  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),
   ordered: PropTypes.bool
@@ -148,4 +161,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(mapStateToProps)(ItemsContainer);
+export default injectIntl(connect(mapStateToProps)(ItemsContainer));
