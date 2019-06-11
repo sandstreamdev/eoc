@@ -94,7 +94,8 @@
     max-width: 360px;
   }
 
-  &__show-more {
+  &__show-more,
+  &__show-less {
     background: transparent;
     color: $text-normal;
     width: 36px;
@@ -120,6 +121,14 @@
       position: relative;
       vertical-align: top;
       width: 7px;
+    }
+  }
+
+  &__show-less {
+    &::before {
+      top: 3px;
+      bottom: 0;
+      transform: rotate(315deg);
     }
   }
 
