@@ -270,19 +270,9 @@ class MemberDetails extends PureComponent {
     );
   };
 
-  renderAvatar = () => {
-    const { avatarUrl, displayName } = this.props;
-    return (
-      <Avatar
-        avatarUrl={avatarUrl}
-        className="member-details__image"
-        name={displayName}
-      />
-    );
-  };
-
   renderHeader = () => {
     const {
+      avatarUrl,
       displayName,
       isCohortList,
       isGuest,
@@ -301,7 +291,13 @@ class MemberDetails extends PureComponent {
 
     return (
       <header className="member-details__header">
-        <div className="member-details__avatar">{this.renderAvatar()}</div>
+        <div className="member-details__avatar">
+          <Avatar
+            avatarUrl={avatarUrl}
+            className="member-details__image"
+            name={displayName}
+          />
+        </div>
         <div>
           <h3 className="member-details__name">{displayName}</h3>
           <p className="member-details__role">
