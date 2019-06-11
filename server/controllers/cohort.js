@@ -318,16 +318,14 @@ const addMember = (req, resp) => {
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
       .status(401)
-      .send({ message: 'Adding members is disabled in demo mode.' });
+      .send({ message: 'cohort.actions.add-member-demo-msg' });
   }
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
     .then(cohort => {
       if (!cohort) {
-        throw new BadRequestException(
-          "You don't have permission to add new member."
-        );
+        throw new BadRequestException();
       }
 
       currentCohort = cohort;
@@ -339,13 +337,17 @@ const addMember = (req, resp) => {
       }
 
       if (user.idFromProvider === DEMO_MODE_ID) {
-        throw new BadRequestException(`There is no user of email: ${email}`);
+        throw new BadRequestException(
+          'cohort.actions.add-member-no-user-of-email'
+        );
       }
 
       const { _id, avatarUrl, displayName } = user;
 
       if (checkIfCohortMember(currentCohort, _id)) {
-        throw new BadRequestException('User is already a member.');
+        throw new BadRequestException(
+          'cohort.actions.add-member-already-member'
+        );
       }
 
       currentCohort.memberIds.push(_id);

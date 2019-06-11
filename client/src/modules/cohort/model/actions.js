@@ -280,11 +280,29 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     })
     .catch(err => {
       dispatch(addMemberFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message || `Failed to add: "${email}" as member. Please try again.`
-      );
+      if (err.message === 'cohort.actions.add-member-demo-msg') {
+        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+          notificationId: err.message
+        });
+      }
+
+      if (err.message === 'cohort.actions.add-member-no-user-of-email') {
+        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+          notificationId: err.message,
+          data: email
+        });
+      }
+
+      if (err.message === 'cohort.actions.add-member-already-member') {
+        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+          notificationId: err.message
+        });
+      }
+
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.add-member-default',
+        data: email
+      });
     });
 
 export const removeCohortMember = (cohortId, userName, userId) => dispatch =>

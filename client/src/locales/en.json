@@ -163,5 +163,9 @@
   "cohort.actions.fetch-fail": "Failed to fetch cohorts data. Please try again.",
   "cohort.actions.create-fail": "Failed to create new cohort: '{data}'. Please try again.",
   "cohort.actions.remove-owner-fail-1": "You can not remove the owner role from yourself because you are the only owner in the cohort.",
-  "cohort.actions.remove-owner-fail": "Failed to remove owner role from: '{data}'. Please try again."
+  "cohort.actions.remove-owner-fail": "Failed to remove owner role from: '{data}'. Please try again.",
+  "cohort.actions.add-member-demo-msg": "Adding members is disabled in demo mode.",
+  "cohort.actions.add-member-no-user-of-email": "There is no user of email: {data}",
+  "cohort.actions.add-member-already-member": "User is already a member.",
+  "cohort.actions.add-member-default": "Failed to add: '{data}' as member. Please try again."
 }
