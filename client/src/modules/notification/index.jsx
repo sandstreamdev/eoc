@@ -18,8 +18,6 @@ const Notifications = ({ notifications, intl: { formatMessage } }) => (
               const {
                 notification: { notificationId, data }
               } = item;
-
-              console.log(item);
               return (
                 <li className="notification__list-item" key={id}>
                   <MessageBox

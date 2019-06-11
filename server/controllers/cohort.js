@@ -283,12 +283,10 @@ const removeOwnerRole = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { name, ownerIds } = doc;
+      const { ownerIds } = doc;
 
       if (ownerIds.length < 2) {
-        throw new BadRequestException(
-          `You can not remove the owner role from yourself because you are the only owner in the "${name}" cohort.`
-        );
+        throw new BadRequestException('cohort.actions.remove-owner-fail-1');
       }
 
       ownerIds.splice(doc.ownerIds.indexOf(userId), 1);

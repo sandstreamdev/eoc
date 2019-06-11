@@ -19,7 +19,18 @@ const handleFetchErrors = resp => {
     throw new Error();
   }
 
-  if (resp.status >= ResponseStatusCode.BAD_REQUEST && resp.status < 600) {
+  if (resp.status === ResponseStatusCode.BAD_REQUEST) {
+    const contentType = resp.headers.get('content-type');
+    if (contentType.includes('application/json')) {
+      return resp.json().then(json => {
+        throw new Error(json.message || '');
+      });
+    }
+
+    throw new Error();
+  }
+
+  if (resp.status > ResponseStatusCode.BAD_REQUEST && resp.status < 600) {
     throw new Error();
   }
 

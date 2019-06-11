@@ -345,10 +345,15 @@ export const removeOwnerRole = (
     })
     .catch(err => {
       dispatch(removeOwnerRoleFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message ||
-          `Failed to remove owner role from: "${userName}". Please try again.`
-      );
+
+      if (err.message) {
+        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+          notificationId: err.message
+        });
+      }
+
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.remove-owner-fail',
+        data: userName
+      });
     });
