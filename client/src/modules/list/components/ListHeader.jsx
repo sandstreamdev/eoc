@@ -44,15 +44,15 @@ class ListHeader extends PureComponent {
     }
   }
 
-  handleNameInputVisibility = () =>
-    this.setState(({ isNameInputVisible }) => ({
-      isNameInputVisible: !isNameInputVisible
-    }));
+  showNameInput = () =>
+    this.setState({
+      isNameInputVisible: true
+    });
 
-  handleDescriptionTextareaVisibility = () =>
-    this.setState(({ isDescriptionTextareaVisible }) => ({
-      isDescriptionTextareaVisible: !isDescriptionTextareaVisible
-    }));
+  showDescriptionTextarea = () =>
+    this.setState({
+      isDescriptionTextareaVisible: true
+    });
 
   handleNameChange = event => {
     const {
@@ -76,12 +76,16 @@ class ListHeader extends PureComponent {
     const { isDescriptionTextareaVisible } = this.state;
     const { code } = event;
 
-    if (code === KeyCodes.ENTER || code === KeyCodes.ESCAPE) {
+    if (code === KeyCodes.ESCAPE) {
       const action = isDescriptionTextareaVisible
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
 
-      action();
+      return action();
+    }
+
+    if (code === KeyCodes.ENTER) {
+      this.handleNameUpdate();
     }
   };
 
@@ -91,18 +95,20 @@ class ListHeader extends PureComponent {
       isNameInputVisible,
       nameInputValue
     } = this.state;
+    const {
+      details: { name }
+    } = this.props;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
       return;
     }
 
-    if (
-      isNameInputVisible &&
-      _trim(nameInputValue).length >= 1 &&
-      isClickedOutside
-    ) {
-      this.handleNameUpdate();
+    if (isNameInputVisible && isClickedOutside) {
+      if (_trim(nameInputValue).length > 0) {
+        return this.handleNameUpdate();
+      }
+      this.setState({ isNameInputVisible: false, nameInputValue: name });
     }
   };
 
@@ -231,7 +237,7 @@ class ListHeader extends PureComponent {
               'list-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner ? this.handleDescriptionTextareaVisibility : null}
+            onClick={isOwner ? this.showDescriptionTextarea : null}
           >
             {description}
           </p>
@@ -239,7 +245,7 @@ class ListHeader extends PureComponent {
         {isOwner && !description && (
           <button
             className="list-header__button link-button"
-            onClick={this.handleDescriptionTextareaVisibility}
+            onClick={this.showDescriptionTextarea}
             type="button"
           >
             Add description
@@ -276,7 +282,7 @@ class ListHeader extends PureComponent {
         className={classNames('list-header__heading', {
           'list-header--clickable': isOwner
         })}
-        onClick={isOwner ? this.handleNameInputVisibility : null}
+        onClick={isOwner ? this.showNameInput : null}
       >
         {name}
       </h1>
