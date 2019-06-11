@@ -133,6 +133,7 @@ class List extends Component {
     }
 
     const { cohortId, isArchived, isMember, isOwner, name, type } = list;
+    const isCohortList = cohortId !== null && cohortId !== undefined;
 
     return (
       <Fragment>
@@ -144,7 +145,7 @@ class List extends Component {
             <div className="list">
               <ListHeader
                 details={list}
-                isCohortList={cohortId}
+                isCohortList={isCohortList}
                 updateBreadcrumbs={this.handleBreadcrumbs}
               />
               <div className="list__details">
@@ -180,7 +181,7 @@ class List extends Component {
                   </button>
                   {isMembersBoxVisible && (
                     <MembersBox
-                      isCohortList={cohortId}
+                      isCohortList={isCohortList}
                       isCurrentUserAnOwner={isOwner}
                       isMember={isMember}
                       members={members}
