@@ -85,7 +85,7 @@ class List extends Component {
     if (isOwner) {
       this.setState({ pendingForListArchivization: true });
 
-      archiveList(listId, name).finally(() => {
+      archiveList(listId, name).catch(() => {
         this.setState({ pendingForListArchivization: false });
         this.hideDialog();
       });

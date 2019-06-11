@@ -232,6 +232,7 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
         NotificationType.SUCCESS,
         `Cohort: "${cohortName}" was successfully archived!`
       );
+      history.replace('/cohorts');
     })
     .catch(() => {
       dispatch(archiveCohortFailure());
