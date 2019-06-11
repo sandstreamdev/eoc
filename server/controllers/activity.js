@@ -4,7 +4,7 @@ const Cohort = require('../models/cohort.model');
 
 const saveActivity = (
   activityType,
-  actorId,
+  performerId,
   itemId = null,
   listId = null,
   cohortId = null,
@@ -13,7 +13,7 @@ const saveActivity = (
 ) => {
   const newActivity = new Activity({
     activityType,
-    actorId,
+    performerId,
     cohortId,
     editedUserId,
     editedValue,
@@ -50,7 +50,7 @@ const getActivities = (req, resp) => {
         $or: [{ listId: { $in: listIds } }, { cohortId: { $in: cohortIds } }]
       })
         .sort({ createdAt: -1 })
-        .populate('actorId', 'avatarUrl displayName')
+        .populate('performerId', 'avatarUrl displayName')
         .populate('listId', 'name items')
         .populate('cohortId', 'name')
         .populate('editedUserId', 'displayName')
@@ -65,7 +65,7 @@ const getActivities = (req, resp) => {
         const {
           _id,
           activityType,
-          actorId,
+          performerId,
           cohortId,
           createdAt,
           editedValue,
@@ -74,11 +74,11 @@ const getActivities = (req, resp) => {
           listId
         } = doc;
 
-        const actor = actorId
+        const performer = performerId
           ? {
-              actorId: actorId._id,
-              actorAvatarUrl: actorId.avatarUrl,
-              actorName: actorId.displayName
+              performerId: performerId._id,
+              performerAvatarUrl: performerId.avatarUrl,
+              performerName: performerId.displayName
             }
           : null;
         const cohort = cohortId
@@ -106,7 +106,7 @@ const getActivities = (req, resp) => {
         return {
           _id,
           activityType,
-          actor,
+          performer,
           cohort,
           createdAt,
           editedValue,

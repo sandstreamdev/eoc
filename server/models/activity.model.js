@@ -5,7 +5,7 @@ const { ObjectId } = Schema.Types;
 
 const ActivitySchema = new Schema(
   {
-    actorId: { type: ObjectId, ref: 'User', required: true },
+    performerId: { type: ObjectId, ref: 'User', required: true },
     activityType: { type: String, required: true },
     cohortId: { type: ObjectId, ref: 'Cohort' },
     editedUserId: { type: ObjectId, ref: 'User' },

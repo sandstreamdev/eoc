@@ -47,7 +47,7 @@ class Activity extends PureComponent {
   render() {
     const {
       activity: {
-        actor: { actorAvatarUrl, actorName },
+        performer: { performerAvatarUrl, performerName },
         createdAt,
         item: { itemName }
       }
@@ -58,14 +58,16 @@ class Activity extends PureComponent {
       <div className="activity">
         <div className="activity__avatar">
           <Avatar
-            avatarUrl={actorAvatarUrl}
+            avatarUrl={performerAvatarUrl}
             className="activity__image"
-            name={actorName}
+            name={performerName}
           />
         </div>
         <div className="activity__message">
           <p className="activity__action">
-            {`${actorName} added ${itemName ? `"${itemName}"` : ''} item to `}
+            {`${performerName} added ${
+              itemName ? `"${itemName}"` : ''
+            } item to `}
             {this.renderListInfo()}
             {' sack'}
             {this.renderCohortInfo()}
@@ -81,7 +83,7 @@ class Activity extends PureComponent {
 Activity.propTypes = {
   activity: PropTypes.shape({
     activityType: PropTypes.string.isRequired,
-    actor: PropTypes.objectOf(PropTypes.string).isRequired,
+    performer: PropTypes.objectOf(PropTypes.string).isRequired,
     cohort: PropTypes.objectOf(PropTypes.string),
     createdAt: PropTypes.string.isRequired,
     editedValue: PropTypes.string,
