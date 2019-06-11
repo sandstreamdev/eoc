@@ -300,6 +300,7 @@ export const archiveList = (listId, listName) => dispatch =>
         NotificationType.SUCCESS,
         `Sack: "${listName}" was successfully archived!`
       );
+      history.replace('/dashboard');
     })
     .catch(err => {
       dispatch(archiveListFailure());
