@@ -1,21 +1,18 @@
-.comment {
+.activity {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
-  padding: 16px;
 
-  &__body {
+  &__message {
     text-align: left;
     display: flex;
     flex-direction: column;
     min-width: 0;
   }
 
-  &__author {
-    font-size: $m-font;
+  &__action {
+    font-size: $s-font;
     line-height: 1.2;
-    color: $text-normal;
+    color: $text-dark;
     font-weight: 500;
   }
 
@@ -25,31 +22,29 @@
     margin-top: 6px;
   }
 
-  &__content {
-    font-size: $m-font;
-    line-height: 1.2;
-    margin-top: 16px;
-    color: $text-normal;
-    overflow-wrap: break-word;
-  }
-
   &__link {
     font-style: italic;
     text-decoration: underline;
     color: $link-color;
 
     &:visited {
-      color: $text-normal;
+      color: $text-dark;
+      &:hover {
+        color: $link-color;
+      }
     }
   }
 
   &__avatar {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 16px;
     min-width: 32px;
     width: 32px;
-    display: flex;
-    justify-content: center;
+    height: 32px;
+    padding: 0;
   }
 
   &__image {

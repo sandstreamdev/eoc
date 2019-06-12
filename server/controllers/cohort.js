@@ -321,6 +321,10 @@ const addMember = (req, resp) => {
       .send({ message: 'cohort.actions.add-member-demo-msg' });
   }
 
+  if (!email) {
+    return resp.status(400).send({ message: 'Email can not be empty.' });
+  }
+
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
     .then(cohort => {

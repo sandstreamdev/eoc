@@ -49,6 +49,7 @@ $overlay-color: $black;
 $restore-blue: $blue;
 $restore-color: $app-bg;
 $shadow-color: $black;
+$shadow-color-light: lighten($shadow-color, 75%);
 $success-bg: $light-green;
 $success: $green;
 $switch-dot-color: $gold;

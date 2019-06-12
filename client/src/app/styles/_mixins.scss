@@ -4,6 +4,12 @@
   }
 }
 
+@mixin height-breakpoint($height) {
+  @media only screen and (min-height: $height) {
+    @content;
+  }
+}
+
 @mixin show-for($width) {
   display: none;
 

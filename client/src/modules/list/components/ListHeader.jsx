@@ -29,6 +29,7 @@ class ListHeader extends PureComponent {
       descriptionInputValue: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
+      isTipVisible: false,
       nameInputValue: name,
       pendingForDescription: false,
       pendingForName: false,
@@ -36,22 +37,32 @@ class ListHeader extends PureComponent {
     };
   }
 
-  handleNameInputVisibility = () =>
-    this.setState(({ isNameInputVisible }) => ({
-      isNameInputVisible: !isNameInputVisible
-    }));
+  componentDidUpdate() {
+    const { isTipVisible, nameInputValue } = this.state;
 
-  handleDescriptionTextareaVisibility = () =>
-    this.setState(({ isDescriptionTextareaVisible }) => ({
-      isDescriptionTextareaVisible: !isDescriptionTextareaVisible
-    }));
+    if (isTipVisible && nameInputValue) {
+      this.hideTip();
+    }
+  }
+
+  showNameInput = () =>
+    this.setState({
+      isNameInputVisible: true
+    });
+
+  showDescriptionTextarea = () =>
+    this.setState({
+      isDescriptionTextareaVisible: true
+    });
 
   handleNameChange = event => {
     const {
       target: { value }
     } = event;
 
-    this.setState({ nameInputValue: value });
+    this.setState({ nameInputValue: value }, () => {
+      this.handleTipVisibility();
+    });
   };
 
   handleDescriptionChange = event => {
@@ -66,12 +77,16 @@ class ListHeader extends PureComponent {
     const { isDescriptionTextareaVisible } = this.state;
     const { code } = event;
 
-    if (code === KeyCodes.ENTER || code === KeyCodes.ESCAPE) {
+    if (code === KeyCodes.ESCAPE) {
       const action = isDescriptionTextareaVisible
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
 
-      action();
+      return action();
+    }
+
+    if (code === KeyCodes.ENTER) {
+      this.handleNameUpdate();
     }
   };
 
@@ -81,18 +96,20 @@ class ListHeader extends PureComponent {
       isNameInputVisible,
       nameInputValue
     } = this.state;
+    const {
+      details: { name }
+    } = this.props;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
       return;
     }
 
-    if (
-      isNameInputVisible &&
-      _trim(nameInputValue).length >= 1 &&
-      isClickedOutside
-    ) {
-      this.handleNameUpdate();
+    if (isNameInputVisible && isClickedOutside) {
+      if (_trim(nameInputValue).length > 0) {
+        return this.handleNameUpdate();
+      }
+      this.setState({ isNameInputVisible: false, nameInputValue: name });
     }
   };
 
@@ -180,6 +197,17 @@ class ListHeader extends PureComponent {
     );
   };
 
+  handleTipVisibility = () => {
+    const { nameInputValue } = this.state;
+    const isItemNameEmpty = !_trim(nameInputValue);
+
+    if (isItemNameEmpty) {
+      this.setState({ isTipVisible: true });
+    }
+  };
+
+  hideTip = () => this.setState({ isTipVisible: false });
+
   renderDescription = () => {
     const {
       descriptionInputValue,
@@ -210,7 +238,7 @@ class ListHeader extends PureComponent {
               'list-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner ? this.handleDescriptionTextareaVisibility : null}
+            onClick={isOwner ? this.showDescriptionTextarea : null}
           >
             {description}
           </p>
@@ -218,7 +246,7 @@ class ListHeader extends PureComponent {
         {isOwner && !description && (
           <button
             className="list-header__button link-button"
-            onClick={this.handleDescriptionTextareaVisibility}
+            onClick={this.showDescriptionTextarea}
             type="button"
           >
             <FormattedMessage id="list.list-header.add-button" />
@@ -229,25 +257,33 @@ class ListHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { isNameInputVisible, nameInputValue, pendingForName } = this.state;
+    const {
+      isNameInputVisible,
+      isTipVisible,
+      nameInputValue,
+      pendingForName
+    } = this.state;
     const {
       details: { isOwner, name }
     } = this.props;
 
     return isNameInputVisible ? (
-      <NameInput
-        disabled={pendingForName}
-        name={nameInputValue}
-        onClick={isOwner ? this.handleClick : null}
-        onKeyPress={this.handleKeyPress}
-        onNameChange={this.handleNameChange}
-      />
+      <div>
+        <NameInput
+          disabled={pendingForName}
+          name={nameInputValue}
+          onClick={isOwner ? this.handleClick : null}
+          onKeyPress={this.handleKeyPress}
+          onNameChange={this.handleNameChange}
+        />
+        {isTipVisible && <p className="error-message">Name can not be empty</p>}
+      </div>
     ) : (
       <h1
         className={classNames('list-header__heading', {
           'list-header--clickable': isOwner
         })}
-        onClick={isOwner ? this.handleNameInputVisibility : null}
+        onClick={isOwner ? this.showNameInput : null}
       >
         {name}
       </h1>

@@ -222,6 +222,7 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
         notificationId: 'cohort.actions.archive-cohort',
         data: cohortName
       });
+      history.replace('/cohorts');
     })
     .catch(() => {
       dispatch(archiveCohortFailure());

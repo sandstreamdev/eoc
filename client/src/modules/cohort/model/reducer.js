@@ -55,13 +55,17 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.CREATE_SUCCESS:
       return { [action.payload._id]: { ...action.payload }, ...state };
     case CohortActionTypes.UPDATE_SUCCESS: {
-      const prevCohort = state[action.payload.cohortId];
+      const { description, cohortId, name } = action.payload;
+      const prevCohort = state[cohortId];
+      const { name: prevName, description: prevDescription } = prevCohort;
+      const newDescription = name ? prevDescription : description;
+
       const updatedCohort = {
         ...prevCohort,
-        name: action.payload.name || prevCohort.name,
-        description: action.payload.description
+        name: name || prevName,
+        description: newDescription
       };
-      return { ...state, [action.payload.cohortId]: updatedCohort };
+      return { ...state, [cohortId]: updatedCohort };
     }
     case CohortActionTypes.ARCHIVE_SUCCESS: {
       const _id = action.payload;

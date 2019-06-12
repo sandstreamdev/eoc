@@ -17,7 +17,6 @@ const Footer = () => (
         </Link>
       </span>
       <span className="footer__text footer__copyrights">
-        &copy;
         <FormattedMessage id="app.footer.copyrights" />
       </span>
       <a

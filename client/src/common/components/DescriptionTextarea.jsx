@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 class DescriptionTextarea extends PureComponent {
   constructor(props) {
@@ -38,15 +39,25 @@ class DescriptionTextarea extends PureComponent {
   render() {
     const { description, disabled, onDescriptionChange } = this.props;
     return (
-      <textarea
-        className="desc-textarea primary-textarea"
-        disabled={disabled}
-        name="description"
-        onChange={onDescriptionChange}
-        ref={this.descriptionTextarea}
-        type="text"
-        value={description}
-      />
+      <div className="desc-textarea">
+        <textarea
+          className="desc-textarea__textarea primary-textarea"
+          disabled={disabled}
+          name="description"
+          onChange={onDescriptionChange}
+          ref={this.descriptionTextarea}
+          type="text"
+          value={description}
+        />
+        <input
+          className={classNames('desc-textarea__submit primary-button', {
+            'desc-textarea__submit--disabled': disabled
+          })}
+          disabled={disabled}
+          type="submit"
+          value="save"
+        />
+      </div>
     );
   }
 }

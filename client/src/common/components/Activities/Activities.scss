@@ -1,0 +1,59 @@
+.activities {
+  position: relative;
+
+  &__button {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 38px;
+    width: 38px;
+    margin-right: 8px;
+    border: 0;
+    cursor: pointer;
+    outline: none;
+    padding: 1px 7px 2px;
+    svg {
+      height: 16px;
+
+      path {
+        fill: $text-normal;
+      }
+    }
+  }
+
+  &__wrapper {
+    box-sizing: border-box;
+    width: 250px;
+    background: $bg-color;
+    padding: 16px;
+    top: 50px;
+    right: -62px;
+    filter: drop-shadow(0 2px 2px $shadow-color-light);
+
+    &::before {
+      right: 73px;
+      top: -10px;
+      position: absolute;
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid $bg-color;
+    }
+
+    @include breakpoint($xsmall) {
+      right: 8px;
+
+      &::before {
+        right: 3px;
+      }
+    }
+
+    @include breakpoint($small) {
+      width: 300px;
+    }
+  }
+}

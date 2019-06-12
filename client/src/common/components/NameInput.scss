@@ -1,7 +1,23 @@
 .name-input {
-  font-size: $xl-font;
-  font-weight: 700;
-  line-height: 1;
-  color: $text-dark;
+  position: relative;
+  width: 100%;
   margin-bottom: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+
+  &__input {
+    font-size: $xl-font;
+    font-weight: 700;
+    line-height: 1;
+    color: $text-dark;
+  }
+
+  &__submit {
+    &--disabled {
+      cursor: not-allowed;
+      background: $gray2;
+    }
+    @include hide-for($large);
+  }
 }

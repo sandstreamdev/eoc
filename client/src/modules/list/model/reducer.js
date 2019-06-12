@@ -107,13 +107,17 @@ const lists = (state = {}, action) => {
       return newState;
     }
     case ListActionTypes.UPDATE_SUCCESS: {
-      const prevList = state[action.payload.listId];
+      const { description, listId, name } = action.payload;
+      const prevList = state[listId];
+      const { name: prevName, description: prevDescription } = prevList;
+      const newDescription = name ? prevDescription : description;
+
       const updatedList = {
         ...prevList,
-        name: action.payload.name || prevList.name,
-        description: action.payload.description || prevList.description
+        name: name || prevName,
+        description: newDescription
       };
-      return { ...state, [action.payload.listId]: updatedList };
+      return { ...state, [listId]: updatedList };
     }
     case ListActionTypes.ARCHIVE_SUCCESS: {
       const { listId: _id, isArchived } = action.payload;

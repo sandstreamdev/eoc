@@ -114,7 +114,7 @@ class Cohort extends PureComponent {
 
     this.setState({ pendingForCohortArchivization: true });
 
-    archiveCohort(id, name).finally(() => {
+    archiveCohort(id, name).catch(() => {
       this.setState({ pendingForCohortArchivization: false });
       this.hideDialog();
     });

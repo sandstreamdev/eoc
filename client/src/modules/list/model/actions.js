@@ -287,6 +287,7 @@ export const archiveList = (listId, listName) => dispatch =>
         notificationId: 'list.actions.arch-list',
         data: listName
       });
+      history.replace('/dashboard');
     })
     .catch(err => {
       dispatch(archiveListFailure());

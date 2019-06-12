@@ -28,10 +28,19 @@ class CohortHeader extends PureComponent {
       descriptionInputValue: trimmedDescription,
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
+      isTipVisible: false,
       nameInputValue: name,
       pendingForDescription: false,
       pendingForName: false
     };
+  }
+
+  componentDidUpdate() {
+    const { isTipVisible, nameInputValue } = this.state;
+
+    if (isTipVisible && nameInputValue) {
+      this.hideTip();
+    }
   }
 
   handleClick = (event, isClickedOutside) => {
@@ -40,18 +49,20 @@ class CohortHeader extends PureComponent {
       isNameInputVisible,
       nameInputValue
     } = this.state;
+    const {
+      details: { name }
+    } = this.props;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
       return;
     }
 
-    if (
-      isNameInputVisible &&
-      nameInputValue.trim().length >= 1 &&
-      isClickedOutside
-    ) {
-      this.handleNameUpdate();
+    if (isNameInputVisible && isClickedOutside) {
+      if (_trim(nameInputValue).length > 0) {
+        return this.handleNameUpdate();
+      }
+      this.setState({ isNameInputVisible: false, nameInputValue: name });
     }
   };
 
@@ -59,31 +70,37 @@ class CohortHeader extends PureComponent {
     const { isDescriptionTextareaVisible } = this.state;
     const { code } = event;
 
-    if (code === KeyCodes.ENTER || code === KeyCodes.ESCAPE) {
+    if (code === KeyCodes.ESCAPE) {
       const action = isDescriptionTextareaVisible
         ? this.handleDescriptionUpdate
         : this.handleNameUpdate;
 
-      action();
+      return action();
+    }
+
+    if (code === KeyCodes.ENTER) {
+      this.handleNameUpdate();
     }
   };
 
-  handleNameInputVisibility = () =>
-    this.setState(({ isNameInputVisible }) => ({
-      isNameInputVisible: !isNameInputVisible
-    }));
+  showNameInput = () =>
+    this.setState({
+      isNameInputVisible: true
+    });
 
-  handleDescriptionTextareaVisibility = () =>
-    this.setState(({ isDescriptionTextareaVisible }) => ({
-      isDescriptionTextareaVisible: !isDescriptionTextareaVisible
-    }));
+  showDescriptionTextarea = () =>
+    this.setState({
+      isDescriptionTextareaVisible: true
+    });
 
   handleNameChange = event => {
     const {
       target: { value }
     } = event;
 
-    this.setState({ nameInputValue: value });
+    this.setState({ nameInputValue: value }, () => {
+      this.handleTipVisibility();
+    });
   };
 
   handleDescriptionChange = event => {
@@ -160,6 +177,17 @@ class CohortHeader extends PureComponent {
     );
   };
 
+  handleTipVisibility = () => {
+    const { nameInputValue } = this.state;
+    const isItemNameEmpty = !_trim(nameInputValue);
+
+    if (isItemNameEmpty) {
+      this.setState({ isTipVisible: true });
+    }
+  };
+
+  hideTip = () => this.setState({ isTipVisible: false });
+
   renderDescription = () => {
     const {
       descriptionInputValue,
@@ -191,7 +219,7 @@ class CohortHeader extends PureComponent {
               'cohort-header--clickable': isOwner
             })}
             data-id="description"
-            onClick={isOwner ? this.handleDescriptionTextareaVisibility : null}
+            onClick={isOwner ? this.showDescriptionTextarea : null}
           >
             {description}
           </p>
@@ -199,7 +227,7 @@ class CohortHeader extends PureComponent {
         {isOwner && !description && (
           <button
             className="cohort-header__button link-button"
-            onClick={this.handleDescriptionTextareaVisibility}
+            onClick={this.showDescriptionTextarea}
             type="button"
           >
             <FormattedMessage id="cohort.cohort-header.add-description" />
@@ -210,25 +238,33 @@ class CohortHeader extends PureComponent {
   };
 
   renderName = () => {
-    const { isNameInputVisible, nameInputValue, pendingForName } = this.state;
+    const {
+      isNameInputVisible,
+      isTipVisible,
+      nameInputValue,
+      pendingForName
+    } = this.state;
     const {
       details: { isOwner, name }
     } = this.props;
 
     return isNameInputVisible ? (
-      <NameInput
-        disabled={pendingForName}
-        name={nameInputValue}
-        onClick={this.handleClick}
-        onKeyPress={this.handleKeyPress}
-        onNameChange={this.handleNameChange}
-      />
+      <div>
+        <NameInput
+          disabled={pendingForName}
+          name={nameInputValue}
+          onClick={this.handleClick}
+          onKeyPress={this.handleKeyPress}
+          onNameChange={this.handleNameChange}
+        />
+        {isTipVisible && <p className="error-message">Name can not be empty</p>}
+      </div>
     ) : (
       <h1
         className={classNames('cohort-header__heading', {
           'cohort-header--clickable': isOwner
         })}
-        onClick={isOwner ? this.handleNameInputVisibility : null}
+        onClick={isOwner ? this.showNameInput : null}
       >
         {name}
       </h1>

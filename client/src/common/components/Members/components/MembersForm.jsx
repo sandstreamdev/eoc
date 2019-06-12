@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import _isEmpty from 'lodash/isEmpty';
+import _trim from 'lodash/trim';
 
 import Preloader, {
   PreloaderSize,
@@ -51,7 +53,9 @@ class MembersForm extends PureComponent {
     const { onAddNew } = this.props;
     const { inputValue } = this.state;
 
-    onAddNew(inputValue);
+    if (!_isEmpty(_trim(inputValue))) {
+      onAddNew(inputValue);
+    }
   };
 
   handleSubmit = event => event.preventDefault();
@@ -67,6 +71,8 @@ class MembersForm extends PureComponent {
       pending,
       intl: { formatMessage }
     } = this.props;
+    const isEmpty = _isEmpty(_trim(inputValue));
+    const isButtonDisabled = disabled || pending || isEmpty;
 
     return (
       <form className="members-form" onSubmit={this.handleSubmit}>
@@ -87,7 +93,7 @@ class MembersForm extends PureComponent {
           className={classNames('primary-button', {
             'primary-button--disabled': disabled
           })}
-          disabled={disabled}
+          disabled={isButtonDisabled}
           onClick={this.handleAddNew}
           type="button"
         >
