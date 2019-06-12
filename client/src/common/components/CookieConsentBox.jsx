@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 
@@ -24,9 +24,9 @@ const CookieConsentBox = ({ isAuthPage, onAccept }) => (
       {isAuthPage && (
         <Fragment>
           <br />
-          <FormattedHTMLMessage id="common.cookie-consent.privacy-1" />
+          <FormattedMessage id="common.cookie-consent.privacy-1" />
           <Link className="cookie-consent__link" to="/privacy-policy">
-            <FormattedHTMLMessage id="common.cookie-consent.privacy-2" />
+            <FormattedMessage id="common.cookie-consent.privacy-2" />
           </Link>
         </Fragment>
       )}

@@ -68,8 +68,8 @@ class MembersForm extends PureComponent {
     const { inputValue } = this.state;
     const {
       disabled,
-      pending,
-      intl: { formatMessage }
+      intl: { formatMessage },
+      pending
     } = this.props;
     const isEmpty = _isEmpty(_trim(inputValue));
     const isButtonDisabled = disabled || pending || isEmpty;

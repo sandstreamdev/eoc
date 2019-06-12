@@ -8,11 +8,11 @@ import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
 
 const VotingBox = ({
+  intl: { formatMessage },
   isMember,
   isVoted,
   onVote,
-  votesCount,
-  intl: { formatMessage }
+  votesCount
 }) => (
   <PendingButton
     className={classNames('voting-box', {

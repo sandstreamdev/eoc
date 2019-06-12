@@ -38,9 +38,9 @@ class ArchivedMessage extends PureComponent {
   render() {
     const { isDialogVisible, pending } = this.state;
     const {
+      intl: { formatMessage },
       item,
-      name,
-      intl: { formatMessage }
+      name
     } = this.props;
 
     return (

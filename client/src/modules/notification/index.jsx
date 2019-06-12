@@ -8,7 +8,7 @@ import { getNotifications } from './model/selectors';
 import MessageBox from 'common/components/MessageBox';
 import { IntlPropType } from 'common/constants/propTypes';
 
-const Notifications = ({ notifications, intl: { formatMessage } }) => (
+const Notifications = ({ intl: { formatMessage }, notifications }) => (
   <Fragment>
     {Object.entries(notifications).length > 0 && (
       <div className="notification">

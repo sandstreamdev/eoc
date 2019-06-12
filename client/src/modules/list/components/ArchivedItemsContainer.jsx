@@ -54,8 +54,8 @@ class ArchivedItemsContainer extends PureComponent {
     const { areArchivedItemsVisible, pending } = this.state;
     const {
       archivedItems,
-      isMember,
-      intl: { formatMessage }
+      intl: { formatMessage },
+      isMember
     } = this.props;
 
     return (

@@ -57,8 +57,8 @@ class Form extends PureComponent {
     const { description, name } = this.state;
     const {
       disabled,
-      onSelect,
-      intl: { formatMessage }
+      intl: { formatMessage },
+      onSelect
     } = this.props;
 
     return (

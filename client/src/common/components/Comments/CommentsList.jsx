@@ -76,8 +76,8 @@ class CommentsList extends PureComponent {
   render() {
     const {
       comments,
-      isFormAccessible,
-      intl: { formatMessage }
+      intl: { formatMessage },
+      isFormAccessible
     } = this.props;
     const { isNewCommentVisible, pending } = this.state;
 
@@ -125,8 +125,8 @@ class CommentsList extends PureComponent {
 
 CommentsList.propTypes = {
   comments: PropTypes.objectOf(PropTypes.object),
-  isFormAccessible: PropTypes.bool,
   intl: IntlPropType.isRequired,
+  isFormAccessible: PropTypes.bool,
   itemId: PropTypes.string.isRequired,
   itemName: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,

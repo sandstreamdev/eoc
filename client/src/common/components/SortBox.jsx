@@ -28,11 +28,11 @@ class SortBox extends Component {
 
   render() {
     const {
+      intl: { formatMessage },
       label,
       options,
       sortBy,
-      sortOrder,
-      intl: { formatMessage }
+      sortOrder
     } = this.props;
 
     const orderButtonClass = classNames('sort-box__button', {

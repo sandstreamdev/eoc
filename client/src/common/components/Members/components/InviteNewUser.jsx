@@ -9,9 +9,9 @@ import { IntlPropType } from 'common/constants/propTypes';
 
 const InviteNewUser = ({
   email,
+  intl: { formatMessage },
   onCancel,
-  onInvite,
-  intl: { formatMessage }
+  onInvite
 }) => (
   <div className="invite-user">
     <p className="invite-user__message">

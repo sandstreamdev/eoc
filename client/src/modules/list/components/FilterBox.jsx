@@ -15,9 +15,9 @@ class FilterBox extends Component {
   render() {
     const {
       filterBy,
+      intl: { formatMessage },
       label,
-      options,
-      intl: { formatMessage }
+      options
     } = this.props;
 
     return (

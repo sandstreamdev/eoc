@@ -104,9 +104,9 @@ class ItemsContainer extends Component {
     const {
       archived,
       children,
+      intl: { formatMessage },
       isMember,
-      items,
-      intl: { formatMessage }
+      items
     } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterItems(items, filterBy);
