@@ -133,7 +133,7 @@ class List extends Component {
     }
 
     const { cohortId, isArchived, isMember, isOwner, name, type } = list;
-    const isCohortList = cohortId !== null;
+    const isCohortList = cohortId !== null && cohortId !== undefined;
 
     return (
       <Fragment>
