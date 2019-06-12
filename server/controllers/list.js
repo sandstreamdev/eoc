@@ -528,14 +528,14 @@ const removeOwnerRole = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException("Can't remove owner role.");
+        throw new BadRequestException();
       }
 
-      const { name, ownerIds } = doc;
+      const { ownerIds } = doc;
 
       if (ownerIds.length < 2) {
         throw new BadRequestException(
-          `You can not remove the owner role from yourself because you are the only owner in the "${name}" sack.`
+          'list.actions.remove-owner-role-only-one-owner'
         );
       }
       const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
@@ -546,18 +546,14 @@ const removeOwnerRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() =>
-      resp.send({
-        message: 'User has no owner role.'
-      })
-    )
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;
         return resp.status(400).send({ message });
       }
 
-      resp.status(400).send({ message: 'Sack data not found' });
+      resp.sendStatus(400);
     });
 };
 
@@ -609,13 +605,13 @@ const removeMemberRole = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { memberIds, name, ownerIds } = doc;
+      const { memberIds, ownerIds } = doc;
 
       const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
 
       if (userIsOwner && ownerIds.length < 2) {
         throw new BadRequestException(
-          `You can not remove the member and owner role from yourself because you are the only owner in the "${name}" sack.`
+          'list.actions.remove-member-role-only-one-owner'
         );
       }
 
@@ -655,7 +651,7 @@ const addViewer = (req, resp) => {
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
       .status(400)
-      .send({ message: 'Adding viewers in DEMO mode is disabled.' });
+      .send({ message: 'list.actions.add-viewer-demo-mode' });
   }
 
   List.findOne({
@@ -675,7 +671,7 @@ const addViewer = (req, resp) => {
       }
 
       if (userData.idFromProvider === DEMO_MODE_ID) {
-        throw new BadRequestException(`There is no user of email: ${email}`);
+        throw new BadRequestException('list.actions.add-viewer-no-email');
       }
 
       const { _id: newMemberId } = userData;
@@ -683,7 +679,7 @@ const addViewer = (req, resp) => {
       const userExists = checkIfArrayContainsUserId(viewersIds, newMemberId);
 
       if (userExists) {
-        throw new BadRequestException('User is already a member.');
+        throw new BadRequestException('list.actions.add-viewer-is-member');
       }
 
       user = userData;
@@ -712,9 +708,7 @@ const addViewer = (req, resp) => {
         return resp.status(400).send({ message });
       }
 
-      resp.status(400).send({
-        message: 'An error occurred while adding new viewer. Please try again.'
-      });
+      resp.sendStatus(400);
     });
 };
 

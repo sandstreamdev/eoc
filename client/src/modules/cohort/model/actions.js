@@ -316,7 +316,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
         data: userName
       });
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(removeMemberFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'cohort.actions.remove-member-fail',
