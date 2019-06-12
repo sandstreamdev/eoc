@@ -1,5 +1,13 @@
 {
   "footer.privacy": "Privacy policy",
   "footer.copyrights": "© Copyrights 2019",
-  "footer.about": "About"
+  "footer.about": "About",
+  "list.activities.item.add": "{performer} added '{item}' item to '{list}' list in '{cohort}' cohort.",
+  "list.activities.item.add.no-performer": "User added '{item}' item to '{list}' list in '{cohort}' cohort.",
+  "list.activities.item.add.no-performer.no-item": "User added item to '{list}' list in '{cohort}' cohort.",
+  "list.activities.item.add.no-performer.no-item.priv-list": "User added item to '{list}' list.",
+  "list.activities.item.add.no-performer.priv-list": "User added '{item}' item to '{list}' list.",
+  "list.activities.item.add.no-item": "{performer} added item to '{list}' list in '{cohort}' cohort.",
+  "list.activities.item.add.no-item.priv-list": "{performer} added item to '{list}' list.",
+  "list.activities.item.add.priv-list": "{performer} added '{item}' item to '{list}' list."
 }

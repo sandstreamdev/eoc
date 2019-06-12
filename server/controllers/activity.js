@@ -76,36 +76,48 @@ const getActivities = (req, resp) => {
 
         const performer = performerId
           ? {
-              performerId: performerId._id,
-              performerAvatarUrl: performerId.avatarUrl,
-              performerName: performerId.displayName
+              id: performerId._id,
+              avatarUrl: performerId.avatarUrl,
+              name: performerId.displayName
             }
           : null;
         const cohort = cohortId
-          ? { cohortId: cohortId._id, cohortName: cohortId.name }
+          ? { id: cohortId._id, name: cohortId.name }
           : null;
         const editedUser = editedUserId
           ? {
-              editedUserId: editedUserId._id,
-              editedUserAvatarUrl: editedUserId.avatarUrl,
-              editedUserName: editedUserId.displayName
+              id: editedUserId._id,
+              avatarUrl: editedUserId.avatarUrl,
+              name: editedUserId.displayName
             }
           : null;
 
-        const list = listId
-          ? { listId: listId._id, listName: listId.name }
-          : null;
-        const item = { itemId };
+        const list = listId ? { id: listId._id, name: listId.name } : null;
+        const item = { id: itemId };
 
         if (listId) {
           const { items } = listId;
           const itemData = items.id(itemId);
-          item.itemName = itemData ? itemData.name : null;
+          item.name = itemData ? itemData.name : null;
+        }
+
+        let adjustedActivityType = activityType;
+
+        if (!performer) {
+          adjustedActivityType = `${adjustedActivityType}.no-performer`;
+        }
+
+        if (itemId && !item.name) {
+          adjustedActivityType = `${adjustedActivityType}.no-item`;
+        }
+
+        if (!cohort) {
+          adjustedActivityType = `${adjustedActivityType}.priv-list`;
         }
 
         return {
           _id,
-          activityType,
+          activityType: adjustedActivityType,
           performer,
           cohort,
           createdAt,

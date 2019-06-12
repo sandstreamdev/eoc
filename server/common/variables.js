@@ -7,8 +7,8 @@ const DEMO_MODE_ID = '5ce2e16d7d8999071560c9ae';
 const DEMO_USER_ID = '5ce283fee76a2e02c79d8f55';
 const PROJECT_NAME = 'EOC';
 const ActivityType = Object.freeze({
-  ITEM_ADD: 'activity.item.add',
-  ITEM_DELETE: 'activity.item.delete'
+  ITEM_ADD: 'list.activities.item.add',
+  ITEM_DELETE: 'list.activities.item.delete'
 });
 
 module.exports = {

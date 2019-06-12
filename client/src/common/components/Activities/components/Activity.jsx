@@ -1,6 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 import { dateFromString } from 'common/utils/helpers';
 import Avatar from 'common/components/Avatar';
@@ -11,19 +12,11 @@ class Activity extends PureComponent {
       activity: { cohort }
     } = this.props;
 
-    if (cohort) {
-      const { cohortId, cohortName } = cohort;
-
-      return (
-        <Fragment>
-          {' in '}
-          <Link className="activity__link" to={`/cohort/${cohortId}`}>
-            {cohortName}
-          </Link>
-          {' cohort'}
-        </Fragment>
-      );
-    }
+    return cohort ? (
+      <Link className="activity__link" to={`/cohort/${cohort.id}`}>
+        {cohort.name}
+      </Link>
+    ) : null;
   };
 
   renderListInfo = () => {
@@ -31,47 +24,40 @@ class Activity extends PureComponent {
       activity: { list }
     } = this.props;
 
-    if (list) {
-      const { listId, listName } = list;
-
-      return (
-        <Fragment>
-          <Link className="activity__link" to={`/sack/${listId}`}>
-            {listName}
-          </Link>
-        </Fragment>
-      );
-    }
+    return list ? (
+      <Link className="activity__link" to={`/sack/${list.id}`}>
+        {list.name}
+      </Link>
+    ) : null;
   };
 
   render() {
     const {
-      activity: {
-        performer: { performerAvatarUrl, performerName },
-        createdAt,
-        item: { itemName }
-      }
+      activity: { activityType, createdAt, item, performer }
     } = this.props;
     const date = dateFromString(createdAt);
+    console.log(activityType);
 
     return (
       <div className="activity">
         <div className="activity__avatar">
           <Avatar
-            avatarUrl={performerAvatarUrl}
+            avatarUrl={performer ? performer.avatarUrl : null}
             className="activity__image"
-            name={performerName}
+            name={performer ? performer.name : null}
           />
         </div>
         <div className="activity__message">
           <p className="activity__action">
-            {`${performerName} added ${
-              itemName ? `"${itemName}"` : ''
-            } item to `}
-            {this.renderListInfo()}
-            {' sack'}
-            {this.renderCohortInfo()}
-            {'.'}
+            <FormattedMessage
+              id={activityType}
+              values={{
+                performer: performer ? performer.name : null,
+                item: <em>{item ? item.name : null}</em>,
+                list: this.renderListInfo(),
+                cohort: this.renderCohortInfo()
+              }}
+            />
           </p>
           <p className="activity__date">{date}</p>
         </div>
@@ -83,7 +69,7 @@ class Activity extends PureComponent {
 Activity.propTypes = {
   activity: PropTypes.shape({
     activityType: PropTypes.string.isRequired,
-    performer: PropTypes.objectOf(PropTypes.string).isRequired,
+    performer: PropTypes.objectOf(PropTypes.string),
     cohort: PropTypes.objectOf(PropTypes.string),
     createdAt: PropTypes.string.isRequired,
     editedValue: PropTypes.string,

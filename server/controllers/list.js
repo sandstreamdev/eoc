@@ -22,6 +22,7 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
+const Activity = require('../models/activity.model');
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -84,7 +85,9 @@ const deleteListById = (req, resp) => {
     params: { id: listId }
   } = req;
 
-  List.findOneAndDelete({ _id: sanitize(listId), ownerIds: userId })
+  const sanitizedListId = sanitize(listId);
+
+  List.findOneAndDelete({ _id: sanitizedListId, ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -93,6 +96,7 @@ const deleteListById = (req, resp) => {
 
       return Comment.deleteMany({ listId }).exec();
     })
+    .then(() => Activity.deleteMany({ listId: sanitizedListId }).exec())
     .then(() => resp.send())
     .catch(() => resp.sendStatus(400));
 };

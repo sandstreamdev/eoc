@@ -10,10 +10,16 @@
   }
 
   &__action {
-    font-size: $s-font;
-    line-height: 1.2;
-    color: $text-dark;
-    font-weight: 500;
+    span {
+      font-size: $s-font;
+      line-height: 1.2;
+      color: $text-dark;
+      font-weight: 500;
+    }
+
+    em {
+      font-weight: 700;
+    }
   }
 
   &__date {
@@ -25,7 +31,8 @@
   &__link {
     font-style: italic;
     text-decoration: underline;
-    color: $link-color;
+    color: $text-dark;
+    font-weight: 700;
 
     &:visited {
       color: $text-dark;
