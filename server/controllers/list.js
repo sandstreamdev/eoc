@@ -668,6 +668,10 @@ const addViewer = (req, resp) => {
       .send({ message: 'Adding viewers in DEMO mode is disabled.' });
   }
 
+  if (!email) {
+    return resp.status(400).send({ message: 'Email can not be empty.' });
+  }
+
   List.findOne({
     _id: sanitize(listId),
     memberIds: currentUserId
