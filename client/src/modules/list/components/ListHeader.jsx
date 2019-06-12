@@ -5,11 +5,11 @@ import { withRouter } from 'react-router-dom';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { ListIcon } from 'assets/images/icons';
 import { updateList, changeType } from 'modules/list/model/actions';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import { ListType } from '../consts';
@@ -292,7 +292,8 @@ class ListHeader extends PureComponent {
 
   renderListType = () => {
     const {
-      details: { type }
+      details: { type },
+      intl: { formatMessage }
     } = this.props;
     const { pendingForType } = this.state;
 
@@ -304,10 +305,10 @@ class ListHeader extends PureComponent {
         onChange={this.handleChangingType}
       >
         <option className="list-header__option" value={ListType.LIMITED}>
-          {ListType.LIMITED}
+          {formatMessage({ id: 'list.type.limited' })}
         </option>
         <option className="list-header__option" value={ListType.SHARED}>
-          {ListType.SHARED}
+          {formatMessage({ id: 'list.type.shared' })}
         </option>
       </select>
     );
@@ -356,6 +357,7 @@ class ListHeader extends PureComponent {
 
 ListHeader.propTypes = {
   details: PropTypes.objectOf(PropTypes.any).isRequired,
+  intl: IntlPropType.isRequired,
   isCohortList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
@@ -364,9 +366,11 @@ ListHeader.propTypes = {
   updateList: PropTypes.func.isRequired
 };
 
-export default withRouter(
-  connect(
-    null,
-    { changeType, updateList }
-  )(ListHeader)
+export default injectIntl(
+  withRouter(
+    connect(
+      null,
+      { changeType, updateList }
+    )(ListHeader)
+  )
 );

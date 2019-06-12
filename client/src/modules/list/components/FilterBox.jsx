@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
+
+import { IntlPropType } from 'common/constants/propTypes';
 
 class FilterBox extends Component {
   handleFilterByChange = event => {
@@ -10,7 +13,12 @@ class FilterBox extends Component {
   };
 
   render() {
-    const { filterBy, label, options } = this.props;
+    const {
+      filterBy,
+      label,
+      options,
+      intl: { formatMessage }
+    } = this.props;
 
     return (
       <div className="filter-box">
@@ -23,7 +31,7 @@ class FilterBox extends Component {
         >
           {options.map(option => (
             <option key={option.id} value={option.id}>
-              {option.label}
+              {formatMessage({ id: `list.filter-box.${option.id}` })}
             </option>
           ))}
         </select>
@@ -34,10 +42,11 @@ class FilterBox extends Component {
 
 FilterBox.propTypes = {
   filterBy: PropTypes.string.isRequired,
+  intl: IntlPropType.isRequired,
   label: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   onChange: PropTypes.func.isRequired
 };
 
-export default FilterBox;
+export default injectIntl(FilterBox);

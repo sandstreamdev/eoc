@@ -203,5 +203,13 @@
   "list.actions.remove-member-role-only-one-owner": "You can not remove the member and owner role from yourself because you are the only owner in the sack.",
   "list.actions.remove-member-role-fail": "Failed to remove owner role from: '{data}'. Please try again.",
   "list.actions.change-type": "Sack '{data}' type changed. ",
-  "list.actions.change-type-fail": "Failed to change: '{data}' type. Please try again."
+  "list.actions.change-type-fail": "Failed to change: '{data}' type. Please try again.",
+  "list.type.limited": "Limited",
+  "list.type.shared": "Shared",
+  "list.filter-box.my_items": "my",
+  "list.filter-box.all_items": "all",
+  "list.sort-box.name": "name",
+  "list.sort-box.createdAt": "date",
+  "list.sort-box.author": "author",
+  "list.sort-box.votes": "votes"
 }

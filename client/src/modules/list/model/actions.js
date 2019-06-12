@@ -289,7 +289,7 @@ export const archiveList = (listId, listName) => dispatch =>
       });
       history.replace('/dashboard');
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(archiveListFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.actions.arch-list-fail',

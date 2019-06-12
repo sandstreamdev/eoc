@@ -24,15 +24,15 @@ export const FilterOptionType = Object.freeze({
 });
 
 const sortOptions = [
-  { id: SortOptionType.AUTHOR, label: 'author' },
-  { id: SortOptionType.DATE, label: 'date' },
-  { id: SortOptionType.NAME, label: 'name' },
-  { id: SortOptionType.VOTES, label: 'votes' }
+  { id: SortOptionType.AUTHOR },
+  { id: SortOptionType.DATE },
+  { id: SortOptionType.NAME },
+  { id: SortOptionType.VOTES }
 ];
 
 const filterOptions = [
-  { id: FilterOptionType.ALL_ITEMS, label: 'all' },
-  { id: FilterOptionType.MY_ITEMS, label: 'my' }
+  { id: FilterOptionType.ALL_ITEMS },
+  { id: FilterOptionType.MY_ITEMS }
 ];
 
 class ItemsContainer extends Component {

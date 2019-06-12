@@ -49,8 +49,8 @@ class SortBox extends Component {
           name="sorting options"
         >
           {options.map(option => (
-            <option key={option.label} value={option.id}>
-              {option.label}
+            <option key={option.id} value={option.id}>
+              {formatMessage({ id: `list.sort-box.${option.id}` })}
             </option>
           ))}
         </select>
