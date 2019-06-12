@@ -66,6 +66,7 @@ class MembersForm extends PureComponent {
     const { inputValue } = this.state;
     const { disabled, pending } = this.props;
     const isEmpty = _isEmpty(_trim(inputValue));
+    const isButtonDisabled = disabled || pending || isEmpty;
 
     return (
       <form className="members-form" onSubmit={this.handleSubmit}>
@@ -86,7 +87,7 @@ class MembersForm extends PureComponent {
           className={classNames('primary-button', {
             'primary-button--disabled': disabled
           })}
-          disabled={disabled || pending || isEmpty}
+          disabled={isButtonDisabled}
           onClick={this.handleAddNew}
           type="button"
         >
