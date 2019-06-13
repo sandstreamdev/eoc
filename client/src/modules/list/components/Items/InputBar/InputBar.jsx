@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import _trim from 'lodash/trim';
+import io from 'socket.io-client';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
@@ -35,6 +36,13 @@ class InputBar extends Component {
 
     if (isTipVisible) {
       this.hideTipAfterTimeout();
+    }
+
+    let socket;
+
+    if (!socket) {
+      console.log('ustawnaiwam polaczenie');
+      socket = io('http://localhost:8080');
     }
   }
 
