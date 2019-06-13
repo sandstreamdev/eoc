@@ -88,17 +88,20 @@ const items = (state = {}, action) => {
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
         payload: {
-          data: { description },
+          data: { description, name },
           itemId
         }
       } = action;
       const prevItem = state[itemId];
+      const prevDescription = prevItem.description;
+      const newDescription = name ? prevDescription : description;
 
       return {
         ...state,
         [itemId]: {
           ...prevItem,
-          description
+          description: newDescription,
+          name: name || prevItem.name
         }
       };
     }
