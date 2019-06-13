@@ -103,10 +103,6 @@ const getActivities = (req, resp) => {
 
         let adjustedActivityType = activityType;
 
-        if (!performer) {
-          adjustedActivityType = `${adjustedActivityType}.no-performer`;
-        }
-
         if (itemId && !item.name) {
           adjustedActivityType = `${adjustedActivityType}.no-item`;
         }

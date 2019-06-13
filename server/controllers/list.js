@@ -96,7 +96,7 @@ const deleteListById = (req, resp) => {
 
       return Comment.deleteMany({ listId }).exec();
     })
-    .then(() => Activity.deleteMany({ listId: sanitizedListId }).exec())
+    // .then(() => Activity.deleteMany({ listId: sanitizedListId }).exec())
     .then(() => resp.send())
     .catch(() => resp.sendStatus(400));
 };
@@ -304,26 +304,39 @@ const voteForItem = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+  let list;
 
   List.findOne({
-    _id: sanitize(listId),
+    _id: sanitizedListId,
     memberIds: userId,
-    'items._id': sanitize(itemId)
+    'items._id': sanitizedItemId
   })
     .exec()
-    .then(list => {
-      if (!list) {
+    .then(doc => {
+      if (!doc) {
         return resp.sendStatus(400);
       }
-
+      list = doc;
       const { items } = list;
-      const item = items.id(itemId);
+      const item = items.id(sanitizedItemId);
 
       item.voterIds.push(userId);
 
       return list.save();
     })
-    .then(() => resp.send())
+    .then(() => {
+      resp.send();
+
+      saveActivity(
+        ActivityType.ITEM_ADD_VOTE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId
+      );
+    })
     .catch(() => resp.sendStatus(400));
 };
 
@@ -333,27 +346,42 @@ const clearVote = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+  let list;
 
   List.findOne({
-    _id: sanitize(listId),
+    _id: sanitizedListId,
     memberIds: userId,
-    'items._id': sanitize(itemId)
+    'items._id': sanitizedItemId
   })
     .exec()
-    .then(list => {
-      if (!list) {
+    .then(doc => {
+      if (!doc) {
         return resp.sendStatus(400);
       }
 
+      list = doc;
+
       const { items } = list;
-      const item = items.id(itemId);
+      const item = items.id(sanitizedItemId);
       const voterIdIndex = item.voterIds.indexOf(userId);
 
       item.voterIds.splice(voterIdIndex, 1);
 
       return list.save();
     })
-    .then(() => resp.send())
+    .then(() => {
+      resp.send();
+
+      saveActivity(
+        ActivityType.ITEM_CLEAR_VOTE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId
+      );
+    })
     .catch(() => resp.sendStatus(400));
 };
 
@@ -745,34 +773,50 @@ const updateListItem = (req, resp) => {
     itemId,
     name
   } = req.body;
-
   const {
     user: { _id: userId }
   } = req;
   const { id: listId } = req.params;
-
-  const sanitizeItemId = sanitize(itemId);
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+  let editedItemActivity;
+  let list;
+  let prevItemName;
 
   List.findOne({
-    _id: sanitize(listId),
-    'items._id': sanitizeItemId,
+    _id: sanitizedListId,
+    'items._id': sanitizedItemId,
     memberIds: userId
   })
     .exec()
-    .then(list => {
-      if (!list) {
+    .then(doc => {
+      if (!doc) {
         throw new BadRequestException();
       }
 
+      list = doc;
+
       const { items } = list;
-      const itemToUpdate = items.id(sanitizeItemId);
+      const itemToUpdate = items.id(sanitizedItemId);
 
       if (description !== undefined) {
+        const { description: prevDescription } = itemToUpdate;
         itemToUpdate.description = description;
+
+        if (!description && prevDescription) {
+          editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
+        } else if (description && !prevDescription) {
+          editedItemActivity = ActivityType.ITEM_ADD_DESCRIPTION;
+        } else {
+          editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
+        }
       }
 
       if (isOrdered !== undefined) {
         itemToUpdate.isOrdered = isOrdered;
+        editedItemActivity = isOrdered
+          ? ActivityType.ITEM_DONE
+          : ActivityType.ITEM_UNHANDLED;
       }
 
       if (authorId) {
@@ -780,16 +824,33 @@ const updateListItem = (req, resp) => {
       }
 
       if (name) {
+        prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
+        editedItemActivity = ActivityType.ITEM_EDIT_NAME;
       }
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
+        editedItemActivity = isArchived
+          ? ActivityType.ITEM_ARCHIVE
+          : ActivityType.ITEM_RESTORE;
       }
 
       return list.save();
     })
-    .then(() => resp.send())
+    .then(() => {
+      resp.send();
+
+      saveActivity(
+        editedItemActivity,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId,
+        null,
+        prevItemName
+      );
+    })
     .catch(() => resp.sendStatus(400));
 };
 
@@ -798,9 +859,12 @@ const cloneItem = (req, resp) => {
   const { id: listId } = req.params;
   const { _id: userId } = req.user;
 
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+
   List.findOne({
-    _id: sanitize(listId),
-    'items._id': sanitize(itemId),
+    _id: sanitize(sanitizedListId),
+    'items._id': sanitize(sanitizedItemId),
     memberIds: userId
   })
     .exec()
@@ -809,7 +873,7 @@ const cloneItem = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { description, link, name } = list.items.id(itemId);
+      const { description, link, name } = list.items.id(sanitizedItemId);
 
       const item = new Item({
         authorId: userId,
@@ -820,7 +884,7 @@ const cloneItem = (req, resp) => {
 
       return List.findByIdAndUpdate(
         {
-          _id: sanitize(listId),
+          _id: sanitizedListId,
           memberIds: userId
         },
         { $push: { items: item } },
@@ -840,6 +904,14 @@ const cloneItem = (req, resp) => {
       resp.send({
         item: responseWithItem(newItem, userId)
       });
+
+      saveActivity(
+        ActivityType.ITEM_CLONE,
+        userId,
+        newItem._id,
+        sanitizedListId,
+        list.cohortId
+      );
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -935,23 +1007,35 @@ const getArchivedItems = (req, resp) => {
 const deleteItem = (req, resp) => {
   const { id: listId, itemId } = req.params;
   const { _id: userId } = req.user;
-  const sanitizeItemId = sanitize(itemId);
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
 
   List.findOneAndUpdate(
     {
-      _id: sanitize(listId),
+      _id: sanitizedListId,
       memberIds: userId,
-      'items._id': sanitizeItemId
+      'items._id': sanitizedItemId
     },
-    { $pull: { items: { _id: sanitizeItemId } } }
+    { $pull: { items: { _id: sanitizedItemId } } }
   )
     .exec()
     .then(list => {
       if (!list) {
         return resp.sendStatus(400);
       }
+      const deletedItem = list.items.id(sanitizedItemId);
 
       resp.send();
+
+      saveActivity(
+        ActivityType.ITEM_DELETE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId,
+        null,
+        deletedItem.name
+      );
     })
     .catch(() => resp.sendStatus(400));
 };

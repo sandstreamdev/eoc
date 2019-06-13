@@ -7,41 +7,55 @@ const {
   responseWithComments
 } = require('../common/utils/index');
 const BadRequestException = require('../common/exceptions/BadRequestException');
+const { saveActivity } = require('./activity');
+const { ActivityType } = require('../common/variables');
 
 const addComment = (req, resp) => {
   const { itemId, listId, text } = req.body;
   const {
     user: { _id: userId, avatarUrl, displayName }
   } = req;
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+  let list;
 
   List.findOne({
-    _id: sanitize(listId),
+    _id: sanitizedListId,
     memberIds: userId,
-    'items._id': sanitize(itemId),
+    'items._id': sanitizedItemId,
     'items.isOrdered': false
   })
     .exec()
-    .then(list => {
-      if (!list) {
+    .then(doc => {
+      if (!doc) {
         throw new BadRequestException();
       }
+      list = doc;
 
       const comment = new Comment({
         authorId: userId,
-        itemId,
-        listId,
+        itemId: sanitizedItemId,
+        listId: sanitizedListId,
         text
       });
 
       return comment.save();
     })
-    .then(comment =>
+    .then(comment => {
       resp
         .location(`/comment/${comment._id}`)
         .status(201)
-        .send(responseWithComment(comment, avatarUrl, displayName))
-    )
-    .catch(() => resp.sendStatus(400));
+        .send(responseWithComment(comment, avatarUrl, displayName));
+
+      saveActivity(
+        ActivityType.ITEM_ADD_COMMENT,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId
+      );
+    })
+    .catch(err => resp.sendStatus(400));
 };
 
 const getComments = (req, resp) => {

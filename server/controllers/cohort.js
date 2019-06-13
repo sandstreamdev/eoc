@@ -193,7 +193,7 @@ const deleteCohortById = (req, resp) => {
         return Comment.deleteMany({ listId: { $in: listsIds } });
       }
     })
-    .then(() => Activity.deleteMany({ cohortId: sanitizedCohortId }))
+    // .then(() => Activity.deleteMany({ cohortId: sanitizedCohortId }))
     .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
     .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
     .then(() => resp.send())

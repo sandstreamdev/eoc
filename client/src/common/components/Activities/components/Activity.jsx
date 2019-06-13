@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
@@ -33,10 +33,9 @@ class Activity extends PureComponent {
 
   render() {
     const {
-      activity: { activityType, createdAt, item, performer }
+      activity: { activityType, createdAt, editedValue, item, performer }
     } = this.props;
     const date = dateFromString(createdAt);
-    console.log(activityType);
 
     return (
       <div className="activity">
@@ -52,10 +51,11 @@ class Activity extends PureComponent {
             <FormattedMessage
               id={activityType}
               values={{
-                performer: performer ? performer.name : null,
+                cohort: this.renderCohortInfo(),
+                value: editedValue,
                 item: <em>{item ? item.name : null}</em>,
                 list: this.renderListInfo(),
-                cohort: this.renderCohortInfo()
+                performer: performer ? performer.name : null
               }}
             />
           </p>
