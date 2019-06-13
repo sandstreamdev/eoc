@@ -20,7 +20,7 @@ const Toolbar = ({ children, intl: { formatMessage } }) => (
           mainIcon={<AppLogo />}
           path="/dashboard"
           title={formatMessage({
-            id: 'app.toolbar.go-back'
+            id: 'app.toolbar.go-to-dashboard'
           })}
         />
       </div>

@@ -119,7 +119,7 @@ class Cohorts extends Component {
               onAddNew={this.handleDialogVisibility}
               pending={pendingForCohorts}
               placeholder={formatMessage({
-                id: 'cohort.cohorts.placeholder-1'
+                id: 'cohort.cohorts.no-cohorts'
               })}
               route={Routes.COHORT}
               viewType={ViewType.TILES}
@@ -143,7 +143,7 @@ class Cohorts extends Component {
                 name="Archived cohorts"
                 pending={pendingForArchivedCohorts}
                 placeholder={formatMessage({
-                  id: 'cohort.cohorts.placeholder-2'
+                  id: 'cohort.cohorts.no-arch-cohorts'
                 })}
                 route={Routes.COHORT}
                 viewType={ViewType.TILES}
