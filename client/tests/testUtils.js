@@ -6,6 +6,7 @@ export const getWrapper = (Component, props = {}, state = null) => {
   if (state) {
     wrapper.setState(state);
   }
+
   return wrapper;
 };
 

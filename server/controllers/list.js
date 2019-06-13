@@ -564,6 +564,7 @@ const removeOwnerRole = (req, resp) => {
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;
+
         return resp.status(400).send({ message });
       }
 
@@ -645,6 +646,7 @@ const removeMemberRole = (req, resp) => {
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;
+
         return resp.status(400).send({ message });
       }
 

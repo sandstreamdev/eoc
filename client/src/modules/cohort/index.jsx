@@ -121,6 +121,7 @@ class Cohort extends PureComponent {
 
   checkIfArchived = () => {
     const { cohortDetails } = this.props;
+
     return cohortDetails && cohortDetails.isArchived;
   };
 
@@ -310,6 +311,7 @@ const mapStateToProps = (state, ownProps) => {
       params: { id }
     }
   } = ownProps;
+
   return {
     archivedLists: getCohortArchivedLists(state, id),
     cohortDetails: getCohortDetails(state, id),

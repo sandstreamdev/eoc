@@ -189,6 +189,7 @@ const deleteCohortById = (req, resp) => {
     .then(lists => {
       if (lists) {
         const listsIds = lists.map(lists => lists._id);
+
         return Comment.deleteMany({ listId: { $in: listsIds } });
       }
     })
@@ -337,6 +338,7 @@ const addMember = (req, resp) => {
       }
 
       currentCohort = cohort;
+
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {

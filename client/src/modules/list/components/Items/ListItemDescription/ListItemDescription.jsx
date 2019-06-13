@@ -113,6 +113,7 @@ class ListItemDescription extends PureComponent {
       this.pendingPromise = makeAbortablePromise(
         updateListItem(name, listId, itemId, { description })
       );
+
       return this.pendingPromise.promise
         .then(() => {
           this.setState({ pending: false });

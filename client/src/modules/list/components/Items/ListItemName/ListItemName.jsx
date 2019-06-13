@@ -119,6 +119,7 @@ class ListItemName extends PureComponent {
   render() {
     const { isNameInputFocused, isTipVisible, name, pending } = this.state;
     const { isMember } = this.props;
+
     return (
       <div ref={this.listItemName}>
         <div className="list-item-name">

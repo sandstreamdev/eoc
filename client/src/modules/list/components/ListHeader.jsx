@@ -101,6 +101,7 @@ class ListHeader extends PureComponent {
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
+
       return;
     }
 
@@ -127,6 +128,7 @@ class ListHeader extends PureComponent {
 
     if (_trim(previousName) === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
+
       return;
     }
 
@@ -159,6 +161,7 @@ class ListHeader extends PureComponent {
 
     if (_trim(previousDescription) === descriptionToUpdate) {
       this.setState({ isDescriptionTextareaVisible: false });
+
       return;
     }
 
