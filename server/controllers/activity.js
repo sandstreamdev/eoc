@@ -47,7 +47,10 @@ const getActivities = (req, resp) => {
     })
     .then(() =>
       Activity.find({
-        $or: [{ listId: { $in: listIds } }, { cohortId: { $in: cohortIds } }]
+        $or: [
+          { listId: { $in: listIds } },
+          { $and: [{ cohortId: { $in: cohortIds } }, { listId: null }] }
+        ]
       })
         .sort({ createdAt: -1 })
         .populate('performerId', 'avatarUrl displayName')
@@ -60,7 +63,6 @@ const getActivities = (req, resp) => {
       if (!docs) {
         return resp.sendStatus(400);
       }
-
       const activities = docs.map(doc => {
         const {
           _id,

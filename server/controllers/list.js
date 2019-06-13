@@ -904,7 +904,7 @@ const addViewer = (req, resp) => {
 
         resp.send(userToSend);
 
-        saveActivity(
+        return saveActivity(
           ActivityType.LIST_ADD_USER,
           currentUserId,
           null,
