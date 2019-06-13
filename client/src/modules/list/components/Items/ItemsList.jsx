@@ -43,6 +43,7 @@ class ItemsList extends PureComponent {
   render() {
     const { archived, items } = this.props;
     const { limit } = this.state;
+
     return (
       <Fragment>
         {!items.length ? (
