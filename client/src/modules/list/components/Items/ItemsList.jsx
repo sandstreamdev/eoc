@@ -17,6 +17,10 @@ class ItemsList extends PureComponent {
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
+  showLess = () => {
+    this.setState({ limit: DISPLAY_LIMIT });
+  };
+
   renderItems = () => {
     const { archived, isMember, items } = this.props;
     const { limit } = this.state;
@@ -54,6 +58,13 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-more"
             onClick={this.showMore}
+            type="button"
+          />
+        )}
+        {limit > DISPLAY_LIMIT && (
+          <button
+            className="items__show-less"
+            onClick={this.showLess}
             type="button"
           />
         )}

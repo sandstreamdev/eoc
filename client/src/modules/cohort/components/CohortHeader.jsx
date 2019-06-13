@@ -54,6 +54,7 @@ class CohortHeader extends PureComponent {
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
+
       return;
     }
 
@@ -125,6 +126,7 @@ class CohortHeader extends PureComponent {
 
     if (_trim(previousName) === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
+
       return;
     }
 
@@ -157,6 +159,7 @@ class CohortHeader extends PureComponent {
 
     if (_trim(previousDescription) === descriptionToUpdate) {
       this.setState({ isDescriptionTextareaVisible: false });
+
       return;
     }
 

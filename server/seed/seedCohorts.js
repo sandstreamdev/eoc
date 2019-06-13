@@ -9,6 +9,7 @@ const seedCohorts = async () => {
 
   if (existingCohorts.length > 0) {
     console.log(`Skip seeding -> collection ${Cohort.modelName} not empty`);
+
     return;
   }
 

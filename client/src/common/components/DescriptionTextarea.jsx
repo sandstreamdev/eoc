@@ -38,6 +38,7 @@ class DescriptionTextarea extends PureComponent {
 
   render() {
     const { description, disabled, onDescriptionChange } = this.props;
+
     return (
       <div className="desc-textarea">
         <textarea

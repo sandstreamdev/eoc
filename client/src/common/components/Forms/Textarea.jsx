@@ -42,6 +42,7 @@ class Textarea extends PureComponent {
   render() {
     const { disabled, placeholder } = this.props;
     const { isEnlarged, value } = this.state;
+
     return (
       <div className="ss-textarea">
         {placeholder && (
