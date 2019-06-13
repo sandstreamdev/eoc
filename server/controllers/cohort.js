@@ -19,7 +19,7 @@ const {
 } = require('../common/utils/index');
 const { ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
-const Activity = require('../models/activity.model');
+// const Activity = require('../models/activity.model');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;

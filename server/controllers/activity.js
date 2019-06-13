@@ -93,9 +93,9 @@ const getActivities = (req, resp) => {
           : null;
 
         const list = listId ? { id: listId._id, name: listId.name } : null;
-        const item = { id: itemId };
+        const item = itemId ? { id: itemId } : null;
 
-        if (listId) {
+        if (item && listId) {
           const { items } = listId;
           const itemData = items.id(itemId);
           item.name = itemData ? itemData.name : null;
