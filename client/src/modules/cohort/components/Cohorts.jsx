@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { CohortIcon } from 'assets/images/icons';
 import {
@@ -186,7 +187,8 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default injectIntl(
+export default _flowRight(
+  injectIntl,
   connect(
     mapStateToProps,
     {
@@ -195,5 +197,5 @@ export default injectIntl(
       fetchCohortsMetaData,
       removeArchivedCohortsMetaData
     }
-  )(Cohorts)
-);
+  )
+)(Cohorts);

@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
 import {
@@ -189,7 +190,8 @@ const mapStateToProps = state => ({
   privateLists: getPrivateLists(state)
 });
 
-export default injectIntl(
+export default _flowRight(
+  injectIntl,
   connect(
     mapStateToProps,
     {
@@ -198,5 +200,5 @@ export default injectIntl(
       fetchListsMetaData,
       removeArchivedListsMetaData
     }
-  )(Dashboard)
-);
+  )
+)(Dashboard);

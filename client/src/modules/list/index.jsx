@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
@@ -258,14 +259,14 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default injectIntl(
-  withRouter(
-    connect(
-      mapStateToProps,
-      {
-        archiveList,
-        fetchListData
-      }
-    )(List)
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    mapStateToProps,
+    {
+      archiveList,
+      fetchListData
+    }
   )
-);
+)(List);

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import {
   getCohortActiveLists,
@@ -346,18 +347,18 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default injectIntl(
-  withRouter(
-    connect(
-      mapStateToProps,
-      {
-        archiveCohort,
-        createList,
-        fetchArchivedListsMetaData,
-        fetchCohortDetails,
-        fetchListsMetaData,
-        removeArchivedListsMetaData
-      }
-    )(Cohort)
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    mapStateToProps,
+    {
+      archiveCohort,
+      createList,
+      fetchArchivedListsMetaData,
+      fetchCohortDetails,
+      fetchListsMetaData,
+      removeArchivedListsMetaData
+    }
   )
-);
+)(Cohort);

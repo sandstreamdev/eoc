@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import PendingButton from 'common/components/PendingButton';
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
@@ -134,11 +135,11 @@ ListArchivedItem.propTypes = {
   restoreItem: PropTypes.func.isRequired
 };
 
-export default injectIntl(
-  withRouter(
-    connect(
-      null,
-      { deleteItem, restoreItem }
-    )(ListArchivedItem)
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    null,
+    { deleteItem, restoreItem }
   )
-);
+)(ListArchivedItem);

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _sortBy from 'lodash/sortBy';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import ItemsList from 'modules/list/components/Items';
 import SortBox from 'common/components/SortBox';
@@ -24,10 +25,10 @@ export const FilterOptionType = Object.freeze({
 });
 
 const sortOptions = [
-  { id: SortOptionType.AUTHOR },
-  { id: SortOptionType.DATE },
-  { id: SortOptionType.NAME },
-  { id: SortOptionType.VOTES }
+  { id: SortOptionType.AUTHOR, label: 'list.sort-box.author' },
+  { id: SortOptionType.DATE, label: 'list.sort-box.createdAt' },
+  { id: SortOptionType.NAME, label: 'list.sort-box.name' },
+  { id: SortOptionType.VOTES, label: 'list.sort-box.votes' }
 ];
 
 const filterOptions = [
@@ -161,4 +162,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default injectIntl(connect(mapStateToProps)(ItemsContainer));
+export default _flowRight(injectIntl, connect(mapStateToProps))(ItemsContainer);

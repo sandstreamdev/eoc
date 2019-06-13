@@ -80,15 +80,11 @@ class ListViewItem extends PureComponent {
             })}
             disabled={pending}
             onClick={this.handleFavClick}
-            title={
-              isFavourite
-                ? formatMessage({
-                    id: 'common.list-view-item.remove-fav'
-                  })
-                : formatMessage({
-                    id: 'common.list-view-item.add-fav'
-                  })
-            }
+            title={formatMessage({
+              id: isFavourite
+                ? 'common.list-view-item.remove-fav'
+                : 'common.list-view-item.add-fav'
+            })}
             type="button"
           >
             {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}

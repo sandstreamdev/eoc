@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
 import {
@@ -167,7 +168,7 @@ class ListItem extends PureComponent {
           type="button"
           preloaderTheme={PreloaderTheme.LIGHT}
         >
-          <FormattedMessage id="list.list-item.confirm" />
+          <FormattedMessage id="common.button.confirm" />
         </PendingButton>
         <button
           className="primary-button"
@@ -175,7 +176,7 @@ class ListItem extends PureComponent {
           onClick={this.handleConfirmationVisibility}
           type="button"
         >
-          <FormattedMessage id="list.list-item.cancel" />
+          <FormattedMessage id="common.button.cancel" />
         </button>
       </div>
     );
@@ -365,11 +366,11 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default injectIntl(
-  withRouter(
-    connect(
-      mapStateToProps,
-      { archiveItem, clearVote, cloneItem, setVote, toggle }
-    )(ListItem)
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    mapStateToProps,
+    { archiveItem, clearVote, cloneItem, setVote, toggle }
   )
-);
+)(ListItem);

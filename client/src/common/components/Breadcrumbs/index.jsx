@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
-import _tail from 'lodash/tail';
 
 import { ChevronRight } from 'assets/images/icons';
 import { IntlPropType } from 'common/constants/propTypes';
@@ -13,8 +12,7 @@ const Breadcrumbs = ({ breadcrumbs, isGuest, intl: { formatMessage } }) => {
     return null;
   }
 
-  const restOfTheBreadcrumbs = _tail(breadcrumbs);
-  const firstBreadcrumb = breadcrumbs[0];
+  const [firstBreadcrumb, ...restOfTheBreadcrumbs] = breadcrumbs;
 
   return (
     <div className="wrapper">

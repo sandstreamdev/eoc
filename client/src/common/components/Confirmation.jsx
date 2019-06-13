@@ -16,7 +16,7 @@ const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
       preloaderTheme={PreloaderTheme.LIGHT}
       type="button"
     >
-      <FormattedMessage id="common.confirmation.confirm" />
+      <FormattedMessage id="common.button.confirm" />
     </PendingButton>
     <button
       className="primary-button"
@@ -24,7 +24,7 @@ const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
       onClick={onCancel}
       type="button"
     >
-      <FormattedMessage id="common.confirmation.cancel" />
+      <FormattedMessage id="common.button.cancel" />
     </button>
   </div>
 );

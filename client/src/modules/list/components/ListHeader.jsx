@@ -6,6 +6,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
 import { updateList, changeType } from 'modules/list/model/actions';
@@ -366,11 +367,11 @@ ListHeader.propTypes = {
   updateList: PropTypes.func.isRequired
 };
 
-export default injectIntl(
-  withRouter(
-    connect(
-      null,
-      { changeType, updateList }
-    )(ListHeader)
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    null,
+    { changeType, updateList }
   )
-);
+)(ListHeader);

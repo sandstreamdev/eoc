@@ -26,6 +26,17 @@ import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
 import Avatar from 'common/components/Avatar';
 
+const infoText = {
+  [Routes.COHORT]: {
+    [UserRoles.OWNER]: 'common.member-details.cohort.userRoles/OWNER',
+    [UserRoles.MEMBER]: 'common.member-details.cohort.userRoles/MEMBER'
+  },
+  [Routes.LIST]: {
+    [UserRoles.OWNER]: 'common.member-details.sack.userRoles/OWNER',
+    [UserRoles.MEMBER]: 'common.member-details.sack.userRoles/MEMBER'
+  }
+};
+
 class MemberDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -217,7 +228,7 @@ class MemberDetails extends PureComponent {
         </div>
         {isInfoVisible && (
           <p className="member-details__role-description">
-            <FormattedMessage id={`common.member-details.${route}.${role}`} />
+            <FormattedMessage id={infoText[route][role]} />
           </p>
         )}
       </Fragment>
@@ -236,14 +247,14 @@ class MemberDetails extends PureComponent {
           onClick={this.handleMemberRemoving}
           type="button"
         >
-          <FormattedMessage id="common.member-details.confirm" />
+          <FormattedMessage id="common.button.confirm" />
         </button>
         <button
           className="primary-button"
           onClick={this.handleConfirmationVisibility}
           type="button"
         >
-          <FormattedMessage id="common.member-details.cancel" />
+          <FormattedMessage id="common.button.cancel" />
         </button>
       </div>
     ) : (

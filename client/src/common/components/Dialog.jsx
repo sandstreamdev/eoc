@@ -27,7 +27,7 @@ const Dialog = ({ children, onCancel, onConfirm, pending, title }) => (
             onClick={onConfirm}
             type="button"
           >
-            <FormattedMessage id="common.dialog.confirm" />
+            <FormattedMessage id="common.button.confirm" />
           </button>
           <button
             className="dialog__button primary-button"
@@ -35,7 +35,7 @@ const Dialog = ({ children, onCancel, onConfirm, pending, title }) => (
             onClick={onCancel}
             type="button"
           >
-            <FormattedMessage id="common.dialog.cancel" />
+            <FormattedMessage id="common.button.cancel" />
           </button>
         </div>
         {pending && <Preloader />}

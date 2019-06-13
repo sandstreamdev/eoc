@@ -5,6 +5,7 @@ import _isEmpty from 'lodash/isEmpty';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import Comment from 'common/components/Comments/Comment';
 import MessageBox from 'common/components/MessageBox';
@@ -135,11 +136,11 @@ CommentsList.propTypes = {
   fetchComments: PropTypes.func.isRequired
 };
 
-export default injectIntl(
-  withRouter(
-    connect(
-      null,
-      { addComment, fetchComments }
-    )(CommentsList)
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    null,
+    { addComment, fetchComments }
   )
-);
+)(CommentsList);

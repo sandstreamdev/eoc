@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
@@ -103,15 +104,12 @@ export class Layout extends PureComponent {
                 )
               }
               onClick={this.handleViewTypeChange()}
-              title={
-                viewType === ViewType.LIST
-                  ? formatMessage({
-                      id: 'app.layout.list-view'
-                    })
-                  : formatMessage({
-                      id: 'app.layout.tile-view'
-                    })
-              }
+              title={formatMessage({
+                id:
+                  viewType === ViewType.LIST
+                    ? 'app.layout.list-view'
+                    : 'app.layout.tile-view'
+              })}
             />
           )}
         </Toolbar>
@@ -154,11 +152,11 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default injectIntl(
-  withRouter(
-    connect(
-      mapStateToProps,
-      { loginUser }
-    )(Layout)
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    mapStateToProps,
+    { loginUser }
   )
-);
+)(Layout);

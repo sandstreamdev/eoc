@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
@@ -185,11 +186,11 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default injectIntl(
-  withRouter(
-    connect(
-      mapStateToProps,
-      { addItem }
-    )(InputBar)
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    mapStateToProps,
+    { addItem }
   )
-);
+)(InputBar);
