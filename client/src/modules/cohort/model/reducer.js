@@ -9,12 +9,14 @@ const membersReducer = (state = [], action) => {
       const {
         payload: { data }
       } = action;
+
       return [...state, data];
     }
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { userId }
       } = action;
+
       return state.filter(member => member._id !== userId);
     }
     case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS: {
@@ -65,16 +67,19 @@ const cohorts = (state = {}, action) => {
         name: name || prevName,
         description: newDescription
       };
+
       return { ...state, [cohortId]: updatedCohort };
     }
     case CohortActionTypes.ARCHIVE_SUCCESS: {
       const _id = action.payload;
       const { name } = state[_id];
       const archivedCohort = { _id, isArchived: true, name };
+
       return { ...state, [_id]: archivedCohort };
     }
     case CohortActionTypes.DELETE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;
+
       return newState;
     }
     case CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
@@ -96,6 +101,7 @@ const cohorts = (state = {}, action) => {
         payload: { cohortId }
       } = action;
       const { members } = state[cohortId];
+
       return {
         ...state,
         [cohortId]: {

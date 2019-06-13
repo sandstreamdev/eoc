@@ -33,6 +33,7 @@ const clearDemoData = () => {
     .then(demoUsers => {
       if (!demoUsers || demoUsers.length === 0) {
         console.log('\nThere is no demo data!\n');
+
         return;
       }
 

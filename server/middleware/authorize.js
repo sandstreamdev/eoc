@@ -14,8 +14,10 @@ const authorize = (req, res, next) => {
       error.message =
         'Your session has ended, you will be redirected to the login page in 5s.';
     }
+
     return res.status(403).send(error);
   }
+
   return next();
 };
 

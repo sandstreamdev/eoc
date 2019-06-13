@@ -19,6 +19,7 @@ export const getCohortDetails = (state, cohortId) => {
       members,
       name
     } = cohort;
+
     return { description, isMember, isOwner, isArchived, members, name };
   }
 };

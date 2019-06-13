@@ -36,6 +36,7 @@ class NameInput extends PureComponent {
 
   render() {
     const { disabled, name, onNameChange } = this.props;
+
     return (
       <div className="name-input">
         <input
