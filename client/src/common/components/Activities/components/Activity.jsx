@@ -1,9 +1,8 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 
-import { dateFromString } from 'common/utils/helpers';
 import Avatar from 'common/components/Avatar';
 
 class Activity extends PureComponent {
@@ -114,7 +113,6 @@ class Activity extends PureComponent {
     const {
       activity: { cohort, createdAt, item, list, performer }
     } = this.props;
-    const date = dateFromString(createdAt);
 
     return (
       <div className="activity">
@@ -131,7 +129,9 @@ class Activity extends PureComponent {
             {list && !item && this.renderListActivity()}
             {cohort && !list && this.renderCohortActivity()}
           </p>
-          <p className="activity__date">{date}</p>
+          <p className="activity__date">
+            <FormattedRelative value={createdAt} />
+          </p>
         </div>
       </div>
     );
