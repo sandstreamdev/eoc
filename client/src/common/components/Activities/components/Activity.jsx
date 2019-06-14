@@ -68,7 +68,7 @@ class Activity extends PureComponent {
 
   renderListActivity = () => {
     const {
-      activity: { activityType, cohort, editedValue, performer }
+      activity: { activityType, cohort, editedUser, editedValue, performer }
     } = this.props;
 
     return (
@@ -76,8 +76,9 @@ class Activity extends PureComponent {
         <FormattedMessage
           id={activityType}
           values={{
-            list: this.renderListInfo(),
+            list: this.renderListLink(),
             performer: performer.name,
+            user: editedUser ? editedUser.name : null,
             value: editedValue
           }}
         />
@@ -93,15 +94,16 @@ class Activity extends PureComponent {
 
   renderCohortActivity = () => {
     const {
-      activity: { activityType, editedValue, performer }
+      activity: { activityType, editedUser, editedValue, performer }
     } = this.props;
 
     return (
       <FormattedMessage
         id={activityType}
         values={{
-          cohort: this.renderCohortInfo(),
+          cohort: this.renderCohortLink(),
           performer: performer.name,
+          user: editedUser ? editedUser.name : null,
           value: editedValue
         }}
       />

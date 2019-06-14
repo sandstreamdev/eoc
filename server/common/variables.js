@@ -23,7 +23,6 @@ const ActivityType = Object.freeze({
   ITEM_UNHANDLED: 'activity.item.unhandled',
   ITEM_ADD_COMMENT: 'activity.item.add-comment',
   LIST_ADD: 'activity.list.add',
-  LIST_DELETE: 'activity.list.delete',
   LIST_ARCHIVE: 'activity.list.archive',
   LIST_RESTORE: 'activity.list.restore',
   LIST_ADD_DESCRIPTION: 'activity.list.add-description',
@@ -40,19 +39,18 @@ const ActivityType = Object.freeze({
   LIST_SET_AS_MEMBER: 'activity.list.set-as-member',
   LIST_SET_AS_VIEWER: 'activity.list.set-as-viewer',
   COHORT_ADD: 'activity.cohort.add',
-  COHORT_DELETE: 'activity.cohort.delete',
   COHORT_ARCHIVE: 'activity.cohort.archive',
   COHORT_RESTORE: 'activity.cohort.restore',
   COHORT_ADD_DESCRIPTION: 'activity.cohort.add-description',
   COHORT_REMOVE_DESCRIPTION: 'activity.cohort.remove-description',
   COHORT_EDIT_DESCRIPTION: 'activity.cohort.edit-description',
   COHORT_EDIT_NAME: 'activity.cohort.edit-name',
+  COHORT_DELETE_LIST: 'activity.cohort.delete-list',
   COHORT_ADD_USER: 'activity.cohort.add-user',
   COHORT_INVITE_USER: 'activity.cohort.invite-user',
   COHORT_REMOVE_USER: 'activity.cohort.remove-user',
   COHORT_SET_AS_OWNER: 'activity.cohort.set-as-owner',
-  COHORT_SET_AS_MEMBER: 'activity.cohort.set-as-member',
-  COHORT_SET_AS_VIEWER: 'activity.cohort.set-as-viewer'
+  COHORT_SET_AS_MEMBER: 'activity.cohort.set-as-member'
 });
 
 module.exports = {

@@ -22,7 +22,7 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
-// const Activity = require('../models/activity.model');
+const Activity = require('../models/activity.model');
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -107,19 +107,21 @@ const deleteListById = (req, resp) => {
 
       return Comment.deleteMany({ sanitizedListId }).exec();
     })
-    // .then(() => Activity.deleteMany({ listId: sanitizedListId }).exec())
+    .then(() => Activity.deleteMany({ listId: sanitizedListId }).exec())
     .then(() => {
       resp.send();
 
-      saveActivity(
-        ActivityType.LIST_DELETE,
-        userId,
-        null,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        list.name
-      );
+      if (list.cohortId) {
+        saveActivity(
+          ActivityType.COHORT_DELETE_LIST,
+          userId,
+          null,
+          sanitizedListId,
+          list.cohortId,
+          null,
+          list.name
+        );
+      }
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -438,7 +440,7 @@ const updateListById = (req, resp) => {
       resp.send();
 
       if (description !== undefined) {
-        const { description: prevDescription } = doc.description;
+        const { description: prevDescription } = doc;
         if (!description && prevDescription) {
           listActivity = ActivityType.LIST_REMOVE_DESCRIPTION;
         } else if (description && !prevDescription) {
@@ -449,7 +451,7 @@ const updateListById = (req, resp) => {
       }
 
       if (name) {
-        listActivity = ActivityType.ITEM_EDIT_NAME;
+        listActivity = ActivityType.LIST_EDIT_NAME;
       }
 
       if (isArchived !== undefined) {
@@ -793,6 +795,7 @@ const removeMemberRole = (req, resp) => {
       if (!doc) {
         throw new BadRequestException();
       }
+      list = doc;
 
       const { memberIds, name, ownerIds } = doc;
 

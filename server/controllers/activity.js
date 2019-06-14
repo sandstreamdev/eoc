@@ -109,10 +109,6 @@ const getActivities = (req, resp) => {
           adjustedActivityType = `${adjustedActivityType}.no-item`;
         }
 
-        if (!cohort) {
-          adjustedActivityType = `${adjustedActivityType}.priv-list`;
-        }
-
         return {
           _id,
           activityType: adjustedActivityType,
