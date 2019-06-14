@@ -122,7 +122,7 @@ const getActivities = (req, resp) => {
         };
       });
 
-      resp.send(activities);
+      resp.send({ activities, page: 1 });
     })
     .catch(() => resp.sendStatus(400));
 };

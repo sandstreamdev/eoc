@@ -1,11 +1,13 @@
+import _keyBy from 'lodash/keyBy';
+
 import { getData } from 'common/utils/fetchMethods';
 import { ActivitiesActionTypes } from './actionTypes';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { MessageType as NotificationType } from 'common/constants/enums';
 
-const fetchActivitiesSuccess = activities => ({
+const fetchActivitiesSuccess = (activities, page) => ({
   type: ActivitiesActionTypes.FETCH_SUCCESS,
-  payload: activities
+  payload: { activities, page }
 });
 
 const fetchActivitiesFailure = () => ({
@@ -15,7 +17,11 @@ const fetchActivitiesFailure = () => ({
 export const fetchActivities = () => dispatch =>
   getData('/api/activities/data')
     .then(resp => resp.json())
-    .then(json => dispatch(fetchActivitiesSuccess(json)))
+    .then(json => {
+      const { activities, page } = json;
+      const activitiesData = _keyBy(activities, '_id');
+      dispatch(fetchActivitiesSuccess(activitiesData, page));
+    })
     .catch(() => {
       dispatch(fetchActivitiesFailure());
       createNotificationWithTimeout(
