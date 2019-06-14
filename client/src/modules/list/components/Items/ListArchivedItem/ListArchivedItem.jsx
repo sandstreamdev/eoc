@@ -76,11 +76,13 @@ class ListArchivedItem extends PureComponent {
                   { votesCount }
                 )}
               </span>
-              {isOrdered ? (
-                <FormattedMessage id="list.list-archived-item.done" />
-              ) : (
-                <FormattedMessage id="list.list-archived-item.unhandled" />
-              )}
+              <FormattedMessage
+                id={
+                  isOrdered
+                    ? 'list.list-archived-item.done'
+                    : 'list.list-archived-item.unhandled'
+                }
+              />
             </div>
           </div>
           <div className="list-archived-item__features">

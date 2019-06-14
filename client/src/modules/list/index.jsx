@@ -183,11 +183,13 @@ class List extends Component {
                     onClick={this.handleMembersBoxVisibility}
                     type="button"
                   >
-                    {isMembersBoxVisible ? (
-                      <FormattedMessage id="list.index.hide-members" />
-                    ) : (
-                      <FormattedMessage id="list.index.show-members" />
-                    )}
+                    <FormattedMessage
+                      id={
+                        isMembersBoxVisible
+                          ? 'list.index.hide-members'
+                          : 'list.index.show-members'
+                      }
+                    />
                   </button>
                   {isMembersBoxVisible && (
                     <MembersBox
@@ -210,21 +212,14 @@ class List extends Component {
             onCancel={this.hideDialog}
             onConfirm={this.handleListArchivization(listId)}
             pending={pendingForListArchivization}
-            title={
-              pendingForListArchivization
-                ? formatMessage(
-                    {
-                      id: 'list.index.archivization'
-                    },
-                    { name }
-                  )
-                : formatMessage(
-                    {
-                      id: 'list.index.question'
-                    },
-                    { name }
-                  )
-            }
+            title={formatMessage(
+              {
+                id: pendingForListArchivization
+                  ? 'list.index.archivization'
+                  : 'list.index.question'
+              },
+              { name }
+            )}
           />
         )}
       </Fragment>

@@ -94,10 +94,14 @@ class ItemsContainer extends Component {
       return <FormattedMessage id="list.items-container.arch-items" />;
     }
 
-    return ordered ? (
-      <FormattedMessage id="list.items-container.done" />
-    ) : (
-      <FormattedMessage id="list.items-container.unhandled" />
+    return (
+      <FormattedMessage
+        id={
+          ordered
+            ? 'list.items-container.done'
+            : 'list.items-container.unhandled'
+        }
+      />
     );
   };
 
