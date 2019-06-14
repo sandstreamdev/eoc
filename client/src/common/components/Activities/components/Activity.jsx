@@ -45,8 +45,8 @@ class Activity extends PureComponent {
         <FormattedMessage
           id={activityType}
           values={{
-            item: item ? item.name : null,
-            performer: performer.name,
+            item: item ? <em>{item.name}</em> : null,
+            performer: <em>{performer.name}</em>,
             value: editedValue
           }}
         />
@@ -76,8 +76,8 @@ class Activity extends PureComponent {
         <FormattedMessage
           id={activityType}
           values={{
-            list: this.renderListLink(),
-            performer: performer.name,
+            list: <em>{this.renderListLink()}</em>,
+            performer: <em>{performer.name}</em>,
             user: editedUser ? editedUser.name : null,
             value: editedValue
           }}
@@ -101,8 +101,8 @@ class Activity extends PureComponent {
       <FormattedMessage
         id={activityType}
         values={{
-          cohort: this.renderCohortLink(),
-          performer: performer.name,
+          cohort: <em>{this.renderCohortLink()}</em>,
+          performer: <em>{performer.name}</em>,
           user: editedUser ? editedUser.name : null,
           value: editedValue
         }}
