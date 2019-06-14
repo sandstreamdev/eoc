@@ -43,6 +43,7 @@
     "passport": "0.4.0",
     "passport-google-oauth": "2.0.0",
     "passport-local": "1.0.0",
+    "passport.socketio": "3.7.0",
     "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-cookie-consent": "2.3.1",

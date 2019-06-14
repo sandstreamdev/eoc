@@ -25,6 +25,7 @@ class InputBar extends Component {
     };
 
     this.input = React.createRef();
+    this.socket = undefined;
   }
 
   componentDidUpdate() {
@@ -38,11 +39,8 @@ class InputBar extends Component {
       this.hideTipAfterTimeout();
     }
 
-    let socket;
-
-    if (!socket) {
-      console.log('ustawnaiwam polaczenie');
-      socket = io('http://localhost:8080');
+    if (!this.socket) {
+      this.socket = io(':8080');
     }
   }
 
@@ -97,8 +95,9 @@ class InputBar extends Component {
 
     if (_trim(itemName)) {
       this.setState({ pending: true });
+      const { socket } = this;
 
-      return addItem(newItem, id).finally(() => {
+      return addItem(newItem, id, socket).finally(() => {
         this.setState({ itemName: '', pending: false });
         this.hideForm();
       });

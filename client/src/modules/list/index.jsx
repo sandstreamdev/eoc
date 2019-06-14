@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import io from 'socket.io-client';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
@@ -21,15 +22,23 @@ import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
+import { addItemSocket } from './components/Items/model/actions';
+import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 
 class List extends Component {
-  state = {
-    breadcrumbs: [],
-    dialogContext: null,
-    isMembersBoxVisible: false,
-    pendingForDetails: false,
-    pendingForListArchivization: false
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      breadcrumbs: [],
+      dialogContext: null,
+      isMembersBoxVisible: false,
+      pendingForDetails: false,
+      pendingForListArchivization: false
+    };
+
+    this.socket = undefined;
+  }
 
   componentDidMount() {
     this.setState({ pendingForDetails: true });
@@ -38,7 +47,21 @@ class List extends Component {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
     });
+
+    this.handleSocketListening();
   }
+
+  handleSocketListening = () => {
+    const { addItemSocket } = this.props;
+
+    this.socket = io(':8080');
+    this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
+      const { item, listId } = data;
+
+      console.log('Reciving event');
+      addItemSocket(item, listId);
+    });
+  };
 
   handleBreadcrumbs = () => {
     const {
@@ -219,6 +242,7 @@ List.propTypes = {
   members: PropTypes.objectOf(PropTypes.object),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
+  addItemSocket: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired
 };
@@ -242,6 +266,7 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
+      addItemSocket,
       archiveList,
       fetchListData
     }

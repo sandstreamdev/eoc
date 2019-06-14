@@ -8,8 +8,9 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
 const MongoStore = require('connect-mongo')(session);
+const passportSocketIo = require('passport.socketio');
 
-const { DB_URL } = require('./common/variables');
+const { DB_URL, ItemActionTypes } = require('./common/variables');
 const authRouter = require('./routes/authorization');
 const commentsRouter = require('./routes/comment');
 const cohortsRouter = require('./routes/cohort');
@@ -22,7 +23,9 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 /* eslint-enable import/order */
-
+const sessionStore = new MongoStore({
+  mongooseConnection: mongoose.connection
+});
 // Set up mongodb connection
 const dbUrl = DB_URL;
 mongoose.connect(dbUrl, { useNewUrlParser: true });
@@ -34,7 +37,7 @@ app.use(cookieParser());
 app.use(
   session({
     secret: process.env.EXPRESS_SESSION_KEY,
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    store: sessionStore,
     unset: 'destroy',
     saveUninitialized: false,
     resave: false
@@ -59,6 +62,27 @@ const PORT = 8080;
 // eslint-disable-next-line no-console
 server.listen(PORT, () => console.info(`EOC server running on port ${PORT}`));
 
+// Socket.io authentication
+io.use(
+  passportSocketIo.authorize({
+    key: 'connect.sid',
+    secret: process.env.EXPRESS_SESSION_KEY,
+    store: sessionStore,
+    passport,
+    cookieParser
+  })
+);
+
+// Socket.io connection handler
 io.on('connection', socket => {
-  console.log('connected');
+  const {
+    request: { user }
+  } = socket;
+  const userExist = user || false;
+
+  if (userExist) {
+    socket.on(ItemActionTypes.ADD_SUCCESS, data => {
+      socket.broadcast.emit(ItemActionTypes.ADD_SUCCESS, data);
+    });
+  }
 });
