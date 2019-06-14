@@ -28,12 +28,12 @@ import Avatar from 'common/components/Avatar';
 
 const infoText = {
   [Routes.COHORT]: {
-    [UserRoles.OWNER]: 'common.member-details.cohort.userRoles/OWNER',
-    [UserRoles.MEMBER]: 'common.member-details.cohort.userRoles/MEMBER'
+    [UserRoles.OWNER]: 'common.member-details.cohort.user-role-owner',
+    [UserRoles.MEMBER]: 'common.member-details.cohort.user-roles-member'
   },
   [Routes.LIST]: {
-    [UserRoles.OWNER]: 'common.member-details.sack.userRoles/OWNER',
-    [UserRoles.MEMBER]: 'common.member-details.sack.userRoles/MEMBER'
+    [UserRoles.OWNER]: 'common.member-details.sack.user-roles-owner',
+    [UserRoles.MEMBER]: 'common.member-details.sack.user-roles-member'
   }
 };
 

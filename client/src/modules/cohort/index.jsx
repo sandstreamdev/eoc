@@ -203,21 +203,14 @@ class Cohort extends PureComponent {
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleCohortArchivization()}
             pending={pendingForCohortArchivization}
-            title={
-              pendingForCohortArchivization
-                ? formatMessage(
-                    {
-                      id: 'cohort.index.archivization'
-                    },
-                    { name }
-                  )
-                : formatMessage(
-                    {
-                      id: 'cohort.index.archive'
-                    },
-                    { name }
-                  )
-            }
+            title={formatMessage(
+              {
+                id: pendingForCohortArchivization
+                  ? 'cohort.index.archivization'
+                  : 'cohort.index.archive'
+              },
+              { name }
+            )}
           />
         )}
         {dialogContext === DialogContext.CREATE && (
@@ -225,11 +218,11 @@ class Cohort extends PureComponent {
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleListCreation}
             pending={pendingForListCreation}
-            title={
-              pendingForListCreation
-                ? formatMessage({ id: 'cohort.index.adding-sack' })
-                : formatMessage({ id: 'cohort.index.add-sack' })
-            }
+            title={formatMessage({
+              id: pendingForListCreation
+                ? 'cohort.index.adding-sack'
+                : 'cohort.index.add-sack'
+            })}
             onSelect={this.handleListType}
           />
         )}
@@ -282,9 +275,13 @@ class Cohort extends PureComponent {
                     onClick={this.handleArchivedListsVisibility(cohortId)}
                     type="button"
                   >
-                    {areArchivedListsVisible
-                      ? formatMessage({ id: 'cohort.index.hide-archived' })
-                      : formatMessage({ id: 'cohort.index.show-archived' })}
+                    <FormattedMessage
+                      id={
+                        areArchivedListsVisible
+                          ? 'cohort.index.hide-archived'
+                          : 'cohort.index.show-archived'
+                      }
+                    />
                   </button>
                   {areArchivedListsVisible && (
                     <CollectionView

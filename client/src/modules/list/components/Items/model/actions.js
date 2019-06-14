@@ -132,11 +132,10 @@ export const addItem = (item, listId) => dispatch =>
     .then(json => dispatch(addItemSuccess(json, listId)))
     .catch(() => {
       dispatch(addItemFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to add: "${item.name}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.items.actions.add-item-fail',
+        data: item.name
+      });
     });
 
 export const toggle = (
@@ -157,19 +156,17 @@ export const toggle = (
         () => dispatch(toggleItemSuccess(authorId, authorName, itemId, listId)),
         ITEM_TOGGLE_TIME
       );
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Item: "${itemName}" updated successfully.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.items.actions.toggle',
+        data: itemName
+      });
     })
     .catch(() => {
       dispatch(toggleItemFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to update item: "${itemName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.items.actions.toggle-fail',
+        data: itemName
+      });
     });
 
 export const setVote = (itemId, listId, itemName) => dispatch =>
@@ -177,11 +174,10 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
     .then(() => dispatch(setVoteSuccess(itemId, listId)))
     .catch(() => {
       dispatch(setVoteFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to vote for: "${itemName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.items.actions.set-vote-fail',
+        data: ''
+      });
     });
 
 export const clearVote = (itemId, listId, itemName) => dispatch =>
@@ -189,11 +185,10 @@ export const clearVote = (itemId, listId, itemName) => dispatch =>
     .then(() => dispatch(clearVoteSuccess(itemId, listId)))
     .catch(err => {
       dispatch(clearVoteFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to clear vote for item: "${itemName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.items.actions.clear-vote-fail',
+        data: itemName
+      });
     });
 
 export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
@@ -206,7 +201,10 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        `Item: "${itemName}" updated successfully.`
+        {
+          notificationId: '',
+          data: ''
+        }`Item: "${itemName}" updated successfully.`
       );
     })
     .catch(() => {
@@ -214,7 +212,10 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to update "${itemName}" item. Please try again.`
+        {
+          notificationId: '',
+          data: ''
+        }`Failed to update "${itemName}" item. Please try again.`
       );
     });
 
@@ -228,7 +229,10 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        `Successfully cloned item: "${itemName}".`
+        {
+          notificationId: '',
+          data: ''
+        }`Successfully cloned item: "${itemName}".`
       );
     })
     .catch(err => {
@@ -236,7 +240,10 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to clone item: "${itemName}". Please try again.`
+        {
+          notificationId: '',
+          data: ''
+        }`Failed to clone item: "${itemName}". Please try again.`
       );
     });
 
@@ -253,7 +260,10 @@ export const addComment = (listId, itemId, text) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to add comment: "${text}". Please try again.`
+        {
+          notificationId: '',
+          data: ''
+        }`Failed to add comment: "${text}". Please try again.`
       );
     });
 
@@ -269,7 +279,10 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to fetch comments for "${itemName}" item. Please try again.`
+        {
+          notificationId: '',
+          data: ''
+        }`Failed to fetch comments for "${itemName}" item. Please try again.`
       );
     });
 
@@ -283,7 +296,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        `Item "${name}" successfully archived.`
+        { notificationId: '', data: '' }`Item "${name}" successfully archived.`
       );
     })
     .catch(() => {
@@ -291,7 +304,10 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to archive item: "${name}". Please try again.`
+        {
+          notificationId: '',
+          data: ''
+        }`Failed to archive item: "${name}". Please try again.`
       );
     });
 
@@ -307,7 +323,10 @@ export const fetchArchivedItems = (listId, listName) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to fetch archived items of sack: "${listName}". Please try again.`
+        {
+          notificationId: '',
+          data: ''
+        }`Failed to fetch archived items of sack: "${listName}". Please try again.`
       );
     });
 
@@ -321,7 +340,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        `Item "${name}" successfully restored.`
+        { notificationId: '', data: '' }`Item "${name}" successfully restored.`
       );
     })
     .catch(() => {
@@ -329,7 +348,10 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to restore item: "${name}". Please try again.`
+        {
+          notificationId: '',
+          data: ''
+        }`Failed to restore item: "${name}". Please try again.`
       );
     });
 
@@ -340,7 +362,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.SUCCESS,
-        `Item "${name}" successfully deleted.`
+        { notificationId: '', data: '' }`Item "${name}" successfully deleted.`
       );
     })
     .catch(() => {
@@ -348,6 +370,9 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        `Failed to delete item: "${name}". Please try again.`
+        {
+          notificationId: '',
+          data: ''
+        }`Failed to delete item: "${name}". Please try again.`
       );
     });

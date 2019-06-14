@@ -372,27 +372,8 @@ export const addListViewer = (listId, email) => dispatch =>
     })
     .catch(err => {
       dispatch(addViewerFailure());
-      if (err.message === 'list.actions.add-viewer-demo-mode') {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: 'list.actions.add-viewer-demo-mode'
-        });
-      }
-
-      if (err.message === 'list.actions.add-viewer-no-email') {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: 'list.actions.add-viewer-no-email',
-          data: email
-        });
-      }
-
-      if (err.message === 'list.actions.add-viewer-is-member') {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: 'list.actions.add-viewer-is-member'
-        });
-      }
-
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.add-viewer-default-fail',
+        notificationId: err.message || 'list.actions.add-viewer-default-fail',
         data: email
       });
     });
@@ -463,14 +444,8 @@ export const removeOwnerRole = (
     })
     .catch(err => {
       dispatch(removeOwnerRoleFailure());
-      if (err.message === 'list.actions.remove-owner-role-only-one-owner') {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: 'list.actions.remove-owner-role-only-one-owner'
-        });
-      }
-
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.remove-owner-role-fail',
+        notificationId: err.message || 'list.actions.remove-owner-role-fail',
         data: userName
       });
     });
@@ -517,14 +492,8 @@ export const removeMemberRole = (
     })
     .catch(err => {
       dispatch(removeMemberRoleFailure());
-      if (err.message === 'list.actions.remove-member-role-only-one-owner') {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: 'list.actions.remove-member-role-only-one-owner'
-        });
-      }
-
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.remove-member-role-fail',
+        notificationId: err.message || 'list.actions.remove-member-role-fail',
         data: userName
       });
     });

@@ -281,27 +281,8 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     })
     .catch(err => {
       dispatch(addMemberFailure());
-      if (err.message === 'cohort.actions.add-member-demo-msg') {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: err.message
-        });
-      }
-
-      if (err.message === 'cohort.actions.add-member-no-user-of-email') {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: err.message,
-          data: email
-        });
-      }
-
-      if (err.message === 'cohort.actions.add-member-already-member') {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: err.message
-        });
-      }
-
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.add-member-default',
+        notificationId: err.message || 'cohort.actions.add-member-default',
         data: email
       });
     });
@@ -364,15 +345,8 @@ export const removeOwnerRole = (
     })
     .catch(err => {
       dispatch(removeOwnerRoleFailure());
-
-      if (err.message) {
-        return createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: err.message
-        });
-      }
-
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.remove-owner-fail',
+        notificationId: err.message || 'cohort.actions.remove-owner-fail',
         data: userName
       });
     });
