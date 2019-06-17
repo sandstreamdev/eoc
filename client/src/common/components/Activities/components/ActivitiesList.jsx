@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
+import _flowRight from 'lodash/flowRight';
+import { injectIntl } from 'react-intl';
 
 import Activity from './Activity';
 import Preloader from 'common/components/Preloader';
@@ -13,6 +15,7 @@ import { MessageType } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class ActivitiesList extends PureComponent {
   pendingPromise = null;
@@ -50,12 +53,20 @@ class ActivitiesList extends PureComponent {
   };
 
   render() {
-    const { activities, isNextPage } = this.props;
+    const {
+      activities,
+      intl: { formatMessage },
+      isNextPage
+    } = this.props;
     const { pending } = this.state;
 
     return (
       <div className="activities-list">
-        <h2 className="activities-list__heading">Activities</h2>
+        <h2 className="activities-list__heading">
+          {formatMessage({
+            id: 'activity.title'
+          })}
+        </h2>
         <div className="activities-list__content">
           {_isEmpty(activities) ? (
             <MessageBox
@@ -76,7 +87,9 @@ class ActivitiesList extends PureComponent {
                     onClick={this.handleShowActivities}
                     type="button"
                   >
-                    View more activities...
+                    {formatMessage({
+                      id: 'activity.button.view-more-activities'
+                    })}
                   </PendingButton>
                 </li>
               )}
@@ -92,6 +105,7 @@ class ActivitiesList extends PureComponent {
 ActivitiesList.propTypes = {
   activities: PropTypes.objectOf(PropTypes.object),
   nextPage: PropTypes.number.isRequired,
+  intl: IntlPropType.isRequired,
   isNextPage: PropTypes.bool.isRequired,
 
   fetchActivities: PropTypes.func.isRequired,
@@ -104,7 +118,10 @@ const mapStateToProps = state => ({
   nextPage: getNextPage(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchActivities, removeActivities }
+export default _flowRight(
+  injectIntl,
+  connect(
+    mapStateToProps,
+    { fetchActivities, removeActivities }
+  )
 )(ActivitiesList);
