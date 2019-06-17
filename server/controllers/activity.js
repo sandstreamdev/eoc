@@ -1,6 +1,9 @@
+const sanitize = require('mongo-sanitize');
+
 const Activity = require('../models/activity.model');
 const List = require('../models/list.model');
 const Cohort = require('../models/cohort.model');
+const { ACTIVITIES_RES_SIZE } = require('../common/variables');
 
 const saveActivity = (
   activityType,
@@ -25,11 +28,20 @@ const saveActivity = (
 };
 
 const getActivities = (req, resp) => {
+  const { page } = req.params;
   const {
     user: { _id: userId }
   } = req;
+  const sanitizedPage = sanitize(page);
   let cohortIds;
   let listIds;
+  let activitiesCount;
+
+  if (!Number.isInteger(sanitizedPage) && sanitizedPage < 0) {
+    return resp.sendStatus(400);
+  }
+
+  const skip = ACTIVITIES_RES_SIZE * (sanitizedPage - 1);
 
   Cohort.find({ memberIds: userId }, '_id')
     .lean()
@@ -46,19 +58,31 @@ const getActivities = (req, resp) => {
       listIds = lists.map(list => list._id);
     })
     .then(() =>
-      Activity.find({
+      Activity.countDocuments({
+        $or: [
+          { listId: { $in: listIds } },
+          { $and: [{ cohortId: { $in: cohortIds } }, { listId: null }] }
+        ]
+      })
+    )
+    .then(count => {
+      activitiesCount = count;
+
+      return Activity.find({
         $or: [
           { listId: { $in: listIds } },
           { $and: [{ cohortId: { $in: cohortIds } }, { listId: null }] }
         ]
       })
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(ACTIVITIES_RES_SIZE)
         .populate('performerId', 'avatarUrl displayName')
         .populate('listId', 'name items')
         .populate('cohortId', 'name')
         .populate('editedUserId', 'displayName')
-        .exec()
-    )
+        .exec();
+    })
     .then(docs => {
       if (!docs) {
         return resp.sendStatus(400);
@@ -122,7 +146,11 @@ const getActivities = (req, resp) => {
         };
       });
 
-      resp.send({ activities, page: 1 });
+      const nextPage = +sanitizedPage + 1;
+
+      const isNextPage = activitiesCount > ACTIVITIES_RES_SIZE * +sanitizedPage;
+
+      resp.send({ activities, isNextPage, nextPage });
     })
     .catch(() => resp.sendStatus(400));
 };

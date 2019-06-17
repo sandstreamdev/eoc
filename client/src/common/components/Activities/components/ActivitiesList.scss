@@ -10,24 +10,26 @@
   }
 
   &__list {
-    max-height: 150px;
+    max-height: 120px;
     overflow: auto;
 
     @include height-breakpoint($xsmall) {
-      max-height: 200px;
+      max-height: 150px;
     }
 
     @include height-breakpoint($small) {
-      max-height: 500px;
+      max-height: 450px;
     }
   }
 
-  li {
-    padding-bottom: 16px;
-  }
-
   li:not(:last-of-type) {
+    padding-bottom: 16px;
     margin-bottom: 16px;
     border-bottom: 1px solid $border-color;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
   }
 }

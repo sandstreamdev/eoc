@@ -6,6 +6,7 @@ const ListType = Object.freeze({
 const DEMO_MODE_ID = '5ce2e16d7d8999071560c9ae';
 const DEMO_USER_ID = '5ce283fee76a2e02c79d8f55';
 const PROJECT_NAME = 'EOC';
+const ACTIVITIES_RES_SIZE = 20;
 
 const ActivityType = Object.freeze({
   ITEM_ADD: 'activity.item.add',
@@ -54,6 +55,7 @@ const ActivityType = Object.freeze({
 });
 
 module.exports = {
+  ACTIVITIES_RES_SIZE,
   ActivityType,
   DB_URL,
   DEMO_MODE_ID,

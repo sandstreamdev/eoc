@@ -13,3 +13,19 @@ export const getActivities = state => {
     '_id'
   );
 };
+
+export const getNextPage = state => {
+  const {
+    activities: { nextPage }
+  } = state;
+
+  return nextPage;
+};
+
+export const getIsNextPage = state => {
+  const {
+    activities: { isNextPage }
+  } = state;
+
+  return isNextPage;
+};

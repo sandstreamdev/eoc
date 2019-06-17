@@ -6,12 +6,13 @@ import _isEmpty from 'lodash/isEmpty';
 
 import Activity from './Activity';
 import Preloader from 'common/components/Preloader';
-import { fetchActivities } from '../model/actions';
-import { getActivities } from '../model/selectors';
+import { fetchActivities, removeActivities } from '../model/actions';
+import { getActivities, getIsNextPage, getNextPage } from '../model/selectors';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
+import PendingButton from 'common/components/PendingButton';
 
 class ActivitiesList extends PureComponent {
   pendingPromise = null;
@@ -21,11 +22,24 @@ class ActivitiesList extends PureComponent {
   };
 
   componentDidMount() {
-    const { fetchActivities } = this.props;
+    this.handleShowActivities();
+  }
+
+  componentWillUnmount() {
+    const { removeActivities } = this.props;
+
+    if (this.pendingPromise) {
+      this.pendingPromise.abort();
+    }
+
+    removeActivities();
+  }
+
+  handleShowActivities = () => {
+    const { fetchActivities, nextPage } = this.props;
 
     this.setState({ pending: true });
-
-    this.pendingPromise = makeAbortablePromise(fetchActivities());
+    this.pendingPromise = makeAbortablePromise(fetchActivities(nextPage));
     this.pendingPromise.promise
       .then(() => this.setState({ pending: false }))
       .catch(err => {
@@ -33,16 +47,10 @@ class ActivitiesList extends PureComponent {
           this.setState({ pending: false });
         }
       });
-  }
-
-  componentWillUnmount() {
-    if (this.pendingPromise) {
-      this.pendingPromise.abort();
-    }
-  }
+  };
 
   render() {
-    const { activities } = this.props;
+    const { activities, isNextPage } = this.props;
     const { pending } = this.state;
 
     return (
@@ -61,6 +69,17 @@ class ActivitiesList extends PureComponent {
                   <Activity activity={activity} />
                 </li>
               ))}
+              {isNextPage && (
+                <li className="activities-list__buttons">
+                  <PendingButton
+                    className="link-button"
+                    onClick={this.handleShowActivities}
+                    type="button"
+                  >
+                    View more activities...
+                  </PendingButton>
+                </li>
+              )}
             </ul>
           )}
           {pending && <Preloader />}
@@ -72,15 +91,20 @@ class ActivitiesList extends PureComponent {
 
 ActivitiesList.propTypes = {
   activities: PropTypes.objectOf(PropTypes.object),
+  nextPage: PropTypes.number.isRequired,
+  isNextPage: PropTypes.bool.isRequired,
 
-  fetchActivities: PropTypes.func.isRequired
+  fetchActivities: PropTypes.func.isRequired,
+  removeActivities: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  activities: getActivities(state)
+  activities: getActivities(state),
+  isNextPage: getIsNextPage(state),
+  nextPage: getNextPage(state)
 });
 
 export default connect(
   mapStateToProps,
-  { fetchActivities }
+  { fetchActivities, removeActivities }
 )(ActivitiesList);

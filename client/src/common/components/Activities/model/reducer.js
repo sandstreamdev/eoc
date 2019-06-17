@@ -1,11 +1,15 @@
 import { ActivitiesActionTypes } from './actionTypes';
+import initialState from './initialState';
 
-const activities = (state = { data: {}, page: 1 }, action) => {
+const activities = (state = initialState, action) => {
   switch (action.type) {
     case ActivitiesActionTypes.FETCH_SUCCESS: {
-      const { activities, page } = action.payload;
+      const { activities, isNextPage, nextPage } = action.payload;
 
-      return { data: { ...state.data, ...activities }, page };
+      return { data: { ...state.data, ...activities }, isNextPage, nextPage };
+    }
+    case ActivitiesActionTypes.REMOVE: {
+      return initialState;
     }
     default:
       return state;
