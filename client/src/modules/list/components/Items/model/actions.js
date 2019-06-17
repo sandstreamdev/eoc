@@ -137,7 +137,8 @@ export const addItem = (item, listId, socket) => dispatch =>
       socket.emit(ItemActionTypes.ADD_SUCCESS, data);
       dispatch(addItemSuccess(json, listId));
     })
-    .catch(() => {
+    .catch(err => {
+      console.log(err);
       dispatch(addItemFailure());
       createNotificationWithTimeout(
         dispatch,

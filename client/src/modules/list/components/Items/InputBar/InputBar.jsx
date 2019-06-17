@@ -40,7 +40,7 @@ class InputBar extends Component {
     }
 
     if (!this.socket) {
-      this.socket = io(':8080');
+      this.socket = io('http://localhost:8080/sack');
     }
   }
 

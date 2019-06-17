@@ -46,21 +46,61 @@ class List extends Component {
     this.fetchData().finally(() => {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
+      this.handleSocketListening();
     });
+  }
 
-    this.handleSocketListening();
+  componentDidUpdate(prevProps) {
+    const {
+      match: {
+        params: { id: prevListId }
+      }
+    } = prevProps;
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    if (prevListId !== listId) {
+      console.log('Should emit disconnetct');
+      this.socket.emit('leavingRoom', prevListId);
+    }
+  }
+
+  componentWillUnmount() {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    this.socket.emit('leavingRoom', listId);
   }
 
   handleSocketListening = () => {
-    const { addItemSocket } = this.props;
+    const {
+      addItemSocket,
+      list: { _id: listId }
+    } = this.props;
 
-    this.socket = io(':8080');
+    this.socket = io('http://localhost:8080/sack');
+
+    this.socket.on('connect', () =>
+      this.socket.emit('listRoom', `list-${listId}`)
+    );
+
     this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
       const { item, listId } = data;
 
+      console.log(data.listId);
       console.log('Reciving event');
       addItemSocket(item, listId);
     });
+
+    // this.socket.on('dupa', data => {
+    //   console.log(data);
+    // });
   };
 
   handleBreadcrumbs = () => {
