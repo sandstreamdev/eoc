@@ -41,7 +41,24 @@ class Cohort extends PureComponent {
   };
 
   componentDidMount() {
-    this.fetchData().then(() => this.handleBreadcrumbs());
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props;
+    const {
+      match: {
+        params: { id: prevId }
+      }
+    } = prevProps;
+
+    if (id !== prevId) {
+      this.fetchData();
+    }
   }
 
   fetchData = () => {
@@ -61,7 +78,10 @@ class Cohort extends PureComponent {
           return fetchListsMetaData(id);
         }
       })
-      .finally(() => this.setState({ pendingForDetails: false }));
+      .finally(() => {
+        this.handleBreadcrumbs();
+        this.setState({ pendingForDetails: false });
+      });
   };
 
   handleBreadcrumbs = () => {

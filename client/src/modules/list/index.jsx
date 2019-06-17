@@ -32,12 +32,24 @@ class List extends Component {
   };
 
   componentDidMount() {
-    this.setState({ pendingForDetails: true });
+    this.fetchData();
+  }
 
-    this.fetchData().finally(() => {
-      this.setState({ pendingForDetails: false });
-      this.handleBreadcrumbs();
-    });
+  componentDidUpdate(prevProps) {
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props;
+    const {
+      match: {
+        params: { id: prevId }
+      }
+    } = prevProps;
+
+    if (id !== prevId) {
+      this.fetchData();
+    }
   }
 
   handleBreadcrumbs = () => {
@@ -73,7 +85,12 @@ class List extends Component {
       }
     } = this.props;
 
-    return fetchListData(id);
+    this.setState({ pendingForDetails: true });
+
+    fetchListData(id).finally(() => {
+      this.setState({ pendingForDetails: false });
+      this.handleBreadcrumbs();
+    });
   };
 
   handleListArchivization = listId => () => {
