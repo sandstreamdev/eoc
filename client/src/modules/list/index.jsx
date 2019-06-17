@@ -63,7 +63,6 @@ class List extends Component {
     } = this.props;
 
     if (prevListId !== listId) {
-      console.log('Should emit disconnetct');
       this.socket.emit('leavingRoom', prevListId);
     }
   }
@@ -84,8 +83,7 @@ class List extends Component {
       list: { _id: listId }
     } = this.props;
 
-    this.socket = io('http://localhost:8080/sack');
-
+    this.socket = io('http://localhost:8080');
     this.socket.on('connect', () =>
       this.socket.emit('listRoom', `list-${listId}`)
     );
@@ -93,14 +91,11 @@ class List extends Component {
     this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
       const { item, listId } = data;
 
-      console.log(data.listId);
-      console.log('Reciving event');
+      /* TODO: change name to the same approach as on server
+       * addItemWS - where WS stands for Web Socket
+       */
       addItemSocket(item, listId);
     });
-
-    // this.socket.on('dupa', data => {
-    //   console.log(data);
-    // });
   };
 
   handleBreadcrumbs = () => {
