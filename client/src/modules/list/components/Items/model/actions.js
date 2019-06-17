@@ -138,7 +138,6 @@ export const addItem = (item, listId, socket) => dispatch =>
       dispatch(addItemSuccess(json, listId));
     })
     .catch(err => {
-      console.log(err);
       dispatch(addItemFailure());
       createNotificationWithTimeout(
         dispatch,
