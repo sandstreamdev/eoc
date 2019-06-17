@@ -79,7 +79,7 @@ class NewComment extends PureComponent {
           <Textarea
             disabled={pending}
             onChange={this.handleCommentChange}
-            placeholder={formatMessage({ id: 'common.new-comment.add' })}
+            placeholder={formatMessage({ id: 'common.add-comment' })}
           />
           {comment && (
             <button

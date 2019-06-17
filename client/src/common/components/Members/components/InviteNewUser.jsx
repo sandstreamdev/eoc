@@ -35,7 +35,7 @@ const InviteNewUser = ({
         title={formatMessage({ id: 'common.invite-new-user.invite' })}
         type="button"
       >
-        <FormattedMessage id="common.invite-new-user.cancel" />
+        <FormattedMessage id="common.button.cancel" />
       </button>
     </footer>
   </div>

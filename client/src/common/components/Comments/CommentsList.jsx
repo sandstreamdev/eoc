@@ -92,7 +92,7 @@ class CommentsList extends PureComponent {
               onClick={this.showAddComment}
               type="button"
             >
-              <FormattedMessage id="common.comments-list.add" />
+              <FormattedMessage id="common.add-comment" />
             </button>
           )}
         </header>
