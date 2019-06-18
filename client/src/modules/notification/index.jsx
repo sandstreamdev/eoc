@@ -25,6 +25,7 @@ const Notifications = ({ intl: { formatMessage }, notifications }) => (
               if (item.type === NotificationType.ERROR) {
                 message += ` ${formatMessage({ id: 'common.try-again' })}`;
               }
+
               return (
                 <li className="notification__list-item" key={id}>
                   <MessageBox type={item.type} message={message} />
