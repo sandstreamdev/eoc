@@ -8,9 +8,8 @@ const activities = (state = initialState, action) => {
 
       return { data: { ...state.data, ...activities }, isNextPage, nextPage };
     }
-    case ActivitiesActionTypes.REMOVE: {
+    case ActivitiesActionTypes.REMOVE:
       return initialState;
-    }
     default:
       return state;
   }

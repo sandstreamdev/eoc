@@ -20,7 +20,6 @@ const {
 const { ActivityType, ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
-const Activity = require('../models/activity.model');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
@@ -230,10 +229,24 @@ const deleteCohortById = (req, resp) => {
         return Comment.deleteMany({ listId: { $in: listsIds } });
       }
     })
-    .then(() => Activity.deleteMany({ cohortId: sanitizedCohortId }))
     .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
     .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
-    .then(() => resp.send())
+    .then(doc => {
+      if (!doc) {
+        return resp.sendStatus(400);
+      }
+
+      resp.send();
+
+      saveActivity(
+        ActivityType.COHORT_DELETE,
+        userId,
+        null,
+        null,
+        cohortId,
+        doc.name
+      );
+    })
     .catch(err =>
       resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
     );

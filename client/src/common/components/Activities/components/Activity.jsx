@@ -111,16 +111,22 @@ class Activity extends PureComponent {
 
   render() {
     const {
-      activity: { cohort, createdAt, item, list, performer }
+      activity: {
+        cohort,
+        createdAt,
+        item,
+        list,
+        performer: { avatarUrl, name }
+      }
     } = this.props;
 
     return (
       <div className="activity">
         <div className="activity__avatar">
           <Avatar
-            avatarUrl={performer ? performer.avatarUrl : null}
+            avatarUrl={avatarUrl}
             className="activity__image"
-            name={performer ? performer.name : null}
+            name={name}
           />
         </div>
         <div className="activity__message">
@@ -141,13 +147,13 @@ class Activity extends PureComponent {
 Activity.propTypes = {
   activity: PropTypes.shape({
     activityType: PropTypes.string.isRequired,
-    performer: PropTypes.objectOf(PropTypes.string),
     cohort: PropTypes.objectOf(PropTypes.string),
     createdAt: PropTypes.string.isRequired,
-    editedValue: PropTypes.string,
     editedUser: PropTypes.objectOf(PropTypes.string),
+    editedValue: PropTypes.string,
     item: PropTypes.objectOf(PropTypes.string),
-    list: PropTypes.objectOf(PropTypes.string)
+    list: PropTypes.objectOf(PropTypes.string),
+    performer: PropTypes.objectOf(PropTypes.string)
   })
 };
 

@@ -32,7 +32,7 @@ const getActivities = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
-  const sanitizedPage = sanitize(page);
+  const sanitizedPage = +sanitize(page);
   let cohortIds;
   let listIds;
   let activitiesCount;
@@ -146,9 +146,9 @@ const getActivities = (req, resp) => {
         };
       });
 
-      const nextPage = +sanitizedPage + 1;
+      const nextPage = sanitizedPage + 1;
 
-      const isNextPage = activitiesCount > ACTIVITIES_RES_SIZE * +sanitizedPage;
+      const isNextPage = activitiesCount > ACTIVITIES_RES_SIZE * sanitizedPage;
 
       resp.send({ activities, isNextPage, nextPage });
     })

@@ -70,7 +70,9 @@ class ActivitiesList extends PureComponent {
         <div className="activities-list__content">
           {_isEmpty(activities) ? (
             <MessageBox
-              message="There are no activities."
+              message={formatMessage({
+                id: 'activity.no-activities'
+              })}
               type={MessageType.INFO}
             />
           ) : (
@@ -104,9 +106,9 @@ class ActivitiesList extends PureComponent {
 
 ActivitiesList.propTypes = {
   activities: PropTypes.objectOf(PropTypes.object),
-  nextPage: PropTypes.number.isRequired,
   intl: IntlPropType.isRequired,
   isNextPage: PropTypes.bool.isRequired,
+  nextPage: PropTypes.number.isRequired,
 
   fetchActivities: PropTypes.func.isRequired,
   removeActivities: PropTypes.func.isRequired
