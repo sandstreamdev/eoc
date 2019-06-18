@@ -89,6 +89,13 @@
     a:hover {
       color: $text-normal;
     }
+
+    svg {
+      width: 20px;
+      path {
+        fill: $gray2;
+      }
+    }
   }
 
   &__menu-logout {
@@ -126,13 +133,5 @@
   &__logged {
     display: flex;
     flex-direction: column;
-  }
-
-  svg {
-    height: 20px;
-
-    path {
-      fill: $gray2;
-    }
   }
 }

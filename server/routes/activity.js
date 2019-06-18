@@ -5,6 +5,6 @@ const router = express.Router();
 const { authorize } = require('../middleware/authorize');
 const { getActivities } = require('../controllers/activity');
 
-router.get('/data', authorize, getActivities);
+router.get('/data/:page', authorize, getActivities);
 
 module.exports = router;

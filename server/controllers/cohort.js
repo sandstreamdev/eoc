@@ -17,8 +17,9 @@ const {
   responseWithCohortMember,
   responseWithCohortMembers
 } = require('../common/utils/index');
-const { ListType, DEMO_MODE_ID } = require('../common/variables');
+const { ActivityType, ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
+const { saveActivity } = require('./activity');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
@@ -31,12 +32,14 @@ const createCohort = (req, resp) => {
 
   cohort
     .save()
-    .then(doc =>
+    .then(doc => {
       resp
         .location(`/cohorts/${doc._id}`)
         .status(201)
-        .send(responseWithCohort(doc, userId))
-    )
+        .send(responseWithCohort(doc, userId));
+
+      saveActivity(ActivityType.COHORT_ADD, userId, null, null, doc._id);
+    })
     .catch(() => resp.sendStatus(400));
 };
 
@@ -91,15 +94,17 @@ const updateCohortById = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
+  const sanitizedCohortId = sanitize(cohortId);
   const dataToUpdate = filter(x => x !== undefined)({
     description,
     isArchived,
     name
   });
+  let cohortActivity;
 
   Cohort.findOneAndUpdate(
     {
-      _id: sanitize(cohortId),
+      _id: sanitizedCohortId,
       ownerIds: userId
     },
     dataToUpdate
@@ -110,7 +115,38 @@ const updateCohortById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      return resp.send();
+      resp.send();
+
+      if (description !== undefined) {
+        const { description: prevDescription } = doc;
+        if (!description && prevDescription) {
+          cohortActivity = ActivityType.COHORT_REMOVE_DESCRIPTION;
+        } else if (description && !prevDescription) {
+          cohortActivity = ActivityType.COHORT_ADD_DESCRIPTION;
+        } else {
+          cohortActivity = ActivityType.COHORT_EDIT_DESCRIPTION;
+        }
+      }
+
+      if (name) {
+        cohortActivity = ActivityType.COHORT_EDIT_NAME;
+      }
+
+      if (isArchived !== undefined) {
+        cohortActivity = isArchived
+          ? ActivityType.COHORT_ARCHIVE
+          : ActivityType.COHORT_RESTORE;
+      }
+
+      saveActivity(
+        cohortActivity,
+        userId,
+        null,
+        null,
+        sanitizedCohortId,
+        null,
+        doc.name
+      );
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -195,7 +231,22 @@ const deleteCohortById = (req, resp) => {
     })
     .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
     .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
-    .then(() => resp.send())
+    .then(doc => {
+      if (!doc) {
+        return resp.sendStatus(400);
+      }
+
+      resp.send();
+
+      saveActivity(
+        ActivityType.COHORT_DELETE,
+        userId,
+        null,
+        null,
+        cohortId,
+        doc.name
+      );
+    })
     .catch(err =>
       resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
     );
@@ -235,7 +286,18 @@ const removeMember = (req, resp) => {
         { $pull: { viewersIds: userId } }
       ).exec();
     })
-    .then(() => resp.send())
+    .then(() => {
+      resp.send();
+
+      saveActivity(
+        ActivityType.COHORT_REMOVE_USER,
+        currentUserId,
+        null,
+        null,
+        sanitizedCohortId,
+        sanitizedUserId
+      );
+    })
     .catch(() => resp.sendStatus(400));
 };
 
@@ -246,6 +308,7 @@ const addOwnerRole = (req, resp) => {
   const {
     user: { _id: currentUserId }
   } = req;
+  const sanitizedCohortId = sanitize(cohortId);
 
   Cohort.findOneAndUpdate(
     {
@@ -261,7 +324,16 @@ const addOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      return resp.send();
+      resp.send();
+
+      saveActivity(
+        ActivityType.COHORT_SET_AS_OWNER,
+        currentUserId,
+        null,
+        null,
+        sanitizedCohortId,
+        sanitizedUserId
+      );
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -273,9 +345,10 @@ const removeOwnerRole = (req, resp) => {
   const {
     user: { _id: currentUserId }
   } = req;
+  const sanitizedCohortId = sanitize(cohortId);
 
   Cohort.findOne({
-    _id: sanitize(cohortId),
+    _id: sanitizedCohortId,
     ownerIds: { $all: [currentUserId, sanitizedUserId] }
   })
     .exec()
@@ -294,7 +367,18 @@ const removeOwnerRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => resp.send())
+    .then(() => {
+      resp.send();
+
+      saveActivity(
+        ActivityType.COHORT_SET_AS_MEMBER,
+        currentUserId,
+        null,
+        null,
+        sanitizedCohortId,
+        sanitizedUserId
+      );
+    })
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;
@@ -379,7 +463,16 @@ const addMember = (req, resp) => {
       if (newMember) {
         const { ownerIds } = currentCohort;
 
-        return resp.send(responseWithCohortMember(newMember, ownerIds));
+        resp.send(responseWithCohortMember(newMember, ownerIds));
+
+        return saveActivity(
+          ActivityType.COHORT_ADD_USER,
+          userId,
+          null,
+          null,
+          sanitizedCohortId,
+          newMember._id
+        );
       }
 
       resp.send({ _id: null });

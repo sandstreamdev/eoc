@@ -1,79 +1,143 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 
-import { dateFromString } from 'common/utils/helpers';
 import Avatar from 'common/components/Avatar';
 
 class Activity extends PureComponent {
-  renderCohortInfo = () => {
+  renderCohortLink = () => {
     const {
-      activity: { cohort }
+      activity: {
+        cohort: { id, name }
+      }
     } = this.props;
 
-    if (cohort) {
-      const { cohortId, cohortName } = cohort;
-
-      return (
-        <Fragment>
-          {' in '}
-          <Link className="activity__link" to={`/cohort/${cohortId}`}>
-            {cohortName}
-          </Link>
-          {' cohort'}
-        </Fragment>
-      );
-    }
+    return (
+      <Link className="activity__link" to={`/cohort/${id}`}>
+        {name}
+      </Link>
+    );
   };
 
-  renderListInfo = () => {
+  renderListLink = () => {
     const {
-      activity: { list }
+      activity: {
+        list: { id, name }
+      }
     } = this.props;
 
-    if (list) {
-      const { listId, listName } = list;
+    return (
+      <Link className="activity__link" to={`/sack/${id}`}>
+        {name}
+      </Link>
+    );
+  };
 
-      return (
-        <Fragment>
-          <Link className="activity__link" to={`/sack/${listId}`}>
-            {listName}
-          </Link>
-        </Fragment>
-      );
-    }
+  renderItemActivity = () => {
+    const {
+      activity: { activityType, cohort, editedValue, item, list, performer }
+    } = this.props;
+
+    return (
+      <Fragment>
+        <FormattedMessage
+          id={activityType}
+          values={{
+            item: item ? <em>{item.name}</em> : null,
+            performer: <em>{performer.name}</em>,
+            value: editedValue
+          }}
+        />
+        {list && (
+          <FormattedMessage
+            id="activity.list"
+            values={{ list: this.renderListLink() }}
+          />
+        )}
+        {cohort && (
+          <FormattedMessage
+            id="activity.cohort"
+            values={{ cohort: this.renderCohortLink() }}
+          />
+        )}
+      </Fragment>
+    );
+  };
+
+  renderListActivity = () => {
+    const {
+      activity: { activityType, cohort, editedUser, editedValue, performer }
+    } = this.props;
+
+    return (
+      <Fragment>
+        <FormattedMessage
+          id={activityType}
+          values={{
+            list: <em>{this.renderListLink()}</em>,
+            performer: <em>{performer.name}</em>,
+            user: editedUser ? editedUser.name : null,
+            value: editedValue
+          }}
+        />
+        {cohort && (
+          <FormattedMessage
+            id="activity.cohort"
+            values={{ cohort: this.renderCohortLink() }}
+          />
+        )}
+      </Fragment>
+    );
+  };
+
+  renderCohortActivity = () => {
+    const {
+      activity: { activityType, editedUser, editedValue, performer }
+    } = this.props;
+
+    return (
+      <FormattedMessage
+        id={activityType}
+        values={{
+          cohort: <em>{this.renderCohortLink()}</em>,
+          performer: <em>{performer.name}</em>,
+          user: editedUser ? editedUser.name : null,
+          value: editedValue
+        }}
+      />
+    );
   };
 
   render() {
     const {
       activity: {
-        performer: { performerAvatarUrl, performerName },
+        cohort,
         createdAt,
-        item: { itemName }
+        item,
+        list,
+        performer: { avatarUrl, name }
       }
     } = this.props;
-    const date = dateFromString(createdAt);
 
     return (
       <div className="activity">
         <div className="activity__avatar">
           <Avatar
-            avatarUrl={performerAvatarUrl}
+            avatarUrl={avatarUrl}
             className="activity__image"
-            name={performerName}
+            name={name}
           />
         </div>
         <div className="activity__message">
           <p className="activity__action">
-            {`${performerName} added ${
-              itemName ? `"${itemName}"` : ''
-            } item to `}
-            {this.renderListInfo()}
-            {' sack'}
-            {this.renderCohortInfo()}
-            {'.'}
+            {item && this.renderItemActivity()}
+            {list && !item && this.renderListActivity()}
+            {cohort && !list && this.renderCohortActivity()}
           </p>
-          <p className="activity__date">{date}</p>
+          <p className="activity__date">
+            <FormattedRelative value={createdAt} />
+          </p>
         </div>
       </div>
     );
@@ -83,13 +147,13 @@ class Activity extends PureComponent {
 Activity.propTypes = {
   activity: PropTypes.shape({
     activityType: PropTypes.string.isRequired,
-    performer: PropTypes.objectOf(PropTypes.string).isRequired,
     cohort: PropTypes.objectOf(PropTypes.string),
     createdAt: PropTypes.string.isRequired,
-    editedValue: PropTypes.string,
     editedUser: PropTypes.objectOf(PropTypes.string),
+    editedValue: PropTypes.string,
     item: PropTypes.objectOf(PropTypes.string),
-    list: PropTypes.objectOf(PropTypes.string)
+    list: PropTypes.objectOf(PropTypes.string),
+    performer: PropTypes.objectOf(PropTypes.string)
   })
 };
 

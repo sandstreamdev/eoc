@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import UserIconPlaceholder from 'assets/images/user.svg';
+import { UserIcon } from 'assets/images/icons';
 
 class Avatar extends PureComponent {
   state = {
@@ -16,15 +17,21 @@ class Avatar extends PureComponent {
     const { avatarUrl, className, name } = this.props;
 
     return (
-      <img
-        alt={`${name || 'user'} avatar`}
-        className={classNames(`${className} avatar`, {
-          avatar__placeholder: isAvatarError
-        })}
-        onError={this.handleAvatarError}
-        src={isAvatarError ? UserIconPlaceholder : avatarUrl}
-        title={name}
-      />
+      <span className="avatar">
+        {avatarUrl ? (
+          <img
+            alt={`${name || 'user'} avatar`}
+            className={classNames(`${className} avatar__image`, {
+              avatar__placeholder: isAvatarError
+            })}
+            onError={this.handleAvatarError}
+            src={isAvatarError ? UserIconPlaceholder : avatarUrl}
+            title={name}
+          />
+        ) : (
+          <UserIcon />
+        )}
+      </span>
     );
   }
 }

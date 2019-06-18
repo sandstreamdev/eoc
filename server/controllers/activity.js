@@ -1,6 +1,9 @@
+const sanitize = require('mongo-sanitize');
+
 const Activity = require('../models/activity.model');
 const List = require('../models/list.model');
 const Cohort = require('../models/cohort.model');
+const { NUMBER_OF_ACTIVITIES_TO_SEND } = require('../common/variables');
 
 const saveActivity = (
   activityType,
@@ -25,11 +28,20 @@ const saveActivity = (
 };
 
 const getActivities = (req, resp) => {
+  const { page } = req.params;
   const {
     user: { _id: userId }
   } = req;
+  const sanitizedPage = Number(sanitize(page));
   let cohortIds;
   let listIds;
+  let activitiesCount;
+
+  if (!Number.isInteger(sanitizedPage) && sanitizedPage < 0) {
+    return resp.sendStatus(400);
+  }
+
+  const skip = NUMBER_OF_ACTIVITIES_TO_SEND * (sanitizedPage - 1);
 
   Cohort.find({ memberIds: userId }, '_id')
     .lean()
@@ -46,21 +58,35 @@ const getActivities = (req, resp) => {
       listIds = lists.map(list => list._id);
     })
     .then(() =>
-      Activity.find({
-        $or: [{ listId: { $in: listIds } }, { cohortId: { $in: cohortIds } }]
+      Activity.countDocuments({
+        $or: [
+          { listId: { $in: listIds } },
+          { $and: [{ cohortId: { $in: cohortIds } }, { listId: null }] }
+        ]
+      })
+    )
+    .then(count => {
+      activitiesCount = count;
+
+      return Activity.find({
+        $or: [
+          { listId: { $in: listIds } },
+          { $and: [{ cohortId: { $in: cohortIds } }, { listId: null }] }
+        ]
       })
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(NUMBER_OF_ACTIVITIES_TO_SEND)
         .populate('performerId', 'avatarUrl displayName')
         .populate('listId', 'name items')
         .populate('cohortId', 'name')
         .populate('editedUserId', 'displayName')
-        .exec()
-    )
+        .exec();
+    })
     .then(docs => {
       if (!docs) {
         return resp.sendStatus(400);
       }
-
       const activities = docs.map(doc => {
         const {
           _id,
@@ -76,36 +102,40 @@ const getActivities = (req, resp) => {
 
         const performer = performerId
           ? {
-              performerId: performerId._id,
-              performerAvatarUrl: performerId.avatarUrl,
-              performerName: performerId.displayName
+              id: performerId._id,
+              avatarUrl: performerId.avatarUrl,
+              name: performerId.displayName
             }
           : null;
         const cohort = cohortId
-          ? { cohortId: cohortId._id, cohortName: cohortId.name }
+          ? { id: cohortId._id, name: cohortId.name }
           : null;
         const editedUser = editedUserId
           ? {
-              editedUserId: editedUserId._id,
-              editedUserAvatarUrl: editedUserId.avatarUrl,
-              editedUserName: editedUserId.displayName
+              id: editedUserId._id,
+              avatarUrl: editedUserId.avatarUrl,
+              name: editedUserId.displayName
             }
           : null;
 
-        const list = listId
-          ? { listId: listId._id, listName: listId.name }
-          : null;
-        const item = { itemId };
+        const list = listId ? { id: listId._id, name: listId.name } : null;
+        const item = itemId ? { id: itemId } : null;
 
-        if (listId) {
+        if (item && listId) {
           const { items } = listId;
           const itemData = items.id(itemId);
-          item.itemName = itemData ? itemData.name : null;
+          item.name = itemData ? itemData.name : null;
+        }
+
+        let adjustedActivityType = activityType;
+
+        if (itemId && !item.name) {
+          adjustedActivityType = `${adjustedActivityType}.no-item`;
         }
 
         return {
           _id,
-          activityType,
+          activityType: adjustedActivityType,
           performer,
           cohort,
           createdAt,
@@ -116,7 +146,12 @@ const getActivities = (req, resp) => {
         };
       });
 
-      resp.send(activities);
+      const nextPage = sanitizedPage + 1;
+
+      const isNextPage =
+        activitiesCount > NUMBER_OF_ACTIVITIES_TO_SEND * sanitizedPage;
+
+      resp.send({ activities, isNextPage, nextPage });
     })
     .catch(() => resp.sendStatus(400));
 };

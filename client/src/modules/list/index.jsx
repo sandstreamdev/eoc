@@ -43,13 +43,7 @@ class List extends Component {
   }
 
   componentDidMount() {
-    this.setState({ pendingForDetails: true });
-
-    this.fetchData().finally(() => {
-      this.setState({ pendingForDetails: false });
-      this.handleBreadcrumbs();
-      this.handleSocketListening();
-    });
+    this.fetchData();
   }
 
   componentDidUpdate(prevProps) {
@@ -66,6 +60,7 @@ class List extends Component {
 
     if (prevListId !== listId) {
       this.socket.emit('leavingRoom', prevListId);
+      this.fetchData();
     }
   }
 
@@ -130,7 +125,13 @@ class List extends Component {
       }
     } = this.props;
 
-    return fetchListData(id);
+    this.setState({ pendingForDetails: true });
+
+    fetchListData(id).finally(() => {
+      this.setState({ pendingForDetails: false });
+      this.handleBreadcrumbs();
+      this.handleSocketListening();
+    });
   };
 
   handleListArchivization = listId => () => {
