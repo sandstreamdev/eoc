@@ -22,8 +22,9 @@ import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
-import { addItemSocket } from './components/Items/model/actions';
+import { addItemWS } from './components/Items/model/actions';
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
+import { FULL_URL } from 'common/constants/variables';
 
 class List extends Component {
   constructor(props) {
@@ -79,11 +80,11 @@ class List extends Component {
 
   handleSocketListening = () => {
     const {
-      addItemSocket,
+      addItemWS,
       list: { _id: listId }
     } = this.props;
 
-    this.socket = io('http://localhost:8080');
+    this.socket = io(FULL_URL);
     this.socket.on('connect', () =>
       this.socket.emit('listRoom', `list-${listId}`)
     );
@@ -91,10 +92,7 @@ class List extends Component {
     this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
       const { item, listId } = data;
 
-      /* TODO: change name to the same approach as on server
-       * addItemWS - where WS stands for Web Socket
-       */
-      addItemSocket(item, listId);
+      addItemWS(item, listId);
     });
   };
 
@@ -277,7 +275,7 @@ List.propTypes = {
   members: PropTypes.objectOf(PropTypes.object),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
-  addItemSocket: PropTypes.func.isRequired,
+  addItemWS: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired
 };
@@ -301,7 +299,7 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
-      addItemSocket,
+      addItemWS,
       archiveList,
       fetchListData
     }

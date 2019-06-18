@@ -20,9 +20,9 @@ const activitiesRouter = require('./routes/activity');
 const app = express();
 /* eslint-disable import/order */
 const server = require('http').Server(app);
-const socketIo = require('./sockets/index');
+const socketListenTo = require('./sockets/index');
 
-socketIo.listen(server);
+socketListenTo(server);
 
 /* eslint-enable import/order */
 const sessionStore = new MongoStore({

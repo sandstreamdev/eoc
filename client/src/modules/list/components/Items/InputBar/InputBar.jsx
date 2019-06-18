@@ -11,6 +11,7 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { FULL_URL } from 'common/constants/variables';
 
 class InputBar extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class InputBar extends Component {
     }
 
     if (!this.socket) {
-      this.socket = io('http://localhost:8080');
+      this.socket = io(FULL_URL);
     }
   }
 

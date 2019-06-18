@@ -11,7 +11,7 @@ const sessionStore = new MongoStore({
 });
 const { addItemToListWS } = require('./list');
 
-module.exports.listen = server => {
+const socketListenTo = server => {
   const ioInstance = io(server);
 
   ioInstance.use(
@@ -37,3 +37,5 @@ module.exports.listen = server => {
     addItemToListWS(socket);
   });
 };
+
+module.exports = socketListenTo;

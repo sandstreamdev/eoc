@@ -146,7 +146,7 @@ export const addItem = (item, listId, socket) => dispatch =>
       );
     });
 
-export const addItemSocket = (item, listId) => dispatch =>
+export const addItemWS = (item, listId) => dispatch =>
   dispatch(addItemSuccess(item, listId));
 
 export const toggle = (
