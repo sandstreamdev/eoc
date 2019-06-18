@@ -58,7 +58,7 @@ module.exports = {
     proxy: {
       '/api': 'http://localhost:8080',
       '/auth': 'http://localhost:8080',
-      '/socket.io': 'http://localhost:8080'
+      '/socket.io': { target: 'http://localhost:8080', ws: true }
     },
     watchOptions: {
       ignored: /node_modules/
