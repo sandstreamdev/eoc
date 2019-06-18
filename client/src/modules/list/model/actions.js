@@ -412,7 +412,7 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
     .then(() => {
       dispatch(addOwnerRoleSuccess(listId, userId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'list.actions.add-owner-role',
+        notificationId: 'common.owner-role',
         data: userName
       });
     })
@@ -438,7 +438,7 @@ export const removeOwnerRole = (
         removeOwnerRoleSuccess(listId, userId, isCurrentUserRoleChanging)
       );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'list.actions.remove-owner-role',
+        notificationId: 'common.no-owner-role',
         data: userName
       });
     })

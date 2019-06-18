@@ -45,7 +45,7 @@ class AuthBox extends PureComponent {
         <div className="authbox">
           <div className="authbox__left">
             <h2 className="authbox__heading">
-              <FormattedMessage id="authorization.auth-box.heading" />
+              <FormattedMessage id="common.app-name" />
             </h2>
             <p className="authbox__description">
               <FormattedMessage id="authorization.auth-box.description" />

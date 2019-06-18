@@ -8,6 +8,7 @@ import _flowRight from 'lodash/flowRight';
 import { getNotifications } from './model/selectors';
 import MessageBox from 'common/components/MessageBox';
 import { IntlPropType } from 'common/constants/propTypes';
+import { MessageType as NotificationType } from 'common/constants/enums';
 
 const Notifications = ({ intl: { formatMessage }, notifications }) => {
   return (
@@ -20,12 +21,14 @@ const Notifications = ({ intl: { formatMessage }, notifications }) => {
                 const {
                   notification: { notificationId, data }
                 } = item;
+                let message = formatMessage({ id: notificationId }, { data });
+
+                if (item.type === NotificationType.ERROR) {
+                  message += ` ${formatMessage({ id: 'common.try-again' })}`;
+                }
                 return (
                   <li className="notification__list-item" key={id}>
-                    <MessageBox
-                      type={item.type}
-                      message={formatMessage({ id: notificationId }, { data })}
-                    />
+                    <MessageBox type={item.type} message={message} />
                   </li>
                 );
               })}

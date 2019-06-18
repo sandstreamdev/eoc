@@ -313,7 +313,7 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
     .then(() => {
       dispatch(addOwnerRoleSuccess(cohortId, userId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'cohort.actions.set-owner',
+        notificationId: 'common.owner-role',
         data: userName
       });
     })
@@ -339,7 +339,7 @@ export const removeOwnerRole = (
         removeOwnerRoleSuccess(cohortId, userId, isCurrentUserRoleChanging)
       );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'cohort.actions.remove-owner',
+        notificationId: 'common.no-owner-role',
         data: userName
       });
     })

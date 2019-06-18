@@ -1,16 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
-const About = () => (
+import { IntlPropType } from 'common/constants/propTypes';
+
+const About = ({ intl: { formatMessage } }) => (
   <div className="about">
     <div className="about__intro">
       <div className="wrapper">
         <h1 className="about__intro-heading">
-          <FormattedMessage id="about.intro-heading" />
+          <FormattedMessage
+            id="about.intro-heading"
+            values={{ appName: formatMessage({ id: 'common.app-name' }) }}
+          />
         </h1>
         <h2 className="about__subheading">
-          <FormattedMessage id="about.intro-subheading" />
+          <FormattedMessage
+            id="about.intro-subheading"
+            values={{ appName: formatMessage({ id: 'common.app-name' }) }}
+          />
         </h2>
       </div>
     </div>
@@ -22,7 +30,10 @@ const About = () => (
           </h2>
           <section className="about__section">
             <p className="about__content">
-              <FormattedMessage id="about.content-1" />
+              <FormattedMessage
+                id="about.content-1"
+                values={{ appName: formatMessage({ id: 'common.app-name' }) }}
+              />
             </p>
             <p className="about__content">
               <FormattedMessage id="about.content-2" />
@@ -33,7 +44,10 @@ const About = () => (
     </div>
     <div className="about__cta">
       <h2 className="about__cta-heading">
-        <FormattedMessage id="about.try-cta" />
+        <FormattedMessage
+          id="about.try-cta"
+          values={{ appName: formatMessage({ id: 'common.app-name' }) }}
+        />
       </h2>
       <Link to="/dashboard">
         <button className="about__cta-button primary-button" type="button">
@@ -44,4 +58,8 @@ const About = () => (
   </div>
 );
 
-export default About;
+About.propTypes = {
+  intl: IntlPropType.isRequired
+};
+
+export default injectIntl(About);
