@@ -3,7 +3,7 @@ const sanitize = require('mongo-sanitize');
 const Activity = require('../models/activity.model');
 const List = require('../models/list.model');
 const Cohort = require('../models/cohort.model');
-const { ACTIVITIES_RES_SIZE } = require('../common/variables');
+const { NUMBER_OF_ACTIVITIES_TO_SEND } = require('../common/variables');
 
 const saveActivity = (
   activityType,
@@ -41,7 +41,7 @@ const getActivities = (req, resp) => {
     return resp.sendStatus(400);
   }
 
-  const skip = ACTIVITIES_RES_SIZE * (sanitizedPage - 1);
+  const skip = NUMBER_OF_ACTIVITIES_TO_SEND * (sanitizedPage - 1);
 
   Cohort.find({ memberIds: userId }, '_id')
     .lean()
@@ -76,7 +76,7 @@ const getActivities = (req, resp) => {
       })
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(ACTIVITIES_RES_SIZE)
+        .limit(NUMBER_OF_ACTIVITIES_TO_SEND)
         .populate('performerId', 'avatarUrl displayName')
         .populate('listId', 'name items')
         .populate('cohortId', 'name')
@@ -148,7 +148,8 @@ const getActivities = (req, resp) => {
 
       const nextPage = sanitizedPage + 1;
 
-      const isNextPage = activitiesCount > ACTIVITIES_RES_SIZE * sanitizedPage;
+      const isNextPage =
+        activitiesCount > NUMBER_OF_ACTIVITIES_TO_SEND * sanitizedPage;
 
       resp.send({ activities, isNextPage, nextPage });
     })
