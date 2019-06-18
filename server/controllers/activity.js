@@ -32,7 +32,7 @@ const getActivities = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
-  const sanitizedPage = +sanitize(page);
+  const sanitizedPage = Number(sanitize(page));
   let cohortIds;
   let listIds;
   let activitiesCount;
