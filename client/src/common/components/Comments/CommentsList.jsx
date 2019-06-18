@@ -4,6 +4,8 @@ import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import Comment from 'common/components/Comments/Comment';
 import MessageBox from 'common/components/MessageBox';
@@ -13,7 +15,7 @@ import {
   addComment,
   fetchComments
 } from 'modules/list/components/Items/model/actions';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
@@ -73,7 +75,11 @@ class CommentsList extends PureComponent {
   };
 
   render() {
-    const { comments, isFormAccessible } = this.props;
+    const {
+      comments,
+      intl: { formatMessage },
+      isFormAccessible
+    } = this.props;
     const { isNewCommentVisible, pending } = this.state;
 
     return (
@@ -86,7 +92,7 @@ class CommentsList extends PureComponent {
               onClick={this.showAddComment}
               type="button"
             >
-              Add comment
+              <FormattedMessage id="common.add-comment" />
             </button>
           )}
         </header>
@@ -105,7 +111,9 @@ class CommentsList extends PureComponent {
             </ul>
           ) : (
             <MessageBox
-              message="There are no comments!"
+              message={formatMessage({
+                id: 'common.comments-list.no-comments'
+              })}
               type={MessageType.INFO}
             />
           )}
@@ -118,6 +126,7 @@ class CommentsList extends PureComponent {
 
 CommentsList.propTypes = {
   comments: PropTypes.objectOf(PropTypes.object),
+  intl: IntlPropType.isRequired,
   isFormAccessible: PropTypes.bool,
   itemId: PropTypes.string.isRequired,
   itemName: PropTypes.string.isRequired,
@@ -127,9 +136,11 @@ CommentsList.propTypes = {
   fetchComments: PropTypes.func.isRequired
 };
 
-export default withRouter(
+export default _flowRight(
+  injectIntl,
+  withRouter,
   connect(
     null,
     { addComment, fetchComments }
-  )(CommentsList)
-);
+  )
+)(CommentsList);

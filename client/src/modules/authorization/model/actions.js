@@ -41,11 +41,9 @@ export const logoutCurrentUser = () => dispatch =>
     .then(() => dispatch(logoutSuccess()))
     .catch(err => {
       dispatch(logoutFailure(err.message));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        "Oops, we're sorry, logout failed..."
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'authorization.actions.logout-fail'
+      });
     });
 
 export const loginDemoUser = () => dispatch =>
@@ -55,17 +53,13 @@ export const loginDemoUser = () => dispatch =>
   })
     .then(() => {
       dispatch(loginSuccess(setCurrentUser()));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        'Login success'
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'authorization.actions.login'
+      });
     })
     .catch(err => {
       dispatch(loginFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        'Login failed'
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'authorization.actions.login-failed'
+      });
     });

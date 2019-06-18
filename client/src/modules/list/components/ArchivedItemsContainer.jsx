@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getArchivedItems } from 'modules/list/model/selectors';
@@ -10,7 +12,7 @@ import {
   fetchArchivedItems,
   removeArchivedItems
 } from 'modules/list/components/Items/model/actions';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import Preloader from 'common/components/Preloader';
 
 class ArchivedItemsContainer extends PureComponent {
@@ -51,7 +53,11 @@ class ArchivedItemsContainer extends PureComponent {
 
   render() {
     const { areArchivedItemsVisible, pending } = this.state;
-    const { archivedItems, isMember } = this.props;
+    const {
+      archivedItems,
+      intl: { formatMessage },
+      isMember
+    } = this.props;
 
     return (
       <div className="archived-items">
@@ -60,7 +66,9 @@ class ArchivedItemsContainer extends PureComponent {
           onClick={this.handleArchivedItemsVisibility}
           type="button"
         >
-          {`${areArchivedItemsVisible ? 'hide' : 'show'} archived items`}
+          {areArchivedItemsVisible
+            ? formatMessage({ id: 'list.archived-items-container.hide' })
+            : formatMessage({ id: 'list.archived-items-container.show' })}
         </button>
         {areArchivedItemsVisible && (
           <div
@@ -83,6 +91,7 @@ class ArchivedItemsContainer extends PureComponent {
 
 ArchivedItemsContainer.propTypes = {
   archivedItems: PropTypes.arrayOf(PropTypes.object),
+  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
@@ -103,12 +112,14 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default withRouter(
+export default _flowRight(
+  injectIntl,
+  withRouter,
   connect(
     mapStateToProps,
     {
       fetchArchivedItems,
       removeArchivedItems
     }
-  )(ArchivedItemsContainer)
-);
+  )
+)(ArchivedItemsContainer);

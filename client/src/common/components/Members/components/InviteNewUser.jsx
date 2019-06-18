@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import { PROJECT_NAME } from 'common/constants/variables';
+import { IntlPropType } from 'common/constants/propTypes';
 
-const InviteNewUser = ({ email, onCancel, onInvite }) => (
+const InviteNewUser = ({
+  email,
+  intl: { formatMessage },
+  onCancel,
+  onInvite
+}) => (
   <div className="invite-user">
     <p className="invite-user__message">
       User
@@ -17,13 +24,18 @@ const InviteNewUser = ({ email, onCancel, onInvite }) => (
         className="primary-button"
         onClick={onInvite}
         preloaderTheme={PreloaderTheme.LIGHT}
-        title="Invite user"
+        title={formatMessage({ id: 'common.invite-new-user.invite' })}
         value="Invite user"
       >
-        Invite User
+        <FormattedMessage id="common.invite-new-user.invite" />
       </PendingButton>
-      <button className="primary-button" onClick={onCancel} type="button">
-        Cancel
+      <button
+        className="primary-button"
+        onClick={onCancel}
+        title={formatMessage({ id: 'common.invite-new-user.invite' })}
+        type="button"
+      >
+        <FormattedMessage id="common.button.cancel" />
       </button>
     </footer>
   </div>
@@ -31,9 +43,10 @@ const InviteNewUser = ({ email, onCancel, onInvite }) => (
 
 InviteNewUser.propTypes = {
   email: PropTypes.string.isRequired,
+  intl: IntlPropType.isRequired,
 
   onCancel: PropTypes.func.isRequired,
   onInvite: PropTypes.func.isRequired
 };
 
-export default InviteNewUser;
+export default injectIntl(InviteNewUser);

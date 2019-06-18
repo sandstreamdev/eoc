@@ -4,9 +4,15 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import _trim from 'lodash/trim';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  RouterMatchPropType,
+  UserPropType,
+  IntlPropType
+} from 'common/constants/propTypes';
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
@@ -111,6 +117,9 @@ class InputBar extends Component {
       itemName,
       pending
     } = this.state;
+    const {
+      intl: { formatMessage }
+    } = this.props;
 
     return isFormVisible ? (
       <Fragment>
@@ -120,7 +129,7 @@ class InputBar extends Component {
             disabled={pending}
             name="item name"
             onChange={this.handleNameChange}
-            placeholder="What is missing?"
+            placeholder={formatMessage({ id: 'list.input-bar.placeholder' })}
             ref={this.input}
             required
             type="text"
@@ -132,10 +141,14 @@ class InputBar extends Component {
             })}
             disabled={isButtonDisabled}
             type="submit"
-            value="add"
+            value={formatMessage({ id: 'list.input-bar.button' })}
           />
         </form>
-        {isTipVisible && <p className="error-message">Name can not be empty</p>}
+        {isTipVisible && (
+          <p className="error-message">
+            <FormattedMessage id="list.input-bar.tip" />
+          </p>
+        )}
       </Fragment>
     ) : (
       <button
@@ -144,7 +157,7 @@ class InputBar extends Component {
         type="button"
       >
         <PlusIcon />
-        Add new item
+        <FormattedMessage id="list.input-bar.add-new" />
       </button>
     );
   };
@@ -163,6 +176,7 @@ class InputBar extends Component {
 
 InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
+  intl: IntlPropType.isRequired,
   match: RouterMatchPropType.isRequired,
 
   addItem: PropTypes.func.isRequired
@@ -172,9 +186,11 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default withRouter(
+export default _flowRight(
+  injectIntl,
+  withRouter,
   connect(
     mapStateToProps,
     { addItem }
-  )(InputBar)
-);
+  )
+)(InputBar);

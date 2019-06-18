@@ -16,11 +16,11 @@ const removeNotification = id => ({
 export const createNotificationWithTimeout = (
   dispatch,
   type,
-  message,
+  notification,
   timeout = NOTIFICATION_TIMEOUT
 ) => {
   const id = uniqueId('notification_');
-  dispatch(addNotification({ id, type, message }));
+  dispatch(addNotification({ id, type, notification }));
   setTimeout(() => {
     dispatch(removeNotification(id));
   }, timeout);

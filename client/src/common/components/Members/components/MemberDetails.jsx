@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { CloseIcon, InfoIcon } from 'assets/images/icons';
@@ -27,14 +28,12 @@ import Avatar from 'common/components/Avatar';
 
 const infoText = {
   [Routes.COHORT]: {
-    [UserRoles.OWNER]:
-      "Can edit, archive and delete this cohort. Can add, edit sack's items and mark them as done. Can add, edit, archive and delete sacks. Can add, remove members, and change their roles.",
-    [UserRoles.MEMBER]: "Can view sacks, add and edit sack's items."
+    [UserRoles.OWNER]: 'common.member-details.cohort.user-role-owner',
+    [UserRoles.MEMBER]: 'common.member-details.cohort.user-roles-member'
   },
   [Routes.LIST]: {
-    [UserRoles.OWNER]:
-      "Can edit, archive and delete this sack. Can add, edit sack's items and mark them as done. Can add, remove members, and change their roles.",
-    [UserRoles.MEMBER]: "Can view, add and edit sack's items."
+    [UserRoles.OWNER]: 'common.member-details.sack.user-roles-owner',
+    [UserRoles.MEMBER]: 'common.member-details.sack.user-roles-member'
   }
 };
 
@@ -229,7 +228,7 @@ class MemberDetails extends PureComponent {
         </div>
         {isInfoVisible && (
           <p className="member-details__role-description">
-            {infoText[route][role]}
+            <FormattedMessage id={infoText[route][role]} />
           </p>
         )}
       </Fragment>
@@ -248,14 +247,14 @@ class MemberDetails extends PureComponent {
           onClick={this.handleMemberRemoving}
           type="button"
         >
-          Confirm
+          <FormattedMessage id="common.button.confirm" />
         </button>
         <button
           className="primary-button"
           onClick={this.handleConfirmationVisibility}
           type="button"
         >
-          Cancel
+          <FormattedMessage id="common.button.cancel" />
         </button>
       </div>
     ) : (
@@ -265,7 +264,7 @@ class MemberDetails extends PureComponent {
         onClick={this.handleConfirmationVisibility}
         type="button"
       >
-        Remove user
+        <FormattedMessage id="common.member-details.remove" />
       </button>
     );
   };
@@ -279,14 +278,20 @@ class MemberDetails extends PureComponent {
       isMember,
       isOwner
     } = this.props;
-    let roleToDisplay = UserRolesToDisplay.VIEWER;
+    let roleToDisplay = (
+      <FormattedMessage id="common.member-details.role-viewer" />
+    );
 
     if (isMember) {
-      roleToDisplay = UserRolesToDisplay.MEMBER;
+      roleToDisplay = (
+        <FormattedMessage id="common.member-details.role-member" />
+      );
     }
 
     if (isOwner) {
-      roleToDisplay = UserRolesToDisplay.OWNER;
+      roleToDisplay = (
+        <FormattedMessage id="common.member-details.role-owner" />
+      );
     }
 
     return (
@@ -302,7 +307,9 @@ class MemberDetails extends PureComponent {
           <h3 className="member-details__name">{displayName}</h3>
           <p className="member-details__role">
             {roleToDisplay}
-            {isGuest && isCohortList && '\n(Guest)'}
+            {isGuest && isCohortList && (
+              <FormattedMessage id="common.member-details.role-guest" />
+            )}
           </p>
         </div>
       </header>

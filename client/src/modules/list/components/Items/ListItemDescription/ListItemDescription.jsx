@@ -7,6 +7,7 @@ import _isEqual from 'lodash/isEqual';
 import Linkify from 'react-linkify';
 import Textarea from 'react-textarea-autosize';
 import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
 import Preloader, {
   PreloaderSize,
@@ -196,7 +197,7 @@ class ListItemDescription extends PureComponent {
         onClick={this.handleShowTextarea}
         type="button"
       >
-        Add Description
+        <FormattedMessage id="list.list-description.add-button" />
       </button>
     );
   };
@@ -241,7 +242,9 @@ class ListItemDescription extends PureComponent {
       <Fragment>
         <div onClick={disabled ? null : this.handleShowTextarea}>
           {isTitleVisible && (
-            <h2 className="list-item-description__title">Description</h2>
+            <h2 className="list-item-description__title">
+              <FormattedMessage id="list.list-description.title" />
+            </h2>
           )}
           {isTextareaVisible ? (
             this.renderTextarea()

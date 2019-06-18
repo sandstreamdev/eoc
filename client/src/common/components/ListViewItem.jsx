@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { ListType } from 'modules/list/consts';
 import { ColorType, Routes } from 'common/constants/enums';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class ListViewItem extends PureComponent {
   state = {
@@ -23,6 +25,7 @@ class ListViewItem extends PureComponent {
   render() {
     const {
       color,
+      intl: { formatMessage },
       item: {
         description,
         doneItemsCount,
@@ -59,8 +62,14 @@ class ListViewItem extends PureComponent {
             )}
           </header>
           <div className="list-view-item__data">
-            <span>{`Done: ${doneItemsCount}`}</span>
-            <span>{`Unhandled: ${unhandledItemsCount}`}</span>
+            <FormattedMessage
+              id="common.list-view-item.done"
+              values={{ doneItemsCount }}
+            />
+            <FormattedMessage
+              id="common.list-view-item.unhandled"
+              values={{ unhandledItemsCount }}
+            />
           </div>
         </div>
         {route !== Routes.COHORT && (
@@ -71,7 +80,11 @@ class ListViewItem extends PureComponent {
             })}
             disabled={pending}
             onClick={this.handleFavClick}
-            title={`${isFavourite ? 'Remove from' : 'Add to'} favourites`}
+            title={formatMessage({
+              id: isFavourite
+                ? 'common.list-view-item.remove-fav'
+                : 'common.list-view-item.add-fav'
+            })}
             type="button"
           >
             {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
@@ -89,6 +102,7 @@ class ListViewItem extends PureComponent {
 
 ListViewItem.propTypes = {
   color: PropTypes.string.isRequired,
+  intl: IntlPropType.isRequired,
   item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   route: PropTypes.string.isRequired,
 
@@ -96,4 +110,4 @@ ListViewItem.propTypes = {
   onFavClick: PropTypes.func
 };
 
-export default ListViewItem;
+export default injectIntl(ListViewItem);
