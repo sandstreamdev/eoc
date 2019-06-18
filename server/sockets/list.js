@@ -4,18 +4,10 @@ const { ItemActionTypes } = require('../common/variables');
  * this from controllers naming convention
  */
 const addItemToListWS = socket => {
-  socket.on('listRoom', room => {
-    socket.join(room);
-  });
-
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     socket.broadcast
       .to(`list-${data.listId}`)
       .emit(ItemActionTypes.ADD_SUCCESS, data);
-  });
-
-  socket.on('leavingRoom', listId => {
-    socket.leave(`list-${listId}`);
   });
 };
 

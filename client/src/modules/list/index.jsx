@@ -85,7 +85,7 @@ class List extends Component {
 
     this.socket = io();
     this.socket.on('connect', () =>
-      this.socket.emit('listRoom', `list-${listId}`)
+      this.socket.emit('joinRoom', `list-${listId}`)
     );
 
     this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {

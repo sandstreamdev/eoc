@@ -34,6 +34,14 @@ const socketListenTo = server => {
       return;
     }
 
+    socket.on('joinRoom', room => {
+      socket.join(room);
+    });
+
+    socket.on('leavingRoom', listId => {
+      socket.leave(`list-${listId}`);
+    });
+
     addItemToListWS(socket);
   });
 };
