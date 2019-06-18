@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { BellIcon } from 'assets/images/icons';
 import UserBar from './components/UserBar';
@@ -8,16 +10,19 @@ import AppLogo from 'common/components/AppLogo';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import ToolbarLink from './components/ToolbarLink';
 import ToolbarItem from './components/ToolbarItem';
+import { IntlPropType } from 'common/constants/propTypes';
 import Activities from 'common/components/Activities';
 
-const Toolbar = ({ children }) => (
+const Toolbar = ({ children, intl: { formatMessage } }) => (
   <div className="toolbar">
     <div className="wrapper toolbar__wrapper">
       <div className="toolbar__left">
         <ToolbarLink
           mainIcon={<AppLogo />}
           path="/dashboard"
-          title="Go back to dashboard"
+          title={formatMessage({
+            id: 'app.toolbar.go-to-dashboard'
+          })}
         />
       </div>
       <div className="toolbar__right">
@@ -26,7 +31,9 @@ const Toolbar = ({ children }) => (
         <ToolbarItem
           mainIcon={<BellIcon />}
           onClick={() => {}}
-          title="Set notifications up"
+          title={formatMessage({
+            id: 'app.toolbar.notification-tooltip'
+          })}
         />
         <UserBar />
       </div>
@@ -35,11 +42,12 @@ const Toolbar = ({ children }) => (
 );
 
 Toolbar.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  intl: IntlPropType
 };
 
 const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(mapStateToProps)(Toolbar);
+export default _flowRight(injectIntl, connect(mapStateToProps))(Toolbar);

@@ -2,6 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
@@ -43,9 +44,11 @@ class AuthBox extends PureComponent {
       <Fragment>
         <div className="authbox">
           <div className="authbox__left">
-            <h2 className="authbox__heading">End Of Coffee</h2>
+            <h2 className="authbox__heading">
+              <FormattedMessage id="common.app-name" />
+            </h2>
             <p className="authbox__description">
-              The best app to track your office inventory.
+              <FormattedMessage id="authorization.auth-box.description" />
             </p>
           </div>
           <div className="authbox__right">
@@ -53,7 +56,9 @@ class AuthBox extends PureComponent {
               <AppLogo />
             </div>
             <div className="authbox__buttons">
-              <h1 className="authbox__sign-in">Sign in with:</h1>
+              <h1 className="authbox__sign-in">
+                <FormattedMessage id="authorization.auth-box.sign-in" />
+              </h1>
               <div className="authbox__button-wrapper">
                 <a
                   className={classNames('google-button', {
@@ -78,7 +83,9 @@ class AuthBox extends PureComponent {
               </div>
             </div>
             <div className="authbox__demo">
-              <h1 className="authbox__sign-in">Try it out:</h1>
+              <h1 className="authbox__sign-in">
+                <FormattedMessage id="authorization.auth-box.cta" />
+              </h1>
               <div className="authbox__button-wrapper">
                 <PendingButton
                   className="primary-button authbox__demo-button"
@@ -86,7 +93,7 @@ class AuthBox extends PureComponent {
                   onClick={this.handleLaunchingDemo}
                   preloaderTheme={PreloaderTheme.LIGHT}
                 >
-                  Live Demo
+                  <FormattedMessage id="authorization.auth-box.demo-button" />
                 </PendingButton>
               </div>
             </div>

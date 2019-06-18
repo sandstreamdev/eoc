@@ -1,6 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 
 import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';
 import { ColorType, Routes } from 'common/constants/enums';
@@ -9,6 +10,7 @@ import Preloader, {
   PreloaderTheme
 } from 'common/components/Preloader';
 import { ListType } from 'modules/list/consts';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class TilesViewItem extends PureComponent {
   state = {
@@ -26,6 +28,7 @@ class TilesViewItem extends PureComponent {
   render() {
     const {
       color,
+      intl: { formatMessage },
       item: {
         description,
         doneItemsCount,
@@ -61,7 +64,11 @@ class TilesViewItem extends PureComponent {
             className="tiles-view-item__star"
             disabled={pending}
             onClick={this.handleFavClick}
-            title={`${isFavourite ? 'Remove from' : 'Add to'} favourites`}
+            title={
+              isFavourite
+                ? formatMessage({ id: 'common.tile-view-item.remove-fav' })
+                : formatMessage({ id: 'common.tile-view-item.add-fav' })
+            }
             type="button"
           >
             {isFavourite ? <SolidStarIcon /> : <RegularStarIcon />}
@@ -92,6 +99,7 @@ class TilesViewItem extends PureComponent {
 
 TilesViewItem.propTypes = {
   color: PropTypes.string.isRequired,
+  intl: IntlPropType.isRequired,
   item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   route: PropTypes.string.isRequired,
 
@@ -99,4 +107,4 @@ TilesViewItem.propTypes = {
   onFavClick: PropTypes.func
 };
 
-export default TilesViewItem;
+export default injectIntl(TilesViewItem);

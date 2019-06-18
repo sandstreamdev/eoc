@@ -2,6 +2,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
@@ -28,102 +29,85 @@ class PrivacyPolicy extends PureComponent {
       <Fragment>
         <div className="privacy-policy">
           <h1 className="privacy-policy__intro-heading">
-            Privacy <span>& Terms</span>
+            <FormattedMessage id="privacy-policy.index.heading" />
           </h1>
           <h2 className="privacy-policy__intro-subheading">
-            Check our Privacy Policy <span>and Terms.</span>
+            <FormattedMessage id="privacy-policy.index.subheading" />
           </h2>
           <div className="privacy-policy__info-wrapper">
             <article className="privacy-policy__info">
-              <h2 className="privacy-policy__header">Privacy Policy</h2>
+              <h2 className="privacy-policy__header">
+                <FormattedMessage id="privacy-policy.index.privacy-policy" />
+              </h2>
               <p className="privacy-policy__content">
-                Sandstream Development (herein referred to as “Sandstream”) has
-                created this Privacy Policy in line with our commitment to your
-                privacy on EOC Application (herein referred to &apos;App&apos;).
-                This app informs you of our policies regarding the collection,
-                use and disclosure of Personal Information, Information Security
-                and Quality, and Cookies.
-              </p>
-            </article>
-          </div>
-          <div className="privacy-policy__info-wrapper">
-            <article className="privacy-policy__info">
-              <h2 className="privacy-policy__header">Personal Information</h2>
-              <p className="privacy-policy__content">
-                Our privacy practices are designed to provide a high level of
-                protection for your personal data. We use your Personal
-                information only for providing and improving the App. You agree
-                to the collection and use of this information in accordance with
-                this policy.
+                <FormattedMessage id="privacy-policy.index.content-1" />
               </p>
             </article>
           </div>
           <div className="privacy-policy__info-wrapper">
             <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">
-                Information Security and&nbsp;Quality
+                <FormattedMessage id="privacy-policy.index.header-1" />
               </h2>
               <p className="privacy-policy__content">
-                The security of your Personal Information is important to us. We
-                intend to protect the quality and integrity of your personally
-                identifiable information. We will make a sincere effort to
-                respond in a timely manner to your requests to correct
-                inaccuracies in your personal information. To correct
-                inaccuracies in your personal information, please send the
-                message containing the inaccuracies to the author with details
-                of the correction requested.
+                <FormattedMessage id="privacy-policy.index.content-2" />
               </p>
             </article>
           </div>
           <div className="privacy-policy__info-wrapper">
             <article className="privacy-policy__info">
-              <h2 className="privacy-policy__header">Cookies</h2>
+              <h2 className="privacy-policy__header">
+                <FormattedMessage id="privacy-policy.index.header-2" />
+              </h2>
               <p className="privacy-policy__content">
-                Like many site operators, we collect information (i.e. cookies)
-                that your browser sends whenever you visit the App. You can
-                instruct your browser to refuse all cookies or to indicate when
-                a cookie is being sent. However, if you do not accept cookies,
-                you may not be able to use our App.
+                <FormattedMessage id="privacy-policy.index.content-3" />
               </p>
             </article>
           </div>
           <div className="privacy-policy__info-wrapper">
             <article className="privacy-policy__info">
-              <h2 className="privacy-policy__header">Business Connections</h2>
+              <h2 className="privacy-policy__header">
+                <FormattedMessage id="privacy-policy.index.header-3" />
+              </h2>
               <p className="privacy-policy__content">
-                This web application may contain links to various third-party
-                websites. Sandstream has no control over and is not responsible
-                for the content, privacy policies or reliability of such sites.
+                <FormattedMessage id="privacy-policy.index.content-4" />
               </p>
             </article>
           </div>
           <div className="privacy-policy__info-wrapper">
             <article className="privacy-policy__info">
-              <h2 className="privacy-policy__header">Contact Us</h2>
+              <h2 className="privacy-policy__header">
+                <FormattedMessage id="privacy-policy.index.header-4" />
+              </h2>
               <p className="privacy-policy__content">
-                If you have any questions about this Privacy Policy or
-                practices, please contact us via a{' '}
+                <FormattedMessage id="privacy-policy.index.content-5" />
+              </p>
+            </article>
+          </div>
+          <div className="privacy-policy__info-wrapper">
+            <article className="privacy-policy__info">
+              <h2 className="privacy-policy__header">
+                <FormattedMessage id="privacy-policy.index.header-5" />
+              </h2>
+              <p className="privacy-policy__content">
+                <FormattedMessage id="privacy-policy.index.content-6" />
                 <a
                   href="https://sandstream.pl/contact"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  contact form
+                  <FormattedMessage id="privacy-policy.index.link" />
                 </a>
-                .
               </p>
             </article>
           </div>
           <div className="privacy-policy__info-wrapper">
             <article className="privacy-policy__info">
               <h2 className="privacy-policy__header">
-                Changes to this Privacy Policy
+                <FormattedMessage id="privacy-policy.index.header-6" />
               </h2>
               <p className="privacy-policy__content">
-                Sandstream reserves the right to change, modify or otherwise
-                update this Privacy Statement at any time. So we encourage you
-                to review this privacy statement periodically to track the
-                changes.
+                <FormattedMessage id="privacy-policy.index.content-7" />
               </p>
             </article>
           </div>
@@ -131,7 +115,7 @@ class PrivacyPolicy extends PureComponent {
             <div className="privacy-policy__links">
               <Link to="/">
                 <button className="primary-button" type="button">
-                  Login page
+                  <FormattedMessage id="privacy-policy.index.login-btn" />
                 </button>
               </Link>
             </div>

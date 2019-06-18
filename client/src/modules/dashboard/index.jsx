@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
 import {
@@ -18,6 +20,7 @@ import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import { ColorType, Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class Dashboard extends Component {
   state = {
@@ -82,7 +85,13 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { archivedLists, cohortLists, privateLists, viewType } = this.props;
+    const {
+      archivedLists,
+      cohortLists,
+      intl: { formatMessage },
+      privateLists,
+      viewType
+    } = this.props;
     const {
       areArchivedListsVisible,
       isDialogVisible,
@@ -106,7 +115,7 @@ class Dashboard extends Component {
               name="Private Sacks"
               onAddNew={this.handleDialogVisibility}
               pending={pendingForLists}
-              placeholder="There are no sacks yet!"
+              placeholder={formatMessage({ id: 'dashboard.index.no-sacks' })}
               route={Routes.LIST}
               viewType={viewType}
             />
@@ -116,7 +125,7 @@ class Dashboard extends Component {
               items={cohortLists}
               name="Cohorts' Sacks"
               pending={pendingForLists}
-              placeholder="There are no sacks yet!"
+              placeholder={formatMessage({ id: 'dashboard.index.no-sacks' })}
               route={Routes.LIST}
               viewType={viewType}
             />
@@ -125,7 +134,9 @@ class Dashboard extends Component {
               onClick={this.handleArchivedListsVisibility}
               type="button"
             >
-              {` ${areArchivedListsVisible ? 'hide' : 'show'} archived sacks`}
+              {areArchivedListsVisible
+                ? formatMessage({ id: 'dashboard.index.hide-arch-sacks' })
+                : formatMessage({ id: 'dashboard.index.show-arch-sacks' })}
             </button>
             {areArchivedListsVisible && (
               <CollectionView
@@ -134,7 +145,9 @@ class Dashboard extends Component {
                 items={archivedLists}
                 name="Archived Sacks"
                 pending={pendingForArchivedLists}
-                placeholder="You have no archived sacks!"
+                placeholder={formatMessage({
+                  id: 'dashboard.index.no-arch-sacks'
+                })}
                 route={Routes.LIST}
                 viewType={viewType}
               />
@@ -146,7 +159,11 @@ class Dashboard extends Component {
             onCancel={this.handleDialogVisibility}
             onConfirm={this.handleConfirm}
             pending={pendingForListCreation}
-            title={`${pendingForListCreation ? 'Adding' : 'Add'} new sack`}
+            title={
+              pendingForListCreation
+                ? formatMessage({ id: 'dashboard.index.adding' })
+                : formatMessage({ id: 'dashboard.index.add' })
+            }
           />
         )}
       </Fragment>
@@ -157,6 +174,7 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
+  intl: IntlPropType.isRequired,
   privateLists: PropTypes.objectOf(PropTypes.object),
   viewType: PropTypes.string.isRequired,
 
@@ -172,12 +190,15 @@ const mapStateToProps = state => ({
   privateLists: getPrivateLists(state)
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    createList,
-    fetchArchivedListsMetaData,
-    fetchListsMetaData,
-    removeArchivedListsMetaData
-  }
+export default _flowRight(
+  injectIntl,
+  connect(
+    mapStateToProps,
+    {
+      createList,
+      fetchArchivedListsMetaData,
+      fetchListsMetaData,
+      removeArchivedListsMetaData
+    }
+  )
 )(Dashboard);

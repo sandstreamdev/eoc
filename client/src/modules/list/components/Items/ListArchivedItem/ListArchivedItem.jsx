@@ -2,9 +2,11 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import PendingButton from 'common/components/PendingButton';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import {
   deleteItem,
   restoreItem
@@ -48,6 +50,7 @@ class ListArchivedItem extends PureComponent {
   render() {
     const {
       data: { authorName, name, isOrdered, votesCount },
+      intl: { formatMessage },
       isMember
     } = this.props;
     const { isConfirmationVisible } = this.state;
@@ -57,11 +60,29 @@ class ListArchivedItem extends PureComponent {
         <div className="list-archived-item__wrapper">
           <div className="list-archived-item__data">
             <span className="list-archived-item__name">{name}</span>
-            <span className="list-archived-item__author">{`Added by: ${authorName}`}</span>
+            <span className="list-archived-item__author">
+              <FormattedMessage
+                id="list.list-archived-item.author"
+                values={{ authorName }}
+              />
+            </span>
             <div className="list-archived-item__details">
-              <span>archived</span>
-              <span>{`votes: ${votesCount}`}</span>
-              <span>{isOrdered ? 'Done' : 'Unhandled'}</span>
+              <FormattedMessage id="list.list-archived-item.archived" />
+              <span>
+                {formatMessage(
+                  {
+                    id: 'list.list-archived-item.votes-count'
+                  },
+                  { votesCount }
+                )}
+              </span>
+              <FormattedMessage
+                id={
+                  isOrdered
+                    ? 'list.list-archived-item.done'
+                    : 'list.list-archived-item.unhandled'
+                }
+              />
             </div>
           </div>
           <div className="list-archived-item__features">
@@ -70,14 +91,14 @@ class ListArchivedItem extends PureComponent {
               onClick={this.handleRestoringItem}
               type="button"
             >
-              restore
+              <FormattedMessage id="list.list-archived-item.restore" />
             </PendingButton>
             <button
               className="link-button"
               onClick={this.handleConfirmationVisibility}
               type="button"
             >
-              delete
+              <FormattedMessage id="list.list-archived-item.delete" />
             </button>
           </div>
         </div>
@@ -86,7 +107,12 @@ class ListArchivedItem extends PureComponent {
             disabled={!isMember}
             onCancel={this.handleConfirmationVisibility}
             onConfirm={this.handleDeletingItem}
-            title={`Do you really want to delete "${name}" item?`}
+            title={formatMessage(
+              {
+                id: 'list.list-archived-item.confirmation'
+              },
+              { name }
+            )}
           />
         )}
       </li>
@@ -103,6 +129,7 @@ ListArchivedItem.propTypes = {
       PropTypes.object
     ])
   ),
+  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
@@ -110,9 +137,11 @@ ListArchivedItem.propTypes = {
   restoreItem: PropTypes.func.isRequired
 };
 
-export default withRouter(
+export default _flowRight(
+  injectIntl,
+  withRouter,
   connect(
     null,
     { deleteItem, restoreItem }
-  )(ListArchivedItem)
-);
+  )
+)(ListArchivedItem);

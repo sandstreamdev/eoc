@@ -180,11 +180,9 @@ export const fetchListData = listId => dispatch =>
     })
     .catch(() => {
       dispatch(fetchListDataFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        'Failed to fetch sack data. Please try again.'
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.fetch-data-fail'
+      });
     });
 
 export const createList = data => dispatch =>
@@ -192,19 +190,17 @@ export const createList = data => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       dispatch(createListSuccess(json));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Sack "${data.name}" successfully created. `
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.create-list',
+        data: data.name
+      });
     })
     .catch(() => {
       dispatch(createListFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to create sack: "${data.name}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.create-list-fail',
+        data: data.name
+      });
     });
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
@@ -220,11 +216,9 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
     })
     .catch(() => {
       dispatch(fetchListsMetaDataFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        'Failed to fetch sacks. Please try again.'
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.fetch-meta-data-fail'
+      });
     });
 };
 
@@ -241,11 +235,9 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     })
     .catch(() => {
       dispatch(fetchArchivedListsMetaDataFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        'Failed to fetch archived sacks. Please try again.'
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.fetch-arch-meta-data-fail'
+      });
     });
 };
 
@@ -253,20 +245,18 @@ export const deleteList = (id, listName) => dispatch =>
   deleteData(`/api/lists/${id}/delete`)
     .then(() => {
       dispatch(deleteListSuccess(id));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Sack: "${listName}" successfully deleted.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.delete-list',
+        data: listName
+      });
       history.replace('/dashboard');
     })
     .catch(() => {
       dispatch(deleteListFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to delete sack: "${listName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.delete-list-fail',
+        data: listName
+      });
       throw new Error();
     });
 
@@ -274,19 +264,17 @@ export const updateList = (listId, data, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, data)
     .then(() => {
       dispatch(updateListSuccess({ ...data, listId }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Sack: "${listName}" successfully updated.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.update-list',
+        data: listName
+      });
     })
     .catch(() => {
       dispatch(updateListFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to update sack: "${listName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.update-list-fail',
+        data: listName
+      });
     });
 
 export const archiveList = (listId, listName) => dispatch =>
@@ -295,20 +283,18 @@ export const archiveList = (listId, listName) => dispatch =>
   })
     .then(() => {
       dispatch(archiveListSuccess({ isArchived: true, listId }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Sack: "${listName}" was successfully archived!`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.arch-list',
+        data: listName
+      });
       history.replace('/dashboard');
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(archiveListFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to archive sack: "${listName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.arch-list-fail',
+        data: listName
+      });
     });
 
 export const restoreList = (listId, listName) => dispatch =>
@@ -319,57 +305,51 @@ export const restoreList = (listId, listName) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       dispatch(restoreListSuccess(json, listId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Sack "${listName}" was successfully restored!`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.restore-list',
+        data: listName
+      });
     })
     .catch(() => {
       dispatch(restoreListFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to restore sack: "${listName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.restore-list-fail',
+        data: listName
+      });
     });
 
 export const addListToFavourites = (listId, listName) => dispatch =>
   patchData(`/api/lists/${listId}/add-to-fav`)
     .then(() => {
       dispatch(favouritesSuccess({ listId, isFavourite: true }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Sack: "${listName}" marked as favourite.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.add-to-fav',
+        data: listName
+      });
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(favouritesFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to mark sack: ${listName} as favourite. Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.add-to-fav-fail',
+        data: listName
+      });
     });
 
 export const removeListFromFavourites = (listId, listName) => dispatch =>
   patchData(`/api/lists/${listId}/remove-from-fav`)
     .then(() => {
       dispatch(favouritesSuccess({ listId, isFavourite: false }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Sack: "${listName}" removed from favourites.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.remove-from-fav',
+        data: listName
+      });
     })
     .catch(() => {
       dispatch(favouritesFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to remove sack: "${listName}" from favourites. Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.remove-from-fav-fail',
+        data: listName
+      });
     });
 
 export const addListViewer = (listId, email) => dispatch =>
@@ -380,11 +360,10 @@ export const addListViewer = (listId, email) => dispatch =>
     .then(json => {
       if (json._id) {
         dispatch(addViewerSuccess(json, listId));
-        createNotificationWithTimeout(
-          dispatch,
-          NotificationType.SUCCESS,
-          `Viewer: "${json.displayName}" added successfully.`
-        );
+        createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+          notificationId: 'list.actions.add-viewer',
+          data: json.displayName
+        });
 
         return UserAddingStatus.ADDED;
       }
@@ -393,11 +372,10 @@ export const addListViewer = (listId, email) => dispatch =>
     })
     .catch(err => {
       dispatch(addViewerFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message || `Failed to add: "${email}" as viewer. Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: err.message || 'list.actions.add-viewer-default-fail',
+        data: email
+      });
     });
 
 export const removeListMember = (
@@ -413,19 +391,17 @@ export const removeListMember = (
   return patchData(url, { userId })
     .then(() => {
       dispatch(removeMemberSuccess(listId, userId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `"${userName}" successfully removed.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.remove-member',
+        data: userName
+      });
     })
     .catch(() => {
       dispatch(removeMemberFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to remove "${userName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.remove-member-fail',
+        data: userName
+      });
     });
 };
 
@@ -435,19 +411,17 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
   })
     .then(() => {
       dispatch(addOwnerRoleSuccess(listId, userId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `"${userName}" has owner role.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'common.owner-role',
+        data: userName
+      });
     })
     .catch(() => {
       dispatch(addOwnerRoleFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to add owner role for: "${userName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.add-owner-role-fail',
+        data: userName
+      });
     });
 
 export const removeOwnerRole = (
@@ -463,20 +437,17 @@ export const removeOwnerRole = (
       dispatch(
         removeOwnerRoleSuccess(listId, userId, isCurrentUserRoleChanging)
       );
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `"${userName}" has no owner role.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'common.no-owner-role',
+        data: userName
+      });
     })
     .catch(err => {
       dispatch(removeOwnerRoleFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message ||
-          `Failed to remove owner role from: "${userName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: err.message || 'list.actions.remove-owner-role-fail',
+        data: userName
+      });
     });
 
 export const addMemberRole = (
@@ -490,19 +461,17 @@ export const addMemberRole = (
   })
     .then(() => {
       dispatch(addMemberRoleSuccess(listId, userId, isCurrentUserAnOwner));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `"${userName}" has member role.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.add-member-role',
+        data: userName
+      });
     })
     .catch(() => {
       dispatch(addMemberRoleFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to add: "${userName}" as member. Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.add-member-role-fail',
+        data: userName
+      });
     });
 
 export const removeMemberRole = (
@@ -516,20 +485,17 @@ export const removeMemberRole = (
   })
     .then(() => {
       dispatch(removeMemberRoleSuccess(listId, userId, isCurrentUserAnOwner));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `"${userName}" has no member role.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.remove-member-role',
+        data: userName
+      });
     })
     .catch(err => {
       dispatch(removeMemberRoleFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message ||
-          `Failed to remove owner role from: "${userName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: err.message || 'list.actions.remove-member-role-fail',
+        data: userName
+      });
     });
 
 export const changeType = (listId, listName, type) => dispatch =>
@@ -539,17 +505,15 @@ export const changeType = (listId, listName, type) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       dispatch(changeTypeSuccess(listId, json.data));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Sack: "${listName}" changed to ${type}.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.change-type',
+        data: listName
+      });
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(changeTypeFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to change: "${listName}" type. Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'list.actions.change-type-fail',
+        data: listName
+      });
     });

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 
@@ -9,6 +10,7 @@ import Preloader, {
   PreloaderTheme
 } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class MembersForm extends PureComponent {
   constructor(props) {
@@ -64,7 +66,11 @@ class MembersForm extends PureComponent {
 
   render() {
     const { inputValue } = this.state;
-    const { disabled, pending } = this.props;
+    const {
+      disabled,
+      intl: { formatMessage },
+      pending
+    } = this.props;
     const isEmpty = _isEmpty(_trim(inputValue));
     const isButtonDisabled = disabled || pending || isEmpty;
 
@@ -80,7 +86,7 @@ class MembersForm extends PureComponent {
           onFocus={this.handleFocus}
           placeholder="Enter email"
           ref={this.input}
-          type="email"
+          type={formatMessage({ id: 'common.members-form.email' })}
           value={inputValue}
         />
         <button
@@ -91,7 +97,7 @@ class MembersForm extends PureComponent {
           onClick={this.handleAddNew}
           type="button"
         >
-          Add
+          <FormattedMessage id="common.members-form.add" />
           {pending && (
             <Preloader
               size={PreloaderSize.SMALL}
@@ -106,9 +112,10 @@ class MembersForm extends PureComponent {
 
 MembersForm.propTypes = {
   disabled: PropTypes.bool,
+  intl: IntlPropType.isRequired,
   pending: PropTypes.bool.isRequired,
 
   onAddNew: PropTypes.func.isRequired
 };
 
-export default MembersForm;
+export default injectIntl(MembersForm);

@@ -189,6 +189,7 @@ const deleteCohortById = (req, resp) => {
     .then(lists => {
       if (lists) {
         const listsIds = lists.map(lists => lists._id);
+
         return Comment.deleteMany({ listId: { $in: listsIds } });
       }
     })
@@ -283,12 +284,10 @@ const removeOwnerRole = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { name, ownerIds } = doc;
+      const { ownerIds } = doc;
 
       if (ownerIds.length < 2) {
-        throw new BadRequestException(
-          `You can not remove the owner role from yourself because you are the only owner in the "${name}" cohort.`
-        );
+        throw new BadRequestException('cohort.actions.remove-owner-fail-1');
       }
 
       ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
@@ -320,7 +319,7 @@ const addMember = (req, resp) => {
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
       .status(401)
-      .send({ message: 'Adding members is disabled in demo mode.' });
+      .send({ message: 'cohort.actions.add-member-demo-msg' });
   }
 
   if (!email) {
@@ -331,12 +330,11 @@ const addMember = (req, resp) => {
     .exec()
     .then(cohort => {
       if (!cohort) {
-        throw new BadRequestException(
-          "You don't have permission to add new member."
-        );
+        throw new BadRequestException();
       }
 
       currentCohort = cohort;
+
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {
@@ -345,13 +343,17 @@ const addMember = (req, resp) => {
       }
 
       if (user.idFromProvider === DEMO_MODE_ID) {
-        throw new BadRequestException(`There is no user of email: ${email}`);
+        throw new BadRequestException(
+          'cohort.actions.add-member-no-user-of-email'
+        );
       }
 
       const { _id, avatarUrl, displayName } = user;
 
       if (checkIfCohortMember(currentCohort, _id)) {
-        throw new BadRequestException('User is already a member.');
+        throw new BadRequestException(
+          'cohort.actions.add-member-already-member'
+        );
       }
 
       currentCohort.memberIds.push(_id);

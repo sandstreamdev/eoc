@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
 import { CohortIcon } from 'assets/images/icons';
 import { updateCohort } from '../model/actions';
@@ -54,6 +55,7 @@ class CohortHeader extends PureComponent {
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
+
       return;
     }
 
@@ -125,6 +127,7 @@ class CohortHeader extends PureComponent {
 
     if (_trim(previousName) === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
+
       return;
     }
 
@@ -157,6 +160,7 @@ class CohortHeader extends PureComponent {
 
     if (_trim(previousDescription) === descriptionToUpdate) {
       this.setState({ isDescriptionTextareaVisible: false });
+
       return;
     }
 
@@ -229,7 +233,7 @@ class CohortHeader extends PureComponent {
             onClick={this.showDescriptionTextarea}
             type="button"
           >
-            Add description
+            <FormattedMessage id="cohort.cohort-header.add-description" />
           </button>
         )}
       </Fragment>

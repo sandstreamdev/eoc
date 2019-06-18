@@ -2,6 +2,8 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import {
   getCohortActiveLists,
@@ -15,7 +17,7 @@ import {
 } from 'modules/list/model/actions';
 import { ListIcon } from 'assets/images/icons';
 import { getCohortDetails, getMembers } from './model/selectors';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import { archiveCohort, fetchCohortDetails } from './model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
@@ -121,6 +123,7 @@ class Cohort extends PureComponent {
 
   checkIfArchived = () => {
     const { cohortDetails } = this.props;
+
     return cohortDetails && cohortDetails.isArchived;
   };
 
@@ -170,6 +173,7 @@ class Cohort extends PureComponent {
     const {
       archivedLists,
       cohortDetails,
+      intl: { formatMessage },
       lists,
       match: {
         params: { id: cohortId }
@@ -200,11 +204,14 @@ class Cohort extends PureComponent {
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleCohortArchivization()}
             pending={pendingForCohortArchivization}
-            title={
-              pendingForCohortArchivization
-                ? `"${name}" cohort archivization...`
-                : `Do you really want to archive the "${name}" cohort?`
-            }
+            title={formatMessage(
+              {
+                id: pendingForCohortArchivization
+                  ? 'cohort.index.archivization'
+                  : 'cohort.index.archive'
+              },
+              { name }
+            )}
           />
         )}
         {dialogContext === DialogContext.CREATE && (
@@ -212,7 +219,11 @@ class Cohort extends PureComponent {
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleListCreation}
             pending={pendingForListCreation}
-            title={`${pendingForListCreation ? 'Adding' : 'Add'} new sack`}
+            title={formatMessage({
+              id: pendingForListCreation
+                ? 'cohort.index.adding-sack'
+                : 'cohort.index.add-sack'
+            })}
             onSelect={this.handleListType}
           />
         )}
@@ -237,7 +248,12 @@ class Cohort extends PureComponent {
                   items={lists}
                   name="Sacks"
                   onAddNew={this.handleDialogContext(DialogContext.CREATE)}
-                  placeholder={`There are no sacks in the ${name} cohort!`}
+                  placeholder={formatMessage(
+                    {
+                      id: 'cohort.index.no-sacks'
+                    },
+                    { name }
+                  )}
                   route={Routes.LIST}
                   viewType={viewType}
                 />
@@ -247,7 +263,10 @@ class Cohort extends PureComponent {
                     onClick={this.handleDialogContext(DialogContext.ARCHIVE)}
                     type="button"
                   >
-                    {`Archive the "${name}" cohort`}
+                    <FormattedMessage
+                      id="cohort.index.archive-button"
+                      values={{ name }}
+                    />
                   </button>
                 )}
                 <div>
@@ -257,9 +276,13 @@ class Cohort extends PureComponent {
                     onClick={this.handleArchivedListsVisibility(cohortId)}
                     type="button"
                   >
-                    {`${
-                      areArchivedListsVisible ? 'hide' : 'show'
-                    } archived sacks`}
+                    <FormattedMessage
+                      id={
+                        areArchivedListsVisible
+                          ? 'cohort.index.hide-archived'
+                          : 'cohort.index.show-archived'
+                      }
+                    />
                   </button>
                   {areArchivedListsVisible && (
                     <CollectionView
@@ -268,7 +291,10 @@ class Cohort extends PureComponent {
                       items={archivedLists}
                       name="Archived Sacks"
                       pending={pendingForArchivedLists}
-                      placeholder={`There are no archived sacks in the ${name} cohort!`}
+                      placeholder={formatMessage(
+                        { id: 'cohort.index.no-archived-sacks' },
+                        { name }
+                      )}
                       route={Routes.LIST}
                       viewType={viewType}
                     />
@@ -292,6 +318,7 @@ Cohort.propTypes = {
     name: PropTypes.string
   }),
   createList: PropTypes.func.isRequired,
+  intl: IntlPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
@@ -310,6 +337,7 @@ const mapStateToProps = (state, ownProps) => {
       params: { id }
     }
   } = ownProps;
+
   return {
     archivedLists: getCohortArchivedLists(state, id),
     cohortDetails: getCohortDetails(state, id),
@@ -318,7 +346,9 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default withRouter(
+export default _flowRight(
+  injectIntl,
+  withRouter,
   connect(
     mapStateToProps,
     {
@@ -329,5 +359,5 @@ export default withRouter(
       fetchListsMetaData,
       removeArchivedListsMetaData
     }
-  )(Cohort)
-);
+  )
+)(Cohort);

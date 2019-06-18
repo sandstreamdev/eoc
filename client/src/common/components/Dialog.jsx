@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import Preloader from 'common/components/Preloader';
@@ -26,7 +27,7 @@ const Dialog = ({ children, onCancel, onConfirm, pending, title }) => (
             onClick={onConfirm}
             type="button"
           >
-            Confirm
+            <FormattedMessage id="common.button.confirm" />
           </button>
           <button
             className="dialog__button primary-button"
@@ -34,7 +35,7 @@ const Dialog = ({ children, onCancel, onConfirm, pending, title }) => (
             onClick={onCancel}
             type="button"
           >
-            Cancel
+            <FormattedMessage id="common.button.cancel" />
           </button>
         </div>
         {pending && <Preloader />}

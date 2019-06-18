@@ -17,3 +17,6 @@ export const UserPropType = PropTypes.shape({
 export const MessagePropType = PropTypes.oneOf(_values(MessageType));
 export const SortOrderPropType = PropTypes.oneOf(_values(SortOrderType));
 export const StatusPropType = PropTypes.oneOf(_values(StatusType));
+export const IntlPropType = PropTypes.objectOf(
+  PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object])
+);

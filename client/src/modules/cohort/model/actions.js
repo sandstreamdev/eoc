@@ -142,11 +142,10 @@ export const createCohort = data => dispatch =>
     .then(json => dispatch(createCohortSuccess(json)))
     .catch(err => {
       dispatch(createCohortFailure(err.message));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to create new cohort: "${data.name}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.create-fail',
+        data: data.name
+      });
     });
 
 export const fetchCohortsMetaData = () => dispatch =>
@@ -158,11 +157,9 @@ export const fetchCohortsMetaData = () => dispatch =>
     })
     .catch(err => {
       dispatch(fetchCohortsMetaDataFailure(err.message));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        'Failed to fetch cohorts data. Please try again.'
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.fetch-fail'
+      });
     });
 
 export const fetchArchivedCohortsMetaData = () => dispatch =>
@@ -174,50 +171,44 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
     })
     .catch(err => {
       dispatch(fetchArchivedCohortsMetaDataFailure(err.message));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        'Failed to fetch archived cohorts data. Please try again.'
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.fetch-arch-fail'
+      });
     });
 
 export const updateCohort = (cohortName, cohortId, data) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, data)
     .then(() => {
       dispatch(updateCohortSuccess({ ...data, cohortId }));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Cohort: "${cohortName}" successfully updated.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'cohort.actions.update-cohort',
+        data: cohortName
+      });
     })
     .catch(err => {
       dispatch(updateCohortFailure(err));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to update: "${cohortName}" cohort. Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.update-cohort-fail',
+        data: cohortName
+      });
     });
 
 export const deleteCohort = (cohortId, cohortName) => dispatch =>
   deleteData(`/api/cohorts/${cohortId}/delete`)
     .then(() => {
       dispatch(deleteCohortSuccess(cohortId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Successfully deleted cohort: "${cohortName}".`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'cohort.actions.delete-cohort',
+        data: cohortName
+      });
       history.replace('/cohorts');
     })
     .catch(err => {
       dispatch(deleteCohortFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to delete cohort: "${cohortName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.delete-cohort-fail',
+        data: cohortName
+      });
       throw err;
     });
 
@@ -227,20 +218,18 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
   })
     .then(() => {
       dispatch(archiveCohortSuccess(cohortId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Cohort: "${cohortName}" was successfully archived!`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'cohort.actions.archive-cohort',
+        data: cohortName
+      });
       history.replace('/cohorts');
     })
     .catch(() => {
       dispatch(archiveCohortFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to archive cohort: "${cohortName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.archive-cohort-fail',
+        data: cohortName
+      });
     });
 
 export const restoreCohort = (cohortId, cohortName) => dispatch =>
@@ -251,19 +240,17 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       dispatch(restoreCohortSuccess(json, cohortId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `Cohort: "${cohortName}" was successfully restored.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'cohort.actions.restore-cohort',
+        data: cohortName
+      });
     })
     .catch(() => {
       dispatch(restoreCohortFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to restore cohort: "${cohortName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.restore-cohort-fail',
+        data: cohortName
+      });
     });
 
 export const fetchCohortDetails = cohortId => dispatch =>
@@ -272,11 +259,9 @@ export const fetchCohortDetails = cohortId => dispatch =>
     .then(json => dispatch(fetchCohortDetailsSuccess(json, cohortId)))
     .catch(err => {
       dispatch(fetchCohortDetailsFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        'Failed to fetch cohort data. Please try again.'
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.fetch-details-fail'
+      });
       throw err;
     });
 
@@ -296,11 +281,10 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     })
     .catch(err => {
       dispatch(addMemberFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message || `Failed to add: "${email}" as member. Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: err.message || 'cohort.actions.add-member-default',
+        data: email
+      });
     });
 
 export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
@@ -309,19 +293,17 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
   })
     .then(() => {
       dispatch(removeMemberSuccess(cohortId, userId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `"${userName}" successfully removed.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'cohort.actions.remove-member',
+        data: userName
+      });
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(removeMemberFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to remove "${userName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.remove-member-fail',
+        data: userName
+      });
     });
 
 export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
@@ -330,19 +312,17 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
   })
     .then(() => {
       dispatch(addOwnerRoleSuccess(cohortId, userId));
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `"${userName}" has owner role.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'common.owner-role',
+        data: userName
+      });
     })
     .catch(() => {
       dispatch(addOwnerRoleFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        `Failed to set: "${userName}" as owner. Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'cohort.actions.set-owner-fail',
+        data: userName
+      });
     });
 
 export const removeOwnerRole = (
@@ -358,18 +338,15 @@ export const removeOwnerRole = (
       dispatch(
         removeOwnerRoleSuccess(cohortId, userId, isCurrentUserRoleChanging)
       );
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        `"${userName}" has no owner role.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'common.no-owner-role',
+        data: userName
+      });
     })
     .catch(err => {
       dispatch(removeOwnerRoleFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        err.message ||
-          `Failed to remove owner role from: "${userName}". Please try again.`
-      );
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: err.message || 'cohort.actions.remove-owner-fail',
+        data: userName
+      });
     });
