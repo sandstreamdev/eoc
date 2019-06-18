@@ -24,7 +24,6 @@ import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
 import { addItemWS } from './components/Items/model/actions';
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
-import { FULL_URL } from 'common/constants/variables';
 
 class List extends Component {
   constructor(props) {
@@ -84,7 +83,7 @@ class List extends Component {
       list: { _id: listId }
     } = this.props;
 
-    this.socket = io(FULL_URL);
+    this.socket = io();
     this.socket.on('connect', () =>
       this.socket.emit('listRoom', `list-${listId}`)
     );
