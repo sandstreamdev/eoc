@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import io from 'socket.io-client';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
@@ -30,6 +31,7 @@ class InputBar extends Component {
     };
 
     this.input = React.createRef();
+    this.socket = undefined;
   }
 
   componentDidUpdate() {
@@ -41,6 +43,10 @@ class InputBar extends Component {
 
     if (isTipVisible) {
       this.hideTipAfterTimeout();
+    }
+
+    if (!this.socket) {
+      this.socket = io();
     }
   }
 
@@ -95,8 +101,9 @@ class InputBar extends Component {
 
     if (_trim(itemName)) {
       this.setState({ pending: true });
+      const { socket } = this;
 
-      return addItem(newItem, id).finally(() => {
+      return addItem(newItem, id, socket).finally(() => {
         this.setState({ itemName: '', pending: false });
         this.hideForm();
       });

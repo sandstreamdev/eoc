@@ -14,7 +14,7 @@ const addItemFailure = errorMessage => ({
   payload: errorMessage
 });
 
-const addItemSuccess = (item, listId) => ({
+export const addItemSuccess = (item, listId) => ({
   type: ItemActionTypes.ADD_SUCCESS,
   payload: { item, listId }
 });
@@ -126,17 +126,27 @@ export const removeArchivedItems = listId => ({
   payload: { listId }
 });
 
-export const addItem = (item, listId) => dispatch =>
+export const addItem = (item, listId, socket) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
-    .then(json => dispatch(addItemSuccess(json, listId)))
-    .catch(() => {
+    .then(json => {
+      const data = {
+        item: json,
+        listId
+      };
+      socket.emit(ItemActionTypes.ADD_SUCCESS, data);
+      dispatch(addItemSuccess(json, listId));
+    })
+    .catch(err => {
       dispatch(addItemFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.add-item-fail',
         data: item.name
       });
     });
+
+export const addItemWS = (item, listId) => dispatch =>
+  dispatch(addItemSuccess(item, listId));
 
 export const toggle = (
   itemName,

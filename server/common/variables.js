@@ -11,11 +11,16 @@ const ActivityType = Object.freeze({
   ITEM_DELETE: 'activity.item.delete'
 });
 
+const ItemActionTypes = Object.freeze({
+  ADD_SUCCESS: 'item/ADD_SUCCESS'
+});
+
 module.exports = {
   ActivityType,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,
+  ItemActionTypes,
   ListType,
   PROJECT_NAME
 };

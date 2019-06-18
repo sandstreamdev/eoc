@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import io from 'socket.io-client';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
@@ -23,15 +24,23 @@ import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
+import { addItemWS } from './components/Items/model/actions';
+import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 
 class List extends Component {
-  state = {
-    breadcrumbs: [],
-    dialogContext: null,
-    isMembersBoxVisible: false,
-    pendingForDetails: false,
-    pendingForListArchivization: false
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      breadcrumbs: [],
+      dialogContext: null,
+      isMembersBoxVisible: false,
+      pendingForDetails: false,
+      pendingForListArchivization: false
+    };
+
+    this.socket = undefined;
+  }
 
   componentDidMount() {
     this.setState({ pendingForDetails: true });
@@ -39,8 +48,54 @@ class List extends Component {
     this.fetchData().finally(() => {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
+      this.handleSocketListening();
     });
   }
+
+  componentDidUpdate(prevProps) {
+    const {
+      match: {
+        params: { id: prevListId }
+      }
+    } = prevProps;
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    if (prevListId !== listId) {
+      this.socket.emit('leavingRoom', prevListId);
+    }
+  }
+
+  componentWillUnmount() {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    this.socket.emit('leavingRoom', listId);
+  }
+
+  handleSocketListening = () => {
+    const {
+      addItemWS,
+      list: { _id: listId }
+    } = this.props;
+
+    this.socket = io();
+    this.socket.on('connect', () =>
+      this.socket.emit('joinRoom', `list-${listId}`)
+    );
+
+    this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
+      const { item, listId } = data;
+
+      addItemWS(item, listId);
+    });
+  };
 
   handleBreadcrumbs = () => {
     const {
@@ -235,6 +290,7 @@ List.propTypes = {
   members: PropTypes.objectOf(PropTypes.object),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
+  addItemWS: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired
 };
@@ -260,6 +316,7 @@ export default _flowRight(
   connect(
     mapStateToProps,
     {
+      addItemWS,
       archiveList,
       fetchListData
     }
