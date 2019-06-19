@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
-const { addItemToListWS } = require('./list');
+const { addItemToListWS, archiveItemWs } = require('./list');
 
 const socketListenTo = server => {
   const ioInstance = io(server);
@@ -43,6 +43,7 @@ const socketListenTo = server => {
     });
 
     addItemToListWS(socket);
+    archiveItemWs(socket);
   });
 };
 

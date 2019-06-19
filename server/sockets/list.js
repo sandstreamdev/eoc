@@ -11,6 +11,15 @@ const addItemToListWS = socket => {
   });
 };
 
+const archiveItemWs = socket => {
+  socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
+    socket.broadcast
+      .in(`list-${data.listId}`)
+      .emit(ItemActionTypes.ARCHIVE_SUCCESS, data);
+  });
+};
+
 module.exports = {
-  addItemToListWS
+  addItemToListWS,
+  archiveItemWs
 };

@@ -24,7 +24,7 @@ import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
-import { addItemWS } from './components/Items/model/actions';
+import { addItemWS, archiveItemWS } from './components/Items/model/actions';
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 
 class List extends Component {
@@ -82,6 +82,7 @@ class List extends Component {
   handleSocketListening = () => {
     const {
       addItemWS,
+      archiveItemWS,
       list: { _id: listId }
     } = this.props;
 
@@ -94,6 +95,12 @@ class List extends Component {
       const { item, listId } = data;
 
       addItemWS(item, listId);
+    });
+
+    this.socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
+      const { itemId, listId } = data;
+
+      archiveItemWS(listId, itemId);
     });
   };
 
@@ -291,6 +298,7 @@ List.propTypes = {
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   addItemWS: PropTypes.func.isRequired,
+  archiveItemWS: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired
 };
@@ -317,6 +325,7 @@ export default _flowRight(
     mapStateToProps,
     {
       addItemWS,
+      archiveItemWS,
       archiveList,
       fetchListData
     }

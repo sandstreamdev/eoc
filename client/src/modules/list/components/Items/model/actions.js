@@ -272,7 +272,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
       });
     });
 
-export const archiveItem = (listId, itemId, name) => dispatch =>
+export const archiveItem = (listId, itemId, name, socket) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: true,
     itemId
@@ -283,6 +283,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.archive-item',
         data: name
       });
+      socket.emit(ItemActionTypes.ARCHIVE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(archiveItemFailure());
@@ -291,6 +292,9 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
         data: name
       });
     });
+
+export const archiveItemWS = (listId, itemId) => dispatch =>
+  dispatch(archiveItemSuccess(listId, itemId));
 
 export const fetchArchivedItems = (listId, listName) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)

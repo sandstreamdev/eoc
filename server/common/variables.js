@@ -12,7 +12,8 @@ const ActivityType = Object.freeze({
 });
 
 const ItemActionTypes = Object.freeze({
-  ADD_SUCCESS: 'item/ADD_SUCCESS'
+  ADD_SUCCESS: 'item/ADD_SUCCESS',
+  ARCHIVE_SUCCESS: 'item/ARCHIVE_SUCCESS'
 });
 
 module.exports = {

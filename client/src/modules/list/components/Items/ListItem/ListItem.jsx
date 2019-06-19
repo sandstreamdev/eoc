@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import io from 'socket.io-client';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
 import {
@@ -41,6 +42,14 @@ class ListItem extends PureComponent {
       isNameEdited: false,
       isConfirmationVisible: false
     };
+
+    this.socket = undefined;
+  }
+
+  componentDidMount() {
+    if (!this.socket) {
+      this.socket = io();
+    }
   }
 
   handleItemToggling = () => {
@@ -118,8 +127,9 @@ class ListItem extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
+    const { socket } = this;
 
-    return archiveItem(listId, itemId, name);
+    return archiveItem(listId, itemId, name, socket);
   };
 
   renderVoting = () => {
