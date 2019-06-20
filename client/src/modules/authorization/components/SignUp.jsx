@@ -3,10 +3,12 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _find from 'lodash/find';
+import validator from 'validator';
 
-import UsernameInput from './UsernameInput';
-import EmailInput from './EmailInput';
-import PasswordInput from './PasswordInput';
+// import UsernameInput from './UsernameInput';
+// import EmailInput from './EmailInput';
+// import PasswordInput from './PasswordInput';
+import SignUpInput from './SignUpInput';
 import { signUp } from 'modules/authorization/model/actions';
 
 class SignUp extends PureComponent {
@@ -53,6 +55,54 @@ class SignUp extends PureComponent {
       { passwordConfirm, isPasswordConfirmValid: isValid },
       this.comparePasswords
     );
+  };
+
+  nameValidator = value => {
+    const emptyInfoId = 'authorization.input.username.empty';
+    const errorInfoId = 'authorization.input.username.invalid';
+    const { isEmpty, isLength } = validator;
+
+    if (isEmpty(value)) {
+      return emptyInfoId;
+    }
+
+    if (!isLength(value, { min: 1, max: 32 })) {
+      return errorInfoId;
+    }
+
+    return '';
+  };
+
+  emailValidator = value => {
+    const emptyInfoId = 'authorization.input.email.empty';
+    const errorInfoId = 'authorization.input.email.invalid';
+    const { isEmpty, isEmail } = validator;
+
+    if (isEmpty(value)) {
+      return emptyInfoId;
+    }
+
+    if (!isEmail(value)) {
+      return errorInfoId;
+    }
+
+    return '';
+  };
+
+  passwordValidator = value => {
+    const emptyInfoId = 'authorization.input.password.empty';
+    const errorInfoId = 'authorization.input.password.invalid';
+    const { isEmpty, isLength } = validator;
+
+    if (isEmpty(value)) {
+      return emptyInfoId;
+    }
+
+    if (!isLength(value, { min: 4 })) {
+      return errorInfoId;
+    }
+
+    return '';
   };
 
   comparePasswords = () => {
@@ -144,26 +194,46 @@ class SignUp extends PureComponent {
           <FormattedMessage id="authorization.create-account" />
         </h1>
         <form autoComplete="off" className="Sign-Up__form" noValidate>
-          <UsernameInput
+          <SignUpInput
             disabled={pending}
             externalErrorId={nameError}
+            focus
+            labelId="authorization.input.username.label"
+            name="name"
             onChange={this.onNameChange}
+            successInfoId="authorization.input.username.valid"
+            type="text"
+            validator={this.nameValidator}
           />
-          <EmailInput
+          <SignUpInput
             disabled={pending}
             externalErrorId={emailError}
+            labelId="authorization.input.email.label"
+            name="email"
             onChange={this.onEmailChange}
+            successInfoId="authorization.input.email.valid"
+            type="text"
+            validator={this.emailValidator}
           />
-          <PasswordInput
+          <SignUpInput
             disabled={pending}
             externalErrorId={passwordError}
+            labelId="authorization.input.password.label"
+            name="password"
             onChange={this.onPasswordChange}
+            successInfoId="authorization.input.password.valid"
+            type="password"
+            validator={this.passwordValidator}
           />
-          <PasswordInput
+          <SignUpInput
             disabled={pending}
             externalErrorId={passwordError}
-            id="confirm"
+            labelId="authorization.input.password.confirm"
+            name="confirm"
             onChange={this.onPasswordConfirmChange}
+            successInfoId="authorization.input.password.valid"
+            type="password"
+            validator={this.passwordValidator}
           />
           <div className="Sign-Up__buttons">
             <button

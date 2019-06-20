@@ -86,6 +86,7 @@
   "authorization.input.password.label": "Password",
   "authorization.input.password.confirm": "Confirm password",
   "authorization.input.password.valid": "Password is OK.",
+  "authorization.input.password.invalid": "Please use min 4 chars.",
   "authorization.input.password.not-same": "Passwords are not the same.",
   "authorization.input.password.empty": "Please enter password.",
   "cohort.cohort-header.add-description": "Add description",
