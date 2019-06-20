@@ -272,7 +272,7 @@ const getListData = (req, resp) => {
       const isGuest = !checkIfArrayContainsUserId(cohortMembers, userId);
       const isMember = checkIfArrayContainsUserId(memberIds, userId);
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
-      const items = responseWithItems(userId, activeItems);
+      const items = responseWithItems(userId, activeItems, _id);
 
       return resp.send({
         _id,

@@ -19,7 +19,18 @@ const archiveItemWs = socket => {
   });
 };
 
+const updateItemState = socket => {
+  socket.on('item-busy', data => {
+    const { listId } = data;
+
+    console.log('item is busy');
+    console.log(data);
+    socket.broadcast.to(`list-${listId}`).emit('item-busy', data);
+  });
+};
+
 module.exports = {
   addItemToListWS,
-  archiveItemWs
+  archiveItemWs,
+  updateItemState
 };

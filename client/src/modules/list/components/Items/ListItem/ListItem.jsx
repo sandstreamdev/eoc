@@ -27,6 +27,7 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
+import { thisTypeAnnotation, thisExpression } from '@babel/types';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -38,6 +39,7 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
+      busy: false,
       done: isOrdered,
       isNameEdited: false,
       isConfirmationVisible: false
@@ -47,10 +49,52 @@ class ListItem extends PureComponent {
   }
 
   componentDidMount() {
+    this.handleSocketConnection();
+  }
+
+  componentDidUpdate() {
+    const { busy } = this.state;
+    const {
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    if (busy) {
+      this.socket.emit('item-busy', { itemId, listId });
+
+      console.log('emitting to a server message that this item is busy');
+    }
+  }
+
+  handleSocketConnection = () => {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
     if (!this.socket) {
       this.socket = io();
     }
-  }
+
+    this.socket = io();
+    this.socket.on('connect', () =>
+      this.socket.emit('joinRoom', `list-${listId}`)
+    );
+
+    this.socket.on('item-busy', data => {
+      const { itemId, listId } = data;
+
+      this.setState({ busy: true });
+      console.log('this item is busy');
+
+      // Here i should setState({someoneIsEditing: true})
+      // and in every method I should check whetever someone
+      // is editing and block any actions
+    });
+  };
 
   handleItemToggling = () => {
     const {
@@ -68,15 +112,23 @@ class ListItem extends PureComponent {
       return;
     }
 
-    this.setState(({ done }) => ({ done: !done, disableToggleButton: true }));
+    this.setState(({ done }) => ({
+      done: !done,
+      disableToggleButton: true,
+      busy: true
+    }));
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
-      return toggle(itemName, isOrdered, _id, listId, userId, name);
+      return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
+        () => this.setState({ busy: false })
+      );
     }
 
-    toggle(itemName, isOrdered, _id, listId);
+    toggle(itemName, isOrdered, _id, listId).finally(() =>
+      this.setState({ busy: false })
+    );
   };
 
   handleDetailsVisibility = () =>
@@ -94,8 +146,12 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
+    this.setState({ busy: true });
+
     if (isMember) {
-      return cloneItem(name, listId, itemId);
+      return cloneItem(name, listId, itemId).finally(() =>
+        this.setState({ busy: false })
+      );
     }
   };
 
@@ -111,7 +167,11 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    return action(_id, listId, name);
+    this.setState({ busy: true });
+
+    return action(_id, listId, name).finally(() =>
+      this.setState({ busy: false })
+    );
   };
 
   handleConfirmationVisibility = () =>
@@ -156,9 +216,17 @@ class ListItem extends PureComponent {
 
   preventDefault = event => event.preventDefault();
 
-  handleNameFocus = () => this.setState({ isNameEdited: true });
+  handleNameFocus = () => this.setState({ isNameEdited: true, busy: true });
 
-  handleNameBlur = () => this.setState({ isNameEdited: false });
+  handleNameBlur = () => this.setState({ isNameEdited: false, busy: false });
+
+  handleDescriptionFocus = () => this.setState({ busy: true });
+
+  handleDescriptionBlur = () => this.setState({ busy: false });
+
+  handleCommentsBlur = () => this.setState({ busy: false });
+
+  handleCommentsFocus = () => this.setState({ busy: true });
 
   renderConfirmation = () => {
     const {
@@ -253,6 +321,8 @@ class ListItem extends PureComponent {
             disabled={isFieldDisabled}
             itemId={itemId}
             name={name}
+            onBlur={this.handleDescriptionBlur}
+            onFocus={this.handleDescriptionFocus}
           />
         </div>
       );
@@ -275,6 +345,8 @@ class ListItem extends PureComponent {
             isFormAccessible={isMember && !isOrdered}
             itemId={itemId}
             itemName={name}
+            onBlur={this.handleCommentsBlur}
+            onFocus={this.handleCommentsFocus}
           />
         </div>
       </Fragment>
