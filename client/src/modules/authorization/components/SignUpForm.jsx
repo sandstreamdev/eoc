@@ -7,8 +7,16 @@ import validator from 'validator';
 
 import SignUpInput from './SignUpInput';
 import { signUp } from 'modules/authorization/model/actions';
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { makeAbortablePromise } from 'common/utils/helpers';
+import Preloader, {
+  PreloaderSize,
+  PreloaderTheme
+} from 'common/components/Preloader';
 
 class SignUpForm extends PureComponent {
+  pendingPromise = null;
+
   constructor(props) {
     super(props);
 
@@ -30,6 +38,12 @@ class SignUpForm extends PureComponent {
 
   componentDidUpdate() {
     this.isFormValid();
+  }
+
+  componentWillUnmount() {
+    if (this.pendingPromise) {
+      this.pendingPromise.abort();
+    }
   }
 
   onNameChange = (name, isValid) => {
@@ -164,17 +178,24 @@ class SignUpForm extends PureComponent {
 
     this.setState({ pending: true });
 
-    signUp(email, name, password, passwordConfirm)
-      .then(() => this.setState({ confirmationSend: true }))
+    this.pendingPromise = makeAbortablePromise(
+      signUp(email, name, password, passwordConfirm)
+    );
+    this.pendingPromise.promise
+      .then(() => this.setState({ confirmationSend: true, pending: false }))
       .catch(err => {
-        const { status } = err.response;
+        if (!(err instanceof AbortPromiseException)) {
+          const { status } = err.response;
+          const newState = { pending: false };
 
-        if (status === 406) {
-          const { errors } = err.response;
-          this.setState({ errors });
+          if (status === 406) {
+            const { errors } = err.response;
+            newState.errors = errors;
+          }
+
+          this.setState(newState);
         }
-      })
-      .finally(() => this.setState({ pending: false }));
+      });
   };
 
   renderSignUpForm = () => {
@@ -242,12 +263,18 @@ class SignUpForm extends PureComponent {
               <FormattedMessage id="common.button.cancel" />
             </button>
             <button
-              className="primary-button"
+              className="primary-button Sign-Up-Form__confirm"
               type="button"
               disabled={pending || !isFormValid}
               onClick={this.handleSignUp}
             >
               <FormattedMessage id="authorization.sign-up" />
+              {pending && (
+                <Preloader
+                  size={PreloaderSize.SMALL}
+                  theme={PreloaderTheme.DARK}
+                />
+              )}
             </button>
           </div>
         </form>

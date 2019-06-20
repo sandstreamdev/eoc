@@ -26,4 +26,8 @@
     color: $text-normal;
     line-height: 1.5;
   }
+
+  &__confirm {
+    position: relative;
+  }
 }
