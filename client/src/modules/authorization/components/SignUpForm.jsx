@@ -5,13 +5,10 @@ import { connect } from 'react-redux';
 import _find from 'lodash/find';
 import validator from 'validator';
 
-// import UsernameInput from './UsernameInput';
-// import EmailInput from './EmailInput';
-// import PasswordInput from './PasswordInput';
 import SignUpInput from './SignUpInput';
 import { signUp } from 'modules/authorization/model/actions';
 
-class SignUp extends PureComponent {
+class SignUpForm extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -190,10 +187,10 @@ class SignUp extends PureComponent {
 
     return (
       <Fragment>
-        <h1 className="Sign-Up__heading">
+        <h1 className="Sign-Up-Form__heading">
           <FormattedMessage id="authorization.create-account" />
         </h1>
-        <form autoComplete="off" className="Sign-Up__form" noValidate>
+        <form autoComplete="off" className="Sign-Up-Form__form" noValidate>
           <SignUpInput
             disabled={pending}
             externalErrorId={nameError}
@@ -235,7 +232,7 @@ class SignUp extends PureComponent {
             type="password"
             validator={this.passwordValidator}
           />
-          <div className="Sign-Up__buttons">
+          <div className="Sign-Up-Form__buttons">
             <button
               className="primary-button"
               type="button"
@@ -262,7 +259,7 @@ class SignUp extends PureComponent {
     const { email } = this.state;
 
     return (
-      <p className="Sign-Up__confirmation">
+      <p className="Sign-Up-Form__confirmation">
         <FormattedMessage
           email={email}
           id="authorization.sign-up.confirmation-link-sent"
@@ -284,7 +281,7 @@ class SignUp extends PureComponent {
   }
 }
 
-SignUp.propTypes = {
+SignUpForm.propTypes = {
   onCancel: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired
 };
@@ -292,4 +289,4 @@ SignUp.propTypes = {
 export default connect(
   null,
   { signUp }
-)(SignUp);
+)(SignUpForm);

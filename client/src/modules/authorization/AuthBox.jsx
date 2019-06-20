@@ -15,7 +15,7 @@ import Preloader, {
   PreloaderTheme
 } from 'common/components/Preloader';
 import GoogleButtonImg from 'assets/images/google-btn.png';
-import SignUp from './components/SignUp';
+import SignUpForm from './components/SignUpForm';
 
 class AuthBox extends PureComponent {
   state = {
@@ -142,7 +142,7 @@ class AuthBox extends PureComponent {
               <AppLogo />
             </div>
             {isSignUpFormVisible ? (
-              <SignUp onCancel={this.handleSignUpFormVisibility} />
+              <SignUpForm onCancel={this.handleSignUpFormVisibility} />
             ) : (
               <Fragment>
                 {this.renderGoogleSignInButton()}
