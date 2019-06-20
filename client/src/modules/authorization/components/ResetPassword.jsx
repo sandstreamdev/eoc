@@ -21,7 +21,8 @@ class ResetPassword extends PureComponent {
     return validator.isEmail(email);
   };
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault();
     const isEmailCorrect = this.handleEmailValidation();
 
     if (isEmailCorrect) {
@@ -34,7 +35,7 @@ class ResetPassword extends PureComponent {
 
   handleTipVisibility = () => {
     this.setState({ tipVisible: true });
-    setTimeout(() => this.setState({ tipVisible: false }), 3000);
+    setTimeout(() => this.setState({ tipVisible: false }), 6000);
   };
 
   render() {
