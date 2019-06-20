@@ -21,18 +21,6 @@ class PasswordInput extends PureComponent {
     this.debouncedPasswordChange = _debounce(this.handlePasswordChange, 500);
   }
 
-  componentDidMount() {
-    const { externalErrorId } = this.props;
-    this.setState({ errorMessageId: externalErrorId });
-  }
-
-  componentDidUpdate(prevProps) {
-    const { externalErrorId: prevExternalErrorId } = prevProps;
-    const { externalErrorId } = this.props;
-
-    this.checkExternalError(prevExternalErrorId, externalErrorId);
-  }
-
   componentWillUnmount() {
     this.debouncedPasswordChange.cancel();
   }
@@ -43,15 +31,17 @@ class PasswordInput extends PureComponent {
     const { isEmpty } = validator;
     let errorMessageId = '';
 
-    if (!wasEdited) {
-      this.setState({ wasEdited: true });
-    }
-
     if (isEmpty(value)) {
       errorMessageId = 'authorization.input.password.empty';
     }
 
-    this.setState({ errorMessageId });
+    const newState = { errorMessageId };
+
+    if (!wasEdited) {
+      newState.wasEdited = true;
+    }
+
+    this.setState(newState);
     onChange(value, !errorMessageId);
   };
 
@@ -61,22 +51,17 @@ class PasswordInput extends PureComponent {
     this.setState({ value }, this.debouncedPasswordChange);
   };
 
-  checkExternalError = (prevExternalErrorId, externalErrorId) => {
-    if (!prevExternalErrorId && externalErrorId) {
-      this.setState({ errorMessageId: externalErrorId });
-    }
-  };
-
   renderFeedback = () => {
     const { errorMessageId } = this.state;
     const {
+      externalErrorId,
       intl: { formatMessage }
     } = this.props;
-    const isValid = !errorMessageId;
+    const isValid = !externalErrorId && !errorMessageId;
 
     const feedbackMessageId = isValid
       ? 'authorization.input.password.valid'
-      : errorMessageId;
+      : externalErrorId || errorMessageId;
 
     return (
       <Fragment>
@@ -96,28 +81,30 @@ class PasswordInput extends PureComponent {
   render() {
     const {
       disabled,
+      externalErrorId,
+      id,
       intl: { formatMessage },
       label
     } = this.props;
-    const { errorMessageId, value, wasEdited } = this.state;
+    const { value, wasEdited } = this.state;
 
     return (
       <Fragment>
-        <label htmlFor="password">
+        <label htmlFor={id || 'password'}>
           {formatMessage({
             id: label || 'authorization.input.password.label'
           })}
         </label>
         <input
-          id="password"
+          id={id || 'password'}
           className="form__input primary-input"
           disabled={disabled}
-          name="password"
+          name={id || 'password'}
           onChange={this.handleInputChange}
           type="password"
           value={value}
         />
-        {(errorMessageId || wasEdited) && this.renderFeedback()}
+        {(externalErrorId || wasEdited) && this.renderFeedback()}
       </Fragment>
     );
   }
@@ -126,6 +113,7 @@ class PasswordInput extends PureComponent {
 PasswordInput.propTypes = {
   disabled: PropTypes.bool,
   externalErrorId: PropTypes.string,
+  id: PropTypes.string,
   label: PropTypes.string,
   intl: IntlPropType.isRequired,
   onChange: PropTypes.func.isRequired

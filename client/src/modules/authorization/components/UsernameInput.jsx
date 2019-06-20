@@ -23,16 +23,7 @@ class UsernameInput extends PureComponent {
   }
 
   componentDidMount() {
-    const { externalErrorId } = this.props;
-    this.setState({ errorMessageId: externalErrorId });
     this.nameInput.current.focus();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { externalErrorId: prevExternalErrorId } = prevProps;
-    const { externalErrorId } = this.props;
-
-    this.checkExternalError(prevExternalErrorId, externalErrorId);
   }
 
   componentWillUnmount() {
@@ -45,17 +36,19 @@ class UsernameInput extends PureComponent {
     const { isEmpty, isLength } = validator;
     let errorMessageId = '';
 
-    if (!wasEdited) {
-      this.setState({ wasEdited: true });
-    }
-
     if (isEmpty(value)) {
       errorMessageId = 'authorization.input.username.empty';
     } else if (!isLength(value, { min: 3, max: 32 })) {
       errorMessageId = 'authorization.input.username.invalid';
     }
 
-    this.setState({ errorMessageId });
+    const newState = { errorMessageId };
+
+    if (!wasEdited) {
+      newState.wasEdited = true;
+    }
+
+    this.setState(newState);
     onChange(value, !errorMessageId);
   };
 
@@ -65,22 +58,17 @@ class UsernameInput extends PureComponent {
     this.setState({ value }, this.debouncedNameChange);
   };
 
-  checkExternalError = (prevExternalErrorId, externalErrorId) => {
-    if (!prevExternalErrorId && externalErrorId) {
-      this.setState({ errorMessageId: externalErrorId });
-    }
-  };
-
   renderFeedback = () => {
     const { errorMessageId } = this.state;
     const {
+      externalErrorId,
       intl: { formatMessage }
     } = this.props;
-    const isValid = !errorMessageId;
+    const isValid = !externalErrorId && !errorMessageId;
 
     const feedbackMessageId = isValid
       ? 'authorization.input.username.valid'
-      : errorMessageId;
+      : externalErrorId || errorMessageId;
 
     return (
       <Fragment>
@@ -100,9 +88,10 @@ class UsernameInput extends PureComponent {
   render() {
     const {
       disabled,
+      externalErrorId,
       intl: { formatMessage }
     } = this.props;
-    const { errorMessageId, value, wasEdited } = this.state;
+    const { value, wasEdited } = this.state;
 
     return (
       <Fragment>
@@ -121,7 +110,7 @@ class UsernameInput extends PureComponent {
           type="text"
           value={value}
         />
-        {(errorMessageId || wasEdited) && this.renderFeedback()}
+        {(externalErrorId || wasEdited) && this.renderFeedback()}
       </Fragment>
     );
   }

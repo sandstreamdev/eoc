@@ -31,17 +31,19 @@ class EmailInput extends PureComponent {
     const { isEmpty, isEmail } = validator;
     let errorMessageId = '';
 
-    if (!wasEdited) {
-      this.setState({ wasEdited: true });
-    }
-
     if (isEmpty(value)) {
       errorMessageId = 'authorization.input.email.empty';
     } else if (!isEmail(value)) {
       errorMessageId = 'authorization.input.email.invalid';
     }
 
-    this.setState({ errorMessageId });
+    const newState = { errorMessageId };
+
+    if (!wasEdited) {
+      newState.wasEdited = true;
+    }
+
+    this.setState(newState);
     onChange(value, !errorMessageId);
   };
 
@@ -81,6 +83,7 @@ class EmailInput extends PureComponent {
   render() {
     const {
       disabled,
+      externalErrorId,
       intl: { formatMessage }
     } = this.props;
     const { value, wasEdited } = this.state;
@@ -101,7 +104,7 @@ class EmailInput extends PureComponent {
           type="email"
           value={value}
         />
-        {wasEdited && this.renderFeedback()}
+        {(externalErrorId || wasEdited) && this.renderFeedback()}
       </Fragment>
     );
   }

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -13,8 +13,9 @@ class SignUp extends PureComponent {
     super(props);
 
     this.state = {
+      confirmationSend: false,
       email: '',
-      errors: { nameError: 'authorization.input.username.invalid' },
+      errors: {},
       isEmailValid: false,
       isFormValid: false,
       isNameValid: false,
@@ -54,16 +55,32 @@ class SignUp extends PureComponent {
   };
 
   comparePasswords = () => {
-    const { errors, password, passwordConfirm } = this.state;
+    const {
+      errors,
+      errors: { passwordError },
+      password,
+      passwordConfirm
+    } = this.state;
+    let newError;
+
+    if (passwordError && password === passwordConfirm) {
+      newError = '';
+    }
+
     if (
+      !passwordError &&
       password !== '' &&
       passwordConfirm !== '' &&
       password !== passwordConfirm
     ) {
+      newError = 'authorization.input.password.not-same';
+    }
+
+    if (newError !== undefined) {
       this.setState({
         errors: {
           ...errors,
-          passwordError: 'authorization.input.password.invalid'
+          passwordError: newError
         }
       });
     }
@@ -96,18 +113,19 @@ class SignUp extends PureComponent {
     this.setState({ pending: true });
 
     signUp(email, name, password, passwordConfirm)
+      .then(() => this.setState({ confirmationSend: true }))
       .catch(err => {
         const { status } = err.response;
 
         if (status === 406) {
-          const { errors } = this.state;
+          const { errors } = err.response;
           this.setState({ errors });
         }
       })
       .finally(() => this.setState({ pending: false }));
   };
 
-  render() {
+  renderSignUpForm = () => {
     const {
       errors: { nameError, emailError, passwordError },
       isFormValid,
@@ -115,7 +133,7 @@ class SignUp extends PureComponent {
     } = this.state;
 
     return (
-      <div>
+      <Fragment>
         <h1>
           <FormattedMessage id="authorization.sign-up" />
         </h1>
@@ -138,7 +156,7 @@ class SignUp extends PureComponent {
           <PasswordInput
             disabled={pending}
             externalErrorId={passwordError}
-            label="authorization.input.password.confirm"
+            id="confirm"
             onChange={this.onPasswordConfirmChange}
           />
           <button
@@ -150,6 +168,22 @@ class SignUp extends PureComponent {
             <FormattedMessage id="authorization.sign-up" />
           </button>
         </form>
+      </Fragment>
+    );
+  };
+
+  renderConfirmationMessage = () => {
+    <p>send</p>;
+  };
+
+  render() {
+    const { confirmationSend } = this.state;
+
+    return (
+      <div>
+        {confirmationSend
+          ? this.renderConfirmationMessage()
+          : this.renderSignUpForm()}
       </div>
     );
   }
