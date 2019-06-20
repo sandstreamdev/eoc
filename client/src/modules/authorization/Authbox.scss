@@ -77,13 +77,19 @@
   }
 
   &__footer {
-    font-size: 12px;
+    margin-top: 16px;
+    font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
   }
 
   &__link {
+    color: $link-color;
     text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &__button-wrapper {
