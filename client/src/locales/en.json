@@ -40,6 +40,8 @@
   "common.member-details.role-owner": "owner",
   "common.member-details.role-viewer": "viewer",
   "common.member-details.role-guest": "(Guest)",
+  "common.member-details.leave-box-heading": "Do you really want to leave?",
+  "common.member-details.leave": "Leave {data}",
   "common.members-form.email": "email",
   "common.members-form.add": "add",
   "common.page-404.heading": "Oops!",

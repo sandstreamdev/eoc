@@ -397,21 +397,21 @@ class MemberDetails extends PureComponent {
         <div className="member-details__leave-box">
           {isLeaveConfirmationVisible ? (
             <div className="member-details__leave-box-confirmation">
-              Do you really want to leave?
+              <FormattedMessage id="common.member-details.leave-box-heading" />
               <footer className="member-details__leave-box-confirmation-footer">
                 <PendingButton
                   className="primary-button"
                   onClick={this.handleCohortLeave}
                   pending={pendingForLeaving}
                 >
-                  Confirm
+                  <FormattedMessage id="common.button.confirm" />
                 </PendingButton>
                 <button
                   className="primary-button"
                   onClick={onClose}
                   type="button"
                 >
-                  cancel
+                  <FormattedMessage id="common.button.cancel" />
                 </button>
               </footer>
             </div>
@@ -425,8 +425,10 @@ class MemberDetails extends PureComponent {
               }
               type="button"
             >
-              Leave
-              {route === Routes.LIST ? ' list' : ' cohort'}
+              <FormattedMessage
+                id="common.member-details.leave"
+                values={{ data: route === Routes.LIST ? 'list' : 'cohort' }}
+              />
             </button>
           )}
         </div>
