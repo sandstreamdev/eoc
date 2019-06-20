@@ -21,10 +21,10 @@
     height: 50%;
     padding: 20px;
     background: url('../../assets/images/auth-intro.jpg') center;
-    background-size: auto 100%;
     position: relative;
 
     @include breakpoint($large) {
+      background-size: auto 100%;
       width: 50%;
       height: auto;
     }

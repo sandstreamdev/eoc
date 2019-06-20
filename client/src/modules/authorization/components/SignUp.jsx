@@ -2,6 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _find from 'lodash/find';
 
 import UsernameInput from './UsernameInput';
 import EmailInput from './EmailInput';
@@ -15,7 +16,7 @@ class SignUp extends PureComponent {
     this.state = {
       confirmationSend: false,
       email: '',
-      errors: {},
+      errors: { nameError: '', emailError: '', passwordError: '' },
       isEmailValid: false,
       isFormValid: false,
       isNameValid: false,
@@ -95,11 +96,14 @@ class SignUp extends PureComponent {
       isPasswordValid
     } = this.state;
 
+    const isError = _find(errors, error => error !== '');
+
     if (
       isNameValid &&
       isEmailValid &&
       isPasswordValid &&
-      isPasswordConfirmValid
+      isPasswordConfirmValid &&
+      !isError
     ) {
       return this.setState({ isFormValid: true });
     }
