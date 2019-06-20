@@ -19,7 +19,7 @@
   }
 
   &__input {
-    max-width: 250px;
+    min-width: 250px;
     &--valid,
     &--valid:focus {
       border-color: $success;
@@ -41,10 +41,10 @@
 
   &__feedback-icon {
     display: block;
-    margin-right: 8px;
-    width: 16px;
+    padding-right: 8px;
     &--valid {
       svg {
+        width: 14px;
         path {
           fill: $success;
         }
@@ -52,6 +52,7 @@
     }
     &--invalid {
       svg {
+        width: 12px;
         path {
           fill: $danger;
         }

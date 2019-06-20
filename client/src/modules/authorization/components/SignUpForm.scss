@@ -15,15 +15,15 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 16px;
+
+    .primary-button {
+      text-transform: capitalize;
+    }
   }
 
   &__confirmation {
     margin-top: 16px;
     color: $text-normal;
     line-height: 1.5;
-  }
-
-  .primary-button {
-    text-transform: capitalize;
   }
 }

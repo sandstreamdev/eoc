@@ -12,6 +12,7 @@
   flex-direction: column;
 
   @include breakpoint($large) {
+    width: 55%;
     flex-direction: row;
   }
 
