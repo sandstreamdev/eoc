@@ -63,3 +63,6 @@ export const loginDemoUser = () => dispatch =>
         notificationId: 'authorization.actions.login-failed'
       });
     });
+
+export const signUp = (email, name, password, passwordConfirm) => dispatch =>
+  postData('auth/sign-up', { email, name, password, passwordConfirm });

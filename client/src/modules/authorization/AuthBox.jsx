@@ -15,6 +15,7 @@ import Preloader, {
   PreloaderTheme
 } from 'common/components/Preloader';
 import GoogleButtonImg from 'assets/images/google-btn.png';
+import SignUp from './components/SignUp';
 
 class AuthBox extends PureComponent {
   state = {
@@ -97,6 +98,7 @@ class AuthBox extends PureComponent {
                 </PendingButton>
               </div>
             </div>
+            <SignUp />
             <footer className="authbox__footer">
               <a
                 className="authbox__link"
