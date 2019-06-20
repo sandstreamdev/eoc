@@ -131,11 +131,12 @@ class SignUp extends PureComponent {
       isFormValid,
       pending
     } = this.state;
+    const { onCancel } = this.props;
 
     return (
       <Fragment>
         <h1>
-          <FormattedMessage id="authorization.sign-up" />
+          <FormattedMessage id="authorization.create-account" />
         </h1>
         <form autoComplete="off" noValidate>
           <UsernameInput
@@ -162,6 +163,14 @@ class SignUp extends PureComponent {
           <button
             className="primary-button"
             type="button"
+            disabled={pending}
+            onClick={onCancel}
+          >
+            <FormattedMessage id="common.button.cancel" />
+          </button>
+          <button
+            className="primary-button"
+            type="button"
             disabled={pending || !isFormValid}
             onClick={this.handleSignUp}
           >
@@ -173,7 +182,16 @@ class SignUp extends PureComponent {
   };
 
   renderConfirmationMessage = () => {
-    <p>send</p>;
+    const { email } = this.state;
+
+    return (
+      <p>
+        <FormattedMessage
+          email={email}
+          id="authorization.sign-up.confirmation-link-sent"
+        />
+      </p>
+    );
   };
 
   render() {
@@ -190,6 +208,7 @@ class SignUp extends PureComponent {
 }
 
 SignUp.propTypes = {
+  onCancel: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired
 };
 

@@ -20,6 +20,7 @@ import SignUp from './components/SignUp';
 class AuthBox extends PureComponent {
   state = {
     isCookieSet: true,
+    isSignUpFormVisible: false,
     pending: false
   };
 
@@ -38,8 +39,14 @@ class AuthBox extends PureComponent {
 
   handleLogin = () => this.setState({ pending: true });
 
+  handleSignUpFormVisibility = () => {
+    this.setState(({ isSignUpFormVisible }) => ({
+      isSignUpFormVisible: !isSignUpFormVisible
+    }));
+  };
+
   render() {
-    const { isCookieSet, pending } = this.state;
+    const { isCookieSet, isSignUpFormVisible, pending } = this.state;
 
     return (
       <Fragment>
@@ -56,49 +63,70 @@ class AuthBox extends PureComponent {
             <div className="authbox__intro">
               <AppLogo />
             </div>
-            <div className="authbox__buttons">
-              <h1 className="authbox__sign-in">
-                <FormattedMessage id="authorization.auth-box.sign-in" />
-              </h1>
-              <div className="authbox__button-wrapper">
-                <a
-                  className={classNames('google-button', {
-                    'disabled-google-button': !isCookieSet || pending
-                  })}
-                  href="/auth/google"
-                  onClick={this.handleLogin}
-                  tabIndex={!isCookieSet ? '-1' : '1'}
-                >
-                  <img
-                    alt="Sign in with Google"
-                    className="google-button__img"
-                    src={GoogleButtonImg}
-                  />
-                </a>
-                {pending && (
-                  <Preloader
-                    size={PreloaderSize.SMALL}
-                    theme={PreloaderTheme.GOOGLE}
-                  />
-                )}
-              </div>
-            </div>
-            <div className="authbox__demo">
-              <h1 className="authbox__sign-in">
-                <FormattedMessage id="authorization.auth-box.cta" />
-              </h1>
-              <div className="authbox__button-wrapper">
-                <PendingButton
-                  className="primary-button authbox__demo-button"
-                  disable={!isCookieSet || pending}
-                  onClick={this.handleLaunchingDemo}
-                  preloaderTheme={PreloaderTheme.LIGHT}
-                >
-                  <FormattedMessage id="authorization.auth-box.demo-button" />
-                </PendingButton>
-              </div>
-            </div>
-            <SignUp />
+            {isSignUpFormVisible ? (
+              <SignUp onCancel={this.handleSignUpFormVisibility} />
+            ) : (
+              <Fragment>
+                <div className="authbox__buttons">
+                  <h1 className="authbox__sign-in">
+                    <FormattedMessage id="authorization.auth-box.sign-in" />
+                  </h1>
+                  <div className="authbox__button-wrapper">
+                    <a
+                      className={classNames('google-button', {
+                        'disabled-google-button': !isCookieSet || pending
+                      })}
+                      href="/auth/google"
+                      onClick={this.handleLogin}
+                      tabIndex={!isCookieSet ? '-1' : '1'}
+                    >
+                      <img
+                        alt="Sign in with Google"
+                        className="google-button__img"
+                        src={GoogleButtonImg}
+                      />
+                    </a>
+                    {pending && (
+                      <Preloader
+                        size={PreloaderSize.SMALL}
+                        theme={PreloaderTheme.GOOGLE}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="authbox__sign-up">
+                  <h1 className="authbox__sign-in">
+                    <FormattedMessage id="authorization.auth-box.sign-up" />
+                  </h1>
+                  <div className="authbox__button-wrapper">
+                    <button
+                      className="primary-button authbox__sign-up-button"
+                      disabled={!isCookieSet || pending}
+                      onClick={this.handleSignUpFormVisibility}
+                      type="button"
+                    >
+                      <FormattedMessage id="authorization.create-account" />
+                    </button>
+                  </div>
+                </div>
+                <div className="authbox__demo">
+                  <h1 className="authbox__sign-in">
+                    <FormattedMessage id="authorization.auth-box.cta" />
+                  </h1>
+                  <div className="authbox__button-wrapper">
+                    <PendingButton
+                      className="primary-button authbox__demo-button"
+                      disable={!isCookieSet || pending}
+                      onClick={this.handleLaunchingDemo}
+                      preloaderTheme={PreloaderTheme.LIGHT}
+                    >
+                      <FormattedMessage id="authorization.auth-box.demo-button" />
+                    </PendingButton>
+                  </div>
+                </div>
+              </Fragment>
+            )}
+
             <footer className="authbox__footer">
               <a
                 className="authbox__link"
