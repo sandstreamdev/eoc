@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import validator from 'validator';
+import { FormattedMessage } from 'react-intl';
 
 class ResetPassword extends PureComponent {
   state = {
@@ -43,10 +44,12 @@ class ResetPassword extends PureComponent {
 
     return (
       <form className="reset-password" onSubmit={this.handleSubmit}>
-        <h2 className="reset-password__heading">Reset your password</h2>
+        <h2 className="reset-password__heading">
+          <FormattedMessage id="authorization.reset-password.heading" />
+        </h2>
         <div className="reset-password__body">
           <label className="reset-password__email-label">
-            Enter email
+            <FormattedMessage id="authorization.reset-password.email-label" />
             <input
               className="reset-password__email-input primary-input"
               onChange={this.handleInputChange}
@@ -56,7 +59,7 @@ class ResetPassword extends PureComponent {
           </label>
           {tipVisible && (
             <span className="reset-password__message-error">
-              Please enter correct email.
+              <FormattedMessage id="authorization.reset-password.tip-content" />
             </span>
           )}
           <button
@@ -65,7 +68,7 @@ class ResetPassword extends PureComponent {
             type="submit"
             value="Reset password"
           >
-            Reset password
+            <FormattedMessage id="authorization.reset-password.button-content" />
           </button>
         </div>
       </form>
