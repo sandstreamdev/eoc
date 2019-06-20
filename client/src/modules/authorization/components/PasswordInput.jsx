@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import _debounce from 'lodash/debounce';
+import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import { CheckIcon, ErrorIcon } from 'assets/images/icons';
@@ -29,9 +30,10 @@ class PasswordInput extends PureComponent {
     const { value, wasEdited } = this.state;
     const { onChange } = this.props;
     const { isEmpty } = validator;
+    const trimmedValue = _trim(value);
     let errorMessageId = '';
 
-    if (isEmpty(value)) {
+    if (isEmpty(trimmedValue)) {
       errorMessageId = 'authorization.input.password.empty';
     }
 
@@ -42,7 +44,7 @@ class PasswordInput extends PureComponent {
     }
 
     this.setState(newState);
-    onChange(value, !errorMessageId);
+    onChange(trimmedValue, !errorMessageId);
   };
 
   handleInputChange = event => {

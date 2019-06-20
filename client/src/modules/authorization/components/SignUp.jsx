@@ -88,10 +88,11 @@ class SignUp extends PureComponent {
 
   isFormValid = () => {
     const {
-      isNameValid,
+      errors,
       isEmailValid,
-      isPasswordValid,
-      isPasswordConfirmValid
+      isNameValid,
+      isPasswordConfirmValid,
+      isPasswordValid
     } = this.state;
 
     if (

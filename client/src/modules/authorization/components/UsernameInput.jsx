@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import _debounce from 'lodash/debounce';
+import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import { CheckIcon, ErrorIcon } from 'assets/images/icons';
@@ -34,11 +35,12 @@ class UsernameInput extends PureComponent {
     const { value, wasEdited } = this.state;
     const { onChange } = this.props;
     const { isEmpty, isLength } = validator;
+    const trimmedValue = _trim(value);
     let errorMessageId = '';
 
-    if (isEmpty(value)) {
+    if (isEmpty(trimmedValue)) {
       errorMessageId = 'authorization.input.username.empty';
-    } else if (!isLength(value, { min: 1, max: 32 })) {
+    } else if (!isLength(trimmedValue, { min: 1, max: 32 })) {
       errorMessageId = 'authorization.input.username.invalid';
     }
 
@@ -49,7 +51,7 @@ class UsernameInput extends PureComponent {
     }
 
     this.setState(newState);
-    onChange(value, !errorMessageId);
+    onChange(trimmedValue, !errorMessageId);
   };
 
   handleInputChange = event => {
