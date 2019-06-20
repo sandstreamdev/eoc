@@ -63,11 +63,13 @@
     justify-content: center;
 
     .app-logo {
-      margin-bottom: 6px;
+      @include breakpoint($large) {
+        margin-bottom: 8px;
+      }
     }
   }
 
-  &__sign-in {
+  &__button-header {
     font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
@@ -92,18 +94,18 @@
     max-width: 166px;
   }
 
-  &__demo {
+  &__button-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 16px;
 
     @include breakpoint($large) {
-      margin-top: 0px;
+      margin-top: 8px;
     }
   }
 
-  &__demo-button {
+  &__button {
     width: 100%;
     width: 166px;
     font-weight: 400;

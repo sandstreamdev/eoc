@@ -67,8 +67,8 @@ class AuthBox extends PureComponent {
               <SignUp onCancel={this.handleSignUpFormVisibility} />
             ) : (
               <Fragment>
-                <div className="authbox__buttons">
-                  <h1 className="authbox__sign-in">
+                <div className="authbox__button-container">
+                  <h1 className="authbox__button-header">
                     <FormattedMessage id="authorization.auth-box.sign-in" />
                   </h1>
                   <div className="authbox__button-wrapper">
@@ -94,13 +94,13 @@ class AuthBox extends PureComponent {
                     )}
                   </div>
                 </div>
-                <div className="authbox__sign-up">
-                  <h1 className="authbox__sign-in">
+                <div className="authbox__button-container">
+                  <h1 className="authbox__button-header">
                     <FormattedMessage id="authorization.auth-box.sign-up" />
                   </h1>
                   <div className="authbox__button-wrapper">
                     <button
-                      className="primary-button authbox__sign-up-button"
+                      className="primary-button authbox__button"
                       disabled={!isCookieSet || pending}
                       onClick={this.handleSignUpFormVisibility}
                       type="button"
@@ -109,13 +109,13 @@ class AuthBox extends PureComponent {
                     </button>
                   </div>
                 </div>
-                <div className="authbox__demo">
-                  <h1 className="authbox__sign-in">
+                <div className="authbox__button-container">
+                  <h1 className="authbox__button-header">
                     <FormattedMessage id="authorization.auth-box.cta" />
                   </h1>
                   <div className="authbox__button-wrapper">
                     <PendingButton
-                      className="primary-button authbox__demo-button"
+                      className="primary-button authbox__button"
                       disable={!isCookieSet || pending}
                       onClick={this.handleLaunchingDemo}
                       preloaderTheme={PreloaderTheme.LIGHT}
