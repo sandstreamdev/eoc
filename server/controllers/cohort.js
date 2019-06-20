@@ -488,15 +488,69 @@ const addMember = (req, resp) => {
     });
 };
 
+const leaveCohort = (req, resp) => {
+  const { id: cohortId } = req.params;
+  const { userId } = req.body;
+  const sanitizedUserId = sanitize(userId);
+  const sanitizedCohortId = sanitize(cohortId);
+  // const {
+  //   user: { _id: currentUserId }
+  // } = req;
+
+  Cohort.findOne({
+    _id: sanitizedCohortId,
+    memberIds: { $in: [sanitizedUserId] }
+  })
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new BadRequestException();
+      }
+
+      const { memberIds, ownerIds } = doc;
+      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
+      const isMember = checkIfArrayContainsUserId(memberIds, userId);
+
+      if (ownerIds.length < 2) {
+        throw new BadRequestException(
+          'cohort.actions.leave-cohort-only-one-owner'
+        );
+      }
+
+      if (isOwner) {
+        ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
+      }
+
+      if (isMember) {
+        memberIds.splice(doc.memberIds.indexOf(userId), 1);
+      }
+
+      return doc.save();
+    })
+    .then(() => {
+      resp.send();
+    })
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { message } = err;
+
+        return resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
 module.exports = {
   addMember,
   addOwnerRole,
-  removeOwnerRole,
   createCohort,
   deleteCohortById,
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
+  leaveCohort,
   removeMember,
+  removeOwnerRole,
   updateCohortById
 };
