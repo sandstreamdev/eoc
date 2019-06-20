@@ -493,9 +493,6 @@ const leaveCohort = (req, resp) => {
   const { userId } = req.body;
   const sanitizedUserId = sanitize(userId);
   const sanitizedCohortId = sanitize(cohortId);
-  // const {
-  //   user: { _id: currentUserId }
-  // } = req;
 
   Cohort.findOne({
     _id: sanitizedCohortId,
