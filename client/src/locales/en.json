@@ -74,7 +74,7 @@
   "authorization.auth-box.sign-up": "Sign up to app:",
   "authorization.create-account": "Create account",
   "authorization.sign-up": "Sign up",
-  "authorization.sign-up.confirmation-link-sent": "In order to complete process please click the link that we have just sent to {email}.",
+  "authorization.sign-up.confirmation-link-sent": "In order to complete sign up process please click the link that we have just sent to {email}.",
   "authorization.input.username.label": "Name",
   "authorization.input.username.valid": "Name is OK.",
   "authorization.input.username.invalid": "Please use max 32 chars.",

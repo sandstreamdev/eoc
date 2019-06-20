@@ -20,7 +20,7 @@ import SignUp from './components/SignUp';
 class AuthBox extends PureComponent {
   state = {
     isCookieSet: true,
-    isSignUpFormVisible: false,
+    isSignUpFormVisible: true,
     pending: false
   };
 

@@ -135,10 +135,10 @@ class SignUp extends PureComponent {
 
     return (
       <Fragment>
-        <h1>
+        <h1 className="Sign-Up__heading">
           <FormattedMessage id="authorization.create-account" />
         </h1>
-        <form autoComplete="off" noValidate>
+        <form autoComplete="off" className="Sign-Up__form" noValidate>
           <UsernameInput
             disabled={pending}
             externalErrorId={nameError}
@@ -160,22 +160,24 @@ class SignUp extends PureComponent {
             id="confirm"
             onChange={this.onPasswordConfirmChange}
           />
-          <button
-            className="primary-button"
-            type="button"
-            disabled={pending}
-            onClick={onCancel}
-          >
-            <FormattedMessage id="common.button.cancel" />
-          </button>
-          <button
-            className="primary-button"
-            type="button"
-            disabled={pending || !isFormValid}
-            onClick={this.handleSignUp}
-          >
-            <FormattedMessage id="authorization.sign-up" />
-          </button>
+          <div className="Sign-Up__buttons">
+            <button
+              className="primary-button"
+              type="button"
+              disabled={pending}
+              onClick={onCancel}
+            >
+              <FormattedMessage id="common.button.cancel" />
+            </button>
+            <button
+              className="primary-button"
+              type="button"
+              disabled={pending || !isFormValid}
+              onClick={this.handleSignUp}
+            >
+              <FormattedMessage id="authorization.sign-up" />
+            </button>
+          </div>
         </form>
       </Fragment>
     );
@@ -185,7 +187,7 @@ class SignUp extends PureComponent {
     const { email } = this.state;
 
     return (
-      <p>
+      <p className="Sign-Up__confirmation">
         <FormattedMessage
           email={email}
           id="authorization.sign-up.confirmation-link-sent"
@@ -198,7 +200,7 @@ class SignUp extends PureComponent {
     const { confirmationSend } = this.state;
 
     return (
-      <div>
+      <div className="Sign-Up">
         {confirmationSend
           ? this.renderConfirmationMessage()
           : this.renderSignUpForm()}

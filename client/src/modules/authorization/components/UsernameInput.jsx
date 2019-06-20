@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import validator from 'validator';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -38,7 +38,7 @@ class UsernameInput extends PureComponent {
 
     if (isEmpty(value)) {
       errorMessageId = 'authorization.input.username.empty';
-    } else if (!isLength(value, { min: 3, max: 32 })) {
+    } else if (!isLength(value, { min: 1, max: 32 })) {
       errorMessageId = 'authorization.input.username.invalid';
     }
 
@@ -71,17 +71,24 @@ class UsernameInput extends PureComponent {
       : externalErrorId || errorMessageId;
 
     return (
-      <Fragment>
-        <span>{isValid ? <CheckIcon /> : <ErrorIcon />}</span>
+      <p className="Sign-Up__feedback">
         <span
-          className={classNames({
-            'username__feedback--valid': isValid,
-            'username__feedback--invalid': !isValid
+          className={classNames('Sign-Up__feedback-icon', {
+            'Sign-Up__feedback-icon--valid': isValid,
+            'Sign-Up__feedback-icon--invalid': !isValid
+          })}
+        >
+          {isValid ? <CheckIcon /> : <ErrorIcon />}
+        </span>
+        <span
+          className={classNames('Sign-Up__feedback-info', {
+            'Sign-Up__feedback-info--valid': isValid,
+            'Sign-Up__feedback-info--invalid': !isValid
           })}
         >
           {formatMessage({ id: feedbackMessageId })}
         </span>
-      </Fragment>
+      </p>
     );
   };
 
@@ -91,18 +98,28 @@ class UsernameInput extends PureComponent {
       externalErrorId,
       intl: { formatMessage }
     } = this.props;
-    const { value, wasEdited } = this.state;
+    const { errorMessageId, value, wasEdited } = this.state;
+    const isValid = !externalErrorId && !errorMessageId;
 
     return (
-      <Fragment>
-        <label htmlFor="username">
+      <div className="Sign-Up__input-box">
+        <label
+          className={classNames('Sign-Up__label', {
+            'Sign-Up__label--valid': wasEdited && isValid,
+            'Sign-Up__label--invalid': wasEdited && !isValid
+          })}
+          htmlFor="username"
+        >
           {formatMessage({
             id: 'authorization.input.username.label'
           })}
         </label>
         <input
           id="username"
-          className="form__input primary-input"
+          className={classNames('primary-input Sign-Up__input', {
+            'Sign-Up__input--valid': wasEdited && isValid,
+            'Sign-Up__input--invalid': wasEdited && !isValid
+          })}
           disabled={disabled}
           name="name"
           onChange={this.handleInputChange}
@@ -111,7 +128,7 @@ class UsernameInput extends PureComponent {
           value={value}
         />
         {(externalErrorId || wasEdited) && this.renderFeedback()}
-      </Fragment>
+      </div>
     );
   }
 }

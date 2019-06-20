@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import validator from 'validator';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -64,17 +64,24 @@ class PasswordInput extends PureComponent {
       : externalErrorId || errorMessageId;
 
     return (
-      <Fragment>
-        <span>{isValid ? <CheckIcon /> : <ErrorIcon />}</span>
+      <p className="Sign-Up__feedback">
         <span
-          className={classNames({
-            'password__feedback--valid': isValid,
-            'password__feedback--invalid': !isValid
+          className={classNames('Sign-Up__feedback-icon', {
+            'Sign-Up__feedback-icon--valid': isValid,
+            'Sign-Up__feedback-icon--invalid': !isValid
+          })}
+        >
+          {isValid ? <CheckIcon /> : <ErrorIcon />}
+        </span>
+        <span
+          className={classNames('Sign-Up__feedback-info', {
+            'Sign-Up__feedback-info--valid': isValid,
+            'Sign-Up__feedback-info--invalid': !isValid
           })}
         >
           {formatMessage({ id: feedbackMessageId })}
         </span>
-      </Fragment>
+      </p>
     );
   };
 
@@ -86,18 +93,28 @@ class PasswordInput extends PureComponent {
       intl: { formatMessage },
       label
     } = this.props;
-    const { value, wasEdited } = this.state;
+    const { errorMessageId, value, wasEdited } = this.state;
+    const isValid = !externalErrorId && !errorMessageId;
 
     return (
-      <Fragment>
-        <label htmlFor={id || 'password'}>
+      <div className="Sign-Up__input-box">
+        <label
+          className={classNames('Sign-Up__label', {
+            'Sign-Up__label--valid': wasEdited && isValid,
+            'Sign-Up__label--invalid': wasEdited && !isValid
+          })}
+          htmlFor={id || 'password'}
+        >
           {formatMessage({
             id: label || 'authorization.input.password.label'
           })}
         </label>
         <input
           id={id || 'password'}
-          className="form__input primary-input"
+          className={classNames('primary-input Sign-Up__input', {
+            'Sign-Up__input--valid': wasEdited && isValid,
+            'Sign-Up__input--invalid': wasEdited && !isValid
+          })}
           disabled={disabled}
           name={id || 'password'}
           onChange={this.handleInputChange}
@@ -105,7 +122,7 @@ class PasswordInput extends PureComponent {
           value={value}
         />
         {(externalErrorId || wasEdited) && this.renderFeedback()}
-      </Fragment>
+      </div>
     );
   }
 }

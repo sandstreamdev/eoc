@@ -17,9 +17,11 @@
 
   &__left {
     width: auto;
+    box-sizing: border-box;
     height: 50%;
-    padding: 26px;
+    padding: 20px;
     background: url('../../assets/images/auth-intro.jpg') center;
+    background-size: auto 100%;
     position: relative;
 
     @include breakpoint($large) {
@@ -30,13 +32,15 @@
 
   &__right {
     width: auto;
-    padding: 26px;
+    box-sizing: border-box;
+    min-width: 240px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
     @include breakpoint($large) {
-      width: 50%;
+      min-width: 50%;
     }
   }
 
