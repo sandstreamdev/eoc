@@ -26,6 +26,7 @@ import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
 import Avatar from 'common/components/Avatar';
+import PendingButton from 'common/components/PendingButton';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -47,7 +48,8 @@ class MemberDetails extends PureComponent {
       isLeaveConfirmationVisible: false,
       isMemberInfoVisible: false,
       isOwnerInfoVisible: false,
-      pending: false
+      pending: false,
+      pendingForLeaving: false
     };
   }
 
@@ -203,7 +205,11 @@ class MemberDetails extends PureComponent {
       }
     } = this.props;
 
-    return leaveCohort(id, currentUserId, name);
+    this.setState({ pendingForLeaving: true });
+
+    return leaveCohort(id, currentUserId, name).finally(() => {
+      this.setState({ pendingForLeaving: false });
+    });
   };
 
   handleLeaveConfirmationVisibility = () =>
@@ -384,7 +390,7 @@ class MemberDetails extends PureComponent {
       onClose,
       route
     } = this.props;
-    const { isLeaveConfirmationVisible } = this.state;
+    const { isLeaveConfirmationVisible, pendingForLeaving } = this.state;
 
     if (userId === currentUserId) {
       return (
@@ -393,13 +399,13 @@ class MemberDetails extends PureComponent {
             <div className="member-details__leave-box-confirmation">
               Do you really want to leave?
               <footer className="member-details__leave-box-confirmation-footer">
-                <button
+                <PendingButton
                   className="primary-button"
                   onClick={this.handleCohortLeave}
-                  type="button"
+                  pending={pendingForLeaving}
                 >
                   Confirm
-                </button>
+                </PendingButton>
                 <button
                   className="primary-button"
                   onClick={onClose}
