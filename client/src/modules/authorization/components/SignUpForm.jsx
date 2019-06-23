@@ -23,7 +23,12 @@ class SignUpForm extends PureComponent {
     this.state = {
       confirmationSend: false,
       email: '',
-      errors: { nameError: '', emailError: '', passwordError: '' },
+      higherLevelErrors: {
+        emailError: '',
+        nameError: '',
+        passwordConfirmError: '',
+        passwordError: ''
+      },
       isEmailValid: false,
       isFormValid: false,
       isNameValid: false,
@@ -31,7 +36,7 @@ class SignUpForm extends PureComponent {
       isPasswordValid: false,
       name: '',
       password: '',
-      passwordConfirm: '',
+      passwordConfirm: undefined,
       pending: false
     };
   }
@@ -69,48 +74,34 @@ class SignUpForm extends PureComponent {
   };
 
   nameValidator = value => {
-    const emptyInfoId = 'authorization.input.username.empty';
-    const errorInfoId = 'authorization.input.username.invalid';
     const { isEmpty, isLength } = validator;
 
     if (isEmpty(value)) {
-      return emptyInfoId;
+      return 'authorization.input.username.empty';
     }
 
     if (!isLength(value, { min: 1, max: 32 })) {
-      return errorInfoId;
+      return 'authorization.input.username.invalid';
     }
 
     return '';
   };
 
   emailValidator = value => {
-    const emptyInfoId = 'authorization.input.email.empty';
-    const errorInfoId = 'authorization.input.email.invalid';
     const { isEmpty, isEmail } = validator;
 
-    if (isEmpty(value)) {
-      return emptyInfoId;
-    }
-
-    if (!isEmail(value)) {
-      return errorInfoId;
+    if (isEmpty(value) || !isEmail(value)) {
+      return 'authorization.input.email.invalid';
     }
 
     return '';
   };
 
   passwordValidator = value => {
-    const emptyInfoId = 'authorization.input.password.empty';
-    const errorInfoId = 'authorization.input.password.invalid';
-    const { isEmpty, isLength } = validator;
-
-    if (isEmpty(value)) {
-      return emptyInfoId;
-    }
+    const { isLength } = validator;
 
     if (!isLength(value, { min: 4 })) {
-      return errorInfoId;
+      return 'authorization.input.password.invalid';
     }
 
     return '';
@@ -118,31 +109,30 @@ class SignUpForm extends PureComponent {
 
   comparePasswords = () => {
     const {
-      errors,
-      errors: { passwordError },
+      higherLevelErrors,
+      higherLevelErrors: { passwordConfirmError },
       password,
       passwordConfirm
     } = this.state;
     let newError;
 
-    if (passwordError && password === passwordConfirm) {
+    if (passwordConfirmError && password === passwordConfirm) {
       newError = '';
     }
 
     if (
-      !passwordError &&
-      password !== '' &&
-      passwordConfirm !== '' &&
+      !passwordConfirmError &&
+      passwordConfirm !== undefined &&
       password !== passwordConfirm
     ) {
-      newError = 'authorization.input.password.not-same';
+      newError = 'authorization.input.password.not-match';
     }
 
     if (newError !== undefined) {
       this.setState({
-        errors: {
-          ...errors,
-          passwordError: newError
+        higherLevelErrors: {
+          ...higherLevelErrors,
+          passwordConfirmError: newError
         }
       });
     }
@@ -150,14 +140,14 @@ class SignUpForm extends PureComponent {
 
   isFormValid = () => {
     const {
-      errors,
+      higherLevelErrors,
       isEmailValid,
       isNameValid,
       isPasswordConfirmValid,
       isPasswordValid
     } = this.state;
 
-    const isError = _find(errors, error => error !== '');
+    const isError = _find(higherLevelErrors, error => error !== '');
 
     if (
       isNameValid &&
@@ -190,7 +180,7 @@ class SignUpForm extends PureComponent {
 
           if (status === 406) {
             const { errors } = err.response;
-            newState.errors = errors;
+            newState.higherLevelErrors = errors;
           }
 
           this.setState(newState);
@@ -200,7 +190,12 @@ class SignUpForm extends PureComponent {
 
   renderSignUpForm = () => {
     const {
-      errors: { nameError, emailError, passwordError },
+      higherLevelErrors: {
+        nameError,
+        emailError,
+        passwordConfirmError,
+        passwordError
+      },
       isFormValid,
       pending
     } = this.state;
@@ -219,7 +214,6 @@ class SignUpForm extends PureComponent {
             labelId="authorization.input.username.label"
             name="name"
             onChange={this.onNameChange}
-            successInfoId="authorization.input.username.valid"
             type="text"
             validator={this.nameValidator}
           />
@@ -229,7 +223,6 @@ class SignUpForm extends PureComponent {
             labelId="authorization.input.email.label"
             name="email"
             onChange={this.onEmailChange}
-            successInfoId="authorization.input.email.valid"
             type="text"
             validator={this.emailValidator}
           />
@@ -239,19 +232,16 @@ class SignUpForm extends PureComponent {
             labelId="authorization.input.password.label"
             name="password"
             onChange={this.onPasswordChange}
-            successInfoId="authorization.input.password.valid"
             type="password"
             validator={this.passwordValidator}
           />
           <SignUpInput
             disabled={pending}
-            externalErrorId={passwordError}
+            externalErrorId={passwordConfirmError}
             labelId="authorization.input.password.confirm"
             name="confirm"
             onChange={this.onPasswordConfirmChange}
-            successInfoId="authorization.input.password.valid"
             type="password"
-            validator={this.passwordValidator}
           />
           <div className="Sign-Up-Form__buttons">
             <button

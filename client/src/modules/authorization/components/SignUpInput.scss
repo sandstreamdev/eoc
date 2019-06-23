@@ -5,10 +5,10 @@
   margin-bottom: 8px;
 
   &__label {
-    display: block;
     width: 100%;
     padding: 5px 0;
-    text-align: left;
+    display: flex;
+    justify-content: space-between;
 
     &--valid {
       color: $success;
@@ -39,9 +39,8 @@
     padding: 5px 0;
   }
 
-  &__feedback-icon {
+  &__icon {
     display: block;
-    padding-right: 8px;
     &--valid {
       svg {
         width: 14px;
@@ -51,6 +50,7 @@
       }
     }
     &--invalid {
+      padding-right: 8px;
       svg {
         width: 12px;
         path {

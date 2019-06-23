@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
+import _trimStart from 'lodash/trimStart';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import { CheckIcon, ErrorIcon } from 'assets/images/icons';
@@ -13,9 +14,10 @@ class SignUpInput extends PureComponent {
     super(props);
 
     this.state = {
-      value: '',
       errorMessageId: '',
-      wasEdited: false
+      invalidView: false,
+      validView: false,
+      value: ''
     };
 
     const { focus } = props;
@@ -32,96 +34,104 @@ class SignUpInput extends PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { errorMessageId } = this.state;
+    const { externalErrorId: prevExternalErrorId } = prevProps;
+    const { externalErrorId } = this.props;
+
+    if (prevExternalErrorId !== externalErrorId) {
+      this.setValidationView(errorMessageId);
+    }
+  }
+
   componentWillUnmount() {
     this.debouncedChange.cancel();
   }
 
+  setValidationView = errorMessageId => {
+    const { value } = this.state;
+    const { externalErrorId } = this.props;
+
+    const isValid = !externalErrorId && !errorMessageId;
+    const invalidView = !isValid;
+    const validView = isValid && value;
+    this.setState({ invalidView, validView });
+  };
+
   handleChange = () => {
-    const { value, wasEdited } = this.state;
+    const { value } = this.state;
     const { onChange, validator } = this.props;
+
     const trimmedValue = _trim(value);
-    const errorMessageId = validator(trimmedValue);
+    const errorMessageId = validator ? validator(trimmedValue) : '';
 
-    const newState = { errorMessageId };
+    this.setValidationView(errorMessageId);
 
-    if (!wasEdited) {
-      newState.wasEdited = true;
-    }
-
-    this.setState(newState);
+    this.setState({ errorMessageId });
     onChange(trimmedValue, !errorMessageId);
   };
 
   handleInputChange = event => {
     const { value } = event.target;
 
-    this.setState({ value }, this.debouncedChange);
+    this.setState({ value: _trimStart(value) }, this.debouncedChange);
   };
 
   renderFeedback = () => {
     const { errorMessageId } = this.state;
     const {
       externalErrorId,
-      intl: { formatMessage },
-      successInfoId
+      intl: { formatMessage }
     } = this.props;
-    const isValid = !externalErrorId && !errorMessageId;
 
-    const feedbackMessageId = isValid
-      ? successInfoId
-      : externalErrorId || errorMessageId;
+    if (externalErrorId || errorMessageId) {
+      const feedbackMessageId = externalErrorId || errorMessageId;
 
-    return (
-      <p className="Sign-Up-Input__feedback">
-        <span
-          className={classNames('Sign-Up-Input__feedback-icon', {
-            'Sign-Up-Input__feedback-icon--valid': isValid,
-            'Sign-Up-Input__feedback-icon--invalid': !isValid
-          })}
-        >
-          {isValid ? <CheckIcon /> : <ErrorIcon />}
-        </span>
-        <span
-          className={classNames('Sign-Up-Input__feedback-info', {
-            'Sign-Up-Input__feedback-info--valid': isValid,
-            'Sign-Up-Input__feedback-info--invalid': !isValid
-          })}
-        >
-          {formatMessage({ id: feedbackMessageId })}
-        </span>
-      </p>
-    );
+      return (
+        <p className="Sign-Up-Input__feedback">
+          <span className="Sign-Up-Input__icon--invalid">
+            <ErrorIcon />
+          </span>
+          <span className="Sign-Up-Input__feedback-info--invalid">
+            {formatMessage({ id: feedbackMessageId })}
+          </span>
+        </p>
+      );
+    }
   };
 
   render() {
     const {
       disabled,
-      externalErrorId,
       focus,
       intl: { formatMessage },
       labelId,
       name,
       type
     } = this.props;
-    const { errorMessageId, value, wasEdited } = this.state;
-    const isValid = !externalErrorId && !errorMessageId;
+    const { invalidView, value, validView } = this.state;
 
     return (
       <div className="Sign-Up-Input">
         <label
           className={classNames('Sign-Up-Input__label', {
-            'Sign-Up-Input__label--valid': wasEdited && isValid,
-            'Sign-Up-Input__label--invalid': wasEdited && !isValid
+            'Sign-Up-Input__label--valid': validView,
+            'Sign-Up-Input__label--invalid': invalidView
           })}
           htmlFor={name}
         >
           {formatMessage({ id: labelId })}
+          {validView && (
+            <span className="Sign-Up-Input__icon--valid">
+              <CheckIcon />
+            </span>
+          )}
         </label>
         <input
           id={name}
           className={classNames('primary-input Sign-Up-Input__input', {
-            'Sign-Up-Input__input--valid': wasEdited && isValid,
-            'Sign-Up-Input__input--invalid': wasEdited && !isValid
+            'Sign-Up-Input__input--valid': validView,
+            'Sign-Up-Input__input--invalid': invalidView
           })}
           disabled={disabled}
           name={name}
@@ -130,7 +140,7 @@ class SignUpInput extends PureComponent {
           type={type}
           value={value}
         />
-        {(externalErrorId || wasEdited) && this.renderFeedback()}
+        {this.renderFeedback()}
       </div>
     );
   }
@@ -142,12 +152,11 @@ SignUpInput.propTypes = {
   focus: PropTypes.bool,
   intl: IntlPropType.isRequired,
   labelId: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  successInfoId: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
 
   onChange: PropTypes.func.isRequired,
-  validator: PropTypes.func.isRequired
+  validator: PropTypes.func
 };
 
 export default injectIntl(SignUpInput);
