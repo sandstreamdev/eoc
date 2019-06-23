@@ -82,7 +82,7 @@
   "authorization.input.password.label": "Password",
   "authorization.input.password.confirm": "Confirm password",
   "authorization.input.password.invalid": "Please use min 4 and max 32 signs and don't use white chars.",
-  "authorization.input.password.not-match": "Passwords does not match.",
+  "authorization.input.password.not-match": "Passwords do not match.",
   "cohort.cohort-header.add-description": "Add description",
   "cohort.cohorts.no-cohorts": "There are no cohorts yet!",
   "cohort.cohorts.no-arch-cohorts": "You have no archived cohorts!",
