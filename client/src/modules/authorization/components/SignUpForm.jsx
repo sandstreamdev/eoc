@@ -98,9 +98,9 @@ class SignUpForm extends PureComponent {
   };
 
   passwordValidator = value => {
-    const { isLength } = validator;
+    const { matches } = validator;
 
-    if (!isLength(value, { min: 4 })) {
+    if (!matches(value, /^[^\s]{4,32}$/)) {
       return 'authorization.input.password.invalid';
     }
 

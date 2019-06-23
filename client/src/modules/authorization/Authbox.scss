@@ -10,6 +10,11 @@
   text-align: center;
   min-height: 300px;
   flex-direction: column;
+  width: 250px;
+
+  @include breakpoint($xsmall) {
+    width: 300px;
+  }
 
   @include breakpoint($large) {
     width: 55%;
@@ -41,7 +46,8 @@
     justify-content: space-between;
 
     @include breakpoint($large) {
-      min-width: 50%;
+      width: 50%;
+      // max-width: 50%;
     }
   }
 

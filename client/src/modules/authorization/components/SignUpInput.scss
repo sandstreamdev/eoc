@@ -19,7 +19,6 @@
   }
 
   &__input {
-    min-width: 250px;
     &--valid,
     &--valid:focus {
       border-color: $success;
@@ -27,6 +26,10 @@
     &--invalid,
     &--invalid:focus {
       border-color: $danger;
+    }
+
+    @include breakpoint($xsmall) {
+      min-width: 250px;
     }
   }
 
@@ -36,7 +39,9 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    text-align: left;
     padding: 5px 0;
+    overflow-wrap: break-word;
   }
 
   &__icon {
