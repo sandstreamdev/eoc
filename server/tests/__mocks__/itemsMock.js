@@ -9,6 +9,7 @@ const itemsMock = [
       displayName: 'John Doe'
     },
     isArchived: false,
+    listId: '',
     name: 'Milk',
     updatedAt: { $date: { $numberLong: '1556963603400' } },
     createdAt: { $date: { $numberLong: '1556963603400' } }
@@ -23,6 +24,7 @@ const itemsMock = [
       displayName: 'William Doe'
     },
     isArchived: false,
+    listId: '',
     name: 'Coffee',
     updatedAt: { $date: { $numberLong: '1556963607250' } },
     createdAt: { $date: { $numberLong: '1556963607250' } }
@@ -37,6 +39,7 @@ const itemsMock = [
       displayName: 'Brad Doe'
     },
     isArchived: false,
+    listId: '',
     name: 'Bread',
     updatedAt: { $date: { $numberLong: '1556963610226' } },
     createdAt: { $date: { $numberLong: '1556963610226' } }
@@ -48,6 +51,7 @@ const itemsMock = [
     _id: { $oid: '5ccd611e4663533f995b175c' },
     authorId: '5c9dc5a619ae7924074940f4',
     isArchived: false,
+    listId: '',
     name: 'A4 Sheets',
     updatedAt: { $date: { $numberLong: '1556963614753' } },
     createdAt: { $date: { $numberLong: '1556963614753' } }
@@ -62,6 +66,7 @@ const expectedItemProperties = [
   'description',
   'isArchived',
   'isOrdered',
+  'listId',
   'name',
   'updatedAt'
 ];
