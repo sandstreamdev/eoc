@@ -19,7 +19,7 @@ const ItemActionTypes = Object.freeze({
 });
 
 const ItemStatusType = Object.freeze({
-  BUSY: 'item/busy',
+  BUSY: 'item/BUSY',
   FREE: 'item/FREE'
 });
 
