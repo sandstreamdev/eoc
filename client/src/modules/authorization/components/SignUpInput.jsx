@@ -15,12 +15,13 @@ class SignUpInput extends PureComponent {
 
     this.state = {
       errorMessageId: '',
-      invalidView: false,
-      validView: false,
+      invalidTheme: false,
+      validTheme: false,
       value: ''
     };
 
     const { focus } = props;
+
     if (focus) {
       this.input = React.createRef();
     }
@@ -29,6 +30,7 @@ class SignUpInput extends PureComponent {
 
   componentDidMount() {
     const { focus } = this.props;
+
     if (focus) {
       this.input.current.focus();
     }
@@ -40,7 +42,7 @@ class SignUpInput extends PureComponent {
     const { externalErrorId } = this.props;
 
     if (prevExternalErrorId !== externalErrorId) {
-      this.setValidationView(errorMessageId);
+      this.setValidationTheme(errorMessageId);
     }
   }
 
@@ -48,25 +50,23 @@ class SignUpInput extends PureComponent {
     this.debouncedChange.cancel();
   }
 
-  setValidationView = errorMessageId => {
+  setValidationTheme = errorMessageId => {
     const { value } = this.state;
     const { externalErrorId } = this.props;
-
     const isValid = !externalErrorId && !errorMessageId;
-    const invalidView = !isValid;
-    const validView = isValid && value;
-    this.setState({ invalidView, validView });
+    const invalidTheme = !isValid;
+    const validTheme = isValid && value;
+
+    this.setState({ invalidTheme, validTheme });
   };
 
   handleChange = () => {
     const { value } = this.state;
     const { onChange, validator } = this.props;
-
     const trimmedValue = _trim(value);
     const errorMessageId = validator ? validator(trimmedValue) : '';
 
-    this.setValidationView(errorMessageId);
-
+    this.setValidationTheme(errorMessageId);
     this.setState({ errorMessageId });
     onChange(trimmedValue, !errorMessageId);
   };
@@ -88,11 +88,11 @@ class SignUpInput extends PureComponent {
       const feedbackMessageId = externalErrorId || errorMessageId;
 
       return (
-        <p className="Sign-Up-Input__feedback">
-          <span className="Sign-Up-Input__icon--invalid">
+        <p className="sign-up-input__feedback">
+          <span className="sign-up-input__icon--invalid">
             <ErrorIcon />
           </span>
-          <span className="Sign-Up-Input__feedback-info--invalid">
+          <span className="sign-up-input__feedback-info--invalid">
             {formatMessage({ id: feedbackMessageId })}
           </span>
         </p>
@@ -109,29 +109,29 @@ class SignUpInput extends PureComponent {
       name,
       type
     } = this.props;
-    const { invalidView, value, validView } = this.state;
+    const { invalidTheme, value, validTheme } = this.state;
 
     return (
-      <div className="Sign-Up-Input">
+      <div className="sign-up-input">
         <label
-          className={classNames('Sign-Up-Input__label', {
-            'Sign-Up-Input__label--valid': validView,
-            'Sign-Up-Input__label--invalid': invalidView
+          className={classNames('sign-up-input__label', {
+            'sign-up-input__label--valid': validTheme,
+            'sign-up-input__label--invalid': invalidTheme
           })}
           htmlFor={name}
         >
           {formatMessage({ id: labelId })}
-          {validView && (
-            <span className="Sign-Up-Input__icon--valid">
+          {validTheme && (
+            <span className="sign-up-input__icon--valid">
               <CheckIcon />
             </span>
           )}
         </label>
         <input
           id={name}
-          className={classNames('primary-input Sign-Up-Input__input', {
-            'Sign-Up-Input__input--valid': validView,
-            'Sign-Up-Input__input--invalid': invalidView
+          className={classNames('primary-input sign-up-input__input', {
+            'sign-up-input__input--valid': validTheme,
+            'sign-up-input__input--invalid': invalidTheme
           })}
           disabled={disabled}
           name={name}

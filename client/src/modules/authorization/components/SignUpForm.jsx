@@ -9,10 +9,7 @@ import SignUpInput from './SignUpInput';
 import { signUp } from 'modules/authorization/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
-import Preloader, {
-  PreloaderSize,
-  PreloaderTheme
-} from 'common/components/Preloader';
+import PendingButton from 'common/components/PendingButton';
 
 class SignUpForm extends PureComponent {
   pendingPromise = null;
@@ -26,7 +23,7 @@ class SignUpForm extends PureComponent {
       higherLevelErrors: {
         emailError: '',
         nameError: '',
-        passwordConfirmError: '',
+        confirmPasswordValueError: '',
         passwordError: ''
       },
       isEmailValid: false,
@@ -36,7 +33,7 @@ class SignUpForm extends PureComponent {
       isPasswordValid: false,
       name: '',
       password: '',
-      passwordConfirm: undefined,
+      confirmPasswordValue: undefined,
       pending: false
     };
   }
@@ -51,27 +48,23 @@ class SignUpForm extends PureComponent {
     }
   }
 
-  onNameChange = (name, isValid) => {
+  onNameChange = (name, isValid) =>
     this.setState({ name, isNameValid: isValid });
-  };
 
-  onEmailChange = (email, isValid) => {
+  onEmailChange = (email, isValid) =>
     this.setState({ email, isEmailValid: isValid });
-  };
 
-  onPasswordChange = (password, isValid) => {
+  onPasswordChange = (password, isValid) =>
     this.setState(
       { password, isPasswordValid: isValid },
       this.comparePasswords
     );
-  };
 
-  onPasswordConfirmChange = (passwordConfirm, isValid) => {
+  onPasswordConfirmChange = (confirmPasswordValue, isValid) =>
     this.setState(
-      { passwordConfirm, isPasswordConfirmValid: isValid },
+      { confirmPasswordValue, isPasswordConfirmValid: isValid },
       this.comparePasswords
     );
-  };
 
   nameValidator = value => {
     const { isEmpty, isLength } = validator;
@@ -110,20 +103,20 @@ class SignUpForm extends PureComponent {
   comparePasswords = () => {
     const {
       higherLevelErrors,
-      higherLevelErrors: { passwordConfirmError },
+      higherLevelErrors: { confirmPasswordValueError },
       password,
-      passwordConfirm
+      confirmPasswordValue
     } = this.state;
     let newError;
 
-    if (passwordConfirmError && password === passwordConfirm) {
+    if (confirmPasswordValueError && password === confirmPasswordValue) {
       newError = '';
     }
 
     if (
-      !passwordConfirmError &&
-      passwordConfirm !== undefined &&
-      password !== passwordConfirm
+      !confirmPasswordValueError &&
+      confirmPasswordValue !== undefined &&
+      password !== confirmPasswordValue
     ) {
       newError = 'authorization.input.password.not-match';
     }
@@ -132,7 +125,7 @@ class SignUpForm extends PureComponent {
       this.setState({
         higherLevelErrors: {
           ...higherLevelErrors,
-          passwordConfirmError: newError
+          confirmPasswordValueError: newError
         }
       });
     }
@@ -146,7 +139,6 @@ class SignUpForm extends PureComponent {
       isPasswordConfirmValid,
       isPasswordValid
     } = this.state;
-
     const isError = _find(higherLevelErrors, error => error !== '');
 
     if (
@@ -164,14 +156,15 @@ class SignUpForm extends PureComponent {
 
   handleSignUp = () => {
     const { signUp } = this.props;
-    const { email, name, password, passwordConfirm } = this.state;
+    const { email, name, password, confirmPasswordValue } = this.state;
 
     this.setState({ pending: true });
 
     this.pendingPromise = makeAbortablePromise(
-      signUp(email, name, password, passwordConfirm)
+      signUp(email, name, password, confirmPasswordValue)
     );
-    this.pendingPromise.promise
+
+    return this.pendingPromise.promise
       .then(() => this.setState({ confirmationSend: true, pending: false }))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
@@ -193,7 +186,7 @@ class SignUpForm extends PureComponent {
       higherLevelErrors: {
         nameError,
         emailError,
-        passwordConfirmError,
+        confirmPasswordValueError,
         passwordError
       },
       isFormValid,
@@ -203,10 +196,10 @@ class SignUpForm extends PureComponent {
 
     return (
       <Fragment>
-        <h1 className="Sign-Up-Form__heading">
+        <h1 className="sign-up-form__heading">
           <FormattedMessage id="authorization.create-account" />
         </h1>
-        <form className="Sign-Up-Form__form" noValidate>
+        <form className="sign-up-form__form" noValidate>
           <SignUpInput
             disabled={pending}
             externalErrorId={nameError}
@@ -237,13 +230,13 @@ class SignUpForm extends PureComponent {
           />
           <SignUpInput
             disabled={pending}
-            externalErrorId={passwordConfirmError}
+            externalErrorId={confirmPasswordValueError}
             labelId="authorization.input.password.confirm"
             name="confirm"
             onChange={this.onPasswordConfirmChange}
             type="password"
           />
-          <div className="Sign-Up-Form__buttons">
+          <div className="sign-up-form__buttons">
             <button
               className="primary-button"
               type="button"
@@ -252,20 +245,14 @@ class SignUpForm extends PureComponent {
             >
               <FormattedMessage id="common.button.cancel" />
             </button>
-            <button
-              className="primary-button Sign-Up-Form__confirm"
+            <PendingButton
+              className="primary-button sign-up-form__confirm"
               type="button"
-              disabled={pending || !isFormValid}
+              disabled={!isFormValid}
               onClick={this.handleSignUp}
             >
               <FormattedMessage id="authorization.sign-up" />
-              {pending && (
-                <Preloader
-                  size={PreloaderSize.SMALL}
-                  theme={PreloaderTheme.DARK}
-                />
-              )}
-            </button>
+            </PendingButton>
           </div>
         </form>
       </Fragment>
@@ -276,7 +263,7 @@ class SignUpForm extends PureComponent {
     const { email } = this.state;
 
     return (
-      <p className="Sign-Up-Form__confirmation">
+      <p className="sign-up-form__confirmation">
         <FormattedMessage
           email={email}
           id="authorization.sign-up.confirmation-link-sent"
@@ -289,7 +276,7 @@ class SignUpForm extends PureComponent {
     const { confirmationSend } = this.state;
 
     return (
-      <div className="Sign-Up">
+      <div className="sign-up">
         {confirmationSend
           ? this.renderConfirmationMessage()
           : this.renderSignUpForm()}

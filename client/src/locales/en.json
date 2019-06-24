@@ -68,7 +68,7 @@
   "authorization.auth-box.sign-in": "Sign in with:",
   "authorization.auth-box.cta": "Try it out:",
   "authorization.auth-box.demo-button": "Live demo",
-  "authorization.actions.logout-fail": "Oops, we're sorry, logout failed.",
+  "authorization.actions.logout-fail": "Logout failed.",
   "authorization.actions.login": "Login success.",
   "authorization.auth-box.sign-up": "Sign up to app:",
   "authorization.create-account": "Create account",
