@@ -11,7 +11,7 @@ const addItemToListWS = socket => {
   });
 };
 
-const archiveItemWs = socket => {
+const archiveItemWS = socket => {
   socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
     socket.broadcast
       .to(`list-${data.listId}`)
@@ -51,7 +51,7 @@ const updateItemState = socket => {
 
 module.exports = {
   addItemToListWS,
-  archiveItemWs,
+  archiveItemWS,
   deleteItemWS,
   restoreItemWS,
   updateItemState
