@@ -508,13 +508,12 @@ const leaveCohort = (req, resp) => {
       const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const isMember = checkIfArrayContainsUserId(memberIds, userId);
 
-      if (ownerIds.length === 1 && isOwner) {
-        throw new BadRequestException(
-          'cohort.actions.leave-cohort-only-one-owner'
-        );
-      }
-
       if (isOwner) {
+        if (ownerIds.length === 1) {
+          throw new BadRequestException(
+            'cohort.actions.leave-cohort-only-one-owner'
+          );
+        }
         ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
       }
 

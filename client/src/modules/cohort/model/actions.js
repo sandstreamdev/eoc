@@ -361,7 +361,7 @@ export const removeOwnerRole = (
     });
 
 export const leaveCohort = (cohortId, userId, userName) => dispatch =>
-  patchData(`/api/cohorts/${cohortId}/leave-cohort`, { userId })
+  patchData(`/api/cohorts/${cohortId}/leave-cohortt`, { userId })
     .then(() => {
       dispatch(leaveCohortSuccess(cohortId, userId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -372,7 +372,7 @@ export const leaveCohort = (cohortId, userId, userName) => dispatch =>
     })
     .catch(err => {
       dispatch(leaveCohortFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR_2, {
         notificationId: err.message || 'cohort.actions.leave-cohort-fail',
         data: userName
       });

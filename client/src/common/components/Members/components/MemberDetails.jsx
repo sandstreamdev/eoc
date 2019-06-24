@@ -205,9 +205,9 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    return leaveCohort(id, currentUserId, name).finally(() => {
-      this.setState({ pending: false });
-    });
+    return leaveCohort(id, currentUserId, name).finally(() =>
+      this.setState({ pending: false })
+    );
   };
 
   handleLeaveConfirmationVisibility = () =>
