@@ -206,7 +206,7 @@ class SignUpForm extends PureComponent {
         <h1 className="Sign-Up-Form__heading">
           <FormattedMessage id="authorization.create-account" />
         </h1>
-        <form autoComplete="off" className="Sign-Up-Form__form" noValidate>
+        <form className="Sign-Up-Form__form" noValidate>
           <SignUpInput
             disabled={pending}
             externalErrorId={nameError}
