@@ -112,15 +112,8 @@ const signUp = (req, resp, next) => {
     .then(dataToSend => {
       // eslint-disable-next-line no-param-reassign
       resp.locals = dataToSend;
-      const errors = {
-        confirmPasswordValueError: 'authorization.input.password.not-match',
-        emailError: 'authorization.input.email.invalid',
-        nameError: 'authorization.input.username.invalid',
-        passwordError: 'authorization.input.password.invalid'
-      };
-      // resp.send();
-      resp.status(406).send({ errors });
-      // return next();
+
+      return next();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

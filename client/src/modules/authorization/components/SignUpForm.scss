@@ -30,4 +30,11 @@
   &__confirm {
     position: relative;
   }
+
+  &__error {
+    text-align: left;
+    font-size: $s-font;
+    padding: 8px 0;
+    color: $danger;
+  }
 }
