@@ -70,7 +70,7 @@
   "authorization.auth-box.demo-button": "Live demo",
   "authorization.reset-password.heading": "Reset your password",
   "authorization.reset-password.email-label": "Enter email",
-  "authorization.reset-password.tip-content": "Please enter correct email",
+  "authorization.reset-password.tip-content": "Please enter a valid email address",
   "authorization.reset-password.button-content": "Reset password",
   "cohort.cohort-header.add-description": "Add description",
   "cohort.cohorts.no-cohorts": "There are no cohorts yet!",

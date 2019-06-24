@@ -28,19 +28,21 @@ class ResetPassword extends PureComponent {
 
     if (isEmailCorrect) {
       // handle submit here
+      this.hideTip();
+
       return;
     }
 
-    this.handleTipVisibility();
+    this.showTip();
   };
 
-  handleTipVisibility = () => {
-    this.setState({ tipVisible: true });
-    setTimeout(() => this.setState({ tipVisible: false }), 6000);
-  };
+  showTip = () => this.setState({ tipVisible: true });
+
+  hideTip = () => this.setState({ tipVisible: false });
 
   render() {
     const { email, tipVisible } = this.state;
+    const isEmailEmpty = email.length === 0;
 
     return (
       <form className="reset-password" onSubmit={this.handleSubmit}>
@@ -64,6 +66,7 @@ class ResetPassword extends PureComponent {
           )}
           <button
             className="primary-button"
+            disabled={isEmailEmpty}
             onClick={this.handleSubmit}
             type="submit"
             value="Reset password"
