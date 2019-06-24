@@ -4,24 +4,19 @@ const { Schema } = mongoose;
 
 const UserSchema = new Schema(
   {
-    accessToken: { type: String, required: true },
-    avatarUrl: { type: String, required: true },
+    accessToken: { type: String },
+    avatarUrl: { type: String },
     displayName: { type: String, required: true },
     email: { type: String, required: true },
-    idFromProvider: { type: String, required: true },
-    name: { type: String, required: true },
-    provider: { type: String, required: true },
-    surname: { type: String, required: true },
-    tokens: [
-      {
-        access: {
-          type: String
-        },
-        token: {
-          type: String
-        }
-      }
-    ]
+    idFromProvider: { type: String },
+    isActive: { type: Boolean },
+    name: { type: String },
+    password: { type: String },
+    provider: { type: String },
+    salt: { type: String },
+    signUpHash: { type: String },
+    signUpHashExpirationDate: { type: Date },
+    surname: { type: String }
   },
   { timestamps: true }
 );
