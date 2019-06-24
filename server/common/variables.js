@@ -16,12 +16,18 @@ const ItemActionTypes = Object.freeze({
   ARCHIVE_SUCCESS: 'item/ARCHIVE_SUCCESS'
 });
 
+const ItemStatusType = Object.freeze({
+  BUSY: 'item/busy',
+  FREE: 'item/FREE'
+});
+
 module.exports = {
   ActivityType,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,
   ItemActionTypes,
+  ItemStatusType,
   ListType,
   PROJECT_NAME
 };

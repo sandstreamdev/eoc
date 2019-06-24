@@ -1,4 +1,4 @@
-const { ItemActionTypes } = require('../common/variables');
+const { ItemActionTypes, ItemStatusType } = require('../common/variables');
 
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
@@ -20,12 +20,16 @@ const archiveItemWs = socket => {
 };
 
 const updateItemState = socket => {
-  socket.on('item-busy', data => {
+  socket.on(ItemStatusType.BUSY, data => {
     const { listId } = data;
 
-    console.log('item is busy');
-    console.log(data);
-    socket.broadcast.to(`list-${listId}`).emit('item-busy', data);
+    socket.broadcast.to(`list-${listId}`).emit(ItemStatusType.BUSY, data);
+  });
+
+  socket.on(ItemStatusType.FREE, data => {
+    const { listId } = data;
+
+    socket.broadcast.to(`list-${listId}`).emit(ItemStatusType.FREE, data);
   });
 };
 

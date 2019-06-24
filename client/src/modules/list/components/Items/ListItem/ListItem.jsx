@@ -27,7 +27,7 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
-import { thisTypeAnnotation, thisExpression } from '@babel/types';
+import { ItemStatusType } from '../model/actionTypes';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -40,6 +40,8 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       busy: false,
+      busyBySomeone: false,
+      busyInfoVisibility: false,
       done: isOrdered,
       isNameEdited: false,
       isConfirmationVisible: false
@@ -50,23 +52,59 @@ class ListItem extends PureComponent {
 
   componentDidMount() {
     this.handleSocketConnection();
+    this.receiveWSEvents();
   }
 
   componentDidUpdate() {
+    this.emitWSEvents();
+  }
+
+  emitWSEvents = () => {
     const { busy } = this.state;
     const {
       data: { _id: itemId },
       match: {
         params: { id: listId }
-      }
+      },
+      currentUser: { id: userId }
     } = this.props;
 
     if (busy) {
-      this.socket.emit('item-busy', { itemId, listId });
+      this.socket.emit(ItemStatusType.BUSY, { itemId, listId, userId });
 
-      console.log('emitting to a server message that this item is busy');
+      return;
     }
-  }
+
+    this.socket.emit(ItemStatusType.FREE, { itemId, listId, userId });
+  };
+
+  receiveWSEvents = () => {
+    const {
+      currentUser: { id: currentUserId }
+    } = this.props;
+
+    this.socket.on(ItemStatusType.BUSY, data => {
+      const { itemId, userId } = data;
+      const {
+        data: { _id }
+      } = this.props;
+
+      if (currentUserId !== userId && itemId === _id) {
+        this.setState({ busyBySomeone: true });
+      }
+    });
+
+    this.socket.on(ItemStatusType.FREE, data => {
+      const { itemId, userId } = data;
+      const {
+        data: { _id }
+      } = this.props;
+
+      if (currentUserId !== userId && itemId === _id) {
+        this.setState({ busyBySomeone: false });
+      }
+    });
+  };
 
   handleSocketConnection = () => {
     const {
@@ -83,17 +121,6 @@ class ListItem extends PureComponent {
     this.socket.on('connect', () =>
       this.socket.emit('joinRoom', `list-${listId}`)
     );
-
-    this.socket.on('item-busy', data => {
-      const { itemId, listId } = data;
-
-      this.setState({ busy: true });
-      console.log('this item is busy');
-
-      // Here i should setState({someoneIsEditing: true})
-      // and in every method I should check whetever someone
-      // is editing and block any actions
-    });
   };
 
   handleItemToggling = () => {
@@ -189,7 +216,11 @@ class ListItem extends PureComponent {
     } = this.props;
     const { socket } = this;
 
-    return archiveItem(listId, itemId, name, socket);
+    this.setState({ busy: true });
+
+    return archiveItem(listId, itemId, name, socket).finally(() =>
+      this.setState({ busy: false })
+    );
   };
 
   renderVoting = () => {
@@ -227,6 +258,8 @@ class ListItem extends PureComponent {
   handleCommentsBlur = () => this.setState({ busy: false });
 
   handleCommentsFocus = () => this.setState({ busy: true });
+
+  handleBusyInfoVisibility = () => this.setState({ busyInfoVisibility: true });
 
   renderConfirmation = () => {
     const {
@@ -353,6 +386,26 @@ class ListItem extends PureComponent {
     );
   };
 
+  renderBusyOverlay = () => {
+    const { busyBySomeone, busyInfoVisibility } = this.state;
+
+    return (
+      busyBySomeone && (
+        <div
+          className={classNames('list-item__busy-overlay', {
+            'list-item__busy-overlay--dimmed': busyInfoVisibility
+          })}
+          onClick={this.handleBusyInfoVisibility}
+          role="banner"
+        >
+          {busyInfoVisibility && (
+            <span>This item is currently edited by someone.</span>
+          )}
+        </div>
+      )
+    );
+  };
+
   render() {
     const {
       data: { isOrdered, authorName, _id, name },
@@ -360,9 +413,9 @@ class ListItem extends PureComponent {
     } = this.props;
     const {
       areDetailsVisible,
+      disableToggleButton,
       done,
-      isNameEdited,
-      disableToggleButton
+      isNameEdited
     } = this.state;
 
     return (
@@ -373,6 +426,7 @@ class ListItem extends PureComponent {
           'list-item--details-visible': areDetailsVisible
         })}
       >
+        {this.renderBusyOverlay()}
         <div
           className={classNames('list-item__top', {
             'list-item__top--details-visible': areDetailsVisible,
