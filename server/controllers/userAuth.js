@@ -66,41 +66,27 @@ const signUp = (req, resp, next) => {
     .exec()
     .then(user => {
       if (user) {
-        const {
-          _id,
-          displayName,
-          email,
-          idFromProvider,
-          isActive,
-          signUpHashExpirationDate
-        } = user;
+        const { _id, displayName, email, idFromProvider, isActive } = user;
 
         if (!idFromProvider && !isActive) {
-          const time = new Date();
+          const signUpHash = crypto.randomBytes(32).toString('hex');
+          const expirationDate = new Date().getTime() + 3600000;
 
-          if (time.getTime() <= signUpHashExpirationDate.getTime()) {
-            const signUpHash = crypto.randomBytes(32).toString('hex');
-            const expirationDate = new Date().getTime() + 3600000;
+          return User.findOneAndUpdate(
+            { _id },
+            { signUpHash, signUpHashExpirationDate: expirationDate }
+          )
+            .exec()
+            .then(user => {
+              if (!user) {
+                throw new Error();
+              }
 
-            return User.findOneAndUpdate(
-              { _id },
-              { signUpHash, signUpHashExpirationDate: expirationDate }
-            )
-              .exec()
-              .then(user => {
-                if (!user) {
-                  throw new Error();
-                }
-
-                return { displayName, email, signUpHash };
-              });
-          }
-          throw new BadRequestException(
-            'authorization.confirmation.already.sent'
-          );
-        } else {
-          throw new BadRequestException('authorization.user.exist');
+              return { displayName, email, signUpHash };
+            });
         }
+
+        throw new BadRequestException('authorization.user-already-exist');
       } else {
         const salt = bcrypt.genSaltSync(12);
         const hashedPassword = bcrypt.hashSync(password + email, salt);
@@ -126,8 +112,15 @@ const signUp = (req, resp, next) => {
     .then(dataToSend => {
       // eslint-disable-next-line no-param-reassign
       resp.locals = dataToSend;
-
-      return next();
+      const errors = {
+        confirmPasswordValueError: 'authorization.input.password.not-match',
+        emailError: 'authorization.input.email.invalid',
+        nameError: 'authorization.input.username.invalid',
+        passwordError: 'authorization.input.password.invalid'
+      };
+      // resp.send();
+      resp.status(406).send({ errors });
+      // return next();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

@@ -36,20 +36,6 @@ const sendInvitation = (req, resp) => {
     });
 };
 
-const sendSignUpConfirmationLink = (req, resp) => {
-  const { displayName, email, signUpHash } = resp.locals;
-  const { protocol } = req;
-  const host = req.get('host');
-  const url = `${protocol}://${host}`;
-
-  const message = {
-    to: email,
-    from: 'eoc@eoc.sanddev.com',
-    subject: `Confirm ${PROJECT_NAME}!`,
-    html: mailTemplate(displayName, email, signUpHash, url)
-  };
-
-  return SendGridMail.send(message);
-};
+const sendSignUpConfirmationLink = (req, resp) => {};
 
 module.exports = { sendInvitation, sendSignUpConfirmationLink };
