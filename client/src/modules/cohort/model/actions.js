@@ -372,7 +372,7 @@ export const leaveCohort = (cohortId, userId, userName) => dispatch =>
     })
     .catch(err => {
       dispatch(leaveCohortFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR_2, {
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR_NO_RETRY, {
         notificationId: err.message || 'cohort.actions.leave-cohort-fail',
         data: userName
       });
