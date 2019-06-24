@@ -16,24 +16,18 @@ class ResetPassword extends PureComponent {
     this.setState({ email: value });
   };
 
-  handleEmailValidation = () => {
-    const { email } = this.state;
-
-    return validator.isEmail(email);
-  };
-
   handleSubmit = event => {
     event.preventDefault();
-    const isEmailCorrect = this.handleEmailValidation();
+    const { email } = this.state;
+    const isEmailCorrect = validator.isEmail(email);
 
-    if (isEmailCorrect) {
-      // handle submit here
-      this.hideTip();
+    if (!isEmailCorrect) {
+      this.showTip();
 
       return;
     }
 
-    this.showTip();
+    this.hideTip();
   };
 
   showTip = () => this.setState({ tipVisible: true });
