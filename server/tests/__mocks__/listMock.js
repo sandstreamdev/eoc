@@ -19,7 +19,6 @@ const listMock = [
         authorName: 'Adam Klepacz',
         authorId: '5c9dc5a619ae7924074940f4',
         isArchived: false,
-        listId: '5ccd610f4663533f995b1755',
         name: 'Milk',
         updatedAt: { $date: { $numberLong: '1556963603400' } },
         createdAt: { $date: { $numberLong: '1556963603400' } }
@@ -32,7 +31,6 @@ const listMock = [
         authorName: 'Adam Klepacz',
         authorId: '5c9dc5a619ae7924074940f4',
         isArchived: false,
-        listId: '5ccd610f4663533f995b1755',
         name: 'Coffee',
         updatedAt: { $date: { $numberLong: '1556963607250' } },
         createdAt: { $date: { $numberLong: '1556963607250' } }
@@ -45,7 +43,6 @@ const listMock = [
         authorName: 'Adam Klepacz',
         authorId: '5c9dc5a619ae7924074940f4',
         isArchived: false,
-        listId: '5ccd610f4663533f995b1755',
         name: 'Bread',
         updatedAt: { $date: { $numberLong: '1556963610226' } },
         createdAt: { $date: { $numberLong: '1556963610226' } }
@@ -58,7 +55,6 @@ const listMock = [
         authorName: 'Adam Klepacz',
         authorId: '5c9dc5a619ae7924074940f4',
         isArchived: false,
-        listId: '5ccd610f4663533f995b1755',
         name: 'A4 Sheets',
         updatedAt: { $date: { $numberLong: '1556963614753' } },
         createdAt: { $date: { $numberLong: '1556963614753' } }

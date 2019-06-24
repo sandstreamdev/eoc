@@ -62,7 +62,7 @@ const responseWithListsMetaData = (lists, userId) =>
     return listToSend;
   });
 
-const responseWithItems = (userId, items, listId) =>
+const responseWithItems = (userId, items) =>
   _map(items, item => {
     const { authorId: author, isArchived, voterIds, ...rest } = item;
     const { _id: authorId, displayName: authorName } = author;
@@ -73,7 +73,6 @@ const responseWithItems = (userId, items, listId) =>
       authorName,
       isArchived,
       isVoted: checkIfArrayContainsUserId(voterIds, userId),
-      listId,
       votesCount: voterIds.length
     };
   });
