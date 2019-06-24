@@ -14,8 +14,24 @@ const addItemToListWS = socket => {
 const archiveItemWs = socket => {
   socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
     socket.broadcast
-      .in(`list-${data.listId}`)
+      .to(`list-${data.listId}`)
       .emit(ItemActionTypes.ARCHIVE_SUCCESS, data);
+  });
+};
+
+const deleteItemWS = socket => {
+  socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
+    socket.broadcast
+      .to(`list-${data.listId}`)
+      .emit(ItemActionTypes.DELETE_SUCCESS, data);
+  });
+};
+
+const restoreItemWS = socket => {
+  socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
+    socket.broadcast
+      .to(`list-${data.listId}`)
+      .emit(ItemActionTypes.RESTORE_SUCCESS, data);
   });
 };
 
@@ -36,5 +52,7 @@ const updateItemState = socket => {
 module.exports = {
   addItemToListWS,
   archiveItemWs,
+  deleteItemWS,
+  restoreItemWS,
   updateItemState
 };

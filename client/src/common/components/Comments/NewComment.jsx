@@ -71,8 +71,8 @@ class NewComment extends PureComponent {
     const { comment, pending } = this.state;
     const {
       intl: { formatMessage },
-      onFocus,
-      onBlur
+      onBlur,
+      onFocus
     } = this.props;
 
     return (
@@ -80,8 +80,8 @@ class NewComment extends PureComponent {
         <div className="new-comment__wrapper">
           <Textarea
             disabled={pending}
-            onChange={this.handleCommentChange}
             onBlur={onBlur}
+            onChange={this.handleCommentChange}
             onFocus={onFocus}
             placeholder={formatMessage({ id: 'common.add-comment' })}
           />

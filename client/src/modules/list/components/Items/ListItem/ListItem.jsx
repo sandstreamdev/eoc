@@ -276,8 +276,8 @@ class ListItem extends PureComponent {
           className="primary-button"
           disabled={!isMember}
           onClick={this.handleArchiveItem}
-          type="button"
           preloaderTheme={PreloaderTheme.LIGHT}
+          type="button"
         >
           <FormattedMessage id="common.button.confirm" />
         </PendingButton>
@@ -399,7 +399,7 @@ class ListItem extends PureComponent {
           role="banner"
         >
           {busyInfoVisibility && (
-            <span>This item is currently edited by someone.</span>
+            <FormattedMessage id="list.list-item.busy-info" />
           )}
         </div>
       )

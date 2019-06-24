@@ -30,6 +30,6 @@ export const ItemActionTypes = Object.freeze({
 });
 
 export const ItemStatusType = Object.freeze({
-  BUSY: 'item/busy',
+  BUSY: 'item/BUSY',
   FREE: 'item/FREE'
 });

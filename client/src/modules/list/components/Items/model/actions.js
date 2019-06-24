@@ -311,7 +311,7 @@ export const fetchArchivedItems = (listId, listName) => dispatch =>
       });
     });
 
-export const restoreItem = (listId, itemId, name) => dispatch =>
+export const restoreItem = (listId, itemId, name, socket) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: false,
     itemId
@@ -322,6 +322,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.restore-item',
         data: name
       });
+      socket.emit(ItemActionTypes.RESTORE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(restoreItemFailure());
@@ -331,7 +332,10 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
       });
     });
 
-export const deleteItem = (listId, itemId, name) => dispatch =>
+export const restoreItemWS = (listId, itemId) => dispatch =>
+  dispatch(restoreItemSuccess(listId, itemId));
+
+export const deleteItem = (listId, itemId, name, socket) => dispatch =>
   patchData(`/api/lists/${listId}/delete-item/${itemId}`)
     .then(() => {
       dispatch(deleteItemSuccess(listId, itemId));
@@ -339,6 +343,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.delete-item',
         data: name
       });
+      socket.emit(ItemActionTypes.DELETE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(deleteItemFailure());
@@ -347,3 +352,6 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
         data: name
       });
     });
+
+export const deleteItemWS = (listId, itemId) => dispatch =>
+  dispatch(deleteItemSuccess(listId, itemId));

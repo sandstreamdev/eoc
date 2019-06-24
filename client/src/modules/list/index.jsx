@@ -24,7 +24,12 @@ import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
-import { addItemWS, archiveItemWS } from './components/Items/model/actions';
+import {
+  addItemWS,
+  archiveItemWS,
+  deleteItemWS,
+  restoreItemWS
+} from './components/Items/model/actions';
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 
 class List extends Component {
@@ -83,7 +88,9 @@ class List extends Component {
     const {
       addItemWS,
       archiveItemWS,
-      list: { _id: listId }
+      deleteItemWS,
+      list: { _id: listId },
+      restoreItemWS
     } = this.props;
 
     this.socket = io();
@@ -101,6 +108,18 @@ class List extends Component {
       const { itemId, listId } = data;
 
       archiveItemWS(listId, itemId);
+    });
+
+    this.socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
+      const { itemId, listId } = data;
+
+      deleteItemWS(listId, itemId);
+    });
+
+    this.socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
+      const { itemId, listId } = data;
+
+      restoreItemWS(listId, itemId);
     });
   };
 
@@ -300,7 +319,9 @@ List.propTypes = {
   addItemWS: PropTypes.func.isRequired,
   archiveItemWS: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
-  fetchListData: PropTypes.func.isRequired
+  deleteItemWS: PropTypes.func.isRequired,
+  fetchListData: PropTypes.func.isRequired,
+  restoreItemWS: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -327,7 +348,9 @@ export default _flowRight(
       addItemWS,
       archiveItemWS,
       archiveList,
-      fetchListData
+      deleteItemWS,
+      fetchListData,
+      restoreItemWS
     }
   )
 )(List);
