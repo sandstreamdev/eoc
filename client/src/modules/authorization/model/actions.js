@@ -59,5 +59,5 @@ export const loginDemoUser = () => dispatch =>
       });
     });
 
-export const signUp = (email, name, password, passwordConfirm) => dispatch =>
+export const signUp = (email, name, password, passwordConfirm) =>
   postData('auth/sign-up', { email, name, password, passwordConfirm });

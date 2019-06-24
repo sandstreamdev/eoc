@@ -1,7 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import _find from 'lodash/find';
 import validator from 'validator';
 
@@ -10,6 +9,8 @@ import { signUp } from 'modules/authorization/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
+import { IntlPropType } from 'common/constants/propTypes';
+import { ValidationException } from 'common/exceptions/ValidationException';
 
 class SignUpForm extends PureComponent {
   pendingPromise = null;
@@ -34,7 +35,8 @@ class SignUpForm extends PureComponent {
       name: '',
       password: '',
       confirmPasswordValue: undefined,
-      pending: false
+      pending: false,
+      signUpErrorId: ''
     };
   }
 
@@ -48,17 +50,59 @@ class SignUpForm extends PureComponent {
     }
   }
 
-  onNameChange = (name, isValid) =>
-    this.setState({ name, isNameValid: isValid });
+  onNameChange = (name, isValid) => {
+    const {
+      higherLevelErrors,
+      higherLevelErrors: { nameError }
+    } = this.state;
+    const error = isValid ? '' : nameError;
 
-  onEmailChange = (email, isValid) =>
-    this.setState({ email, isEmailValid: isValid });
+    this.setState({
+      higherLevelErrors: {
+        ...higherLevelErrors,
+        nameError: error
+      },
+      name,
+      isNameValid: isValid
+    });
+  };
 
-  onPasswordChange = (password, isValid) =>
+  onEmailChange = (email, isValid) => {
+    const {
+      higherLevelErrors,
+      higherLevelErrors: { emailError }
+    } = this.state;
+    const error = isValid ? '' : emailError;
+
+    this.setState({
+      higherLevelErrors: {
+        ...higherLevelErrors,
+        emailError: error
+      },
+      email,
+      isEmailValid: isValid
+    });
+  };
+
+  onPasswordChange = (password, isValid) => {
+    const {
+      higherLevelErrors,
+      higherLevelErrors: { passwordError }
+    } = this.state;
+    const error = isValid ? '' : passwordError;
+
     this.setState(
-      { password, isPasswordValid: isValid },
+      {
+        higherLevelErrors: {
+          ...higherLevelErrors,
+          passwordError: error
+        },
+        password,
+        isPasswordValid: isValid
+      },
       this.comparePasswords
     );
+  };
 
   onPasswordConfirmChange = (confirmPasswordValue, isValid) =>
     this.setState(
@@ -152,7 +196,6 @@ class SignUpForm extends PureComponent {
   };
 
   handleSignUp = () => {
-    const { signUp } = this.props;
     const { email, name, password, confirmPasswordValue } = this.state;
 
     this.setState({ pending: true });
@@ -162,20 +205,37 @@ class SignUpForm extends PureComponent {
     );
 
     return this.pendingPromise.promise
-      .then(() => this.setState({ confirmationSend: true, pending: false }))
+      .then(() => {
+        this.setState({ confirmationSend: true });
+      })
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
-          const { status } = err.response;
           const newState = { pending: false };
 
-          if (status === 406) {
-            const { errors } = err.response;
+          if (err instanceof ValidationException) {
+            const { errors } = err;
             newState.higherLevelErrors = errors;
+          } else {
+            newState.signUpErrorId =
+              err.message || 'authorization.actions.sign-up.failed';
           }
 
           this.setState(newState);
         }
       });
+  };
+
+  renderSignUpError = () => {
+    const { email, signUpErrorId } = this.state;
+    const {
+      intl: { formatMessage }
+    } = this.props;
+    const message = `${formatMessage(
+      { id: signUpErrorId },
+      { data: email }
+    )} ${formatMessage({ id: 'common.try-again' })}`;
+
+    return <p className="sign-up-form__error">{message}</p>;
   };
 
   renderSignUpForm = () => {
@@ -187,7 +247,8 @@ class SignUpForm extends PureComponent {
         passwordError
       },
       isFormValid,
-      pending
+      pending,
+      signUpErrorId
     } = this.state;
     const { onCancel } = this.props;
 
@@ -196,6 +257,7 @@ class SignUpForm extends PureComponent {
         <h1 className="sign-up-form__heading">
           <FormattedMessage id="authorization.create-account" />
         </h1>
+        {signUpErrorId && this.renderSignUpError()}
         <form className="sign-up-form__form" noValidate>
           <SignUpInput
             disabled={pending}
@@ -262,7 +324,7 @@ class SignUpForm extends PureComponent {
     return (
       <p className="sign-up-form__confirmation">
         <FormattedMessage
-          email={email}
+          values={{ data: email }}
           id="authorization.sign-up.confirmation-link-sent"
         />
       </p>
@@ -283,11 +345,8 @@ class SignUpForm extends PureComponent {
 }
 
 SignUpForm.propTypes = {
-  onCancel: PropTypes.func.isRequired,
-  signUp: PropTypes.func.isRequired
+  intl: IntlPropType.isRequired,
+  onCancel: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { signUp }
-)(SignUpForm);
+export default injectIntl(SignUpForm);
