@@ -53,7 +53,8 @@ class List extends Component {
     this.fetchData().finally(() => {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
-      this.handleSocketListening();
+      this.handleSocketConnection();
+      this.receiveWSEvents();
     });
   }
 
@@ -84,19 +85,24 @@ class List extends Component {
     this.socket.emit('leavingRoom', listId);
   }
 
-  handleSocketListening = () => {
+  handleSocketConnection = () => {
     const {
-      addItemWS,
-      archiveItemWS,
-      deleteItemWS,
-      list: { _id: listId },
-      restoreItemWS
+      list: { _id: listId }
     } = this.props;
 
     this.socket = io();
     this.socket.on('connect', () =>
       this.socket.emit('joinRoom', `list-${listId}`)
     );
+  };
+
+  receiveWSEvents = () => {
+    const {
+      addItemWS,
+      archiveItemWS,
+      deleteItemWS,
+      restoreItemWS
+    } = this.props;
 
     this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
       const { item, listId } = data;
