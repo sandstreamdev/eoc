@@ -26,11 +26,10 @@ import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
 import Avatar from 'common/components/Avatar';
-import PendingButton from 'common/components/PendingButton';
 
 const infoText = {
   [Routes.COHORT]: {
-    [UserRoles.OWNER]: 'common.member-details.cohort.user-role-owner',
+    [UserRoles.OWNER]: 'common.member-details.cohort.user-roles-owner',
     [UserRoles.MEMBER]: 'common.member-details.cohort.user-roles-member'
   },
   [Routes.LIST]: {
@@ -48,8 +47,7 @@ class MemberDetails extends PureComponent {
       isLeaveConfirmationVisible: false,
       isMemberInfoVisible: false,
       isOwnerInfoVisible: false,
-      pending: false,
-      pendingForLeaving: false
+      pending: false
     };
   }
 
@@ -205,10 +203,10 @@ class MemberDetails extends PureComponent {
       }
     } = this.props;
 
-    this.setState({ pendingForLeaving: true });
+    this.setState({ pending: true });
 
     return leaveCohort(id, currentUserId, name).finally(() => {
-      this.setState({ pendingForLeaving: false });
+      this.setState({ pending: false });
     });
   };
 
@@ -390,50 +388,54 @@ class MemberDetails extends PureComponent {
       onClose,
       route
     } = this.props;
-    const { isLeaveConfirmationVisible, pendingForLeaving } = this.state;
+    const { isLeaveConfirmationVisible, pending } = this.state;
 
-    if (userId === currentUserId) {
-      return (
-        <div className="member-details__leave-box">
-          {isLeaveConfirmationVisible ? (
-            <div className="member-details__leave-box-confirmation">
-              <FormattedMessage id="common.member-details.leave-box-heading" />
-              <footer className="member-details__leave-box-confirmation-footer">
-                <PendingButton
-                  className="primary-button"
-                  onClick={this.handleCohortLeave}
-                  pending={pendingForLeaving}
-                >
-                  <FormattedMessage id="common.button.confirm" />
-                </PendingButton>
-                <button
-                  className="primary-button"
-                  onClick={onClose}
-                  type="button"
-                >
-                  <FormattedMessage id="common.button.cancel" />
-                </button>
-              </footer>
-            </div>
-          ) : (
-            <button
-              className="primary-button"
-              onClick={
-                route === Routes.LIST
-                  ? null
-                  : this.handleLeaveConfirmationVisibility
-              }
-              type="button"
-            >
-              <FormattedMessage
-                id="common.member-details.leave"
-                values={{ data: route === Routes.LIST ? 'list' : 'cohort' }}
-              />
-            </button>
-          )}
-        </div>
-      );
+    if (userId !== currentUserId) {
+      return null;
     }
+
+    return (
+      <div className="member-details__leave-box">
+        {isLeaveConfirmationVisible ? (
+          <div className="member-details__leave-box-confirmation">
+            <FormattedMessage id="common.member-details.leave-box-heading" />
+            <footer className="member-details__leave-box-confirmation-footer">
+              <button
+                className="primary-button"
+                disabled={pending}
+                onClick={this.handleCohortLeave}
+                type="button"
+              >
+                <FormattedMessage id="common.button.confirm" />
+              </button>
+              <button
+                className="primary-button"
+                disabled={pending}
+                onClick={onClose}
+                type="button"
+              >
+                <FormattedMessage id="common.button.cancel" />
+              </button>
+            </footer>
+          </div>
+        ) : (
+          <button
+            className="primary-button"
+            onClick={
+              route === Routes.LIST
+                ? null
+                : this.handleLeaveConfirmationVisibility
+            }
+            type="button"
+          >
+            <FormattedMessage
+              id="common.member-details.leave"
+              values={{ data: route === Routes.LIST ? 'list' : 'cohort' }}
+            />
+          </button>
+        )}
+      </div>
+    );
   };
 
   render() {
@@ -460,8 +462,8 @@ class MemberDetails extends PureComponent {
               {isCurrentUserAnOwner && this.renderDetails()}
               {pending && <Preloader />}
             </div>
+            {this.renderLeaveOption()}
           </div>
-          {this.renderLeaveOption()}
         </div>
       </Fragment>
     );

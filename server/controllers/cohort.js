@@ -524,9 +524,7 @@ const leaveCohort = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => {
-      resp.send();
-    })
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;
