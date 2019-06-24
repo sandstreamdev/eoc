@@ -125,9 +125,9 @@ class SignUpForm extends PureComponent {
   };
 
   emailValidator = value => {
-    const { isEmpty, isEmail } = validator;
+    const { isEmail } = validator;
 
-    if (isEmpty(value) || !isEmail(value)) {
+    if (!isEmail(value)) {
       return 'authorization.input.email.invalid';
     }
 
@@ -185,17 +185,14 @@ class SignUpForm extends PureComponent {
     } = this.state;
     const isError = _find(higherLevelErrors, error => error !== '');
 
-    if (
-      isNameValid &&
-      isEmailValid &&
-      isPasswordValid &&
-      isPasswordConfirmValid &&
-      !isError
-    ) {
-      return this.setState({ isFormValid: true });
-    }
-
-    this.setState({ isFormValid: false });
+    return this.setState({
+      isFormValid:
+        isNameValid &&
+        isEmailValid &&
+        isPasswordValid &&
+        isPasswordConfirmValid &&
+        !isError
+    });
   };
 
   handleSignUp = () => {

@@ -25,6 +25,7 @@ class SignUpInput extends PureComponent {
     if (focus) {
       this.input = React.createRef();
     }
+
     this.debouncedChange = _debounce(this.handleChange, 500);
   }
 

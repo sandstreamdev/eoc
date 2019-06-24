@@ -2,7 +2,8 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
@@ -16,6 +17,7 @@ import Preloader, {
 } from 'common/components/Preloader';
 import GoogleButtonImg from 'assets/images/google-btn.png';
 import SignUpForm from './components/SignUpForm';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class AuthBox extends PureComponent {
   state = {
@@ -39,14 +41,16 @@ class AuthBox extends PureComponent {
 
   handleLogin = () => this.setState({ pending: true });
 
-  handleSignUpFormVisibility = () => {
+  handleSignUpFormVisibility = () =>
     this.setState(({ isSignUpFormVisible }) => ({
       isSignUpFormVisible: !isSignUpFormVisible
     }));
-  };
 
   renderGoogleSignInButton = () => {
     const { isCookieSet, pending } = this.state;
+    const {
+      intl: { formatMessage }
+    } = this.props;
 
     return (
       <div className="authbox__button-container">
@@ -63,7 +67,9 @@ class AuthBox extends PureComponent {
             tabIndex={!isCookieSet ? '-1' : '1'}
           >
             <img
-              alt="Sign in with Google"
+              alt={formatMessage({
+                id: 'authorization.auth-box.sign-in-google'
+              })}
               className="google-button__img"
               src={GoogleButtonImg}
             />
@@ -171,10 +177,14 @@ class AuthBox extends PureComponent {
 }
 
 AuthBox.propTypes = {
+  intl: IntlPropType.isRequired,
   loginDemoUser: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { loginDemoUser }
+export default _flowRight(
+  injectIntl,
+  connect(
+    null,
+    { loginDemoUser }
+  )
 )(AuthBox);
