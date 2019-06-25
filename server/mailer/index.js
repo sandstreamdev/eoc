@@ -1,6 +1,7 @@
 const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
+const signUpMailTemplate = require('./mail-signup-template');
 const { PROJECT_NAME } = require('../common/variables');
 
 const { SENDGRID_API_KEY } = process.env;
@@ -37,6 +38,21 @@ const sendInvitation = (req, resp) => {
 };
 
 const sendSignUpConfirmationLink = (req, resp) => {
+  const { displayName: name, email: receiver, signUpHash } = resp.locals;
+  const { protocol } = req;
+  const host = req.get('host');
+  const url = `${protocol}://${host}`;
+  const confirmUrl = `${url}/auth/confirm-email/${signUpHash}`;
+
+  const message = {
+    to: receiver,
+    from: 'no.replay@app.eoc.com',
+    subject: `Confirm your account in ${PROJECT_NAME}!`,
+    html: signUpMailTemplate(url, name, confirmUrl)
+  };
+
+  SendGridMail.send(message);
+
   resp.send();
 };
 
