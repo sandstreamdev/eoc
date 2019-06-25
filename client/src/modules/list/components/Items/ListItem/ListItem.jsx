@@ -30,8 +30,6 @@ import ListItemDescription from '../ListItemDescription';
 import { ItemStatusType } from '../model/actionTypes';
 
 class ListItem extends PureComponent {
-  isMounted = false;
-
   constructor(props) {
     super(props);
 
@@ -55,16 +53,10 @@ class ListItem extends PureComponent {
   componentDidMount() {
     this.handleSocketConnection();
     this.receiveWSEvents();
-
-    this.isMounted = true;
   }
 
   componentDidUpdate() {
     this.emitWSEvents();
-  }
-
-  componentWillUnmount() {
-    this.isMounted = false;
   }
 
   emitWSEvents = () => {
@@ -91,29 +83,27 @@ class ListItem extends PureComponent {
       currentUser: { id: currentUserId }
     } = this.props;
 
-    if (this.isMounted) {
-      this.socket.on(ItemStatusType.BUSY, data => {
-        const { itemId, userId } = data;
-        const {
-          data: { _id }
-        } = this.props;
+    this.socket.on(ItemStatusType.BUSY, data => {
+      const { itemId, userId } = data;
+      const {
+        data: { _id }
+      } = this.props;
 
-        if (currentUserId !== userId && itemId === _id) {
-          this.setState({ busyBySomeone: true });
-        }
-      });
+      if (currentUserId !== userId && itemId === _id) {
+        this.setState({ busyBySomeone: true });
+      }
+    });
 
-      this.socket.on(ItemStatusType.FREE, data => {
-        const { itemId, userId } = data;
-        const {
-          data: { _id }
-        } = this.props;
+    this.socket.on(ItemStatusType.FREE, data => {
+      const { itemId, userId } = data;
+      const {
+        data: { _id }
+      } = this.props;
 
-        if (currentUserId !== userId && itemId === _id) {
-          this.setState({ busyBySomeone: false });
-        }
-      });
-    }
+      if (currentUserId !== userId && itemId === _id) {
+        this.setState({ busyBySomeone: false });
+      }
+    });
   };
 
   handleSocketConnection = () => {
