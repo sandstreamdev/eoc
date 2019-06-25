@@ -48,7 +48,14 @@ class List extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.setState({ pendingForDetails: true });
+
+    this.fetchData().finally(() => {
+      this.setState({ pendingForDetails: false });
+      this.handleBreadcrumbs();
+      this.handleSocketConnection();
+      this.receiveWSEvents();
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -156,13 +163,7 @@ class List extends Component {
       }
     } = this.props;
 
-    this.setState({ pendingForDetails: true });
-
-    fetchListData(id).finally(() => {
-      this.setState({ pendingForDetails: false });
-      this.handleBreadcrumbs();
-      this.handleSocketConnection();
-    });
+    return fetchListData(id);
   };
 
   handleListArchivization = listId => () => {
