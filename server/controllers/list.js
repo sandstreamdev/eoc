@@ -910,11 +910,7 @@ const addViewer = (req, resp) => {
 
       return list.save();
     })
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
-
+    .then(() => {
       if (user) {
         const userToSend = responseWithListMember(user, cohortMembers);
 
@@ -925,7 +921,7 @@ const addViewer = (req, resp) => {
           currentUserId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          list.cohortId,
           user.id
         );
       }
