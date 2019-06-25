@@ -23,6 +23,7 @@ const handleFetchErrors = resp => {
 
   if (resp.status === ResponseStatusCode.BAD_REQUEST) {
     const contentType = resp.headers.get('content-type');
+
     if (contentType.includes('application/json')) {
       return resp.json().then(json => {
         throw new Error(json.message || '');
@@ -34,6 +35,7 @@ const handleFetchErrors = resp => {
 
   if (resp.status === ResponseStatusCode.NOT_ACCEPTABLE) {
     const contentType = resp.headers.get('content-type');
+
     if (contentType.includes('application/json')) {
       return resp.json().then(json => {
         throw new ValidationException('', json.errors);

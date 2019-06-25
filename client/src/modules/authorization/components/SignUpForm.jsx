@@ -201,9 +201,7 @@ class SignUpForm extends PureComponent {
     );
 
     return this.pendingPromise.promise
-      .then(() => {
-        this.setState({ confirmationSend: true });
-      })
+      .then(() => this.setState({ confirmationSend: true }))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           const newState = { pending: false };
@@ -232,7 +230,7 @@ class SignUpForm extends PureComponent {
             };
           } else {
             newState.signUpErrorId =
-              err.message || 'authorization.actions.sign-up.failed';
+              err.message || 'common.something-went-wrong';
           }
 
           this.setState(newState);
@@ -256,9 +254,9 @@ class SignUpForm extends PureComponent {
   renderSignUpForm = () => {
     const {
       higherLevelErrors: {
-        nameError,
-        emailError,
         confirmPasswordValueError,
+        emailError,
+        nameError,
         passwordError
       },
       isFormValid,
@@ -313,17 +311,17 @@ class SignUpForm extends PureComponent {
           <div className="sign-up-form__buttons">
             <button
               className="primary-button"
-              type="button"
               disabled={pending}
               onClick={onCancel}
+              type="button"
             >
               <FormattedMessage id="common.button.cancel" />
             </button>
             <PendingButton
               className="primary-button sign-up-form__confirm"
-              type="button"
               disabled={!isFormValid}
               onClick={this.handleSignUp}
+              type="button"
             >
               <FormattedMessage id="authorization.sign-up" />
             </PendingButton>
@@ -339,8 +337,8 @@ class SignUpForm extends PureComponent {
     return (
       <p className="sign-up-form__confirmation">
         <FormattedMessage
-          values={{ data: email }}
           id="authorization.sign-up.confirmation-link-sent"
+          values={{ data: email }}
         />
       </p>
     );
@@ -361,6 +359,7 @@ class SignUpForm extends PureComponent {
 
 SignUpForm.propTypes = {
   intl: IntlPropType.isRequired,
+
   onCancel: PropTypes.func.isRequired
 };
 
