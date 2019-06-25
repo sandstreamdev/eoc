@@ -84,26 +84,28 @@ const signUp = (req, resp, next) => {
             });
         }
 
-        throw new BadRequestException('authorization.user-already-exist');
-      } else {
-        const hashedPassword = bcrypt.hashSync(password + email, 12);
-        const signUpHash = crypto.randomBytes(32).toString('hex');
-        const expirationDate = new Date().getTime() + 3600000;
-        const newUser = new User({
-          displayName: sanitizedUsername,
-          email: sanitizedEmail,
-          isActive: false,
-          password: hashedPassword,
-          signUpHash,
-          signUpHashExpirationDate: expirationDate
-        });
-
-        return newUser.save().then(user => {
-          const { displayName, email, signUpHash } = user;
-
-          return { displayName, email, signUpHash };
-        });
+        throw new BadRequestException(
+          'authorization.actions.sign-up.user-already-exist'
+        );
       }
+
+      const hashedPassword = bcrypt.hashSync(password + email, 12);
+      const signUpHash = crypto.randomBytes(32).toString('hex');
+      const expirationDate = new Date().getTime() + 3600000;
+      const newUser = new User({
+        displayName: sanitizedUsername,
+        email: sanitizedEmail,
+        isActive: false,
+        password: hashedPassword,
+        signUpHash,
+        signUpHashExpirationDate: expirationDate
+      });
+
+      return newUser.save().then(user => {
+        const { displayName, email, signUpHash } = user;
+
+        return { displayName, email, signUpHash };
+      });
     })
     .then(dataToSend => {
       // eslint-disable-next-line no-param-reassign
