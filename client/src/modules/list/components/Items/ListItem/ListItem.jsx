@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import io from 'socket.io-client';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
 import {
@@ -26,6 +27,7 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
+import { ItemStatusType } from '../model/actionTypes';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -37,11 +39,89 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
+      busy: false,
+      busyBySomeone: false,
+      busyInfoVisibility: false,
       done: isOrdered,
       isNameEdited: false,
       isConfirmationVisible: false
     };
+
+    this.socket = undefined;
   }
+
+  componentDidMount() {
+    this.handleSocketConnection();
+    this.receiveWSEvents();
+  }
+
+  componentDidUpdate() {
+    this.emitWSEvents();
+  }
+
+  emitWSEvents = () => {
+    const { busy } = this.state;
+    const {
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      },
+      currentUser: { id: userId }
+    } = this.props;
+
+    if (busy) {
+      this.socket.emit(ItemStatusType.BUSY, { itemId, listId, userId });
+
+      return;
+    }
+
+    this.socket.emit(ItemStatusType.FREE, { itemId, listId, userId });
+  };
+
+  receiveWSEvents = () => {
+    const {
+      currentUser: { id: currentUserId }
+    } = this.props;
+
+    this.socket.on(ItemStatusType.BUSY, data => {
+      const { itemId, userId } = data;
+      const {
+        data: { _id }
+      } = this.props;
+
+      if (currentUserId !== userId && itemId === _id) {
+        this.setState({ busyBySomeone: true });
+      }
+    });
+
+    this.socket.on(ItemStatusType.FREE, data => {
+      const { itemId, userId } = data;
+      const {
+        data: { _id }
+      } = this.props;
+
+      if (currentUserId !== userId && itemId === _id) {
+        this.setState({ busyBySomeone: false });
+      }
+    });
+  };
+
+  handleSocketConnection = () => {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    if (!this.socket) {
+      this.socket = io();
+    }
+
+    this.socket = io();
+    this.socket.on('connect', () =>
+      this.socket.emit('joinRoom', `list-${listId}`)
+    );
+  };
 
   handleItemToggling = () => {
     const {
@@ -59,15 +139,23 @@ class ListItem extends PureComponent {
       return;
     }
 
-    this.setState(({ done }) => ({ done: !done, disableToggleButton: true }));
+    this.setState(({ done }) => ({
+      done: !done,
+      disableToggleButton: true,
+      busy: true
+    }));
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
-      return toggle(itemName, isOrdered, _id, listId, userId, name);
+      return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
+        () => this.setState({ busy: false })
+      );
     }
 
-    toggle(itemName, isOrdered, _id, listId);
+    toggle(itemName, isOrdered, _id, listId).finally(() =>
+      this.setState({ busy: false })
+    );
   };
 
   handleDetailsVisibility = () =>
@@ -85,8 +173,12 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
+    this.setState({ busy: true });
+
     if (isMember) {
-      return cloneItem(name, listId, itemId);
+      return cloneItem(name, listId, itemId).finally(() =>
+        this.setState({ busy: false })
+      );
     }
   };
 
@@ -102,7 +194,11 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    return action(_id, listId, name);
+    this.setState({ busy: true });
+
+    return action(_id, listId, name).finally(() =>
+      this.setState({ busy: false })
+    );
   };
 
   handleConfirmationVisibility = () =>
@@ -118,8 +214,13 @@ class ListItem extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
+    const { socket } = this;
 
-    return archiveItem(listId, itemId, name);
+    this.setState({ busy: true });
+
+    return archiveItem(listId, itemId, name, socket).finally(() =>
+      this.setState({ busy: false })
+    );
   };
 
   renderVoting = () => {
@@ -146,9 +247,19 @@ class ListItem extends PureComponent {
 
   preventDefault = event => event.preventDefault();
 
-  handleNameFocus = () => this.setState({ isNameEdited: true });
+  handleNameFocus = () => this.setState({ isNameEdited: true, busy: true });
 
-  handleNameBlur = () => this.setState({ isNameEdited: false });
+  handleNameBlur = () => this.setState({ isNameEdited: false, busy: false });
+
+  handleDescriptionFocus = () => this.setState({ busy: true });
+
+  handleDescriptionBlur = () => this.setState({ busy: false });
+
+  handleCommentsBlur = () => this.setState({ busy: false });
+
+  handleCommentsFocus = () => this.setState({ busy: true });
+
+  handleBusyInfoVisibility = () => this.setState({ busyInfoVisibility: true });
 
   renderConfirmation = () => {
     const {
@@ -165,8 +276,8 @@ class ListItem extends PureComponent {
           className="primary-button"
           disabled={!isMember}
           onClick={this.handleArchiveItem}
-          type="button"
           preloaderTheme={PreloaderTheme.LIGHT}
+          type="button"
         >
           <FormattedMessage id="common.button.confirm" />
         </PendingButton>
@@ -243,6 +354,8 @@ class ListItem extends PureComponent {
             disabled={isFieldDisabled}
             itemId={itemId}
             name={name}
+            onBlur={this.handleDescriptionBlur}
+            onFocus={this.handleDescriptionFocus}
           />
         </div>
       );
@@ -265,9 +378,31 @@ class ListItem extends PureComponent {
             isFormAccessible={isMember && !isOrdered}
             itemId={itemId}
             itemName={name}
+            onBlur={this.handleCommentsBlur}
+            onFocus={this.handleCommentsFocus}
           />
         </div>
       </Fragment>
+    );
+  };
+
+  renderBusyOverlay = () => {
+    const { busyBySomeone, busyInfoVisibility } = this.state;
+
+    return (
+      busyBySomeone && (
+        <div
+          className={classNames('list-item__busy-overlay', {
+            'list-item__busy-overlay--dimmed': busyInfoVisibility
+          })}
+          onClick={this.handleBusyInfoVisibility}
+          role="banner"
+        >
+          {busyInfoVisibility && (
+            <FormattedMessage id="list.list-item.busy-info" />
+          )}
+        </div>
+      )
     );
   };
 
@@ -278,9 +413,9 @@ class ListItem extends PureComponent {
     } = this.props;
     const {
       areDetailsVisible,
+      disableToggleButton,
       done,
-      isNameEdited,
-      disableToggleButton
+      isNameEdited
     } = this.state;
 
     return (
@@ -291,6 +426,7 @@ class ListItem extends PureComponent {
           'list-item--details-visible': areDetailsVisible
         })}
       >
+        {this.renderBusyOverlay()}
         <div
           className={classNames('list-item__top', {
             'list-item__top--details-visible': areDetailsVisible,

@@ -70,7 +70,9 @@ class NewComment extends PureComponent {
   render() {
     const { comment, pending } = this.state;
     const {
-      intl: { formatMessage }
+      intl: { formatMessage },
+      onBlur,
+      onFocus
     } = this.props;
 
     return (
@@ -78,7 +80,9 @@ class NewComment extends PureComponent {
         <div className="new-comment__wrapper">
           <Textarea
             disabled={pending}
+            onBlur={onBlur}
             onChange={this.handleCommentChange}
+            onFocus={onFocus}
             placeholder={formatMessage({ id: 'common.add-comment' })}
           />
           {comment && (
@@ -107,7 +111,9 @@ NewComment.propTypes = {
   intl: IntlPropType.isRequired,
 
   onAddComment: PropTypes.func,
-  onClose: PropTypes.func
+  onBlur: PropTypes.func,
+  onClose: PropTypes.func,
+  onFocus: PropTypes.func
 };
 
 export default injectIntl(NewComment);
