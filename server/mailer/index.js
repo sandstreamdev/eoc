@@ -1,7 +1,6 @@
 const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
-const signUpMailTemplate = require('./mail-signup-template');
 const { PROJECT_NAME } = require('../common/variables');
 
 const { SENDGRID_API_KEY } = process.env;
@@ -16,12 +15,15 @@ const sendInvitation = (req, resp) => {
   const { protocol } = req;
   const host = req.get('host');
   const url = `${protocol}://${host}`;
+  const title = `Join ${PROJECT_NAME} today!`;
+  const info = `Would you like to join me in amazing ${PROJECT_NAME} app?`;
+  const value = `JOIN ${PROJECT_NAME}`;
 
   const message = {
     to: receiver,
     from: sender,
     subject: `Join ${PROJECT_NAME}!`,
-    html: mailTemplate(receiver, sender, url)
+    html: mailTemplate(receiver, sender, url, title, info, value)
   };
 
   SendGridMail.send(message)
@@ -43,17 +45,27 @@ const sendSignUpConfirmationLink = (req, resp) => {
   const host = req.get('host');
   const url = `${protocol}://${host}`;
   const confirmUrl = `${url}/auth/confirm-email/${signUpHash}`;
+  const title = `Welcome to ${PROJECT_NAME}!`;
+  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!`;
+  const value = 'Confirm your account';
 
   const message = {
     to: receiver,
     from: 'no.replay@app.eoc.com',
     subject: `Confirm your account in ${PROJECT_NAME}!`,
-    html: signUpMailTemplate(url, name, confirmUrl)
+    html: mailTemplate(
+      name,
+      `${PROJECT_NAME} team`,
+      confirmUrl,
+      title,
+      info,
+      value
+    )
   };
 
-  SendGridMail.send(message);
-
-  resp.send();
+  SendGridMail.send(message)
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = { sendInvitation, sendSignUpConfirmationLink };
