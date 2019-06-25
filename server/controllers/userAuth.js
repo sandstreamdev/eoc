@@ -43,19 +43,19 @@ const signUp = (req, resp, next) => {
   const { isEmail, isEmpty, isLength, matches } = validator;
 
   if (!isLength(sanitizedUsername, { min: 1, max: 32 })) {
-    errors.nameError = 'authorization.input.username.invalid';
+    errors.nameError = true;
   }
 
   if (isEmpty(sanitizedEmail) || !isEmail(sanitizedEmail)) {
-    errors.emailError = 'authorization.input.email.invalid';
+    errors.emailError = true;
   }
 
   if (!matches(sanitizedPassword, /^[^\s]{4,32}$/)) {
-    errors.passwordError = 'authorization.input.password.invalid';
+    errors.passwordError = true;
   }
 
   if (sanitizedPassword !== sanitizedPasswordConfirm) {
-    errors.passwordConfirmError = 'authorization.input.password.not-match';
+    errors.confirmPasswordError = true;
   }
 
   if (_some(errors, error => error !== undefined)) {
