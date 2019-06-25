@@ -118,7 +118,7 @@ class AuthBox extends PureComponent {
         <div className="authbox__button-wrapper">
           <PendingButton
             className="primary-button authbox__button"
-            disable={!isCookieSet || pending}
+            disabled={!isCookieSet || pending}
             onClick={this.handleLaunchingDemo}
             preloaderTheme={PreloaderTheme.LIGHT}
           >

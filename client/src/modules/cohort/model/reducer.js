@@ -47,6 +47,14 @@ const membersReducer = (state = [], action) => {
           : member
       );
     }
+    case CohortActionTypes.LEAVE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+      const userIndex = state.indexOf(userId);
+
+      return [...state.slice(0, userIndex), ...state.slice(userIndex + 1)];
+    }
     default:
       return state;
   }
@@ -96,7 +104,8 @@ const cohorts = (state = {}, action) => {
       return { ...state, [action.payload._id]: action.payload.data };
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS:
-    case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
+    case CohortActionTypes.LEAVE_SUCCESS: {
       const {
         payload: { cohortId }
       } = action;

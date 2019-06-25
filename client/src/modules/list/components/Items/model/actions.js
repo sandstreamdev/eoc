@@ -272,7 +272,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
       });
     });
 
-export const archiveItem = (listId, itemId, name) => dispatch =>
+export const archiveItem = (listId, itemId, name, socket) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: true,
     itemId
@@ -283,6 +283,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.archive-item',
         data: name
       });
+      socket.emit(ItemActionTypes.ARCHIVE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(archiveItemFailure());
@@ -291,6 +292,9 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
         data: name
       });
     });
+
+export const archiveItemWS = (listId, itemId) => dispatch =>
+  dispatch(archiveItemSuccess(listId, itemId));
 
 export const fetchArchivedItems = (listId, listName) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
@@ -307,7 +311,7 @@ export const fetchArchivedItems = (listId, listName) => dispatch =>
       });
     });
 
-export const restoreItem = (listId, itemId, name) => dispatch =>
+export const restoreItem = (listId, itemId, name, socket) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: false,
     itemId
@@ -318,6 +322,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.restore-item',
         data: name
       });
+      socket.emit(ItemActionTypes.RESTORE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(restoreItemFailure());
@@ -327,7 +332,10 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
       });
     });
 
-export const deleteItem = (listId, itemId, name) => dispatch =>
+export const restoreItemWS = (listId, itemId) => dispatch =>
+  dispatch(restoreItemSuccess(listId, itemId));
+
+export const deleteItem = (listId, itemId, name, socket) => dispatch =>
   patchData(`/api/lists/${listId}/delete-item/${itemId}`)
     .then(() => {
       dispatch(deleteItemSuccess(listId, itemId));
@@ -335,6 +343,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.delete-item',
         data: name
       });
+      socket.emit(ItemActionTypes.DELETE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(deleteItemFailure());
@@ -343,3 +352,6 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
         data: name
       });
     });
+
+export const deleteItemWS = (listId, itemId) => dispatch =>
+  dispatch(deleteItemSuccess(listId, itemId));
