@@ -239,9 +239,9 @@ class SignUpForm extends PureComponent {
   renderSignUpForm = () => {
     const {
       higherLevelErrors: {
-        nameError,
-        emailError,
         confirmPasswordValueError,
+        emailError,
+        nameError,
         passwordError
       },
       isFormValid,
@@ -296,17 +296,17 @@ class SignUpForm extends PureComponent {
           <div className="sign-up-form__buttons">
             <button
               className="primary-button"
-              type="button"
               disabled={pending}
               onClick={onCancel}
+              type="button"
             >
               <FormattedMessage id="common.button.cancel" />
             </button>
             <PendingButton
               className="primary-button sign-up-form__confirm"
-              type="button"
               disabled={!isFormValid}
               onClick={this.handleSignUp}
+              type="button"
             >
               <FormattedMessage id="authorization.sign-up" />
             </PendingButton>
@@ -322,8 +322,8 @@ class SignUpForm extends PureComponent {
     return (
       <p className="sign-up-form__confirmation">
         <FormattedMessage
-          values={{ data: email }}
           id="authorization.sign-up.confirmation-link-sent"
+          values={{ data: email }}
         />
       </p>
     );
@@ -344,6 +344,7 @@ class SignUpForm extends PureComponent {
 
 SignUpForm.propTypes = {
   intl: IntlPropType.isRequired,
+
   onCancel: PropTypes.func.isRequired
 };
 
