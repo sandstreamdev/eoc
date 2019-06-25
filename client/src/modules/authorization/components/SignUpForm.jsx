@@ -205,9 +205,7 @@ class SignUpForm extends PureComponent {
     );
 
     return this.pendingPromise.promise
-      .then(() => {
-        this.setState({ confirmationSend: true });
-      })
+      .then(() => this.setState({ confirmationSend: true }))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           const newState = { pending: false };
@@ -217,7 +215,7 @@ class SignUpForm extends PureComponent {
             newState.higherLevelErrors = errors;
           } else {
             newState.signUpErrorId =
-              err.message || 'authorization.actions.sign-up.failed';
+              err.message || 'common.something-went-wrong';
           }
 
           this.setState(newState);
