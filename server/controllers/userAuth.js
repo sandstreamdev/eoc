@@ -1,6 +1,6 @@
 const sanitize = require('mongo-sanitize');
 const validator = require('validator');
-const _find = require('lodash/find');
+const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 
@@ -36,29 +36,27 @@ const sendDemoUser = (req, resp) => {
 const signUp = (req, resp, next) => {
   const { email, password, passwordConfirm, username } = req.body;
   const sanitizedEmail = sanitize(email);
-  const sanitizedPassword = sanitize(password);
-  const sanitizedPasswordConfirm = sanitize(passwordConfirm);
   const sanitizedUsername = sanitize(username);
   const errors = {};
   const { isEmail, isEmpty, isLength, matches } = validator;
 
   if (!isLength(sanitizedUsername, { min: 1, max: 32 })) {
-    errors.nameError = 'authorization.input.username.invalid';
+    errors.nameError = true;
   }
 
   if (isEmpty(sanitizedEmail) || !isEmail(sanitizedEmail)) {
-    errors.emailError = 'authorization.input.email.invalid';
+    errors.emailError = true;
   }
 
-  if (!matches(sanitizedPassword, /^[^\s]{4,32}$/)) {
-    errors.passwordError = 'authorization.input.password.invalid';
+  if (!matches(password, /^[^\s]{4,32}$/)) {
+    errors.passwordError = true;
   }
 
-  if (sanitizedPassword !== sanitizedPasswordConfirm) {
-    errors.passwordConfirmError = 'authorization.input.password.not-match';
+  if (password !== passwordConfirm) {
+    errors.confirmPasswordError = true;
   }
 
-  if (_find(errors, error => error !== undefined)) {
+  if (_some(errors, error => error !== undefined)) {
     return resp.status(406).send(errors);
   }
 
@@ -88,8 +86,7 @@ const signUp = (req, resp, next) => {
 
         throw new BadRequestException('authorization.user-already-exist');
       } else {
-        const salt = bcrypt.genSaltSync(12);
-        const hashedPassword = bcrypt.hashSync(password + email, salt);
+        const hashedPassword = bcrypt.hashSync(password + email, 12);
         const signUpHash = crypto.randomBytes(32).toString('hex');
         const expirationDate = new Date().getTime() + 3600000;
         const newUser = new User({
@@ -97,7 +94,6 @@ const signUp = (req, resp, next) => {
           email: sanitizedEmail,
           isActive: false,
           password: hashedPassword,
-          salt,
           signUpHash,
           signUpHashExpirationDate: expirationDate
         });

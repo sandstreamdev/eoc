@@ -13,7 +13,6 @@ const UserSchema = new Schema(
     name: { type: String },
     password: { type: String },
     provider: { type: String },
-    salt: { type: String },
     signUpHash: { type: String },
     signUpHashExpirationDate: { type: Date },
     surname: { type: String }

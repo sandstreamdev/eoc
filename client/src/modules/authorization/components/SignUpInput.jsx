@@ -129,12 +129,12 @@ class SignUpInput extends PureComponent {
           )}
         </label>
         <input
-          id={name}
           className={classNames('primary-input sign-up-input__input', {
             'sign-up-input__input--valid': validTheme,
             'sign-up-input__input--invalid': invalidTheme
           })}
           disabled={disabled}
+          id={name}
           name={name}
           onChange={this.handleInputChange}
           ref={focus && this.input}
