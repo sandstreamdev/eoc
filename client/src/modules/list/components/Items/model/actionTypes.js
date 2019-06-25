@@ -28,3 +28,8 @@ export const ItemActionTypes = Object.freeze({
   UPDATE_FAILURE: 'item/UPDATE_FAILURE',
   UPDATE_SUCCESS: 'item/UPDATE_SUCCESS'
 });
+
+export const ItemStatusType = Object.freeze({
+  BUSY: 'item/BUSY',
+  FREE: 'item/FREE'
+});

@@ -56,7 +56,15 @@ const ActivityType = Object.freeze({
 });
 
 const ItemActionTypes = Object.freeze({
-  ADD_SUCCESS: 'item/ADD_SUCCESS'
+  ADD_SUCCESS: 'item/ADD_SUCCESS',
+  ARCHIVE_SUCCESS: 'item/ARCHIVE_SUCCESS',
+  DELETE_SUCCESS: 'item/DELETE_SUCCESS',
+  RESTORE_SUCCESS: 'item/RESTORE_SUCCESS'
+});
+
+const ItemStatusType = Object.freeze({
+  BUSY: 'item/BUSY',
+  FREE: 'item/FREE'
 });
 
 module.exports = {
@@ -66,6 +74,7 @@ module.exports = {
   DEMO_MODE_ID,
   DEMO_USER_ID,
   ItemActionTypes,
+  ItemStatusType,
   ListType,
   PROJECT_NAME
 };

@@ -120,6 +120,7 @@
   "list.list-item.clone": "Clone item",
   "list.list-item.confirmation": "Do you really want to archive '{name}' item?",
   "list.list-item.author": "Added by: {authorName}",
+  "list.list-item.busy-info": "This item is currently edited by someone.",
   "list.list-description.add-button": "Add description",
   "list.list-description.title": "Description",
   "list.voting-box.remove": "Remove your vote",

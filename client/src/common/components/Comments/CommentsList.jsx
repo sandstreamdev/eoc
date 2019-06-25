@@ -78,7 +78,9 @@ class CommentsList extends PureComponent {
     const {
       comments,
       intl: { formatMessage },
-      isFormAccessible
+      isFormAccessible,
+      onBlur,
+      onFocus
     } = this.props;
     const { isNewCommentVisible, pending } = this.state;
 
@@ -99,7 +101,9 @@ class CommentsList extends PureComponent {
         {isNewCommentVisible && (
           <NewComment
             onAddComment={this.handleAddComment}
+            onBlur={onBlur}
             onClose={this.hideAddComment}
+            onFocus={onFocus}
           />
         )}
         <div className="comments__container">
@@ -133,7 +137,9 @@ CommentsList.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   addComment: PropTypes.func.isRequired,
-  fetchComments: PropTypes.func.isRequired
+  fetchComments: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func
 };
 
 export default _flowRight(

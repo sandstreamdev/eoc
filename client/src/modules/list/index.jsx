@@ -24,7 +24,12 @@ import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
-import { addItemWS } from './components/Items/model/actions';
+import {
+  addItemWS,
+  archiveItemWS,
+  deleteItemWS,
+  restoreItemWS
+} from './components/Items/model/actions';
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 
 class List extends Component {
@@ -43,7 +48,14 @@ class List extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.setState({ pendingForDetails: true });
+
+    this.fetchData().finally(() => {
+      this.setState({ pendingForDetails: false });
+      this.handleBreadcrumbs();
+      this.handleSocketConnection();
+      this.receiveWSEvents();
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -74,9 +86,8 @@ class List extends Component {
     this.socket.emit('leavingRoom', listId);
   }
 
-  handleSocketListening = () => {
+  handleSocketConnection = () => {
     const {
-      addItemWS,
       list: { _id: listId }
     } = this.props;
 
@@ -84,11 +95,38 @@ class List extends Component {
     this.socket.on('connect', () =>
       this.socket.emit('joinRoom', `list-${listId}`)
     );
+  };
+
+  receiveWSEvents = () => {
+    const {
+      addItemWS,
+      archiveItemWS,
+      deleteItemWS,
+      restoreItemWS
+    } = this.props;
 
     this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
       const { item, listId } = data;
 
       addItemWS(item, listId);
+    });
+
+    this.socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
+      const { itemId, listId } = data;
+
+      archiveItemWS(listId, itemId);
+    });
+
+    this.socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
+      const { itemId, listId } = data;
+
+      deleteItemWS(listId, itemId);
+    });
+
+    this.socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
+      const { itemId, listId } = data;
+
+      restoreItemWS(listId, itemId);
     });
   };
 
@@ -292,8 +330,11 @@ List.propTypes = {
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   addItemWS: PropTypes.func.isRequired,
+  archiveItemWS: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
-  fetchListData: PropTypes.func.isRequired
+  deleteItemWS: PropTypes.func.isRequired,
+  fetchListData: PropTypes.func.isRequired,
+  restoreItemWS: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -318,8 +359,11 @@ export default _flowRight(
     mapStateToProps,
     {
       addItemWS,
+      archiveItemWS,
       archiveList,
-      fetchListData
+      deleteItemWS,
+      fetchListData,
+      restoreItemWS
     }
   )
 )(List);
