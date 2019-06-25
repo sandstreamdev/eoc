@@ -153,9 +153,7 @@ class ListItem extends PureComponent {
       );
     }
 
-    toggle(itemName, isOrdered, _id, listId).finally(() =>
-      this.setState({ busy: false })
-    );
+    toggle(itemName, isOrdered, _id, listId);
   };
 
   handleDetailsVisibility = () =>
@@ -218,9 +216,7 @@ class ListItem extends PureComponent {
 
     this.setState({ busy: true });
 
-    return archiveItem(listId, itemId, name, socket).finally(() =>
-      this.setState({ busy: false })
-    );
+    return archiveItem(listId, itemId, name, socket);
   };
 
   renderVoting = () => {
