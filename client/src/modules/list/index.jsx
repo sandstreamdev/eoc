@@ -50,12 +50,7 @@ class List extends Component {
   componentDidMount() {
     this.setState({ pendingForDetails: true });
 
-    this.fetchData().finally(() => {
-      this.setState({ pendingForDetails: false });
-      this.handleBreadcrumbs();
-      this.handleSocketConnection();
-      this.receiveWSEvents();
-    });
+    this.fetchData();
   }
 
   componentDidUpdate(prevProps) {
@@ -168,7 +163,7 @@ class List extends Component {
     fetchListData(id).finally(() => {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
-      this.handleSocketListening();
+      this.handleSocketConnection();
     });
   };
 
