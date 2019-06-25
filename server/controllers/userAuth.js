@@ -36,8 +36,6 @@ const sendDemoUser = (req, resp) => {
 const signUp = (req, resp, next) => {
   const { email, password, passwordConfirm, username } = req.body;
   const sanitizedEmail = sanitize(email);
-  const sanitizedPassword = sanitize(password);
-  const sanitizedPasswordConfirm = sanitize(passwordConfirm);
   const sanitizedUsername = sanitize(username);
   const errors = {};
   const { isEmail, isEmpty, isLength, matches } = validator;
@@ -50,11 +48,11 @@ const signUp = (req, resp, next) => {
     errors.emailError = true;
   }
 
-  if (!matches(sanitizedPassword, /^[^\s]{4,32}$/)) {
+  if (!matches(password, /^[^\s]{4,32}$/)) {
     errors.passwordError = true;
   }
 
-  if (sanitizedPassword !== sanitizedPasswordConfirm) {
+  if (password !== passwordConfirm) {
     errors.confirmPasswordError = true;
   }
 
