@@ -10,6 +10,7 @@ const {
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,
+  leaveCohort,
   removeMember,
   removeOwnerRole,
   updateCohortById
@@ -26,5 +27,6 @@ router.patch('/:id/remove-member', authorize, removeMember);
 router.patch('/:id/add-owner-role', authorize, addOwnerRole);
 router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);
 router.patch('/:id/add-member', authorize, addMember);
+router.patch('/:id/leave-cohort', leaveCohort);
 
 module.exports = router;

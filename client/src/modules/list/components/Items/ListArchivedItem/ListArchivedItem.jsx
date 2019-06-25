@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import io from 'socket.io-client';
 
 import PendingButton from 'common/components/PendingButton';
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
@@ -18,6 +19,10 @@ class ListArchivedItem extends PureComponent {
     isConfirmationVisible: false
   };
 
+  componentDidMount() {
+    this.handleSocketConnection();
+  }
+
   handleRestoringItem = () => {
     const {
       restoreItem,
@@ -26,8 +31,9 @@ class ListArchivedItem extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
+    const { socket } = this;
 
-    return restoreItem(listId, itemId, name);
+    return restoreItem(listId, itemId, name, socket);
   };
 
   handleConfirmationVisibility = () =>
@@ -43,8 +49,26 @@ class ListArchivedItem extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
+    const { socket } = this;
 
-    return deleteItem(listId, itemId, name);
+    return deleteItem(listId, itemId, name, socket);
+  };
+
+  handleSocketConnection = () => {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    if (!this.socket) {
+      this.socket = io();
+    }
+
+    this.socket = io();
+    this.socket.on('connect', () =>
+      this.socket.emit('joinRoom', `list-${listId}`)
+    );
   };
 
   render() {

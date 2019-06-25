@@ -132,6 +132,15 @@ const removeOwnerRoleSuccess = (
   payload: { cohortId, isCurrentUserRoleChanging, userId }
 });
 
+const leaveCohortSuccess = (cohortId, userId) => ({
+  type: CohortActionTypes.LEAVE_SUCCESS,
+  payload: { cohortId, userId }
+});
+
+const leaveCohortFailure = () => ({
+  type: CohortActionTypes.LEAVE_FAILURE
+});
+
 export const removeArchivedCohortsMetaData = () => ({
   type: CohortActionTypes.REMOVE_ARCHIVED_META_DATA
 });
@@ -347,6 +356,24 @@ export const removeOwnerRole = (
       dispatch(removeOwnerRoleFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: err.message || 'cohort.actions.remove-owner-fail',
+        data: userName
+      });
+    });
+
+export const leaveCohort = (cohortId, userId, userName) => dispatch =>
+  patchData(`/api/cohorts/${cohortId}/leave-cohortt`, { userId })
+    .then(() => {
+      dispatch(leaveCohortSuccess(cohortId, userId));
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'cohort.actions.leave-cohort',
+        data: userName
+      });
+      history.replace('/cohorts');
+    })
+    .catch(err => {
+      dispatch(leaveCohortFailure());
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR_NO_RETRY, {
+        notificationId: err.message || 'cohort.actions.leave-cohort-fail',
         data: userName
       });
     });

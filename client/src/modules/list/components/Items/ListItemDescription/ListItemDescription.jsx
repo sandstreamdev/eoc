@@ -70,11 +70,17 @@ class ListItemDescription extends PureComponent {
   };
 
   handleFocus = () => {
+    const { onFocus } = this.props;
+
     this.setState({ isFocused: true });
+    onFocus();
     document.addEventListener('keydown', this.handleEscapePress);
   };
 
   handleBlur = () => {
+    const { onBlur } = this.props;
+
+    onBlur();
     this.setState({ isFocused: false });
     document.removeEventListener('keydown', this.handleEscapePress);
     this.handleDescriptionUpdate();
@@ -267,6 +273,8 @@ ListItemDescription.propTypes = {
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
 
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
   updateListItem: PropTypes.func.isRequired
 };
 

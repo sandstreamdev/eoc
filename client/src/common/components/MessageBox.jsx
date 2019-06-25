@@ -10,7 +10,8 @@ const MessageBox = ({ message, type }) => (
   <div
     className={classNames('message-box', {
       'message-box--green': type === MessageType.SUCCESS,
-      'message-box--red': type === MessageType.ERROR,
+      'message-box--red':
+        type === (MessageType.ERROR || MessageType.ERROR_NO_RETRY),
       'message-box--gray': type === MessageType.INFO
     })}
   >

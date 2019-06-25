@@ -1,5 +1,6 @@
 export const MessageType = Object.freeze({
   ERROR: 'error',
+  ERROR_NO_RETRY: 'no_retry',
   INFO: 'info',
   SUCCESS: 'success'
 });
