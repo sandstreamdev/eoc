@@ -1,6 +1,6 @@
 const sanitize = require('mongo-sanitize');
 const validator = require('validator');
-const _find = require('lodash/find');
+const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 
@@ -58,7 +58,7 @@ const signUp = (req, resp, next) => {
     errors.passwordConfirmError = 'authorization.input.password.not-match';
   }
 
-  if (_find(errors, error => error !== undefined)) {
+  if (_some(errors, error => error !== undefined)) {
     return resp.status(406).send(errors);
   }
 
@@ -88,8 +88,7 @@ const signUp = (req, resp, next) => {
 
         throw new BadRequestException('authorization.user-already-exist');
       } else {
-        const salt = bcrypt.genSaltSync(12);
-        const hashedPassword = bcrypt.hashSync(password + email, salt);
+        const hashedPassword = bcrypt.hashSync(password + email, 12);
         const signUpHash = crypto.randomBytes(32).toString('hex');
         const expirationDate = new Date().getTime() + 3600000;
         const newUser = new User({
@@ -97,7 +96,6 @@ const signUp = (req, resp, next) => {
           email: sanitizedEmail,
           isActive: false,
           password: hashedPassword,
-          salt,
           signUpHash,
           signUpHashExpirationDate: expirationDate
         });

@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import _find from 'lodash/find';
+import _some from 'lodash/some';
 import validator from 'validator';
 
 import SignUpInput from './SignUpInput';
@@ -183,7 +183,7 @@ class SignUpForm extends PureComponent {
       isPasswordConfirmValid,
       isPasswordValid
     } = this.state;
-    const isError = _find(higherLevelErrors, error => error !== '');
+    const isError = _some(higherLevelErrors, error => error !== '');
 
     return this.setState({
       isFormValid:
