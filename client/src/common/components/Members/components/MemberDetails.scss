@@ -175,4 +175,15 @@
   &__notice {
     padding-top: 15px;
   }
+
+  &__leave-box {
+    margin-top: 5px;
+  }
+
+  &__leave-box-confirmation-footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
