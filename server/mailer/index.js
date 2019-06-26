@@ -36,4 +36,8 @@ const sendInvitation = (req, resp) => {
     });
 };
 
-module.exports = { sendInvitation };
+const sendSignUpConfirmationLink = (req, resp) => {
+  resp.send();
+};
+
+module.exports = { sendInvitation, sendSignUpConfirmationLink };

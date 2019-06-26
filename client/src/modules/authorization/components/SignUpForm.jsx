@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import _find from 'lodash/find';
+import _some from 'lodash/some';
 import validator from 'validator';
 
 import SignUpInput from './SignUpInput';
@@ -20,11 +20,12 @@ class SignUpForm extends PureComponent {
 
     this.state = {
       confirmationSend: false,
+      confirmPasswordValue: undefined,
       email: '',
       higherLevelErrors: {
+        confirmPasswordValueError: '',
         emailError: '',
         nameError: '',
-        confirmPasswordValueError: '',
         passwordError: ''
       },
       isEmailValid: false,
@@ -34,7 +35,6 @@ class SignUpForm extends PureComponent {
       isPasswordValid: false,
       name: '',
       password: '',
-      confirmPasswordValue: undefined,
       pending: false,
       signUpErrorId: ''
     };
@@ -111,11 +111,7 @@ class SignUpForm extends PureComponent {
     );
 
   nameValidator = value => {
-    const { isEmpty, isLength } = validator;
-
-    if (isEmpty(value)) {
-      return 'authorization.input.username.empty';
-    }
+    const { isLength } = validator;
 
     if (!isLength(value, { min: 1, max: 32 })) {
       return 'authorization.input.username.invalid';
@@ -183,7 +179,7 @@ class SignUpForm extends PureComponent {
       isPasswordConfirmValid,
       isPasswordValid
     } = this.state;
-    const isError = _find(higherLevelErrors, error => error !== '');
+    const isError = _some(higherLevelErrors, error => error !== '');
 
     return this.setState({
       isFormValid:
@@ -211,8 +207,27 @@ class SignUpForm extends PureComponent {
           const newState = { pending: false };
 
           if (err instanceof ValidationException) {
-            const { errors } = err;
-            newState.higherLevelErrors = errors;
+            const {
+              isConfirmPasswordError,
+              isEmailError,
+              isNameError,
+              isPasswordError
+            } = err.errors;
+
+            newState.higherLevelErrors = {
+              confirmPasswordValueError: isConfirmPasswordError
+                ? 'authorization.input.password.not-match'
+                : '',
+              emailError: isEmailError
+                ? 'authorization.input.email.invalid'
+                : '',
+              nameError: isNameError
+                ? 'authorization.input.username.invalid'
+                : '',
+              passwordError: isPasswordError
+                ? 'authorization.input.password.invalid'
+                : ''
+            };
           } else {
             newState.signUpErrorId =
               err.message || 'common.something-went-wrong';
