@@ -1,0 +1,76 @@
+.sign-up-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 8px;
+
+  &__label {
+    width: 100%;
+    padding: 5px 0;
+    display: flex;
+    justify-content: space-between;
+
+    &--valid {
+      color: $success;
+    }
+    &--invalid {
+      color: $danger;
+    }
+  }
+
+  &__input {
+    &--valid,
+    &--valid:focus {
+      border-color: $success;
+    }
+    &--invalid,
+    &--invalid:focus {
+      border-color: $danger;
+    }
+
+    @include breakpoint($xsmall) {
+      min-width: 250px;
+    }
+  }
+
+  &__feedback {
+    width: 100%;
+    font-size: $s-font;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+    padding: 5px 0;
+    overflow-wrap: break-word;
+  }
+
+  &__icon {
+    display: block;
+    &--valid {
+      svg {
+        width: 14px;
+        path {
+          fill: $success;
+        }
+      }
+    }
+    &--invalid {
+      padding-right: 8px;
+      svg {
+        width: 12px;
+        path {
+          fill: $danger;
+        }
+      }
+    }
+  }
+
+  &__feedback-info {
+    &--valid {
+      color: $success;
+    }
+    &--invalid {
+      color: $danger;
+    }
+  }
+}

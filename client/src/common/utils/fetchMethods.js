@@ -1,10 +1,12 @@
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
+import { ValidationException } from 'common/exceptions/ValidationException';
 
 export const ResponseStatusCode = Object.freeze({
   BAD_REQUEST: 400,
   FORBIDDEN: 403,
-  NOT_FOUND: 404
+  NOT_FOUND: 404,
+  NOT_ACCEPTABLE: 406
 });
 
 const handleFetchErrors = resp => {
@@ -21,9 +23,22 @@ const handleFetchErrors = resp => {
 
   if (resp.status === ResponseStatusCode.BAD_REQUEST) {
     const contentType = resp.headers.get('content-type');
+
     if (contentType.includes('application/json')) {
       return resp.json().then(json => {
         throw new Error(json.message || '');
+      });
+    }
+
+    throw new Error();
+  }
+
+  if (resp.status === ResponseStatusCode.NOT_ACCEPTABLE) {
+    const contentType = resp.headers.get('content-type');
+
+    if (contentType.includes('application/json')) {
+      return resp.json().then(json => {
+        throw new ValidationException('', json.errors);
       });
     }
 

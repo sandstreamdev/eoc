@@ -55,7 +55,7 @@ class ResetPassword extends PureComponent {
           </label>
           {tipVisible && (
             <span className="reset-password__message-error">
-              <FormattedMessage id="authorization.reset-password.tip-content" />
+              <FormattedMessage id="authorization.input.email.invalid" />
             </span>
           )}
           <button

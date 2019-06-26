@@ -39,12 +39,7 @@ export const loginUser = () => dispatch =>
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
     .then(() => dispatch(logoutSuccess()))
-    .catch(err => {
-      dispatch(logoutFailure(err.message));
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'authorization.actions.logout-fail'
-      });
-    });
+    .catch(err => dispatch(logoutFailure(err.message)));
 
 export const loginDemoUser = () => dispatch =>
   postData('/auth/demo', {
@@ -63,3 +58,6 @@ export const loginDemoUser = () => dispatch =>
         notificationId: 'authorization.actions.login-failed'
       });
     });
+
+export const signUp = (email, name, password, passwordConfirm) =>
+  postData('auth/sign-up', { email, name, password, passwordConfirm });

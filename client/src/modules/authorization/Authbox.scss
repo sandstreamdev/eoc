@@ -10,19 +10,27 @@
   text-align: center;
   min-height: 300px;
   flex-direction: column;
+  width: 250px;
+
+  @include breakpoint($xsmall) {
+    width: 300px;
+  }
 
   @include breakpoint($large) {
+    width: 55%;
     flex-direction: row;
   }
 
   &__left {
     width: auto;
+    box-sizing: border-box;
     height: 50%;
-    padding: 26px;
+    padding: 20px;
     background: url('../../assets/images/auth-intro.jpg') center;
     position: relative;
 
     @include breakpoint($large) {
+      background-size: auto 100%;
       width: 50%;
       height: auto;
     }
@@ -30,7 +38,9 @@
 
   &__right {
     width: auto;
-    padding: 26px;
+    box-sizing: border-box;
+    min-width: 240px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -63,11 +73,13 @@
     justify-content: center;
 
     .app-logo {
-      margin-bottom: 6px;
+      @include breakpoint($large) {
+        margin-bottom: 8px;
+      }
     }
   }
 
-  &__sign-in {
+  &__button-header {
     font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
@@ -75,13 +87,19 @@
   }
 
   &__footer {
-    font-size: 12px;
+    margin-top: 16px;
+    font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
   }
 
   &__link {
+    color: $link-color;
     text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &__button-wrapper {
@@ -92,18 +110,18 @@
     max-width: 166px;
   }
 
-  &__demo {
+  &__button-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 16px;
 
     @include breakpoint($large) {
-      margin-top: 0px;
+      margin-top: 8px;
     }
   }
 
-  &__demo-button {
+  &__button {
     width: 100%;
     width: 166px;
     font-weight: 400;
