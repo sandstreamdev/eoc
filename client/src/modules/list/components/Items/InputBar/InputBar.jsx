@@ -17,6 +17,7 @@ import {
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { EventTypes } from 'common/constants/enums';
 
 class InputBar extends Component {
   constructor(props) {
@@ -85,7 +86,12 @@ class InputBar extends Component {
     setTimeout(() => this.setState({ isTipVisible: false }), 5000);
 
   handleFormSubmit = event => {
-    event.preventDefault();
+    const { type } = event;
+
+    if (type === EventTypes.SUBMIT) {
+      event.preventDefault();
+    }
+
     const {
       addItem,
       currentUser,
@@ -104,15 +110,23 @@ class InputBar extends Component {
       const { socket } = this;
 
       return addItem(newItem, id, socket).finally(() => {
-        this.setState({ itemName: '', pending: false });
         this.hideForm();
+        this.setState({ itemName: '', pending: false });
       });
     }
 
     this.handleTipVisibility();
   };
 
-  showForm = () => this.setState({ isFormVisible: true });
+  showForm = event => {
+    const { type } = event;
+
+    if (type === EventTypes.CLICK) {
+      event.preventDefault();
+    }
+
+    this.setState({ isFormVisible: true });
+  };
 
   hideForm = () => this.setState({ isFormVisible: false });
 
@@ -147,6 +161,8 @@ class InputBar extends Component {
               'input-bar__submit--disabled': isButtonDisabled
             })}
             disabled={isButtonDisabled}
+            onClick={this.handleFormSubmit}
+            onTouchStart={this.handleFormSubmit}
             type="submit"
             value={formatMessage({ id: 'list.input-bar.button' })}
           />
@@ -161,6 +177,7 @@ class InputBar extends Component {
       <button
         className="input-bar__button"
         onClick={this.showForm}
+        onTouchStart={this.showForm}
         type="button"
       >
         <PlusIcon />
