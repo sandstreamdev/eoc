@@ -124,7 +124,10 @@ const signUp = (req, resp, next) => {
     });
 };
 
+const confirmEmail = (req, resp) => {};
+
 module.exports = {
+  confirmEmail,
   logout,
   sendDemoUser,
   sendUser,

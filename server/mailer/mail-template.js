@@ -1,6 +1,6 @@
 const { PROJECT_NAME } = require('../common/variables');
 
-const mailTemplate = (receiver, sender, hostUrl) => {
+const mailTemplate = (receiver, sender, hostUrl, title, info, value) => {
   return `
       <!DOCTYPE html>
       <html>
@@ -32,7 +32,7 @@ const mailTemplate = (receiver, sender, hostUrl) => {
                          padding-bottom:0px;
                          width:100%;"
                 >
-                 Join ${PROJECT_NAME} today!
+                 ${title}
                 </td>
               </tr>
               <tr style="width:100%;">
@@ -47,7 +47,7 @@ const mailTemplate = (receiver, sender, hostUrl) => {
                          padding-bottom:20px;
                          width:100%;"
               >
-                <td style="width=100%;">Would you like to join me in amazing ${PROJECT_NAME} app?</td>
+                <td style="width=100%;">${info}</td>
               </tr>
               <tr style="padding-top:40px;
                          padding-bottom:0px;
@@ -71,7 +71,7 @@ const mailTemplate = (receiver, sender, hostUrl) => {
                       line-height: 1.2;
                       padding: 8px 16px;"
                       type="button";
-                      value="JOIN ${PROJECT_NAME}"
+                      value="${value}"
                     />
                   </a>
                 </td>
