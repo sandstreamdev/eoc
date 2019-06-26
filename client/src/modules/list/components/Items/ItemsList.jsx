@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import ListItem from 'modules/list/components/Items/ListItem';
 import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
 import MessageBox from 'common/components/MessageBox';
-import { MessageType } from 'common/constants/enums';
+import { MessageType, EventTypes } from 'common/constants/enums';
 import {
   IntlPropType,
   RouterMatchPropType,
@@ -117,11 +117,23 @@ class ItemsList extends PureComponent {
     );
   };
 
-  showMore = () => {
+  showMore = event => {
+    const { type } = event;
+
+    if (type === EventTypes.CLICK) {
+      event.preventDefault();
+    }
+
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
-  showLess = () => {
+  showLess = event => {
+    const { type } = event;
+
+    if (type === EventTypes.CLICK) {
+      event.preventDefault();
+    }
+
     this.setState({ limit: DISPLAY_LIMIT });
   };
 
@@ -196,6 +208,7 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-more"
             onClick={this.showMore}
+            onTouchStart={this.showMore}
             type="button"
           />
         )}
@@ -203,6 +216,7 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-less"
             onClick={this.showLess}
+            onTouchStart={this.showLess}
             type="button"
           />
         )}
