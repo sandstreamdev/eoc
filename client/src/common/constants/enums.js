@@ -52,7 +52,5 @@ export const KeyCodes = Object.freeze({
 });
 
 export const EventTypes = Object.freeze({
-  CLICK: 'click',
-  SUBMIT: 'submit',
-  TOUCHSTART: 'touchstart'
+  SUBMIT: 'submit'
 });

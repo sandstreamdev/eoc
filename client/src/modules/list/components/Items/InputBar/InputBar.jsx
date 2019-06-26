@@ -88,7 +88,7 @@ class InputBar extends Component {
   handleFormSubmit = event => {
     const { type } = event;
 
-    if (type === EventTypes.SUBMIT) {
+    if (type === EventTypes.SUBMIT || type === EventTypes.CLICK) {
       event.preventDefault();
     }
 
@@ -118,15 +118,7 @@ class InputBar extends Component {
     this.handleTipVisibility();
   };
 
-  showForm = event => {
-    const { type } = event;
-
-    if (type === EventTypes.CLICK) {
-      event.preventDefault();
-    }
-
-    this.setState({ isFormVisible: true });
-  };
+  showForm = () => this.setState({ isFormVisible: true });
 
   hideForm = () => this.setState({ isFormVisible: false });
 
@@ -162,7 +154,7 @@ class InputBar extends Component {
             })}
             disabled={isButtonDisabled}
             onClick={this.handleFormSubmit}
-            onTouchStart={this.handleFormSubmit}
+            onTouchEnd={this.handleFormSubmit}
             type="submit"
             value={formatMessage({ id: 'list.input-bar.button' })}
           />
@@ -177,7 +169,7 @@ class InputBar extends Component {
       <button
         className="input-bar__button"
         onClick={this.showForm}
-        onTouchStart={this.showForm}
+        onTouchEnd={this.showForm}
         type="button"
       >
         <PlusIcon />

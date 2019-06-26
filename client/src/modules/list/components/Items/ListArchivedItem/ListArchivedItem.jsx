@@ -46,7 +46,9 @@ class ListArchivedItem extends PureComponent {
     this.setState({ busyBySomeone: blocked });
   };
 
-  handleRestoringItem = () => {
+  handleRestoringItem = event => {
+    event.preventDefault();
+
     const {
       restoreItem,
       data: { _id: itemId, name },
@@ -63,15 +65,15 @@ class ListArchivedItem extends PureComponent {
     );
   };
 
-  showConfirmation = () => {
-    this.itemBusy();
+  showConfirmation = event => {
+    event.preventDefault();
 
+    this.itemBusy();
     this.setState({ isConfirmationVisible: true });
   };
 
   hideConfirmation = () => {
     this.itemFree();
-
     this.setState({ isConfirmationVisible: false });
   };
 
@@ -130,7 +132,11 @@ class ListArchivedItem extends PureComponent {
     onFree();
   };
 
-  handleBusyInfoVisibility = () => this.setState({ busyInfoVisibility: true });
+  handleBusyInfoVisibility = event => {
+    event.preventDefault();
+
+    this.setState({ busyInfoVisibility: true });
+  };
 
   renderBusyOverlay = () => {
     const { busyBySomeone, busyInfoVisibility } = this.state;
@@ -142,6 +148,7 @@ class ListArchivedItem extends PureComponent {
             'list-item__busy-overlay--dimmed': busyInfoVisibility
           })}
           onClick={this.handleBusyInfoVisibility}
+          onTouchEnd={this.handleBusyInfoVisibility}
           role="banner"
         >
           {busyInfoVisibility && (
@@ -195,6 +202,7 @@ class ListArchivedItem extends PureComponent {
             <PendingButton
               className="link-button"
               onClick={this.handleRestoringItem}
+              onTouchEnd={this.handleRestoringItem}
               type="button"
             >
               <FormattedMessage id="list.list-archived-item.restore" />
@@ -202,6 +210,7 @@ class ListArchivedItem extends PureComponent {
             <button
               className="link-button"
               onClick={this.showConfirmation}
+              onTouchEnd={this.showConfirmation}
               type="button"
             >
               <FormattedMessage id="list.list-archived-item.delete" />
