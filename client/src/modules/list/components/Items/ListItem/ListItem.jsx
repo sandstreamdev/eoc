@@ -156,7 +156,9 @@ class ListItem extends PureComponent {
     }
   };
 
-  handleVoting = () => {
+  handleVoting = event => {
+    event.preventDefault();
+
     const {
       clearVote,
       data: { _id, isVoted, name },
