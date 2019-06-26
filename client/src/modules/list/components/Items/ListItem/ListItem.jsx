@@ -27,7 +27,6 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
-import { ItemStatusType } from '../model/actionTypes';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -39,7 +38,6 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
-      busy: false,
       busyBySomeone: false,
       busyInfoVisibility: false,
       done: isOrdered,
@@ -52,59 +50,25 @@ class ListItem extends PureComponent {
 
   componentDidMount() {
     this.handleSocketConnection();
-    this.receiveWSEvents();
   }
 
-  componentDidUpdate() {
-    this.emitWSEvents();
+  componentDidUpdate(prevProps) {
+    const { blocked } = this.state;
+
+    if (prevProps.blocked !== blocked) {
+      this.handleBusyBySomeone();
+    }
   }
 
-  emitWSEvents = () => {
-    const { busy } = this.state;
+  componentWillUnmount() {
     const {
-      data: { _id: itemId },
       match: {
         params: { id: listId }
-      },
-      currentUser: { id: userId }
+      }
     } = this.props;
 
-    if (busy) {
-      this.socket.emit(ItemStatusType.BUSY, { itemId, listId, userId });
-
-      return;
-    }
-
-    this.socket.emit(ItemStatusType.FREE, { itemId, listId, userId });
-  };
-
-  receiveWSEvents = () => {
-    const {
-      currentUser: { id: currentUserId }
-    } = this.props;
-
-    this.socket.on(ItemStatusType.BUSY, data => {
-      const { itemId, userId } = data;
-      const {
-        data: { _id }
-      } = this.props;
-
-      if (currentUserId !== userId && itemId === _id) {
-        this.setState({ busyBySomeone: true });
-      }
-    });
-
-    this.socket.on(ItemStatusType.FREE, data => {
-      const { itemId, userId } = data;
-      const {
-        data: { _id }
-      } = this.props;
-
-      if (currentUserId !== userId && itemId === _id) {
-        this.setState({ busyBySomeone: false });
-      }
-    });
-  };
+    this.socket.emit('leavingRoom', listId);
+  }
 
   handleSocketConnection = () => {
     const {
@@ -121,6 +85,12 @@ class ListItem extends PureComponent {
     this.socket.on('connect', () =>
       this.socket.emit('joinRoom', `list-${listId}`)
     );
+  };
+
+  handleBusyBySomeone = () => {
+    const { blocked } = this.props;
+
+    this.setState({ busyBySomeone: blocked });
   };
 
   handleItemToggling = () => {
@@ -141,21 +111,20 @@ class ListItem extends PureComponent {
 
     this.setState(({ done }) => ({
       done: !done,
-      disableToggleButton: true,
-      busy: true
+      disableToggleButton: true
     }));
+
+    this.itemBusy();
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
       return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
-        () => this.setState({ busy: false })
+        () => this.itemFree()
       );
     }
 
-    toggle(itemName, isOrdered, _id, listId).finally(() =>
-      this.setState({ busy: false })
-    );
+    toggle(itemName, isOrdered, _id, listId);
   };
 
   handleDetailsVisibility = () =>
@@ -173,12 +142,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setState({ busy: true });
+    this.itemBusy();
 
     if (isMember) {
-      return cloneItem(name, listId, itemId).finally(() =>
-        this.setState({ busy: false })
-      );
+      return cloneItem(name, listId, itemId).finally(() => this.itemFree());
     }
   };
 
@@ -194,11 +161,9 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    this.setState({ busy: true });
+    this.itemBusy();
 
-    return action(_id, listId, name).finally(() =>
-      this.setState({ busy: false })
-    );
+    return action(_id, listId, name).finally(() => this.itemFree());
   };
 
   handleConfirmationVisibility = () =>
@@ -216,11 +181,9 @@ class ListItem extends PureComponent {
     } = this.props;
     const { socket } = this;
 
-    this.setState({ busy: true });
+    this.itemBusy();
 
-    return archiveItem(listId, itemId, name, socket).finally(() =>
-      this.setState({ busy: false })
-    );
+    return archiveItem(listId, itemId, name, socket);
   };
 
   renderVoting = () => {
@@ -247,17 +210,32 @@ class ListItem extends PureComponent {
 
   preventDefault = event => event.preventDefault();
 
-  handleNameFocus = () => this.setState({ isNameEdited: true, busy: true });
+  handleNameFocus = () => {
+    this.setState({ isNameEdited: true });
+    this.itemBusy();
+  };
 
-  handleNameBlur = () => this.setState({ isNameEdited: false, busy: false });
+  handleNameBlur = () => {
+    const { onFree } = this.props;
 
-  handleDescriptionFocus = () => this.setState({ busy: true });
+    this.setState({ isNameEdited: false });
+    onFree();
+  };
 
-  handleDescriptionBlur = () => this.setState({ busy: false });
+  itemBusy = () => {
+    const {
+      onBusy,
+      data: { _id: itemId }
+    } = this.props;
 
-  handleCommentsBlur = () => this.setState({ busy: false });
+    onBusy(itemId);
+  };
 
-  handleCommentsFocus = () => this.setState({ busy: true });
+  itemFree = () => {
+    const { onFree } = this.props;
+
+    onFree();
+  };
 
   handleBusyInfoVisibility = () => this.setState({ busyInfoVisibility: true });
 
@@ -354,8 +332,8 @@ class ListItem extends PureComponent {
             disabled={isFieldDisabled}
             itemId={itemId}
             name={name}
-            onBlur={this.handleDescriptionBlur}
-            onFocus={this.handleDescriptionFocus}
+            onBlur={this.itemFree}
+            onFocus={this.itemBusy}
           />
         </div>
       );
@@ -378,8 +356,8 @@ class ListItem extends PureComponent {
             isFormAccessible={isMember && !isOrdered}
             itemId={itemId}
             itemName={name}
-            onBlur={this.handleCommentsBlur}
-            onFocus={this.handleCommentsFocus}
+            onBlur={this.itemFree}
+            onFocus={this.itemBusy}
           />
         </div>
       </Fragment>
@@ -478,6 +456,7 @@ class ListItem extends PureComponent {
 }
 
 ListItem.propTypes = {
+  blocked: PropTypes.bool,
   currentUser: UserPropType.isRequired,
   data: PropTypes.objectOf(
     PropTypes.oneOfType([
@@ -494,6 +473,8 @@ ListItem.propTypes = {
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
+  onBusy: PropTypes.func.isRequired,
+  onFree: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired
 };
