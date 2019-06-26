@@ -110,15 +110,19 @@ class InputBar extends Component {
       const { socket } = this;
 
       return addItem(newItem, id, socket).finally(() => {
-        this.hideForm();
         this.setState({ itemName: '', pending: false });
+        this.hideForm();
       });
     }
 
     this.handleTipVisibility();
   };
 
-  showForm = () => this.setState({ isFormVisible: true });
+  showForm = event => {
+    event.preventDefault();
+
+    this.setState({ isFormVisible: true });
+  };
 
   hideForm = () => this.setState({ isFormVisible: false });
 

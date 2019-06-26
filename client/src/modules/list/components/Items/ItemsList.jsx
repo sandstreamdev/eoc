@@ -117,10 +117,17 @@ class ItemsList extends PureComponent {
     );
   };
 
-  showMore = () =>
-    this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
+  showMore = event => {
+    event.preventDefault();
 
-  showLess = () => this.setState({ limit: DISPLAY_LIMIT });
+    this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
+  };
+
+  showLess = event => {
+    event.preventDefault();
+
+    this.setState({ limit: DISPLAY_LIMIT });
+  };
 
   handleItemBusy = itemId => this.setState({ busyItemId: itemId });
 
