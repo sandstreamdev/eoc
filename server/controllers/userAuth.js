@@ -130,7 +130,28 @@ const signUp = (req, resp, next) => {
     });
 };
 
-const confirmEmail = (req, resp) => {};
+const confirmEmail = (req, resp) => {
+  const { hash: signUpHash } = req.params;
+
+  User.findOneAndUpdate(
+    {
+      signUpHash,
+      signUpHashExpirationDate: { $gte: new Date() }
+    },
+    { isActive: true, signUpHash: null, signUpHashExpirationDate: null }
+  )
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+      resp.redirect('/sign-up/success');
+    })
+    .catch(() => {
+      resp.redirect('/sign-up/failed');
+    });
+};
 
 module.exports = {
   confirmEmail,
