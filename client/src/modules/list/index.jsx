@@ -50,7 +50,12 @@ class List extends Component {
   componentDidMount() {
     this.setState({ pendingForDetails: true });
 
-    this.fetchData();
+    this.fetchData().finally(() => {
+      this.setState({ pendingForDetails: false });
+      this.handleBreadcrumbs();
+      this.handleSocketConnection();
+      this.receiveWSEvents();
+    });
   }
 
   componentDidUpdate(prevProps) {
