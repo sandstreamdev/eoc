@@ -193,6 +193,18 @@ class MemberDetails extends PureComponent {
     }
   };
 
+  handleLeave = () => {
+    const { onCohortLeave, onListLeave, route } = this.props;
+
+    this.setState({ pending: true });
+
+    if (route === Routes.LIST) {
+      return onListLeave().finally(() => this.setState({ pending: false }));
+    }
+
+    onCohortLeave().finally(() => this.setState({ pending: false }));
+  };
+
   handleLeaveConfirmationVisibility = () =>
     this.setState(({ isLeaveConfirmationVisible }) => ({
       isLeaveConfirmationVisible: !isLeaveConfirmationVisible
@@ -369,8 +381,6 @@ class MemberDetails extends PureComponent {
       _id: userId,
       currentUser: { id: currentUserId },
       onClose,
-      onCohortLeave,
-      onListLeave,
       route
     } = this.props;
     const { isLeaveConfirmationVisible, pending } = this.state;
@@ -388,7 +398,7 @@ class MemberDetails extends PureComponent {
               <button
                 className="primary-button"
                 disabled={pending}
-                onClick={route === Routes.LIST ? onListLeave : onCohortLeave}
+                onClick={this.handleLeave}
                 type="button"
               >
                 <FormattedMessage id="common.button.confirm" />

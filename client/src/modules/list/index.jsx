@@ -211,8 +211,6 @@ class List extends Component {
       }
     } = this.props;
 
-    // this.setState({ pending: true });
-
     return leaveList(id, currentUserId, cohortId, name);
   };
 

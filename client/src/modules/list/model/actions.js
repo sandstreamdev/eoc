@@ -535,7 +535,6 @@ export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
         notificationId: 'list.actions.leave-list',
         data: userName
       });
-      // TODO: Revert back to cohort or to dashboard
       history.replace(`/${cohortId ? 'cohorts' : 'dashboard'}`);
     })
     .catch(err => {
