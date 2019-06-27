@@ -22,6 +22,7 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import ResetPassword from 'modules/authorization/components/ResetPassword';
+import SignUpResult from 'modules/authorization/components/SignUpResult';
 
 export class Layout extends PureComponent {
   constructor(props) {
@@ -89,6 +90,7 @@ export class Layout extends PureComponent {
       <Switch>
         <Route component={AuthBox} exact path="/" />
         <Route component={PrivacyPolicy} path="/privacy-policy" />
+        <Route component={SignUpResult} path="/sign-up/:result" />
         <Redirect to="/" />
       </Switch>
     ) : (
