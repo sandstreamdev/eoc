@@ -864,7 +864,7 @@ const addViewer = (req, resp) => {
 
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
-      .status(400)
+      .status(401)
       .send({ message: 'list.actions.add-viewer-demo-mode' });
   }
 

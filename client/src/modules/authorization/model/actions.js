@@ -66,3 +66,18 @@ export const signUp = (email, username, password, passwordConfirm) =>
     passwordConfirm,
     username
   });
+
+export const signIn = (email, password) => dispatch =>
+  postData('/auth/sign-in', { email, password })
+    .then(() => {
+      dispatch(loginSuccess(setCurrentUser()));
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'authorization.actions.login'
+      });
+    })
+    .catch(err => {
+      dispatch(loginFailure());
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'authorization.actions.login-failed'
+      });
+    });

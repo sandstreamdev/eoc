@@ -17,12 +17,13 @@ import Preloader, {
 } from 'common/components/Preloader';
 import GoogleButtonImg from 'assets/images/google-btn.png';
 import SignUpForm from './components/SignUpForm';
+import SignInForm from './components/SignInForm';
 import { IntlPropType } from 'common/constants/propTypes';
 
 class AuthBox extends PureComponent {
   state = {
     isCookieSet: true,
-    isSignInFormVisible: false,
+    isSignInFormVisible: true,
     isSignUpFormVisible: false,
     pending: false
   };
@@ -145,8 +146,24 @@ class AuthBox extends PureComponent {
     );
   };
 
+  renderForms = () => {
+    const { isSignInFormVisible, isSignUpFormVisible } = this.state;
+
+    if (isSignInFormVisible) {
+      return <SignInForm onCancel={this.handleSignInFormVisibility} />;
+    }
+
+    if (isSignUpFormVisible) {
+      return <SignUpForm onCancel={this.handleSignUpFormVisibility} />;
+    }
+  };
+
   render() {
-    const { isCookieSet, isSignUpFormVisible } = this.state;
+    const {
+      isCookieSet,
+      isSignInFormVisible,
+      isSignUpFormVisible
+    } = this.state;
 
     return (
       <Fragment>
@@ -163,8 +180,8 @@ class AuthBox extends PureComponent {
             <div className="authbox__intro">
               <AppLogo />
             </div>
-            {isSignUpFormVisible ? (
-              <SignUpForm onCancel={this.handleSignUpFormVisibility} />
+            {isSignUpFormVisible || isSignInFormVisible ? (
+              this.renderForms()
             ) : (
               <Fragment>
                 {this.renderSignInButtons()}

@@ -39,10 +39,16 @@ class SignUpInput extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const { errorMessageId } = this.state;
-    const { externalErrorId: prevExternalErrorId } = prevProps;
-    const { externalErrorId } = this.props;
+    const {
+      externalErrorId: prevExternalErrorId,
+      formError: prevFormError
+    } = prevProps;
+    const { externalErrorId, formError } = this.props;
 
-    if (prevExternalErrorId !== externalErrorId) {
+    if (
+      prevExternalErrorId !== externalErrorId ||
+      prevFormError !== formError
+    ) {
       this.setValidationTheme(errorMessageId);
     }
   }
@@ -53,10 +59,11 @@ class SignUpInput extends PureComponent {
 
   setValidationTheme = errorMessageId => {
     const { value } = this.state;
-    const { externalErrorId } = this.props;
+    const { externalErrorId, formError } = this.props;
+
     const isValid = !externalErrorId && !errorMessageId;
-    const invalidTheme = !isValid;
-    const validTheme = isValid && value;
+    const invalidTheme = !isValid || formError;
+    const validTheme = isValid && value && !formError;
 
     this.setState({ invalidTheme, validTheme });
   };
@@ -151,6 +158,7 @@ SignUpInput.propTypes = {
   disabled: PropTypes.bool,
   externalErrorId: PropTypes.string,
   focus: PropTypes.bool,
+  formError: PropTypes.bool,
   intl: IntlPropType.isRequired,
   labelId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,

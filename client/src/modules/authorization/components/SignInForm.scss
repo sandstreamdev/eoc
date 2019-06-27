@@ -1,0 +1,34 @@
+.sign-in-form {
+  &__heading {
+    font-size: $m-font;
+    line-height: 1.2;
+    color: $text-normal;
+  }
+
+  &__form {
+    font-size: $m-font;
+    color: $text-normal;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+
+    .primary-button {
+      text-transform: capitalize;
+    }
+  }
+
+  &__confirm {
+    position: relative;
+  }
+
+  &__error {
+    text-align: left;
+    font-size: $s-font;
+    padding: 8px 0;
+    color: $danger;
+  }
+}

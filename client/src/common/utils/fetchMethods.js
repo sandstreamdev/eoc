@@ -1,12 +1,14 @@
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 import { ValidationException } from 'common/exceptions/ValidationException';
+import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
 
 export const ResponseStatusCode = Object.freeze({
   BAD_REQUEST: 400,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
-  NOT_ACCEPTABLE: 406
+  NOT_ACCEPTABLE: 406,
+  UNAUTHORIZED: 401
 });
 
 const handleFetchErrors = resp => {
@@ -27,6 +29,18 @@ const handleFetchErrors = resp => {
     if (contentType.includes('application/json')) {
       return resp.json().then(json => {
         throw new Error(json.message || '');
+      });
+    }
+
+    throw new Error();
+  }
+
+  if (resp.status === ResponseStatusCode.UNAUTHORIZED) {
+    const contentType = resp.headers.get('content-type');
+
+    if (contentType.includes('application/json')) {
+      return resp.json().then(json => {
+        throw new UnauthorizedException(json.message || '');
       });
     }
 
