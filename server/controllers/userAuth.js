@@ -67,12 +67,18 @@ const signUp = (req, resp, next) => {
         const { _id, displayName, email, idFromProvider, isActive } = user;
 
         if (!idFromProvider && !isActive) {
+          const hashedPassword = bcrypt.hashSync(password + email, 12);
           const signUpHash = crypto.randomBytes(32).toString('hex');
           const expirationDate = new Date().getTime() + 3600000;
 
           return User.findOneAndUpdate(
             { _id },
-            { signUpHash, signUpHashExpirationDate: expirationDate }
+            {
+              displayName: sanitizedUsername,
+              password: hashedPassword,
+              signUpHash,
+              signUpHashExpirationDate: expirationDate
+            }
           )
             .exec()
             .then(user => {
