@@ -46,7 +46,7 @@ class AuthBox extends PureComponent {
       isSignUpFormVisible: !isSignUpFormVisible
     }));
 
-  renderGoogleSignInButton = () => {
+  renderSignInButtons = () => {
     const { isCookieSet, pending } = this.state;
     const {
       intl: { formatMessage }
@@ -80,6 +80,16 @@ class AuthBox extends PureComponent {
               theme={PreloaderTheme.GOOGLE}
             />
           )}
+        </div>
+        <div className="authbox__button-wrapper">
+          <button
+            className="primary-button authbox__button"
+            disabled={!isCookieSet || pending}
+            onClick={this.handleSignInFormVisibility}
+            type="button"
+          >
+            <FormattedMessage id="authorization.sign-in" />
+          </button>
         </div>
       </div>
     );
@@ -151,7 +161,7 @@ class AuthBox extends PureComponent {
               <SignUpForm onCancel={this.handleSignUpFormVisibility} />
             ) : (
               <Fragment>
-                {this.renderGoogleSignInButton()}
+                {this.renderSignInButtons()}
                 {this.renderSignUpButton()}
                 {this.renderDemoButton()}
               </Fragment>
