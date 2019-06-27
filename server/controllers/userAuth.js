@@ -130,6 +130,8 @@ const signUp = (req, resp, next) => {
     });
 };
 
+const signIn = (email, password) => {};
+
 const confirmEmail = (req, resp) => {
   const { hash: signUpHash } = req.params;
 
@@ -158,5 +160,6 @@ module.exports = {
   logout,
   sendDemoUser,
   sendUser,
+  signIn,
   signUp
 };
