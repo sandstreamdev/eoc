@@ -23,7 +23,7 @@ class SignInForm extends PureComponent {
     isPasswordValid: false,
     password: '',
     pending: false,
-    signUpErrorId: ''
+    signInErrorId: ''
   };
 
   componentDidUpdate() {
@@ -37,23 +37,23 @@ class SignInForm extends PureComponent {
   }
 
   onEmailChange = (email, isValid) => {
-    const { signUpErrorId } = this.state;
-    const error = isValid ? '' : signUpErrorId;
+    const { signInErrorId } = this.state;
+    const error = isValid ? '' : signInErrorId;
     this.setState({
       email,
       isEmailValid: isValid,
-      signUpErrorId: error
+      signInErrorId: error
     });
   };
 
   onPasswordChange = (password, isValid) => {
-    const { signUpErrorId } = this.state;
-    const error = isValid ? '' : signUpErrorId;
+    const { signInErrorId } = this.state;
+    const error = isValid ? '' : signInErrorId;
     this.setState(
       {
         password,
         isPasswordValid: isValid,
-        signUpErrorId: error
+        signInErrorId: error
       },
       this.comparePasswords
     );
@@ -70,10 +70,10 @@ class SignInForm extends PureComponent {
   };
 
   isFormValid = () => {
-    const { isEmailValid, isPasswordValid, signUpErrorId } = this.state;
+    const { isEmailValid, isPasswordValid, signInErrorId } = this.state;
 
     return this.setState({
-      isFormValid: isEmailValid && isPasswordValid && !signUpErrorId
+      isFormValid: isEmailValid && isPasswordValid && !signInErrorId
     });
   };
 
@@ -92,10 +92,10 @@ class SignInForm extends PureComponent {
           const newState = { pending: false };
 
           if (err instanceof UnauthorizedException) {
-            newState.signUpErrorId =
+            newState.signInErrorId =
               'authorization.actions.sign-in.invalid-credentials';
           } else {
-            newState.signUpErrorId = 'common.something-went-wrong';
+            newState.signInErrorId = 'common.something-went-wrong';
           }
 
           this.setState(newState);
@@ -116,16 +116,16 @@ class SignInForm extends PureComponent {
   };
 
   render() {
-    const { isFormValid, pending, signUpErrorId } = this.state;
+    const { isFormValid, pending, signInErrorId } = this.state;
     const { onCancel } = this.props;
-    const hasSignUpFailed = signUpErrorId !== '';
+    const hasSignUpFailed = signInErrorId !== '';
 
     return (
       <div className="sign-in">
         <h1 className="sign-in-form__heading">
           <FormattedMessage id="authorization.auth-box.sign-in" />
         </h1>
-        {signUpErrorId && this.renderSignUpError()}
+        {signInErrorId && this.renderSignUpError()}
         <form className="sign-in-form__form" noValidate>
           <AuthInput
             disabled={pending}
