@@ -103,6 +103,7 @@ class MembersBox extends PureComponent {
     const {
       isCohortList,
       isCurrentUserAnOwner,
+      isPrivateList,
       onCohortLeave,
       onListLeave,
       route,
@@ -114,6 +115,7 @@ class MembersBox extends PureComponent {
         {...member}
         isCohortList={isCohortList}
         isCurrentUserAnOwner={isCurrentUserAnOwner}
+        isPrivateList={isPrivateList}
         onClose={this.handleClosingMemberDetails}
         onCohortLeave={onCohortLeave}
         onListLeave={onListLeave}
@@ -229,6 +231,7 @@ MembersBox.propTypes = {
   isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool,
   isMember: PropTypes.bool,
+  isPrivateList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
   route: PropTypes.string.isRequired,

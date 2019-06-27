@@ -40,6 +40,7 @@ import {
 } from './components/Items/model/actions';
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { ListType } from './consts';
 
 class List extends Component {
   constructor(props) {
@@ -306,6 +307,7 @@ class List extends Component {
                       isCohortList={isCohortList}
                       isCurrentUserAnOwner={isOwner}
                       isMember={isMember}
+                      isPrivateList={type === ListType.LIMITED}
                       members={members}
                       onListLeave={this.handleLeave}
                       route={Routes.LIST}

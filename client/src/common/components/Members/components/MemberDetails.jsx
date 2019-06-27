@@ -25,6 +25,8 @@ import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
 import Avatar from 'common/components/Avatar';
+import { makeAbortablePromise } from 'common/utils/helpers';
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -38,6 +40,8 @@ const infoText = {
 };
 
 class MemberDetails extends PureComponent {
+  pendingPromise = null;
+
   constructor(props) {
     super(props);
 
@@ -48,6 +52,12 @@ class MemberDetails extends PureComponent {
       isOwnerInfoVisible: false,
       pending: false
     };
+  }
+
+  componentWillUnmount() {
+    if (this.pendingPromise) {
+      this.pendingPromise.abort();
+    }
   }
 
   handleConfirmationVisibility = () =>
@@ -199,10 +209,26 @@ class MemberDetails extends PureComponent {
     this.setState({ pending: true });
 
     if (route === Routes.LIST) {
-      return onListLeave().finally(() => this.setState({ pending: false }));
+      this.pendingPromise = makeAbortablePromise(onListLeave());
+      this.pendingPromise.promise
+        .then(() => this.setState({ pending: false }))
+        .catch(err => {
+          if (!(err instanceof AbortPromiseException)) {
+            this.setState({ pending: false });
+          }
+        });
+
+      return;
     }
 
-    onCohortLeave().finally(() => this.setState({ pending: false }));
+    this.pendingPromise = makeAbortablePromise(onCohortLeave());
+    this.pendingPromise.promise
+      .then(() => this.setState({ pending: false }))
+      .catch(err => {
+        if (!(err instanceof AbortPromiseException)) {
+          this.setState({ pending: false });
+        }
+      });
   };
 
   handleLeaveConfirmationVisibility = () =>
@@ -434,7 +460,7 @@ class MemberDetails extends PureComponent {
   };
 
   render() {
-    const { isCurrentUserAnOwner, onClose } = this.props;
+    const { isCurrentUserAnOwner, onClose, isPrivateList, route } = this.props;
     const { pending } = this.state;
 
     return (
@@ -457,7 +483,8 @@ class MemberDetails extends PureComponent {
               {isCurrentUserAnOwner && this.renderDetails()}
               {pending && <Preloader />}
             </div>
-            {this.renderLeaveOption()}
+            {(isPrivateList || route === Routes.COHORT) &&
+              this.renderLeaveOption()}
           </div>
         </div>
       </Fragment>
@@ -475,6 +502,7 @@ MemberDetails.propTypes = {
   isGuest: PropTypes.bool,
   isMember: PropTypes.bool,
   isOwner: PropTypes.bool,
+  isPrivateList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   route: PropTypes.string,
   type: PropTypes.string,
