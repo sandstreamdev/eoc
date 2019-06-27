@@ -6,7 +6,7 @@ import { MessageType, SortOrderType, StatusType } from './enums';
 export const RouterMatchPropType = PropTypes.shape({
   params: PropTypes.shape({
     id: PropTypes.string,
-    status: PropTypes.string
+    result: PropTypes.string
   })
 });
 export const UserPropType = PropTypes.shape({

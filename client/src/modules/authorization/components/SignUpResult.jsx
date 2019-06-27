@@ -8,7 +8,7 @@ import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 const SignUpResult = ({
   intl: { formatMessage },
   match: {
-    params: { status }
+    params: { result }
   }
 }) => (
   <div className="sign-up-result">
@@ -18,7 +18,7 @@ const SignUpResult = ({
     <p className="sign-up-result__message">
       <FormattedMessage
         id={
-          status === 'success'
+          result === 'success'
             ? 'authorization.sign-up.result.success'
             : 'authorization.sign-up.result.failed'
         }
