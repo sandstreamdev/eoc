@@ -1233,6 +1233,57 @@ const deleteItem = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const leaveList = (req, resp) => {
+  const { id: listId } = req.params;
+  const { _id: userId } = req.user;
+  const sanitizedListId = sanitize(listId);
+
+  List.findOne({
+    _id: sanitizedListId,
+    viewersIds: userId,
+    type: ListType.LIMITED
+  })
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException();
+      }
+
+      const { viewersIds, memberIds, ownerIds } = list;
+      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
+      const isMember = checkIfArrayContainsUserId(memberIds, userId);
+      const isViewer = checkIfArrayContainsUserId(viewersIds, userId);
+
+      if (isOwner) {
+        if (ownerIds.length === 1) {
+          throw new BadRequestException('list.actions.leave-list-one-owner');
+        }
+
+        ownerIds.splice(ownerIds.indexOf(userId), 1);
+      }
+
+      if (isMember) {
+        memberIds.splice(memberIds.indexOf(userId), 1);
+      }
+
+      if (isViewer) {
+        viewersIds.splice(viewersIds.indexOf(userId), 1);
+      }
+
+      return list.save();
+    })
+    .then(() => resp.send())
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { message } = err;
+
+        return resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
@@ -1249,6 +1300,7 @@ module.exports = {
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
+  leaveList,
   removeFromFavourites,
   removeMember,
   removeMemberRole,

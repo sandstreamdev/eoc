@@ -11,8 +11,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
   addOwnerRole as addOwnerRoleInCohort,
   removeCohortMember,
-  removeOwnerRole as removeOwnerRoleInCohort,
-  leaveCohort
+  removeOwnerRole as removeOwnerRoleInCohort
 } from 'modules/cohort/model/actions';
 import {
   addOwnerRole as addOwnerRoleInList,
@@ -194,22 +193,6 @@ class MemberDetails extends PureComponent {
     }
   };
 
-  handleCohortLeave = () => {
-    const {
-      currentUser: { id: currentUserId, name },
-      leaveCohort,
-      match: {
-        params: { id }
-      }
-    } = this.props;
-
-    this.setState({ pending: true });
-
-    return leaveCohort(id, currentUserId, name).finally(() =>
-      this.setState({ pending: false })
-    );
-  };
-
   handleLeaveConfirmationVisibility = () =>
     this.setState(({ isLeaveConfirmationVisible }) => ({
       isLeaveConfirmationVisible: !isLeaveConfirmationVisible
@@ -386,6 +369,8 @@ class MemberDetails extends PureComponent {
       _id: userId,
       currentUser: { id: currentUserId },
       onClose,
+      onCohortLeave,
+      onListLeave,
       route
     } = this.props;
     const { isLeaveConfirmationVisible, pending } = this.state;
@@ -403,7 +388,7 @@ class MemberDetails extends PureComponent {
               <button
                 className="primary-button"
                 disabled={pending}
-                onClick={this.handleCohortLeave}
+                onClick={route === Routes.LIST ? onListLeave : onCohortLeave}
                 type="button"
               >
                 <FormattedMessage id="common.button.confirm" />
@@ -423,7 +408,7 @@ class MemberDetails extends PureComponent {
             className="primary-button"
             onClick={
               route === Routes.LIST
-                ? null
+                ? this.handleLeaveConfirmationVisibility
                 : this.handleLeaveConfirmationVisibility
             }
             type="button"
@@ -487,8 +472,9 @@ MemberDetails.propTypes = {
   addMemberRoleInList: PropTypes.func.isRequired,
   addOwnerRoleInCohort: PropTypes.func.isRequired,
   addOwnerRoleInList: PropTypes.func.isRequired,
-  leaveCohort: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCohortLeave: PropTypes.func,
+  onListLeave: PropTypes.func,
   removeCohortMember: PropTypes.func.isRequired,
   removeListMember: PropTypes.func.isRequired,
   removeMemberRoleInList: PropTypes.func.isRequired,
@@ -507,7 +493,6 @@ export default withRouter(
       addMemberRoleInList,
       addOwnerRoleInCohort,
       addOwnerRoleInList,
-      leaveCohort,
       removeCohortMember,
       removeListMember,
       removeMemberRoleInList,

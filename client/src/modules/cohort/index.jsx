@@ -17,9 +17,17 @@ import {
 } from 'modules/list/model/actions';
 import { ListIcon } from 'assets/images/icons';
 import { getCohortDetails, getMembers } from './model/selectors';
-import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
+import {
+  RouterMatchPropType,
+  IntlPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
-import { archiveCohort, fetchCohortDetails } from './model/actions';
+import {
+  archiveCohort,
+  fetchCohortDetails,
+  leaveCohort
+} from './model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedCohort from 'modules/cohort/components/ArchivedCohort';
 import CollectionView from 'common/components/CollectionView';
@@ -29,6 +37,7 @@ import { ColorType, Routes } from 'common/constants/enums';
 import CohortHeader from './components/CohortHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class Cohort extends PureComponent {
   state = {
@@ -183,6 +192,18 @@ class Cohort extends PureComponent {
 
   handleListType = type => this.setState({ type });
 
+  handleLeave = () => {
+    const {
+      currentUser: { id: currentUserId, name },
+      leaveCohort,
+      match: {
+        params: { id }
+      }
+    } = this.props;
+
+    return leaveCohort(id, currentUserId, name);
+  };
+
   renderBreadcrumbs = () => {
     const { breadcrumbs } = this.state;
 
@@ -261,6 +282,7 @@ class Cohort extends PureComponent {
                   isCurrentUserAnOwner={isOwner}
                   members={members}
                   route={Routes.COHORT}
+                  onCohortLeave={this.handleLeave}
                 />
                 <CollectionView
                   color={ColorType.ORANGE}
@@ -337,6 +359,7 @@ Cohort.propTypes = {
     isArchived: PropTypes.bool,
     name: PropTypes.string
   }),
+  currentUser: UserPropType.isRequired,
   createList: PropTypes.func.isRequired,
   intl: IntlPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
@@ -348,6 +371,7 @@ Cohort.propTypes = {
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
+  leaveCohort: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
@@ -361,6 +385,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     archivedLists: getCohortArchivedLists(state, id),
     cohortDetails: getCohortDetails(state, id),
+    currentUser: getCurrentUser(state),
     lists: getCohortActiveLists(state, id),
     members: getMembers(state, id)
   };
@@ -377,6 +402,7 @@ export default _flowRight(
       fetchArchivedListsMetaData,
       fetchCohortDetails,
       fetchListsMetaData,
+      leaveCohort,
       removeArchivedListsMetaData
     }
   )

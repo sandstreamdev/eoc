@@ -171,6 +171,15 @@ const changeTypeFailure = () => ({
   type: ListActionTypes.CHANGE_TYPE_FAILURE
 });
 
+const leaveListSuccess = (listId, userId) => ({
+  type: ListActionTypes.LEAVE_SUCCESS,
+  payload: { listId, userId }
+});
+
+const leaveListFailure = () => ({
+  type: ListActionTypes.LEAVE_FAILURE
+});
+
 export const fetchListData = listId => dispatch =>
   getData(`/api/lists/${listId}/data`)
     .then(resp => resp.json())
@@ -515,5 +524,24 @@ export const changeType = (listId, listName, type) => dispatch =>
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.actions.change-type-fail',
         data: listName
+      });
+    });
+
+export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
+  patchData(`/api/lists/${listId}/leave-list`)
+    .then(() => {
+      dispatch(leaveListSuccess(listId, userId));
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.actions.leave-list',
+        data: userName
+      });
+      // TODO: Revert back to cohort or to dashboard
+      history.replace(`/${cohortId ? 'cohorts' : 'dashboard'}`);
+    })
+    .catch(err => {
+      dispatch(leaveListFailure());
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: err.message || 'list.actions.leave-list-fail',
+        data: userName
       });
     });
