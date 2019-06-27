@@ -16,22 +16,26 @@ import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import { ListType } from '../consts';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
+import Dialog from 'common/components/Dialog';
 
 class ListHeader extends PureComponent {
   constructor(props) {
     super(props);
 
     const {
-      details: { description, name }
+      details: { description, name, type }
     } = this.props;
     const trimmedDescription = description.trim();
 
     this.state = {
       descriptionInputValue: trimmedDescription,
       isDescriptionTextareaVisible: false,
+      isDialogVisible: false,
       isNameInputVisible: false,
       isTipVisible: false,
+      listType: type,
       nameInputValue: name,
+      newType: null,
       pendingForDescription: false,
       pendingForName: false,
       pendingForType: false
@@ -182,10 +186,7 @@ class ListHeader extends PureComponent {
     );
   };
 
-  handleChangingType = event => {
-    const {
-      target: { value }
-    } = event;
+  handleChangingType = () => {
     const {
       changeType,
       details: { name },
@@ -193,12 +194,14 @@ class ListHeader extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
+    const { newType } = this.state;
 
     this.setState({ pendingForType: true });
 
-    changeType(listId, name, value).finally(() =>
-      this.setState({ pendingForType: false })
-    );
+    changeType(listId, name, newType).finally(() => {
+      this.setState({ pendingForType: false, listType: newType });
+      this.hideDialog();
+    });
   };
 
   handleTipVisibility = () => {
@@ -211,6 +214,16 @@ class ListHeader extends PureComponent {
   };
 
   hideTip = () => this.setState({ isTipVisible: false });
+
+  showDialog = event => {
+    const { value } = event.target;
+
+    this.setState({ isDialogVisible: true, newType: value });
+  };
+
+  hideDialog = () => {
+    this.setState({ isDialogVisible: false, newType: null });
+  };
 
   renderDescription = () => {
     const {
@@ -296,17 +309,16 @@ class ListHeader extends PureComponent {
 
   renderListType = () => {
     const {
-      details: { type },
       intl: { formatMessage }
     } = this.props;
-    const { pendingForType } = this.state;
+    const { listType, pendingForType } = this.state;
 
     return (
       <select
         className="list-header__select primary-select"
-        defaultValue={type}
+        value={listType}
         disabled={pendingForType}
-        onChange={this.handleChangingType}
+        onChange={this.showDialog}
       >
         <option className="list-header__option" value={ListType.LIMITED}>
           {formatMessage({ id: 'list.type.limited' })}
@@ -318,12 +330,37 @@ class ListHeader extends PureComponent {
     );
   };
 
+  renderDialog = () => {
+    const { newType: value, pendingForType } = this.state;
+    const {
+      details: { name },
+      intl: { formatMessage }
+    } = this.props;
+
+    return (
+      <Dialog
+        onCancel={this.hideDialog}
+        onConfirm={this.handleChangingType}
+        pending={pendingForType}
+        title={formatMessage(
+          {
+            id: pendingForType
+              ? 'list.index.changing-type'
+              : 'list.index.change-type-question'
+          },
+          { name, value }
+        )}
+      />
+    );
+  };
+
   render() {
     const {
       details: { isOwner, type },
       isCohortList
     } = this.props;
     const {
+      isDialogVisible,
       pendingForDescription,
       pendingForName,
       pendingForType
@@ -354,6 +391,7 @@ class ListHeader extends PureComponent {
           {this.renderDescription()}
           {pendingForDescription && <Preloader size={PreloaderSize.SMALL} />}
         </div>
+        {isDialogVisible && this.renderDialog()}
       </div>
     );
   }
