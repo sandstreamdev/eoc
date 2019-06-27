@@ -22,8 +22,8 @@ import {
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedList from 'modules/list/components/ArchivedList';
 import {
-  RouterMatchPropType,
   IntlPropType,
+  RouterMatchPropType,
   UserPropType
 } from 'common/constants/propTypes';
 import MembersBox from 'common/components/Members';

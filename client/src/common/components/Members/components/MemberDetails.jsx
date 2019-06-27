@@ -442,11 +442,7 @@ class MemberDetails extends PureComponent {
         ) : (
           <button
             className="primary-button"
-            onClick={
-              route === Routes.LIST
-                ? this.handleLeaveConfirmationVisibility
-                : this.handleLeaveConfirmationVisibility
-            }
+            onClick={this.handleLeaveConfirmationVisibility}
             type="button"
           >
             <FormattedMessage
@@ -460,7 +456,7 @@ class MemberDetails extends PureComponent {
   };
 
   render() {
-    const { isCurrentUserAnOwner, onClose, isPrivateList, route } = this.props;
+    const { isCurrentUserAnOwner, isPrivateList, onClose, route } = this.props;
     const { pending } = this.state;
 
     return (

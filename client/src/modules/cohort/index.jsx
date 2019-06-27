@@ -18,8 +18,8 @@ import {
 import { ListIcon } from 'assets/images/icons';
 import { getCohortDetails, getMembers } from './model/selectors';
 import {
-  RouterMatchPropType,
   IntlPropType,
+  RouterMatchPropType,
   UserPropType
 } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
@@ -281,8 +281,8 @@ class Cohort extends PureComponent {
                 <MembersBox
                   isCurrentUserAnOwner={isOwner}
                   members={members}
-                  route={Routes.COHORT}
                   onCohortLeave={this.handleLeave}
+                  route={Routes.COHORT}
                 />
                 <CollectionView
                   color={ColorType.ORANGE}
