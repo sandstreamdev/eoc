@@ -5,7 +5,7 @@ import validator from 'validator';
 import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
 
-import SignUpInput from './SignUpInput';
+import AuthInput from './AuthInput';
 import { signIn } from 'modules/authorization/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
@@ -127,7 +127,7 @@ class SignInForm extends PureComponent {
         </h1>
         {signUpErrorId && this.renderSignUpError()}
         <form className="sign-in-form__form" noValidate>
-          <SignUpInput
+          <AuthInput
             disabled={pending}
             formError={hasSignUpFailed}
             focus
@@ -137,7 +137,7 @@ class SignInForm extends PureComponent {
             type="text"
             validator={this.emailValidator}
           />
-          <SignUpInput
+          <AuthInput
             disabled={pending}
             formError={hasSignUpFailed}
             labelId="authorization.input.password.label"

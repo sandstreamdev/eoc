@@ -23,7 +23,7 @@ import { IntlPropType } from 'common/constants/propTypes';
 class AuthBox extends PureComponent {
   state = {
     isCookieSet: true,
-    isSignInFormVisible: true,
+    isSignInFormVisible: false,
     isSignUpFormVisible: false,
     pending: false
   };

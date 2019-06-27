@@ -9,7 +9,7 @@ import _trimStart from 'lodash/trimStart';
 import { IntlPropType } from 'common/constants/propTypes';
 import { CheckIcon, ErrorIcon } from 'assets/images/icons';
 
-class SignUpInput extends PureComponent {
+class AuthInput extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -96,11 +96,11 @@ class SignUpInput extends PureComponent {
       const feedbackMessageId = externalErrorId || errorMessageId;
 
       return (
-        <p className="sign-up-input__feedback">
-          <span className="sign-up-input__icon--invalid">
+        <p className="auth-input__feedback">
+          <span className="auth-input__icon--invalid">
             <ErrorIcon />
           </span>
-          <span className="sign-up-input__feedback-info--invalid">
+          <span className="auth-input__feedback-info--invalid">
             {formatMessage({ id: feedbackMessageId })}
           </span>
         </p>
@@ -120,25 +120,25 @@ class SignUpInput extends PureComponent {
     const { invalidTheme, value, validTheme } = this.state;
 
     return (
-      <div className="sign-up-input">
+      <div className="auth-input">
         <label
-          className={classNames('sign-up-input__label', {
-            'sign-up-input__label--valid': validTheme,
-            'sign-up-input__label--invalid': invalidTheme
+          className={classNames('auth-input__label', {
+            'auth-input__label--valid': validTheme,
+            'auth-input__label--invalid': invalidTheme
           })}
           htmlFor={name}
         >
           {formatMessage({ id: labelId })}
           {validTheme && (
-            <span className="sign-up-input__icon--valid">
+            <span className="auth-input__icon--valid">
               <CheckIcon />
             </span>
           )}
         </label>
         <input
-          className={classNames('primary-input sign-up-input__input', {
-            'sign-up-input__input--valid': validTheme,
-            'sign-up-input__input--invalid': invalidTheme
+          className={classNames('primary-input auth-input__input', {
+            'auth-input__input--valid': validTheme,
+            'auth-input__input--invalid': invalidTheme
           })}
           disabled={disabled}
           id={name}
@@ -154,7 +154,7 @@ class SignUpInput extends PureComponent {
   }
 }
 
-SignUpInput.propTypes = {
+AuthInput.propTypes = {
   disabled: PropTypes.bool,
   externalErrorId: PropTypes.string,
   focus: PropTypes.bool,
@@ -168,4 +168,4 @@ SignUpInput.propTypes = {
   validator: PropTypes.func
 };
 
-export default injectIntl(SignUpInput);
+export default injectIntl(AuthInput);
