@@ -22,6 +22,7 @@ import { IntlPropType } from 'common/constants/propTypes';
 class AuthBox extends PureComponent {
   state = {
     isCookieSet: true,
+    isSignInFormVisible: false,
     isSignUpFormVisible: false,
     pending: false
   };
@@ -44,6 +45,11 @@ class AuthBox extends PureComponent {
   handleSignUpFormVisibility = () =>
     this.setState(({ isSignUpFormVisible }) => ({
       isSignUpFormVisible: !isSignUpFormVisible
+    }));
+
+  handleSignInFormVisibility = () =>
+    this.setState(({ isSignInFormVisible }) => ({
+      isSignInFormVisible: !isSignInFormVisible
     }));
 
   renderSignInButtons = () => {
