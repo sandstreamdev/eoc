@@ -43,7 +43,7 @@ export const logoutCurrentUser = () => dispatch =>
 
 export const loginDemoUser = () => dispatch =>
   postData('/auth/demo', {
-    username: 'demo',
+    email: 'demo@example.com',
     password: 'demo'
   })
     .then(() => {
