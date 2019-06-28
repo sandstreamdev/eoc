@@ -126,9 +126,79 @@ const signUp = (req, resp, next) => {
 
 const confirmEmail = (req, resp) => {};
 
+const resetPasswordRequest = (req, resp, next) => {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetTokenExpirationDate = new Date().getTime() + 3600000;
+  const errors = {};
+  const { email } = req.body;
+  const sanitizedEmail = sanitize(email);
+  const { isEmail, isEmpty } = validator;
+
+  if (isEmpty(sanitizedEmail) || !isEmail(sanitizedEmail)) {
+    errors.emailError = true;
+  }
+
+  if (_some(errors, error => error !== undefined)) {
+    return resp.status(406).send(errors);
+  }
+
+  User.findOne({ email: sanitizedEmail })
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error('authorization.actions.no-user-of-email');
+      }
+
+      const { displayName, isActive, idFromProvider } = user;
+
+      if (idFromProvider) {
+        throw new Error('authorization.actions.google-user-no-reset-password');
+      }
+
+      if (!isActive) {
+        throw new Error(
+          'authorization.actions.reset-password-not-active-account'
+        );
+      }
+
+      return User.findOneAndUpdate(
+        {
+          email
+        },
+        { resetToken, resetTokenExpirationDate }
+      )
+        .exec()
+        .then(() => {
+          // eslint-disable-next-line no-param-reassign
+          resp.locales = {
+            displayName,
+            email,
+            resetToken
+          };
+
+          next();
+        })
+        .catch(() => {
+          throw new Error();
+        });
+    })
+    .catch(err => {
+      const { message } = err;
+
+      if (message) {
+        return resp.status(400).send(message);
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
+resetPasswordRequest();
+
 module.exports = {
   confirmEmail,
   logout,
+  resetPasswordRequest,
   sendDemoUser,
   sendUser,
   signUp

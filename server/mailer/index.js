@@ -68,4 +68,38 @@ const sendSignUpConfirmationLink = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-module.exports = { sendInvitation, sendSignUpConfirmationLink };
+const sendResetPasswordLink = (req, resp) => {
+  const { email: receiver, displayName, resetToken } = resp.locales;
+  const { protocol } = req;
+  const host = req.get('host');
+  const url = `${protocol}://${host}`;
+  const resetUrl = `${url}/reset/${resetToken}`;
+  const title = `${PROJECT_NAME} - Reset your password`;
+  const info =
+    'Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.';
+  const value = 'Reset password';
+
+  const message = {
+    to: receiver,
+    from: 'no.replay@app.eoc.com',
+    subject: title,
+    html: mailTemplate(
+      displayName,
+      `${PROJECT_NAME} team`,
+      resetUrl,
+      title,
+      info,
+      value
+    )
+  };
+
+  SendGridMail.send(message)
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
+};
+
+module.exports = {
+  sendInvitation,
+  sendResetPasswordLink,
+  sendSignUpConfirmationLink
+};
