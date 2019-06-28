@@ -213,7 +213,6 @@ class MemberDetails extends PureComponent {
       case Routes.LIST:
         action = onListLeave;
         break;
-
       case Routes.COHORT:
         action = onCohortLeave;
         break;
