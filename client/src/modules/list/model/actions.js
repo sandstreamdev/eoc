@@ -535,7 +535,7 @@ export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
         notificationId: 'list.actions.leave-list',
         data: userName
       });
-      history.replace(`/${cohortId ? 'cohorts' : 'dashboard'}`);
+      history.replace(`/${cohortId ? `cohort/${cohortId}` : 'dashboard'}`);
     })
     .catch(err => {
       dispatch(leaveListFailure());

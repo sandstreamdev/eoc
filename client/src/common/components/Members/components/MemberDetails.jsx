@@ -208,20 +208,20 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    if (route === Routes.LIST) {
-      this.pendingPromise = makeAbortablePromise(onListLeave());
-      this.pendingPromise.promise
-        .then(() => this.setState({ pending: false }))
-        .catch(err => {
-          if (!(err instanceof AbortPromiseException)) {
-            this.setState({ pending: false });
-          }
-        });
+    let action;
+    switch (route) {
+      case Routes.LIST:
+        action = onListLeave;
+        break;
 
-      return;
+      case Routes.COHORT:
+        action = onCohortLeave;
+        break;
+      default:
+        break;
     }
 
-    this.pendingPromise = makeAbortablePromise(onCohortLeave());
+    this.pendingPromise = makeAbortablePromise(action());
     this.pendingPromise.promise
       .then(() => this.setState({ pending: false }))
       .catch(err => {
