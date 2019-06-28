@@ -66,3 +66,18 @@ export const signUp = (email, username, password, passwordConfirm) =>
     passwordConfirm,
     username
   });
+
+export const resetPassword = email => dispatch =>
+  postData('auth/reset-password', { email })
+    .then(() => {
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'authorization.actions.reset-successful',
+        data: email
+      });
+    })
+    .catch(err => {
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: err.message || 'default',
+        data: email
+      });
+    });

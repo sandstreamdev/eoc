@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import validator from 'validator';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { resetPassword } from '../model/actions';
 
 class ResetPassword extends PureComponent {
   state = {
@@ -20,6 +24,7 @@ class ResetPassword extends PureComponent {
     event.preventDefault();
     const { email } = this.state;
     const isEmailCorrect = validator.isEmail(email);
+    const { resetPassword } = this.props;
 
     if (!isEmailCorrect) {
       this.showTip();
@@ -27,6 +32,7 @@ class ResetPassword extends PureComponent {
       return;
     }
 
+    resetPassword(email);
     this.hideTip();
   };
 
@@ -73,4 +79,11 @@ class ResetPassword extends PureComponent {
   }
 }
 
-export default ResetPassword;
+ResetPassword.propTypes = {
+  resetPassword: PropTypes.func
+};
+
+export default connect(
+  null,
+  { resetPassword }
+)(ResetPassword);

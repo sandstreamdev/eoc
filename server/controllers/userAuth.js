@@ -186,14 +186,12 @@ const resetPasswordRequest = (req, resp, next) => {
       const { message } = err;
 
       if (message) {
-        return resp.status(400).send(message);
+        return resp.status(400).send({ message });
       }
 
       resp.sendStatus(400);
     });
 };
-
-resetPasswordRequest();
 
 module.exports = {
   confirmEmail,
