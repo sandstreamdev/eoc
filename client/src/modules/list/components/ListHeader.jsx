@@ -38,7 +38,7 @@ class ListHeader extends PureComponent {
       updatedType: null,
       pendingForDescription: false,
       pendingForName: false,
-      pendingForType: false
+      pendingForTypeUpdate: false
     };
   }
 
@@ -196,10 +196,10 @@ class ListHeader extends PureComponent {
     } = this.props;
     const { updatedType } = this.state;
 
-    this.setState({ pendingForType: true });
+    this.setState({ pendingForTypeUpdate: true });
 
     changeType(listId, name, updatedType).finally(() => {
-      this.setState({ pendingForType: false, listType: updatedType });
+      this.setState({ pendingForTypeUpdate: false, listType: updatedType });
       this.hideDialog();
     });
   };
@@ -310,12 +310,12 @@ class ListHeader extends PureComponent {
     const {
       intl: { formatMessage }
     } = this.props;
-    const { listType, pendingForType } = this.state;
+    const { listType, pendingForTypeUpdate } = this.state;
 
     return (
       <select
         className="list-header__select primary-select"
-        disabled={pendingForType}
+        disabled={pendingForTypeUpdate}
         onChange={this.showDialog}
         value={listType}
       >
@@ -330,7 +330,7 @@ class ListHeader extends PureComponent {
   };
 
   renderDialog = () => {
-    const { updatedType: value, pendingForType } = this.state;
+    const { updatedType: value, pendingForTypeUpdate } = this.state;
     const {
       details: { name },
       intl: { formatMessage }
@@ -340,10 +340,10 @@ class ListHeader extends PureComponent {
       <Dialog
         onCancel={this.hideDialog}
         onConfirm={this.handleChangingType}
-        pending={pendingForType}
+        pending={pendingForTypeUpdate}
         title={formatMessage(
           {
-            id: pendingForType
+            id: pendingForTypeUpdate
               ? 'list.index.changing-type'
               : 'list.index.change-type-question'
           },
@@ -362,7 +362,7 @@ class ListHeader extends PureComponent {
       isDialogVisible,
       pendingForDescription,
       pendingForName,
-      pendingForType
+      pendingForTypeUpdate
     } = this.state;
 
     return (
@@ -378,7 +378,9 @@ class ListHeader extends PureComponent {
               {isOwner ? (
                 <Fragment>
                   {this.renderListType()}
-                  {pendingForType && <Preloader size={PreloaderSize.SMALL} />}
+                  {pendingForTypeUpdate && (
+                    <Preloader size={PreloaderSize.SMALL} />
+                  )}
                 </Fragment>
               ) : (
                 type
