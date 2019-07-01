@@ -105,7 +105,7 @@ class SignInForm extends PureComponent {
       });
   };
 
-  renderSignUpError = () => {
+  renderSignInError = () => {
     const { signInErrorId } = this.state;
     const {
       intl: { formatMessage }
@@ -127,12 +127,30 @@ class SignInForm extends PureComponent {
     );
   };
 
+  renderForgotPassword = () => {
+    const {
+      intl: { formatMessage }
+    } = this.props;
+
+    return (
+      <p className="sign-in__forgot-password">
+        <FormattedMessage
+          id="authorization.forgot-password.question"
+          values={{
+            link: (
+              <Link className="sign-in__link" to="/reset-password">
+                {formatMessage({ id: 'authorization.forgot-password' })}
+              </Link>
+            )
+          }}
+        />
+      </p>
+    );
+  };
+
   render() {
     const { isFormValid, pending, signInErrorId } = this.state;
-    const {
-      intl: { formatMessage },
-      onCancel
-    } = this.props;
+    const { onCancel } = this.props;
     const hasSignUpFailed = signInErrorId.length > 0;
 
     return (
@@ -140,7 +158,7 @@ class SignInForm extends PureComponent {
         <h1 className="sign-in__heading">
           <FormattedMessage id="authorization.auth-box.sign-in" />
         </h1>
-        {signInErrorId && this.renderSignUpError()}
+        {signInErrorId && this.renderSignInError()}
         <form className="sign-in__form" noValidate>
           <AuthInput
             disabled={pending}
@@ -179,12 +197,7 @@ class SignInForm extends PureComponent {
             </PendingButton>
           </div>
         </form>
-        <p className="sign-in__forgot-password">
-          <Link className="sign-in__link" to="/reset-password">
-            {formatMessage({ id: 'authorization.forgot-password' })}
-          </Link>
-          ?
-        </p>
+        {this.renderForgotPassword()}
       </div>
     );
   }

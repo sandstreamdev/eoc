@@ -78,6 +78,7 @@
   "authorization.create-account": "Create account",
   "authorization.sign-in": "Sign in",
   "authorization.sign-up": "Sign up",
+  "authorization.forgot-password.question": "If you forgot the password please click {link} to reset it.",
   "authorization.forgot-password": "Forgot password",
   "authorization.input.username.label": "Name",
   "authorization.input.username.invalid": "Please use max 32 chars.",
