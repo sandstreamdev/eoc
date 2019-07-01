@@ -76,7 +76,7 @@ export const resetPassword = email => dispatch =>
       });
     })
     .catch(err => {
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR_NO_RETRY, {
         notificationId: err.message || 'default',
         data: email
       });
