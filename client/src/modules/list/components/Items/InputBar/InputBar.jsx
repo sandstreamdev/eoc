@@ -126,6 +126,14 @@ class InputBar extends Component {
 
   hideForm = () => this.setState({ isFormVisible: false });
 
+  handleBlur = () => {
+    const { itemName } = this.state;
+
+    if (_trim(itemName).length === 0) {
+      this.hideForm();
+    }
+  };
+
   renderInputBar = () => {
     const {
       isButtonDisabled,
@@ -146,6 +154,7 @@ class InputBar extends Component {
             disabled={pending}
             name="item name"
             onChange={this.handleNameChange}
+            onBlur={this.handleBlur}
             placeholder={formatMessage({ id: 'list.input-bar.placeholder' })}
             ref={this.input}
             required
