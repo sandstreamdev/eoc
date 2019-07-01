@@ -6,7 +6,7 @@ const {
   authenticateCallback,
   setDemoUser
 } = require('../config/auth');
-const { signUp, resetPasswordRequest } = require('../controllers/userAuth');
+const { signUp, resetPassword } = require('../controllers/userAuth');
 const {
   confirmEmail,
   logout,
@@ -27,6 +27,6 @@ router.get('/google/callback', authenticateCallback, sendUser);
 router.post('/logout', removeDemoUserChanges, logout);
 router.post('/sign-up', signUp, sendSignUpConfirmationLink);
 router.get('/confirm-email/:hash', confirmEmail);
-router.post('/reset-password', resetPasswordRequest, sendResetPasswordLink);
+router.post('/reset-password', resetPassword, sendResetPasswordLink);
 
 module.exports = router;

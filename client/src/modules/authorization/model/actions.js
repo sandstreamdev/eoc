@@ -76,8 +76,13 @@ export const resetPassword = email => dispatch =>
       });
     })
     .catch(err => {
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR_NO_RETRY, {
-        notificationId: err.message || 'default',
-        data: email
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        err.message ? NotificationType.ERROR_NO_RETRY : NotificationType.ERROR,
+        {
+          notificationId:
+            err.message || 'authorization.actions.reset-default-error',
+          data: email
+        }
+      );
     });

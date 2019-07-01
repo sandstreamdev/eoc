@@ -126,20 +126,17 @@ const signUp = (req, resp, next) => {
 
 const confirmEmail = (req, resp) => {};
 
-const resetPasswordRequest = (req, resp, next) => {
+const resetPassword = (req, resp, next) => {
   const resetToken = crypto.randomBytes(32).toString('hex');
   const resetTokenExpirationDate = new Date().getTime() + 3600000;
-  const errors = {};
   const { email } = req.body;
   const sanitizedEmail = sanitize(email);
   const { isEmail, isEmpty } = validator;
 
   if (isEmpty(sanitizedEmail) || !isEmail(sanitizedEmail)) {
-    errors.emailError = true;
-  }
-
-  if (_some(errors, error => error !== undefined)) {
-    return resp.status(406).send(errors);
+    return resp
+      .status(400)
+      .send({ message: 'authorization.actions.wrong-email' });
   }
 
   User.findOne({ email: sanitizedEmail })
@@ -196,7 +193,7 @@ const resetPasswordRequest = (req, resp, next) => {
 module.exports = {
   confirmEmail,
   logout,
-  resetPasswordRequest,
+  resetPassword,
   sendDemoUser,
   sendUser,
   signUp

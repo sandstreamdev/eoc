@@ -95,6 +95,8 @@
   "authorization.actions.google-user-no-reset-password": "This user: {data} is signed up via Google Account. You can not reset password to Google account here.",
   "authorization.actions.reset-successful": "Password reset email successfully sent to: {data}. Please open your email and click reset button to continue resetting you password.",
   "authorization.actions.reset-password-not-active-account": "Account: {data} not active yet. Please go to your email inbox and activate account.",
+  "authorization.actions.reset-default-error": "Something went wrong.",
+  "authorization.actions.wrong-email": "Wrong email.",
   "cohort.cohort-header.add-description": "Add description",
   "cohort.cohorts.no-cohorts": "There are no cohorts yet!",
   "cohort.cohorts.no-arch-cohorts": "You have no archived cohorts!",
