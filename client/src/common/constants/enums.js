@@ -50,3 +50,8 @@ export const KeyCodes = Object.freeze({
   ENTER: 'Enter',
   ESCAPE: 'Escape'
 });
+
+export const EventTypes = Object.freeze({
+  CLICK: 'click',
+  SUBMIT: 'submit'
+});

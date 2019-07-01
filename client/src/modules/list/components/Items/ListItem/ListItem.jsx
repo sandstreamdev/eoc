@@ -93,7 +93,9 @@ class ListItem extends PureComponent {
     this.setState({ busyBySomeone: blocked });
   };
 
-  handleItemToggling = () => {
+  handleItemToggling = event => {
+    event.preventDefault();
+
     const {
       currentUser: { name, id: userId },
       data: { isOrdered, authorId, _id, name: itemName },
@@ -127,12 +129,17 @@ class ListItem extends PureComponent {
     toggle(itemName, isOrdered, _id, listId);
   };
 
-  handleDetailsVisibility = () =>
+  handleDetailsVisibility = event => {
+    event.preventDefault();
+
     this.setState(({ areDetailsVisible }) => ({
       areDetailsVisible: !areDetailsVisible
     }));
+  };
 
-  handleItemCloning = () => {
+  handleItemCloning = event => {
+    event.preventDefault();
+
     const {
       cloneItem,
       data: { _id: itemId, name },
@@ -149,7 +156,9 @@ class ListItem extends PureComponent {
     }
   };
 
-  handleVoting = () => {
+  handleVoting = event => {
+    event.preventDefault();
+
     const {
       clearVote,
       data: { _id, isVoted, name },
@@ -166,12 +175,17 @@ class ListItem extends PureComponent {
     return action(_id, listId, name).finally(() => this.itemFree());
   };
 
-  handleConfirmationVisibility = () =>
+  handleConfirmationVisibility = event => {
+    event.preventDefault();
+
     this.setState(({ isConfirmationVisible }) => ({
       isConfirmationVisible: !isConfirmationVisible
     }));
+  };
 
-  handleArchiveItem = () => {
+  handleArchiveItem = event => {
+    event.preventDefault();
+
     const {
       archiveItem,
       data: { _id: itemId, name },
@@ -237,7 +251,11 @@ class ListItem extends PureComponent {
     onFree();
   };
 
-  handleBusyInfoVisibility = () => this.setState({ busyInfoVisibility: true });
+  handleBusyInfoVisibility = event => {
+    event.preventDefault();
+
+    this.setState({ busyInfoVisibility: true });
+  };
 
   renderConfirmation = () => {
     const {
@@ -254,6 +272,7 @@ class ListItem extends PureComponent {
           className="primary-button"
           disabled={!isMember}
           onClick={this.handleArchiveItem}
+          onTouchEnd={this.handleArchiveItem}
           preloaderTheme={PreloaderTheme.LIGHT}
           type="button"
         >
@@ -263,6 +282,7 @@ class ListItem extends PureComponent {
           className="primary-button"
           disabled={!isMember}
           onClick={this.handleConfirmationVisibility}
+          onTouchEnd={this.handleConfirmationVisibility}
           type="button"
         >
           <FormattedMessage id="common.button.cancel" />
@@ -286,6 +306,7 @@ class ListItem extends PureComponent {
             className="link-button"
             disabled={!isMember || isConfirmationVisible}
             onClick={this.handleConfirmationVisibility}
+            onTouchEnd={this.handleConfirmationVisibility}
             type="button"
           >
             <FormattedMessage id="list.list-item.archive" />
@@ -295,6 +316,7 @@ class ListItem extends PureComponent {
               className="link-button"
               disabled={!isMember || isConfirmationVisible}
               onClick={this.handleItemCloning}
+              onTouchEnd={this.handleItemCloning}
             >
               <FormattedMessage id="list.list-item.clone" />
             </PendingButton>
@@ -374,6 +396,7 @@ class ListItem extends PureComponent {
             'list-item__busy-overlay--dimmed': busyInfoVisibility
           })}
           onClick={this.handleBusyInfoVisibility}
+          onTouchEnd={this.handleBusyInfoVisibility}
           role="banner"
         >
           {busyInfoVisibility && (
@@ -411,6 +434,7 @@ class ListItem extends PureComponent {
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
           onClick={isNameEdited ? null : this.handleDetailsVisibility}
+          onTouchEnd={isNameEdited ? null : this.handleDetailsVisibility}
           role="listitem"
         >
           <input
@@ -443,6 +467,7 @@ class ListItem extends PureComponent {
                 className="list-item__icon"
                 disabled={disableToggleButton || !isMember}
                 onClick={this.handleItemToggling}
+                onTouchEnd={this.handleItemToggling}
               />
             </div>
           </div>
