@@ -37,10 +37,12 @@ class ResetPassword extends PureComponent {
 
     this.setState({ pending: true });
 
-    return resetPassword(email).finally(() => {
-      this.setState({ email: '', pending: false });
-      this.hideTip();
-    });
+    return resetPassword(email)
+      .finally(() => {
+        this.setState({ email: '', pending: false });
+        this.hideTip();
+      })
+      .catch(() => this.showTip());
   };
 
   showTip = () => this.setState({ tipVisible: true });

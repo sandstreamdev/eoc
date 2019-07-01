@@ -134,9 +134,7 @@ const resetPassword = (req, resp, next) => {
   const { isEmail, isEmpty } = validator;
 
   if (isEmpty(sanitizedEmail) || !isEmail(sanitizedEmail)) {
-    return resp
-      .status(400)
-      .send({ message: 'authorization.actions.wrong-email' });
+    return resp.sendStatus(406);
   }
 
   User.findOne({ email: sanitizedEmail })

@@ -28,7 +28,7 @@ class PendingButton extends PureComponent {
 
     this.setState({ pending: true });
 
-    this.pendingPromise = makeAbortablePromise(onClick());
+    this.pendingPromise = makeAbortablePromise(onClick(event));
     this.pendingPromise.promise
       .then(() => this.setState({ pending: false }))
       .catch(err => {
