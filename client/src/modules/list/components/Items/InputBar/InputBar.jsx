@@ -17,7 +17,7 @@ import {
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { EventTypes } from 'common/constants/enums';
+import { EventTypes, KeyCodes } from 'common/constants/enums';
 
 class InputBar extends Component {
   constructor(props) {
@@ -35,6 +35,10 @@ class InputBar extends Component {
     this.socket = undefined;
   }
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleEscapePress);
+  }
+
   componentDidUpdate() {
     const { isFormVisible, pending, isTipVisible } = this.state;
 
@@ -50,6 +54,20 @@ class InputBar extends Component {
       this.socket = io();
     }
   }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleEscapePress);
+  }
+
+  handleEscapePress = event => {
+    const { code } = event;
+    const { itemName } = this.state;
+    const isInputEmpty = _trim(itemName).length === 0;
+
+    if (code === KeyCodes.ESCAPE && isInputEmpty) {
+      this.hideForm();
+    }
+  };
 
   handleNameChange = event => {
     const {
