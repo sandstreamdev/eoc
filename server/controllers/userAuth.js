@@ -97,7 +97,7 @@ const signUp = (req, resp, next) => {
 
       const hashedPassword = bcrypt.hashSync(password + email, 12);
       const signUpHash = crypto.randomBytes(32).toString('hex');
-      const expirationDate = new Date().getTime() + 5000;
+      const expirationDate = new Date().getTime() + 3600000;
       const newUser = new User({
         displayName: sanitizedUsername,
         email: sanitizedEmail,
@@ -175,7 +175,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
 
       const { _id, displayName, email } = user;
       const signUpHash = crypto.randomBytes(32).toString('hex');
-      const expirationDate = new Date().getTime() + 5000;
+      const expirationDate = new Date().getTime() + 3600000;
 
       return User.findOneAndUpdate(
         { _id },

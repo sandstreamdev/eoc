@@ -10,7 +10,7 @@ import { resendConfirmationLink } from 'modules/authorization/model/actions';
 
 class SignUpResult extends PureComponent {
   state = {
-    confirmationResent: true,
+    confirmationResent: false,
     resendFailed: false
   };
 
