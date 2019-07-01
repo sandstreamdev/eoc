@@ -97,7 +97,7 @@ const signUp = (req, resp, next) => {
 
       const hashedPassword = bcrypt.hashSync(password + email, 12);
       const signUpHash = crypto.randomBytes(32).toString('hex');
-      const expirationDate = new Date().getTime() + 3600000;
+      const expirationDate = new Date().getTime() + 5000;
       const newUser = new User({
         displayName: sanitizedUsername,
         email: sanitizedEmail,
@@ -138,7 +138,12 @@ const confirmEmail = (req, resp) => {
       signUpHash,
       signUpHashExpirationDate: { $gte: new Date() }
     },
-    { isActive: true, signUpHash: null, signUpHashExpirationDate: null }
+    {
+      activatedAt: new Date(),
+      isActive: true,
+      signUpHash: null,
+      signUpHashExpirationDate: null
+    }
   )
     .lean()
     .exec()
@@ -149,13 +154,60 @@ const confirmEmail = (req, resp) => {
       resp.redirect('/sign-up/success');
     })
     .catch(() => {
-      resp.redirect('/sign-up/failed');
+      resp.redirect(`/sign-up/failed/${signUpHash}`);
+    });
+};
+
+const resendSignUpConfirmationLink = (req, resp, next) => {
+  const { hash } = req.body;
+  const sanitizedHash = sanitize(hash);
+
+  User.findOne({
+    signUpHash: sanitizedHash,
+    isActive: false
+  })
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+
+      const { _id, displayName, email } = user;
+      const signUpHash = crypto.randomBytes(32).toString('hex');
+      const expirationDate = new Date().getTime() + 5000;
+
+      return User.findOneAndUpdate(
+        { _id },
+        {
+          signUpHash,
+          signUpHashExpirationDate: expirationDate
+        }
+      )
+        .exec()
+        .then(user => {
+          if (!user) {
+            throw new Error();
+          }
+
+          return { displayName, email, signUpHash };
+        });
+    })
+    .then(dataToSend => {
+      // eslint-disable-next-line no-param-reassign
+      resp.locals = dataToSend;
+
+      return next();
+    })
+    .catch(() => {
+      resp.sendStatus(400);
     });
 };
 
 module.exports = {
   confirmEmail,
   logout,
+  resendSignUpConfirmationLink,
   sendDemoUser,
   sendUser,
   signUp

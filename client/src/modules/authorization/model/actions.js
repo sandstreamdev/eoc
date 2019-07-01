@@ -60,9 +60,14 @@ export const loginDemoUser = () => dispatch =>
     });
 
 export const signUp = (email, username, password, passwordConfirm) =>
-  postData('auth/sign-up', {
+  postData('/auth/sign-up', {
     email,
     password,
     passwordConfirm,
     username
+  });
+
+export const resendConfirmationLink = hash =>
+  postData('/auth/resend-confirmation-link', {
+    hash
   });

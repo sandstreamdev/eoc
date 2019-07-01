@@ -21,6 +21,7 @@
   }
 
   &__message {
+    width: 100%;
     color: $text-normal;
     font-size: $m-font;
     text-align: left;
@@ -43,5 +44,24 @@
         color: $link-color;
       }
     }
+  }
+
+  &__button {
+    text-transform: capitalize;
+    margin-top: 16px;
+  }
+
+  &__error {
+    margin-bottom: 16px;
+    color: $danger;
+    width: 100%;
+    text-align: left;
+  }
+
+  &__confirmation {
+    width: 100%;
+    color: $text-normal;
+    text-align: left;
+    line-height: 1.2;
   }
 }
