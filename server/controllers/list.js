@@ -3,11 +3,14 @@ const sanitize = require('mongo-sanitize');
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
-  checkIfArrayContainsUserId,
   filter,
+  isGuest,
+  isMember,
+  isOwner,
   isValidMongoId,
-  responseWithItems,
+  isViewer,
   responseWithItem,
+  responseWithItems,
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
@@ -46,7 +49,7 @@ const createList = (req, resp) => {
       .then(cohort => {
         const { memberIds } = cohort;
 
-        if (checkIfArrayContainsUserId(memberIds, userId)) {
+        if (isMember(memberIds, userId)) {
           list.viewersIds = memberIds;
 
           return list.save();
@@ -294,9 +297,6 @@ const getListData = (req, resp) => {
         cohortMembers
       );
 
-      const isGuest = !checkIfArrayContainsUserId(cohortMembers, userId);
-      const isMember = checkIfArrayContainsUserId(memberIds, userId);
-      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const items = responseWithItems(userId, activeItems);
 
       return resp.send({
@@ -305,9 +305,9 @@ const getListData = (req, resp) => {
         cohortName,
         description,
         isArchived,
-        isGuest,
-        isMember,
-        isOwner,
+        isGuest: !isGuest(cohortMembers, userId),
+        isMember: isMember(memberIds, userId),
+        isOwner: isOwner(ownerIds, userId),
         items,
         members,
         name,
@@ -645,13 +645,13 @@ const addOwnerRole = (req, resp) => {
       }
 
       const { memberIds, ownerIds } = doc;
-      const userIsNotAnOwner = !checkIfArrayContainsUserId(ownerIds, userId);
+      const userIsNotAnOwner = !isOwner(ownerIds, userId);
 
       if (userIsNotAnOwner) {
         doc.ownerIds.push(userId);
       }
 
-      const userIsNotAMember = !checkIfArrayContainsUserId(memberIds, userId);
+      const userIsNotAMember = !isMember(memberIds, userId);
 
       if (userIsNotAMember) {
         doc.memberIds.push(userId);
@@ -700,9 +700,8 @@ const removeOwnerRole = (req, resp) => {
           'list.actions.remove-owner-role-only-one-owner'
         );
       }
-      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
 
-      if (userIsOwner) {
+      if (isOwner(ownerIds, userId)) {
         ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
       }
 
@@ -753,15 +752,13 @@ const addMemberRole = (req, resp) => {
       }
 
       const { ownerIds, memberIds } = doc;
-      const userIsNotAMember = !checkIfArrayContainsUserId(memberIds, userId);
+      const userIsNotAMember = !isMember(memberIds, userId);
 
       if (userIsNotAMember) {
         memberIds.push(userId);
       }
 
-      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
-
-      if (userIsOwner) {
+      if (isOwner(ownerIds, userId)) {
         ownerIds.splice(ownerIds.indexOf(userId), 1);
       }
 
@@ -804,7 +801,7 @@ const removeMemberRole = (req, resp) => {
 
       const { memberIds, ownerIds } = doc;
 
-      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
+      const userIsOwner = isOwner(ownerIds, userId);
 
       if (userIsOwner && ownerIds.length < 2) {
         throw new BadRequestException(
@@ -812,9 +809,7 @@ const removeMemberRole = (req, resp) => {
         );
       }
 
-      const userIsMember = checkIfArrayContainsUserId(memberIds, userId);
-
-      if (userIsMember) {
+      if (isMember(memberIds, userId)) {
         memberIds.splice(memberIds.indexOf(userId), 1);
       }
 
@@ -894,7 +889,7 @@ const addViewer = (req, resp) => {
 
       const { _id: newMemberId } = userData;
       const { cohortId: cohort, viewersIds } = list;
-      const userExists = checkIfArrayContainsUserId(viewersIds, newMemberId);
+      const userExists = isViewer(viewersIds, newMemberId);
 
       if (userExists) {
         throw new BadRequestException('list.actions.add-viewer-is-member');
@@ -1121,12 +1116,10 @@ const changeType = (req, resp) => {
 
       const updatedViewersIds =
         type === ListType.LIMITED
-          ? viewersIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
+          ? viewersIds.filter(id => isMember(memberIds, id))
           : [
               ...viewersIds,
-              ...cohortMembers.filter(
-                id => !checkIfArrayContainsUserId(viewersIds, id)
-              )
+              ...cohortMembers.filter(id => !isViewer(viewersIds, id))
             ];
 
       return List.findOneAndUpdate(
@@ -1250,11 +1243,8 @@ const leaveList = (req, resp) => {
       }
 
       const { viewersIds, memberIds, ownerIds } = list;
-      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
-      const isMember = checkIfArrayContainsUserId(memberIds, userId);
-      const isViewer = checkIfArrayContainsUserId(viewersIds, userId);
 
-      if (isOwner) {
+      if (isOwner(ownerIds, userId)) {
         if (ownerIds.length === 1) {
           throw new BadRequestException('list.actions.leave-list-one-owner');
         }
@@ -1262,11 +1252,11 @@ const leaveList = (req, resp) => {
         ownerIds.splice(ownerIds.indexOf(userId), 1);
       }
 
-      if (isMember) {
+      if (isMember(memberIds, userId)) {
         memberIds.splice(memberIds.indexOf(userId), 1);
       }
 
-      if (isViewer) {
+      if (isViewer(viewersIds, userId)) {
         viewersIds.splice(viewersIds.indexOf(userId), 1);
       }
 

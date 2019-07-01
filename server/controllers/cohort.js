@@ -2,8 +2,9 @@ const sanitize = require('mongo-sanitize');
 
 const Cohort = require('../models/cohort.model');
 const {
-  checkIfArrayContainsUserId,
   filter,
+  isMember,
+  isOwner,
   isValidMongoId,
   responseWithCohort,
   responseWithCohorts
@@ -186,7 +187,6 @@ const getCohortDetails = (req, resp) => {
         return resp.send({ _id, isArchived, name });
       }
 
-      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const members = responseWithCohortMembers(membersCollection, ownerIds);
 
       resp.send({
@@ -194,7 +194,7 @@ const getCohortDetails = (req, resp) => {
         description,
         isArchived,
         isMember: true,
-        isOwner,
+        isOwner: isOwner(ownerIds, userId),
         members,
         name
       });
@@ -505,10 +505,8 @@ const leaveCohort = (req, resp) => {
       }
 
       const { memberIds, ownerIds } = doc;
-      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
-      const isMember = checkIfArrayContainsUserId(memberIds, userId);
 
-      if (isOwner) {
+      if (isOwner(ownerIds, userId)) {
         if (ownerIds.length === 1) {
           throw new BadRequestException(
             'cohort.actions.leave-cohort-only-one-owner'
@@ -517,7 +515,7 @@ const leaveCohort = (req, resp) => {
         ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
       }
 
-      if (isMember) {
+      if (isMember(memberIds, userId)) {
         memberIds.splice(doc.memberIds.indexOf(userId), 1);
       }
 

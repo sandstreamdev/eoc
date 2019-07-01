@@ -3,7 +3,11 @@ const { ObjectId } = require('mongoose').Types;
 const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  isGuest,
+  isMember,
+  isOwner,
   isValidMongoId,
+  isViewer,
   responseWithCohort,
   responseWithCohortMember,
   responseWithCohortMembers,
@@ -196,6 +200,110 @@ describe('function checkIfArrayContainsUserId', () => {
     const userId = ObjectId();
     const idsArray = [ObjectId(), ObjectId(), ObjectId()];
     const result = checkIfArrayContainsUserId(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('function isOwner', () => {
+  const idsArray = ['123', '456', '789'];
+
+  it('returns true if the passed array does contains the userID', () => {
+    const userId = '123';
+    const result = isOwner(idsArray, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false if the passed array does not contain the user id as string', () => {
+    const userId = '999';
+    const result = isOwner(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+
+  it('returns false if the passed array does not contain the user id as ObjectId', () => {
+    const userId = ObjectId();
+    const idsArray = [ObjectId(), ObjectId(), ObjectId()];
+    const result = isOwner(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('function isMember', () => {
+  const idsArray = ['123', '456', '789'];
+
+  it('returns true if the passed array does contains the userID', () => {
+    const userId = '123';
+    const result = isMember(idsArray, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false if the passed array does not contain the user id as string', () => {
+    const userId = '999';
+    const result = isMember(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+
+  it('returns false if the passed array does not contain the user id as ObjectId', () => {
+    const userId = ObjectId();
+    const idsArray = [ObjectId(), ObjectId(), ObjectId()];
+    const result = isMember(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('function isViewer', () => {
+  const idsArray = ['123', '456', '789'];
+
+  it('returns true if the passed array does contains the userID', () => {
+    const userId = '123';
+    const result = isViewer(idsArray, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false if the passed array does not contain the user id as string', () => {
+    const userId = '999';
+    const result = isViewer(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+
+  it('returns false if the passed array does not contain the user id as ObjectId', () => {
+    const userId = ObjectId();
+    const idsArray = [ObjectId(), ObjectId(), ObjectId()];
+    const result = isViewer(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('function isGuest', () => {
+  const idsArray = ['123', '456', '789'];
+
+  it('returns true if the passed array does contains the userID', () => {
+    const userId = '123';
+    const result = isGuest(idsArray, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false if the passed array does not contain the user id as string', () => {
+    const userId = '999';
+    const result = isGuest(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+
+  it('returns false if the passed array does not contain the user id as ObjectId', () => {
+    const userId = ObjectId();
+    const idsArray = [ObjectId(), ObjectId(), ObjectId()];
+    const result = isGuest(idsArray, userId);
 
     expect(result).toBe(false);
   });
