@@ -78,7 +78,7 @@
   "authorization.create-account": "Create account",
   "authorization.sign-up": "Sign up",
   "authorization.sign-up.confirmation-link-sent": "In order to complete sign up process please click the link that we have just sent to {data}.",
-  "authorization.sign-up.button.resend-link": "Resend confirmation link",
+  "authorization.sign-up.button.resend-link": "Resend activation link",
   "authorization.sign-up.confirmation-link-resent": "Confirmation link has been resent to email address you entered during sign up process.",
   "authorization.input.username.label": "Name",
   "authorization.input.username.invalid": "Please use max 32 chars.",
