@@ -35,7 +35,7 @@ class ListHeader extends PureComponent {
       isTipVisible: false,
       listType: type,
       nameInputValue: name,
-      newType: null,
+      updatedType: null,
       pendingForDescription: false,
       pendingForName: false,
       pendingForType: false
@@ -194,12 +194,12 @@ class ListHeader extends PureComponent {
         params: { id: listId }
       }
     } = this.props;
-    const { newType } = this.state;
+    const { updatedType } = this.state;
 
     this.setState({ pendingForType: true });
 
-    changeType(listId, name, newType).finally(() => {
-      this.setState({ pendingForType: false, listType: newType });
+    changeType(listId, name, updatedType).finally(() => {
+      this.setState({ pendingForType: false, listType: updatedType });
       this.hideDialog();
     });
   };
@@ -218,12 +218,11 @@ class ListHeader extends PureComponent {
   showDialog = event => {
     const { value } = event.target;
 
-    this.setState({ isDialogVisible: true, newType: value });
+    this.setState({ isDialogVisible: true, updatedType: value });
   };
 
-  hideDialog = () => {
-    this.setState({ isDialogVisible: false, newType: null });
-  };
+  hideDialog = () =>
+    this.setState({ isDialogVisible: false, updatedType: null });
 
   renderDescription = () => {
     const {
@@ -316,9 +315,9 @@ class ListHeader extends PureComponent {
     return (
       <select
         className="list-header__select primary-select"
-        value={listType}
         disabled={pendingForType}
         onChange={this.showDialog}
+        value={listType}
       >
         <option className="list-header__option" value={ListType.LIMITED}>
           {formatMessage({ id: 'list.type.limited' })}
@@ -331,7 +330,7 @@ class ListHeader extends PureComponent {
   };
 
   renderDialog = () => {
-    const { newType: value, pendingForType } = this.state;
+    const { updatedType: value, pendingForType } = this.state;
     const {
       details: { name },
       intl: { formatMessage }
