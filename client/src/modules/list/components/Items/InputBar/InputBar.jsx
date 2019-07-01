@@ -146,8 +146,9 @@ class InputBar extends Component {
 
   handleBlur = () => {
     const { itemName } = this.state;
+    const isInputEmpty = _trim(itemName).length === 0;
 
-    if (_trim(itemName).length === 0) {
+    if (isInputEmpty) {
       this.hideForm();
     }
   };
@@ -171,8 +172,8 @@ class InputBar extends Component {
             className="input-bar__input primary-input"
             disabled={pending}
             name="item name"
-            onChange={this.handleNameChange}
             onBlur={this.handleBlur}
+            onChange={this.handleNameChange}
             placeholder={formatMessage({ id: 'list.input-bar.placeholder' })}
             ref={this.input}
             required
