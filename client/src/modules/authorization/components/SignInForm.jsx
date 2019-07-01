@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import validator from 'validator';
 import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
+import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
 import { signIn } from 'modules/authorization/model/actions';
@@ -39,6 +40,7 @@ class SignInForm extends PureComponent {
   onEmailChange = (email, isValid) => {
     const { signInErrorId } = this.state;
     const error = isValid ? '' : signInErrorId;
+
     this.setState({
       email,
       isEmailValid: isValid,
@@ -49,6 +51,7 @@ class SignInForm extends PureComponent {
   onPasswordChange = (password, isValid) => {
     const { signInErrorId } = this.state;
     const error = isValid ? '' : signInErrorId;
+
     this.setState(
       {
         password,
@@ -82,11 +85,10 @@ class SignInForm extends PureComponent {
     const { signIn } = this.props;
 
     this.setState({ pending: true });
-
     this.pendingPromise = makeAbortablePromise(signIn(email, password));
 
     return this.pendingPromise.promise
-      .then(() => this.setState({ pending: true }))
+      .then(() => this.setState({ pending: false }))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           const newState = { pending: false };
@@ -108,25 +110,38 @@ class SignInForm extends PureComponent {
     const {
       intl: { formatMessage }
     } = this.props;
-    const message = `${formatMessage({ id: signInErrorId })} ${formatMessage({
-      id: 'common.try-again'
-    })}`;
 
-    return <p className="sign-in-form__error">{message}</p>;
+    return (
+      <p className="sign-in__error">
+        <FormattedMessage
+          id={signInErrorId}
+          values={{
+            link: (
+              <Link className="sign-in__link" to="/reset-password">
+                {formatMessage({ id: 'authorization.forgot-password' })}
+              </Link>
+            )
+          }}
+        />
+      </p>
+    );
   };
 
   render() {
     const { isFormValid, pending, signInErrorId } = this.state;
-    const { onCancel } = this.props;
-    const hasSignUpFailed = signInErrorId !== '';
+    const {
+      intl: { formatMessage },
+      onCancel
+    } = this.props;
+    const hasSignUpFailed = signInErrorId.length > 0;
 
     return (
       <div className="sign-in">
-        <h1 className="sign-in-form__heading">
+        <h1 className="sign-in__heading">
           <FormattedMessage id="authorization.auth-box.sign-in" />
         </h1>
         {signInErrorId && this.renderSignUpError()}
-        <form className="sign-in-form__form" noValidate>
+        <form className="sign-in__form" noValidate>
           <AuthInput
             disabled={pending}
             formError={hasSignUpFailed}
@@ -145,7 +160,7 @@ class SignInForm extends PureComponent {
             onChange={this.onPasswordChange}
             type="password"
           />
-          <div className="sign-in-form__buttons">
+          <div className="sign-in__buttons">
             <button
               className="primary-button"
               disabled={pending}
@@ -155,7 +170,7 @@ class SignInForm extends PureComponent {
               <FormattedMessage id="common.button.cancel" />
             </button>
             <PendingButton
-              className="primary-button sign-in-form__confirm"
+              className="primary-button sign-in__confirm"
               disabled={!isFormValid}
               onClick={this.handleSignIn}
               type="button"
@@ -164,6 +179,12 @@ class SignInForm extends PureComponent {
             </PendingButton>
           </div>
         </form>
+        <p className="sign-in__forgot-password">
+          <Link className="sign-in__link" to="/reset-password">
+            {formatMessage({ id: 'authorization.forgot-password' })}
+          </Link>
+          ?
+        </p>
       </div>
     );
   }

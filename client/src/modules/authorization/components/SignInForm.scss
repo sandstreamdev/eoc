@@ -1,4 +1,4 @@
-.sign-in-form {
+.sign-in {
   &__heading {
     font-size: $m-font;
     line-height: 1.2;
@@ -30,5 +30,28 @@
     font-size: $s-font;
     padding: 8px 0;
     color: $danger;
+  }
+
+  &__link {
+    color: $link-color;
+    font-style: italic;
+    text-decoration: none;
+
+    &:hover {
+      color: $text-black;
+      text-decoration: underline;
+    }
+
+    &:visited {
+      color: $text-black;
+      &:hover {
+        color: $link-color;
+      }
+    }
+  }
+
+  &__forgot-password {
+    text-align: left;
+    padding-top: 16px;
   }
 }

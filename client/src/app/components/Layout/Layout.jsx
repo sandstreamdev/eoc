@@ -89,6 +89,7 @@ export class Layout extends PureComponent {
       <Switch>
         <Route component={AuthBox} exact path="/" />
         <Route component={PrivacyPolicy} path="/privacy-policy" />
+        <Route component={ResetPassword} path="/reset-password" />
         <Redirect to="/" />
       </Switch>
     ) : (
