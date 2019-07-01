@@ -146,8 +146,9 @@ class InputBar extends Component {
 
   handleBlur = () => {
     const { itemName } = this.state;
+    const isInputEmpty = _trim(itemName).length === 0;
 
-    if (_trim(itemName).length === 0) {
+    if (isInputEmpty) {
       this.hideForm();
     }
   };
