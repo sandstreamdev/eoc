@@ -81,7 +81,7 @@
   "authorization.sign-up.button.resend-link": "Resend activation link",
   "authorization.sign-up.confirmation-link-resent": "Confirmation link has been resent to email address you entered during sign up process.",
   "authorization.input.username.label": "Name",
-  "authorization.input.username.invalid": "Please use max 32 chars.",
+  "authorization.input.username.invalid": "Please use min 1 and max 32 chars.",
   "authorization.input.username.empty": "Please enter your name.",
   "authorization.input.email.label": "Email",
   "authorization.input.email.invalid": "Please enter a valid email address.",

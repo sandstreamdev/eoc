@@ -7,11 +7,12 @@ import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import { resendConfirmationLink } from 'modules/authorization/model/actions';
+import { RouterParams } from 'common/constants/enums';
 
 class SignUpResult extends PureComponent {
   state = {
-    confirmationResent: false,
-    resendFailed: false
+    isLinkSuccessfullySent: false,
+    sendingFailed: false
   };
 
   handleResendLink = () => {
@@ -22,8 +23,8 @@ class SignUpResult extends PureComponent {
     } = this.props;
 
     return resendConfirmationLink(hash)
-      .then(() => this.setState({ confirmationResent: true }))
-      .catch(() => this.setState({ resendFailed: true }));
+      .then(() => this.setState({ isLinkSuccessfullySent: true }))
+      .catch(() => this.setState({ sendingFailed: true }));
   };
 
   renderResendingError = () => {
@@ -40,7 +41,7 @@ class SignUpResult extends PureComponent {
     );
   };
 
-  renderResendConfirmation = () => {
+  renderSuccessMessage = () => {
     const {
       intl: { formatMessage }
     } = this.props;
@@ -67,7 +68,7 @@ class SignUpResult extends PureComponent {
         <p className="sign-up-result__message">
           <FormattedMessage
             id={
-              result === 'success'
+              result === RouterParams.SUCCESS
                 ? 'authorization.sign-up.result.success'
                 : 'authorization.sign-up.result.failed'
             }
@@ -82,7 +83,7 @@ class SignUpResult extends PureComponent {
             }}
           />
         </p>
-        {result === 'failed' && hash && (
+        {result === RouterParams.FAILED && hash && (
           <div>
             <PendingButton
               className="primary-button sign-up-result__button"
@@ -101,16 +102,16 @@ class SignUpResult extends PureComponent {
   };
 
   render() {
-    const { confirmationResent, resendFailed } = this.state;
+    const { isLinkSuccessfullySent, sendingFailed } = this.state;
 
     return (
       <div className="sign-up-result">
         <h1 className="sign-up-result__heading">
           <AppLogo />
         </h1>
-        {resendFailed && this.renderResendingError()}
-        {confirmationResent
-          ? this.renderResendConfirmation()
+        {sendingFailed && this.renderResendingError()}
+        {isLinkSuccessfullySent
+          ? this.renderSuccessMessage()
           : this.renderSignUpResult()}
       </div>
     );
