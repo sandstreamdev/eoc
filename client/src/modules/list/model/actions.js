@@ -528,11 +528,11 @@ export const changeType = (listId, listName, type) => dispatch =>
     });
 
 export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
-  patchData(`/api/lists/${listId}/leave-list`)
+  patchData(`/api/lists/${listId}/leave`)
     .then(() => {
       dispatch(leaveListSuccess(listId, userId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'list.actions.leave-list',
+        notificationId: 'list.actions.leave',
         data: userName
       });
       history.replace(`/${cohortId ? `cohort/${cohortId}` : 'dashboard'}`);
@@ -540,7 +540,7 @@ export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
     .catch(err => {
       dispatch(leaveListFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: err.message || 'list.actions.leave-list-fail',
+        notificationId: err.message || 'list.actions.leave-fail',
         data: userName
       });
     });

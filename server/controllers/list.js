@@ -4,7 +4,6 @@ const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
   filter,
-  isGuest,
   isMember,
   isOwner,
   isValidMongoId,
@@ -49,7 +48,7 @@ const createList = (req, resp) => {
       .then(cohort => {
         const { memberIds } = cohort;
 
-        if (isMember(memberIds, userId)) {
+        if (isMember(cohort, userId)) {
           list.viewersIds = memberIds;
 
           return list.save();
@@ -305,9 +304,9 @@ const getListData = (req, resp) => {
         cohortName,
         description,
         isArchived,
-        isGuest: !isGuest(cohortMembers, userId),
-        isMember: isMember(memberIds, userId),
-        isOwner: isOwner(ownerIds, userId),
+        isGuest: !isMember(list, userId),
+        isMember: isMember(list, userId),
+        isOwner: isOwner(list, userId),
         items,
         members,
         name,
@@ -644,14 +643,13 @@ const addOwnerRole = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { memberIds, ownerIds } = doc;
-      const userIsNotAnOwner = !isOwner(ownerIds, userId);
+      const userIsNotAnOwner = !isOwner(doc, userId);
 
       if (userIsNotAnOwner) {
         doc.ownerIds.push(userId);
       }
 
-      const userIsNotAMember = !isMember(memberIds, userId);
+      const userIsNotAMember = !isMember(doc, userId);
 
       if (userIsNotAMember) {
         doc.memberIds.push(userId);
@@ -701,7 +699,7 @@ const removeOwnerRole = (req, resp) => {
         );
       }
 
-      if (isOwner(ownerIds, userId)) {
+      if (isOwner(doc, userId)) {
         ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
       }
 
@@ -752,13 +750,13 @@ const addMemberRole = (req, resp) => {
       }
 
       const { ownerIds, memberIds } = doc;
-      const userIsNotAMember = !isMember(memberIds, userId);
+      const userIsNotAMember = !isMember(doc, userId);
 
       if (userIsNotAMember) {
         memberIds.push(userId);
       }
 
-      if (isOwner(ownerIds, userId)) {
+      if (isOwner(doc, userId)) {
         ownerIds.splice(ownerIds.indexOf(userId), 1);
       }
 
@@ -801,7 +799,7 @@ const removeMemberRole = (req, resp) => {
 
       const { memberIds, ownerIds } = doc;
 
-      const userIsOwner = isOwner(ownerIds, userId);
+      const userIsOwner = isOwner(doc, userId);
 
       if (userIsOwner && ownerIds.length < 2) {
         throw new BadRequestException(
@@ -809,7 +807,7 @@ const removeMemberRole = (req, resp) => {
         );
       }
 
-      if (isMember(memberIds, userId)) {
+      if (isMember(doc, userId)) {
         memberIds.splice(memberIds.indexOf(userId), 1);
       }
 
@@ -888,8 +886,8 @@ const addViewer = (req, resp) => {
       }
 
       const { _id: newMemberId } = userData;
-      const { cohortId: cohort, viewersIds } = list;
-      const userExists = isViewer(viewersIds, newMemberId);
+      const { cohortId: cohort } = list;
+      const userExists = isViewer(list, newMemberId);
 
       if (userExists) {
         throw new BadRequestException('list.actions.add-viewer-is-member');
@@ -1107,7 +1105,6 @@ const changeType = (req, resp) => {
       }
       const {
         cohortId: { memberIds: cohortMembersCollection },
-        memberIds,
         type,
         viewersIds
       } = list;
@@ -1116,11 +1113,8 @@ const changeType = (req, resp) => {
 
       const updatedViewersIds =
         type === ListType.LIMITED
-          ? viewersIds.filter(id => isMember(memberIds, id))
-          : [
-              ...viewersIds,
-              ...cohortMembers.filter(id => !isViewer(viewersIds, id))
-            ];
+          ? viewersIds.filter(id => isMember(list, id))
+          : [...viewersIds, ...cohortMembers.filter(id => !isViewer(list, id))];
 
       return List.findOneAndUpdate(
         { _id: listId, ownerIds: currentUserId },
@@ -1244,19 +1238,19 @@ const leaveList = (req, resp) => {
 
       const { viewersIds, memberIds, ownerIds } = list;
 
-      if (isOwner(ownerIds, userId)) {
+      if (isOwner(list, userId)) {
         if (ownerIds.length === 1) {
-          throw new BadRequestException('list.actions.leave-list-one-owner');
+          throw new BadRequestException('list.actions.leave-one-owner');
         }
 
         ownerIds.splice(ownerIds.indexOf(userId), 1);
       }
 
-      if (isMember(memberIds, userId)) {
+      if (isMember(list, userId)) {
         memberIds.splice(memberIds.indexOf(userId), 1);
       }
 
-      if (isViewer(viewersIds, userId)) {
+      if (isViewer(list, userId)) {
         viewersIds.splice(viewersIds.indexOf(userId), 1);
       }
 

@@ -194,7 +194,7 @@ const getCohortDetails = (req, resp) => {
         description,
         isArchived,
         isMember: true,
-        isOwner: isOwner(ownerIds, userId),
+        isOwner: isOwner(doc, userId),
         members,
         name
       });
@@ -506,7 +506,7 @@ const leaveCohort = (req, resp) => {
 
       const { memberIds, ownerIds } = doc;
 
-      if (isOwner(ownerIds, userId)) {
+      if (isOwner(doc, userId)) {
         if (ownerIds.length === 1) {
           throw new BadRequestException(
             'cohort.actions.leave-cohort-only-one-owner'
@@ -515,7 +515,7 @@ const leaveCohort = (req, resp) => {
         ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
       }
 
-      if (isMember(memberIds, userId)) {
+      if (isMember(doc, userId)) {
         memberIds.splice(doc.memberIds.indexOf(userId), 1);
       }
 

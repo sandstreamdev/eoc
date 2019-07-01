@@ -19,17 +19,23 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
   return arrayOfStrings.indexOf(userIdAsString) !== -1;
 };
 
-const isOwner = (idsArray, userId) =>
-  checkIfArrayContainsUserId(idsArray, userId);
+const isOwner = (doc, userId) => {
+  const { ownerIds } = doc;
 
-const isMember = (idsArray, userId) =>
-  checkIfArrayContainsUserId(idsArray, userId);
+  return checkIfArrayContainsUserId(ownerIds, userId);
+};
 
-const isViewer = (idsArray, userId) =>
-  checkIfArrayContainsUserId(idsArray, userId);
+const isMember = (doc, userId) => {
+  const { memberIds } = doc;
 
-const isGuest = (idsArray, userId) =>
-  checkIfArrayContainsUserId(idsArray, userId);
+  return checkIfArrayContainsUserId(memberIds, userId);
+};
+
+const isViewer = (doc, userId) => {
+  const { viewersIds } = doc;
+
+  return checkIfArrayContainsUserId(viewersIds, userId);
+};
 
 const responseWithList = (list, userId) => {
   const { _id, cohortId, description, favIds, items, name, type } = list;
@@ -257,7 +263,6 @@ module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   filter,
-  isGuest,
   isMember,
   isOwner,
   isValidMongoId,

@@ -359,8 +359,8 @@ Cohort.propTypes = {
     isArchived: PropTypes.bool,
     name: PropTypes.string
   }),
-  currentUser: UserPropType.isRequired,
   createList: PropTypes.func.isRequired,
+  currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
