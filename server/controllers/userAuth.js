@@ -141,13 +141,13 @@ const resetPassword = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error('authorization.actions.no-user-of-email');
+        throw new Error();
       }
 
       const { displayName, isActive, idFromProvider } = user;
 
       if (idFromProvider) {
-        throw new Error('authorization.actions.google-user-no-reset-password');
+        throw new Error('authorization.actions.reset-successful');
       }
 
       if (!isActive) {

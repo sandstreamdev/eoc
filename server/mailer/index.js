@@ -43,7 +43,7 @@ const sendSignUpConfirmationLink = (req, resp) => {
   const { displayName: name, email: receiver, signUpHash } = resp.locals;
   const { protocol } = req;
   const host = req.get('host');
-  const url = `${protocol}://${host}`;
+  const url = `${host}`;
   const confirmUrl = `${url}/auth/confirm-email/${signUpHash}`;
   const title = `Welcome to ${PROJECT_NAME}!`;
   const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!`;
@@ -51,7 +51,7 @@ const sendSignUpConfirmationLink = (req, resp) => {
 
   const message = {
     to: receiver,
-    from: 'no.replay@app.eoc.com',
+    from: 'no.reply@app.eoc.com',
     subject: `Confirm your account in ${PROJECT_NAME}!`,
     html: mailTemplate(
       name,
@@ -81,7 +81,7 @@ const sendResetPasswordLink = (req, resp) => {
 
   const message = {
     to: receiver,
-    from: 'no.replay@app.eoc.com',
+    from: 'no.reply@app.eoc.com',
     subject: title,
     html: mailTemplate(
       displayName,
