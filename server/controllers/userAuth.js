@@ -127,8 +127,6 @@ const signUp = (req, resp, next) => {
 const confirmEmail = (req, resp) => {};
 
 const resetPassword = (req, resp, next) => {
-  const resetToken = crypto.randomBytes(32).toString('hex');
-  const resetTokenExpirationDate = new Date().getTime() + 3600000;
   const { email } = req.body;
   const sanitizedEmail = sanitize(email);
   const { isEmail, isEmpty } = validator;
@@ -155,6 +153,9 @@ const resetPassword = (req, resp, next) => {
           'authorization.actions.reset-password-not-active-account'
         );
       }
+
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetTokenExpirationDate = new Date().getTime() + 3600000;
 
       return User.findOneAndUpdate(
         {
