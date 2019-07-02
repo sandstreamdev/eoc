@@ -73,7 +73,7 @@ const sendResetPasswordLink = (req, resp) => {
   const { protocol } = req;
   const host = req.get('host');
   const url = `${protocol}://${host}`;
-  const resetUrl = `${url}/reset/${resetToken}`;
+  const resetUrl = `${url}/reset-form/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
   const info =
     'Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.';
