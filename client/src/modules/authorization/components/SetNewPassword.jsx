@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import _trim from 'lodash/trim';
 
 import PendingButton from '../../../common/components/PendingButton';
-import SignUpInput from './SignUpInput';
+import PasswordField from './PasswordField';
 
 class SetNewPassword extends PureComponent {
   constructor(props) {
@@ -23,8 +23,37 @@ class SetNewPassword extends PureComponent {
     };
   }
 
-  handlePasswordChange = value => {
-    this.setState({ password: value });
+  // componentDidUpdate() {
+  //   const { password } = this.state;
+
+  //   if (password.length > 0) {
+  //     this.validatePassword();
+  //   }
+  // }
+
+  handlePasswordChange = event => {
+    const {
+      target: { value }
+    } = event;
+    const { matches } = validator;
+    const password = value;
+    const validationError = !matches(password, /^[^\s]{4,32}$/);
+
+    if (validationError) {
+      return this.setState({
+        errors: {
+          passwordError: 'authorization.input.password.invalid'
+        }
+      });
+    }
+
+    if (password.length >= 4) {
+      this.setState({
+        errors: {
+          passwordError: ''
+        }
+      });
+    }
   };
 
   handlePasswordConfirmationChange = value => {
@@ -37,28 +66,29 @@ class SetNewPassword extends PureComponent {
     console.log('Submitting: ', password, passwordConfirmation);
   };
 
-  validatePassword = () => {
-    const { matches } = validator;
-    const { password } = this.state;
+  // validatePassword = () => {
+  //   const { matches } = validator;
+  //   const { password } = this.state;
 
-    if (!matches(password, /^[^\s]{4,32}$/)) {
-      //return 'authorization.input.password.invalid';
+  //   if (!matches(password, /^[^\s]{4,32}$/)) {
+  //     this.setState({
+  //       errors: {
+  //         passwordError: 'authorization.input.password.invalid'
+  //       }
+  //     });
 
-      this.setState({
-        errors: {
-          passwordError: 'authorization.input.password.invalid'
-        }
-      });
-    }
+  //     return 'authorization.input.password.invalid';
+  //     // debugger;
+  //   }
 
-    this.setState({
-      errors: {
-        passwordError: ''
-      }
-    });
+  //   this.setState({
+  //     errors: {
+  //       passwordError: ''
+  //     }
+  //   });
 
-    // return '';
-  };
+  //   return '';
+  // };
 
   comparePasswords = () => {
     const { password, passwordConfirmation } = this.state;
@@ -82,22 +112,14 @@ class SetNewPassword extends PureComponent {
       <form className="set-new-password" onSubmit={this.handleSubmit}>
         <h2 className="set-new-password__heading">Set new password</h2>
         <div className="set-new-password__body">
-          <SignUpInput
-            disabled={pending}
-            externalErrorId={passwordError}
-            labelId="authorization.input.password.label"
-            name="email"
+          <PasswordField
             onChange={this.handlePasswordChange}
-            type="password"
-            validator={this.validatePassword}
+            label="Password"
+            errorId={passwordError}
           />
-          <SignUpInput
-            disabled={pending}
-            externalErrorId={comparePasswordsError}
-            labelId="authorization.input.password.confirm"
-            name="confirm password"
-            onChange={this.handlePasswordConfirmationChange}
-            type="password"
+          <PasswordField
+            label="Confirm password"
+            errorId={comparePasswordsError}
           />
           <PendingButton className="primary-button">Save</PendingButton>
         </div>
