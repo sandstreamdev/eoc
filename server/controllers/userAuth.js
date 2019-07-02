@@ -162,10 +162,17 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
   const { hash } = req.body;
   const sanitizedHash = sanitize(hash);
 
-  User.findOne({
-    signUpHash: sanitizedHash,
-    isActive: false
-  })
+  User.findOneAndUpdate(
+    {
+      signUpHash: sanitizedHash,
+      isActive: false
+    },
+    {
+      signUpHash: crypto.randomBytes(32).toString('hex'),
+      expirationDate: new Date().getTime() + 3600000
+    },
+    { new: true }
+  )
     .lean()
     .exec()
     .then(user => {
@@ -173,35 +180,14 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
         throw new Error();
       }
 
-      const { _id, displayName, email } = user;
-      const signUpHash = crypto.randomBytes(32).toString('hex');
-      const expirationDate = new Date().getTime() + 3600000;
+      const { displayName, email, signUpHash } = user;
 
-      return User.findOneAndUpdate(
-        { _id },
-        {
-          signUpHash,
-          signUpHashExpirationDate: expirationDate
-        }
-      )
-        .exec()
-        .then(user => {
-          if (!user) {
-            throw new Error();
-          }
-
-          return { displayName, email, signUpHash };
-        });
-    })
-    .then(dataToSend => {
       // eslint-disable-next-line no-param-reassign
-      resp.locals = dataToSend;
+      resp.locals = { displayName, email, signUpHash };
 
-      return next();
+      next();
     })
-    .catch(() => {
-      resp.sendStatus(400);
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = {

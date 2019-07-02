@@ -90,7 +90,7 @@
   "authorization.input.password.invalid": "Please use min 4 and max 32 signs and don't use space characters.",
   "authorization.input.password.not-match": "Passwords do not match.",
   "authorization.actions.sign-up.user-already-exist": "User of email {data} already exist.",
-  "authorization.sign-up.result.success": "Email confirmed. Please go to the {link} and  sign in to app.",
+  "authorization.sign-up.result.success": "Email confirmed. Please go to the {link} and sign in to app.",
   "authorization.sign-up.result.failed": "Your activation link has expired.",
   "authorization.sign-up.result.link": "sign in/sign up page",
   "authorization.reset-password.heading": "Reset your password",
