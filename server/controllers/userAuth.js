@@ -145,7 +145,7 @@ const resetPassword = (req, resp, next) => {
       const { displayName, isActive, idFromProvider } = user;
 
       if (idFromProvider) {
-        throw new Error('authorization.actions.reset-successful');
+        throw new Error('authorization.actions.reset');
       }
 
       if (!isActive) {
@@ -173,9 +173,6 @@ const resetPassword = (req, resp, next) => {
           };
 
           next();
-        })
-        .catch(() => {
-          throw new Error();
         });
     })
     .catch(err => {

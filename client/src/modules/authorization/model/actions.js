@@ -72,7 +72,7 @@ export const resetPassword = email => dispatch =>
   postData('auth/reset-password', { email })
     .then(() => {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'authorization.actions.reset-successful',
+        notificationId: 'authorization.actions.reset',
         data: email
       });
     })
