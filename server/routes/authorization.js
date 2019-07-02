@@ -10,6 +10,7 @@ const { signUp } = require('../controllers/userAuth');
 const {
   confirmEmail,
   logout,
+  resendSignUpConfirmationLink,
   sendDemoUser,
   sendUser
 } = require('../controllers/userAuth');
@@ -24,5 +25,10 @@ router.get('/google/callback', authenticateCallback, sendUser);
 router.post('/logout', removeDemoUserChanges, logout);
 router.post('/sign-up', signUp, sendSignUpConfirmationLink);
 router.get('/confirm-email/:hash', confirmEmail);
+router.post(
+  '/resend-confirmation-link',
+  resendSignUpConfirmationLink,
+  sendSignUpConfirmationLink
+);
 
 module.exports = router;
