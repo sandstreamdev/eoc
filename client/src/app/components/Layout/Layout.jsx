@@ -8,7 +8,11 @@ import _flowRight from 'lodash/flowRight';
 import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
-import AuthBox from 'modules/authorization/AuthBox';
+import AuthBox, {
+  AccountCreated,
+  LinkExpired,
+  ResetPassword
+} from 'modules/authorization';
 import { loginUser } from 'modules/authorization/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
@@ -21,8 +25,6 @@ import Cohorts from 'modules/cohort/components/Cohorts';
 import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
-import ResetPassword from 'modules/authorization/components/ResetPassword';
-import SignUpResult from 'modules/authorization/components/SignUpResult';
 
 export class Layout extends PureComponent {
   constructor(props) {
@@ -90,7 +92,8 @@ export class Layout extends PureComponent {
       <Switch>
         <Route component={AuthBox} exact path="/" />
         <Route component={PrivacyPolicy} path="/privacy-policy" />
-        <Route component={SignUpResult} path="/sign-up/:result" />
+        <Route component={AccountCreated} path="/account-created" />
+        <Route component={LinkExpired} path="/link-expired/:hash?" />
         <Redirect to="/" />
       </Switch>
     ) : (

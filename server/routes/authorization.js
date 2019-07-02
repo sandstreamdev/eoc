@@ -10,6 +10,7 @@ const {
 const {
   confirmEmail,
   logout,
+  resendSignUpConfirmationLink,
   sendDemoUser,
   sendUser,
   signUp
@@ -26,5 +27,10 @@ router.post('/logout', removeDemoUserChanges, logout);
 router.post('/sign-up', signUp, sendSignUpConfirmationLink);
 router.get('/confirm-email/:hash', confirmEmail);
 router.post('/sign-in', authenticateUser, sendUser);
+router.post(
+  '/resend-confirmation-link',
+  resendSignUpConfirmationLink,
+  sendSignUpConfirmationLink
+);
 
 module.exports = router;

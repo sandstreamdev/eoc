@@ -140,7 +140,12 @@ const confirmEmail = (req, resp) => {
       signUpHash,
       signUpHashExpirationDate: { $gte: new Date() }
     },
-    { isActive: true, signUpHash: null, signUpHashExpirationDate: null }
+    {
+      activatedAt: new Date(),
+      isActive: true,
+      signUpHash: null,
+      signUpHashExpirationDate: null
+    }
   )
     .lean()
     .exec()
@@ -148,16 +153,49 @@ const confirmEmail = (req, resp) => {
       if (!user) {
         throw new Error();
       }
-      resp.redirect('/sign-up/success');
+      resp.redirect('/account-created');
     })
     .catch(() => {
-      resp.redirect('/sign-up/failed');
+      resp.redirect(`/link-expired/${signUpHash}`);
     });
+};
+
+const resendSignUpConfirmationLink = (req, resp, next) => {
+  const { hash } = req.body;
+  const sanitizedHash = sanitize(hash);
+
+  User.findOneAndUpdate(
+    {
+      signUpHash: sanitizedHash,
+      isActive: false
+    },
+    {
+      signUpHash: crypto.randomBytes(32).toString('hex'),
+      signUpHashExpirationDate: new Date().getTime() + 3600000
+    },
+    { new: true }
+  )
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+
+      const { displayName, email, signUpHash } = user;
+
+      // eslint-disable-next-line no-param-reassign
+      resp.locals = { displayName, email, signUpHash };
+
+      next();
+    })
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = {
   confirmEmail,
   logout,
+  resendSignUpConfirmationLink,
   sendDemoUser,
   sendUser,
   signIn,

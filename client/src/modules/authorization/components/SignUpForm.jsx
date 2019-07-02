@@ -337,7 +337,7 @@ class SignUpForm extends PureComponent {
     return (
       <p className="sign-up-form__confirmation">
         <FormattedMessage
-          id="authorization.action.sign-up.confirmation-link-sent"
+          id="authorization.actions.sign-up.confirmation-link-sent"
           values={{ data: email }}
         />
       </p>
