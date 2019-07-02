@@ -169,7 +169,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
     },
     {
       signUpHash: crypto.randomBytes(32).toString('hex'),
-      expirationDate: new Date().getTime() + 3600000
+      signUpHashExpirationDate: new Date().getTime() + 3600000
     },
     { new: true }
   )

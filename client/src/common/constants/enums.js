@@ -50,8 +50,3 @@ export const KeyCodes = Object.freeze({
   ENTER: 'Enter',
   ESCAPE: 'Escape'
 });
-
-export const RouterParams = Object.freeze({
-  SUCCESS: 'success',
-  FAILED: 'failed'
-});

@@ -10,8 +10,8 @@ import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import AuthBox, {
   AccountCreated,
-  ResetPassword,
-  SignUpResult
+  LinkExpired,
+  ResetPassword
 } from 'modules/authorization';
 import { loginUser } from 'modules/authorization/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
@@ -93,7 +93,7 @@ export class Layout extends PureComponent {
         <Route component={AuthBox} exact path="/" />
         <Route component={PrivacyPolicy} path="/privacy-policy" />
         <Route component={AccountCreated} path="/account-created" />
-        <Route component={SignUpResult} path="/link-expired/:hash?" />
+        <Route component={LinkExpired} path="/link-expired/:hash?" />
         <Redirect to="/" />
       </Switch>
     ) : (

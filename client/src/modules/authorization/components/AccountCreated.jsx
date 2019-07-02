@@ -15,7 +15,7 @@ const AccountCreated = ({ intl: { formatMessage } }) => (
         id="authorization.sign-up.result.success"
         values={{
           link: (
-            <Link className="sign-up-result__link" to="/">
+            <Link className="account-created__link" to="/">
               {formatMessage({
                 id: 'authorization.sign-up.result.link'
               })}

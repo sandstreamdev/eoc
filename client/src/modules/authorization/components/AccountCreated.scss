@@ -1,4 +1,4 @@
-.link-expired {
+.account-created {
   display: flex;
   position: absolute;
   left: 50%;
@@ -28,22 +28,21 @@
     line-height: 1.2;
   }
 
-  &__button {
-    text-transform: capitalize;
-    margin-top: 16px;
-  }
+  &__link {
+    color: $link-color;
+    font-style: italic;
+    text-decoration: none;
 
-  &__error {
-    margin-bottom: 16px;
-    color: $danger;
-    width: 100%;
-    text-align: left;
-  }
+    &:hover {
+      color: $text-black;
+      text-decoration: underline;
+    }
 
-  &__confirmation {
-    width: 100%;
-    color: $text-normal;
-    text-align: left;
-    line-height: 1.2;
+    &:visited {
+      color: $text-black;
+      &:hover {
+        color: $link-color;
+      }
+    }
   }
 }
