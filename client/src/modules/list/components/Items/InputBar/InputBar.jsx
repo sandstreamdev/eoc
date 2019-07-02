@@ -146,6 +146,8 @@ class InputBar extends Component {
     if (isInputEmpty) {
       this.hideForm();
     }
+
+    document.removeEventListener('keydown', this.handleEscapePress);
   };
 
   handleFocus = () => {
