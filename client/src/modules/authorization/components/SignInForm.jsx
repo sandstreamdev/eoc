@@ -162,8 +162,8 @@ class SignInForm extends PureComponent {
         <form className="sign-in__form" noValidate>
           <AuthInput
             disabled={pending}
-            formError={hasSignUpFailed}
             focus
+            formError={hasSignUpFailed}
             labelId="authorization.input.email.label"
             name="email"
             onChange={this.onEmailChange}
