@@ -181,7 +181,7 @@ describe('function responseWithCohort', () => {
 describe('function checkIfArrayContainsUserId', () => {
   const idsArray = ['123', '456', '789'];
 
-  it('returns true if the passed array does contains the userID', () => {
+  it('returns true if the passed array does contains the userI', () => {
     const userId = '123';
     const result = checkIfArrayContainsUserId(idsArray, userId);
 
@@ -208,7 +208,7 @@ describe('function isOwner', () => {
   const list = listMock[0];
   const { ownerIds } = list;
 
-  it('returns true if the passed array does contains the userID', () => {
+  it('returns true if the passed array contains the userId', () => {
     const userId = '123';
 
     ownerIds.push(userId);
@@ -230,7 +230,7 @@ describe('function isMember', () => {
   const list = listMock[0];
   const { memberIds } = list;
 
-  it('returns true if the passed array does contains the userID', () => {
+  it('returns true if the passed array does contains the userId', () => {
     const userId = '123';
 
     memberIds.push(userId);
@@ -252,7 +252,7 @@ describe('function isViewer', () => {
   const list = listMock[0];
   const { viewersIds } = list;
 
-  it('returns true if the passed array does contains the userID', () => {
+  it('returns true if the passed array does contains the userId', () => {
     const userId = '123';
 
     viewersIds.push(userId);
