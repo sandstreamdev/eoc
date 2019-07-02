@@ -151,10 +151,10 @@ const confirmEmail = (req, resp) => {
       if (!user) {
         throw new Error();
       }
-      resp.redirect('/sign-up/success');
+      resp.redirect('/account-created');
     })
     .catch(() => {
-      resp.redirect(`/sign-up/failed/${signUpHash}`);
+      resp.redirect(`/link-expired/${signUpHash}`);
     });
 };
 
