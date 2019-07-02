@@ -58,6 +58,8 @@ class InputBar extends Component {
 
     if (code === KeyCodes.ESCAPE && isInputEmpty) {
       this.hideForm();
+
+      document.removeEventListener('keydown', this.handleEscapePress);
     }
   };
 
@@ -134,10 +136,7 @@ class InputBar extends Component {
     this.setState({ isFormVisible: true });
   };
 
-  hideForm = () => {
-    document.removeEventListener('keydown', this.handleEscapePress);
-    this.setState({ isFormVisible: false });
-  };
+  hideForm = () => this.setState({ isFormVisible: false });
 
   handleBlur = () => {
     const { itemName } = this.state;
