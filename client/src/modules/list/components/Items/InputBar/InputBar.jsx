@@ -17,7 +17,7 @@ import {
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { EventTypes } from 'common/constants/enums';
+import { EventTypes, KeyCodes } from 'common/constants/enums';
 
 class InputBar extends Component {
   constructor(props) {
@@ -50,6 +50,18 @@ class InputBar extends Component {
       this.socket = io();
     }
   }
+
+  handleEscapePress = event => {
+    const { code } = event;
+    const { itemName } = this.state;
+    const isInputEmpty = _trim(itemName).length === 0;
+
+    if (code === KeyCodes.ESCAPE && isInputEmpty) {
+      this.hideForm();
+
+      document.removeEventListener('keydown', this.handleEscapePress);
+    }
+  };
 
   handleNameChange = event => {
     const {
@@ -126,6 +138,21 @@ class InputBar extends Component {
 
   hideForm = () => this.setState({ isFormVisible: false });
 
+  handleBlur = () => {
+    const { itemName } = this.state;
+    const isInputEmpty = _trim(itemName).length === 0;
+
+    if (isInputEmpty) {
+      this.hideForm();
+    }
+
+    document.removeEventListener('keydown', this.handleEscapePress);
+  };
+
+  handleFocus = () => {
+    document.addEventListener('keydown', this.handleEscapePress);
+  };
+
   renderInputBar = () => {
     const {
       isButtonDisabled,
@@ -145,6 +172,8 @@ class InputBar extends Component {
             className="input-bar__input primary-input"
             disabled={pending}
             name="item name"
+            onBlur={this.handleBlur}
+            onFocus={this.handleFocus}
             onChange={this.handleNameChange}
             placeholder={formatMessage({ id: 'list.input-bar.placeholder' })}
             ref={this.input}
