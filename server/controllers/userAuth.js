@@ -130,7 +130,19 @@ const signUp = (req, resp, next) => {
     });
 };
 
-const signIn = (email, password) => {};
+const signIn = (email, password) => {
+  return User.findOne({ email })
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+      const { email: dbEmail, password: dbPassword } = user;
+      if (bcrypt.compare(password + email))
+
+    });
+};
 
 const confirmEmail = (req, resp) => {
   const { hash: signUpHash } = req.params;
