@@ -3,8 +3,8 @@ import AccountCreated from './components/AccountCreated';
 import LinkExpired from './components/LinkExpired';
 import ResetPassword from './components/ResetPassword';
 import SignUpForm from './components/SignUpForm';
-import SignUpInput from './components/SignUpInput';
+import AuthInput from './components/AuthInput';
 
-export { AccountCreated, LinkExpired, ResetPassword, SignUpForm, SignUpInput };
+export { AccountCreated, AuthInput, LinkExpired, ResetPassword, SignUpForm };
 
 export default AuthBox;

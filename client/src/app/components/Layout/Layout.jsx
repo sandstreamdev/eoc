@@ -94,6 +94,7 @@ export class Layout extends PureComponent {
         <Route component={PrivacyPolicy} path="/privacy-policy" />
         <Route component={AccountCreated} path="/account-created" />
         <Route component={LinkExpired} path="/link-expired/:hash?" />
+        <Route component={ResetPassword} path="/reset-password" />
         <Redirect to="/" />
       </Switch>
     ) : (

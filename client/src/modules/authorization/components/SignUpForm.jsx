@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import _some from 'lodash/some';
 import validator from 'validator';
 
-import SignUpInput from './SignUpInput';
+import AuthInput from './AuthInput';
 import { signUp } from 'modules/authorization/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
@@ -272,7 +272,7 @@ class SignUpForm extends PureComponent {
         </h1>
         {signUpErrorId && this.renderSignUpError()}
         <form className="sign-up-form__form" noValidate>
-          <SignUpInput
+          <AuthInput
             disabled={pending}
             externalErrorId={nameError}
             focus
@@ -282,7 +282,7 @@ class SignUpForm extends PureComponent {
             type="text"
             validator={this.nameValidator}
           />
-          <SignUpInput
+          <AuthInput
             disabled={pending}
             externalErrorId={emailError}
             labelId="authorization.input.email.label"
@@ -291,7 +291,7 @@ class SignUpForm extends PureComponent {
             type="text"
             validator={this.emailValidator}
           />
-          <SignUpInput
+          <AuthInput
             disabled={pending}
             externalErrorId={passwordError}
             labelId="authorization.input.password.label"
@@ -300,7 +300,7 @@ class SignUpForm extends PureComponent {
             type="password"
             validator={this.passwordValidator}
           />
-          <SignUpInput
+          <AuthInput
             disabled={pending}
             externalErrorId={confirmPasswordValueError}
             labelId="authorization.input.password.confirm"
@@ -337,7 +337,7 @@ class SignUpForm extends PureComponent {
     return (
       <p className="sign-up-form__confirmation">
         <FormattedMessage
-          id="authorization.sign-up.confirmation-link-sent"
+          id="authorization.action.sign-up.confirmation-link-sent"
           values={{ data: email }}
         />
       </p>
