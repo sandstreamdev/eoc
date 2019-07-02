@@ -137,17 +137,59 @@ const authenticateUser = (req, resp, next) => {
   })(req, resp, next);
 };
 
-const setDemoUser = passport.authenticate('demo-mode', {
-  failureRedirect: '/'
-});
+const setDemoUser = (req, resp, next) => {
+  passport.authenticate('demo-mode', (err, user) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!user) {
+      return resp.sendStatus(401);
+    }
+
+    req.login(user, err => {
+      if (err) {
+        return next(err);
+      }
+
+      // resp.send();
+      next();
+    });
+  })(req, resp, next);
+};
+
+// const setDemoUser = passport.authenticate('demo-mode', {
+//   failureRedirect: '/'
+// });
 
 const authenticateWithGoogle = passport.authenticate('google', {
   scope: ['email', 'profile']
 });
 
-const authenticateCallback = passport.authenticate('google', {
-  failureRedirect: '/'
-});
+const authenticateCallback = (req, resp, next) => {
+  passport.authenticate('google', (err, user) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!user) {
+      return resp.sendStatus(401);
+    }
+
+    req.login(user, err => {
+      if (err) {
+        return next(err);
+      }
+
+      // resp.send();
+      next();
+    });
+  })(req, resp, next);
+};
+
+// const authenticateCallback = passport.authenticate('google', {
+//   failureRedirect: '/'
+// });
 
 module.exports = {
   authenticateCallback,

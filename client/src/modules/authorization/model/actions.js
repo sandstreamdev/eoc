@@ -46,8 +46,9 @@ export const loginDemoUser = () => dispatch =>
     email: 'demo@example.com',
     password: 'demo'
   })
-    .then(() => {
-      dispatch(loginSuccess(setCurrentUser()));
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'authorization.actions.login'
       });
