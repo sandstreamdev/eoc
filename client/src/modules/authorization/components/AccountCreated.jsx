@@ -12,12 +12,12 @@ const AccountCreated = ({ intl: { formatMessage } }) => (
     </h1>
     <p className="account-created__message">
       <FormattedMessage
-        id="authorization.sign-up.result.success"
+        id="authorization.sign-up.result-success"
         values={{
           link: (
             <Link className="account-created__link" to="/">
               {formatMessage({
-                id: 'authorization.sign-up.result.link'
+                id: 'authorization.sign-up.result-link'
               })}
             </Link>
           )

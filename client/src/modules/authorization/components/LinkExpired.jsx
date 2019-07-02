@@ -61,7 +61,7 @@ class LinkExpired extends PureComponent {
     return (
       <Fragment>
         <p className="link-expired__message">
-          <FormattedMessage id="authorization.sign-up.result.failed" />
+          <FormattedMessage id="authorization.sign-up.result-failed" />
         </p>
         <div>
           <PendingButton

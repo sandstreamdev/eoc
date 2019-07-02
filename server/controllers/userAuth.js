@@ -153,9 +153,7 @@ const confirmEmail = (req, resp) => {
       }
       resp.redirect('/account-created');
     })
-    .catch(() => {
-      resp.redirect(`/link-expired/${signUpHash}`);
-    });
+    .catch(() => resp.redirect(`/link-expired/${signUpHash}`));
 };
 
 const resendSignUpConfirmationLink = (req, resp, next) => {
