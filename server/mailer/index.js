@@ -43,7 +43,7 @@ const sendSignUpConfirmationLink = (req, resp) => {
   const { displayName: name, email: receiver, signUpHash } = resp.locals;
   const { protocol } = req;
   const host = req.get('host');
-  const url = `${host}`;
+  const url = `${protocol}://${host}`;
   const confirmUrl = `${url}/auth/confirm-email/${signUpHash}`;
   const title = `Welcome to ${PROJECT_NAME}!`;
   const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!`;
