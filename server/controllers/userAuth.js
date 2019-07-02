@@ -38,13 +38,13 @@ const signUp = (req, resp, next) => {
   const sanitizedEmail = sanitize(email);
   const sanitizedUsername = sanitize(username);
   const errors = {};
-  const { isEmail, isEmpty, isLength, matches } = validator;
+  const { isEmail, isLength, matches } = validator;
 
   if (!isLength(sanitizedUsername, { min: 1, max: 32 })) {
     errors.nameError = true;
   }
 
-  if (isEmpty(sanitizedEmail) || !isEmail(sanitizedEmail)) {
+  if (!isEmail(sanitizedEmail)) {
     errors.emailError = true;
   }
 
@@ -129,9 +129,9 @@ const confirmEmail = (req, resp) => {};
 const resetPassword = (req, resp, next) => {
   const { email } = req.body;
   const sanitizedEmail = sanitize(email);
-  const { isEmail, isEmpty } = validator;
+  const { isEmail } = validator;
 
-  if (isEmpty(sanitizedEmail) || !isEmail(sanitizedEmail)) {
+  if (!isEmail(sanitizedEmail)) {
     return resp.sendStatus(406);
   }
 
