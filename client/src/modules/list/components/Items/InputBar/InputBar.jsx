@@ -35,10 +35,6 @@ class InputBar extends Component {
     this.socket = undefined;
   }
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleEscapePress);
-  }
-
   componentDidUpdate() {
     const { isFormVisible, pending, isTipVisible } = this.state;
 
@@ -53,10 +49,6 @@ class InputBar extends Component {
     if (!this.socket) {
       this.socket = io();
     }
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleEscapePress);
   }
 
   handleEscapePress = event => {
@@ -151,6 +143,12 @@ class InputBar extends Component {
     if (isInputEmpty) {
       this.hideForm();
     }
+
+    document.removeEventListener('keydown', this.handleEscapePress);
+  };
+
+  handleFocus = () => {
+    document.addEventListener('keydown', this.handleEscapePress);
   };
 
   renderInputBar = () => {
@@ -173,6 +171,7 @@ class InputBar extends Component {
             disabled={pending}
             name="item name"
             onBlur={this.handleBlur}
+            onFocus={this.handleFocus}
             onChange={this.handleNameChange}
             placeholder={formatMessage({ id: 'list.input-bar.placeholder' })}
             ref={this.input}
