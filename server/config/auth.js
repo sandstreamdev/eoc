@@ -6,11 +6,11 @@ const { createDemoUser } = require('../seed/demoSeed/generateUsers');
 const { seedDemoData } = require('../seed/demoSeed/seedDemoData');
 const {
   extractUserProfile,
+  findAndAuthenticateUser,
   findOrCreateUser
 } = require('../common/utils/userUtils');
 const User = require('../models/user.model');
 const { DEMO_MODE_ID } = require('../common/variables');
-const signIn = require('../controllers/userAuth');
 
 // Use GoogleStrategy to authenticate user
 passport.use(
@@ -31,10 +31,19 @@ passport.use(
 passport.use(
   'normal-mode',
   new LocalStrategy(
-    { usernameField: 'email', passwordField: 'password' },
+    {
+      usernameField: 'email',
+      passwordField: 'password'
+    },
     (email, password, done) => {
-      signIn(email, password)
-        .then(user => done(null, user))
+      findAndAuthenticateUser(email, password)
+        .then(user => {
+          if (user) {
+            return done(null, user);
+          }
+
+          done(null, false);
+        })
         .catch(err => done(null, false, { message: err.message }));
     }
   )
@@ -107,9 +116,26 @@ passport.deserializeUser((id, done) => {
     .catch(err => done(null, false, { message: err.message }));
 });
 
-const authenticateUser = passport.authenticate('normal-mode', {
-  failureRedirect: '/'
-});
+const authenticateUser = (req, resp, next) => {
+  passport.authenticate('normal-mode', (err, user) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!user) {
+      return resp.sendStatus(401);
+    }
+
+    req.login(user, err => {
+      if (err) {
+        return next(err);
+      }
+
+      // resp.send();
+      next();
+    });
+  })(req, resp, next);
+};
 
 const setDemoUser = passport.authenticate('demo-mode', {
   failureRedirect: '/'

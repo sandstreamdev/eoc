@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const User = require('../../models/user.model');
 const List = require('../../models/list.model');
 const Cohort = require('../../models/cohort.model');
@@ -38,6 +40,22 @@ const extractUserProfile = (profile, accessToken) => {
   };
 };
 
+const findAndAuthenticateUser = (email, password) =>
+  User.findOne({ email, isActive: true })
+    .lean()
+    .exec()
+    .then(user => {
+      if (user) {
+        const { password: dbPassword } = user;
+
+        if (bcrypt.compareSync(password + email, dbPassword)) {
+          return user;
+        }
+      }
+
+      return null;
+    });
+
 const removeDemoUserData = id =>
   List.find(
     {
@@ -61,6 +79,7 @@ const removeDemoUserData = id =>
 
 module.exports = {
   extractUserProfile,
+  findAndAuthenticateUser,
   findOrCreateUser,
   removeDemoUserData
 };

@@ -44,7 +44,7 @@ const handleFetchErrors = resp => {
       });
     }
 
-    throw new Error();
+    throw new UnauthorizedException();
   }
 
   if (resp.status === ResponseStatusCode.NOT_ACCEPTABLE) {

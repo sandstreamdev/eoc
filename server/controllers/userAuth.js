@@ -9,9 +9,9 @@ const User = require('../models/user.model');
 
 const sendUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
-
-  resp.cookie('user', JSON.stringify({ avatarUrl, id, name }));
-  resp.redirect('/');
+  resp.send({ avatarUrl, _id: id, displayName: name });
+  // resp.cookie('user', JSON.stringify({ avatarUrl, id, name }));
+  // resp.redirect('/');
 };
 
 const logout = (req, resp) => {
@@ -130,20 +130,6 @@ const signUp = (req, resp, next) => {
     });
 };
 
-const signIn = (email, password) => {
-  return User.findOne({ email })
-    .lean()
-    .exec()
-    .then(user => {
-      if (!user) {
-        throw new Error();
-      }
-      const { email: dbEmail, password: dbPassword } = user;
-      if (bcrypt.compare(password + email))
-
-    });
-};
-
 const confirmEmail = (req, resp) => {
   const { hash: signUpHash } = req.params;
 
@@ -210,6 +196,5 @@ module.exports = {
   resendSignUpConfirmationLink,
   sendDemoUser,
   sendUser,
-  signIn,
   signUp
 };
