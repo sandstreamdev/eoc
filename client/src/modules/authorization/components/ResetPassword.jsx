@@ -1,10 +1,17 @@
 import React, { PureComponent } from 'react';
 import validator from 'validator';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { resetPassword } from '../model/actions';
+import PendingButton from 'common/components/PendingButton';
+import { PreloaderTheme } from 'common/components/Preloader';
 
 class ResetPassword extends PureComponent {
   state = {
     email: '',
+    pending: false,
     tipVisible: false
   };
 
@@ -20,6 +27,7 @@ class ResetPassword extends PureComponent {
     event.preventDefault();
     const { email } = this.state;
     const isEmailCorrect = validator.isEmail(email);
+    const { resetPassword } = this.props;
 
     if (!isEmailCorrect) {
       this.showTip();
@@ -27,7 +35,14 @@ class ResetPassword extends PureComponent {
       return;
     }
 
-    this.hideTip();
+    this.setState({ pending: true });
+
+    return resetPassword(email)
+      .finally(() => {
+        this.setState({ email: '', pending: false });
+        this.hideTip();
+      })
+      .catch(() => this.showTip());
   };
 
   showTip = () => this.setState({ tipVisible: true });
@@ -35,7 +50,7 @@ class ResetPassword extends PureComponent {
   hideTip = () => this.setState({ tipVisible: false });
 
   render() {
-    const { email, tipVisible } = this.state;
+    const { email, pending, tipVisible } = this.state;
     const isEmailEmpty = email.length === 0;
 
     return (
@@ -48,6 +63,7 @@ class ResetPassword extends PureComponent {
             <FormattedMessage id="authorization.reset-password.email-label" />
             <input
               className="reset-password__email-input primary-input"
+              disabled={pending}
               onChange={this.handleInputChange}
               type="email"
               value={email}
@@ -58,19 +74,25 @@ class ResetPassword extends PureComponent {
               <FormattedMessage id="authorization.input.email.invalid" />
             </span>
           )}
-          <button
+          <PendingButton
             className="primary-button"
-            disabled={isEmailEmpty}
+            disabled={isEmailEmpty || pending}
             onClick={this.handleSubmit}
-            type="submit"
-            value="Reset password"
+            preloaderTheme={PreloaderTheme.LIGHT}
           >
             <FormattedMessage id="authorization.reset-password.button-content" />
-          </button>
+          </PendingButton>
         </div>
       </form>
     );
   }
 }
 
-export default ResetPassword;
+ResetPassword.propTypes = {
+  resetPassword: PropTypes.func
+};
+
+export default connect(
+  null,
+  { resetPassword }
+)(ResetPassword);

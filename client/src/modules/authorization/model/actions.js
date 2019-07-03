@@ -2,6 +2,7 @@ import { checkIfCookieSet } from 'common/utils/cookie';
 import { postData, postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+import { ValidationException } from 'common/exceptions/ValidationException';
 
 export const AuthorizationActionTypes = Object.freeze({
   LOGIN_FAILURE: 'LOGIN_FAILURE',
@@ -85,4 +86,27 @@ export const signIn = (email, password) => dispatch =>
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'authorization.actions.login-failed'
       });
+    });
+
+export const resetPassword = email => dispatch =>
+  postData('auth/reset-password', { email })
+    .then(() => {
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'authorization.actions.reset',
+        data: email
+      });
+    })
+    .catch(err => {
+      if (err instanceof ValidationException) {
+        throw new Error();
+      }
+
+      createNotificationWithTimeout(
+        dispatch,
+        err.message ? NotificationType.ERROR_NO_RETRY : NotificationType.ERROR,
+        {
+          notificationId: err.message || 'common.something-went-wrong',
+          data: email
+        }
+      );
     });

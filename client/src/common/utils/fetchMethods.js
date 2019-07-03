@@ -56,7 +56,7 @@ const handleFetchErrors = resp => {
       });
     }
 
-    throw new Error();
+    throw new ValidationException();
   }
 
   if (resp.status > ResponseStatusCode.BAD_REQUEST && resp.status < 600) {

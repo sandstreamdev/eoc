@@ -14,6 +14,8 @@ const UserSchema = new Schema(
     name: { type: String },
     password: { type: String },
     provider: { type: String },
+    resetToken: { type: String },
+    resetTokenExpirationDate: { type: Date },
     signUpHash: { type: String },
     signUpHashExpirationDate: { type: Date },
     surname: { type: String }

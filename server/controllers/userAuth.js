@@ -38,13 +38,13 @@ const signUp = (req, resp, next) => {
   const sanitizedEmail = sanitize(email);
   const sanitizedUsername = sanitize(username);
   const errors = {};
-  const { isEmail, isEmpty, isLength, matches } = validator;
+  const { isEmail, isLength, matches } = validator;
 
   if (!isLength(sanitizedUsername, { min: 1, max: 32 })) {
     errors.nameError = true;
   }
 
-  if (isEmpty(sanitizedEmail) || !isEmail(sanitizedEmail)) {
+  if (!isEmail(sanitizedEmail)) {
     errors.emailError = true;
   }
 
@@ -188,10 +188,71 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const resetPassword = (req, resp, next) => {
+  const { email } = req.body;
+  const sanitizedEmail = sanitize(email);
+  const { isEmail } = validator;
+
+  if (!isEmail(sanitizedEmail)) {
+    return resp.sendStatus(406);
+  }
+
+  User.findOne({ email: sanitizedEmail })
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+
+      const { displayName, isActive, idFromProvider } = user;
+
+      if (idFromProvider) {
+        throw new Error('authorization.actions.reset');
+      }
+
+      if (!isActive) {
+        throw new Error(
+          'authorization.actions.reset-password-not-active-account'
+        );
+      }
+
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetTokenExpirationDate = new Date().getTime() + 3600000;
+
+      return User.findOneAndUpdate(
+        {
+          email: sanitizedEmail
+        },
+        { resetToken, resetTokenExpirationDate }
+      )
+        .exec()
+        .then(() => {
+          // eslint-disable-next-line no-param-reassign
+          resp.locales = {
+            displayName,
+            email,
+            resetToken
+          };
+
+          next();
+        });
+    })
+    .catch(err => {
+      const { message } = err;
+
+      if (message) {
+        return resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
 module.exports = {
   confirmEmail,
   logout,
   resendSignUpConfirmationLink,
+  resetPassword,
   sendDemoUser,
   sendUser,
   signUp
