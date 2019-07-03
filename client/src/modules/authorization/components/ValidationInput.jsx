@@ -17,8 +17,8 @@ const ValidationInput = ({ onChange, label, errorId, success, type }) => (
       className={classNames('primary-input validation-input__input', {
         'validation-input__input--error': errorId
       })}
-      type={type}
       onChange={onChange}
+      type={type}
     />
     <div className="validation-input__check-icon">
       <CheckIcon />

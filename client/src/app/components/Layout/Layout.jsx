@@ -22,7 +22,7 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import ResetPassword from 'modules/authorization/components/ResetPassword';
-import SetNewPassword from 'modules/authorization/components/SetNewPassword';
+import PasswordRecoveryForm from 'modules/authorization/components/PasswordRecoveryForm';
 
 export class Layout extends PureComponent {
   constructor(props) {
@@ -93,7 +93,10 @@ export class Layout extends PureComponent {
           <Route component={AuthBox} exact path="/" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={ResetPassword} path="/reset-password" />
-          <Route component={SetNewPassword} path="/password-recovery/:token?" />
+          <Route
+            component={PasswordRecoveryForm}
+            path="/password-recovery/:token?"
+          />
           <Redirect to="/" />
         </Switch>
       </Fragment>
