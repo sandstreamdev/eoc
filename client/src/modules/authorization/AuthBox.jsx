@@ -165,6 +165,8 @@ class AuthBox extends PureComponent {
       isSignUpFormVisible
     } = this.state;
 
+    const areFormsVisible = isSignUpFormVisible || isSignInFormVisible;
+
     return (
       <Fragment>
         <div className="authbox">
@@ -180,7 +182,7 @@ class AuthBox extends PureComponent {
             <div className="authbox__intro">
               <AppLogo />
             </div>
-            {isSignUpFormVisible || isSignInFormVisible ? (
+            {areFormsVisible ? (
               this.renderForms()
             ) : (
               <Fragment>

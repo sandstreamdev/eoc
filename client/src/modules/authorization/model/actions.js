@@ -68,6 +68,11 @@ export const signUp = (email, username, password, passwordConfirm) =>
     username
   });
 
+export const resendConfirmationLink = hash =>
+  postData('/auth/resend-confirmation-link', {
+    hash
+  });
+
 export const signIn = (email, password) => dispatch =>
   postData('/auth/sign-in', { email, password })
     .then(resp => resp.json())
@@ -83,8 +88,3 @@ export const signIn = (email, password) => dispatch =>
 //     notificationId: 'authorization.actions.login-failed'
 //   });
 // });
-
-export const resendConfirmationLink = hash =>
-  postData('/auth/resend-confirmation-link', {
-    hash
-  });
