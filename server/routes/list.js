@@ -17,6 +17,7 @@ const {
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
+  leaveList,
   removeFromFavourites,
   removeMember,
   removeMemberRole,
@@ -51,5 +52,6 @@ router.patch('/:id/clone-item', authorize, cloneItem);
 router.patch('/:id/change-type', authorize, changeType);
 router.get('/:id/archived-items', authorize, getArchivedItems);
 router.patch('/:id/delete-item/:itemId', authorize, deleteItem);
+router.patch('/:id/leave', authorize, leaveList);
 
 module.exports = router;
