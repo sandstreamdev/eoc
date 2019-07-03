@@ -12,9 +12,7 @@ const sendInvitation = (req, resp) => {
   const {
     user: { email: sender }
   } = req;
-  const { protocol } = req;
   const host = req.get('host');
-  const url = `${protocol}://${host}`;
   const title = `Join ${PROJECT_NAME} today!`;
   const info = `Would you like to join me in amazing ${PROJECT_NAME} app?`;
   const value = `JOIN ${PROJECT_NAME}`;
@@ -23,7 +21,7 @@ const sendInvitation = (req, resp) => {
     to: receiver,
     from: sender,
     subject: `Join ${PROJECT_NAME}!`,
-    html: mailTemplate(receiver, sender, url, title, info, value)
+    html: mailTemplate(receiver, sender, host, title, info, value)
   };
 
   SendGridMail.send(message)
@@ -41,10 +39,8 @@ const sendInvitation = (req, resp) => {
 
 const sendSignUpConfirmationLink = (req, resp) => {
   const { displayName: name, email: receiver, signUpHash } = resp.locals;
-  const { protocol } = req;
   const host = req.get('host');
-  const url = `${protocol}://${host}`;
-  const confirmUrl = `${url}/auth/confirm-email/${signUpHash}`;
+  const confirmUrl = `${host}/auth/confirm-email/${signUpHash}`;
   const title = `Welcome to ${PROJECT_NAME}!`;
   const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!`;
   const value = 'Confirm your account';
@@ -70,10 +66,8 @@ const sendSignUpConfirmationLink = (req, resp) => {
 
 const sendResetPasswordLink = (req, resp) => {
   const { email: receiver, displayName, resetToken } = resp.locales;
-  const { protocol } = req;
   const host = req.get('host');
-  const url = `${protocol}://${host}`;
-  const resetUrl = `${url}/reset-form/${resetToken}`;
+  const resetUrl = `${host}/reset/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
   const info =
     'Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.';

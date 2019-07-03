@@ -159,7 +159,7 @@ const resetPassword = (req, resp, next) => {
 
       return User.findOneAndUpdate(
         {
-          email
+          email: sanitizedEmail
         },
         { resetToken, resetTokenExpirationDate }
       )

@@ -178,21 +178,21 @@ describe('function responseWithCohort', () => {
 describe('function checkIfArrayContainsUserId', () => {
   const idsArray = ['123', '456', '789'];
 
-  it('returns true if the passed array does contains the userID', () => {
+  it('returns true if the passed array contains the userId', () => {
     const userId = '123';
     const result = checkIfArrayContainsUserId(idsArray, userId);
 
     expect(result).toBe(true);
   });
 
-  it('returns false if the passed array does not contain the user id as string', () => {
+  it('returns false if the passed array not contains the user id as string', () => {
     const userId = '999';
     const result = checkIfArrayContainsUserId(idsArray, userId);
 
     expect(result).toBe(false);
   });
 
-  it('returns false if the passed array does not contain the user id as ObjectId', () => {
+  it('returns false if the passed array not contains the user id as ObjectId', () => {
     const userId = ObjectId();
     const idsArray = [ObjectId(), ObjectId(), ObjectId()];
     const result = checkIfArrayContainsUserId(idsArray, userId);
