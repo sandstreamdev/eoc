@@ -139,7 +139,7 @@ const resetPassword = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error();
+        throw new Error('authorization.actions.reset');
       }
 
       const { displayName, isActive, idFromProvider } = user;
@@ -186,11 +186,61 @@ const resetPassword = (req, resp, next) => {
     });
 };
 
+const updatePassword = (req, resp) => {
+  const { token } = req.params;
+  const { password: updatedPassword } = req.body;
+  const sanitizedToken = sanitize(token);
+  const { matches } = validator;
+
+  if (!matches(updatedPassword, /^[^\s]{4,32}$/)) {
+    return resp.status(400).send({ message: 'wrong-password' });
+  }
+
+  User.findOne({ resetToken: sanitizedToken })
+    .exec()
+    .then(user => {
+      if (!user) {
+        // Wrong token passed, no user found
+        throw new Error();
+      }
+
+      const { resetTokenExpirationDate, email } = user;
+      const today = new Date().getTime();
+
+      if (resetTokenExpirationDate >= today) {
+        const hashedPassword = bcrypt.hashSync(updatedPassword + email, 12);
+
+        return User.findOneAndUpdate(
+          { resetToken: sanitizedToken },
+          {
+            password: hashedPassword,
+            resetToken: null,
+            resetTokenExpirationDate: null
+          },
+          { new: true }
+        ).exec();
+      }
+
+      throw new Error('authorization.actions.reset-link-expired');
+    })
+    .then(() => resp.sendStatus(200))
+    .catch(err => {
+      const { message } = err;
+
+      if (message) {
+        resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
 module.exports = {
   confirmEmail,
   logout,
   resetPassword,
   sendDemoUser,
   sendUser,
-  signUp
+  signUp,
+  updatePassword
 };

@@ -11,7 +11,8 @@ const {
   confirmEmail,
   logout,
   sendDemoUser,
-  sendUser
+  sendUser,
+  updatePassword
 } = require('../controllers/userAuth');
 const {
   removeDemoUserChanges
@@ -28,5 +29,5 @@ router.post('/logout', removeDemoUserChanges, logout);
 router.post('/sign-up', signUp, sendSignUpConfirmationLink);
 router.get('/confirm-email/:hash', confirmEmail);
 router.post('/reset-password', resetPassword, sendResetPasswordLink);
-
+router.post('/recovery-password/:token?', updatePassword);
 module.exports = router;

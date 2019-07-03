@@ -69,7 +69,7 @@ export const signUp = (email, username, password, passwordConfirm) =>
   });
 
 export const resetPassword = email => dispatch =>
-  postData('auth/reset-password', { email })
+  postData('/auth/reset-password', { email })
     .then(() => {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'authorization.actions.reset',
@@ -90,3 +90,8 @@ export const resetPassword = email => dispatch =>
         }
       );
     });
+
+export const updatePassword = (token, password) =>
+  postData(`/auth/recovery-password/${token}`, {
+    password
+  });

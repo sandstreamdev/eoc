@@ -11,21 +11,23 @@ import _flowRight from 'lodash/flowRight';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import PendingButton from '../../../common/components/PendingButton';
 import ValidationInput from './ValidationInput';
+import { updatePassword } from '../model/actions';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      password: '',
-      passwordSuccess: false,
-      passwordConfirmation: '',
-      passwordConfirmationSuccess: false,
-      pending: false,
       errors: {
         passwordError: '',
         comparePasswordsError: ''
-      }
+      },
+      password: '',
+      passwordUpdated: false,
+      passwordConfirmation: '',
+      passwordConfirmationSuccess: false,
+      passwordSuccess: false,
+      pending: false
     };
 
     this.debouncedChange = undefined;
@@ -57,8 +59,9 @@ class PasswordRecoveryForm extends PureComponent {
       }
     } = this.props;
 
-    console.log(token);
-    console.log('Submitting: ', password, passwordConfirmation);
+    updatePassword(token, password)
+      .then(() => this.setState({ passwordUpdated: true }))
+      .catch(err => {});
   };
 
   validatePassword = password => {
