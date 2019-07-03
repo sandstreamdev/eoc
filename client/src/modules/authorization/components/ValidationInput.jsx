@@ -1,14 +1,14 @@
 import React from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
 import { CheckIcon } from 'assets/images/icons';
 
 const ValidationInput = ({
-  onChange,
-  label,
   errorId,
+  label,
+  onChange,
   success,
   type,
   value
@@ -21,9 +21,7 @@ const ValidationInput = ({
   >
     {label}
     <input
-      className={classNames('primary-input validation-input__input', {
-        'validation-input__input--error': errorId
-      })}
+      className="primary-input validation-input__input"
       onChange={onChange}
       type={type}
       value={value}

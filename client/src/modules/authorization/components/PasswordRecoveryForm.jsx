@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
-import validator from 'validator';
-import { FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
-import _trim from 'lodash/trim';
-import _debounce from 'lodash/debounce';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import validator from 'validator';
 import _flowRight from 'lodash/flowRight';
+import _debounce from 'lodash/debounce';
 import _isEmpty from 'lodash/isEmpty';
+import _trim from 'lodash/trim';
 
-import { RouterMatchPropType } from 'common/constants/propTypes';
-import PendingButton from '../../../common/components/PendingButton';
-import ValidationInput from './ValidationInput';
+import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from '../model/actions';
+import ValidationInput from './ValidationInput';
+import PendingButton from '../../../common/components/PendingButton';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -19,8 +19,8 @@ class PasswordRecoveryForm extends PureComponent {
 
     this.state = {
       errors: {
-        passwordError: '',
         comparePasswordsError: '',
+        passwordError: '',
         passwordUpdateError: false
       },
       password: '',
@@ -37,8 +37,8 @@ class PasswordRecoveryForm extends PureComponent {
     const {
       target: { value }
     } = event;
-    this.debouncedChange = _debounce(() => this.validatePassword(value), 500);
 
+    this.debouncedChange = _debounce(() => this.validatePassword(value), 500);
     this.setState({ password: value }, this.debouncedChange);
   };
 
@@ -46,8 +46,8 @@ class PasswordRecoveryForm extends PureComponent {
     const {
       target: { value }
     } = event;
-    this.debouncedChange = _debounce(() => this.comparePasswords(), 500);
 
+    this.debouncedChange = _debounce(() => this.comparePasswords(), 500);
     this.setState({ passwordConfirmation: value }, this.debouncedChange);
   };
 
@@ -80,9 +80,10 @@ class PasswordRecoveryForm extends PureComponent {
   };
 
   validatePassword = password => {
+    const { errors, passwordConfirmation } = this.state;
     const { matches } = validator;
     const validationError = !matches(password, /^[^\s]{4,32}$/);
-    const { passwordConfirmation, errors } = this.state;
+    const passwordMinLength = password.length >= 4;
 
     if (passwordConfirmation) {
       this.comparePasswords();
@@ -92,8 +93,8 @@ class PasswordRecoveryForm extends PureComponent {
       return this.setState({
         errors: {
           ...errors,
-          passwordError: '',
-          comparePasswordsError: ''
+          comparePasswordsError: '',
+          passwordError: ''
         },
         passwordSuccess: false
       });
@@ -109,7 +110,7 @@ class PasswordRecoveryForm extends PureComponent {
       });
     }
 
-    if (password.length >= 4) {
+    if (passwordMinLength && !validationError) {
       this.setState({
         errors: {
           ...errors,
@@ -121,12 +122,13 @@ class PasswordRecoveryForm extends PureComponent {
   };
 
   comparePasswords = () => {
-    const { password, passwordConfirmation, errors } = this.state;
+    const { errors, password, passwordConfirmation } = this.state;
+    const passwordMinLength = password.length >= 4;
 
     if (
       _isEmpty(password) ||
       _isEmpty(passwordConfirmation) ||
-      password.length < 4
+      !passwordMinLength
     ) {
       return this.setState({
         errors: {
@@ -147,7 +149,7 @@ class PasswordRecoveryForm extends PureComponent {
       });
     }
 
-    if (password.length >= 4) {
+    if (passwordMinLength) {
       this.setState({
         errors: {
           ...errors,
@@ -168,14 +170,19 @@ class PasswordRecoveryForm extends PureComponent {
       pending
     } = this.state;
     const isButtonDisabled = !passwordSuccess || !passwordConfirmationSuccess;
+    const {
+      intl: { formatMessage }
+    } = this.props;
 
     return (
       <form className="pass-recovery-form" onSubmit={this.handleSubmit}>
-        <h2 className="pass-recovery-form__heading">Set new password</h2>
+        <h2 className="pass-recovery-form__heading">
+          <FormattedMessage id="authorization.pass-recovery-form.heading" />
+        </h2>
         <div className="pass-recovery-form__body">
           <ValidationInput
             errorId={passwordError}
-            label="Password"
+            label={formatMessage({ id: 'authorization.input.password.label' })}
             onChange={this.handlePasswordChange}
             success={passwordSuccess}
             type="password"
@@ -183,7 +190,9 @@ class PasswordRecoveryForm extends PureComponent {
           />
           <ValidationInput
             errorId={comparePasswordsError}
-            label="Confirm password"
+            label={formatMessage({
+              id: 'authorization.input.password.confirm'
+            })}
             onChange={this.handlePasswordConfirmationChange}
             success={passwordConfirmationSuccess}
             type="password"
@@ -209,7 +218,10 @@ class PasswordRecoveryForm extends PureComponent {
 }
 
 PasswordRecoveryForm.propTypes = {
+  intl: IntlPropType,
   match: RouterMatchPropType.isRequired
 };
 
-export default _flowRight(withRouter, connect())(PasswordRecoveryForm);
+export default _flowRight(injectIntl, withRouter, connect())(
+  PasswordRecoveryForm
+);

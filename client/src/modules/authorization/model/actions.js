@@ -116,9 +116,8 @@ export const updatePassword = (token, password) =>
   postData(`/auth/recovery-password/${token}`, {
     password
   })
-    .then(() => {
-      history.replace('/password-recovery-success');
-    })
+    .then(() => history.replace('/password-recovery-success'))
     .catch(() => {
+      // TODO: IF err instanceof BadRequestException redirect to 'LinkExpired' component
       throw new Error();
     });

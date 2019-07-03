@@ -104,6 +104,7 @@
   "authorization.actions.reset": "An email with instructions to reset password has been sent to {data} if it is associated with an EOC account. Your existing password has not been changed.",
   "authorization.actions.reset-password-not-active-account": "Account: {data} not active yet. Please go to your email inbox and activate account.",
   "authorization.password-recovery-success": "Password successfully updated. Please go to the {link} and sign in to app.",
+  "authorization.pass-recovery-form.heading": "Set new password",
   "cohort.cohort-header.add-description": "Add description",
   "cohort.cohorts.no-cohorts": "There are no cohorts yet!",
   "cohort.cohorts.no-arch-cohorts": "You have no archived cohorts!",

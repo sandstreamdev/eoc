@@ -17,12 +17,12 @@ export const StatusType = Object.freeze({
 });
 
 export const Routes = Object.freeze({
-  ACCOUNT_CREATED: '/account-created',
+  ACCOUNT_CREATED: 'account-created',
   COHORT: 'cohort',
   COHORTS: 'cohorts',
   DASHBOARD: 'dashboard',
   LIST: 'sack',
-  PASSWORD_RECOVERY_SUCCESS: '/password-recovery-success'
+  PASSWORD_RECOVERY_SUCCESS: 'password-recovery-success'
 });
 
 export const UserRoles = Object.freeze({

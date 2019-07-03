@@ -3,8 +3,8 @@ import { FormattedMessage } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import AppLogo from 'common/components/AppLogo';
 import { Routes } from 'common/constants/enums';
+import AppLogo from 'common/components/AppLogo';
 
 class SuccessMessage extends PureComponent {
   render() {
@@ -20,7 +20,7 @@ class SuccessMessage extends PureComponent {
         <p className="success-message__message">
           <FormattedMessage
             id={
-              path === Routes.ACCOUNT_CREATED
+              path === `/${Routes.ACCOUNT_CREATED}`
                 ? 'authorization.sign-up.result-success'
                 : 'authorization.password-recovery-success'
             }

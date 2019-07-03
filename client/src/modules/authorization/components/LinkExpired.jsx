@@ -20,8 +20,6 @@ class LinkExpired extends PureComponent {
       }
     } = this.props;
 
-    // if token resendResetLink();
-
     return resendConfirmationLink(hash)
       .then(() => this.setState({ isLinkSuccessfullySent: true }))
       .catch(() => this.setState({ sendingFailed: true }));
