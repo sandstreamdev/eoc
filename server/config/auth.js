@@ -12,6 +12,12 @@ const {
 const User = require('../models/user.model');
 const { DEMO_MODE_ID } = require('../common/variables');
 
+const StrategyType = Object.freeze({
+  DEMO: 'demo',
+  GOOGLE: 'google',
+  LOCAL: 'local'
+});
+
 // Use GoogleStrategy to authenticate user
 passport.use(
   new GoogleStrategy(
@@ -29,7 +35,7 @@ passport.use(
 
 // Use LocalStrategy to authenticate user
 passport.use(
-  'normal-mode',
+  StrategyType.LOCAL,
   new LocalStrategy(
     {
       usernameField: 'email',
@@ -51,7 +57,7 @@ passport.use(
 
 // Use LocalStrategy for demo purposes
 passport.use(
-  'demo-mode',
+  StrategyType.DEMO,
   new LocalStrategy(
     { usernameField: 'email', passwordField: 'password' },
     (email, password, done) => {
@@ -116,8 +122,8 @@ passport.deserializeUser((id, done) => {
     .catch(err => done(null, false, { message: err.message }));
 });
 
-const authenticateUser = (req, resp, next) => {
-  passport.authenticate('normal-mode', (err, user) => {
+const authenticate = (req, resp, next, type) => {
+  passport.authenticate(type, (err, user) => {
     if (err) {
       return next(err);
     }
@@ -131,69 +137,31 @@ const authenticateUser = (req, resp, next) => {
         return next(err);
       }
 
-      // resp.send();
       next();
     });
   })(req, resp, next);
+};
+
+const setUser = (req, resp, next) => {
+  authenticate(req, resp, next, StrategyType.LOCAL);
 };
 
 const setDemoUser = (req, resp, next) => {
-  passport.authenticate('demo-mode', (err, user) => {
-    if (err) {
-      return next(err);
-    }
-
-    if (!user) {
-      return resp.sendStatus(401);
-    }
-
-    req.login(user, err => {
-      if (err) {
-        return next(err);
-      }
-
-      // resp.send();
-      next();
-    });
-  })(req, resp, next);
+  authenticate(req, resp, next, StrategyType.DEMO);
 };
 
-// const setDemoUser = passport.authenticate('demo-mode', {
-//   failureRedirect: '/'
-// });
-
-const authenticateWithGoogle = passport.authenticate('google', {
+const authenticateWithGoogle = passport.authenticate(StrategyType.GOOGLE, {
   scope: ['email', 'profile']
 });
 
-const authenticateCallback = (req, resp, next) => {
-  passport.authenticate('google', (err, user) => {
-    if (err) {
-      return next(err);
-    }
-
-    if (!user) {
-      return resp.sendStatus(401);
-    }
-
-    req.login(user, err => {
-      if (err) {
-        return next(err);
-      }
-
-      // resp.send();
-      next();
-    });
-  })(req, resp, next);
-};
-
-// const authenticateCallback = passport.authenticate('google', {
-//   failureRedirect: '/'
-// });
+const authenticateCallback = passport.authenticate(StrategyType.GOOGLE, {
+  failureRedirect: '/',
+  successRedirect: '/'
+});
 
 module.exports = {
   authenticateCallback,
-  authenticateUser,
   authenticateWithGoogle,
-  setDemoUser
+  setDemoUser,
+  setUser
 };

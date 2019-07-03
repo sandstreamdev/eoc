@@ -1,5 +1,4 @@
-import { checkIfCookieSet } from 'common/utils/cookie';
-import { postData, postRequest } from 'common/utils/fetchMethods';
+import { getData, postData, postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
@@ -26,15 +25,6 @@ const loginSuccess = data => ({
 const loginFailure = () => ({
   type: AuthorizationActionTypes.LOGIN_FAILURE
 });
-
-export const setCurrentUser = () => {
-  const user = JSON.parse(decodeURIComponent(checkIfCookieSet('user')));
-
-  return typeof user === 'object' ? user : null;
-};
-
-export const loginUser = () => dispatch =>
-  dispatch(loginSuccess(setCurrentUser()));
 
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
@@ -82,9 +72,18 @@ export const signIn = (email, password) => dispatch =>
         notificationId: 'authorization.actions.login'
       });
     });
-// .catch(err => {
-//   dispatch(loginFailure());
-//   createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-//     notificationId: 'authorization.actions.login-failed'
-//   });
-// });
+
+export const getLoggedUser = () => dispatch =>
+  getData('auth/user')
+    .then(resp => {
+      const contentType = resp.headers.get('content-type');
+
+      if (contentType && contentType.includes('application/json')) {
+        return resp.json();
+      }
+    })
+    .then(json => {
+      if (json) {
+        dispatch(loginSuccess(json));
+      }
+    });
