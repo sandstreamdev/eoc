@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import _trim from 'lodash/trim';
 
 import PendingButton from '../../../common/components/PendingButton';
-import PasswordField from './PasswordField';
+import ValidationInput from './ValidationInput';
 
 class SetNewPassword extends PureComponent {
   constructor(props) {
@@ -14,50 +14,31 @@ class SetNewPassword extends PureComponent {
 
     this.state = {
       password: '',
+      passwordSuccess: false,
       passwordConfirmation: '',
+      passwordConfirmationSuccess: false,
       pending: false,
-      errors: {
-        passwordError: '',
-        comparePasswordsError: ''
-      }
+      passwordError: '',
+      comparePasswordsError: ''
     };
   }
-
-  // componentDidUpdate() {
-  //   const { password } = this.state;
-
-  //   if (password.length > 0) {
-  //     this.validatePassword();
-  //   }
-  // }
 
   handlePasswordChange = event => {
     const {
       target: { value }
     } = event;
-    const { matches } = validator;
-    const password = value;
-    const validationError = !matches(password, /^[^\s]{4,32}$/);
 
-    if (validationError) {
-      return this.setState({
-        errors: {
-          passwordError: 'authorization.input.password.invalid'
-        }
-      });
-    }
-
-    if (password.length >= 4) {
-      this.setState({
-        errors: {
-          passwordError: ''
-        }
-      });
-    }
+    this.setState({ password: value }, () => this.validatePassword(value));
   };
 
-  handlePasswordConfirmationChange = value => {
-    this.setState({ passwordConfirmation: value }, this.comparePasswords);
+  handlePasswordConfirmationChange = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState({ passwordConfirmation: value }, () =>
+      this.comparePasswords()
+    );
   };
 
   handleSubmit = () => {
@@ -66,62 +47,92 @@ class SetNewPassword extends PureComponent {
     console.log('Submitting: ', password, passwordConfirmation);
   };
 
-  // validatePassword = () => {
-  //   const { matches } = validator;
-  //   const { password } = this.state;
+  validatePassword = password => {
+    const { matches } = validator;
+    const validationError = !matches(password, /^[^\s]{4,32}$/);
+    const { passwordConfirmation } = this.state;
 
-  //   if (!matches(password, /^[^\s]{4,32}$/)) {
-  //     this.setState({
-  //       errors: {
-  //         passwordError: 'authorization.input.password.invalid'
-  //       }
-  //     });
+    if (passwordConfirmation) {
+      this.comparePasswords();
+    }
 
-  //     return 'authorization.input.password.invalid';
-  //     // debugger;
-  //   }
+    if (!password) {
+      return this.setState({
+        passwordError: '',
+        passwordSuccess: false
+      });
+    }
 
-  //   this.setState({
-  //     errors: {
-  //       passwordError: ''
-  //     }
-  //   });
+    if (validationError) {
+      return this.setState({
+        passwordError: 'authorization.input.password.invalid',
+        passwordSuccess: false
+      });
+    }
 
-  //   return '';
-  // };
+    if (password.length >= 4) {
+      this.setState({
+        passwordError: '',
+        passwordSuccess: true
+      });
+    }
+  };
 
   comparePasswords = () => {
     const { password, passwordConfirmation } = this.state;
 
+    if (!password || !passwordConfirmation || password.length < 4) {
+      return this.setState({
+        comparePasswordsError: '',
+        passwordConfirmationSuccess: false
+      });
+    }
+
     if (_trim(password) !== _trim(passwordConfirmation)) {
+      return this.setState({
+        comparePasswordsError: 'authorization.input.password.not-match',
+        passwordConfirmationSuccess: false
+      });
+    }
+
+    if (password.length >= 4) {
       this.setState({
-        errors: {
-          comparePasswordsError: 'authorization.input.password.not-match'
-        }
+        comparePasswordsError: '',
+        passwordConfirmationSuccess: true
       });
     }
   };
 
   render() {
     const {
-      pending,
-      errors: { passwordError, comparePasswordsError }
+      passwordError,
+      comparePasswordsError,
+      passwordSuccess,
+      passwordConfirmationSuccess
     } = this.state;
+    const isButtonDisabled = !passwordSuccess || !passwordConfirmationSuccess;
 
     return (
       <form className="set-new-password" onSubmit={this.handleSubmit}>
         <h2 className="set-new-password__heading">Set new password</h2>
         <div className="set-new-password__body">
-          <PasswordField
+          <ValidationInput
             onChange={this.handlePasswordChange}
             label="Password"
             errorId={passwordError}
+            success={passwordSuccess}
+            type="password"
           />
-          <PasswordField
+          <ValidationInput
             label="Confirm password"
+            onChange={this.handlePasswordConfirmationChange}
             errorId={comparePasswordsError}
+            success={passwordConfirmationSuccess}
+            type="password"
           />
-          <PendingButton className="primary-button">Save</PendingButton>
+          <PendingButton className="primary-button" disabled={isButtonDisabled}>
+            Save
+          </PendingButton>
         </div>
       </form>
     );

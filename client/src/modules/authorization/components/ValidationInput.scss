@@ -1,0 +1,55 @@
+.validation-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: $text-normal;
+  margin-bottom: 10px;
+  position: relative;
+
+  &--error {
+    color: $danger;
+  }
+
+  &__input {
+    margin-top: 10px;
+
+    &--error {
+      border: 1px solid $danger;
+    }
+  }
+
+  &__check-icon {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    svg {
+      height: 16px;
+    }
+  }
+
+  &--success {
+    color: $success;
+
+    input {
+      border-color: $success;
+    }
+
+    input:focus {
+      border-color: $success;
+    }
+
+    .validation-input__check-icon {
+      display: block;
+
+      svg path {
+        fill: $success;
+      }
+    }
+  }
+
+  span {
+    margin-top: 5px;
+  }
+}
