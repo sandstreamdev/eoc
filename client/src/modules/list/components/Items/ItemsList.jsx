@@ -117,11 +117,15 @@ class ItemsList extends PureComponent {
     );
   };
 
-  showMore = () => {
+  showMore = event => {
+    event.preventDefault();
+
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
   };
 
-  showLess = () => {
+  showLess = event => {
+    event.preventDefault();
+
     this.setState({ limit: DISPLAY_LIMIT });
   };
 
@@ -196,6 +200,7 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-more"
             onClick={this.showMore}
+            onTouchEnd={this.showMore}
             type="button"
           />
         )}
@@ -203,6 +208,7 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-less"
             onClick={this.showLess}
+            onTouchEnd={this.showLess}
             type="button"
           />
         )}

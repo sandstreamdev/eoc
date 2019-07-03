@@ -5,9 +5,9 @@ const listMock = [
     favIds: [],
     isArchived: false,
     type: 'limited',
-    memberIds: [{ $oid: '5c9dc5a619ae7924074940f4' }],
-    ownerIds: [{ $oid: '5c9dc5a619ae7924074940f4' }],
-    viewersIds: [{ $oid: '5c9dc5a619ae7924074940f4' }],
+    memberIds: ['5c9dc5a619ae7924074940f4'],
+    ownerIds: ['5c9dc5a619ae7924074940f4'],
+    viewersIds: ['5c9dc5a619ae7924074940f4'],
     description: '',
     name: 'Test list',
     items: [

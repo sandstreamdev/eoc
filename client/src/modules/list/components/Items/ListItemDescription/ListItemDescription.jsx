@@ -86,7 +86,11 @@ class ListItemDescription extends PureComponent {
     this.handleDescriptionUpdate();
   };
 
-  handleShowTextarea = () => this.setState({ isTextareaVisible: true });
+  handleShowTextarea = event => {
+    event.preventDefault();
+
+    this.setState({ isTextareaVisible: true });
+  };
 
   handleHideTextarea = () => this.setState({ isTextareaVisible: false });
 
@@ -95,7 +99,9 @@ class ListItemDescription extends PureComponent {
       isDescriptionVisible: !isDescriptionVisible
     }));
 
-  handleDescriptionUpdate = () => {
+  handleDescriptionUpdate = event => {
+    event && event.preventDefault();
+
     const {
       descriptionTextareaValue: description,
       isDescriptionUpdated
@@ -157,6 +163,7 @@ class ListItemDescription extends PureComponent {
           className="primary-button"
           disabled={disabled || pending}
           onClick={this.handleDescriptionUpdate}
+          onTouchEnd={this.handleDescriptionUpdate}
           type="button"
         >
           Save
@@ -201,6 +208,7 @@ class ListItemDescription extends PureComponent {
         className="link-button"
         disabled={disabled}
         onClick={this.handleShowTextarea}
+        onTouchEnd={this.handleShowTextarea}
         type="button"
       >
         <FormattedMessage id="list.list-description.add-button" />
@@ -246,7 +254,10 @@ class ListItemDescription extends PureComponent {
 
     return (
       <Fragment>
-        <div onClick={disabled ? null : this.handleShowTextarea}>
+        <div
+          onClick={disabled ? null : this.handleShowTextarea}
+          onTouchEnd={disabled ? null : this.handleShowTextarea}
+        >
           {isTitleVisible && (
             <h2 className="list-item-description__title">
               <FormattedMessage id="list.list-description.title" />

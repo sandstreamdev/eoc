@@ -1,0 +1,49 @@
+.link-expired {
+  display: flex;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $container-bg;
+  box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
+  text-align: center;
+  flex-direction: column;
+  width: 250px;
+  align-items: center;
+  padding: 32px;
+
+  @include breakpoint($xsmall) {
+    width: 300px;
+  }
+
+  &__heading {
+    margin-bottom: 16px;
+  }
+
+  &__message {
+    width: 100%;
+    color: $text-normal;
+    font-size: $m-font;
+    text-align: left;
+    line-height: 1.2;
+  }
+
+  &__button {
+    text-transform: capitalize;
+    margin-top: 16px;
+  }
+
+  &__error {
+    margin-bottom: 16px;
+    color: $danger;
+    width: 100%;
+    text-align: left;
+  }
+
+  &__confirmation {
+    width: 100%;
+    color: $text-normal;
+    text-align: left;
+    line-height: 1.2;
+  }
+}

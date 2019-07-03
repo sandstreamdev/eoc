@@ -8,7 +8,7 @@ import _flowRight from 'lodash/flowRight';
 import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
-import AuthBox from 'modules/authorization/AuthBox';
+import AuthBox, { AccountCreated, LinkExpired } from 'modules/authorization';
 import { loginUser } from 'modules/authorization/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
@@ -92,6 +92,8 @@ export class Layout extends PureComponent {
         <Switch>
           <Route component={AuthBox} exact path="/" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
+          <Route component={AccountCreated} path="/account-created" />
+          <Route component={LinkExpired} path="/link-expired/:hash?" />
           <Route component={ResetPassword} path="/reset-password" />
           <Route
             component={PasswordRecoveryForm}

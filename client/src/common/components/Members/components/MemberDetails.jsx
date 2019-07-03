@@ -11,8 +11,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
   addOwnerRole as addOwnerRoleInCohort,
   removeCohortMember,
-  removeOwnerRole as removeOwnerRoleInCohort,
-  leaveCohort
+  removeOwnerRole as removeOwnerRoleInCohort
 } from 'modules/cohort/model/actions';
 import {
   addOwnerRole as addOwnerRoleInList,
@@ -26,6 +25,8 @@ import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
 import Avatar from 'common/components/Avatar';
+import { makeAbortablePromise } from 'common/utils/helpers';
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -39,6 +40,8 @@ const infoText = {
 };
 
 class MemberDetails extends PureComponent {
+  pendingPromise = null;
+
   constructor(props) {
     super(props);
 
@@ -49,6 +52,12 @@ class MemberDetails extends PureComponent {
       isOwnerInfoVisible: false,
       pending: false
     };
+  }
+
+  componentWillUnmount() {
+    if (this.pendingPromise) {
+      this.pendingPromise.abort();
+    }
   }
 
   handleConfirmationVisibility = () =>
@@ -194,20 +203,31 @@ class MemberDetails extends PureComponent {
     }
   };
 
-  handleCohortLeave = () => {
-    const {
-      currentUser: { id: currentUserId, name },
-      leaveCohort,
-      match: {
-        params: { id }
-      }
-    } = this.props;
+  handleLeave = () => {
+    const { onCohortLeave, onListLeave, route } = this.props;
 
     this.setState({ pending: true });
 
-    return leaveCohort(id, currentUserId, name).finally(() =>
-      this.setState({ pending: false })
-    );
+    let action;
+    switch (route) {
+      case Routes.LIST:
+        action = onListLeave;
+        break;
+      case Routes.COHORT:
+        action = onCohortLeave;
+        break;
+      default:
+        break;
+    }
+
+    this.pendingPromise = makeAbortablePromise(action());
+    this.pendingPromise.promise
+      .then(() => this.setState({ pending: false }))
+      .catch(err => {
+        if (!(err instanceof AbortPromiseException)) {
+          this.setState({ pending: false });
+        }
+      });
   };
 
   handleLeaveConfirmationVisibility = () =>
@@ -403,7 +423,7 @@ class MemberDetails extends PureComponent {
               <button
                 className="primary-button"
                 disabled={pending}
-                onClick={this.handleCohortLeave}
+                onClick={this.handleLeave}
                 type="button"
               >
                 <FormattedMessage id="common.button.confirm" />
@@ -421,11 +441,7 @@ class MemberDetails extends PureComponent {
         ) : (
           <button
             className="primary-button"
-            onClick={
-              route === Routes.LIST
-                ? null
-                : this.handleLeaveConfirmationVisibility
-            }
+            onClick={this.handleLeaveConfirmationVisibility}
             type="button"
           >
             <FormattedMessage
@@ -439,7 +455,7 @@ class MemberDetails extends PureComponent {
   };
 
   render() {
-    const { isCurrentUserAnOwner, onClose } = this.props;
+    const { isCurrentUserAnOwner, isPrivateList, onClose, route } = this.props;
     const { pending } = this.state;
 
     return (
@@ -462,7 +478,8 @@ class MemberDetails extends PureComponent {
               {isCurrentUserAnOwner && this.renderDetails()}
               {pending && <Preloader />}
             </div>
-            {this.renderLeaveOption()}
+            {(isPrivateList || route === Routes.COHORT) &&
+              this.renderLeaveOption()}
           </div>
         </div>
       </Fragment>
@@ -480,6 +497,7 @@ MemberDetails.propTypes = {
   isGuest: PropTypes.bool,
   isMember: PropTypes.bool,
   isOwner: PropTypes.bool,
+  isPrivateList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   route: PropTypes.string,
   type: PropTypes.string,
@@ -487,8 +505,9 @@ MemberDetails.propTypes = {
   addMemberRoleInList: PropTypes.func.isRequired,
   addOwnerRoleInCohort: PropTypes.func.isRequired,
   addOwnerRoleInList: PropTypes.func.isRequired,
-  leaveCohort: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCohortLeave: PropTypes.func,
+  onListLeave: PropTypes.func,
   removeCohortMember: PropTypes.func.isRequired,
   removeListMember: PropTypes.func.isRequired,
   removeMemberRoleInList: PropTypes.func.isRequired,
@@ -507,7 +526,6 @@ export default withRouter(
       addMemberRoleInList,
       addOwnerRoleInCohort,
       addOwnerRoleInList,
-      leaveCohort,
       removeCohortMember,
       removeListMember,
       removeMemberRoleInList,

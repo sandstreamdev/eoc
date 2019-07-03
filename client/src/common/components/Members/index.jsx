@@ -100,14 +100,25 @@ class MembersBox extends PureComponent {
   };
 
   renderDetails = member => {
-    const { isCohortList, isCurrentUserAnOwner, route, type } = this.props;
+    const {
+      isCohortList,
+      isCurrentUserAnOwner,
+      isPrivateList,
+      onCohortLeave,
+      onListLeave,
+      route,
+      type
+    } = this.props;
 
     return (
       <MemberDetails
         {...member}
         isCohortList={isCohortList}
         isCurrentUserAnOwner={isCurrentUserAnOwner}
+        isPrivateList={isPrivateList}
         onClose={this.handleClosingMemberDetails}
+        onCohortLeave={onCohortLeave}
+        onListLeave={onListLeave}
         route={route}
         type={type}
       />
@@ -220,6 +231,7 @@ MembersBox.propTypes = {
   isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool,
   isMember: PropTypes.bool,
+  isPrivateList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
   route: PropTypes.string.isRequired,
@@ -227,7 +239,9 @@ MembersBox.propTypes = {
 
   addCohortMember: PropTypes.func.isRequired,
   addListViewer: PropTypes.func.isRequired,
-  inviteUser: PropTypes.func.isRequired
+  inviteUser: PropTypes.func.isRequired,
+  onCohortLeave: PropTypes.func,
+  onListLeave: PropTypes.func
 };
 
 export default withRouter(

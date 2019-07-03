@@ -3,11 +3,13 @@ const sanitize = require('mongo-sanitize');
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
-  checkIfArrayContainsUserId,
   filter,
+  isMember,
+  isOwner,
   isValidMongoId,
-  responseWithItems,
+  isViewer,
   responseWithItem,
+  responseWithItems,
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
@@ -46,7 +48,7 @@ const createList = (req, resp) => {
       .then(cohort => {
         const { memberIds } = cohort;
 
-        if (checkIfArrayContainsUserId(memberIds, userId)) {
+        if (isMember(cohort, userId)) {
           list.viewersIds = memberIds;
 
           return list.save();
@@ -294,9 +296,6 @@ const getListData = (req, resp) => {
         cohortMembers
       );
 
-      const isGuest = !checkIfArrayContainsUserId(cohortMembers, userId);
-      const isMember = checkIfArrayContainsUserId(memberIds, userId);
-      const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
       const items = responseWithItems(userId, activeItems);
 
       return resp.send({
@@ -305,9 +304,9 @@ const getListData = (req, resp) => {
         cohortName,
         description,
         isArchived,
-        isGuest,
-        isMember,
-        isOwner,
+        isGuest: !isMember(list, userId),
+        isMember: isMember(list, userId),
+        isOwner: isOwner(list, userId),
         items,
         members,
         name,
@@ -644,14 +643,13 @@ const addOwnerRole = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { memberIds, ownerIds } = doc;
-      const userIsNotAnOwner = !checkIfArrayContainsUserId(ownerIds, userId);
+      const userIsNotAnOwner = !isOwner(doc, userId);
 
       if (userIsNotAnOwner) {
         doc.ownerIds.push(userId);
       }
 
-      const userIsNotAMember = !checkIfArrayContainsUserId(memberIds, userId);
+      const userIsNotAMember = !isMember(doc, userId);
 
       if (userIsNotAMember) {
         doc.memberIds.push(userId);
@@ -700,9 +698,8 @@ const removeOwnerRole = (req, resp) => {
           'list.actions.remove-owner-role-only-one-owner'
         );
       }
-      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
 
-      if (userIsOwner) {
+      if (isOwner(doc, userId)) {
         ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
       }
 
@@ -753,15 +750,13 @@ const addMemberRole = (req, resp) => {
       }
 
       const { ownerIds, memberIds } = doc;
-      const userIsNotAMember = !checkIfArrayContainsUserId(memberIds, userId);
+      const userIsNotAMember = !isMember(doc, userId);
 
       if (userIsNotAMember) {
         memberIds.push(userId);
       }
 
-      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
-
-      if (userIsOwner) {
+      if (isOwner(doc, userId)) {
         ownerIds.splice(ownerIds.indexOf(userId), 1);
       }
 
@@ -804,7 +799,7 @@ const removeMemberRole = (req, resp) => {
 
       const { memberIds, ownerIds } = doc;
 
-      const userIsOwner = checkIfArrayContainsUserId(ownerIds, userId);
+      const userIsOwner = isOwner(doc, userId);
 
       if (userIsOwner && ownerIds.length < 2) {
         throw new BadRequestException(
@@ -812,9 +807,7 @@ const removeMemberRole = (req, resp) => {
         );
       }
 
-      const userIsMember = checkIfArrayContainsUserId(memberIds, userId);
-
-      if (userIsMember) {
+      if (isMember(doc, userId)) {
         memberIds.splice(memberIds.indexOf(userId), 1);
       }
 
@@ -864,7 +857,7 @@ const addViewer = (req, resp) => {
 
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
-      .status(400)
+      .status(401)
       .send({ message: 'list.actions.add-viewer-demo-mode' });
   }
 
@@ -893,8 +886,8 @@ const addViewer = (req, resp) => {
       }
 
       const { _id: newMemberId } = userData;
-      const { cohortId: cohort, viewersIds } = list;
-      const userExists = checkIfArrayContainsUserId(viewersIds, newMemberId);
+      const { cohortId: cohort } = list;
+      const userExists = isViewer(list, newMemberId);
 
       if (userExists) {
         throw new BadRequestException('list.actions.add-viewer-is-member');
@@ -1112,7 +1105,6 @@ const changeType = (req, resp) => {
       }
       const {
         cohortId: { memberIds: cohortMembersCollection },
-        memberIds,
         type,
         viewersIds
       } = list;
@@ -1121,13 +1113,8 @@ const changeType = (req, resp) => {
 
       const updatedViewersIds =
         type === ListType.LIMITED
-          ? viewersIds.filter(id => checkIfArrayContainsUserId(memberIds, id))
-          : [
-              ...viewersIds,
-              ...cohortMembers.filter(
-                id => !checkIfArrayContainsUserId(viewersIds, id)
-              )
-            ];
+          ? viewersIds.filter(id => isMember(list, id))
+          : [...viewersIds, ...cohortMembers.filter(id => !isViewer(list, id))];
 
       return List.findOneAndUpdate(
         { _id: listId, ownerIds: currentUserId },
@@ -1233,6 +1220,54 @@ const deleteItem = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const leaveList = (req, resp) => {
+  const { id: listId } = req.params;
+  const { _id: userId } = req.user;
+  const sanitizedListId = sanitize(listId);
+
+  List.findOne({
+    _id: sanitizedListId,
+    viewersIds: userId,
+    type: ListType.LIMITED
+  })
+    .exec()
+    .then(list => {
+      if (!list) {
+        throw new BadRequestException();
+      }
+
+      const { viewersIds, memberIds, ownerIds } = list;
+
+      if (isOwner(list, userId)) {
+        if (ownerIds.length === 1) {
+          throw new BadRequestException('list.actions.leave-one-owner');
+        }
+
+        ownerIds.splice(ownerIds.indexOf(userId), 1);
+      }
+
+      if (isMember(list, userId)) {
+        memberIds.splice(memberIds.indexOf(userId), 1);
+      }
+
+      if (isViewer(list, userId)) {
+        viewersIds.splice(viewersIds.indexOf(userId), 1);
+      }
+
+      return list.save();
+    })
+    .then(() => resp.send())
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { message } = err;
+
+        return resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
@@ -1249,6 +1284,7 @@ module.exports = {
   getArchivedListsMetaData,
   getListData,
   getListsMetaData,
+  leaveList,
   removeFromFavourites,
   removeMember,
   removeMemberRole,

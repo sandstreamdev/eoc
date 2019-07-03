@@ -92,6 +92,15 @@ const membersReducer = (state = [], action) => {
 
       return members;
     }
+    case ListActionTypes.LEAVE_SUCCESS: {
+      const {
+        payload: { userId }
+      } = action;
+
+      const userIndex = state.indexOf(userId);
+
+      return [...state.slice(0, userIndex), ...state.slice(userIndex + 1)];
+    }
     default:
       return state;
   }
@@ -146,7 +155,8 @@ const lists = (state = {}, action) => {
     case ListActionTypes.ADD_VIEWER_SUCCESS:
     case ListActionTypes.ADD_OWNER_ROLE_SUCCESS:
     case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS:
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
+    case ListActionTypes.LEAVE_SUCCESS: {
       const {
         payload: { listId }
       } = action;

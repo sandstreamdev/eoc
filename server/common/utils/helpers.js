@@ -19,6 +19,24 @@ const checkIfArrayContainsUserId = (idsArray, userId) => {
   return arrayOfStrings.indexOf(userIdAsString) !== -1;
 };
 
+const isOwner = (doc, userId) => {
+  const { ownerIds } = doc;
+
+  return checkIfArrayContainsUserId(ownerIds, userId);
+};
+
+const isMember = (doc, userId) => {
+  const { memberIds } = doc;
+
+  return checkIfArrayContainsUserId(memberIds, userId);
+};
+
+const isViewer = (doc, userId) => {
+  const { viewersIds } = doc;
+
+  return checkIfArrayContainsUserId(viewersIds, userId);
+};
+
 const responseWithList = (list, userId) => {
   const { _id, cohortId, description, favIds, items, name, type } = list;
   const doneItemsCount = items.filter(item => item.isOrdered).length;
@@ -245,7 +263,10 @@ module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   filter,
+  isMember,
+  isOwner,
   isValidMongoId,
+  isViewer,
   responseWithCohort,
   responseWithCohortMember,
   responseWithCohortMembers,

@@ -17,11 +17,13 @@ import Preloader, {
 } from 'common/components/Preloader';
 import GoogleButtonImg from 'assets/images/google-btn.png';
 import SignUpForm from './components/SignUpForm';
+import SignInForm from './components/SignInForm';
 import { IntlPropType } from 'common/constants/propTypes';
 
 class AuthBox extends PureComponent {
   state = {
     isCookieSet: true,
+    isSignInFormVisible: false,
     isSignUpFormVisible: false,
     pending: false
   };
@@ -46,7 +48,12 @@ class AuthBox extends PureComponent {
       isSignUpFormVisible: !isSignUpFormVisible
     }));
 
-  renderGoogleSignInButton = () => {
+  handleSignInFormVisibility = () =>
+    this.setState(({ isSignInFormVisible }) => ({
+      isSignInFormVisible: !isSignInFormVisible
+    }));
+
+  renderSignInButtons = () => {
     const { isCookieSet, pending } = this.state;
     const {
       intl: { formatMessage }
@@ -80,6 +87,16 @@ class AuthBox extends PureComponent {
               theme={PreloaderTheme.GOOGLE}
             />
           )}
+        </div>
+        <div className="authbox__button-wrapper">
+          <button
+            className="primary-button authbox__button"
+            disabled={!isCookieSet || pending}
+            onClick={this.handleSignInFormVisibility}
+            type="button"
+          >
+            <FormattedMessage id="authorization.sign-in" />
+          </button>
         </div>
       </div>
     );
@@ -129,8 +146,26 @@ class AuthBox extends PureComponent {
     );
   };
 
+  renderForms = () => {
+    const { isSignInFormVisible, isSignUpFormVisible } = this.state;
+
+    if (isSignInFormVisible) {
+      return <SignInForm onCancel={this.handleSignInFormVisibility} />;
+    }
+
+    if (isSignUpFormVisible) {
+      return <SignUpForm onCancel={this.handleSignUpFormVisibility} />;
+    }
+  };
+
   render() {
-    const { isCookieSet, isSignUpFormVisible } = this.state;
+    const {
+      isCookieSet,
+      isSignInFormVisible,
+      isSignUpFormVisible
+    } = this.state;
+
+    const areFormsVisible = isSignUpFormVisible || isSignInFormVisible;
 
     return (
       <Fragment>
@@ -147,11 +182,11 @@ class AuthBox extends PureComponent {
             <div className="authbox__intro">
               <AppLogo />
             </div>
-            {isSignUpFormVisible ? (
-              <SignUpForm onCancel={this.handleSignUpFormVisibility} />
+            {areFormsVisible ? (
+              this.renderForms()
             ) : (
               <Fragment>
-                {this.renderGoogleSignInButton()}
+                {this.renderSignInButtons()}
                 {this.renderSignUpButton()}
                 {this.renderDemoButton()}
               </Fragment>

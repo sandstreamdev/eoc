@@ -20,6 +20,7 @@ const VotingBox = ({
     })}
     disabled={!isMember}
     onClick={onVote}
+    onTouchEnd={onVote}
     title={
       isVoted
         ? formatMessage({ id: 'list.voting-box.remove' })

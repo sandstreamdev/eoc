@@ -17,6 +17,7 @@ import {
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { EventTypes, KeyCodes } from 'common/constants/enums';
 
 class InputBar extends Component {
   constructor(props) {
@@ -49,6 +50,18 @@ class InputBar extends Component {
       this.socket = io();
     }
   }
+
+  handleEscapePress = event => {
+    const { code } = event;
+    const { itemName } = this.state;
+    const isInputEmpty = _trim(itemName).length === 0;
+
+    if (code === KeyCodes.ESCAPE && isInputEmpty) {
+      this.hideForm();
+
+      document.removeEventListener('keydown', this.handleEscapePress);
+    }
+  };
 
   handleNameChange = event => {
     const {
@@ -85,7 +98,12 @@ class InputBar extends Component {
     setTimeout(() => this.setState({ isTipVisible: false }), 5000);
 
   handleFormSubmit = event => {
-    event.preventDefault();
+    const { type } = event;
+
+    if (type === EventTypes.SUBMIT || type === EventTypes.CLICK) {
+      event.preventDefault();
+    }
+
     const {
       addItem,
       currentUser,
@@ -112,9 +130,28 @@ class InputBar extends Component {
     this.handleTipVisibility();
   };
 
-  showForm = () => this.setState({ isFormVisible: true });
+  showForm = event => {
+    event.preventDefault();
+
+    this.setState({ isFormVisible: true });
+  };
 
   hideForm = () => this.setState({ isFormVisible: false });
+
+  handleBlur = () => {
+    const { itemName } = this.state;
+    const isInputEmpty = _trim(itemName).length === 0;
+
+    if (isInputEmpty) {
+      this.hideForm();
+    }
+
+    document.removeEventListener('keydown', this.handleEscapePress);
+  };
+
+  handleFocus = () => {
+    document.addEventListener('keydown', this.handleEscapePress);
+  };
 
   renderInputBar = () => {
     const {
@@ -135,6 +172,8 @@ class InputBar extends Component {
             className="input-bar__input primary-input"
             disabled={pending}
             name="item name"
+            onBlur={this.handleBlur}
+            onFocus={this.handleFocus}
             onChange={this.handleNameChange}
             placeholder={formatMessage({ id: 'list.input-bar.placeholder' })}
             ref={this.input}
@@ -147,6 +186,8 @@ class InputBar extends Component {
               'input-bar__submit--disabled': isButtonDisabled
             })}
             disabled={isButtonDisabled}
+            onClick={this.handleFormSubmit}
+            onTouchEnd={this.handleFormSubmit}
             type="submit"
             value={formatMessage({ id: 'list.input-bar.button' })}
           />
@@ -161,6 +202,7 @@ class InputBar extends Component {
       <button
         className="input-bar__button"
         onClick={this.showForm}
+        onTouchEnd={this.showForm}
         type="button"
       >
         <PlusIcon />

@@ -106,7 +106,11 @@ class ListItemName extends PureComponent {
     document.removeEventListener('mousedown', this.handleClickOutside);
   };
 
-  handleOnClick = event => event.stopPropagation();
+  handleOnClick = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    this.nameInput.current.focus();
+  };
 
   handleClickOutside = event => {
     const { target } = event;
@@ -132,6 +136,7 @@ class ListItemName extends PureComponent {
             onBlur={this.handleNameInputBlur}
             onChange={this.handleNameChange}
             onClick={this.handleOnClick}
+            onTouchEnd={this.handleOnClick}
             onFocus={this.handleNameInputFocus}
             ref={this.nameInput}
             type="text"

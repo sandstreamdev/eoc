@@ -67,12 +67,18 @@ const signUp = (req, resp, next) => {
         const { _id, displayName, email, idFromProvider, isActive } = user;
 
         if (!idFromProvider && !isActive) {
+          const hashedPassword = bcrypt.hashSync(password + email, 12);
           const signUpHash = crypto.randomBytes(32).toString('hex');
           const expirationDate = new Date().getTime() + 3600000;
 
           return User.findOneAndUpdate(
             { _id },
-            { signUpHash, signUpHashExpirationDate: expirationDate }
+            {
+              displayName: sanitizedUsername,
+              password: hashedPassword,
+              signUpHash,
+              signUpHashExpirationDate: expirationDate
+            }
           )
             .exec()
             .then(user => {
@@ -124,7 +130,63 @@ const signUp = (req, resp, next) => {
     });
 };
 
-const confirmEmail = (req, resp) => {};
+const confirmEmail = (req, resp) => {
+  const { hash: signUpHash } = req.params;
+
+  User.findOneAndUpdate(
+    {
+      signUpHash,
+      signUpHashExpirationDate: { $gte: new Date() }
+    },
+    {
+      activatedAt: new Date(),
+      isActive: true,
+      signUpHash: null,
+      signUpHashExpirationDate: null
+    }
+  )
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+      resp.redirect('/account-created');
+    })
+    .catch(() => resp.redirect(`/link-expired/${signUpHash}`));
+};
+
+const resendSignUpConfirmationLink = (req, resp, next) => {
+  const { hash } = req.body;
+  const sanitizedHash = sanitize(hash);
+
+  User.findOneAndUpdate(
+    {
+      signUpHash: sanitizedHash,
+      isActive: false
+    },
+    {
+      signUpHash: crypto.randomBytes(32).toString('hex'),
+      signUpHashExpirationDate: new Date().getTime() + 3600000
+    },
+    { new: true }
+  )
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+
+      const { displayName, email, signUpHash } = user;
+
+      // eslint-disable-next-line no-param-reassign
+      resp.locals = { displayName, email, signUpHash };
+
+      next();
+    })
+    .catch(() => resp.sendStatus(400));
+};
 
 const resetPassword = (req, resp, next) => {
   const { email } = req.body;
@@ -238,6 +300,7 @@ const updatePassword = (req, resp) => {
 module.exports = {
   confirmEmail,
   logout,
+  resendSignUpConfirmationLink,
   resetPassword,
   sendDemoUser,
   sendUser,

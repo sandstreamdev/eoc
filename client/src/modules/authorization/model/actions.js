@@ -61,12 +61,32 @@ export const loginDemoUser = () => dispatch =>
     });
 
 export const signUp = (email, username, password, passwordConfirm) =>
-  postData('auth/sign-up', {
+  postData('/auth/sign-up', {
     email,
     password,
     passwordConfirm,
     username
   });
+
+export const resendConfirmationLink = hash =>
+  postData('/auth/resend-confirmation-link', {
+    hash
+  });
+
+export const signIn = (email, password) => dispatch =>
+  postData('/auth/sign-in', { email, password })
+    .then(() => {
+      dispatch(loginSuccess(setCurrentUser()));
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'authorization.actions.login'
+      });
+    })
+    .catch(err => {
+      dispatch(loginFailure());
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'authorization.actions.login-failed'
+      });
+    });
 
 export const resetPassword = email => dispatch =>
   postData('/auth/reset-password', { email })

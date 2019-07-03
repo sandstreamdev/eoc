@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 const UserSchema = new Schema(
   {
     accessToken: { type: String },
+    activatedAt: { type: Date },
     avatarUrl: { type: String },
     displayName: { type: String, required: true },
     email: { type: String, required: true },
