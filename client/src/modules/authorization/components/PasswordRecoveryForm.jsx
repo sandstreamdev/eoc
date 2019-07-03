@@ -12,6 +12,8 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import PendingButton from '../../../common/components/PendingButton';
 import ValidationInput from './ValidationInput';
 import { updatePassword } from '../model/actions';
+import { MessageType } from 'common/constants/enums';
+import MessageBox from 'common/components/MessageBox';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -20,10 +22,10 @@ class PasswordRecoveryForm extends PureComponent {
     this.state = {
       errors: {
         passwordError: '',
-        comparePasswordsError: ''
+        comparePasswordsError: '',
+        passwordUpdateError: false
       },
       password: '',
-      passwordUpdated: false,
       passwordConfirmation: '',
       passwordConfirmationSuccess: false,
       passwordSuccess: false,
@@ -52,16 +54,27 @@ class PasswordRecoveryForm extends PureComponent {
   };
 
   handleSubmit = () => {
-    const { password, passwordConfirmation } = this.state;
+    const { password } = this.state;
     const {
       match: {
         params: { token }
       }
     } = this.props;
 
-    updatePassword(token, password)
-      .then(() => this.setState({ passwordUpdated: true }))
-      .catch(err => {});
+    updatePassword(token, password).catch(() => {
+      const { errors } = this.state;
+
+      this.setState({
+        errors: {
+          ...errors,
+          passwordUpdateError: true
+        },
+        password: '',
+        passwordConfirmation: '',
+        passwordConfirmationSuccess: false,
+        passwordSuccess: false
+      });
+    });
   };
 
   validatePassword = password => {
@@ -141,9 +154,11 @@ class PasswordRecoveryForm extends PureComponent {
 
   render() {
     const {
-      errors: { passwordError, comparePasswordsError },
+      errors: { passwordError, comparePasswordsError, passwordUpdateError },
       passwordSuccess,
-      passwordConfirmationSuccess
+      passwordConfirmationSuccess,
+      password,
+      passwordConfirmation
     } = this.state;
     const isButtonDisabled = !passwordSuccess || !passwordConfirmationSuccess;
 
@@ -157,6 +172,7 @@ class PasswordRecoveryForm extends PureComponent {
             onChange={this.handlePasswordChange}
             success={passwordSuccess}
             type="password"
+            value={password}
           />
           <ValidationInput
             errorId={comparePasswordsError}
@@ -164,6 +180,7 @@ class PasswordRecoveryForm extends PureComponent {
             onChange={this.handlePasswordConfirmationChange}
             success={passwordConfirmationSuccess}
             type="password"
+            value={passwordConfirmation}
           />
           <PendingButton
             className="primary-button"
@@ -172,6 +189,11 @@ class PasswordRecoveryForm extends PureComponent {
           >
             Save
           </PendingButton>
+          {passwordUpdateError && (
+            <div className="pass-recovery-form__error">
+              <span>Something went wrong. Please try again.</span>
+            </div>
+          )}
         </div>
       </form>
     );

@@ -5,7 +5,14 @@ import { FormattedMessage } from 'react-intl';
 
 import { CheckIcon } from 'assets/images/icons';
 
-const ValidationInput = ({ onChange, label, errorId, success, type }) => (
+const ValidationInput = ({
+  onChange,
+  label,
+  errorId,
+  success,
+  type,
+  value
+}) => (
   <label
     className={classNames('validation-input', {
       'validation-input--error': errorId,
@@ -19,6 +26,7 @@ const ValidationInput = ({ onChange, label, errorId, success, type }) => (
       })}
       onChange={onChange}
       type={type}
+      value={value}
     />
     <div className="validation-input__check-icon">
       <CheckIcon />
@@ -32,6 +40,7 @@ ValidationInput.propTypes = {
   label: PropTypes.string.isRequired,
   success: PropTypes.bool.isRequired,
   type: PropTypes.string.isRequired,
+  value: PropTypes.string,
 
   onChange: PropTypes.func
 };

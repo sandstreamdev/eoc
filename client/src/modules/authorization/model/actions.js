@@ -3,6 +3,7 @@ import { postData, postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
+import history from 'common/utils/history';
 
 export const AuthorizationActionTypes = Object.freeze({
   LOGIN_FAILURE: 'LOGIN_FAILURE',
@@ -114,4 +115,10 @@ export const resetPassword = email => dispatch =>
 export const updatePassword = (token, password) =>
   postData(`/auth/recovery-password/${token}`, {
     password
-  });
+  })
+    .then(() => {
+      history.replace('/password-recovery-success');
+    })
+    .catch(() => {
+      throw new Error();
+    });

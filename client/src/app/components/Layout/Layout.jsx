@@ -99,6 +99,7 @@ export class Layout extends PureComponent {
             component={PasswordRecoveryForm}
             path="/password-recovery/:token?"
           />
+          <Route component={AccountCreated} path="/password-recovery-success" />
           <Redirect to="/" />
         </Switch>
       </Fragment>
