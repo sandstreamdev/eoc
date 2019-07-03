@@ -1,10 +1,18 @@
 import AuthBox from './AuthBox';
-import AccountCreated from './components/AccountCreated';
+import SuccessMessage from './components/SuccessMessage';
 import LinkExpired from './components/LinkExpired';
 import ResetPassword from './components/ResetPassword';
 import SignUpForm from './components/SignUpForm';
 import AuthInput from './components/AuthInput';
+import PasswordRecoveryForm from './components/PasswordRecoveryForm';
 
-export { AccountCreated, AuthInput, LinkExpired, ResetPassword, SignUpForm };
+export {
+  AuthInput,
+  LinkExpired,
+  PasswordRecoveryForm,
+  ResetPassword,
+  SignUpForm,
+  SuccessMessage
+};
 
 export default AuthBox;

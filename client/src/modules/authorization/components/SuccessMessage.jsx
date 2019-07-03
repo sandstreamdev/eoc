@@ -6,18 +6,18 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import AppLogo from 'common/components/AppLogo';
 import { Routes } from 'common/constants/enums';
 
-class AccountCreated extends PureComponent {
+class SuccessMessage extends PureComponent {
   render() {
     const {
       match: { path }
     } = this.props;
 
     return (
-      <div className="account-created">
-        <h1 className="account-created__heading">
+      <div className="success-message">
+        <h1 className="success-message__heading">
           <AppLogo />
         </h1>
-        <p className="account-created__message">
+        <p className="success-message__message">
           <FormattedMessage
             id={
               path === Routes.ACCOUNT_CREATED
@@ -26,7 +26,7 @@ class AccountCreated extends PureComponent {
             }
             values={{
               link: (
-                <Link className="account-created__link" to="/">
+                <Link className="success-message__link" to="/">
                   <FormattedMessage id="authorization.sign-up.result-link" />
                 </Link>
               )
@@ -38,8 +38,8 @@ class AccountCreated extends PureComponent {
   }
 }
 
-AccountCreated.propTypes = {
+SuccessMessage.propTypes = {
   match: RouterMatchPropType.isRequired
 };
 
-export default withRouter(AccountCreated);
+export default withRouter(SuccessMessage);
