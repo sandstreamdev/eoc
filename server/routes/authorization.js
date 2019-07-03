@@ -12,13 +12,17 @@ const {
   getLoggedUser,
   logout,
   resendSignUpConfirmationLink,
+  resetPassword,
   sendUser,
   signUp
 } = require('../controllers/userAuth');
 const {
   removeDemoUserChanges
 } = require('../middleware/removeDemoUserChanges');
-const { sendSignUpConfirmationLink } = require('../mailer');
+const {
+  sendResetPasswordLink,
+  sendSignUpConfirmationLink
+} = require('../mailer');
 
 router.post('/demo', setDemoUser, sendUser);
 router.get('/google', authenticateWithGoogle);
@@ -33,5 +37,6 @@ router.post(
   sendSignUpConfirmationLink
 );
 router.get('/user', getLoggedUser);
+router.post('/reset-password', resetPassword, sendResetPasswordLink);
 
 module.exports = router;

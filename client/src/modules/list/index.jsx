@@ -14,10 +14,18 @@ import {
   getUndoneItems
 } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/Items/InputBar';
-import { archiveList, fetchListData } from 'modules/list/model/actions';
+import {
+  archiveList,
+  fetchListData,
+  leaveList
+} from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedList from 'modules/list/components/ArchivedList';
-import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  RouterMatchPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import MembersBox from 'common/components/Members';
 import { Routes } from 'common/constants/enums';
 import ListHeader from './components/ListHeader';
@@ -31,6 +39,8 @@ import {
   restoreItemWS
 } from './components/Items/model/actions';
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { ListType } from './consts';
 
 class List extends Component {
   constructor(props) {
@@ -192,6 +202,19 @@ class List extends Component {
       isMembersBoxVisible: !isMembersBoxVisible
     }));
 
+  handleLeave = () => {
+    const {
+      currentUser: { id: currentUserId, name },
+      leaveList,
+      list: { cohortId },
+      match: {
+        params: { id }
+      }
+    } = this.props;
+
+    return leaveList(id, currentUserId, cohortId, name);
+  };
+
   renderBreadcrumbs = () => {
     const { breadcrumbs } = this.state;
     const {
@@ -284,7 +307,9 @@ class List extends Component {
                       isCohortList={isCohortList}
                       isCurrentUserAnOwner={isOwner}
                       isMember={isMember}
+                      isPrivateList={type === ListType.LIMITED}
                       members={members}
+                      onListLeave={this.handleLeave}
                       route={Routes.LIST}
                       type={type}
                     />
@@ -316,6 +341,7 @@ class List extends Component {
 }
 
 List.propTypes = {
+  currentUser: UserPropType.isRequired,
   doneItems: PropTypes.arrayOf(PropTypes.object),
   intl: IntlPropType.isRequired,
   list: PropTypes.objectOf(PropTypes.any),
@@ -328,6 +354,7 @@ List.propTypes = {
   archiveList: PropTypes.func.isRequired,
   deleteItemWS: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
+  leaveList: PropTypes.func.isRequired,
   restoreItemWS: PropTypes.func.isRequired
 };
 
@@ -339,6 +366,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
 
   return {
+    currentUser: getCurrentUser(state),
     doneItems: getDoneItems(state, id),
     list: getList(state, id),
     members: getMembers(state, id),
@@ -357,6 +385,7 @@ export default _flowRight(
       archiveList,
       deleteItemWS,
       fetchListData,
+      leaveList,
       restoreItemWS
     }
   )

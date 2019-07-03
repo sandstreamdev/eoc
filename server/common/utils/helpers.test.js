@@ -3,7 +3,10 @@ const { ObjectId } = require('mongoose').Types;
 const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  isMember,
+  isOwner,
   isValidMongoId,
+  isViewer,
   responseWithCohort,
   responseWithCohortMember,
   responseWithCohortMembers,
@@ -178,7 +181,7 @@ describe('function responseWithCohort', () => {
 describe('function checkIfArrayContainsUserId', () => {
   const idsArray = ['123', '456', '789'];
 
-  it('returns true if the passed array does contains the userID', () => {
+  it('returns true if the passed array contains the userId', () => {
     const userId = '123';
     const result = checkIfArrayContainsUserId(idsArray, userId);
 
@@ -196,6 +199,71 @@ describe('function checkIfArrayContainsUserId', () => {
     const userId = ObjectId();
     const idsArray = [ObjectId(), ObjectId(), ObjectId()];
     const result = checkIfArrayContainsUserId(idsArray, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('function isOwner', () => {
+  const list = listMock[0];
+  const { ownerIds } = list;
+
+  it('returns true if the passed array contains the userId', () => {
+    const userId = '123';
+
+    ownerIds.push(userId);
+
+    const result = isOwner(list, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false if the passed array does not contain the user id as string', () => {
+    const userId = '999';
+    const result = isOwner(list, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('function isMember', () => {
+  const list = listMock[0];
+  const { memberIds } = list;
+
+  it('returns true if the passed array contains the userId', () => {
+    const userId = '123';
+
+    memberIds.push(userId);
+
+    const result = isMember(list, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false if the passed array does not contain the user id as string', () => {
+    const userId = '999';
+    const result = isMember(list, userId);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe('function isViewer', () => {
+  const list = listMock[0];
+  const { viewersIds } = list;
+
+  it('returns true if the passed array contains the userId', () => {
+    const userId = '123';
+
+    viewersIds.push(userId);
+    const result = isViewer(list, userId);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false if the passed array does not contain the user id as string', () => {
+    const userId = '999';
+    const result = isViewer(list, userId);
 
     expect(result).toBe(false);
   });

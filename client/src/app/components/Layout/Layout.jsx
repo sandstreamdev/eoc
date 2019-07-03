@@ -99,14 +99,17 @@ export class Layout extends PureComponent {
     }
 
     return !currentUser ? (
-      <Switch>
-        <Route component={AuthBox} exact path="/" />
-        <Route component={PrivacyPolicy} path="/privacy-policy" />
-        <Route component={AccountCreated} path="/account-created" />
-        <Route component={LinkExpired} path="/link-expired/:hash?" />
-        <Route component={ResetPassword} path="/reset-password" />
-        <Redirect to="/" />
-      </Switch>
+      <Fragment>
+        <Notifications />
+        <Switch>
+          <Route component={AuthBox} exact path="/" />
+          <Route component={PrivacyPolicy} path="/privacy-policy" />
+          <Route component={AccountCreated} path="/account-created" />
+          <Route component={LinkExpired} path="/link-expired/:hash?" />
+          <Route component={ResetPassword} path="/reset-password" />
+          <Redirect to="/" />
+        </Switch>
+      </Fragment>
     ) : (
       <Fragment>
         <Notifications />
@@ -144,7 +147,6 @@ export class Layout extends PureComponent {
           <Route component={About} path="/about" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={Cohorts} path="/cohorts" />
-          <Route component={ResetPassword} path="/reset-password" />
           <Route component={Page404} />
         </Switch>
         <Footer />
