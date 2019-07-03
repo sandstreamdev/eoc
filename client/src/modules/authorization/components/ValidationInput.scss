@@ -8,14 +8,14 @@
 
   &--error {
     color: $danger;
+
+    .primary-input {
+      border-color: $danger;
+    }
   }
 
   &__input {
     margin-top: 10px;
-
-    &--error {
-      border: 1px solid $danger;
-    }
   }
 
   &__check-icon {

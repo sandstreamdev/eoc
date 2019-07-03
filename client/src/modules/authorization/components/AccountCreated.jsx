@@ -12,8 +12,6 @@ class AccountCreated extends PureComponent {
       match: { path }
     } = this.props;
 
-    console.log(path);
-
     return (
       <div className="account-created">
         <h1 className="account-created__heading">
