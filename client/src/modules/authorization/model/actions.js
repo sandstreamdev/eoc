@@ -23,10 +23,6 @@ const loginSuccess = data => ({
   payload: data
 });
 
-const loginFailure = () => ({
-  type: AuthorizationActionTypes.LOGIN_FAILURE
-});
-
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
     .then(() => dispatch(logoutSuccess()))
@@ -42,12 +38,6 @@ export const loginDemoUser = () => dispatch =>
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'authorization.actions.login'
-      });
-    })
-    .catch(err => {
-      dispatch(loginFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'authorization.actions.login-failed'
       });
     });
 
