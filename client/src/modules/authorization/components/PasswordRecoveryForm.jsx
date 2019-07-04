@@ -80,67 +80,48 @@ class PasswordRecoveryForm extends PureComponent {
   };
 
   validatePassword = password => {
-    const { errors, passwordConfirmation } = this.state;
+    const { errors } = this.state;
     const { matches } = validator;
     const validationError = !matches(password, /^[^\s]{4,32}$/);
-    const passwordMinLength = password.length >= 4;
 
-    if (passwordConfirmation) {
-      this.comparePasswords();
-    }
-
-    if (_isEmpty(password)) {
-      return this.setState({
-        errors: {
-          ...errors,
-          comparePasswordsError: '',
-          passwordError: ''
+    if (!_isEmpty(password) && !validationError) {
+      this.setState(
+        {
+          errors: {
+            ...errors,
+            passwordError: ''
+          },
+          passwordSuccess: true
         },
-        passwordSuccess: false
-      });
-    }
-
-    if (validationError) {
-      return this.setState({
-        errors: {
-          ...errors,
-          passwordError: 'authorization.input.password.invalid'
+        this.comparePasswords
+      );
+    } else {
+      this.setState(
+        {
+          errors: {
+            ...errors,
+            passwordError: 'authorization.input.password.invalid'
+          },
+          passwordSuccess: false
         },
-        passwordSuccess: false
-      });
-    }
-
-    if (passwordMinLength && !validationError) {
-      this.setState({
-        errors: {
-          ...errors,
-          passwordError: ''
-        },
-        passwordSuccess: true
-      });
+        this.comparePasswords
+      );
     }
   };
 
   comparePasswords = () => {
     const { errors, password, passwordConfirmation } = this.state;
-    const passwordMinLength = password.length >= 4;
 
-    if (
-      _isEmpty(password) ||
-      _isEmpty(passwordConfirmation) ||
-      !passwordMinLength
-    ) {
-      return this.setState({
+    if (_trim(password) === _trim(passwordConfirmation)) {
+      this.setState({
         errors: {
           ...errors,
           comparePasswordsError: ''
         },
-        passwordConfirmationSuccess: false
+        passwordConfirmationSuccess: true
       });
-    }
-
-    if (_trim(password) !== _trim(passwordConfirmation)) {
-      return this.setState({
+    } else {
+      this.setState({
         errors: {
           ...errors,
           comparePasswordsError: 'authorization.input.password.not-match'
@@ -149,15 +130,49 @@ class PasswordRecoveryForm extends PureComponent {
       });
     }
 
-    if (passwordMinLength) {
+    if (!passwordConfirmation) {
       this.setState({
         errors: {
           ...errors,
           comparePasswordsError: ''
         },
-        passwordConfirmationSuccess: true
+        passwordConfirmationSuccess: false
       });
     }
+
+    // if (
+    //   _isEmpty(password) ||
+    //   _isEmpty(passwordConfirmation) ||
+    //   !passwordMinLength
+    // ) {
+    //   return this.setState({
+    //     errors: {
+    //       ...errors,
+    //       comparePasswordsError: ''
+    //     },
+    //     passwordConfirmationSuccess: false
+    //   });
+    // }
+
+    // if (_trim(password) !== _trim(passwordConfirmation)) {
+    //   return this.setState({
+    //     errors: {
+    //       ...errors,
+    //       comparePasswordsError: 'authorization.input.password.not-match'
+    //     },
+    //     passwordConfirmationSuccess: false
+    //   });
+    // }
+
+    // if (passwordMinLength) {
+    //   this.setState({
+    //     errors: {
+    //       ...errors,
+    //       comparePasswordsError: ''
+    //     },
+    //     passwordConfirmationSuccess: true
+    //   });
+    // }
   };
 
   render() {
