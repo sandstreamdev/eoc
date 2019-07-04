@@ -266,8 +266,16 @@ const getListData = (req, resp) => {
     })
     .then(cohort => cohort || [])
     .then(cohort => {
-      const { memberIds: cohortMemberIds, name: cohortName } = cohort;
+      const {
+        isArchived: isCohortArchived,
+        memberIds: cohortMemberIds,
+        name: cohortName
+      } = cohort;
       const cohortMembers = cohortMemberIds || [];
+
+      if (isCohortArchived) {
+        throw new NotFoundException();
+      }
 
       const {
         _id,
