@@ -20,7 +20,8 @@ class PasswordRecoveryForm extends PureComponent {
       errors: {
         comparePasswordsError: '',
         passwordError: '',
-        passwordUpdateError: false
+        passwordUpdateError: false,
+        validationError: false
       },
       password: '',
       passwordConfirmation: '',
@@ -39,7 +40,7 @@ class PasswordRecoveryForm extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.debouncedPasswordValidation.cancel();
+    this.debouncedPasswordValidation().cancel();
     this.debouncedComparePasswords.cancel();
   }
 
@@ -75,13 +76,23 @@ class PasswordRecoveryForm extends PureComponent {
     this.setState({ pending: true });
     updatePassword(token, password, passwordConfirmation)
       .then(() => this.setState({ pending: false }))
-      .catch(() => {
-        const { errors } = this.state;
+      .catch(err => this.handleErrors(err));
+  };
 
-        this.setState({
+  handleErrors = err => {
+    const { errors } = this.state;
+
+    if (err.errors) {
+      const {
+        errors: { validationError }
+      } = err;
+
+      if (validationError) {
+        return this.setState({
           errors: {
             ...errors,
-            passwordUpdateError: true
+            passwordUpdateError: true,
+            validationError: true
           },
           password: '',
           passwordConfirmation: '',
@@ -89,7 +100,20 @@ class PasswordRecoveryForm extends PureComponent {
           passwordSuccess: false,
           pending: false
         });
-      });
+      }
+    }
+
+    this.setState({
+      errors: {
+        ...errors,
+        passwordUpdateError: true
+      },
+      password: '',
+      passwordConfirmation: '',
+      passwordConfirmationSuccess: false,
+      passwordSuccess: false,
+      pending: false
+    });
   };
 
   validatePassword = password => {
@@ -156,7 +180,12 @@ class PasswordRecoveryForm extends PureComponent {
 
   render() {
     const {
-      errors: { passwordError, comparePasswordsError, passwordUpdateError },
+      errors: {
+        passwordError,
+        comparePasswordsError,
+        passwordUpdateError,
+        validationError
+      },
       password,
       passwordConfirmation,
       passwordConfirmationSuccess,
@@ -202,7 +231,13 @@ class PasswordRecoveryForm extends PureComponent {
           </PendingButton>
           {passwordUpdateError && (
             <div className="pass-recovery-form__error">
-              <FormattedMessage id="common.something-went-wrong" />
+              <FormattedMessage
+                id={
+                  validationError
+                    ? 'authorization.pass-recovery-form.validation-error'
+                    : 'common.something-went-wrong'
+                }
+              />
             </div>
           )}
         </div>

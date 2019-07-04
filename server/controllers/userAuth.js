@@ -253,13 +253,16 @@ const updatePassword = (req, resp) => {
   const { password: updatedPassword, passwordConfirmation } = req.body;
   const { matches } = validator;
   const { token } = req.params;
+  const errors = {};
   const sanitizedToken = sanitize(token);
   const validationError = !matches(updatedPassword, /^[^\s]{4,32}$/);
   const passwordsNoMatch =
     _trim(updatedPassword) !== _trim(passwordConfirmation);
 
   if (validationError || passwordsNoMatch) {
-    return resp.sendStatus(400);
+    errors.validationError = true;
+
+    return resp.status(406).send({ errors });
   }
 
   User.findOne({ resetToken: sanitizedToken })

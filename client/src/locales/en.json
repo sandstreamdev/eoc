@@ -105,6 +105,7 @@
   "authorization.actions.reset-password-not-active-account": "Account: {data} not active yet. Please go to your email inbox and activate account.",
   "authorization.password-recovery-success": "Password successfully updated. Please go to the {link} and sign in to app.",
   "authorization.pass-recovery-form.heading": "Set new password",
+  "authorization.pass-recovery-form.validation-error": "Passwords validation went wrong. Please try again.",
   "cohort.cohort-header.add-description": "Add description",
   "cohort.cohorts.no-cohorts": "There are no cohorts yet!",
   "cohort.cohorts.no-arch-cohorts": "You have no archived cohorts!",

@@ -118,7 +118,7 @@ export const updatePassword = (token, password, passwordConfirmation) =>
     passwordConfirmation
   })
     .then(() => history.replace('/password-recovery-success'))
-    .catch(() => {
+    .catch(err => {
       // TODO: IF err instanceof BadRequestException redirect to 'LinkExpired' component
-      throw new Error();
+      throw err;
     });
