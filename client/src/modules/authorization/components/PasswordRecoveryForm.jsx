@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 import validator from 'validator';
 import _flowRight from 'lodash/flowRight';
 import _debounce from 'lodash/debounce';
@@ -30,7 +29,13 @@ class PasswordRecoveryForm extends PureComponent {
       pending: false
     };
 
-    this.debouncedChange = undefined;
+    this.debouncedPasswordValidation = value =>
+      _debounce(() => this.validatePassword(value), 500);
+
+    this.debouncedComparePasswords = _debounce(
+      () => this.comparePasswords(),
+      500
+    );
   }
 
   handlePasswordChange = event => {
@@ -38,8 +43,9 @@ class PasswordRecoveryForm extends PureComponent {
       target: { value }
     } = event;
 
-    this.debouncedChange = _debounce(() => this.validatePassword(value), 500);
-    this.setState({ password: value }, this.debouncedChange);
+    this.setState({ password: value }, () =>
+      this.debouncedPasswordValidation(value)()
+    );
   };
 
   handlePasswordConfirmationChange = event => {
@@ -48,7 +54,9 @@ class PasswordRecoveryForm extends PureComponent {
     } = event;
 
     this.debouncedChange = _debounce(() => this.comparePasswords(), 500);
-    this.setState({ passwordConfirmation: value }, this.debouncedChange);
+    this.setState({ passwordConfirmation: value }, () =>
+      this.debouncedComparePasswords()
+    );
   };
 
   handleSubmit = () => {
@@ -139,40 +147,6 @@ class PasswordRecoveryForm extends PureComponent {
         passwordConfirmationSuccess: false
       });
     }
-
-    // if (
-    //   _isEmpty(password) ||
-    //   _isEmpty(passwordConfirmation) ||
-    //   !passwordMinLength
-    // ) {
-    //   return this.setState({
-    //     errors: {
-    //       ...errors,
-    //       comparePasswordsError: ''
-    //     },
-    //     passwordConfirmationSuccess: false
-    //   });
-    // }
-
-    // if (_trim(password) !== _trim(passwordConfirmation)) {
-    //   return this.setState({
-    //     errors: {
-    //       ...errors,
-    //       comparePasswordsError: 'authorization.input.password.not-match'
-    //     },
-    //     passwordConfirmationSuccess: false
-    //   });
-    // }
-
-    // if (passwordMinLength) {
-    //   this.setState({
-    //     errors: {
-    //       ...errors,
-    //       comparePasswordsError: ''
-    //     },
-    //     passwordConfirmationSuccess: true
-    //   });
-    // }
   };
 
   render() {
@@ -237,6 +211,4 @@ PasswordRecoveryForm.propTypes = {
   match: RouterMatchPropType.isRequired
 };
 
-export default _flowRight(injectIntl, withRouter, connect())(
-  PasswordRecoveryForm
-);
+export default _flowRight(injectIntl, withRouter)(PasswordRecoveryForm);
