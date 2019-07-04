@@ -112,9 +112,10 @@ export const resetPassword = email => dispatch =>
       );
     });
 
-export const updatePassword = (token, password) =>
+export const updatePassword = (token, password, passwordConfirmation) =>
   postData(`/auth/recovery-password/${token}`, {
-    password
+    password,
+    passwordConfirmation
   })
     .then(() => history.replace('/password-recovery-success'))
     .catch(() => {

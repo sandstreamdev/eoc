@@ -38,6 +38,11 @@ class PasswordRecoveryForm extends PureComponent {
     );
   }
 
+  componentWillUnmount() {
+    this.debouncedPasswordValidation.cancel();
+    this.debouncedComparePasswords.cancel();
+  }
+
   handlePasswordChange = event => {
     const {
       target: { value }
@@ -60,7 +65,7 @@ class PasswordRecoveryForm extends PureComponent {
   };
 
   handleSubmit = () => {
-    const { password } = this.state;
+    const { password, passwordConfirmation } = this.state;
     const {
       match: {
         params: { token }
@@ -68,7 +73,7 @@ class PasswordRecoveryForm extends PureComponent {
     } = this.props;
 
     this.setState({ pending: true });
-    updatePassword(token, password)
+    updatePassword(token, password, passwordConfirmation)
       .then(() => this.setState({ pending: false }))
       .catch(() => {
         const { errors } = this.state;

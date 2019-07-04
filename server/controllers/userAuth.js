@@ -3,6 +3,7 @@ const validator = require('validator');
 const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
@@ -249,12 +250,15 @@ const resetPassword = (req, resp, next) => {
 };
 
 const updatePassword = (req, resp) => {
-  const { password: updatedPassword } = req.body;
+  const { password: updatedPassword, passwordConfirmation } = req.body;
   const { matches } = validator;
   const { token } = req.params;
   const sanitizedToken = sanitize(token);
+  const validationError = !matches(updatedPassword, /^[^\s]{4,32}$/);
+  const passwordsNoMatch =
+    _trim(updatedPassword) !== _trim(passwordConfirmation);
 
-  if (!matches(updatedPassword, /^[^\s]{4,32}$/)) {
+  if (validationError || passwordsNoMatch) {
     return resp.sendStatus(400);
   }
 
