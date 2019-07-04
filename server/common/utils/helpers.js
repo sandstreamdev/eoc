@@ -1,6 +1,7 @@
 const { ObjectId } = require('mongoose').Types;
 const _map = require('lodash/map');
 const _pickBy = require('lodash/pickBy');
+const _filter = require('lodash/filter');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -60,25 +61,34 @@ const responseWithList = (list, userId) => {
 };
 
 const responseWithListsMetaData = (lists, userId) =>
-  _map(lists, list => {
-    const { cohortId, favIds, items, ...rest } = list;
-    const activeItems = items.filter(item => !item.isArchived);
-    const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
-    const unhandledItemsCount = activeItems.length - doneItemsCount;
+  _filter(
+    _map(lists, list => {
+      const { cohortId: cohort, favIds, items, ...rest } = list;
 
-    const listToSend = {
-      ...rest,
-      doneItemsCount,
-      isFavourite: checkIfArrayContainsUserId(favIds, userId),
-      unhandledItemsCount
-    };
+      if (cohort && cohort.isArchived === true) {
+        return;
+      }
 
-    if (cohortId) {
-      listToSend.cohortId = cohortId;
-    }
+      const activeItems = items.filter(item => !item.isArchived);
+      const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
+      const unhandledItemsCount = activeItems.length - doneItemsCount;
+      const cohortId = cohort ? cohort._id : null;
 
-    return listToSend;
-  });
+      const listToSend = {
+        ...rest,
+        doneItemsCount,
+        isFavourite: checkIfArrayContainsUserId(favIds, userId),
+        unhandledItemsCount
+      };
+
+      if (cohortId) {
+        listToSend.cohortId = cohortId;
+      }
+
+      return listToSend;
+    }),
+    list => list
+  );
 
 const responseWithItems = (userId, items) =>
   _map(items, item => {
