@@ -44,11 +44,7 @@ passport.use(
     (email, password, done) => {
       findAndAuthenticateUser(email, password)
         .then(user => {
-          if (user) {
-            return done(null, user);
-          }
-
-          done(null, false);
+          done(null, user || false);
         })
         .catch(err => done(null, false, { message: err.message }));
     }
@@ -68,13 +64,7 @@ passport.use(
       })
         .lean()
         .exec()
-        .then(user => {
-          if (!user) {
-            return new User({ ...createDemoUser() }).save();
-          }
-
-          return user;
-        })
+        .then(user => user || new User({ ...createDemoUser() }).save())
         .then(user => {
           const {
             accessToken,
