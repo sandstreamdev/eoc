@@ -87,6 +87,10 @@ class ListItemDescription extends PureComponent {
   };
 
   handleShowTextarea = event => {
+    const { nodeName } = event.target;
+    if (nodeName === 'A') {
+      return;
+    }
     event.preventDefault();
 
     this.setState({ isTextareaVisible: true });
