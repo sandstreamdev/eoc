@@ -344,3 +344,33 @@
     }
   }
 }
+
+// CSS transition classes
+.animated-item {
+  // appearing ListItem
+  &-enter {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    opacity: 1;
+    box-shadow: 0 9px 0px 0px $bg-color, 0 -9px 0px 0px $bg-color,
+      12px 0 8px -4px rgba($brand-color, 0.4),
+      -12px 0 8px -4px rgba($brand-color, 0.4);
+    transition: all 500ms ease-in;
+  }
+
+  &-enter-done {
+    box-shadow: 0;
+    transition: all 500ms ease-in;
+  }
+
+  // disappearing ListItem
+  &-exit {
+    display: none;
+  }
+
+  &-exit-active {
+    display: none;
+  }
+}
