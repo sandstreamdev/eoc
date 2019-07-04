@@ -8,6 +8,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
+import { ValidationException } from 'common/exceptions/ValidationException';
 import { updatePassword } from '../model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from '../../../common/components/PendingButton';
@@ -81,32 +82,17 @@ class PasswordRecoveryForm extends PureComponent {
 
   handleErrors = err => {
     const { errors } = this.state;
+    let validationErrorValue = false;
 
-    if (err.errors) {
-      const {
-        errors: { validationError }
-      } = err;
-
-      if (validationError) {
-        return this.setState({
-          errors: {
-            ...errors,
-            passwordUpdateError: true,
-            validationError: true
-          },
-          password: '',
-          passwordConfirmation: '',
-          passwordConfirmationSuccess: false,
-          passwordSuccess: false,
-          pending: false
-        });
-      }
+    if (err instanceof ValidationException) {
+      validationErrorValue = true;
     }
 
     this.setState({
       errors: {
         ...errors,
-        passwordUpdateError: true
+        passwordUpdateError: true,
+        validationError: validationErrorValue
       },
       password: '',
       passwordConfirmation: '',
