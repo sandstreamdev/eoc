@@ -22,7 +22,9 @@ export const Routes = Object.freeze({
   COHORTS: 'cohorts',
   DASHBOARD: 'dashboard',
   LIST: 'sack',
-  PASSWORD_RECOVERY_SUCCESS: 'password-recovery-success'
+  PASSWORD_RECOVERY_EXPIRED: 'recovery-link-expired',
+  PASSWORD_RECOVERY_SUCCESS: 'password-recovery-success',
+  CONFIRMATION_LINK_EXPIRED: 'confirmation-link-expired'
 });
 
 export const UserRoles = Object.freeze({

@@ -154,7 +154,7 @@ const confirmEmail = (req, resp) => {
       }
       resp.redirect('/account-created');
     })
-    .catch(() => resp.redirect(`/link-expired/${signUpHash}`));
+    .catch(() => resp.redirect(`/confirmation-link-expired/${signUpHash}`));
 };
 
 const resendSignUpConfirmationLink = (req, resp, next) => {
@@ -263,6 +263,7 @@ const updatePassword = (req, resp) => {
     return resp.sendStatus(406);
   }
 
+  console.log(' TUTAJ');
   User.findOne({ resetToken: sanitizedToken })
     .exec()
     .then(user => {
@@ -274,6 +275,7 @@ const updatePassword = (req, resp) => {
       const now = new Date().getTime();
 
       if (resetTokenExpirationDate >= now) {
+        console.log('Token date valid');
         const hashedPassword = bcrypt.hashSync(updatedPassword + email, 12);
 
         return User.findOneAndUpdate(
@@ -286,7 +288,9 @@ const updatePassword = (req, resp) => {
         ).exec();
       }
 
+      console.log('Token date invalid');
       // TODO: Redirect on front-end to 'LinkExpired' component
+      resp.redirect(`/recovery-link-expired/${token}`);
       throw new BadRequestException('authorization.actions.reset-link-expired');
     })
     .then(() => resp.sendStatus(200))
@@ -301,10 +305,63 @@ const updatePassword = (req, resp) => {
     });
 };
 
+const resendUpdatePassword = (req, resp, next) => {
+  const { token } = req.params;
+  const sanitizedToken = sanitize(token);
+  const newToken = crypto.randomBytes(32).toString('hex');
+  const newExpirationDate = new Date().getTime() + 3600000;
+
+  User.findOneAndUpdate(
+    {
+      resetToken: sanitizedToken,
+      isActive: false
+    },
+    {
+      resetToken: newToken,
+      resetTokenExpirationDate: newExpirationDate
+    }
+  )
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error('authorization.actions.reset');
+      }
+      const { isActive } = user;
+
+      if (!isActive) {
+        throw new Error(
+          'authorization.actions.reset-password-not-active-account'
+        );
+      }
+
+      const { displayName, email } = user;
+
+      // eslint-disable-next-line no-param-reassign
+      resp.locales = {
+        displayName,
+        email,
+        resetToken: newToken
+      };
+
+      next();
+    })
+    .catch(err => {
+      const { message } = err;
+
+      if (message) {
+        return resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
 module.exports = {
   confirmEmail,
   logout,
   resendSignUpConfirmationLink,
+  resendUpdatePassword,
   resetPassword,
   sendDemoUser,
   sendUser,

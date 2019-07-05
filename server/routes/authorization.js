@@ -11,6 +11,7 @@ const {
   confirmEmail,
   logout,
   resendSignUpConfirmationLink,
+  resendUpdatePassword,
   sendDemoUser,
   sendUser,
   updatePassword
@@ -36,4 +37,10 @@ router.post(
 );
 router.post('/reset-password', resetPassword, sendResetPasswordLink);
 router.post('/recovery-password/:token?', updatePassword);
+router.post(
+  'resend-recovery-link/:token?',
+  resendUpdatePassword,
+  sendResetPasswordLink
+);
+
 module.exports = router;

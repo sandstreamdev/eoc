@@ -122,3 +122,6 @@ export const updatePassword = (token, password, passwordConfirmation) =>
       // TODO: IF err instanceof BadRequestException redirect to 'LinkExpired' component
       throw err;
     });
+
+export const resendUpdatePassword = token =>
+  postData(`/auth/resend-recovery-link/${token}`);
