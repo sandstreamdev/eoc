@@ -65,7 +65,7 @@ const responseWithListsMetaData = (lists, userId) =>
     _map(lists, list => {
       const { cohortId: cohort, favIds, items, ...rest } = list;
 
-      if (cohort && cohort.isArchived === true) {
+      if (cohort && !cohort.isArchived) {
         return;
       }
 
