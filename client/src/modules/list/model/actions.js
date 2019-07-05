@@ -189,14 +189,14 @@ export const fetchListData = listId => dispatch =>
       dispatch(fetchListDataSuccess(listData, listId));
     })
     .catch(err => {
-      if (err instanceof NotFoundException) {
-        throw new Error();
+      if (!(err instanceof NotFoundException)) {
+        dispatch(fetchListDataFailure());
+        createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+          notificationId: 'list.actions.fetch-data-fail'
+        });
       }
 
-      dispatch(fetchListDataFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.fetch-data-fail'
-      });
+      throw err;
     });
 
 export const createList = data => dispatch =>

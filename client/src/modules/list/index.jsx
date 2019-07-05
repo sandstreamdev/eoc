@@ -41,7 +41,7 @@ import {
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
-import { noOp } from 'common/utils/noOp';
+import { NotFoundException } from 'common/exceptions/NotFoundException';
 
 class List extends Component {
   constructor(props) {
@@ -68,7 +68,11 @@ class List extends Component {
         this.receiveWSEvents();
         this.setState({ pendingForDetails: false });
       })
-      .catch(() => noOp());
+      .catch(err => {
+        if (!(err instanceof NotFoundException)) {
+          this.setState({ pendingForDetails: false });
+        }
+      });
   }
 
   componentDidUpdate(prevProps) {
