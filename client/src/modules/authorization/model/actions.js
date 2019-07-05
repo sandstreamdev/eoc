@@ -65,7 +65,7 @@ export const signIn = (email, password) => dispatch =>
     });
 
 export const getLoggedUser = () => dispatch =>
-  getData('auth/user')
+  getData('/auth/user')
     .then(resp => {
       const contentType = resp.headers.get('content-type');
 

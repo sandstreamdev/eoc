@@ -43,9 +43,7 @@ passport.use(
     },
     (email, password, done) => {
       findAndAuthenticateUser(email, password)
-        .then(user => {
-          done(null, user || false);
-        })
+        .then(user => done(null, user || false))
         .catch(err => done(null, false, { message: err.message }));
     }
   )
