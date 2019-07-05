@@ -304,7 +304,7 @@ const getListData = (req, resp) => {
         cohortName,
         description,
         isArchived,
-        isGuest: !isMember(list, userId),
+        isGuest: cohortId && !isMember(cohort, userId),
         isMember: isMember(list, userId),
         isOwner: isOwner(list, userId),
         items,
