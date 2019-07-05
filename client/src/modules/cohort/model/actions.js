@@ -274,7 +274,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
           notificationId: 'cohort.actions.fetch-details-fail'
         });
       }
-      throw new Error();
+      throw err;
     });
 
 export const addCohortMember = (cohortId, email) => dispatch =>
