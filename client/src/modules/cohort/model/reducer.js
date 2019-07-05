@@ -3,57 +3,44 @@ import _keyBy from 'lodash/keyBy';
 
 import { CohortActionTypes } from './actionTypes';
 
-const membersReducer = (state = [], action) => {
+const membersReducer = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.ADD_MEMBER_SUCCESS: {
       const {
         payload: { data }
       } = action;
 
-      return [...state, data];
+      return { [data._id]: data, ...state };
     }
-    case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
+    case CohortActionTypes.LEAVE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
 
-      return state.filter(member => member._id !== userId);
+      const { [userId]: deleted, ...rest } = state;
+
+      return rest;
     }
     case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
 
-      return state.map(member =>
-        member._id === userId
-          ? {
-              ...member,
-              isOwner: true
-            }
-          : member
-      );
+      return {
+        ...state,
+        [userId]: { ...state[userId], isOwner: true }
+      };
     }
     case CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
 
-      return state.map(member =>
-        member._id === userId
-          ? {
-              ...member,
-              isOwner: false
-            }
-          : member
-      );
-    }
-    case CohortActionTypes.LEAVE_SUCCESS: {
-      const {
-        payload: { userId }
-      } = action;
-      const userIndex = state.indexOf(userId);
-
-      return [...state.slice(0, userIndex), ...state.slice(userIndex + 1)];
+      return {
+        ...state,
+        [userId]: { ...state[userId], isOwner: false }
+      };
     }
     default:
       return state;
