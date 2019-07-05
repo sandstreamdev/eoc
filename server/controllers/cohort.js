@@ -162,6 +162,8 @@ const getCohortDetails = (req, resp) => {
     return resp.sendStatus(404);
   }
 
+  // return resp.sendStatus(400);
+
   Cohort.findOne({
     _id: sanitize(cohortId),
     memberIds: userId
@@ -171,7 +173,7 @@ const getCohortDetails = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        return resp.sendStatus(400);
+        return resp.sendStatus(404);
       }
 
       const {
