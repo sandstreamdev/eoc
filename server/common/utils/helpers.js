@@ -65,14 +65,13 @@ const responseWithListsMetaData = (lists, userId) =>
     _map(lists, list => {
       const { cohortId: cohort, favIds, items, ...rest } = list;
 
-      if (cohort && !cohort.isArchived) {
+      if (cohort && cohort.isArchived) {
         return;
       }
 
       const activeItems = items.filter(item => !item.isArchived);
       const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
       const unhandledItemsCount = activeItems.length - doneItemsCount;
-      const cohortId = cohort ? cohort._id : null;
 
       const listToSend = {
         ...rest,
@@ -81,8 +80,8 @@ const responseWithListsMetaData = (lists, userId) =>
         unhandledItemsCount
       };
 
-      if (cohortId) {
-        listToSend.cohortId = cohortId;
+      if (cohort) {
+        listToSend.cohortId = cohort._id;
       }
 
       return listToSend;
