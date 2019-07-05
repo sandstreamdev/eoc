@@ -41,6 +41,7 @@ import {
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
+import { noOp } from 'common/utils/noOp';
 
 class List extends Component {
   constructor(props) {
@@ -67,9 +68,7 @@ class List extends Component {
         this.receiveWSEvents();
         this.setState({ pendingForDetails: false });
       })
-      .catch(() => {
-        this.setState({ pendingForDetails: false });
-      });
+      .catch(() => noOp());
   }
 
   componentDidUpdate(prevProps) {

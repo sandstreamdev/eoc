@@ -257,7 +257,6 @@ const getListData = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        console.log('no doc');
         throw new NotFoundException();
       }
       list = doc;
