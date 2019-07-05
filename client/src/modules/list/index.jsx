@@ -60,12 +60,16 @@ class List extends Component {
   componentDidMount() {
     this.setState({ pendingForDetails: true });
 
-    this.fetchData().finally(() => {
-      this.setState({ pendingForDetails: false });
-      this.handleBreadcrumbs();
-      this.handleSocketConnection();
-      this.receiveWSEvents();
-    });
+    this.fetchData()
+      .then(() => {
+        this.handleBreadcrumbs();
+        this.handleSocketConnection();
+        this.receiveWSEvents();
+        this.setState({ pendingForDetails: false });
+      })
+      .catch(() => {
+        this.setState({ pendingForDetails: false });
+      });
   }
 
   componentDidUpdate(prevProps) {
@@ -88,12 +92,15 @@ class List extends Component {
 
   componentWillUnmount() {
     const {
+      list,
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    this.socket.emit('leavingRoom', listId);
+    if (list) {
+      this.socket.emit('leavingRoom', listId);
+    }
   }
 
   handleSocketConnection = () => {
