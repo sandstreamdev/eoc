@@ -41,11 +41,10 @@ passport.use(
       usernameField: 'email',
       passwordField: 'password'
     },
-    (email, password, done) => {
+    (email, password, done) =>
       findAndAuthenticateUser(email, password)
         .then(user => done(null, user || false))
-        .catch(err => done(null, false, { message: err.message }));
-    }
+        .catch(err => done(null, false, { message: err.message }))
   )
 );
 
@@ -110,7 +109,7 @@ passport.deserializeUser((id, done) => {
     .catch(err => done(null, false, { message: err.message }));
 });
 
-const authenticate = (req, resp, next, type) => {
+const authenticate = (req, resp, next, type) =>
   passport.authenticate(type, (err, user) => {
     if (err) {
       return next(err);
@@ -128,15 +127,12 @@ const authenticate = (req, resp, next, type) => {
       next();
     });
   })(req, resp, next);
-};
 
-const setUser = (req, resp, next) => {
+const setUser = (req, resp, next) =>
   authenticate(req, resp, next, StrategyType.LOCAL);
-};
 
-const setDemoUser = (req, resp, next) => {
+const setDemoUser = (req, resp, next) =>
   authenticate(req, resp, next, StrategyType.DEMO);
-};
 
 const authenticateWithGoogle = passport.authenticate(StrategyType.GOOGLE, {
   scope: ['email', 'profile']

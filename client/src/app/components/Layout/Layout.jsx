@@ -57,6 +57,7 @@ export class Layout extends PureComponent {
 
   setAuthenticationState = () => {
     const { currentUser, getLoggedUser } = this.props;
+
     if (_isEmpty(currentUser)) {
       this.setState({ pending: true });
 

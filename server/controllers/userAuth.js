@@ -9,6 +9,7 @@ const User = require('../models/user.model');
 
 const sendUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
+
   resp.send({ avatarUrl, id, name });
 };
 
