@@ -106,5 +106,5 @@ export const getCohortArchivedLists = createSelector(
 
 export const getMembers = createSelector(
   getList,
-  list => list && _keyBy(list.members, '_id')
+  list => list && list.members
 );

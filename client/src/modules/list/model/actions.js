@@ -184,7 +184,11 @@ export const fetchListData = listId => dispatch =>
   getData(`/api/lists/${listId}/data`)
     .then(resp => resp.json())
     .then(json => {
-      const listData = { ...json, items: _keyBy(json.items, '_id') };
+      const listData = {
+        ...json,
+        items: _keyBy(json.items, '_id'),
+        members: _keyBy(json.members, '_id')
+      };
       dispatch(fetchListDataSuccess(listData, listId));
     })
     .catch(() => {
@@ -513,7 +517,12 @@ export const changeType = (listId, listName, type) => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(changeTypeSuccess(listId, json.data));
+      const { data } = json;
+      const listData = {
+        ...data,
+        members: _keyBy(json.members, '_id')
+      };
+      dispatch(changeTypeSuccess(listId, listData));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.change-type',
         data: listName
