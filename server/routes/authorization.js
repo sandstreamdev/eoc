@@ -12,7 +12,8 @@ const {
   logout,
   resendSignUpConfirmationLink,
   sendDemoUser,
-  sendUser
+  sendUser,
+  updatePassword
 } = require('../controllers/userAuth');
 const {
   removeDemoUserChanges
@@ -34,5 +35,5 @@ router.post(
   sendSignUpConfirmationLink
 );
 router.post('/reset-password', resetPassword, sendResetPasswordLink);
-
+router.post('/recovery-password/:token?', updatePassword);
 module.exports = router;

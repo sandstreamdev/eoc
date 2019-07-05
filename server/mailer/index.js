@@ -67,7 +67,7 @@ const sendSignUpConfirmationLink = (req, resp) => {
 const sendResetPasswordLink = (req, resp) => {
   const { email: receiver, displayName, resetToken } = resp.locales;
   const host = req.get('host');
-  const resetUrl = `${host}/reset/${resetToken}`;
+  const resetUrl = `${host}/password-recovery/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
   const info =
     'Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.';
