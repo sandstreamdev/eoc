@@ -1,10 +1,11 @@
 import React, { Fragment, PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
 import io from 'socket.io-client';
+import PropTypes from 'prop-types';
 import _flowRight from 'lodash/flowRight';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { withRouter } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import ListItem from 'modules/list/components/Items/ListItem';
 import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
@@ -137,39 +138,59 @@ class ItemsList extends PureComponent {
     const { archived, isMember, items } = this.props;
     const { limit, busyBySomeoneItemId } = this.state;
 
+    if (!items) {
+      return null;
+    }
+
     return archived ? (
       <ul className="items-list">
-        {items.slice(0, limit).map(item => {
-          const isItemBlocked = item._id === busyBySomeoneItemId;
+        <TransitionGroup component={null}>
+          {items.slice(0, limit).map((item, index) => {
+            const isItemBlocked = item._id === busyBySomeoneItemId;
 
-          return (
-            <ListArchivedItem
-              blocked={isItemBlocked}
-              data={item}
-              isMember={isMember}
-              key={item._id}
-              onBusy={this.handleItemBusy}
-              onFree={this.handleItemFree}
-            />
-          );
-        })}
+            return (
+              <CSSTransition
+                classNames="animated-item"
+                key={item._id}
+                timeout={1000}
+              >
+                <ListArchivedItem
+                  blocked={isItemBlocked}
+                  data={item}
+                  isMember={isMember}
+                  key={item._id}
+                  onBusy={this.handleItemBusy}
+                  onFree={this.handleItemFree}
+                />
+              </CSSTransition>
+            );
+          })}
+        </TransitionGroup>
       </ul>
     ) : (
       <ul className="items-list">
-        {items.slice(0, limit).map(item => {
-          const isItemBlocked = item._id === busyBySomeoneItemId;
+        <TransitionGroup component={null}>
+          {items.slice(0, limit).map((item, index) => {
+            const isItemBlocked = item._id === busyBySomeoneItemId;
 
-          return (
-            <ListItem
-              blocked={isItemBlocked}
-              data={item}
-              isMember={isMember}
-              key={item._id}
-              onBusy={this.handleItemBusy}
-              onFree={this.handleItemFree}
-            />
-          );
-        })}
+            return (
+              <CSSTransition
+                classNames="animated-item"
+                key={item._id}
+                timeout={2000}
+              >
+                <ListItem
+                  blocked={isItemBlocked}
+                  data={item}
+                  isMember={isMember}
+                  key={item._id}
+                  onBusy={this.handleItemBusy}
+                  onFree={this.handleItemFree}
+                />
+              </CSSTransition>
+            );
+          })}
+        </TransitionGroup>
       </ul>
     );
   };
@@ -184,7 +205,7 @@ class ItemsList extends PureComponent {
 
     return (
       <Fragment>
-        {!items.length ? (
+        {!items.length && (
           <MessageBox
             message={
               archived
@@ -193,9 +214,8 @@ class ItemsList extends PureComponent {
             }
             type={MessageType.INFO}
           />
-        ) : (
-          this.renderItems()
         )}
+        {this.renderItems()}
         {limit < items.length && (
           <button
             className="items__show-more"
