@@ -162,8 +162,6 @@ const getCohortDetails = (req, resp) => {
     return resp.sendStatus(404);
   }
 
-  // return resp.sendStatus(400);
-
   Cohort.findOne({
     _id: sanitize(cohortId),
     memberIds: userId
