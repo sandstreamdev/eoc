@@ -877,7 +877,7 @@ const addViewer = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(userData => {
-      if (!userData || userData.isActive === false) {
+      if (!userData || (!userData.idFromProvider && !userData.isActive)) {
         return;
       }
 

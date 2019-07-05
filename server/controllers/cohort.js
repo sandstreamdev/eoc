@@ -422,7 +422,7 @@ const addMember = (req, resp) => {
       return User.findOne({ email: sanitize(email) }).exec();
     })
     .then(user => {
-      if (!user || user.isActive === false) {
+      if (!user || (!user.idFromProvider && !user.isActive)) {
         return;
       }
 
