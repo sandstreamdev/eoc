@@ -39,31 +39,22 @@ export class Layout extends PureComponent {
   }
 
   componentDidMount() {
-    this.setAuthenticationState();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { currentUser, history } = this.props;
     const {
-      currentUser: prevCurrentUser,
+      currentUser,
+      getLoggedUser,
+      history,
       location: { pathname }
-    } = prevProps;
-
-    if (!prevCurrentUser && currentUser) {
-      const newPath = pathname === '/' ? '/dashboard' : pathname;
-      history.push(newPath);
-    }
-  }
-
-  setAuthenticationState = () => {
-    const { currentUser, getLoggedUser } = this.props;
+    } = this.props;
 
     if (_isEmpty(currentUser)) {
       this.setState({ pending: true });
-
-      getLoggedUser().finally(() => this.setState({ pending: false }));
+      getLoggedUser()
+        .then(() => {
+          history.push(pathname);
+        })
+        .finally(() => this.setState({ pending: false }));
     }
-  };
+  }
 
   isListsView = () => {
     const {
