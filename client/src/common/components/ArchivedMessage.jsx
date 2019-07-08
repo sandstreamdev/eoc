@@ -32,13 +32,16 @@ class ArchivedMessage extends PureComponent {
 
     this.setState({ pending: true });
 
-    onRestore().catch(() => this.setState({ pending: false }));
+    onRestore().catch(() => {
+      this.setState({ pending: false });
+    });
   };
 
   render() {
     const { isDialogVisible, pending } = this.state;
     const {
       intl: { formatMessage },
+      isOwner,
       item,
       name
     } = this.props;
@@ -59,25 +62,27 @@ class ArchivedMessage extends PureComponent {
               />
             )}
           </h1>
-          <div className="archived-message__body">
-            <button
-              className="archived-message__button primary-button"
-              disabled={pending}
-              onClick={this.showDialog}
-              type="button"
-            >
-              <FormattedMessage id="common.archived-message.delete-button" />
-            </button>
-            <button
-              className="archived-message__button primary-button"
-              disabled={pending}
-              type="button"
-              onClick={this.handleRestoring}
-            >
-              <FormattedMessage id="common.archived-message.restore-button" />
-            </button>
-            {pending && !isDialogVisible && <Preloader />}
-          </div>
+          {isOwner && (
+            <div className="archived-message__body">
+              <button
+                className="archived-message__button primary-button"
+                disabled={pending}
+                onClick={this.showDialog}
+                type="button"
+              >
+                <FormattedMessage id="common.archived-message.delete-button" />
+              </button>
+              <button
+                className="archived-message__button primary-button"
+                disabled={pending}
+                type="button"
+                onClick={this.handleRestoring}
+              >
+                <FormattedMessage id="common.archived-message.restore-button" />
+              </button>
+              {pending && !isDialogVisible && <Preloader />}
+            </div>
+          )}
         </div>
         {isDialogVisible && (
           <Dialog
@@ -101,6 +106,7 @@ class ArchivedMessage extends PureComponent {
 
 ArchivedMessage.propTypes = {
   intl: IntlPropType.isRequired,
+  isOwner: PropTypes.bool,
   item: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 

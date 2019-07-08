@@ -269,7 +269,7 @@ class Cohort extends PureComponent {
           />
         )}
         {isArchived ? (
-          <ArchivedCohort cohortId={cohortId} name={name} />
+          <ArchivedCohort cohortId={cohortId} isOwner={isOwner} name={name} />
         ) : (
           <div className="wrapper">
             <div className="cohort">
