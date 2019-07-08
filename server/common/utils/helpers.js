@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongoose').Types;
 const _map = require('lodash/map');
 const _pickBy = require('lodash/pickBy');
-const _filter = require('lodash/filter');
+const _compact = require('lodash/compact');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -61,7 +61,7 @@ const responseWithList = (list, userId) => {
 };
 
 const responseWithListsMetaData = (lists, userId) =>
-  _filter(
+  _compact(
     _map(lists, list => {
       const { cohortId: cohort, favIds, items, ...rest } = list;
 
@@ -85,8 +85,7 @@ const responseWithListsMetaData = (lists, userId) =>
       }
 
       return listToSend;
-    }),
-    list => list
+    })
   );
 
 const responseWithItems = (userId, items) =>
