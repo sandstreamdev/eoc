@@ -288,9 +288,9 @@ const getListData = (req, resp) => {
       const isListOwner = isOwner(list, userId);
 
       if (isArchived) {
-        // if (!isListMember) {
-        //   return resp.sendStatus(404);
-        // }
+        if (!isListMember) {
+          return resp.sendStatus(404);
+        }
 
         return resp.send({
           cohortId,
