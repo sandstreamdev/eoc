@@ -2,6 +2,7 @@ import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 import { ValidationException } from 'common/exceptions/ValidationException';
 import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
+import { NotFoundException } from 'common/exceptions/NotFoundException';
 
 export const ResponseStatusCode = Object.freeze({
   BAD_REQUEST: 400,
@@ -20,7 +21,7 @@ const handleFetchErrors = resp => {
 
   if (resp.status === ResponseStatusCode.NOT_FOUND) {
     history.replace('/page-not-found');
-    throw new Error();
+    throw new NotFoundException();
   }
 
   if (resp.status === ResponseStatusCode.BAD_REQUEST) {
