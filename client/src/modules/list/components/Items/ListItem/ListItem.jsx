@@ -17,7 +17,8 @@ import {
   clearVote,
   cloneItem,
   setVote,
-  toggle
+  toggle,
+  updateListItemWS
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -27,6 +28,7 @@ import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
 import withSocket from 'common/hoc/withSocket';
+import { ItemActionTypes } from '../model/actionTypes';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -48,6 +50,7 @@ class ListItem extends PureComponent {
 
   componentDidMount() {
     this.handleSocketConnection();
+    this.receiveWSEvents();
   }
 
   componentDidUpdate(prevProps) {
@@ -78,6 +81,16 @@ class ListItem extends PureComponent {
     } = this.props;
 
     socket.emit('joinRoom', `list-${listId}`);
+  };
+
+  receiveWSEvents = () => {
+    const { socket, updateListItemWS } = this.props;
+
+    socket.on(ItemActionTypes.UPDATE_SUCCESS, itemData => {
+      const { listId, itemId, data } = itemData;
+
+      updateListItemWS(itemId, listId, data);
+    });
   };
 
   handleBusyBySomeone = () => {
@@ -442,6 +455,8 @@ class ListItem extends PureComponent {
                 name={name}
                 onBlur={this.handleNameBlur}
                 onFocus={this.handleNameFocus}
+                onBusy={this.itemBusy}
+                onFree={this.itemFree}
               />
               <span className="list-item__author">
                 <FormattedMessage
@@ -493,7 +508,8 @@ ListItem.propTypes = {
   onBusy: PropTypes.func.isRequired,
   onFree: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired,
+  updateListItemWS: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -506,6 +522,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { archiveItem, clearVote, cloneItem, setVote, toggle }
+    { archiveItem, clearVote, cloneItem, setVote, toggle, updateListItemWS }
   )
 )(ListItem);

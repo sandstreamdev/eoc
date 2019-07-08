@@ -138,7 +138,7 @@ class ItemsList extends PureComponent {
     return archived ? (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {items.slice(0, limit).map((item, index) => {
+          {items.slice(0, limit).map(item => {
             const isItemBlocked = item._id === busyBySomeoneItemId;
 
             return (
