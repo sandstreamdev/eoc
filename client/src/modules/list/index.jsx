@@ -142,14 +142,17 @@ class List extends Component {
 
   handleBreadcrumbs = () => {
     const {
-      list: { cohortId, cohortName, name, _id: listId }
+      list: { cohortId, cohortName, isGuest, name, _id: listId }
     } = this.props;
 
     if (cohortId) {
       this.setState({
         breadcrumbs: [
           { name: Routes.COHORTS, path: `/${Routes.COHORTS}` },
-          { name: cohortName, path: `/${Routes.COHORT}/${cohortId}` },
+          {
+            name: cohortName,
+            path: isGuest ? null : `/${Routes.COHORT}/${cohortId}`
+          },
           { name, path: `/${Routes.LIST}/${listId}` }
         ]
       });

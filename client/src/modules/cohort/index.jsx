@@ -38,8 +38,13 @@ import CohortHeader from './components/CohortHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { noOp } from 'common/utils/noOp';
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { makeAbortablePromise } from 'common/utils/helpers';
 
 class Cohort extends PureComponent {
+  pendingPromises = [];
+
   state = {
     areArchivedListsVisible: false,
     breadcrumbs: [],
@@ -72,6 +77,10 @@ class Cohort extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    this.pendingPromises.forEach(promise => promise.abort());
+  }
+
   fetchData = () => {
     const {
       fetchCohortDetails,
@@ -81,17 +90,32 @@ class Cohort extends PureComponent {
       }
     } = this.props;
 
+    const fetchPromises = [];
+
     this.setState({ pendingForDetails: true });
 
-    return fetchCohortDetails(id)
+    const abortableFetchDetails = makeAbortablePromise(fetchCohortDetails(id));
+
+    this.pendingPromises.push(abortableFetchDetails);
+    fetchPromises.push(abortableFetchDetails.promise);
+
+    if (!this.checkIfArchived()) {
+      const abortableFetchLists = makeAbortablePromise(fetchListsMetaData(id));
+
+      this.pendingPromises.push(abortableFetchLists);
+      fetchPromises.push(abortableFetchLists.promise);
+    }
+
+    Promise.all(fetchPromises)
       .then(() => {
-        if (!this.checkIfArchived()) {
-          return fetchListsMetaData(id);
-        }
-      })
-      .finally(() => {
         this.handleBreadcrumbs();
         this.setState({ pendingForDetails: false });
+      })
+      .catch(err => {
+        if (!(err instanceof AbortPromiseException)) {
+          this.setState({ pendingForDetails: false });
+        }
+        noOp();
       });
   };
 

@@ -11,6 +11,7 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
+import { NotFoundException } from 'common/exceptions/NotFoundException';
 
 const createCohortSuccess = data => ({
   type: CohortActionTypes.CREATE_SUCCESS,
@@ -267,10 +268,12 @@ export const fetchCohortDetails = cohortId => dispatch =>
     .then(resp => resp.json())
     .then(json => dispatch(fetchCohortDetailsSuccess(json, cohortId)))
     .catch(err => {
-      dispatch(fetchCohortDetailsFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.fetch-details-fail'
-      });
+      if (!(err instanceof NotFoundException)) {
+        dispatch(fetchCohortDetailsFailure());
+        createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+          notificationId: 'cohort.actions.fetch-details-fail'
+        });
+      }
       throw err;
     });
 
