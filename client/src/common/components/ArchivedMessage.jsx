@@ -32,9 +32,7 @@ class ArchivedMessage extends PureComponent {
 
     this.setState({ pending: true });
 
-    onRestore().catch(() => {
-      this.setState({ pending: false });
-    });
+    onRestore().catch(() => this.setState({ pending: false }));
   };
 
   render() {
