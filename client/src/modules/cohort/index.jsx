@@ -95,11 +95,13 @@ class Cohort extends PureComponent {
     this.setState({ pendingForDetails: true });
 
     const abortableFetchDetails = makeAbortablePromise(fetchCohortDetails(id));
+
     this.pendingPromises.push(abortableFetchDetails);
     fetchPromises.push(abortableFetchDetails.promise);
 
     if (!this.checkIfArchived()) {
       const abortableFetchLists = makeAbortablePromise(fetchListsMetaData(id));
+
       this.pendingPromises.push(abortableFetchLists);
       fetchPromises.push(abortableFetchLists.promise);
     }
