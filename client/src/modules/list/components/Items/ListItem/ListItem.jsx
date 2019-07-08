@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import io from 'socket.io-client';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
 import {
@@ -27,6 +26,7 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
+import withSocket from 'common/hoc/withSocket';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -44,8 +44,6 @@ class ListItem extends PureComponent {
       isNameEdited: false,
       isConfirmationVisible: false
     };
-
-    this.socket = undefined;
   }
 
   componentDidMount() {
@@ -64,27 +62,22 @@ class ListItem extends PureComponent {
     const {
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
 
-    this.socket.emit('leavingRoom', listId);
+    socket.emit('leavingRoom', listId);
   }
 
   handleSocketConnection = () => {
     const {
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
 
-    if (!this.socket) {
-      this.socket = io();
-    }
-
-    this.socket = io();
-    this.socket.on('connect', () =>
-      this.socket.emit('joinRoom', `list-${listId}`)
-    );
+    socket.emit('joinRoom', `list-${listId}`);
   };
 
   handleBusyBySomeone = () => {
@@ -191,9 +184,9 @@ class ListItem extends PureComponent {
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
-    const { socket } = this;
 
     this.itemBusy();
 
@@ -416,7 +409,6 @@ class ListItem extends PureComponent {
       done,
       isNameEdited
     } = this.state;
-    const { socket } = this;
 
     return (
       <li
@@ -450,7 +442,6 @@ class ListItem extends PureComponent {
                 name={name}
                 onBlur={this.handleNameBlur}
                 onFocus={this.handleNameFocus}
-                socket={socket}
               />
               <span className="list-item__author">
                 <FormattedMessage
@@ -494,6 +485,7 @@ ListItem.propTypes = {
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
 
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
@@ -509,6 +501,7 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   withRouter,
   connect(

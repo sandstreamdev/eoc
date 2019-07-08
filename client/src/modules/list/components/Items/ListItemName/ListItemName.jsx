@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import io from 'socket.io-client';
+import _flowRight from 'lodash/flowRight';
 
 import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
+import withSocket from 'common/hoc/withSocket';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -40,9 +41,8 @@ class ListItemName extends PureComponent {
   }
 
   handleSocketConnection = () => {
-    const { socket } = this.props;
-
-    console.log(socket);
+    // This will be used in comming task EOC-250
+    // const { socket } = this.props;
   };
 
   handleKeyPress = event => {
@@ -172,9 +172,11 @@ ListItemName.propTypes = {
   updateListItem: PropTypes.func.isRequired
 };
 
-export default withRouter(
+export default _flowRight(
+  withSocket,
+  withRouter,
   connect(
     null,
     { updateListItem }
-  )(ListItemName)
-);
+  )
+)(ListItemName);

@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import io from 'socket.io-client';
 import classNames from 'classnames';
 
 import PendingButton from 'common/components/PendingButton';
@@ -14,6 +13,7 @@ import {
   restoreItem
 } from 'modules/list/components/Items/model/actions';
 import Confirmation from 'common/components/Confirmation';
+import withSocket from 'common/hoc/withSocket';
 
 class ListArchivedItem extends PureComponent {
   constructor(props) {
@@ -24,8 +24,6 @@ class ListArchivedItem extends PureComponent {
       busyInfoVisibility: false,
       isConfirmationVisible: false
     };
-
-    this.socket = undefined;
   }
 
   componentDidMount() {
@@ -54,9 +52,9 @@ class ListArchivedItem extends PureComponent {
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
-    const { socket } = this;
 
     this.itemBusy();
 
@@ -89,9 +87,9 @@ class ListArchivedItem extends PureComponent {
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
-    const { socket } = this;
 
     this.itemBusy();
 
@@ -104,17 +102,11 @@ class ListArchivedItem extends PureComponent {
     const {
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
 
-    if (!this.socket) {
-      this.socket = io();
-    }
-
-    this.socket = io();
-    this.socket.on('connect', () =>
-      this.socket.emit('joinRoom', `list-${listId}`)
-    );
+    socket.emit('joinRoom', `list-${listId}`);
   };
 
   itemBusy = () => {
@@ -248,6 +240,7 @@ ListArchivedItem.propTypes = {
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
 
   deleteItem: PropTypes.func.isRequired,
   onBusy: PropTypes.func.isRequired,
@@ -256,6 +249,7 @@ ListArchivedItem.propTypes = {
 };
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   withRouter,
   connect(
