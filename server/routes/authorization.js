@@ -11,8 +11,8 @@ const {
   confirmEmail,
   logout,
   recoveryPassword,
-  resendSignUpConfirmationLink,
   resendRecoveryLink,
+  resendSignUpConfirmationLink,
   sendDemoUser,
   sendUser,
   updatePassword

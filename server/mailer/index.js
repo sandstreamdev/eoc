@@ -67,7 +67,6 @@ const sendSignUpConfirmationLink = (req, resp) => {
 const sendResetPasswordLink = (req, resp) => {
   const { email: receiver, displayName, resetToken } = resp.locales;
   const host = req.get('host');
-  // TODO: Here I need to redrirec to backedn endpoitn to check if token is valid
   const resetUrl = `${host}/auth/recovery-password/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
   const info =
