@@ -230,10 +230,8 @@ class ListItem extends PureComponent {
   };
 
   handleNameBlur = () => {
-    const { onFree } = this.props;
-
     this.setState({ isNameEdited: false });
-    onFree();
+    this.itemFree();
   };
 
   itemBusy = () => {
@@ -418,6 +416,7 @@ class ListItem extends PureComponent {
       done,
       isNameEdited
     } = this.state;
+    const { socket } = this;
 
     return (
       <li
@@ -451,6 +450,7 @@ class ListItem extends PureComponent {
                 name={name}
                 onBlur={this.handleNameBlur}
                 onFocus={this.handleNameFocus}
+                socket={socket}
               />
               <span className="list-item__author">
                 <FormattedMessage

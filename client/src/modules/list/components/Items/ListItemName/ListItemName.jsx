@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import io from 'socket.io-client';
 
 import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
@@ -26,6 +27,10 @@ class ListItemName extends PureComponent {
     this.listItemName = React.createRef();
   }
 
+  componentDidMount() {
+    this.handleSocketConnection();
+  }
+
   componentDidUpdate() {
     const { name } = this.state;
 
@@ -33,6 +38,12 @@ class ListItemName extends PureComponent {
       this.nameInput.current.focus();
     }
   }
+
+  handleSocketConnection = () => {
+    const { socket } = this.props;
+
+    console.log(socket);
+  };
 
   handleKeyPress = event => {
     const { code } = event;

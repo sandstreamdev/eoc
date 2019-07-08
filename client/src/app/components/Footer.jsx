@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import { COMPANY_NAME, COMPANY_PAGE_URL } from 'common/constants/variables';
+import withSocket from 'common/hoc/withSocket';
 
 const Footer = () => (
   <div className="footer">
@@ -31,4 +32,4 @@ const Footer = () => (
   </div>
 );
 
-export default Footer;
+export default withSocket(Footer);
