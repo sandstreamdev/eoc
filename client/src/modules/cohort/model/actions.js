@@ -271,10 +271,12 @@ export const fetchCohortDetails = cohortId => dispatch =>
     .then(resp => resp.json())
     .then(json => dispatch(fetchCohortDetailsSuccess(json, cohortId)))
     .catch(err => {
-      dispatch(fetchCohortDetailsFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.fetch-details-fail'
-      });
+      if (!(err instanceof NotFoundException)) {
+        dispatch(fetchCohortDetailsFailure());
+        createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+          notificationId: 'cohort.actions.fetch-details-fail'
+        });
+      }
       throw err;
     });
 

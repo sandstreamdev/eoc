@@ -35,7 +35,11 @@ const Breadcrumbs = ({ breadcrumbs, isGuest, intl: { formatMessage } }) => {
           {restOfTheBreadcrumbs.map(breadcrumb => (
             <Fragment key={breadcrumb.name}>
               <li className="breadcrumbs__list-item">
-                <Link to={`${breadcrumb.path}`}>{breadcrumb.name}</Link>
+                {breadcrumb.path ? (
+                  <Link to={`${breadcrumb.path}`}>{breadcrumb.name}</Link>
+                ) : (
+                  breadcrumb.name
+                )}
               </li>
               <li className="breadcrumbs__list-item">
                 <ChevronRight />
