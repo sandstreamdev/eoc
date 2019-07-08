@@ -67,7 +67,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.socket.emit('leavingRoom', listId);
+    this.socket.emit('leavingListRoom', listId);
   }
 
   handleSocketConnection = () => {
@@ -83,7 +83,7 @@ class ListItem extends PureComponent {
 
     this.socket = io();
     this.socket.on('connect', () =>
-      this.socket.emit('joinRoom', `list-${listId}`)
+      this.socket.emit('joinListRoom', `list-${listId}`)
     );
   };
 

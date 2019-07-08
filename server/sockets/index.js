@@ -40,11 +40,11 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinRoom', room => {
+    socket.on('joinListRoom', room => {
       socket.join(room);
     });
 
-    socket.on('leavingRoom', listId => {
+    socket.on('leavingListRoom', listId => {
       socket.leave(`list-${listId}`);
     });
 

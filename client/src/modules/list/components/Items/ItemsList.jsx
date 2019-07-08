@@ -50,7 +50,7 @@ class ItemsList extends PureComponent {
       }
     } = this.props;
 
-    this.socket.emit('leavingRoom', listId);
+    this.socket.emit('leavingListRoom', listId);
 
     // or disconnect from the socket here
   }
@@ -114,7 +114,7 @@ class ItemsList extends PureComponent {
 
     this.socket = io();
     this.socket.on('connect', () =>
-      this.socket.emit('joinRoom', `list-${listId}`)
+      this.socket.emit('joinListRoom', `list-${listId}`)
     );
   };
 

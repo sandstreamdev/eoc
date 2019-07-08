@@ -81,7 +81,7 @@ class List extends Component {
     } = this.props;
 
     if (prevListId !== listId) {
-      this.socket.emit('leavingRoom', prevListId);
+      this.socket.emit('leavingListRoom', prevListId);
       this.fetchData();
     }
   }
@@ -93,7 +93,7 @@ class List extends Component {
       }
     } = this.props;
 
-    this.socket.emit('leavingRoom', listId);
+    this.socket.emit('leavingListRoom', listId);
   }
 
   handleSocketConnection = () => {
@@ -103,7 +103,7 @@ class List extends Component {
 
     this.socket = io();
     this.socket.on('connect', () =>
-      this.socket.emit('joinRoom', `list-${listId}`)
+      this.socket.emit('joinListRoom', `list-${listId}`)
     );
   };
 

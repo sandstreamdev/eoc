@@ -113,7 +113,7 @@ class ListArchivedItem extends PureComponent {
 
     this.socket = io();
     this.socket.on('connect', () =>
-      this.socket.emit('joinRoom', `list-${listId}`)
+      this.socket.emit('joinListRoom', `list-${listId}`)
     );
   };
 
