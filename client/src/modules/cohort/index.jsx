@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import io from 'socket.io-client';
 
 import {
   getCohortActiveLists,
@@ -40,16 +41,22 @@ import Breadcrumbs from 'common/components/Breadcrumbs';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class Cohort extends PureComponent {
-  state = {
-    areArchivedListsVisible: false,
-    breadcrumbs: [],
-    dialogContext: null,
-    pendingForArchivedLists: false,
-    pendingForDetails: false,
-    pendingForListCreation: false,
-    pendingForCohortArchivization: false,
-    type: ListType.LIMITED
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      areArchivedListsVisible: false,
+      breadcrumbs: [],
+      dialogContext: null,
+      pendingForArchivedLists: false,
+      pendingForDetails: false,
+      pendingForListCreation: false,
+      pendingForCohortArchivization: false,
+      type: ListType.LIMITED
+    };
+
+    this.socket = undefined;
+  }
 
   componentDidMount() {
     this.fetchData();

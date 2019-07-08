@@ -45,7 +45,15 @@ const socketListenTo = server => {
     });
 
     socket.on('leavingListRoom', listId => {
-      socket.leave(`list-${listId}`);
+      socket.leave(`cohort-${listId}`);
+    });
+
+    socket.on('joinCohortRoom', room => {
+      socket.join(room);
+    });
+
+    socket.on('leavingCohortRoom', listId => {
+      socket.leave(`cohort-${listId}`);
     });
 
     socket.on('error', () => {
