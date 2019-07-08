@@ -80,7 +80,7 @@
   "authorization.sign-up": "Sign up",
   "authorization.sign-up.confirmation-link-sent": "In order to complete sign up process please click the link that we have just sent to {data}.",
   "authorization.sign-up.button.resend-link": "Resend link",
-  "authorization.link-expired.recovery-expired": "Resend password recovery link",
+  "authorization.link-expired.recovery-expired": "Resend password recovery link expired.",
   "authorization.sign-up.confirmation-link-resent": "Confirmation link has been resent to email address you entered during sign up process.",
   "authorization.forgot-password.question": "If you forgot the password please click {link} to reset it.",
   "authorization.forgot-password": "Forgot password",

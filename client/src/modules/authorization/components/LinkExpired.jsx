@@ -1,6 +1,5 @@
 import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { withRouter } from 'react-router-dom';
 
 import AppLogo from 'common/components/AppLogo';
 import { RouterMatchPropType } from 'common/constants/propTypes';
@@ -8,7 +7,7 @@ import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import {
   resendConfirmationLink,
-  resendUpdatePassword
+  resendRecoveryLink
 } from 'modules/authorization/model/actions';
 import { Routes } from 'common/constants/enums';
 
@@ -33,7 +32,7 @@ class LinkExpired extends PureComponent {
     }
 
     if (path.includes(Routes.PASSWORD_RECOVERY_EXPIRED)) {
-      action = resendUpdatePassword;
+      action = resendRecoveryLink;
     }
 
     return action(token)

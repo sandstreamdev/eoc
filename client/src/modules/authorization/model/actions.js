@@ -113,7 +113,7 @@ export const resetPassword = email => dispatch =>
     });
 
 export const updatePassword = (token, password, passwordConfirmation) =>
-  postData(`/auth/recovery-password/${token}`, {
+  postData(`/auth/update-password/${token}`, {
     password,
     passwordConfirmation
   })
@@ -123,5 +123,5 @@ export const updatePassword = (token, password, passwordConfirmation) =>
       throw err;
     });
 
-export const resendUpdatePassword = token =>
+export const resendRecoveryLink = token =>
   postData(`/auth/resend-recovery-link/${token}`);

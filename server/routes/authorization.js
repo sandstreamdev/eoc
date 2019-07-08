@@ -10,8 +10,9 @@ const { signUp, resetPassword } = require('../controllers/userAuth');
 const {
   confirmEmail,
   logout,
+  recoveryPassword,
   resendSignUpConfirmationLink,
-  resendUpdatePassword,
+  resendRecoveryLink,
   sendDemoUser,
   sendUser,
   updatePassword
@@ -36,10 +37,11 @@ router.post(
   sendSignUpConfirmationLink
 );
 router.post('/reset-password', resetPassword, sendResetPasswordLink);
-router.post('/recovery-password/:token?', updatePassword);
+router.get('/recovery-password/:token?', recoveryPassword);
+router.post('/update-password/:token?', updatePassword);
 router.post(
-  'resend-recovery-link/:token?',
-  resendUpdatePassword,
+  '/resend-recovery-link/:token?',
+  resendRecoveryLink,
   sendResetPasswordLink
 );
 

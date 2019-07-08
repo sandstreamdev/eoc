@@ -249,6 +249,24 @@ const resetPassword = (req, resp, next) => {
     });
 };
 
+const recoveryPassword = (req, resp) => {
+  const { token: resetToken } = req.params;
+
+  User.findOne({
+    resetToken,
+    resetTokenExpirationDate: { $gte: new Date() }
+  })
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+      resp.redirect(`/password-recovery/${resetToken}`);
+    })
+    .catch(() => resp.redirect(`/recovery-link-expired/${resetToken}`));
+};
+
 const updatePassword = (req, resp) => {
   const { password: updatedPassword, passwordConfirmation } = req.body;
   const { matches } = validator;
@@ -263,7 +281,6 @@ const updatePassword = (req, resp) => {
     return resp.sendStatus(406);
   }
 
-  console.log(' TUTAJ');
   User.findOne({ resetToken: sanitizedToken })
     .exec()
     .then(user => {
@@ -274,24 +291,22 @@ const updatePassword = (req, resp) => {
       const { resetTokenExpirationDate, email } = user;
       const now = new Date().getTime();
 
-      if (resetTokenExpirationDate >= now) {
-        console.log('Token date valid');
-        const hashedPassword = bcrypt.hashSync(updatedPassword + email, 12);
+      if (resetTokenExpirationDate < now) {
+        resp.redirect(`/recovery-link-expired/${token}`);
 
-        return User.findOneAndUpdate(
-          { resetToken: sanitizedToken },
-          {
-            password: hashedPassword,
-            resetToken: null,
-            resetTokenExpirationDate: null
-          }
-        ).exec();
+        throw new Error();
       }
 
-      console.log('Token date invalid');
-      // TODO: Redirect on front-end to 'LinkExpired' component
-      resp.redirect(`/recovery-link-expired/${token}`);
-      throw new BadRequestException('authorization.actions.reset-link-expired');
+      const hashedPassword = bcrypt.hashSync(updatedPassword + email, 12);
+
+      return User.findOneAndUpdate(
+        { resetToken: sanitizedToken },
+        {
+          password: hashedPassword,
+          resetToken: null,
+          resetTokenExpirationDate: null
+        }
+      ).exec();
     })
     .then(() => resp.sendStatus(200))
     .catch(err => {
@@ -305,7 +320,7 @@ const updatePassword = (req, resp) => {
     });
 };
 
-const resendUpdatePassword = (req, resp, next) => {
+const resendRecoveryLink = (req, resp, next) => {
   const { token } = req.params;
   const sanitizedToken = sanitize(token);
   const newToken = crypto.randomBytes(32).toString('hex');
@@ -313,8 +328,7 @@ const resendUpdatePassword = (req, resp, next) => {
 
   User.findOneAndUpdate(
     {
-      resetToken: sanitizedToken,
-      isActive: false
+      resetToken: sanitizedToken
     },
     {
       resetToken: newToken,
@@ -360,8 +374,9 @@ const resendUpdatePassword = (req, resp, next) => {
 module.exports = {
   confirmEmail,
   logout,
+  recoveryPassword,
+  resendRecoveryLink,
   resendSignUpConfirmationLink,
-  resendUpdatePassword,
   resetPassword,
   sendDemoUser,
   sendUser,
