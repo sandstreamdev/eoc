@@ -15,7 +15,7 @@ import Preloader, {
 } from 'common/components/Preloader';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { updateListItem } from '../model/actions';
-import { KeyCodes } from 'common/constants/enums';
+import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 
@@ -87,6 +87,12 @@ class ListItemDescription extends PureComponent {
   };
 
   handleShowTextarea = event => {
+    const { nodeName } = event.target;
+
+    if (nodeName === NodeTypes.LINK) {
+      return;
+    }
+
     event.preventDefault();
 
     this.setState({ isTextareaVisible: true });

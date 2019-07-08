@@ -55,3 +55,7 @@ export const EventTypes = Object.freeze({
   CLICK: 'click',
   SUBMIT: 'submit'
 });
+
+export const NodeTypes = Object.freeze({
+  LINK: 'A'
+});
