@@ -18,7 +18,7 @@ const {
 } = require('./list');
 
 const socketListenTo = server => {
-  const ioInstance = io(server);
+  const ioInstance = io(server, { forceNew: true });
 
   ioInstance.use(
     passportSocketIo.authorize({
@@ -46,6 +46,14 @@ const socketListenTo = server => {
 
     socket.on('leavingRoom', listId => {
       socket.leave(`list-${listId}`);
+    });
+
+    socket.on('error', () => {
+      /* Ignore error.
+       * Don't show any information to a user
+       * on the client app, because sockets are
+       * not the main feature in this app
+       */
     });
 
     addItemToListWS(socket);
