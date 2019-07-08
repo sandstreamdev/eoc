@@ -15,11 +15,11 @@ const membersReducer = (state = {}, action) => {
       const {
         payload: {
           data,
-          data: { _id: id }
+          data: { _id }
         }
       } = action;
 
-      return { [id]: data, ...state };
+      return { [_id]: data, ...state };
     }
     case ListActionTypes.REMOVE_MEMBER_SUCCESS:
     case ListActionTypes.LEAVE_SUCCESS: {
