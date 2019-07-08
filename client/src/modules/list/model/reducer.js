@@ -13,10 +13,13 @@ const membersReducer = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.ADD_VIEWER_SUCCESS: {
       const {
-        payload: { data }
+        payload: {
+          data,
+          data: { _id: id }
+        }
       } = action;
 
-      return { [data._id]: data, ...state };
+      return { [id]: data, ...state };
     }
     case ListActionTypes.REMOVE_MEMBER_SUCCESS:
     case ListActionTypes.LEAVE_SUCCESS: {
