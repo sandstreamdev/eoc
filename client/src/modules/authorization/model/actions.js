@@ -1,5 +1,4 @@
-import { checkIfCookieSet } from 'common/utils/cookie';
-import { postData, postRequest } from 'common/utils/fetchMethods';
+import { getData, postData, postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
@@ -24,19 +23,6 @@ const loginSuccess = data => ({
   payload: data
 });
 
-const loginFailure = () => ({
-  type: AuthorizationActionTypes.LOGIN_FAILURE
-});
-
-export const setCurrentUser = () => {
-  const user = JSON.parse(decodeURIComponent(checkIfCookieSet('user')));
-
-  return typeof user === 'object' ? user : null;
-};
-
-export const loginUser = () => dispatch =>
-  dispatch(loginSuccess(setCurrentUser()));
-
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
     .then(() => dispatch(logoutSuccess()))
@@ -44,19 +30,14 @@ export const logoutCurrentUser = () => dispatch =>
 
 export const loginDemoUser = () => dispatch =>
   postData('/auth/demo', {
-    username: 'demo',
+    email: 'demo@example.com',
     password: 'demo'
   })
-    .then(() => {
-      dispatch(loginSuccess(setCurrentUser()));
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'authorization.actions.login'
-      });
-    })
-    .catch(err => {
-      dispatch(loginFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'authorization.actions.login-failed'
       });
     });
 
@@ -75,17 +56,27 @@ export const resendConfirmationLink = hash =>
 
 export const signIn = (email, password) => dispatch =>
   postData('/auth/sign-in', { email, password })
-    .then(() => {
-      dispatch(loginSuccess(setCurrentUser()));
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'authorization.actions.login'
       });
+    });
+
+export const getLoggedUser = () => dispatch =>
+  getData('/auth/user')
+    .then(resp => {
+      const contentType = resp.headers.get('content-type');
+
+      if (contentType && contentType.includes('application/json')) {
+        return resp.json();
+      }
     })
-    .catch(err => {
-      dispatch(loginFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'authorization.actions.login-failed'
-      });
+    .then(json => {
+      if (json) {
+        dispatch(loginSuccess(json));
+      }
     });
 
 export const resetPassword = email => dispatch =>

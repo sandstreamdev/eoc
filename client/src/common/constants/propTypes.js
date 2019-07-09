@@ -10,7 +10,7 @@ export const RouterMatchPropType = PropTypes.shape({
   })
 });
 export const UserPropType = PropTypes.shape({
-  avatarUrl: PropTypes.string.isRequired,
+  avatarUrl: PropTypes.string,
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired
 });

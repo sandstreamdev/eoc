@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -47,6 +48,7 @@ class PendingButton extends PureComponent {
       preloaderSize,
       preloaderTheme,
       title,
+      type,
       value
     } = this.props;
 
@@ -60,7 +62,7 @@ class PendingButton extends PureComponent {
           onClick={disabled || pending ? null : this.handleOnClick}
           onTouchEnd={disabled || pending ? null : this.handleOnClick}
           title={title}
-          type="button"
+          type={type}
           value={value}
         >
           {children}
@@ -73,7 +75,8 @@ class PendingButton extends PureComponent {
 
 PendingButton.defaultProps = {
   preloaderSize: PreloaderSize.SMALL,
-  preloaderTheme: PreloaderTheme.DARK
+  preloaderTheme: PreloaderTheme.DARK,
+  type: 'button'
 };
 
 PendingButton.propTypes = {
@@ -83,6 +86,7 @@ PendingButton.propTypes = {
   preloaderSize: PropTypes.string,
   preloaderTheme: PropTypes.string,
   title: PropTypes.string,
+  type: PropTypes.string,
   value: PropTypes.string,
 
   onClick: PropTypes.func.isRequired

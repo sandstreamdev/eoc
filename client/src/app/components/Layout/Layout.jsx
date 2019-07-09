@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import _isEmpty from 'lodash/isEmpty';
 
 import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
@@ -13,7 +14,7 @@ import AuthBox, {
   LinkExpired,
   ResetPassword
 } from 'modules/authorization';
-import { loginUser } from 'modules/authorization/model/actions';
+import { getLoggedUser } from 'modules/authorization/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import Footer from '../Footer';
@@ -25,38 +26,35 @@ import Cohorts from 'modules/cohort/components/Cohorts';
 import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
+import Preloader from 'common/components/Preloader';
 
 export class Layout extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
+      pending: false,
       viewType: ViewType.LIST
     };
   }
 
   componentDidMount() {
-    this.setAuthenticationState();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { currentUser, history } = this.props;
     const {
-      currentUser: prevCurrentUser,
+      currentUser,
+      getLoggedUser,
+      history,
       location: { pathname }
-    } = prevProps;
+    } = this.props;
 
-    if (!prevCurrentUser && currentUser) {
-      const newPath = pathname === '/' ? '/dashboard' : pathname;
-      history.push(newPath);
+    if (_isEmpty(currentUser)) {
+      this.setState({ pending: true });
+      getLoggedUser()
+        .then(() => {
+          history.push(pathname);
+        })
+        .finally(() => this.setState({ pending: false }));
     }
   }
-
-  setAuthenticationState = () => {
-    const { loginUser } = this.props;
-
-    loginUser();
-  };
 
   isListsView = () => {
     const {
@@ -86,7 +84,11 @@ export class Layout extends PureComponent {
       currentUser,
       intl: { formatMessage }
     } = this.props;
-    const { viewType } = this.state;
+    const { pending, viewType } = this.state;
+
+    if (pending) {
+      return <Preloader />;
+    }
 
     return !currentUser ? (
       <Fragment>
@@ -155,7 +157,7 @@ Layout.propTypes = {
     pathname: PropTypes.string.isRequired
   }),
 
-  loginUser: PropTypes.func.isRequired
+  getLoggedUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -167,6 +169,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { loginUser }
+    { getLoggedUser }
   )
 )(Layout);

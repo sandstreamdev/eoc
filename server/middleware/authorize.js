@@ -5,12 +5,8 @@ const authorize = (req, res, next) => {
       message: 'Unauthorized access.'
     };
 
-    if (req.cookies['connect.sid'] || req.cookies['logged.in']) {
+    if (req.cookies['connect.sid']) {
       res.clearCookie('connect.sid');
-      res.clearCookie('user');
-      res.clearCookie('demo');
-      res.clearCookie('logged.in');
-      res.clearCookie('authenticated');
       error.message =
         'Your session has ended, you will be redirected to the login page in 5s.';
     }
