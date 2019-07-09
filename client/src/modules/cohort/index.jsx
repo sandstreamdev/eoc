@@ -44,6 +44,8 @@ import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 
 class Cohort extends PureComponent {
+  pendingPromises = [];
+
   constructor(props) {
     super(props);
 
@@ -55,6 +57,7 @@ class Cohort extends PureComponent {
       pendingForDetails: false,
       pendingForListCreation: false,
       pendingForCohortArchivization: false,
+      socket: undefined,
       type: ListType.LIMITED
     };
 
@@ -78,11 +81,20 @@ class Cohort extends PureComponent {
     } = prevProps;
 
     if (id !== prevId) {
+      this.socket.emit('leavingCohortRoom', prevId);
       this.fetchData();
     }
   }
 
   componentWillUnmount() {
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
+    this.socket.emit('leavingCohortRoom', cohortId);
+
     this.pendingPromises.forEach(promise => promise.abort());
   }
 
@@ -113,8 +125,9 @@ class Cohort extends PureComponent {
 
     Promise.all(fetchPromises)
       .then(() => {
-        this.handleBreadcrumbs();
         this.setState({ pendingForDetails: false });
+        this.handleBreadcrumbs();
+        this.handleSocketConnection();
       })
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
@@ -141,6 +154,25 @@ class Cohort extends PureComponent {
         }
       ]
     });
+  };
+
+  handleSocketConnection = () => {
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
+    this.setState({ socket: io() }, () => {
+      const { socket } = this.state;
+      socket.on('connect', () =>
+        socket.emit('joinCohortRoom', `cohort-${cohortId}`)
+      );
+    });
+    // this.socket = io();
+    // this.socket.on('connect', () =>
+    //   this.socket.emit('joinCohortRoom', `cohort-${cohortId}`)
+    // );
   };
 
   handleListCreation = (name, description) => {
@@ -263,7 +295,8 @@ class Cohort extends PureComponent {
       pendingForArchivedLists,
       pendingForCohortArchivization,
       pendingForDetails,
-      pendingForListCreation
+      pendingForListCreation,
+      socket
     } = this.state;
 
     return (
@@ -312,6 +345,7 @@ class Cohort extends PureComponent {
                   members={members}
                   onCohortLeave={this.handleLeave}
                   route={Routes.COHORT}
+                  socket={socket}
                 />
                 <CollectionView
                   color={ColorType.ORANGE}

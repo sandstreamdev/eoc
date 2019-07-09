@@ -201,8 +201,10 @@ class MembersBox extends PureComponent {
 
   render() {
     const { context, email, isInvitationBoxVisible } = this.state;
-    const { members } = this.props;
+    const { members, socket } = this.props;
     const currentUser = members[context];
+
+    console.log(socket);
 
     return (
       <div className="members-box">
@@ -235,6 +237,7 @@ MembersBox.propTypes = {
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
   route: PropTypes.string.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any).isRequired,
   type: PropTypes.string,
 
   addCohortMember: PropTypes.func.isRequired,

@@ -49,11 +49,12 @@ const socketListenTo = server => {
     });
 
     socket.on('joinCohortRoom', room => {
+      console.log('wchodzi');
       socket.join(room);
     });
 
-    socket.on('leavingCohortRoom', listId => {
-      socket.leave(`cohort-${listId}`);
+    socket.on('leavingCohortRoom', cohortId => {
+      socket.leave(`cohort-${cohortId}`);
     });
 
     socket.on('error', () => {
