@@ -28,10 +28,6 @@ class ListItemName extends PureComponent {
     this.listItemName = React.createRef();
   }
 
-  componentDidMount() {
-    this.handleRoomConnection();
-  }
-
   componentDidUpdate(prevProps) {
     const { name: prevName } = prevProps;
     const { name } = this.props;
@@ -45,29 +41,7 @@ class ListItemName extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    const {
-      socket,
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-
-    socket.emit('leavingRoom', listId);
-  }
-
   updateNameWS = updatedName => this.setState({ name: updatedName });
-
-  handleRoomConnection = () => {
-    const {
-      match: {
-        params: { id: listId }
-      },
-      socket
-    } = this.props;
-
-    socket.emit('joinRoom', `list-${listId}`);
-  };
 
   handleKeyPress = event => {
     const { code } = event;

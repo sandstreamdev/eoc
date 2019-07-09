@@ -26,10 +26,6 @@ class ListArchivedItem extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    this.handleRoomConnection();
-  }
-
   componentDidUpdate(prevProps) {
     const { blocked } = this.state;
 
@@ -96,17 +92,6 @@ class ListArchivedItem extends PureComponent {
     return deleteItem(listId, itemId, name, socket).finally(() =>
       this.itemFree()
     );
-  };
-
-  handleRoomConnection = () => {
-    const {
-      match: {
-        params: { id: listId }
-      },
-      socket
-    } = this.props;
-
-    socket.emit('joinRoom', `list-${listId}`);
   };
 
   itemBusy = () => {

@@ -33,23 +33,11 @@ class ItemsList extends PureComponent {
   }
 
   componentDidMount() {
-    this.handleRoomConnection();
     this.receiveWSEvents();
   }
 
   componentDidUpdate() {
     this.emitWSEvents();
-  }
-
-  componentWillUnmount() {
-    const {
-      match: {
-        params: { id: listId }
-      },
-      socket
-    } = this.props;
-
-    socket.emit('leavingRoom', listId);
   }
 
   emitWSEvents = () => {
@@ -98,17 +86,6 @@ class ItemsList extends PureComponent {
         this.setState({ busyBySomeoneItemId: itemId });
       }
     });
-  };
-
-  handleRoomConnection = () => {
-    const {
-      match: {
-        params: { id: listId }
-      },
-      socket
-    } = this.props;
-
-    socket.emit('joinRoom', `list-${listId}`);
   };
 
   showMore = event => {
