@@ -97,19 +97,19 @@ export const resetPassword = email => dispatch =>
         dispatch,
         err.message ? NotificationType.ERROR_NO_RETRY : NotificationType.ERROR,
         {
-          notificationId: err.message || 'common.something-went-wrong',
+          notificationId:
+            err.message ||
+            'authorization.actions.recovery-password-default-error',
           data: email
         }
       );
     });
 
 export const updatePassword = (token, password, passwordConfirmation) =>
-  postData(`/auth/recovery-password/${token}`, {
+  postData(`/auth/update-password/${token}`, {
     password,
     passwordConfirmation
-  })
-    .then(() => history.replace('/password-recovery-success'))
-    .catch(err => {
-      // TODO: IF err instanceof BadRequestException redirect to 'LinkExpired' component
-      throw err;
-    });
+  }).then(() => history.replace('/password-recovery-success'));
+
+export const resendRecoveryLink = token =>
+  postData(`/auth/resend-recovery-link/${token}`);

@@ -98,8 +98,15 @@ export class Layout extends PureComponent {
           <Route component={AuthBox} exact path="/" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={SuccessMessage} path="/account-created" />
-          <Route component={LinkExpired} path="/link-expired/:hash?" />
+          <Route
+            component={LinkExpired}
+            path="/confirmation-link-expired/:token?"
+          />
           <Route component={ResetPassword} path="/reset-password" />
+          <Route
+            component={LinkExpired}
+            path="/recovery-link-expired/:token?"
+          />
           <Route
             component={PasswordRecoveryForm}
             path="/password-recovery/:token?"

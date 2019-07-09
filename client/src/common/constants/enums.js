@@ -20,8 +20,10 @@ export const Routes = Object.freeze({
   ACCOUNT_CREATED: 'account-created',
   COHORT: 'cohort',
   COHORTS: 'cohorts',
+  CONFIRMATION_LINK_EXPIRED: 'confirmation-link-expired',
   DASHBOARD: 'dashboard',
   LIST: 'sack',
+  PASSWORD_RECOVERY_EXPIRED: 'recovery-link-expired',
   PASSWORD_RECOVERY_SUCCESS: 'password-recovery-success'
 });
 
