@@ -41,7 +41,7 @@ import {
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
-import { NotFoundException } from 'common/exceptions/NotFoundException';
+import { ResourceNotFoundException } from 'common/exceptions/ResourceNotFoundException';
 
 class List extends Component {
   constructor(props) {
@@ -69,7 +69,7 @@ class List extends Component {
         this.setState({ pendingForDetails: false });
       })
       .catch(err => {
-        if (!(err instanceof NotFoundException)) {
+        if (!(err instanceof ResourceNotFoundException)) {
           this.setState({ pendingForDetails: false });
         }
       });
