@@ -10,7 +10,7 @@ import _trim from 'lodash/trim';
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from '../model/actions';
 import ValidationInput from './ValidationInput';
-import PendingButton from '../../../common/components/PendingButton';
+import PendingButton from 'common/components/PendingButton';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -29,17 +29,12 @@ class PasswordRecoveryForm extends PureComponent {
       pending: false
     };
 
-    this.debouncedPasswordValidation = value =>
-      _debounce(() => this.validatePassword(value), 500);
-
-    this.debouncedComparePasswords = _debounce(
-      () => this.comparePasswords(),
-      500
-    );
+    this.debouncedPasswordValidation = _debounce(this.validatePassword, 500);
+    this.debouncedComparePasswords = _debounce(this.comparePasswords, 500);
   }
 
   componentWillUnmount() {
-    this.debouncedPasswordValidation().cancel();
+    this.debouncedPasswordValidation.cancel();
     this.debouncedComparePasswords.cancel();
   }
 
@@ -49,7 +44,7 @@ class PasswordRecoveryForm extends PureComponent {
     } = event;
 
     this.setState({ password: value }, () =>
-      this.debouncedPasswordValidation(value)()
+      this.debouncedPasswordValidation(value)
     );
   };
 
@@ -58,7 +53,6 @@ class PasswordRecoveryForm extends PureComponent {
       target: { value }
     } = event;
 
-    this.debouncedChange = _debounce(() => this.comparePasswords(), 500);
     this.setState({ passwordConfirmation: value }, () =>
       this.debouncedComparePasswords()
     );
