@@ -118,11 +118,7 @@ export const updatePassword = (token, password, passwordConfirmation) =>
   postData(`/auth/update-password/${token}`, {
     password,
     passwordConfirmation
-  })
-    .then(() => history.replace('/password-recovery-success'))
-    .catch(err => {
-      throw err;
-    });
+  }).then(() => history.replace('/password-recovery-success'));
 
 export const resendRecoveryLink = token =>
   postData(`/auth/resend-recovery-link/${token}`);
