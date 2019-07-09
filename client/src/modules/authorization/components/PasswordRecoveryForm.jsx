@@ -90,9 +90,8 @@ class PasswordRecoveryForm extends PureComponent {
   validatePassword = password => {
     const { errors } = this.state;
     const { matches } = validator;
-    const validationError = !matches(password, /^[^\s]{4,32}$/);
 
-    if (!validationError) {
+    if (matches(password, /^[^\s]{4,32}$/)) {
       this.setState(
         {
           errors: {
