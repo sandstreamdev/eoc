@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import validator from 'validator';
 import _flowRight from 'lodash/flowRight';
 import _debounce from 'lodash/debounce';
-import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
@@ -93,7 +92,7 @@ class PasswordRecoveryForm extends PureComponent {
     const { matches } = validator;
     const validationError = !matches(password, /^[^\s]{4,32}$/);
 
-    if (!_isEmpty(password) && !validationError) {
+    if (!validationError) {
       this.setState(
         {
           errors: {
