@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import io from 'socket.io-client';
 
 import {
   getCohortActiveLists,
@@ -42,6 +41,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { noOp } from 'common/utils/noOp';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
+import withSocket from 'common/hoc/withSocket';
 
 class Cohort extends PureComponent {
   pendingPromises = [];
@@ -160,19 +160,13 @@ class Cohort extends PureComponent {
     const {
       match: {
         params: { id: cohortId }
-      }
+      },
+      socket
     } = this.props;
 
-    this.setState({ socket: io() }, () => {
-      const { socket } = this.state;
-      socket.on('connect', () =>
-        socket.emit('joinCohortRoom', `cohort-${cohortId}`)
-      );
-    });
-    // this.socket = io();
-    // this.socket.on('connect', () =>
-    //   this.socket.emit('joinCohortRoom', `cohort-${cohortId}`)
-    // );
+    socket.on('connect', () =>
+      socket.emit('joinCohortRoom', `cohort-${cohortId}`)
+    );
   };
 
   handleListCreation = (name, description) => {
@@ -284,7 +278,7 @@ class Cohort extends PureComponent {
       viewType
     } = this.props;
 
-    if (!cohortDetails) {
+    if (!cohortDetails || !members) {
       return null;
     }
 
@@ -428,6 +422,7 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
+  socket: PropTypes.objectOf(PropTypes.any),
   viewType: PropTypes.string.isRequired,
 
   archiveCohort: PropTypes.func.isRequired,
@@ -455,6 +450,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   withRouter,
   connect(
