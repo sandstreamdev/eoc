@@ -3,6 +3,7 @@ const validator = require('validator');
 const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
@@ -200,7 +201,7 @@ const resetPassword = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error();
+        throw new Error('authorization.actions.reset');
       }
 
       const { displayName, isActive, idFromProvider } = user;
@@ -247,6 +248,58 @@ const resetPassword = (req, resp, next) => {
     });
 };
 
+const updatePassword = (req, resp) => {
+  const { password: updatedPassword, passwordConfirmation } = req.body;
+  const { matches } = validator;
+  const { token } = req.params;
+
+  const sanitizedToken = sanitize(token);
+  const validationError = !matches(updatedPassword, /^[^\s]{4,32}$/);
+  const passwordsNoMatch =
+    _trim(updatedPassword) !== _trim(passwordConfirmation);
+
+  if (validationError || passwordsNoMatch) {
+    return resp.sendStatus(400);
+  }
+
+  User.findOne({ resetToken: sanitizedToken })
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+
+      const { resetTokenExpirationDate, email } = user;
+      const now = new Date().getTime();
+
+      if (resetTokenExpirationDate >= now) {
+        const hashedPassword = bcrypt.hashSync(updatedPassword + email, 12);
+
+        return User.findOneAndUpdate(
+          { resetToken: sanitizedToken },
+          {
+            password: hashedPassword,
+            resetToken: null,
+            resetTokenExpirationDate: null
+          }
+        ).exec();
+      }
+
+      // TODO: Redirect on front-end to 'LinkExpired' component
+      throw new BadRequestException('authorization.actions.reset-link-expired');
+    })
+    .then(() => resp.sendStatus(200))
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { message } = err;
+
+        resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
 module.exports = {
   confirmEmail,
   getLoggedUser,
@@ -254,5 +307,6 @@ module.exports = {
   resendSignUpConfirmationLink,
   resetPassword,
   sendUser,
-  signUp
+  signUp,
+  updatePassword
 };

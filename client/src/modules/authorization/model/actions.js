@@ -2,6 +2,7 @@ import { getData, postData, postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
+import history from 'common/utils/history';
 
 export const AuthorizationActionTypes = Object.freeze({
   LOGIN_FAILURE: 'LOGIN_FAILURE',
@@ -80,7 +81,7 @@ export const getLoggedUser = () => dispatch =>
     });
 
 export const resetPassword = email => dispatch =>
-  postData('auth/reset-password', { email })
+  postData('/auth/reset-password', { email })
     .then(() => {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'authorization.actions.reset',
@@ -100,4 +101,15 @@ export const resetPassword = email => dispatch =>
           data: email
         }
       );
+    });
+
+export const updatePassword = (token, password, passwordConfirmation) =>
+  postData(`/auth/recovery-password/${token}`, {
+    password,
+    passwordConfirmation
+  })
+    .then(() => history.replace('/password-recovery-success'))
+    .catch(err => {
+      // TODO: IF err instanceof BadRequestException redirect to 'LinkExpired' component
+      throw err;
     });
