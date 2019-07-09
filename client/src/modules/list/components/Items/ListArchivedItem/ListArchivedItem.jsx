@@ -27,7 +27,7 @@ class ListArchivedItem extends PureComponent {
   }
 
   componentDidMount() {
-    this.handleSocketConnection();
+    this.handleRoomConnection();
   }
 
   componentDidUpdate(prevProps) {
@@ -98,7 +98,7 @@ class ListArchivedItem extends PureComponent {
     );
   };
 
-  handleSocketConnection = () => {
+  handleRoomConnection = () => {
     const {
       match: {
         params: { id: listId }

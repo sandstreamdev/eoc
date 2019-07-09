@@ -49,7 +49,7 @@ class ListItem extends PureComponent {
   }
 
   componentDidMount() {
-    this.handleSocketConnection();
+    this.handleRoomConnection();
     this.receiveWSEvents();
   }
 
@@ -72,7 +72,7 @@ class ListItem extends PureComponent {
     socket.emit('leavingRoom', listId);
   }
 
-  handleSocketConnection = () => {
+  handleRoomConnection = () => {
     const {
       match: {
         params: { id: listId }
@@ -454,8 +454,8 @@ class ListItem extends PureComponent {
                 itemId={_id}
                 name={name}
                 onBlur={this.handleNameBlur}
-                onFocus={this.handleNameFocus}
                 onBusy={this.itemBusy}
+                onFocus={this.handleNameFocus}
                 onFree={this.itemFree}
               />
               <span className="list-item__author">

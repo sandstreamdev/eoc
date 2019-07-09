@@ -29,7 +29,7 @@ class ListItemName extends PureComponent {
   }
 
   componentDidMount() {
-    this.handleSocketConnection();
+    this.handleRoomConnection();
   }
 
   componentDidUpdate(prevProps) {
@@ -58,7 +58,7 @@ class ListItemName extends PureComponent {
 
   updateNameWS = updatedName => this.setState({ name: updatedName });
 
-  handleSocketConnection = () => {
+  handleRoomConnection = () => {
     const {
       match: {
         params: { id: listId }

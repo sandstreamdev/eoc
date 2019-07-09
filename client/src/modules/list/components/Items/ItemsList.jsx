@@ -33,7 +33,7 @@ class ItemsList extends PureComponent {
   }
 
   componentDidMount() {
-    this.handleSocketConnection();
+    this.handleRoomConnection();
     this.receiveWSEvents();
   }
 
@@ -100,7 +100,7 @@ class ItemsList extends PureComponent {
     });
   };
 
-  handleSocketConnection = () => {
+  handleRoomConnection = () => {
     const {
       match: {
         params: { id: listId }
