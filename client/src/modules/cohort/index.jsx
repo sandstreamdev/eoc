@@ -48,23 +48,16 @@ import { CohortActionTypes } from './model/actionTypes';
 class Cohort extends PureComponent {
   pendingPromises = [];
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      areArchivedListsVisible: false,
-      breadcrumbs: [],
-      dialogContext: null,
-      pendingForArchivedLists: false,
-      pendingForDetails: false,
-      pendingForListCreation: false,
-      pendingForCohortArchivization: false,
-      socket: undefined,
-      type: ListType.LIMITED
-    };
-
-    this.socket = undefined;
-  }
+  state = {
+    areArchivedListsVisible: false,
+    breadcrumbs: [],
+    dialogContext: null,
+    pendingForArchivedLists: false,
+    pendingForDetails: false,
+    pendingForListCreation: false,
+    pendingForCohortArchivization: false,
+    type: ListType.LIMITED
+  };
 
   componentDidMount() {
     this.fetchData();
@@ -302,8 +295,7 @@ class Cohort extends PureComponent {
       pendingForArchivedLists,
       pendingForCohortArchivization,
       pendingForDetails,
-      pendingForListCreation,
-      socket
+      pendingForListCreation
     } = this.state;
 
     return (
@@ -352,7 +344,6 @@ class Cohort extends PureComponent {
                   members={members}
                   onCohortLeave={this.handleLeave}
                   route={Routes.COHORT}
-                  socket={socket}
                 />
                 <CollectionView
                   color={ColorType.ORANGE}
