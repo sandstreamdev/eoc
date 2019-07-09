@@ -31,6 +31,8 @@ const socketListenTo = server => {
     })
   );
 
+  const cohortsClients = new Map();
+
   ioInstance.on('connection', socket => {
     const {
       request: { user }
@@ -57,6 +59,16 @@ const socketListenTo = server => {
       socket.leave(`cohort-${cohortId}`);
     });
 
+    socket.on('joinCohortsRoom', userId => {
+      socket.join('cohorts');
+      cohortsClients.set(userId, socket.id);
+    });
+
+    socket.on('leavingCohortsRoom', userId => {
+      socket.leave('cohorts');
+      cohortsClients.delete(userId);
+    });
+
     socket.on('error', () => {
       /* Ignore error.
        * Don't show any information to a user
@@ -71,7 +83,7 @@ const socketListenTo = server => {
     deleteItemWS(socket);
     restoreItemWS(socket);
 
-    addCohortMemberWS(socket);
+    addCohortMemberWS(socket, cohortsClients);
   });
 };
 

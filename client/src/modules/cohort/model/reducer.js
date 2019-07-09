@@ -53,7 +53,7 @@ const membersReducer = (state = {}, action) => {
 const cohorts = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.CREATE_SUCCESS:
-      return { [action.payload._id]: { ...action.payload }, ...state };
+      return { ...state, [action.payload._id]: { ...action.payload } };
     case CohortActionTypes.UPDATE_SUCCESS: {
       const { description, cohortId, name } = action.payload;
       const prevCohort = state[cohortId];

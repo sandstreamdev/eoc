@@ -7,6 +7,7 @@ import _flowRight from 'lodash/flowRight';
 import { CohortIcon } from 'assets/images/icons';
 import {
   createCohort,
+  createOrUpdateCohortOnAddingNewMemberWS,
   fetchArchivedCohortsMetaData,
   fetchCohortsMetaData,
   removeArchivedCohortsMetaData
@@ -21,6 +22,8 @@ import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { ColorType, Routes, ViewType } from 'common/constants/enums';
+import withSocket from 'common/hoc/withSocket';
+import { CohortActionTypes } from '../model/actionTypes';
 
 class Cohorts extends Component {
   state = {
@@ -32,14 +35,38 @@ class Cohorts extends Component {
   };
 
   componentDidMount() {
-    const { fetchCohortsMetaData } = this.props;
+    const {
+      currentUser: { id },
+      fetchCohortsMetaData,
+      socket
+    } = this.props;
 
     this.setState({ pendingForCohorts: true });
 
     fetchCohortsMetaData().finally(() =>
       this.setState({ pendingForCohorts: false })
     );
+
+    socket.emit('joinCohortsRoom', id);
+    this.receiveWSEvents();
   }
+
+  componentWillUnmount() {
+    const {
+      currentUser: { id },
+      socket
+    } = this.props;
+
+    socket.emit('leavingCohortsRoom', id);
+  }
+
+  receiveWSEvents = () => {
+    const { createOrUpdateCohortOnAddingNewMemberWS, socket } = this.props;
+
+    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
+      createOrUpdateCohortOnAddingNewMemberWS(data);
+    });
+  };
 
   handleDialogVisibility = () =>
     this.setState(({ isDialogVisible }) => ({
@@ -174,8 +201,10 @@ Cohorts.propTypes = {
   cohorts: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
 
   createCohort: PropTypes.func.isRequired,
+  createOrUpdateCohortOnAddingNewMemberWS: PropTypes.func.isRequired,
   fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
   removeArchivedCohortsMetaData: PropTypes.func.isRequired
@@ -188,11 +217,13 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   connect(
     mapStateToProps,
     {
       createCohort,
+      createOrUpdateCohortOnAddingNewMemberWS,
       fetchArchivedCohortsMetaData,
       fetchCohortsMetaData,
       removeArchivedCohortsMetaData

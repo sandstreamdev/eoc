@@ -2,8 +2,15 @@ import _filter from 'lodash/filter';
 import _head from 'lodash/head';
 import _keyBy from 'lodash/keyBy';
 import { createSelector } from 'reselect';
+import _orderBy from 'lodash/orderBy';
 
-export const getCohorts = state => state.cohorts;
+export const getCohorts = state =>
+  _keyBy(
+    _orderBy(state.cohorts, cohort => new Date(cohort.createdAt).getTime(), [
+      'desc'
+    ]),
+    '_id'
+  );
 
 export const getCohortDetails = (state, cohortId) => {
   const cohort = _head(

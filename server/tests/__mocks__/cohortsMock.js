@@ -25,6 +25,7 @@ const cohortsMock = [
 
 const expectedCohortMetaDataProperties = [
   '_id',
+  'createdAt',
   'description',
   'isArchived',
   'membersCount',

@@ -79,11 +79,12 @@ class Cohort extends PureComponent {
     const {
       match: {
         params: { id: prevId }
-      }
+      },
+      socket
     } = prevProps;
 
     if (id !== prevId) {
-      this.socket.emit('leavingCohortRoom', prevId);
+      socket.emit('leavingCohortRoom', prevId);
       this.fetchData();
     }
   }
@@ -92,10 +93,11 @@ class Cohort extends PureComponent {
     const {
       match: {
         params: { id: cohortId }
-      }
+      },
+      socket
     } = this.props;
 
-    this.socket.emit('leavingCohortRoom', cohortId);
+    socket.emit('leavingCohortRoom', cohortId);
 
     this.pendingPromises.forEach(promise => promise.abort());
   }
