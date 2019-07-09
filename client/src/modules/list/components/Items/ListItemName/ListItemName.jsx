@@ -180,12 +180,12 @@ ListItemName.propTypes = {
   itemId: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
-  onBusy: PropTypes.func.isRequired,
-  onFree: PropTypes.func.isRequired,
   socket: PropTypes.objectOf(PropTypes.any),
 
   onBlur: PropTypes.func.isRequired,
+  onBusy: PropTypes.func.isRequired,
   onFocus: PropTypes.func.isRequired,
+  onFree: PropTypes.func.isRequired,
   updateListItem: PropTypes.func.isRequired
 };
 
