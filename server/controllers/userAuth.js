@@ -344,9 +344,7 @@ const resendRecoveryLink = (req, resp, next) => {
       const { isActive } = user;
 
       if (!isActive) {
-        throw new Error(
-          'authorization.actions.reset-password-not-active-account'
-        );
+        throw new Error();
       }
 
       const { displayName, email } = user;
