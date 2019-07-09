@@ -359,8 +359,6 @@ class ListItem extends PureComponent {
             isFormAccessible={isMember && !isOrdered}
             itemId={itemId}
             itemName={name}
-            onBlur={this.itemFree}
-            onFocus={this.itemBusy}
           />
         </div>
       </Fragment>

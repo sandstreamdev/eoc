@@ -68,14 +68,19 @@ const ItemStatusType = Object.freeze({
   FREE: 'item/FREE'
 });
 
+const CommentActionTypes = Object.freeze({
+  ADD_SUCCESS: 'comment/ADD_SUCCESS'
+});
+
 module.exports = {
-  NUMBER_OF_ACTIVITIES_TO_SEND,
   ActivityType,
+  CommentActionTypes,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,
   ItemActionTypes,
   ItemStatusType,
   ListType,
+  NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME
 };
