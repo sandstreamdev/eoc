@@ -283,13 +283,15 @@ export const fetchCohortDetails = cohortId => dispatch =>
       throw err;
     });
 
-export const addCohortMember = (cohortId, email) => dispatch =>
+export const addCohortMember = (cohortId, email, socket) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })
     .then(resp => resp.json())
     .then(json => {
       if (json._id) {
+        const data = { cohortId, json };
+        socket.emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
         dispatch(addMemberSuccess(json, cohortId));
 
         return UserAddingStatus.ADDED;
@@ -304,6 +306,9 @@ export const addCohortMember = (cohortId, email) => dispatch =>
         data: email
       });
     });
+
+export const addCohortMemberWS = (cohortId, json) => dispatch =>
+  dispatch(addMemberSuccess(json, cohortId));
 
 export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/remove-member`, {

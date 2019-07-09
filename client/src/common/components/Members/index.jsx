@@ -2,6 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import _flowRight from 'lodash/flowRight';
 
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { PlusIcon, DotsIcon } from 'assets/images/icons';
@@ -14,6 +15,7 @@ import { Routes } from 'common/constants/enums';
 import { UserAddingStatus, MEMBERS_DISPLAY_LIMIT } from './const';
 import InviteNewUser from './components/InviteNewUser';
 import { inviteUser } from './model/actions';
+import withSocket from 'common/hoc/withSocket';
 
 class MembersBox extends PureComponent {
   constructor(props) {
@@ -51,13 +53,14 @@ class MembersBox extends PureComponent {
       match: {
         params: { id }
       },
-      route
+      route,
+      socket
     } = this.props;
 
     const action = route === Routes.COHORT ? addCohortMember : addListViewer;
 
     this.setState({ pending: true });
-    action(id, email).then(resp => {
+    action(id, email, socket).then(resp => {
       if (resp === UserAddingStatus.ADDED) {
         this.setState({ pending: false });
         this.hideForm();
@@ -234,6 +237,7 @@ MembersBox.propTypes = {
   isPrivateList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
   route: PropTypes.string.isRequired,
   type: PropTypes.string,
 
@@ -244,9 +248,11 @@ MembersBox.propTypes = {
   onListLeave: PropTypes.func
 };
 
-export default withRouter(
+export default _flowRight(
+  withSocket,
+  withRouter,
   connect(
     null,
     { addCohortMember, addListViewer, inviteUser }
-  )(MembersBox)
-);
+  )
+)(MembersBox);

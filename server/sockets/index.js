@@ -16,6 +16,7 @@ const {
   restoreItemWS,
   updateItemState
 } = require('./list');
+const { addCohortMemberWS } = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -49,7 +50,6 @@ const socketListenTo = server => {
     });
 
     socket.on('joinCohortRoom', room => {
-      console.log('wchodzi');
       socket.join(room);
     });
 
@@ -70,6 +70,8 @@ const socketListenTo = server => {
     updateItemState(socket);
     deleteItemWS(socket);
     restoreItemWS(socket);
+
+    addCohortMemberWS(socket);
   });
 };
 

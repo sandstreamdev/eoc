@@ -67,9 +67,14 @@ const ItemStatusType = Object.freeze({
   FREE: 'item/FREE'
 });
 
+const CohortActionTypes = Object.freeze({
+  ADD_MEMBER_SUCCESS: 'cohort/ADD_MEMBER_SUCCESS'
+});
+
 module.exports = {
   NUMBER_OF_ACTIVITIES_TO_SEND,
   ActivityType,
+  CohortActionTypes,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,
