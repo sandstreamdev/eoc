@@ -49,10 +49,19 @@ const updateItemState = socket => {
   });
 };
 
+const updateItemWS = socket => {
+  socket.on(ItemActionTypes.UPDATE_SUCCESS, data =>
+    socket.broadcast
+      .to(`list-${data.listId}`)
+      .emit(ItemActionTypes.UPDATE_SUCCESS, data)
+  );
+};
+
 module.exports = {
   addItemToListWS,
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,
-  updateItemState
+  updateItemState,
+  updateItemWS
 };

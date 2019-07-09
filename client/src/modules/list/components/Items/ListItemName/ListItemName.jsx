@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import _flowRight from 'lodash/flowRight';
 
 import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
+import withSocket from 'common/hoc/withSocket';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -26,13 +28,20 @@ class ListItemName extends PureComponent {
     this.listItemName = React.createRef();
   }
 
-  componentDidUpdate() {
-    const { name } = this.state;
+  componentDidUpdate(prevProps) {
+    const { name: prevName } = prevProps;
+    const { name } = this.props;
 
     if (name.length === 0) {
       this.nameInput.current.focus();
     }
+
+    if (prevName !== name) {
+      this.updateNameWS(name);
+    }
   }
+
+  updateNameWS = updatedName => this.setState({ name: updatedName });
 
   handleKeyPress = event => {
     const { code } = event;
@@ -50,24 +59,33 @@ class ListItemName extends PureComponent {
         params: { id: listId }
       },
       name,
-      updateListItem
+      updateListItem,
+      socket,
+      onBusy,
+      onFree
     } = this.props;
     const isNameUpdated = updatedName !== name;
     const canBeUpdated = updatedName.trim().length > 1;
 
     if (canBeUpdated && isNameUpdated) {
       this.setState({ pending: true });
+      onBusy();
 
-      updateListItem(name, listId, itemId, { name: updatedName }).finally(
-        () => {
-          this.setState({
-            pending: false,
-            isTipVisible: false
-          });
+      updateListItem(
+        name,
+        listId,
+        itemId,
+        { name: updatedName },
+        socket
+      ).finally(() => {
+        this.setState({
+          pending: false,
+          isTipVisible: false
+        });
 
-          this.handleNameInputBlur();
-        }
-      );
+        this.handleNameInputBlur();
+        onFree();
+      });
     }
 
     if (!canBeUpdated) {
@@ -98,12 +116,19 @@ class ListItemName extends PureComponent {
 
   handleNameInputBlur = () => {
     const { onBlur } = this.props;
+    const { name } = this.state;
 
-    onBlur();
-    this.nameInput.current.blur();
-    this.setState({ isNameInputFocused: false });
-    document.removeEventListener('keydown', this.handleKeyPress);
-    document.removeEventListener('mousedown', this.handleClickOutside);
+    if (name) {
+      onBlur();
+      this.nameInput.current.blur();
+      this.setState({ isNameInputFocused: false });
+      document.removeEventListener('keydown', this.handleKeyPress);
+      document.removeEventListener('mousedown', this.handleClickOutside);
+
+      return;
+    }
+
+    this.nameInput.current.focus();
   };
 
   handleOnClick = event => {
@@ -155,15 +180,20 @@ ListItemName.propTypes = {
   itemId: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
 
   onBlur: PropTypes.func.isRequired,
+  onBusy: PropTypes.func.isRequired,
   onFocus: PropTypes.func.isRequired,
+  onFree: PropTypes.func.isRequired,
   updateListItem: PropTypes.func.isRequired
 };
 
-export default withRouter(
+export default _flowRight(
+  withSocket,
+  withRouter,
   connect(
     null,
     { updateListItem }
-  )(ListItemName)
-);
+  )
+)(ListItemName);

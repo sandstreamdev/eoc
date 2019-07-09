@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import io from 'socket.io-client';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
@@ -41,6 +40,7 @@ import {
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
+import withSocket from 'common/hoc/withSocket';
 
 class List extends Component {
   constructor(props) {
@@ -53,8 +53,6 @@ class List extends Component {
       pendingForDetails: false,
       pendingForListArchivization: false
     };
-
-    this.socket = undefined;
   }
 
   componentDidMount() {
@@ -63,7 +61,7 @@ class List extends Component {
     this.fetchData().finally(() => {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
-      this.handleSocketConnection();
+      this.handleRoomConnection();
       this.receiveWSEvents();
     });
   }
@@ -77,11 +75,12 @@ class List extends Component {
     const {
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
 
     if (prevListId !== listId) {
-      this.socket.emit('leavingRoom', prevListId);
+      socket.emit('leavingRoom', prevListId);
       this.fetchData();
     }
   }
@@ -90,21 +89,20 @@ class List extends Component {
     const {
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
 
-    this.socket.emit('leavingRoom', listId);
+    socket.emit('leavingRoom', listId);
   }
 
-  handleSocketConnection = () => {
+  handleRoomConnection = () => {
     const {
-      list: { _id: listId }
+      list: { _id: listId },
+      socket
     } = this.props;
 
-    this.socket = io();
-    this.socket.on('connect', () =>
-      this.socket.emit('joinRoom', `list-${listId}`)
-    );
+    socket.emit('joinRoom', `list-${listId}`);
   };
 
   receiveWSEvents = () => {
@@ -112,28 +110,29 @@ class List extends Component {
       addItemWS,
       archiveItemWS,
       deleteItemWS,
-      restoreItemWS
+      restoreItemWS,
+      socket
     } = this.props;
 
-    this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
+    socket.on(ItemActionTypes.ADD_SUCCESS, data => {
       const { item, listId } = data;
 
       addItemWS(item, listId);
     });
 
-    this.socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
+    socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
       const { itemId, listId } = data;
 
       archiveItemWS(listId, itemId);
     });
 
-    this.socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
+    socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
       const { itemId, listId } = data;
 
       deleteItemWS(listId, itemId);
     });
 
-    this.socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
+    socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
       const { itemId, listId } = data;
 
       restoreItemWS(listId, itemId);
@@ -350,6 +349,7 @@ List.propTypes = {
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
+  socket: PropTypes.objectOf(PropTypes.any),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   addItemWS: PropTypes.func.isRequired,
@@ -378,6 +378,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   withRouter,
   connect(
