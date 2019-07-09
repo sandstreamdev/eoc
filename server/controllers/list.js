@@ -139,9 +139,10 @@ const getListsMetaData = (req, resp) => {
     query.cohortId = sanitize(cohortId);
   }
 
-  List.find(query, '_id name description items favIds cohortId type', {
+  List.find(query, '_id name description items favIds type', {
     sort: { created_at: -1 }
   })
+    .populate('cohortId', 'isArchived')
     .lean()
     .exec()
     .then(docs => {
@@ -169,13 +170,10 @@ const getArchivedListsMetaData = (req, resp) => {
     query.cohortId = sanitize(cohortId);
   }
 
-  List.find(
-    query,
-    `_id name description type items favIds isArchived ${
-      cohortId ? 'cohortId' : ''
-    }`,
-    { sort: { created_at: -1 } }
-  )
+  List.find(query, '_id name description type items favIds isArchived', {
+    sort: { created_at: -1 }
+  })
+    .populate('cohortId', 'isArchived')
     .lean()
     .exec()
     .then(docs => {
@@ -268,8 +266,16 @@ const getListData = (req, resp) => {
     })
     .then(cohort => cohort || [])
     .then(cohort => {
-      const { memberIds: cohortMemberIds, name: cohortName } = cohort;
+      const {
+        isArchived: isCohortArchived,
+        memberIds: cohortMemberIds,
+        name: cohortName
+      } = cohort;
       const cohortMembers = cohortMemberIds || [];
+
+      if (isCohortArchived) {
+        throw new NotFoundException();
+      }
 
       const {
         _id,

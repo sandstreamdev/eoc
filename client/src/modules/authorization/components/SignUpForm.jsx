@@ -191,7 +191,8 @@ class SignUpForm extends PureComponent {
     });
   };
 
-  handleSignUp = () => {
+  handleSignUp = event => {
+    event.preventDefault();
     const { email, name, password, confirmPasswordValue } = this.state;
 
     this.setState({ pending: true });
@@ -271,7 +272,11 @@ class SignUpForm extends PureComponent {
           <FormattedMessage id="authorization.create-account" />
         </h1>
         {signUpErrorId && this.renderSignUpError()}
-        <form className="sign-up-form__form" noValidate>
+        <form
+          className="sign-up-form__form"
+          noValidate
+          onSubmit={isFormValid && !pending ? this.handleSignUp : null}
+        >
           <AuthInput
             disabled={pending}
             externalErrorId={nameError}
@@ -321,7 +326,7 @@ class SignUpForm extends PureComponent {
               className="primary-button sign-up-form__confirm"
               disabled={!isFormValid}
               onClick={this.handleSignUp}
-              type="button"
+              type="submit"
             >
               <FormattedMessage id="authorization.sign-up" />
             </PendingButton>

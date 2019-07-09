@@ -9,79 +9,67 @@ import {
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
 
-const membersReducer = (state = [], action) => {
+const membersReducer = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.ADD_VIEWER_SUCCESS: {
       const {
-        payload: { data }
+        payload: {
+          data,
+          data: { _id }
+        }
       } = action;
 
-      return [...state, data];
+      return { [_id]: data, ...state };
     }
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
+    case ListActionTypes.LEAVE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
 
-      return state.filter(member => member._id !== userId);
+      const { [userId]: deleted, ...rest } = state;
+
+      return rest;
     }
     case ListActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
 
-      return state.map(member =>
-        member._id === userId
-          ? {
-              ...member,
-              isOwner: true,
-              isMember: true
-            }
-          : member
-      );
+      return {
+        ...state,
+        [userId]: { ...state[userId], isOwner: true, isMember: true }
+      };
     }
     case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
 
-      return state.map(member =>
-        member._id === userId
-          ? {
-              ...member,
-              isOwner: false
-            }
-          : member
-      );
+      return {
+        ...state,
+        [userId]: { ...state[userId], isOwner: false }
+      };
     }
     case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
 
-      return state.map(member =>
-        member._id === userId
-          ? {
-              ...member,
-              isMember: true
-            }
-          : member
-      );
+      return {
+        ...state,
+        [userId]: { ...state[userId], isMember: true }
+      };
     }
     case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
       const {
         payload: { userId }
       } = action;
 
-      return state.map(member =>
-        member._id === userId
-          ? {
-              ...member,
-              isMember: false,
-              isOwner: false
-            }
-          : member
-      );
+      return {
+        ...state,
+        [userId]: { ...state[userId], isOwner: false, isMember: false }
+      };
     }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
@@ -91,15 +79,6 @@ const membersReducer = (state = [], action) => {
       } = action;
 
       return members;
-    }
-    case ListActionTypes.LEAVE_SUCCESS: {
-      const {
-        payload: { userId }
-      } = action;
-
-      const userIndex = state.indexOf(userId);
-
-      return [...state.slice(0, userIndex), ...state.slice(userIndex + 1)];
     }
     default:
       return state;

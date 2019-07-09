@@ -59,11 +59,11 @@ class AuthInput extends PureComponent {
 
   setValidationTheme = errorMessageId => {
     const { value } = this.state;
-    const { externalErrorId, formError } = this.props;
+    const { externalErrorId, formError, noSuccessTheme } = this.props;
 
     const isValid = !externalErrorId && !errorMessageId;
     const invalidTheme = !isValid || formError;
-    const validTheme = isValid && value && !formError;
+    const validTheme = isValid && value && !formError && !noSuccessTheme;
 
     this.setState({ invalidTheme, validTheme });
   };
@@ -162,6 +162,7 @@ AuthInput.propTypes = {
   intl: IntlPropType.isRequired,
   labelId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  noSuccessTheme: PropTypes.bool,
   type: PropTypes.string.isRequired,
 
   onChange: PropTypes.func.isRequired,

@@ -80,7 +80,8 @@ class SignInForm extends PureComponent {
     });
   };
 
-  handleSignIn = () => {
+  handleSignIn = event => {
+    event.preventDefault();
     const { email, password } = this.state;
     const { signIn } = this.props;
 
@@ -159,7 +160,11 @@ class SignInForm extends PureComponent {
           <FormattedMessage id="authorization.auth-box.sign-in" />
         </h1>
         {signInErrorId && this.renderSignInError()}
-        <form className="sign-in__form" noValidate>
+        <form
+          className="sign-in__form"
+          noValidate
+          onSubmit={isFormValid && !pending ? this.handleSignIn : null}
+        >
           <AuthInput
             disabled={pending}
             focus
@@ -175,6 +180,7 @@ class SignInForm extends PureComponent {
             formError={hasSignUpFailed}
             labelId="authorization.input.password.label"
             name="password"
+            noSuccessTheme
             onChange={this.onPasswordChange}
             type="password"
           />
@@ -191,7 +197,7 @@ class SignInForm extends PureComponent {
               className="primary-button sign-in__confirm"
               disabled={!isFormValid}
               onClick={this.handleSignIn}
-              type="button"
+              type="submit"
             >
               <FormattedMessage id="authorization.sign-in" />
             </PendingButton>

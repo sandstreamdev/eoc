@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs');
+const sanitize = require('mongo-sanitize');
+
 const User = require('../../models/user.model');
 const List = require('../../models/list.model');
 const Cohort = require('../../models/cohort.model');
@@ -38,6 +41,25 @@ const extractUserProfile = (profile, accessToken) => {
   };
 };
 
+const findAndAuthenticateUser = (email, password) => {
+  const sanitizedEmail = sanitize(email);
+
+  return User.findOne({ email: sanitizedEmail, isActive: true })
+    .lean()
+    .exec()
+    .then(user => {
+      if (user) {
+        const { password: dbPassword } = user;
+
+        if (bcrypt.compareSync(password + email, dbPassword)) {
+          return user;
+        }
+      }
+
+      return null;
+    });
+};
+
 const removeDemoUserData = id =>
   List.find(
     {
@@ -61,6 +83,7 @@ const removeDemoUserData = id =>
 
 module.exports = {
   extractUserProfile,
+  findAndAuthenticateUser,
   findOrCreateUser,
   removeDemoUserData
 };

@@ -266,7 +266,13 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
 export const fetchCohortDetails = cohortId => dispatch =>
   getData(`/api/cohorts/${cohortId}/data`)
     .then(resp => resp.json())
-    .then(json => dispatch(fetchCohortDetailsSuccess(json, cohortId)))
+    .then(json => {
+      const data = {
+        ...json,
+        members: _keyBy(json.members, '_id')
+      };
+      dispatch(fetchCohortDetailsSuccess(data, cohortId));
+    })
     .catch(err => {
       if (!(err instanceof NotFoundException)) {
         dispatch(fetchCohortDetailsFailure());

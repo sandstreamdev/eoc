@@ -10,8 +10,7 @@ const User = require('../models/user.model');
 const sendUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
 
-  resp.cookie('user', JSON.stringify({ avatarUrl, id, name }));
-  resp.redirect('/');
+  resp.send({ avatarUrl, id, name });
 };
 
 const logout = (req, resp) => {
@@ -19,18 +18,8 @@ const logout = (req, resp) => {
     req.logout();
 
     resp.clearCookie('connect.sid');
-    resp.clearCookie('user');
-    resp.clearCookie('demo');
     resp.redirect('/');
   });
-};
-
-const sendDemoUser = (req, resp) => {
-  const { avatarUrl, _id: id, displayName: name } = req.user;
-
-  resp.cookie('user', JSON.stringify({ avatarUrl, id, name }));
-  resp.cookie('demo', true);
-  resp.redirect('/');
 };
 
 const signUp = (req, resp, next) => {
@@ -188,6 +177,16 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const getLoggedUser = (req, resp) => {
+  if (req.user) {
+    const { avatarUrl, _id: id, displayName: name } = req.user;
+
+    return resp.send({ avatarUrl, id, name });
+  }
+
+  return resp.sendStatus(204);
+};
+
 const resetPassword = (req, resp, next) => {
   const { email } = req.body;
   const sanitizedEmail = sanitize(email);
@@ -250,10 +249,10 @@ const resetPassword = (req, resp, next) => {
 
 module.exports = {
   confirmEmail,
+  getLoggedUser,
   logout,
   resendSignUpConfirmationLink,
   resetPassword,
-  sendDemoUser,
   sendUser,
   signUp
 };

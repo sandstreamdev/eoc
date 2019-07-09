@@ -2,17 +2,19 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  authenticate,
   authenticateCallback,
-  setDemoUser
+  authenticateWithGoogle,
+  setDemoUser,
+  setUser
 } = require('../config/auth');
-const { signUp, resetPassword } = require('../controllers/userAuth');
 const {
   confirmEmail,
+  getLoggedUser,
   logout,
   resendSignUpConfirmationLink,
-  sendDemoUser,
-  sendUser
+  resetPassword,
+  sendUser,
+  signUp
 } = require('../controllers/userAuth');
 const {
   removeDemoUserChanges
@@ -22,17 +24,19 @@ const {
   sendSignUpConfirmationLink
 } = require('../mailer');
 
-router.post('/demo', setDemoUser, sendDemoUser);
-router.get('/google', authenticate);
-router.get('/google/callback', authenticateCallback, sendUser);
+router.post('/demo', setDemoUser, sendUser);
+router.get('/google', authenticateWithGoogle);
+router.get('/google/callback', authenticateCallback);
 router.post('/logout', removeDemoUserChanges, logout);
 router.post('/sign-up', signUp, sendSignUpConfirmationLink);
 router.get('/confirm-email/:hash', confirmEmail);
+router.post('/sign-in', setUser, sendUser);
 router.post(
   '/resend-confirmation-link',
   resendSignUpConfirmationLink,
   sendSignUpConfirmationLink
 );
+router.get('/user', getLoggedUser);
 router.post('/reset-password', resetPassword, sendResetPasswordLink);
 
 module.exports = router;

@@ -133,7 +133,7 @@ class MembersBox extends PureComponent {
     return membersList.slice(0, membersDisplayLimit).map(member => (
       <li
         className="members-box__list-item"
-        key={member.avatarUrl}
+        key={member._id}
         title={member.displayName}
       >
         <div className="members-box__button-mobile">
