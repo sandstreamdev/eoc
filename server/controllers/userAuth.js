@@ -260,7 +260,7 @@ const updatePassword = (req, resp) => {
     _trim(updatedPassword) !== _trim(passwordConfirmation);
 
   if (validationError || passwordsNoMatch) {
-    return resp.sendStatus(406);
+    return resp.sendStatus(400);
   }
 
   User.findOne({ resetToken: sanitizedToken })

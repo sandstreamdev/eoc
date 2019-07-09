@@ -8,7 +8,6 @@ import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
-import { ValidationException } from 'common/exceptions/ValidationException';
 import { updatePassword } from '../model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from '../../../common/components/PendingButton';
@@ -21,8 +20,7 @@ class PasswordRecoveryForm extends PureComponent {
       errors: {
         comparePasswordsError: '',
         passwordError: '',
-        passwordUpdateError: false,
-        validationError: false
+        passwordUpdateError: false
       },
       password: '',
       passwordConfirmation: '',
@@ -77,22 +75,16 @@ class PasswordRecoveryForm extends PureComponent {
     this.setState({ pending: true });
     updatePassword(token, password, passwordConfirmation)
       .then(() => this.setState({ pending: false }))
-      .catch(err => this.handleErrors(err));
+      .catch(() => this.handleErrors());
   };
 
-  handleErrors = err => {
+  handleErrors = () => {
     const { errors } = this.state;
-    let validationErrorValue = false;
-
-    if (err instanceof ValidationException) {
-      validationErrorValue = true;
-    }
 
     this.setState({
       errors: {
         ...errors,
-        passwordUpdateError: true,
-        validationError: validationErrorValue
+        passwordUpdateError: true
       },
       password: '',
       passwordConfirmation: '',
@@ -166,12 +158,7 @@ class PasswordRecoveryForm extends PureComponent {
 
   render() {
     const {
-      errors: {
-        passwordError,
-        comparePasswordsError,
-        passwordUpdateError,
-        validationError
-      },
+      errors: { passwordError, comparePasswordsError, passwordUpdateError },
       password,
       passwordConfirmation,
       passwordConfirmationSuccess,
@@ -217,13 +204,7 @@ class PasswordRecoveryForm extends PureComponent {
           </PendingButton>
           {passwordUpdateError && (
             <div className="pass-recovery-form__error">
-              <FormattedMessage
-                id={
-                  validationError
-                    ? 'authorization.pass-recovery-form.validation-error'
-                    : 'common.something-went-wrong'
-                }
-              />
+              <FormattedMessage id="common.something-went-wrong" />
             </div>
           )}
         </div>
