@@ -47,7 +47,7 @@ class Cohorts extends Component {
       this.setState({ pendingForCohorts: false })
     );
 
-    socket.emit('joinCohortsRoom', id);
+    socket.emit('enterCohortsView', id);
     this.receiveWSEvents();
   }
 
@@ -57,7 +57,7 @@ class Cohorts extends Component {
       socket
     } = this.props;
 
-    socket.emit('leavingCohortsRoom', id);
+    socket.emit('leavingCohortsView', id);
   }
 
   receiveWSEvents = () => {

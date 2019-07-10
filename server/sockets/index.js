@@ -59,13 +59,11 @@ const socketListenTo = server => {
       socket.leave(`cohort-${cohortId}`);
     });
 
-    socket.on('joinCohortsRoom', userId => {
-      socket.join('cohorts');
+    socket.on('enterCohortsView', userId => {
       cohortsClients.set(userId, socket.id);
     });
 
-    socket.on('leavingCohortsRoom', userId => {
-      socket.leave('cohorts');
+    socket.on('leavingCohortsView', userId => {
       cohortsClients.delete(userId);
     });
 
