@@ -59,7 +59,8 @@ const ItemActionTypes = Object.freeze({
   ADD_SUCCESS: 'item/ADD_SUCCESS',
   ARCHIVE_SUCCESS: 'item/ARCHIVE_SUCCESS',
   DELETE_SUCCESS: 'item/DELETE_SUCCESS',
-  RESTORE_SUCCESS: 'item/RESTORE_SUCCESS'
+  RESTORE_SUCCESS: 'item/RESTORE_SUCCESS',
+  UPDATE_SUCCESS: 'item/UPDATE_SUCCESS'
 });
 
 const ItemStatusType = Object.freeze({
