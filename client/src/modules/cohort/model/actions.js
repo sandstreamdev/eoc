@@ -294,6 +294,7 @@ export const addCohortMember = (cohortId, email, socket) => dispatch =>
     .then(json => {
       if (json._id) {
         const data = { cohortId, json };
+
         socket.emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
         dispatch(addMemberSuccess(json, cohortId));
 

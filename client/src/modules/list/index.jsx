@@ -43,6 +43,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
 import withSocket from 'common/hoc/withSocket';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
+import { ListActionTypes } from 'modules/list/model/actionTypes';
 
 class List extends Component {
   state = {
@@ -138,6 +139,12 @@ class List extends Component {
     });
 
     socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
+      const { listId, member } = data;
+
+      addListViewerWS(listId, member);
+    });
+
+    socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
       const { listId, member } = data;
 
       addListViewerWS(listId, member);

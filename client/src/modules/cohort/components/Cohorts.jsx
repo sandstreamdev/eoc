@@ -24,6 +24,8 @@ import Breadcrumbs from 'common/components/Breadcrumbs';
 import { ColorType, Routes, ViewType } from 'common/constants/enums';
 import withSocket from 'common/hoc/withSocket';
 import { CohortActionTypes } from '../model/actionTypes';
+import { ListActionTypes } from 'modules/list/model/actionTypes';
+import { addListsOnAddingNewCohortMemberWS } from 'modules/list/model/actions';
 
 class Cohorts extends Component {
   state = {
@@ -66,6 +68,10 @@ class Cohorts extends Component {
     socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
       createOrUpdateCohortOnAddingNewMemberWS(data);
     });
+
+    socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data =>
+      addListsOnAddingNewCohortMemberWS(data)
+    );
   };
 
   handleDialogVisibility = () =>

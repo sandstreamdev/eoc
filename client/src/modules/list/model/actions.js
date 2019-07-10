@@ -375,13 +375,16 @@ export const removeListFromFavourites = (listId, listName) => dispatch =>
       });
     });
 
-export const addListViewer = (listId, email) => dispatch =>
+export const addListViewer = (listId, email, socket) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
     .then(resp => resp.json())
     .then(json => {
       if (json._id) {
+        const data = { listId, json };
+
+        socket.emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
         dispatch(addViewerSuccess(json, listId));
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',

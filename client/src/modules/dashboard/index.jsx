@@ -25,6 +25,7 @@ import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import withSocket from 'common/hoc/withSocket';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { ListActionTypes } from 'modules/list/model/actionTypes';
 
 class Dashboard extends Component {
   state = {
@@ -64,9 +65,13 @@ class Dashboard extends Component {
   receiveWSEvents = () => {
     const { addListsOnAddingNewCohortMemberWS, socket } = this.props;
 
-    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
-      addListsOnAddingNewCohortMemberWS(data);
-    });
+    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data =>
+      addListsOnAddingNewCohortMemberWS(data)
+    );
+
+    socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data =>
+      addListsOnAddingNewCohortMemberWS(data)
+    );
   };
 
   handleDialogVisibility = () =>
