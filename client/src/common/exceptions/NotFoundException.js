@@ -1,1 +1,1 @@
-export class NotFoundException extends Error {}
+export class ResourceNotFoundException extends Error {}

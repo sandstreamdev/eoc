@@ -11,7 +11,7 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
-import { NotFoundException } from 'common/exceptions';
+import { ResourceNotFoundException } from 'common/exceptions';
 
 const createCohortSuccess = data => ({
   type: CohortActionTypes.CREATE_SUCCESS,
@@ -214,7 +214,7 @@ export const deleteCohort = (cohortId, cohortName) => dispatch =>
       history.replace('/cohorts');
     })
     .catch(err => {
-      if (!(err instanceof NotFoundException)) {
+      if (!(err instanceof ResourceNotFoundException)) {
         dispatch(deleteCohortFailure());
         createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
           notificationId: 'cohort.actions.delete-cohort-fail',
@@ -271,7 +271,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
     .then(resp => resp.json())
     .then(json => dispatch(fetchCohortDetailsSuccess(json, cohortId)))
     .catch(err => {
-      if (!(err instanceof NotFoundException)) {
+      if (!(err instanceof ResourceNotFoundException)) {
         dispatch(fetchCohortDetailsFailure());
         createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
           notificationId: 'cohort.actions.fetch-details-fail'
