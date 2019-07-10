@@ -59,10 +59,10 @@ class ListItemName extends PureComponent {
         params: { id: listId }
       },
       name,
-      updateListItem,
-      socket,
       onBusy,
-      onFree
+      onFree,
+      socket,
+      updateListItem
     } = this.props;
     const isNameUpdated = updatedName !== name;
     const canBeUpdated = updatedName.trim().length > 1;
