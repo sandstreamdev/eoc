@@ -16,6 +16,7 @@ import {
   archiveItem,
   clearVote,
   cloneItem,
+  cloneItemWS,
   setVote,
   toggle,
   updateListItemWS
@@ -61,12 +62,18 @@ class ListItem extends PureComponent {
   }
 
   receiveWSEvents = () => {
-    const { socket, updateListItemWS } = this.props;
+    const { socket, updateListItemWS, cloneItemWS } = this.props;
 
     socket.on(ItemActionTypes.UPDATE_SUCCESS, itemData => {
       const { listId, itemId, data } = itemData;
 
       updateListItemWS(itemId, listId, data);
+    });
+
+    socket.on(ItemActionTypes.CLONE_SUCCESS, data => {
+      const { listId, item } = data;
+
+      cloneItemWS(listId, item);
     });
   };
 
@@ -129,13 +136,16 @@ class ListItem extends PureComponent {
       isMember,
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
 
     this.itemBusy();
 
     if (isMember) {
-      return cloneItem(name, listId, itemId).finally(() => this.itemFree());
+      return cloneItem(name, listId, itemId, socket).finally(() =>
+        this.itemFree()
+      );
     }
   };
 
@@ -482,6 +492,7 @@ ListItem.propTypes = {
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
+  cloneItemWS: PropTypes.func.isRequired,
   onBusy: PropTypes.func.isRequired,
   onFree: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
@@ -499,6 +510,14 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { archiveItem, clearVote, cloneItem, setVote, toggle, updateListItemWS }
+    {
+      archiveItem,
+      clearVote,
+      cloneItem,
+      cloneItemWS,
+      setVote,
+      toggle,
+      updateListItemWS
+    }
   )
 )(ListItem);

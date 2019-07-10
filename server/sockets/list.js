@@ -57,9 +57,17 @@ const updateItemWS = socket => {
   );
 };
 
+const cloneItemWS = socket =>
+  socket.on(ItemActionTypes.CLONE_SUCCESS, data => {
+    socket.broadcast
+      .to(`list-${data.listId}`)
+      .emit(ItemActionTypes.CLONE_SUCCESS, data);
+  });
+
 module.exports = {
   addItemToListWS,
   archiveItemWS,
+  cloneItemWS,
   deleteItemWS,
   restoreItemWS,
   updateItemState,
