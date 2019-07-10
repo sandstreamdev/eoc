@@ -1,5 +1,4 @@
 import React, { Fragment, PureComponent } from 'react';
-import io from 'socket.io-client';
 import PropTypes from 'prop-types';
 import _flowRight from 'lodash/flowRight';
 import { connect } from 'react-redux';
@@ -18,6 +17,7 @@ import {
 } from 'common/constants/propTypes';
 import { ItemStatusType } from './model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
+import withSocket from 'common/hoc/withSocket';
 
 const DISPLAY_LIMIT = 3;
 
@@ -30,29 +30,14 @@ class ItemsList extends PureComponent {
       busyBySomeoneItemId: '',
       limit: DISPLAY_LIMIT
     };
-
-    this.socket = undefined;
   }
 
   componentDidMount() {
-    this.handleSocketConnection();
     this.receiveWSEvents();
   }
 
   componentDidUpdate() {
     this.emitWSEvents();
-  }
-
-  componentWillUnmount() {
-    const {
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-
-    this.socket.emit('leavingListRoom', listId);
-
-    // or disconnect from the socket here
   }
 
   emitWSEvents = () => {
@@ -61,18 +46,19 @@ class ItemsList extends PureComponent {
       match: {
         params: { id: listId }
       },
-      currentUser: { id: userId }
+      currentUser: { id: userId },
+      socket
     } = this.props;
 
     if (busyItemId) {
-      this.socket.emit(ItemStatusType.BUSY, {
+      socket.emit(ItemStatusType.BUSY, {
         itemId: busyItemId,
         listId,
         userId
       });
     }
 
-    this.socket.emit(ItemStatusType.FREE, {
+    socket.emit(ItemStatusType.FREE, {
       itemId: busyItemId,
       listId,
       userId
@@ -81,10 +67,11 @@ class ItemsList extends PureComponent {
 
   receiveWSEvents = () => {
     const {
-      currentUser: { id: currentUserId }
+      currentUser: { id: currentUserId },
+      socket
     } = this.props;
 
-    this.socket.on(ItemStatusType.BUSY, data => {
+    socket.on(ItemStatusType.BUSY, data => {
       const { itemId, userId } = data;
 
       if (currentUserId !== userId) {
@@ -92,30 +79,13 @@ class ItemsList extends PureComponent {
       }
     });
 
-    this.socket.on(ItemStatusType.FREE, data => {
+    socket.on(ItemStatusType.FREE, data => {
       const { itemId, userId } = data;
 
       if (currentUserId !== userId) {
         this.setState({ busyBySomeoneItemId: itemId });
       }
     });
-  };
-
-  handleSocketConnection = () => {
-    const {
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-
-    if (!this.socket) {
-      this.socket = io();
-    }
-
-    this.socket = io();
-    this.socket.on('connect', () =>
-      this.socket.emit('joinListRoom', `list-${listId}`)
-    );
   };
 
   showMore = event => {
@@ -145,7 +115,7 @@ class ItemsList extends PureComponent {
     return archived ? (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {items.slice(0, limit).map((item, index) => {
+          {items.slice(0, limit).map(item => {
             const isItemBlocked = item._id === busyBySomeoneItemId;
 
             return (
@@ -243,13 +213,17 @@ ItemsList.propTypes = {
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),
-  match: RouterMatchPropType.isRequired
+  match: RouterMatchPropType.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any)
 };
 
 const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(withRouter, injectIntl, connect(mapStateToProps))(
-  ItemsList
-);
+export default _flowRight(
+  withSocket,
+  withRouter,
+  injectIntl,
+  connect(mapStateToProps)
+)(ItemsList);

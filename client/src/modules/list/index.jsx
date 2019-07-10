@@ -59,7 +59,7 @@ class List extends Component {
     this.fetchData().finally(() => {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
-      this.handleSocketConnection();
+      this.handleRoomConnection();
       this.receiveWSEvents();
     });
   }
@@ -94,13 +94,13 @@ class List extends Component {
     socket.emit('leavingListRoom', listId);
   }
 
-  handleSocketConnection = () => {
+  handleRoomConnection = () => {
     const {
       list: { _id: listId },
       socket
     } = this.props;
 
-    socket.on('connect', () => socket.emit('joinListRoom', `list-${listId}`));
+    socket.emit('joinListRoom', `list-${listId}`);
   };
 
   receiveWSEvents = () => {

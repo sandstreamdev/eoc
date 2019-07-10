@@ -59,7 +59,8 @@ const ItemActionTypes = Object.freeze({
   ADD_SUCCESS: 'item/ADD_SUCCESS',
   ARCHIVE_SUCCESS: 'item/ARCHIVE_SUCCESS',
   DELETE_SUCCESS: 'item/DELETE_SUCCESS',
-  RESTORE_SUCCESS: 'item/RESTORE_SUCCESS'
+  RESTORE_SUCCESS: 'item/RESTORE_SUCCESS',
+  UPDATE_SUCCESS: 'item/UPDATE_SUCCESS'
 });
 
 const ItemStatusType = Object.freeze({
@@ -71,15 +72,20 @@ const CohortActionTypes = Object.freeze({
   ADD_MEMBER_SUCCESS: 'cohort/ADD_MEMBER_SUCCESS'
 });
 
+const CommentActionTypes = Object.freeze({
+  ADD_SUCCESS: 'comment/ADD_SUCCESS'
+});
+
 module.exports = {
-  NUMBER_OF_ACTIVITIES_TO_SEND,
   ActivityType,
   CohortActionTypes,
+  CommentActionTypes,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,
   ItemActionTypes,
   ItemStatusType,
   ListType,
+  NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME
 };

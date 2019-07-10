@@ -3,6 +3,7 @@ const validator = require('validator');
 const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
@@ -142,7 +143,7 @@ const confirmEmail = (req, resp) => {
       }
       resp.redirect('/account-created');
     })
-    .catch(() => resp.redirect(`/link-expired/${signUpHash}`));
+    .catch(() => resp.redirect(`/confirmation-link-expired/${signUpHash}`));
 };
 
 const resendSignUpConfirmationLink = (req, resp, next) => {
@@ -200,7 +201,7 @@ const resetPassword = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error();
+        throw new Error('authorization.actions.reset');
       }
 
       const { displayName, isActive, idFromProvider } = user;
@@ -247,12 +248,135 @@ const resetPassword = (req, resp, next) => {
     });
 };
 
+const recoveryPassword = (req, resp) => {
+  const { token: resetToken } = req.params;
+
+  User.findOne({
+    resetToken,
+    resetTokenExpirationDate: { $gte: new Date() }
+  })
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+      resp.redirect(`/password-recovery/${resetToken}`);
+    })
+    .catch(() => resp.redirect(`/recovery-link-expired/${resetToken}`));
+};
+
+const updatePassword = (req, resp) => {
+  const { password: updatedPassword, passwordConfirmation } = req.body;
+  const { matches } = validator;
+  const { token } = req.params;
+
+  const sanitizedToken = sanitize(token);
+  const validationError = !matches(updatedPassword, /^[^\s]{4,32}$/);
+  const passwordsNoMatch =
+    _trim(updatedPassword) !== _trim(passwordConfirmation);
+
+  if (validationError || passwordsNoMatch) {
+    return resp.sendStatus(400);
+  }
+
+  User.findOne({ resetToken: sanitizedToken })
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error();
+      }
+
+      const { resetTokenExpirationDate, email } = user;
+      const now = new Date().getTime();
+
+      if (resetTokenExpirationDate < now) {
+        resp.redirect(`/recovery-link-expired/${token}`);
+
+        throw new Error();
+      }
+
+      const hashedPassword = bcrypt.hashSync(updatedPassword + email, 12);
+
+      return User.findOneAndUpdate(
+        { resetToken: sanitizedToken },
+        {
+          password: hashedPassword,
+          resetToken: null,
+          resetTokenExpirationDate: null
+        }
+      ).exec();
+    })
+    .then(() => resp.sendStatus(200))
+    .catch(err => {
+      if (err instanceof BadRequestException) {
+        const { message } = err;
+
+        resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
+const resendRecoveryLink = (req, resp, next) => {
+  const { token } = req.params;
+  const sanitizedToken = sanitize(token);
+  const newToken = crypto.randomBytes(32).toString('hex');
+  const newExpirationDate = new Date().getTime() + 3600000;
+
+  User.findOneAndUpdate(
+    {
+      resetToken: sanitizedToken
+    },
+    {
+      resetToken: newToken,
+      resetTokenExpirationDate: newExpirationDate
+    }
+  )
+    .lean()
+    .exec()
+    .then(user => {
+      if (!user) {
+        throw new Error('authorization.actions.reset');
+      }
+      const { isActive } = user;
+
+      if (!isActive) {
+        throw new Error();
+      }
+
+      const { displayName, email } = user;
+
+      // eslint-disable-next-line no-param-reassign
+      resp.locales = {
+        displayName,
+        email,
+        resetToken: newToken
+      };
+
+      next();
+    })
+    .catch(err => {
+      const { message } = err;
+
+      if (message) {
+        return resp.status(400).send({ message });
+      }
+
+      resp.sendStatus(400);
+    });
+};
+
 module.exports = {
   confirmEmail,
   getLoggedUser,
   logout,
+  recoveryPassword,
+  resendRecoveryLink,
   resendSignUpConfirmationLink,
   resetPassword,
   sendUser,
-  signUp
+  signUp,
+  updatePassword
 };

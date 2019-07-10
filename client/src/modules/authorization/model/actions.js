@@ -2,6 +2,7 @@ import { getData, postData, postRequest } from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
+import history from 'common/utils/history';
 
 export const AuthorizationActionTypes = Object.freeze({
   LOGIN_FAILURE: 'LOGIN_FAILURE',
@@ -80,7 +81,7 @@ export const getLoggedUser = () => dispatch =>
     });
 
 export const resetPassword = email => dispatch =>
-  postData('auth/reset-password', { email })
+  postData('/auth/reset-password', { email })
     .then(() => {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'authorization.actions.reset',
@@ -96,8 +97,19 @@ export const resetPassword = email => dispatch =>
         dispatch,
         err.message ? NotificationType.ERROR_NO_RETRY : NotificationType.ERROR,
         {
-          notificationId: err.message || 'common.something-went-wrong',
+          notificationId:
+            err.message ||
+            'authorization.actions.recovery-password-default-error',
           data: email
         }
       );
     });
+
+export const updatePassword = (token, password, passwordConfirmation) =>
+  postData(`/auth/update-password/${token}`, {
+    password,
+    passwordConfirmation
+  }).then(() => history.replace('/password-recovery-success'));
+
+export const resendRecoveryLink = token =>
+  postData(`/auth/resend-recovery-link/${token}`);

@@ -10,9 +10,10 @@ import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import AuthBox, {
-  AccountCreated,
   LinkExpired,
-  ResetPassword
+  PasswordRecoveryForm,
+  ResetPassword,
+  SuccessMessage
 } from 'modules/authorization';
 import { getLoggedUser } from 'modules/authorization/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
@@ -96,9 +97,21 @@ export class Layout extends PureComponent {
         <Switch>
           <Route component={AuthBox} exact path="/" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
-          <Route component={AccountCreated} path="/account-created" />
-          <Route component={LinkExpired} path="/link-expired/:hash?" />
+          <Route component={SuccessMessage} path="/account-created" />
+          <Route
+            component={LinkExpired}
+            path="/confirmation-link-expired/:token?"
+          />
           <Route component={ResetPassword} path="/reset-password" />
+          <Route
+            component={LinkExpired}
+            path="/recovery-link-expired/:token?"
+          />
+          <Route
+            component={PasswordRecoveryForm}
+            path="/password-recovery/:token?"
+          />
+          <Route component={SuccessMessage} path="/password-recovery-success" />
           <Redirect to="/" />
         </Switch>
       </Fragment>

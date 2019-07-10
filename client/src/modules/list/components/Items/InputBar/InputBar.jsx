@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import io from 'socket.io-client';
 
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import {
@@ -18,6 +17,7 @@ import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { EventTypes, KeyCodes } from 'common/constants/enums';
+import withSocket from 'common/hoc/withSocket';
 
 class InputBar extends Component {
   constructor(props) {
@@ -32,7 +32,6 @@ class InputBar extends Component {
     };
 
     this.input = React.createRef();
-    this.socket = undefined;
   }
 
   componentDidUpdate() {
@@ -44,10 +43,6 @@ class InputBar extends Component {
 
     if (isTipVisible) {
       this.hideTipAfterTimeout();
-    }
-
-    if (!this.socket) {
-      this.socket = io();
     }
   }
 
@@ -119,7 +114,7 @@ class InputBar extends Component {
 
     if (_trim(itemName)) {
       this.setState({ pending: true });
-      const { socket } = this;
+      const { socket } = this.props;
 
       return addItem(newItem, id, socket).finally(() => {
         this.setState({ itemName: '', pending: false });
@@ -227,6 +222,7 @@ InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   match: RouterMatchPropType.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
 
   addItem: PropTypes.func.isRequired
 };
@@ -236,6 +232,7 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   withRouter,
   connect(

@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _trim from 'lodash/trim';
 import _isEqual from 'lodash/isEqual';
+import _flowRight from 'lodash/flowRight';
 import Linkify from 'react-linkify';
 import Textarea from 'react-textarea-autosize';
 import classNames from 'classnames';
@@ -18,6 +19,7 @@ import { updateListItem } from '../model/actions';
 import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
+import withSocket from 'common/hoc/withSocket';
 
 class ListItemDescription extends PureComponent {
   pendingPromise = null;
@@ -42,7 +44,9 @@ class ListItemDescription extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     this.isDescriptionUpdated();
     const { isTextareaVisible: isPreviousIsTextareaVisible } = prevState;
+    const { description: prevDescription } = prevProps;
     const { isTextareaVisible } = this.state;
+    const { description } = this.props;
 
     if (!isPreviousIsTextareaVisible && isTextareaVisible) {
       this.descriptionTextarea.current.focus();
@@ -52,6 +56,10 @@ class ListItemDescription extends PureComponent {
     if (isPreviousIsTextareaVisible && !isTextareaVisible) {
       this.handleBlur();
     }
+
+    if (prevDescription !== description) {
+      this.updateDescription();
+    }
   }
 
   componentWillUnmount() {
@@ -59,6 +67,12 @@ class ListItemDescription extends PureComponent {
       this.pendingPromise.abort();
     }
   }
+
+  updateDescription = () => {
+    const { description } = this.props;
+
+    this.setState({ descriptionTextareaValue: description });
+  };
 
   handleEscapePress = event => {
     const { code } = event;
@@ -119,7 +133,8 @@ class ListItemDescription extends PureComponent {
         params: { id: listId }
       },
       name,
-      updateListItem
+      updateListItem,
+      socket
     } = this.props;
 
     if (disabled) {
@@ -130,7 +145,7 @@ class ListItemDescription extends PureComponent {
       this.setState({ pending: true });
 
       this.pendingPromise = makeAbortablePromise(
-        updateListItem(name, listId, itemId, { description })
+        updateListItem(name, listId, itemId, { description }, socket)
       );
 
       return this.pendingPromise.promise
@@ -289,15 +304,18 @@ ListItemDescription.propTypes = {
   itemId: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
 
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,
   updateListItem: PropTypes.func.isRequired
 };
 
-export default withRouter(
+export default _flowRight(
+  withSocket,
+  withRouter,
   connect(
     null,
     { updateListItem }
-  )(ListItemDescription)
-);
+  )
+)(ListItemDescription);

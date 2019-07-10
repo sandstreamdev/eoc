@@ -10,11 +10,13 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
 const {
+  addCommentWS,
   addItemToListWS,
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,
-  updateItemState
+  updateItemState,
+  updateItemWS
 } = require('./list');
 const { addCohortMemberWS } = require('./cohort');
 
@@ -90,6 +92,8 @@ const socketListenTo = server => {
     updateItemState(socket);
     deleteItemWS(socket);
     restoreItemWS(socket);
+    updateItemWS(socket);
+    addCommentWS(socket);
 
     addCohortMemberWS(socket, cohortsClients, dashboardClients);
   });

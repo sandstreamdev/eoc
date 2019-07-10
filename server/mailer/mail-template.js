@@ -61,7 +61,7 @@ const mailTemplate = (receiver, sender, hostUrl, title, info, value) => {
               <tr style="width:100%;">
                 <td style="padding-top:40px;
                            width:100%;">
-                  <a href="${hostUrl}">
+                  <a href="http://${hostUrl}">
                     <input style="
                       background: #ef9b1f;
                       border: 0;

@@ -201,7 +201,13 @@ export const clearVote = (itemId, listId, itemName) => dispatch =>
       });
     });
 
-export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
+export const updateListItem = (
+  itemName,
+  listId,
+  itemId,
+  data,
+  socket
+) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId
@@ -212,6 +218,7 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
         notificationId: 'list.items.actions.update-item',
         data: itemName
       });
+      socket.emit(ItemActionTypes.UPDATE_SUCCESS, { listId, itemId, data });
     })
     .catch(() => {
       dispatch(updateListItemFailure());
@@ -220,6 +227,9 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
         data: itemName
       });
     });
+
+export const updateListItemWS = (itemId, listId, data) => dispatch =>
+  dispatch(updateListItemSuccess(listId, itemId, data));
 
 export const cloneItem = (itemName, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
@@ -241,14 +251,17 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
       });
     });
 
-export const addComment = (listId, itemId, text) => dispatch =>
+export const addComment = (listId, itemId, text, socket) => dispatch =>
   postData('/api/comments/add-comment', {
     itemId,
     listId,
     text
   })
     .then(resp => resp.json())
-    .then(json => dispatch(addCommentSuccess(listId, itemId, json)))
+    .then(json => {
+      dispatch(addCommentSuccess(listId, itemId, json));
+      socket.emit(CommentActionTypes.ADD_SUCCESS, { listId, itemId, json });
+    })
     .catch(() => {
       dispatch(addCommentFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
@@ -256,6 +269,9 @@ export const addComment = (listId, itemId, text) => dispatch =>
         data: text
       });
     });
+
+export const addCommentWS = (listId, itemId, data) => dispatch =>
+  dispatch(addCommentSuccess(listId, itemId, data));
 
 export const fetchComments = (itemName, listId, itemId) => dispatch =>
   getData(`/api/comments/${listId}/${itemId}/data`)

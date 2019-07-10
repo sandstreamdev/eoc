@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import io from 'socket.io-client';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
 import {
@@ -18,7 +17,8 @@ import {
   clearVote,
   cloneItem,
   setVote,
-  toggle
+  toggle,
+  updateListItemWS
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -27,6 +27,8 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
+import withSocket from 'common/hoc/withSocket';
+import { ItemActionTypes } from '../model/actionTypes';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -44,12 +46,10 @@ class ListItem extends PureComponent {
       isNameEdited: false,
       isConfirmationVisible: false
     };
-
-    this.socket = undefined;
   }
 
   componentDidMount() {
-    this.handleSocketConnection();
+    this.receiveWSEvents();
   }
 
   componentDidUpdate(prevProps) {
@@ -60,31 +60,14 @@ class ListItem extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    const {
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
+  receiveWSEvents = () => {
+    const { socket, updateListItemWS } = this.props;
 
-    this.socket.emit('leavingListRoom', listId);
-  }
+    socket.on(ItemActionTypes.UPDATE_SUCCESS, itemData => {
+      const { listId, itemId, data } = itemData;
 
-  handleSocketConnection = () => {
-    const {
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-
-    if (!this.socket) {
-      this.socket = io();
-    }
-
-    this.socket = io();
-    this.socket.on('connect', () =>
-      this.socket.emit('joinListRoom', `list-${listId}`)
-    );
+      updateListItemWS(itemId, listId, data);
+    });
   };
 
   handleBusyBySomeone = () => {
@@ -191,9 +174,9 @@ class ListItem extends PureComponent {
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
-    const { socket } = this;
 
     this.itemBusy();
 
@@ -230,10 +213,8 @@ class ListItem extends PureComponent {
   };
 
   handleNameBlur = () => {
-    const { onFree } = this.props;
-
     this.setState({ isNameEdited: false });
-    onFree();
+    this.itemFree();
   };
 
   itemBusy = () => {
@@ -378,8 +359,6 @@ class ListItem extends PureComponent {
             isFormAccessible={isMember && !isOrdered}
             itemId={itemId}
             itemName={name}
-            onBlur={this.itemFree}
-            onFocus={this.itemBusy}
           />
         </div>
       </Fragment>
@@ -450,7 +429,9 @@ class ListItem extends PureComponent {
                 itemId={_id}
                 name={name}
                 onBlur={this.handleNameBlur}
+                onBusy={this.itemBusy}
                 onFocus={this.handleNameFocus}
+                onFree={this.itemFree}
               />
               <span className="list-item__author">
                 <FormattedMessage
@@ -494,6 +475,7 @@ ListItem.propTypes = {
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
 
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
@@ -501,7 +483,8 @@ ListItem.propTypes = {
   onBusy: PropTypes.func.isRequired,
   onFree: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired,
+  updateListItemWS: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -509,10 +492,11 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   withRouter,
   connect(
     mapStateToProps,
-    { archiveItem, clearVote, cloneItem, setVote, toggle }
+    { archiveItem, clearVote, cloneItem, setVote, toggle, updateListItemWS }
   )
 )(ListItem);
