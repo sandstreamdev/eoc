@@ -15,7 +15,7 @@ import SocketContext from 'common/context/socket-context';
 
 addLocaleData([...en]);
 const store = configureStore();
-const socket = io();
+const socket = io({ forceNew: true });
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,8 +1,12 @@
 const {
   ItemActionTypes,
   ItemStatusType,
-  CommentActionTypes
+  CohortActionTypes,
+  CommentActionTypes,
+  ListType
 } = require('../common/variables');
+const List = require('../models/list.model');
+const { responseWithListsMetaData } = require('../common/utils');
 
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
@@ -69,12 +73,60 @@ const addCommentWS = socket => {
   );
 };
 
+const sendListsOnAddCohortMember = (socket, clients) => {
+  socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
+    const {
+      cohortId,
+      json: { _id: userId }
+    } = data;
+
+    List.find(
+      {
+        cohortId,
+        type: ListType.SHARED
+      },
+      '_id cohortId name description items favIds type'
+    )
+      .lean()
+      .exec()
+      .then(docs => {
+        if (docs) {
+          const lists = responseWithListsMetaData(docs, userId);
+          const sharedListIds = lists.map(list => list._id.toString());
+          const { json } = data;
+          const member = {
+            ...json,
+            isMember: false,
+            isViewer: true
+          };
+
+          // sends new cohort's member data to all users
+          // on cohort's shared lists views
+          sharedListIds.forEach(listId => {
+            socket.broadcast
+              .to(`list-${listId}`)
+              .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, { listId, member });
+          });
+
+          // sends shared lists metadata to new cohort
+          // member if they are already on dashboard
+          if (clients.has(userId)) {
+            socket.broadcast
+              .to(clients.get(userId))
+              .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, lists);
+          }
+        }
+      });
+  });
+};
+
 module.exports = {
   addCommentWS,
   addItemToListWS,
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,
+  sendListsOnAddCohortMember,
   updateItemState,
   updateItemWS
 };

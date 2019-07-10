@@ -1,17 +1,10 @@
-const { CohortActionTypes, ListType } = require('../common/variables');
+const { CohortActionTypes } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
-const List = require('../models/list.model');
-const {
-  responseWithCohort,
-  responseWithListsMetaData
-} = require('../common/utils');
+const { responseWithCohort } = require('../common/utils');
 
-const addCohortMemberWS = (socket, cohortClients, dashboardClients) => {
+const addCohortMemberWS = (socket, cohortClients) => {
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
-    const {
-      cohortId,
-      json: { _id: userId }
-    } = data;
+    const { cohortId } = data;
 
     // sends new cohort member to all user on this cohort view
     socket.broadcast
@@ -42,48 +35,6 @@ const addCohortMemberWS = (socket, cohortClients, dashboardClients) => {
           }
         });
     }
-
-    List.find(
-      {
-        cohortId,
-        type: ListType.SHARED
-      },
-      '_id cohortId name description items favIds type'
-    )
-      .select()
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const lists = responseWithListsMetaData(docs, userId);
-          const sharedListIds = lists.map(list => list._id.toString());
-
-          // sends shared lists metadata to new cohort
-          // member if they are already on dashboard
-          if (dashboardClients.has(userId)) {
-            socket.broadcast
-              .to(dashboardClients.get(userId))
-              .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, lists);
-          }
-
-          // sends new cohort member data to all users
-          // on cohort's shared lists views
-          if (sharedListIds.length > 0) {
-            const { json } = data;
-            const member = {
-              ...json,
-              isMember: false,
-              isViewer: true
-            };
-
-            sharedListIds.forEach(listId => {
-              socket.broadcast
-                .to(`list-${listId}`)
-                .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, { listId, member });
-            });
-          }
-        }
-      });
   });
 };
 
