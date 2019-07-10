@@ -326,7 +326,7 @@
 
   &__busy-overlay {
     align-items: center;
-    background: rgba($brand-color, 0.4);
+    background: transparent;
     color: $bg-color;
     display: flex;
     font-size: $l-font;
