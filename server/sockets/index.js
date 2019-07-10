@@ -47,37 +47,29 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinListRoom', room => {
-      socket.join(room);
-    });
+    socket.on('joinListRoom', room => socket.join(room));
 
-    socket.on('leavingListRoom', listId => {
-      socket.leave(`cohort-${listId}`);
-    });
+    socket.on('leavingListRoom', listId => socket.leave(`cohort-${listId}`));
 
-    socket.on('joinCohortRoom', room => {
-      socket.join(room);
-    });
+    socket.on('joinCohortRoom', room => socket.join(room));
 
-    socket.on('leavingCohortRoom', cohortId => {
-      socket.leave(`cohort-${cohortId}`);
-    });
+    socket.on('leavingCohortRoom', cohortId =>
+      socket.leave(`cohort-${cohortId}`)
+    );
 
-    socket.on('enterCohortsView', userId => {
-      cohortsClients.set(userId, socket.id);
-    });
+    socket.on('enterCohortsView', userId =>
+      cohortsClients.set(userId, socket.id)
+    );
 
-    socket.on('leavingCohortsView', userId => {
-      cohortsClients.delete(userId);
-    });
+    socket.on('leavingCohortsView', userId => cohortsClients.delete(userId));
 
-    socket.on('enterDashboardView', userId => {
-      dashboardClients.set(userId, socket.id);
-    });
+    socket.on('enterDashboardView', userId =>
+      dashboardClients.set(userId, socket.id)
+    );
 
-    socket.on('leavingDashboardView', userId => {
-      dashboardClients.delete(userId);
-    });
+    socket.on('leavingDashboardView', userId =>
+      dashboardClients.delete(userId)
+    );
 
     socket.on('error', () => {
       /* Ignore error.

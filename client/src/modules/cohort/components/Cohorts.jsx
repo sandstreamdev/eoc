@@ -7,7 +7,7 @@ import _flowRight from 'lodash/flowRight';
 import { CohortIcon } from 'assets/images/icons';
 import {
   createCohort,
-  createOrUpdateCohortOnAddingNewMemberWS,
+  addCohortToStoreWS,
   fetchArchivedCohortsMetaData,
   fetchCohortsMetaData,
   removeArchivedCohortsMetaData
@@ -61,11 +61,11 @@ class Cohorts extends Component {
   }
 
   receiveWSEvents = () => {
-    const { createOrUpdateCohortOnAddingNewMemberWS, socket } = this.props;
+    const { addCohortToStoreWS, socket } = this.props;
 
-    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
-      createOrUpdateCohortOnAddingNewMemberWS(data);
-    });
+    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data =>
+      addCohortToStoreWS(data)
+    );
   };
 
   handleDialogVisibility = () =>
@@ -204,7 +204,7 @@ Cohorts.propTypes = {
   socket: PropTypes.objectOf(PropTypes.any),
 
   createCohort: PropTypes.func.isRequired,
-  createOrUpdateCohortOnAddingNewMemberWS: PropTypes.func.isRequired,
+  addCohortToStoreWS: PropTypes.func.isRequired,
   fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
   removeArchivedCohortsMetaData: PropTypes.func.isRequired
@@ -223,7 +223,7 @@ export default _flowRight(
     mapStateToProps,
     {
       createCohort,
-      createOrUpdateCohortOnAddingNewMemberWS,
+      addCohortToStoreWS,
       fetchArchivedCohortsMetaData,
       fetchCohortsMetaData,
       removeArchivedCohortsMetaData
