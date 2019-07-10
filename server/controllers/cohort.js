@@ -511,8 +511,9 @@ const leaveCohort = (req, resp) => {
       }
 
       const { memberIds, ownerIds } = doc;
+      const isOwner = isCohortOwner(doc, userId);
 
-      if (isCohortOwner(doc, userId)) {
+      if (isOwner) {
         if (ownerIds.length === 1) {
           throw new BadRequestException(
             'cohort.actions.leave-cohort-only-one-owner'
