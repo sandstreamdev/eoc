@@ -8,7 +8,6 @@ const {
  * this from controllers naming convention
  */
 const addItemToListWS = socket => {
-  console.log('additem');
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     socket.broadcast
       .to(`list-${data.listId}`)

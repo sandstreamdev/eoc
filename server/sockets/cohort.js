@@ -69,7 +69,6 @@ const addCohortMemberWS = (socket, cohortClients, dashboardClients) => {
           // sends new cohort member data to all users
           // on cohort's shared lists views
           if (sharedListIds.length > 0) {
-            console.log('listy są');
             const { json } = data;
             const member = {
               ...json,
@@ -78,7 +77,6 @@ const addCohortMemberWS = (socket, cohortClients, dashboardClients) => {
             };
 
             sharedListIds.forEach(listId => {
-              console.log(`list-${listId}`);
               socket.broadcast
                 .to(`list-${listId}`)
                 .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, { listId, member });

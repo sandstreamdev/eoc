@@ -139,7 +139,6 @@ class List extends Component {
 
     socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
       const { listId, member } = data;
-      console.lof('addMember');
 
       addListViewerWS(listId, member);
     });

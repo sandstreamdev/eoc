@@ -47,7 +47,6 @@ const socketListenTo = server => {
     }
 
     socket.on('joinListRoom', room => {
-      console.log(room);
       socket.join(room);
     });
 
