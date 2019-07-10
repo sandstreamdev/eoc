@@ -41,6 +41,7 @@ import {
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
+import { ResourceNotFoundException } from 'common/exceptions/ResourceNotFoundException';
 
 class List extends Component {
   constructor(props) {
@@ -60,12 +61,18 @@ class List extends Component {
   componentDidMount() {
     this.setState({ pendingForDetails: true });
 
-    this.fetchData().finally(() => {
-      this.setState({ pendingForDetails: false });
-      this.handleBreadcrumbs();
-      this.handleSocketConnection();
-      this.receiveWSEvents();
-    });
+    this.fetchData()
+      .then(() => {
+        this.handleBreadcrumbs();
+        this.handleSocketConnection();
+        this.receiveWSEvents();
+        this.setState({ pendingForDetails: false });
+      })
+      .catch(err => {
+        if (!(err instanceof ResourceNotFoundException)) {
+          this.setState({ pendingForDetails: false });
+        }
+      });
   }
 
   componentDidUpdate(prevProps) {
@@ -88,12 +95,15 @@ class List extends Component {
 
   componentWillUnmount() {
     const {
+      list,
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    this.socket.emit('leavingRoom', listId);
+    if (list) {
+      this.socket.emit('leavingRoom', listId);
+    }
   }
 
   handleSocketConnection = () => {
