@@ -251,14 +251,17 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
       });
     });
 
-export const addComment = (listId, itemId, text) => dispatch =>
+export const addComment = (listId, itemId, text, socket) => dispatch =>
   postData('/api/comments/add-comment', {
     itemId,
     listId,
     text
   })
     .then(resp => resp.json())
-    .then(json => dispatch(addCommentSuccess(listId, itemId, json)))
+    .then(json => {
+      dispatch(addCommentSuccess(listId, itemId, json));
+      socket.emit(CommentActionTypes.ADD_SUCCESS, { listId, itemId, json });
+    })
     .catch(() => {
       dispatch(addCommentFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
@@ -266,6 +269,9 @@ export const addComment = (listId, itemId, text) => dispatch =>
         data: text
       });
     });
+
+export const addCommentWS = (listId, itemId, data) => dispatch =>
+  dispatch(addCommentSuccess(listId, itemId, data));
 
 export const fetchComments = (itemName, listId, itemId) => dispatch =>
   getData(`/api/comments/${listId}/${itemId}/data`)

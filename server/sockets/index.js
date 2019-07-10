@@ -10,6 +10,7 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
 const {
+  addCommentWS,
   addItemToListWS,
   archiveItemWS,
   deleteItemWS,
@@ -63,6 +64,7 @@ const socketListenTo = server => {
     deleteItemWS(socket);
     restoreItemWS(socket);
     updateItemWS(socket);
+    addCommentWS(socket);
   });
 };
 
