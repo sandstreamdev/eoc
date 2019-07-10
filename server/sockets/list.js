@@ -73,7 +73,7 @@ const addCommentWS = socket => {
   );
 };
 
-const sendListsOnAddCohortMember = (socket, clients) => {
+const sendListsOnAddCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const {
       cohortId,
@@ -118,7 +118,6 @@ const sendListsOnAddCohortMember = (socket, clients) => {
         }
       });
   });
-};
 
 module.exports = {
   addCommentWS,

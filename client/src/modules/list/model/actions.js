@@ -240,7 +240,7 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const addListsOnAddingNewCohortMemberWS = data => dispatch => {
+export const addListsToStoreWS = data => dispatch => {
   const dataMap = _keyBy(data, '_id');
   dispatch(fetchListsMetaDataSuccess(dataMap));
 };

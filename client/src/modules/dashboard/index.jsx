@@ -6,7 +6,7 @@ import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
 import {
-  addListsOnAddingNewCohortMemberWS,
+  addListsToStoreWS,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
@@ -63,14 +63,14 @@ class Dashboard extends Component {
   }
 
   receiveWSEvents = () => {
-    const { addListsOnAddingNewCohortMemberWS, socket } = this.props;
+    const { addListsToStoreWS, socket } = this.props;
 
     socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data =>
-      addListsOnAddingNewCohortMemberWS(data)
+      addListsToStoreWS(data)
     );
 
     socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data =>
-      addListsOnAddingNewCohortMemberWS(data)
+      addListsToStoreWS(data)
     );
   };
 
@@ -213,7 +213,7 @@ Dashboard.propTypes = {
   socket: PropTypes.objectOf(PropTypes.any),
   viewType: PropTypes.string.isRequired,
 
-  addListsOnAddingNewCohortMemberWS: PropTypes.func.isRequired,
+  addListsToStoreWS: PropTypes.func.isRequired,
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
@@ -234,7 +234,7 @@ export default _flowRight(
     mapStateToProps,
     {
       createList,
-      addListsOnAddingNewCohortMemberWS,
+      addListsToStoreWS,
       fetchArchivedListsMetaData,
       fetchListsMetaData,
       removeArchivedListsMetaData

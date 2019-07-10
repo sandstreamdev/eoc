@@ -158,7 +158,7 @@ export const createCohort = data => dispatch =>
       });
     });
 
-export const createOrUpdateCohortOnAddingNewMemberWS = data => dispatch =>
+export const addCohortToStoreWS = data => dispatch =>
   dispatch(createCohortSuccess(data));
 
 export const fetchCohortsMetaData = () => dispatch =>

@@ -7,7 +7,7 @@ import _flowRight from 'lodash/flowRight';
 import { CohortIcon } from 'assets/images/icons';
 import {
   createCohort,
-  createOrUpdateCohortOnAddingNewMemberWS,
+  addCohortToStoreWS,
   fetchArchivedCohortsMetaData,
   fetchCohortsMetaData,
   removeArchivedCohortsMetaData
@@ -25,7 +25,7 @@ import { ColorType, Routes, ViewType } from 'common/constants/enums';
 import withSocket from 'common/hoc/withSocket';
 import { CohortActionTypes } from '../model/actionTypes';
 import { ListActionTypes } from 'modules/list/model/actionTypes';
-import { addListsOnAddingNewCohortMemberWS } from 'modules/list/model/actions';
+import { addListsToStoreWS } from 'modules/list/model/actions';
 
 class Cohorts extends Component {
   state = {
@@ -63,14 +63,14 @@ class Cohorts extends Component {
   }
 
   receiveWSEvents = () => {
-    const { createOrUpdateCohortOnAddingNewMemberWS, socket } = this.props;
+    const { addCohortToStoreWS, socket } = this.props;
 
-    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
-      createOrUpdateCohortOnAddingNewMemberWS(data);
-    });
+    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data =>
+      addCohortToStoreWS(data)
+    );
 
     socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data =>
-      addListsOnAddingNewCohortMemberWS(data)
+      addListsToStoreWS(data)
     );
   };
 
@@ -210,7 +210,7 @@ Cohorts.propTypes = {
   socket: PropTypes.objectOf(PropTypes.any),
 
   createCohort: PropTypes.func.isRequired,
-  createOrUpdateCohortOnAddingNewMemberWS: PropTypes.func.isRequired,
+  addCohortToStoreWS: PropTypes.func.isRequired,
   fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
   removeArchivedCohortsMetaData: PropTypes.func.isRequired
@@ -229,7 +229,7 @@ export default _flowRight(
     mapStateToProps,
     {
       createCohort,
-      createOrUpdateCohortOnAddingNewMemberWS,
+      addCohortToStoreWS,
       fetchArchivedCohortsMetaData,
       fetchCohortsMetaData,
       removeArchivedCohortsMetaData
