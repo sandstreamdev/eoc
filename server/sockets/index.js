@@ -14,7 +14,8 @@ const {
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,
-  updateItemState
+  updateItemState,
+  updateItemWS
 } = require('./list');
 
 const socketListenTo = server => {
@@ -61,6 +62,7 @@ const socketListenTo = server => {
     updateItemState(socket);
     deleteItemWS(socket);
     restoreItemWS(socket);
+    updateItemWS(socket);
   });
 };
 
