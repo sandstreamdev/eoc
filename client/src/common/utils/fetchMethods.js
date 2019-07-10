@@ -1,7 +1,7 @@
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 import {
-  NotFoundException,
+  ResourceNotFoundException,
   UnauthorizedException,
   ValidationException
 } from 'common/exceptions';
@@ -23,7 +23,7 @@ const handleFetchErrors = resp => {
 
   if (resp.status === ResponseStatusCode.NOT_FOUND) {
     history.replace('/page-not-found');
-    throw new NotFoundException();
+    throw new ResourceNotFoundException();
   }
 
   if (resp.status === ResponseStatusCode.BAD_REQUEST) {

@@ -11,7 +11,7 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
-import { NotFoundException } from 'common/exceptions/NotFoundException';
+import { ResourceNotFoundException } from 'common/exceptions';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -189,7 +189,7 @@ export const fetchListData = listId => dispatch =>
       dispatch(fetchListDataSuccess(listData, listId));
     })
     .catch(err => {
-      if (!(err instanceof NotFoundException)) {
+      if (!(err instanceof ResourceNotFoundException)) {
         dispatch(fetchListDataFailure());
         createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
           notificationId: 'list.actions.fetch-data-fail'
