@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import io from 'socket.io-client';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import {
@@ -15,6 +14,7 @@ import {
 } from 'modules/list/model/selectors';
 import InputBar from 'modules/list/components/Items/InputBar';
 import {
+  addListViewerWS,
   archiveList,
   fetchListData,
   leaveList
@@ -41,21 +41,17 @@ import {
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
+import withSocket from 'common/hoc/withSocket';
+import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 
 class List extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      breadcrumbs: [],
-      dialogContext: null,
-      isMembersBoxVisible: false,
-      pendingForDetails: false,
-      pendingForListArchivization: false
-    };
-
-    this.socket = undefined;
-  }
+  state = {
+    breadcrumbs: [],
+    dialogContext: null,
+    isMembersBoxVisible: false,
+    pendingForDetails: false,
+    pendingForListArchivization: false
+  };
 
   componentDidMount() {
     this.setState({ pendingForDetails: true });
@@ -77,11 +73,12 @@ class List extends Component {
     const {
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
 
     if (prevListId !== listId) {
-      this.socket.emit('leavingListRoom', prevListId);
+      socket.emit('leavingListRoom', prevListId);
       this.fetchData();
     }
   }
@@ -90,53 +87,61 @@ class List extends Component {
     const {
       match: {
         params: { id: listId }
-      }
+      },
+      socket
     } = this.props;
 
-    this.socket.emit('leavingListRoom', listId);
+    socket.emit('leavingListRoom', listId);
   }
 
   handleSocketConnection = () => {
     const {
-      list: { _id: listId }
+      list: { _id: listId },
+      socket
     } = this.props;
 
-    this.socket = io();
-    this.socket.on('connect', () =>
-      this.socket.emit('joinListRoom', `list-${listId}`)
-    );
+    socket.on('connect', () => socket.emit('joinListRoom', `list-${listId}`));
   };
 
   receiveWSEvents = () => {
     const {
       addItemWS,
+      addListViewerWS,
       archiveItemWS,
       deleteItemWS,
-      restoreItemWS
+      restoreItemWS,
+      socket
     } = this.props;
 
-    this.socket.on(ItemActionTypes.ADD_SUCCESS, data => {
+    socket.on(ItemActionTypes.ADD_SUCCESS, data => {
       const { item, listId } = data;
 
       addItemWS(item, listId);
     });
 
-    this.socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
+    socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
       const { itemId, listId } = data;
 
       archiveItemWS(listId, itemId);
     });
 
-    this.socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
+    socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
       const { itemId, listId } = data;
 
       deleteItemWS(listId, itemId);
     });
 
-    this.socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
+    socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
       const { itemId, listId } = data;
 
       restoreItemWS(listId, itemId);
+    });
+
+    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
+      const { listId, member } = data;
+      console.lof('addMember');
+
+      addListViewerWS(listId, member);
     });
   };
 
@@ -350,9 +355,11 @@ List.propTypes = {
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
+  socket: PropTypes.objectOf(PropTypes.any),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   addItemWS: PropTypes.func.isRequired,
+  addListViewerWS: PropTypes.func.isRequired,
   archiveItemWS: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
   deleteItemWS: PropTypes.func.isRequired,
@@ -378,12 +385,14 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   withRouter,
   connect(
     mapStateToProps,
     {
       addItemWS,
+      addListViewerWS,
       archiveItemWS,
       archiveList,
       deleteItemWS,

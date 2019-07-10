@@ -32,6 +32,7 @@ const socketListenTo = server => {
   );
 
   const cohortsClients = new Map();
+  const dashboardClients = new Map();
 
   ioInstance.on('connection', socket => {
     const {
@@ -44,6 +45,7 @@ const socketListenTo = server => {
     }
 
     socket.on('joinListRoom', room => {
+      console.log(room);
       socket.join(room);
     });
 
@@ -67,6 +69,14 @@ const socketListenTo = server => {
       cohortsClients.delete(userId);
     });
 
+    socket.on('enterDashboardView', userId => {
+      dashboardClients.set(userId, socket.id);
+    });
+
+    socket.on('leavingDashboardView', userId => {
+      dashboardClients.delete(userId);
+    });
+
     socket.on('error', () => {
       /* Ignore error.
        * Don't show any information to a user
@@ -81,7 +91,7 @@ const socketListenTo = server => {
     deleteItemWS(socket);
     restoreItemWS(socket);
 
-    addCohortMemberWS(socket, cohortsClients);
+    addCohortMemberWS(socket, cohortsClients, dashboardClients);
   });
 };
 

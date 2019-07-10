@@ -6,6 +6,7 @@ import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
 import {
+  addListsOnAddingNewCohortMemberWS,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
@@ -20,7 +21,10 @@ import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import { ColorType, Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
-import { IntlPropType } from 'common/constants/propTypes';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
+import withSocket from 'common/hoc/withSocket';
+import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class Dashboard extends Component {
   state = {
@@ -32,14 +36,38 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    const { fetchListsMetaData } = this.props;
+    const {
+      currentUser: { id },
+      fetchListsMetaData,
+      socket
+    } = this.props;
 
     this.setState({ pendingForLists: true });
 
     fetchListsMetaData().finally(() =>
       this.setState({ pendingForLists: false })
     );
+
+    socket.emit('enterDashboardView', id);
+    this.receiveWSEvents();
   }
+
+  componentWillUnmount() {
+    const {
+      currentUser: { id },
+      socket
+    } = this.props;
+
+    socket.emit('leavingDashboardView', id);
+  }
+
+  receiveWSEvents = () => {
+    const { addListsOnAddingNewCohortMemberWS, socket } = this.props;
+
+    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
+      addListsOnAddingNewCohortMemberWS(data);
+    });
+  };
 
   handleDialogVisibility = () =>
     this.setState(({ isDialogVisible }) => ({
@@ -174,10 +202,13 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
+  currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   privateLists: PropTypes.objectOf(PropTypes.object),
+  socket: PropTypes.objectOf(PropTypes.any),
   viewType: PropTypes.string.isRequired,
 
+  addListsOnAddingNewCohortMemberWS: PropTypes.func.isRequired,
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
@@ -187,15 +218,18 @@ Dashboard.propTypes = {
 const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
   cohortLists: getCohortsLists(state),
+  currentUser: getCurrentUser(state),
   privateLists: getPrivateLists(state)
 });
 
 export default _flowRight(
+  withSocket,
   injectIntl,
   connect(
     mapStateToProps,
     {
       createList,
+      addListsOnAddingNewCohortMemberWS,
       fetchArchivedListsMetaData,
       fetchListsMetaData,
       removeArchivedListsMetaData

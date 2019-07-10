@@ -235,6 +235,11 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
+export const addListsOnAddingNewCohortMemberWS = data => dispatch => {
+  const dataMap = _keyBy(data, '_id');
+  dispatch(fetchListsMetaDataSuccess(dataMap));
+};
+
 export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
     ? `/api/lists/archived/${cohortId}`
@@ -390,6 +395,10 @@ export const addListViewer = (listId, email) => dispatch =>
         data: email
       });
     });
+
+export const addListViewerWS = (listId, data) => dispatch => {
+  dispatch(addViewerSuccess(data, listId));
+};
 
 export const removeListMember = (
   listId,
