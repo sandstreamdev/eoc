@@ -8,6 +8,7 @@ import {
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ITEM_TOGGLE_TIME } from '../ListItem/constants';
+import socketInstance from 'sockets';
 
 const addItemFailure = errorMessage => ({
   type: ItemActionTypes.ADD_FAILURE,
@@ -134,7 +135,7 @@ export const addItem = (item, listId, socket) => dispatch =>
         item: json,
         listId
       };
-      socket.emit(ItemActionTypes.ADD_SUCCESS, data);
+      socketInstance.emit(ItemActionTypes.ADD_SUCCESS, data);
       dispatch(addItemSuccess(json, listId));
     })
     .catch(err => {
