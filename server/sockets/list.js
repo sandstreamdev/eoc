@@ -61,18 +61,25 @@ const updateItemWS = socket => {
   );
 };
 
-const addCommentWS = socket => {
+const addCommentWS = socket =>
   socket.on(CommentActionTypes.ADD_SUCCESS, data =>
     socket.broadcast
       .to(`list-${data.listId}`)
       .emit(CommentActionTypes.ADD_SUCCESS, data)
   );
-};
+
+const cloneItemWS = socket =>
+  socket.on(ItemActionTypes.CLONE_SUCCESS, data =>
+    socket.broadcast
+      .to(`list-${data.listId}`)
+      .emit(ItemActionTypes.CLONE_SUCCESS, data)
+  );
 
 module.exports = {
   addCommentWS,
   addItemToListWS,
   archiveItemWS,
+  cloneItemWS,
   deleteItemWS,
   restoreItemWS,
   updateItemState,

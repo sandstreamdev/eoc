@@ -231,17 +231,20 @@ export const updateListItem = (
 export const updateListItemWS = (itemId, listId, data) => dispatch =>
   dispatch(updateListItemSuccess(listId, itemId, data));
 
-export const cloneItem = (itemName, listId, itemId) => dispatch =>
+export const cloneItem = (itemName, listId, itemId, socket) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
     itemId
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(cloneItemSuccess(listId, json.item));
+      const { item } = json;
+
+      dispatch(cloneItemSuccess(listId, item));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.clone-item',
         data: itemName
       });
+      socket.emit(ItemActionTypes.CLONE_SUCCESS, { listId, item });
     })
     .catch(err => {
       dispatch(cloneItemFailure());
@@ -250,6 +253,9 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
         data: itemName
       });
     });
+
+export const cloneItemWS = (listId, item) => dispatch =>
+  dispatch(cloneItemSuccess(listId, item));
 
 export const addComment = (listId, itemId, text, socket) => dispatch =>
   postData('/api/comments/add-comment', {

@@ -13,6 +13,7 @@ const {
   addCommentWS,
   addItemToListWS,
   archiveItemWS,
+  cloneItemWS,
   deleteItemWS,
   restoreItemWS,
   updateItemState,
@@ -65,6 +66,7 @@ const socketListenTo = server => {
     restoreItemWS(socket);
     updateItemWS(socket);
     addCommentWS(socket);
+    cloneItemWS(socket);
   });
 };
 
