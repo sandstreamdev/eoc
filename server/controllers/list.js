@@ -3,6 +3,7 @@ const sanitize = require('mongo-sanitize');
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
 const {
+  checkIfArrayContainsUserId,
   filter,
   isMember,
   isOwner,
@@ -609,7 +610,8 @@ const removeMember = (req, resp) => {
       $pull: {
         viewersIds: sanitizedUserId,
         memberIds: sanitizedUserId,
-        ownerIds: sanitizedUserId
+        ownerIds: sanitizedUserId,
+        favIds: sanitizedUserId
       }
     }
   )
@@ -1242,7 +1244,7 @@ const leaveList = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { viewersIds, memberIds, ownerIds } = list;
+      const { favIds, viewersIds, memberIds, ownerIds } = list;
 
       if (isOwner(list, userId)) {
         if (ownerIds.length === 1) {
@@ -1258,6 +1260,10 @@ const leaveList = (req, resp) => {
 
       if (isViewer(list, userId)) {
         viewersIds.splice(viewersIds.indexOf(userId), 1);
+      }
+
+      if (checkIfArrayContainsUserId(favIds, userId)) {
+        favIds.splice(favIds.indexOf(userId), 1);
       }
 
       return list.save();
