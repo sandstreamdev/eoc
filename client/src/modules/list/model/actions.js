@@ -221,6 +221,9 @@ export const createList = data => dispatch =>
       });
     });
 
+export const addListToStoreWS = data => dispatch =>
+  dispatch(createListSuccess(data));
+
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
     ? `/api/lists/meta-data/${cohortId}`

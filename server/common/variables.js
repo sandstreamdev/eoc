@@ -76,6 +76,10 @@ const CommentActionTypes = Object.freeze({
   ADD_SUCCESS: 'comment/ADD_SUCCESS'
 });
 
+const ListActionTypes = Object.freeze({
+  ADD_VIEWER_SUCCESS: 'list/ADD_VIEWER_SUCCESS'
+});
+
 module.exports = {
   ActivityType,
   CohortActionTypes,
@@ -85,6 +89,7 @@ module.exports = {
   DEMO_USER_ID,
   ItemActionTypes,
   ItemStatusType,
+  ListActionTypes,
   ListType,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME

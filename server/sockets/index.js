@@ -12,6 +12,7 @@ const sessionStore = new MongoStore({
 const {
   addCommentWS,
   addItemToListWS,
+  addListMemberWS,
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,
@@ -80,6 +81,7 @@ const socketListenTo = server => {
     });
 
     addItemToListWS(socket);
+    addListMemberWS(socket, dashboardClients);
     archiveItemWS(socket);
     updateItemState(socket);
     deleteItemWS(socket);

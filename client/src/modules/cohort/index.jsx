@@ -10,6 +10,7 @@ import {
   getCohortArchivedLists
 } from 'modules/list/model/selectors';
 import {
+  addListToStoreWS,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
@@ -44,6 +45,7 @@ import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import withSocket from 'common/hoc/withSocket';
 import { CohortActionTypes } from './model/actionTypes';
+import { ListActionTypes } from 'modules/list/model/actionTypes';
 
 class Cohort extends PureComponent {
   pendingPromises = [];
@@ -166,13 +168,17 @@ class Cohort extends PureComponent {
   };
 
   receiveWSEvents = () => {
-    const { addCohortMemberWS, socket } = this.props;
+    const { addCohortMemberWS, addListToStoreWS, socket } = this.props;
 
     socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
       const { cohortId, json } = data;
 
       addCohortMemberWS(cohortId, json);
     });
+
+    socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data =>
+      addListToStoreWS(data)
+    );
   };
 
   handleListCreation = (name, description) => {
@@ -430,6 +436,7 @@ Cohort.propTypes = {
   viewType: PropTypes.string.isRequired,
 
   addCohortMemberWS: PropTypes.func.isRequired,
+  addListToStoreWS: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
@@ -462,6 +469,7 @@ export default _flowRight(
     mapStateToProps,
     {
       addCohortMemberWS,
+      addListToStoreWS,
       archiveCohort,
       createList,
       fetchArchivedListsMetaData,

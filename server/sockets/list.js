@@ -3,10 +3,14 @@ const {
   ItemStatusType,
   CohortActionTypes,
   CommentActionTypes,
+  ListActionTypes,
   ListType
 } = require('../common/variables');
 const List = require('../models/list.model');
-const { responseWithListsMetaData } = require('../common/utils');
+const {
+  responseWithList,
+  responseWithListsMetaData
+} = require('../common/utils');
 
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
@@ -85,7 +89,7 @@ const sendListsOnAddCohortMember = (socket, clients) =>
         cohortId,
         type: ListType.SHARED
       },
-      '_id cohortId name description items favIds type'
+      '_id created_at cohortId name description items favIds type'
     )
       .lean()
       .exec()
@@ -100,16 +104,12 @@ const sendListsOnAddCohortMember = (socket, clients) =>
             isViewer: true
           };
 
-          // sends new cohort's member data to all users
-          // on cohort's shared lists views
           sharedListIds.forEach(listId => {
             socket.broadcast
               .to(`list-${listId}`)
               .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, { listId, member });
           });
 
-          // sends shared lists metadata to new cohort
-          // member if they are already on dashboard
           if (clients.has(userId)) {
             socket.broadcast
               .to(clients.get(userId))
@@ -119,9 +119,45 @@ const sendListsOnAddCohortMember = (socket, clients) =>
       });
   });
 
+const addListMemberWS = (socket, clients) => {
+  socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
+    const {
+      listId,
+      json: { _id: memberId }
+    } = data;
+
+    socket.broadcast
+      .to(`list-${listId}`)
+      .emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
+
+    List.findById(listId)
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { cohortId } = doc;
+          const list = responseWithList(doc, memberId);
+
+          if (cohortId) {
+            socket.broadcast
+              .to(`cohort-${cohortId.toString()}`)
+              .emit(ListActionTypes.ADD_VIEWER_SUCCESS, list);
+          }
+
+          if (clients.has(memberId)) {
+            socket.broadcast
+              .to(clients.get(memberId))
+              .emit(ListActionTypes.ADD_VIEWER_SUCCESS, list);
+          }
+        }
+      });
+  });
+};
+
 module.exports = {
   addCommentWS,
   addItemToListWS,
+  addListMemberWS,
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,

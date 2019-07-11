@@ -145,9 +145,9 @@ class List extends Component {
     });
 
     socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
-      const { listId, member } = data;
+      const { listId, json } = data;
 
-      addListViewerWS(listId, member);
+      addListViewerWS(listId, json);
     });
   };
 

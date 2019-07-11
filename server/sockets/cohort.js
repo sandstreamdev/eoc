@@ -2,18 +2,15 @@ const { CohortActionTypes } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
 
-const addCohortMemberWS = (socket, cohortClients) =>
+const addCohortMemberWS = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const { cohortId } = data;
 
-    // sends new cohort member to all user on this cohort view
     socket.broadcast
       .to(`cohort-${data.cohortId}`)
       .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
-    // sends updated cohort metadata to users (which are members
-    // of this cohort including the new one) on cohorts view
-    if (cohortClients.size > 0) {
+    if (clients.size > 0) {
       Cohort.findById(cohortId)
         .select('_id isArchived createdAt name description memberIds')
         .lean()
@@ -26,9 +23,9 @@ const addCohortMemberWS = (socket, cohortClients) =>
             memberIds.forEach(id => {
               const memberId = id.toString();
 
-              if (cohortClients.has(memberId)) {
+              if (clients.has(memberId)) {
                 socket.broadcast
-                  .to(cohortClients.get(memberId))
+                  .to(clients.get(memberId))
                   .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, cohort);
               }
             });
