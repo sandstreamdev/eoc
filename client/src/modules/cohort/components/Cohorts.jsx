@@ -203,8 +203,8 @@ Cohorts.propTypes = {
   intl: IntlPropType.isRequired,
   socket: PropTypes.objectOf(PropTypes.any),
 
-  createCohort: PropTypes.func.isRequired,
   addCohortToStoreWS: PropTypes.func.isRequired,
+  createCohort: PropTypes.func.isRequired,
   fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
   removeArchivedCohortsMetaData: PropTypes.func.isRequired
