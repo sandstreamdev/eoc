@@ -1,13 +1,6 @@
 import io from 'socket.io-client';
 
-const socketInstance = (() => {
-  let socket;
-  if (!socket) {
-    socket = io();
-  }
-
-  return socket;
-})();
+const socketInstance = io({ forceNew: true });
 
 export const joinRoom = (route, id) =>
   socketInstance.emit(`joinRoom-${route}`, `${route}-${id}`);

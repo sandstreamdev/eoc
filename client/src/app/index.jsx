@@ -21,6 +21,8 @@ const socket = io();
 
 receiveEvents(store.dispatch, socketInstance);
 
+console.log(socketInstance);
+
 ReactDOM.render(
   <Provider store={store}>
     <IntlProvider locale="en" messages={enData}>

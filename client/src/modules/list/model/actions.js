@@ -14,6 +14,8 @@ import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions/ResourceNotFoundException';
 import socketInstance from 'sockets';
 
+console.log(socketInstance);
+
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
   payload: errMessage
