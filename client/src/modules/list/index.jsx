@@ -31,16 +31,9 @@ import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
-import {
-  addItemWS,
-  archiveItemWS,
-  deleteItemWS,
-  restoreItemWS
-} from './components/Items/model/actions';
-import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
-import withSocket from 'common/hoc/withSocket';
+import { joinRoom, leaveRoom } from 'sockets';
 
 class List extends Component {
   constructor(props) {
@@ -62,8 +55,15 @@ class List extends Component {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
       this.handleRoomConnection();
-      this.receiveWSEvents();
     });
+
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props;
+
+    joinRoom(Routes.LIST, id);
   }
 
   componentDidUpdate(prevProps) {
@@ -75,12 +75,11 @@ class List extends Component {
     const {
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
     if (prevListId !== listId) {
-      socket.emit('leavingRoom', prevListId);
+      joinRoom(Routes.LIST, listId);
       this.fetchData();
     }
   }
@@ -88,56 +87,12 @@ class List extends Component {
   componentWillUnmount() {
     const {
       match: {
-        params: { id: listId }
-      },
-      socket
+        params: { id }
+      }
     } = this.props;
 
-    socket.emit('leavingRoom', listId);
+    leaveRoom(Routes.LIST, id);
   }
-
-  handleRoomConnection = () => {
-    const {
-      list: { _id: listId },
-      socket
-    } = this.props;
-
-    socket.emit('joinRoom', `list-${listId}`);
-  };
-
-  receiveWSEvents = () => {
-    const {
-      addItemWS,
-      archiveItemWS,
-      deleteItemWS,
-      restoreItemWS,
-      socket
-    } = this.props;
-
-    socket.on(ItemActionTypes.ADD_SUCCESS, data => {
-      const { item, listId } = data;
-
-      addItemWS(item, listId);
-    });
-
-    socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
-      const { itemId, listId } = data;
-
-      archiveItemWS(listId, itemId);
-    });
-
-    socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
-      const { itemId, listId } = data;
-
-      deleteItemWS(listId, itemId);
-    });
-
-    socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
-      const { itemId, listId } = data;
-
-      restoreItemWS(listId, itemId);
-    });
-  };
 
   handleBreadcrumbs = () => {
     const {
@@ -349,16 +304,11 @@ List.propTypes = {
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
-  socket: PropTypes.objectOf(PropTypes.any),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
-  addItemWS: PropTypes.func.isRequired,
-  archiveItemWS: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
-  deleteItemWS: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
-  leaveList: PropTypes.func.isRequired,
-  restoreItemWS: PropTypes.func.isRequired
+  leaveList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -378,19 +328,14 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   withRouter,
   connect(
     mapStateToProps,
     {
-      addItemWS,
-      archiveItemWS,
       archiveList,
-      deleteItemWS,
       fetchListData,
-      leaveList,
-      restoreItemWS
+      leaveList
     }
   )
 )(List);

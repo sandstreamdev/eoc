@@ -12,6 +12,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions/ResourceNotFoundException';
+import socketInstance from 'sockets';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -212,6 +213,7 @@ export const createList = data => dispatch =>
         notificationId: 'list.actions.create-list',
         data: data.name
       });
+      socketInstance.emit(ListActionTypes.CREATE_SUCCESS, { json });
     })
     .catch(() => {
       dispatch(createListFailure());
