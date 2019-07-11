@@ -1,9 +1,9 @@
 import {
   ITEMS_EVENTS,
-  LIST_EVENTS,
-  COHORT_EVENTS,
-  ACTIVITIES_EVENTS,
-  COMMENT_EVENTS
+  LIST_EVENTS
+  // COHORT_EVENTS,
+  // ACTIVITIES_EVENTS,
+  // COMMENT_EVENTS
 } from './enums';
 
 export const receiveEvents = (dispatch, socket) => {
