@@ -86,13 +86,14 @@ class Cohort extends PureComponent {
 
   componentWillUnmount() {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       },
       socket
     } = this.props;
 
-    socket.emit('leavingCohortRoom', cohortId);
+    socket.emit('leavingCohortRoom', { room: `cohort-${cohortId}`, userId });
 
     this.pendingPromises.forEach(promise => promise.abort());
   }
@@ -158,13 +159,14 @@ class Cohort extends PureComponent {
 
   handleSocketConnection = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       },
       socket
     } = this.props;
 
-    socket.emit('joinCohortRoom', `cohort-${cohortId}`);
+    socket.emit('joinCohortRoom', { room: `cohort-${cohortId}`, userId });
   };
 
   receiveWSEvents = () => {

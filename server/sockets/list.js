@@ -119,7 +119,7 @@ const sendListsOnAddCohortMember = (socket, clients) =>
       });
   });
 
-const addListMemberWS = (socket, clients) => {
+const addListMemberWS = (socket, dashboardClients, cohortClients) => {
   socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
     const {
       listId,
@@ -138,15 +138,15 @@ const addListMemberWS = (socket, clients) => {
           const { cohortId } = doc;
           const list = responseWithList(doc, memberId);
 
-          if (cohortId) {
-            socket.broadcast
-              .to(`cohort-${cohortId.toString()}`)
+          if (cohortId && cohortClients.has(memberId)) {
+            socket
+              .to(cohortClients.get(memberId))
               .emit(ListActionTypes.ADD_VIEWER_SUCCESS, list);
           }
 
-          if (clients.has(memberId)) {
-            socket.broadcast
-              .to(clients.get(memberId))
+          if (dashboardClients.has(memberId)) {
+            socket
+              .to(dashboardClients.get(memberId))
               .emit(ListActionTypes.ADD_VIEWER_SUCCESS, list);
           }
         }

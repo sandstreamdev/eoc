@@ -35,8 +35,9 @@ const socketListenTo = server => {
     })
   );
 
-  const cohortsClients = new Map();
-  const dashboardClients = new Map();
+  const cohortViewClients = new Map();
+  const allCohortsViewClients = new Map();
+  const dashboardViewClients = new Map();
 
   ioInstance.on('connection', socket => {
     const {
@@ -52,24 +53,34 @@ const socketListenTo = server => {
 
     socket.on('leavingListRoom', listId => socket.leave(`cohort-${listId}`));
 
-    socket.on('joinCohortRoom', room => socket.join(room));
+    socket.on('joinCohortRoom', data => {
+      const { room, userId } = data;
 
-    socket.on('leavingCohortRoom', cohortId =>
-      socket.leave(`cohort-${cohortId}`)
-    );
+      socket.join(room);
+      cohortViewClients.set(userId, socket.id);
+    });
+
+    socket.on('leavingCohortRoom', data => {
+      const { room, userId } = data;
+
+      socket.leave(room);
+      cohortViewClients.set(userId, socket.id);
+    });
 
     socket.on('enterCohortsView', userId =>
-      cohortsClients.set(userId, socket.id)
+      allCohortsViewClients.set(userId, socket.id)
     );
 
-    socket.on('leavingCohortsView', userId => cohortsClients.delete(userId));
+    socket.on('leavingCohortsView', userId =>
+      allCohortsViewClients.delete(userId)
+    );
 
     socket.on('enterDashboardView', userId =>
-      dashboardClients.set(userId, socket.id)
+      dashboardViewClients.set(userId, socket.id)
     );
 
     socket.on('leavingDashboardView', userId =>
-      dashboardClients.delete(userId)
+      dashboardViewClients.delete(userId)
     );
 
     socket.on('error', () => {
@@ -81,16 +92,16 @@ const socketListenTo = server => {
     });
 
     addItemToListWS(socket);
-    addListMemberWS(socket, dashboardClients);
+    addListMemberWS(socket, dashboardViewClients, cohortViewClients);
     archiveItemWS(socket);
     updateItemState(socket);
     deleteItemWS(socket);
     restoreItemWS(socket);
     updateItemWS(socket);
     addCommentWS(socket);
-    sendListsOnAddCohortMember(socket, dashboardClients);
+    sendListsOnAddCohortMember(socket, dashboardViewClients);
 
-    addCohortMemberWS(socket, cohortsClients);
+    addCohortMemberWS(socket, allCohortsViewClients);
   });
 };
 
