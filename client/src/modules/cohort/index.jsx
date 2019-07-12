@@ -128,8 +128,8 @@ class Cohort extends PureComponent {
 
     Promise.all(fetchPromises)
       .then(() => {
-        this.setState({ pendingForDetails: false });
         this.handleBreadcrumbs();
+        this.setState({ pendingForDetails: false });
       })
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {

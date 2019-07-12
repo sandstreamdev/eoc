@@ -15,7 +15,6 @@ import { Routes } from 'common/constants/enums';
 import { UserAddingStatus, MEMBERS_DISPLAY_LIMIT } from './const';
 import InviteNewUser from './components/InviteNewUser';
 import { inviteUser } from './model/actions';
-import withSocket from 'common/hoc/withSocket';
 
 class MembersBox extends PureComponent {
   constructor(props) {
@@ -53,14 +52,13 @@ class MembersBox extends PureComponent {
       match: {
         params: { id }
       },
-      route,
-      socket
+      route
     } = this.props;
 
     const action = route === Routes.COHORT ? addCohortMember : addListViewer;
 
     this.setState({ pending: true });
-    action(id, email, socket).then(resp => {
+    action(id, email).then(resp => {
       if (resp === UserAddingStatus.ADDED) {
         this.setState({ pending: false });
         this.hideForm();
@@ -237,7 +235,6 @@ MembersBox.propTypes = {
   isPrivateList: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object).isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
   route: PropTypes.string.isRequired,
   type: PropTypes.string,
 
@@ -249,7 +246,6 @@ MembersBox.propTypes = {
 };
 
 export default _flowRight(
-  withSocket,
   withRouter,
   connect(
     null,

@@ -398,10 +398,6 @@ export const addListViewer = (listId, email) => dispatch =>
       });
     });
 
-export const addListViewerWS = (listId, data) => dispatch => {
-  dispatch(addViewerSuccess(data, listId));
-};
-
 export const removeListMember = (
   listId,
   userName,

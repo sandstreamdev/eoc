@@ -371,7 +371,6 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default _flowRight(
-  // withSocket,
   injectIntl,
   withRouter,
   connect(
