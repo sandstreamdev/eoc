@@ -12,6 +12,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { NotFoundException } from 'common/exceptions/NotFoundException';
+import socket from 'sockets';
 
 const createCohortSuccess = data => ({
   type: CohortActionTypes.CREATE_SUCCESS,
@@ -286,7 +287,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
       throw err;
     });
 
-export const addCohortMember = (cohortId, email, socket) => dispatch =>
+export const addCohortMember = (cohortId, email) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })

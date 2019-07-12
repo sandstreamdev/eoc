@@ -107,13 +107,13 @@ const sendListsOnAddCohortMember = (socket, clients) =>
           sharedListIds.forEach(listId => {
             socket.broadcast
               .to(`list-${listId}`)
-              .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, { listId, member });
+              .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { listId, member });
           });
 
           if (clients.has(userId)) {
             socket.broadcast
               .to(clients.get(userId))
-              .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, lists);
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, lists);
           }
         }
       });
@@ -141,13 +141,13 @@ const addListMemberWS = (socket, dashboardClients, cohortClients) => {
           if (cohortId && cohortClients.has(memberId)) {
             socket
               .to(cohortClients.get(memberId))
-              .emit(ListActionTypes.ADD_VIEWER_SUCCESS, list);
+              .emit(ListActionTypes.CREATE_SUCCESS, list);
           }
 
           if (dashboardClients.has(memberId)) {
             socket
               .to(dashboardClients.get(memberId))
-              .emit(ListActionTypes.ADD_VIEWER_SUCCESS, list);
+              .emit(ListActionTypes.CREATE_SUCCESS, list);
           }
         }
       });

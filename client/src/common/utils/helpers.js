@@ -1,3 +1,5 @@
+import _upperFirst from 'lodash/upperFirst';
+
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 export const makeAbortablePromise = promise => {
@@ -17,3 +19,5 @@ export const makeAbortablePromise = promise => {
 };
 
 export const dateFromString = string => new Date(string).toLocaleString();
+
+export const capitalizeString = string => _upperFirst(string);

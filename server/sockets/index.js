@@ -49,9 +49,17 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinListRoom', room => socket.join(room));
+    socket.on('joinListRoom', data => {
+      const { room } = data;
 
-    socket.on('leavingListRoom', listId => socket.leave(`cohort-${listId}`));
+      socket.join(room);
+    });
+
+    socket.on('leaveListRoom', data => {
+      const { room } = data;
+
+      socket.leave(room);
+    });
 
     socket.on('joinCohortRoom', data => {
       const { room, userId } = data;
@@ -60,7 +68,7 @@ const socketListenTo = server => {
       cohortViewClients.set(userId, socket.id);
     });
 
-    socket.on('leavingCohortRoom', data => {
+    socket.on('leaveCohortRoom', data => {
       const { room, userId } = data;
 
       socket.leave(room);
@@ -71,7 +79,7 @@ const socketListenTo = server => {
       allCohortsViewClients.set(userId, socket.id)
     );
 
-    socket.on('leavingCohortsView', userId =>
+    socket.on('leaveCohortsView', userId =>
       allCohortsViewClients.delete(userId)
     );
 
@@ -79,7 +87,7 @@ const socketListenTo = server => {
       dashboardViewClients.set(userId, socket.id)
     );
 
-    socket.on('leavingDashboardView', userId =>
+    socket.on('leaveDashboardView', userId =>
       dashboardViewClients.delete(userId)
     );
 
