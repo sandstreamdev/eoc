@@ -76,7 +76,7 @@ const addCommentWS = socket => {
   );
 };
 
-const sendListsOnAddCohortMember = (socket, clients) =>
+const sendListsOnAddCohortMemberWS = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const {
       cohortId,
@@ -125,7 +125,7 @@ module.exports = {
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,
-  sendListsOnAddCohortMember,
+  sendListsOnAddCohortMemberWS,
   updateItemState,
   updateItemWS
 };

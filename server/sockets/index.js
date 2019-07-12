@@ -15,7 +15,7 @@ const {
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,
-  sendListsOnAddCohortMember,
+  sendListsOnAddCohortMemberWS,
   updateItemState,
   updateItemWS
 } = require('./list');
@@ -98,7 +98,7 @@ const socketListenTo = server => {
     restoreItemWS(socket);
     updateItemWS(socket);
     addCommentWS(socket);
-    sendListsOnAddCohortMember(socket, dashboardClients);
+    sendListsOnAddCohortMemberWS(socket, dashboardClients);
 
     addCohortMemberWS(socket, cohortsClients);
   });
