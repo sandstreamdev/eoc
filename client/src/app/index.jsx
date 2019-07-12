@@ -12,10 +12,16 @@ import Layout from './components/Layout';
 import configureStore from './model/store';
 import history from 'common/utils/history';
 import SocketContext from 'common/context/socket-context';
+import { receiveEvents } from 'sockets/receiveEvents';
+import socketInstance from 'sockets';
 
 addLocaleData([...en]);
 const store = configureStore();
 const socket = io();
+
+receiveEvents(store.dispatch, socketInstance);
+
+console.log(socketInstance);
 
 ReactDOM.render(
   <Provider store={store}>
