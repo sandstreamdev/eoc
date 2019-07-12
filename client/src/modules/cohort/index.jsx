@@ -10,7 +10,6 @@ import {
   getCohortArchivedLists
 } from 'modules/list/model/selectors';
 import {
-  addListToStoreWS,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,

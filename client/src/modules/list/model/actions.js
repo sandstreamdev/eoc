@@ -12,6 +12,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions/ResourceNotFoundException';
+import socket from 'sockets';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -221,9 +222,6 @@ export const createList = data => dispatch =>
       });
     });
 
-export const addListToStoreWS = data => dispatch =>
-  dispatch(createListSuccess(data));
-
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
     ? `/api/lists/meta-data/${cohortId}`
@@ -373,7 +371,7 @@ export const removeListFromFavourites = (listId, listName) => dispatch =>
       });
     });
 
-export const addListViewer = (listId, email, socket) => dispatch =>
+export const addListViewer = (listId, email) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })

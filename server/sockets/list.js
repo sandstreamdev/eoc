@@ -79,7 +79,7 @@ const addCommentWS = socket => {
   );
 };
 
-const sendListsOnAddCohortMember = (socket, clients) =>
+const sendListsOnAddCohortMemberWS = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const {
       cohortId,
@@ -126,7 +126,7 @@ const addListMemberWS = (socket, dashboardClients, cohortClients) => {
   socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
     const {
       listId,
-      json: { _id: memberId }
+      viewer: { _id: viewerId }
     } = data;
 
     socket.broadcast
@@ -139,17 +139,17 @@ const addListMemberWS = (socket, dashboardClients, cohortClients) => {
       .then(doc => {
         if (doc) {
           const { cohortId } = doc;
-          const list = responseWithList(doc, memberId);
+          const list = responseWithList(doc, viewerId);
 
-          if (cohortId && cohortClients.has(memberId)) {
+          if (cohortId && cohortClients.has(viewerId)) {
             socket
-              .to(cohortClients.get(memberId))
+              .to(cohortClients.get(viewerId))
               .emit(ListActionTypes.CREATE_SUCCESS, list);
           }
 
-          if (dashboardClients.has(memberId)) {
+          if (dashboardClients.has(viewerId)) {
             socket
-              .to(dashboardClients.get(memberId))
+              .to(dashboardClients.get(viewerId))
               .emit(ListActionTypes.CREATE_SUCCESS, list);
           }
         }
@@ -164,7 +164,7 @@ module.exports = {
   archiveItemWS,
   deleteItemWS,
   restoreItemWS,
-  sendListsOnAddCohortMember,
+  sendListsOnAddCohortMemberWS,
   updateItemState,
   updateItemWS
 };
