@@ -9,8 +9,6 @@ const {
  */
 const addItemToListWS = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
-    console.log(ItemActionTypes.ADD_SUCCESS);
-
     socket.broadcast
       .to(`sack-${data.listId}`)
       .emit(ItemActionTypes.ADD_SUCCESS, data);

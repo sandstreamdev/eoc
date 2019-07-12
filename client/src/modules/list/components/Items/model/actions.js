@@ -224,9 +224,6 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
       });
     });
 
-export const updateListItemWS = (itemId, listId, data) => dispatch =>
-  dispatch(updateListItemSuccess(listId, itemId, data));
-
 export const cloneItem = (itemName, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
     itemId
@@ -250,9 +247,6 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
       });
     });
 
-export const cloneItemWS = (listId, item) => dispatch =>
-  dispatch(cloneItemSuccess(listId, item));
-
 export const addComment = (listId, itemId, text) => dispatch =>
   postData('/api/comments/add-comment', {
     itemId,
@@ -275,9 +269,6 @@ export const addComment = (listId, itemId, text) => dispatch =>
         data: text
       });
     });
-
-export const addCommentWS = (listId, itemId, data) => dispatch =>
-  dispatch(addCommentSuccess(listId, itemId, data));
 
 export const fetchComments = (itemName, listId, itemId) => dispatch =>
   getData(`/api/comments/${listId}/${itemId}/data`)
@@ -315,9 +306,6 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       });
     });
 
-export const archiveItemWS = (listId, itemId) => dispatch =>
-  dispatch(archiveItemSuccess(listId, itemId));
-
 export const fetchArchivedItems = (listId, listName) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
     .then(resp => resp.json())
@@ -354,9 +342,6 @@ export const restoreItem = (listId, itemId, name, socket) => dispatch =>
       });
     });
 
-export const restoreItemWS = (listId, itemId) => dispatch =>
-  dispatch(restoreItemSuccess(listId, itemId));
-
 export const deleteItem = (listId, itemId, name, socket) => dispatch =>
   patchData(`/api/lists/${listId}/delete-item/${itemId}`)
     .then(() => {
@@ -374,6 +359,3 @@ export const deleteItem = (listId, itemId, name, socket) => dispatch =>
         data: name
       });
     });
-
-export const deleteItemWS = (listId, itemId) => dispatch =>
-  dispatch(deleteItemSuccess(listId, itemId));
