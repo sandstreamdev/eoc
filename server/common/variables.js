@@ -69,7 +69,13 @@ const ItemStatusType = Object.freeze({
 });
 
 const CohortActionTypes = Object.freeze({
-  ADD_MEMBER_SUCCESS: 'cohort/ADD_MEMBER_SUCCESS'
+  ADD_MEMBER_SUCCESS: 'cohort/ADD_MEMBER_SUCCESS',
+  CREATE_SUCCESS: 'cohort/CREATE_SUCCESS'
+});
+
+const ListActionTypes = Object.freeze({
+  ADD_VIEWER_SUCCESS: 'list/ADD_VIEWER_SUCCESS',
+  FETCH_META_DATA_SUCCESS: 'cohort/FETCH_META_DATA_SUCCESS'
 });
 
 const CommentActionTypes = Object.freeze({
@@ -85,6 +91,7 @@ module.exports = {
   DEMO_USER_ID,
   ItemActionTypes,
   ItemStatusType,
+  ListActionTypes,
   ListType,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME

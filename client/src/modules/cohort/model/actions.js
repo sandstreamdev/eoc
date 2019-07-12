@@ -12,6 +12,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { NotFoundException } from 'common/exceptions/NotFoundException';
+import socket from 'sockets';
 
 const createCohortSuccess = data => ({
   type: CohortActionTypes.CREATE_SUCCESS,
@@ -158,9 +159,6 @@ export const createCohort = data => dispatch =>
       });
     });
 
-export const addCohortToStoreWS = data => dispatch =>
-  dispatch(createCohortSuccess(data));
-
 export const fetchCohortsMetaData = () => dispatch =>
   getData('/api/cohorts/meta-data')
     .then(resp => resp.json())
@@ -286,7 +284,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
       throw err;
     });
 
-export const addCohortMember = (cohortId, email, socket) => dispatch =>
+export const addCohortMember = (cohortId, email) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })
@@ -309,9 +307,6 @@ export const addCohortMember = (cohortId, email, socket) => dispatch =>
         data: email
       });
     });
-
-export const addCohortMemberWS = (cohortId, json) => dispatch =>
-  dispatch(addMemberSuccess(json, cohortId));
 
 export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/remove-member`, {

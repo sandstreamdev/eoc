@@ -29,7 +29,7 @@ const addCohortMemberWS = (socket, cohortClients) =>
               if (cohortClients.has(memberId)) {
                 socket.broadcast
                   .to(cohortClients.get(memberId))
-                  .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, cohort);
+                  .emit(CohortActionTypes.CREATE_SUCCESS, cohort);
               }
             });
           }

@@ -3,6 +3,7 @@ const {
   ItemStatusType,
   CohortActionTypes,
   CommentActionTypes,
+  ListActionTypes,
   ListType
 } = require('../common/variables');
 const List = require('../models/list.model');
@@ -105,7 +106,7 @@ const sendListsOnAddCohortMember = (socket, clients) =>
           sharedListIds.forEach(listId => {
             socket.broadcast
               .to(`list-${listId}`)
-              .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, { listId, member });
+              .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { listId, member });
           });
 
           // sends shared lists metadata to new cohort
@@ -113,7 +114,7 @@ const sendListsOnAddCohortMember = (socket, clients) =>
           if (clients.has(userId)) {
             socket.broadcast
               .to(clients.get(userId))
-              .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, lists);
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, lists);
           }
         }
       });
