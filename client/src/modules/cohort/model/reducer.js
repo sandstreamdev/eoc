@@ -7,13 +7,11 @@ const membersReducer = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.ADD_MEMBER_SUCCESS: {
       const {
-        payload: {
-          data,
-          data: { _id }
-        }
-      } = action;
+        member,
+        member: { _id }
+      } = action.payload;
 
-      return { [_id]: data, ...state };
+      return { [_id]: member, ...state };
     }
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
     case CohortActionTypes.LEAVE_SUCCESS: {

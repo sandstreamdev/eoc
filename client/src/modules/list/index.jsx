@@ -40,8 +40,7 @@ import {
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
-import withSocket from 'common/hoc/withSocket';
-import { joinRoom, leaveRoom } from 'sockets';
+import socket, { joinRoom, leaveRoom } from 'sockets';
 
 class List extends Component {
   state = {
@@ -65,7 +64,6 @@ class List extends Component {
     this.fetchData().finally(() => {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
-      // this.handleRoomConnection();
       this.receiveWSEvents();
     });
 
@@ -102,22 +100,12 @@ class List extends Component {
     leaveRoom(Routes.LIST, listId, userId);
   }
 
-  // handleRoomConnection = () => {
-  //   const {
-  //     list: { _id: listId },
-  //     socket
-  //   } = this.props;
-
-  //   socket.emit('joinListRoom', `list-${listId}`);
-  // };
-
   receiveWSEvents = () => {
     const {
       addItemWS,
       archiveItemWS,
       deleteItemWS,
-      restoreItemWS,
-      socket
+      restoreItemWS
     } = this.props;
 
     socket.on(ItemActionTypes.ADD_SUCCESS, data => {
@@ -355,7 +343,6 @@ List.propTypes = {
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
-  socket: PropTypes.objectOf(PropTypes.any),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   addItemWS: PropTypes.func.isRequired,
@@ -384,7 +371,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default _flowRight(
-  withSocket,
+  // withSocket,
   injectIntl,
   withRouter,
   connect(

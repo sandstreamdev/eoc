@@ -75,7 +75,7 @@ const CohortActionTypes = Object.freeze({
 
 const ListActionTypes = Object.freeze({
   ADD_VIEWER_SUCCESS: 'list/ADD_VIEWER_SUCCESS',
-  FETCH_META_DATA_SUCCESS: 'cohort/FETCH_META_DATA_SUCCESS'
+  FETCH_META_DATA_SUCCESS: 'list/FETCH_META_DATA_SUCCESS'
 });
 
 const CommentActionTypes = Object.freeze({

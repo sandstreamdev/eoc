@@ -6,13 +6,10 @@ const addCohortMemberWS = (socket, cohortClients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const { cohortId } = data;
 
-    // sends new cohort member to all user on this cohort view
     socket.broadcast
-      .to(`cohort-${data.cohortId}`)
+      .to(`cohort-${cohortId}`)
       .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
-    // sends updated cohort metadata to users (which are members
-    // of this cohort including the new one) on cohorts view
     if (cohortClients.size > 0) {
       Cohort.findById(cohortId)
         .select('_id isArchived createdAt name description memberIds')

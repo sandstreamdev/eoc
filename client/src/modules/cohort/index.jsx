@@ -66,7 +66,7 @@ class Cohort extends PureComponent {
     } = this.props;
 
     this.fetchData();
-    joinRoom(Routes.LIST, cohortId, userId);
+    joinRoom(Routes.COHORT, cohortId, userId);
   }
 
   componentDidUpdate(prevProps) {
@@ -83,7 +83,7 @@ class Cohort extends PureComponent {
     } = prevProps;
 
     if (id !== prevId) {
-      leaveRoom(Routes.LIST, prevId, userId);
+      leaveRoom(Routes.COHORT, prevId, userId);
       this.fetchData();
     }
   }
@@ -96,7 +96,7 @@ class Cohort extends PureComponent {
       }
     } = this.props;
 
-    leaveRoom(Routes.LIST, cohortId, userId);
+    leaveRoom(Routes.COHORT, cohortId, userId);
 
     this.pendingPromises.forEach(promise => promise.abort());
   }
