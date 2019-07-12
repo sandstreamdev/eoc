@@ -3,7 +3,8 @@ import _keyBy from 'lodash/keyBy';
 import { getData, patchData, postData } from 'common/utils/fetchMethods';
 import {
   CommentActionTypes,
-  ItemActionTypes
+  ItemActionTypes,
+  ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
@@ -359,3 +360,9 @@ export const deleteItem = (listId, itemId, name, socket) => dispatch =>
         data: name
       });
     });
+
+export const itemBusy = (itemId, listId, busy) =>
+  socketInstance.emit(ItemStatusType.BUSY, { itemId, listId, busy });
+
+export const itemFree = (itemId, listId, busy) =>
+  socketInstance.emit(ItemStatusType.FREE, { itemId, listId, busy });

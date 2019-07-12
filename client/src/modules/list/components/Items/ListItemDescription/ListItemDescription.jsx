@@ -264,16 +264,22 @@ class ListItemDescription extends PureComponent {
     this.setState({ descriptionTextareaValue: value });
   };
 
+  renderOverlay = () => <div className="list-item-description__overlay" />;
+
   render() {
     const { isDescriptionUpdated, isTextareaVisible } = this.state;
-    const { description, disabled } = this.props;
+    const { description, disabled, busy } = this.props;
 
     const isSaveButtonVisible = isDescriptionUpdated && !disabled;
     const isTitleVisible = description || isTextareaVisible;
 
     return (
       <Fragment>
+        {busy && this.renderOverlay()}
         <div
+          className={classNames('list-item-description', {
+            'list-item-description--disabled': busy
+          })}
           onClick={disabled ? null : this.handleShowTextarea}
           onTouchEnd={disabled ? null : this.handleShowTextarea}
         >
@@ -297,6 +303,7 @@ class ListItemDescription extends PureComponent {
 }
 
 ListItemDescription.propTypes = {
+  busy: PropTypes.bool,
   description: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   itemId: PropTypes.string.isRequired,

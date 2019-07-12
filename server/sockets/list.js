@@ -43,13 +43,15 @@ const updateItemState = socket => {
   socket.on(ItemStatusType.BUSY, data => {
     const { listId } = data;
 
-    socket.broadcast.to(`list-${listId}`).emit(ItemStatusType.BUSY, data);
+    console.log(data);
+
+    socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.BUSY, data);
   });
 
   socket.on(ItemStatusType.FREE, data => {
     const { listId } = data;
 
-    socket.broadcast.to(`list-${listId}`).emit(ItemStatusType.FREE, data);
+    socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.FREE, data);
   });
 };
 

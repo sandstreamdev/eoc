@@ -50,19 +50,19 @@ class ItemsList extends PureComponent {
       socket
     } = this.props;
 
-    if (busyItemId) {
-      socket.emit(ItemStatusType.BUSY, {
-        itemId: busyItemId,
-        listId,
-        userId
-      });
-    }
+    // if (busyItemId) {
+    //   socket.emit(ItemStatusType.BUSY, {
+    //     itemId: busyItemId,
+    //     listId,
+    //     userId
+    //   });
+    // }
 
-    socket.emit(ItemStatusType.FREE, {
-      itemId: busyItemId,
-      listId,
-      userId
-    });
+    // socket.emit(ItemStatusType.FREE, {
+    //   itemId: busyItemId,
+    //   listId,
+    //   userId
+    // });
   };
 
   receiveWSEvents = () => {

@@ -16,6 +16,8 @@ import {
   archiveItem,
   clearVote,
   cloneItem,
+  itemBusy,
+  itemFree,
   setVote,
   toggle
 } from '../model/actions';
@@ -37,27 +39,29 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
-      busyBySomeone: false,
-      busyInfoVisibility: false,
+      busy: {
+        nameBusy: false,
+        descriptionBusy: false
+      },
       done: isOrdered,
       isNameEdited: false,
       isConfirmationVisible: false
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { blocked } = this.state;
+  // componentDidUpdate(prevProps) {
+  //   const { blocked } = this.state;
 
-    if (prevProps.blocked !== blocked) {
-      this.handleBusyBySomeone();
-    }
-  }
+  //   if (prevProps.blocked !== blocked) {
+  //     this.handleBusyBySomeone();
+  //   }
+  // }
 
-  handleBusyBySomeone = () => {
-    const { blocked } = this.props;
+  // handleBusyBySomeone = () => {
+  //   const { blocked } = this.props;
 
-    this.setState({ busyBySomeone: blocked });
-  };
+  //   this.setState({ busyBySomeone: blocked });
+  // };
 
   handleItemToggling = event => {
     event.preventDefault();
@@ -189,35 +193,60 @@ class ListItem extends PureComponent {
 
   preventDefault = event => event.preventDefault();
 
-  handleNameFocus = () => {
-    this.setState({ isNameEdited: true });
-    this.itemBusy();
+  handleNameBusy = () => {
+    this.setState(
+      { busy: { nameBusy: true, descriptionBusy: false } },
+      this.itemBusy
+    );
   };
 
-  handleNameBlur = () => {
-    this.setState({ isNameEdited: false });
-    this.itemFree();
+  handleNameFree = () => {
+    this.setState(
+      { busy: { nameBusy: false, descriptionBusy: false } },
+      this.itemFree
+    );
+  };
+
+  handleDescriptionBusy = () => {
+    this.setState(
+      { busy: { nameBusy: false, descriptionBusy: true } },
+      this.itemBusy
+    );
+  };
+
+  handleDescriptionFree = () => {
+    this.setState(
+      { busy: { nameBusy: false, descriptionBusy: false } },
+      this.itemFree
+    );
   };
 
   itemBusy = () => {
     const {
-      onBusy,
-      data: { _id: itemId }
+      busy: { nameBusy, descriptionBusy }
+    } = this.state;
+    const {
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
     } = this.props;
 
-    onBusy(itemId);
+    itemBusy(itemId, listId, { nameBusy, descriptionBusy });
   };
 
   itemFree = () => {
-    const { onFree } = this.props;
+    const {
+      busy: { nameBusy, descriptionBusy }
+    } = this.state;
+    const {
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
 
-    onFree();
-  };
-
-  handleBusyInfoVisibility = event => {
-    event.preventDefault();
-
-    this.setState({ busyInfoVisibility: true });
+    itemFree(itemId, listId, { nameBusy, descriptionBusy });
   };
 
   renderConfirmation = () => {
@@ -304,21 +333,29 @@ class ListItem extends PureComponent {
 
   renderDescription = () => {
     const {
-      data: { _id: itemId, description, isOrdered, name },
+      data: { _id: itemId, description, isOrdered, name, busy },
       isMember
     } = this.props;
     const isFieldDisabled = !isMember || isOrdered;
+    let isDescriptionBusy;
+
+    if (busy) {
+      const { descriptionBusy } = busy;
+
+      isDescriptionBusy = descriptionBusy;
+    }
 
     if (description || !isFieldDisabled) {
       return (
         <div className="list-item__description">
           <ListItemDescription
+            busy={isDescriptionBusy}
             description={description}
             disabled={isFieldDisabled}
             itemId={itemId}
             name={name}
-            onBlur={this.itemFree}
-            onFocus={this.itemBusy}
+            onBlur={this.handleDescriptionFree}
+            onFocus={this.handleDescriptionBusy}
           />
         </div>
       );
@@ -347,30 +384,9 @@ class ListItem extends PureComponent {
     );
   };
 
-  renderBusyOverlay = () => {
-    const { busyBySomeone, busyInfoVisibility } = this.state;
-
-    return (
-      busyBySomeone && (
-        <div
-          className={classNames('list-item__busy-overlay', {
-            'list-item__busy-overlay--dimmed': busyInfoVisibility
-          })}
-          onClick={this.handleBusyInfoVisibility}
-          onTouchEnd={this.handleBusyInfoVisibility}
-          role="banner"
-        >
-          {busyInfoVisibility && (
-            <FormattedMessage id="list.list-item.busy-info" />
-          )}
-        </div>
-      )
-    );
-  };
-
   render() {
     const {
-      data: { isOrdered, authorName, _id, name },
+      data: { _id, authorName, isOrdered, name, busy },
       isMember
     } = this.props;
     const {
@@ -379,6 +395,13 @@ class ListItem extends PureComponent {
       done,
       isNameEdited
     } = this.state;
+    let isNameBusy;
+
+    if (busy) {
+      const { nameBusy } = busy;
+
+      isNameBusy = nameBusy;
+    }
 
     return (
       <li
@@ -388,7 +411,6 @@ class ListItem extends PureComponent {
           'list-item--details-visible': areDetailsVisible
         })}
       >
-        {this.renderBusyOverlay()}
         <div
           className={classNames('list-item__top', {
             'list-item__top--details-visible': areDetailsVisible,
@@ -407,13 +429,13 @@ class ListItem extends PureComponent {
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <ListItemName
+                busy={isNameBusy}
                 isMember={isMember}
                 itemId={_id}
                 name={name}
-                onBlur={this.handleNameBlur}
-                onBusy={this.itemBusy}
-                onFocus={this.handleNameFocus}
-                onFree={this.itemFree}
+                onBlur={this.handleNameFree}
+                onPending={this.handleNamePending}
+                onFocus={this.handleNameBusy}
               />
               <span className="list-item__author">
                 <FormattedMessage
@@ -444,7 +466,6 @@ class ListItem extends PureComponent {
 }
 
 ListItem.propTypes = {
-  blocked: PropTypes.bool,
   currentUser: UserPropType.isRequired,
   data: PropTypes.objectOf(
     PropTypes.oneOfType([
@@ -461,8 +482,6 @@ ListItem.propTypes = {
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
-  onBusy: PropTypes.func.isRequired,
-  onFree: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired
 };

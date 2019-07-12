@@ -4,7 +4,8 @@ import _keyBy from 'lodash/keyBy';
 import { ListActionTypes } from './actionTypes';
 import {
   CommentActionTypes,
-  ItemActionTypes
+  ItemActionTypes,
+  ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
@@ -210,6 +211,8 @@ const lists = (state = {}, action) => {
     case ItemActionTypes.SET_VOTE_SUCCESS:
     case ItemActionTypes.TOGGLE_SUCCESS:
     case ItemActionTypes.UPDATE_SUCCESS:
+    case ItemStatusType.BUSY:
+    case ItemStatusType.FREE:
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {

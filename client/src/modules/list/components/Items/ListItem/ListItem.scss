@@ -282,6 +282,7 @@
   }
 
   &__description {
+    position: relative;
     width: 100%;
     text-align: right;
     border-bottom: 1px solid $item-border;
@@ -326,7 +327,7 @@
 
   &__busy-overlay {
     align-items: center;
-    background: transparent;
+    background: rgba($shadow-color, 0.7);
     color: $bg-color;
     display: flex;
     font-size: $l-font;

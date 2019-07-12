@@ -3,7 +3,8 @@ import _keyBy from 'lodash/keyBy';
 
 import {
   CommentActionTypes,
-  ItemActionTypes
+  ItemActionTypes,
+  ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
 
 const comments = (state = {}, action) => {
@@ -150,6 +151,16 @@ const items = (state = {}, action) => {
 
       return rest;
     }
+    case ItemStatusType.BUSY:
+    case ItemStatusType.FREE: {
+      const {
+        payload: { itemId, busy }
+      } = action;
+      const blockedItem = state[itemId];
+      blockedItem.busy = busy;
+
+      return { [itemId]: blockedItem, ...state };
+    }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {
@@ -162,6 +173,7 @@ const items = (state = {}, action) => {
         [itemId]: { ...state[itemId], comments: comments(prevComments, action) }
       };
     }
+
     default:
       return state;
   }

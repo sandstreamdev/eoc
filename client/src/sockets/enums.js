@@ -11,6 +11,11 @@ export const ItemsEvents = Object.freeze({
   UPDATE_SUCCESS: ItemActionTypes.UPDATE_SUCCESS
 });
 
+export const ItemStatusType = Object.freeze({
+  BUSY: 'item/BUSY',
+  FREE: 'item/FREE'
+});
+
 export const ListEvents = Object.freeze({});
 
 export const CohortEvent = Object.freeze({});
