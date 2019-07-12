@@ -1,9 +1,11 @@
-import { LIST_EVENTS } from './enums';
+import { CohortEvents, ListEvents } from './enums';
 
 export const receiveEvents = (dispatch, socket) => {
-  Object.entries(LIST_EVENTS).forEach(event => {
-    socket.on(event, data => {
-      dispatch({ type: event, payload: data });
-    });
-  });
+  Object.values(ListEvents).forEach(event =>
+    socket.on(event, data => dispatch({ type: event, payload: data }))
+  );
+
+  Object.values(CohortEvents).forEach(event =>
+    socket.on(event, data => dispatch({ type: event, payload: data }))
+  );
 };

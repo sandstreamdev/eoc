@@ -49,13 +49,13 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinListRoom', data => {
+    socket.on('joinSackRoom', data => {
       const { room } = data;
 
       socket.join(room);
     });
 
-    socket.on('leaveListRoom', data => {
+    socket.on('leaveSackRoom', data => {
       const { room } = data;
 
       socket.leave(room);

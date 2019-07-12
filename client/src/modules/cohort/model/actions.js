@@ -94,9 +94,9 @@ const fetchArchivedCohortsMetaDataFailure = errMessage => ({
   payload: errMessage
 });
 
-const addMemberSuccess = (data, cohortId) => ({
+const addMemberSuccess = data => ({
   type: CohortActionTypes.ADD_MEMBER_SUCCESS,
-  payload: { cohortId, data }
+  payload: data
 });
 
 const addMemberFailure = () => ({
@@ -158,9 +158,6 @@ export const createCohort = data => dispatch =>
         data: data.name
       });
     });
-
-export const addCohortToStoreWS = data => dispatch =>
-  dispatch(createCohortSuccess(data));
 
 export const fetchCohortsMetaData = () => dispatch =>
   getData('/api/cohorts/meta-data')
@@ -294,9 +291,10 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       if (json._id) {
-        const data = { cohortId, json };
+        const data = { cohortId, member: json };
+
         socket.emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
-        dispatch(addMemberSuccess(json, cohortId));
+        dispatch(addMemberSuccess(data));
 
         return UserAddingStatus.ADDED;
       }
@@ -310,9 +308,6 @@ export const addCohortMember = (cohortId, email) => dispatch =>
         data: email
       });
     });
-
-export const addCohortMemberWS = (cohortId, json) => dispatch =>
-  dispatch(addMemberSuccess(json, cohortId));
 
 export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/remove-member`, {

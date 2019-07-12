@@ -25,7 +25,6 @@ import {
 } from 'common/constants/propTypes';
 import FormDialog from 'common/components/FormDialog';
 import {
-  addCohortMemberWS,
   archiveCohort,
   fetchCohortDetails,
   leaveCohort
@@ -43,9 +42,7 @@ import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { noOp } from 'common/utils/noOp';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
-import withSocket from 'common/hoc/withSocket';
-import { CohortActionTypes } from './model/actionTypes';
-import { ListActionTypes } from 'modules/list/model/actionTypes';
+import { joinRoom, leaveRoom } from 'sockets';
 
 class Cohort extends PureComponent {
   pendingPromises = [];
@@ -62,7 +59,15 @@ class Cohort extends PureComponent {
   };
 
   componentDidMount() {
+    const {
+      currentUser: { id: userId },
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
     this.fetchData();
+    joinRoom(Routes.COHORT, cohortId, userId);
   }
 
   componentDidUpdate(prevProps) {
@@ -72,14 +77,14 @@ class Cohort extends PureComponent {
       }
     } = this.props;
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: prevId }
-      },
-      socket
+      }
     } = prevProps;
 
     if (id !== prevId) {
-      socket.emit('leavingCohortRoom', prevId);
+      leaveRoom(Routes.COHORT, prevId, userId);
       this.fetchData();
     }
   }
@@ -89,11 +94,10 @@ class Cohort extends PureComponent {
       currentUser: { id: userId },
       match: {
         params: { id: cohortId }
-      },
-      socket
+      }
     } = this.props;
 
-    socket.emit('leavingCohortRoom', { room: `cohort-${cohortId}`, userId });
+    leaveRoom(Routes.COHORT, cohortId, userId);
 
     this.pendingPromises.forEach(promise => promise.abort());
   }
@@ -125,10 +129,8 @@ class Cohort extends PureComponent {
 
     Promise.all(fetchPromises)
       .then(() => {
-        this.setState({ pendingForDetails: false });
         this.handleBreadcrumbs();
-        this.handleSocketConnection();
-        this.receiveWSEvents();
+        this.setState({ pendingForDetails: false });
       })
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
@@ -155,32 +157,6 @@ class Cohort extends PureComponent {
         }
       ]
     });
-  };
-
-  handleSocketConnection = () => {
-    const {
-      currentUser: { id: userId },
-      match: {
-        params: { id: cohortId }
-      },
-      socket
-    } = this.props;
-
-    socket.emit('joinCohortRoom', { room: `cohort-${cohortId}`, userId });
-  };
-
-  receiveWSEvents = () => {
-    const { addCohortMemberWS, addListToStoreWS, socket } = this.props;
-
-    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
-      const { cohortId, json } = data;
-
-      addCohortMemberWS(cohortId, json);
-    });
-
-    socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data =>
-      addListToStoreWS(data)
-    );
   };
 
   handleListCreation = (name, description) => {
@@ -434,11 +410,8 @@ Cohort.propTypes = {
   lists: PropTypes.objectOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
-  socket: PropTypes.objectOf(PropTypes.any),
   viewType: PropTypes.string.isRequired,
 
-  addCohortMemberWS: PropTypes.func.isRequired,
-  addListToStoreWS: PropTypes.func.isRequired,
   archiveCohort: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
@@ -464,14 +437,11 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   withRouter,
   connect(
     mapStateToProps,
     {
-      addCohortMemberWS,
-      addListToStoreWS,
       archiveCohort,
       createList,
       fetchArchivedListsMetaData,

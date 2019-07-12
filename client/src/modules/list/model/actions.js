@@ -105,9 +105,9 @@ const favouritesFailure = () => ({
   type: ListActionTypes.FAVOURITES_FAILURE
 });
 
-const addViewerSuccess = (data, listId) => ({
+const addViewerSuccess = data => ({
   type: ListActionTypes.ADD_VIEWER_SUCCESS,
-  payload: { listId, data }
+  payload: data
 });
 
 const addViewerFailure = () => ({
@@ -241,11 +241,6 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
         notificationId: 'list.actions.fetch-meta-data-fail'
       });
     });
-};
-
-export const addListsToStoreWS = data => dispatch => {
-  const dataMap = _keyBy(data, '_id');
-  dispatch(fetchListsMetaDataSuccess(dataMap));
 };
 
 export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
@@ -385,10 +380,10 @@ export const addListViewer = (listId, email, socket) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       if (json._id) {
-        const data = { listId, json };
+        const data = { listId, viewer: json };
 
         socket.emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
-        dispatch(addViewerSuccess(json, listId));
+        dispatch(addViewerSuccess(data));
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',
           data: json.displayName
@@ -406,10 +401,6 @@ export const addListViewer = (listId, email, socket) => dispatch =>
         data: email
       });
     });
-
-export const addListViewerWS = (listId, data) => dispatch => {
-  dispatch(addViewerSuccess(data, listId));
-};
 
 export const removeListMember = (
   listId,

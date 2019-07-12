@@ -7,7 +7,7 @@ const addCohortMemberWS = (socket, clients) =>
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${data.cohortId}`)
+      .to(`cohort-${cohortId}`)
       .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
     if (clients.size > 0) {

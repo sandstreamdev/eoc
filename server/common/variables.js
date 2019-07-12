@@ -80,7 +80,7 @@ const CommentActionTypes = Object.freeze({
 const ListActionTypes = Object.freeze({
   ADD_VIEWER_SUCCESS: 'list/ADD_VIEWER_SUCCESS',
   CREATE_SUCCESS: 'list/CREATE_SUCCESS',
-  FETCH_META_DATA_SUCCESS: 'cohort/FETCH_META_DATA_SUCCESS'
+  FETCH_META_DATA_SUCCESS: 'list/FETCH_META_DATA_SUCCESS'
 });
 
 module.exports = {

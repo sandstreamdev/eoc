@@ -6,8 +6,6 @@ import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
 import {
-  addListsToStoreWS,
-  addListToStoreWS,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
@@ -23,10 +21,8 @@ import FormDialog from 'common/components/FormDialog';
 import { ColorType, Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
-import withSocket from 'common/hoc/withSocket';
-import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { ListActionTypes } from 'modules/list/model/actionTypes';
+import { enterView, leaveView } from 'sockets';
 
 class Dashboard extends Component {
   state = {
@@ -40,8 +36,7 @@ class Dashboard extends Component {
   componentDidMount() {
     const {
       currentUser: { id },
-      fetchListsMetaData,
-      socket
+      fetchListsMetaData
     } = this.props;
 
     this.setState({ pendingForLists: true });
@@ -50,30 +45,16 @@ class Dashboard extends Component {
       this.setState({ pendingForLists: false })
     );
 
-    socket.emit('enterDashboardView', id);
-    this.receiveWSEvents();
+    enterView(Routes.DASHBOARD, id);
   }
 
   componentWillUnmount() {
     const {
-      currentUser: { id },
-      socket
+      currentUser: { id }
     } = this.props;
 
-    socket.emit('leavingDashboardView', id);
+    leaveView(Routes.DASHBOARD, id);
   }
-
-  receiveWSEvents = () => {
-    const { addListsToStoreWS, addListToStoreWS, socket } = this.props;
-
-    socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data =>
-      addListsToStoreWS(data)
-    );
-
-    socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data =>
-      addListToStoreWS(data)
-    );
-  };
 
   handleDialogVisibility = () =>
     this.setState(({ isDialogVisible }) => ({
@@ -211,11 +192,8 @@ Dashboard.propTypes = {
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   privateLists: PropTypes.objectOf(PropTypes.object),
-  socket: PropTypes.objectOf(PropTypes.any),
   viewType: PropTypes.string.isRequired,
 
-  addListsToStoreWS: PropTypes.func.isRequired,
-  addListToStoreWS: PropTypes.func.isRequired,
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
@@ -230,14 +208,11 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   connect(
     mapStateToProps,
     {
       createList,
-      addListToStoreWS,
-      addListsToStoreWS,
       fetchArchivedListsMetaData,
       fetchListsMetaData,
       removeArchivedListsMetaData
