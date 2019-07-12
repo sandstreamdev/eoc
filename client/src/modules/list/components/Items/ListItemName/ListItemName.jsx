@@ -9,7 +9,6 @@ import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import withSocket from 'common/hoc/withSocket';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -61,7 +60,6 @@ class ListItemName extends PureComponent {
       name,
       onBusy,
       onFree,
-      socket,
       updateListItem
     } = this.props;
     const isNameUpdated = updatedName !== name;
@@ -71,21 +69,17 @@ class ListItemName extends PureComponent {
       this.setState({ pending: true });
       onBusy();
 
-      updateListItem(
-        name,
-        listId,
-        itemId,
-        { name: updatedName },
-        socket
-      ).finally(() => {
-        this.setState({
-          pending: false,
-          isTipVisible: false
-        });
+      updateListItem(name, listId, itemId, { name: updatedName }).finally(
+        () => {
+          this.setState({
+            pending: false,
+            isTipVisible: false
+          });
 
-        this.handleNameInputBlur();
-        onFree();
-      });
+          this.handleNameInputBlur();
+          onFree();
+        }
+      );
     }
 
     if (!canBeUpdated) {
@@ -180,7 +174,6 @@ ListItemName.propTypes = {
   itemId: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
 
   onBlur: PropTypes.func.isRequired,
   onBusy: PropTypes.func.isRequired,
@@ -190,7 +183,6 @@ ListItemName.propTypes = {
 };
 
 export default _flowRight(
-  withSocket,
   withRouter,
   connect(
     null,

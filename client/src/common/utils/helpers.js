@@ -17,3 +17,6 @@ export const makeAbortablePromise = promise => {
 };
 
 export const dateFromString = string => new Date(string).toLocaleString();
+
+export const capitalizeString = string =>
+  string && string[0].toUpperCase() + string.slice(1);

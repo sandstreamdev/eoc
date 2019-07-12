@@ -1,13 +1,20 @@
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 
-export const ITEMS_EVENTS = Object.freeze({
-  ITEM_ADD_SUCCESS: ItemActionTypes.ADD_SUCCESS
+export const ItemsEvents = Object.freeze({
+  ADD_SUCCESS: ItemActionTypes.ADD_SUCCESS,
+  ARCHIVE_SUCCESS: ItemActionTypes.ARCHIVE_SUCCESS,
+  CLEAR_VOTE_SUCCESS: ItemActionTypes.CLEAR_VOTE_SUCCESS,
+  CLONE_SUCCESS: ItemActionTypes.CLONE_SUCCESS,
+  DELETE_SUCCESS: ItemActionTypes.DELETE_SUCCESS,
+  RESTORE_SUCCESS: ItemActionTypes.RESTORE_SUCCESS,
+  SET_VOTE_SUCCESS: ItemActionTypes.SET_VOTE_SUCCESS,
+  UPDATE_SUCCESS: ItemActionTypes.UPDATE_SUCCESS
 });
 
-export const LIST_EVENTS = Object.freeze({});
+export const ListEvents = Object.freeze({});
 
-export const COHORT_EVENTS = Object.freeze({});
+export const CohortEvent = Object.freeze({});
 
-export const COMMENT_EVENTS = Object.freeze({});
+export const CommentEvents = Object.freeze({});
 
-export const ACTIVITIES_EVENTS = Object.freeze({});
+export const ActivitiesEvents = Object.freeze({});

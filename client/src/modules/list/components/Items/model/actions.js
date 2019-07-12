@@ -127,7 +127,7 @@ export const removeArchivedItems = listId => ({
   payload: { listId }
 });
 
-export const addItem = (item, listId, socket) => dispatch =>
+export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
     .then(json => {
@@ -145,9 +145,6 @@ export const addItem = (item, listId, socket) => dispatch =>
         data: item.name
       });
     });
-
-export const addItemWS = (item, listId) => dispatch =>
-  dispatch(addItemSuccess(item, listId));
 
 export const toggle = (
   itemName,
@@ -187,14 +184,14 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
       dispatch(setVoteFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.set-vote-fail',
-        data: ''
+        data: itemName
       });
     });
 
 export const clearVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
     .then(() => dispatch(clearVoteSuccess(itemId, listId)))
-    .catch(err => {
+    .catch(() => {
       dispatch(clearVoteFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.clear-vote-fail',
@@ -202,13 +199,7 @@ export const clearVote = (itemId, listId, itemName) => dispatch =>
       });
     });
 
-export const updateListItem = (
-  itemName,
-  listId,
-  itemId,
-  data,
-  socket
-) => dispatch =>
+export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId
@@ -219,9 +210,13 @@ export const updateListItem = (
         notificationId: 'list.items.actions.update-item',
         data: itemName
       });
-      socket.emit(ItemActionTypes.UPDATE_SUCCESS, { listId, itemId, data });
+      socketInstance.emit(ItemActionTypes.UPDATE_SUCCESS, {
+        listId,
+        itemId,
+        data
+      });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(updateListItemFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.update-item-fail',
@@ -232,7 +227,7 @@ export const updateListItem = (
 export const updateListItemWS = (itemId, listId, data) => dispatch =>
   dispatch(updateListItemSuccess(listId, itemId, data));
 
-export const cloneItem = (itemName, listId, itemId, socket) => dispatch =>
+export const cloneItem = (itemName, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
     itemId
   })
@@ -245,7 +240,7 @@ export const cloneItem = (itemName, listId, itemId, socket) => dispatch =>
         notificationId: 'list.items.actions.clone-item',
         data: itemName
       });
-      socket.emit(ItemActionTypes.CLONE_SUCCESS, { listId, item });
+      socketInstance.emit(ItemActionTypes.CLONE_SUCCESS, { listId, item });
     })
     .catch(err => {
       dispatch(cloneItemFailure());
@@ -258,7 +253,7 @@ export const cloneItem = (itemName, listId, itemId, socket) => dispatch =>
 export const cloneItemWS = (listId, item) => dispatch =>
   dispatch(cloneItemSuccess(listId, item));
 
-export const addComment = (listId, itemId, text, socket) => dispatch =>
+export const addComment = (listId, itemId, text) => dispatch =>
   postData('/api/comments/add-comment', {
     itemId,
     listId,
@@ -267,7 +262,11 @@ export const addComment = (listId, itemId, text, socket) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       dispatch(addCommentSuccess(listId, itemId, json));
-      socket.emit(CommentActionTypes.ADD_SUCCESS, { listId, itemId, json });
+      socketInstance.emit(CommentActionTypes.ADD_SUCCESS, {
+        listId,
+        itemId,
+        json
+      });
     })
     .catch(() => {
       dispatch(addCommentFailure());
@@ -295,7 +294,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
       });
     });
 
-export const archiveItem = (listId, itemId, name, socket) => dispatch =>
+export const archiveItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: true,
     itemId
@@ -306,7 +305,7 @@ export const archiveItem = (listId, itemId, name, socket) => dispatch =>
         notificationId: 'list.items.actions.archive-item',
         data: name
       });
-      socket.emit(ItemActionTypes.ARCHIVE_SUCCESS, { listId, itemId });
+      socketInstance.emit(ItemActionTypes.ARCHIVE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(archiveItemFailure());

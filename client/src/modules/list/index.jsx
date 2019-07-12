@@ -54,7 +54,6 @@ class List extends Component {
     this.fetchData().finally(() => {
       this.setState({ pendingForDetails: false });
       this.handleBreadcrumbs();
-      this.handleRoomConnection();
     });
 
     const {

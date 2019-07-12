@@ -19,7 +19,6 @@ import { updateListItem } from '../model/actions';
 import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
-import withSocket from 'common/hoc/withSocket';
 
 class ListItemDescription extends PureComponent {
   pendingPromise = null;
@@ -133,8 +132,7 @@ class ListItemDescription extends PureComponent {
         params: { id: listId }
       },
       name,
-      updateListItem,
-      socket
+      updateListItem
     } = this.props;
 
     if (disabled) {
@@ -145,7 +143,7 @@ class ListItemDescription extends PureComponent {
       this.setState({ pending: true });
 
       this.pendingPromise = makeAbortablePromise(
-        updateListItem(name, listId, itemId, { description }, socket)
+        updateListItem(name, listId, itemId, { description })
       );
 
       return this.pendingPromise.promise
@@ -304,7 +302,6 @@ ListItemDescription.propTypes = {
   itemId: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
 
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,
@@ -312,7 +309,6 @@ ListItemDescription.propTypes = {
 };
 
 export default _flowRight(
-  withSocket,
   withRouter,
   connect(
     null,

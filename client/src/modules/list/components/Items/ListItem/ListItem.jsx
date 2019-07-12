@@ -16,10 +16,8 @@ import {
   archiveItem,
   clearVote,
   cloneItem,
-  cloneItemWS,
   setVote,
-  toggle,
-  updateListItemWS
+  toggle
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -28,8 +26,6 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
-import withSocket from 'common/hoc/withSocket';
-import { ItemActionTypes } from '../model/actionTypes';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -49,10 +45,6 @@ class ListItem extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    this.receiveWSEvents();
-  }
-
   componentDidUpdate(prevProps) {
     const { blocked } = this.state;
 
@@ -60,22 +52,6 @@ class ListItem extends PureComponent {
       this.handleBusyBySomeone();
     }
   }
-
-  receiveWSEvents = () => {
-    const { socket, updateListItemWS, cloneItemWS } = this.props;
-
-    socket.on(ItemActionTypes.UPDATE_SUCCESS, itemData => {
-      const { listId, itemId, data } = itemData;
-
-      updateListItemWS(itemId, listId, data);
-    });
-
-    socket.on(ItemActionTypes.CLONE_SUCCESS, data => {
-      const { listId, item } = data;
-
-      cloneItemWS(listId, item);
-    });
-  };
 
   handleBusyBySomeone = () => {
     const { blocked } = this.props;
@@ -136,16 +112,13 @@ class ListItem extends PureComponent {
       isMember,
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
     this.itemBusy();
 
     if (isMember) {
-      return cloneItem(name, listId, itemId, socket).finally(() =>
-        this.itemFree()
-      );
+      return cloneItem(name, listId, itemId).finally(() => this.itemFree());
     }
   };
 
@@ -184,13 +157,12 @@ class ListItem extends PureComponent {
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
     this.itemBusy();
 
-    return archiveItem(listId, itemId, name, socket);
+    return archiveItem(listId, itemId, name);
   };
 
   renderVoting = () => {
@@ -485,17 +457,14 @@ ListItem.propTypes = {
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
 
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
-  cloneItemWS: PropTypes.func.isRequired,
   onBusy: PropTypes.func.isRequired,
   onFree: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired,
-  updateListItemWS: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -503,7 +472,6 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   withRouter,
   connect(
@@ -512,10 +480,8 @@ export default _flowRight(
       archiveItem,
       clearVote,
       cloneItem,
-      cloneItemWS,
       setVote,
-      toggle,
-      updateListItemWS
+      toggle
     }
   )
 )(ListItem);
