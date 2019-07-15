@@ -75,13 +75,36 @@ const cloneItemWS = socket =>
       .emit(ItemActionTypes.CLONE_SUCCESS, data)
   );
 
+const setVoteWS = socket =>
+  socket.on(ItemActionTypes.SET_VOTE_SUCCESS, data =>
+    socket.broadcast
+      .to(`sack-${data.listId}`)
+      .emit(ItemActionTypes.SET_VOTE_SUCCESS, data)
+  );
+const clearVoteWS = socket =>
+  socket.on(ItemActionTypes.CLEAR_VOTE_SUCCESS, data =>
+    socket.broadcast
+      .to(`sack-${data.listId}`)
+      .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data)
+  );
+
+const markAsDoneWS = socket =>
+  socket.on(ItemActionTypes.TOGGLE_SUCCESS, data =>
+    socket.broadcast
+      .to(`sack-${data.listId}`)
+      .emit(ItemActionTypes.TOGGLE_SUCCESS, data)
+  );
+
 module.exports = {
   addCommentWS,
   addItemToListWS,
   archiveItemWS,
+  clearVoteWS,
   cloneItemWS,
   deleteItemWS,
+  markAsDoneWS,
   restoreItemWS,
+  setVoteWS,
   updateItemState,
   updateItemWS
 };

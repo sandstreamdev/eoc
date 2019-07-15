@@ -169,6 +169,12 @@ export const toggle = (
         notificationId: 'list.items.actions.toggle',
         data: itemName
       });
+      socket.emit(ItemActionTypes.TOGGLE_SUCCESS, {
+        authorId,
+        authorName,
+        itemId,
+        listId
+      });
     })
     .catch(() => {
       dispatch(toggleItemFailure());
@@ -180,7 +186,10 @@ export const toggle = (
 
 export const setVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/set-vote`, { itemId })
-    .then(() => dispatch(setVoteSuccess(itemId, listId)))
+    .then(() => {
+      dispatch(setVoteSuccess(itemId, listId));
+      socket.emit(ItemActionTypes.SET_VOTE_SUCCESS, { itemId, listId });
+    })
     .catch(() => {
       dispatch(setVoteFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
@@ -191,7 +200,10 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
 
 export const clearVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
-    .then(() => dispatch(clearVoteSuccess(itemId, listId)))
+    .then(() => {
+      dispatch(clearVoteSuccess(itemId, listId));
+      socket.emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { itemId, listId });
+    })
     .catch(() => {
       dispatch(clearVoteFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {

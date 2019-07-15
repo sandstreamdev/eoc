@@ -11,6 +11,7 @@ export const ItemsEvents = Object.freeze({
   DELETE_SUCCESS: ItemActionTypes.DELETE_SUCCESS,
   RESTORE_SUCCESS: ItemActionTypes.RESTORE_SUCCESS,
   SET_VOTE_SUCCESS: ItemActionTypes.SET_VOTE_SUCCESS,
+  TOGGLE_SUCCESS: ItemActionTypes.TOGGLE_SUCCESS,
   UPDATE_SUCCESS: ItemActionTypes.UPDATE_SUCCESS
 });
 

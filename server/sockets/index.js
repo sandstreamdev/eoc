@@ -13,9 +13,12 @@ const {
   addCommentWS,
   addItemToListWS,
   archiveItemWS,
+  clearVoteWS,
   cloneItemWS,
   deleteItemWS,
+  markAsDoneWS,
   restoreItemWS,
+  setVoteWS,
   updateItemState,
   updateItemWS
 } = require('./list');
@@ -67,6 +70,9 @@ const socketListenTo = server => {
     updateItemWS(socket);
     addCommentWS(socket);
     cloneItemWS(socket);
+    setVoteWS(socket);
+    clearVoteWS(socket);
+    markAsDoneWS(socket);
   });
 };
 
