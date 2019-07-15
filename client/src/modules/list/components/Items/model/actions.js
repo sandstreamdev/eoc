@@ -9,7 +9,7 @@ import {
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ITEM_TOGGLE_TIME } from '../ListItem/constants';
-import socketInstance from 'sockets';
+import socket from 'sockets';
 
 const addItemFailure = errorMessage => ({
   type: ItemActionTypes.ADD_FAILURE,
@@ -136,7 +136,7 @@ export const addItem = (item, listId) => dispatch =>
         item: json,
         listId
       };
-      socketInstance.emit(ItemActionTypes.ADD_SUCCESS, data);
+      socket.emit(ItemActionTypes.ADD_SUCCESS, data);
       dispatch(addItemSuccess(json, listId));
     })
     .catch(err => {
@@ -211,7 +211,7 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
         notificationId: 'list.items.actions.update-item',
         data: itemName
       });
-      socketInstance.emit(ItemActionTypes.UPDATE_SUCCESS, {
+      socket.emit(ItemActionTypes.UPDATE_SUCCESS, {
         listId,
         itemId,
         data
@@ -238,7 +238,7 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
         notificationId: 'list.items.actions.clone-item',
         data: itemName
       });
-      socketInstance.emit(ItemActionTypes.CLONE_SUCCESS, { listId, item });
+      socket.emit(ItemActionTypes.CLONE_SUCCESS, { listId, item });
     })
     .catch(() => {
       dispatch(cloneItemFailure());
@@ -257,7 +257,7 @@ export const addComment = (listId, itemId, text) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       dispatch(addCommentSuccess(listId, itemId, json));
-      socketInstance.emit(CommentActionTypes.ADD_SUCCESS, {
+      socket.emit(CommentActionTypes.ADD_SUCCESS, {
         listId,
         itemId,
         json
@@ -297,7 +297,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.archive-item',
         data: name
       });
-      socketInstance.emit(ItemActionTypes.ARCHIVE_SUCCESS, { listId, itemId });
+      socket.emit(ItemActionTypes.ARCHIVE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(archiveItemFailure());
@@ -333,7 +333,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.restore-item',
         data: name
       });
-      socketInstance.emit(ItemActionTypes.RESTORE_SUCCESS, { listId, itemId });
+      socket.emit(ItemActionTypes.RESTORE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(restoreItemFailure());
@@ -351,7 +351,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
         notificationId: 'list.items.actions.delete-item',
         data: name
       });
-      socketInstance.emit(ItemActionTypes.DELETE_SUCCESS, { listId, itemId });
+      socket.emit(ItemActionTypes.DELETE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(deleteItemFailure());
@@ -362,7 +362,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
     });
 
 export const itemBusy = (itemId, listId, busy) =>
-  socketInstance.emit(ItemStatusType.BUSY, { itemId, listId, busy });
+  socket.emit(ItemStatusType.BUSY, { itemId, listId, busy });
 
 export const itemFree = (itemId, listId, busy) =>
-  socketInstance.emit(ItemStatusType.FREE, { itemId, listId, busy });
+  socket.emit(ItemStatusType.FREE, { itemId, listId, busy });
