@@ -49,20 +49,6 @@ class ListItem extends PureComponent {
     };
   }
 
-  // componentDidUpdate(prevProps) {
-  //   const { blocked } = this.state;
-
-  //   if (prevProps.blocked !== blocked) {
-  //     this.handleBusyBySomeone();
-  //   }
-  // }
-
-  // handleBusyBySomeone = () => {
-  //   const { blocked } = this.props;
-
-  //   this.setState({ busyBySomeone: blocked });
-  // };
-
   handleItemToggling = event => {
     event.preventDefault();
 
@@ -286,17 +272,24 @@ class ListItem extends PureComponent {
   renderItemFeatures = () => {
     const { isConfirmationVisible } = this.state;
     const {
-      data: { isOrdered, name },
+      data: { isOrdered, name, busy },
       intl: { formatMessage },
       isMember
     } = this.props;
+    let isEdited;
+
+    if (busy) {
+      const { nameBusy, descriptionBusy } = busy;
+
+      isEdited = nameBusy || descriptionBusy;
+    }
 
     return (
       <div className="list-item__features">
         <div className="list-item__feature-buttons">
           <button
             className="link-button"
-            disabled={!isMember || isConfirmationVisible}
+            disabled={!isMember || isConfirmationVisible || isEdited}
             onClick={this.handleConfirmationVisibility}
             onTouchEnd={this.handleConfirmationVisibility}
             type="button"
@@ -396,11 +389,13 @@ class ListItem extends PureComponent {
       isNameEdited
     } = this.state;
     let isNameBusy;
+    let isEdited;
 
     if (busy) {
-      const { nameBusy } = busy;
+      const { nameBusy, descriptionBusy } = busy;
 
       isNameBusy = nameBusy;
+      isEdited = nameBusy || descriptionBusy;
     }
 
     return (
@@ -434,7 +429,7 @@ class ListItem extends PureComponent {
                 itemId={_id}
                 name={name}
                 onBlur={this.handleNameFree}
-                onPending={this.handleNamePending}
+                onPending={this.handleNameBusy}
                 onFocus={this.handleNameBusy}
               />
               <span className="list-item__author">
@@ -450,7 +445,7 @@ class ListItem extends PureComponent {
             <div className="list-item__toggle">
               <PendingButton
                 className="list-item__icon"
-                disabled={disableToggleButton || !isMember}
+                disabled={disableToggleButton || !isMember || isEdited}
                 onClick={this.handleItemToggling}
                 onTouchEnd={this.handleItemToggling}
               />

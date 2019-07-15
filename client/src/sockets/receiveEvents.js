@@ -10,8 +10,6 @@ export const receiveEvents = (dispatch, socket) => {
 
   Object.values(ItemStatusType).forEach(event => {
     socket.on(event, data => {
-      console.log(event);
-
       dispatch({ type: event, payload: data });
     });
   });

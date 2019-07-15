@@ -44,12 +44,10 @@ const socketListenTo = server => {
     }
 
     socket.on('joinSackRoom', room => {
-      console.log('Joining room', room);
       socket.join(room);
     });
 
     socket.on('leaveSackRoom', listId => {
-      console.log('Leaving room:', `sack-${listId}`);
       socket.leave(`sack-${listId}`);
     });
 

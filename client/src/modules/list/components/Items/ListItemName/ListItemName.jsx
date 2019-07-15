@@ -58,8 +58,8 @@ class ListItemName extends PureComponent {
         params: { id: listId }
       },
       name,
-      onBusy,
-      onFree,
+      onBlur,
+      onPending,
       updateListItem
     } = this.props;
     const isNameUpdated = updatedName !== name;
@@ -67,8 +67,7 @@ class ListItemName extends PureComponent {
 
     if (canBeUpdated && isNameUpdated) {
       this.setState({ pending: true });
-      onBusy();
-
+      onPending();
       updateListItem(name, listId, itemId, { name: updatedName }).finally(
         () => {
           this.setState({
@@ -77,7 +76,7 @@ class ListItemName extends PureComponent {
           });
 
           this.handleNameInputBlur();
-          onFree();
+          onBlur();
         }
       );
     }
@@ -177,9 +176,8 @@ ListItemName.propTypes = {
   name: PropTypes.string.isRequired,
 
   onBlur: PropTypes.func.isRequired,
-  onBusy: PropTypes.func.isRequired,
   onFocus: PropTypes.func.isRequired,
-  onFree: PropTypes.func.isRequired,
+  onPending: PropTypes.func.isRequired,
   updateListItem: PropTypes.func.isRequired
 };
 

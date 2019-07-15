@@ -43,8 +43,6 @@ const updateItemState = socket => {
   socket.on(ItemStatusType.BUSY, data => {
     const { listId } = data;
 
-    console.log(data);
-
     socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.BUSY, data);
   });
 
