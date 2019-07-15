@@ -16,8 +16,8 @@ import {
   archiveItem,
   clearVote,
   cloneItem,
-  itemBusy,
-  itemFree,
+  setItemBusy,
+  setItemFree,
   setVote,
   toggle
 } from '../model/actions';
@@ -72,13 +72,13 @@ class ListItem extends PureComponent {
       disableToggleButton: true
     }));
 
-    this.itemBusy();
+    this.setItemBusy();
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
       return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
-        () => this.itemFree()
+        () => this.setItemFree()
       );
     }
 
@@ -105,10 +105,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.itemBusy();
+    this.setItemBusy();
 
     if (isMember) {
-      return cloneItem(name, listId, itemId).finally(() => this.itemFree());
+      return cloneItem(name, listId, itemId).finally(() => this.setItemFree());
     }
   };
 
@@ -126,9 +126,9 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    this.itemBusy();
+    this.setItemBusy();
 
-    return action(_id, listId, name).finally(() => this.itemFree());
+    return action(_id, listId, name).finally(() => this.setItemFree());
   };
 
   handleConfirmationVisibility = event => {
@@ -150,7 +150,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.itemBusy();
+    this.setItemBusy();
 
     return archiveItem(listId, itemId, name);
   };
@@ -182,32 +182,32 @@ class ListItem extends PureComponent {
   handleNameBusy = () => {
     this.setState(
       { busy: { nameBusy: true, descriptionBusy: false } },
-      this.itemBusy
+      this.setItemBusy
     );
   };
 
   handleNameFree = () => {
     this.setState(
       { busy: { nameBusy: false, descriptionBusy: false } },
-      this.itemFree
+      this.setItemFree
     );
   };
 
   handleDescriptionBusy = () => {
     this.setState(
       { busy: { nameBusy: false, descriptionBusy: true } },
-      this.itemBusy
+      this.setItemBusy
     );
   };
 
   handleDescriptionFree = () => {
     this.setState(
       { busy: { nameBusy: false, descriptionBusy: false } },
-      this.itemFree
+      this.setItemFree
     );
   };
 
-  itemBusy = () => {
+  setItemBusy = () => {
     const {
       busy: { nameBusy, descriptionBusy }
     } = this.state;
@@ -218,10 +218,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    itemBusy(itemId, listId, { nameBusy, descriptionBusy });
+    setItemBusy(itemId, listId, { nameBusy, descriptionBusy });
   };
 
-  itemFree = () => {
+  setItemFree = () => {
     const {
       busy: { nameBusy, descriptionBusy }
     } = this.state;
@@ -232,7 +232,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    itemFree(itemId, listId, { nameBusy, descriptionBusy });
+    setItemFree(itemId, listId, { nameBusy, descriptionBusy });
   };
 
   renderConfirmation = () => {
