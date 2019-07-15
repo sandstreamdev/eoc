@@ -72,7 +72,7 @@ const socketListenTo = server => {
       const { room, userId } = data;
 
       socket.leave(room);
-      cohortViewClients.set(userId, socket.id);
+      cohortViewClients.delete(userId, socket.id);
     });
 
     socket.on('enterCohortsView', userId =>
