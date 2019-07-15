@@ -429,8 +429,8 @@ class ListItem extends PureComponent {
                 itemId={_id}
                 name={name}
                 onBlur={this.handleNameFree}
-                onPending={this.handleNameBusy}
                 onFocus={this.handleNameBusy}
+                onPending={this.handleNameBusy}
               />
               <span className="list-item__author">
                 <FormattedMessage

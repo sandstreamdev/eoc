@@ -173,7 +173,6 @@ const items = (state = {}, action) => {
         [itemId]: { ...state[itemId], comments: comments(prevComments, action) }
       };
     }
-
     default:
       return state;
   }

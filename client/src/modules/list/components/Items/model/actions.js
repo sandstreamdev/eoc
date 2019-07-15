@@ -139,7 +139,7 @@ export const addItem = (item, listId) => dispatch =>
       socket.emit(ItemActionTypes.ADD_SUCCESS, data);
       dispatch(addItemSuccess(json, listId));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(addItemFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.add-item-fail',
@@ -217,7 +217,7 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
         data
       });
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(updateListItemFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.update-item-fail',
@@ -278,7 +278,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
       const comments = _keyBy(json, '_id');
       dispatch(fetchCommentsSuccess(listId, itemId, comments));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchCommentsFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.fetch-comments-fails',
