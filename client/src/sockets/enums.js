@@ -1,4 +1,7 @@
-import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
+import {
+  ItemActionTypes,
+  CommentActionTypes
+} from 'modules/list/components/Items/model/actionTypes';
 
 export const ItemsEvents = Object.freeze({
   ADD_SUCCESS: ItemActionTypes.ADD_SUCCESS,
@@ -20,6 +23,8 @@ export const ListEvents = Object.freeze({});
 
 export const CohortEvent = Object.freeze({});
 
-export const CommentEvents = Object.freeze({});
+export const CommentEvents = Object.freeze({
+  ADD_SUCCESS: CommentActionTypes.ADD_SUCCESS
+});
 
 export const ActivitiesEvents = Object.freeze({});

@@ -260,7 +260,7 @@ export const addComment = (listId, itemId, text) => dispatch =>
       socket.emit(CommentActionTypes.ADD_SUCCESS, {
         listId,
         itemId,
-        json
+        comment: json
       });
     })
     .catch(() => {

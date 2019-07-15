@@ -1,7 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _flowRight from 'lodash/flowRight';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -46,37 +45,33 @@ class ItemsList extends PureComponent {
     return archived ? (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {items.slice(0, limit).map(item => {
-            return (
-              <CSSTransition
-                classNames="animated-item"
+          {items.slice(0, limit).map(item => (
+            <CSSTransition
+              classNames="animated-item"
+              key={item._id}
+              timeout={1000}
+            >
+              <ListArchivedItem
+                data={item}
+                isMember={isMember}
                 key={item._id}
-                timeout={1000}
-              >
-                <ListArchivedItem
-                  data={item}
-                  isMember={isMember}
-                  key={item._id}
-                />
-              </CSSTransition>
-            );
-          })}
+              />
+            </CSSTransition>
+          ))}
         </TransitionGroup>
       </ul>
     ) : (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {items.slice(0, limit).map(item => {
-            return (
-              <CSSTransition
-                classNames="animated-item"
-                key={item._id}
-                timeout={2000}
-              >
-                <ListItem data={item} isMember={isMember} key={item._id} />
-              </CSSTransition>
-            );
-          })}
+          {items.slice(0, limit).map(item => (
+            <CSSTransition
+              classNames="animated-item"
+              key={item._id}
+              timeout={2000}
+            >
+              <ListItem data={item} isMember={isMember} key={item._id} />
+            </CSSTransition>
+          ))}
         </TransitionGroup>
       </ul>
     );
@@ -131,4 +126,4 @@ ItemsList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default _flowRight(withRouter, injectIntl, connect())(ItemsList);
+export default _flowRight(withRouter, injectIntl)(ItemsList);
