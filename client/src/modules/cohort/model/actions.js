@@ -251,7 +251,11 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
     .then(() => getData(`/api/cohorts/${cohortId}/data`))
     .then(resp => resp.json())
     .then(json => {
-      dispatch(restoreCohortSuccess(json, cohortId));
+      const data = {
+        ...json,
+        members: _keyBy(json.members, '_id')
+      };
+      dispatch(restoreCohortSuccess(data, cohortId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName

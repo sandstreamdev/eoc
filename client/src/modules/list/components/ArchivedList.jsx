@@ -19,10 +19,11 @@ class ArchivedList extends PureComponent {
   };
 
   render() {
-    const { listId, name } = this.props;
+    const { isOwner, listId, name } = this.props;
 
     return (
       <ArchivedMessage
+        isOwner={isOwner}
         item="sack"
         name={name}
         onDelete={this.handleListDeletion(listId)}
@@ -33,6 +34,7 @@ class ArchivedList extends PureComponent {
 }
 
 ArchivedList.propTypes = {
+  isOwner: PropTypes.bool,
   listId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 

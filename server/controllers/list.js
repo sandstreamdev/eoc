@@ -290,8 +290,24 @@ const getListData = (req, resp) => {
         viewersIds: viewersCollection
       } = list;
 
+      const isListMember = isMember(list, userId);
+      const isListOwner = isOwner(list, userId);
+
       if (isArchived) {
-        return resp.send({ cohortId, cohortName, _id, isArchived, name, type });
+        if (!isListMember) {
+          return resp.sendStatus(404);
+        }
+
+        return resp.send({
+          cohortId,
+          cohortName,
+          _id,
+          isArchived,
+          isMember: isListMember,
+          isOwner: isListOwner,
+          name,
+          type
+        });
       }
 
       const activeItems = listItems.filter(item => !item.isArchived);
@@ -311,8 +327,8 @@ const getListData = (req, resp) => {
         description,
         isArchived,
         isGuest: !cohortId || (cohortId && !isMember(cohort, userId)),
-        isMember: isMember(list, userId),
-        isOwner: isOwner(list, userId),
+        isMember: isListMember,
+        isOwner: isListOwner,
         items,
         members,
         name,

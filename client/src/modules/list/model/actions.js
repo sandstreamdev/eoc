@@ -11,7 +11,7 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
-import { ResourceNotFoundException } from 'common/exceptions/ResourceNotFoundException';
+import { ResourceNotFoundException } from 'common/exceptions';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -322,7 +322,12 @@ export const restoreList = (listId, listName) => dispatch =>
     .then(() => getData(`/api/lists/${listId}/data`))
     .then(resp => resp.json())
     .then(json => {
-      dispatch(restoreListSuccess(json, listId));
+      const listData = {
+        ...json,
+        items: _keyBy(json.items, '_id'),
+        members: _keyBy(json.members, '_id')
+      };
+      dispatch(restoreListSuccess(listData, listId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.restore-list',
         data: listName
