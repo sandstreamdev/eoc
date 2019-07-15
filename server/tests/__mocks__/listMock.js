@@ -68,6 +68,7 @@ const listMock = [
 
 const expectedListProperties = [
   '_id',
+  'createdAt',
   'description',
   'doneItemsCount',
   'isFavourite',
@@ -90,6 +91,7 @@ const expectedCohortListProperties = [
 const expectedListMetaDataProperties = [
   '_id',
   'cohortId',
+  'createdAt',
   'description',
   'doneItemsCount',
   'isFavourite',

@@ -2,7 +2,7 @@ const { CohortActionTypes } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
 
-const addCohortMemberWS = (socket, cohortClients) =>
+const addCohortMemberWS = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const { cohortId } = data;
 
@@ -10,7 +10,7 @@ const addCohortMemberWS = (socket, cohortClients) =>
       .to(`cohort-${cohortId}`)
       .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
-    if (cohortClients.size > 0) {
+    if (clients.size > 0) {
       Cohort.findById(cohortId)
         .select('_id isArchived createdAt name description memberIds')
         .lean()
@@ -23,9 +23,9 @@ const addCohortMemberWS = (socket, cohortClients) =>
             memberIds.forEach(id => {
               const memberId = id.toString();
 
-              if (cohortClients.has(memberId)) {
+              if (clients.has(memberId)) {
                 socket.broadcast
-                  .to(cohortClients.get(memberId))
+                  .to(clients.get(memberId))
                   .emit(CohortActionTypes.CREATE_SUCCESS, cohort);
               }
             });

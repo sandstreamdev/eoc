@@ -74,13 +74,14 @@ const CohortActionTypes = Object.freeze({
   CREATE_SUCCESS: 'cohort/CREATE_SUCCESS'
 });
 
-const ListActionTypes = Object.freeze({
-  ADD_VIEWER_SUCCESS: 'list/ADD_VIEWER_SUCCESS',
-  FETCH_META_DATA_SUCCESS: 'list/FETCH_META_DATA_SUCCESS'
-});
-
 const CommentActionTypes = Object.freeze({
   ADD_SUCCESS: 'comment/ADD_SUCCESS'
+});
+
+const ListActionTypes = Object.freeze({
+  ADD_VIEWER_SUCCESS: 'list/ADD_VIEWER_SUCCESS',
+  CREATE_SUCCESS: 'list/CREATE_SUCCESS',
+  FETCH_META_DATA_SUCCESS: 'list/FETCH_META_DATA_SUCCESS'
 });
 
 module.exports = {

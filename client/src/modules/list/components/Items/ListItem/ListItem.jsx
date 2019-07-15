@@ -28,8 +28,8 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
-import withSocket from 'common/hoc/withSocket';
 import { ItemActionTypes } from '../model/actionTypes';
+import socket from 'sockets';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -62,7 +62,7 @@ class ListItem extends PureComponent {
   }
 
   receiveWSEvents = () => {
-    const { socket, updateListItemWS, cloneItemWS } = this.props;
+    const { updateListItemWS, cloneItemWS } = this.props;
 
     socket.on(ItemActionTypes.UPDATE_SUCCESS, itemData => {
       const { listId, itemId, data } = itemData;
@@ -136,8 +136,7 @@ class ListItem extends PureComponent {
       isMember,
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
     this.itemBusy();
@@ -184,8 +183,7 @@ class ListItem extends PureComponent {
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
     this.itemBusy();
@@ -485,7 +483,6 @@ ListItem.propTypes = {
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
 
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
@@ -503,7 +500,6 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   withRouter,
   connect(

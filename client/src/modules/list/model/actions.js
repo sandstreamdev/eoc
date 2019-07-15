@@ -12,6 +12,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
+import socket from 'sockets';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -384,6 +385,7 @@ export const addListViewer = (listId, email) => dispatch =>
       if (json._id) {
         const data = { listId, viewer: json };
 
+        socket.emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
         dispatch(addViewerSuccess(data));
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',

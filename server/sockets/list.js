@@ -9,7 +9,10 @@ const {
   ListType
 } = require('../common/variables');
 const List = require('../models/list.model');
-const { responseWithListsMetaData } = require('../common/utils');
+const {
+  responseWithList,
+  responseWithListsMetaData
+} = require('../common/utils');
 
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
@@ -94,7 +97,7 @@ const sendListsOnAddCohortMemberWS = (socket, clients) =>
         cohortId,
         type: ListType.SHARED
       },
-      '_id cohortId name description items favIds type'
+      '_id created_at cohortId name description items favIds type'
     )
       .lean()
       .exec()
@@ -125,9 +128,44 @@ const sendListsOnAddCohortMemberWS = (socket, clients) =>
       });
   });
 
+const addListMemberWS = (socket, dashboardClients, cohortClients) =>
+  socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
+    const {
+      listId,
+      viewer: { _id: viewerId }
+    } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
+
+    List.findById(listId)
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { cohortId } = doc;
+          const list = responseWithList(doc, viewerId);
+
+          if (cohortId && cohortClients.has(viewerId)) {
+            socket
+              .to(cohortClients.get(viewerId))
+              .emit(ListActionTypes.CREATE_SUCCESS, list);
+          }
+
+          if (dashboardClients.has(viewerId)) {
+            socket
+              .to(dashboardClients.get(viewerId))
+              .emit(ListActionTypes.CREATE_SUCCESS, list);
+          }
+        }
+      });
+  });
+
 module.exports = {
   addCommentWS,
   addItemToListWS,
+  addListMemberWS,
   archiveItemWS,
   cloneItemWS,
   deleteItemWS,

@@ -12,6 +12,7 @@ const sessionStore = new MongoStore({
 const {
   addCommentWS,
   addItemToListWS,
+  addListMemberWS,
   archiveItemWS,
   cloneItemWS,
   deleteItemWS,
@@ -35,8 +36,9 @@ const socketListenTo = server => {
     })
   );
 
-  const cohortsClients = new Map();
-  const dashboardClients = new Map();
+  const cohortViewClients = new Map();
+  const allCohortsViewClients = new Map();
+  const dashboardViewClients = new Map();
 
   ioInstance.on('connection', socket => {
     const {
@@ -61,28 +63,34 @@ const socketListenTo = server => {
     });
 
     socket.on('joinCohortRoom', data => {
-      const { room } = data;
+      const { room, userId } = data;
 
       socket.join(room);
+      cohortViewClients.set(userId, socket.id);
     });
 
     socket.on('leaveCohortRoom', data => {
-      const { room } = data;
+      const { room, userId } = data;
 
       socket.leave(room);
+      cohortViewClients.delete(userId, socket.id);
     });
 
     socket.on('enterCohortsView', userId =>
-      cohortsClients.set(userId, socket.id)
+      allCohortsViewClients.set(userId, socket.id)
     );
 
-    socket.on('leaveCohortsView', userId => cohortsClients.delete(userId));
+    socket.on('leaveCohortsView', userId =>
+      allCohortsViewClients.delete(userId)
+    );
 
     socket.on('enterDashboardView', userId =>
-      dashboardClients.set(userId, socket.id)
+      dashboardViewClients.set(userId, socket.id)
     );
 
-    socket.on('leaveDashboardView', userId => dashboardClients.delete(userId));
+    socket.on('leaveDashboardView', userId =>
+      dashboardViewClients.delete(userId)
+    );
 
     socket.on('error', () => {
       /* Ignore error.
@@ -93,6 +101,7 @@ const socketListenTo = server => {
     });
 
     addItemToListWS(socket);
+    addListMemberWS(socket, dashboardViewClients, cohortViewClients);
     archiveItemWS(socket);
     updateItemState(socket);
     deleteItemWS(socket);
@@ -100,9 +109,9 @@ const socketListenTo = server => {
     updateItemWS(socket);
     addCommentWS(socket);
     cloneItemWS(socket);
-    sendListsOnAddCohortMemberWS(socket, dashboardClients);
+    sendListsOnAddCohortMemberWS(socket, dashboardViewClients);
 
-    addCohortMemberWS(socket, cohortsClients);
+    addCohortMemberWS(socket, allCohortsViewClients);
   });
 };
 

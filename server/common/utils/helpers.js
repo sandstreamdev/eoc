@@ -39,12 +39,22 @@ const isViewer = (doc, userId) => {
 };
 
 const responseWithList = (list, userId) => {
-  const { _id, cohortId, description, favIds, items, name, type } = list;
+  const {
+    _id,
+    cohortId,
+    created_at: createdAt,
+    description,
+    favIds,
+    items,
+    name,
+    type
+  } = list;
   const doneItemsCount = items.filter(item => item.isOrdered).length;
   const unhandledItemsCount = items.length - doneItemsCount;
 
   const listToSend = {
     _id,
+    createdAt,
     description,
     doneItemsCount,
     isFavourite: checkIfArrayContainsUserId(favIds, userId),
@@ -63,7 +73,13 @@ const responseWithList = (list, userId) => {
 const responseWithListsMetaData = (lists, userId) =>
   _compact(
     _map(lists, list => {
-      const { cohortId: cohort, favIds, items, ...rest } = list;
+      const {
+        cohortId: cohort,
+        favIds,
+        items,
+        created_at: createdAt,
+        ...rest
+      } = list;
 
       if (cohort && cohort.isArchived) {
         return;
@@ -75,6 +91,7 @@ const responseWithListsMetaData = (lists, userId) =>
 
       const listToSend = {
         ...rest,
+        createdAt,
         doneItemsCount,
         isFavourite: checkIfArrayContainsUserId(favIds, userId),
         unhandledItemsCount
