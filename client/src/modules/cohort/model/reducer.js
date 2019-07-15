@@ -91,7 +91,6 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.FETCH_DETAILS_SUCCESS:
       return { ...state, [action.payload._id]: action.payload.data };
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
-    case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS:
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
     case CohortActionTypes.LEAVE_SUCCESS: {
       const {
@@ -106,6 +105,22 @@ const cohorts = (state = {}, action) => {
           members: membersReducer(members, action)
         }
       };
+    }
+    case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS: {
+      const {
+        payload: { cohortId, isCurrentUserRoleChanging }
+      } = action;
+      const { members } = state[cohortId];
+      const cohort = {
+        ...state[cohortId],
+        members: membersReducer(members, action)
+      };
+
+      if (isCurrentUserRoleChanging) {
+        cohort.isOwner = true;
+      }
+
+      return { ...state, [cohortId]: cohort };
     }
     case CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
