@@ -14,12 +14,12 @@ const membersReducer = (state = {}, action) => {
     case ListActionTypes.ADD_VIEWER_SUCCESS: {
       const {
         payload: {
-          data,
-          data: { _id }
+          viewer,
+          viewer: { _id }
         }
       } = action;
 
-      return { [_id]: data, ...state };
+      return { [_id]: viewer, ...state };
     }
     case ListActionTypes.REMOVE_MEMBER_SUCCESS:
     case ListActionTypes.LEAVE_SUCCESS: {
@@ -90,7 +90,7 @@ const lists = (state = {}, action) => {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
       return { ...state, ...action.payload };
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
-      return { ...action.payload };
+      return { ...state, ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
       return { [action.payload._id]: { ...action.payload }, ...state };
     case ListActionTypes.DELETE_SUCCESS: {

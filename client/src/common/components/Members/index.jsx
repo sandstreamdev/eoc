@@ -2,6 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import _flowRight from 'lodash/flowRight';
 
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { PlusIcon, DotsIcon } from 'assets/images/icons';
@@ -244,9 +245,10 @@ MembersBox.propTypes = {
   onListLeave: PropTypes.func
 };
 
-export default withRouter(
+export default _flowRight(
+  withRouter,
   connect(
     null,
     { addCohortMember, addListViewer, inviteUser }
-  )(MembersBox)
-);
+  )
+)(MembersBox);

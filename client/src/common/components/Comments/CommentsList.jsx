@@ -21,7 +21,7 @@ import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { CommentActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import Preloader from 'common/components/Preloader';
-import withSocket from 'common/hoc/withSocket';
+import socket from 'sockets';
 
 class CommentsList extends PureComponent {
   pendingPromise = null;
@@ -43,7 +43,7 @@ class CommentsList extends PureComponent {
   }
 
   receiveWSEvents = () => {
-    const { addCommentWS, socket } = this.props;
+    const { addCommentWS } = this.props;
 
     socket.on(CommentActionTypes.ADD_SUCCESS, data => {
       const { itemId, listId, json } = data;
@@ -86,8 +86,7 @@ class CommentsList extends PureComponent {
       itemId,
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
     return addComment(listId, itemId, comment, socket);
@@ -150,7 +149,6 @@ CommentsList.propTypes = {
   itemId: PropTypes.string.isRequired,
   itemName: PropTypes.string.isRequired,
   match: RouterMatchPropType.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
 
   addComment: PropTypes.func.isRequired,
   addCommentWS: PropTypes.func.isRequired,
@@ -158,7 +156,6 @@ CommentsList.propTypes = {
 };
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   withRouter,
   connect(

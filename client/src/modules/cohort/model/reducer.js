@@ -7,13 +7,11 @@ const membersReducer = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.ADD_MEMBER_SUCCESS: {
       const {
-        payload: {
-          data,
-          data: { _id }
-        }
-      } = action;
+        member,
+        member: { _id }
+      } = action.payload;
 
-      return { [_id]: data, ...state };
+      return { [_id]: member, ...state };
     }
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
     case CohortActionTypes.LEAVE_SUCCESS: {
@@ -53,7 +51,7 @@ const membersReducer = (state = {}, action) => {
 const cohorts = (state = {}, action) => {
   switch (action.type) {
     case CohortActionTypes.CREATE_SUCCESS:
-      return { [action.payload._id]: { ...action.payload }, ...state };
+      return { ...state, [action.payload._id]: { ...action.payload } };
     case CohortActionTypes.UPDATE_SUCCESS: {
       const { description, cohortId, name } = action.payload;
       const prevCohort = state[cohortId];

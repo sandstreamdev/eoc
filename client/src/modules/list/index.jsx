@@ -40,29 +40,31 @@ import {
 import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
-import withSocket from 'common/hoc/withSocket';
 import { ResourceNotFoundException } from 'common/exceptions';
+import socket, { joinRoom, leaveRoom } from 'sockets';
 
 class List extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      breadcrumbs: [],
-      dialogContext: null,
-      isMembersBoxVisible: false,
-      pendingForDetails: false,
-      pendingForListArchivization: false
-    };
-  }
+  state = {
+    breadcrumbs: [],
+    dialogContext: null,
+    isMembersBoxVisible: false,
+    pendingForDetails: false,
+    pendingForListArchivization: false
+  };
 
   componentDidMount() {
+    const {
+      currentUser: { id: userId },
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
     this.setState({ pendingForDetails: true });
 
     this.fetchData()
       .then(() => {
         this.handleBreadcrumbs();
-        this.handleSocketConnection();
         this.receiveWSEvents();
         this.setState({ pendingForDetails: false });
       })
@@ -71,6 +73,7 @@ class List extends Component {
           this.setState({ pendingForDetails: false });
         }
       });
+    joinRoom(Routes.LIST, cohortId, userId);
   }
 
   componentDidUpdate(prevProps) {
@@ -80,45 +83,35 @@ class List extends Component {
       }
     } = prevProps;
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
     if (prevListId !== listId) {
-      socket.emit('leavingRoom', prevListId);
+      leaveRoom(Routes.LIST, listId, userId);
       this.fetchData();
     }
   }
 
   componentWillUnmount() {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
-    socket.emit('leavingRoom', listId);
+    leaveRoom(Routes.LIST, listId, userId);
   }
-
-  handleRoomConnection = () => {
-    const {
-      list: { _id: listId },
-      socket
-    } = this.props;
-
-    socket.emit('joinRoom', `list-${listId}`);
-  };
 
   receiveWSEvents = () => {
     const {
       addItemWS,
       archiveItemWS,
       deleteItemWS,
-      restoreItemWS,
-      socket
+      restoreItemWS
     } = this.props;
 
     socket.on(ItemActionTypes.ADD_SUCCESS, data => {
@@ -356,7 +349,6 @@ List.propTypes = {
   list: PropTypes.objectOf(PropTypes.any),
   match: RouterMatchPropType.isRequired,
   members: PropTypes.objectOf(PropTypes.object),
-  socket: PropTypes.objectOf(PropTypes.any),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   addItemWS: PropTypes.func.isRequired,
@@ -385,7 +377,6 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   withRouter,
   connect(

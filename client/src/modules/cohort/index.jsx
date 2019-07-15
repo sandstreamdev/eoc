@@ -40,6 +40,7 @@ import Breadcrumbs from 'common/components/Breadcrumbs';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
+import { joinRoom, leaveRoom } from 'sockets';
 
 class Cohort extends PureComponent {
   pendingPromises = [];
@@ -56,7 +57,15 @@ class Cohort extends PureComponent {
   };
 
   componentDidMount() {
+    const {
+      currentUser: { id: userId },
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
     this.fetchData();
+    joinRoom(Routes.COHORT, cohortId, userId);
   }
 
   componentDidUpdate(prevProps) {
@@ -66,17 +75,28 @@ class Cohort extends PureComponent {
       }
     } = this.props;
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: prevId }
       }
     } = prevProps;
 
     if (id !== prevId) {
+      leaveRoom(Routes.COHORT, prevId, userId);
       this.fetchData();
     }
   }
 
   componentWillUnmount() {
+    const {
+      currentUser: { id: userId },
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
+    leaveRoom(Routes.COHORT, cohortId, userId);
+
     this.pendingPromises.forEach(promise => promise.abort());
   }
 

@@ -105,9 +105,9 @@ const favouritesFailure = () => ({
   type: ListActionTypes.FAVOURITES_FAILURE
 });
 
-const addViewerSuccess = (data, listId) => ({
+const addViewerSuccess = data => ({
   type: ListActionTypes.ADD_VIEWER_SUCCESS,
-  payload: { listId, data }
+  payload: data
 });
 
 const addViewerFailure = () => ({
@@ -382,7 +382,9 @@ export const addListViewer = (listId, email) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       if (json._id) {
-        dispatch(addViewerSuccess(json, listId));
+        const data = { listId, viewer: json };
+
+        dispatch(addViewerSuccess(data));
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',
           data: json.displayName
@@ -530,7 +532,7 @@ export const changeType = (listId, listName, type) => dispatch =>
       const { data } = json;
       const listData = {
         ...data,
-        members: _keyBy(json.members, '_id')
+        members: _keyBy(data.members, '_id')
       };
       dispatch(changeTypeSuccess(listId, listData));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {

@@ -12,6 +12,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
+import socket from 'sockets';
 
 const createCohortSuccess = data => ({
   type: CohortActionTypes.CREATE_SUCCESS,
@@ -93,9 +94,9 @@ const fetchArchivedCohortsMetaDataFailure = errMessage => ({
   payload: errMessage
 });
 
-const addMemberSuccess = (data, cohortId) => ({
+const addMemberSuccess = data => ({
   type: CohortActionTypes.ADD_MEMBER_SUCCESS,
-  payload: { cohortId, data }
+  payload: data
 });
 
 const addMemberFailure = () => ({
@@ -297,7 +298,10 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       if (json._id) {
-        dispatch(addMemberSuccess(json, cohortId));
+        const data = { cohortId, member: json };
+
+        socket.emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
+        dispatch(addMemberSuccess(data));
 
         return UserAddingStatus.ADDED;
       }

@@ -20,7 +20,9 @@ import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import { ColorType, Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
-import { IntlPropType } from 'common/constants/propTypes';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { enterView, leaveView } from 'sockets';
 
 class Dashboard extends Component {
   state = {
@@ -32,13 +34,26 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    const { fetchListsMetaData } = this.props;
+    const {
+      currentUser: { id },
+      fetchListsMetaData
+    } = this.props;
 
     this.setState({ pendingForLists: true });
 
     fetchListsMetaData().finally(() =>
       this.setState({ pendingForLists: false })
     );
+
+    enterView(Routes.DASHBOARD, id);
+  }
+
+  componentWillUnmount() {
+    const {
+      currentUser: { id }
+    } = this.props;
+
+    leaveView(Routes.DASHBOARD, id);
   }
 
   handleDialogVisibility = () =>
@@ -174,6 +189,7 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortLists: PropTypes.objectOf(PropTypes.object),
+  currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   privateLists: PropTypes.objectOf(PropTypes.object),
   viewType: PropTypes.string.isRequired,
@@ -187,6 +203,7 @@ Dashboard.propTypes = {
 const mapStateToProps = state => ({
   archivedLists: getArchivedLists(state),
   cohortLists: getCohortsLists(state),
+  currentUser: getCurrentUser(state),
   privateLists: getPrivateLists(state)
 });
 

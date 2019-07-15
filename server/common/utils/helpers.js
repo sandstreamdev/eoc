@@ -129,11 +129,12 @@ const responseWithCohorts = cohorts =>
   });
 
 const responseWithCohort = cohort => {
-  const { _id, description, memberIds, name, isArchived } = cohort;
+  const { _id, createdAt, description, memberIds, name, isArchived } = cohort;
   const membersCount = memberIds.length;
 
   return {
     _id,
+    createdAt,
     description,
     isArchived,
     membersCount,

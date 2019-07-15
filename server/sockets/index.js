@@ -16,9 +16,11 @@ const {
   cloneItemWS,
   deleteItemWS,
   restoreItemWS,
+  sendListsOnAddCohortMemberWS,
   updateItemState,
   updateItemWS
 } = require('./list');
+const { addCohortMemberWS } = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -33,6 +35,9 @@ const socketListenTo = server => {
     })
   );
 
+  const cohortsClients = new Map();
+  const dashboardClients = new Map();
+
   ioInstance.on('connection', socket => {
     const {
       request: { user }
@@ -43,13 +48,41 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinRoom', room => {
+    socket.on('joinSackRoom', data => {
+      const { room } = data;
+
       socket.join(room);
     });
 
-    socket.on('leavingRoom', listId => {
-      socket.leave(`list-${listId}`);
+    socket.on('leaveSackRoom', data => {
+      const { room } = data;
+
+      socket.leave(room);
     });
+
+    socket.on('joinCohortRoom', data => {
+      const { room } = data;
+
+      socket.join(room);
+    });
+
+    socket.on('leaveCohortRoom', data => {
+      const { room } = data;
+
+      socket.leave(room);
+    });
+
+    socket.on('enterCohortsView', userId =>
+      cohortsClients.set(userId, socket.id)
+    );
+
+    socket.on('leaveCohortsView', userId => cohortsClients.delete(userId));
+
+    socket.on('enterDashboardView', userId =>
+      dashboardClients.set(userId, socket.id)
+    );
+
+    socket.on('leaveDashboardView', userId => dashboardClients.delete(userId));
 
     socket.on('error', () => {
       /* Ignore error.
@@ -67,6 +100,9 @@ const socketListenTo = server => {
     updateItemWS(socket);
     addCommentWS(socket);
     cloneItemWS(socket);
+    sendListsOnAddCohortMemberWS(socket, dashboardClients);
+
+    addCohortMemberWS(socket, cohortsClients);
   });
 };
 

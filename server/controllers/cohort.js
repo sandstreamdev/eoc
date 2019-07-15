@@ -50,7 +50,7 @@ const getCohortsMetaData = (req, resp) => {
   } = req;
 
   Cohort.find({ memberIds: currentUserId, isArchived: false })
-    .select('_id name description memberIds ownerIds')
+    .select('_id createdAt description memberIds name ownerIds')
     .sort({ createdAt: -1 })
     .lean()
     .exec()
@@ -74,7 +74,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
       ownerIds: userId,
       isArchived: true
     },
-    '_id name description isArchived memberIds ownerIds',
+    '_id name createdAt description isArchived memberIds ownerIds',
     { sort: { created_at: -1 } }
   )
     .lean()
