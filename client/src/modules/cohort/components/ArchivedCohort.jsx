@@ -22,10 +22,11 @@ class ArchivedCohort extends PureComponent {
   };
 
   render() {
-    const { cohortId, name } = this.props;
+    const { cohortId, isOwner, name } = this.props;
 
     return (
       <ArchivedMessage
+        isOwner={isOwner}
         item="cohort"
         name={name}
         onDelete={this.handleCohortDeletion(cohortId)}
@@ -37,6 +38,7 @@ class ArchivedCohort extends PureComponent {
 
 ArchivedCohort.propTypes = {
   cohortId: PropTypes.string.isRequired,
+  isOwner: PropTypes.bool,
   name: PropTypes.string.isRequired,
 
   deleteCohort: PropTypes.func.isRequired,

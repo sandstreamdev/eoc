@@ -14,6 +14,7 @@
 
   &__body {
     position: relative;
+    margin-top: 16px;
   }
 
   &__button {
@@ -29,6 +30,5 @@
     font-size: 16px;
     line-height: 1.2;
     color: $text-normal;
-    margin-bottom: 16px;
   }
 }

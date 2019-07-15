@@ -1,8 +1,10 @@
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
-import { ValidationException } from 'common/exceptions/ValidationException';
-import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
-import { ResourceNotFoundException } from 'common/exceptions/ResourceNotFoundException';
+import {
+  ResourceNotFoundException,
+  UnauthorizedException,
+  ValidationException
+} from 'common/exceptions';
 
 export const ResponseStatusCode = Object.freeze({
   BAD_REQUEST: 400,

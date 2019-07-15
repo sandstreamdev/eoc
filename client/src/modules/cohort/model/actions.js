@@ -11,7 +11,7 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
-import { NotFoundException } from 'common/exceptions/NotFoundException';
+import { ResourceNotFoundException } from 'common/exceptions';
 
 const createCohortSuccess = data => ({
   type: CohortActionTypes.CREATE_SUCCESS,
@@ -214,11 +214,13 @@ export const deleteCohort = (cohortId, cohortName) => dispatch =>
       history.replace('/cohorts');
     })
     .catch(err => {
-      dispatch(deleteCohortFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.delete-cohort-fail',
-        data: cohortName
-      });
+      if (!(err instanceof ResourceNotFoundException)) {
+        dispatch(deleteCohortFailure());
+        createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+          notificationId: 'cohort.actions.delete-cohort-fail',
+          data: cohortName
+        });
+      }
       throw err;
     });
 
@@ -255,12 +257,13 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
         data: cohortName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(restoreCohortFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'cohort.actions.restore-cohort-fail',
         data: cohortName
       });
+      throw err;
     });
 
 export const fetchCohortDetails = cohortId => dispatch =>
@@ -274,7 +277,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
       dispatch(fetchCohortDetailsSuccess(data, cohortId));
     })
     .catch(err => {
-      if (!(err instanceof NotFoundException)) {
+      if (!(err instanceof ResourceNotFoundException)) {
         dispatch(fetchCohortDetailsFailure());
         createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
           notificationId: 'cohort.actions.fetch-details-fail'

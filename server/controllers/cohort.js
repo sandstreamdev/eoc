@@ -4,7 +4,7 @@ const Cohort = require('../models/cohort.model');
 const {
   filter,
   isMember,
-  isOwner,
+  isOwner: isCohortOwner,
   isValidMongoId,
   responseWithCohort,
   responseWithCohorts
@@ -183,8 +183,14 @@ const getCohortDetails = (req, resp) => {
         ownerIds
       } = doc;
 
+      const isOwner = isCohortOwner(doc, userId);
+
       if (isArchived) {
-        return resp.send({ _id, isArchived, name });
+        if (!isOwner) {
+          return resp.sendStatus(404);
+        }
+
+        return resp.send({ _id, isArchived, isOwner, name });
       }
 
       const members = responseWithCohortMembers(membersCollection, ownerIds);
@@ -194,7 +200,7 @@ const getCohortDetails = (req, resp) => {
         description,
         isArchived,
         isMember: true,
-        isOwner: isOwner(doc, userId),
+        isOwner,
         members,
         name
       });
@@ -505,8 +511,9 @@ const leaveCohort = (req, resp) => {
       }
 
       const { memberIds, ownerIds } = doc;
+      const isOwner = isCohortOwner(doc, userId);
 
-      if (isOwner(doc, userId)) {
+      if (isOwner) {
         if (ownerIds.length === 1) {
           throw new BadRequestException(
             'cohort.actions.leave-cohort-only-one-owner'

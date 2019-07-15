@@ -38,7 +38,6 @@ import CohortHeader from './components/CohortHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { noOp } from 'common/utils/noOp';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 
@@ -115,7 +114,6 @@ class Cohort extends PureComponent {
         if (!(err instanceof AbortPromiseException)) {
           this.setState({ pendingForDetails: false });
         }
-        noOp();
       });
   };
 
@@ -293,7 +291,7 @@ class Cohort extends PureComponent {
           />
         )}
         {isArchived ? (
-          <ArchivedCohort cohortId={cohortId} name={name} />
+          <ArchivedCohort cohortId={cohortId} isOwner={isOwner} name={name} />
         ) : (
           <div className="wrapper">
             <div className="cohort">
