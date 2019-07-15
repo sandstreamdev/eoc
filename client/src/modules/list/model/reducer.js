@@ -93,7 +93,8 @@ const lists = (state = {}, action) => {
       return { ...state, ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
       return { [action.payload._id]: { ...action.payload }, ...state };
-    case ListActionTypes.DELETE_SUCCESS: {
+    case ListActionTypes.DELETE_SUCCESS:
+    case ListActionTypes.LEAVE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;
 
       return newState;
@@ -134,8 +135,7 @@ const lists = (state = {}, action) => {
     case ListActionTypes.ADD_VIEWER_SUCCESS:
     case ListActionTypes.ADD_OWNER_ROLE_SUCCESS:
     case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS:
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
-    case ListActionTypes.LEAVE_SUCCESS: {
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { listId }
       } = action;

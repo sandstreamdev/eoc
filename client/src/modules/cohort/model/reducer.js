@@ -73,7 +73,8 @@ const cohorts = (state = {}, action) => {
 
       return { ...state, [_id]: archivedCohort };
     }
-    case CohortActionTypes.DELETE_SUCCESS: {
+    case CohortActionTypes.DELETE_SUCCESS:
+    case CohortActionTypes.LEAVE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;
 
       return newState;
@@ -92,8 +93,7 @@ const cohorts = (state = {}, action) => {
       return { ...state, [action.payload._id]: action.payload.data };
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS:
-    case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
-    case CohortActionTypes.LEAVE_SUCCESS: {
+    case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { cohortId }
       } = action;

@@ -173,9 +173,9 @@ const changeTypeFailure = () => ({
   type: ListActionTypes.CHANGE_TYPE_FAILURE
 });
 
-const leaveListSuccess = (listId, userId) => ({
+const leaveListSuccess = listId => ({
   type: ListActionTypes.LEAVE_SUCCESS,
-  payload: { listId, userId }
+  payload: listId
 });
 
 const leaveListFailure = () => ({
@@ -553,7 +553,7 @@ export const changeType = (listId, listName, type) => dispatch =>
 export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
   patchData(`/api/lists/${listId}/leave`)
     .then(() => {
-      dispatch(leaveListSuccess(listId, userId));
+      dispatch(leaveListSuccess(listId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.leave',
         data: userName
