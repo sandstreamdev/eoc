@@ -34,7 +34,7 @@ class Cohorts extends Component {
 
   componentDidMount() {
     const {
-      currentUser: { id },
+      currentUser: { id: userId },
       fetchCohortsMetaData
     } = this.props;
 
@@ -44,15 +44,15 @@ class Cohorts extends Component {
       this.setState({ pendingForCohorts: false })
     );
 
-    enterView(Routes.COHORTS, id);
+    enterView(Routes.COHORTS, userId);
   }
 
   componentWillUnmount() {
     const {
-      currentUser: { id }
+      currentUser: { id: userId }
     } = this.props;
 
-    leaveView(Routes.COHORTS, id);
+    leaveView(Routes.COHORTS, userId);
   }
 
   handleDialogVisibility = () =>
