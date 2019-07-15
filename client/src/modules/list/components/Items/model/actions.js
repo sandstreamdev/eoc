@@ -240,7 +240,7 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
       });
       socketInstance.emit(ItemActionTypes.CLONE_SUCCESS, { listId, item });
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(cloneItemFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.clone-item-fail',
@@ -322,7 +322,7 @@ export const fetchArchivedItems = (listId, listName) => dispatch =>
       });
     });
 
-export const restoreItem = (listId, itemId, name, socket) => dispatch =>
+export const restoreItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: false,
     itemId
@@ -333,7 +333,7 @@ export const restoreItem = (listId, itemId, name, socket) => dispatch =>
         notificationId: 'list.items.actions.restore-item',
         data: name
       });
-      socket.emit(ItemActionTypes.RESTORE_SUCCESS, { listId, itemId });
+      socketInstance.emit(ItemActionTypes.RESTORE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(restoreItemFailure());
@@ -343,7 +343,7 @@ export const restoreItem = (listId, itemId, name, socket) => dispatch =>
       });
     });
 
-export const deleteItem = (listId, itemId, name, socket) => dispatch =>
+export const deleteItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/delete-item/${itemId}`)
     .then(() => {
       dispatch(deleteItemSuccess(listId, itemId));
@@ -351,7 +351,7 @@ export const deleteItem = (listId, itemId, name, socket) => dispatch =>
         notificationId: 'list.items.actions.delete-item',
         data: name
       });
-      socket.emit(ItemActionTypes.DELETE_SUCCESS, { listId, itemId });
+      socketInstance.emit(ItemActionTypes.DELETE_SUCCESS, { listId, itemId });
     })
     .catch(() => {
       dispatch(deleteItemFailure());

@@ -37,7 +37,7 @@ class ItemsList extends PureComponent {
 
   renderItems = () => {
     const { archived, isMember, items } = this.props;
-    const { limit, busyBySomeoneItemId } = this.state;
+    const { limit } = this.state;
 
     if (!items) {
       return null;
@@ -47,8 +47,6 @@ class ItemsList extends PureComponent {
       <ul className="items-list">
         <TransitionGroup component={null}>
           {items.slice(0, limit).map(item => {
-            const isItemBlocked = item._id === busyBySomeoneItemId;
-
             return (
               <CSSTransition
                 classNames="animated-item"
@@ -56,12 +54,9 @@ class ItemsList extends PureComponent {
                 timeout={1000}
               >
                 <ListArchivedItem
-                  blocked={isItemBlocked}
                   data={item}
                   isMember={isMember}
                   key={item._id}
-                  onBusy={this.handleItemBusy}
-                  onFree={this.handleItemFree}
                 />
               </CSSTransition>
             );
@@ -78,13 +73,7 @@ class ItemsList extends PureComponent {
                 key={item._id}
                 timeout={2000}
               >
-                <ListItem
-                  data={item}
-                  isMember={isMember}
-                  key={item._id}
-                  onBusy={this.handleItemBusy}
-                  onFree={this.handleItemFree}
-                />
+                <ListItem data={item} isMember={isMember} key={item._id} />
               </CSSTransition>
             );
           })}
