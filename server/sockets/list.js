@@ -159,10 +159,10 @@ const addListMemberWS = (socket, dashboardClients, cohortClients) => {
 
 const addMemberRoleInListWS = (socket, clients) => {
   socket.on(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, data => {
-    const { userId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(`sack-${listId}`)
       .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -181,10 +181,10 @@ const addMemberRoleInListWS = (socket, clients) => {
 
 const addOwnerRoleInListWS = (socket, clients) => {
   socket.on(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, data => {
-    const { userId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(`sack-${listId}`)
       .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -203,10 +203,10 @@ const addOwnerRoleInListWS = (socket, clients) => {
 
 const removeMemberRoleInListWS = (socket, clients) => {
   socket.on(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, data => {
-    const { userId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(`sack-${listId}`)
       .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -225,10 +225,10 @@ const removeMemberRoleInListWS = (socket, clients) => {
 
 const removeOwnerRoleInListWS = (socket, clients) => {
   socket.on(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, data => {
-    const { userId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(`sack-${listId}`)
       .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false

@@ -24,7 +24,11 @@ const {
   updateItemState,
   updateItemWS
 } = require('./list');
-const { addCohortMemberWS } = require('./cohort');
+const {
+  addCohortMemberWS,
+  addOwnerRoleInCohortWS,
+  removeOwnerRoleInCohortWS
+} = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -121,6 +125,8 @@ const socketListenTo = server => {
     sendListsOnAddCohortMemberWS(socket, dashboardViewClients);
 
     addCohortMemberWS(socket, allCohortsViewClients);
+    addOwnerRoleInCohortWS(socket, cohortViewClients);
+    removeOwnerRoleInCohortWS(socket, cohortViewClients);
   });
 };
 
