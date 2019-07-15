@@ -36,6 +36,8 @@ const socketListenTo = server => {
     })
   );
 
+  const dashboardClients = new Map();
+
   ioInstance.on('connection', socket => {
     const {
       request: { user }
@@ -53,6 +55,12 @@ const socketListenTo = server => {
     socket.on('leaveSackRoom', listId => {
       socket.leave(`sack-${listId}`);
     });
+
+    socket.on('enterDashboardView', userId =>
+      dashboardClients.set(userId, socket.id)
+    );
+
+    socket.on('leaveDashboardView', userId => dashboardClients.delete(userId));
 
     socket.on('error', () => {
       /* Ignore error.
@@ -72,7 +80,7 @@ const socketListenTo = server => {
     cloneItemWS(socket);
     setVoteWS(socket);
     clearVoteWS(socket);
-    markAsDoneWS(socket);
+    markAsDoneWS(socket, dashboardClients);
   });
 };
 

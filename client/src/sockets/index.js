@@ -15,4 +15,16 @@ export const leaveRoom = (route, id) => {
   socket.emit(`leave${room}Room`, id);
 };
 
+export const enterView = (route, userId) => {
+  const view = _upperFirst(route);
+
+  socket.emit(`enter${view}View`, userId);
+};
+
+export const leaveView = (route, userId) => {
+  const view = _upperFirst(route);
+
+  socket.emit(`leave${view}View`, userId);
+};
+
 export default socket;

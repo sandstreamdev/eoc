@@ -3,7 +3,8 @@ const {
   ItemStatusType,
   CommentActionTypes
 } = require('../common/variables');
-
+const List = require('../models/list.model');
+const { responseWithListsMetaData } = require('../common/utils');
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
  */
@@ -88,12 +89,33 @@ const clearVoteWS = socket =>
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data)
   );
 
-const markAsDoneWS = socket =>
-  socket.on(ItemActionTypes.TOGGLE_SUCCESS, data =>
+const markAsDoneWS = (socket, clients) => {
+  socket.on(ItemActionTypes.TOGGLE_SUCCESS, data => {
+    const { listId } = data;
+
+    // send to users that are on the list view
     socket.broadcast
       .to(`sack-${data.listId}`)
-      .emit(ItemActionTypes.TOGGLE_SUCCESS, data)
-  );
+      .emit(ItemActionTypes.TOGGLE_SUCCESS, data);
+
+    List.findOne({
+      _id: listId
+    })
+      .lean()
+      .exec()
+      .then(list => {
+        // TODO: Tutaj skonczylem
+        // FIXME: TUTAJ NAPRAWIC
+        // const lists = responseWithListsMetaData([...list], userId);
+        // if (clients.has(userId)) {
+        //   const dataMap = _keyBy(lists, '_id');
+        //   socket.broadcast
+        //     .to(clients.get(userId))
+        //     .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, dataMap);
+        // }
+      });
+  });
+};
 
 module.exports = {
   addCommentWS,
