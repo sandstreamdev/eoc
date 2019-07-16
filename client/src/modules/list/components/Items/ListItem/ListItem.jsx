@@ -39,13 +39,11 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
+      descriptionLock: false,
       done: isOrdered,
       isConfirmationVisible: false,
       isNameEdited: false,
-      lock: {
-        nameLock: false,
-        descriptionLock: false
-      }
+      nameLock: false
     };
   }
 
@@ -180,37 +178,23 @@ class ListItem extends PureComponent {
   preventDefault = event => event.preventDefault();
 
   handleNameLock = () => {
-    this.setState(
-      { lock: { nameLock: true, descriptionLock: false } },
-      this.lockItem
-    );
+    this.setState({ nameLock: true, descriptionLock: false }, this.lockItem);
   };
 
   handleNameUnlock = () => {
-    this.setState(
-      { lock: { nameLock: false, descriptionLock: false } },
-      this.unlockItem
-    );
+    this.setState({ nameLock: false, descriptionLock: false }, this.unlockItem);
   };
 
   handleDescriptionLock = () => {
-    this.setState(
-      { lock: { nameLock: false, descriptionLock: true } },
-      this.lockItem
-    );
+    this.setState({ nameLock: false, descriptionLock: true }, this.lockItem);
   };
 
   handleDescriptionUnlock = () => {
-    this.setState(
-      { lock: { nameLock: false, descriptionLock: false } },
-      this.unlockItem
-    );
+    this.setState({ nameLock: false, descriptionLock: false }, this.unlockItem);
   };
 
   lockItem = () => {
-    const {
-      lock: { nameLock, descriptionLock }
-    } = this.state;
+    const { nameLock, descriptionLock } = this.state;
     const {
       data: { _id: itemId },
       match: {
@@ -222,9 +206,7 @@ class ListItem extends PureComponent {
   };
 
   unlockItem = () => {
-    const {
-      lock: { nameLock, descriptionLock }
-    } = this.state;
+    const { nameLock, descriptionLock } = this.state;
     const {
       data: { _id: itemId },
       match: {
@@ -272,17 +254,11 @@ class ListItem extends PureComponent {
   renderItemFeatures = () => {
     const { isConfirmationVisible } = this.state;
     const {
-      data: { isOrdered, name, lock },
+      data: { isOrdered, name, nameLock = false, descriptionLock = false },
       intl: { formatMessage },
       isMember
     } = this.props;
-    let isEdited;
-
-    if (lock) {
-      const { nameLock, descriptionLock } = lock;
-
-      isEdited = nameLock || descriptionLock;
-    }
+    const isEdited = nameLock || descriptionLock;
 
     return (
       <div className="list-item__features">
@@ -326,11 +302,16 @@ class ListItem extends PureComponent {
 
   renderDescription = () => {
     const {
-      data: { _id: itemId, description, isOrdered, name, lock },
+      data: {
+        _id: itemId,
+        description,
+        descriptionLock = false,
+        isOrdered,
+        name
+      },
       isMember
     } = this.props;
     const isFieldDisabled = !isMember || isOrdered;
-    const { descriptionLock = false } = lock || {};
 
     if (description || !isFieldDisabled) {
       return (
@@ -373,7 +354,14 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { _id, authorName, isOrdered, name, lock },
+      data: {
+        _id,
+        authorName,
+        descriptionLock = false,
+        isOrdered,
+        name,
+        nameLock = false
+      },
       isMember
     } = this.props;
     const {
@@ -382,7 +370,6 @@ class ListItem extends PureComponent {
       done,
       isNameEdited
     } = this.state;
-    const { nameLock = false, descriptionLock = false } = lock || {};
     const isEdited = nameLock || descriptionLock;
 
     return (

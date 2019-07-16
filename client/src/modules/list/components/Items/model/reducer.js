@@ -154,10 +154,11 @@ const items = (state = {}, action) => {
     case ItemStatusType.LOCK:
     case ItemStatusType.UNLOCK: {
       const {
-        payload: { itemId, lock }
+        payload: { itemId, descriptionLock, nameLock }
       } = action;
       const blockedItem = state[itemId];
-      blockedItem.lock = lock;
+      blockedItem.descriptionLock = descriptionLock;
+      blockedItem.nameLock = nameLock;
 
       return { [itemId]: blockedItem, ...state };
     }
