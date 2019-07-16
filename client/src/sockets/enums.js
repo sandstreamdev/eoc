@@ -10,5 +10,6 @@ export const ListEvents = Object.freeze({
 
 export const CohortEvents = Object.freeze({
   ADD_MEMBER_SUCCESS: CohortActionTypes.ADD_MEMBER_SUCCESS,
-  CREATE_SUCCESS: CohortActionTypes.CREATE_SUCCESS
+  CREATE_SUCCESS: CohortActionTypes.CREATE_SUCCESS,
+  REMOVE_MEMBER_SUCCESS: CohortActionTypes.REMOVE_MEMBER_SUCCESS
 });
