@@ -2,7 +2,7 @@ const { CohortActionTypes } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
 
-const addCohortMemberWS = (socket, clients) =>
+const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const { cohortId } = data;
 
@@ -34,7 +34,7 @@ const addCohortMemberWS = (socket, clients) =>
     }
   });
 
-const addOwnerRoleInCohortWS = (socket, clients) => {
+const addOwnerRoleInCohort = (socket, clients) => {
   socket.on(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, data => {
     const { cohortId, userId } = data;
 
@@ -56,7 +56,7 @@ const addOwnerRoleInCohortWS = (socket, clients) => {
   });
 };
 
-const removeOwnerRoleInCohortWS = (socket, clients) => {
+const removeOwnerRoleInCohort = (socket, clients) => {
   socket.on(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, data => {
     const { cohortId, userId } = data;
 
@@ -79,7 +79,7 @@ const removeOwnerRoleInCohortWS = (socket, clients) => {
 };
 
 module.exports = {
-  addCohortMemberWS,
-  addOwnerRoleInCohortWS,
-  removeOwnerRoleInCohortWS
+  addCohortMember,
+  addOwnerRoleInCohort,
+  removeOwnerRoleInCohort
 };
