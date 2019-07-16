@@ -37,7 +37,7 @@
     "express": "4.17.0",
     "express-session": "1.16.1",
     "history": "4.9.0",
-    "lodash": "4.17.11",
+    "lodash": "4.17.14",
     "mongo-sanitize": "1.0.1",
     "mongodb": "3.2.5",
     "mongoose": "5.5.10",
