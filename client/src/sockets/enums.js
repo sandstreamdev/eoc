@@ -15,8 +15,8 @@ export const ItemsEvents = Object.freeze({
 });
 
 export const ItemStatusType = Object.freeze({
-  BUSY: 'item/BUSY',
-  FREE: 'item/FREE'
+  LOCK: 'item/LOCK',
+  UNLOCK: 'item/UNLOCK'
 });
 
 export const ListEvents = Object.freeze({});

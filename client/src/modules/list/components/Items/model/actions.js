@@ -362,7 +362,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
     });
 
 export const setItemBusy = (itemId, listId, busy) =>
-  socket.emit(ItemStatusType.BUSY, { itemId, listId, busy });
+  socket.emit(ItemStatusType.LOCK, { itemId, listId, busy });
 
 export const setItemFree = (itemId, listId, busy) =>
-  socket.emit(ItemStatusType.FREE, { itemId, listId, busy });
+  socket.emit(ItemStatusType.UNLOCK, { itemId, listId, busy });

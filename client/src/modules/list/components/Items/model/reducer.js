@@ -151,8 +151,8 @@ const items = (state = {}, action) => {
 
       return rest;
     }
-    case ItemStatusType.BUSY:
-    case ItemStatusType.FREE: {
+    case ItemStatusType.LOCK:
+    case ItemStatusType.UNLOCK: {
       const {
         payload: { itemId, busy }
       } = action;

@@ -40,8 +40,8 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       busy: {
-        nameBusy: false,
-        descriptionBusy: false
+        nameLock: false,
+        descriptionLock: false
       },
       done: isOrdered,
       isNameEdited: false,
@@ -179,37 +179,37 @@ class ListItem extends PureComponent {
 
   preventDefault = event => event.preventDefault();
 
-  handleNameBusy = () => {
+  handleNameLock = () => {
     this.setState(
-      { busy: { nameBusy: true, descriptionBusy: false } },
+      { busy: { nameLock: true, descriptionLock: false } },
       this.setItemBusy
     );
   };
 
-  handleNameFree = () => {
+  handleNameUnlock = () => {
     this.setState(
-      { busy: { nameBusy: false, descriptionBusy: false } },
+      { busy: { nameLock: false, descriptionLock: false } },
       this.setItemFree
     );
   };
 
-  handleDescriptionBusy = () => {
+  handleDescriptionLock = () => {
     this.setState(
-      { busy: { nameBusy: false, descriptionBusy: true } },
+      { busy: { nameLock: false, descriptionLock: true } },
       this.setItemBusy
     );
   };
 
-  handleDescriptionFree = () => {
+  handleDescriptionUnlock = () => {
     this.setState(
-      { busy: { nameBusy: false, descriptionBusy: false } },
+      { busy: { nameLock: false, descriptionLock: false } },
       this.setItemFree
     );
   };
 
   setItemBusy = () => {
     const {
-      busy: { nameBusy, descriptionBusy }
+      busy: { nameLock, descriptionLock }
     } = this.state;
     const {
       data: { _id: itemId },
@@ -218,12 +218,12 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    setItemBusy(itemId, listId, { nameBusy, descriptionBusy });
+    setItemBusy(itemId, listId, { nameLock, descriptionLock });
   };
 
   setItemFree = () => {
     const {
-      busy: { nameBusy, descriptionBusy }
+      busy: { nameLock, descriptionLock }
     } = this.state;
     const {
       data: { _id: itemId },
@@ -232,7 +232,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    setItemFree(itemId, listId, { nameBusy, descriptionBusy });
+    setItemFree(itemId, listId, { nameLock, descriptionLock });
   };
 
   renderConfirmation = () => {
@@ -279,9 +279,9 @@ class ListItem extends PureComponent {
     let isEdited;
 
     if (busy) {
-      const { nameBusy, descriptionBusy } = busy;
+      const { nameLock, descriptionLock } = busy;
 
-      isEdited = nameBusy || descriptionBusy;
+      isEdited = nameLock || descriptionLock;
     }
 
     return (
@@ -330,25 +330,19 @@ class ListItem extends PureComponent {
       isMember
     } = this.props;
     const isFieldDisabled = !isMember || isOrdered;
-    let isDescriptionBusy;
-
-    if (busy) {
-      const { descriptionBusy } = busy;
-
-      isDescriptionBusy = descriptionBusy;
-    }
+    const { descriptionLock = false } = busy || {};
 
     if (description || !isFieldDisabled) {
       return (
         <div className="list-item__description">
           <ListItemDescription
-            busy={isDescriptionBusy}
+            busy={descriptionLock}
             description={description}
             disabled={isFieldDisabled}
             itemId={itemId}
             name={name}
-            onBlur={this.handleDescriptionFree}
-            onFocus={this.handleDescriptionBusy}
+            onBlur={this.handleDescriptionUnlock}
+            onFocus={this.handleDescriptionLock}
           />
         </div>
       );
@@ -388,15 +382,8 @@ class ListItem extends PureComponent {
       done,
       isNameEdited
     } = this.state;
-    let isNameBusy;
-    let isEdited;
-
-    if (busy) {
-      const { nameBusy, descriptionBusy } = busy;
-
-      isNameBusy = nameBusy;
-      isEdited = nameBusy || descriptionBusy;
-    }
+    const { nameLock = false, descriptionLock = false } = busy || {};
+    const isEdited = nameLock || descriptionLock;
 
     return (
       <li
@@ -424,13 +411,13 @@ class ListItem extends PureComponent {
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <ListItemName
-                busy={isNameBusy}
+                busy={nameLock}
                 isMember={isMember}
                 itemId={_id}
                 name={name}
-                onBlur={this.handleNameFree}
-                onFocus={this.handleNameBusy}
-                onPending={this.handleNameBusy}
+                onBlur={this.handleNameUnlock}
+                onFocus={this.handleNameLock}
+                onPending={this.handleNameLock}
               />
               <span className="list-item__author">
                 <FormattedMessage
