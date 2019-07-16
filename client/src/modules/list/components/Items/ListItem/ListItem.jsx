@@ -16,10 +16,10 @@ import {
   archiveItem,
   clearVote,
   cloneItem,
-  setItemBusy,
-  setItemFree,
+  lockItem,
   setVote,
-  toggle
+  toggle,
+  unlockItem
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -39,13 +39,13 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
-      busy: {
-        nameLock: false,
-        descriptionLock: false
-      },
       done: isOrdered,
       isNameEdited: false,
-      isConfirmationVisible: false
+      isConfirmationVisible: false,
+      lock: {
+        nameLock: false,
+        descriptionLock: false
+      }
     };
   }
 
@@ -72,13 +72,13 @@ class ListItem extends PureComponent {
       disableToggleButton: true
     }));
 
-    this.setItemBusy();
+    this.lockItem();
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
       return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
-        () => this.setItemFree()
+        () => this.unlockItem()
       );
     }
 
@@ -105,10 +105,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setItemBusy();
+    this.lockItem();
 
     if (isMember) {
-      return cloneItem(name, listId, itemId).finally(() => this.setItemFree());
+      return cloneItem(name, listId, itemId).finally(() => this.unlockItem());
     }
   };
 
@@ -126,9 +126,9 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    this.setItemBusy();
+    this.lockItem();
 
-    return action(_id, listId, name).finally(() => this.setItemFree());
+    return action(_id, listId, name).finally(() => this.unlockItem());
   };
 
   handleConfirmationVisibility = event => {
@@ -150,7 +150,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setItemBusy();
+    this.lockItem();
 
     return archiveItem(listId, itemId, name);
   };
@@ -181,35 +181,35 @@ class ListItem extends PureComponent {
 
   handleNameLock = () => {
     this.setState(
-      { busy: { nameLock: true, descriptionLock: false } },
-      this.setItemBusy
+      { lock: { nameLock: true, descriptionLock: false } },
+      this.lockItem
     );
   };
 
   handleNameUnlock = () => {
     this.setState(
-      { busy: { nameLock: false, descriptionLock: false } },
-      this.setItemFree
+      { lock: { nameLock: false, descriptionLock: false } },
+      this.unlockItem
     );
   };
 
   handleDescriptionLock = () => {
     this.setState(
-      { busy: { nameLock: false, descriptionLock: true } },
-      this.setItemBusy
+      { lock: { nameLock: false, descriptionLock: true } },
+      this.lockItem
     );
   };
 
   handleDescriptionUnlock = () => {
     this.setState(
-      { busy: { nameLock: false, descriptionLock: false } },
-      this.setItemFree
+      { lock: { nameLock: false, descriptionLock: false } },
+      this.unlockItem
     );
   };
 
-  setItemBusy = () => {
+  lockItem = () => {
     const {
-      busy: { nameLock, descriptionLock }
+      lock: { nameLock, descriptionLock }
     } = this.state;
     const {
       data: { _id: itemId },
@@ -218,12 +218,12 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    setItemBusy(itemId, listId, { nameLock, descriptionLock });
+    lockItem(itemId, listId, { nameLock, descriptionLock });
   };
 
-  setItemFree = () => {
+  unlockItem = () => {
     const {
-      busy: { nameLock, descriptionLock }
+      lock: { nameLock, descriptionLock }
     } = this.state;
     const {
       data: { _id: itemId },
@@ -232,7 +232,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    setItemFree(itemId, listId, { nameLock, descriptionLock });
+    unlockItem(itemId, listId, { nameLock, descriptionLock });
   };
 
   renderConfirmation = () => {
@@ -272,14 +272,14 @@ class ListItem extends PureComponent {
   renderItemFeatures = () => {
     const { isConfirmationVisible } = this.state;
     const {
-      data: { isOrdered, name, busy },
+      data: { isOrdered, name, lock },
       intl: { formatMessage },
       isMember
     } = this.props;
     let isEdited;
 
-    if (busy) {
-      const { nameLock, descriptionLock } = busy;
+    if (lock) {
+      const { nameLock, descriptionLock } = lock;
 
       isEdited = nameLock || descriptionLock;
     }
@@ -326,17 +326,17 @@ class ListItem extends PureComponent {
 
   renderDescription = () => {
     const {
-      data: { _id: itemId, description, isOrdered, name, busy },
+      data: { _id: itemId, description, isOrdered, name, lock },
       isMember
     } = this.props;
     const isFieldDisabled = !isMember || isOrdered;
-    const { descriptionLock = false } = busy || {};
+    const { descriptionLock = false } = lock || {};
 
     if (description || !isFieldDisabled) {
       return (
         <div className="list-item__description">
           <ListItemDescription
-            busy={descriptionLock}
+            locked={descriptionLock}
             description={description}
             disabled={isFieldDisabled}
             itemId={itemId}
@@ -373,7 +373,7 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { _id, authorName, isOrdered, name, busy },
+      data: { _id, authorName, isOrdered, name, lock },
       isMember
     } = this.props;
     const {
@@ -382,7 +382,7 @@ class ListItem extends PureComponent {
       done,
       isNameEdited
     } = this.state;
-    const { nameLock = false, descriptionLock = false } = busy || {};
+    const { nameLock = false, descriptionLock = false } = lock || {};
     const isEdited = nameLock || descriptionLock;
 
     return (
@@ -411,7 +411,7 @@ class ListItem extends PureComponent {
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <ListItemName
-                busy={nameLock}
+                locked={nameLock}
                 isMember={isMember}
                 itemId={_id}
                 name={name}

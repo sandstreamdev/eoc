@@ -43,13 +43,8 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinSackRoom', room => {
-      socket.join(room);
-    });
-
-    socket.on('leaveSackRoom', listId => {
-      socket.leave(`sack-${listId}`);
-    });
+    socket.on('joinSackRoom', room => socket.join(room));
+    socket.on('leaveSackRoom', listId => socket.leave(`sack-${listId}`));
 
     socket.on('error', () => {
       /* Ignore error.

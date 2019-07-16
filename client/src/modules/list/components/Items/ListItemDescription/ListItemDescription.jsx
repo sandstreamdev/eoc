@@ -268,17 +268,17 @@ class ListItemDescription extends PureComponent {
 
   render() {
     const { isDescriptionUpdated, isTextareaVisible } = this.state;
-    const { description, disabled, busy } = this.props;
+    const { description, disabled, locked } = this.props;
 
     const isSaveButtonVisible = isDescriptionUpdated && !disabled;
     const isTitleVisible = description || isTextareaVisible;
 
     return (
       <Fragment>
-        {busy && this.renderOverlay()}
+        {locked && this.renderOverlay()}
         <div
           className={classNames('list-item-description', {
-            'list-item-description--disabled': busy
+            'list-item-description--disabled': locked
           })}
           onClick={disabled ? null : this.handleShowTextarea}
           onTouchEnd={disabled ? null : this.handleShowTextarea}
@@ -303,10 +303,10 @@ class ListItemDescription extends PureComponent {
 }
 
 ListItemDescription.propTypes = {
-  busy: PropTypes.bool,
   description: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   itemId: PropTypes.string.isRequired,
+  locked: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
 
