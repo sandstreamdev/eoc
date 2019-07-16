@@ -13,14 +13,14 @@ const {
   addComment,
   addItemToList,
   archiveItem,
+  changeOrderState,
   clearVote,
   cloneItem,
   deleteItem,
-  markAsDone,
   restoreItem,
   setVote,
-  updateItemState,
-  updateItem
+  updateItem,
+  updateItemState
 } = require('./list');
 
 const socketListenTo = server => {
@@ -86,17 +86,17 @@ const socketListenTo = server => {
        */
     });
 
+    addComment(socket);
     addItemToList(socket);
     archiveItem(socket);
-    updateItemState(socket);
+    changeOrderState(socket, dashboardClients);
+    clearVote(socket);
+    cloneItem(socket);
     deleteItem(socket);
     restoreItem(socket);
-    updateItem(socket);
-    addComment(socket);
-    cloneItem(socket);
     setVote(socket);
-    clearVote(socket);
-    markAsDone(socket, dashboardClients);
+    updateItem(socket);
+    updateItemState(socket);
   });
 };
 

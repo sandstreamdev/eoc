@@ -92,7 +92,7 @@ const clearVote = socket =>
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data)
   );
 
-const markAsDone = (socket, dashboardClients) => {
+const changeOrderState = (socket, dashboardClients) => {
   socket.on(ItemActionTypes.TOGGLE_SUCCESS, data => {
     const { listId } = data;
 
@@ -152,12 +152,12 @@ module.exports = {
   addComment,
   addItemToList,
   archiveItem,
+  changeOrderState,
   clearVote,
   cloneItem,
   deleteItem,
-  markAsDone,
   restoreItem,
   setVote,
-  updateItemState,
-  updateItem
+  updateItem,
+  updateItemState
 };
