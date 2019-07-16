@@ -10,19 +10,19 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
 const {
-  addCommentWS,
-  addItemToListWS,
-  addListMemberWS,
-  archiveItemWS,
-  cloneItemWS,
-  deleteItemWS,
-  leaveListWS,
-  restoreItemWS,
-  sendListsOnAddCohortMemberWS,
+  addComment,
+  addItemToList,
+  addListMember,
+  archiveItem,
+  cloneItem,
+  deleteItem,
+  leaveList,
+  restoreItem,
+  sendListsOnAddCohortMember,
   updateItemState,
-  updateItemWS
+  updateItem
 } = require('./list');
-const { addCohortMemberWS } = require('./cohort');
+const { addCohortMember } = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -101,19 +101,19 @@ const socketListenTo = server => {
        */
     });
 
-    addCommentWS(socket);
-    addItemToListWS(socket);
-    addListMemberWS(socket, dashboardViewClients, cohortViewClients);
-    archiveItemWS(socket);
-    cloneItemWS(socket);
-    deleteItemWS(socket);
-    leaveListWS(socket);
-    restoreItemWS(socket);
-    sendListsOnAddCohortMemberWS(socket, dashboardViewClients);
+    addComment(socket);
+    addItemToList(socket);
+    addListMember(socket, dashboardViewClients, cohortViewClients);
+    archiveItem(socket);
+    cloneItem(socket);
+    deleteItem(socket);
+    leaveList(socket);
+    restoreItem(socket);
+    sendListsOnAddCohortMember(socket, dashboardViewClients);
     updateItemState(socket);
-    updateItemWS(socket);
+    updateItem(socket);
 
-    addCohortMemberWS(socket, allCohortsViewClients);
+    addCohortMember(socket, allCohortsViewClients);
   });
 };
 

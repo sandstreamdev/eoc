@@ -2,7 +2,7 @@ const { CohortActionTypes } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
 
-const addCohortMemberWS = (socket, clients) =>
+const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const { cohortId } = data;
 
@@ -35,5 +35,5 @@ const addCohortMemberWS = (socket, clients) =>
   });
 
 module.exports = {
-  addCohortMemberWS
+  addCohortMember
 };

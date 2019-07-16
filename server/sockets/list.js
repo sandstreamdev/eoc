@@ -14,10 +14,7 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 
-/* WS postfix stands for Web Socket, to differentiate
- * this from controllers naming convention
- */
-const addItemToListWS = socket => {
+const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -25,7 +22,7 @@ const addItemToListWS = socket => {
   });
 };
 
-const archiveItemWS = socket => {
+const archiveItem = socket => {
   socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -33,7 +30,7 @@ const archiveItemWS = socket => {
   });
 };
 
-const deleteItemWS = socket => {
+const deleteItem = socket => {
   socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -41,7 +38,7 @@ const deleteItemWS = socket => {
   });
 };
 
-const restoreItemWS = socket => {
+const restoreItem = socket => {
   socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -63,7 +60,7 @@ const updateItemState = socket => {
   });
 };
 
-const updateItemWS = socket => {
+const updateItem = socket => {
   socket.on(ItemActionTypes.UPDATE_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -71,21 +68,21 @@ const updateItemWS = socket => {
   );
 };
 
-const addCommentWS = socket =>
+const addComment = socket =>
   socket.on(CommentActionTypes.ADD_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
       .emit(CommentActionTypes.ADD_SUCCESS, data)
   );
 
-const cloneItemWS = socket =>
+const cloneItem = socket =>
   socket.on(ItemActionTypes.CLONE_SUCCESS, data =>
     socket.broadcast
       .to(`list-${data.listId}`)
       .emit(ItemActionTypes.CLONE_SUCCESS, data)
   );
 
-const sendListsOnAddCohortMemberWS = (socket, clients) =>
+const sendListsOnAddCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const {
       cohortId,
@@ -128,7 +125,7 @@ const sendListsOnAddCohortMemberWS = (socket, clients) =>
       });
   });
 
-const addListMemberWS = (socket, dashboardClients, cohortClients) =>
+const addListMember = (socket, dashboardClients, cohortClients) =>
   socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
     const {
       listId,
@@ -162,7 +159,7 @@ const addListMemberWS = (socket, dashboardClients, cohortClients) =>
       });
   });
 
-const leaveListWS = socket =>
+const leaveList = socket =>
   socket.on(ListActionTypes.LEAVE_SUCCESS, data => {
     const { listId } = data;
 
@@ -172,15 +169,15 @@ const leaveListWS = socket =>
   });
 
 module.exports = {
-  addCommentWS,
-  addItemToListWS,
-  addListMemberWS,
-  archiveItemWS,
-  cloneItemWS,
-  deleteItemWS,
-  leaveListWS,
-  restoreItemWS,
-  sendListsOnAddCohortMemberWS,
+  addComment,
+  addItemToList,
+  addListMember,
+  archiveItem,
+  cloneItem,
+  deleteItem,
+  leaveList,
+  restoreItem,
+  sendListsOnAddCohortMember,
   updateItemState,
-  updateItemWS
+  updateItem
 };
