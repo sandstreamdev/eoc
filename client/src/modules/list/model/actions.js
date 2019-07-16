@@ -119,9 +119,9 @@ const removeMemberFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = (listId, userId) => ({
+const removeMemberSuccess = data => ({
   type: ListActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: { listId, userId }
+  payload: data
 });
 
 const addOwnerRoleSuccess = (listId, userId) => ({
@@ -417,7 +417,7 @@ export const removeListMember = (
 
   return patchData(url, { userId })
     .then(() => {
-      dispatch(removeMemberSuccess(listId, userId));
+      dispatch(removeMemberSuccess({ listId, userId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.remove-member',
         data: userName
@@ -553,6 +553,7 @@ export const changeType = (listId, listName, type) => dispatch =>
 export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
   patchData(`/api/lists/${listId}/leave`)
     .then(() => {
+      socket.emit(ListActionTypes.LEAVE_SUCCESS, { listId, userId });
       dispatch(leaveListSuccess(listId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.leave',
