@@ -1,10 +1,11 @@
 const {
   ItemActionTypes,
   ItemStatusType,
-  CommentActionTypes
+  CommentActionTypes,
+  ListActionTypes
 } = require('../common/variables');
 const List = require('../models/list.model');
-const { responseWithListsMetaData } = require('../common/utils');
+const { responseWithList } = require('../common/utils/helpers');
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
  */
@@ -98,22 +99,30 @@ const markAsDoneWS = (socket, clients) => {
       .to(`sack-${data.listId}`)
       .emit(ItemActionTypes.TOGGLE_SUCCESS, data);
 
-    List.findOne({
-      _id: listId
-    })
-      .lean()
-      .exec()
-      .then(list => {
-        // TODO: Tutaj skonczylem
-        // FIXME: TUTAJ NAPRAWIC
-        // const lists = responseWithListsMetaData([...list], userId);
-        // if (clients.has(userId)) {
-        //   const dataMap = _keyBy(lists, '_id');
-        //   socket.broadcast
-        //     .to(clients.get(userId))
-        //     .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, dataMap);
-        // }
-      });
+    if (clients.size > 0) {
+      List.findOne({
+        _id: listId
+      })
+        .lean()
+        .exec()
+        .then(doc => {
+          if (doc) {
+            const { viewersIds } = doc;
+
+            viewersIds.forEach(id => {
+              const viewerId = id.toString();
+              const list = responseWithList(doc, id);
+
+              if (clients.has(viewerId)) {
+                // send to users that are on the dashboard view
+                socket.broadcast
+                  .to(clients.get(viewerId))
+                  .emit(ListActionTypes.CREATE_SUCCESS, list);
+              }
+            });
+          }
+        });
+    }
   });
 };
 

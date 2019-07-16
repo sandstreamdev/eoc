@@ -1,4 +1,9 @@
-import { ItemsEvents, ItemStatusType, CommentEvents } from './enums';
+import {
+  ItemsEvents,
+  ItemStatusType,
+  CommentEvents,
+  ListEvents
+} from './enums';
 
 export const receiveEvents = (dispatch, socket) => {
   // Items events
@@ -11,6 +16,10 @@ export const receiveEvents = (dispatch, socket) => {
   );
 
   Object.values(CommentEvents).forEach(event =>
+    socket.on(event, data => dispatch({ type: event, payload: data }))
+  );
+
+  Object.values(ListEvents).forEach(event =>
     socket.on(event, data => dispatch({ type: event, payload: data }))
   );
 

@@ -2,6 +2,7 @@ import {
   ItemActionTypes,
   CommentActionTypes
 } from 'modules/list/components/Items/model/actionTypes';
+import { ListActionTypes } from 'modules/list/model/actionTypes';
 
 export const ItemsEvents = Object.freeze({
   ADD_SUCCESS: ItemActionTypes.ADD_SUCCESS,
@@ -20,7 +21,9 @@ export const ItemStatusType = Object.freeze({
   FREE: 'item/FREE'
 });
 
-export const ListEvents = Object.freeze({});
+export const ListEvents = Object.freeze({
+  CREATE_SUCCESS: ListActionTypes.CREATE_SUCCESS
+});
 
 export const CohortEvent = Object.freeze({});
 
