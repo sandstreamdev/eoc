@@ -5,7 +5,9 @@ const {
   ListActionTypes
 } = require('../common/variables');
 const List = require('../models/list.model');
+const Cohort = require('../models/cohort.model');
 const { responseWithList } = require('../common/utils/helpers');
+
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
  */
@@ -90,7 +92,7 @@ const clearVoteWS = socket =>
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data)
   );
 
-const markAsDoneWS = (socket, clients) => {
+const markAsDoneWS = (socket, dashboardClients) => {
   socket.on(ItemActionTypes.TOGGLE_SUCCESS, data => {
     const { listId } = data;
 
@@ -99,30 +101,50 @@ const markAsDoneWS = (socket, clients) => {
       .to(`sack-${data.listId}`)
       .emit(ItemActionTypes.TOGGLE_SUCCESS, data);
 
-    if (clients.size > 0) {
-      List.findOne({
-        _id: listId
-      })
-        .lean()
-        .exec()
-        .then(doc => {
-          if (doc) {
-            const { viewersIds } = doc;
+    List.findOne({
+      _id: listId
+    })
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { viewersIds, cohortId } = doc;
 
+          if (dashboardClients.size > 0) {
             viewersIds.forEach(id => {
               const viewerId = id.toString();
               const list = responseWithList(doc, id);
 
-              if (clients.has(viewerId)) {
+              if (dashboardClients.has(viewerId)) {
                 // send to users that are on the dashboard view
                 socket.broadcast
-                  .to(clients.get(viewerId))
+                  .to(dashboardClients.get(viewerId))
                   .emit(ListActionTypes.CREATE_SUCCESS, list);
               }
             });
           }
-        });
-    }
+
+          if (cohortId) {
+            Cohort.findOne({ _id: cohortId })
+              .lean()
+              .exec()
+              .then(cohort => {
+                if (cohort) {
+                  const { memberIds } = cohort;
+
+                  memberIds.forEach(id => {
+                    const currentList = responseWithList(doc, id);
+
+                    // send to users that are on cohort view
+                    socket.broadcast
+                      .to(`cohort-${cohortId}`)
+                      .emit(ListActionTypes.CREATE_SUCCESS, currentList);
+                  });
+                }
+              });
+          }
+        }
+      });
   });
 };
 

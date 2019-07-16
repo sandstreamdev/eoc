@@ -48,19 +48,35 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinSackRoom', room => {
+    // sack room
+    socket.on('joinSackRoom', data => {
+      const { room } = data;
+
       socket.join(room);
     });
+    socket.on('leaveSackRoom', data => {
+      const { room } = data;
 
-    socket.on('leaveSackRoom', listId => {
-      socket.leave(`sack-${listId}`);
+      socket.leave(room);
     });
 
+    // dashboard view
     socket.on('enterDashboardView', userId =>
       dashboardClients.set(userId, socket.id)
     );
-
     socket.on('leaveDashboardView', userId => dashboardClients.delete(userId));
+
+    // cohort room
+    socket.on('joinCohortRoom', data => {
+      const { room } = data;
+
+      socket.join(room);
+    });
+    socket.on('leaveCohortRoom', data => {
+      const { room } = data;
+
+      socket.leave(room);
+    });
 
     socket.on('error', () => {
       /* Ignore error.

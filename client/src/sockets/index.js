@@ -3,16 +3,16 @@ import _upperFirst from 'lodash/upperFirst';
 
 const socket = io({ forceNew: true });
 
-export const joinRoom = (route, id) => {
+export const joinRoom = (route, id, userId) => {
   const room = _upperFirst(route);
 
-  socket.emit(`join${room}Room`, `${route}-${id}`);
+  socket.emit(`join${room}Room`, { room: `${route}-${id}`, userId });
 };
 
-export const leaveRoom = (route, id) => {
+export const leaveRoom = (route, id, userId) => {
   const room = _upperFirst(route);
 
-  socket.emit(`leave${room}Room`, id);
+  socket.emit(`leave${room}Room`, { room: `${route}-${id}`, userId });
 };
 
 export const enterView = (route, userId) => {
