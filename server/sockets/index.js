@@ -10,17 +10,17 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
 const {
-  addCommentWS,
-  addItemToListWS,
-  archiveItemWS,
-  clearVoteWS,
-  cloneItemWS,
-  deleteItemWS,
-  markAsDoneWS,
-  restoreItemWS,
-  setVoteWS,
+  addComment,
+  addItemToList,
+  archiveItem,
+  clearVote,
+  cloneItem,
+  deleteItem,
+  markAsDone,
+  restoreItem,
+  setVote,
   updateItemState,
-  updateItemWS
+  updateItem
 } = require('./list');
 
 const socketListenTo = server => {
@@ -86,17 +86,17 @@ const socketListenTo = server => {
        */
     });
 
-    addItemToListWS(socket);
-    archiveItemWS(socket);
+    addItemToList(socket);
+    archiveItem(socket);
     updateItemState(socket);
-    deleteItemWS(socket);
-    restoreItemWS(socket);
-    updateItemWS(socket);
-    addCommentWS(socket);
-    cloneItemWS(socket);
-    setVoteWS(socket);
-    clearVoteWS(socket);
-    markAsDoneWS(socket, dashboardClients);
+    deleteItem(socket);
+    restoreItem(socket);
+    updateItem(socket);
+    addComment(socket);
+    cloneItem(socket);
+    setVote(socket);
+    clearVote(socket);
+    markAsDone(socket, dashboardClients);
   });
 };
 

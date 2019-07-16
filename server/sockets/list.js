@@ -11,7 +11,7 @@ const { responseWithList } = require('../common/utils/helpers');
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
  */
-const addItemToListWS = socket => {
+const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -19,7 +19,7 @@ const addItemToListWS = socket => {
   });
 };
 
-const archiveItemWS = socket => {
+const archiveItem = socket => {
   socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -27,7 +27,7 @@ const archiveItemWS = socket => {
   });
 };
 
-const deleteItemWS = socket => {
+const deleteItem = socket => {
   socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -35,7 +35,7 @@ const deleteItemWS = socket => {
   });
 };
 
-const restoreItemWS = socket => {
+const restoreItem = socket => {
   socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -57,7 +57,7 @@ const updateItemState = socket => {
   });
 };
 
-const updateItemWS = socket => {
+const updateItem = socket => {
   socket.on(ItemActionTypes.UPDATE_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -65,34 +65,34 @@ const updateItemWS = socket => {
   );
 };
 
-const addCommentWS = socket =>
+const addComment = socket =>
   socket.on(CommentActionTypes.ADD_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
       .emit(CommentActionTypes.ADD_SUCCESS, data)
   );
 
-const cloneItemWS = socket =>
+const cloneItem = socket =>
   socket.on(ItemActionTypes.CLONE_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
       .emit(ItemActionTypes.CLONE_SUCCESS, data)
   );
 
-const setVoteWS = socket =>
+const setVote = socket =>
   socket.on(ItemActionTypes.SET_VOTE_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
       .emit(ItemActionTypes.SET_VOTE_SUCCESS, data)
   );
-const clearVoteWS = socket =>
+const clearVote = socket =>
   socket.on(ItemActionTypes.CLEAR_VOTE_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data)
   );
 
-const markAsDoneWS = (socket, dashboardClients) => {
+const markAsDone = (socket, dashboardClients) => {
   socket.on(ItemActionTypes.TOGGLE_SUCCESS, data => {
     const { listId } = data;
 
@@ -149,15 +149,15 @@ const markAsDoneWS = (socket, dashboardClients) => {
 };
 
 module.exports = {
-  addCommentWS,
-  addItemToListWS,
-  archiveItemWS,
-  clearVoteWS,
-  cloneItemWS,
-  deleteItemWS,
-  markAsDoneWS,
-  restoreItemWS,
-  setVoteWS,
+  addComment,
+  addItemToList,
+  archiveItem,
+  clearVote,
+  cloneItem,
+  deleteItem,
+  markAsDone,
+  restoreItem,
+  setVote,
   updateItemState,
-  updateItemWS
+  updateItem
 };
