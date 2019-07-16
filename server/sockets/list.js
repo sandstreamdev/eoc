@@ -162,6 +162,15 @@ const addListMemberWS = (socket, dashboardClients, cohortClients) =>
       });
   });
 
+const leaveListWS = socket =>
+  socket.on(ListActionTypes.LEAVE_SUCCESS, data => {
+    const { listId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+  });
+
 module.exports = {
   addCommentWS,
   addItemToListWS,
@@ -169,6 +178,7 @@ module.exports = {
   archiveItemWS,
   cloneItemWS,
   deleteItemWS,
+  leaveListWS,
   restoreItemWS,
   sendListsOnAddCohortMemberWS,
   updateItemState,

@@ -16,6 +16,7 @@ const {
   archiveItemWS,
   cloneItemWS,
   deleteItemWS,
+  leaveListWS,
   restoreItemWS,
   sendListsOnAddCohortMemberWS,
   updateItemState,
@@ -100,16 +101,17 @@ const socketListenTo = server => {
        */
     });
 
+    addCommentWS(socket);
     addItemToListWS(socket);
     addListMemberWS(socket, dashboardViewClients, cohortViewClients);
     archiveItemWS(socket);
-    updateItemState(socket);
-    deleteItemWS(socket);
-    restoreItemWS(socket);
-    updateItemWS(socket);
-    addCommentWS(socket);
     cloneItemWS(socket);
+    deleteItemWS(socket);
+    leaveListWS(socket);
+    restoreItemWS(socket);
     sendListsOnAddCohortMemberWS(socket, dashboardViewClients);
+    updateItemState(socket);
+    updateItemWS(socket);
 
     addCohortMemberWS(socket, allCohortsViewClients);
   });
