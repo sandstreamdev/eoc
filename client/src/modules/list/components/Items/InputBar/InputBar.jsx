@@ -17,7 +17,6 @@ import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { EventTypes, KeyCodes } from 'common/constants/enums';
-import withSocket from 'common/hoc/withSocket';
 
 class InputBar extends Component {
   constructor(props) {
@@ -114,9 +113,8 @@ class InputBar extends Component {
 
     if (_trim(itemName)) {
       this.setState({ pending: true });
-      const { socket } = this.props;
 
-      return addItem(newItem, id, socket).finally(() => {
+      return addItem(newItem, id).finally(() => {
         this.setState({ itemName: '', pending: false });
         this.hideForm();
       });
@@ -222,7 +220,6 @@ InputBar.propTypes = {
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   match: RouterMatchPropType.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
 
   addItem: PropTypes.func.isRequired
 };
@@ -232,7 +229,6 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   withRouter,
   connect(

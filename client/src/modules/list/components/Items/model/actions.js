@@ -3,11 +3,13 @@ import _keyBy from 'lodash/keyBy';
 import { getData, patchData, postData } from 'common/utils/fetchMethods';
 import {
   CommentActionTypes,
-  ItemActionTypes
+  ItemActionTypes,
+  ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ITEM_TOGGLE_TIME } from '../ListItem/constants';
+import socket from 'sockets';
 
 const addItemFailure = errorMessage => ({
   type: ItemActionTypes.ADD_FAILURE,
@@ -126,7 +128,7 @@ export const removeArchivedItems = listId => ({
   payload: { listId }
 });
 
-export const addItem = (item, listId, socket) => dispatch =>
+export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(resp => resp.json())
     .then(json => {
@@ -137,16 +139,13 @@ export const addItem = (item, listId, socket) => dispatch =>
       socket.emit(ItemActionTypes.ADD_SUCCESS, data);
       dispatch(addItemSuccess(json, listId));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(addItemFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.add-item-fail',
         data: item.name
       });
     });
-
-export const addItemWS = (item, listId) => dispatch =>
-  dispatch(addItemSuccess(item, listId));
 
 export const toggle = (
   itemName,
@@ -186,14 +185,14 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
       dispatch(setVoteFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.set-vote-fail',
-        data: ''
+        data: itemName
       });
     });
 
 export const clearVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
     .then(() => dispatch(clearVoteSuccess(itemId, listId)))
-    .catch(err => {
+    .catch(() => {
       dispatch(clearVoteFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.clear-vote-fail',
@@ -201,13 +200,7 @@ export const clearVote = (itemId, listId, itemName) => dispatch =>
       });
     });
 
-export const updateListItem = (
-  itemName,
-  listId,
-  itemId,
-  data,
-  socket
-) => dispatch =>
+export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId
@@ -218,7 +211,11 @@ export const updateListItem = (
         notificationId: 'list.items.actions.update-item',
         data: itemName
       });
-      socket.emit(ItemActionTypes.UPDATE_SUCCESS, { listId, itemId, data });
+      socket.emit(ItemActionTypes.UPDATE_SUCCESS, {
+        listId,
+        itemId,
+        data
+      });
     })
     .catch(() => {
       dispatch(updateListItemFailure());
@@ -228,10 +225,7 @@ export const updateListItem = (
       });
     });
 
-export const updateListItemWS = (itemId, listId, data) => dispatch =>
-  dispatch(updateListItemSuccess(listId, itemId, data));
-
-export const cloneItem = (itemName, listId, itemId, socket) => dispatch =>
+export const cloneItem = (itemName, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
     itemId
   })
@@ -246,7 +240,7 @@ export const cloneItem = (itemName, listId, itemId, socket) => dispatch =>
       });
       socket.emit(ItemActionTypes.CLONE_SUCCESS, { listId, item });
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(cloneItemFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.clone-item-fail',
@@ -254,10 +248,7 @@ export const cloneItem = (itemName, listId, itemId, socket) => dispatch =>
       });
     });
 
-export const cloneItemWS = (listId, item) => dispatch =>
-  dispatch(cloneItemSuccess(listId, item));
-
-export const addComment = (listId, itemId, text, socket) => dispatch =>
+export const addComment = (listId, itemId, text) => dispatch =>
   postData('/api/comments/add-comment', {
     itemId,
     listId,
@@ -266,7 +257,11 @@ export const addComment = (listId, itemId, text, socket) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       dispatch(addCommentSuccess(listId, itemId, json));
-      socket.emit(CommentActionTypes.ADD_SUCCESS, { listId, itemId, json });
+      socket.emit(CommentActionTypes.ADD_SUCCESS, {
+        listId,
+        itemId,
+        comment: json
+      });
     })
     .catch(() => {
       dispatch(addCommentFailure());
@@ -276,9 +271,6 @@ export const addComment = (listId, itemId, text, socket) => dispatch =>
       });
     });
 
-export const addCommentWS = (listId, itemId, data) => dispatch =>
-  dispatch(addCommentSuccess(listId, itemId, data));
-
 export const fetchComments = (itemName, listId, itemId) => dispatch =>
   getData(`/api/comments/${listId}/${itemId}/data`)
     .then(resp => resp.json())
@@ -286,7 +278,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
       const comments = _keyBy(json, '_id');
       dispatch(fetchCommentsSuccess(listId, itemId, comments));
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchCommentsFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'list.items.actions.fetch-comments-fails',
@@ -294,7 +286,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
       });
     });
 
-export const archiveItem = (listId, itemId, name, socket) => dispatch =>
+export const archiveItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: true,
     itemId
@@ -315,9 +307,6 @@ export const archiveItem = (listId, itemId, name, socket) => dispatch =>
       });
     });
 
-export const archiveItemWS = (listId, itemId) => dispatch =>
-  dispatch(archiveItemSuccess(listId, itemId));
-
 export const fetchArchivedItems = (listId, listName) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
     .then(resp => resp.json())
@@ -333,7 +322,7 @@ export const fetchArchivedItems = (listId, listName) => dispatch =>
       });
     });
 
-export const restoreItem = (listId, itemId, name, socket) => dispatch =>
+export const restoreItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: false,
     itemId
@@ -354,10 +343,7 @@ export const restoreItem = (listId, itemId, name, socket) => dispatch =>
       });
     });
 
-export const restoreItemWS = (listId, itemId) => dispatch =>
-  dispatch(restoreItemSuccess(listId, itemId));
-
-export const deleteItem = (listId, itemId, name, socket) => dispatch =>
+export const deleteItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/delete-item/${itemId}`)
     .then(() => {
       dispatch(deleteItemSuccess(listId, itemId));
@@ -375,5 +361,18 @@ export const deleteItem = (listId, itemId, name, socket) => dispatch =>
       });
     });
 
-export const deleteItemWS = (listId, itemId) => dispatch =>
-  dispatch(deleteItemSuccess(listId, itemId));
+export const lockItem = (itemId, listId, { nameLock, descriptionLock }) =>
+  socket.emit(ItemStatusType.LOCK, {
+    descriptionLock,
+    itemId,
+    listId,
+    nameLock
+  });
+
+export const unlockItem = (itemId, listId, { nameLock, descriptionLock }) =>
+  socket.emit(ItemStatusType.UNLOCK, {
+    descriptionLock,
+    itemId,
+    listId,
+    nameLock
+  });

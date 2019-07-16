@@ -3,7 +3,8 @@ import _keyBy from 'lodash/keyBy';
 
 import {
   CommentActionTypes,
-  ItemActionTypes
+  ItemActionTypes,
+  ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
 
 const comments = (state = {}, action) => {
@@ -149,6 +150,17 @@ const items = (state = {}, action) => {
       const { [itemId]: deleted, ...rest } = state;
 
       return rest;
+    }
+    case ItemStatusType.LOCK:
+    case ItemStatusType.UNLOCK: {
+      const {
+        payload: { itemId, descriptionLock, nameLock }
+      } = action;
+      const blockedItem = state[itemId];
+      blockedItem.descriptionLock = descriptionLock;
+      blockedItem.nameLock = nameLock;
+
+      return { [itemId]: blockedItem, ...state };
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {

@@ -9,7 +9,6 @@ import { updateListItem } from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import withSocket from 'common/hoc/withSocket';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -59,9 +58,8 @@ class ListItemName extends PureComponent {
         params: { id: listId }
       },
       name,
-      onBusy,
-      onFree,
-      socket,
+      onBlur,
+      onPending,
       updateListItem
     } = this.props;
     const isNameUpdated = updatedName !== name;
@@ -69,23 +67,18 @@ class ListItemName extends PureComponent {
 
     if (canBeUpdated && isNameUpdated) {
       this.setState({ pending: true });
-      onBusy();
+      onPending();
+      updateListItem(name, listId, itemId, { name: updatedName }).finally(
+        () => {
+          this.setState({
+            pending: false,
+            isTipVisible: false
+          });
 
-      updateListItem(
-        name,
-        listId,
-        itemId,
-        { name: updatedName },
-        socket
-      ).finally(() => {
-        this.setState({
-          pending: false,
-          isTipVisible: false
-        });
-
-        this.handleNameInputBlur();
-        onFree();
-      });
+          this.handleNameInputBlur();
+          onBlur();
+        }
+      );
     }
 
     if (!canBeUpdated) {
@@ -147,7 +140,7 @@ class ListItemName extends PureComponent {
 
   render() {
     const { isNameInputFocused, isTipVisible, name, pending } = this.state;
-    const { isMember } = this.props;
+    const { isMember, locked } = this.props;
 
     return (
       <div ref={this.listItemName}>
@@ -155,9 +148,9 @@ class ListItemName extends PureComponent {
           <input
             className={classNames('list-item-name__input', {
               'primary-input': isNameInputFocused,
-              'list-item-name__input--disabled': pending
+              'list-item-name__input--disabled': pending || locked
             })}
-            disabled={!isMember || pending}
+            disabled={!isMember || pending || locked}
             onBlur={this.handleNameInputBlur}
             onChange={this.handleNameChange}
             onClick={this.handleOnClick}
@@ -178,19 +171,17 @@ class ListItemName extends PureComponent {
 ListItemName.propTypes = {
   isMember: PropTypes.bool.isRequired,
   itemId: PropTypes.string.isRequired,
+  locked: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
 
   onBlur: PropTypes.func.isRequired,
-  onBusy: PropTypes.func.isRequired,
   onFocus: PropTypes.func.isRequired,
-  onFree: PropTypes.func.isRequired,
+  onPending: PropTypes.func.isRequired,
   updateListItem: PropTypes.func.isRequired
 };
 
 export default _flowRight(
-  withSocket,
   withRouter,
   connect(
     null,

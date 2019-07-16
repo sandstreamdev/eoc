@@ -1,4 +1,21 @@
 .list-item-description {
+  &--disabled {
+    h2,
+    span,
+    p {
+      color: $button-disabled;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+  }
+
   &__title {
     text-align: left;
     font-size: $m-font;

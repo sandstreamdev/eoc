@@ -31,17 +31,10 @@ import ListHeader from './components/ListHeader';
 import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContainer';
-import {
-  addItemWS,
-  archiveItemWS,
-  deleteItemWS,
-  restoreItemWS
-} from './components/Items/model/actions';
-import { ItemActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import { getCurrentUser } from 'modules/authorization/model/selectors';
 import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
-import socket, { joinRoom, leaveRoom } from 'sockets';
+import { joinRoom, leaveRoom } from 'sockets';
 
 class List extends Component {
   state = {
@@ -64,15 +57,15 @@ class List extends Component {
 
     this.fetchData()
       .then(() => {
-        this.handleBreadcrumbs();
-        this.receiveWSEvents();
         this.setState({ pendingForDetails: false });
+        this.handleBreadcrumbs();
       })
       .catch(err => {
         if (!(err instanceof ResourceNotFoundException)) {
           this.setState({ pendingForDetails: false });
         }
       });
+
     joinRoom(Routes.LIST, cohortId, userId);
   }
 
@@ -105,39 +98,6 @@ class List extends Component {
 
     leaveRoom(Routes.LIST, listId, userId);
   }
-
-  receiveWSEvents = () => {
-    const {
-      addItemWS,
-      archiveItemWS,
-      deleteItemWS,
-      restoreItemWS
-    } = this.props;
-
-    socket.on(ItemActionTypes.ADD_SUCCESS, data => {
-      const { item, listId } = data;
-
-      addItemWS(item, listId);
-    });
-
-    socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
-      const { itemId, listId } = data;
-
-      archiveItemWS(listId, itemId);
-    });
-
-    socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
-      const { itemId, listId } = data;
-
-      deleteItemWS(listId, itemId);
-    });
-
-    socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
-      const { itemId, listId } = data;
-
-      restoreItemWS(listId, itemId);
-    });
-  };
 
   handleBreadcrumbs = () => {
     const {
@@ -351,13 +311,9 @@ List.propTypes = {
   members: PropTypes.objectOf(PropTypes.object),
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
-  addItemWS: PropTypes.func.isRequired,
-  archiveItemWS: PropTypes.func.isRequired,
   archiveList: PropTypes.func.isRequired,
-  deleteItemWS: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
-  leaveList: PropTypes.func.isRequired,
-  restoreItemWS: PropTypes.func.isRequired
+  leaveList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -382,13 +338,9 @@ export default _flowRight(
   connect(
     mapStateToProps,
     {
-      addItemWS,
-      archiveItemWS,
       archiveList,
-      deleteItemWS,
       fetchListData,
-      leaveList,
-      restoreItemWS
+      leaveList
     }
   )
 )(List);

@@ -13,15 +13,12 @@ import { MessageType } from 'common/constants/enums';
 import NewComment from 'common/components/Comments/NewComment';
 import {
   addComment,
-  addCommentWS,
   fetchComments
 } from 'modules/list/components/Items/model/actions';
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
-import { CommentActionTypes } from 'modules/list/components/Items/model/actionTypes';
 import Preloader from 'common/components/Preloader';
-import socket from 'sockets';
 
 class CommentsList extends PureComponent {
   pendingPromise = null;
@@ -33,7 +30,6 @@ class CommentsList extends PureComponent {
 
   componentDidMount() {
     this.fetchComments();
-    this.receiveWSEvents();
   }
 
   componentWillUnmount() {
@@ -41,16 +37,6 @@ class CommentsList extends PureComponent {
       this.pendingPromise.abort();
     }
   }
-
-  receiveWSEvents = () => {
-    const { addCommentWS } = this.props;
-
-    socket.on(CommentActionTypes.ADD_SUCCESS, data => {
-      const { itemId, listId, json } = data;
-
-      addCommentWS(listId, itemId, json);
-    });
-  };
 
   fetchComments = () => {
     const {
@@ -89,7 +75,7 @@ class CommentsList extends PureComponent {
       }
     } = this.props;
 
-    return addComment(listId, itemId, comment, socket);
+    return addComment(listId, itemId, comment);
   };
 
   render() {
@@ -151,7 +137,6 @@ CommentsList.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   addComment: PropTypes.func.isRequired,
-  addCommentWS: PropTypes.func.isRequired,
   fetchComments: PropTypes.func.isRequired
 };
 
@@ -160,6 +145,6 @@ export default _flowRight(
   withRouter,
   connect(
     null,
-    { addComment, addCommentWS, fetchComments }
+    { addComment, fetchComments }
   )
 )(CommentsList);

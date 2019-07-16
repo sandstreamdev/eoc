@@ -1,7 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _flowRight from 'lodash/flowRight';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -10,14 +9,7 @@ import ListItem from 'modules/list/components/Items/ListItem';
 import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
-import {
-  IntlPropType,
-  RouterMatchPropType,
-  UserPropType
-} from 'common/constants/propTypes';
-import { ItemStatusType } from './model/actionTypes';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
-import withSocket from 'common/hoc/withSocket';
+import { IntlPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
@@ -26,67 +18,9 @@ class ItemsList extends PureComponent {
     super(props);
 
     this.state = {
-      busyItemId: '',
-      busyBySomeoneItemId: '',
       limit: DISPLAY_LIMIT
     };
   }
-
-  componentDidMount() {
-    this.receiveWSEvents();
-  }
-
-  componentDidUpdate() {
-    this.emitWSEvents();
-  }
-
-  emitWSEvents = () => {
-    const { busyItemId } = this.state;
-    const {
-      match: {
-        params: { id: listId }
-      },
-      currentUser: { id: userId },
-      socket
-    } = this.props;
-
-    if (busyItemId) {
-      socket.emit(ItemStatusType.BUSY, {
-        itemId: busyItemId,
-        listId,
-        userId
-      });
-    }
-
-    socket.emit(ItemStatusType.FREE, {
-      itemId: busyItemId,
-      listId,
-      userId
-    });
-  };
-
-  receiveWSEvents = () => {
-    const {
-      currentUser: { id: currentUserId },
-      socket
-    } = this.props;
-
-    socket.on(ItemStatusType.BUSY, data => {
-      const { itemId, userId } = data;
-
-      if (currentUserId !== userId) {
-        this.setState({ busyBySomeoneItemId: itemId });
-      }
-    });
-
-    socket.on(ItemStatusType.FREE, data => {
-      const { itemId, userId } = data;
-
-      if (currentUserId !== userId) {
-        this.setState({ busyBySomeoneItemId: itemId });
-      }
-    });
-  };
 
   showMore = event => {
     event.preventDefault();
@@ -100,13 +34,9 @@ class ItemsList extends PureComponent {
     this.setState({ limit: DISPLAY_LIMIT });
   };
 
-  handleItemBusy = itemId => this.setState({ busyItemId: itemId });
-
-  handleItemFree = () => this.setState({ busyItemId: '' });
-
   renderItems = () => {
     const { archived, isMember, items } = this.props;
-    const { limit, busyBySomeoneItemId } = this.state;
+    const { limit } = this.state;
 
     if (!items) {
       return null;
@@ -115,51 +45,33 @@ class ItemsList extends PureComponent {
     return archived ? (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {items.slice(0, limit).map(item => {
-            const isItemBlocked = item._id === busyBySomeoneItemId;
-
-            return (
-              <CSSTransition
-                classNames="animated-item"
+          {items.slice(0, limit).map(item => (
+            <CSSTransition
+              classNames="animated-item"
+              key={item._id}
+              timeout={1000}
+            >
+              <ListArchivedItem
+                data={item}
+                isMember={isMember}
                 key={item._id}
-                timeout={1000}
-              >
-                <ListArchivedItem
-                  blocked={isItemBlocked}
-                  data={item}
-                  isMember={isMember}
-                  key={item._id}
-                  onBusy={this.handleItemBusy}
-                  onFree={this.handleItemFree}
-                />
-              </CSSTransition>
-            );
-          })}
+              />
+            </CSSTransition>
+          ))}
         </TransitionGroup>
       </ul>
     ) : (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {items.slice(0, limit).map((item, index) => {
-            const isItemBlocked = item._id === busyBySomeoneItemId;
-
-            return (
-              <CSSTransition
-                classNames="animated-item"
-                key={item._id}
-                timeout={2000}
-              >
-                <ListItem
-                  blocked={isItemBlocked}
-                  data={item}
-                  isMember={isMember}
-                  key={item._id}
-                  onBusy={this.handleItemBusy}
-                  onFree={this.handleItemFree}
-                />
-              </CSSTransition>
-            );
-          })}
+          {items.slice(0, limit).map(item => (
+            <CSSTransition
+              classNames="animated-item"
+              key={item._id}
+              timeout={2000}
+            >
+              <ListItem data={item} isMember={isMember} key={item._id} />
+            </CSSTransition>
+          ))}
         </TransitionGroup>
       </ul>
     );
@@ -209,21 +121,9 @@ class ItemsList extends PureComponent {
 
 ItemsList.propTypes = {
   archived: PropTypes.bool,
-  currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
-  items: PropTypes.arrayOf(PropTypes.object),
-  match: RouterMatchPropType.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any)
+  items: PropTypes.arrayOf(PropTypes.object)
 };
 
-const mapStateToProps = state => ({
-  currentUser: getCurrentUser(state)
-});
-
-export default _flowRight(
-  withSocket,
-  withRouter,
-  injectIntl,
-  connect(mapStateToProps)
-)(ItemsList);
+export default _flowRight(withRouter, injectIntl)(ItemsList);

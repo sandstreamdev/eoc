@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import classNames from 'classnames';
 
 import PendingButton from 'common/components/PendingButton';
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
@@ -13,32 +12,15 @@ import {
   restoreItem
 } from 'modules/list/components/Items/model/actions';
 import Confirmation from 'common/components/Confirmation';
-import withSocket from 'common/hoc/withSocket';
 
 class ListArchivedItem extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      busyBySomeone: false,
-      busyInfoVisibility: false,
       isConfirmationVisible: false
     };
   }
-
-  componentDidUpdate(prevProps) {
-    const { blocked } = this.state;
-
-    if (prevProps.blocked !== blocked) {
-      this.handleBusyBySomeone();
-    }
-  }
-
-  handleBusyBySomeone = () => {
-    const { blocked } = this.props;
-
-    this.setState({ busyBySomeone: blocked });
-  };
 
   handleRestoringItem = event => {
     event.preventDefault();
@@ -48,33 +30,20 @@ class ListArchivedItem extends PureComponent {
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
-    this.itemBusy();
-
-    return restoreItem(listId, itemId, name, socket).finally(() =>
-      this.itemFree()
-    );
+    return restoreItem(listId, itemId, name);
   };
 
   showConfirmation = event => {
     event.preventDefault();
 
-    this.itemBusy();
     this.setState({ isConfirmationVisible: true });
   };
 
   hideConfirmation = () => {
-    this.itemFree();
     this.setState({ isConfirmationVisible: false });
-  };
-
-  handleBusyBySomeone = () => {
-    const { blocked } = this.props;
-
-    this.setState({ busyBySomeone: blocked });
   };
 
   handleDeletingItem = () => {
@@ -83,57 +52,10 @@ class ListArchivedItem extends PureComponent {
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      },
-      socket
+      }
     } = this.props;
 
-    this.itemBusy();
-
-    return deleteItem(listId, itemId, name, socket).finally(() =>
-      this.itemFree()
-    );
-  };
-
-  itemBusy = () => {
-    const {
-      onBusy,
-      data: { _id: itemId }
-    } = this.props;
-
-    onBusy(itemId);
-  };
-
-  itemFree = () => {
-    const { onFree } = this.props;
-
-    onFree();
-  };
-
-  handleBusyInfoVisibility = event => {
-    event.preventDefault();
-
-    this.setState({ busyInfoVisibility: true });
-  };
-
-  renderBusyOverlay = () => {
-    const { busyBySomeone, busyInfoVisibility } = this.state;
-
-    return (
-      busyBySomeone && (
-        <div
-          className={classNames('list-item__busy-overlay', {
-            'list-item__busy-overlay--dimmed': busyInfoVisibility
-          })}
-          onClick={this.handleBusyInfoVisibility}
-          onTouchEnd={this.handleBusyInfoVisibility}
-          role="banner"
-        >
-          {busyInfoVisibility && (
-            <FormattedMessage id="list.list-item.busy-info" />
-          )}
-        </div>
-      )
-    );
+    return deleteItem(listId, itemId, name);
   };
 
   render() {
@@ -146,7 +68,6 @@ class ListArchivedItem extends PureComponent {
 
     return (
       <li className="list-archived-item">
-        {this.renderBusyOverlay()}
         <div className="list-archived-item__wrapper">
           <div className="list-archived-item__data">
             <span className="list-archived-item__name">{name}</span>
@@ -213,7 +134,6 @@ class ListArchivedItem extends PureComponent {
 }
 
 ListArchivedItem.propTypes = {
-  blocked: PropTypes.bool,
   data: PropTypes.objectOf(
     PropTypes.oneOfType([
       PropTypes.string,
@@ -225,16 +145,12 @@ ListArchivedItem.propTypes = {
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
 
   deleteItem: PropTypes.func.isRequired,
-  onBusy: PropTypes.func.isRequired,
-  onFree: PropTypes.func.isRequired,
   restoreItem: PropTypes.func.isRequired
 };
 
 export default _flowRight(
-  withSocket,
   injectIntl,
   withRouter,
   connect(

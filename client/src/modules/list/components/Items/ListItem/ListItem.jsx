@@ -16,10 +16,10 @@ import {
   archiveItem,
   clearVote,
   cloneItem,
-  cloneItemWS,
+  lockItem,
   setVote,
   toggle,
-  updateListItemWS
+  unlockItem
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -28,8 +28,6 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
-import { ItemActionTypes } from '../model/actionTypes';
-import socket from 'sockets';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -41,47 +39,13 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
-      busyBySomeone: false,
-      busyInfoVisibility: false,
+      descriptionLock: false,
       done: isOrdered,
+      isConfirmationVisible: false,
       isNameEdited: false,
-      isConfirmationVisible: false
+      nameLock: false
     };
   }
-
-  componentDidMount() {
-    this.receiveWSEvents();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { blocked } = this.state;
-
-    if (prevProps.blocked !== blocked) {
-      this.handleBusyBySomeone();
-    }
-  }
-
-  receiveWSEvents = () => {
-    const { updateListItemWS, cloneItemWS } = this.props;
-
-    socket.on(ItemActionTypes.UPDATE_SUCCESS, itemData => {
-      const { listId, itemId, data } = itemData;
-
-      updateListItemWS(itemId, listId, data);
-    });
-
-    socket.on(ItemActionTypes.CLONE_SUCCESS, data => {
-      const { listId, item } = data;
-
-      cloneItemWS(listId, item);
-    });
-  };
-
-  handleBusyBySomeone = () => {
-    const { blocked } = this.props;
-
-    this.setState({ busyBySomeone: blocked });
-  };
 
   handleItemToggling = event => {
     event.preventDefault();
@@ -106,13 +70,13 @@ class ListItem extends PureComponent {
       disableToggleButton: true
     }));
 
-    this.itemBusy();
+    this.lockItem();
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
       return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
-        () => this.itemFree()
+        () => this.unlockItem()
       );
     }
 
@@ -139,12 +103,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.itemBusy();
+    this.lockItem();
 
     if (isMember) {
-      return cloneItem(name, listId, itemId, socket).finally(() =>
-        this.itemFree()
-      );
+      return cloneItem(name, listId, itemId).finally(() => this.unlockItem());
     }
   };
 
@@ -162,9 +124,9 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    this.itemBusy();
+    this.lockItem();
 
-    return action(_id, listId, name).finally(() => this.itemFree());
+    return action(_id, listId, name).finally(() => this.unlockItem());
   };
 
   handleConfirmationVisibility = event => {
@@ -186,9 +148,9 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.itemBusy();
+    this.lockItem();
 
-    return archiveItem(listId, itemId, name, socket);
+    return archiveItem(listId, itemId, name);
   };
 
   renderVoting = () => {
@@ -215,35 +177,44 @@ class ListItem extends PureComponent {
 
   preventDefault = event => event.preventDefault();
 
-  handleNameFocus = () => {
-    this.setState({ isNameEdited: true });
-    this.itemBusy();
+  handleNameLock = () => {
+    this.setState({ nameLock: true, descriptionLock: false }, this.lockItem);
   };
 
-  handleNameBlur = () => {
-    this.setState({ isNameEdited: false });
-    this.itemFree();
+  handleNameUnlock = () => {
+    this.setState({ nameLock: false, descriptionLock: false }, this.unlockItem);
   };
 
-  itemBusy = () => {
+  handleDescriptionLock = () => {
+    this.setState({ nameLock: false, descriptionLock: true }, this.lockItem);
+  };
+
+  handleDescriptionUnlock = () => {
+    this.setState({ nameLock: false, descriptionLock: false }, this.unlockItem);
+  };
+
+  lockItem = () => {
+    const { nameLock, descriptionLock } = this.state;
     const {
-      onBusy,
-      data: { _id: itemId }
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
     } = this.props;
 
-    onBusy(itemId);
+    lockItem(itemId, listId, { nameLock, descriptionLock });
   };
 
-  itemFree = () => {
-    const { onFree } = this.props;
+  unlockItem = () => {
+    const { nameLock, descriptionLock } = this.state;
+    const {
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
 
-    onFree();
-  };
-
-  handleBusyInfoVisibility = event => {
-    event.preventDefault();
-
-    this.setState({ busyInfoVisibility: true });
+    unlockItem(itemId, listId, { nameLock, descriptionLock });
   };
 
   renderConfirmation = () => {
@@ -283,17 +254,18 @@ class ListItem extends PureComponent {
   renderItemFeatures = () => {
     const { isConfirmationVisible } = this.state;
     const {
-      data: { isOrdered, name },
+      data: { isOrdered, name, nameLock = false, descriptionLock = false },
       intl: { formatMessage },
       isMember
     } = this.props;
+    const isEdited = nameLock || descriptionLock;
 
     return (
       <div className="list-item__features">
         <div className="list-item__feature-buttons">
           <button
             className="link-button"
-            disabled={!isMember || isConfirmationVisible}
+            disabled={!isMember || isConfirmationVisible || isEdited}
             onClick={this.handleConfirmationVisibility}
             onTouchEnd={this.handleConfirmationVisibility}
             type="button"
@@ -330,7 +302,13 @@ class ListItem extends PureComponent {
 
   renderDescription = () => {
     const {
-      data: { _id: itemId, description, isOrdered, name },
+      data: {
+        _id: itemId,
+        description,
+        descriptionLock = false,
+        isOrdered,
+        name
+      },
       isMember
     } = this.props;
     const isFieldDisabled = !isMember || isOrdered;
@@ -339,12 +317,13 @@ class ListItem extends PureComponent {
       return (
         <div className="list-item__description">
           <ListItemDescription
+            locked={descriptionLock}
             description={description}
             disabled={isFieldDisabled}
             itemId={itemId}
             name={name}
-            onBlur={this.itemFree}
-            onFocus={this.itemBusy}
+            onBlur={this.handleDescriptionUnlock}
+            onFocus={this.handleDescriptionLock}
           />
         </div>
       );
@@ -373,30 +352,16 @@ class ListItem extends PureComponent {
     );
   };
 
-  renderBusyOverlay = () => {
-    const { busyBySomeone, busyInfoVisibility } = this.state;
-
-    return (
-      busyBySomeone && (
-        <div
-          className={classNames('list-item__busy-overlay', {
-            'list-item__busy-overlay--dimmed': busyInfoVisibility
-          })}
-          onClick={this.handleBusyInfoVisibility}
-          onTouchEnd={this.handleBusyInfoVisibility}
-          role="banner"
-        >
-          {busyInfoVisibility && (
-            <FormattedMessage id="list.list-item.busy-info" />
-          )}
-        </div>
-      )
-    );
-  };
-
   render() {
     const {
-      data: { isOrdered, authorName, _id, name },
+      data: {
+        _id,
+        authorName,
+        descriptionLock = false,
+        isOrdered,
+        name,
+        nameLock = false
+      },
       isMember
     } = this.props;
     const {
@@ -405,6 +370,7 @@ class ListItem extends PureComponent {
       done,
       isNameEdited
     } = this.state;
+    const isEdited = nameLock || descriptionLock;
 
     return (
       <li
@@ -414,7 +380,6 @@ class ListItem extends PureComponent {
           'list-item--details-visible': areDetailsVisible
         })}
       >
-        {this.renderBusyOverlay()}
         <div
           className={classNames('list-item__top', {
             'list-item__top--details-visible': areDetailsVisible,
@@ -433,13 +398,13 @@ class ListItem extends PureComponent {
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <ListItemName
+                locked={nameLock}
                 isMember={isMember}
                 itemId={_id}
                 name={name}
-                onBlur={this.handleNameBlur}
-                onBusy={this.itemBusy}
-                onFocus={this.handleNameFocus}
-                onFree={this.itemFree}
+                onBlur={this.handleNameUnlock}
+                onFocus={this.handleNameLock}
+                onPending={this.handleNameLock}
               />
               <span className="list-item__author">
                 <FormattedMessage
@@ -454,7 +419,7 @@ class ListItem extends PureComponent {
             <div className="list-item__toggle">
               <PendingButton
                 className="list-item__icon"
-                disabled={disableToggleButton || !isMember}
+                disabled={disableToggleButton || !isMember || isEdited}
                 onClick={this.handleItemToggling}
                 onTouchEnd={this.handleItemToggling}
               />
@@ -470,7 +435,6 @@ class ListItem extends PureComponent {
 }
 
 ListItem.propTypes = {
-  blocked: PropTypes.bool,
   currentUser: UserPropType.isRequired,
   data: PropTypes.objectOf(
     PropTypes.oneOfType([
@@ -487,12 +451,8 @@ ListItem.propTypes = {
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
-  cloneItemWS: PropTypes.func.isRequired,
-  onBusy: PropTypes.func.isRequired,
-  onFree: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired,
-  updateListItemWS: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -508,10 +468,8 @@ export default _flowRight(
       archiveItem,
       clearVote,
       cloneItem,
-      cloneItemWS,
       setVote,
-      toggle,
-      updateListItemWS
+      toggle
     }
   )
 )(ListItem);
