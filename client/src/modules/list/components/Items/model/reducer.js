@@ -151,13 +151,13 @@ const items = (state = {}, action) => {
 
       return rest;
     }
-    case ItemStatusType.BUSY:
-    case ItemStatusType.FREE: {
+    case ItemStatusType.LOCK:
+    case ItemStatusType.UNLOCK: {
       const {
-        payload: { itemId, busy }
+        payload: { itemId, lock }
       } = action;
       const blockedItem = state[itemId];
-      blockedItem.busy = busy;
+      blockedItem.lock = lock;
 
       return { [itemId]: blockedItem, ...state };
     }

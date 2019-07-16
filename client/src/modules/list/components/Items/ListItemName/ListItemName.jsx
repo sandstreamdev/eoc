@@ -140,7 +140,7 @@ class ListItemName extends PureComponent {
 
   render() {
     const { isNameInputFocused, isTipVisible, name, pending } = this.state;
-    const { isMember, busy } = this.props;
+    const { isMember, locked } = this.props;
 
     return (
       <div ref={this.listItemName}>
@@ -148,9 +148,9 @@ class ListItemName extends PureComponent {
           <input
             className={classNames('list-item-name__input', {
               'primary-input': isNameInputFocused,
-              'list-item-name__input--disabled': pending || busy
+              'list-item-name__input--disabled': pending || locked
             })}
-            disabled={!isMember || pending || busy}
+            disabled={!isMember || pending || locked}
             onBlur={this.handleNameInputBlur}
             onChange={this.handleNameChange}
             onClick={this.handleOnClick}
@@ -169,9 +169,9 @@ class ListItemName extends PureComponent {
 }
 
 ListItemName.propTypes = {
-  busy: PropTypes.bool,
   isMember: PropTypes.bool.isRequired,
   itemId: PropTypes.string.isRequired,
+  locked: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
 

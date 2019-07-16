@@ -211,8 +211,8 @@ const lists = (state = {}, action) => {
     case ItemActionTypes.SET_VOTE_SUCCESS:
     case ItemActionTypes.TOGGLE_SUCCESS:
     case ItemActionTypes.UPDATE_SUCCESS:
-    case ItemStatusType.BUSY:
-    case ItemStatusType.FREE:
+    case ItemStatusType.LOCK:
+    case ItemStatusType.UNLOCK:
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {

@@ -16,10 +16,10 @@ import {
   archiveItem,
   clearVote,
   cloneItem,
-  setItemBusy,
-  setItemFree,
+  lockItem,
   setVote,
-  toggle
+  toggle,
+  unlockItem
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -39,13 +39,13 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
-      busy: {
-        nameBusy: false,
-        descriptionBusy: false
-      },
       done: isOrdered,
+      isConfirmationVisible: false,
       isNameEdited: false,
-      isConfirmationVisible: false
+      lock: {
+        nameLock: false,
+        descriptionLock: false
+      }
     };
   }
 
@@ -72,13 +72,13 @@ class ListItem extends PureComponent {
       disableToggleButton: true
     }));
 
-    this.setItemBusy();
+    this.lockItem();
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
       return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
-        () => this.setItemFree()
+        () => this.unlockItem()
       );
     }
 
@@ -105,10 +105,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setItemBusy();
+    this.lockItem();
 
     if (isMember) {
-      return cloneItem(name, listId, itemId).finally(() => this.setItemFree());
+      return cloneItem(name, listId, itemId).finally(() => this.unlockItem());
     }
   };
 
@@ -126,9 +126,9 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    this.setItemBusy();
+    this.lockItem();
 
-    return action(_id, listId, name).finally(() => this.setItemFree());
+    return action(_id, listId, name).finally(() => this.unlockItem());
   };
 
   handleConfirmationVisibility = event => {
@@ -150,7 +150,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.setItemBusy();
+    this.lockItem();
 
     return archiveItem(listId, itemId, name);
   };
@@ -179,37 +179,37 @@ class ListItem extends PureComponent {
 
   preventDefault = event => event.preventDefault();
 
-  handleNameBusy = () => {
+  handleNameLock = () => {
     this.setState(
-      { busy: { nameBusy: true, descriptionBusy: false } },
-      this.setItemBusy
+      { lock: { nameLock: true, descriptionLock: false } },
+      this.lockItem
     );
   };
 
-  handleNameFree = () => {
+  handleNameUnlock = () => {
     this.setState(
-      { busy: { nameBusy: false, descriptionBusy: false } },
-      this.setItemFree
+      { lock: { nameLock: false, descriptionLock: false } },
+      this.unlockItem
     );
   };
 
-  handleDescriptionBusy = () => {
+  handleDescriptionLock = () => {
     this.setState(
-      { busy: { nameBusy: false, descriptionBusy: true } },
-      this.setItemBusy
+      { lock: { nameLock: false, descriptionLock: true } },
+      this.lockItem
     );
   };
 
-  handleDescriptionFree = () => {
+  handleDescriptionUnlock = () => {
     this.setState(
-      { busy: { nameBusy: false, descriptionBusy: false } },
-      this.setItemFree
+      { lock: { nameLock: false, descriptionLock: false } },
+      this.unlockItem
     );
   };
 
-  setItemBusy = () => {
+  lockItem = () => {
     const {
-      busy: { nameBusy, descriptionBusy }
+      lock: { nameLock, descriptionLock }
     } = this.state;
     const {
       data: { _id: itemId },
@@ -218,12 +218,12 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    setItemBusy(itemId, listId, { nameBusy, descriptionBusy });
+    lockItem(itemId, listId, { nameLock, descriptionLock });
   };
 
-  setItemFree = () => {
+  unlockItem = () => {
     const {
-      busy: { nameBusy, descriptionBusy }
+      lock: { nameLock, descriptionLock }
     } = this.state;
     const {
       data: { _id: itemId },
@@ -232,7 +232,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    setItemFree(itemId, listId, { nameBusy, descriptionBusy });
+    unlockItem(itemId, listId, { nameLock, descriptionLock });
   };
 
   renderConfirmation = () => {
@@ -272,16 +272,16 @@ class ListItem extends PureComponent {
   renderItemFeatures = () => {
     const { isConfirmationVisible } = this.state;
     const {
-      data: { isOrdered, name, busy },
+      data: { isOrdered, name, lock },
       intl: { formatMessage },
       isMember
     } = this.props;
     let isEdited;
 
-    if (busy) {
-      const { nameBusy, descriptionBusy } = busy;
+    if (lock) {
+      const { nameLock, descriptionLock } = lock;
 
-      isEdited = nameBusy || descriptionBusy;
+      isEdited = nameLock || descriptionLock;
     }
 
     return (
@@ -326,29 +326,23 @@ class ListItem extends PureComponent {
 
   renderDescription = () => {
     const {
-      data: { _id: itemId, description, isOrdered, name, busy },
+      data: { _id: itemId, description, isOrdered, name, lock },
       isMember
     } = this.props;
     const isFieldDisabled = !isMember || isOrdered;
-    let isDescriptionBusy;
-
-    if (busy) {
-      const { descriptionBusy } = busy;
-
-      isDescriptionBusy = descriptionBusy;
-    }
+    const { descriptionLock = false } = lock || {};
 
     if (description || !isFieldDisabled) {
       return (
         <div className="list-item__description">
           <ListItemDescription
-            busy={isDescriptionBusy}
+            locked={descriptionLock}
             description={description}
             disabled={isFieldDisabled}
             itemId={itemId}
             name={name}
-            onBlur={this.handleDescriptionFree}
-            onFocus={this.handleDescriptionBusy}
+            onBlur={this.handleDescriptionUnlock}
+            onFocus={this.handleDescriptionLock}
           />
         </div>
       );
@@ -379,7 +373,7 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { _id, authorName, isOrdered, name, busy },
+      data: { _id, authorName, isOrdered, name, lock },
       isMember
     } = this.props;
     const {
@@ -388,15 +382,8 @@ class ListItem extends PureComponent {
       done,
       isNameEdited
     } = this.state;
-    let isNameBusy;
-    let isEdited;
-
-    if (busy) {
-      const { nameBusy, descriptionBusy } = busy;
-
-      isNameBusy = nameBusy;
-      isEdited = nameBusy || descriptionBusy;
-    }
+    const { nameLock = false, descriptionLock = false } = lock || {};
+    const isEdited = nameLock || descriptionLock;
 
     return (
       <li
@@ -424,13 +411,13 @@ class ListItem extends PureComponent {
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <ListItemName
-                busy={isNameBusy}
+                locked={nameLock}
                 isMember={isMember}
                 itemId={_id}
                 name={name}
-                onBlur={this.handleNameFree}
-                onFocus={this.handleNameBusy}
-                onPending={this.handleNameBusy}
+                onBlur={this.handleNameUnlock}
+                onFocus={this.handleNameLock}
+                onPending={this.handleNameLock}
               />
               <span className="list-item__author">
                 <FormattedMessage

@@ -44,16 +44,16 @@ const restoreItemWS = socket => {
 };
 
 const updateItemState = socket => {
-  socket.on(ItemStatusType.BUSY, data => {
+  socket.on(ItemStatusType.LOCK, data => {
     const { listId } = data;
 
-    socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.BUSY, data);
+    socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.LOCK, data);
   });
 
-  socket.on(ItemStatusType.FREE, data => {
+  socket.on(ItemStatusType.UNLOCK, data => {
     const { listId } = data;
 
-    socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.FREE, data);
+    socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.UNLOCK, data);
   });
 };
 
