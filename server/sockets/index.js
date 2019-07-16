@@ -10,21 +10,21 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
 const {
-  addCommentWS,
-  addItemToListWS,
-  addListMemberWS,
-  addMemberRoleInListWS,
-  addOwnerRoleInListWS,
-  archiveItemWS,
-  deleteItemWS,
-  removeMemberRoleInListWS,
-  removeOwnerRoleInListWS,
-  restoreItemWS,
-  sendListsOnAddCohortMemberWS,
+  addComment,
+  addItemToList,
+  addListMember,
+  addMemberRoleInList,
+  addOwnerRoleInList,
+  archiveItem,
+  deleteItem,
+  removeMemberRoleInList,
+  removeOwnerRoleInList,
+  restoreItem,
+  sendListsOnAddCohortMember,
   updateItemState,
-  updateItemWS
+  updateItem
 } = require('./list');
-const { addCohortMemberWS } = require('./cohort');
+const { addCohortMember } = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -106,21 +106,21 @@ const socketListenTo = server => {
        */
     });
 
-    addItemToListWS(socket);
-    addListMemberWS(socket, dashboardViewClients, cohortViewClients);
-    addMemberRoleInListWS(socket, listViewClients);
-    addOwnerRoleInListWS(socket, listViewClients);
-    archiveItemWS(socket);
+    addItemToList(socket);
+    addListMember(socket, dashboardViewClients, cohortViewClients);
+    addMemberRoleInList(socket, listViewClients);
+    addOwnerRoleInList(socket, listViewClients);
+    archiveItem(socket);
     updateItemState(socket);
-    deleteItemWS(socket);
-    removeMemberRoleInListWS(socket, listViewClients);
-    removeOwnerRoleInListWS(socket, listViewClients);
-    restoreItemWS(socket);
-    updateItemWS(socket);
-    addCommentWS(socket);
-    sendListsOnAddCohortMemberWS(socket, dashboardViewClients);
+    deleteItem(socket);
+    removeMemberRoleInList(socket, listViewClients);
+    removeOwnerRoleInList(socket, listViewClients);
+    restoreItem(socket);
+    updateItem(socket);
+    addComment(socket);
+    sendListsOnAddCohortMember(socket, dashboardViewClients);
 
-    addCohortMemberWS(socket, allCohortsViewClients);
+    addCohortMember(socket, allCohortsViewClients);
   });
 };
 

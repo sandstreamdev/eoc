@@ -14,10 +14,7 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 
-/* WS postfix stands for Web Socket, to differentiate
- * this from controllers naming convention
- */
-const addItemToListWS = socket => {
+const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -25,7 +22,7 @@ const addItemToListWS = socket => {
   });
 };
 
-const archiveItemWS = socket => {
+const archiveItem = socket => {
   socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -33,7 +30,7 @@ const archiveItemWS = socket => {
   });
 };
 
-const deleteItemWS = socket => {
+const deleteItem = socket => {
   socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -41,7 +38,7 @@ const deleteItemWS = socket => {
   });
 };
 
-const restoreItemWS = socket => {
+const restoreItem = socket => {
   socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -63,7 +60,7 @@ const updateItemState = socket => {
   });
 };
 
-const updateItemWS = socket => {
+const updateItem = socket => {
   socket.on(ItemActionTypes.UPDATE_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -71,7 +68,7 @@ const updateItemWS = socket => {
   );
 };
 
-const addCommentWS = socket => {
+const addComment = socket => {
   socket.on(CommentActionTypes.ADD_SUCCESS, data =>
     socket.broadcast
       .to(`sack-${data.listId}`)
@@ -79,7 +76,7 @@ const addCommentWS = socket => {
   );
 };
 
-const sendListsOnAddCohortMemberWS = (socket, clients) =>
+const sendListsOnAddCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const {
       cohortId,
@@ -122,7 +119,7 @@ const sendListsOnAddCohortMemberWS = (socket, clients) =>
       });
   });
 
-const addListMemberWS = (socket, dashboardClients, cohortClients) => {
+const addListMember = (socket, dashboardClients, cohortClients) => {
   socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
     const {
       listId,
@@ -157,7 +154,7 @@ const addListMemberWS = (socket, dashboardClients, cohortClients) => {
   });
 };
 
-const addMemberRoleInListWS = (socket, clients) => {
+const addMemberRoleInList = (socket, clients) => {
   socket.on(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, data => {
     const { userId } = data;
 
@@ -179,7 +176,7 @@ const addMemberRoleInListWS = (socket, clients) => {
   });
 };
 
-const addOwnerRoleInListWS = (socket, clients) => {
+const addOwnerRoleInList = (socket, clients) => {
   socket.on(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, data => {
     const { userId } = data;
 
@@ -201,7 +198,7 @@ const addOwnerRoleInListWS = (socket, clients) => {
   });
 };
 
-const removeMemberRoleInListWS = (socket, clients) => {
+const removeMemberRoleInList = (socket, clients) => {
   socket.on(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, data => {
     const { userId } = data;
 
@@ -223,7 +220,7 @@ const removeMemberRoleInListWS = (socket, clients) => {
   });
 };
 
-const removeOwnerRoleInListWS = (socket, clients) => {
+const removeOwnerRoleInList = (socket, clients) => {
   socket.on(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, data => {
     const { userId } = data;
 
@@ -246,17 +243,17 @@ const removeOwnerRoleInListWS = (socket, clients) => {
 };
 
 module.exports = {
-  addCommentWS,
-  addItemToListWS,
-  addListMemberWS,
-  addMemberRoleInListWS,
-  addOwnerRoleInListWS,
-  archiveItemWS,
-  deleteItemWS,
-  removeMemberRoleInListWS,
-  removeOwnerRoleInListWS,
-  restoreItemWS,
-  sendListsOnAddCohortMemberWS,
+  addComment,
+  addItemToList,
+  addListMember,
+  addMemberRoleInList,
+  addOwnerRoleInList,
+  archiveItem,
+  deleteItem,
+  removeMemberRoleInList,
+  removeOwnerRoleInList,
+  restoreItem,
+  sendListsOnAddCohortMember,
   updateItemState,
-  updateItemWS
+  updateItem
 };
