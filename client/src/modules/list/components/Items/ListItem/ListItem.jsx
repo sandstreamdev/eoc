@@ -40,8 +40,8 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       done: isOrdered,
-      isNameEdited: false,
       isConfirmationVisible: false,
+      isNameEdited: false,
       lock: {
         nameLock: false,
         descriptionLock: false
