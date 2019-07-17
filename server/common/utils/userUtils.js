@@ -7,22 +7,21 @@ const Cohort = require('../../models/cohort.model');
 const Comment = require('../../models/comment.model');
 
 // Find or create user
-const findOrCreateUser = (user, doneCallback) => {
-  User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
-    if (err) {
-      return doneCallback(null, false);
-    }
+const findOrCreateUser = (user, done) =>
+  User.findOne({
+    $or: [{ idFromProvider: user.idFromProvider }, { email: user.email }]
+  })
+    .lean()
+    .exec()
+    .then(user => {
+      if (user) {
+        return user;
+      }
 
-    if (currentUser) {
-      return doneCallback(null, currentUser);
-    }
-
-    return new User({ ...user })
-      .save()
-      .then(newUser => doneCallback(null, newUser))
-      .catch(err => doneCallback(null, false, { message: err.message }));
-  });
-};
+      return new User({ ...user }).save();
+    })
+    .then(user => done(null, user))
+    .catch(err => done(null, false, { message: err.message }));
 
 /* eslint camelcase: "off" */
 const extractUserProfile = (profile, accessToken) => {
