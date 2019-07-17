@@ -17,6 +17,9 @@ class DescriptionTextarea extends PureComponent {
   }
 
   componentWillUnmount() {
+    const { onUnmount } = this.props;
+
+    onUnmount();
     document.removeEventListener('keydown', this.onKeyPress);
     document.removeEventListener('mousedown', this.onClick);
   }
@@ -37,7 +40,7 @@ class DescriptionTextarea extends PureComponent {
   };
 
   render() {
-    const { description, disabled, onDescriptionChange } = this.props;
+    const { description, disabled, onDescriptionChange, onFocus } = this.props;
 
     return (
       <div className="desc-textarea">
@@ -46,6 +49,7 @@ class DescriptionTextarea extends PureComponent {
           disabled={disabled}
           name="description"
           onChange={onDescriptionChange}
+          onFocus={onFocus}
           ref={this.descriptionTextarea}
           type="text"
           value={description}
@@ -69,7 +73,9 @@ DescriptionTextarea.propTypes = {
 
   onClick: PropTypes.func.isRequired,
   onDescriptionChange: PropTypes.func.isRequired,
-  onKeyPress: PropTypes.func.isRequired
+  onFocus: PropTypes.func.isRequired,
+  onKeyPress: PropTypes.func.isRequired,
+  onUnmount: PropTypes.func.isRequired
 };
 
 export default DescriptionTextarea;

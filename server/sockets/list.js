@@ -1,19 +1,20 @@
 const _keyBy = require('lodash/keyBy');
 
 const {
-  ItemActionTypes,
-  ItemStatusType,
   CohortActionTypes,
   CommentActionTypes,
+  ItemActionTypes,
+  ItemStatusType,
   ListActionTypes,
+  ListHeaderStatusTypes,
   ListType
 } = require('../common/variables');
 const List = require('../models/list.model');
-const Cohort = require('../models/cohort.model');
 const {
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
+const { updateListOnDashboardAndCohortView } = require('./helpers');
 
 /* WS postfix stands for Web Socket, to differentiate
  * this from controllers naming convention
@@ -176,7 +177,7 @@ const clearVote = socket =>
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data)
   );
 
-const changeOrderState = (socket, dashboardClients) => {
+const changeItemOrderState = (socket, dashboardClients) => {
   socket.on(ItemActionTypes.TOGGLE_SUCCESS, data => {
     const { listId } = data;
 
@@ -185,58 +186,40 @@ const changeOrderState = (socket, dashboardClients) => {
       .to(`sack-${data.listId}`)
       .emit(ItemActionTypes.TOGGLE_SUCCESS, data);
 
-    List.findOne({
-      _id: listId
-    })
-      .lean()
-      .exec()
-      .then(doc => {
-        const { viewersIds, cohortId } = doc;
-
-        if (dashboardClients.size > 0) {
-          viewersIds.forEach(id => {
-            const viewerId = id.toString();
-            const list = responseWithList(doc, id);
-
-            if (dashboardClients.has(viewerId)) {
-              // send to users that are on the dashboard view
-              socket.broadcast
-                .to(dashboardClients.get(viewerId))
-                .emit(ListActionTypes.CREATE_SUCCESS, list);
-            }
-          });
-        }
-
-        if (cohortId) {
-          Cohort.findOne({ _id: cohortId })
-            .lean()
-            .exec()
-            .then(cohort => {
-              if (cohort) {
-                const { memberIds } = cohort;
-
-                memberIds.forEach(id => {
-                  const currentList = responseWithList(doc, id);
-
-                  // send to users that are on cohort view
-                  socket.broadcast
-                    .to(`cohort-${cohortId}`)
-                    .emit(ListActionTypes.CREATE_SUCCESS, currentList);
-                });
-              }
-            });
-        }
-      });
+    // send to users on dashboard and cohort view
+    updateListOnDashboardAndCohortView(socket, listId, dashboardClients);
   });
 };
 
-const updateList = socket => {
+const updateList = (socket, dashboardViewClients) => {
   socket.on(ListActionTypes.UPDATE_SUCCESS, data => {
+    const { listId } = data;
+
+    // send to users that are on the list view
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.UPDATE_SUCCESS, data);
+
+    // send to users on dashboard and cohort view
+    updateListOnDashboardAndCohortView(socket, listId, dashboardViewClients);
+  });
+};
+
+const updateListHeaderState = socket => {
+  socket.on(ListHeaderStatusTypes.UNLOCK, data => {
     const { listId } = data;
 
     socket.broadcast
       .to(`sack-${listId}`)
-      .emit(ListActionTypes.UPDATE_SUCCESS, data);
+      .emit(ListHeaderStatusTypes.UNLOCK, data);
+  });
+
+  socket.on(ListHeaderStatusTypes.LOCK, data => {
+    const { listId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListHeaderStatusTypes.LOCK, data);
   });
 };
 
@@ -245,7 +228,7 @@ module.exports = {
   addItemToList,
   addListMember,
   archiveItem,
-  changeOrderState,
+  changeItemOrderState,
   clearVote,
   cloneItem,
   deleteItem,
@@ -254,5 +237,6 @@ module.exports = {
   setVote,
   updateItem,
   updateItemState,
-  updateList
+  updateList,
+  updateListHeaderState
 };

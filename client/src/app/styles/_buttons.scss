@@ -59,9 +59,10 @@
   &:disabled {
     cursor: not-allowed;
     text-decoration: none;
+    color: $gray-bg2;
 
     &:hover {
-      color: $text-normal;
+      color: $gray-bg2;
     }
   }
 }

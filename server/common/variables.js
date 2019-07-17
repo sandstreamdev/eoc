@@ -88,6 +88,11 @@ const ListActionTypes = Object.freeze({
   UPDATE_SUCCESS: 'list/UPDATE_SUCCESS'
 });
 
+const ListHeaderStatusTypes = Object.freeze({
+  LOCK: 'list-header/LOCK',
+  UNLOCK: 'list-header/UNLOCK'
+});
+
 module.exports = {
   ActivityType,
   CohortActionTypes,
@@ -98,6 +103,7 @@ module.exports = {
   ItemActionTypes,
   ItemStatusType,
   ListActionTypes,
+  ListHeaderStatusTypes,
   ListType,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME

@@ -17,6 +17,9 @@ class NameInput extends PureComponent {
   }
 
   componentWillUnmount() {
+    const { onUnmount } = this.props;
+
+    onUnmount();
     document.removeEventListener('keydown', this.onKeyPress);
     document.removeEventListener('mousedown', this.onClick);
   }
@@ -35,7 +38,7 @@ class NameInput extends PureComponent {
   };
 
   render() {
-    const { disabled, name, onNameChange } = this.props;
+    const { disabled, name, onNameChange, onFocus } = this.props;
 
     return (
       <div className="name-input">
@@ -44,10 +47,11 @@ class NameInput extends PureComponent {
           disabled={disabled}
           name="name"
           onChange={onNameChange}
+          onFocus={onFocus}
           ref={this.nameInput}
+          required
           type="text"
           value={name}
-          required
         />
         <input
           className={classNames('name-input__submit primary-button', {
@@ -67,8 +71,10 @@ NameInput.propTypes = {
   name: PropTypes.string.isRequired,
 
   onClick: PropTypes.func.isRequired,
+  onFocus: PropTypes.func.isRequired,
   onKeyPress: PropTypes.func.isRequired,
-  onNameChange: PropTypes.func.isRequired
+  onNameChange: PropTypes.func.isRequired,
+  onUnmount: PropTypes.func.isRequired
 };
 
 export default NameInput;
