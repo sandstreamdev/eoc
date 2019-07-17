@@ -18,7 +18,8 @@ const {
   deleteItem,
   leaveList,
   restoreItem,
-  sendListsOnAddCohortMember,
+  emitListsOnAddCohortMember,
+  emitRemoveMemberOnLeaveCohort,
   updateItemState,
   updateItem
 } = require('./list');
@@ -109,11 +110,13 @@ const socketListenTo = server => {
     deleteItem(socket);
     leaveList(socket);
     restoreItem(socket);
-    sendListsOnAddCohortMember(socket, dashboardViewClients);
+    emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitRemoveMemberOnLeaveCohort(socket);
     updateItemState(socket);
     updateItem(socket);
 
     addCohortMember(socket, allCohortsViewClients);
+    leaveList(socket, cohortViewClients);
   });
 };
 
