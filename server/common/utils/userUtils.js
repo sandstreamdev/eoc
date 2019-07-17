@@ -11,11 +11,40 @@ const findOrCreateUser = (user, done) =>
   User.findOne({
     $or: [{ idFromProvider: user.idFromProvider }, { email: user.email }]
   })
-    .lean()
     .exec()
-    .then(user => {
-      if (user) {
-        return user;
+    .then(doc => {
+      if (doc) {
+        const { idFromProvider, email, isActive, activatedAt } = doc;
+
+        if (email && !idFromProvider) {
+          const {
+            accessToken,
+            avatarUrl,
+            idFromProvider,
+            name,
+            provider,
+            surname
+          } = user;
+
+          /* eslint-disable no-param-reassign */
+          doc.accessToken = accessToken;
+          doc.avatarUrl = avatarUrl;
+          doc.idFromProvider = idFromProvider;
+          doc.name = name;
+          doc.provider = provider;
+          doc.surname = surname;
+          if (!activatedAt) {
+            doc.activatedAt = new Date();
+          }
+          if (!isActive) {
+            doc.isActive = true;
+          }
+          /* eslint-enable no-param-reassign */
+
+          return doc.save();
+        }
+
+        return doc;
       }
 
       return new User({ ...user }).save();
