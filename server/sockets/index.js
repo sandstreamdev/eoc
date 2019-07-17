@@ -108,12 +108,12 @@ const socketListenTo = server => {
     archiveItem(socket);
     cloneItem(socket);
     deleteItem(socket);
-    leaveList(socket);
-    restoreItem(socket);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
     emitRemoveMemberOnLeaveCohort(socket);
-    updateItemState(socket);
+    leaveList(socket);
+    restoreItem(socket);
     updateItem(socket);
+    updateItemState(socket);
 
     addCohortMember(socket, allCohortsViewClients);
     leaveCohort(socket, allCohortsViewClients);

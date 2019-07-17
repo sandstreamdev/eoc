@@ -201,10 +201,10 @@ module.exports = {
   archiveItem,
   cloneItem,
   deleteItem,
-  leaveList,
-  restoreItem,
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
-  updateItemState,
-  updateItem
+  leaveList,
+  restoreItem,
+  updateItem,
+  updateItemState
 };
