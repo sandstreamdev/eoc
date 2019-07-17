@@ -96,7 +96,6 @@ class Cohort extends PureComponent {
     } = this.props;
 
     leaveRoom(Routes.COHORT, cohortId, userId);
-
     this.pendingPromises.forEach(promise => promise.abort());
   }
 

@@ -10,18 +10,21 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
 const {
-  addCommentWS,
-  addItemToListWS,
-  addListMemberWS,
-  archiveItemWS,
-  cloneItemWS,
-  deleteItemWS,
-  restoreItemWS,
-  sendListsOnAddCohortMemberWS,
-  updateItemState,
-  updateItemWS
+  addComment,
+  addItemToList,
+  addListMember,
+  archiveItem,
+  changeOrderState,
+  clearVote,
+  cloneItem,
+  deleteItem,
+  restoreItem,
+  sendListsOnAddCohortMember,
+  setVote,
+  updateItem,
+  updateItemState
 } = require('./list');
-const { addCohortMemberWS } = require('./cohort');
+const { addCohortMember } = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -55,7 +58,6 @@ const socketListenTo = server => {
 
       socket.join(room);
     });
-
     socket.on('leaveSackRoom', data => {
       const { room } = data;
 
@@ -100,18 +102,21 @@ const socketListenTo = server => {
        */
     });
 
-    addItemToListWS(socket);
-    addListMemberWS(socket, dashboardViewClients, cohortViewClients);
-    archiveItemWS(socket);
+    addComment(socket);
+    addItemToList(socket);
+    addListMember(socket, dashboardViewClients, cohortViewClients);
+    archiveItem(socket);
+    changeOrderState(socket, dashboardViewClients);
+    clearVote(socket);
+    cloneItem(socket);
+    deleteItem(socket);
+    restoreItem(socket);
+    sendListsOnAddCohortMember(socket, dashboardViewClients);
+    setVote(socket);
+    updateItem(socket);
     updateItemState(socket);
-    deleteItemWS(socket);
-    restoreItemWS(socket);
-    updateItemWS(socket);
-    addCommentWS(socket);
-    cloneItemWS(socket);
-    sendListsOnAddCohortMemberWS(socket, dashboardViewClients);
 
-    addCohortMemberWS(socket, allCohortsViewClients);
+    addCohortMember(socket, allCohortsViewClients);
   });
 };
 

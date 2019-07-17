@@ -93,7 +93,7 @@ const lists = (state = {}, action) => {
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...state, ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
-      return { [action.payload._id]: { ...action.payload }, ...state };
+      return { ...state, [action.payload._id]: { ...action.payload } };
     case ListActionTypes.DELETE_SUCCESS:
     case ListActionTypes.LEAVE_SUCCESS: {
       const { [action.payload]: removed, ...newState } = state;
