@@ -21,7 +21,8 @@ export const ItemsEvents = Object.freeze({
 export const ListEvents = Object.freeze({
   ADD_VIEWER_SUCCESS: ListActionTypes.ADD_VIEWER_SUCCESS,
   CREATE_SUCCESS: ListActionTypes.CREATE_SUCCESS,
-  FETCH_META_DATA_SUCCESS: ListActionTypes.FETCH_META_DATA_SUCCESS
+  FETCH_META_DATA_SUCCESS: ListActionTypes.FETCH_META_DATA_SUCCESS,
+  UPDATE_SUCCESS: ListActionTypes.UPDATE_SUCCESS
 });
 
 export const CohortEvents = Object.freeze({

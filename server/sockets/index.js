@@ -22,7 +22,8 @@ const {
   sendListsOnAddCohortMember,
   setVote,
   updateItem,
-  updateItemState
+  updateItemState,
+  updateList
 } = require('./list');
 const { addCohortMember } = require('./cohort');
 
@@ -115,6 +116,7 @@ const socketListenTo = server => {
     setVote(socket);
     updateItem(socket);
     updateItemState(socket);
+    updateList(socket);
 
     addCohortMember(socket, allCohortsViewClients);
   });

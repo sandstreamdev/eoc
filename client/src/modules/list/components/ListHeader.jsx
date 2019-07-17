@@ -231,7 +231,7 @@ class ListHeader extends PureComponent {
       pendingForDescription
     } = this.state;
     const {
-      details: { description, isOwner }
+      details: { description, descriptionLock, isOwner }
     } = this.props;
 
     if (!description && !isOwner) {
@@ -241,7 +241,7 @@ class ListHeader extends PureComponent {
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
         description={descriptionInputValue}
-        disabled={pendingForDescription}
+        disabled={pendingForDescription || descriptionLock}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
@@ -280,13 +280,13 @@ class ListHeader extends PureComponent {
       pendingForName
     } = this.state;
     const {
-      details: { isOwner, name }
+      details: { isOwner, name, nameLock }
     } = this.props;
 
     return isNameInputVisible ? (
       <div>
         <NameInput
-          disabled={pendingForName}
+          disabled={pendingForName || nameLock}
           name={nameInputValue}
           onClick={isOwner ? this.handleClick : null}
           onKeyPress={this.handleKeyPress}

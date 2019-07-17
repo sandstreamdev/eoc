@@ -288,6 +288,7 @@ export const updateList = (listId, data, listName) => dispatch =>
         notificationId: 'list.actions.update-list',
         data: listName
       });
+      socket.emit(ListActionTypes.UPDATE_SUCCESS, { ...data, listId });
     })
     .catch(() => {
       dispatch(updateListFailure());

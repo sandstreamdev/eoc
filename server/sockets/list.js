@@ -230,6 +230,16 @@ const changeOrderState = (socket, dashboardClients) => {
   });
 };
 
+const updateList = socket => {
+  socket.on(ListActionTypes.UPDATE_SUCCESS, data => {
+    const { listId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.UPDATE_SUCCESS, data);
+  });
+};
+
 module.exports = {
   addComment,
   addItemToList,
@@ -243,5 +253,6 @@ module.exports = {
   sendListsOnAddCohortMember,
   setVote,
   updateItem,
-  updateItemState
+  updateItemState,
+  updateList
 };
