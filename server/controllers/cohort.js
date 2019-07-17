@@ -528,7 +528,20 @@ const leaveCohort = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => resp.send())
+    .then(() =>
+      List.updateMany(
+        {
+          cohortId: sanitizedCohortId,
+          type: ListType.SHARED,
+          viewersIds: { $in: [userId] },
+          memberIds: { $nin: [userId] },
+          ownerIds: { $nin: [userId] }
+        },
+        { $pull: { viewersIds: userId } }
+      )
+        .exec()
+        .then(() => resp.send())
+    )
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;
