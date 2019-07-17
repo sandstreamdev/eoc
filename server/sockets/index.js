@@ -23,7 +23,7 @@ const {
   updateItemState,
   updateItem
 } = require('./list');
-const { addCohortMember } = require('./cohort');
+const { addCohortMember, leaveCohort } = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -116,7 +116,7 @@ const socketListenTo = server => {
     updateItem(socket);
 
     addCohortMember(socket, allCohortsViewClients);
-    leaveList(socket, cohortViewClients);
+    leaveCohort(socket, allCohortsViewClients);
   });
 };
 
