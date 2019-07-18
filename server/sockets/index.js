@@ -28,7 +28,11 @@ const {
   updateItem,
   updateItemState
 } = require('./list');
-const { addCohortMember } = require('./cohort');
+const {
+  addCohortMember,
+  addOwnerRoleInCohort,
+  removeOwnerRoleInCohort
+} = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -128,6 +132,8 @@ const socketListenTo = server => {
     updateItemState(socket);
 
     addCohortMember(socket, allCohortsViewClients);
+    addOwnerRoleInCohort(socket, cohortViewClients);
+    removeOwnerRoleInCohort(socket, cohortViewClients);
   });
 };
 
