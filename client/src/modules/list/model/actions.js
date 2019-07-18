@@ -13,6 +13,7 @@ import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
+import { ListType } from 'modules/list/consts';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -551,7 +552,13 @@ export const changeType = (listId, listName, type) => dispatch =>
       });
     });
 
-export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
+export const leaveList = (
+  listId,
+  userId,
+  cohortId,
+  userName,
+  type
+) => dispatch =>
   patchData(`/api/lists/${listId}/leave`)
     .then(() => {
       dispatch(leaveListSuccess(listId));
@@ -559,7 +566,13 @@ export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
         notificationId: 'list.actions.leave',
         data: userName
       });
-      history.replace(`/${cohortId ? `cohort/${cohortId}` : 'dashboard'}`);
+      history.replace(
+        `/${
+          cohortId && type === ListType.LIMITED
+            ? `cohort/${cohortId}`
+            : 'dashboard'
+        }`
+      );
     })
     .catch(err => {
       dispatch(leaveListFailure());

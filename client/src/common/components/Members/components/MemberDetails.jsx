@@ -40,7 +40,7 @@ const infoText = {
 };
 
 class MemberDetails extends PureComponent {
-  pendingPromise = null;
+  pendingPromises = [];
 
   constructor(props) {
     super(props);
@@ -55,9 +55,7 @@ class MemberDetails extends PureComponent {
   }
 
   componentWillUnmount() {
-    if (this.pendingPromise) {
-      this.pendingPromise.abort();
-    }
+    this.pendingPromises.forEach(promise => promise.abort());
   }
 
   handleConfirmationVisibility = () =>
@@ -83,9 +81,18 @@ class MemberDetails extends PureComponent {
 
     this.setState({ pending: true });
 
-    action(id, displayName, userId, isOwner).finally(() =>
-      this.setState({ pending: false })
+    const abortablePromise = makeAbortablePromise(
+      action(id, displayName, userId, isOwner)
     );
+    this.pendingPromises.push(abortablePromise);
+
+    abortablePromise.promise
+      .then(() => this.setState({ pending: false }))
+      .catch(err => {
+        if (!(err instanceof AbortPromiseException)) {
+          this.setState({ pending: false });
+        }
+      });
   };
 
   handleOwnerInfoVisibility = event => {
@@ -220,8 +227,10 @@ class MemberDetails extends PureComponent {
         break;
     }
 
-    this.pendingPromise = makeAbortablePromise(action());
-    this.pendingPromise.promise
+    const abortablePromise = makeAbortablePromise(action());
+
+    this.pendingPromises.push(abortablePromise);
+    abortablePromise.promise
       .then(() => this.setState({ pending: false }))
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
@@ -455,8 +464,17 @@ class MemberDetails extends PureComponent {
   };
 
   render() {
-    const { isCurrentUserAnOwner, isPrivateList, onClose, route } = this.props;
+    const {
+      isCurrentUserAnOwner,
+      isGuest,
+      isPrivateList,
+      onClose,
+      route
+    } = this.props;
     const { pending } = this.state;
+
+    const isLeaveButtonDisplayed =
+      route === Routes.COHORT || isPrivateList || (!isPrivateList && isGuest);
 
     return (
       <Fragment>
@@ -478,8 +496,7 @@ class MemberDetails extends PureComponent {
               {isCurrentUserAnOwner && this.renderDetails()}
               {pending && <Preloader />}
             </div>
-            {(isPrivateList || route === Routes.COHORT) &&
-              this.renderLeaveOption()}
+            {isLeaveButtonDisplayed && this.renderLeaveOption()}
           </div>
         </div>
       </Fragment>
