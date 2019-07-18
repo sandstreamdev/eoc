@@ -201,19 +201,13 @@ const resetPassword = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error('authorization.actions.reset');
+        return resp.sendStatus(200);
       }
 
       const { displayName, isActive, idFromProvider } = user;
 
-      if (idFromProvider) {
-        throw new Error('authorization.actions.reset');
-      }
-
-      if (!isActive) {
-        throw new Error(
-          'authorization.actions.reset-password-not-active-account'
-        );
+      if (idFromProvider || !isActive) {
+        return resp.sendStatus(200);
       }
 
       const resetToken = crypto.randomBytes(32).toString('hex');
@@ -237,15 +231,7 @@ const resetPassword = (req, resp, next) => {
           next();
         });
     })
-    .catch(err => {
-      const { message } = err;
-
-      if (message) {
-        return resp.status(400).send({ message });
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 const recoveryPassword = (req, resp) => {
