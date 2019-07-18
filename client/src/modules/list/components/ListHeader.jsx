@@ -287,11 +287,11 @@ class ListHeader extends PureComponent {
       <DescriptionTextarea
         description={descriptionInputValue}
         disabled={pendingForDescription || descriptionLock}
-        onFocus={this.handleDescriptionLock}
-        onUnmount={this.handleDescriptionUnmount}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
+        onFocus={this.handleDescriptionLock}
         onKeyPress={this.handleKeyPress}
+        onUnmount={this.handleDescriptionUnmount}
       />
     ) : (
       <Fragment>
@@ -346,12 +346,12 @@ class ListHeader extends PureComponent {
             <NameInput
               disabled={pendingForName || nameLock}
               name={nameInputValue}
-              onUnmount={this.handleNameUnmount}
               onClick={isOwner ? this.handleClick : null}
               onFocus={this.handleNameLock}
               onKeyPress={this.handleKeyPress}
               onNameChange={this.handleNameChange}
               onPending={this.handleNameLock}
+              onUnmount={this.handleNameUnmount}
             />
             {isTipVisible && (
               <p className="error-message">Name can not be empty</p>
