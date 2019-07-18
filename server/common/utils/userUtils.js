@@ -14,7 +14,7 @@ const findOrCreateUser = (user, done) =>
     .exec()
     .then(doc => {
       if (doc) {
-        const { idFromProvider, email, isActive, activatedAt } = doc;
+        const { email, idFromProvider, isActive } = doc;
 
         if (email && !idFromProvider) {
           const {
@@ -33,11 +33,12 @@ const findOrCreateUser = (user, done) =>
           doc.name = name;
           doc.provider = provider;
           doc.surname = surname;
-          if (!activatedAt) {
-            doc.activatedAt = new Date();
-          }
+
           if (!isActive) {
+            doc.activatedAt = new Date();
             doc.isActive = true;
+            doc.signUpHash = null;
+            doc.signUpHashExpirationDate = null;
           }
           /* eslint-enable no-param-reassign */
 
@@ -47,7 +48,7 @@ const findOrCreateUser = (user, done) =>
         return doc;
       }
 
-      return new User({ ...user }).save();
+      return new User({ ...user, activatedAt: new Date() }).save();
     })
     .then(user => done(null, user))
     .catch(err => done(null, false, { message: err.message }));

@@ -204,17 +204,7 @@ const resetPassword = (req, resp, next) => {
         throw new Error('authorization.actions.reset');
       }
 
-      const { displayName, isActive, idFromProvider } = user;
-
-      if (idFromProvider) {
-        throw new Error('authorization.actions.reset');
-      }
-
-      if (!isActive) {
-        throw new Error(
-          'authorization.actions.reset-password-not-active-account'
-        );
-      }
+      const { displayName } = user;
 
       const resetToken = crypto.randomBytes(32).toString('hex');
       const resetTokenExpirationDate = new Date().getTime() + 3600000;
@@ -237,15 +227,7 @@ const resetPassword = (req, resp, next) => {
           next();
         });
     })
-    .catch(err => {
-      const { message } = err;
-
-      if (message) {
-        return resp.status(400).send({ message });
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(err => resp.send());
 };
 
 const recoveryPassword = (req, resp) => {
@@ -287,7 +269,13 @@ const updatePassword = (req, resp) => {
         throw new Error();
       }
 
-      const { resetTokenExpirationDate, email } = user;
+      const {
+        createdAt,
+        email,
+        idFromProvider,
+        isActive,
+        resetTokenExpirationDate
+      } = user;
       const now = new Date().getTime();
 
       if (resetTokenExpirationDate < now) {
@@ -296,15 +284,20 @@ const updatePassword = (req, resp) => {
         throw new Error();
       }
 
-      const hashedPassword = bcrypt.hashSync(updatedPassword + email, 12);
+      const dataUpdate = {
+        password: bcrypt.hashSync(updatedPassword + email, 12),
+        resetToken: null,
+        resetTokenExpirationDate: null
+      };
+
+      if (idFromProvider && !isActive) {
+        dataUpdate.activatedAt = createdAt;
+        dataUpdate.isActive = true;
+      }
 
       return User.findOneAndUpdate(
         { resetToken: sanitizedToken },
-        {
-          password: hashedPassword,
-          resetToken: null,
-          resetTokenExpirationDate: null
-        }
+        dataUpdate
       ).exec();
     })
     .then(() => resp.sendStatus(200))
