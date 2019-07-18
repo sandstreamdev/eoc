@@ -9,6 +9,7 @@ import {
 } from 'modules/list/components/Items/model/actionTypes';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
+import { ListType } from 'modules/list/consts';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -134,18 +135,39 @@ const lists = (state = {}, action) => {
       return { ...state, [listId]: { ...state[listId], isFavourite } };
     }
     case ListActionTypes.ADD_VIEWER_SUCCESS:
-    case ListActionTypes.ADD_OWNER_ROLE_SUCCESS:
-    case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS:
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
+    case ListActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
-        payload: { listId }
+        payload: { isCurrentUserRoleChanging, listId }
       } = action;
       const { members } = state[listId];
-
-      return {
-        ...state,
-        [listId]: { ...state[listId], members: membersReducer(members, action) }
+      const list = {
+        ...state[listId],
+        members: membersReducer(members, action)
       };
+
+      if (isCurrentUserRoleChanging) {
+        list.isOwner = true;
+        list.isMember = true;
+      }
+
+      return { ...state, [listId]: list };
+    }
+    case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS: {
+      const {
+        payload: { isCurrentUserRoleChanging, listId }
+      } = action;
+      const { members } = state[listId];
+      const list = {
+        ...state[listId],
+        members: membersReducer(members, action)
+      };
+
+      if (isCurrentUserRoleChanging) {
+        list.isMember = true;
+      }
+
+      return { ...state, [listId]: list };
     }
     case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
@@ -200,6 +222,25 @@ const lists = (state = {}, action) => {
     }
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
+    case CohortActionTypes.LEAVE_SUCCESS: {
+      const { payload: leavedCohortId } = action;
+
+      return _keyBy(
+        _filter(state, list => {
+          const { cohortId, isMember, type } = list;
+
+          if (
+            !cohortId ||
+            cohortId !== leavedCohortId ||
+            type === ListType.LIMITED ||
+            (type === ListType.SHARED && isMember)
+          ) {
+            return list;
+          }
+        }),
+        '_id'
+      );
+    }
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.ARCHIVE_SUCCESS:
     case ItemActionTypes.CLEAR_VOTE_SUCCESS:

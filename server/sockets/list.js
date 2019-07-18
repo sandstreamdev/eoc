@@ -15,9 +15,6 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 
-/* WS postfix stands for Web Socket, to differentiate
- * this from controllers naming convention
- */
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     socket.broadcast
@@ -86,7 +83,7 @@ const cloneItem = socket =>
       .emit(ItemActionTypes.CLONE_SUCCESS, data)
   );
 
-const sendListsOnAddCohortMember = (socket, clients) =>
+const emitListsOnAddCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const {
       cohortId,
@@ -230,17 +227,146 @@ const changeOrderState = (socket, dashboardClients) => {
   });
 };
 
+const addMemberRoleInList = (socket, clients) => {
+  socket.on(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, data => {
+    const { listId, userId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
+        ...data,
+        isCurrentUserRoleChanging: false
+      });
+
+    if (clients.has(userId)) {
+      socket.broadcast
+        .to(clients.get(userId))
+        .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  });
+};
+
+const addOwnerRoleInList = (socket, clients) => {
+  socket.on(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, data => {
+    const { listId, userId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
+        ...data,
+        isCurrentUserRoleChanging: false
+      });
+
+    if (clients.has(userId)) {
+      socket.broadcast
+        .to(clients.get(userId))
+        .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  });
+};
+
+const removeMemberRoleInList = (socket, clients) => {
+  socket.on(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, data => {
+    const { listId, userId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+        ...data,
+        isCurrentUserRoleChanging: false
+      });
+
+    if (clients.has(userId)) {
+      socket.broadcast
+        .to(clients.get(userId))
+        .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  });
+};
+
+const removeOwnerRoleInList = (socket, clients) => {
+  socket.on(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, data => {
+    const { listId, userId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+        ...data,
+        isCurrentUserRoleChanging: false
+      });
+
+    if (clients.has(userId)) {
+      socket.broadcast
+        .to(clients.get(userId))
+        .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  });
+};
+
+const leaveList = socket =>
+  socket.on(ListActionTypes.LEAVE_SUCCESS, data => {
+    const { listId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+  });
+
+const emitRemoveMemberOnLeaveCohort = socket =>
+  socket.on(CohortActionTypes.LEAVE_SUCCESS, data => {
+    const { cohortId, userId } = data;
+
+    List.find(
+      {
+        cohortId,
+        type: ListType.SHARED
+      },
+      '_id created_at cohortId name description items favIds type'
+    )
+      .lean()
+      .exec()
+      .then(docs => {
+        if (docs) {
+          const sharedListIds = docs.map(list => list._id.toString());
+
+          sharedListIds.forEach(listId =>
+            socket.broadcast
+              .to(`sack-${listId}`)
+              .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId })
+          );
+        }
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
   addListMember,
+  addMemberRoleInList,
+  addOwnerRoleInList,
   archiveItem,
   changeOrderState,
   clearVote,
   cloneItem,
   deleteItem,
+  emitListsOnAddCohortMember,
+  emitRemoveMemberOnLeaveCohort,
+  leaveList,
+  removeMemberRoleInList,
+  removeOwnerRoleInList,
   restoreItem,
-  sendListsOnAddCohortMember,
   setVote,
   updateItem,
   updateItemState

@@ -1255,16 +1255,20 @@ const leaveList = (req, resp) => {
 
   List.findOne({
     _id: sanitizedListId,
-    viewersIds: userId,
-    type: ListType.LIMITED
+    viewersIds: userId
   })
+    .populate('cohortId', 'memberIds')
     .exec()
     .then(list => {
       if (!list) {
         throw new BadRequestException();
       }
 
-      const { favIds, viewersIds, memberIds, ownerIds } = list;
+      const { cohortId, favIds, viewersIds, memberIds, ownerIds, type } = list;
+
+      if (type === ListType.SHARED && isMember(cohortId, userId)) {
+        throw new BadRequestException();
+      }
 
       if (isOwner(list, userId)) {
         if (ownerIds.length === 1) {

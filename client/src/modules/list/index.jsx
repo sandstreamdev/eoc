@@ -168,13 +168,13 @@ class List extends Component {
     const {
       currentUser: { id: currentUserId, name },
       leaveList,
-      list: { cohortId },
+      list: { cohortId, type },
       match: {
         params: { id }
       }
     } = this.props;
 
-    return leaveList(id, currentUserId, cohortId, name);
+    return leaveList(id, currentUserId, cohortId, name, type);
   };
 
   renderBreadcrumbs = () => {

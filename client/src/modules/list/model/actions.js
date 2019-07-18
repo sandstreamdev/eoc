@@ -13,6 +13,7 @@ import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
+import { ListType } from 'modules/list/consts';
 
 const fetchListDataFailure = errMessage => ({
   type: ListActionTypes.FETCH_DATA_FAILURE,
@@ -119,45 +120,41 @@ const removeMemberFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = (listId, userId) => ({
+const removeMemberSuccess = data => ({
   type: ListActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: { listId, userId }
+  payload: data
 });
 
-const addOwnerRoleSuccess = (listId, userId) => ({
+const addOwnerRoleSuccess = data => ({
   type: ListActionTypes.ADD_OWNER_ROLE_SUCCESS,
-  payload: { listId, userId }
+  payload: data
 });
 
 const addOwnerRoleFailure = () => ({
   type: ListActionTypes.ADD_OWNER_ROLE_FAILURE
 });
 
-const removeOwnerRoleSuccess = (listId, userId, isCurrentUserRoleChanging) => ({
+const removeOwnerRoleSuccess = data => ({
   type: ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  payload: { isCurrentUserRoleChanging, listId, userId }
+  payload: data
 });
 
 const removeOwnerRoleFailure = () => ({
   type: ListActionTypes.REMOVE_OWNER_ROLE_FAILURE
 });
 
-const addMemberRoleSuccess = (listId, userId) => ({
+const addMemberRoleSuccess = data => ({
   type: ListActionTypes.ADD_MEMBER_ROLE_SUCCESS,
-  payload: { listId, userId }
+  payload: data
 });
 
 const addMemberRoleFailure = () => ({
   type: ListActionTypes.ADD_MEMBER_ROLE_FAILURE
 });
 
-const removeMemberRoleSuccess = (
-  listId,
-  userId,
-  isCurrentUserRoleChanging
-) => ({
+const removeMemberRoleSuccess = data => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS,
-  payload: { listId, userId, isCurrentUserRoleChanging }
+  payload: data
 });
 
 const removeMemberRoleFailure = () => ({
@@ -418,7 +415,7 @@ export const removeListMember = (
 
   return patchData(url, { userId })
     .then(() => {
-      dispatch(removeMemberSuccess(listId, userId));
+      dispatch(removeMemberSuccess({ listId, userId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.remove-member',
         data: userName
@@ -438,7 +435,14 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
     userId
   })
     .then(() => {
-      dispatch(addOwnerRoleSuccess(listId, userId));
+      socket.emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, { listId, userId });
+      dispatch(
+        addOwnerRoleSuccess({
+          isCurrentUserRoleChanging: false,
+          listId,
+          userId
+        })
+      );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.owner-role',
         data: userName
@@ -462,8 +466,12 @@ export const removeOwnerRole = (
     userId
   })
     .then(() => {
+      socket.emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+        listId,
+        userId
+      });
       dispatch(
-        removeOwnerRoleSuccess(listId, userId, isCurrentUserRoleChanging)
+        removeOwnerRoleSuccess({ listId, userId, isCurrentUserRoleChanging })
       );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.no-owner-role',
@@ -488,7 +496,11 @@ export const addMemberRole = (
     userId
   })
     .then(() => {
-      dispatch(addMemberRoleSuccess(listId, userId, isCurrentUserAnOwner));
+      socket.emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
+        listId,
+        userId
+      });
+      dispatch(addMemberRoleSuccess({ listId, userId, isCurrentUserAnOwner }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.add-member-role',
         data: userName
@@ -512,7 +524,13 @@ export const removeMemberRole = (
     userId
   })
     .then(() => {
-      dispatch(removeMemberRoleSuccess(listId, userId, isCurrentUserAnOwner));
+      socket.emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+        listId,
+        userId
+      });
+      dispatch(
+        removeMemberRoleSuccess({ listId, userId, isCurrentUserAnOwner })
+      );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.remove-member-role',
         data: userName
@@ -551,15 +569,28 @@ export const changeType = (listId, listName, type) => dispatch =>
       });
     });
 
-export const leaveList = (listId, userId, cohortId, userName) => dispatch =>
+export const leaveList = (
+  listId,
+  userId,
+  cohortId,
+  userName,
+  type
+) => dispatch =>
   patchData(`/api/lists/${listId}/leave`)
     .then(() => {
+      socket.emit(ListActionTypes.LEAVE_SUCCESS, { listId, userId });
       dispatch(leaveListSuccess(listId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.leave',
         data: userName
       });
-      history.replace(`/${cohortId ? `cohort/${cohortId}` : 'dashboard'}`);
+      history.replace(
+        `/${
+          cohortId && type === ListType.LIMITED
+            ? `cohort/${cohortId}`
+            : 'dashboard'
+        }`
+      );
     })
     .catch(err => {
       dispatch(leaveListFailure());
