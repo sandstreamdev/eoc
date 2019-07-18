@@ -20,6 +20,7 @@ const {
   clearVote,
   cloneItem,
   deleteItem,
+  leaveList,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
@@ -123,6 +124,7 @@ const socketListenTo = server => {
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);
+    leaveList(socket);
     removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);

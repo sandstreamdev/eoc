@@ -315,6 +315,15 @@ const removeOwnerRoleInList = (socket, clients) => {
   });
 };
 
+const leaveList = socket =>
+  socket.on(ListActionTypes.LEAVE_SUCCESS, data => {
+    const { listId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -326,6 +335,7 @@ module.exports = {
   clearVote,
   cloneItem,
   deleteItem,
+  leaveList,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
