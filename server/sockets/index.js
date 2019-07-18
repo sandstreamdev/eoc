@@ -13,11 +13,15 @@ const {
   addComment,
   addItemToList,
   addListMember,
+  addMemberRoleInList,
+  addOwnerRoleInList,
   archiveItem,
   changeOrderState,
   clearVote,
   cloneItem,
   deleteItem,
+  removeMemberRoleInList,
+  removeOwnerRoleInList,
   restoreItem,
   sendListsOnAddCohortMember,
   setVote,
@@ -42,6 +46,7 @@ const socketListenTo = server => {
   const cohortViewClients = new Map();
   const allCohortsViewClients = new Map();
   const dashboardViewClients = new Map();
+  const listViewClients = new Map();
 
   ioInstance.on('connection', socket => {
     const {
@@ -54,14 +59,16 @@ const socketListenTo = server => {
     }
 
     socket.on('joinSackRoom', data => {
-      const { room } = data;
+      const { room, userId } = data;
 
       socket.join(room);
+      listViewClients.set(userId, socket.id);
     });
     socket.on('leaveSackRoom', data => {
-      const { room } = data;
+      const { room, userId } = data;
 
       socket.leave(room);
+      listViewClients.delete(userId, socket.id);
     });
 
     socket.on('joinCohortRoom', data => {
@@ -105,11 +112,15 @@ const socketListenTo = server => {
     addComment(socket);
     addItemToList(socket);
     addListMember(socket, dashboardViewClients, cohortViewClients);
+    addMemberRoleInList(socket, listViewClients);
+    addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
     changeOrderState(socket, dashboardViewClients);
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);
+    removeMemberRoleInList(socket, listViewClients);
+    removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);
     sendListsOnAddCohortMember(socket, dashboardViewClients);
     setVote(socket);

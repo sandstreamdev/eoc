@@ -15,9 +15,6 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 
-/* WS postfix stands for Web Socket, to differentiate
- * this from controllers naming convention
- */
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     socket.broadcast
@@ -230,15 +227,107 @@ const changeOrderState = (socket, dashboardClients) => {
   });
 };
 
+const addMemberRoleInList = (socket, clients) => {
+  socket.on(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, data => {
+    const { userId } = data;
+
+    socket.broadcast
+      .to(`sack-${data.listId}`)
+      .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
+        ...data,
+        isCurrentUserRoleChanging: false
+      });
+
+    if (clients.has(userId)) {
+      socket.broadcast
+        .to(clients.get(userId))
+        .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  });
+};
+
+const addOwnerRoleInList = (socket, clients) => {
+  socket.on(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, data => {
+    const { userId } = data;
+
+    socket.broadcast
+      .to(`sack-${data.listId}`)
+      .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
+        ...data,
+        isCurrentUserRoleChanging: false
+      });
+
+    if (clients.has(userId)) {
+      socket.broadcast
+        .to(clients.get(userId))
+        .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  });
+};
+
+const removeMemberRoleInList = (socket, clients) => {
+  socket.on(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, data => {
+    const { userId } = data;
+
+    socket.broadcast
+      .to(`sack-${data.listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+        ...data,
+        isCurrentUserRoleChanging: false
+      });
+
+    if (clients.has(userId)) {
+      socket.broadcast
+        .to(clients.get(userId))
+        .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  });
+};
+
+const removeOwnerRoleInList = (socket, clients) => {
+  socket.on(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, data => {
+    const { userId } = data;
+
+    socket.broadcast
+      .to(`sack-${data.listId}`)
+      .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+        ...data,
+        isCurrentUserRoleChanging: false
+      });
+
+    if (clients.has(userId)) {
+      socket.broadcast
+        .to(clients.get(userId))
+        .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  });
+};
+
 module.exports = {
   addComment,
   addItemToList,
   addListMember,
+  addMemberRoleInList,
+  addOwnerRoleInList,
   archiveItem,
   changeOrderState,
   clearVote,
   cloneItem,
   deleteItem,
+  removeMemberRoleInList,
+  removeOwnerRoleInList,
   restoreItem,
   sendListsOnAddCohortMember,
   setVote,
