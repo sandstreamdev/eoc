@@ -32,8 +32,9 @@ export const ListEvents = Object.freeze({
 export const CohortEvents = Object.freeze({
   ADD_MEMBER_SUCCESS: CohortActionTypes.ADD_MEMBER_SUCCESS,
   ADD_OWNER_ROLE_SUCCESS: CohortActionTypes.ADD_OWNER_ROLE_SUCCESS,
-  REMOVE_OWNER_ROLE_SUCCESS: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  CREATE_SUCCESS: CohortActionTypes.CREATE_SUCCESS
+  CREATE_SUCCESS: CohortActionTypes.CREATE_SUCCESS,
+  REMOVE_MEMBER_SUCCESS: CohortActionTypes.REMOVE_MEMBER_SUCCESS,
+  REMOVE_OWNER_ROLE_SUCCESS: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS
 });
 
 export const CommentEvents = Object.freeze({

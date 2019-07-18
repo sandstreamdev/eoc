@@ -9,6 +9,7 @@ import {
 } from 'modules/list/components/Items/model/actionTypes';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
+import { ListType } from 'modules/list/consts';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -221,6 +222,25 @@ const lists = (state = {}, action) => {
     }
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
+    case CohortActionTypes.LEAVE_SUCCESS: {
+      const { payload: leavedCohortId } = action;
+
+      return _keyBy(
+        _filter(state, list => {
+          const { cohortId, isMember, type } = list;
+
+          if (
+            !cohortId ||
+            cohortId !== leavedCohortId ||
+            type === ListType.LIMITED ||
+            (type === ListType.SHARED && isMember)
+          ) {
+            return list;
+          }
+        }),
+        '_id'
+      );
+    }
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.ARCHIVE_SUCCESS:
     case ItemActionTypes.CLEAR_VOTE_SUCCESS:

@@ -20,11 +20,12 @@ const {
   clearVote,
   cloneItem,
   deleteItem,
+  emitListsOnAddCohortMember,
+  emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
-  sendListsOnAddCohortMember,
   setVote,
   updateItem,
   updateItemState
@@ -32,6 +33,7 @@ const {
 const {
   addCohortMember,
   addOwnerRoleInCohort,
+  leaveCohort,
   removeOwnerRoleInCohort
 } = require('./cohort');
 
@@ -124,17 +126,19 @@ const socketListenTo = server => {
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);
+    emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitRemoveMemberOnLeaveCohort(socket);
     leaveList(socket);
     removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);
-    sendListsOnAddCohortMember(socket, dashboardViewClients);
     setVote(socket);
     updateItem(socket);
     updateItemState(socket);
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
+    leaveCohort(socket, allCohortsViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
   });
 };

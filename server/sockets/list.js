@@ -83,7 +83,7 @@ const cloneItem = socket =>
       .emit(ItemActionTypes.CLONE_SUCCESS, data)
   );
 
-const sendListsOnAddCohortMember = (socket, clients) =>
+const emitListsOnAddCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const {
       cohortId,
@@ -324,6 +324,32 @@ const leaveList = socket =>
       .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
   });
 
+const emitRemoveMemberOnLeaveCohort = socket =>
+  socket.on(CohortActionTypes.LEAVE_SUCCESS, data => {
+    const { cohortId, userId } = data;
+
+    List.find(
+      {
+        cohortId,
+        type: ListType.SHARED
+      },
+      '_id created_at cohortId name description items favIds type'
+    )
+      .lean()
+      .exec()
+      .then(docs => {
+        if (docs) {
+          const sharedListIds = docs.map(list => list._id.toString());
+
+          sharedListIds.forEach(listId =>
+            socket.broadcast
+              .to(`sack-${listId}`)
+              .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId })
+          );
+        }
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -335,11 +361,12 @@ module.exports = {
   clearVote,
   cloneItem,
   deleteItem,
+  emitListsOnAddCohortMember,
+  emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
-  sendListsOnAddCohortMember,
   setVote,
   updateItem,
   updateItemState
