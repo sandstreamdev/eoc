@@ -201,13 +201,13 @@ const resetPassword = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        return resp.sendStatus(200);
+        return resp.send();
       }
 
       const { displayName, isActive, idFromProvider } = user;
 
       if (idFromProvider || !isActive) {
-        return resp.sendStatus(200);
+        return resp.send();
       }
 
       const resetToken = crypto.randomBytes(32).toString('hex');
