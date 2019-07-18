@@ -201,10 +201,14 @@ const resetPassword = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error('authorization.actions.reset');
+        return resp.send();
       }
 
-      const { displayName } = user;
+      const { displayName, isActive, idFromProvider } = user;
+
+      if (!idFromProvider && !isActive) {
+        return resp.send();
+      }
 
       const resetToken = crypto.randomBytes(32).toString('hex');
       const resetTokenExpirationDate = new Date().getTime() + 3600000;
@@ -227,7 +231,7 @@ const resetPassword = (req, resp, next) => {
           next();
         });
     })
-    .catch(err => resp.send());
+    .catch(() => resp.sendStatus(400));
 };
 
 const recoveryPassword = (req, resp) => {
