@@ -106,19 +106,19 @@ const socketListenTo = server => {
        */
     });
 
+    addComment(socket);
     addItemToList(socket);
     addListMember(socket, dashboardViewClients, cohortViewClients);
     addMemberRoleInList(socket, listViewClients);
     addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
-    updateItemState(socket);
     deleteItem(socket);
     removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);
-    updateItem(socket);
-    addComment(socket);
     sendListsOnAddCohortMember(socket, dashboardViewClients);
+    updateItem(socket);
+    updateItemState(socket);
 
     addCohortMember(socket, allCohortsViewClients);
   });
