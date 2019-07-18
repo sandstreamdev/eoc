@@ -117,7 +117,7 @@ const socketListenTo = server => {
     setVote(socket);
     updateItem(socket);
     updateItemState(socket);
-    updateList(socket, dashboardViewClients);
+    updateList(socket, dashboardViewClients, cohortViewClients);
     updateListHeaderState(socket);
 
     addCohortMember(socket, allCohortsViewClients);

@@ -191,7 +191,7 @@ const changeItemOrderState = (socket, dashboardClients) => {
   });
 };
 
-const updateList = (socket, dashboardViewClients) => {
+const updateList = (socket, dashboardViewClients, cohortViewClients) => {
   socket.on(ListActionTypes.UPDATE_SUCCESS, data => {
     const { listId } = data;
 
@@ -201,7 +201,12 @@ const updateList = (socket, dashboardViewClients) => {
       .emit(ListActionTypes.UPDATE_SUCCESS, data);
 
     // send to users on dashboard and cohort view
-    updateListOnDashboardAndCohortView(socket, listId, dashboardViewClients);
+    updateListOnDashboardAndCohortView(
+      socket,
+      listId,
+      dashboardViewClients,
+      cohortViewClients
+    );
   });
 };
 

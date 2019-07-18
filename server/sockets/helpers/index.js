@@ -1,12 +1,12 @@
 const List = require('../../models/list.model');
 const { ListActionTypes } = require('../../common/variables');
-const Cohort = require('../../models/cohort.model');
 const { responseWithList } = require('../../common/utils');
 
 const updateListOnDashboardAndCohortView = (
   socket,
   listId,
-  dashboardClients
+  dashboardClients,
+  cohortViewClients
 ) => {
   List.findOne({
     _id: listId
@@ -30,24 +30,17 @@ const updateListOnDashboardAndCohortView = (
         });
       }
 
-      if (cohortId) {
-        Cohort.findOne({ _id: cohortId })
-          .lean()
-          .exec()
-          .then(cohort => {
-            if (cohort) {
-              const { memberIds } = cohort;
+      if (cohortId && cohortViewClients) {
+        viewersIds.forEach(id => {
+          const viewerId = id.toString();
+          const currentList = responseWithList(doc, id);
 
-              memberIds.forEach(id => {
-                const currentList = responseWithList(doc, id);
-
-                // send to users that are on cohort view
-                socket.broadcast
-                  .to(`cohort-${cohortId}`)
-                  .emit(ListActionTypes.CREATE_SUCCESS, currentList);
-              });
-            }
-          });
+          if (cohortViewClients.has(viewerId)) {
+            socket.broadcast
+              .to(cohortViewClients.get(viewerId))
+              .emit(ListActionTypes.CREATE_SUCCESS, currentList);
+          }
+        });
       }
     });
 };
