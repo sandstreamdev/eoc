@@ -45,7 +45,6 @@ const updateCohort = (socket, allCohortsViewClients) => {
       .to(`cohort-${cohortId}`)
       .emit(CohortActionTypes.UPDATE_SUCCESS, data);
 
-    // TODO: Refactor lines from 46 to 67 as they're the same as in the lines from 13 to 33 - make helper function
     if (allCohortsViewClients.size > 0) {
       Cohort.findOne({
         _id: cohortId

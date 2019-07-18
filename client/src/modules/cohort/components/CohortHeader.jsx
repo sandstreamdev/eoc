@@ -177,6 +177,7 @@ class CohortHeader extends PureComponent {
 
     if (nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
+      this.handleNameLock();
 
       updateCohort(previousName, id, { name: nameToUpdate }).finally(() => {
         this.setState({
@@ -185,6 +186,7 @@ class CohortHeader extends PureComponent {
           pendingForName: false
         });
 
+        this.handleNameUnmount();
         updateBreadcrumbs();
       });
     }
@@ -213,14 +215,17 @@ class CohortHeader extends PureComponent {
       : descriptionToUpdate;
 
     this.setState({ pendingForDescription: true });
+    this.handleDescriptionLock();
 
     updateCohort(previousName, id, { description: updatedDescription }).finally(
-      () =>
+      () => {
         this.setState({
           isDescriptionTextareaVisible: false,
           descriptionInputValue: updatedDescription,
           pendingForDescription: false
-        })
+        });
+        this.handleDescriptionUnmount();
+      }
     );
   };
 
@@ -256,8 +261,8 @@ class CohortHeader extends PureComponent {
         disabled={pendingForDescription || descriptionLock}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
-        onKeyPress={this.handleKeyPress}
         onFocus={this.handleDescriptionLock}
+        onKeyPress={this.handleKeyPress}
         onUnmount={this.handleDescriptionUnmount}
       />
     ) : (
@@ -313,9 +318,9 @@ class CohortHeader extends PureComponent {
               disabled={pendingForName || nameLock}
               name={nameInputValue}
               onClick={this.handleClick}
+              onFocus={this.handleNameLock}
               onKeyPress={this.handleKeyPress}
               onNameChange={this.handleNameChange}
-              onFocus={this.handleNameLock}
               onUnmount={this.handleNameUnmount}
             />
             {isTipVisible && (
