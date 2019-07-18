@@ -185,11 +185,11 @@ const emitRemoveMemberOnLeaveCohort = socket =>
         if (docs) {
           const sharedListIds = docs.map(list => list._id.toString());
 
-          sharedListIds.forEach(listId => {
+          sharedListIds.forEach(listId =>
             socket.broadcast
               .to(`sack-${listId}`)
-              .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
-          });
+              .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId })
+          );
         }
       });
   });

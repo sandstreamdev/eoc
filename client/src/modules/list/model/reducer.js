@@ -206,6 +206,7 @@ const lists = (state = {}, action) => {
       return _keyBy(
         _filter(state, list => {
           const { cohortId, isMember, type } = list;
+
           if (
             !cohortId ||
             cohortId !== leavedCohortId ||
