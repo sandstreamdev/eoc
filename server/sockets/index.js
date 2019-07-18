@@ -26,7 +26,7 @@ const {
   updateList,
   updateListHeaderState
 } = require('./list');
-const { addCohortMember } = require('./cohort');
+const { addCohortMember, updateCohort } = require('./cohort');
 
 const socketListenTo = server => {
   const ioInstance = io(server, { forceNew: true });
@@ -121,6 +121,7 @@ const socketListenTo = server => {
     updateListHeaderState(socket);
 
     addCohortMember(socket, allCohortsViewClients);
+    updateCohort(socket, allCohortsViewClients);
   });
 };
 

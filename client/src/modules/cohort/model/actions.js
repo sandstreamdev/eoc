@@ -195,6 +195,7 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
         notificationId: 'cohort.actions.update-cohort',
         data: cohortName
       });
+      socket.emit(CohortActionTypes.UPDATE_SUCCESS, { ...data, cohortId });
     })
     .catch(err => {
       dispatch(updateCohortFailure(err));

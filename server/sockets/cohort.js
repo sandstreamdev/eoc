@@ -34,6 +34,42 @@ const addCohortMember = (socket, clients) =>
     }
   });
 
+const updateCohort = (socket, allCohortsViewClients) => {
+  socket.on(CohortActionTypes.UPDATE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    socket.broadcast
+      .to(`cohort-${cohortId}`)
+      .emit(CohortActionTypes.UPDATE_SUCCESS, data);
+
+    // TODO: Refactor lines from 46 to 67 as they're the same as in the lines from 13 to 33 - make helper function
+    if (allCohortsViewClients.size > 0) {
+      Cohort.findOne({
+        _id: cohortId
+      })
+        .lean()
+        .exec()
+        .then(doc => {
+          if (doc) {
+            const { memberIds } = doc;
+            const cohort = responseWithCohort(doc);
+
+            memberIds.forEach(id => {
+              const memberId = id.toString();
+
+              if (allCohortsViewClients.has(memberId)) {
+                socket.broadcast
+                  .to(allCohortsViewClients.get(memberId))
+                  .emit(CohortActionTypes.UPDATE_SUCCESS, cohort);
+              }
+            });
+          }
+        });
+    }
+  });
+};
+
 module.exports = {
-  addCohortMember
+  addCohortMember,
+  updateCohort
 };

@@ -74,7 +74,8 @@ const ItemStatusType = Object.freeze({
 
 const CohortActionTypes = Object.freeze({
   ADD_MEMBER_SUCCESS: 'cohort/ADD_MEMBER_SUCCESS',
-  CREATE_SUCCESS: 'cohort/CREATE_SUCCESS'
+  CREATE_SUCCESS: 'cohort/CREATE_SUCCESS',
+  UPDATE_SUCCESS: 'cohort/UPDATE_SUCCESS'
 });
 
 const CommentActionTypes = Object.freeze({
