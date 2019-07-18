@@ -2,7 +2,10 @@ import {
   ListActionTypes,
   ListHeaderStatusType
 } from 'modules/list/model/actionTypes';
-import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
+import {
+  CohortActionTypes,
+  CohortHeaderStatusTypes
+} from 'modules/cohort/model/actionTypes';
 import {
   ItemActionTypes,
   ItemStatusType,
@@ -34,9 +37,14 @@ export const ListEvents = Object.freeze({
 });
 
 export const CohortEvents = Object.freeze({
-  ADD_MEMBER_SUCCESS: CohortActionTypes.ADD_MEMBER_SUCCESS,
+  ADD_MEMBER_SUCCESS: CohortHeaderStatusTypes.ADD_MEMBER_SUCCESS,
   CREATE_SUCCESS: CohortActionTypes.CREATE_SUCCESS,
   UPDATE_SUCCESS: CohortActionTypes.UPDATE_SUCCESS
+});
+
+export const CohortHeaderEvents = Object.freeze({
+  LOCK: CohortHeaderStatusTypes.LOCK,
+  UNLOCK: CohortHeaderStatusTypes.UNLOCK
 });
 
 export const CommentEvents = Object.freeze({

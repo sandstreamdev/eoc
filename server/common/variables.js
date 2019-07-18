@@ -78,6 +78,11 @@ const CohortActionTypes = Object.freeze({
   UPDATE_SUCCESS: 'cohort/UPDATE_SUCCESS'
 });
 
+const CohortHeaderStatusTypes = Object.freeze({
+  LOCK: 'cohort-header/LOCK',
+  UNLOCK: 'cohort-header/UNLOCK'
+});
+
 const CommentActionTypes = Object.freeze({
   ADD_SUCCESS: 'comment/ADD_SUCCESS'
 });
@@ -97,6 +102,7 @@ const ListHeaderStatusTypes = Object.freeze({
 module.exports = {
   ActivityType,
   CohortActionTypes,
+  CohortHeaderStatusTypes,
   CommentActionTypes,
   DB_URL,
   DEMO_MODE_ID,

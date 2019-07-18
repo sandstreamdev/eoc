@@ -8,7 +8,11 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
 import { CohortIcon } from 'assets/images/icons';
-import { updateCohort } from '../model/actions';
+import {
+  lockCohortHeader,
+  unlockCohortHeader,
+  updateCohort
+} from '../model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
@@ -112,6 +116,46 @@ class CohortHeader extends PureComponent {
     this.setState({ descriptionInputValue: value });
   };
 
+  handleDescriptionLock = () => {
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
+    lockCohortHeader(cohortId, { descriptionLock: true });
+  };
+
+  handleDescriptionUnmount = () => {
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
+    unlockCohortHeader(cohortId, { descriptionLock: false });
+  };
+
+  handleNameLock = () => {
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
+    lockCohortHeader(cohortId, { nameLock: true });
+  };
+
+  handleNameUnmount = () => {
+    const {
+      match: {
+        params: { id: cohortId }
+      }
+    } = this.props;
+
+    unlockCohortHeader(cohortId, { nameLock: false });
+  };
+
   handleNameUpdate = () => {
     const {
       details,
@@ -199,7 +243,7 @@ class CohortHeader extends PureComponent {
     } = this.state;
 
     const {
-      details: { description, isOwner }
+      details: { description, descriptionLock, isOwner }
     } = this.props;
 
     if (!description && !isOwner) {
@@ -209,20 +253,25 @@ class CohortHeader extends PureComponent {
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
         description={descriptionInputValue}
-        disabled={pendingForDescription}
+        disabled={pendingForDescription || descriptionLock}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
         onKeyPress={this.handleKeyPress}
+        onFocus={this.handleDescriptionLock}
+        onUnmount={this.handleDescriptionUnmount}
       />
     ) : (
       <Fragment>
         {description && (
           <p
             className={classNames('cohort-header__description', {
-              'cohort-header--clickable': isOwner
+              'cohort-header--clickable': !descriptionLock && isOwner,
+              'cohort-header__description--disabled': descriptionLock
             })}
             data-id="description"
-            onClick={isOwner ? this.showDescriptionTextarea : null}
+            onClick={
+              isOwner && !descriptionLock ? this.showDescriptionTextarea : null
+            }
           >
             {description}
           </p>
@@ -248,42 +297,53 @@ class CohortHeader extends PureComponent {
       pendingForName
     } = this.state;
     const {
-      details: { isOwner, name }
+      details: { isOwner, name, nameLock }
     } = this.props;
 
-    return isNameInputVisible ? (
-      <div>
-        <NameInput
-          disabled={pendingForName}
-          name={nameInputValue}
-          onClick={this.handleClick}
-          onKeyPress={this.handleKeyPress}
-          onNameChange={this.handleNameChange}
-        />
-        {isTipVisible && <p className="error-message">Name can not be empty</p>}
-      </div>
-    ) : (
-      <h1
-        className={classNames('cohort-header__heading', {
-          'cohort-header--clickable': isOwner
+    return (
+      <div
+        className={classNames('cohort-header__top', {
+          'cohort-header__top--disabled': nameLock
         })}
-        onClick={isOwner ? this.showNameInput : null}
       >
-        {name}
-      </h1>
+        <CohortIcon />
+        {isNameInputVisible && !nameLock ? (
+          <div>
+            <NameInput
+              disabled={pendingForName || nameLock}
+              name={nameInputValue}
+              onClick={this.handleClick}
+              onKeyPress={this.handleKeyPress}
+              onNameChange={this.handleNameChange}
+              onFocus={this.handleNameLock}
+              onUnmount={this.handleNameUnmount}
+            />
+            {isTipVisible && (
+              <p className="error-message">Name can not be empty</p>
+            )}
+          </div>
+        ) : (
+          <h1
+            className={classNames('cohort-header__heading', {
+              'cohort-header--clickable': !nameLock && isOwner,
+              'cohort-header__heading--disabled': nameLock
+            })}
+            onClick={isOwner && !nameLock ? this.showNameInput : null}
+          >
+            {name}
+          </h1>
+        )}
+        {pendingForName && <Preloader size={PreloaderSize.SMALL} />}
+      </div>
     );
   };
 
   render() {
-    const { pendingForDescription, pendingForName } = this.state;
+    const { pendingForDescription } = this.state;
 
     return (
       <header className="cohort-header">
-        <div className="cohort-header__top">
-          <CohortIcon />
-          {this.renderName()}
-          {pendingForName && <Preloader size={PreloaderSize.SMALL} />}
-        </div>
+        {this.renderName()}
         <div className="list-header__bottom">
           {this.renderDescription()}
           {pendingForDescription && <Preloader size={PreloaderSize.SMALL} />}

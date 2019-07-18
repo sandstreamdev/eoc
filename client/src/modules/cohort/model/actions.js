@@ -1,6 +1,6 @@
 import _keyBy from 'lodash/keyBy';
 
-import { CohortActionTypes } from './actionTypes';
+import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
 import {
   deleteData,
   getData,
@@ -398,3 +398,17 @@ export const leaveCohort = (cohortId, userId, userName) => dispatch =>
         data: userName
       });
     });
+
+export const lockCohortHeader = (cohortId, { nameLock, descriptionLock }) =>
+  socket.emit(CohortHeaderStatusTypes.LOCK, {
+    cohortId,
+    descriptionLock,
+    nameLock
+  });
+
+export const unlockCohortHeader = (cohortId, { nameLock, descriptionLock }) =>
+  socket.emit(CohortHeaderStatusTypes.UNLOCK, {
+    cohortId,
+    descriptionLock,
+    nameLock
+  });

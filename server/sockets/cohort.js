@@ -1,4 +1,7 @@
-const { CohortActionTypes } = require('../common/variables');
+const {
+  CohortActionTypes,
+  CohortHeaderStatusTypes
+} = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
 
@@ -69,7 +72,26 @@ const updateCohort = (socket, allCohortsViewClients) => {
   });
 };
 
+const updateCohortHeaderStatus = socket => {
+  socket.on(CohortHeaderStatusTypes.UNLOCK, data => {
+    const { cohortId } = data;
+
+    socket.broadcast
+      .to(`cohort-${cohortId}`)
+      .emit(CohortHeaderStatusTypes.UNLOCK, data);
+  });
+
+  socket.on(CohortHeaderStatusTypes.LOCK, data => {
+    const { cohortId } = data;
+
+    socket.broadcast
+      .to(`cohort-${cohortId}`)
+      .emit(CohortHeaderStatusTypes.LOCK, data);
+  });
+};
+
 module.exports = {
   addCohortMember,
-  updateCohort
+  updateCohort,
+  updateCohortHeaderStatus
 };

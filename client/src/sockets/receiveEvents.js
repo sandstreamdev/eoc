@@ -1,5 +1,6 @@
 import {
   CohortEvents,
+  CohortHeaderEvents,
   CommentEvents,
   ItemsEvents,
   ItemStatusType,
@@ -29,6 +30,10 @@ export const receiveEvents = (dispatch, socket) => {
   );
 
   Object.values(ListHeaderEvents).forEach(event =>
+    socket.on(event, data => dispatch({ type: event, payload: data }))
+  );
+
+  Object.values(CohortHeaderEvents).forEach(event =>
     socket.on(event, data => dispatch({ type: event, payload: data }))
   );
 };
