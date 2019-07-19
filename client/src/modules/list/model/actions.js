@@ -161,9 +161,9 @@ const removeMemberRoleFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_FAILURE
 });
 
-const changeTypeSuccess = (listId, data) => ({
+const changeTypeSuccess = data => ({
   type: ListActionTypes.CHANGE_TYPE_SUCCESS,
-  payload: { listId, data }
+  payload: data
 });
 
 const changeTypeFailure = () => ({
@@ -555,7 +555,11 @@ export const changeType = (listId, listName, type) => dispatch =>
         ...data,
         members: _keyBy(data.members, '_id')
       };
-      dispatch(changeTypeSuccess(listId, listData));
+      socket.emit(ListActionTypes.CHANGE_TYPE_SUCCESS, {
+        listId,
+        ...listData
+      });
+      dispatch(changeTypeSuccess({ listId, ...listData }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.change-type',
         data: listName
