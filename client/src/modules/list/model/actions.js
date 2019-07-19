@@ -6,7 +6,7 @@ import {
   patchData,
   postData
 } from 'common/utils/fetchMethods';
-import { ListActionTypes } from './actionTypes';
+import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import history from 'common/utils/history';
@@ -285,6 +285,7 @@ export const updateList = (listId, data, listName) => dispatch =>
         notificationId: 'list.actions.update-list',
         data: listName
       });
+      socket.emit(ListActionTypes.UPDATE_SUCCESS, { ...data, listId });
     })
     .catch(() => {
       dispatch(updateListFailure());
@@ -599,3 +600,19 @@ export const leaveList = (
         data: userName
       });
     });
+
+export const lockListHeader = (listId, { nameLock, descriptionLock }) => {
+  socket.emit(ListHeaderStatusType.LOCK, {
+    descriptionLock,
+    listId,
+    nameLock
+  });
+};
+
+export const unlockListHeader = (listId, { nameLock, descriptionLock }) => {
+  socket.emit(ListHeaderStatusType.UNLOCK, {
+    descriptionLock,
+    listId,
+    nameLock
+  });
+};

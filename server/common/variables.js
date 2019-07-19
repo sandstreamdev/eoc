@@ -94,7 +94,13 @@ const ListActionTypes = Object.freeze({
   LEAVE_SUCCESS: 'list/LEAVE_SUCCESS',
   REMOVE_MEMBER_ROLE_SUCCESS: 'list/REMOVE_MEMBER_ROLE_SUCCESS',
   REMOVE_MEMBER_SUCCESS: 'list/REMOVE_MEMBER_SUCCESS',
-  REMOVE_OWNER_ROLE_SUCCESS: 'list/REMOVE_OWNER_ROLE_SUCCESS'
+  REMOVE_OWNER_ROLE_SUCCESS: 'list/REMOVE_OWNER_ROLE_SUCCESS',
+  UPDATE_SUCCESS: 'list/UPDATE_SUCCESS'
+});
+
+const ListHeaderStatusTypes = Object.freeze({
+  LOCK: 'list-header/LOCK',
+  UNLOCK: 'list-header/UNLOCK'
 });
 
 module.exports = {
@@ -107,6 +113,7 @@ module.exports = {
   ItemActionTypes,
   ItemStatusType,
   ListActionTypes,
+  ListHeaderStatusTypes,
   ListType,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME

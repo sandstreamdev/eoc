@@ -16,7 +16,7 @@ const {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
-  changeOrderState,
+  changeItemOrderState,
   clearVote,
   cloneItem,
   deleteItem,
@@ -28,7 +28,9 @@ const {
   restoreItem,
   setVote,
   updateItem,
-  updateItemState
+  updateItemState,
+  updateList,
+  updateListHeaderState
 } = require('./list');
 const {
   addCohortMember,
@@ -122,7 +124,7 @@ const socketListenTo = server => {
     addMemberRoleInList(socket, listViewClients);
     addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
-    changeOrderState(socket, dashboardViewClients);
+    changeItemOrderState(socket, dashboardViewClients);
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);
@@ -135,6 +137,8 @@ const socketListenTo = server => {
     setVote(socket);
     updateItem(socket);
     updateItemState(socket);
+    updateList(socket, dashboardViewClients, cohortViewClients);
+    updateListHeaderState(socket);
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);

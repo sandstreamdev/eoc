@@ -1,7 +1,7 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 
-import { ListActionTypes } from './actionTypes';
+import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
 import {
   CommentActionTypes,
   ItemActionTypes,
@@ -264,6 +264,17 @@ const lists = (state = {}, action) => {
       return {
         ...state,
         [listId]: { ...state[listId], items: items(prevItems, action) }
+      };
+    }
+    case ListHeaderStatusType.LOCK:
+    case ListHeaderStatusType.UNLOCK: {
+      const {
+        payload: { listId, nameLock = false, descriptionLock = false }
+      } = action;
+
+      return {
+        ...state,
+        [listId]: { ...state[listId], nameLock, descriptionLock }
       };
     }
     default:

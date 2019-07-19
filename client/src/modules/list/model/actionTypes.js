@@ -51,3 +51,8 @@ export const ListActionTypes = Object.freeze({
   UPDATE_REQUEST: 'list/UPDATE_REQUEST',
   UPDATE_SUCCESS: 'list/UPDATE_SUCCESS'
 });
+
+export const ListHeaderStatusType = Object.freeze({
+  LOCK: 'list-header/LOCK',
+  UNLOCK: 'list-header/UNLOCK'
+});

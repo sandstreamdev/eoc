@@ -1,4 +1,7 @@
-import { ListActionTypes } from 'modules/list/model/actionTypes';
+import {
+  ListActionTypes,
+  ListHeaderStatusType
+} from 'modules/list/model/actionTypes';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import {
   ItemActionTypes,
@@ -18,6 +21,11 @@ export const ItemsEvents = Object.freeze({
   UPDATE_SUCCESS: ItemActionTypes.UPDATE_SUCCESS
 });
 
+export const ListHeaderEvents = Object.freeze({
+  LOCK: ListHeaderStatusType.LOCK,
+  UNLOCK: ListHeaderStatusType.UNLOCK
+});
+
 export const ListEvents = Object.freeze({
   ADD_MEMBER_ROLE_SUCCESS: ListActionTypes.ADD_MEMBER_ROLE_SUCCESS,
   ADD_OWNER_ROLE_SUCCESS: ListActionTypes.ADD_OWNER_ROLE_SUCCESS,
@@ -26,7 +34,8 @@ export const ListEvents = Object.freeze({
   FETCH_META_DATA_SUCCESS: ListActionTypes.FETCH_META_DATA_SUCCESS,
   REMOVE_MEMBER_ROLE_SUCCESS: ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS,
   REMOVE_MEMBER_SUCCESS: ListActionTypes.REMOVE_MEMBER_SUCCESS,
-  REMOVE_OWNER_ROLE_SUCCESS: ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS
+  REMOVE_OWNER_ROLE_SUCCESS: ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
+  UPDATE_SUCCESS: ListActionTypes.UPDATE_SUCCESS
 });
 
 export const CohortEvents = Object.freeze({
