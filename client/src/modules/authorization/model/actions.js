@@ -98,7 +98,6 @@ export const resetPassword = email => dispatch =>
         err.message ? NotificationType.ERROR_NO_RETRY : NotificationType.ERROR,
         {
           notificationId:
-            err.message ||
             'authorization.actions.recovery-password-default-error',
           data: email
         }
