@@ -26,7 +26,10 @@ const loginSuccess = data => ({
 
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
-    .then(() => dispatch(logoutSuccess()))
+    .then(() => {
+      dispatch(logoutSuccess());
+      window.location.reload();
+    })
     .catch(err => dispatch(logoutFailure(err.message)));
 
 export const loginDemoUser = () => dispatch =>
