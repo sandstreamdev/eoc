@@ -14,33 +14,36 @@ const updateListOnDashboardAndCohortView = (
     .lean()
     .exec()
     .then(doc => {
-      const { viewersIds, cohortId } = doc;
+      if (doc) {
+        const { viewersIds, cohortId } = doc;
+        const dashboardClientExists = dashboardClients.size > 0;
 
-      if (dashboardClients.size > 0) {
-        viewersIds.forEach(id => {
-          const viewerId = id.toString();
-          const list = responseWithList(doc, id);
+        if (dashboardClientExists) {
+          viewersIds.forEach(id => {
+            const viewerId = id.toString();
+            const list = responseWithList(doc, id);
 
-          if (dashboardClients.has(viewerId)) {
-            // send to users that are on the dashboard view
-            socket.broadcast
-              .to(dashboardClients.get(viewerId))
-              .emit(ListActionTypes.CREATE_SUCCESS, list);
-          }
-        });
-      }
+            if (dashboardClients.has(viewerId)) {
+              // send to users that are on the dashboard view
+              socket.broadcast
+                .to(dashboardClients.get(viewerId))
+                .emit(ListActionTypes.CREATE_SUCCESS, list);
+            }
+          });
+        }
 
-      if (cohortId && cohortViewClients) {
-        viewersIds.forEach(id => {
-          const viewerId = id.toString();
-          const currentList = responseWithList(doc, id);
+        if (cohortId && dashboardClientExists) {
+          viewersIds.forEach(id => {
+            const viewerId = id.toString();
+            const currentList = responseWithList(doc, id);
 
-          if (cohortViewClients.has(viewerId)) {
-            socket.broadcast
-              .to(cohortViewClients.get(viewerId))
-              .emit(ListActionTypes.CREATE_SUCCESS, currentList);
-          }
-        });
+            if (cohortViewClients.has(viewerId)) {
+              socket.broadcast
+                .to(cohortViewClients.get(viewerId))
+                .emit(ListActionTypes.CREATE_SUCCESS, currentList);
+            }
+          });
+        }
       }
     });
 };

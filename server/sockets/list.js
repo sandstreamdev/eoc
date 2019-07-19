@@ -16,9 +16,6 @@ const {
 } = require('../common/utils');
 const { updateListOnDashboardAndCohortView } = require('./helpers');
 
-/* WS postfix stands for Web Socket, to differentiate
- * this from controllers naming convention
- */
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     socket.broadcast
