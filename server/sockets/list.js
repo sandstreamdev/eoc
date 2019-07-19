@@ -148,13 +148,17 @@ const addListMember = (socket, dashboardClients, cohortClients) =>
           if (cohortId && cohortClients.has(viewerId)) {
             socket
               .to(cohortClients.get(viewerId))
-              .emit(ListActionTypes.CREATE_SUCCESS, list);
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                [listId]: { ...list }
+              });
           }
 
           if (dashboardClients.has(viewerId)) {
             socket
               .to(dashboardClients.get(viewerId))
-              .emit(ListActionTypes.CREATE_SUCCESS, list);
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                [listId]: { ...list }
+              });
           }
         }
       });
@@ -188,40 +192,46 @@ const changeOrderState = (socket, dashboardClients) => {
       .lean()
       .exec()
       .then(doc => {
-        const { viewersIds, cohortId } = doc;
+        if (doc) {
+          const { viewersIds, cohortId, items } = doc;
+          const doneItemsCount = items.filter(item => item.isOrdered).length;
+          const unhandledItemsCount = items.length - doneItemsCount;
+          const dataToUpdate = {
+            listId,
+            doneItemsCount,
+            unhandledItemsCount
+          };
 
-        if (dashboardClients.size > 0) {
-          viewersIds.forEach(id => {
-            const viewerId = id.toString();
-            const list = responseWithList(doc, id);
+          if (dashboardClients.size > 0) {
+            viewersIds.forEach(id => {
+              const viewerId = id.toString();
 
-            if (dashboardClients.has(viewerId)) {
-              // send to users that are on the dashboard view
-              socket.broadcast
-                .to(dashboardClients.get(viewerId))
-                .emit(ListActionTypes.CREATE_SUCCESS, list);
-            }
-          });
-        }
-
-        if (cohortId) {
-          Cohort.findOne({ _id: cohortId })
-            .lean()
-            .exec()
-            .then(cohort => {
-              if (cohort) {
-                const { memberIds } = cohort;
-
-                memberIds.forEach(id => {
-                  const currentList = responseWithList(doc, id);
-
-                  // send to users that are on cohort view
-                  socket.broadcast
-                    .to(`cohort-${cohortId}`)
-                    .emit(ListActionTypes.CREATE_SUCCESS, currentList);
-                });
+              if (dashboardClients.has(viewerId)) {
+                // send to users that are on the dashboard view
+                socket.broadcast
+                  .to(dashboardClients.get(viewerId))
+                  .emit(ListActionTypes.UPDATE_SUCCESS, dataToUpdate);
               }
             });
+          }
+
+          if (cohortId) {
+            Cohort.findOne({ _id: cohortId })
+              .lean()
+              .exec()
+              .then(cohort => {
+                if (cohort) {
+                  const { memberIds } = cohort;
+
+                  memberIds.forEach(() => {
+                    // send to users that are on cohort view
+                    socket.broadcast
+                      .to(`cohort-${cohortId}`)
+                      .emit(ListActionTypes.UPDATE_SUCCESS, dataToUpdate);
+                  });
+                }
+              });
+          }
         }
       });
   });

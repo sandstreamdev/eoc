@@ -2,7 +2,12 @@ const Cohort = require('../../models/cohort.model');
 const { responseWithCohort } = require('../../common/utils');
 const { CohortActionTypes } = require('../../common/variables');
 
-const emitCohortMetaData = (cohortId, clients, socket) => {
+const emitCohortMembersCount = (
+  socket,
+  clients,
+  cohortId,
+  newMemberId = null
+) => {
   Cohort.findById(cohortId)
     .select('_id isArchived createdAt name description memberIds')
     .lean()
@@ -11,14 +16,26 @@ const emitCohortMetaData = (cohortId, clients, socket) => {
       if (doc) {
         const { memberIds } = doc;
         const cohort = responseWithCohort(doc);
+        const membersCount = memberIds.length;
 
         memberIds.forEach(id => {
           const memberId = id.toString();
 
           if (clients.has(memberId)) {
-            socket.broadcast
-              .to(clients.get(memberId))
-              .emit(CohortActionTypes.CREATE_SUCCESS, cohort);
+            if (memberId === newMemberId) {
+              socket.broadcast
+                .to(clients.get(memberId))
+                .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [cohortId]: { ...cohort }
+                });
+            } else {
+              socket.broadcast
+                .to(clients.get(memberId))
+                .emit(CohortActionTypes.UPDATE_SUCCESS, {
+                  cohortId,
+                  membersCount
+                });
+            }
           }
         });
       }
@@ -26,5 +43,5 @@ const emitCohortMetaData = (cohortId, clients, socket) => {
 };
 
 module.exports = {
-  emitCohortMetaData
+  emitCohortMembersCount
 };

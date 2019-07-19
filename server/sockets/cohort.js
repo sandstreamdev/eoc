@@ -1,5 +1,5 @@
 const { CohortActionTypes } = require('../common/variables');
-const { emitCohortMetaData } = require('./helpers');
+const { emitCohortMembersCount } = require('./helpers');
 
 const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
@@ -10,7 +10,11 @@ const addCohortMember = (socket, clients) =>
       .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
     if (clients.size > 0) {
-      emitCohortMetaData(cohortId, clients, socket);
+      const {
+        member: { _id: userId }
+      } = data;
+
+      emitCohortMembersCount(socket, clients, cohortId, userId);
     }
   });
 
@@ -23,7 +27,7 @@ const leaveCohort = (socket, clients) =>
       .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
     if (clients.size > 0) {
-      emitCohortMetaData(cohortId, clients, socket);
+      emitCohortMembersCount(cohortId, clients, socket);
     }
   });
 
