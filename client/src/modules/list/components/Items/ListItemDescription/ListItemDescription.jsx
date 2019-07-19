@@ -220,12 +220,12 @@ class ListItemDescription extends PureComponent {
   };
 
   renderAddButton = () => {
-    const { disabled } = this.props;
+    const { disabled, locked } = this.props;
 
     return (
       <button
         className="link-button"
-        disabled={disabled}
+        disabled={disabled || locked}
         onClick={this.handleShowTextarea}
         onTouchEnd={this.handleShowTextarea}
         type="button"

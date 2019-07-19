@@ -1,9 +1,11 @@
 import {
   CohortEvents,
+  CohortHeaderEvents,
   CommentEvents,
   ItemsEvents,
   ItemStatusType,
-  ListEvents
+  ListEvents,
+  ListHeaderEvents
 } from './enums';
 
 export const receiveEvents = (dispatch, socket) => {
@@ -24,6 +26,14 @@ export const receiveEvents = (dispatch, socket) => {
   );
 
   Object.values(CohortEvents).forEach(event =>
+    socket.on(event, data => dispatch({ type: event, payload: data }))
+  );
+
+  Object.values(ListHeaderEvents).forEach(event =>
+    socket.on(event, data => dispatch({ type: event, payload: data }))
+  );
+
+  Object.values(CohortHeaderEvents).forEach(event =>
     socket.on(event, data => dispatch({ type: event, payload: data }))
   );
 };

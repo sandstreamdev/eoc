@@ -2,7 +2,7 @@ import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 import _pickBy from 'lodash/pickBy';
 
-import { CohortActionTypes } from './actionTypes';
+import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -123,6 +123,17 @@ const cohorts = (state = {}, action) => {
       }
 
       return { ...state, [cohortId]: cohort };
+    }
+    case CohortHeaderStatusTypes.LOCK:
+    case CohortHeaderStatusTypes.UNLOCK: {
+      const {
+        payload: { cohortId, nameLock = false, descriptionLock = false }
+      } = action;
+
+      return {
+        ...state,
+        [cohortId]: { ...state[cohortId], nameLock, descriptionLock }
+      };
     }
     default:
       return state;

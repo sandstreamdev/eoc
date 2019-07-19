@@ -9,7 +9,12 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
-import { updateList, changeType } from 'modules/list/model/actions';
+import {
+  changeType,
+  lockListHeader,
+  unlockListHeader,
+  updateList
+} from 'modules/list/model/actions';
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
@@ -35,10 +40,10 @@ class ListHeader extends PureComponent {
       isTipVisible: false,
       listType: type,
       nameInputValue: name,
-      updatedType: null,
       pendingForDescription: false,
       pendingForName: false,
-      pendingForTypeUpdate: false
+      pendingForTypeUpdate: false,
+      updatedType: null
     };
   }
 
@@ -224,6 +229,46 @@ class ListHeader extends PureComponent {
   hideDialog = () =>
     this.setState({ isDialogVisible: false, updatedType: null });
 
+  handleNameLock = () => {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    lockListHeader(listId, { nameLock: true });
+  };
+
+  handleNameUnmount = () => {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    unlockListHeader(listId, { nameLock: false });
+  };
+
+  handleDescriptionLock = () => {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    lockListHeader(listId, { descriptionLock: true });
+  };
+
+  handleDescriptionUnmount = () => {
+    const {
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    unlockListHeader(listId, { descriptionLock: false });
+  };
+
   renderDescription = () => {
     const {
       descriptionInputValue,
@@ -231,7 +276,7 @@ class ListHeader extends PureComponent {
       pendingForDescription
     } = this.state;
     const {
-      details: { description, isOwner }
+      details: { description, descriptionLock, isOwner }
     } = this.props;
 
     if (!description && !isOwner) {
@@ -241,20 +286,25 @@ class ListHeader extends PureComponent {
     return isDescriptionTextareaVisible ? (
       <DescriptionTextarea
         description={descriptionInputValue}
-        disabled={pendingForDescription}
+        disabled={pendingForDescription || descriptionLock}
         onClick={this.handleClick}
         onDescriptionChange={this.handleDescriptionChange}
+        onFocus={this.handleDescriptionLock}
         onKeyPress={this.handleKeyPress}
+        onUnmount={this.handleDescriptionUnmount}
       />
     ) : (
       <Fragment>
         {description && (
           <p
             className={classNames('list-header__description', {
-              'list-header--clickable': isOwner
+              'list-header--clickable': !descriptionLock && isOwner,
+              'list-header__description--disabled': descriptionLock
             })}
             data-id="description"
-            onClick={isOwner ? this.showDescriptionTextarea : null}
+            onClick={
+              isOwner && !descriptionLock ? this.showDescriptionTextarea : null
+            }
           >
             {description}
           </p>
@@ -262,7 +312,8 @@ class ListHeader extends PureComponent {
         {isOwner && !description && (
           <button
             className="list-header__button link-button"
-            onClick={this.showDescriptionTextarea}
+            disabled={descriptionLock}
+            onClick={descriptionLock ? null : this.showDescriptionTextarea}
             type="button"
           >
             <FormattedMessage id="list.list-header.add-button" />
@@ -280,29 +331,43 @@ class ListHeader extends PureComponent {
       pendingForName
     } = this.state;
     const {
-      details: { isOwner, name }
+      details: { isOwner, name, nameLock }
     } = this.props;
 
-    return isNameInputVisible ? (
-      <div>
-        <NameInput
-          disabled={pendingForName}
-          name={nameInputValue}
-          onClick={isOwner ? this.handleClick : null}
-          onKeyPress={this.handleKeyPress}
-          onNameChange={this.handleNameChange}
-        />
-        {isTipVisible && <p className="error-message">Name can not be empty</p>}
-      </div>
-    ) : (
-      <h1
-        className={classNames('list-header__heading', {
-          'list-header--clickable': isOwner
+    return (
+      <div
+        className={classNames('list-header__name', {
+          'list-header__name--disabled': nameLock
         })}
-        onClick={isOwner ? this.showNameInput : null}
       >
-        {name}
-      </h1>
+        <ListIcon />
+        {isNameInputVisible && !nameLock ? (
+          <Fragment>
+            <NameInput
+              disabled={pendingForName || nameLock}
+              name={nameInputValue}
+              onClick={isOwner ? this.handleClick : null}
+              onFocus={this.handleNameLock}
+              onKeyPress={this.handleKeyPress}
+              onNameChange={this.handleNameChange}
+              onUnmount={this.handleNameUnmount}
+            />
+            {isTipVisible && (
+              <p className="error-message">Name can not be empty</p>
+            )}
+          </Fragment>
+        ) : (
+          <h1
+            className={classNames('list-header__heading', {
+              'list-header--clickable': !nameLock && isOwner,
+              'list-header__heading--disabled': nameLock
+            })}
+            onClick={isOwner && !nameLock ? this.showNameInput : null}
+          >
+            {name}
+          </h1>
+        )}
+      </div>
     );
   };
 
@@ -368,10 +433,7 @@ class ListHeader extends PureComponent {
     return (
       <div className="list-header">
         <div className="list-header__top">
-          <div className="list-header__name">
-            <ListIcon />
-            {this.renderName()}
-          </div>
+          {this.renderName()}
           {pendingForName && <Preloader size={PreloaderSize.SMALL} />}
           {isCohortList && (
             <div className="list-header__type">

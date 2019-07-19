@@ -20,14 +20,25 @@ export const getCohortDetails = (state, cohortId) => {
   if (cohort) {
     const {
       description,
+      descriptionLock,
       isArchived,
       isMember,
       isOwner,
       members,
-      name
+      name,
+      nameLock
     } = cohort;
 
-    return { description, isMember, isOwner, isArchived, members, name };
+    return {
+      description,
+      descriptionLock,
+      isArchived,
+      isMember,
+      isOwner,
+      members,
+      name,
+      nameLock
+    };
   }
 };
 

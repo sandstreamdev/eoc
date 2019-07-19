@@ -24,6 +24,12 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
+
+    &--disabled {
+      svg path {
+        fill: $gray-bg2;
+      }
+    }
   }
 
   &__bottom {
@@ -38,6 +44,10 @@
     font-weight: 700;
     line-height: 1;
     color: $text-dark;
+
+    &--disabled {
+      color: $gray-bg2;
+    }
 
     svg {
       height: 20px;
@@ -54,10 +64,18 @@
     line-height: 1.2;
     color: $text-normal;
     padding: 8px 0 16px;
+
+    &--disabled {
+      color: $gray-bg2;
+    }
   }
 
   &__button {
     margin-bottom: 8px;
+
+    &:disabled {
+      color: $gray-bg2;
+    }
   }
 
   &__desc-textarea {
