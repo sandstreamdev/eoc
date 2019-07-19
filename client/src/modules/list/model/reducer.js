@@ -1,5 +1,6 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
+import _pickBy from 'lodash/pickBy';
 
 import { ListActionTypes } from './actionTypes';
 import {
@@ -75,9 +76,7 @@ const membersReducer = (state = {}, action) => {
     }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
-        payload: {
-          data: { members }
-        }
+        payload: { members }
       } = action;
 
       return members;
@@ -102,15 +101,13 @@ const lists = (state = {}, action) => {
       return newState;
     }
     case ListActionTypes.UPDATE_SUCCESS: {
-      const { description, listId, name } = action.payload;
+      const { listId, ...data } = action.payload;
       const prevList = state[listId];
-      const { name: prevName, description: prevDescription } = prevList;
-      const newDescription = name ? prevDescription : description;
+      const dataToUpdate = _pickBy(data, el => el !== undefined);
 
       const updatedList = {
         ...prevList,
-        name: name || prevName,
-        description: newDescription
+        ...dataToUpdate
       };
 
       return { ...state, [listId]: updatedList };
@@ -204,10 +201,7 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
-        payload: {
-          data: { type },
-          listId
-        }
+        payload: { type, listId }
       } = action;
       const { members } = state[listId];
 
