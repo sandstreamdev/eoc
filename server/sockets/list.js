@@ -360,6 +360,15 @@ const emitRemoveMemberOnLeaveCohort = socket =>
       });
   });
 
+const changeListType = (socket, dashboardClients, cohortClients) =>
+  socket.on(CohortActionTypes.CHANGE_TYPE_SUCCESS, data => {
+    const { listId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, data);
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -367,6 +376,7 @@ module.exports = {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
+  changeListType,
   changeOrderState,
   clearVote,
   cloneItem,
