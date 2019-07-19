@@ -78,7 +78,13 @@ const CohortActionTypes = Object.freeze({
   CREATE_SUCCESS: 'cohort/CREATE_SUCCESS',
   LEAVE_SUCCESS: 'cohort/LEAVE_SUCCESS',
   REMOVE_MEMBER_SUCCESS: 'cohort/REMOVE_MEMBER_SUCCESS',
-  REMOVE_OWNER_ROLE_SUCCESS: 'cohort/REMOVE_OWNER_ROLE_SUCCESS'
+  REMOVE_OWNER_ROLE_SUCCESS: 'cohort/REMOVE_OWNER_ROLE_SUCCESS',
+  UPDATE_SUCCESS: 'cohort/UPDATE_SUCCESS'
+});
+
+const CohortHeaderStatusTypes = Object.freeze({
+  LOCK: 'cohort-header/LOCK',
+  UNLOCK: 'cohort-header/UNLOCK'
 });
 
 const CommentActionTypes = Object.freeze({
@@ -106,6 +112,7 @@ const ListHeaderStatusTypes = Object.freeze({
 module.exports = {
   ActivityType,
   CohortActionTypes,
+  CohortHeaderStatusTypes,
   CommentActionTypes,
   DB_URL,
   DEMO_MODE_ID,

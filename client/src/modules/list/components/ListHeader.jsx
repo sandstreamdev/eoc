@@ -350,7 +350,6 @@ class ListHeader extends PureComponent {
               onFocus={this.handleNameLock}
               onKeyPress={this.handleKeyPress}
               onNameChange={this.handleNameChange}
-              onPending={this.handleNameLock}
               onUnmount={this.handleNameUnmount}
             />
             {isTipVisible && (

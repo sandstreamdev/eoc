@@ -14,6 +14,12 @@
     position: relative;
     display: flex;
     align-items: center;
+
+    &--disabled {
+      svg path {
+        fill: $gray-bg2;
+      }
+    }
   }
 
   &__bottom {
@@ -25,6 +31,10 @@
     line-height: 1.2;
     color: $text-normal;
     padding: 8px 0 16px;
+
+    &--disabled {
+      color: $gray-bg2;
+    }
   }
 
   &__heading {
@@ -35,6 +45,10 @@
     font-weight: 700;
     line-height: 1;
     color: $text-dark;
+
+    &--disabled {
+      color: $gray-bg2;
+    }
   }
 
   &__button {

@@ -36,7 +36,9 @@ const {
   addCohortMember,
   addOwnerRoleInCohort,
   leaveCohort,
-  removeOwnerRoleInCohort
+  removeOwnerRoleInCohort,
+  updateCohort,
+  updateCohortHeaderStatus
 } = require('./cohort');
 
 const socketListenTo = server => {
@@ -144,6 +146,8 @@ const socketListenTo = server => {
     addOwnerRoleInCohort(socket, cohortViewClients);
     leaveCohort(socket, allCohortsViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
+    updateCohort(socket, allCohortsViewClients);
+    updateCohortHeaderStatus(socket);
   });
 };
 

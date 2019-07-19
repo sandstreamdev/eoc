@@ -2,7 +2,10 @@ import {
   ListActionTypes,
   ListHeaderStatusType
 } from 'modules/list/model/actionTypes';
-import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
+import {
+  CohortActionTypes,
+  CohortHeaderStatusTypes
+} from 'modules/cohort/model/actionTypes';
 import {
   ItemActionTypes,
   ItemStatusType,
@@ -43,7 +46,13 @@ export const CohortEvents = Object.freeze({
   ADD_OWNER_ROLE_SUCCESS: CohortActionTypes.ADD_OWNER_ROLE_SUCCESS,
   CREATE_SUCCESS: CohortActionTypes.CREATE_SUCCESS,
   REMOVE_MEMBER_SUCCESS: CohortActionTypes.REMOVE_MEMBER_SUCCESS,
-  REMOVE_OWNER_ROLE_SUCCESS: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS
+  REMOVE_OWNER_ROLE_SUCCESS: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
+  UPDATE_SUCCESS: CohortActionTypes.UPDATE_SUCCESS
+});
+
+export const CohortHeaderEvents = Object.freeze({
+  LOCK: CohortHeaderStatusTypes.LOCK,
+  UNLOCK: CohortHeaderStatusTypes.UNLOCK
 });
 
 export const CommentEvents = Object.freeze({

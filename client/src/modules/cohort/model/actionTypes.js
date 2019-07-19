@@ -27,3 +27,8 @@ export const CohortActionTypes = Object.freeze({
   UPDATE_FAILURE: 'cohort/UPDATE_FAILURE',
   UPDATE_SUCCESS: 'cohort/UPDATE_SUCCESS'
 });
+
+export const CohortHeaderStatusTypes = Object.freeze({
+  LOCK: 'cohort-header/LOCK',
+  UNLOCK: 'cohort-header/UNLOCK'
+});
