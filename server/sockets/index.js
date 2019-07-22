@@ -128,7 +128,12 @@ const socketListenTo = server => {
     addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
     changeItemOrderState(socket, dashboardViewClients, cohortViewClients);
-    changeListType(socket, dashboardViewClients, cohortViewClients);
+    changeListType(
+      socket,
+      dashboardViewClients,
+      cohortViewClients,
+      listViewClients
+    );
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);

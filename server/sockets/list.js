@@ -11,10 +11,15 @@ const {
 } = require('../common/variables');
 const List = require('../models/list.model');
 const {
+  checkIfArrayContainsUserId,
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
-const { updateListOnDashboardAndCohortView } = require('./helpers');
+const {
+  emitForMany,
+  emitListForMany,
+  updateListOnDashboardAndCohortView
+} = require('./helpers');
 
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
@@ -362,13 +367,93 @@ const emitRemoveMemberOnLeaveCohort = socket =>
       });
   });
 
-const changeListType = (socket, dashboardClients, cohortClients) =>
-  socket.on(CohortActionTypes.CHANGE_TYPE_SUCCESS, data => {
-    const { listId } = data;
+const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
+  socket.on(ListActionTypes.CHANGE_TYPE_SUCCESS, (data, fn) => {
+    const { listId, type, removedViewers } = data;
 
-    socket.broadcast
-      .to(`sack-${listId}`)
-      .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, data);
+    List.findById(listId)
+      .populate('cohortId', 'memberIds')
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const {
+            cohortId: { _id: cohortId, memberIds: cohortMemberIds },
+            viewersIds
+          } = doc;
+
+          if (listClients.size > 0) {
+            if (type === ListType.LIMITED && removedViewers) {
+              removedViewers.forEach(id => {
+                const userId = id.toString();
+                const isCohortMember = checkIfArrayContainsUserId(
+                  cohortMemberIds,
+                  userId
+                );
+
+                if (listClients.has(userId)) {
+                  socket.broadcast
+                    .to(listClients.get(userId))
+                    .emit(ListActionTypes.LEAVE_ON_TYPE_CHANGE_SUCCESS, {
+                      cohortId,
+                      isCohortMember,
+                      listId,
+                      type
+                    });
+                }
+              });
+            }
+
+            emitForMany(
+              viewersIds,
+              listClients,
+              socket,
+              ListActionTypes.CHANGE_TYPE_SUCCESS,
+              data
+            );
+          }
+
+          if (dashboardClients.size > 0) {
+            if (type === ListType.LIMITED && removedViewers) {
+              emitForMany(
+                removedViewers,
+                dashboardClients,
+                socket,
+                ListActionTypes.DELETE_SUCCESS,
+                listId
+              );
+            }
+
+            emitListForMany(
+              viewersIds,
+              dashboardClients,
+              socket,
+              ListActionTypes.FETCH_META_DATA_SUCCESS,
+              doc
+            );
+          }
+
+          if (cohortClients.size > 0) {
+            if (type === ListType.LIMITED && removedViewers) {
+              emitForMany(
+                removedViewers,
+                cohortClients,
+                socket,
+                ListActionTypes.DELETE_SUCCESS,
+                listId
+              );
+            }
+
+            emitListForMany(
+              viewersIds,
+              cohortClients,
+              socket,
+              ListActionTypes.FETCH_META_DATA_SUCCESS,
+              doc
+            );
+          }
+        }
+      });
   });
 
 module.exports = {

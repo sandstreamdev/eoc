@@ -6,6 +6,27 @@ const {
 } = require('../../common/variables');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 
+const emitForMany = (users, clients, socket, event, data) => {
+  users.forEach(id => {
+    const userId = id.toString();
+
+    if (clients.has(userId)) {
+      socket.broadcast.to(clients.get(userId)).emit(event, data);
+    }
+  });
+};
+
+const emitListForMany = (users, clients, socket, event, doc) => {
+  users.forEach(id => {
+    const userId = id.toString();
+    const list = { [doc._id]: { ...responseWithList(doc, userId) } };
+
+    if (clients.has(userId)) {
+      socket.broadcast.to(clients.get(userId)).emit(event, list);
+    }
+  });
+};
+
 const emitCohortMetaData = (socket, clients, cohortId) => {
   Cohort.findById(cohortId)
     .select('_id isArchived createdAt name description memberIds')
@@ -84,5 +105,7 @@ const updateListOnDashboardAndCohortView = (
 
 module.exports = {
   emitCohortMetaData,
+  emitForMany,
+  emitListForMany,
   updateListOnDashboardAndCohortView
 };

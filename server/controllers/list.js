@@ -1,4 +1,5 @@
 const sanitize = require('mongo-sanitize');
+const _difference = require('lodash/difference');
 
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
@@ -1118,6 +1119,7 @@ const changeType = (req, resp) => {
   const { id: listId } = req.params;
   const { _id: currentUserId } = req.user;
   let cohortMembers;
+  let removedViewers;
   const sanitizedListId = sanitize(listId);
 
   List.findOneAndUpdate(
@@ -1144,6 +1146,13 @@ const changeType = (req, resp) => {
           ? viewersIds.filter(id => isMember(list, id))
           : [...viewersIds, ...cohortMembers.filter(id => !isViewer(list, id))];
 
+      const viewersDiff = _difference(viewersIds, updatedViewersIds);
+
+      removedViewers =
+        type === ListType.LIMITED && viewersDiff.length > 0
+          ? viewersDiff
+          : null;
+
       return List.findOneAndUpdate(
         { _id: listId, ownerIds: currentUserId },
         { viewersIds: updatedViewersIds },
@@ -1168,9 +1177,7 @@ const changeType = (req, resp) => {
         cohortMembers
       );
 
-      resp.send({
-        data: { members, type }
-      });
+      resp.send({ members, type, removedViewers });
 
       saveActivity(
         ActivityType.LIST_CHANGE_TYPE,

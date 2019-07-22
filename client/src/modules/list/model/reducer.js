@@ -24,8 +24,7 @@ const membersReducer = (state = {}, action) => {
 
       return { [_id]: viewer, ...state };
     }
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
-    case ListActionTypes.LEAVE_SUCCESS: {
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { userId }
       } = action;
