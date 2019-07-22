@@ -5,11 +5,11 @@
     background: url('../../assets/images/hero-bg.png') bottom;
     background-size: auto 260px;
     background-repeat: no-repeat;
-    padding: 0 0 calc($xxl-padding + $xl-padding + $s-padding);
+    padding: 0 0 $xxxl-padding;
 
     @include breakpoint($small) {
       background-size: auto 350px;
-      padding: 0 0 calc($xxl-padding + $xl-padding + $s-padding);
+      padding: 0 0 $xxxl-padding;
     }
 
     @include breakpoint($medium) {
@@ -24,7 +24,7 @@
     text-align: center;
     font-size: 35px;
     max-width: 430px;
-    margin: 0 auto;
+    margin: $l-margin auto;
 
     @include breakpoint($medium) {
       font-size: 45px;
@@ -90,7 +90,7 @@
     }
 
     @include breakpoint($large) {
-      margin-bottom: calc($xl-margin + $l-margin);
+      margin-bottom: $xxl-margin;
     }
 
     a {

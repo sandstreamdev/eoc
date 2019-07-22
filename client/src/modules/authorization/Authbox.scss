@@ -6,7 +6,7 @@
   transform: translate(-50%, -50%);
   background-color: $container-bg;
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-  margin-bottom: calc($l-margin + $s-margin);
+  margin-bottom: $l-margin;
   text-align: center;
   min-height: 300px;
   flex-direction: column;
