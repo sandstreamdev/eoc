@@ -9,6 +9,7 @@ const Comment = require('../../models/comment.model');
 // Find or create user
 const findOrCreateUser = (user, done) => {
   const { idFromProvider, email } = user;
+
   User.findOne({
     $or: [{ idFromProvider }, { email }]
   })
