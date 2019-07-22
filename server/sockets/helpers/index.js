@@ -27,7 +27,7 @@ const emitListForMany = (users, clients, socket, event, doc) => {
   });
 };
 
-const emitCohortMetaData = (socket, clients, cohortId) => {
+const emitCohortMetaData = (cohortId, clients, socket) => {
   Cohort.findById(cohortId)
     .select('_id isArchived createdAt name description memberIds')
     .lean()

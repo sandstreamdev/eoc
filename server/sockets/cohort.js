@@ -15,7 +15,7 @@ const addCohortMember = (socket, clients) =>
       .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
     if (clients.size > 0) {
-      emitCohortMetaData(socket, clients, cohortId);
+      emitCohortMetaData(cohortId, clients, socket);
     }
   });
 
