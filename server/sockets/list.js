@@ -404,13 +404,9 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
               });
             }
 
-            emitForMany(
-              viewersIds,
-              listClients,
-              socket,
-              ListActionTypes.CHANGE_TYPE_SUCCESS,
-              data
-            );
+            socket.broadcast
+              .to(`sack-${listId}`)
+              .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, data);
           }
 
           if (dashboardClients.size > 0) {
