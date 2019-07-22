@@ -66,10 +66,10 @@ const updateListOnDashboardAndCohortView = (
     .then(doc => {
       if (doc) {
         const { viewersIds, cohortId } = doc;
-        const dashboardViewClientExists = dashboardClients.size > 0;
+        const dashboardClientExists = dashboardClients.size > 0;
         const cohortViewClientsExists = cohortViewClients.size > 0;
 
-        if (dashboardViewClientExists) {
+        if (dashboardClientExists) {
           viewersIds.forEach(id => {
             const viewerId = id.toString();
             const list = responseWithList(doc, id);
