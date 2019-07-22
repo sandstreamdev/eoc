@@ -1,5 +1,5 @@
 .cohort {
-  margin: 30px 0 25px 0;
+  margin: $xl-margin 0 $l-margin 0;
   border: 0;
   background-color: $bg-color;
 
@@ -9,7 +9,7 @@
 
   &__header {
     border-bottom: 1px solid $border-light;
-    margin-bottom: 8px;
+    margin-bottom: $m-margin;
   }
 
   &__heading {
@@ -23,7 +23,7 @@
 
     svg {
       height: 20px;
-      margin-right: 12px;
+      margin-right: $l-margin;
 
       path {
         fill: $text-normal;

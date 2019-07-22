@@ -1,6 +1,6 @@
 .collection {
   width: 100%;
-  margin: 16px 0 25px 0;
+  margin: $l-margin 0 25px 0;
   border: 0;
 
   &__heading {
@@ -17,7 +17,7 @@
 
     svg {
       height: 14px;
-      margin-right: 8px;
+      margin-right: $m-margin;
 
       path {
         fill: $text-dark;

@@ -71,7 +71,7 @@
     }
 
     span {
-      margin-left: 4px;
+      margin-left: $s-margin;
     }
 
     a {
@@ -118,8 +118,7 @@
     font-size: 12px;
     line-height: 1.2;
     color: $text-normal;
-    margin-right: 8px;
-    margin-bottom: 3px;
+    margin: 0 $m-margin $s-margin 0;
 
     &:nth-child(2) {
       margin-bottom: 0;

@@ -1,6 +1,6 @@
 .about {
   &__intro {
-    margin-top: 5px;
+    margin-top: $s-margin;
     width: 100%;
     background: url('../../assets/images/hero-bg.png') bottom;
     background-size: auto 260px;
@@ -41,11 +41,11 @@
     text-align: center;
     font-size: $m-font;
     line-height: 1.5;
-    margin: 40px 0 0;
+    margin: $xl-margin 0 0;
 
     @include breakpoint($medium) {
       font-size: 18px;
-      margin: 40px 0 50px;
+      margin: $xl-margin 0 $xl-margin;
     }
   }
 
@@ -62,7 +62,7 @@
     line-height: 1.2;
     color: $text-white;
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: $xl-margin;
   }
 
   &__content {
@@ -70,12 +70,12 @@
     line-height: 1.2;
     color: $text-white;
     letter-spacing: 0.3px;
-    margin-bottom: 20px;
+    margin-bottom: $l-margin;
   }
 
   &__cta {
     padding: 32px 20px;
-    margin-bottom: 32px;
+    margin-bottom: $xl-margin;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -90,7 +90,7 @@
     }
 
     @include breakpoint($large) {
-      margin-bottom: 50px;
+      margin-bottom: calc($xl-margin + $l-margin);
     }
 
     a {
@@ -115,7 +115,7 @@
     line-height: 1.2;
     text-align: center;
     color: $text-normal;
-    margin-bottom: 16px;
+    margin-bottom: $l-margin;
   }
 
   &__article {

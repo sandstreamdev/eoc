@@ -2,7 +2,7 @@
   display: table;
   position: relative;
   width: 70%;
-  margin: 50px auto;
+  margin: $xl-margin auto;
   text-align: center;
   background: $bg-color;
   padding: 20px 25px;
@@ -14,11 +14,11 @@
 
   &__body {
     position: relative;
-    margin-top: 16px;
+    margin-top: $l-margin;
   }
 
   &__button {
-    margin: 0 auto 16px;
+    margin: 0 auto $l-margin;
 
     &:hover {
       transform: scale(1.02);

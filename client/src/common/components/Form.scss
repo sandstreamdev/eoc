@@ -6,7 +6,7 @@
   box-sizing: border-box;
 
   &__label {
-    margin-bottom: 16px;
+    margin-bottom: $l-margin;
 
     &:last-child {
       margin-bottom: 0;

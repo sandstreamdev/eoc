@@ -6,7 +6,7 @@
   transform: translate(-50%, -50%);
   background-color: $container-bg;
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-  margin-bottom: 20px;
+  margin-bottom: calc($l-margin + $s-margin);
   text-align: center;
   min-height: 300px;
   flex-direction: column;
@@ -55,7 +55,7 @@
     line-height: 1.2;
     font-weight: 700;
     color: $text-normal;
-    margin-bottom: 16px;
+    margin-bottom: $l-margin;
     text-align: left;
   }
 
@@ -74,7 +74,7 @@
 
     .app-logo {
       @include breakpoint($large) {
-        margin-bottom: 8px;
+        margin-bottom: $m-margin;
       }
     }
   }
@@ -83,11 +83,11 @@
     font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
-    margin-bottom: 6px;
+    margin-bottom: $s-margin;
   }
 
   &__footer {
-    margin-top: 16px;
+    margin-top: $l-margin;
     font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
@@ -110,7 +110,7 @@
     max-width: 166px;
 
     a {
-      margin-bottom: 8px;
+      margin-bottom: $m-margin;
     }
   }
 

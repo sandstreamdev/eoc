@@ -1,5 +1,5 @@
 .new-comment {
-  padding-bottom: 16px;
+  padding-bottom: $l-margin;
   text-align: left;
 
   &__wrapper {
@@ -9,7 +9,7 @@
   }
 
   .ss-textarea {
-    margin-bottom: 16px;
+    margin-bottom: $l-margin;
     width: 100%;
   }
 

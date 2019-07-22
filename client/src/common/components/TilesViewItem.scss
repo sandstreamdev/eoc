@@ -32,7 +32,7 @@
       width: 12px;
       min-height: 12px;
       min-width: 12px;
-      margin-right: 8px;
+      margin-right: $m-margin;
 
       path {
         fill: $text-white;
@@ -102,7 +102,7 @@
     span {
       display: block;
       &:first-child {
-        margin-bottom: 5px;
+        margin-bottom: $s-margin;
       }
     }
   }

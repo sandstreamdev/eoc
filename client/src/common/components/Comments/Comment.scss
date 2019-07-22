@@ -1,7 +1,7 @@
 .comment {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: $l-margin;
   box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
   padding: 16px;
 
@@ -22,13 +22,13 @@
   &__date {
     color: $text-normal;
     font-size: $s-font;
-    margin-top: 6px;
+    margin-top: $s-margin;
   }
 
   &__content {
     font-size: $m-font;
     line-height: 1.2;
-    margin-top: 16px;
+    margin-top: $l-margin;
     color: $text-normal;
     overflow-wrap: break-word;
   }
@@ -45,7 +45,7 @@
 
   &__avatar {
     position: relative;
-    margin-right: 16px;
+    margin-right: $l-margin;
     min-width: 32px;
     width: 32px;
     display: flex;

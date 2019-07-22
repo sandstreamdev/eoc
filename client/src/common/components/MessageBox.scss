@@ -10,7 +10,7 @@
   transition: color 200ms ease-in;
   overflow: hidden;
   background: $bg-color;
-  margin: 20px 0;
+  margin: $l-margin 0;
   font-size: $s-font;
   font-weight: 700;
   line-height: 1.4;
@@ -24,7 +24,7 @@
     min-width: 20px;
     min-height: 20px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: $m-margin;
     box-sizing: border-box;
     border: 1px solid $message-bg-gray;
   }

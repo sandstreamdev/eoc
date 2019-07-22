@@ -21,7 +21,7 @@
     font-size: $m-font;
     color: $text-normal;
     font-weight: 500;
-    margin-top: 5px;
+    margin-top: $s-margin;
   }
 
   &__description {
@@ -30,7 +30,7 @@
     padding: 8px 0 10px 0;
     line-height: 1.2;
     text-align: left;
-    margin: 0 0 16px 0;
+    margin: 0 0 $l-margin 0;
     overflow-wrap: break-word;
     cursor: pointer;
 
@@ -54,7 +54,7 @@
     border: 0;
     outline: 0;
     padding: 8px 0 10px 0;
-    margin: 0 0 16px 0;
+    margin: 0 0 $l-margin 0;
     background: transparent;
     resize: none;
 
@@ -67,7 +67,7 @@
   &__save-button {
     position: relative;
     width: 100%;
-    margin-bottom: 16px;
+    margin-bottom: $l-margin;
 
     .primary-button {
       font-size: $m-font;

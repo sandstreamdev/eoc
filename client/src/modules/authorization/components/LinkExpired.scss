@@ -17,7 +17,7 @@
   }
 
   &__heading {
-    margin-bottom: 16px;
+    margin-bottom: $l-margin;
   }
 
   &__message {
@@ -30,11 +30,11 @@
 
   &__button {
     text-transform: capitalize;
-    margin-top: 16px;
+    margin-top: $l-margin;
   }
 
   &__error {
-    margin-bottom: 16px;
+    margin-bottom: $l-margin;
     color: $danger;
     width: 100%;
     text-align: left;

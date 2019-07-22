@@ -1,9 +1,9 @@
 .cohort-header {
   border-bottom: 1px solid $border-light;
-  margin-bottom: 8px;
+  margin-bottom: $m-margin;
   svg {
     height: 20px;
-    margin-right: 12px;
+    margin-right: $l-margin;
 
     path {
       fill: $text-dark;
@@ -52,11 +52,11 @@
   }
 
   &__button {
-    margin-bottom: 8px;
+    margin-bottom: $m-margin;
   }
 
   &__desc-textarea {
-    margin-bottom: 8px;
+    margin-bottom: $m-margin;
   }
 
   &--clickable {

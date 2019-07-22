@@ -44,7 +44,7 @@
     justify-content: center;
     svg {
       height: 16px;
-      margin-right: 8px;
+      margin-right: $m-margin;
     }
 
     &:hover {
@@ -54,6 +54,6 @@
   }
 
   .error-message {
-    margin-bottom: 8px;
+    margin-bottom: $m-margin;
   }
 }
