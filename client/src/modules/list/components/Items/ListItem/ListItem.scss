@@ -335,7 +335,7 @@
 
   &-enter-active {
     opacity: 1;
-    box-shadow: 0 9px 0px 0px $bg-color, 0 -9px 0px 0px $bg-color,
+    box-shadow: 0 9px 0px 0px transparent, 0 -9px 0px 0px transparent,
       12px 0 8px -4px rgba($brand-color, 0.4),
       -12px 0 8px -4px rgba($brand-color, 0.4);
     transition: all 500ms ease-in;

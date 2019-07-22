@@ -11,6 +11,7 @@
     transform: translateY(-50%);
     width: auto;
     text-transform: uppercase;
+    min-height: 36px;
 
     &--disabled {
       cursor: not-allowed;
