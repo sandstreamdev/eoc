@@ -55,7 +55,7 @@ const emitCohortMetaData = (cohortId, clients, socket) => {
 const updateListOnDashboardAndCohortView = (
   socket,
   listId,
-  dashboardViewClients,
+  dashboardClients,
   cohortViewClients
 ) => {
   List.findOne({
@@ -66,7 +66,7 @@ const updateListOnDashboardAndCohortView = (
     .then(doc => {
       if (doc) {
         const { viewersIds, cohortId } = doc;
-        const dashboardViewClientExists = dashboardViewClients.size > 0;
+        const dashboardViewClientExists = dashboardClients.size > 0;
         const cohortViewClientsExists = cohortViewClients.size > 0;
 
         if (dashboardViewClientExists) {
@@ -74,10 +74,10 @@ const updateListOnDashboardAndCohortView = (
             const viewerId = id.toString();
             const list = responseWithList(doc, id);
 
-            if (dashboardViewClients.has(viewerId)) {
+            if (dashboardClients.has(viewerId)) {
               // send to users that are on the dashboard view
               socket.broadcast
-                .to(dashboardViewClients.get(viewerId))
+                .to(dashboardClients.get(viewerId))
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
                   [listId]: { ...list }
                 });
