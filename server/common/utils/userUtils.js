@@ -7,24 +7,18 @@ const Cohort = require('../../models/cohort.model');
 const Comment = require('../../models/comment.model');
 
 // Find or create user
-const findOrCreateUser = (user, done) =>
+const findOrCreateUser = (user, done) => {
+  const { idFromProvider, email } = user;
   User.findOne({
-    $or: [{ idFromProvider: user.idFromProvider }, { email: user.email }]
+    $or: [{ idFromProvider }, { email }]
   })
     .exec()
     .then(doc => {
       if (doc) {
-        const { email, idFromProvider, isActive } = doc;
+        const { email, idFromProvider: existingIdFromProvider, isActive } = doc;
 
-        if (email && !idFromProvider) {
-          const {
-            accessToken,
-            avatarUrl,
-            idFromProvider,
-            name,
-            provider,
-            surname
-          } = user;
+        if (email && !existingIdFromProvider) {
+          const { accessToken, avatarUrl, name, provider, surname } = user;
 
           /* eslint-disable no-param-reassign */
           doc.accessToken = accessToken;
@@ -52,6 +46,7 @@ const findOrCreateUser = (user, done) =>
     })
     .then(user => done(null, user))
     .catch(err => done(null, false, { message: err.message }));
+};
 
 /* eslint camelcase: "off" */
 const extractUserProfile = (profile, accessToken) => {
