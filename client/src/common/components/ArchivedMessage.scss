@@ -5,7 +5,7 @@
   margin: $xl-margin auto;
   text-align: center;
   background: $bg-color;
-  padding: 20px 25px;
+  padding: $l-padding $xl-padding;
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
 
   @include breakpoint($xsmall) {

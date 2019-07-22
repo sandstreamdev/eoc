@@ -3,7 +3,7 @@
   display: block;
   position: relative;
   border-bottom: 1px solid $item-border;
-  padding: 0 16px 0;
+  padding: 0 $l-padding 0;
 
   &:first-child {
     margin-top: 0;
@@ -110,7 +110,7 @@
 
   &__label {
     box-sizing: border-box;
-    padding: 16px 0;
+    padding: $l-padding 0;
     display: flex;
     align-items: center;
     text-align: left;
@@ -199,7 +199,7 @@
     justify-content: space-between;
     flex-direction: column;
     align-items: stretch;
-    padding-bottom: 16px;
+    padding-bottom: $l-padding;
   }
 
   &__features {
@@ -226,7 +226,7 @@
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
-    padding: 20px 0;
+    padding: $l-padding 0;
 
     h4 {
       width: 100%;
@@ -234,7 +234,7 @@
       font-weight: 700;
       text-align: center;
       line-height: 1.2;
-      padding: 0 0 16px;
+      padding: 0 0 $l-padding;
     }
 
     button:first-of-type {

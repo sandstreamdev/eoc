@@ -23,7 +23,7 @@
   }
 
   li:not(:last-of-type) {
-    padding-bottom: 16px;
+    padding-bottom: $l-padding;
     margin-bottom: $l-margin;
     border-bottom: 1px solid $border-color;
   }

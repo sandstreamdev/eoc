@@ -40,7 +40,7 @@
   &__details {
     box-sizing: border-box;
     width: calc(100% - 88px);
-    padding: 6px 16px;
+    padding: $s-padding $l-padding;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -63,7 +63,7 @@
     }
 
     &--no-description {
-      padding-top: 12px;
+      padding-top: $m-padding;
 
       @include breakpoint($small) {
         padding-top: 0;

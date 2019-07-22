@@ -5,11 +5,11 @@
     background: url('../../assets/images/hero-bg.png') bottom;
     background-size: auto 260px;
     background-repeat: no-repeat;
-    padding: 0 0 100px;
+    padding: 0 0 calc($xxl-padding + $xl-padding + $s-padding);
 
     @include breakpoint($small) {
       background-size: auto 350px;
-      padding: 0 0 100px;
+      padding: 0 0 calc($xxl-padding + $xl-padding + $s-padding);
     }
 
     @include breakpoint($medium) {
@@ -53,7 +53,7 @@
     position: relative;
     top: -1px;
     background: $orange-bg;
-    padding: 0 0 32px;
+    padding: 0 0 $xl-padding;
     box-shadow: 0px 5px 5px $orange-bg;
   }
 
@@ -74,7 +74,7 @@
   }
 
   &__cta {
-    padding: 32px 20px;
+    padding: $xl-padding $l-padding;
     margin-bottom: $xl-margin;
     display: flex;
     flex-direction: column;

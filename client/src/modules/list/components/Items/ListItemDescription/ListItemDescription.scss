@@ -27,7 +27,7 @@
   &__description {
     font-size: $m-font;
     color: $text-normal;
-    padding: 8px 0 10px 0;
+    padding: $m-padding 0;
     line-height: 1.2;
     text-align: left;
     margin: 0 0 $l-margin 0;
@@ -53,14 +53,14 @@
     cursor: text;
     border: 0;
     outline: 0;
-    padding: 8px 0 10px 0;
+    padding: $m-padding 0;
     margin: 0 0 $l-margin 0;
     background: transparent;
     resize: none;
 
     &:focus {
       border-bottom: 1px solid $orange;
-      padding-bottom: 5px;
+      padding-bottom: $s-padding;
     }
   }
 

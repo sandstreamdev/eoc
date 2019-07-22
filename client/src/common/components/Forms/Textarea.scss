@@ -28,7 +28,7 @@
     line-height: 1.2;
     min-height: 65px;
     outline: 0;
-    padding: 20px 12px 10px;
+    padding: $l-padding $m-padding $m-padding;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     width: 100%;
     resize: none;

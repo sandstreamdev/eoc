@@ -7,7 +7,7 @@
     font-weight: 400;
     text-align: center;
     font-size: 52px;
-    padding-top: 50px;
+    padding-top: $xl-padding;
   }
 
   &__intro-subheading {
@@ -20,7 +20,7 @@
   }
 
   &__info-wrapper {
-    padding: 0 20px;
+    padding: 0 $l-padding;
     &:nth-child(even) {
       background-color: $dark-orange;
       color: $white;
@@ -29,7 +29,7 @@
 
   &__info {
     font-size: 16px;
-    padding: 30px 0;
+    padding: $xl-padding 0;
     margin: 0 auto;
     max-width: 70ch;
   }
@@ -37,7 +37,7 @@
   &__header {
     font-weight: 500;
     font-size: $xxxl-font;
-    padding: 0 0 10px 0;
+    padding: 0 0 $m-padding 0;
   }
 
   &__content {

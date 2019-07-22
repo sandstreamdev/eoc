@@ -25,7 +25,7 @@
     width: auto;
     box-sizing: border-box;
     height: 50%;
-    padding: 20px;
+    padding: $l-padding;
     background: url('../../assets/images/auth-intro.jpg') center;
     position: relative;
 
@@ -40,7 +40,7 @@
     width: auto;
     box-sizing: border-box;
     min-width: 240px;
-    padding: 20px;
+    padding: $l-padding;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -118,7 +118,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 16px;
+    padding: $l-padding;
 
     &:not(:last-of-type) {
       border-bottom: 1px solid $border-color;

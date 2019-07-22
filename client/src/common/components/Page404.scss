@@ -14,7 +14,7 @@
     font-size: 100px;
     font-weight: 700;
     color: $orange;
-    padding: 0 0 50px;
+    padding: 0 0 $xl-padding;
   }
 
   &__error {
@@ -23,12 +23,12 @@
   }
 
   &__message {
-    padding: 20px 40px;
+    padding: $l-padding $xl-padding;
     line-height: 25px;
   }
 
   .primary-button {
     box-sizing: border-box;
-    padding: 10px 16px;
+    padding: $m-padding $l-padding;
   }
 }

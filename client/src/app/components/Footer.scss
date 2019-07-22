@@ -1,7 +1,7 @@
 .footer {
   background-color: $bg-color;
   box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
-  padding: 15px 0;
+  padding: $l-padding 0;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -19,7 +19,7 @@
   }
 
   &__text {
-    padding: 10px 0;
+    padding: $m-padding 0;
     font-size: 16px;
     font-weight: 400;
     line-height: 1.2;

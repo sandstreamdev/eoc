@@ -1,6 +1,6 @@
 .list-archived-item {
   border-bottom: 1px solid $item-border;
-  padding: 16px;
+  padding: $l-padding;
   position: relative;
 
   &:hover {

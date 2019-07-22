@@ -10,7 +10,7 @@
   flex-direction: column;
   width: 250px;
   align-items: center;
-  padding: 32px;
+  padding: $xl-padding;
 
   @include breakpoint($xsmall) {
     width: 300px;

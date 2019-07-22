@@ -16,7 +16,7 @@
   }
 
   &__header {
-    padding: 10px;
+    padding: $m-padding;
     color: $text-normal;
     font-size: $m-font;
     letter-spacing: 0.2px;
@@ -38,11 +38,11 @@
     font-size: 13px;
     line-height: 1.2;
     color: $text-normal;
-    padding: 15px 15px 0;
+    padding: $l-padding $l-padding 0;
   }
 
   &__footer {
-    padding: 15px;
+    padding: $l-padding;
     display: flex;
     flex-direction: column;
 

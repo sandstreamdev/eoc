@@ -12,7 +12,7 @@
     text-decoration: none;
     outline: none;
     background: transparent;
-    padding: 5px;
+    padding: $s-padding;
     width: 38px;
     height: 38px;
   }
@@ -33,7 +33,7 @@
 
   &__menu-wrapper {
     width: 250px;
-    padding: 4px 16px;
+    padding: $s-padding $l-padding;
     background: $bg-color;
     position: absolute;
     top: 50px;
@@ -57,7 +57,7 @@
   &__menu-item {
     cursor: initial;
     height: 44px;
-    padding: 4px 0;
+    padding: $s-padding 0;
     color: $text-normal;
     font-size: $s-font;
     line-height: 1.2;

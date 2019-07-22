@@ -1,7 +1,7 @@
 .message-box {
   box-shadow: 0 1px 3px rgba($shadow-color, 0.5);
   box-sizing: border-box;
-  padding: 15px;
+  padding: $l-padding;
   display: flex;
   align-items: center;
   text-align: left;
@@ -45,7 +45,7 @@
   &--gray {
     box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
     font-weight: 400;
-    padding: 20px 25px;
+    padding: $l-padding;
     color: $text-normal;
 
     svg {
