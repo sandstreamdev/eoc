@@ -368,7 +368,7 @@ const emitRemoveMemberOnLeaveCohort = socket =>
   });
 
 const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
-  socket.on(ListActionTypes.CHANGE_TYPE_SUCCESS, (data, fn) => {
+  socket.on(ListActionTypes.CHANGE_TYPE_SUCCESS, data => {
     const { listId, type, removedViewers } = data;
 
     List.findById(listId)
