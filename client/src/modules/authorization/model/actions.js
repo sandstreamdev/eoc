@@ -7,16 +7,11 @@ import history from 'common/utils/history';
 export const AuthorizationActionTypes = Object.freeze({
   LOGIN_FAILURE: 'LOGIN_FAILURE',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-  LOGOUT_FAILURE: 'LOGOUT_FAILURE',
-  LOGOUT_SUCCESS: 'LOGOUT_SUCCESS'
+  LOGOUT_FAILURE: 'LOGOUT_FAILURE'
 });
 
 const logoutFailure = () => ({
   type: AuthorizationActionTypes.LOGOUT_FAILURE
-});
-
-const logoutSuccess = () => ({
-  type: AuthorizationActionTypes.LOGOUT_SUCCESS
 });
 
 const loginSuccess = data => ({
@@ -26,7 +21,7 @@ const loginSuccess = data => ({
 
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
-    .then(() => dispatch(logoutSuccess()))
+    .then(() => window.location.reload())
     .catch(err => dispatch(logoutFailure(err.message)));
 
 export const loginDemoUser = () => dispatch =>
