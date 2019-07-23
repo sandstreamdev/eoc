@@ -1,0 +1,80 @@
+.user-profile {
+  width: 100%;
+  margin: 26px auto;
+  color: $text-normal;
+  $font-size: $m-font;
+
+  @include breakpoint($large) {
+    width: 60%;
+  }
+
+  &__header {
+    font-size: $xxl-font;
+    margin-bottom: 24px;
+    color: $text-dark;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__avatar {
+      height: 80px;
+    }
+
+    span {
+      margin-bottom: 4px;
+    }
+  }
+
+  &__data-container {
+    margin-bottom: 48px;
+  }
+
+  &__data-header {
+    font-size: $xl-font;
+    font-weight: 500;
+    color: $text-dark;
+    margin-bottom: 8px;
+  }
+
+  &__data-item {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid $border-color;
+    padding: 8px;
+    height: 50px;
+
+    @include breakpoint($small) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  &__photo {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__data-name {
+    text-transform: uppercase;
+    font-size: $s-font;
+    margin-bottom: 4px;
+  }
+
+  &__data-value {
+    color: $text-dark;
+    font-weight: 500;
+    font-size: $s-font;
+
+    @include breakpoint($xsmall) {
+      font-size: $m-font;
+    }
+  }
+
+  &__avatar {
+    height: 40px;
+  }
+}

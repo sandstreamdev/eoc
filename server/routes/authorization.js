@@ -10,6 +10,7 @@ const {
 const {
   confirmEmail,
   getLoggedUser,
+  getUserDetails,
   logout,
   recoveryPassword,
   resendRecoveryLink,
@@ -26,6 +27,7 @@ const {
   sendResetPasswordLink,
   sendSignUpConfirmationLink
 } = require('../mailer');
+const { authorize } = require('../middleware/authorize');
 
 router.post('/demo', setDemoUser, sendUser);
 router.get('/google', authenticateWithGoogle);
@@ -48,5 +50,6 @@ router.post(
   resendRecoveryLink,
   sendResetPasswordLink
 );
+router.get('/user-details', authorize, getUserDetails);
 
 module.exports = router;

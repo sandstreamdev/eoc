@@ -36,15 +36,17 @@ class UserBar extends Component {
       <ul className="user-bar__menu">
         <li className="user-bar__menu-item">
           {name}
-          <Avatar
-            avatarUrl={avatarUrl}
-            className="user-bar__avatar"
-            name={name}
-          />
+          <span>
+            <Avatar
+              avatarUrl={avatarUrl}
+              className="user-bar__avatar"
+              name={name}
+            />
+          </span>
         </li>
         <li className="user-bar__menu-item">
           <Link to="/user-profile">
-            <FormattedMessage id="app.user-bar.user-profile" />
+            <FormattedMessage id="authorization.profile" />
             <UserIcon />
           </Link>
         </li>

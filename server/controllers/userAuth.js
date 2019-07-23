@@ -365,9 +365,21 @@ const resendRecoveryLink = (req, resp, next) => {
     });
 };
 
+const getUserDetails = (req, resp) => {
+  if (req.user) {
+    const { activatedAt, createdAt, email } = req.user;
+    const activationDate = activatedAt || createdAt;
+
+    return resp.send({ activationDate, email });
+  }
+
+  return resp.sendStatus(204);
+};
+
 module.exports = {
   confirmEmail,
   getLoggedUser,
+  getUserDetails,
   logout,
   recoveryPassword,
   resendRecoveryLink,

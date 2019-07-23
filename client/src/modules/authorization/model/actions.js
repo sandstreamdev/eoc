@@ -5,9 +5,10 @@ import { ValidationException } from 'common/exceptions/ValidationException';
 import history from 'common/utils/history';
 
 export const AuthorizationActionTypes = Object.freeze({
-  LOGIN_FAILURE: 'LOGIN_FAILURE',
-  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-  LOGOUT_FAILURE: 'LOGOUT_FAILURE'
+  FETCH_SUCCESS: 'user/FETCH_SUCCESS',
+  LOGIN_FAILURE: 'user/LOGIN_FAILURE',
+  LOGIN_SUCCESS: 'user/LOGIN_SUCCESS',
+  LOGOUT_FAILURE: 'user/LOGOUT_FAILURE'
 });
 
 const logoutFailure = () => ({
@@ -17,6 +18,15 @@ const logoutFailure = () => ({
 const loginSuccess = data => ({
   type: AuthorizationActionTypes.LOGIN_SUCCESS,
   payload: data
+});
+
+const fetchUserDetailsSuccess = data => ({
+  type: AuthorizationActionTypes.FETCH_SUCCESS,
+  payload: data
+});
+
+const fetchUserDetailsFailure = () => ({
+  type: AuthorizationActionTypes.FETCH_FAILURE
 });
 
 export const logoutCurrentUser = () => dispatch =>
@@ -107,3 +117,15 @@ export const updatePassword = (token, password, passwordConfirmation) =>
 
 export const resendRecoveryLink = token =>
   postData(`/auth/resend-recovery-link/${token}`);
+
+export const fetchUserDetails = userName => dispatch =>
+  getData('/auth/user-details')
+    .then(resp => resp.json())
+    .then(json => dispatch(fetchUserDetailsSuccess(json)))
+    .catch(() => {
+      dispatch(fetchUserDetailsFailure());
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId:
+          'authorization.user-profile.action.fetch-user-details-error'
+      });
+    });
