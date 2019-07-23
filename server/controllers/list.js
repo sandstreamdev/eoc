@@ -1118,9 +1118,9 @@ const changeType = (req, resp) => {
   const { type } = req.body;
   const { id: listId } = req.params;
   const { _id: currentUserId } = req.user;
+  const sanitizedListId = sanitize(listId);
   let cohortMembers;
   let removedViewers;
-  const sanitizedListId = sanitize(listId);
 
   List.findOneAndUpdate(
     { _id: sanitizedListId, ownerIds: currentUserId },
