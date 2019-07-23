@@ -555,6 +555,7 @@ export const changeType = (listId, listName, type) => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
+
       socket.emit(ListActionTypes.CHANGE_TYPE_SUCCESS, {
         listId,
         ...listData

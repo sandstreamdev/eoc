@@ -6,7 +6,7 @@ const {
 } = require('../../common/variables');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 
-const emitForMany = (users, clients, socket, event, data) => {
+const emitForMany = (users, clients, socket, event, data) =>
   users.forEach(id => {
     const userId = id.toString();
 
@@ -14,9 +14,8 @@ const emitForMany = (users, clients, socket, event, data) => {
       socket.broadcast.to(clients.get(userId)).emit(event, data);
     }
   });
-};
 
-const emitListForMany = (users, clients, socket, event, doc) => {
+const emitListForMany = (users, clients, socket, event, doc) =>
   users.forEach(id => {
     const userId = id.toString();
     const list = { [doc._id]: { ...responseWithList(doc, userId) } };
@@ -25,9 +24,8 @@ const emitListForMany = (users, clients, socket, event, doc) => {
       socket.broadcast.to(clients.get(userId)).emit(event, list);
     }
   });
-};
 
-const emitCohortMetaData = (cohortId, clients, socket) => {
+const emitCohortMetaData = (cohortId, clients, socket) =>
   Cohort.findById(cohortId)
     .select('_id isArchived createdAt name description memberIds')
     .lean()
@@ -50,14 +48,13 @@ const emitCohortMetaData = (cohortId, clients, socket) => {
         });
       }
     });
-};
 
 const updateListOnDashboardAndCohortView = (
   socket,
   listId,
   dashboardClients,
   cohortViewClients
-) => {
+) =>
   List.findOne({
     _id: listId
   })
@@ -101,7 +98,6 @@ const updateListOnDashboardAndCohortView = (
         }
       }
     });
-};
 
 module.exports = {
   emitCohortMetaData,
