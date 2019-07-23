@@ -32,7 +32,7 @@
   }
 
   &__menu-wrapper {
-    width: 250px;
+    width: 200px;
     padding: 4px 16px;
     background: $bg-color;
     position: absolute;
@@ -71,7 +71,7 @@
     }
 
     span {
-      margin-left: 4px;
+      width: auto;
     }
 
     a {

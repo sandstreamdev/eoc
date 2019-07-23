@@ -7,6 +7,7 @@
   "app.user-bar.user-name": "Logged as: {name}",
   "app.user-bar.my-cohorts": "My cohorts",
   "app.user-bar.logout": "Logout",
+  "app.user-bar.user-profile": "Profile",
   "app.toolbar.go-to-dashboard": "Go back to dashboard",
   "app.toolbar.notification-tooltip": "See notifications",
   "common.archived-message.restoring": "Restoring '{name}' {item}...",
