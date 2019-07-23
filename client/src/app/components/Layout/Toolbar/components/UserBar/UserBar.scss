@@ -118,7 +118,8 @@
     font-size: 12px;
     line-height: 1.2;
     color: $text-normal;
-    margin: 0 $m-margin $s-margin 0;
+    margin-right: $m-margin;
+    margin-bottom: $s-margin;
 
     &:nth-child(2) {
       margin-bottom: 0;

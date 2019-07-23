@@ -65,7 +65,7 @@
       margin: 0 0 $l-margin;
 
       @include breakpoint($xxsmall) {
-        margin: 0 $l-margin 0 0;
+        margin-right: $l-margin;
       }
     }
   }
