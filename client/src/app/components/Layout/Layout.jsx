@@ -28,6 +28,7 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
+import UserProfile from 'modules/authorization/UserProfile';
 
 export class Layout extends PureComponent {
   constructor(props) {
@@ -152,6 +153,7 @@ export class Layout extends PureComponent {
           <Route component={About} path="/about" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={Cohorts} path="/cohorts" />
+          <Route component={UserProfile} path="/user-profile" />
           <Route component={Page404} />
         </Switch>
         <Footer />
