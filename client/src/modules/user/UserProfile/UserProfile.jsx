@@ -66,12 +66,12 @@ class UserProfile extends PureComponent {
           </h1>
           <section className="user-profile__data-container">
             <h2 className="user-profile__data-header">
-              <FormattedMessage id="authorization.user-profile.personal-info" />
+              <FormattedMessage id="user.profile.personal-info" />
             </h2>
             <ul className="user-profile__data-list">
               <li className="user-profile__data-item  user-profile__photo">
                 <span className="user-profile__data-name">
-                  <FormattedMessage id="authorization.photo" />
+                  <FormattedMessage id="user.photo" />
                 </span>
                 <span className="user-profile__data-value">
                   <Avatar
@@ -83,7 +83,7 @@ class UserProfile extends PureComponent {
               </li>
               <li className="user-profile__data-item">
                 <span className="user-profile__data-name">
-                  <FormattedMessage id="authorization.name" />
+                  <FormattedMessage id="user.name" />
                 </span>
                 <span className="user-profile__data-value">{name}</span>
               </li>
@@ -91,12 +91,12 @@ class UserProfile extends PureComponent {
           </section>
           <section className="user-profile__data-container">
             <h2 className="user-profile__data-header">
-              <FormattedMessage id="authorization.user-profile.contact-info" />
+              <FormattedMessage id="user.profile.contact-info" />
             </h2>
             <ul className="user-profile__data-list">
               <li className="user-profile__data-item">
                 <span className="user-profile__data-name">
-                  <FormattedMessage id="authorization.email" />
+                  <FormattedMessage id="user.email" />
                 </span>
                 <span className="user-profile__data-value">{email}</span>
               </li>
@@ -104,12 +104,20 @@ class UserProfile extends PureComponent {
           </section>
           <section className="user-profile__data-container">
             <h2 className="user-profile__data-header">
-              <FormattedMessage id="authorization.user-profile.account" />
+              <FormattedMessage id="user.profile.account" />
             </h2>
             <ul className="user-profile__data-list">
               <li className="user-profile__data-item">
                 <span className="user-profile__data-name">
-                  <FormattedMessage id="authorization.user-profile.account-activation" />
+                  <FormattedMessage id="user.password" />
+                </span>
+                <span className="user-profile__data-value">
+                  &#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;
+                </span>
+              </li>
+              <li className="user-profile__data-item">
+                <span className="user-profile__data-name">
+                  <FormattedMessage id="user.profile.account-activation" />
                 </span>
                 <span className="user-profile__data-value">
                   {activationDate && (

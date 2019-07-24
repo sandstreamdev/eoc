@@ -15,13 +15,13 @@ const SuccessMessage = ({ match: { path } }) => (
       <FormattedMessage
         id={
           path === `/${Routes.ACCOUNT_CREATED}`
-            ? 'authorization.sign-up.result-success'
-            : 'authorization.password-recovery-success'
+            ? 'user.actions.sign-up.result-success'
+            : 'user.actions.password-recovery-success'
         }
         values={{
           link: (
             <Link className="success-message__link" to="/">
-              <FormattedMessage id="authorization.sign-up.result-link" />
+              <FormattedMessage id="user.auth.sign-up.result-link" />
             </Link>
           )
         }}

@@ -114,7 +114,7 @@ class SignUpForm extends PureComponent {
     const { isLength } = validator;
 
     if (!isLength(value, { min: 1, max: 32 })) {
-      return 'authorization.input.username.invalid';
+      return 'user.auth.input.username.invalid';
     }
 
     return '';
@@ -124,7 +124,7 @@ class SignUpForm extends PureComponent {
     const { isEmail } = validator;
 
     if (!isEmail(value)) {
-      return 'authorization.input.email.invalid';
+      return 'user.auth.input.email.invalid';
     }
 
     return '';
@@ -134,7 +134,7 @@ class SignUpForm extends PureComponent {
     const { matches } = validator;
 
     if (!matches(value, /^[^\s]{4,32}$/)) {
-      return 'authorization.input.password.invalid';
+      return 'user.auth.input.password.invalid';
     }
 
     return '';
@@ -158,7 +158,7 @@ class SignUpForm extends PureComponent {
       confirmPasswordValue !== undefined &&
       password !== confirmPasswordValue
     ) {
-      newError = 'authorization.input.password.not-match';
+      newError = 'user.auth.input.password.not-match';
     }
 
     if (newError !== undefined) {
@@ -217,16 +217,12 @@ class SignUpForm extends PureComponent {
 
             newState.higherLevelErrors = {
               confirmPasswordValueError: isConfirmPasswordError
-                ? 'authorization.input.password.not-match'
+                ? 'user.auth.input.password.not-match'
                 : '',
-              emailError: isEmailError
-                ? 'authorization.input.email.invalid'
-                : '',
-              nameError: isNameError
-                ? 'authorization.input.username.invalid'
-                : '',
+              emailError: isEmailError ? 'user.auth.input.email.invalid' : '',
+              nameError: isNameError ? 'user.auth.input.username.invalid' : '',
               passwordError: isPasswordError
-                ? 'authorization.input.password.invalid'
+                ? 'user.auth.input.password.invalid'
                 : ''
             };
           } else {
@@ -269,7 +265,7 @@ class SignUpForm extends PureComponent {
     return (
       <Fragment>
         <h1 className="sign-up-form__heading">
-          <FormattedMessage id="authorization.create-account" />
+          <FormattedMessage id="user.auth-box.create-account" />
         </h1>
         {signUpErrorId && this.renderSignUpError()}
         <form
@@ -281,7 +277,7 @@ class SignUpForm extends PureComponent {
             disabled={pending}
             externalErrorId={nameError}
             focus
-            labelId="authorization.input.username.label"
+            labelId="user.name"
             name="name"
             onChange={this.onNameChange}
             type="text"
@@ -290,7 +286,7 @@ class SignUpForm extends PureComponent {
           <AuthInput
             disabled={pending}
             externalErrorId={emailError}
-            labelId="authorization.input.email.label"
+            labelId="user.email"
             name="email"
             onChange={this.onEmailChange}
             type="text"
@@ -299,7 +295,7 @@ class SignUpForm extends PureComponent {
           <AuthInput
             disabled={pending}
             externalErrorId={passwordError}
-            labelId="authorization.input.password.label"
+            labelId="user.password"
             name="password"
             onChange={this.onPasswordChange}
             type="password"
@@ -308,7 +304,7 @@ class SignUpForm extends PureComponent {
           <AuthInput
             disabled={pending}
             externalErrorId={confirmPasswordValueError}
-            labelId="authorization.input.password.confirm"
+            labelId="user.auth.input.password.confirm"
             name="confirm"
             onChange={this.onPasswordConfirmChange}
             type="password"
@@ -328,7 +324,7 @@ class SignUpForm extends PureComponent {
               onClick={this.handleSignUp}
               type="submit"
             >
-              <FormattedMessage id="authorization.sign-up" />
+              <FormattedMessage id="user.auth.sign-up" />
             </PendingButton>
           </div>
         </form>
@@ -342,7 +338,7 @@ class SignUpForm extends PureComponent {
     return (
       <p className="sign-up-form__confirmation">
         <FormattedMessage
-          id="authorization.actions.sign-up.confirmation-link-sent"
+          id="user.actions.sign-up.confirmation-link-sent"
           values={{ data: email }}
         />
       </p>

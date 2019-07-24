@@ -43,7 +43,7 @@ export const loginDemoUser = () => dispatch =>
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'authorization.actions.login'
+        notificationId: 'user.actions.login'
       });
     });
 
@@ -66,7 +66,7 @@ export const signIn = (email, password) => dispatch =>
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'authorization.actions.login'
+        notificationId: 'user.actions.login'
       });
     });
 
@@ -89,7 +89,7 @@ export const resetPassword = email => dispatch =>
   postData('/auth/reset-password', { email })
     .then(() => {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'authorization.actions.reset',
+        notificationId: 'user.actions.reset',
         data: email
       });
     })
@@ -102,8 +102,7 @@ export const resetPassword = email => dispatch =>
         dispatch,
         err.message ? NotificationType.ERROR_NO_RETRY : NotificationType.ERROR,
         {
-          notificationId:
-            'authorization.actions.recovery-password-default-error',
+          notificationId: 'user.actions.recovery-password-default-error',
           data: email
         }
       );
@@ -125,7 +124,6 @@ export const fetchUserDetails = userName => dispatch =>
     .catch(() => {
       dispatch(fetchUserDetailsFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId:
-          'authorization.user-profile.action.fetch-user-details-error'
+        notificationId: 'user.actions.fetch-user-details-error'
       });
     });

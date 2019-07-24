@@ -107,7 +107,7 @@ class PasswordRecoveryForm extends PureComponent {
         {
           errors: {
             ...errors,
-            passwordError: 'authorization.input.password.invalid'
+            passwordError: 'user.auth.input.password.invalid'
           },
           passwordSuccess: false
         },
@@ -131,7 +131,7 @@ class PasswordRecoveryForm extends PureComponent {
       this.setState({
         errors: {
           ...errors,
-          comparePasswordsError: 'authorization.input.password.not-match'
+          comparePasswordsError: 'user.auth.input.password.not-match'
         },
         passwordConfirmationSuccess: false
       });
@@ -165,12 +165,12 @@ class PasswordRecoveryForm extends PureComponent {
     return (
       <form className="pass-recovery-form" onSubmit={this.handleSubmit}>
         <h2 className="pass-recovery-form__heading">
-          <FormattedMessage id="authorization.pass-recovery-form.heading" />
+          <FormattedMessage id="user.auth.pass-recovery-form.heading" />
         </h2>
         <div className="pass-recovery-form__body">
           <ValidationInput
             errorId={passwordError}
-            label={formatMessage({ id: 'authorization.input.password.label' })}
+            label={formatMessage({ id: 'user.password' })}
             onChange={this.handlePasswordChange}
             success={passwordSuccess}
             type="password"
@@ -179,7 +179,7 @@ class PasswordRecoveryForm extends PureComponent {
           <ValidationInput
             errorId={comparePasswordsError}
             label={formatMessage({
-              id: 'authorization.input.password.confirm'
+              id: 'user.auth.input.password.confirm'
             })}
             onChange={this.handlePasswordConfirmationChange}
             success={passwordConfirmationSuccess}

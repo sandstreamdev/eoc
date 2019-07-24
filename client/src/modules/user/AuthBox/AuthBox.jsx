@@ -62,7 +62,7 @@ class AuthBox extends PureComponent {
     return (
       <div className="authbox__button-container">
         <h1 className="authbox__button-header">
-          <FormattedMessage id="authorization.auth-box.sign-in" />
+          <FormattedMessage id="user.auth-box.sign-in" />
         </h1>
         <div className="authbox__button-wrapper">
           <a
@@ -75,7 +75,7 @@ class AuthBox extends PureComponent {
           >
             <img
               alt={formatMessage({
-                id: 'authorization.auth-box.sign-in-google'
+                id: 'user.auth-box.sign-in-google'
               })}
               className="google-button__img"
               src={GoogleButtonImg}
@@ -95,7 +95,7 @@ class AuthBox extends PureComponent {
             onClick={this.handleSignInFormVisibility}
             type="button"
           >
-            <FormattedMessage id="authorization.sign-in" />
+            <FormattedMessage id="user.auth.sign-in" />
           </button>
         </div>
       </div>
@@ -108,7 +108,7 @@ class AuthBox extends PureComponent {
     return (
       <div className="authbox__button-container">
         <h1 className="authbox__button-header">
-          <FormattedMessage id="authorization.auth-box.sign-up" />
+          <FormattedMessage id="user.auth-box.sign-up" />
         </h1>
         <div className="authbox__button-wrapper">
           <button
@@ -117,7 +117,7 @@ class AuthBox extends PureComponent {
             onClick={this.handleSignUpFormVisibility}
             type="button"
           >
-            <FormattedMessage id="authorization.create-account" />
+            <FormattedMessage id="user.auth-box.create-account" />
           </button>
         </div>
       </div>
@@ -130,7 +130,7 @@ class AuthBox extends PureComponent {
     return (
       <div className="authbox__button-container">
         <h1 className="authbox__button-header">
-          <FormattedMessage id="authorization.auth-box.cta" />
+          <FormattedMessage id="user.auth-box.cta" />
         </h1>
         <div className="authbox__button-wrapper">
           <PendingButton
@@ -139,7 +139,7 @@ class AuthBox extends PureComponent {
             onClick={this.handleLaunchingDemo}
             preloaderTheme={PreloaderTheme.LIGHT}
           >
-            <FormattedMessage id="authorization.auth-box.demo-button" />
+            <FormattedMessage id="user.auth-box.demo-button" />
           </PendingButton>
         </div>
       </div>
@@ -175,7 +175,7 @@ class AuthBox extends PureComponent {
               <FormattedMessage id="common.app-name" />
             </h2>
             <p className="authbox__description">
-              <FormattedMessage id="authorization.auth-box.description" />
+              <FormattedMessage id="user.auth-box.description" />
             </p>
           </div>
           <div className="authbox__right">

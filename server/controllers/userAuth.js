@@ -81,7 +81,7 @@ const signUp = (req, resp, next) => {
         }
 
         throw new BadRequestException(
-          'authorization.actions.sign-up.user-already-exist'
+          'user.actions.actions.sign-up.user-already-exist'
         );
       }
 
@@ -335,7 +335,7 @@ const resendRecoveryLink = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error('authorization.actions.reset');
+        throw new Error('user.actions.reset');
       }
       const { isActive } = user;
 

@@ -46,7 +46,7 @@ class UserBar extends Component {
         </li>
         <li className="user-bar__menu-item">
           <Link to="/user-profile">
-            <FormattedMessage id="authorization.profile" />
+            <FormattedMessage id="user.profile" />
             <UserIcon />
           </Link>
         </li>
