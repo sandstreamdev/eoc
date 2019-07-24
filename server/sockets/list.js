@@ -452,25 +452,22 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
-const removeMember = (socket, dashboardClients, cohortClients, listClients) => {
+const removeMember = (socket, dashboardClients, listClients) =>
   socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
     const { listId, userId } = data;
 
-    // Broadcast to all other users that are at this list view
+    // Broadcast to every user on the list
     socket.broadcast
       .to(`sack-${listId}`)
       .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
     // Broadcast to that removed user if he is at dashboard view
-    if (dashboardClients.size > 0) {
-      if (dashboardClients.has(userId)) {
-        socket.broadcast
-          .to(dashboardClients.get(userId))
-          .emit(ListActionTypes.DELETE_SUCCESS, listId);
-      }
+    if (dashboardClients.size > 0 && dashboardClients.has(userId)) {
+      socket.broadcast
+        .to(dashboardClients.get(userId))
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
     }
 
-    // cohort list
     List.findById(listId)
       .populate('cohortId')
       .lean()
@@ -479,48 +476,30 @@ const removeMember = (socket, dashboardClients, cohortClients, listClients) => {
         if (doc) {
           const {
             cohortId: cohort,
-            cohortId: { _id: cohortId },
-            type
+            cohortId: { _id: cohortId }
           } = doc;
-          let isCohortMember;
 
-          if (cohort) {
+          if (cohort && listClients.size > 0) {
             const { memberIds: cohortMemberIds } = cohort;
-
-            isCohortMember = checkIfArrayContainsUserId(
+            const isCohortMember = checkIfArrayContainsUserId(
               cohortMemberIds,
               userId
             );
-          }
 
-          if (cohort && type === ListType.SHARED) {
-            if (listClients.size > 0) {
-              listClients.forEach(listClientId => {
-                socket.broadcast
-                  .to(listClients.get(listClientId))
-                  .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
-                    listId,
-                    userId,
-                    isCohortMember
-                  });
-              });
-
-              if (listClients.has(userId)) {
-                socket.broadcast
-                  .to(listClients.get(userId))
-                  .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
-                    cohortId,
-                    isCohortMember,
-                    listId,
-                    type
-                  });
-              }
+            if (listClients.has(userId)) {
+              // Broadcast to people which are on the list view within cohort
+              socket.broadcast
+                .to(listClients.get(userId))
+                .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
+                  cohortId,
+                  isCohortMember,
+                  listId
+                });
             }
           }
         }
       });
   });
-};
 
 module.exports = {
   addComment,
