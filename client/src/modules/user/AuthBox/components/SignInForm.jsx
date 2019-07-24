@@ -7,7 +7,7 @@ import _flowRight from 'lodash/flowRight';
 import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
-import { signIn } from 'modules/authorization/model/actions';
+import { signIn } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';

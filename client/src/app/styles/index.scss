@@ -23,7 +23,7 @@
 // 4. Components
 @import '../../common/components/AppLogo.scss';
 @import '../../app/components/Footer.scss';
-@import '../../modules/authorization/Authbox.scss';
+@import '../../modules/user/AuthBox/Authbox.scss';
 @import '../../common/components/MessageBox.scss';
 @import '../../common/components/Preloader.scss';
 @import '../../modules/list/components/ItemsContainer.scss';
@@ -79,12 +79,12 @@
 @import '../../common/components/Activities/components/ActivitiesList.scss';
 @import '../../common/components/Activities/components/Activity.scss';
 @import '../../common/components/Avatar.scss';
-@import '../../modules/authorization/components/SignUpForm.scss';
-@import '../../modules/authorization/components/SignInForm.scss';
-@import '../../modules/authorization/components/AuthInput.scss';
-@import '../../modules/authorization/components/ResetPassword.scss';
-@import '../../modules/authorization/components/PasswordRecoveryForm.scss';
-@import '../../modules/authorization/components/ValidationInput.scss';
-@import '../../modules/authorization/components/LinkExpired.scss';
-@import '../../modules/authorization/components/SuccessMessage.scss';
-@import '../../modules/authorization/UserProfile.scss';
+@import '../../modules/user/AuthBox/components/SignUpForm.scss';
+@import '../../modules/user/AuthBox/components/SignInForm.scss';
+@import '../../modules/user/AuthBox/components/AuthInput.scss';
+@import '../../modules/user/AuthBox/components/ResetPassword.scss';
+@import '../../modules/user/AuthBox/components/PasswordRecoveryForm.scss';
+@import '../../modules/user/AuthBox/components/ValidationInput.scss';
+@import '../../modules/user/AuthBox/components/LinkExpired.scss';
+@import '../../modules/user/AuthBox/components/SuccessMessage.scss';
+@import '../../modules/user/UserProfile/UserProfile.scss';

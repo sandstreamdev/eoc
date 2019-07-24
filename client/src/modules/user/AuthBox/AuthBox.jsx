@@ -9,7 +9,7 @@ import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import { checkIfCookieSet } from 'common/utils/cookie';
 import CookieConsentBox from 'common/components/CookieConsentBox';
-import { loginDemoUser } from 'modules/authorization/model/actions';
+import { loginDemoUser } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import Preloader, {
   PreloaderSize,

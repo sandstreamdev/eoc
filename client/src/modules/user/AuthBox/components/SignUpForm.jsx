@@ -5,7 +5,7 @@ import _some from 'lodash/some';
 import validator from 'validator';
 
 import AuthInput from './AuthInput';
-import { signUp } from 'modules/authorization/model/actions';
+import { signUp } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';

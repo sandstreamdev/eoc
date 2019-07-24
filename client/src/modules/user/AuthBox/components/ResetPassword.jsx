@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { resetPassword } from '../model/actions';
+import { resetPassword } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 

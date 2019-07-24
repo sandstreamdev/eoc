@@ -8,7 +8,7 @@ import { PreloaderTheme } from 'common/components/Preloader';
 import {
   resendConfirmationLink,
   resendRecoveryLink
-} from 'modules/authorization/model/actions';
+} from 'modules/user/model/actions';
 import { Routes } from 'common/constants/enums';
 
 class LinkExpired extends PureComponent {

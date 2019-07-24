@@ -1,16 +1,15 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
 
 import Avatar from 'common/components/Avatar';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
-import { fetchUserDetails } from './model/actions';
+import { fetchUserDetails } from 'modules/user/model/actions';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;

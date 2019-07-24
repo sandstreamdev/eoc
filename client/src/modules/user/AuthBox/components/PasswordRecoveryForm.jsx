@@ -7,7 +7,7 @@ import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
-import { updatePassword } from '../model/actions';
+import { updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
 

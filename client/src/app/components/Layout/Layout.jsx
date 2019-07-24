@@ -9,15 +9,17 @@ import _isEmpty from 'lodash/isEmpty';
 import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
-import AuthBox, {
+import {
+  AuthBox,
   LinkExpired,
   PasswordRecoveryForm,
   ResetPassword,
-  SuccessMessage
-} from 'modules/authorization';
-import { getLoggedUser } from 'modules/authorization/model/actions';
+  SuccessMessage,
+  UserProfile
+} from 'modules/user';
+import { getLoggedUser } from 'modules/user/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import Footer from '../Footer';
 import Notifications from 'modules/notification';
 import Page404 from 'common/components/Page404';
@@ -28,7 +30,6 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import UserProfile from 'modules/authorization/UserProfile';
 
 export class Layout extends PureComponent {
   constructor(props) {
