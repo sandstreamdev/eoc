@@ -348,6 +348,8 @@ const emitRemoveMemberOnLeaveCohort = socket =>
       });
   });
 
+const removeMember = (socket, listViewClients) => {};
+
 module.exports = {
   addComment,
   addItemToList,
@@ -362,6 +364,7 @@ module.exports = {
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,

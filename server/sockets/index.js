@@ -23,6 +23,7 @@ const {
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
@@ -133,6 +134,7 @@ const socketListenTo = server => {
     emitListsOnAddCohortMember(socket, dashboardViewClients);
     emitRemoveMemberOnLeaveCohort(socket);
     leaveList(socket);
+    removeMember(socket, listViewClients);
     removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);
