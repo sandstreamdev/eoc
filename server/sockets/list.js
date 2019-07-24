@@ -452,7 +452,35 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
-const removeMember = (socket, listViewClients) => {};
+const removeMember = (socket, dashboardClients, cohortClients, listClients) => {
+  socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
+    const { listId, userId } = data;
+
+    // Broadcast to all other users that are at this view
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+
+    // List.findById(listId)
+    //   .populate('cohortId')
+    //   .lean()
+    //   .exec()
+    //   .then(doc => {
+    //     if (doc) {
+    //       const {
+    //         cohortId: { _id: cohortId },
+    //         type
+    //       } = doc;
+
+    //       if (listClients.size > 0) {
+    //         if (type === ListType.LIMITED) {
+    //           const removedUserId = userId.toString();
+    //         }
+    //       }
+    //     }
+    //   });
+  });
+};
 
 module.exports = {
   addComment,
