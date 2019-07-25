@@ -81,7 +81,7 @@ const signUp = (req, resp, next) => {
         }
 
         throw new BadRequestException(
-          'user.actions.actions.sign-up.user-already-exist'
+          'user.actions.sign-up.user-already-exist'
         );
       }
 
