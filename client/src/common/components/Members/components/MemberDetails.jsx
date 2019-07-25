@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { CloseIcon, InfoIcon } from 'assets/images/icons';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import {
   addOwnerRole as addOwnerRoleInCohort,
   removeCohortMember,

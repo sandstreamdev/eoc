@@ -7,7 +7,7 @@ import _flowRight from 'lodash/flowRight';
 import { BellIcon } from 'assets/images/icons';
 import UserBar from './components/UserBar';
 import AppLogo from 'common/components/AppLogo';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import ToolbarLink from './components/ToolbarLink';
 import ToolbarItem from './components/ToolbarItem';
 import { IntlPropType } from 'common/constants/propTypes';

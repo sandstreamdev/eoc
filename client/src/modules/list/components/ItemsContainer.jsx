@@ -9,7 +9,7 @@ import ItemsList from 'modules/list/components/Items';
 import SortBox from 'common/components/SortBox';
 import { SortOrderType } from 'common/constants/enums';
 import FilterBox from 'modules/list/components/FilterBox';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import { IntlPropType } from 'common/constants/propTypes';
 
 const SortOptionType = Object.freeze({

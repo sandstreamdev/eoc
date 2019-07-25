@@ -21,7 +21,7 @@ import FormDialog from 'common/components/FormDialog';
 import { ColorType, Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import { enterView, leaveView } from 'sockets';
 
 class Dashboard extends Component {

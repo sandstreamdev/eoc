@@ -23,7 +23,7 @@ import {
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';

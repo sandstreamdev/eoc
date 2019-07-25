@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
-import { logoutCurrentUser } from 'modules/authorization/model/actions';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { logoutCurrentUser } from 'modules/user/model/actions';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { LogoutIcon, UserIcon, CohortIcon } from 'assets/images/icons';
 import Avatar from 'common/components/Avatar';

@@ -127,3 +127,9 @@ export const fetchUserDetails = userName => dispatch =>
         notificationId: 'user.actions.fetch-user-details-error'
       });
     });
+
+export const changePassword = (token, password, passwordConfirmation) =>
+  postData(`/auth/update-password/${token}`, {
+    password,
+    passwordConfirmation
+  }).then(() => history.replace('/password-recovery-success'));

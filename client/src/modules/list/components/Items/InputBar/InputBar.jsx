@@ -7,7 +7,7 @@ import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import {
   RouterMatchPropType,
   UserPropType,
