@@ -15,11 +15,7 @@ const {
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
-const {
-  emitForMany,
-  emitListForMany,
-  updateListOnDashboardAndCohortView
-} = require('./helpers');
+const { updateListOnDashboardAndCohortView } = require('./helpers');
 
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
@@ -152,11 +148,15 @@ const addListMember = (socket, dashboardClients, cohortClients) =>
           const list = responseWithList(doc, viewerId);
 
           if (cohortId && cohortClients.has(viewerId)) {
-            socket
-              .to(cohortClients.get(viewerId))
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: { ...list }
-              });
+            const { cohortId: id, socketId } = cohortClients.get(viewerId);
+
+            if (id === cohortId.toString()) {
+              socket
+                .to(socketId)
+                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [listId]: { ...list }
+                });
+            }
           }
 
           if (dashboardClients.has(viewerId)) {
@@ -256,12 +256,16 @@ const addMemberRoleInList = (socket, clients) => {
       });
 
     if (clients.has(userId)) {
-      socket.broadcast
-        .to(clients.get(userId))
-        .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
-          ...data,
-          isCurrentUserRoleChanging: true
-        });
+      const { viewId, socketId } = clients.get(userId);
+
+      if (viewId === listId) {
+        socket.broadcast
+          .to(socketId)
+          .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
+            ...data,
+            isCurrentUserRoleChanging: true
+          });
+      }
     }
   });
 };
@@ -278,12 +282,16 @@ const addOwnerRoleInList = (socket, clients) => {
       });
 
     if (clients.has(userId)) {
-      socket.broadcast
-        .to(clients.get(userId))
-        .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-          ...data,
-          isCurrentUserRoleChanging: true
-        });
+      const { viewId, socketId } = clients.get(userId);
+
+      if (viewId === listId) {
+        socket.broadcast
+          .to(socketId)
+          .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
+            ...data,
+            isCurrentUserRoleChanging: true
+          });
+      }
     }
   });
 };
@@ -300,12 +308,16 @@ const removeMemberRoleInList = (socket, clients) => {
       });
 
     if (clients.has(userId)) {
-      socket.broadcast
-        .to(clients.get(userId))
-        .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
-          ...data,
-          isCurrentUserRoleChanging: true
-        });
+      const { viewId, socketId } = clients.get(userId);
+
+      if (viewId === listId) {
+        socket.broadcast
+          .to(socketId)
+          .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+            ...data,
+            isCurrentUserRoleChanging: true
+          });
+      }
     }
   });
 };
@@ -322,12 +334,16 @@ const removeOwnerRoleInList = (socket, clients) => {
       });
 
     if (clients.has(userId)) {
-      socket.broadcast
-        .to(clients.get(userId))
-        .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
-          ...data,
-          isCurrentUserRoleChanging: true
-        });
+      const { viewId, socketId } = clients.get(userId);
+
+      if (viewId === listId) {
+        socket.broadcast
+          .to(socketId)
+          .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+            ...data,
+            isCurrentUserRoleChanging: true
+          });
+      }
     }
   });
 };
@@ -394,14 +410,18 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
                 );
 
                 if (listClients.has(userId)) {
-                  socket.broadcast
-                    .to(listClients.get(userId))
-                    .emit(ListActionTypes.LEAVE_ON_TYPE_CHANGE_SUCCESS, {
-                      cohortId,
-                      isCohortMember,
-                      listId,
-                      type
-                    });
+                  const { viewId, socketId } = listClients.get(userId);
+
+                  if (viewId === listId) {
+                    socket.broadcast
+                      .to(socketId)
+                      .emit(ListActionTypes.LEAVE_ON_TYPE_CHANGE_SUCCESS, {
+                        cohortId,
+                        isCohortMember,
+                        listId,
+                        type
+                      });
+                  }
                 }
               });
             }
@@ -413,42 +433,62 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
 
           if (dashboardClients.size > 0) {
             if (type === ListType.LIMITED && removedViewers) {
-              emitForMany(
-                removedViewers,
-                dashboardClients,
-                socket,
-                ListActionTypes.DELETE_SUCCESS,
-                listId
-              );
+              removedViewers.forEach(id => {
+                const userId = id.toString();
+
+                if (dashboardClients.has(userId)) {
+                  socket.broadcast
+                    .to(dashboardClients.get(userId))
+                    .emit(ListActionTypes.DELETE_SUCCESS, listId);
+                }
+              });
             }
 
-            emitListForMany(
-              viewersIds,
-              dashboardClients,
-              socket,
-              ListActionTypes.FETCH_META_DATA_SUCCESS,
-              list
-            );
+            viewersIds.forEach(id => {
+              const userId = id.toString();
+
+              if (dashboardClients.has(userId)) {
+                socket.broadcast
+                  .to(dashboardClients.get(userId))
+                  .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                    [list._id]: { ...responseWithList(list, userId) }
+                  });
+              }
+            });
           }
 
           if (cohortClients.size > 0) {
             if (type === ListType.LIMITED && removedViewers) {
-              emitForMany(
-                removedViewers,
-                cohortClients,
-                socket,
-                ListActionTypes.DELETE_SUCCESS,
-                listId
-              );
+              removedViewers.forEach(id => {
+                const userId = id.toString();
+
+                if (cohortClients.has(userId)) {
+                  const { viewId, socketId } = cohortClients.get(userId);
+
+                  if (viewId === cohortId.toString()) {
+                    socket.broadcast
+                      .to(socketId)
+                      .emit(ListActionTypes.DELETE_SUCCESS, listId);
+                  }
+                }
+              });
             }
 
-            emitListForMany(
-              viewersIds,
-              cohortClients,
-              socket,
-              ListActionTypes.FETCH_META_DATA_SUCCESS,
-              list
-            );
+            viewersIds.forEach(id => {
+              const userId = id.toString();
+
+              if (cohortClients.has(userId)) {
+                const { viewId, socketId } = cohortClients.get(userId);
+
+                if (viewId === cohortId.toString()) {
+                  socket.broadcast
+                    .to(socketId)
+                    .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                      [list._id]: { ...responseWithList(list, userId) }
+                    });
+                }
+              }
+            });
           }
         }
       });

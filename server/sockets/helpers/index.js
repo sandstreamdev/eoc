@@ -6,25 +6,6 @@ const {
 } = require('../../common/variables');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 
-const emitForMany = (users, clients, socket, event, data) =>
-  users.forEach(id => {
-    const userId = id.toString();
-
-    if (clients.has(userId)) {
-      socket.broadcast.to(clients.get(userId)).emit(event, data);
-    }
-  });
-
-const emitListForMany = (users, clients, socket, event, doc) =>
-  users.forEach(id => {
-    const userId = id.toString();
-    const list = { [doc._id]: { ...responseWithList(doc, userId) } };
-
-    if (clients.has(userId)) {
-      socket.broadcast.to(clients.get(userId)).emit(event, list);
-    }
-  });
-
 const emitCohortMetaData = (cohortId, clients, socket) =>
   Cohort.findById(cohortId)
     .select('_id isArchived createdAt name description memberIds')
@@ -88,11 +69,15 @@ const updateListOnDashboardAndCohortView = (
             const currentList = responseWithList(doc, id);
 
             if (cohortViewClients.has(viewerId)) {
-              socket.broadcast
-                .to(cohortViewClients.get(viewerId))
-                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: { ...currentList }
-                });
+              const { viewId, socketId } = cohortViewClients.get(viewerId);
+
+              if (viewId === cohortId.toString()) {
+                socket.broadcast
+                  .to(socketId)
+                  .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                    [listId]: { ...currentList }
+                  });
+              }
             }
           });
         }
@@ -101,7 +86,5 @@ const updateListOnDashboardAndCohortView = (
 
 module.exports = {
   emitCohortMetaData,
-  emitForMany,
-  emitListForMany,
   updateListOnDashboardAndCohortView
 };
