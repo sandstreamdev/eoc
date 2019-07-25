@@ -295,7 +295,7 @@ export const updateList = (listId, data, listName) => dispatch =>
       });
     });
 
-export const archiveList = (listId, listName) => dispatch =>
+export const archiveList = (listId, listName, cohortId) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
@@ -305,7 +305,7 @@ export const archiveList = (listId, listName) => dispatch =>
         notificationId: 'list.actions.arch-list',
         data: listName
       });
-      history.replace('/dashboard');
+      history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
     })
     .catch(() => {
       dispatch(archiveListFailure());
