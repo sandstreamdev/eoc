@@ -382,6 +382,8 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
             viewersIds
           } = doc;
 
+          const list = { ...doc, cohortId };
+
           if (listClients.size > 0) {
             if (type === ListType.LIMITED && removedViewers) {
               removedViewers.forEach(id => {
@@ -425,7 +427,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
               dashboardClients,
               socket,
               ListActionTypes.FETCH_META_DATA_SUCCESS,
-              doc
+              list
             );
           }
 
@@ -445,7 +447,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
               cohortClients,
               socket,
               ListActionTypes.FETCH_META_DATA_SUCCESS,
-              doc
+              list
             );
           }
         }
