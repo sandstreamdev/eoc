@@ -27,7 +27,7 @@
     justify-content: space-between;
     flex-direction: column;
     background: $bg-color;
-    padding: $m-padding 0;
+    padding: four-by(2) 0;
   }
 
   &__button {
@@ -37,7 +37,7 @@
     display: flex;
     border: 0;
     border-bottom: 1px solid $border-light;
-    padding: $l-padding 0;
+    padding: four-by(4) 0;
     outline: 0;
     font-size: $m-font;
     line-height: 1.2;
@@ -45,7 +45,7 @@
     justify-content: center;
     svg {
       height: 16px;
-      margin-right: $m-margin;
+      margin-right: four-by(2);
     }
 
     &:hover {
@@ -55,6 +55,6 @@
   }
 
   .error-message {
-    margin-bottom: $m-margin;
+    margin-bottom: four-by(2);
   }
 }

@@ -3,7 +3,7 @@
   display: block;
   position: relative;
   border-bottom: 1px solid $item-border;
-  padding: 0 $l-padding 0;
+  padding: 0 four-by(4) 0;
 
   &:first-child {
     margin-top: 0;
@@ -110,7 +110,7 @@
 
   &__label {
     box-sizing: border-box;
-    padding: $l-padding 0;
+    padding: four-by(4) 0;
     display: flex;
     align-items: center;
     text-align: left;
@@ -132,7 +132,7 @@
 
   &__author {
     font-size: $s-font;
-    margin-top: $s-margin;
+    margin-top: four-by(1);
     text-transform: capitalize;
     text-overflow: ellipsis;
   }
@@ -199,7 +199,7 @@
     justify-content: space-between;
     flex-direction: column;
     align-items: stretch;
-    padding-bottom: $l-padding;
+    padding-bottom: four-by(4);
   }
 
   &__features {
@@ -217,7 +217,7 @@
     min-height: 45px;
 
     button:not(:last-of-type) {
-      margin-right: $l-margin;
+      margin-right: four-by(4);
     }
   }
 
@@ -226,7 +226,7 @@
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
-    padding: $l-padding 0;
+    padding: four-by(4) 0;
 
     h4 {
       width: 100%;
@@ -234,11 +234,11 @@
       font-weight: 700;
       text-align: center;
       line-height: 1.2;
-      padding: 0 0 $l-padding;
+      padding: 0 0 four-by(4);
     }
 
     button:first-of-type {
-      margin-right: $l-margin;
+      margin-right: four-by(4);
     }
   }
 
@@ -292,14 +292,14 @@
     position: relative;
 
     &:nth-child(2) {
-      margin-top: $l-margin;
+      margin-top: four-by(4);
     }
   }
 
   &__new-comment {
     text-align: left;
     border-bottom: 1px solid $item-border;
-    margin-bottom: $l-margin;
+    margin-bottom: four-by(4);
   }
 
   &__voting {
@@ -307,12 +307,12 @@
     display: flex;
     align-items: center;
     min-width: 40px;
-    margin-right: $l-margin;
+    margin-right: four-by(4);
     z-index: 3;
   }
 
   &__validation-error {
-    margin-bottom: $s-margin;
+    margin-bottom: four-by(1);
   }
 
   &__save-details {

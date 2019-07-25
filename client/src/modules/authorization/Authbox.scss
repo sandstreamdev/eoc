@@ -6,7 +6,7 @@
   transform: translate(-50%, -50%);
   background-color: $container-bg;
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-  margin-bottom: $l-margin;
+  margin-bottom: four-by(4);
   text-align: center;
   min-height: 300px;
   flex-direction: column;
@@ -25,7 +25,7 @@
     width: auto;
     box-sizing: border-box;
     height: 50%;
-    padding: $l-padding;
+    padding: four-by(4);
     background: url('../../assets/images/auth-intro.jpg') center;
     position: relative;
 
@@ -40,7 +40,7 @@
     width: auto;
     box-sizing: border-box;
     min-width: 240px;
-    padding: $l-padding;
+    padding: four-by(4);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -55,7 +55,7 @@
     line-height: 1.2;
     font-weight: 700;
     color: $text-normal;
-    margin-bottom: $l-margin;
+    margin-bottom: four-by(4);
     text-align: left;
   }
 
@@ -74,7 +74,7 @@
 
     .app-logo {
       @include breakpoint($large) {
-        margin-bottom: $m-margin;
+        margin-bottom: four-by(2);
       }
     }
   }
@@ -83,11 +83,11 @@
     font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
-    margin-bottom: $s-margin;
+    margin-bottom: four-by(1);
   }
 
   &__footer {
-    margin-top: $l-margin;
+    margin-top: four-by(4);
     font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
@@ -110,7 +110,7 @@
     max-width: 166px;
 
     a {
-      margin-bottom: $m-margin;
+      margin-bottom: four-by(2);
     }
   }
 
@@ -118,7 +118,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: $l-padding;
+    padding: four-by(4);
 
     &:not(:last-of-type) {
       border-bottom: 1px solid $border-color;

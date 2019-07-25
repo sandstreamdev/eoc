@@ -1,5 +1,5 @@
 .cohort {
-  margin: $xl-margin 0 $l-margin 0;
+  margin: four-by(8) 0 four-by(4) 0;
   border: 0;
   background-color: $bg-color;
 
@@ -9,11 +9,11 @@
 
   &__header {
     border-bottom: 1px solid $border-light;
-    margin-bottom: $m-margin;
+    margin-bottom: four-by(2);
   }
 
   &__heading {
-    padding: $m-padding 0;
+    padding: four-by(2) 0;
     display: inline-flex;
     align-items: center;
     font-size: 20px;
@@ -23,7 +23,7 @@
 
     svg {
       height: 20px;
-      margin-right: $l-margin;
+      margin-right: four-by(4);
 
       path {
         fill: $text-normal;
@@ -35,7 +35,7 @@
     font-size: 16px;
     line-height: 1.2;
     color: $text-normal;
-    padding: $m-padding 0 $l-padding;
+    padding: four-by(2) 0 four-by(4);
   }
 
   &__name-input {
@@ -44,6 +44,6 @@
 
   &__name-form,
   &__description-form {
-    padding-bottom: $m-padding;
+    padding-bottom: four-by(2);
   }
 }

@@ -2,7 +2,7 @@
   display: flex;
 
   &__input {
-    margin-right: $m-margin;
+    margin-right: four-by(2);
 
     &--disabled {
       cursor: not-allowed;

@@ -9,11 +9,11 @@
     align-items: center;
     height: 38px;
     width: 38px;
-    margin-right: $m-margin;
+    margin-right: four-by(2);
     border: 0;
     cursor: pointer;
     outline: none;
-    padding: 0 $m-padding 2px;
+    padding: 0 four-by(2) 2px;
     svg {
       height: 16px;
 
@@ -27,7 +27,7 @@
     box-sizing: border-box;
     width: 250px;
     background: $bg-color;
-    padding: $l-padding;
+    padding: four-by(4);
     top: 50px;
     right: -62px;
     filter: drop-shadow(0 2px 2px $shadow-color-light);

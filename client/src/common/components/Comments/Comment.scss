@@ -1,9 +1,9 @@
 .comment {
   display: flex;
   align-items: flex-start;
-  margin-bottom: $l-margin;
+  margin-bottom: four-by(4);
   box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
-  padding: $l-padding;
+  padding: four-by(4);
 
   &__body {
     text-align: left;
@@ -22,13 +22,13 @@
   &__date {
     color: $text-normal;
     font-size: $s-font;
-    margin-top: $s-margin;
+    margin-top: four-by(1);
   }
 
   &__content {
     font-size: $m-font;
     line-height: 1.2;
-    margin-top: $l-margin;
+    margin-top: four-by(4);
     color: $text-normal;
     overflow-wrap: break-word;
   }
@@ -45,7 +45,7 @@
 
   &__avatar {
     position: relative;
-    margin-right: $l-margin;
+    margin-right: four-by(4);
     min-width: 32px;
     width: 32px;
     display: flex;

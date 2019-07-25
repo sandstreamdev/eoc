@@ -2,11 +2,11 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: $m-margin;
+  margin-bottom: four-by(2);
 
   &__label {
     width: 100%;
-    padding: $s-padding 0;
+    padding: four-by(1) 0;
     display: flex;
     justify-content: space-between;
 
@@ -40,7 +40,7 @@
     justify-content: flex-start;
     align-items: center;
     text-align: left;
-    padding: $s-padding 0;
+    padding: four-by(1) 0;
     overflow-wrap: break-word;
   }
 
@@ -55,7 +55,7 @@
       }
     }
     &--invalid {
-      padding-right: $m-padding;
+      padding-right: four-by(2);
       svg {
         width: 12px;
         path {

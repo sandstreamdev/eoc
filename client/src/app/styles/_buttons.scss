@@ -5,7 +5,7 @@
   color: $text-white;
   font-size: $m-font;
   text-transform: uppercase;
-  padding: $m-padding $l-padding;
+  padding: four-by(2) four-by(4);
   line-height: 1.2;
   text-decoration: none;
   display: block;
@@ -48,7 +48,7 @@
   font-size: $m-font;
   color: $text-normal;
   cursor: pointer;
-  padding: $m-padding 0;
+  padding: four-by(2) 0;
   text-decoration: underline;
   text-transform: capitalize;
 

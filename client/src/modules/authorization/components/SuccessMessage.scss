@@ -10,14 +10,14 @@
   flex-direction: column;
   width: 250px;
   align-items: center;
-  padding: $xl-padding;
+  padding: four-by(8);
 
   @include breakpoint($xsmall) {
     width: 300px;
   }
 
   &__heading {
-    margin-bottom: $l-margin;
+    margin-bottom: four-by(4);
   }
 
   &__message {

@@ -1,5 +1,5 @@
 .list {
-  margin: $xl-margin 0 $l-margin 0;
+  margin: four-by(8) 0 four-by(4) 0;
   height: 100%;
   min-height: 100%;
 
@@ -9,7 +9,7 @@
 
   &__items {
     position: relative;
-    margin: $l-margin 0 0;
+    margin: four-by(4) 0 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

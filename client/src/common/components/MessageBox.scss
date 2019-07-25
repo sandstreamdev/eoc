@@ -1,7 +1,7 @@
 .message-box {
   box-shadow: 0 1px 3px rgba($shadow-color, 0.5);
   box-sizing: border-box;
-  padding: $l-padding;
+  padding: four-by(4);
   display: flex;
   align-items: center;
   text-align: left;
@@ -10,7 +10,7 @@
   transition: color 200ms ease-in;
   overflow: hidden;
   background: $bg-color;
-  margin: $l-margin 0;
+  margin: four-by(4) 0;
   font-size: $s-font;
   font-weight: 700;
   line-height: 1.4;
@@ -24,7 +24,7 @@
     min-width: 20px;
     min-height: 20px;
     border-radius: 50%;
-    margin-right: $m-margin;
+    margin-right: four-by(2);
     box-sizing: border-box;
     border: 1px solid $message-bg-gray;
   }
@@ -45,7 +45,7 @@
   &--gray {
     box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
     font-weight: 400;
-    padding: $l-padding;
+    padding: four-by(4);
     color: $text-normal;
 
     svg {

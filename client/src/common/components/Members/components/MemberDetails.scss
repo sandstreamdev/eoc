@@ -80,7 +80,7 @@
     padding: 0 15px 0 10px;
 
     span:nth-child(2) {
-      margin-left: $s-margin;
+      margin-left: four-by(1);
     }
   }
 
@@ -177,11 +177,11 @@
   }
 
   &__leave-box {
-    margin-top: $s-margin;
+    margin-top: four-by(1);
   }
 
   &__leave-box-confirmation-footer {
-    margin-top: $m-margin;
+    margin-top: four-by(2);
     display: flex;
     justify-content: space-between;
     align-items: center;

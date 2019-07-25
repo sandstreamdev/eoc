@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: flex-start;
   color: $text-normal;
-  margin-bottom: $m-margin;
+  margin-bottom: four-by(2);
   position: relative;
 
   &--error {
@@ -15,7 +15,7 @@
   }
 
   &__input {
-    margin-top: $m-margin;
+    margin-top: four-by(2);
   }
 
   &__check-icon {
@@ -50,6 +50,6 @@
   }
 
   span {
-    margin-top: $s-margin;
+    margin-top: four-by(1);
   }
 }

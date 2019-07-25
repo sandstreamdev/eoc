@@ -8,7 +8,7 @@
     font-size: $l-font;
     font-weight: 500;
     line-height: 1.2;
-    margin-bottom: $s-margin;
+    margin-bottom: four-by(1);
 
     &--disabled {
       color: $button-disabled;

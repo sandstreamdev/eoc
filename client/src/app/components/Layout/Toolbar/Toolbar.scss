@@ -10,7 +10,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: $s-padding $l-padding;
+    padding: four-by(1) four-by(4);
     position: relative;
   }
 
@@ -26,7 +26,7 @@
 
   &__company-link {
     display: block;
-    margin-right: $l-margin;
+    margin-right: four-by(4);
   }
 
   &__logo {

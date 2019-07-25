@@ -16,7 +16,7 @@
   }
 
   &__header {
-    padding: $m-padding;
+    padding: four-by(2);
     color: $text-normal;
     font-size: $m-font;
     letter-spacing: 0.2px;
@@ -38,11 +38,11 @@
     font-size: 13px;
     line-height: 1.2;
     color: $text-normal;
-    padding: $l-padding $l-padding 0;
+    padding: four-by(4) four-by(4) 0;
   }
 
   &__footer {
-    padding: $l-padding;
+    padding: four-by(4);
     display: flex;
     flex-direction: column;
 
@@ -62,10 +62,10 @@
 
   &__button {
     &:first-of-type {
-      margin: 0 0 $l-margin;
+      margin: 0;
 
       @include breakpoint($xxsmall) {
-        margin-right: $l-margin;
+        margin-right: four-by(4);
       }
     }
   }

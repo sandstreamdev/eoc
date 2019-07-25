@@ -2,7 +2,7 @@
   &__heading {
     color: $text-normal;
     font-size: $m-font;
-    margin-bottom: $l-margin;
+    margin-bottom: four-by(4);
   }
 
   &__content {
@@ -23,8 +23,8 @@
   }
 
   li:not(:last-of-type) {
-    padding-bottom: $l-padding;
-    margin-bottom: $l-margin;
+    padding-bottom: four-by(4);
+    margin-bottom: four-by(4);
     border-bottom: 1px solid $border-color;
   }
 

@@ -16,7 +16,7 @@
 
   &__icon {
     display: inline-block;
-    margin-right: $m-margin;
+    margin-right: four-by(2);
     height: 14px;
   }
 
@@ -37,7 +37,7 @@
   }
 
   svg {
-    margin-right: $m-margin;
+    margin-right: four-by(2);
     height: 14px;
 
     path {

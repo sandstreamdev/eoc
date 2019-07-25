@@ -3,7 +3,7 @@
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
-  padding: $l-padding 0;
+  padding: four-by(4) 0;
 
   h4 {
     width: 100%;
@@ -11,10 +11,10 @@
     font-weight: 700;
     text-align: center;
     line-height: 1.2;
-    padding: 0 0 $l-padding;
+    padding: 0 0 four-by(4);
   }
 
   button:first-of-type {
-    margin-right: $l-margin;
+    margin-right: four-by(4);
   }
 }

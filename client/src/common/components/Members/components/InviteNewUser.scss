@@ -1,7 +1,7 @@
 .invite-user {
   box-shadow: 0 0 5px rgba($shadow-color, 0.15);
   box-sizing: border-box;
-  padding: $l-padding $l-padding;
+  padding: four-by(4) four-by(4);
   margin: 0;
   width: 100%;
   text-align: left;
@@ -15,7 +15,7 @@
   }
 
   &__message {
-    margin-bottom: $l-margin;
+    margin-bottom: four-by(4);
   }
 
   &__footer {

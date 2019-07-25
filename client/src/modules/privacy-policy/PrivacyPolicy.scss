@@ -7,7 +7,7 @@
     font-weight: 400;
     text-align: center;
     font-size: 52px;
-    padding-top: $xl-padding;
+    padding-top: four-by(8);
   }
 
   &__intro-subheading {
@@ -16,11 +16,11 @@
     text-align: center;
     font-size: $s-font;
     line-height: 1.5;
-    margin: $l-margin 0;
+    margin: four-by(4) 0;
   }
 
   &__info-wrapper {
-    padding: 0 $l-padding;
+    padding: 0 four-by(4);
     &:nth-child(even) {
       background-color: $dark-orange;
       color: $white;
@@ -29,7 +29,7 @@
 
   &__info {
     font-size: 16px;
-    padding: $xl-padding 0;
+    padding: four-by(8) 0;
     margin: 0 auto;
     max-width: 70ch;
   }
@@ -37,7 +37,7 @@
   &__header {
     font-weight: 500;
     font-size: $xxxl-font;
-    padding: 0 0 $m-padding 0;
+    padding: 0 0 four-by(2) 0;
   }
 
   &__content {
