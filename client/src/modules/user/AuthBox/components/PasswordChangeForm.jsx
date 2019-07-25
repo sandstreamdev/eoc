@@ -1,9 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-// import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _some from 'lodash/some';
-// import _flowRight from 'lodash/flowRight';
 import validator from 'validator';
 
 import AuthInput from './AuthInput';
@@ -150,7 +148,6 @@ class PasswordChangeForm extends PureComponent {
   handleChangePassword = event => {
     event.preventDefault();
     const { password, newPassword, confirmPasswordValue } = this.state;
-    // const { changePassword } = this.props;
 
     this.setState({ pending: true });
 
@@ -270,11 +267,11 @@ class PasswordChangeForm extends PureComponent {
     </p>
   );
 
-  handleFormClose = () => {
+  handleFormClose = event => {
     const { onCancel } = this.props;
 
     this.setState({ passwordChanged: false });
-    onCancel();
+    onCancel(event);
   };
 
   render() {
@@ -293,16 +290,7 @@ class PasswordChangeForm extends PureComponent {
 PasswordChangeForm.propTypes = {
   intl: IntlPropType.isRequired,
 
-  // changePassword: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired
 };
-
-// export default _flowRight(
-//   injectIntl,
-//   connect(
-//     null,
-//     { changePassword }
-//   )
-// )(PasswordChangeForm);
 
 export default injectIntl(PasswordChangeForm);

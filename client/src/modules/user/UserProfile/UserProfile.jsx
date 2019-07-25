@@ -50,7 +50,6 @@ class UserProfile extends PureComponent {
 
   handlePasswordChangeVisibility = event => {
     event.preventDefault();
-
     this.setState(({ isPasswordUpdateFormVisible }) => ({
       isPasswordUpdateFormVisible: !isPasswordUpdateFormVisible
     }));
