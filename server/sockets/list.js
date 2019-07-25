@@ -480,17 +480,10 @@ const removeMember = (socket, dashboardClients, listClients, cohortClients) =>
             const { _id: cohortId } = cohort;
 
             if (cohort) {
-              const { memberIds: cohortMemberIds } = cohort;
-              const isCohortMember = checkIfArrayContainsUserId(
-                cohortMemberIds,
-                userId
-              );
-
               socket.broadcast
                 .to(listClients.get(userId))
                 .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
                   cohortId,
-                  isCohortMember,
                   listId
                 });
             }
@@ -506,6 +499,44 @@ const removeMember = (socket, dashboardClients, listClients, cohortClients) =>
     }
   });
 
+const archiveList = (socket, dashboardClients, cohortClients) =>
+  socket.on(ListActionTypes.ARCHIVE_SUCCESS, data => {
+    const { listId } = data;
+
+    // broadcast to clients on list view
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
+
+    List.findById(listId)
+      .populate('cohortId')
+      .lean()
+      .exec()
+      .then(doc => {
+        const { viewersIds } = doc;
+
+        viewersIds.forEach(viewerId => {
+          dashboardClients.forEach((socketId, clientId) => {
+            if (clientId === viewerId.toString()) {
+              // Broadcast to clients on dashboard that have this list
+              socket.broadcast
+                .to(dashboardClients.get(clientId))
+                .emit(ListActionTypes.DELETE_SUCCESS, listId);
+            }
+          });
+
+          return cohortClients.forEach((socketId, clientId) => {
+            if (clientId === viewerId.toString()) {
+              // Broadcast to clients on cohort view
+              socket.broadcast
+                .to(cohortClients.get(clientId))
+                .emit(ListActionTypes.DELETE_SUCCESS, listId);
+            }
+          });
+        });
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -513,6 +544,7 @@ module.exports = {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
+  archiveList,
   changeItemOrderState,
   changeListType,
   clearVote,

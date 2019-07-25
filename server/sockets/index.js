@@ -16,6 +16,7 @@ const {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
+  archiveList,
   changeItemOrderState,
   changeListType,
   clearVote,
@@ -128,6 +129,7 @@ const socketListenTo = server => {
     addMemberRoleInList(socket, listViewClients);
     addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
+    archiveList(socket, dashboardViewClients, cohortViewClients);
     changeItemOrderState(socket, dashboardViewClients, cohortViewClients);
     changeListType(
       socket,

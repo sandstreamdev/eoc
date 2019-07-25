@@ -13,16 +13,32 @@ export const listEventsController = (event, data, dispatch) => {
       );
     }
     case ListEvents.REMOVE_MEMBER_SUCCESS: {
-      const { cohortId, isCohortMember } = data;
+      const { cohortId } = data;
 
       if (cohortId) {
         dispatch({ type: event, payload: data });
-        history.replace(
-          `/${isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
-        );
+        history.replace(`cohort/${cohortId}`);
 
         return window.location.reload();
       }
+
+      history.replace('/dashboard');
+      window.location.reload();
+
+      return dispatch({ type: event, payload: data });
+    }
+    case ListEvents.ARCHIVE_SUCCESS: {
+      const { cohortId } = data;
+
+      if (cohortId) {
+        dispatch({ type: event, payload: data });
+        history.replace(`/cohort/${cohortId}`);
+
+        return window.location.reload();
+      }
+
+      history.replace('/dashboard');
+      window.location.reload();
 
       return dispatch({ type: event, payload: data });
     }

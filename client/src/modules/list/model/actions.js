@@ -306,6 +306,7 @@ export const archiveList = (listId, listName, cohortId) => dispatch =>
         data: listName
       });
       history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
+      socket.emit(ListActionTypes.ARCHIVE_SUCCESS, { listId, cohortId });
     })
     .catch(() => {
       dispatch(archiveListFailure());
