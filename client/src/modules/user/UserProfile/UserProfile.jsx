@@ -132,7 +132,7 @@ class UserProfile extends PureComponent {
 
   renderAccountInfo = () => {
     const {
-      currentUser: { activationDate }
+      currentUser: { activationDate, isPassword }
     } = this.props;
     const { isPasswordUpdateFormVisible } = this.state;
 
@@ -146,31 +146,35 @@ class UserProfile extends PureComponent {
           <FormattedMessage id="user.profile.account" />
         </h2>
         <ul className="user-profile__data-list">
-          <li
-            className={classNames(
-              'user-profile__data-item user-profile__data-item--clickable',
-              {
-                'user-profile__data-item--clickable--form-visible': isPasswordUpdateFormVisible,
-                'user-profile__data-item--clickable--form-not-visible': !isPasswordUpdateFormVisible
-              }
-            )}
-            onClick={this.handlePasswordChangeVisibility}
-          >
-            <span className="user-profile__data-name">
-              <FormattedMessage id={passwordTitleId} />
-            </span>
-            {!isPasswordUpdateFormVisible && (
-              <span className="user-profile__data-value">
-                &#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;
-              </span>
-            )}
-          </li>
-          {isPasswordUpdateFormVisible && (
-            <li className="user-profile__update-password">
-              <PasswordChangeForm
-                onCancel={this.handlePasswordChangeVisibility}
-              />
-            </li>
+          {isPassword && (
+            <Fragment>
+              <li
+                className={classNames(
+                  'user-profile__data-item user-profile__data-item--clickable',
+                  {
+                    'user-profile__data-item--clickable--form-visible': isPasswordUpdateFormVisible,
+                    'user-profile__data-item--clickable--form-not-visible': !isPasswordUpdateFormVisible
+                  }
+                )}
+                onClick={this.handlePasswordChangeVisibility}
+              >
+                <span className="user-profile__data-name">
+                  <FormattedMessage id={passwordTitleId} />
+                </span>
+                {!isPasswordUpdateFormVisible && (
+                  <span className="user-profile__data-value">
+                    &#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;
+                  </span>
+                )}
+              </li>
+              {isPasswordUpdateFormVisible && (
+                <li className="user-profile__update-password">
+                  <PasswordChangeForm
+                    onCancel={this.handlePasswordChangeVisibility}
+                  />
+                </li>
+              )}
+            </Fragment>
           )}
           <li className="user-profile__data-item">
             <span className="user-profile__data-name">

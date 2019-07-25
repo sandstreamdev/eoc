@@ -367,10 +367,11 @@ const resendRecoveryLink = (req, resp, next) => {
 
 const getUserDetails = (req, resp) => {
   if (req.user) {
-    const { activatedAt, createdAt, email } = req.user;
+    const { activatedAt, createdAt, email, password } = req.user;
     const activationDate = activatedAt || createdAt;
+    const isPassword = !!password;
 
-    return resp.send({ activationDate, email });
+    return resp.send({ activationDate, email, isPassword });
   }
 
   return resp.sendStatus(204);
