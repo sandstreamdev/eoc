@@ -503,7 +503,7 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
   socket.on(ListActionTypes.ARCHIVE_SUCCESS, data => {
     const { listId } = data;
 
-    // broadcast to clients on list view
+    // Broadcast to clients on list view
     socket.broadcast
       .to(`sack-${listId}`)
       .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
@@ -525,9 +525,9 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
             }
           });
 
-          return cohortClients.forEach((socketId, clientId) => {
+          cohortClients.forEach((socketId, clientId) => {
             if (clientId === viewerId.toString()) {
-              // Broadcast to clients on cohort view
+              // Broadcast to clients on cohort view that have this list
               socket.broadcast
                 .to(cohortClients.get(clientId))
                 .emit(ListActionTypes.DELETE_SUCCESS, listId);

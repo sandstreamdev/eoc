@@ -141,7 +141,7 @@ class List extends Component {
   handleListArchivization = listId => () => {
     const {
       archiveList,
-      list: { isOwner, name, cohortId }
+      list: { cohortId, isOwner, name }
     } = this.props;
 
     if (isOwner) {
