@@ -1,233 +1,9 @@
-// import React, { PureComponent } from 'react';
-// import { FormattedMessage, injectIntl } from 'react-intl';
-// import { withRouter } from 'react-router-dom';
-// import validator from 'validator';
-// import _flowRight from 'lodash/flowRight';
-// import _debounce from 'lodash/debounce';
-// import _trim from 'lodash/trim';
-
-// import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
-// import { updatePassword } from 'modules/user/model/actions';
-// import ValidationInput from './ValidationInput';
-// import PendingButton from 'common/components/PendingButton';
-
-// class PasswordUpdateForm extends PureComponent {
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       errors: {
-//         comparePasswordsError: '',
-//         passwordError: '',
-//         passwordUpdateError: false
-//       },
-//       password: '',
-//       passwordConfirmation: '',
-//       passwordConfirmationSuccess: false,
-//       passwordSuccess: false,
-//       pending: false
-//     };
-
-//     this.debouncedPasswordValidation = _debounce(this.validatePassword, 500);
-//     this.debouncedComparePasswords = _debounce(this.comparePasswords, 500);
-//   }
-
-//   componentWillUnmount() {
-//     this.debouncedPasswordValidation.cancel();
-//     this.debouncedComparePasswords.cancel();
-//   }
-
-//   handlePasswordChange = event => {
-//     const {
-//       target: { value }
-//     } = event;
-
-//     this.setState({ password: value }, () =>
-//       this.debouncedPasswordValidation(value)
-//     );
-//   };
-
-//   handlePasswordConfirmationChange = event => {
-//     const {
-//       target: { value }
-//     } = event;
-
-//     this.setState({ passwordConfirmation: value }, () =>
-//       this.debouncedComparePasswords()
-//     );
-//   };
-
-//   handleSubmit = () => {
-//     const { password, passwordConfirmation } = this.state;
-//     const {
-//       match: {
-//         params: { token }
-//       }
-//     } = this.props;
-
-//     this.setState({ pending: true });
-//     updatePassword(token, password, passwordConfirmation)
-//       .then(() => this.setState({ pending: false }))
-//       .catch(() => this.handleErrors());
-//   };
-
-//   handleErrors = () => {
-//     const { errors } = this.state;
-
-//     this.setState({
-//       errors: {
-//         ...errors,
-//         passwordUpdateError: true
-//       },
-//       password: '',
-//       passwordConfirmation: '',
-//       passwordConfirmationSuccess: false,
-//       passwordSuccess: false,
-//       pending: false
-//     });
-//   };
-
-//   validatePassword = password => {
-//     const { errors } = this.state;
-//     const { matches } = validator;
-
-//     if (matches(password, /^[^\s]{4,32}$/)) {
-//       this.setState(
-//         {
-//           errors: {
-//             ...errors,
-//             passwordError: ''
-//           },
-//           passwordSuccess: true
-//         },
-//         this.comparePasswords
-//       );
-//     } else {
-//       this.setState(
-//         {
-//           errors: {
-//             ...errors,
-//             passwordError: 'user.auth.input.password.invalid'
-//           },
-//           passwordSuccess: false
-//         },
-//         this.comparePasswords
-//       );
-//     }
-//   };
-
-//   comparePasswords = () => {
-//     const { errors, password, passwordConfirmation } = this.state;
-
-//     if (_trim(password) === _trim(passwordConfirmation)) {
-//       this.setState({
-//         errors: {
-//           ...errors,
-//           comparePasswordsError: ''
-//         },
-//         passwordConfirmationSuccess: true
-//       });
-//     } else {
-//       this.setState({
-//         errors: {
-//           ...errors,
-//           comparePasswordsError: 'user.auth.input.password.not-match'
-//         },
-//         passwordConfirmationSuccess: false
-//       });
-//     }
-
-//     if (!passwordConfirmation) {
-//       this.setState({
-//         errors: {
-//           ...errors,
-//           comparePasswordsError: ''
-//         },
-//         passwordConfirmationSuccess: false
-//       });
-//     }
-//   };
-
-//   render() {
-//     const {
-//       errors: { passwordError, comparePasswordsError, passwordUpdateError },
-//       password,
-//       passwordConfirmation,
-//       passwordConfirmationSuccess,
-//       passwordSuccess,
-//       pending
-//     } = this.state;
-//     const isButtonDisabled = !passwordSuccess || !passwordConfirmationSuccess;
-//     const {
-//       intl: { formatMessage }
-//     } = this.props;
-
-//     return (
-//       <form className="pass-update-form" onSubmit={this.handleSubmit}>
-//         <h2 className="pass-update-form__heading">
-//           <FormattedMessage id="user.auth.pass-update-form.heading" />
-//         </h2>
-//         <div className="pass-update-form__body">
-//           <ValidationInput
-//             errorId={passwordError}
-//             label={formatMessage({ id: 'user.password' })}
-//             onChange={this.handlePasswordChange}
-//             success={passwordSuccess}
-//             type="password"
-//             value={password}
-//           />
-//           <ValidationInput
-//             errorId={comparePasswordsError}
-//             label={formatMessage({
-//               id: 'user.auth.input.password.confirm'
-//             })}
-//             onChange={this.handlePasswordConfirmationChange}
-//             success={passwordConfirmationSuccess}
-//             type="password"
-//             value={passwordConfirmation}
-//           />
-//           <div className="password-change-form__buttons">
-//             <button
-//               className="primary-button"
-//               disabled={pending}
-//               // onClick={onCancel}
-//               type="button"
-//             >
-//               <FormattedMessage id="common.button.cancel" />
-//             </button>
-//             <PendingButton
-//               className="primary-button"
-//               disabled={isButtonDisabled}
-//               onClick={this.handleSubmit}
-//               pending={pending}
-//             >
-//               <FormattedMessage id="common.new-comment.save" />
-//             </PendingButton>
-//           </div>
-//           {passwordUpdateError && (
-//             <div className="pass-update-form__error">
-//               <FormattedMessage id="common.something-went-wrong" />
-//             </div>
-//           )}
-//         </div>
-//       </form>
-//     );
-//   }
-// }
-
-// PasswordUpdateForm.propTypes = {
-//   intl: IntlPropType,
-//   match: RouterMatchPropType.isRequired
-// };
-
-// export default _flowRight(injectIntl, withRouter)(PasswordUpdateForm);
-
 import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _some from 'lodash/some';
-import _flowRight from 'lodash/flowRight';
+// import _flowRight from 'lodash/flowRight';
 import validator from 'validator';
 
 import AuthInput from './AuthInput';
@@ -374,6 +150,7 @@ class PasswordChangeForm extends PureComponent {
   handleChangePassword = event => {
     event.preventDefault();
     const { password, newPassword, confirmPasswordValue } = this.state;
+    // const { changePassword } = this.props;
 
     this.setState({ pending: true });
 
@@ -389,7 +166,6 @@ class PasswordChangeForm extends PureComponent {
 
           if (err instanceof ValidationException) {
             const { isConfirmPasswordError, isNewPasswordError } = err.errors;
-
             newState.higherLevelErrors = {
               confirmPasswordValueError: isConfirmPasswordError
                 ? 'user.auth.input.password.not-match'
@@ -427,7 +203,6 @@ class PasswordChangeForm extends PureComponent {
       pending,
       changePasswordErrorId
     } = this.state;
-    const { onCancel } = this.props;
     const hasChangePasswordFailed = changePasswordErrorId.length > 0;
 
     return (
@@ -470,7 +245,7 @@ class PasswordChangeForm extends PureComponent {
             <button
               className="primary-button"
               disabled={pending}
-              onClick={onCancel}
+              onClick={this.handleFormClose}
               type="button"
             >
               <FormattedMessage id="common.button.cancel" />
@@ -495,6 +270,13 @@ class PasswordChangeForm extends PureComponent {
     </p>
   );
 
+  handleFormClose = () => {
+    const { onCancel } = this.props;
+
+    this.setState({ passwordChanged: false });
+    onCancel();
+  };
+
   render() {
     const { passwordChanged } = this.state;
 
@@ -511,13 +293,16 @@ class PasswordChangeForm extends PureComponent {
 PasswordChangeForm.propTypes = {
   intl: IntlPropType.isRequired,
 
+  // changePassword: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired
 };
 
-export default _flowRight(
-  injectIntl,
-  connect(
-    null,
-    { changePassword }
-  )
-)(PasswordChangeForm);
+// export default _flowRight(
+//   injectIntl,
+//   connect(
+//     null,
+//     { changePassword }
+//   )
+// )(PasswordChangeForm);
+
+export default injectIntl(PasswordChangeForm);

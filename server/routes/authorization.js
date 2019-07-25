@@ -8,6 +8,7 @@ const {
   setUser
 } = require('../config/auth');
 const {
+  changePassword,
   confirmEmail,
   getLoggedUser,
   getUserDetails,
@@ -51,5 +52,5 @@ router.post(
   sendResetPasswordLink
 );
 router.get('/user-details', authorize, getUserDetails);
-
+router.post('/change-password', authorize, changePassword);
 module.exports = router;

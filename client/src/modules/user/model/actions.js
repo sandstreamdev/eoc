@@ -128,8 +128,9 @@ export const fetchUserDetails = userName => dispatch =>
       });
     });
 
-export const changePassword = (token, password, passwordConfirmation) =>
-  postData(`/auth/update-password/${token}`, {
+export const changePassword = (password, newPassword, passwordConfirm) =>
+  postData('/auth/change-password', {
     password,
-    passwordConfirmation
-  }).then(() => history.replace('/password-recovery-success'));
+    newPassword,
+    passwordConfirm
+  });

@@ -376,7 +376,48 @@ const getUserDetails = (req, resp) => {
   return resp.sendStatus(204);
 };
 
+const changePassword = (req, resp) => {
+  const { password, newPassword, passwordConfirm } = req.body;
+  const errors = {};
+  const { matches } = validator;
+  const { email } = req.user;
+
+  if (!matches(newPassword, /^[^\s]{4,32}$/)) {
+    errors.isNewPasswordError = true;
+  }
+
+  if (newPassword !== passwordConfirm) {
+    errors.isConfirmPasswordError = true;
+  }
+
+  if (_some(errors, error => error !== undefined)) {
+    return resp.status(406).send(errors);
+  }
+
+  User.findOne({ email }, 'password')
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new Error();
+      }
+
+      const { password: dbPassword } = doc;
+
+      if (bcrypt.compareSync(password + email, dbPassword)) {
+        const newHashedPassword = bcrypt.hashSync(newPassword + email, 12);
+
+        // eslint-disable-next-line no-param-reassign
+        doc.password = newHashedPassword;
+
+        return doc.save();
+      }
+    })
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
+};
+
 module.exports = {
+  changePassword,
   confirmEmail,
   getLoggedUser,
   getUserDetails,

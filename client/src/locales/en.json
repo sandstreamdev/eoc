@@ -115,6 +115,7 @@
   "user.actions.password-recovery-success": "Password successfully updated. Please go to the {link} and sign in to app.",
   "user.actions.recovery-password-default-error": "Account does not exist or is not activated.",
   "user.actions.reset": "An email with instructions to reset password has been sent to {data} if it is associated with an EOC account. Your existing password has not been changed.",
+  "user.actions.change-password-success": "Password successfully changed.",
   "cohort.cohort-header.add-description": "Add description",
   "cohort.cohorts.no-cohorts": "There are no cohorts yet!",
   "cohort.cohorts.no-arch-cohorts": "You have no archived cohorts!",

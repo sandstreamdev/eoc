@@ -17,7 +17,7 @@ class UserProfile extends PureComponent {
   pendingPromise = null;
 
   state = {
-    isPasswordUpdateFormVisible: true,
+    isPasswordUpdateFormVisible: false,
     pending: false
   };
 

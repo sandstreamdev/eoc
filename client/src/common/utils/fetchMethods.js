@@ -55,7 +55,7 @@ const handleFetchErrors = resp => {
 
     if (contentType.includes('application/json')) {
       return resp.json().then(json => {
-        throw new ValidationException('', json.errors);
+        throw new ValidationException('', json);
       });
     }
 
