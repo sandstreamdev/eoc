@@ -452,7 +452,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
-const removeMember = (socket, dashboardClients, listClients) =>
+const removeMember = (socket, dashboardClients, listClients, cohortClients) =>
   socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
     const { listId, userId } = data;
 
@@ -496,6 +496,13 @@ const removeMember = (socket, dashboardClients, listClients) =>
             }
           }
         });
+    }
+
+    // Broadcast to that removed user if he is on the cohort view
+    if (cohortClients.has(userId)) {
+      socket.broadcast
+        .to(cohortClients.get(userId))
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
     }
   });
 

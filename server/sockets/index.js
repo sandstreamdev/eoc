@@ -141,7 +141,12 @@ const socketListenTo = server => {
     emitListsOnAddCohortMember(socket, dashboardViewClients);
     emitRemoveMemberOnLeaveCohort(socket);
     leaveList(socket);
-    removeMember(socket, dashboardViewClients, listViewClients);
+    removeMember(
+      socket,
+      dashboardViewClients,
+      listViewClients,
+      cohortViewClients
+    );
     removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);
