@@ -12,7 +12,7 @@ export const listEventsController = (event, data, dispatch) => {
         `/${isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
       );
     }
-    case ListEvents.REMOVE_MEMBER_SUCCESS: {
+    case ListEvents.REMOVE_BY_SOMEONE: {
       const { cohortId, listId } = data;
 
       if (cohortId) {

@@ -5,14 +5,14 @@ const socket = io({ forceNew: true });
 
 export const joinRoom = (route, id, userId) => {
   const room = _upperFirst(route);
-  const data = { room: `${route}-${id}`, userId, id };
+  const data = { room: `${route}-${id}`, userId, viewId: id };
 
   socket.emit(`join${room}Room`, data);
 };
 
 export const leaveRoom = (route, id, userId) => {
   const room = _upperFirst(route);
-  const data = { room: `${route}-${id}`, userId, id };
+  const data = { room: `${route}-${id}`, userId, viewId: id };
 
   socket.emit(`leave${room}Room`, data);
 };
