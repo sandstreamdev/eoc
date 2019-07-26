@@ -554,7 +554,7 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
             // Broadcast to clients on dashboard that have this list
             socket.broadcast
               .to(socketId)
-              .emit(ListActionTypes.DELETE_SUCCESS, listId);
+              .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
           }
 
           if (cohortClients.has(id)) {
@@ -563,7 +563,7 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
             // Broadcast to clients on cohort view that have this list
             socket.broadcast
               .to(socketId)
-              .emit(ListActionTypes.DELETE_SUCCESS, listId);
+              .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
           }
         });
       });

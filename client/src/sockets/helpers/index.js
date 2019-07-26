@@ -1,5 +1,6 @@
 import { ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
+import { ListActionTypes } from '../../modules/list/model/actionTypes';
 
 export const listEventsController = (event, data, dispatch) => {
   switch (event) {
@@ -25,19 +26,13 @@ export const listEventsController = (event, data, dispatch) => {
       return history.replace('/dashboard');
     }
     case ListEvents.ARCHIVE_SUCCESS: {
-      const { cohortId } = data;
+      const { cohortId, listId } = data;
 
-      if (cohortId) {
-        dispatch({ type: event, payload: data });
-        history.replace(`/cohort/${cohortId}`);
+      // FIXME: CHECK IF IT WORK
+      dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: listId });
+      history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
 
-        return window.location.reload();
-      }
-
-      history.replace('/dashboard');
-      window.location.reload();
-
-      return dispatch({ type: event, payload: data });
+      return;
     }
     default:
       return dispatch({ type: event, payload: data });
