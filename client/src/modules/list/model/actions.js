@@ -258,7 +258,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const deleteList = (id, listName) => dispatch =>
+export const deleteList = (id, listName, cohortId) => dispatch =>
   deleteData(`/api/lists/${id}/delete`)
     .then(() => {
       dispatch(deleteListSuccess(id));
@@ -266,7 +266,7 @@ export const deleteList = (id, listName) => dispatch =>
         notificationId: 'list.actions.delete-list',
         data: listName
       });
-      history.replace('/dashboard');
+      history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
     })
     .catch(() => {
       dispatch(deleteListFailure());
