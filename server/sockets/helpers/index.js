@@ -20,8 +20,10 @@ const emitCohortMetaData = (cohortId, clients, socket) =>
           const memberId = id.toString();
 
           if (clients.has(memberId)) {
+            const { socketId } = clients.get(memberId);
+
             socket.broadcast
-              .to(clients.get(memberId))
+              .to(socketId)
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
                 [cohortId]: { ...cohort }
               });
@@ -44,43 +46,33 @@ const updateListOnDashboardAndCohortView = (
     .then(doc => {
       if (doc) {
         const { viewersIds, cohortId } = doc;
-        const dashboardClientExists = dashboardClients.size > 0;
-        const cohortViewClientsExists = cohortViewClients.size > 0;
 
-        if (dashboardClientExists) {
-          viewersIds.forEach(id => {
-            const viewerId = id.toString();
-            const list = responseWithList(doc, id);
+        viewersIds.forEach(id => {
+          const viewerId = id.toString();
+          const list = responseWithList(doc, id);
 
-            if (dashboardClients.has(viewerId)) {
-              // send to users that are on the dashboard view
+          if (dashboardClients.has(viewerId)) {
+            const { socketId } = dashboardClients.get(viewerId);
+            // send to users that are on the dashboard view
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                [listId]: { ...list }
+              });
+          }
+
+          if (cohortId && cohortViewClients.has(viewerId)) {
+            const { viewId, socketId } = cohortViewClients.get(viewerId);
+
+            if (viewId === cohortId.toString()) {
               socket.broadcast
-                .to(dashboardClients.get(viewerId))
+                .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
                   [listId]: { ...list }
                 });
             }
-          });
-        }
-
-        if (cohortId && cohortViewClientsExists) {
-          viewersIds.forEach(id => {
-            const viewerId = id.toString();
-            const currentList = responseWithList(doc, id);
-
-            if (cohortViewClients.has(viewerId)) {
-              const { viewId, socketId } = cohortViewClients.get(viewerId);
-
-              if (viewId === cohortId.toString()) {
-                socket.broadcast
-                  .to(socketId)
-                  .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                    [listId]: { ...currentList }
-                  });
-              }
-            }
-          });
-        }
+          }
+        });
       }
     });
 

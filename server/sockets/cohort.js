@@ -107,8 +107,10 @@ const updateCohort = (socket, allCohortsViewClients) => {
               const memberId = id.toString();
 
               if (allCohortsViewClients.has(memberId)) {
+                const { socketId } = allCohortsViewClients.get(memberId);
+
                 socket.broadcast
-                  .to(allCohortsViewClients.get(memberId))
+                  .to(socketId)
                   .emit(CohortActionTypes.UPDATE_SUCCESS, cohort);
               }
             });
