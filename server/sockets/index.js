@@ -22,6 +22,7 @@ const {
   cloneItem,
   deleteItem,
   emitListsOnAddCohortMember,
+  emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeMemberRoleInList,
@@ -37,6 +38,7 @@ const {
   addCohortMember,
   addOwnerRoleInCohort,
   leaveCohort,
+  removeCohortMember,
   removeOwnerRoleInCohort,
   updateCohort,
   updateCohortHeaderStatus
@@ -139,6 +141,11 @@ const socketListenTo = server => {
     cloneItem(socket);
     deleteItem(socket);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitListsOnRemoveCohortMember(
+      socket,
+      dashboardViewClients,
+      listViewClients
+    );
     emitRemoveMemberOnLeaveCohort(socket);
     leaveList(socket);
     removeMemberRoleInList(socket, listViewClients);
@@ -153,6 +160,7 @@ const socketListenTo = server => {
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
     leaveCohort(socket, allCohortsViewClients);
+    removeCohortMember(socket, allCohortsViewClients, cohortViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket);

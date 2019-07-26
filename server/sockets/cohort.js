@@ -138,10 +138,42 @@ const updateCohortHeaderStatus = socket => {
   });
 };
 
+const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
+  socket.on(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data => {
+    const { cohortId, userId } = data;
+
+    if (cohortClients.has(userId)) {
+      const { viewId, socketId } = cohortClients.get(userId);
+
+      if (viewId === cohortId) {
+        socket.broadcast
+          .to(socketId)
+          .emit(CohortActionTypes.REMOVE_BY_SOMEONE, {
+            cohortId
+          });
+      }
+    }
+
+    if (allCohortsClients.has(userId)) {
+      const { socketId } = allCohortsClients.get(userId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(CohortActionTypes.DELETE_SUCCESS, cohortId);
+    }
+
+    socket.broadcast
+      .to(`cohort-${cohortId}`)
+      .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
+
+    emitCohortMetaData(cohortId, allCohortsClients, socket);
+  });
+
 module.exports = {
   addCohortMember,
   addOwnerRoleInCohort,
   leaveCohort,
+  removeCohortMember,
   removeOwnerRoleInCohort,
   updateCohort,
   updateCohortHeaderStatus
