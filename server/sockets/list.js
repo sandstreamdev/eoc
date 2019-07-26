@@ -571,19 +571,27 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
 
 const deleteList = (socket, dashboardClients, cohortClients) => {
   socket.on(ListActionTypes.DELETE_SUCCESS, data => {
-    const { listId, cohortId } = data;
+    const { listId } = data;
 
     socket.broadcast
       .to(`sack-${listId}`)
-      .emit(ListActionTypes.DELETE_SUCCESS, data);
+      .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
 
     dashboardClients.forEach(client => {
       const { socketId } = client;
 
-      socket.broadcast.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, data);
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
     });
 
-    // FIXME: Archive nie dziala bo delete archiwuzjac whysylamy DELETE_SUCCESS EVENT na ktory reaguje ten kontroller w receiveEvents
+    cohortClients.forEach(client => {
+      const { socketId } = client;
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
+    });
   });
 };
 
