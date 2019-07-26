@@ -39,6 +39,14 @@ export const listEventsController = (event, data, dispatch) => {
 
       return dispatch({ type: event, payload: data });
     }
+    case ListEvents.DELETE_SUCCESS: {
+      const { cohortId, listId } = data;
+
+      dispatch({ type: event, payload: listId });
+      history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
+
+      return;
+    }
     default:
       return dispatch({ type: event, payload: data });
   }

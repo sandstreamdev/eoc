@@ -258,15 +258,16 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const deleteList = (id, listName, cohortId) => dispatch =>
-  deleteData(`/api/lists/${id}/delete`)
+export const deleteList = (listId, listName, cohortId) => dispatch =>
+  deleteData(`/api/lists/${listId}/delete`)
     .then(() => {
-      dispatch(deleteListSuccess(id));
+      dispatch(deleteListSuccess(listId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.delete-list',
         data: listName
       });
       history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
+      socket.emit(ListActionTypes.DELETE_SUCCESS, { listId, cohortId });
     })
     .catch(() => {
       dispatch(deleteListFailure());
