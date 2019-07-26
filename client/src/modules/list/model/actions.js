@@ -161,9 +161,9 @@ const removeMemberRoleFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_FAILURE
 });
 
-const changeTypeSuccess = (listId, data) => ({
+const changeTypeSuccess = data => ({
   type: ListActionTypes.CHANGE_TYPE_SUCCESS,
-  payload: { listId, data }
+  payload: data
 });
 
 const changeTypeFailure = () => ({
@@ -295,7 +295,7 @@ export const updateList = (listId, data, listName) => dispatch =>
       });
     });
 
-export const archiveList = (listId, listName) => dispatch =>
+export const archiveList = (listId, listName, cohortId) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
@@ -305,7 +305,8 @@ export const archiveList = (listId, listName) => dispatch =>
         notificationId: 'list.actions.arch-list',
         data: listName
       });
-      history.replace('/dashboard');
+      history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
+      socket.emit(ListActionTypes.ARCHIVE_SUCCESS, { listId, cohortId });
     })
     .catch(() => {
       dispatch(archiveListFailure());
@@ -421,6 +422,7 @@ export const removeListMember = (
         notificationId: 'list.actions.remove-member',
         data: userName
       });
+      socket.emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
     })
     .catch(() => {
       dispatch(removeMemberFailure());
@@ -551,12 +553,21 @@ export const changeType = (listId, listName, type) => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => {
-      const { data } = json;
       const listData = {
-        ...data,
-        members: _keyBy(data.members, '_id')
+        ...json,
+        members: _keyBy(json.members, '_id')
       };
-      dispatch(changeTypeSuccess(listId, listData));
+
+      socket.emit(ListActionTypes.CHANGE_TYPE_SUCCESS, {
+        listId,
+        ...listData
+      });
+      dispatch(
+        changeTypeSuccess({
+          listId,
+          ...listData
+        })
+      );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.change-type',
         data: listName
