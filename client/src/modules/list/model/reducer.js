@@ -73,6 +73,19 @@ const membersReducer = (state = {}, action) => {
         [userId]: { ...state[userId], isOwner: false, isMember: false }
       };
     }
+    case ListActionTypes.MEMBER_UPDATE_SUCCESS: {
+      const {
+        payload: { userId, listId, isCurrentUserUpdated, ...data }
+      } = action;
+      const prevMember = state[userId];
+      const dataToUpdate = _pickBy(data, el => el !== undefined);
+      const updatedMember = { ...prevMember, ...dataToUpdate };
+
+      return {
+        ...state,
+        [userId]: updatedMember
+      };
+    }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
         payload: { members }
@@ -123,6 +136,14 @@ const lists = (state = {}, action) => {
       return { ...state, [action.payload.listId]: action.payload.data };
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
+    case ListActionTypes.REMOVE_BY_IDS: {
+      const { payload: listToRemoved } = action;
+
+      return _keyBy(
+        _filter(state, list => !listToRemoved.includes(list._id)),
+        '_id'
+      );
+    }
     case ListActionTypes.FAVOURITES_SUCCESS: {
       const {
         payload: { listId, isFavourite }
@@ -194,6 +215,22 @@ const lists = (state = {}, action) => {
       if (isCurrentUserRoleChanging) {
         list.isMember = false;
         list.isOwner = false;
+      }
+
+      return { ...state, [listId]: list };
+    }
+    case ListActionTypes.MEMBER_UPDATE_SUCCESS: {
+      const {
+        payload: { isCurrentUserUpdated, isGuest, listId }
+      } = action;
+      const { members } = state[listId];
+      const list = {
+        ...state[listId],
+        members: membersReducer(members, action)
+      };
+
+      if (isCurrentUserUpdated) {
+        list.isGuest = isGuest;
       }
 
       return { ...state, [listId]: list };

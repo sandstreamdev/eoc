@@ -107,9 +107,9 @@ const removeMemberFailure = () => ({
   type: CohortActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = (cohortId, userId) => ({
+const removeMemberSuccess = data => ({
   type: CohortActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: { cohortId, userId }
+  payload: data
 });
 
 const addOwnerRoleFailure = () => ({
@@ -318,7 +318,11 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
     userId
   })
     .then(() => {
-      dispatch(removeMemberSuccess(cohortId, userId));
+      socket.emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, {
+        cohortId,
+        userId
+      });
+      dispatch(removeMemberSuccess({ cohortId, userId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.remove-member',
         data: userName
