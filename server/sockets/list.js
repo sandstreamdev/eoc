@@ -456,38 +456,41 @@ const removeMember = (socket, dashboardClients, listClients, cohortClients) =>
   socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
     const { listId, userId } = data;
 
-    // Broadcast to every user on the list
-    socket.broadcast
-      .to(`sack-${listId}`)
-      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
-
     // Broadcast to that removed user if he is at dashboard view
     if (dashboardClients.has(userId)) {
+      const { socketId } = dashboardClients.get(userId);
+
       socket.broadcast
-        .to(dashboardClients.get(userId))
+        .to(socketId)
         .emit(ListActionTypes.DELETE_SUCCESS, listId);
     }
 
-    // Broadcast to that removed user if he is on the list view
-    if (listClients.has(userId)) {
-      List.findById(listId)
-        .populate('cohortId')
-        .lean()
-        .exec()
-        .then(doc => {
-          if (doc) {
+    List.findById(listId)
+      .populate('cohortId')
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          // Broadcast to every user on the list
+          socket.broadcast
+            .to(`sack-${listId}`)
+            .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId });
+
+          if (listClients.has(userId)) {
+            const { socketId, viewId } = listClients.get(userId);
             const { cohortId: cohort } = doc;
             const { _id: cohortId } = cohort;
 
-            if (cohort) {
+            if (cohort && viewId === listId) {
               const { memberIds: cohortMemberIds } = cohort;
               const isCohortMember = checkIfArrayContainsUserId(
                 cohortMemberIds,
                 userId
               );
 
+              // Broadcast to that removed user if he is on the list view
               socket.broadcast
-                .to(listClients.get(userId))
+                .to(socketId)
                 .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
                   cohortId,
                   isCohortMember,
@@ -495,13 +498,15 @@ const removeMember = (socket, dashboardClients, listClients, cohortClients) =>
                 });
             }
           }
-        });
-    }
+        }
+      });
 
     // Broadcast to that removed user if he is on the cohort view
     if (cohortClients.has(userId)) {
+      const { socketId } = cohortClients.get(userId);
+
       socket.broadcast
-        .to(cohortClients.get(userId))
+        .to(socketId)
         .emit(ListActionTypes.DELETE_SUCCESS, listId);
     }
   });

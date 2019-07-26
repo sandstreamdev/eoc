@@ -13,18 +13,17 @@ export const listEventsController = (event, data, dispatch) => {
       );
     }
     case ListEvents.REMOVE_MEMBER_SUCCESS: {
-      const { cohortId, isCohortMember } = data;
+      const { cohortId, listId } = data;
 
       if (cohortId) {
-        dispatch({ type: event, payload: data });
-        history.replace(
-          `/${isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
-        );
+        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
 
-        return window.location.reload();
+        return history.replace(`/cohort/${cohortId}`);
       }
 
-      return dispatch({ type: event, payload: data });
+      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
+
+      return history.replace('/dashboard');
     }
     default:
       return dispatch({ type: event, payload: data });
