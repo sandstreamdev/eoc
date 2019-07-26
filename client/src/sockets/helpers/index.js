@@ -1,4 +1,4 @@
-import { ListEvents } from 'sockets/enums';
+import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
 
 export const listEventsController = (event, data, dispatch) => {
@@ -11,6 +11,29 @@ export const listEventsController = (event, data, dispatch) => {
       return history.replace(
         `/${isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
       );
+    }
+    case ListEvents.REMOVE_BY_SOMEONE: {
+      const { cohortId, isCohortMember, listId } = data;
+
+      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
+
+      return history.replace(
+        `/${cohortId && isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
+      );
+    }
+    default:
+      return dispatch({ type: event, payload: data });
+  }
+};
+
+export const cohortEventsController = (event, data, dispatch) => {
+  switch (event) {
+    case CohortEvents.REMOVE_BY_SOMEONE: {
+      const { cohortId } = data;
+
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: cohortId });
+
+      return history.replace('/cohorts');
     }
     default:
       return dispatch({ type: event, payload: data });
