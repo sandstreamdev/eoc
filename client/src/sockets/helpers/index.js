@@ -28,7 +28,6 @@ export const listEventsController = (event, data, dispatch) => {
     case ListEvents.ARCHIVE_SUCCESS: {
       const { cohortId, listId } = data;
 
-      // FIXME: CHECK IF IT WORK
       dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: listId });
       history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
 
