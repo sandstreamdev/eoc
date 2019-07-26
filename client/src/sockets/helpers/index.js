@@ -12,20 +12,17 @@ export const listEventsController = (event, data, dispatch) => {
         `/${isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
       );
     }
-    case ListEvents.REMOVE_MEMBER_SUCCESS: {
-      const { cohortId } = data;
+    case ListEvents.REMOVE_BY_SOMEONE: {
+      const { cohortId, listId } = data;
 
       if (cohortId) {
-        dispatch({ type: event, payload: data });
-        history.replace(`cohort/${cohortId}`);
+        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
 
-        return window.location.reload();
+        return history.replace(`/cohort/${cohortId}`);
       }
+      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
 
-      history.replace('/dashboard');
-      window.location.reload();
-
-      return dispatch({ type: event, payload: data });
+      return history.replace('/dashboard');
     }
     case ListEvents.ARCHIVE_SUCCESS: {
       const { cohortId } = data;
