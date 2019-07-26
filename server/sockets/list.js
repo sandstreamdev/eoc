@@ -546,25 +546,25 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
         const { viewersIds } = doc;
 
         viewersIds.forEach(viewerId => {
-          dashboardClients.forEach((socketId, clientId) => {
-            if (clientId === viewerId.toString()) {
-              const { socketId } = dashboardClients.get(clientId);
-              // Broadcast to clients on dashboard that have this list
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.DELETE_SUCCESS, listId);
-            }
-          });
+          const id = viewerId.toString();
 
-          cohortClients.forEach((socketId, clientId) => {
-            if (clientId === viewerId.toString()) {
-              const { socketId } = cohortClients.get(clientId);
-              // Broadcast to clients on cohort view that have this list
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.DELETE_SUCCESS, listId);
-            }
-          });
+          if (dashboardClients.has(id)) {
+            const { socketId } = dashboardClients.get(id);
+
+            // Broadcast to clients on dashboard that have this list
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.DELETE_SUCCESS, listId);
+          }
+
+          if (cohortClients.has(id)) {
+            const { socketId } = cohortClients.get(id);
+
+            // Broadcast to clients on cohort view that have this list
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.DELETE_SUCCESS, listId);
+          }
         });
       });
   });
