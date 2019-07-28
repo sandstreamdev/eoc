@@ -142,6 +142,12 @@ const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
   socket.on(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data => {
     const { cohortId, userId } = data;
 
+    socket.broadcast
+      .to(`cohort-${cohortId}`)
+      .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
+
+    emitCohortMetaData(cohortId, allCohortsClients, socket);
+
     if (cohortClients.has(userId)) {
       const { viewId, socketId } = cohortClients.get(userId);
 
@@ -161,12 +167,6 @@ const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
         .to(socketId)
         .emit(CohortActionTypes.DELETE_SUCCESS, cohortId);
     }
-
-    socket.broadcast
-      .to(`cohort-${cohortId}`)
-      .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
-
-    emitCohortMetaData(cohortId, allCohortsClients, socket);
   });
 
 module.exports = {
