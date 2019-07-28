@@ -7,7 +7,7 @@ import validator from 'validator';
 import AuthInput from './AuthInput';
 import { signUp } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise } from 'common/utils/helpers';
+import { makeAbortablePromise, validatePassword } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
@@ -131,9 +131,7 @@ class SignUpForm extends PureComponent {
   };
 
   passwordValidator = value => {
-    const { matches } = validator;
-
-    if (!matches(value, /^[^\s]{4,32}$/)) {
+    if (!validatePassword(value)) {
       return 'user.auth.input.password.invalid';
     }
 

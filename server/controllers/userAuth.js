@@ -7,6 +7,7 @@ const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
+const { validatePassword } = require('../common/utils/userUtils');
 
 const sendUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
@@ -28,7 +29,7 @@ const signUp = (req, resp, next) => {
   const sanitizedEmail = sanitize(email);
   const sanitizedUsername = sanitize(username);
   const errors = {};
-  const { isEmail, isLength, matches } = validator;
+  const { isEmail, isLength } = validator;
 
   if (!isLength(sanitizedUsername, { min: 1, max: 32 })) {
     errors.nameError = true;
@@ -38,7 +39,7 @@ const signUp = (req, resp, next) => {
     errors.emailError = true;
   }
 
-  if (!matches(password, /^[^\s]{4,32}$/)) {
+  if (!validatePassword(password)) {
     errors.passwordError = true;
   }
 
@@ -254,11 +255,10 @@ const recoveryPassword = (req, resp) => {
 
 const updatePassword = (req, resp) => {
   const { password: updatedPassword, passwordConfirmation } = req.body;
-  const { matches } = validator;
   const { token } = req.params;
 
   const sanitizedToken = sanitize(token);
-  const validationError = !matches(updatedPassword, /^[^\s]{4,32}$/);
+  const validationError = !validatePassword(updatedPassword);
   const passwordsNoMatch =
     _trim(updatedPassword) !== _trim(passwordConfirmation);
 
@@ -380,10 +380,9 @@ const getUserDetails = (req, resp) => {
 const changePassword = (req, resp) => {
   const { password, newPassword, passwordConfirm } = req.body;
   const errors = {};
-  const { matches } = validator;
   const { email } = req.user;
 
-  if (!matches(newPassword, /^[^\s]{4,32}$/)) {
+  if (!validatePassword(newPassword)) {
     errors.isNewPasswordError = true;
   }
 

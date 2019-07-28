@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import validator from 'validator';
 import _flowRight from 'lodash/flowRight';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
@@ -10,6 +9,7 @@ import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
+import { validatePassword as _validatePassword } from 'common/utils/helpers';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -89,9 +89,8 @@ class PasswordRecoveryForm extends PureComponent {
 
   validatePassword = password => {
     const { errors } = this.state;
-    const { matches } = validator;
 
-    if (matches(password, /^[^\s]{4,32}$/)) {
+    if (_validatePassword(password)) {
       this.setState(
         {
           errors: {

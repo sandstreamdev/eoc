@@ -2,12 +2,11 @@ import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import _some from 'lodash/some';
-import validator from 'validator';
 
 import AuthInput from './AuthInput';
 import { changePassword } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise } from 'common/utils/helpers';
+import { makeAbortablePromise, validatePassword } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
@@ -87,9 +86,7 @@ class PasswordChangeForm extends PureComponent {
     );
 
   passwordValidator = value => {
-    const { matches } = validator;
-
-    if (!matches(value, /^[^\s]{4,32}$/)) {
+    if (!validatePassword(value)) {
       return 'user.auth.input.password.invalid';
     }
 
