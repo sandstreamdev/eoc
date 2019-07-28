@@ -401,7 +401,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
 
           const list = { ...doc, cohortId };
 
-          if (type === ListType.LIMITED && removedViewers) {
+          if (type === ListType.LIMITED) {
             removedViewers.forEach(id => {
               const userId = id.toString();
               const isCohortMember = checkIfArrayContainsUserId(
