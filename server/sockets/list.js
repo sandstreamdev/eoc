@@ -500,9 +500,7 @@ const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
 
             if (isListViewer) {
               listIdsUserRemained.push(listId);
-            }
-
-            if (!isListViewer && type === ListType.SHARED) {
+            } else if (!isListViewer && type === ListType.SHARED) {
               listIdsUserWasRemovedFrom.push(listId);
             }
           });
