@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import validator from 'validator';
 import { connect } from 'react-redux';
-import _flowRight from 'lodash/flowRight';
 import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
@@ -12,7 +11,6 @@ import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
-import { IntlPropType } from 'common/constants/propTypes';
 
 class SignInForm extends PureComponent {
   pendingPromise = null;
@@ -107,9 +105,6 @@ class SignInForm extends PureComponent {
 
   renderSignInError = () => {
     const { signInErrorId } = this.state;
-    const {
-      intl: { formatMessage }
-    } = this.props;
 
     return (
       <p className="sign-in__error">
@@ -118,7 +113,7 @@ class SignInForm extends PureComponent {
           values={{
             link: (
               <Link className="sign-in__link" to="/reset-password">
-                {formatMessage({ id: 'user.auth.forgot-password' })}
+                <FormattedMessage id="user.auth.forgot-password" />
               </Link>
             )
           }}
@@ -127,26 +122,20 @@ class SignInForm extends PureComponent {
     );
   };
 
-  renderForgotPassword = () => {
-    const {
-      intl: { formatMessage }
-    } = this.props;
-
-    return (
-      <p className="sign-in__forgot-password">
-        <FormattedMessage
-          id="user.auth.forgot-password.question"
-          values={{
-            link: (
-              <Link className="sign-in__link" to="/reset-password">
-                {formatMessage({ id: 'user.auth.forgot-password' })}
-              </Link>
-            )
-          }}
-        />
-      </p>
-    );
-  };
+  renderForgotPassword = () => (
+    <p className="sign-in__forgot-password">
+      <FormattedMessage
+        id="user.auth.forgot-password.question"
+        values={{
+          link: (
+            <Link className="sign-in__link" to="/reset-password">
+              <FormattedMessage id="user.auth.forgot-password" />
+            </Link>
+          )
+        }}
+      />
+    </p>
+  );
 
   render() {
     const { isFormValid, pending, signInErrorId } = this.state;
@@ -209,16 +198,11 @@ class SignInForm extends PureComponent {
 }
 
 SignInForm.propTypes = {
-  intl: IntlPropType.isRequired,
-
   onCancel: PropTypes.func.isRequired,
   signIn: PropTypes.func.isRequired
 };
 
-export default _flowRight(
-  injectIntl,
-  connect(
-    null,
-    { signIn }
-  )
+export default connect(
+  null,
+  { signIn }
 )(SignInForm);

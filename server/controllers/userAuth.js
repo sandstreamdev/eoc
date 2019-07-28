@@ -369,7 +369,7 @@ const getUserDetails = (req, resp) => {
   if (req.user) {
     const { activatedAt, createdAt, email, password } = req.user;
     const activationDate = activatedAt || createdAt;
-    const isPassword = !!password;
+    const isPassword = password !== undefined;
 
     return resp.send({ activationDate, email, isPassword });
   }

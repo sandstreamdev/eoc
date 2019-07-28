@@ -76,6 +76,7 @@
   "user.profile.contact-info": "Contact info",
   "user.profile.change-password": "Change password",
   "user.profile.account-activation": "Account activated on",
+  "user.profile.account-activation-date": "{date} at {time}",
   "user.auth-box.description": "The best app to track your office inventory.",
   "user.auth-box.sign-in": "Sign in to app:",
   "user.auth-box.sign-in-google": "Sign in with Google",

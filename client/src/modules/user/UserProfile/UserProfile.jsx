@@ -182,16 +182,20 @@ class UserProfile extends PureComponent {
             </span>
             <span className="user-profile__data-value">
               {activationDate && (
-                <Fragment>
-                  <FormattedDate
-                    value={activationDate}
-                    year="numeric"
-                    month="long"
-                    day="2-digit"
-                  />
-                  {' at '}
-                  <FormattedTime value={activationDate} />
-                </Fragment>
+                <FormattedMessage
+                  id="user.profile.account-activation-date"
+                  values={{
+                    date: (
+                      <FormattedDate
+                        value={activationDate}
+                        year="numeric"
+                        month="long"
+                        day="2-digit"
+                      />
+                    ),
+                    time: <FormattedTime value={activationDate} />
+                  }}
+                />
               )}
             </span>
           </li>
