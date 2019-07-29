@@ -159,12 +159,9 @@ const archiveCohort = (socket, allCohortsClients) => {
 
 const deleteCohort = (socket, allCohortsClients) => {
   socket.on(CohortActionTypes.DELETE_SUCCESS, data => {
-    const {
-      cohortId,
-      data: { memberIds }
-    } = data;
+    const { cohortId, members } = data;
 
-    removeCohort(socket, cohortId, allCohortsClients, memberIds);
+    removeCohort(socket, cohortId, allCohortsClients, members);
   });
 };
 

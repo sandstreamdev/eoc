@@ -204,14 +204,14 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
 export const deleteCohort = (cohortId, cohortName) => dispatch =>
   deleteData(`/api/cohorts/${cohortId}/delete`)
     .then(resp => resp.json())
-    .then(data => {
+    .then(members => {
       dispatch(deleteCohortSuccess(cohortId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.delete-cohort',
         data: cohortName
       });
       history.replace('/cohorts');
-      socket.emit(CohortActionTypes.DELETE_SUCCESS, { cohortId, data });
+      socket.emit(CohortActionTypes.DELETE_SUCCESS, { cohortId, members });
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
@@ -235,7 +235,7 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
         data: cohortName
       });
       history.replace('/cohorts');
-      socket.emit(CohortActionTypes.ARCHIVE_SUCCESS, { cohortId });
+      // socket.emit(CohortActionTypes.ARCHIVE_SUCCESS, { cohortId });
     })
     .catch(() => {
       dispatch(archiveCohortFailure());
