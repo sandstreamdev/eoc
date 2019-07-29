@@ -233,6 +233,7 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
         data: cohortName
       });
       history.replace('/cohorts');
+      socket.emit(CohortActionTypes.ARCHIVE_SUCCESS, { cohortId });
     })
     .catch(() => {
       dispatch(archiveCohortFailure());
