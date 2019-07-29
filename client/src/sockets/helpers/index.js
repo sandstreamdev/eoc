@@ -13,7 +13,9 @@ export const listEventsController = (event, data, dispatch) => {
       );
     }
     case ListEvents.REMOVE_ON_ARCHIVE_COHORT: {
-      dispatch({ type: ListEvents.LEAVE_SUCCESS, payload: data });
+      const { cohortId, listId } = data;
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: cohortId });
+      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
 
       return history.replace('/cohorts');
     }

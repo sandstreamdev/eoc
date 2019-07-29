@@ -497,7 +497,10 @@ const removeListsOnArchiveCohort = (socket, dashboardClients) =>
           listIds.forEach(listId => {
             socket.broadcast
               .to(`sack-${listId}`)
-              .emit(ListActionTypes.REMOVE_ON_ARCHIVE_COHORT, listId);
+              .emit(ListActionTypes.REMOVE_ON_ARCHIVE_COHORT, {
+                cohortId,
+                listId
+              });
           });
 
           Object.keys(listsByViewers).forEach(memberId => {
