@@ -21,10 +21,12 @@ export const listEventsController = (event, data, dispatch) => {
       return history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
     }
     case ListEvents.ARCHIVE_SUCCESS: {
-      const { cohortId, listId } = data;
+      const { cohortId, listId, isGuest } = data;
 
       dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: listId });
-      history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
+      history.replace(
+        isGuest || !cohortId ? '/dashboard' : `/cohort/${cohortId}`
+      );
 
       return;
     }
