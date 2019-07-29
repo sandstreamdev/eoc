@@ -24,11 +24,10 @@ export const listEventsController = (event, data, dispatch) => {
       const { cohortId, listId, isGuest } = data;
 
       dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: listId });
-      history.replace(
+
+      return history.replace(
         isGuest || !cohortId ? '/dashboard' : `/cohort/${cohortId}`
       );
-
-      return;
     }
     default:
       return dispatch({ type: event, payload: data });
