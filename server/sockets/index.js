@@ -36,6 +36,7 @@ const {
 const {
   addCohortMember,
   addOwnerRoleInCohort,
+  createListCohort,
   leaveCohort,
   removeOwnerRoleInCohort,
   updateCohort,
@@ -152,6 +153,7 @@ const socketListenTo = server => {
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
+    createListCohort(socket, dashboardViewClients);
     leaveCohort(socket, allCohortsViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);

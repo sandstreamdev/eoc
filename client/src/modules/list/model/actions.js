@@ -201,8 +201,10 @@ export const fetchListData = listId => dispatch =>
       throw err;
     });
 
-export const createList = data => dispatch =>
-  postData('/api/lists/create', data)
+export const createList = data => dispatch => {
+  const { type } = data;
+
+  return postData('/api/lists/create', data)
     .then(resp => resp.json())
     .then(json => {
       dispatch(createListSuccess(json));
@@ -210,7 +212,9 @@ export const createList = data => dispatch =>
         notificationId: 'list.actions.create-list',
         data: data.name
       });
-      socket.emit(ListActionTypes.CREATE_SUCCESS, { json });
+      if (type === ListType.SHARED) {
+        socket.emit(ListActionTypes.CREATE_SUCCESS, json);
+      }
     })
     .catch(() => {
       dispatch(createListFailure());
@@ -219,6 +223,7 @@ export const createList = data => dispatch =>
         data: data.name
       });
     });
+};
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
