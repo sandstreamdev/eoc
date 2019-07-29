@@ -477,7 +477,12 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
-const removeMember = (socket, dashboardClients, listClients, cohortClients) =>
+const removeListMember = (
+  socket,
+  dashboardClients,
+  listClients,
+  cohortClients
+) =>
   socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
     const { listId, userId } = data;
 
@@ -544,7 +549,7 @@ module.exports = {
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
-  removeMember,
+  removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
