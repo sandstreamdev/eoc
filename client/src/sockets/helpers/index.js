@@ -12,7 +12,7 @@ export const listEventsController = (event, data, dispatch) => {
         `/${isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
       );
     }
-    case ListEvents.REMOVE_ON_ARCHIVE_COHORT: {
+    case ListEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
       const { cohortId, listId } = data;
 
       dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: cohortId });
@@ -27,7 +27,7 @@ export const listEventsController = (event, data, dispatch) => {
 
 export const cohortEventsController = (event, data, dispatch) => {
   switch (event) {
-    case CohortEvents.ARCHIVE_SUCCESS: {
+    case CohortEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
       dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: data });
 
       return history.replace('/cohorts');

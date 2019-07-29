@@ -203,13 +203,15 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
 
 export const deleteCohort = (cohortId, cohortName) => dispatch =>
   deleteData(`/api/cohorts/${cohortId}/delete`)
-    .then(() => {
+    .then(resp => resp.json())
+    .then(data => {
       dispatch(deleteCohortSuccess(cohortId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.delete-cohort',
         data: cohortName
       });
       history.replace('/cohorts');
+      socket.emit(CohortActionTypes.DELETE_SUCCESS, { cohortId, data });
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {

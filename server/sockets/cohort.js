@@ -4,7 +4,7 @@ const {
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
-const { emitCohortMetaData } = require('./helpers');
+const { emitCohortMetaData, removeCohort } = require('./helpers');
 
 const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
@@ -142,10 +142,6 @@ const archiveCohort = (socket, allCohortsClients) => {
   socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
     const { cohortId } = data;
 
-    socket.broadcast
-      .to(`cohort-${cohortId}`)
-      .emit(CohortActionTypes.ARCHIVE_SUCCESS, cohortId);
-
     Cohort.findOne({
       _id: cohortId
     })
@@ -155,19 +151,20 @@ const archiveCohort = (socket, allCohortsClients) => {
         if (doc) {
           const { memberIds } = doc;
 
-          memberIds.forEach(id => {
-            const memberId = id.toString();
-
-            if (allCohortsClients.has(memberId)) {
-              const { socketId } = allCohortsClients.get(memberId);
-
-              socket.broadcast
-                .to(socketId)
-                .emit(CohortActionTypes.DELETE_SUCCESS, cohortId);
-            }
-          });
+          removeCohort(socket, cohortId, allCohortsClients, memberIds);
         }
       });
+  });
+};
+
+const deleteCohort = (socket, allCohortsClients) => {
+  socket.on(CohortActionTypes.DELETE_SUCCESS, data => {
+    const {
+      cohortId,
+      data: { memberIds }
+    } = data;
+
+    removeCohort(socket, cohortId, allCohortsClients, memberIds);
   });
 };
 
@@ -175,6 +172,7 @@ module.exports = {
   addCohortMember,
   addOwnerRoleInCohort,
   archiveCohort,
+  deleteCohort,
   leaveCohort,
   removeOwnerRoleInCohort,
   updateCohort,
