@@ -16,14 +16,9 @@ export const listEventsController = (event, data, dispatch) => {
     case ListEvents.REMOVE_BY_SOMEONE: {
       const { cohortId, listId } = data;
 
-      if (cohortId) {
-        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
-
-        return history.replace(`/cohort/${cohortId}`);
-      }
       dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
 
-      return history.replace('/dashboard');
+      return history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
     }
     case ListEvents.ARCHIVE_SUCCESS: {
       const { cohortId, listId } = data;
