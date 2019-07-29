@@ -533,6 +533,9 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
   socket.on(ListActionTypes.ARCHIVE_SUCCESS, data => {
     const { listId } = data;
 
+    // FIXME: Jesli user jest gosciem na liscie cohortowej
+    // to trzeba wyslac, isCohortMember do controllera na froncie,
+    // zeby go przekierwoac na dahsboard
     // Broadcast to clients on list view
     socket.broadcast
       .to(`sack-${listId}`)
