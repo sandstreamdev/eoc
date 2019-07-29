@@ -15,7 +15,10 @@ const {
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
-const { updateListOnDashboardAndCohortView } = require('./helpers');
+const {
+  getListsByViewers,
+  updateListOnDashboardAndCohortView
+} = require('./helpers');
 
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
@@ -477,6 +480,40 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
+const removeListsOnArchiveCohort = (socket, dashboardClients) =>
+  socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    List.find({
+      cohortId
+    })
+      .lean()
+      .exec()
+      .then(docs => {
+        if (docs) {
+          const listIds = docs.map(list => list._id.toString());
+          const listsByViewers = getListsByViewers(docs);
+
+          listIds.forEach(listId => {
+            socket.broadcast
+              .to(`sack-${listId}`)
+              .emit(ListActionTypes.REMOVE_ON_ARCHIVE_COHORT, listId);
+          });
+
+          Object.keys(listsByViewers).forEach(memberId => {
+            if (dashboardClients.has(memberId)) {
+              const { socketId } = dashboardClients.get(memberId);
+              const listsToRemoved = listsByViewers[memberId];
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.REMOVE_BY_IDS, listsToRemoved);
+            }
+          });
+        }
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -492,6 +529,7 @@ module.exports = {
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeListsOnArchiveCohort,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,

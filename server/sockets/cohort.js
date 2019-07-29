@@ -138,9 +138,43 @@ const updateCohortHeaderStatus = socket => {
   });
 };
 
+const archiveCohort = (socket, allCohortsClients) => {
+  socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    socket.broadcast
+      .to(`cohort-${cohortId}`)
+      .emit(CohortActionTypes.ARCHIVE_SUCCESS, cohortId);
+
+    Cohort.findOne({
+      _id: cohortId
+    })
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { memberIds } = doc;
+
+          memberIds.forEach(id => {
+            const memberId = id.toString();
+
+            if (allCohortsClients.has(memberId)) {
+              const { socketId } = allCohortsClients.get(memberId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.DELETE_SUCCESS, cohortId);
+            }
+          });
+        }
+      });
+  });
+};
+
 module.exports = {
   addCohortMember,
   addOwnerRoleInCohort,
+  archiveCohort,
   leaveCohort,
   removeOwnerRoleInCohort,
   updateCohort,
