@@ -573,10 +573,6 @@ const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
             // Broadcast to clients on dashboard that have this list
             socket.broadcast
               .to(socketId)
-              .emit(ListActionTypes.DELETE_SUCCESS, listId);
-
-            socket.broadcast
-              .to(socketId)
               .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
                 [listId]: {
                   ...responseWithList(list, viewerId),
@@ -586,21 +582,19 @@ const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
           }
 
           if (cohortClients.has(id)) {
-            const { socketId } = cohortClients.get(id);
+            const { socketId, viewId } = cohortClients.get(id);
 
-            // Broadcast to clients on cohort view that have this list
-            socket.broadcast
-              .to(socketId)
-              .emit(ListActionTypes.DELETE_SUCCESS, listId);
-
-            socket.broadcast
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
-                [listId]: {
-                  ...responseWithList(list, viewerId),
-                  isArchived: true
-                }
-              });
+            if (viewId === cohortId) {
+              // Broadcast to clients on cohort view that have this list
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+                  [listId]: {
+                    ...responseWithList(list, viewerId),
+                    isArchived: true
+                  }
+                });
+            }
           }
         });
       });
@@ -658,11 +652,3 @@ module.exports = {
   updateList,
   updateListHeaderState
 };
-
-// Dla kazdego kto jest na widoku listy, wysylam event ARCHIVE SUCCESS z danymi, list ID, isGuest, cohortId
-// jesli jest guest, to przekierowuje na dashboard i return
-// jesli nie jest guest to sprawdzam czy istnieje cohortiId i przekierwouje na cohorte lub dahsboard
-
-// Dla kazdego kto jest na widoku dahsboard wysylam DELETE_SUCCESS z listId,
-
-// Dla kazdego kto jest na cohort view, wysylam DELETE_SUCCESS z listID
