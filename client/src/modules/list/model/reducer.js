@@ -90,7 +90,7 @@ const lists = (state = {}, action) => {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
       return { ...state, ...action.payload };
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
-      return { ...state, ...action.payload };
+      return { ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
       return { ...state, [action.payload._id]: { ...action.payload } };
     case ListActionTypes.DELETE_SUCCESS:

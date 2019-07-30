@@ -21,12 +21,13 @@ export const listEventsController = (event, data, dispatch) => {
       return history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
     }
     case ListEvents.ARCHIVE_SUCCESS: {
-      const { cohortId, listId } = data;
+      const { cohortId, listId, isGuest } = data;
 
       dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: listId });
-      history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
 
-      return;
+      return history.replace(
+        isGuest || !cohortId ? '/dashboard' : `/cohort/${cohortId}`
+      );
     }
     case ListEvents.DELETE_AND_REDIRECT: {
       const { cohortId, listId } = data;

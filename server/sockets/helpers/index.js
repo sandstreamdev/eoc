@@ -53,7 +53,7 @@ const updateListOnDashboardAndCohortView = (
 
           if (dashboardClients.has(viewerId)) {
             const { socketId } = dashboardClients.get(viewerId);
-            // send to users that are on the dashboard view
+
             socket.broadcast
               .to(socketId)
               .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {

@@ -477,7 +477,12 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
-const removeMember = (socket, dashboardClients, listClients, cohortClients) =>
+const removeListMember = (
+  socket,
+  dashboardClients,
+  listClients,
+  cohortClients
+) =>
   socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
     const { listId, userId } = data;
 
@@ -529,24 +534,38 @@ const removeMember = (socket, dashboardClients, listClients, cohortClients) =>
       .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
   });
 
-const archiveList = (socket, dashboardClients, cohortClients) =>
+const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
   socket.on(ListActionTypes.ARCHIVE_SUCCESS, data => {
-    const { listId } = data;
-
-    // Broadcast to clients on list view
-    socket.broadcast
-      .to(`sack-${listId}`)
-      .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
+    const { listId, cohortId } = data;
 
     List.findById(listId)
       .populate('cohortId')
       .lean()
       .exec()
       .then(doc => {
-        const { viewersIds } = doc;
+        const { viewersIds, cohortId: cohort } = doc;
+        const list = { ...doc, cohortId };
 
         viewersIds.forEach(viewerId => {
           const id = viewerId.toString();
+          let isGuest = false;
+
+          if (cohort) {
+            const { memberIds: cohortMemberIds } = cohort;
+            isGuest = !checkIfArrayContainsUserId(cohortMemberIds, viewerId);
+          }
+
+          const dataToSend = { isGuest, ...data };
+
+          if (listClients.has(id)) {
+            const { socketId, viewId } = listClients.get(id);
+
+            if (viewId === listId) {
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.ARCHIVE_SUCCESS, dataToSend);
+            }
+          }
 
           if (dashboardClients.has(id)) {
             const { socketId } = dashboardClients.get(id);
@@ -554,7 +573,16 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
             // Broadcast to clients on dashboard that have this list
             socket.broadcast
               .to(socketId)
-              .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
+              .emit(ListActionTypes.DELETE_SUCCESS, listId);
+
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+                [listId]: {
+                  ...responseWithList(list, viewerId),
+                  isArchived: true
+                }
+              });
           }
 
           if (cohortClients.has(id)) {
@@ -563,7 +591,16 @@ const archiveList = (socket, dashboardClients, cohortClients) =>
             // Broadcast to clients on cohort view that have this list
             socket.broadcast
               .to(socketId)
-              .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
+              .emit(ListActionTypes.DELETE_SUCCESS, listId);
+
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+                [listId]: {
+                  ...responseWithList(list, viewerId),
+                  isArchived: true
+                }
+              });
           }
         });
       });
@@ -612,7 +649,7 @@ module.exports = {
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
-  removeMember,
+  removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
@@ -622,3 +659,11 @@ module.exports = {
   updateList,
   updateListHeaderState
 };
+
+// Dla kazdego kto jest na widoku listy, wysylam event ARCHIVE SUCCESS z danymi, list ID, isGuest, cohortId
+// jesli jest guest, to przekierowuje na dashboard i return
+// jesli nie jest guest to sprawdzam czy istnieje cohortiId i przekierwouje na cohorte lub dahsboard
+
+// Dla kazdego kto jest na widoku dahsboard wysylam DELETE_SUCCESS z listId,
+
+// Dla kazdego kto jest na cohort view, wysylam DELETE_SUCCESS z listID
