@@ -558,6 +558,7 @@ const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
                     });
                 }
               }
+
               socket.broadcast
                 .to(`sack-${listId}`)
                 .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {

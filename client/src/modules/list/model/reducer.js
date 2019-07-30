@@ -137,10 +137,10 @@ const lists = (state = {}, action) => {
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
     case ListActionTypes.REMOVE_BY_IDS: {
-      const { payload: listToRemoved } = action;
+      const { payload: listsToRemove } = action;
 
       return _keyBy(
-        _filter(state, list => !listToRemoved.includes(list._id)),
+        _filter(state, list => !listsToRemove.includes(list._id)),
         '_id'
       );
     }
