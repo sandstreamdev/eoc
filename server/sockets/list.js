@@ -532,7 +532,7 @@ const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
                 if (viewId === listId) {
                   socket.broadcast
                     .to(socketId)
-                    .emit(ListActionTypes.REMOVE_BY_SOMEONE, {
+                    .emit(ListActionTypes.REMOVED_BY_SOMEONE, {
                       cohortId,
                       isCohortMember,
                       listId

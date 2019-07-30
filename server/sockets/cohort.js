@@ -154,7 +154,7 @@ const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
       if (viewId === cohortId) {
         socket.broadcast
           .to(socketId)
-          .emit(CohortActionTypes.REMOVE_BY_SOMEONE, {
+          .emit(CohortActionTypes.REMOVED_BY_SOMEONE, {
             cohortId
           });
       }

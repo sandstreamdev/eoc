@@ -12,7 +12,7 @@ export const listEventsController = (event, data, dispatch) => {
         `/${isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
       );
     }
-    case ListEvents.REMOVE_BY_SOMEONE: {
+    case ListEvents.REMOVED_BY_SOMEONE: {
       const { cohortId, isCohortMember, listId } = data;
 
       dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
@@ -28,7 +28,7 @@ export const listEventsController = (event, data, dispatch) => {
 
 export const cohortEventsController = (event, data, dispatch) => {
   switch (event) {
-    case CohortEvents.REMOVE_BY_SOMEONE: {
+    case CohortEvents.REMOVED_BY_SOMEONE: {
       const { cohortId } = data;
 
       dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: cohortId });
