@@ -156,15 +156,16 @@ const addListMember = (socket, dashboardClients, cohortClients) =>
               socket
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: { ...list }
+                  [listId]: list
                 });
             }
           }
 
           if (dashboardClients.has(viewerId)) {
             const { socketId } = dashboardClients.get(viewerId);
+
             socket.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: { ...list }
+              [listId]: list
             });
           }
         }
@@ -453,7 +454,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
               socket.broadcast
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [list._id]: { ...responseWithList(list, userId) }
+                  [list._id]: responseWithList(list, userId)
                 });
             }
 
@@ -464,7 +465,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
                 socket.broadcast
                   .to(socketId)
                   .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                    [list._id]: { ...responseWithList(list, userId) }
+                    [list._id]: responseWithList(list, userId)
                   });
               }
             }
