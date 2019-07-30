@@ -25,7 +25,7 @@ const emitCohortMetaData = (cohortId, clients, socket) =>
             socket.broadcast
               .to(socketId)
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
-                [cohortId]: { ...cohort }
+                [cohortId]: cohort
               });
           }
         });

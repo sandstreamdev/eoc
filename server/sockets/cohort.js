@@ -3,7 +3,10 @@ const {
   CohortHeaderStatusTypes
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
-const { responseWithCohort } = require('../common/utils');
+const {
+  responseWithCohort,
+  responseWithCohortDetails
+} = require('../common/utils');
 const { emitCohortMetaData, removeCohort } = require('./helpers');
 
 const addCohortMember = (socket, clients) =>
@@ -163,6 +166,51 @@ const deleteCohort = (socket, allCohortsClients) =>
     removeCohort(socket, cohortId, allCohortsClients, members);
   });
 
+const restoreCohort = (socket, allCohortsClients, cohortClients) =>
+  socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    Cohort.findById(cohortId)
+      .populate('memberIds', 'avatarUrl displayName _id')
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { memberIds, ownerIds } = doc;
+          const cohortMetaData = responseWithCohort(doc);
+
+          ownerIds.forEach(id => {
+            const ownerId = id.toString();
+
+            if (cohortClients.has(ownerId)) {
+              const { socketId } = cohortClients.get(ownerId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.FETCH_DETAILS_SUCCESS, {
+                  [cohortId]: responseWithCohortDetails(doc, ownerId)
+                });
+            }
+          });
+
+          memberIds.forEach(member => {
+            const { _id } = member;
+            const memberId = _id.toString();
+
+            if (allCohortsClients.has(memberId)) {
+              const { socketId } = allCohortsClients.get(memberId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [cohortId]: cohortMetaData
+                });
+            }
+          });
+        }
+      });
+  });
+
 module.exports = {
   addCohortMember,
   addOwnerRoleInCohort,
@@ -170,6 +218,7 @@ module.exports = {
   deleteCohort,
   leaveCohort,
   removeOwnerRoleInCohort,
+  restoreCohort,
   updateCohort,
   updateCohortHeaderStatus
 };

@@ -285,6 +285,29 @@ const responseWithComments = comments =>
     };
   });
 
+const responseWithCohortDetails = (doc, userId) => {
+  const {
+    _id,
+    description,
+    isArchived,
+    memberIds: membersCollection,
+    name,
+    ownerIds
+  } = doc;
+  const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
+  const members = responseWithCohortMembers(membersCollection, ownerIds);
+
+  return {
+    _id,
+    description,
+    isArchived,
+    isMember: true,
+    isOwner,
+    members,
+    name
+  };
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -294,6 +317,7 @@ module.exports = {
   isValidMongoId,
   isViewer,
   responseWithCohort,
+  responseWithCohortDetails,
   responseWithCohortMember,
   responseWithCohortMembers,
   responseWithCohorts,

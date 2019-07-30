@@ -261,6 +261,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName
       });
+      socket.emit(CohortActionTypes.RESTORE_SUCCESS, { cohortId });
     })
     .catch(err => {
       dispatch(restoreCohortFailure());
