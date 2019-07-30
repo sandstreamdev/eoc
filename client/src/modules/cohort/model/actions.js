@@ -252,11 +252,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
     .then(() => getData(`/api/cohorts/${cohortId}/data`))
     .then(resp => resp.json())
     .then(json => {
-      const data = {
-        ...json,
-        members: _keyBy(json.members, '_id')
-      };
-      dispatch(restoreCohortSuccess(data));
+      dispatch(restoreCohortSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName
@@ -276,11 +272,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
   getData(`/api/cohorts/${cohortId}/data`)
     .then(resp => resp.json())
     .then(json => {
-      const data = {
-        ...json,
-        members: _keyBy(json.members, '_id')
-      };
-      dispatch(fetchCohortDetailsSuccess(data));
+      dispatch(fetchCohortDetailsSuccess(json));
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {

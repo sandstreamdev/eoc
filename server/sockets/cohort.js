@@ -4,9 +4,8 @@ const {
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const {
-  checkIfArrayContainsUserId,
   responseWithCohort,
-  responseWithCohortMembers
+  responseWithCohortDetails
 } = require('../common/utils');
 const { emitCohortMetaData, removeCohort } = require('./helpers');
 
@@ -166,32 +165,6 @@ const deleteCohort = (socket, allCohortsClients) =>
 
     removeCohort(socket, cohortId, allCohortsClients, members);
   });
-
-const responseWithCohortDetails = (doc, userId) => {
-  const {
-    _id,
-    createdAt,
-    description,
-    isArchived,
-    memberIds: membersCollection,
-    name,
-    ownerIds
-  } = doc;
-
-  const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
-  const members = responseWithCohortMembers(membersCollection, ownerIds);
-
-  return {
-    _id,
-    createdAt,
-    description,
-    isArchived,
-    isMember: true,
-    isOwner,
-    members,
-    name
-  };
-};
 
 const restoreCohort = (socket, allCohortsClients, cohortClients) =>
   socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {

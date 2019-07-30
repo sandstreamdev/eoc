@@ -54,5 +54,5 @@ export const getArchivedCohorts = createSelector(
 
 export const getMembers = createSelector(
   getCohortDetails,
-  cohort => cohort && cohort.members
+  cohort => (cohort && cohort.members) || {}
 );

@@ -7,6 +7,7 @@ const {
   isOwner: isCohortOwner,
   isValidMongoId,
   responseWithCohort,
+  responseWithCohortDetails,
   responseWithCohorts
 } = require('../common/utils');
 const List = require('../models/list.model');
@@ -15,8 +16,7 @@ const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
 const {
   checkIfCohortMember,
-  responseWithCohortMember,
-  responseWithCohortMembers
+  responseWithCohortMember
 } = require('../common/utils/index');
 const { ActivityType, ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
@@ -174,15 +174,7 @@ const getCohortDetails = (req, resp) => {
         return resp.sendStatus(404);
       }
 
-      const {
-        _id,
-        createdAt,
-        description,
-        isArchived,
-        memberIds: membersCollection,
-        name,
-        ownerIds
-      } = doc;
+      const { _id, isArchived, name } = doc;
 
       const isOwner = isCohortOwner(doc, userId);
 
@@ -193,19 +185,8 @@ const getCohortDetails = (req, resp) => {
 
         return resp.send({ _id, isArchived, isOwner, name });
       }
-      members: _keyBy(json.members, '_id');
-      const members = responseWithCohortMembers(membersCollection, ownerIds);
 
-      resp.send({
-        _id,
-        createdAt,
-        description,
-        isArchived,
-        isMember: true,
-        isOwner,
-        members,
-        name
-      });
+      resp.send(responseWithCohortDetails(doc, userId));
     })
     .catch(err =>
       resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
