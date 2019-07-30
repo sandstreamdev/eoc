@@ -602,7 +602,7 @@ const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
 
 const deleteList = (socket, dashboardClients, cohortClients) =>
   socket.on(ListActionTypes.DELETE_SUCCESS, data => {
-    const { listId } = data;
+    const { listId, cohortId } = data;
 
     socket.broadcast
       .to(`sack-${listId}`)
@@ -616,13 +616,17 @@ const deleteList = (socket, dashboardClients, cohortClients) =>
         .emit(ListActionTypes.DELETE_SUCCESS, listId);
     });
 
-    cohortClients.forEach(client => {
-      const { socketId } = client;
+    if (cohortId) {
+      cohortClients.forEach(client => {
+        const { socketId, viewId } = client;
 
-      socket.broadcast
-        .to(socketId)
-        .emit(ListActionTypes.DELETE_SUCCESS, listId);
-    });
+        if (viewId === cohortId) {
+          socket.broadcast
+            .to(socketId)
+            .emit(ListActionTypes.DELETE_SUCCESS, listId);
+        }
+      });
+    }
   });
 
 module.exports = {
