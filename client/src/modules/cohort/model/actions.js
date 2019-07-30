@@ -54,9 +54,9 @@ const archiveCohortFailure = errMessage => ({
   payload: errMessage
 });
 
-const restoreCohortSuccess = (data, _id) => ({
+const restoreCohortSuccess = data => ({
   type: CohortActionTypes.RESTORE_SUCCESS,
-  payload: { data, _id }
+  payload: data
 });
 
 const restoreCohortFailure = errMessage => ({
@@ -79,9 +79,9 @@ const fetchCohortDetailsFailure = errMessage => ({
   payload: errMessage
 });
 
-const fetchCohortDetailsSuccess = (data, _id) => ({
+const fetchCohortDetailsSuccess = data => ({
   type: CohortActionTypes.FETCH_DETAILS_SUCCESS,
-  payload: { data, _id }
+  payload: data
 });
 
 const fetchArchivedCohortsMetaDataSuccess = data => ({
@@ -256,7 +256,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
-      dispatch(restoreCohortSuccess(data, cohortId));
+      dispatch(restoreCohortSuccess(data));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName
@@ -280,7 +280,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
-      dispatch(fetchCohortDetailsSuccess(data, cohortId));
+      dispatch(fetchCohortDetailsSuccess(data));
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {

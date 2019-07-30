@@ -41,6 +41,7 @@ const {
   deleteCohort,
   leaveCohort,
   removeOwnerRoleInCohort,
+  restoreCohort,
   updateCohort,
   updateCohortHeaderStatus
 } = require('./cohort');
@@ -160,6 +161,7 @@ const socketListenTo = server => {
     deleteCohort(socket, allCohortsViewClients);
     leaveCohort(socket, allCohortsViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
+    restoreCohort(socket, allCohortsViewClients, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket);
   });

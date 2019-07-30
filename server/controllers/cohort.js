@@ -176,6 +176,7 @@ const getCohortDetails = (req, resp) => {
 
       const {
         _id,
+        createdAt,
         description,
         isArchived,
         memberIds: membersCollection,
@@ -192,11 +193,12 @@ const getCohortDetails = (req, resp) => {
 
         return resp.send({ _id, isArchived, isOwner, name });
       }
-
+      members: _keyBy(json.members, '_id');
       const members = responseWithCohortMembers(membersCollection, ownerIds);
 
       resp.send({
         _id,
+        createdAt,
         description,
         isArchived,
         isMember: true,
