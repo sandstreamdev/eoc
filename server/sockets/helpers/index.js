@@ -25,7 +25,7 @@ const emitCohortMetaData = (cohortId, clients, socket) =>
             socket.broadcast
               .to(socketId)
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
-                [cohortId]: { ...cohort }
+                [cohortId]: cohort
               });
           }
         });
@@ -89,6 +89,7 @@ const getListsByViewers = lists => {
       if (!listsByViewers[viewerId]) {
         listsByViewers[viewerId] = [];
       }
+
       if (!listsByViewers[viewerId].includes(listId)) {
         listsByViewers[viewerId].push(listId);
       }

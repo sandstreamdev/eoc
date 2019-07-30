@@ -138,7 +138,7 @@ const updateCohortHeaderStatus = socket => {
   });
 };
 
-const archiveCohort = (socket, allCohortsClients) => {
+const archiveCohort = (socket, allCohortsClients) =>
   socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
     const { cohortId } = data;
 
@@ -153,7 +153,8 @@ const archiveCohort = (socket, allCohortsClients) => {
       .exec()
       .then(doc => {
         if (doc) {
-          const { memberIds } = doc;
+          const { memberIds, ownerIds } = doc;
+          const cohort = responseWithCohort(doc);
 
           memberIds.forEach(id => {
             const memberId = id.toString();
@@ -166,10 +167,23 @@ const archiveCohort = (socket, allCohortsClients) => {
                 .emit(CohortActionTypes.DELETE_SUCCESS, cohortId);
             }
           });
+
+          ownerIds.forEach(id => {
+            const ownerId = id.toString();
+
+            if (allCohortsClients.has(ownerId)) {
+              const { socketId } = allCohortsClients.get(ownerId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [cohortId]: cohort
+                });
+            }
+          });
         }
       });
   });
-};
 
 module.exports = {
   addCohortMember,
