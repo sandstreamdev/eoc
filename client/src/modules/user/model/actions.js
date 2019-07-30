@@ -128,9 +128,9 @@ export const fetchUserDetails = userName => dispatch =>
       });
     });
 
-export const changePassword = (password, newPassword, passwordConfirm) =>
+export const changePassword = (password, newPassword, newPasswordConfirm) =>
   postData('/auth/change-password', {
     password,
     newPassword,
-    passwordConfirm
+    newPasswordConfirm
   });

@@ -18,9 +18,9 @@ class PasswordChangeForm extends PureComponent {
     super(props);
 
     this.state = {
-      confirmPasswordValue: undefined,
+      newConfirmPasswordValue: undefined,
       higherLevelErrors: {
-        confirmPasswordValueError: '',
+        newConfirmPasswordValueError: '',
         newPasswordError: ''
       },
       isFormValid: false,
@@ -79,37 +79,40 @@ class PasswordChangeForm extends PureComponent {
     );
   };
 
-  onPasswordConfirmChange = (confirmPasswordValue, isValid) =>
+  onNewPasswordConfirmChange = (newConfirmPasswordValue, isValid) =>
     this.setState(
-      { confirmPasswordValue, isPasswordConfirmValid: isValid },
+      { newConfirmPasswordValue, isPasswordConfirmValid: isValid },
       this.comparePasswords
     );
 
   passwordValidator = value => {
-    if (!validatePassword(value)) {
-      return 'user.auth.input.password.invalid';
+    if (validatePassword(value)) {
+      return '';
     }
 
-    return '';
+    return 'user.auth.input.password.invalid';
   };
 
   comparePasswords = () => {
     const {
       higherLevelErrors,
-      higherLevelErrors: { confirmPasswordValueError },
+      higherLevelErrors: { newConfirmPasswordValueError },
       newPassword,
-      confirmPasswordValue
+      newConfirmPasswordValue
     } = this.state;
     let newError;
 
-    if (confirmPasswordValueError && newPassword === confirmPasswordValue) {
+    if (
+      newConfirmPasswordValueError &&
+      newPassword === newConfirmPasswordValue
+    ) {
       newError = '';
     }
 
     if (
-      !confirmPasswordValueError &&
-      confirmPasswordValue !== undefined &&
-      newPassword !== confirmPasswordValue
+      !newConfirmPasswordValueError &&
+      newConfirmPasswordValue !== undefined &&
+      newPassword !== newConfirmPasswordValue
     ) {
       newError = 'user.auth.input.password.not-match';
     }
@@ -118,7 +121,7 @@ class PasswordChangeForm extends PureComponent {
       this.setState({
         higherLevelErrors: {
           ...higherLevelErrors,
-          confirmPasswordValueError: newError
+          newConfirmPasswordValueError: newError
         }
       });
     }
@@ -133,7 +136,7 @@ class PasswordChangeForm extends PureComponent {
     } = this.state;
     const isError = _some(higherLevelErrors, error => error !== '');
 
-    return this.setState({
+    this.setState({
       isFormValid:
         isNewPasswordValid &&
         isPasswordConfirmValid &&
@@ -144,12 +147,11 @@ class PasswordChangeForm extends PureComponent {
 
   handleChangePassword = event => {
     event.preventDefault();
-    const { password, newPassword, confirmPasswordValue } = this.state;
+    const { password, newPassword, newConfirmPasswordValue } = this.state;
 
     this.setState({ pending: true });
-
     this.pendingPromise = makeAbortablePromise(
-      changePassword(password, newPassword, confirmPasswordValue)
+      changePassword(password, newPassword, newConfirmPasswordValue)
     );
 
     return this.pendingPromise.promise
@@ -159,9 +161,12 @@ class PasswordChangeForm extends PureComponent {
           const newState = { pending: false };
 
           if (err instanceof ValidationException) {
-            const { isConfirmPasswordError, isNewPasswordError } = err.errors;
+            const {
+              isNewConfirmPasswordError,
+              isNewPasswordError
+            } = err.errors;
             newState.higherLevelErrors = {
-              confirmPasswordValueError: isConfirmPasswordError
+              newConfirmPasswordValueError: isNewConfirmPasswordError
                 ? 'user.auth.input.password.not-match'
                 : '',
               newPasswordError: isNewPasswordError
@@ -192,7 +197,7 @@ class PasswordChangeForm extends PureComponent {
 
   renderChangePasswordForm = () => {
     const {
-      higherLevelErrors: { confirmPasswordValueError, newPasswordError },
+      higherLevelErrors: { newConfirmPasswordValueError, newPasswordError },
       isFormValid,
       pending,
       changePasswordErrorId
@@ -228,11 +233,11 @@ class PasswordChangeForm extends PureComponent {
           />
           <AuthInput
             disabled={pending}
-            externalErrorId={confirmPasswordValueError}
+            externalErrorId={newConfirmPasswordValueError}
             formError={hasChangePasswordFailed}
             labelId="user.auth.input.new-password.confirm"
             name="confirm"
-            onChange={this.onPasswordConfirmChange}
+            onChange={this.onNewPasswordConfirmChange}
             type="password"
           />
           <div className="password-change-form__buttons">

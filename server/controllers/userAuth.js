@@ -366,19 +366,21 @@ const resendRecoveryLink = (req, resp, next) => {
 };
 
 const getUserDetails = (req, resp) => {
-  if (req.user) {
-    const { activatedAt, createdAt, email, password } = req.user;
-    const activationDate = activatedAt || createdAt;
-    const isPassword = password !== undefined;
+  const { user } = req;
 
-    return resp.send({ activationDate, email, isPassword });
+  if (user) {
+    const { activatedAt, createdAt, email, password } = user;
+    const activationDate = activatedAt || createdAt;
+    const isPasswordSet = password !== undefined;
+
+    return resp.send({ activationDate, email, isPasswordSet });
   }
 
   return resp.sendStatus(204);
 };
 
 const changePassword = (req, resp) => {
-  const { password, newPassword, passwordConfirm } = req.body;
+  const { password, newPassword, newPasswordConfirm } = req.body;
   const errors = {};
   const { email } = req.user;
 
@@ -386,8 +388,8 @@ const changePassword = (req, resp) => {
     errors.isNewPasswordError = true;
   }
 
-  if (newPassword !== passwordConfirm) {
-    errors.isConfirmPasswordError = true;
+  if (newPassword !== newPasswordConfirm) {
+    errors.isNewConfirmPasswordError = true;
   }
 
   if (_some(errors, error => error !== undefined)) {

@@ -132,10 +132,9 @@ class UserProfile extends PureComponent {
 
   renderAccountInfo = () => {
     const {
-      currentUser: { activationDate, isPassword }
+      currentUser: { activationDate, isPasswordSet }
     } = this.props;
     const { isPasswordUpdateFormVisible } = this.state;
-
     const passwordTitleId = isPasswordUpdateFormVisible
       ? 'user.profile.change-password'
       : 'user.password';
@@ -146,7 +145,7 @@ class UserProfile extends PureComponent {
           <FormattedMessage id="user.profile.account" />
         </h2>
         <ul className="user-profile__data-list">
-          {isPassword && (
+          {isPasswordSet && (
             <Fragment>
               <li
                 className={classNames(
