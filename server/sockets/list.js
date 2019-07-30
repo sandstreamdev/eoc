@@ -606,7 +606,7 @@ const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
-const deleteList = (socket, dashboardClients, cohortClients) => {
+const deleteList = (socket, dashboardClients, cohortClients) =>
   socket.on(ListActionTypes.DELETE_SUCCESS, data => {
     const { listId } = data;
 
@@ -630,7 +630,6 @@ const deleteList = (socket, dashboardClients, cohortClients) => {
         .emit(ListActionTypes.DELETE_SUCCESS, listId);
     });
   });
-};
 
 module.exports = {
   addComment,
