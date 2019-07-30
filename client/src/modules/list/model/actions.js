@@ -212,6 +212,7 @@ export const createList = data => dispatch => {
         notificationId: 'list.actions.create-list',
         data: data.name
       });
+
       if (type === ListType.SHARED) {
         socket.emit(ListActionTypes.CREATE_SUCCESS, json);
       }
