@@ -229,20 +229,48 @@ const updateList = (socket, dashboardViewClients, cohortViewClients) => {
 };
 
 const updateListHeaderState = socket => {
+  const clientsLocks = new Map();
+
   socket.on(ListHeaderStatusTypes.UNLOCK, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
       .to(`sack-${listId}`)
       .emit(ListHeaderStatusTypes.UNLOCK, data);
+
+    if (clientsLocks.has(userId)) {
+      clearTimeout(clientsLocks.get(userId));
+      clientsLocks.delete(userId);
+    }
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
       .to(`sack-${listId}`)
       .emit(ListHeaderStatusTypes.LOCK, data);
+
+    const delayedUnlock = setTimeout(() => {
+      const { listId, nameLock, descriptionLock } = data;
+      const updatedData = { listId };
+
+      if (nameLock !== undefined) {
+        updatedData.nameLock = false;
+      }
+
+      if (descriptionLock !== undefined) {
+        updatedData.descriptionLock = false;
+      }
+
+      socket.broadcast
+        .to(`sack-${listId}`)
+        .emit(ListHeaderStatusTypes.UNLOCK, updatedData);
+
+      clientsLocks.delete(userId);
+    }, 300000);
+
+    clientsLocks.set(userId, delayedUnlock);
   });
 };
 
