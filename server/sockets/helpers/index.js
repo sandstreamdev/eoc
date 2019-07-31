@@ -76,7 +76,7 @@ const updateListOnDashboardAndCohortView = (
       }
     });
 
-const getListsByViewers = lists => {
+const getListIdsByViewers = lists => {
   const listsByViewers = {};
 
   lists.forEach(list => {
@@ -116,9 +116,32 @@ const removeCohort = (socket, cohortId, clients, members) => {
   });
 };
 
+const getListsDataByViewers = lists => {
+  const listsByViewers = {};
+
+  lists.forEach(list => {
+    const { _id, viewersIds } = list;
+    const listId = _id.toString();
+
+    viewersIds.forEach(id => {
+      const viewerId = id.toString();
+
+      if (!listsByViewers[viewerId]) {
+        listsByViewers[viewerId] = {};
+      }
+      if (!listsByViewers[viewerId][listId]) {
+        listsByViewers[viewerId][listId] = responseWithList(list, viewerId);
+      }
+    });
+  });
+
+  return listsByViewers;
+};
+
 module.exports = {
   emitCohortMetaData,
-  getListsByViewers,
+  getListsDataByViewers,
+  getListIdsByViewers,
   removeCohort,
   updateListOnDashboardAndCohortView
 };

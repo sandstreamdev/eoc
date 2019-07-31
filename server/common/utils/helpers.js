@@ -65,7 +65,8 @@ const responseWithList = (list, userId) => {
   };
 
   if (cohortId) {
-    listToSend.cohortId = cohortId;
+    listToSend.cohortId =
+      typeof cohortId === 'string' ? cohortId : cohortId._id;
   }
 
   return listToSend;

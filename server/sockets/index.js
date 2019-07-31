@@ -22,6 +22,7 @@ const {
   cloneItem,
   deleteItem,
   emitListsOnAddCohortMember,
+  emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeListsOnArchiveCohort,
@@ -143,6 +144,7 @@ const socketListenTo = server => {
     cloneItem(socket);
     deleteItem(socket);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
     emitRemoveMemberOnLeaveCohort(socket);
     leaveList(socket);
     removeListsOnArchiveCohort(socket, dashboardViewClients);

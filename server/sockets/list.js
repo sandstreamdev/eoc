@@ -16,7 +16,8 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 const {
-  getListsByViewers,
+  getListsDataByViewers,
+  getListIdsByViewers,
   updateListOnDashboardAndCohortView
 } = require('./helpers');
 
@@ -492,7 +493,7 @@ const removeListsOnArchiveCohort = (socket, dashboardClients) =>
       .then(docs => {
         if (docs) {
           const listIds = docs.map(list => list._id.toString());
-          const listsByViewers = getListsByViewers(docs);
+          const listsByViewers = getListIdsByViewers(docs);
 
           listIds.forEach(listId => {
             socket.broadcast
@@ -517,6 +518,50 @@ const removeListsOnArchiveCohort = (socket, dashboardClients) =>
       });
   });
 
+const emitListsOnRestoreCohort = (socket, dashboardClients, cohortClients) =>
+  socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    List.find({ cohortId })
+      .populate('cohortId', 'ownerIds')
+      .lean()
+      .exec()
+      .then(docs => {
+        if (docs) {
+          const {
+            cohortId: { ownerIds: cohortOwners }
+          } = docs[0];
+          const listsByUsers = getListsDataByViewers(docs);
+
+          cohortOwners.forEach(id => {
+            const cohortOwnerId = id.toString();
+
+            if (cohortClients.has(cohortOwnerId)) {
+              const { socketId, viewId } = cohortClients.get(cohortOwnerId);
+              if (viewId === cohortId) {
+                const listsToSend = listsByUsers[cohortOwnerId];
+
+                socket.broadcast
+                  .to(socketId)
+                  .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listsToSend);
+              }
+            }
+          });
+
+          Object.keys(listsByUsers).forEach(viewerId => {
+            if (dashboardClients.has(viewerId)) {
+              const { socketId } = dashboardClients.get(viewerId);
+              const listsToSend = listsByUsers[viewerId];
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listsToSend);
+            }
+          });
+        }
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -530,6 +575,7 @@ module.exports = {
   cloneItem,
   deleteItem,
   emitListsOnAddCohortMember,
+  emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeListsOnArchiveCohort,
