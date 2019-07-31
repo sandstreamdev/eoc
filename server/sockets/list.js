@@ -478,6 +478,125 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
+const removeListMember = (
+  socket,
+  dashboardClients,
+  listClients,
+  cohortClients
+) =>
+  socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
+    const { listId, userId } = data;
+
+    if (dashboardClients.has(userId)) {
+      const { socketId } = dashboardClients.get(userId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
+    }
+
+    if (listClients.has(userId)) {
+      List.findById(listId)
+        .lean()
+        .exec()
+        .then(doc => {
+          if (doc) {
+            const { socketId, viewId } = listClients.get(userId);
+            const { cohortId } = doc;
+            const data = { listId };
+
+            if (viewId === listId) {
+              if (cohortId) {
+                data.cohortId = cohortId;
+              }
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.REMOVE_BY_SOMEONE, data);
+            }
+          }
+        });
+    }
+
+    if (cohortClients.has(userId)) {
+      const { socketId } = cohortClients.get(userId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
+    }
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
+  });
+
+const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
+  socket.on(ListActionTypes.ARCHIVE_SUCCESS, data => {
+    const { listId, cohortId } = data;
+
+    List.findById(listId)
+      .populate('cohortId')
+      .lean()
+      .exec()
+      .then(doc => {
+        const { viewersIds, cohortId: cohort } = doc;
+        const list = { ...doc, cohortId };
+
+        viewersIds.forEach(viewerId => {
+          const id = viewerId.toString();
+          let isGuest = false;
+
+          if (cohort) {
+            const { memberIds: cohortMemberIds } = cohort;
+            isGuest = !checkIfArrayContainsUserId(cohortMemberIds, viewerId);
+          }
+
+          const dataToSend = { isGuest, ...data };
+
+          if (listClients.has(id)) {
+            const { socketId, viewId } = listClients.get(id);
+
+            if (viewId === listId) {
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.ARCHIVE_SUCCESS, dataToSend);
+            }
+          }
+
+          if (dashboardClients.has(id)) {
+            const { socketId } = dashboardClients.get(id);
+
+            // Broadcast to clients on dashboard that have this list
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+                [listId]: {
+                  ...responseWithList(list, viewerId),
+                  isArchived: true
+                }
+              });
+          }
+
+          if (cohortClients.has(id)) {
+            const { socketId, viewId } = cohortClients.get(id);
+
+            if (viewId === cohortId) {
+              // Broadcast to clients on cohort view that have this list
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+                  [listId]: {
+                    ...responseWithList(list, viewerId),
+                    isArchived: true
+                  }
+                });
+            }
+          }
+        });
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -485,6 +604,7 @@ module.exports = {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
+  archiveList,
   changeItemOrderState,
   changeListType,
   clearVote,
@@ -493,6 +613,7 @@ module.exports = {
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
