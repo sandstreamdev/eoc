@@ -1,5 +1,6 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
+import _pickBy from 'lodash/pickBy';
 
 import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
 
@@ -53,15 +54,13 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.CREATE_SUCCESS:
       return { ...state, [action.payload._id]: { ...action.payload } };
     case CohortActionTypes.UPDATE_SUCCESS: {
-      const { description, cohortId, name } = action.payload;
+      const { cohortId, ...data } = action.payload;
       const prevCohort = state[cohortId];
-      const { name: prevName, description: prevDescription } = prevCohort;
-      const newDescription = name ? prevDescription : description;
+      const dataToUpdate = _pickBy(data, el => el !== undefined);
 
       const updatedCohort = {
         ...prevCohort,
-        name: name || prevName,
-        description: newDescription
+        ...dataToUpdate
       };
 
       return { ...state, [cohortId]: updatedCohort };
@@ -85,7 +84,7 @@ const cohorts = (state = {}, action) => {
         ...action.payload
       };
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
-      return action.payload;
+      return { ...state, ...action.payload };
     case CohortActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, cohort => !cohort.isArchived), '_id');
     case CohortActionTypes.RESTORE_SUCCESS:

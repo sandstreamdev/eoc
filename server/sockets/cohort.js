@@ -44,12 +44,16 @@ const addOwnerRoleInCohort = (socket, clients) => {
       });
 
     if (clients.has(userId)) {
-      socket.broadcast
-        .to(clients.get(userId))
-        .emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-          ...data,
-          isCurrentUserRoleChanging: true
-        });
+      const { viewId, socketId } = clients.get(userId);
+
+      if (viewId === cohortId) {
+        socket.broadcast
+          .to(socketId)
+          .emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
+            ...data,
+            isCurrentUserRoleChanging: true
+          });
+      }
     }
   });
 };
@@ -66,12 +70,16 @@ const removeOwnerRoleInCohort = (socket, clients) => {
       });
 
     if (clients.has(userId)) {
-      socket.broadcast
-        .to(clients.get(userId))
-        .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
-          ...data,
-          isCurrentUserRoleChanging: true
-        });
+      const { viewId, socketId } = clients.get(userId);
+
+      if (viewId === cohortId) {
+        socket.broadcast
+          .to(socketId)
+          .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+            ...data,
+            isCurrentUserRoleChanging: true
+          });
+      }
     }
   });
 };
@@ -99,8 +107,10 @@ const updateCohort = (socket, allCohortsViewClients) => {
               const memberId = id.toString();
 
               if (allCohortsViewClients.has(memberId)) {
+                const { socketId } = allCohortsViewClients.get(memberId);
+
                 socket.broadcast
-                  .to(allCohortsViewClients.get(memberId))
+                  .to(socketId)
                   .emit(CohortActionTypes.UPDATE_SUCCESS, cohort);
               }
             });
