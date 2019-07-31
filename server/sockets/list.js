@@ -156,15 +156,16 @@ const addListMember = (socket, dashboardClients, cohortClients) =>
               socket
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: { ...list }
+                  [listId]: list
                 });
             }
           }
 
           if (dashboardClients.has(viewerId)) {
             const { socketId } = dashboardClients.get(viewerId);
+
             socket.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: { ...list }
+              [listId]: list
             });
           }
         }
@@ -401,7 +402,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
 
           const list = { ...doc, cohortId };
 
-          if (type === ListType.LIMITED && removedViewers) {
+          if (type === ListType.LIMITED) {
             removedViewers.forEach(id => {
               const userId = id.toString();
               const isCohortMember = checkIfArrayContainsUserId(
@@ -453,7 +454,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
               socket.broadcast
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [list._id]: { ...responseWithList(list, userId) }
+                  [list._id]: responseWithList(list, userId)
                 });
             }
 
@@ -464,7 +465,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
                 socket.broadcast
                   .to(socketId)
                   .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                    [list._id]: { ...responseWithList(list, userId) }
+                    [list._id]: responseWithList(list, userId)
                   });
               }
             }
@@ -486,7 +487,6 @@ const removeListMember = (
   socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
     const { listId, userId } = data;
 
-    // Broadcast to that removed user if he is at dashboard view
     if (dashboardClients.has(userId)) {
       const { socketId } = dashboardClients.get(userId);
 
@@ -510,7 +510,6 @@ const removeListMember = (
                 data.cohortId = cohortId;
               }
 
-              // Broadcast to that removed user if he is on the list view
               socket.broadcast
                 .to(socketId)
                 .emit(ListActionTypes.REMOVE_BY_SOMEONE, data);
@@ -519,7 +518,6 @@ const removeListMember = (
         });
     }
 
-    // Broadcast to that removed user if he is on the cohort view
     if (cohortClients.has(userId)) {
       const { socketId } = cohortClients.get(userId);
 
@@ -528,7 +526,6 @@ const removeListMember = (
         .emit(ListActionTypes.DELETE_SUCCESS, listId);
     }
 
-    // Broadcast to every user on the list
     socket.broadcast
       .to(`sack-${listId}`)
       .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });

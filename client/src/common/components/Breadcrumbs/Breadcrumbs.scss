@@ -1,6 +1,6 @@
 .breadcrumbs {
-  padding: 10px 0;
-  margin-top: 10px;
+  padding: four-by(2) 0;
+  margin-top: four-by(2);
   display: inline-block;
 
   &__list {
@@ -40,7 +40,7 @@
     }
 
     &:nth-child(2n) {
-      margin: 0 10px;
+      margin: 0 four-by(2);
     }
 
     &:last-child {
