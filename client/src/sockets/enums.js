@@ -67,4 +67,8 @@ export const CommentEvents = Object.freeze({
   ADD_SUCCESS: CommentActionTypes.ADD_SUCCESS
 });
 
+export const ActivityActionTypes = Object.freeze({
+  UPDATE_ACTIVITIES: 'activities/UPDATE_ACTIVITIES'
+});
+
 export { ItemStatusType };

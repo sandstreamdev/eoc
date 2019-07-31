@@ -55,6 +55,10 @@ const ActivityType = Object.freeze({
   COHORT_SET_AS_MEMBER: 'activity.cohort.set-as-member'
 });
 
+const ActivityActionTypes = Object.freeze({
+  UPDATE_ACTIVITIES: 'activities/UPDATE_ACTIVITIES'
+});
+
 const ItemActionTypes = Object.freeze({
   ADD_SUCCESS: 'item/ADD_SUCCESS',
   ARCHIVE_SUCCESS: 'item/ARCHIVE_SUCCESS',
@@ -115,6 +119,7 @@ const ListHeaderStatusTypes = Object.freeze({
 });
 
 module.exports = {
+  ActivityActionTypes,
   ActivityType,
   CohortActionTypes,
   CohortHeaderStatusTypes,

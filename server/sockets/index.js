@@ -61,6 +61,7 @@ const socketListenTo = server => {
   const allCohortsViewClients = new Map();
   const dashboardViewClients = new Map();
   const listViewClients = new Map();
+  const activitiesClients = new Map();
 
   ioInstance.on('connection', socket => {
     const {
@@ -116,6 +117,14 @@ const socketListenTo = server => {
       dashboardViewClients.delete(userId)
     );
 
+    socket.on('enterActivitiesView', userId =>
+      activitiesClients.set(userId, { socketId: socket.id })
+    );
+
+    socket.on('leaveActivitiesView', userId =>
+      activitiesClients.delete(userId)
+    );
+
     socket.on('error', () => {
       /* Ignore error.
        * Don't show any information to a user
@@ -125,7 +134,7 @@ const socketListenTo = server => {
     });
 
     addComment(socket);
-    addItemToList(socket);
+    addItemToList(socket, activitiesClients);
     addListMember(socket, dashboardViewClients, cohortViewClients);
     addMemberRoleInList(socket, listViewClients);
     addOwnerRoleInList(socket, listViewClients);

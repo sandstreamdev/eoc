@@ -1,8 +1,9 @@
 const List = require('../../models/list.model');
 const Cohort = require('../../models/cohort.model');
 const {
-  ListActionTypes,
-  CohortActionTypes
+  ActivityActionTypes,
+  CohortActionTypes,
+  ListActionTypes
 } = require('../../common/variables');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 
@@ -76,7 +77,13 @@ const updateListOnDashboardAndCohortView = (
       }
     });
 
+const updateActivities = (socket, socketId) =>
+  socket.broadcast.to(socketId).emit(ActivityActionTypes.UPDATE_ACTIVITIES, {
+    shouldUpdate: true
+  });
+
 module.exports = {
   emitCohortMetaData,
+  updateActivities,
   updateListOnDashboardAndCohortView
 };

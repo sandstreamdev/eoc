@@ -34,3 +34,9 @@ export const fetchActivities = page => dispatch =>
         'Failed to fetch activities. Please try again.'
       );
     });
+
+export const resetShouldUpdate = () => dispatch =>
+  dispatch({
+    type: ActivitiesActionTypes.SHOULD_UPDATE,
+    payload: false
+  });

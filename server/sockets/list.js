@@ -15,13 +15,35 @@ const {
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
-const { updateListOnDashboardAndCohortView } = require('./helpers');
+const {
+  updateActivities,
+  updateListOnDashboardAndCohortView
+} = require('./helpers');
 
-const addItemToList = socket => {
+const addItemToList = (socket, activitiesClients) => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(`sack-${listId}`)
       .emit(ItemActionTypes.ADD_SUCCESS, data);
+
+    List.findById(listId)
+      .lean()
+      .exec()
+      .then(doc => {
+        const { viewersIds } = doc;
+
+        viewersIds.forEach(viewerId => {
+          const id = viewerId.toString();
+
+          if (activitiesClients.has(id)) {
+            const { socketId } = activitiesClients.get(id);
+
+            updateActivities(socket, socketId);
+          }
+        });
+      });
   });
 };
 

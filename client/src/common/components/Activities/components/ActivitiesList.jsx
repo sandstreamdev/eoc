@@ -8,14 +8,25 @@ import { injectIntl } from 'react-intl';
 
 import Activity from './Activity';
 import Preloader from 'common/components/Preloader';
-import { fetchActivities, removeActivities } from '../model/actions';
-import { getActivities, getIsNextPage, getNextPage } from '../model/selectors';
+import {
+  fetchActivities,
+  removeActivities,
+  resetShouldUpdate
+} from '../model/actions';
+import {
+  getActivities,
+  getIsNextPage,
+  getNextPage,
+  getShouldUpdate
+} from '../model/selectors';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
-import { IntlPropType } from 'common/constants/propTypes';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
+import { enterView, leaveView } from 'sockets';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class ActivitiesList extends PureComponent {
   pendingPromise = null;
@@ -25,18 +36,42 @@ class ActivitiesList extends PureComponent {
   };
 
   componentDidMount() {
+    const {
+      currentUser: { id }
+    } = this.props;
+
     this.handleShowActivities();
+    enterView('activities', id);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { shouldUpdate: prevShouldUpdate } = prevProps;
+    const { shouldUpdate } = this.props;
+
+    if (prevShouldUpdate !== shouldUpdate) {
+      this.handleUpdateActivities();
+    }
   }
 
   componentWillUnmount() {
-    const { removeActivities } = this.props;
+    const {
+      currentUser: { id },
+      removeActivities
+    } = this.props;
 
     if (this.pendingPromise) {
       this.pendingPromise.abort();
     }
 
     removeActivities();
+    leaveView('activities', id);
   }
+
+  handleUpdateActivities = () => {
+    const { fetchActivities, resetShouldUpdate } = this.props;
+
+    fetchActivities().finally(() => resetShouldUpdate());
+  };
 
   handleShowActivities = () => {
     const { fetchActivities, nextPage } = this.props;
@@ -106,24 +141,29 @@ class ActivitiesList extends PureComponent {
 
 ActivitiesList.propTypes = {
   activities: PropTypes.objectOf(PropTypes.object),
+  currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   isNextPage: PropTypes.bool.isRequired,
-  nextPage: PropTypes.number.isRequired,
+  nextPage: PropTypes.number,
+  shouldUpdate: PropTypes.bool,
 
   fetchActivities: PropTypes.func.isRequired,
-  removeActivities: PropTypes.func.isRequired
+  removeActivities: PropTypes.func.isRequired,
+  resetShouldUpdate: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   activities: getActivities(state),
+  currentUser: getCurrentUser(state),
   isNextPage: getIsNextPage(state),
-  nextPage: getNextPage(state)
+  nextPage: getNextPage(state),
+  shouldUpdate: getShouldUpdate(state)
 });
 
 export default _flowRight(
   injectIntl,
   connect(
     mapStateToProps,
-    { fetchActivities, removeActivities }
+    { fetchActivities, removeActivities, resetShouldUpdate }
   )
 )(ActivitiesList);

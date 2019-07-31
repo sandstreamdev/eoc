@@ -6,10 +6,17 @@ const activities = (state = initialState, action) => {
     case ActivitiesActionTypes.FETCH_SUCCESS: {
       const { activities, isNextPage, nextPage } = action.payload;
 
-      return { data: { ...state.data, ...activities }, isNextPage, nextPage };
+      return {
+        ...state,
+        data: { ...state.data, ...activities },
+        isNextPage,
+        nextPage
+      };
     }
     case ActivitiesActionTypes.REMOVE:
       return initialState;
+    case ActivitiesActionTypes.SHOULD_UPDATE:
+      return { ...state, shouldUpdate: action.payload };
     default:
       return state;
   }

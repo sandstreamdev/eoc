@@ -29,3 +29,11 @@ export const getIsNextPage = state => {
 
   return isNextPage;
 };
+
+export const getShouldUpdate = state => {
+  const {
+    activities: { shouldUpdate }
+  } = state;
+
+  return shouldUpdate;
+};
