@@ -21,16 +21,16 @@
     font-size: $m-font;
     color: $text-normal;
     font-weight: 500;
-    margin-top: 5px;
+    margin-top: four-by(1);
   }
 
   &__description {
     font-size: $m-font;
     color: $text-normal;
-    padding: 8px 0 10px 0;
+    padding: four-by(2) 0;
     line-height: 1.2;
     text-align: left;
-    margin: 0 0 16px 0;
+    margin-bottom: four-by(4);
     overflow-wrap: break-word;
     cursor: pointer;
 
@@ -53,21 +53,21 @@
     cursor: text;
     border: 0;
     outline: 0;
-    padding: 8px 0 10px 0;
-    margin: 0 0 16px 0;
+    padding: four-by(2) 0;
+    margin-bottom: four-by(4);
     background: transparent;
     resize: none;
 
     &:focus {
       border-bottom: 1px solid $orange;
-      padding-bottom: 5px;
+      padding-bottom: four-by(1);
     }
   }
 
   &__save-button {
     position: relative;
     width: 100%;
-    margin-bottom: 16px;
+    margin-bottom: four-by(4);
 
     .primary-button {
       font-size: $m-font;
