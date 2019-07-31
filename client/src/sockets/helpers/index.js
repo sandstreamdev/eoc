@@ -36,6 +36,16 @@ export const listEventsController = (event, data, dispatch) => {
 
       return history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
     }
+    case ListEvents.RESTORE_AND_REDIRECT: {
+      const { listId, listData } = data;
+
+      dispatch({
+        type: ListActionTypes.RESTORE_SUCCESS,
+        payload: { data: listData, listId }
+      });
+
+      return history.replace(`/sack/${listId}`);
+    }
     default:
       return dispatch({ type: event, payload: data });
   }

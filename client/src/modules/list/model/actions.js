@@ -334,6 +334,8 @@ export const restoreList = (listId, listName) => dispatch =>
         notificationId: 'list.actions.restore-list',
         data: listName
       });
+      console.log('emit');
+      socket.emit(ListActionTypes.RESTORE_SUCCESS, { listData, listId });
     })
     .catch(() => {
       dispatch(restoreListFailure());
