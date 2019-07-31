@@ -478,6 +478,59 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
+const removeListMember = (
+  socket,
+  dashboardClients,
+  listClients,
+  cohortClients
+) =>
+  socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
+    const { listId, userId } = data;
+
+    if (dashboardClients.has(userId)) {
+      const { socketId } = dashboardClients.get(userId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
+    }
+
+    if (listClients.has(userId)) {
+      List.findById(listId)
+        .lean()
+        .exec()
+        .then(doc => {
+          if (doc) {
+            const { socketId, viewId } = listClients.get(userId);
+            const { cohortId } = doc;
+            const data = { listId };
+
+            if (viewId === listId) {
+              if (cohortId) {
+                data.cohortId = cohortId;
+              }
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.REMOVE_BY_SOMEONE, data);
+            }
+          }
+        });
+    }
+
+    if (cohortClients.has(userId)) {
+      const { socketId } = cohortClients.get(userId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
+    }
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -493,6 +546,7 @@ module.exports = {
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
