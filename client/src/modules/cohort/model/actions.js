@@ -14,9 +14,9 @@ import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
 
-const createCohortSuccess = data => ({
+const createCohortSuccess = payload => ({
   type: CohortActionTypes.CREATE_SUCCESS,
-  payload: data
+  payload
 });
 
 const createCohortFailure = errMessage => ({
@@ -24,9 +24,9 @@ const createCohortFailure = errMessage => ({
   errMessage
 });
 
-const fetchCohortsMetaDataSuccess = data => ({
+const fetchCohortsMetaDataSuccess = payload => ({
   type: CohortActionTypes.FETCH_META_DATA_SUCCESS,
-  payload: data
+  payload
 });
 
 const fetchCohortsMetaDataFailure = errMessage => ({
@@ -34,9 +34,9 @@ const fetchCohortsMetaDataFailure = errMessage => ({
   errMessage
 });
 
-const updateCohortSuccess = data => ({
+const updateCohortSuccess = payload => ({
   type: CohortActionTypes.UPDATE_SUCCESS,
-  payload: data
+  payload
 });
 
 const updateCohortFailure = err => ({
@@ -44,9 +44,9 @@ const updateCohortFailure = err => ({
   payload: err.message
 });
 
-const archiveCohortSuccess = id => ({
+const archiveCohortSuccess = payload => ({
   type: CohortActionTypes.ARCHIVE_SUCCESS,
-  payload: id
+  payload
 });
 
 const archiveCohortFailure = errMessage => ({
@@ -54,9 +54,9 @@ const archiveCohortFailure = errMessage => ({
   payload: errMessage
 });
 
-const restoreCohortSuccess = (data, _id) => ({
+const restoreCohortSuccess = payload => ({
   type: CohortActionTypes.RESTORE_SUCCESS,
-  payload: { data, _id }
+  payload
 });
 
 const restoreCohortFailure = errMessage => ({
@@ -64,9 +64,9 @@ const restoreCohortFailure = errMessage => ({
   payload: errMessage
 });
 
-const deleteCohortSuccess = _id => ({
+const deleteCohortSuccess = payload => ({
   type: CohortActionTypes.DELETE_SUCCESS,
-  payload: _id
+  payload
 });
 
 const deleteCohortFailure = errMessage => ({
@@ -79,14 +79,14 @@ const fetchCohortDetailsFailure = errMessage => ({
   payload: errMessage
 });
 
-const fetchCohortDetailsSuccess = (data, _id) => ({
+const fetchCohortDetailsSuccess = payload => ({
   type: CohortActionTypes.FETCH_DETAILS_SUCCESS,
-  payload: { data, _id }
+  payload
 });
 
-const fetchArchivedCohortsMetaDataSuccess = data => ({
+const fetchArchivedCohortsMetaDataSuccess = payload => ({
   type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
-  payload: data
+  payload
 });
 
 const fetchArchivedCohortsMetaDataFailure = errMessage => ({
@@ -94,9 +94,9 @@ const fetchArchivedCohortsMetaDataFailure = errMessage => ({
   payload: errMessage
 });
 
-const addMemberSuccess = data => ({
+const addMemberSuccess = payload => ({
   type: CohortActionTypes.ADD_MEMBER_SUCCESS,
-  payload: data
+  payload
 });
 
 const addMemberFailure = () => ({
@@ -107,32 +107,32 @@ const removeMemberFailure = () => ({
   type: CohortActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = (cohortId, userId) => ({
+const removeMemberSuccess = payload => ({
   type: CohortActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: { cohortId, userId }
+  payload
 });
 
 const addOwnerRoleFailure = () => ({
   type: CohortActionTypes.ADD_OWNER_ROLE_FAILURE
 });
 
-const addOwnerRoleSuccess = data => ({
+const addOwnerRoleSuccess = payload => ({
   type: CohortActionTypes.ADD_OWNER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
 const removeOwnerRoleFailure = () => ({
   type: CohortActionTypes.REMOVE_OWNER_ROLE_FAILURE
 });
 
-const removeOwnerRoleSuccess = data => ({
+const removeOwnerRoleSuccess = payload => ({
   type: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
-const leaveCohortSuccess = cohortId => ({
+const leaveCohortSuccess = payload => ({
   type: CohortActionTypes.LEAVE_SUCCESS,
-  payload: cohortId
+  payload
 });
 
 const leaveCohortFailure = () => ({
@@ -253,7 +253,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
-      dispatch(restoreCohortSuccess(data, cohortId));
+      dispatch(restoreCohortSuccess({ data, _id: cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName
@@ -276,7 +276,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
-      dispatch(fetchCohortDetailsSuccess(data, cohortId));
+      dispatch(fetchCohortDetailsSuccess({ data, _id: cohortId }));
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
@@ -318,7 +318,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
     userId
   })
     .then(() => {
-      dispatch(removeMemberSuccess(cohortId, userId));
+      dispatch(removeMemberSuccess({ cohortId, userId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.remove-member',
         data: userName
