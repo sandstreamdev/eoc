@@ -103,13 +103,16 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.UPDATE_SUCCESS: {
       const { description, listId, name } = action.payload;
-      const prevList = state[listId];
-      const { name: prevName, description: prevDescription } = prevList;
-      const newDescription = name ? prevDescription : description;
+      const previousList = state[listId];
+      const {
+        name: previousName,
+        description: previousDescription
+      } = previousList;
+      const newDescription = name ? previousDescription : description;
 
       const updatedList = {
-        ...prevList,
-        name: name || prevName,
+        ...previousList,
+        name: name || previousName,
         description: newDescription
       };
 
@@ -259,11 +262,11 @@ const lists = (state = {}, action) => {
       const {
         payload: { listId }
       } = action;
-      const { items: prevItems } = state[listId];
+      const { items: previousItems } = state[listId];
 
       return {
         ...state,
-        [listId]: { ...state[listId], items: items(prevItems, action) }
+        [listId]: { ...state[listId], items: items(previousItems, action) }
       };
     }
     case ListHeaderStatusType.LOCK:
