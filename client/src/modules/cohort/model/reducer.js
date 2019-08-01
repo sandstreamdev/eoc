@@ -90,11 +90,11 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.RESTORE_SUCCESS:
     case CohortActionTypes.FETCH_DETAILS_SUCCESS: {
       const {
-        payload: data,
+        payload,
         payload: { _id }
       } = action;
 
-      return { ...state, [_id]: data };
+      return { ...state, [_id]: payload };
     }
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS:

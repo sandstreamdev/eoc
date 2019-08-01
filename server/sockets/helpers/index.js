@@ -129,6 +129,7 @@ const getListsDataByViewers = lists => {
       if (!listsByViewers[viewerId]) {
         listsByViewers[viewerId] = {};
       }
+
       if (!listsByViewers[viewerId][listId]) {
         listsByViewers[viewerId][listId] = responseWithList(list, viewerId);
       }
