@@ -1,5 +1,6 @@
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { asyncPostfixes } from 'common/constants/variables';
+import { Routes } from 'common/constants/enums';
 
 export const makeAbortablePromise = promise => {
   let _reject;
@@ -21,6 +22,12 @@ export const dateFromString = string => new Date(string).toLocaleString();
 
 export const routeGenerator = (route, param = null) =>
   `/${route}${param ? `/${param}` : ''}`;
+
+export const cohortRoute = id => routeGenerator(Routes.COHORT, id);
+
+export const cohortsRoute = () => routeGenerator(Routes.COHORTS);
+
+export const dashboardRoute = () => routeGenerator(Routes.DASHBOARD);
 
 export const enumerable = namespace => (...keys) =>
   Object.freeze(

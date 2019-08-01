@@ -14,6 +14,7 @@ import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
 import { ListType } from 'modules/list/consts';
+import { cohortRoute, dashboardRoute } from 'common/utils/helpers';
 
 const fetchListDataFailure = () => ({
   type: ListActionTypes.FETCH_DATA_FAILURE
@@ -258,7 +259,7 @@ export const deleteList = (id, listName) => dispatch =>
         notificationId: 'list.actions.delete-list',
         data: listName
       });
-      history.replace('/dashboard');
+      history.replace(dashboardRoute());
     })
     .catch(() => {
       dispatch(deleteListFailure());
@@ -297,7 +298,7 @@ export const archiveList = (listId, listName) => dispatch =>
         notificationId: 'list.actions.arch-list',
         data: listName
       });
-      history.replace('/dashboard');
+      history.replace(dashboardRoute());
     })
     .catch(() => {
       dispatch(archiveListFailure());
@@ -586,13 +587,10 @@ export const leaveList = (
         notificationId: 'list.actions.leave',
         data: userName
       });
-      history.replace(
-        `/${
-          cohortId && type === ListType.LIMITED
-            ? `cohort/${cohortId}`
-            : 'dashboard'
-        }`
-      );
+      const goToCohort = cohortId && type === ListType.LIMITED;
+      const url = goToCohort ? cohortRoute(cohortId) : dashboardRoute();
+
+      history.replace(url);
     })
     .catch(err => {
       dispatch(leaveListFailure());

@@ -1,7 +1,10 @@
 import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
-import { Routes } from 'common/constants/enums';
-import { routeGenerator } from 'common/utils/helpers';
+import {
+  cohortRoute,
+  cohortsRoute,
+  dashboardRoute
+} from 'common/utils/helpers';
 
 export const listEventsController = (event, data, dispatch) => {
   switch (event) {
@@ -13,9 +16,7 @@ export const listEventsController = (event, data, dispatch) => {
 
       const goToCohort = cohortId && isCohortMember;
 
-      const url = goToCohort
-        ? routeGenerator(Routes.COHORT, cohortId)
-        : routeGenerator(Routes.DASHBOARD);
+      const url = goToCohort ? cohortRoute(cohortId) : dashboardRoute();
 
       return history.replace(url);
     }
@@ -31,7 +32,7 @@ export const cohortEventsController = (event, data, dispatch) => {
 
       dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: cohortId });
 
-      return history.replace(routeGenerator(Routes.COHORTS));
+      return history.replace(cohortsRoute());
     }
     default:
       return dispatch({ type: event, payload: data });

@@ -13,6 +13,7 @@ import history from 'common/utils/history';
 import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
+import { cohortsRoute } from 'common/utils/helpers';
 
 const createCohortSuccess = payload => ({
   type: CohortActionTypes.CREATE_SUCCESS,
@@ -201,7 +202,7 @@ export const deleteCohort = (cohortId, cohortName) => dispatch =>
         notificationId: 'cohort.actions.delete-cohort',
         data: cohortName
       });
-      history.replace('/cohorts');
+      history.replace(cohortsRoute());
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
@@ -224,7 +225,7 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
         notificationId: 'cohort.actions.archive-cohort',
         data: cohortName
       });
-      history.replace('/cohorts');
+      history.replace(cohortsRoute());
     })
     .catch(() => {
       dispatch(archiveCohortFailure());
@@ -396,7 +397,7 @@ export const leaveCohort = (cohortId, userId, userName) => dispatch =>
         notificationId: 'cohort.actions.leave-cohort',
         data: userName
       });
-      history.replace('/cohorts');
+      history.replace(cohortsRoute());
     })
     .catch(err => {
       dispatch(leaveCohortFailure());
