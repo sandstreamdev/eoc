@@ -271,9 +271,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
 export const fetchCohortDetails = cohortId => dispatch =>
   getData(`/api/cohorts/${cohortId}/data`)
     .then(resp => resp.json())
-    .then(json => {
-      dispatch(fetchCohortDetailsSuccess(json));
-    })
+    .then(json => dispatch(fetchCohortDetailsSuccess(json)))
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
         dispatch(fetchCohortDetailsFailure());

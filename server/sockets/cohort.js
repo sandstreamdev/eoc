@@ -169,6 +169,7 @@ const deleteCohort = (socket, allCohortsClients) =>
 const restoreCohort = (socket, allCohortsClients, cohortClients) =>
   socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {
     const { cohortId } = data;
+
     Cohort.findById(cohortId)
       .populate('memberIds', 'avatarUrl displayName _id')
       .lean()

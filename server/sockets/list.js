@@ -522,7 +522,7 @@ const emitListsOnRestoreCohort = (socket, dashboardClients, cohortClients) =>
   socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {
     const { cohortId } = data;
 
-    List.find({ cohortId })
+    List.find({ cohortId, isArchived: false })
       .populate('cohortId', 'ownerIds')
       .lean()
       .exec()
@@ -538,6 +538,7 @@ const emitListsOnRestoreCohort = (socket, dashboardClients, cohortClients) =>
 
             if (cohortClients.has(cohortOwnerId)) {
               const { socketId, viewId } = cohortClients.get(cohortOwnerId);
+
               if (viewId === cohortId) {
                 const listsToSend = listsByUsers[cohortOwnerId];
 

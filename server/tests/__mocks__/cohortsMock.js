@@ -22,6 +22,7 @@ const cohortsMock = [
     __v: { $numberInt: '0' }
   }
 ];
+
 const cohortDetailsMock = {
   _id: { $oid: '5ccfe96a1ad8a35fee6fbc77' },
   isArchived: false,
