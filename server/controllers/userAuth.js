@@ -259,11 +259,10 @@ const updatePassword = (req, resp) => {
 
   const sanitizedToken = sanitize(token);
 
-  if (!validatePasswordStructure(updatedPassword)) {
-    return resp.sendStatus(400);
-  }
-
-  if (_trim(updatedPassword) !== _trim(passwordConfirmation)) {
+  if (
+    !validatePasswordStructure(updatedPassword) ||
+    _trim(updatedPassword) !== _trim(passwordConfirmation)
+  ) {
     return resp.sendStatus(400);
   }
 

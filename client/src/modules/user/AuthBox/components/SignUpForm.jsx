@@ -113,33 +113,16 @@ class SignUpForm extends PureComponent {
       this.comparePasswords
     );
 
-  nameValidator = value => {
-    const { isLength } = validator;
+  nameValidator = value =>
+    validator.isLength(value, { min: 1, max: 32 })
+      ? ''
+      : 'user.auth.input.email.invalid';
 
-    if (!isLength(value, { min: 1, max: 32 })) {
-      return 'user.auth.input.username.invalid';
-    }
+  emailValidator = value =>
+    validator.isEmail(value) ? '' : 'user.auth.input.email.invalid';
 
-    return '';
-  };
-
-  emailValidator = value => {
-    const { isEmail } = validator;
-
-    if (!isEmail(value)) {
-      return 'user.auth.input.email.invalid';
-    }
-
-    return '';
-  };
-
-  passwordValidator = value => {
-    if (!validatePasswordStructure(value)) {
-      return 'user.auth.input.password.invalid';
-    }
-
-    return '';
-  };
+  passwordValidator = value =>
+    validatePasswordStructure(value) ? '' : 'user.auth.input.password.invalid';
 
   comparePasswords = () => {
     const {

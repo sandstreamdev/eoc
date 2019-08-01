@@ -55,7 +55,7 @@ class PasswordChangeForm extends PureComponent {
     this.setState(
       {
         password,
-        isPasswordValid: isValid && password.length > 0,
+        isPasswordValid: isValid,
         changePasswordErrorId: error
       },
       this.comparePasswords
@@ -88,13 +88,8 @@ class PasswordChangeForm extends PureComponent {
       this.comparePasswords
     );
 
-  passwordValidator = value => {
-    if (validatePasswordStructure(value)) {
-      return '';
-    }
-
-    return 'user.auth.input.password.invalid';
-  };
+  passwordValidator = value =>
+    validatePasswordStructure(value) ? '' : 'user.auth.input.password.invalid';
 
   comparePasswords = () => {
     const {
