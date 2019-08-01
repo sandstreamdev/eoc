@@ -3,13 +3,12 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
 import history from 'common/utils/history';
+import { asyncTypes, enumerable } from 'common/utils/helpers';
 
-export const AuthorizationActionTypes = Object.freeze({
-  LOGIN_FAILURE: 'LOGIN_FAILURE',
-  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-  LOGOUT_FAILURE: 'LOGOUT_FAILURE',
-  LOGOUT_SUCCESS: 'LOGOUT_SUCCESS'
-});
+export const AuthorizationActionTypes = enumerable('user')(
+  ...asyncTypes('LOGIN'),
+  ...asyncTypes('LOGOUT')
+);
 
 const logoutFailure = () => ({
   type: AuthorizationActionTypes.LOGOUT_FAILURE
