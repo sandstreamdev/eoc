@@ -11,121 +11,117 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 import { ITEM_TOGGLE_TIME } from '../ListItem/constants';
 import socket from 'sockets';
 
-const addItemFailure = errorMessage => ({
-  type: ItemActionTypes.ADD_FAILURE,
-  payload: errorMessage
+const addItemFailure = () => ({
+  type: ItemActionTypes.ADD_FAILURE
 });
 
-export const addItemSuccess = (item, listId) => ({
+export const addItemSuccess = payload => ({
   type: ItemActionTypes.ADD_SUCCESS,
-  payload: { item, listId }
+  payload
 });
 
-const toggleItemSuccess = (authorId, authorName, itemId, listId) => ({
+const toggleItemSuccess = payload => ({
   type: ItemActionTypes.TOGGLE_SUCCESS,
-  payload: { authorId, authorName, itemId, listId }
+  payload
 });
 
-const toggleItemFailure = errMessage => ({
-  type: ItemActionTypes.TOGGLE_FAILURE,
-  payload: errMessage
+const toggleItemFailure = () => ({
+  type: ItemActionTypes.TOGGLE_FAILURE
 });
 
-const setVoteSuccess = (itemId, listId) => ({
+const setVoteSuccess = payload => ({
   type: ItemActionTypes.SET_VOTE_SUCCESS,
-  payload: { itemId, listId }
+  payload
 });
 
-const setVoteFailure = errMessage => ({
-  type: ItemActionTypes.SET_VOTE_FAILURE,
-  payload: errMessage
+const setVoteFailure = () => ({
+  type: ItemActionTypes.SET_VOTE_FAILURE
 });
 
-const clearVoteSuccess = (itemId, listId) => ({
+const clearVoteSuccess = payload => ({
   type: ItemActionTypes.CLEAR_VOTE_SUCCESS,
-  payload: { itemId, listId }
+  payload
 });
 
-const clearVoteFailure = errMessage => ({
-  type: ItemActionTypes.CLEAR_VOTE_FAILURE,
-  payload: errMessage
+const clearVoteFailure = () => ({
+  type: ItemActionTypes.CLEAR_VOTE_FAILURE
 });
 
-const updateListItemSuccess = (listId, itemId, data) => ({
+const updateListItemSuccess = payload => ({
   type: ItemActionTypes.UPDATE_SUCCESS,
-  payload: { listId, itemId, data }
+  payload
 });
 
 const updateListItemFailure = () => ({
   type: ItemActionTypes.UPDATE_FAILURE
 });
 
-const cloneItemSuccess = (listId, item) => ({
+const cloneItemSuccess = payload => ({
   type: ItemActionTypes.CLONE_SUCCESS,
-  payload: { listId, item }
+  payload
 });
 
 const cloneItemFailure = () => ({
   type: ItemActionTypes.CLONE_FAILURE
 });
 
-const addCommentSuccess = (listId, itemId, comment) => ({
+const addCommentSuccess = payload => ({
   type: CommentActionTypes.ADD_SUCCESS,
-  payload: { comment, itemId, listId }
+  payload
 });
 
 const addCommentFailure = () => ({
   type: CommentActionTypes.ADD_FAILURE
 });
 
-const fetchCommentsSuccess = (listId, itemId, comments) => ({
+const fetchCommentsSuccess = payload => ({
   type: CommentActionTypes.FETCH_SUCCESS,
-  payload: { comments, itemId, listId }
+  payload
 });
 
 const fetchCommentsFailure = () => ({
   type: CommentActionTypes.FETCH_FAILURE
 });
 
-const archiveItemSuccess = (listId, itemId) => ({
+const archiveItemSuccess = payload => ({
   type: ItemActionTypes.ARCHIVE_SUCCESS,
-  payload: { itemId, listId }
+  payload
 });
 
 const archiveItemFailure = () => ({
   type: ItemActionTypes.ARCHIVE_FAILURE
 });
 
-const restoreItemSuccess = (listId, itemId) => ({
+const restoreItemSuccess = payload => ({
   type: ItemActionTypes.RESTORE_SUCCESS,
-  payload: { itemId, listId }
+  payload
 });
 
 const restoreItemFailure = () => ({
   type: ItemActionTypes.RESTORE_FAILURE
 });
 
-const deleteItemSuccess = (listId, itemId) => ({
+const deleteItemSuccess = payload => ({
   type: ItemActionTypes.DELETE_SUCCESS,
-  payload: { itemId, listId }
+  payload
 });
 
 const deleteItemFailure = () => ({
   type: ItemActionTypes.DELETE_FAILURE
 });
 
-const fetchArchivedItemsSuccess = (listId, data) => ({
+const fetchArchivedItemsSuccess = payload => ({
   type: ItemActionTypes.FETCH_ARCHIVED_SUCCESS,
-  payload: { listId, data }
+  payload
 });
 
 const fetchArchivedItemsFailure = () => ({
   type: ItemActionTypes.FETCH_ARCHIVE_FAILURE
 });
 
-export const removeArchivedItems = listId => ({
+export const removeArchivedItems = payload => ({
   type: ItemActionTypes.REMOVE_ARCHIVED,
-  payload: { listId }
+  payload
 });
 
 export const addItem = (item, listId) => dispatch =>
@@ -137,7 +133,7 @@ export const addItem = (item, listId) => dispatch =>
         listId
       };
       socket.emit(ItemActionTypes.ADD_SUCCESS, data);
-      dispatch(addItemSuccess(json, listId));
+      dispatch(addItemSuccess(data));
     })
     .catch(() => {
       dispatch(addItemFailure());
@@ -162,7 +158,8 @@ export const toggle = (
   })
     .then(() => {
       setTimeout(
-        () => dispatch(toggleItemSuccess(authorId, authorName, itemId, listId)),
+        () =>
+          dispatch(toggleItemSuccess({ authorId, authorName, itemId, listId })),
         ITEM_TOGGLE_TIME
       );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -187,7 +184,7 @@ export const toggle = (
 export const setVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/set-vote`, { itemId })
     .then(() => {
-      dispatch(setVoteSuccess(itemId, listId));
+      dispatch(setVoteSuccess({ itemId, listId }));
       socket.emit(ItemActionTypes.SET_VOTE_SUCCESS, { itemId, listId });
     })
     .catch(() => {
@@ -201,7 +198,7 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
 export const clearVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
     .then(() => {
-      dispatch(clearVoteSuccess(itemId, listId));
+      dispatch(clearVoteSuccess({ itemId, listId }));
       socket.emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { itemId, listId });
     })
     .catch(() => {
@@ -218,7 +215,7 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
     itemId
   })
     .then(() => {
-      dispatch(updateListItemSuccess(listId, itemId, data));
+      dispatch(updateListItemSuccess({ listId, itemId, data }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.update-item',
         data: itemName
@@ -245,7 +242,7 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
     .then(json => {
       const { item } = json;
 
-      dispatch(cloneItemSuccess(listId, item));
+      dispatch(cloneItemSuccess({ listId, item }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.clone-item',
         data: itemName
@@ -268,12 +265,9 @@ export const addComment = (listId, itemId, text) => dispatch =>
   })
     .then(resp => resp.json())
     .then(json => {
-      dispatch(addCommentSuccess(listId, itemId, json));
-      socket.emit(CommentActionTypes.ADD_SUCCESS, {
-        listId,
-        itemId,
-        comment: json
-      });
+      const data = { listId, itemId, comment: json };
+      dispatch(addCommentSuccess(data));
+      socket.emit(CommentActionTypes.ADD_SUCCESS, data);
     })
     .catch(() => {
       dispatch(addCommentFailure());
@@ -288,7 +282,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       const comments = _keyBy(json, '_id');
-      dispatch(fetchCommentsSuccess(listId, itemId, comments));
+      dispatch(fetchCommentsSuccess({ listId, itemId, comments }));
     })
     .catch(() => {
       dispatch(fetchCommentsFailure());
@@ -304,7 +298,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
     itemId
   })
     .then(() => {
-      dispatch(archiveItemSuccess(listId, itemId));
+      dispatch(archiveItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.archive-item',
         data: name
@@ -324,7 +318,7 @@ export const fetchArchivedItems = (listId, listName) => dispatch =>
     .then(resp => resp.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
-      dispatch(fetchArchivedItemsSuccess(listId, dataMap));
+      dispatch(fetchArchivedItemsSuccess({ listId, dataMap }));
     })
     .catch(() => {
       dispatch(fetchArchivedItemsFailure());
@@ -340,7 +334,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
     itemId
   })
     .then(() => {
-      dispatch(restoreItemSuccess(listId, itemId));
+      dispatch(restoreItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.restore-item',
         data: name
@@ -358,7 +352,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
 export const deleteItem = (listId, itemId, name) => dispatch =>
   patchData(`/api/lists/${listId}/delete-item/${itemId}`)
     .then(() => {
-      dispatch(deleteItemSuccess(listId, itemId));
+      dispatch(deleteItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.delete-item',
         data: name

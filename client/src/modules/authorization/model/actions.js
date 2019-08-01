@@ -19,9 +19,9 @@ const logoutSuccess = () => ({
   type: AuthorizationActionTypes.LOGOUT_SUCCESS
 });
 
-const loginSuccess = data => ({
+const loginSuccess = payload => ({
   type: AuthorizationActionTypes.LOGIN_SUCCESS,
-  payload: data
+  payload
 });
 
 export const logoutCurrentUser = () => dispatch =>
