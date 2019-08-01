@@ -597,6 +597,35 @@ const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
+const deleteList = (socket, dashboardClients, cohortClients) =>
+  socket.on(ListActionTypes.DELETE_SUCCESS, data => {
+    const { listId, cohortId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
+
+    dashboardClients.forEach(client => {
+      const { socketId } = client;
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, listId);
+    });
+
+    if (cohortId) {
+      cohortClients.forEach(client => {
+        const { socketId, viewId } = client;
+
+        if (viewId === cohortId) {
+          socket.broadcast
+            .to(socketId)
+            .emit(ListActionTypes.DELETE_SUCCESS, listId);
+        }
+      });
+    }
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -610,6 +639,7 @@ module.exports = {
   clearVote,
   cloneItem,
   deleteItem,
+  deleteList,
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
