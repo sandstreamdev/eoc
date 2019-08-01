@@ -17,3 +17,6 @@ export const makeAbortablePromise = promise => {
 };
 
 export const dateFromString = string => new Date(string).toLocaleString();
+
+export const routeBuilder = (route, param = null) =>
+  `/${route}${param ? `/${param}` : ''}`;
