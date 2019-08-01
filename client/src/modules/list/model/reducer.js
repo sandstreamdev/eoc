@@ -77,9 +77,9 @@ const membersReducer = (state = {}, action) => {
       const {
         payload: { userId, listId, isCurrentUserUpdated, ...data }
       } = action;
-      const prevMember = state[userId];
+      const previousMember = state[userId];
       const dataToUpdate = _pickBy(data, el => el !== undefined);
-      const updatedMember = { ...prevMember, ...dataToUpdate };
+      const updatedMember = { ...previousMember, ...dataToUpdate };
 
       return {
         ...state,
@@ -114,11 +114,11 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.UPDATE_SUCCESS: {
       const { listId, ...data } = action.payload;
-      const prevList = state[listId];
+      const previousList = state[listId];
       const dataToUpdate = _pickBy(data, el => el !== undefined);
 
       const updatedList = {
-        ...prevList,
+        ...previousList,
         ...dataToUpdate
       };
 
@@ -289,11 +289,11 @@ const lists = (state = {}, action) => {
       const {
         payload: { listId }
       } = action;
-      const { items: prevItems } = state[listId];
+      const { items: previousItems } = state[listId];
 
       return {
         ...state,
-        [listId]: { ...state[listId], items: items(prevItems, action) }
+        [listId]: { ...state[listId], items: items(previousItems, action) }
       };
     }
     case ListHeaderStatusType.LOCK:

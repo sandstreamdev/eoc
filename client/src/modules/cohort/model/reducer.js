@@ -55,11 +55,11 @@ const cohorts = (state = {}, action) => {
       return { ...state, [action.payload._id]: { ...action.payload } };
     case CohortActionTypes.UPDATE_SUCCESS: {
       const { cohortId, ...data } = action.payload;
-      const prevCohort = state[cohortId];
+      const previousCohort = state[cohortId];
       const dataToUpdate = _pickBy(data, el => el !== undefined);
 
       const updatedCohort = {
-        ...prevCohort,
+        ...previousCohort,
         ...dataToUpdate
       };
 
