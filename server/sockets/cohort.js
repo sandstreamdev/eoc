@@ -1,6 +1,7 @@
 const {
   CohortActionTypes,
-  CohortHeaderStatusTypes
+  CohortHeaderStatusTypes,
+  ListActionTypes
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
@@ -138,9 +139,45 @@ const updateCohortHeaderStatus = socket => {
   });
 };
 
+const createListCohort = (socket, dashboardClients) =>
+  socket.on(ListActionTypes.CREATE_SUCCESS, data => {
+    const { cohortId, _id: listId } = data;
+
+    socket.broadcast
+      .to(`cohort-${cohortId}`)
+      .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+        [listId]: { ...data }
+      });
+
+    Cohort.findById(cohortId)
+      .select('memberIds')
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { memberIds } = doc;
+
+          memberIds.forEach(id => {
+            const memberId = id.toString();
+
+            if (dashboardClients.has(memberId)) {
+              const { socketId } = dashboardClients.get(memberId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [listId]: { ...data }
+                });
+            }
+          });
+        }
+      });
+  });
+
 module.exports = {
   addCohortMember,
   addOwnerRoleInCohort,
+  createListCohort,
   leaveCohort,
   removeOwnerRoleInCohort,
   updateCohort,
