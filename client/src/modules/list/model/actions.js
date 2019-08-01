@@ -15,101 +15,93 @@ import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
 import { ListType } from 'modules/list/consts';
 
-const fetchListDataFailure = errMessage => ({
-  type: ListActionTypes.FETCH_DATA_FAILURE,
-  payload: errMessage
+const fetchListDataFailure = () => ({
+  type: ListActionTypes.FETCH_DATA_FAILURE
 });
-const fetchListDataSuccess = (data, listId) => ({
+const fetchListDataSuccess = payload => ({
   type: ListActionTypes.FETCH_DATA_SUCCESS,
-  payload: { data, listId }
+  payload
 });
 
-const createListSuccess = data => ({
+const createListSuccess = payload => ({
   type: ListActionTypes.CREATE_SUCCESS,
-  payload: data
+  payload
 });
 
-const createListFailure = errMessage => ({
-  type: ListActionTypes.CREATE_FAILURE,
-  payload: errMessage
+const createListFailure = () => ({
+  type: ListActionTypes.CREATE_FAILURE
 });
 
-const deleteListSuccess = id => ({
+const deleteListSuccess = payload => ({
   type: ListActionTypes.DELETE_SUCCESS,
-  payload: id
+  payload
 });
 
-const deleteListFailure = errMessage => ({
-  type: ListActionTypes.DELETE_FAILURE,
-  payload: errMessage
+const deleteListFailure = () => ({
+  type: ListActionTypes.DELETE_FAILURE
 });
 
-const updateListSuccess = data => ({
+const updateListSuccess = payload => ({
   type: ListActionTypes.UPDATE_SUCCESS,
-  payload: data
+  payload
 });
 
-const updateListFailure = errMessage => ({
-  type: ListActionTypes.UPDATE_FAILURE,
-  payload: errMessage
+const updateListFailure = () => ({
+  type: ListActionTypes.UPDATE_FAILURE
 });
 
-const fetchListsMetaDataSuccess = data => ({
+const fetchListsMetaDataSuccess = payload => ({
   type: ListActionTypes.FETCH_META_DATA_SUCCESS,
-  payload: data
+  payload
 });
 
-const fetchListsMetaDataFailure = errMessage => ({
-  type: ListActionTypes.FETCH_META_DATA_FAILURE,
-  payload: errMessage
+const fetchListsMetaDataFailure = () => ({
+  type: ListActionTypes.FETCH_META_DATA_FAILURE
 });
 
-const fetchArchivedListsMetaDataSuccess = data => ({
+const fetchArchivedListsMetaDataSuccess = payload => ({
   type: ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
-  payload: data
+  payload
 });
 
-const fetchArchivedListsMetaDataFailure = errMessage => ({
-  type: ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
-  payload: errMessage
+const fetchArchivedListsMetaDataFailure = () => ({
+  type: ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE
 });
 
-const archiveListSuccess = data => ({
+const archiveListSuccess = payload => ({
   type: ListActionTypes.ARCHIVE_SUCCESS,
-  payload: data
+  payload
 });
 
-const archiveListFailure = errMessage => ({
-  type: ListActionTypes.ARCHIVE_FAILURE,
-  payload: errMessage
+const archiveListFailure = () => ({
+  type: ListActionTypes.ARCHIVE_FAILURE
 });
 
-const restoreListSuccess = (data, listId) => ({
+const restoreListSuccess = payload => ({
   type: ListActionTypes.RESTORE_SUCCESS,
-  payload: { data, listId }
+  payload
 });
 
-const restoreListFailure = errMessage => ({
-  type: ListActionTypes.RESTORE_FAILURE,
-  payload: errMessage
+const restoreListFailure = () => ({
+  type: ListActionTypes.RESTORE_FAILURE
 });
 
 export const removeArchivedListsMetaData = () => ({
   type: ListActionTypes.REMOVE_ARCHIVED_META_DATA
 });
 
-const favouritesSuccess = data => ({
+const favouritesSuccess = payload => ({
   type: ListActionTypes.FAVOURITES_SUCCESS,
-  payload: data
+  payload
 });
 
 const favouritesFailure = () => ({
   type: ListActionTypes.FAVOURITES_FAILURE
 });
 
-const addViewerSuccess = data => ({
+const addViewerSuccess = payload => ({
   type: ListActionTypes.ADD_VIEWER_SUCCESS,
-  payload: data
+  payload
 });
 
 const addViewerFailure = () => ({
@@ -120,32 +112,32 @@ const removeMemberFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = data => ({
+const removeMemberSuccess = payload => ({
   type: ListActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: data
+  payload
 });
 
-const addOwnerRoleSuccess = data => ({
+const addOwnerRoleSuccess = payload => ({
   type: ListActionTypes.ADD_OWNER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
 const addOwnerRoleFailure = () => ({
   type: ListActionTypes.ADD_OWNER_ROLE_FAILURE
 });
 
-const removeOwnerRoleSuccess = data => ({
+const removeOwnerRoleSuccess = payload => ({
   type: ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
 const removeOwnerRoleFailure = () => ({
   type: ListActionTypes.REMOVE_OWNER_ROLE_FAILURE
 });
 
-const addMemberRoleSuccess = data => ({
+const addMemberRoleSuccess = payload => ({
   type: ListActionTypes.ADD_MEMBER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
 const addMemberRoleFailure = () => ({
@@ -161,18 +153,18 @@ const removeMemberRoleFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_FAILURE
 });
 
-const changeTypeSuccess = data => ({
+const changeTypeSuccess = payload => ({
   type: ListActionTypes.CHANGE_TYPE_SUCCESS,
-  payload: data
+  payload
 });
 
 const changeTypeFailure = () => ({
   type: ListActionTypes.CHANGE_TYPE_FAILURE
 });
 
-const leaveListSuccess = listId => ({
+const leaveListSuccess = payload => ({
   type: ListActionTypes.LEAVE_SUCCESS,
-  payload: listId
+  payload
 });
 
 const leaveListFailure = () => ({
@@ -183,12 +175,12 @@ export const fetchListData = listId => dispatch =>
   getData(`/api/lists/${listId}/data`)
     .then(resp => resp.json())
     .then(json => {
-      const listData = {
+      const data = {
         ...json,
         items: _keyBy(json.items, '_id'),
         members: _keyBy(json.members, '_id')
       };
-      dispatch(fetchListDataSuccess(listData, listId));
+      dispatch(fetchListDataSuccess({ data, listId }));
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
@@ -322,12 +314,12 @@ export const restoreList = (listId, listName) => dispatch =>
     .then(() => getData(`/api/lists/${listId}/data`))
     .then(resp => resp.json())
     .then(json => {
-      const listData = {
+      const data = {
         ...json,
         items: _keyBy(json.items, '_id'),
         members: _keyBy(json.members, '_id')
       };
-      dispatch(restoreListSuccess(listData, listId));
+      dispatch(restoreListSuccess({ data, listId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.restore-list',
         data: listName
