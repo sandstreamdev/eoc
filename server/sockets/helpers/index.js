@@ -76,7 +76,12 @@ const updateListOnDashboardAndCohortView = (
       }
     });
 
+const cohortChannel = cohortId => `cohort-${cohortId}`;
+const listChannel = listId => `sack-${listId}`;
+
 module.exports = {
+  cohortChannel,
   emitCohortMetaData,
+  listChannel,
   updateListOnDashboardAndCohortView
 };

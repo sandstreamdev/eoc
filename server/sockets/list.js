@@ -15,36 +15,47 @@ const {
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
-const { updateListOnDashboardAndCohortView } = require('./helpers');
+const {
+  listChannel,
+  updateListOnDashboardAndCohortView
+} = require('./helpers');
 
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(listChannel(listId))
       .emit(ItemActionTypes.ADD_SUCCESS, data);
   });
 };
 
 const archiveItem = socket => {
   socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(listChannel(listId))
       .emit(ItemActionTypes.ARCHIVE_SUCCESS, data);
   });
 };
 
 const deleteItem = socket => {
   socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(listChannel(listId))
       .emit(ItemActionTypes.DELETE_SUCCESS, data);
   });
 };
 
 const restoreItem = socket => {
   socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(listChannel(listId))
       .emit(ItemActionTypes.RESTORE_SUCCESS, data);
   });
 };
@@ -53,37 +64,43 @@ const updateItemState = socket => {
   socket.on(ItemStatusType.LOCK, data => {
     const { listId } = data;
 
-    socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.LOCK, data);
+    socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.LOCK, data);
   });
 
   socket.on(ItemStatusType.UNLOCK, data => {
     const { listId } = data;
 
-    socket.broadcast.to(`sack-${listId}`).emit(ItemStatusType.UNLOCK, data);
+    socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.UNLOCK, data);
   });
 };
 
 const updateItem = socket => {
-  socket.on(ItemActionTypes.UPDATE_SUCCESS, data =>
+  socket.on(ItemActionTypes.UPDATE_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
-      .emit(ItemActionTypes.UPDATE_SUCCESS, data)
-  );
+      .to(listChannel(listId))
+      .emit(ItemActionTypes.UPDATE_SUCCESS, data);
+  });
 };
 
 const addComment = socket =>
-  socket.on(CommentActionTypes.ADD_SUCCESS, data =>
+  socket.on(CommentActionTypes.ADD_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
-      .emit(CommentActionTypes.ADD_SUCCESS, data)
-  );
+      .to(listChannel(listId))
+      .emit(CommentActionTypes.ADD_SUCCESS, data);
+  });
 
 const cloneItem = socket =>
-  socket.on(ItemActionTypes.CLONE_SUCCESS, data =>
+  socket.on(ItemActionTypes.CLONE_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
-      .emit(ItemActionTypes.CLONE_SUCCESS, data)
-  );
+      .to(listChannel(listId))
+      .emit(ItemActionTypes.CLONE_SUCCESS, data);
+  });
 
 const emitListsOnAddCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
@@ -114,7 +131,7 @@ const emitListsOnAddCohortMember = (socket, clients) =>
 
           sharedListIds.forEach(listId => {
             socket.broadcast
-              .to(`sack-${listId}`)
+              .to(listChannel(listId))
               .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { listId, viewer });
           });
 
@@ -138,7 +155,7 @@ const addListMember = (socket, dashboardClients, cohortClients) =>
     } = data;
 
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
 
     List.findById(listId)
@@ -172,18 +189,22 @@ const addListMember = (socket, dashboardClients, cohortClients) =>
   });
 
 const setVote = socket =>
-  socket.on(ItemActionTypes.SET_VOTE_SUCCESS, data =>
+  socket.on(ItemActionTypes.SET_VOTE_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
-      .emit(ItemActionTypes.SET_VOTE_SUCCESS, data)
-  );
+      .to(listChannel(listId))
+      .emit(ItemActionTypes.SET_VOTE_SUCCESS, data);
+  });
 
 const clearVote = socket =>
-  socket.on(ItemActionTypes.CLEAR_VOTE_SUCCESS, data =>
+  socket.on(ItemActionTypes.CLEAR_VOTE_SUCCESS, data => {
+    const { listId } = data;
+
     socket.broadcast
-      .to(`sack-${data.listId}`)
-      .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data)
-  );
+      .to(listChannel(listId))
+      .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data);
+  });
 
 const changeItemOrderState = (
   socket,
@@ -195,7 +216,7 @@ const changeItemOrderState = (
 
     // send to users that are on the list view
     socket.broadcast
-      .to(`sack-${data.listId}`)
+      .to(listChannel(listId))
       .emit(ItemActionTypes.TOGGLE_SUCCESS, data);
 
     // send to users on dashboard and cohort view
@@ -214,7 +235,7 @@ const updateList = (socket, dashboardViewClients, cohortViewClients) => {
 
     // send to users that are on the list view
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListActionTypes.UPDATE_SUCCESS, data);
 
     // send to users on dashboard and cohort view
@@ -232,7 +253,7 @@ const updateListHeaderState = socket => {
     const { listId } = data;
 
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListHeaderStatusTypes.UNLOCK, data);
   });
 
@@ -240,7 +261,7 @@ const updateListHeaderState = socket => {
     const { listId } = data;
 
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListHeaderStatusTypes.LOCK, data);
   });
 };
@@ -250,7 +271,7 @@ const addMemberRoleInList = (socket, clients) => {
     const { listId, userId } = data;
 
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -276,7 +297,7 @@ const addOwnerRoleInList = (socket, clients) => {
     const { listId, userId } = data;
 
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -302,7 +323,7 @@ const removeMemberRoleInList = (socket, clients) => {
     const { listId, userId } = data;
 
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -328,7 +349,7 @@ const removeOwnerRoleInList = (socket, clients) => {
     const { listId, userId } = data;
 
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -354,7 +375,7 @@ const leaveList = socket =>
     const { listId } = data;
 
     socket.broadcast
-      .to(`sack-${listId}`)
+      .to(listChannel(listId))
       .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
   });
 
@@ -377,7 +398,7 @@ const emitRemoveMemberOnLeaveCohort = socket =>
 
           sharedListIds.forEach(listId =>
             socket.broadcast
-              .to(`sack-${listId}`)
+              .to(listChannel(listId))
               .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId })
           );
         }
@@ -471,7 +492,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
           });
 
           socket.broadcast
-            .to(`sack-${listId}`)
+            .to(listChannel(listId))
             .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, data);
         }
       });
@@ -516,7 +537,7 @@ const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
 
             listIdsUserWasRemovedFrom.forEach(listId => {
               socket.broadcast
-                .to(`sack-${listId}`)
+                .to(listChannel(listId))
                 .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
                   listId,
                   userId
@@ -560,7 +581,7 @@ const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
               }
 
               socket.broadcast
-                .to(`sack-${listId}`)
+                .to(listChannel(listId))
                 .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
                   isCurrentUserUpdated: false,
                   isGuest: true,

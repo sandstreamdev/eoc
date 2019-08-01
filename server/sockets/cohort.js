@@ -4,14 +4,14 @@ const {
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
-const { emitCohortMetaData } = require('./helpers');
+const { cohortChannel, emitCohortMetaData } = require('./helpers');
 
 const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
     if (clients.size > 0) {
@@ -24,7 +24,7 @@ const leaveCohort = (socket, clients) =>
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
     if (clients.size > 0) {
@@ -37,7 +37,7 @@ const addOwnerRoleInCohort = (socket, clients) => {
     const { cohortId, userId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -63,7 +63,7 @@ const removeOwnerRoleInCohort = (socket, clients) => {
     const { cohortId, userId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -89,7 +89,7 @@ const updateCohort = (socket, allCohortsViewClients) => {
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.UPDATE_SUCCESS, data);
 
     if (allCohortsViewClients.size > 0) {
@@ -125,7 +125,7 @@ const updateCohortHeaderStatus = socket => {
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortHeaderStatusTypes.UNLOCK, data);
   });
 
@@ -133,7 +133,7 @@ const updateCohortHeaderStatus = socket => {
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortHeaderStatusTypes.LOCK, data);
   });
 };
@@ -143,7 +143,7 @@ const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
     const { cohortId, userId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
     emitCohortMetaData(cohortId, allCohortsClients, socket);
