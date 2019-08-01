@@ -14,89 +14,81 @@ import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
 
-const createCohortSuccess = data => ({
+const createCohortSuccess = payload => ({
   type: CohortActionTypes.CREATE_SUCCESS,
-  payload: data
+  payload
 });
 
-const createCohortFailure = errMessage => ({
-  type: CohortActionTypes.CREATE_FAILURE,
-  errMessage
+const createCohortFailure = () => ({
+  type: CohortActionTypes.CREATE_FAILURE
 });
 
-const fetchCohortsMetaDataSuccess = data => ({
+const fetchCohortsMetaDataSuccess = payload => ({
   type: CohortActionTypes.FETCH_META_DATA_SUCCESS,
-  payload: data
+  payload
 });
 
-const fetchCohortsMetaDataFailure = errMessage => ({
-  type: CohortActionTypes.FETCH_META_DATA_FAILURE,
-  errMessage
+const fetchCohortsMetaDataFailure = () => ({
+  type: CohortActionTypes.FETCH_META_DATA_FAILURE
 });
 
-const updateCohortSuccess = data => ({
+const updateCohortSuccess = payload => ({
   type: CohortActionTypes.UPDATE_SUCCESS,
-  payload: data
+  payload
 });
 
-const updateCohortFailure = err => ({
-  type: CohortActionTypes.UPDATE_FAILURE,
-  payload: err.message
+const updateCohortFailure = () => ({
+  type: CohortActionTypes.UPDATE_FAILURE
 });
 
-const archiveCohortSuccess = id => ({
+const archiveCohortSuccess = payload => ({
   type: CohortActionTypes.ARCHIVE_SUCCESS,
-  payload: id
+  payload
 });
 
-const archiveCohortFailure = errMessage => ({
-  type: CohortActionTypes.ARCHIVE_FAILURE,
-  payload: errMessage
+const archiveCohortFailure = () => ({
+  type: CohortActionTypes.ARCHIVE_FAILURE
 });
 
-const restoreCohortSuccess = (data, _id) => ({
+const restoreCohortSuccess = payload => ({
   type: CohortActionTypes.RESTORE_SUCCESS,
-  payload: { data, _id }
+  payload
 });
 
-const restoreCohortFailure = errMessage => ({
-  type: CohortActionTypes.RESTORE_FAILURE,
-  payload: errMessage
+const restoreCohortFailure = () => ({
+  type: CohortActionTypes.RESTORE_FAILURE
 });
 
-const deleteCohortSuccess = _id => ({
+const deleteCohortSuccess = payload => ({
   type: CohortActionTypes.DELETE_SUCCESS,
-  payload: _id
+  payload
 });
 
-const deleteCohortFailure = errMessage => ({
-  type: CohortActionTypes.DELETE_FAILURE,
-  payload: errMessage
+const deleteCohortFailure = () => ({
+  type: CohortActionTypes.DELETE_FAILURE
 });
 
-const fetchCohortDetailsFailure = errMessage => ({
-  type: CohortActionTypes.FETCH_DETAILS_FAILURE,
-  payload: errMessage
+const fetchCohortDetailsFailure = () => ({
+  type: CohortActionTypes.FETCH_DETAILS_FAILURE
 });
 
-const fetchCohortDetailsSuccess = (data, _id) => ({
+const fetchCohortDetailsSuccess = payload => ({
   type: CohortActionTypes.FETCH_DETAILS_SUCCESS,
-  payload: { data, _id }
+  payload
 });
 
-const fetchArchivedCohortsMetaDataSuccess = data => ({
+const fetchArchivedCohortsMetaDataSuccess = payload => ({
   type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
-  payload: data
+  payload
 });
 
-const fetchArchivedCohortsMetaDataFailure = errMessage => ({
-  type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
-  payload: errMessage
+const fetchArchivedCohortsMetaDataFailure = () => ({
+  type: CohortActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE
 });
 
-const addMemberSuccess = data => ({
+const addMemberSuccess = payload => ({
   type: CohortActionTypes.ADD_MEMBER_SUCCESS,
-  payload: data
+  payload
 });
 
 const addMemberFailure = () => ({
@@ -107,32 +99,32 @@ const removeMemberFailure = () => ({
   type: CohortActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = data => ({
+const removeMemberSuccess = payload => ({
   type: CohortActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: data
+  payload
 });
 
 const addOwnerRoleFailure = () => ({
   type: CohortActionTypes.ADD_OWNER_ROLE_FAILURE
 });
 
-const addOwnerRoleSuccess = data => ({
+const addOwnerRoleSuccess = payload => ({
   type: CohortActionTypes.ADD_OWNER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
 const removeOwnerRoleFailure = () => ({
   type: CohortActionTypes.REMOVE_OWNER_ROLE_FAILURE
 });
 
-const removeOwnerRoleSuccess = data => ({
+const removeOwnerRoleSuccess = payload => ({
   type: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
-const leaveCohortSuccess = cohortId => ({
+const leaveCohortSuccess = payload => ({
   type: CohortActionTypes.LEAVE_SUCCESS,
-  payload: cohortId
+  payload
 });
 
 const leaveCohortFailure = () => ({
@@ -147,8 +139,8 @@ export const createCohort = data => dispatch =>
   postData('/api/cohorts/create', data)
     .then(resp => resp.json())
     .then(json => dispatch(createCohortSuccess(json)))
-    .catch(err => {
-      dispatch(createCohortFailure(err.message));
+    .catch(() => {
+      dispatch(createCohortFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'cohort.actions.create-fail',
         data: data.name
@@ -162,8 +154,8 @@ export const fetchCohortsMetaData = () => dispatch =>
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchCohortsMetaDataSuccess(dataMap));
     })
-    .catch(err => {
-      dispatch(fetchCohortsMetaDataFailure(err.message));
+    .catch(() => {
+      dispatch(fetchCohortsMetaDataFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'cohort.actions.fetch-fail'
       });
@@ -176,8 +168,8 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedCohortsMetaDataSuccess(dataMap));
     })
-    .catch(err => {
-      dispatch(fetchArchivedCohortsMetaDataFailure(err.message));
+    .catch(() => {
+      dispatch(fetchArchivedCohortsMetaDataFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'cohort.actions.fetch-arch-fail'
       });
@@ -193,8 +185,8 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
       });
       socket.emit(CohortActionTypes.UPDATE_SUCCESS, { ...data, cohortId });
     })
-    .catch(err => {
-      dispatch(updateCohortFailure(err));
+    .catch(() => {
+      dispatch(updateCohortFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'cohort.actions.update-cohort-fail',
         data: cohortName
@@ -253,7 +245,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
-      dispatch(restoreCohortSuccess(data, cohortId));
+      dispatch(restoreCohortSuccess({ data, _id: cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName
@@ -276,7 +268,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
-      dispatch(fetchCohortDetailsSuccess(data, cohortId));
+      dispatch(fetchCohortDetailsSuccess({ data, _id: cohortId }));
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
