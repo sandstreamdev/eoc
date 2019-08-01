@@ -124,6 +124,8 @@ const cohorts = (state = {}, action) => {
 
       return { ...state, [cohortId]: cohort };
     }
+    case CohortActionTypes.CLEAR_META_DATA_SUCCESS:
+      return {};
     case CohortHeaderStatusTypes.LOCK:
     case CohortHeaderStatusTypes.UNLOCK: {
       const {

@@ -179,6 +179,10 @@ const leaveListFailure = () => ({
   type: ListActionTypes.LEAVE_FAILURE
 });
 
+const clearMetaDataSuccess = () => ({
+  type: ListActionTypes.CLEAR_META_DATA_SUCCESS
+});
+
 export const fetchListData = listId => dispatch =>
   getData(`/api/lists/${listId}/data`)
     .then(resp => resp.json())
@@ -627,3 +631,5 @@ export const unlockListHeader = (listId, { nameLock, descriptionLock }) => {
     nameLock
   });
 };
+
+export const clearMetaData = () => dispatch => dispatch(clearMetaDataSuccess());
