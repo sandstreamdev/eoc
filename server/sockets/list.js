@@ -228,9 +228,7 @@ const updateList = (socket, dashboardViewClients, cohortViewClients) => {
   });
 };
 
-const updateListHeaderState = socket => {
-  const clientLocks = new Map();
-
+const updateListHeaderState = (socket, listClientLocks) => {
   socket.on(ListHeaderStatusTypes.UNLOCK, data => {
     const { listId, userId } = data;
 
@@ -238,9 +236,9 @@ const updateListHeaderState = socket => {
       .to(`sack-${listId}`)
       .emit(ListHeaderStatusTypes.UNLOCK, data);
 
-    if (clientLocks.has(userId)) {
-      clearTimeout(clientLocks.get(userId));
-      clientLocks.delete(userId);
+    if (listClientLocks.has(userId)) {
+      clearTimeout(listClientLocks.get(userId));
+      listClientLocks.delete(userId);
     }
   });
 
@@ -267,10 +265,10 @@ const updateListHeaderState = socket => {
         .to(`sack-${listId}`)
         .emit(ListHeaderStatusTypes.UNLOCK, updatedData);
 
-      clientLocks.delete(userId);
+      listClientLocks.delete(userId);
     }, 300000);
 
-    clientLocks.set(userId, delayedUnlock);
+    listClientLocks.set(userId, delayedUnlock);
   });
 };
 

@@ -59,6 +59,7 @@ const socketListenTo = server => {
   const allCohortsViewClients = new Map();
   const dashboardViewClients = new Map();
   const listViewClients = new Map();
+  const listClientLocks = new Map();
 
   ioInstance.on('connection', socket => {
     const {
@@ -148,7 +149,7 @@ const socketListenTo = server => {
     updateItem(socket);
     updateItemState(socket);
     updateList(socket, dashboardViewClients, cohortViewClients);
-    updateListHeaderState(socket);
+    updateListHeaderState(socket, listClientLocks);
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
