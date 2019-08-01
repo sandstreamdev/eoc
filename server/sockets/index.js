@@ -64,6 +64,7 @@ const socketListenTo = server => {
   const dashboardViewClients = new Map();
   const listViewClients = new Map();
   const cohortClientLocks = new Map();
+  const itemClientLocks = new Map();
 
   ioInstance.on('connection', socket => {
     const {
@@ -164,7 +165,7 @@ const socketListenTo = server => {
     restoreItem(socket);
     setVote(socket);
     updateItem(socket);
-    updateItemState(socket);
+    updateItemState(socket, itemClientLocks);
     updateList(socket, dashboardViewClients, cohortViewClients);
     updateListHeaderState(socket);
 
