@@ -12,6 +12,7 @@ const {
 const List = require('../models/list.model');
 const {
   checkIfArrayContainsUserId,
+  isViewer,
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
@@ -515,13 +516,12 @@ const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
           const listIdsUserRemained = [];
 
           docs.forEach(doc => {
-            const { type, viewersIds } = doc;
-            const isListViewer = checkIfArrayContainsUserId(viewersIds, userId);
+            const { type } = doc;
             const listId = doc._id.toString();
 
-            if (isListViewer) {
+            if (isViewer(doc, userId)) {
               listIdsUserRemained.push(listId);
-            } else if (!isListViewer && type === ListType.SHARED) {
+            } else if (type === ListType.SHARED) {
               listIdsUserWasRemovedFrom.push(listId);
             }
           });
