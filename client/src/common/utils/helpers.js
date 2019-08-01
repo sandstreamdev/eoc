@@ -1,5 +1,3 @@
-import validator from 'validator';
-
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 
 export const makeAbortablePromise = promise => {
@@ -20,8 +18,4 @@ export const makeAbortablePromise = promise => {
 
 export const dateFromString = string => new Date(string).toLocaleString();
 
-export const validatePassword = value => {
-  const { matches } = validator;
-
-  return matches(value, /^[^\s]{4,32}$/);
-};
+export const validatePasswordStructure = value => value.match(/^[^\s]{4,32}$/);

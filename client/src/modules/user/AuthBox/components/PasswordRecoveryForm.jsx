@@ -9,7 +9,7 @@ import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
-import { validatePassword as _validatePassword } from 'common/utils/helpers';
+import { validatePasswordStructure } from 'common/utils/helpers';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -90,7 +90,7 @@ class PasswordRecoveryForm extends PureComponent {
   validatePassword = password => {
     const { errors } = this.state;
 
-    if (_validatePassword(password)) {
+    if (validatePasswordStructure(password)) {
       this.setState(
         {
           errors: {

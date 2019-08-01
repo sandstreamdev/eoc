@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const sanitize = require('mongo-sanitize');
-const validator = require('validator');
 
 const User = require('../../models/user.model');
 const List = require('../../models/list.model');
@@ -107,16 +106,12 @@ const removeDemoUserData = id =>
     .then(() => User.deleteOne({ _id: id }).exec())
     .then(() => User.deleteMany({ provider: `demo-${id}` }).exec());
 
-const validatePassword = value => {
-  const { matches } = validator;
-
-  return matches(value, /^[^\s]{4,32}$/);
-};
+const validatePasswordStructure = value => value.match(/^[^\s]{4,32}$/);
 
 module.exports = {
   extractUserProfile,
   findAndAuthenticateUser,
   findOrCreateUser,
   removeDemoUserData,
-  validatePassword
+  validatePasswordStructure
 };

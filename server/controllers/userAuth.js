@@ -7,7 +7,7 @@ const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
-const { validatePassword } = require('../common/utils/userUtils');
+const { validatePasswordStructure } = require('../common/utils/userUtils');
 
 const sendUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
@@ -39,7 +39,7 @@ const signUp = (req, resp, next) => {
     errors.emailError = true;
   }
 
-  if (!validatePassword(password)) {
+  if (!validatePasswordStructure(password)) {
     errors.passwordError = true;
   }
 
@@ -258,11 +258,12 @@ const updatePassword = (req, resp) => {
   const { token } = req.params;
 
   const sanitizedToken = sanitize(token);
-  const validationError = !validatePassword(updatedPassword);
-  const passwordsNoMatch =
-    _trim(updatedPassword) !== _trim(passwordConfirmation);
 
-  if (validationError || passwordsNoMatch) {
+  if (!validatePasswordStructure(updatedPassword)) {
+    return resp.sendStatus(400);
+  }
+
+  if (_trim(updatedPassword) !== _trim(passwordConfirmation)) {
     return resp.sendStatus(400);
   }
 
@@ -384,15 +385,10 @@ const changePassword = (req, resp) => {
   const errors = {};
   const { email } = req.user;
 
-  if (!validatePassword(newPassword)) {
-    errors.isNewPasswordError = true;
-  }
+  errors.isNewPasswordError = !validatePasswordStructure(newPassword);
+  errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
 
-  if (newPassword !== newPasswordConfirm) {
-    errors.isNewConfirmPasswordError = true;
-  }
-
-  if (_some(errors, error => error !== undefined)) {
+  if (_some(errors, error => error)) {
     return resp.status(406).send(errors);
   }
 
