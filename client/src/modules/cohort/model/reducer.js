@@ -1,8 +1,8 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
-import _pickBy from 'lodash/pickBy';
 
 import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
+import { filterDefined } from 'common/utils/helpers';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -56,7 +56,7 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.UPDATE_SUCCESS: {
       const { cohortId, ...data } = action.payload;
       const previousCohort = state[cohortId];
-      const dataToUpdate = _pickBy(data, el => el !== undefined);
+      const dataToUpdate = filterDefined(data);
 
       const updatedCohort = {
         ...previousCohort,

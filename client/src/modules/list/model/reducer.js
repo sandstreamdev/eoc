@@ -1,6 +1,5 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
-import _pickBy from 'lodash/pickBy';
 
 import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
 import {
@@ -11,6 +10,7 @@ import {
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
 import { ListType } from 'modules/list/consts';
+import { filterDefined } from 'common/utils/helpers';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -78,7 +78,7 @@ const membersReducer = (state = {}, action) => {
         payload: { userId, listId, isCurrentUserUpdated, ...data }
       } = action;
       const previousMember = state[userId];
-      const dataToUpdate = _pickBy(data, el => el !== undefined);
+      const dataToUpdate = filterDefined(data);
       const updatedMember = { ...previousMember, ...dataToUpdate };
 
       return {
@@ -115,7 +115,7 @@ const lists = (state = {}, action) => {
     case ListActionTypes.UPDATE_SUCCESS: {
       const { listId, ...data } = action.payload;
       const previousList = state[listId];
-      const dataToUpdate = _pickBy(data, el => el !== undefined);
+      const dataToUpdate = filterDefined(data);
 
       const updatedList = {
         ...previousList,

@@ -29,10 +29,22 @@ export const cohortsRoute = () => routeGenerator(Routes.COHORTS);
 
 export const dashboardRoute = () => routeGenerator(Routes.DASHBOARD);
 
-export const enumerable = namespace => (...keys) =>
-  Object.freeze(
-    Object.fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
-  );
+const fromEntries = convertedArray =>
+  convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
 export const asyncTypes = key =>
   asyncPostfixes.map(postfix => [key, postfix].join('_'));
+
+export const enumerable = namespace => (...keys) =>
+  Object.freeze(
+    fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
+  );
+
+const filter = f => object =>
+  fromEntries(
+    Object.entries(object).filter(([key, value]) => f(value, key, object))
+  );
+
+const defined = x => x !== undefined;
+
+export const filterDefined = filter(defined);
