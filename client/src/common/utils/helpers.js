@@ -1,4 +1,5 @@
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { asyncPostfixes } from 'common/constants/variables';
 
 export const makeAbortablePromise = promise => {
   let _reject;
@@ -20,3 +21,11 @@ export const dateFromString = string => new Date(string).toLocaleString();
 
 export const routeGenerator = (route, param = null) =>
   `/${route}${param ? `/${param}` : ''}`;
+
+export const enumerable = namespace => (...keys) =>
+  Object.freeze(
+    Object.fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
+  );
+
+export const asyncTypes = key =>
+  asyncPostfixes.map(postfix => [key, postfix].join('_'));
