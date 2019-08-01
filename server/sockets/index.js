@@ -22,6 +22,7 @@ const {
   clearVote,
   cloneItem,
   deleteItem,
+  deleteList,
   emitListsOnAddCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
@@ -38,6 +39,7 @@ const {
 const {
   addCohortMember,
   addOwnerRoleInCohort,
+  createListCohort,
   leaveCohort,
   removeOwnerRoleInCohort,
   updateCohort,
@@ -147,6 +149,7 @@ const socketListenTo = server => {
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);
+    deleteList(socket, dashboardViewClients, cohortViewClients);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
     emitRemoveMemberOnLeaveCohort(socket);
     leaveList(socket);
@@ -167,6 +170,7 @@ const socketListenTo = server => {
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
+    createListCohort(socket, dashboardViewClients);
     leaveCohort(socket, allCohortsViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);

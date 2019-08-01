@@ -201,8 +201,10 @@ export const fetchListData = listId => dispatch =>
       throw err;
     });
 
-export const createList = data => dispatch =>
-  postData('/api/lists/create', data)
+export const createList = data => dispatch => {
+  const { type } = data;
+
+  return postData('/api/lists/create', data)
     .then(resp => resp.json())
     .then(json => {
       dispatch(createListSuccess(json));
@@ -210,7 +212,10 @@ export const createList = data => dispatch =>
         notificationId: 'list.actions.create-list',
         data: data.name
       });
-      socket.emit(ListActionTypes.CREATE_SUCCESS, { json });
+
+      if (type === ListType.SHARED) {
+        socket.emit(ListActionTypes.CREATE_SUCCESS, json);
+      }
     })
     .catch(() => {
       dispatch(createListFailure());
@@ -219,6 +224,7 @@ export const createList = data => dispatch =>
         data: data.name
       });
     });
+};
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
@@ -258,15 +264,16 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const deleteList = (id, listName) => dispatch =>
-  deleteData(`/api/lists/${id}/delete`)
+export const deleteList = (listId, listName, cohortId) => dispatch =>
+  deleteData(`/api/lists/${listId}/delete`)
     .then(() => {
-      dispatch(deleteListSuccess(id));
+      dispatch(deleteListSuccess(listId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.delete-list',
         data: listName
       });
-      history.replace('/dashboard');
+      history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
+      socket.emit(ListActionTypes.DELETE_SUCCESS, { listId, cohortId });
     })
     .catch(() => {
       dispatch(deleteListFailure());
