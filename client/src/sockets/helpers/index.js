@@ -11,10 +11,11 @@ export const listEventsController = (event, data, dispatch) => {
 
       dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
 
-      const url =
-        cohortId && isCohortMember
-          ? routeGenerator(Routes.COHORT, cohortId)
-          : routeGenerator(Routes.DASHBOARD);
+      const goToCohort = cohortId && isCohortMember;
+
+      const url = goToCohort
+        ? routeGenerator(Routes.COHORT, cohortId)
+        : routeGenerator(Routes.DASHBOARD);
 
       return history.replace(url);
     }

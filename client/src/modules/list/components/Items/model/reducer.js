@@ -56,7 +56,7 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
-        payload: { itemId }
+        payload: { itemId, isVoted }
       } = action;
 
       const previousItem = state[itemId];
@@ -65,14 +65,14 @@ const items = (state = {}, action) => {
         ...state,
         [itemId]: {
           ...previousItem,
-          isVoted: true,
+          isVoted: isVoted !== undefined ? isVoted : previousItem.isVoted,
           votesCount: previousItem.votesCount + 1
         }
       };
     }
     case ItemActionTypes.CLEAR_VOTE_SUCCESS: {
       const {
-        payload: { itemId }
+        payload: { itemId, isVoted }
       } = action;
 
       const previousItem = state[itemId];
@@ -81,7 +81,7 @@ const items = (state = {}, action) => {
         ...state,
         [itemId]: {
           ...previousItem,
-          isVoted: false,
+          isVoted: isVoted !== undefined ? isVoted : previousItem.isVoted,
           votesCount: previousItem.votesCount - 1
         }
       };
