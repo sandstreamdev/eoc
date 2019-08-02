@@ -1,50 +1,40 @@
-import { ListEvents } from 'sockets/enums';
+import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
+import {
+  cohortRoute,
+  cohortsRoute,
+  dashboardRoute
+} from 'common/utils/helpers';
 import { ListActionTypes } from '../../modules/list/model/actionTypes';
 
 export const listEventsController = (event, data, dispatch) => {
   switch (event) {
-    case ListEvents.LEAVE_ON_TYPE_CHANGE_SUCCESS: {
+    case ListEvents.LEAVE_ON_TYPE_CHANGE_SUCCESS:
+    case ListEvents.REMOVED_BY_SOMEONE:
+    case ListEvents.ARCHIVE_SUCCESS:
+    case ListEvents.DELETE_AND_REDIRECT: {
       const { cohortId, isCohortMember, listId } = data;
 
-      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
+      dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: { listId } });
 
-      return history.replace(
-        `/${isCohortMember ? `cohort/${cohortId}` : 'dashboard'}`
-      );
+      const goToCohort = cohortId && isCohortMember;
+      const url = goToCohort ? dashboardRoute() : cohortRoute(cohortId);
+
+      return history.replace(url);
     }
-    case ListEvents.REMOVE_BY_SOMEONE: {
-      const { cohortId, listId } = data;
+    default:
+      return dispatch({ type: event, payload: data });
+  }
+};
 
-      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
+export const cohortEventsController = (event, data, dispatch) => {
+  switch (event) {
+    case CohortEvents.REMOVED_BY_SOMEONE: {
+      const { cohortId } = data;
 
-      return history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
-    }
-    case ListEvents.ARCHIVE_SUCCESS: {
-      const { cohortId, listId, isGuest } = data;
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
 
-      dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: listId });
-
-      return history.replace(
-        isGuest || !cohortId ? '/dashboard' : `/cohort/${cohortId}`
-      );
-    }
-    case ListEvents.DELETE_AND_REDIRECT: {
-      const { cohortId, listId } = data;
-
-      dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: listId });
-
-      return history.replace(cohortId ? `/cohort/${cohortId}` : '/dashboard');
-    }
-    case ListEvents.RESTORE_AND_REDIRECT: {
-      const { listId, listData } = data;
-
-      dispatch({
-        type: ListActionTypes.RESTORE_SUCCESS,
-        payload: { data: listData, listId }
-      });
-
-      return history.replace(`/sack/${listId}`);
+      return history.replace(cohortsRoute());
     }
     default:
       return dispatch({ type: event, payload: data });
