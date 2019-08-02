@@ -50,8 +50,9 @@ const responseWithList = (list, userId) => {
     name,
     type
   } = list;
-  const doneItemsCount = items.filter(item => item.isOrdered).length;
-  const unhandledItemsCount = items.length - doneItemsCount;
+  const activeItems = items.filter(item => !item.isArchived);
+  const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
+  const unhandledItemsCount = activeItems.length - doneItemsCount;
 
   const listToSend = {
     _id,

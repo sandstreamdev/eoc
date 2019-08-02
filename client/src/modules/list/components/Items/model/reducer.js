@@ -42,47 +42,47 @@ const items = (state = {}, action) => {
       const {
         payload: { authorId, authorName, itemId }
       } = action;
-      const prevItem = state[itemId];
+      const previousItem = state[itemId];
 
       return {
         ...state,
         [itemId]: {
           ...state[itemId],
-          authorId: authorId || prevItem.authorId,
-          authorName: authorName || prevItem.authorName,
-          isOrdered: !prevItem.isOrdered
+          authorId: authorId || previousItem.authorId,
+          authorName: authorName || previousItem.authorName,
+          isOrdered: !previousItem.isOrdered
         }
       };
     }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
-        payload: { itemId }
+        payload: { itemId, isVoted }
       } = action;
 
-      const prevItem = state[itemId];
+      const previousItem = state[itemId];
 
       return {
         ...state,
         [itemId]: {
-          ...prevItem,
-          isVoted: true,
-          votesCount: prevItem.votesCount + 1
+          ...previousItem,
+          isVoted: isVoted !== undefined ? isVoted : previousItem.isVoted,
+          votesCount: previousItem.votesCount + 1
         }
       };
     }
     case ItemActionTypes.CLEAR_VOTE_SUCCESS: {
       const {
-        payload: { itemId }
+        payload: { itemId, isVoted }
       } = action;
 
-      const prevItem = state[itemId];
+      const previousItem = state[itemId];
 
       return {
         ...state,
         [itemId]: {
-          ...prevItem,
-          isVoted: false,
-          votesCount: prevItem.votesCount - 1
+          ...previousItem,
+          isVoted: isVoted !== undefined ? isVoted : previousItem.isVoted,
+          votesCount: previousItem.votesCount - 1
         }
       };
     }
@@ -93,16 +93,16 @@ const items = (state = {}, action) => {
           itemId
         }
       } = action;
-      const prevItem = state[itemId];
-      const prevDescription = prevItem.description;
-      const newDescription = name ? prevDescription : description;
+      const previousItem = state[itemId];
+      const previousDescription = previousItem.description;
+      const newDescription = name ? previousDescription : description;
 
       return {
         ...state,
         [itemId]: {
-          ...prevItem,
+          ...previousItem,
           description: newDescription,
-          name: name || prevItem.name
+          name: name || previousItem.name
         }
       };
     }
@@ -110,12 +110,12 @@ const items = (state = {}, action) => {
       const {
         payload: { itemId }
       } = action;
-      const prevItem = state[itemId];
+      const previousItem = state[itemId];
 
       return {
         ...state,
         [itemId]: {
-          ...prevItem,
+          ...previousItem,
           isArchived: true
         }
       };
@@ -124,12 +124,12 @@ const items = (state = {}, action) => {
       const {
         payload: { itemId }
       } = action;
-      const prevItem = state[itemId];
+      const previousItem = state[itemId];
 
       return {
         ...state,
         [itemId]: {
-          ...prevItem,
+          ...previousItem,
           isArchived: false
         }
       };
@@ -167,11 +167,14 @@ const items = (state = {}, action) => {
       const {
         payload: { itemId }
       } = action;
-      const { comments: prevComments } = state[itemId];
+      const { comments: previousComments } = state[itemId];
 
       return {
         ...state,
-        [itemId]: { ...state[itemId], comments: comments(prevComments, action) }
+        [itemId]: {
+          ...state[itemId],
+          comments: comments(previousComments, action)
+        }
       };
     }
     default:

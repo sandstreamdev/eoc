@@ -47,7 +47,7 @@ class ArchivedItemsContainer extends PureComponent {
         this.setState({ pending: false })
       );
     } else {
-      removeArchivedItems(listId);
+      removeArchivedItems({ listId });
     }
   };
 

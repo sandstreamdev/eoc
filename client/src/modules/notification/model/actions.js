@@ -3,14 +3,14 @@ import uniqueId from 'lodash/uniqueId';
 import { NotificationActionTypes } from './actionsTypes';
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables';
 
-const addNotification = notification => ({
+const addNotification = payload => ({
   type: NotificationActionTypes.ADD,
-  payload: notification
+  payload
 });
 
-const removeNotification = id => ({
+const removeNotification = payload => ({
   type: NotificationActionTypes.REMOVE,
-  payload: id
+  payload
 });
 
 export const createNotificationWithTimeout = (
