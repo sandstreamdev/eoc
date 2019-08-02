@@ -18,7 +18,7 @@ const MessageBox = ({ message, type, children }) => (
     <span className="message-box__icon">
       <InfoIcon />
     </span>
-    <p className="message-box__content">{(message, children)}</p>
+    <p className="message-box__content">{message || children}</p>
   </div>
 );
 
