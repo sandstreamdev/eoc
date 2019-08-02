@@ -4,7 +4,10 @@ const {
   ListActionTypes
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
-const { responseWithCohort } = require('../common/utils');
+const {
+  responseWithCohort,
+  responseWithCohortDetails
+} = require('../common/utils');
 const {
   cohortChannel,
   emitCohortMetaData,
@@ -228,12 +231,58 @@ const deleteCohort = (socket, allCohortsClients) =>
     removeCohort(socket, cohortId, allCohortsClients, members);
   });
 
+const restoreCohort = (socket, allCohortsClients, cohortClients) =>
+  socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    Cohort.findById(cohortId)
+      .populate('memberIds', 'avatarUrl displayName _id')
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { memberIds, ownerIds } = doc;
+          const cohortMetaData = responseWithCohort(doc);
+
+          ownerIds.forEach(id => {
+            const ownerId = id.toString();
+
+            if (cohortClients.has(ownerId)) {
+              const { socketId } = cohortClients.get(ownerId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(
+                  CohortActionTypes.FETCH_DETAILS_SUCCESS,
+                  responseWithCohortDetails(doc, ownerId)
+                );
+            }
+          });
+
+          memberIds.forEach(member => {
+            const { _id } = member;
+            const memberId = _id.toString();
+
+            if (allCohortsClients.has(memberId)) {
+              const { socketId } = allCohortsClients.get(memberId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [cohortId]: cohortMetaData
+                });
+            }
+          });
+        }
+      });
+  });
+
 const createListCohort = (socket, dashboardClients) =>
   socket.on(ListActionTypes.CREATE_SUCCESS, data => {
     const { cohortId, _id: listId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
         [listId]: { ...data }
       });
@@ -272,6 +321,7 @@ module.exports = {
   leaveCohort,
   removeCohortMember,
   removeOwnerRoleInCohort,
+  restoreCohort,
   updateCohort,
   updateCohortHeaderStatus
 };

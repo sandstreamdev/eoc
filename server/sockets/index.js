@@ -24,6 +24,7 @@ const {
   deleteItem,
   deleteList,
   emitListsOnAddCohortMember,
+  emitListsOnRestoreCohort,
   emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
@@ -48,6 +49,7 @@ const {
   leaveCohort,
   removeCohortMember,
   removeOwnerRoleInCohort,
+  restoreCohort,
   updateCohort,
   updateCohortHeaderStatus
 } = require('./cohort');
@@ -156,6 +158,7 @@ const socketListenTo = server => {
     deleteItem(socket);
     deleteList(socket, dashboardViewClients, cohortViewClients);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
     emitListsOnRemoveCohortMember(
       socket,
       dashboardViewClients,
@@ -193,6 +196,7 @@ const socketListenTo = server => {
     leaveCohort(socket, allCohortsViewClients);
     removeCohortMember(socket, allCohortsViewClients, cohortViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
+    restoreCohort(socket, allCohortsViewClients, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket);
   });
