@@ -335,11 +335,13 @@ export const restoreList = (listId, listName) => dispatch =>
         items: _keyBy(json.items, '_id'),
         members: _keyBy(json.members, '_id')
       };
+
       dispatch(restoreListSuccess(listData, listId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.restore-list',
         data: listName
       });
+      socket.emit(ListActionTypes.RESTORE_SUCCESS, { listData, listId });
     })
     .catch(() => {
       dispatch(restoreListFailure());

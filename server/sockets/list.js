@@ -626,6 +626,63 @@ const deleteList = (socket, dashboardClients, cohortClients) =>
     }
   });
 
+const restoreList = (socket, dashboardClients, cohortClients, listClients) =>
+  socket.on(ListActionTypes.RESTORE_SUCCESS, data => {
+    const {
+      listId,
+      listData,
+      listData: { cohortId }
+    } = data;
+
+    List.findById(listId)
+      .lean()
+      .exec()
+      .then(doc => {
+        const { viewersIds } = doc;
+
+        viewersIds.forEach(viewerId => {
+          const id = viewerId.toString();
+
+          if (dashboardClients.has(id)) {
+            const { socketId } = dashboardClients.get(id);
+
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.RESTORE_SUCCESS, {
+                data: listData,
+                listId
+              });
+          }
+
+          if (cohortClients.has(id)) {
+            const { socketId, viewId } = cohortClients.get(id);
+
+            if (viewId === cohortId) {
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.RESTORE_SUCCESS, {
+                  data: listData,
+                  listId
+                });
+            }
+          }
+
+          if (listClients.has(id)) {
+            const { socketId, viewId } = listClients.get(id);
+
+            if (viewId === listId) {
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.RESTORE_AND_REDIRECT, {
+                  listData,
+                  listId
+                });
+            }
+          }
+        });
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -647,6 +704,7 @@ module.exports = {
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
+  restoreList,
   setVote,
   updateItem,
   updateItemState,
