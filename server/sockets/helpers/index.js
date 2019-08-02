@@ -76,12 +76,36 @@ const updateListOnDashboardAndCohortView = (
       }
     });
 
+const getListsByViewers = lists => {
+  const listsByViewers = {};
+
+  lists.forEach(list => {
+    const { _id, viewersIds } = list;
+    const listId = _id.toString();
+
+    viewersIds.forEach(id => {
+      const viewerId = id.toString();
+
+      if (!listsByViewers[viewerId]) {
+        listsByViewers[viewerId] = [];
+      }
+
+      if (!listsByViewers[viewerId].includes(listId)) {
+        listsByViewers[viewerId].push(listId);
+      }
+    });
+  });
+
+  return listsByViewers;
+};
+
 const cohortChannel = cohortId => `cohort-${cohortId}`;
 const listChannel = listId => `sack-${listId}`;
 
 module.exports = {
   cohortChannel,
   emitCohortMetaData,
+  getListsByViewers,
   listChannel,
   updateListOnDashboardAndCohortView
 };

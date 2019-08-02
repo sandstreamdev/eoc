@@ -223,7 +223,11 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
     isArchived: true
   })
     .then(() => {
-      dispatch(archiveCohortSuccess(cohortId));
+      const action = archiveCohortSuccess({ cohortId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.archive-cohort',
         data: cohortName

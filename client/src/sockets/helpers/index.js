@@ -18,7 +18,7 @@ export const listEventsController = (event, data, dispatch) => {
       dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: { listId } });
 
       const goToCohort = cohortId && isCohortMember;
-      const url = goToCohort ? dashboardRoute() : cohortRoute(cohortId);
+      const url = goToCohort ? cohortRoute(cohortId) : dashboardRoute();
 
       return history.replace(url);
     }
@@ -30,6 +30,21 @@ export const listEventsController = (event, data, dispatch) => {
 export const cohortEventsController = (event, data, dispatch) => {
   switch (event) {
     case CohortEvents.REMOVED_BY_SOMEONE: {
+      const { cohortId } = data;
+
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
+
+      return history.replace(cohortsRoute());
+    }
+    case CohortEvents.REMOVE_ON_ARCHIVE_COHORT: {
+      const { cohortId, listId } = data;
+
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
+      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
+
+      return history.replace(cohortsRoute());
+    }
+    case CohortEvents.ARCHIVE_SUCCESS: {
       const { cohortId } = data;
 
       dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });

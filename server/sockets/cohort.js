@@ -139,6 +139,53 @@ const updateCohortHeaderStatus = socket => {
   });
 };
 
+const archiveCohort = (socket, allCohortsClients) =>
+  socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    socket.broadcast
+      .to(cohortChannel(cohortId))
+      .emit(CohortActionTypes.ARCHIVE_SUCCESS, { cohortId });
+
+    Cohort.findOne({
+      _id: cohortId
+    })
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { memberIds, ownerIds } = doc;
+          const cohort = responseWithCohort(doc);
+
+          memberIds.forEach(id => {
+            const memberId = id.toString();
+
+            if (allCohortsClients.has(memberId)) {
+              const { socketId } = allCohortsClients.get(memberId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
+            }
+          });
+
+          ownerIds.forEach(id => {
+            const ownerId = id.toString();
+
+            if (allCohortsClients.has(ownerId)) {
+              const { socketId } = allCohortsClients.get(ownerId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [cohortId]: cohort
+                });
+            }
+          });
+        }
+      });
+  });
+
 const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
   socket.on(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data => {
     const { cohortId, userId } = data;
@@ -208,6 +255,7 @@ const createListCohort = (socket, dashboardClients) =>
 module.exports = {
   addCohortMember,
   addOwnerRoleInCohort,
+  archiveCohort,
   createListCohort,
   leaveCohort,
   removeCohortMember,

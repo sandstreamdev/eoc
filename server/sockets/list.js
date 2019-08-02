@@ -18,6 +18,7 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 const {
+  getListsByViewers,
   listChannel,
   updateListOnDashboardAndCohortView
 } = require('./helpers');
@@ -805,6 +806,43 @@ const restoreList = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
+const removeListsOnArchiveCohort = (socket, dashboardClients) =>
+  socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    List.find({
+      cohortId
+    })
+      .lean()
+      .exec()
+      .then(docs => {
+        if (docs) {
+          const listIds = docs.map(list => list._id.toString());
+          const listsByViewers = getListsByViewers(docs);
+
+          listIds.forEach(listId => {
+            socket.broadcast
+              .to(listChannel(listId))
+              .emit(CohortActionTypes.REMOVE_ON_ARCHIVE_COHORT, {
+                cohortId,
+                listId
+              });
+          });
+
+          Object.keys(listsByViewers).forEach(memberId => {
+            if (dashboardClients.has(memberId)) {
+              const { socketId } = dashboardClients.get(memberId);
+              const listsToRemoved = listsByViewers[memberId];
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.REMOVE_BY_IDS, listsToRemoved);
+            }
+          });
+        }
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -823,6 +861,7 @@ module.exports = {
   emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeListsOnArchiveCohort,
   removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
