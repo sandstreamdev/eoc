@@ -253,21 +253,47 @@ const updateList = (socket, dashboardViewClients, cohortViewClients) => {
   });
 };
 
-const updateListHeaderState = socket => {
+const updateListHeaderState = (socket, listClientLocks) => {
   socket.on(ListHeaderStatusTypes.UNLOCK, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ListHeaderStatusTypes.UNLOCK, data);
+
+    if (listClientLocks.has(userId)) {
+      clearTimeout(listClientLocks.get(userId));
+      listClientLocks.delete(userId);
+    }
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ListHeaderStatusTypes.LOCK, data);
+
+    const delayedUnlock = setTimeout(() => {
+      const { listId, nameLock, descriptionLock } = data;
+      const updatedData = { listId };
+
+      if (nameLock !== undefined) {
+        updatedData.nameLock = false;
+      }
+
+      if (descriptionLock !== undefined) {
+        updatedData.descriptionLock = false;
+      }
+
+      socket.broadcast
+        .to(`sack-${listId}`)
+        .emit(ListHeaderStatusTypes.UNLOCK, updatedData);
+
+      listClientLocks.delete(userId);
+    }, 300000);
+
+    listClientLocks.set(userId, delayedUnlock);
   });
 };
 
