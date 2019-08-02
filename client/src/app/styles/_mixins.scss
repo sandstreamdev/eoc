@@ -25,3 +25,7 @@
     display: none;
   }
 }
+
+@function four-by($multiplier) {
+  @return $multiplier * 4px;
+}

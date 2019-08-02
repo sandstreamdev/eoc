@@ -13,9 +13,9 @@ class ArchivedList extends PureComponent {
   };
 
   handleListDeletion = id => () => {
-    const { deleteList, name } = this.props;
+    const { cohortId, deleteList, name } = this.props;
 
-    return deleteList(id, name);
+    return deleteList(id, name, cohortId);
   };
 
   render() {
@@ -34,6 +34,7 @@ class ArchivedList extends PureComponent {
 }
 
 ArchivedList.propTypes = {
+  cohortId: PropTypes.string,
   isOwner: PropTypes.bool,
   listId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,

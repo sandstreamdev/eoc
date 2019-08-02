@@ -16,18 +16,23 @@ const {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
+  archiveList,
   changeItemOrderState,
   changeListType,
   clearVote,
   cloneItem,
   deleteItem,
+  deleteList,
   emitListsOnAddCohortMember,
+  emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeListsOnArchiveCohort,
+  removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
+  restoreList,
   setVote,
   updateItem,
   updateItemState,
@@ -39,7 +44,9 @@ const {
   addOwnerRoleInCohort,
   archiveCohort,
   deleteCohort,
+  createListCohort,
   leaveCohort,
+  removeCohortMember,
   removeOwnerRoleInCohort,
   updateCohort,
   updateCohortHeaderStatus
@@ -131,6 +138,12 @@ const socketListenTo = server => {
     addMemberRoleInList(socket, listViewClients);
     addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
+    archiveList(
+      socket,
+      dashboardViewClients,
+      cohortViewClients,
+      listViewClients
+    );
     changeItemOrderState(socket, dashboardViewClients, cohortViewClients);
     changeListType(
       socket,
@@ -141,13 +154,31 @@ const socketListenTo = server => {
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);
+    deleteList(socket, dashboardViewClients, cohortViewClients);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitListsOnRemoveCohortMember(
+      socket,
+      dashboardViewClients,
+      listViewClients
+    );
     emitRemoveMemberOnLeaveCohort(socket);
     leaveList(socket);
     removeListsOnArchiveCohort(socket, dashboardViewClients);
+    removeListMember(
+      socket,
+      dashboardViewClients,
+      listViewClients,
+      cohortViewClients
+    );
     removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);
+    restoreList(
+      socket,
+      dashboardViewClients,
+      cohortViewClients,
+      listViewClients
+    );
     setVote(socket);
     updateItem(socket);
     updateItemState(socket);
@@ -158,7 +189,9 @@ const socketListenTo = server => {
     addOwnerRoleInCohort(socket, cohortViewClients);
     archiveCohort(socket, allCohortsViewClients);
     deleteCohort(socket, allCohortsViewClients);
+    createListCohort(socket, dashboardViewClients);
     leaveCohort(socket, allCohortsViewClients);
+    removeCohortMember(socket, allCohortsViewClients, cohortViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket);

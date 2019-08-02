@@ -10,14 +10,14 @@
   flex-direction: column;
   width: 250px;
   align-items: center;
-  padding: 32px;
+  padding: four-by(8);
 
   @include breakpoint($xsmall) {
     width: 300px;
   }
 
   &__heading {
-    margin-bottom: 16px;
+    margin-bottom: four-by(4);
   }
 
   &__message {
@@ -30,11 +30,11 @@
 
   &__button {
     text-transform: capitalize;
-    margin-top: 16px;
+    margin-top: four-by(4);
   }
 
   &__error {
-    margin-bottom: 16px;
+    margin-bottom: four-by(4);
     color: $danger;
     width: 100%;
     text-align: left;
