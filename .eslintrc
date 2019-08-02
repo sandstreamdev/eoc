@@ -90,6 +90,7 @@
       }
     ],
     "import/no-useless-path-segments": "error",
+    "react/forbid-prop-types": false,
     "react/jsx-filename-extension": false,
     "react/require-default-props": false
   },

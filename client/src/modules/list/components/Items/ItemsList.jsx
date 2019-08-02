@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _flowRight from 'lodash/flowRight';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
@@ -9,7 +9,6 @@ import ListItem from 'modules/list/components/Items/ListItem';
 import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
-import { IntlPropType } from 'common/constants/propTypes';
 
 const DISPLAY_LIMIT = 3;
 
@@ -78,24 +77,19 @@ class ItemsList extends PureComponent {
   };
 
   render() {
-    const {
-      archived,
-      intl: { formatMessage },
-      items
-    } = this.props;
+    const { archived, items } = this.props;
     const { limit } = this.state;
 
     return (
       <Fragment>
         {!items.length && (
-          <MessageBox
-            message={
-              archived
-                ? formatMessage({ id: 'list.items-list.message-no-arch-items' })
-                : formatMessage({ id: 'list.items-list.message-no-items' })
-            }
-            type={MessageType.INFO}
-          />
+          <MessageBox type={MessageType.INFO}>
+            {archived ? (
+              <FormattedMessage id="list.items-list.message-no-arch-items" />
+            ) : (
+              <FormattedMessage id="list.items-list.message-no-items" />
+            )}
+          </MessageBox>
         )}
         {this.renderItems()}
         {limit < items.length && (
@@ -121,9 +115,8 @@ class ItemsList extends PureComponent {
 
 ItemsList.propTypes = {
   archived: PropTypes.bool,
-  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default _flowRight(withRouter, injectIntl)(ItemsList);
+export default _flowRight(withRouter)(ItemsList);

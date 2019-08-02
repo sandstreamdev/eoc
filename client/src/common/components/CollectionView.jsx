@@ -115,7 +115,7 @@ class CollectionView extends PureComponent {
           </ul>
           {pending && <Preloader />}
           {_isEmpty(items) && !pending && (
-            <MessageBox message={placeholder} type={MessageType.INFO} />
+            <MessageBox type={MessageType.INFO}>{placeholder}</MessageBox>
           )}
         </div>
       </div>
