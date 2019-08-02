@@ -126,7 +126,7 @@ export const removeArchivedItems = payload => ({
 
 export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const action = addItemSuccess({ item: json, listId });
       const { type, payload } = action;
@@ -237,7 +237,7 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
     itemId
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const { item } = json;
       const action = cloneItemSuccess({ listId, item });
@@ -264,7 +264,7 @@ export const addComment = (listId, itemId, text) => dispatch =>
     listId,
     text
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const action = addCommentSuccess({ listId, itemId, comment: json });
       const { type, payload } = action;
@@ -282,7 +282,7 @@ export const addComment = (listId, itemId, text) => dispatch =>
 
 export const fetchComments = (itemName, listId, itemId) => dispatch =>
   getData(`/api/comments/${listId}/${itemId}/data`)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const comments = _keyBy(json, '_id');
       dispatch(fetchCommentsSuccess({ listId, itemId, comments }));
@@ -321,7 +321,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
 
 export const fetchArchivedItems = (listId, listName) => dispatch =>
   getData(`/api/lists/${listId}/archived-items`)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedItemsSuccess({ listId, dataMap }));

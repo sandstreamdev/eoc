@@ -138,7 +138,7 @@ export const removeArchivedCohortsMetaData = () => ({
 
 export const createCohort = data => dispatch =>
   postData('/api/cohorts/create', data)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => dispatch(createCohortSuccess(json)))
     .catch(() => {
       dispatch(createCohortFailure());
@@ -150,7 +150,7 @@ export const createCohort = data => dispatch =>
 
 export const fetchCohortsMetaData = () => dispatch =>
   getData('/api/cohorts/meta-data')
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchCohortsMetaDataSuccess(dataMap));
@@ -164,7 +164,7 @@ export const fetchCohortsMetaData = () => dispatch =>
 
 export const fetchArchivedCohortsMetaData = () => dispatch =>
   getData('/api/cohorts/archived')
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedCohortsMetaDataSuccess(dataMap));
@@ -243,7 +243,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
     isArchived: false
   })
     .then(() => getData(`/api/cohorts/${cohortId}/data`))
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const data = {
         ...json,
@@ -266,7 +266,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
 
 export const fetchCohortDetails = cohortId => dispatch =>
   getData(`/api/cohorts/${cohortId}/data`)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const data = {
         ...json,
@@ -288,7 +288,7 @@ export const addCohortMember = (cohortId, email) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/add-member`, {
     email
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       if (json._id) {
         const data = { cohortId, member: json };

@@ -174,7 +174,7 @@ const leaveListFailure = () => ({
 
 export const fetchListData = listId => dispatch =>
   getData(`/api/lists/${listId}/data`)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const data = {
         ...json,
@@ -196,7 +196,7 @@ export const fetchListData = listId => dispatch =>
 
 export const createList = data => dispatch =>
   postData('/api/lists/create', data)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       dispatch(createListSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -218,7 +218,7 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
     : '/api/lists/meta-data';
 
   return getData(url)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchListsMetaDataSuccess(dataMap));
@@ -237,7 +237,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     : '/api/lists/archived';
 
   return getData(url)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedListsMetaDataSuccess(dataMap));
@@ -315,7 +315,7 @@ export const restoreList = (listId, listName) => dispatch =>
     isArchived: false
   })
     .then(() => getData(`/api/lists/${listId}/data`))
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const data = {
         ...json,
@@ -374,7 +374,7 @@ export const addListViewer = (listId, email) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       if (json._id) {
         const action = addViewerSuccess({ listId, viewer: json });
@@ -554,7 +554,7 @@ export const changeType = (listId, listName, type) => dispatch =>
   patchData(`/api/lists/${listId}/change-type`, {
     type
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const listData = {
         ...json,

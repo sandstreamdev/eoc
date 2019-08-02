@@ -20,7 +20,7 @@ export const removeActivities = () => ({
 
 export const fetchActivities = page => dispatch =>
   getData(`/api/activities/data/${page}`)
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       const { activities, isNextPage, nextPage } = json;
 

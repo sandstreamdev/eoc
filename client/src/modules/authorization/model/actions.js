@@ -33,7 +33,7 @@ export const loginDemoUser = () => dispatch =>
     email: 'demo@example.com',
     password: 'demo'
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -56,7 +56,7 @@ export const resendConfirmationLink = hash =>
 
 export const signIn = (email, password) => dispatch =>
   postData('/auth/sign-in', { email, password })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -66,11 +66,11 @@ export const signIn = (email, password) => dispatch =>
 
 export const getLoggedUser = () => dispatch =>
   getData('/auth/user')
-    .then(resp => {
-      const contentType = resp.headers.get('content-type');
+    .then(response => {
+      const contentType = response.headers.get('content-type');
 
       if (contentType && contentType.includes('application/json')) {
-        return resp.json();
+        return response.json();
       }
     })
     .then(json => {
