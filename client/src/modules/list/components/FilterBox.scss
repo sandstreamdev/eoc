@@ -1,7 +1,7 @@
 .filter-box {
   display: inline-flex;
   align-items: center;
-  margin-right: 16px;
+  margin-right: four-by(4);
 
   &__label {
     font-size: $s-font;
@@ -9,7 +9,7 @@
     font-weight: 400;
     color: $text-normal;
     text-transform: uppercase;
-    margin-right: 8px;
+    margin-right: four-by(2);
   }
 
   &__select {
@@ -18,14 +18,14 @@
     font-weight: 500;
     color: $text-normal;
     background-color: $bg-color;
-    padding: 11px 20px 11px 8px;
+    padding: four-by(2) four-by(4) four-by(2) four-by(2);
     border: 0;
     border-radius: 0;
     background-image: url('../../assets/images/chevron-down-solid.svg');
     background-position: center right 8px;
     background-repeat: no-repeat;
     background-size: 10px;
-    margin-right: 8px;
+    margin-right: four-by(2);
     box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
     text-transform: capitalize;
     -webkit-appearance: none;

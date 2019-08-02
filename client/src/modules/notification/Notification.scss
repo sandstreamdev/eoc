@@ -10,7 +10,7 @@
     position: absolute;
     top: 52px;
     right: 0;
-    padding: 0 20px;
+    padding: 0 four-by(4);
   }
 
   .message-box {
@@ -24,6 +24,6 @@
   }
 
   &__list-item {
-    margin-bottom: 25px;
+    margin-bottom: four-by(4);
   }
 }

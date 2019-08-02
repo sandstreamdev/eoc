@@ -76,7 +76,80 @@ const updateListOnDashboardAndCohortView = (
       }
     });
 
+const getListIdsByViewers = lists => {
+  const listsByViewers = {};
+
+  lists.forEach(list => {
+    const { _id, viewersIds } = list;
+    const listId = _id.toString();
+
+    viewersIds.forEach(id => {
+      const viewerId = id.toString();
+
+      if (!listsByViewers[viewerId]) {
+        listsByViewers[viewerId] = [];
+      }
+
+      if (!listsByViewers[viewerId].includes(listId)) {
+        listsByViewers[viewerId].push(listId);
+      }
+    });
+  });
+
+  return listsByViewers;
+};
+
+const removeCohort = (socket, cohortId, clients, members) => {
+  socket.broadcast
+    .to(`cohort-${cohortId}`)
+    .emit(CohortActionTypes.REMOVE_WHEN_COHORT_UNAVAILABLE, cohortId);
+
+  members.forEach(id => {
+    const memberId = id.toString();
+
+    if (clients.has(memberId)) {
+      const { socketId } = clients.get(memberId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(CohortActionTypes.DELETE_SUCCESS, cohortId);
+    }
+  });
+};
+
+const getListsDataByViewers = lists => {
+  const listsByViewers = {};
+
+  lists.forEach(list => {
+    const { _id, viewersIds } = list;
+    const listId = _id.toString();
+
+    viewersIds.forEach(id => {
+      const viewerId = id.toString();
+
+      if (!listsByViewers[viewerId]) {
+        listsByViewers[viewerId] = {};
+      }
+
+      if (!listsByViewers[viewerId][listId]) {
+        listsByViewers[viewerId][listId] = responseWithList(list, viewerId);
+      }
+    });
+  });
+
+  return listsByViewers;
+};
+
+const cohortChannel = cohortId => `cohort-${cohortId}`;
+
+const listChannel = listId => `sack-${listId}`;
+
 module.exports = {
+  cohortChannel,
   emitCohortMetaData,
+  getListsDataByViewers,
+  getListIdsByViewers,
+  removeCohort,
+  listChannel,
   updateListOnDashboardAndCohortView
 };

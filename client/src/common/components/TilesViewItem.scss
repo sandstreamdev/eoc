@@ -5,7 +5,7 @@
   border: 0;
   color: $text-normal;
   box-shadow: 0 2px 10px rgba($shadow-color, 0.1);
-  padding: 8px;
+  padding: four-by(2);
   position: relative;
   cursor: pointer;
   width: 100%;
@@ -26,13 +26,13 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid $text-white;
-    padding: 0 20px 8px 0;
+    padding: 0 four-by(4) four-by(2) 0;
     svg {
       height: 12px;
       width: 12px;
       min-height: 12px;
       min-width: 12px;
-      margin-right: 8px;
+      margin-right: four-by(2);
 
       path {
         fill: $text-white;
@@ -63,7 +63,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    padding-top: 5px;
+    padding-top: four-by(1);
   }
 
   &:hover {
@@ -76,7 +76,7 @@
     box-shadow: 0;
     cursor: pointer;
     display: block;
-    padding: 3px;
+    padding: four-by(1);
     position: absolute;
     right: 5px;
     top: 5px;
@@ -102,7 +102,7 @@
     span {
       display: block;
       &:first-child {
-        margin-bottom: 5px;
+        margin-bottom: four-by(1);
       }
     }
   }

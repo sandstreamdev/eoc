@@ -8,7 +8,7 @@
   font-size: 16px;
   line-height: 1.2;
   outline: 0;
-  padding: 10px 12px;
+  padding: four-by(2);
   resize: vertical;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   width: 100%;
@@ -34,7 +34,7 @@
   line-height: 1.2;
   min-height: 65px;
   outline: 0;
-  padding: 10px 12px;
+  padding: four-by(2);
   resize: vertical;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   width: 100%;
@@ -66,7 +66,7 @@
   border-radius: 0;
   -webkit-appearance: none;
   appearance: none;
-  padding: 6px 25px 6px 8px;
+  padding: four-by(1) four-by(4) four-by(1) four-by(2);
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
 }
 

@@ -2,10 +2,10 @@
   display: table;
   position: relative;
   width: 70%;
-  margin: 50px auto;
+  margin: four-by(8) auto;
   text-align: center;
   background: $bg-color;
-  padding: 20px 25px;
+  padding: four-by(4) four-by(8);
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
 
   @include breakpoint($xsmall) {
@@ -14,11 +14,11 @@
 
   &__body {
     position: relative;
-    margin-top: 16px;
+    margin-top: four-by(4);
   }
 
   &__button {
-    margin: 0 auto 16px;
+    margin: 0 auto four-by(4);
 
     &:hover {
       transform: scale(1.02);

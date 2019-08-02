@@ -2,6 +2,7 @@ const { ObjectId } = require('mongoose').Types;
 const _map = require('lodash/map');
 const _pickBy = require('lodash/pickBy');
 const _compact = require('lodash/compact');
+const _keyBy = require('lodash/keyBy');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -49,8 +50,9 @@ const responseWithList = (list, userId) => {
     name,
     type
   } = list;
-  const doneItemsCount = items.filter(item => item.isOrdered).length;
-  const unhandledItemsCount = items.length - doneItemsCount;
+  const activeItems = items.filter(item => !item.isArchived);
+  const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
+  const unhandledItemsCount = activeItems.length - doneItemsCount;
 
   const listToSend = {
     _id,
@@ -64,7 +66,8 @@ const responseWithList = (list, userId) => {
   };
 
   if (cohortId) {
-    listToSend.cohortId = cohortId;
+    listToSend.cohortId =
+      typeof cohortId === 'string' ? cohortId : cohortId._id;
   }
 
   return listToSend;
@@ -285,6 +288,35 @@ const responseWithComments = comments =>
     };
   });
 
+const responseWithCohortDetails = (doc, userId) => {
+  const {
+    _id,
+    createdAt,
+    description,
+    isArchived,
+    memberIds: membersCollection,
+    name,
+    ownerIds
+  } = doc;
+
+  const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
+  const members = _keyBy(
+    responseWithCohortMembers(membersCollection, ownerIds),
+    '_id'
+  );
+
+  return {
+    _id,
+    createdAt,
+    description,
+    isArchived,
+    isMember: true,
+    isOwner,
+    members,
+    name
+  };
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -294,6 +326,7 @@ module.exports = {
   isValidMongoId,
   isViewer,
   responseWithCohort,
+  responseWithCohortDetails,
   responseWithCohortMember,
   responseWithCohortMembers,
   responseWithCohorts,

@@ -1,10 +1,10 @@
 .collection {
   width: 100%;
-  margin: 16px 0 25px 0;
+  margin: four-by(4) 0;
   border: 0;
 
   &__heading {
-    padding: 8px 0;
+    padding: four-by(2) 0;
     display: flex;
     align-items: center;
     font-size: $l-font;
@@ -17,7 +17,7 @@
 
     svg {
       height: 14px;
-      margin-right: 8px;
+      margin-right: four-by(2);
 
       path {
         fill: $text-dark;
@@ -27,13 +27,13 @@
 
   &__body {
     position: relative;
-    padding: 6px 0 0;
+    padding: four-by(2) 0 0;
     min-height: 100px;
   }
 
   &__item {
     width: 100%;
-    margin: 0 auto 20px;
+    margin: 0 auto four-by(5);
 
     a {
       text-decoration: none;
