@@ -14,7 +14,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 16px;
+    margin-top: four-by(4);
 
     .primary-button {
       text-transform: capitalize;
@@ -28,7 +28,7 @@
   &__error {
     text-align: left;
     font-size: $s-font;
-    padding: 8px 0;
+    padding: four-by(2) 0;
     color: $danger;
   }
 
@@ -54,6 +54,6 @@
     color: $text-normal;
     line-height: 1.2;
     text-align: left;
-    padding-top: 16px;
+    padding-top: four-by(4);
   }
 }

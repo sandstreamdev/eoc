@@ -194,11 +194,19 @@ export const fetchListData = listId => dispatch =>
       throw err;
     });
 
-export const createList = data => dispatch =>
-  postData('/api/lists/create', data)
+export const createList = data => dispatch => {
+  const { type: listType } = data;
+
+  return postData('/api/lists/create', data)
     .then(response => response.json())
     .then(json => {
-      dispatch(createListSuccess(json));
+      const action = createListSuccess(json);
+      const { type, payload } = action;
+
+      if (listType === ListType.SHARED) {
+        socket.emit(type, payload);
+      }
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.create-list',
         data: data.name
@@ -211,6 +219,7 @@ export const createList = data => dispatch =>
         data: data.name
       });
     });
+};
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
@@ -250,10 +259,14 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const deleteList = (id, listName) => dispatch =>
-  deleteData(`/api/lists/${id}/delete`)
+export const deleteList = (listId, listName, cohortId) => dispatch =>
+  deleteData(`/api/lists/${listId}/delete`)
     .then(() => {
-      dispatch(deleteListSuccess(id));
+      const action = deleteListSuccess({ listId, cohortId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.delete-list',
         data: listName
@@ -290,17 +303,22 @@ export const updateList = (listId, data, listName) => dispatch =>
       });
     });
 
-export const archiveList = (listId, listName) => dispatch =>
+export const archiveList = (listId, listName, cohortId) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
     .then(() => {
-      dispatch(archiveListSuccess({ isArchived: true, listId }));
+      const action = archiveListSuccess({ cohortId, isArchived: true, listId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.arch-list',
         data: listName
       });
-      history.replace(dashboardRoute());
+      const url = cohortId ? cohortRoute(cohortId) : dashboardRoute();
+      history.replace(url);
     })
     .catch(() => {
       dispatch(archiveListFailure());
@@ -417,6 +435,7 @@ export const removeListMember = (
         notificationId: 'list.actions.remove-member',
         data: userName
       });
+      socket.emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
     })
     .catch(() => {
       dispatch(removeMemberFailure());

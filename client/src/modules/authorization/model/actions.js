@@ -14,10 +14,6 @@ const logoutFailure = () => ({
   type: AuthorizationActionTypes.LOGOUT_FAILURE
 });
 
-const logoutSuccess = () => ({
-  type: AuthorizationActionTypes.LOGOUT_SUCCESS
-});
-
 const loginSuccess = payload => ({
   type: AuthorizationActionTypes.LOGIN_SUCCESS,
   payload
@@ -25,7 +21,7 @@ const loginSuccess = payload => ({
 
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
-    .then(() => dispatch(logoutSuccess()))
+    .then(() => window.location.reload())
     .catch(err => dispatch(logoutFailure(err.message)));
 
 export const loginDemoUser = () => dispatch =>

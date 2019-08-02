@@ -12,7 +12,7 @@ export const ItemActionTypes = enumerable('item')(
   ...asyncTypes('CLONE'),
   ...asyncTypes('DELETE'),
   ...asyncTypes('FETCH_ARCHIVED'),
-  'REMOVED_ARCHIVED',
+  'REMOVE_ARCHIVED',
   ...asyncTypes('RESTORE'),
   ...asyncTypes('SET_VOTE'),
   ...asyncTypes('TOGGLE'),

@@ -12,6 +12,7 @@ const {
 const List = require('../models/list.model');
 const {
   checkIfArrayContainsUserId,
+  isMember,
   isViewer,
   responseWithList,
   responseWithListsMetaData
@@ -174,15 +175,16 @@ const addListMember = (socket, dashboardClients, cohortClients) =>
               socket
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: { ...list }
+                  [listId]: list
                 });
             }
           }
 
           if (dashboardClients.has(viewerId)) {
             const { socketId } = dashboardClients.get(viewerId);
+
             socket.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: { ...list }
+              [listId]: list
             });
           }
         }
@@ -423,7 +425,11 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
 
           const list = { ...doc, cohortId };
 
-          if (type === ListType.LIMITED && removedViewers) {
+          socket.broadcast
+            .to(listChannel(listId))
+            .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, data);
+
+          if (type === ListType.LIMITED) {
             removedViewers.forEach(id => {
               const userId = id.toString();
               const isCohortMember = checkIfArrayContainsUserId(
@@ -451,7 +457,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
 
                 socket.broadcast
                   .to(socketId)
-                  .emit(ListActionTypes.DELETE_SUCCESS, listId);
+                  .emit(ListActionTypes.DELETE_SUCCESS, { listId });
               }
 
               if (cohortClients.has(userId)) {
@@ -460,7 +466,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
                 if (viewId === cohortId.toString()) {
                   socket.broadcast
                     .to(socketId)
-                    .emit(ListActionTypes.DELETE_SUCCESS, listId);
+                    .emit(ListActionTypes.DELETE_SUCCESS, { listId });
                 }
               }
             });
@@ -475,7 +481,7 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
               socket.broadcast
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [list._id]: { ...responseWithList(list, userId) }
+                  [list._id]: responseWithList(list, userId)
                 });
             }
 
@@ -486,15 +492,11 @@ const changeListType = (socket, dashboardClients, cohortClients, listClients) =>
                 socket.broadcast
                   .to(socketId)
                   .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                    [list._id]: { ...responseWithList(list, userId) }
+                    [list._id]: responseWithList(list, userId)
                   });
               }
             }
           });
-
-          socket.broadcast
-            .to(listChannel(listId))
-            .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, data);
         }
       });
   });
@@ -594,6 +596,156 @@ const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
       });
   });
 
+const removeListMember = (
+  socket,
+  dashboardClients,
+  listClients,
+  cohortClients
+) =>
+  socket.on(ListActionTypes.REMOVE_MEMBER_SUCCESS, data => {
+    const { listId, userId } = data;
+
+    if (dashboardClients.has(userId)) {
+      const { socketId } = dashboardClients.get(userId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    }
+
+    if (listClients.has(userId)) {
+      List.findById(listId)
+        .populate('cohortId')
+        .lean()
+        .exec()
+        .then(doc => {
+          if (doc) {
+            const { socketId, viewId } = listClients.get(userId);
+            const { cohortId: cohort } = doc;
+            const data = { listId };
+
+            if (viewId === listId) {
+              if (cohort) {
+                const { _id: cohortId } = cohort;
+                data.isCohortMember = isMember(cohort, userId);
+                data.cohortId = cohortId;
+              }
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.REMOVED_BY_SOMEONE, data);
+            }
+          }
+        });
+    }
+
+    if (cohortClients.has(userId)) {
+      const { socketId } = cohortClients.get(userId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    }
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
+  });
+
+const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
+  socket.on(ListActionTypes.ARCHIVE_SUCCESS, data => {
+    const { listId, cohortId } = data;
+
+    List.findById(listId)
+      .populate('cohortId')
+      .lean()
+      .exec()
+      .then(doc => {
+        const { viewersIds, cohortId: cohort } = doc;
+        const list = { ...doc, cohortId };
+
+        viewersIds.forEach(viewerId => {
+          const id = viewerId.toString();
+          let isCohortMember = false;
+
+          if (cohort) {
+            isCohortMember = isMember(cohort, viewerId);
+          }
+
+          const dataToSend = { isCohortMember, ...data };
+
+          if (listClients.has(id)) {
+            const { socketId, viewId } = listClients.get(id);
+
+            if (viewId === listId) {
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.ARCHIVE_SUCCESS, dataToSend);
+            }
+          }
+
+          if (dashboardClients.has(id)) {
+            const { socketId } = dashboardClients.get(id);
+
+            // Broadcast to clients on dashboard that have this list
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+                [listId]: {
+                  ...responseWithList(list, viewerId),
+                  isArchived: true
+                }
+              });
+          }
+
+          if (cohortClients.has(id)) {
+            const { socketId, viewId } = cohortClients.get(id);
+
+            if (viewId === cohortId) {
+              // Broadcast to clients on cohort view that have this list
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+                  [listId]: {
+                    ...responseWithList(list, viewerId),
+                    isArchived: true
+                  }
+                });
+            }
+          }
+        });
+      });
+  });
+
+const deleteList = (socket, dashboardClients, cohortClients) =>
+  socket.on(ListActionTypes.DELETE_SUCCESS, data => {
+    const { listId, cohortId } = data;
+
+    socket.broadcast
+      .to(`sack-${listId}`)
+      .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
+
+    dashboardClients.forEach(client => {
+      const { socketId } = client;
+
+      socket.broadcast
+        .to(socketId)
+        .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    });
+
+    if (cohortId) {
+      cohortClients.forEach(client => {
+        const { socketId, viewId } = client;
+
+        if (viewId === cohortId) {
+          socket.broadcast
+            .to(socketId)
+            .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+        }
+      });
+    }
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -601,15 +753,18 @@ module.exports = {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
+  archiveList,
   changeItemOrderState,
   changeListType,
   clearVote,
   cloneItem,
   deleteItem,
+  deleteList,
   emitListsOnAddCohortMember,
   emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,

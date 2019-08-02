@@ -1146,11 +1146,9 @@ const changeType = (req, resp) => {
           ? viewersIds.filter(id => isMember(list, id))
           : [...viewersIds, ...cohortMembers.filter(id => !isViewer(list, id))];
 
-      const viewersDiff = _difference(viewersIds, updatedViewersIds);
-
       removedViewers =
-        type === ListType.LIMITED && viewersDiff.length > 0
-          ? viewersDiff
+        type === ListType.LIMITED
+          ? _difference(viewersIds, updatedViewersIds)
           : null;
 
       return List.findOneAndUpdate(

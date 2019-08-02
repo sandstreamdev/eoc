@@ -7,21 +7,46 @@ const Cohort = require('../../models/cohort.model');
 const Comment = require('../../models/comment.model');
 
 // Find or create user
-const findOrCreateUser = (user, doneCallback) => {
-  User.findOne({ idFromProvider: user.idFromProvider }, (err, currentUser) => {
-    if (err) {
-      return doneCallback(null, false);
-    }
+const findOrCreateUser = (user, done) => {
+  const { idFromProvider, email } = user;
 
-    if (currentUser) {
-      return doneCallback(null, currentUser);
-    }
+  User.findOne({
+    $or: [{ idFromProvider }, { email }]
+  })
+    .exec()
+    .then(doc => {
+      if (doc) {
+        const { email, idFromProvider: existingIdFromProvider, isActive } = doc;
 
-    return new User({ ...user })
-      .save()
-      .then(newUser => doneCallback(null, newUser))
-      .catch(err => doneCallback(null, false, { message: err.message }));
-  });
+        if (email && !existingIdFromProvider) {
+          const { accessToken, avatarUrl, name, provider, surname } = user;
+
+          /* eslint-disable no-param-reassign */
+          doc.accessToken = accessToken;
+          doc.avatarUrl = avatarUrl;
+          doc.idFromProvider = idFromProvider;
+          doc.name = name;
+          doc.provider = provider;
+          doc.surname = surname;
+
+          if (!isActive) {
+            doc.activatedAt = new Date();
+            doc.isActive = true;
+            doc.signUpHash = null;
+            doc.signUpHashExpirationDate = null;
+          }
+          /* eslint-enable no-param-reassign */
+
+          return doc.save();
+        }
+
+        return doc;
+      }
+
+      return new User({ ...user, activatedAt: new Date() }).save();
+    })
+    .then(user => done(null, user))
+    .catch(err => done(null, false, { message: err.message }));
 };
 
 /* eslint camelcase: "off" */
