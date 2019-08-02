@@ -9,7 +9,7 @@ import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
-import { validatePasswordStructure } from 'common/utils/helpers';
+import { validatePassword } from 'common/utils/helpers';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -28,7 +28,7 @@ class PasswordRecoveryForm extends PureComponent {
       pending: false
     };
 
-    this.debouncedPasswordValidation = _debounce(this.validatePassword, 500);
+    this.debouncedPasswordValidation = _debounce(this.passwordValidator, 500);
     this.debouncedComparePasswords = _debounce(this.comparePasswords, 500);
   }
 
@@ -87,10 +87,10 @@ class PasswordRecoveryForm extends PureComponent {
     });
   };
 
-  validatePassword = password => {
+  passwordValidator = password => {
     const { errors } = this.state;
 
-    if (validatePasswordStructure(password)) {
+    if (validatePassword(password)) {
       this.setState(
         {
           errors: {

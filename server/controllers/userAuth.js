@@ -7,7 +7,7 @@ const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
-const { validatePasswordStructure } = require('../common/utils/userUtils');
+const { validatePassword } = require('../common/utils/userUtils');
 
 const sendUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
@@ -39,7 +39,7 @@ const signUp = (req, resp, next) => {
     errors.emailError = true;
   }
 
-  if (!validatePasswordStructure(password)) {
+  if (!validatePassword(password)) {
     errors.passwordError = true;
   }
 
@@ -260,7 +260,7 @@ const updatePassword = (req, resp) => {
   const sanitizedToken = sanitize(token);
 
   if (
-    !validatePasswordStructure(updatedPassword) ||
+    !validatePassword(updatedPassword) ||
     _trim(updatedPassword) !== _trim(passwordConfirmation)
   ) {
     return resp.sendStatus(400);
@@ -376,7 +376,7 @@ const getUserDetails = (req, resp) => {
     return resp.send({ activationDate, email, isPasswordSet });
   }
 
-  return resp.sendStatus(204);
+  return resp.sendStatus(400);
 };
 
 const changePassword = (req, resp) => {
@@ -384,7 +384,7 @@ const changePassword = (req, resp) => {
   const errors = {};
   const { email } = req.user;
 
-  errors.isNewPasswordError = !validatePasswordStructure(newPassword);
+  errors.isNewPasswordError = !validatePassword(newPassword);
   errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
 
   if (_some(errors, error => error)) {
