@@ -74,7 +74,7 @@ const cohorts = (state = {}, action) => {
     }
     case CohortActionTypes.DELETE_SUCCESS:
     case CohortActionTypes.LEAVE_SUCCESS: {
-      const { [action.payload]: removed, ...newState } = state;
+      const { [action.payload.cohortId]: removed, ...newState } = state;
 
       return newState;
     }

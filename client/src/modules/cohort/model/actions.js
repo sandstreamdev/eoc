@@ -179,12 +179,15 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
 export const updateCohort = (cohortName, cohortId, data) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, data)
     .then(() => {
-      dispatch(updateCohortSuccess({ ...data, cohortId }));
+      const action = updateCohortSuccess({ ...data, cohortId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.update-cohort',
         data: cohortName
       });
-      socket.emit(CohortActionTypes.UPDATE_SUCCESS, { ...data, cohortId });
     })
     .catch(() => {
       dispatch(updateCohortFailure());
@@ -197,7 +200,7 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
 export const deleteCohort = (cohortId, cohortName) => dispatch =>
   deleteData(`/api/cohorts/${cohortId}/delete`)
     .then(() => {
-      dispatch(deleteCohortSuccess(cohortId));
+      dispatch(deleteCohortSuccess({ cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.delete-cohort',
         data: cohortName
@@ -289,9 +292,11 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     .then(json => {
       if (json._id) {
         const data = { cohortId, member: json };
+        const action = addMemberSuccess(data);
+        const { type, payload } = action;
 
-        socket.emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
-        dispatch(addMemberSuccess(data));
+        socket.emit(type, payload);
+        dispatch(action);
 
         return UserAddingStatus.ADDED;
       }
@@ -311,11 +316,11 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
     userId
   })
     .then(() => {
-      socket.emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, {
-        cohortId,
-        userId
-      });
-      dispatch(removeMemberSuccess({ cohortId, userId }));
+      const action = removeMemberSuccess({ cohortId, userId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.remove-member',
         data: userName
@@ -334,17 +339,12 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
     userId
   })
     .then(() => {
-      socket.emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-        cohortId,
-        userId
-      });
-      dispatch(
-        addOwnerRoleSuccess({
-          cohortId,
-          userId,
-          isCurrentUserRoleChanging: false
-        })
-      );
+      const action = addOwnerRoleSuccess({ userId, cohortId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
+
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.owner-role',
         data: userName
@@ -368,13 +368,15 @@ export const removeOwnerRole = (
     userId
   })
     .then(() => {
-      socket.emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+      const action = removeOwnerRoleSuccess({
+        isCurrentUserRoleChanging,
         cohortId,
         userId
       });
-      dispatch(
-        removeOwnerRoleSuccess({ cohortId, userId, isCurrentUserRoleChanging })
-      );
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.no-owner-role',
         data: userName
@@ -391,8 +393,11 @@ export const removeOwnerRole = (
 export const leaveCohort = (cohortId, userId, userName) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/leave-cohort`, { userId })
     .then(() => {
-      socket.emit(CohortActionTypes.LEAVE_SUCCESS, { cohortId, userId });
-      dispatch(leaveCohortSuccess(cohortId));
+      const action = leaveCohortSuccess({ userId, cohortId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.leave-cohort',
         data: userName

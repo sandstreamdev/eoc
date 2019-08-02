@@ -191,20 +191,20 @@ const addListMember = (socket, dashboardClients, cohortClients) =>
 
 const setVote = socket =>
   socket.on(ItemActionTypes.SET_VOTE_SUCCESS, data => {
-    const { listId } = data;
+    const { listId, itemId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
-      .emit(ItemActionTypes.SET_VOTE_SUCCESS, data);
+      .emit(ItemActionTypes.SET_VOTE_SUCCESS, { listId, itemId });
   });
 
 const clearVote = socket =>
   socket.on(ItemActionTypes.CLEAR_VOTE_SUCCESS, data => {
-    const { listId } = data;
+    const { listId, itemId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
-      .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, data);
+      .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
   });
 
 const changeItemOrderState = (
