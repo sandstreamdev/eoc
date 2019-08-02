@@ -55,7 +55,11 @@ class ArchivedMessage extends PureComponent {
               />
             ) : (
               <FormattedMessage
-                id="common.archived-message.was-archived"
+                id={
+                  isOwner
+                    ? 'common.archived-message.was-archived'
+                    : 'common.archived-message.was-archived-member'
+                }
                 values={{ name, item }}
               />
             )}

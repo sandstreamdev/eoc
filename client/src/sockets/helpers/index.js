@@ -18,7 +18,7 @@ export const listEventsController = (event, data, dispatch) => {
       dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: { listId } });
 
       const goToCohort = cohortId && isCohortMember;
-      const url = goToCohort ? dashboardRoute() : cohortRoute(cohortId);
+      const url = goToCohort ? cohortRoute(cohortId) : dashboardRoute();
 
       return history.replace(url);
     }
