@@ -216,6 +216,7 @@ const deleteCohortById = (req, resp) => {
     user: { _id: userId }
   } = req;
   const sanitizedCohortId = sanitize(cohortId);
+  let cohortMembers;
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
@@ -223,6 +224,8 @@ const deleteCohortById = (req, resp) => {
       if (!doc) {
         throw new NotFoundException();
       }
+
+      cohortMembers = doc.memberIds;
 
       return List.find({ cohortId: sanitizedCohortId }, '_id')
         .lean()
@@ -242,7 +245,7 @@ const deleteCohortById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      resp.send(cohortMembers);
 
       saveActivity(
         ActivityType.COHORT_DELETE,

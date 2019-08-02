@@ -823,16 +823,16 @@ const removeListsOnArchiveCohort = (socket, dashboardClients) =>
           listIds.forEach(listId => {
             socket.broadcast
               .to(listChannel(listId))
-              .emit(CohortActionTypes.REMOVE_ON_ARCHIVE_COHORT, {
+              .emit(ListActionTypes.REMOVE_WHEN_COHORT_UNAVAILABLE, {
                 cohortId,
                 listId
               });
           });
 
-          Object.keys(listsByViewers).forEach(memberId => {
-            if (dashboardClients.has(memberId)) {
-              const { socketId } = dashboardClients.get(memberId);
-              const listsToRemoved = listsByViewers[memberId];
+          Object.keys(listsByViewers).forEach(viewerId => {
+            if (dashboardClients.has(viewerId)) {
+              const { socketId } = dashboardClients.get(viewerId);
+              const listsToRemoved = listsByViewers[viewerId];
 
               socket.broadcast
                 .to(socketId)

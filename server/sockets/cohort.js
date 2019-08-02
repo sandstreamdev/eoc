@@ -5,7 +5,11 @@ const {
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const { responseWithCohort } = require('../common/utils');
-const { cohortChannel, emitCohortMetaData } = require('./helpers');
+const {
+  cohortChannel,
+  emitCohortMetaData,
+  removeCohort
+} = require('./helpers');
 
 const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
@@ -217,6 +221,13 @@ const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
     }
   });
 
+const deleteCohort = (socket, allCohortsClients) =>
+  socket.on(CohortActionTypes.DELETE_SUCCESS, data => {
+    const { cohortId, members } = data;
+
+    removeCohort(socket, cohortId, allCohortsClients, members);
+  });
+
 const createListCohort = (socket, dashboardClients) =>
   socket.on(ListActionTypes.CREATE_SUCCESS, data => {
     const { cohortId, _id: listId } = data;
@@ -256,6 +267,7 @@ module.exports = {
   addCohortMember,
   addOwnerRoleInCohort,
   archiveCohort,
+  deleteCohort,
   createListCohort,
   leaveCohort,
   removeCohortMember,

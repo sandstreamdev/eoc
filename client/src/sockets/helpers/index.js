@@ -22,6 +22,14 @@ export const listEventsController = (event, data, dispatch) => {
 
       return history.replace(url);
     }
+    case ListEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
+      const { cohortId, listId } = data;
+
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: cohortId });
+      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
+
+      return history.replace('/cohorts');
+    }
     default:
       return dispatch({ type: event, payload: data });
   }
@@ -45,6 +53,13 @@ export const cohortEventsController = (event, data, dispatch) => {
       return history.replace(cohortsRoute());
     }
     case CohortEvents.ARCHIVE_SUCCESS: {
+      const { cohortId } = data;
+
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
+
+      return history.replace(cohortsRoute());
+    }
+    case CohortEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
       const { cohortId } = data;
 
       dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
