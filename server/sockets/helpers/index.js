@@ -57,7 +57,7 @@ const updateListOnDashboardAndCohortView = (
             socket.broadcast
               .to(socketId)
               .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: { ...list }
+                [listId]: list
               });
           }
 
@@ -68,7 +68,7 @@ const updateListOnDashboardAndCohortView = (
               socket.broadcast
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: { ...list }
+                  [listId]: list
                 });
             }
           }
@@ -99,8 +99,13 @@ const getListsByViewers = lists => {
   return listsByViewers;
 };
 
+const cohortChannel = cohortId => `cohort-${cohortId}`;
+const listChannel = listId => `sack-${listId}`;
+
 module.exports = {
+  cohortChannel,
   emitCohortMetaData,
   getListsByViewers,
+  listChannel,
   updateListOnDashboardAndCohortView
 };

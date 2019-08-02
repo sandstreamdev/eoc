@@ -3,30 +3,25 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
 import history from 'common/utils/history';
+import { asyncTypes, enumerable } from 'common/utils/helpers';
 
-export const AuthorizationActionTypes = Object.freeze({
-  LOGIN_FAILURE: 'LOGIN_FAILURE',
-  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-  LOGOUT_FAILURE: 'LOGOUT_FAILURE',
-  LOGOUT_SUCCESS: 'LOGOUT_SUCCESS'
-});
+export const AuthorizationActionTypes = enumerable('user')(
+  ...asyncTypes('LOGIN'),
+  ...asyncTypes('LOGOUT')
+);
 
 const logoutFailure = () => ({
   type: AuthorizationActionTypes.LOGOUT_FAILURE
 });
 
-const logoutSuccess = () => ({
-  type: AuthorizationActionTypes.LOGOUT_SUCCESS
-});
-
-const loginSuccess = data => ({
+const loginSuccess = payload => ({
   type: AuthorizationActionTypes.LOGIN_SUCCESS,
-  payload: data
+  payload
 });
 
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
-    .then(() => dispatch(logoutSuccess()))
+    .then(() => window.location.reload())
     .catch(err => dispatch(logoutFailure(err.message)));
 
 export const loginDemoUser = () => dispatch =>
@@ -34,7 +29,7 @@ export const loginDemoUser = () => dispatch =>
     email: 'demo@example.com',
     password: 'demo'
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -57,7 +52,7 @@ export const resendConfirmationLink = hash =>
 
 export const signIn = (email, password) => dispatch =>
   postData('/auth/sign-in', { email, password })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -67,11 +62,11 @@ export const signIn = (email, password) => dispatch =>
 
 export const getLoggedUser = () => dispatch =>
   getData('/auth/user')
-    .then(resp => {
-      const contentType = resp.headers.get('content-type');
+    .then(response => {
+      const contentType = response.headers.get('content-type');
 
       if (contentType && contentType.includes('application/json')) {
-        return resp.json();
+        return response.json();
       }
     })
     .then(json => {

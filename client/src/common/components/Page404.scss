@@ -14,7 +14,7 @@
     font-size: 100px;
     font-weight: 700;
     color: $orange;
-    padding: 0 0 50px;
+    padding: 0 0 four-by(8);
   }
 
   &__error {
@@ -23,12 +23,12 @@
   }
 
   &__message {
-    padding: 20px 40px;
+    padding: four-by(4) four-by(8);
     line-height: 25px;
   }
 
   .primary-button {
     box-sizing: border-box;
-    padding: 10px 16px;
+    padding: four-by(2) four-by(4);
   }
 }
