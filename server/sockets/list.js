@@ -746,6 +746,65 @@ const deleteList = (socket, dashboardClients, cohortClients) =>
     }
   });
 
+const restoreList = (socket, dashboardClients, cohortClients, listClients) =>
+  socket.on(ListActionTypes.RESTORE_SUCCESS, listData => {
+    const {
+      listId,
+      data,
+      data: { cohortId }
+    } = listData;
+
+    List.findById(listId)
+      .lean()
+      .exec()
+      .then(doc => {
+        const { viewersIds, memberIds } = doc;
+
+        viewersIds.forEach(viewerId => {
+          const id = viewerId.toString();
+
+          if (dashboardClients.has(id)) {
+            const { socketId } = dashboardClients.get(id);
+
+            socket.broadcast
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                [listId]: responseWithList(doc, id)
+              });
+          }
+
+          if (cohortClients.has(id)) {
+            const { socketId, viewId } = cohortClients.get(id);
+
+            if (viewId === cohortId) {
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [listId]: responseWithList(doc, id)
+                });
+            }
+          }
+        });
+
+        memberIds.forEach(memberId => {
+          const id = memberId.toString();
+
+          if (listClients.has(id)) {
+            const { socketId, viewId } = listClients.get(id);
+
+            if (viewId === listId) {
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.RESTORE_SUCCESS, {
+                  data,
+                  listId
+                });
+            }
+          }
+        });
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -768,6 +827,7 @@ module.exports = {
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
+  restoreList,
   setVote,
   updateItem,
   updateItemState,

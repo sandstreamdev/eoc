@@ -31,6 +31,7 @@ const {
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
+  restoreList,
   setVote,
   updateItem,
   updateItemState,
@@ -168,6 +169,12 @@ const socketListenTo = server => {
     removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);
+    restoreList(
+      socket,
+      dashboardViewClients,
+      cohortViewClients,
+      listViewClients
+    );
     setVote(socket);
     updateItem(socket);
     updateItemState(socket);
