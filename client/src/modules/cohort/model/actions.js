@@ -79,9 +79,9 @@ const fetchCohortDetailsFailure = errMessage => ({
   payload: errMessage
 });
 
-const fetchCohortDetailsSuccess = payload => ({
+const fetchCohortDetailsSuccess = (data, _id) => ({
   type: CohortActionTypes.FETCH_DETAILS_SUCCESS,
-  payload
+  payload: { data, _id }
 });
 
 const fetchArchivedCohortsMetaDataSuccess = payload => ({
@@ -107,9 +107,9 @@ const removeMemberFailure = () => ({
   type: CohortActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = payload => ({
+const removeMemberSuccess = (cohortId, userId) => ({
   type: CohortActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload
+  payload: { cohortId, userId }
 });
 
 const addOwnerRoleFailure = () => ({
@@ -272,7 +272,7 @@ export const fetchCohortDetails = cohortId => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
-      dispatch(fetchCohortDetailsSuccess({ data, _id: cohortId }));
+      dispatch(fetchCohortDetailsSuccess(data, cohortId));
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
@@ -314,7 +314,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
     userId
   })
     .then(() => {
-      dispatch(removeMemberSuccess({ cohortId, userId }));
+      dispatch(removeMemberSuccess(cohortId, userId));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.remove-member',
         data: userName
