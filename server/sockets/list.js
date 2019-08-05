@@ -7,7 +7,8 @@ const {
   ItemStatusType,
   ListActionTypes,
   ListHeaderStatusTypes,
-  ListType
+  ListType,
+  LOCK_TIMEOUT
 } = require('../common/variables');
 const List = require('../models/list.model');
 const {
@@ -87,7 +88,7 @@ const updateItemState = (socket, itemClientLocks) => {
         .emit(ItemStatusType.UNLOCK, updatedData);
 
       itemClientLocks.delete(userId);
-    }, 300000);
+    }, LOCK_TIMEOUT);
 
     itemClientLocks.set(userId, delayedUnlock);
   });
@@ -317,7 +318,7 @@ const updateListHeaderState = (socket, listClientLocks) => {
         .emit(ListHeaderStatusTypes.UNLOCK, updatedData);
 
       listClientLocks.delete(userId);
-    }, 300000);
+    }, LOCK_TIMEOUT);
 
     listClientLocks.set(userId, delayedUnlock);
   });
