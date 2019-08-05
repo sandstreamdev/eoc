@@ -132,6 +132,10 @@ const leaveCohortFailure = () => ({
   type: CohortActionTypes.LEAVE_FAILURE
 });
 
+const clearMetaDataSuccess = () => ({
+  type: CohortActionTypes.CLEAR_META_DATA_SUCCESS
+});
+
 export const removeArchivedCohortsMetaData = () => ({
   type: CohortActionTypes.REMOVE_ARCHIVED_META_DATA
 });
@@ -435,3 +439,5 @@ export const unlockCohortHeader = (
     nameLock,
     userId
   });
+
+export const clearMetaData = () => dispatch => dispatch(clearMetaDataSuccess());

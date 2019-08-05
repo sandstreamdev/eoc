@@ -6,6 +6,7 @@ export const ListActionTypes = enumerable('list')(
   ...asyncTypes('ADD_VIEWER'),
   ...asyncTypes('ARCHIVE'),
   ...asyncTypes('CHANGE_TYPE'),
+  ...asyncTypes('CLEAR_META_DATA'),
   ...asyncTypes('CREATE'),
   ...asyncTypes('DELETE'),
   ...asyncTypes('FAVOURITES'),

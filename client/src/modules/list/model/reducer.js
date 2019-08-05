@@ -251,6 +251,8 @@ const lists = (state = {}, action) => {
         }
       };
     }
+    case ListActionTypes.CLEAR_META_DATA_SUCCESS:
+      return {};
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
     case CohortActionTypes.LEAVE_SUCCESS: {

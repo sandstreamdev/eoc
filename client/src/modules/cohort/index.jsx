@@ -10,6 +10,7 @@ import {
   getCohortArchivedLists
 } from 'modules/list/model/selectors';
 import {
+  clearMetaData,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
@@ -89,6 +90,7 @@ class Cohort extends PureComponent {
 
   componentWillUnmount() {
     const {
+      clearMetaData,
       currentUser: { id: userId },
       match: {
         params: { id: cohortId }
@@ -96,6 +98,7 @@ class Cohort extends PureComponent {
     } = this.props;
 
     leaveRoom(Routes.COHORT, cohortId, userId);
+    clearMetaData();
     this.pendingPromises.forEach(promise => promise.abort());
   }
 
@@ -409,6 +412,7 @@ Cohort.propTypes = {
   viewType: PropTypes.string.isRequired,
 
   archiveCohort: PropTypes.func.isRequired,
+  clearMetaData: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
@@ -439,6 +443,7 @@ export default _flowRight(
     mapStateToProps,
     {
       archiveCohort,
+      clearMetaData,
       createList,
       fetchArchivedListsMetaData,
       fetchCohortDetails,

@@ -6,6 +6,7 @@ import _flowRight from 'lodash/flowRight';
 
 import { CohortIcon } from 'assets/images/icons';
 import {
+  clearMetaData,
   createCohort,
   fetchArchivedCohortsMetaData,
   fetchCohortsMetaData,
@@ -49,9 +50,11 @@ class Cohorts extends Component {
 
   componentWillUnmount() {
     const {
+      clearMetaData,
       currentUser: { id: userId }
     } = this.props;
 
+    clearMetaData();
     leaveView(Routes.COHORTS, userId);
   }
 
@@ -189,6 +192,7 @@ Cohorts.propTypes = {
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
 
+  clearMetaData: PropTypes.func.isRequired,
   createCohort: PropTypes.func.isRequired,
   fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
@@ -206,6 +210,7 @@ export default _flowRight(
   connect(
     mapStateToProps,
     {
+      clearMetaData,
       createCohort,
       fetchArchivedCohortsMetaData,
       fetchCohortsMetaData,

@@ -4,6 +4,7 @@ export const CohortActionTypes = enumerable('cohort')(
   ...asyncTypes('ADD_MEMBER'),
   ...asyncTypes('ADD_OWNER_ROLE'),
   ...asyncTypes('ARCHIVE'),
+  ...asyncTypes('CLEAR_META_DATA'),
   ...asyncTypes('CREATE'),
   ...asyncTypes('DELETE'),
   ...asyncTypes('FETCH_ARCHIVED_META_DATA'),
