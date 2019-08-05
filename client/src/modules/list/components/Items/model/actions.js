@@ -379,18 +379,30 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
       });
     });
 
-export const lockItem = (itemId, listId, { nameLock, descriptionLock }) =>
+export const lockItem = (
+  itemId,
+  listId,
+  userId,
+  { nameLock, descriptionLock }
+) =>
   socket.emit(ItemStatusType.LOCK, {
     descriptionLock,
     itemId,
     listId,
-    nameLock
+    nameLock,
+    userId
   });
 
-export const unlockItem = (itemId, listId, { nameLock, descriptionLock }) =>
+export const unlockItem = (
+  itemId,
+  listId,
+  userId,
+  { nameLock, descriptionLock }
+) =>
   socket.emit(ItemStatusType.UNLOCK, {
     descriptionLock,
     itemId,
     listId,
-    nameLock
+    nameLock,
+    userId
   });

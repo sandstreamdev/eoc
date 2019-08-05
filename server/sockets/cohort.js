@@ -128,21 +128,47 @@ const updateCohort = (socket, allCohortsViewClients) => {
   });
 };
 
-const updateCohortHeaderStatus = socket => {
+const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
   socket.on(CohortHeaderStatusTypes.UNLOCK, data => {
-    const { cohortId } = data;
+    const { cohortId, userId } = data;
 
     socket.broadcast
       .to(cohortChannel(cohortId))
       .emit(CohortHeaderStatusTypes.UNLOCK, data);
+
+    if (cohortClientLocks.has(userId)) {
+      clearTimeout(cohortClientLocks.get(userId));
+      cohortClientLocks.delete(userId);
+    }
   });
 
   socket.on(CohortHeaderStatusTypes.LOCK, data => {
-    const { cohortId } = data;
+    const { cohortId, userId } = data;
 
     socket.broadcast
       .to(cohortChannel(cohortId))
       .emit(CohortHeaderStatusTypes.LOCK, data);
+
+    const delayedUnlock = setTimeout(() => {
+      const { cohortId, nameLock, descriptionLock } = data;
+      const updatedData = { cohortId };
+
+      if (nameLock !== undefined) {
+        updatedData.nameLock = false;
+      }
+
+      if (descriptionLock !== undefined) {
+        updatedData.descriptionLock = false;
+      }
+
+      socket.broadcast
+        .to(`cohort-${cohortId}`)
+        .emit(CohortHeaderStatusTypes.UNLOCK, updatedData);
+
+      cohortClientLocks.delete(userId);
+    }, 300000);
+
+    cohortClientLocks.set(userId, delayedUnlock);
   });
 };
 

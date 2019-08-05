@@ -6,6 +6,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { CohortIcon } from 'assets/images/icons';
 import {
@@ -13,11 +14,12 @@ import {
   unlockCohortHeader,
   updateCohort
 } from '../model/actions';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class CohortHeader extends PureComponent {
   constructor(props) {
@@ -118,42 +120,46 @@ class CohortHeader extends PureComponent {
 
   handleDescriptionLock = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       }
     } = this.props;
 
-    lockCohortHeader(cohortId, { descriptionLock: true });
+    lockCohortHeader(cohortId, userId, { descriptionLock: true });
   };
 
   handleDescriptionUnmount = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       }
     } = this.props;
 
-    unlockCohortHeader(cohortId, { descriptionLock: false });
+    unlockCohortHeader(cohortId, userId, { descriptionLock: false });
   };
 
   handleNameLock = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       }
     } = this.props;
 
-    lockCohortHeader(cohortId, { nameLock: true });
+    lockCohortHeader(cohortId, userId, { nameLock: true });
   };
 
   handleNameUnmount = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       }
     } = this.props;
 
-    unlockCohortHeader(cohortId, { nameLock: false });
+    unlockCohortHeader(cohortId, userId, { nameLock: false });
   };
 
   handleNameUpdate = () => {
@@ -284,6 +290,7 @@ class CohortHeader extends PureComponent {
         {isOwner && !description && (
           <button
             className="cohort-header__button link-button"
+            disabled={descriptionLock}
             onClick={this.showDescriptionTextarea}
             type="button"
           >
@@ -359,6 +366,7 @@ class CohortHeader extends PureComponent {
 }
 
 CohortHeader.propTypes = {
+  currentUser: UserPropType.isRequired,
   details: PropTypes.objectOf(PropTypes.any).isRequired,
   match: RouterMatchPropType.isRequired,
 
@@ -366,11 +374,16 @@ CohortHeader.propTypes = {
   updateCohort: PropTypes.func.isRequired
 };
 
-export default withRouter(
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
+export default _flowRight(
+  withRouter,
   connect(
-    null,
+    mapStateToProps,
     {
       updateCohort
     }
-  )(CohortHeader)
-);
+  )
+)(CohortHeader);

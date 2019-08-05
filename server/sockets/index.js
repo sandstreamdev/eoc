@@ -71,6 +71,8 @@ const socketListenTo = server => {
   const allCohortsViewClients = new Map();
   const dashboardViewClients = new Map();
   const listViewClients = new Map();
+  const cohortClientLocks = new Map();
+  const itemClientLocks = new Map();
   const listClientLocks = new Map();
 
   ioInstance.on('connection', socket => {
@@ -185,7 +187,7 @@ const socketListenTo = server => {
     );
     setVote(socket);
     updateItem(socket);
-    updateItemState(socket);
+    updateItemState(socket, itemClientLocks);
     updateList(socket, dashboardViewClients, cohortViewClients);
     updateListHeaderState(socket, listClientLocks);
 
@@ -199,7 +201,7 @@ const socketListenTo = server => {
     removeOwnerRoleInCohort(socket, cohortViewClients);
     restoreCohort(socket, allCohortsViewClients, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);
-    updateCohortHeaderStatus(socket);
+    updateCohortHeaderStatus(socket, cohortClientLocks);
   });
 };
 

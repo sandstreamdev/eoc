@@ -64,17 +64,43 @@ const restoreItem = socket => {
   });
 };
 
-const updateItemState = socket => {
+const updateItemState = (socket, itemClientLocks) => {
   socket.on(ItemStatusType.LOCK, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.LOCK, data);
+
+    const delayedUnlock = setTimeout(() => {
+      const { nameLock, descriptionLock } = data;
+      const updatedData = { ...data };
+
+      if (nameLock !== undefined) {
+        updatedData.nameLock = false;
+      }
+
+      if (descriptionLock !== undefined) {
+        updatedData.descriptionLock = false;
+      }
+
+      socket.broadcast
+        .to(listChannel(listId))
+        .emit(ItemStatusType.UNLOCK, updatedData);
+
+      itemClientLocks.delete(userId);
+    }, 300000);
+
+    itemClientLocks.set(userId, delayedUnlock);
   });
 
   socket.on(ItemStatusType.UNLOCK, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.UNLOCK, data);
+
+    if (itemClientLocks.has(userId)) {
+      clearTimeout(itemClientLocks.get(userId));
+      itemClientLocks.delete(userId);
+    }
   });
 };
 

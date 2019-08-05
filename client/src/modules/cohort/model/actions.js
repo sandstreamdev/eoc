@@ -412,16 +412,26 @@ export const leaveCohort = (cohortId, userId, userName) => dispatch =>
       });
     });
 
-export const lockCohortHeader = (cohortId, { nameLock, descriptionLock }) =>
+export const lockCohortHeader = (
+  cohortId,
+  userId,
+  { nameLock, descriptionLock }
+) =>
   socket.emit(CohortHeaderStatusTypes.LOCK, {
     cohortId,
     descriptionLock,
-    nameLock
+    nameLock,
+    userId
   });
 
-export const unlockCohortHeader = (cohortId, { nameLock, descriptionLock }) =>
+export const unlockCohortHeader = (
+  cohortId,
+  userId,
+  { nameLock, descriptionLock }
+) =>
   socket.emit(CohortHeaderStatusTypes.UNLOCK, {
     cohortId,
     descriptionLock,
-    nameLock
+    nameLock,
+    userId
   });
