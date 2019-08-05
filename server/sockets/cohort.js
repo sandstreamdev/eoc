@@ -1,7 +1,8 @@
 const {
   CohortActionTypes,
   CohortHeaderStatusTypes,
-  ListActionTypes
+  ListActionTypes,
+  LOCK_TIMEOUT
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const {
@@ -166,7 +167,7 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
         .emit(CohortHeaderStatusTypes.UNLOCK, updatedData);
 
       cohortClientLocks.delete(userId);
-    }, 300000);
+    }, LOCK_TIMEOUT);
 
     cohortClientLocks.set(userId, delayedUnlock);
   });

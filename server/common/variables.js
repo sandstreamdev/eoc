@@ -127,6 +127,8 @@ const ListHeaderStatusTypes = Object.freeze({
   UNLOCK: 'list-header/UNLOCK'
 });
 
+const LOCK_TIMEOUT = 300000;
+
 module.exports = {
   ActivityType,
   CohortActionTypes,
@@ -140,6 +142,7 @@ module.exports = {
   ListActionTypes,
   ListHeaderStatusTypes,
   ListType,
+  LOCK_TIMEOUT,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME
 };
