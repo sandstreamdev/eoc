@@ -267,7 +267,7 @@ class Cohort extends PureComponent {
       viewType
     } = this.props;
 
-    if (!cohortDetails || !members) {
+    if (!cohortDetails) {
       return null;
     }
 

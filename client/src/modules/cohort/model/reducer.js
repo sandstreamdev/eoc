@@ -1,8 +1,8 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
-import _pickBy from 'lodash/pickBy';
 
 import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
+import { filterDefined } from 'common/utils/helpers';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -55,18 +55,18 @@ const cohorts = (state = {}, action) => {
       return { ...state, [action.payload._id]: { ...action.payload } };
     case CohortActionTypes.UPDATE_SUCCESS: {
       const { cohortId, ...data } = action.payload;
-      const prevCohort = state[cohortId];
-      const dataToUpdate = _pickBy(data, el => el !== undefined);
+      const previousCohort = state[cohortId];
+      const dataToUpdate = filterDefined(data);
 
       const updatedCohort = {
-        ...prevCohort,
+        ...previousCohort,
         ...dataToUpdate
       };
 
       return { ...state, [cohortId]: updatedCohort };
     }
     case CohortActionTypes.ARCHIVE_SUCCESS: {
-      const _id = action.payload;
+      const { cohortId: _id } = action.payload;
       const { name } = state[_id];
       const archivedCohort = { _id, isArchived: true, name };
 
@@ -74,7 +74,7 @@ const cohorts = (state = {}, action) => {
     }
     case CohortActionTypes.DELETE_SUCCESS:
     case CohortActionTypes.LEAVE_SUCCESS: {
-      const { [action.payload]: removed, ...newState } = state;
+      const { [action.payload.cohortId]: removed, ...newState } = state;
 
       return newState;
     }
@@ -88,8 +88,14 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, cohort => !cohort.isArchived), '_id');
     case CohortActionTypes.RESTORE_SUCCESS:
-    case CohortActionTypes.FETCH_DETAILS_SUCCESS:
-      return { ...state, [action.payload._id]: action.payload.data };
+    case CohortActionTypes.FETCH_DETAILS_SUCCESS: {
+      const {
+        payload,
+        payload: { _id }
+      } = action;
+
+      return { ...state, [_id]: payload };
+    }
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
     case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
     case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS: {

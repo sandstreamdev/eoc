@@ -215,7 +215,12 @@ class List extends Component {
       <Fragment>
         {this.renderBreadcrumbs()}
         {isArchived ? (
-          <ArchivedList isOwner={isOwner} listId={listId} name={name} />
+          <ArchivedList
+            cohortId={cohortId}
+            isOwner={isOwner}
+            listId={listId}
+            name={name}
+          />
         ) : (
           <div className="wrapper">
             <div className="list">

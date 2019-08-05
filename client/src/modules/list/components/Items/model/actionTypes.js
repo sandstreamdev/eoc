@@ -1,35 +1,22 @@
-export const CommentActionTypes = Object.freeze({
-  ADD_FAILURE: 'comment/ADD_FAILURE',
-  ADD_SUCCESS: 'comment/ADD_SUCCESS',
-  FETCH_FAILURE: 'comment/FETCH_FAILURE',
-  FETCH_SUCCESS: 'comment/FETCH_SUCCESS'
-});
+import { asyncTypes, enumerable } from 'common/utils/helpers';
 
-export const ItemActionTypes = Object.freeze({
-  ADD_FAILURE: 'item/ADD_FAILURE',
-  ADD_SUCCESS: 'item/ADD_SUCCESS',
-  ARCHIVE_FAILURE: 'item/ARCHIVE_FAILURE',
-  ARCHIVE_SUCCESS: 'item/ARCHIVE_SUCCESS',
-  CLEAR_VOTE_FAILURE: 'item/CLEAR_VOTE_FAILURE',
-  CLEAR_VOTE_SUCCESS: 'item/CLEAR_VOTE_SUCCESS',
-  CLONE_FAILURE: 'item/CLONE_FAILURE',
-  CLONE_SUCCESS: 'item/CLONE_SUCCESS',
-  DELETE_FAILURE: 'item/DELETE_FAILURE',
-  DELETE_SUCCESS: 'item/DELETE_SUCCESS',
-  FETCH_ARCHIVED_FAILURE: 'item/FETCH_ARCHIVED_FAILURE',
-  FETCH_ARCHIVED_SUCCESS: 'item/FETCH_ARCHIVED_SUCCESS',
-  REMOVE_ARCHIVED: 'item/REMOVE_ARCHIVED',
-  RESTORE_FAILURE: 'item/RESTORE_FAILURE',
-  RESTORE_SUCCESS: 'item/RESTORE_SUCCESS',
-  SET_VOTE_FAILURE: 'item/SET_VOTE_FAILURE',
-  SET_VOTE_SUCCESS: 'item/SET_VOTE_SUCCESS',
-  TOGGLE_FAILURE: 'item/TOGGLE_FAILURE',
-  TOGGLE_SUCCESS: 'item/TOGGLE_SUCCESS',
-  UPDATE_FAILURE: 'item/UPDATE_FAILURE',
-  UPDATE_SUCCESS: 'item/UPDATE_SUCCESS'
-});
+export const CommentActionTypes = enumerable('comment')(
+  ...asyncTypes('ADD'),
+  ...asyncTypes('FETCH')
+);
 
-export const ItemStatusType = Object.freeze({
-  LOCK: 'item/LOCK',
-  UNLOCK: 'item/UNLOCK'
-});
+export const ItemActionTypes = enumerable('item')(
+  ...asyncTypes('ADD'),
+  ...asyncTypes('ARCHIVE'),
+  ...asyncTypes('CLEAR_VOTE'),
+  ...asyncTypes('CLONE'),
+  ...asyncTypes('DELETE'),
+  ...asyncTypes('FETCH_ARCHIVED'),
+  'REMOVE_ARCHIVED',
+  ...asyncTypes('RESTORE'),
+  ...asyncTypes('SET_VOTE'),
+  ...asyncTypes('TOGGLE'),
+  ...asyncTypes('UPDATE')
+);
+
+export const ItemStatusType = enumerable('item')('LOCK', 'UNLOCK');
