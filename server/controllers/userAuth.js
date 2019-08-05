@@ -388,7 +388,7 @@ const changePassword = (req, resp) => {
   errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
 
   if (_some(errors, error => error)) {
-    return resp.status(406).send(errors);
+    return resp.status(400).send(errors);
   }
 
   User.findOne({ email }, 'password')

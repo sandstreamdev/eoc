@@ -36,13 +36,11 @@ class UserBar extends Component {
       <ul className="user-bar__menu">
         <li className="user-bar__menu-item">
           {name}
-          <span>
-            <Avatar
-              avatarUrl={avatarUrl}
-              className="user-bar__avatar"
-              name={name}
-            />
-          </span>
+          <Avatar
+            avatarUrl={avatarUrl}
+            className="user-bar__avatar"
+            name={name}
+          />
         </li>
         <li className="user-bar__menu-item">
           <Link to="/user-profile">
