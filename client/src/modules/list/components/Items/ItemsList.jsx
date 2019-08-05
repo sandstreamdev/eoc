@@ -1,6 +1,5 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import _flowRight from 'lodash/flowRight';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -84,11 +83,13 @@ class ItemsList extends PureComponent {
       <Fragment>
         {!items.length && (
           <MessageBox type={MessageType.INFO}>
-            {archived ? (
-              <FormattedMessage id="list.items-list.message-no-arch-items" />
-            ) : (
-              <FormattedMessage id="list.items-list.message-no-items" />
-            )}
+            <FormattedMessage
+              id={
+                archived
+                  ? 'list.items-list.message-no-arch-items'
+                  : 'list.items-list.message-no-items'
+              }
+            />
           </MessageBox>
         )}
         {this.renderItems()}
@@ -119,4 +120,4 @@ ItemsList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default _flowRight(withRouter)(ItemsList);
+export default withRouter(ItemsList);
