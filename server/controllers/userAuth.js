@@ -258,10 +258,12 @@ const updatePassword = (req, resp) => {
   const { token } = req.params;
 
   const sanitizedToken = sanitize(token);
+  const trimmedPassword = _trim(updatedPassword);
+  const trimmedPasswordConfirmation = _trim(passwordConfirmation);
 
   if (
     !validatePassword(updatedPassword) ||
-    _trim(updatedPassword) !== _trim(passwordConfirmation)
+    trimmedPassword !== trimmedPasswordConfirmation
   ) {
     return resp.sendStatus(400);
   }
