@@ -15,13 +15,18 @@ import {
   unlockListHeader,
   updateList
 } from 'modules/list/model/actions';
-import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
+import {
+  RouterMatchPropType,
+  IntlPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import { ListType } from '../consts';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
 import Dialog from 'common/components/Dialog';
+import { getCurrentUser } from 'modules/authorization/model/selectors';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -231,42 +236,46 @@ class ListHeader extends PureComponent {
 
   handleNameLock = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    lockListHeader(listId, { nameLock: true });
+    lockListHeader(listId, userId, { nameLock: true });
   };
 
   handleNameUnmount = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    unlockListHeader(listId, { nameLock: false });
+    unlockListHeader(listId, userId, { nameLock: false });
   };
 
   handleDescriptionLock = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    lockListHeader(listId, { descriptionLock: true });
+    lockListHeader(listId, userId, { descriptionLock: true });
   };
 
   handleDescriptionUnmount = () => {
     const {
+      currentUser: { id: userId },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    unlockListHeader(listId, { descriptionLock: false });
+    unlockListHeader(listId, userId, { descriptionLock: false });
   };
 
   renderDescription = () => {
@@ -461,6 +470,7 @@ class ListHeader extends PureComponent {
 }
 
 ListHeader.propTypes = {
+  currentUser: UserPropType.isRequired,
   details: PropTypes.objectOf(PropTypes.any).isRequired,
   intl: IntlPropType.isRequired,
   isCohortList: PropTypes.bool,
@@ -471,11 +481,15 @@ ListHeader.propTypes = {
   updateList: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default _flowRight(
   injectIntl,
   withRouter,
   connect(
-    null,
+    mapStateToProps,
     { changeType, updateList }
   )
 )(ListHeader);

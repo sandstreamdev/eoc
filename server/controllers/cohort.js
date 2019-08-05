@@ -7,6 +7,7 @@ const {
   isOwner: isCohortOwner,
   isValidMongoId,
   responseWithCohort,
+  responseWithCohortDetails,
   responseWithCohorts
 } = require('../common/utils');
 const List = require('../models/list.model');
@@ -15,8 +16,7 @@ const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
 const {
   checkIfCohortMember,
-  responseWithCohortMember,
-  responseWithCohortMembers
+  responseWithCohortMember
 } = require('../common/utils/index');
 const { ActivityType, ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
@@ -174,14 +174,7 @@ const getCohortDetails = (req, resp) => {
         return resp.sendStatus(404);
       }
 
-      const {
-        _id,
-        description,
-        isArchived,
-        memberIds: membersCollection,
-        name,
-        ownerIds
-      } = doc;
+      const { _id, isArchived, name } = doc;
 
       const isOwner = isCohortOwner(doc, userId);
 
@@ -193,17 +186,7 @@ const getCohortDetails = (req, resp) => {
         return resp.send({ _id, isArchived, isOwner, name });
       }
 
-      const members = responseWithCohortMembers(membersCollection, ownerIds);
-
-      resp.send({
-        _id,
-        description,
-        isArchived,
-        isMember: true,
-        isOwner,
-        members,
-        name
-      });
+      resp.send(responseWithCohortDetails(doc, userId));
     })
     .catch(err =>
       resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
@@ -216,6 +199,7 @@ const deleteCohortById = (req, resp) => {
     user: { _id: userId }
   } = req;
   const sanitizedCohortId = sanitize(cohortId);
+  let cohortMembers;
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
@@ -223,6 +207,8 @@ const deleteCohortById = (req, resp) => {
       if (!doc) {
         throw new NotFoundException();
       }
+
+      cohortMembers = doc.memberIds;
 
       return List.find({ cohortId: sanitizedCohortId }, '_id')
         .lean()
@@ -242,7 +228,7 @@ const deleteCohortById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      resp.send(cohortMembers);
 
       saveActivity(
         ActivityType.COHORT_DELETE,

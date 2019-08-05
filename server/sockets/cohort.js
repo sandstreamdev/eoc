@@ -5,15 +5,22 @@ const {
   LOCK_TIMEOUT
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
-const { responseWithCohort } = require('../common/utils');
-const { emitCohortMetaData } = require('./helpers');
+const {
+  responseWithCohort,
+  responseWithCohortDetails
+} = require('../common/utils');
+const {
+  cohortChannel,
+  emitCohortMetaData,
+  removeCohort
+} = require('./helpers');
 
 const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
     if (clients.size > 0) {
@@ -26,7 +33,7 @@ const leaveCohort = (socket, clients) =>
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
     if (clients.size > 0) {
@@ -39,7 +46,7 @@ const addOwnerRoleInCohort = (socket, clients) => {
     const { cohortId, userId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -65,7 +72,7 @@ const removeOwnerRoleInCohort = (socket, clients) => {
     const { cohortId, userId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: false
@@ -91,7 +98,7 @@ const updateCohort = (socket, allCohortsViewClients) => {
     const { cohortId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortActionTypes.UPDATE_SUCCESS, data);
 
     if (allCohortsViewClients.size > 0) {
@@ -127,7 +134,7 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
     const { cohortId, userId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortHeaderStatusTypes.UNLOCK, data);
 
     if (cohortClientLocks.has(userId)) {
@@ -140,7 +147,7 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
     const { cohortId, userId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(CohortHeaderStatusTypes.LOCK, data);
 
     const delayedUnlock = setTimeout(() => {
@@ -166,12 +173,143 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
   });
 };
 
+const archiveCohort = (socket, allCohortsClients) =>
+  socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    socket.broadcast
+      .to(cohortChannel(cohortId))
+      .emit(CohortActionTypes.ARCHIVE_SUCCESS, { cohortId });
+
+    Cohort.findOne({
+      _id: cohortId
+    })
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { memberIds, ownerIds } = doc;
+          const cohort = responseWithCohort(doc);
+
+          memberIds.forEach(id => {
+            const memberId = id.toString();
+
+            if (allCohortsClients.has(memberId)) {
+              const { socketId } = allCohortsClients.get(memberId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
+            }
+          });
+
+          ownerIds.forEach(id => {
+            const ownerId = id.toString();
+
+            if (allCohortsClients.has(ownerId)) {
+              const { socketId } = allCohortsClients.get(ownerId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [cohortId]: cohort
+                });
+            }
+          });
+        }
+      });
+  });
+
+const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
+  socket.on(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data => {
+    const { cohortId, userId } = data;
+
+    socket.broadcast
+      .to(cohortChannel(cohortId))
+      .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
+
+    emitCohortMetaData(cohortId, allCohortsClients, socket);
+
+    if (cohortClients.has(userId)) {
+      const { viewId, socketId } = cohortClients.get(userId);
+
+      if (viewId === cohortId) {
+        socket.broadcast
+          .to(socketId)
+          .emit(CohortActionTypes.REMOVED_BY_SOMEONE, {
+            cohortId
+          });
+      }
+    }
+
+    if (allCohortsClients.has(userId)) {
+      const { socketId } = allCohortsClients.get(userId);
+
+      socket.broadcast
+        .to(socketId)
+        .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
+    }
+  });
+
+const deleteCohort = (socket, allCohortsClients) =>
+  socket.on(CohortActionTypes.DELETE_SUCCESS, data => {
+    const { cohortId, members } = data;
+
+    removeCohort(socket, cohortId, allCohortsClients, members);
+  });
+
+const restoreCohort = (socket, allCohortsClients, cohortClients) =>
+  socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    Cohort.findById(cohortId)
+      .populate('memberIds', 'avatarUrl displayName _id')
+      .lean()
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { memberIds, ownerIds } = doc;
+          const cohortMetaData = responseWithCohort(doc);
+
+          ownerIds.forEach(id => {
+            const ownerId = id.toString();
+
+            if (cohortClients.has(ownerId)) {
+              const { socketId } = cohortClients.get(ownerId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(
+                  CohortActionTypes.FETCH_DETAILS_SUCCESS,
+                  responseWithCohortDetails(doc, ownerId)
+                );
+            }
+          });
+
+          memberIds.forEach(member => {
+            const { _id } = member;
+            const memberId = _id.toString();
+
+            if (allCohortsClients.has(memberId)) {
+              const { socketId } = allCohortsClients.get(memberId);
+
+              socket.broadcast
+                .to(socketId)
+                .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
+                  [cohortId]: cohortMetaData
+                });
+            }
+          });
+        }
+      });
+  });
+
 const createListCohort = (socket, dashboardClients) =>
   socket.on(ListActionTypes.CREATE_SUCCESS, data => {
     const { cohortId, _id: listId } = data;
 
     socket.broadcast
-      .to(`cohort-${cohortId}`)
+      .to(cohortChannel(cohortId))
       .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
         [listId]: { ...data }
       });
@@ -204,9 +342,13 @@ const createListCohort = (socket, dashboardClients) =>
 module.exports = {
   addCohortMember,
   addOwnerRoleInCohort,
+  archiveCohort,
+  deleteCohort,
   createListCohort,
   leaveCohort,
+  removeCohortMember,
   removeOwnerRoleInCohort,
+  restoreCohort,
   updateCohort,
   updateCohortHeaderStatus
 };
