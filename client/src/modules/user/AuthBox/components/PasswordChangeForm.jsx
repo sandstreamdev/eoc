@@ -3,13 +3,13 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import _some from 'lodash/some';
 
-import AuthInput from './AuthInput';
 import { changePassword } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise, validatePassword } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
+import AuthInput from './AuthInput';
 
 class PasswordChangeForm extends PureComponent {
   pendingPromise = null;
@@ -36,7 +36,7 @@ class PasswordChangeForm extends PureComponent {
   }
 
   componentDidUpdate() {
-    this.isFormValid();
+    this.validateForm();
   }
 
   componentWillUnmount() {
@@ -122,7 +122,7 @@ class PasswordChangeForm extends PureComponent {
     }
   };
 
-  isFormValid = () => {
+  validateForm = () => {
     const {
       higherLevelErrors,
       isNewPasswordValid,
