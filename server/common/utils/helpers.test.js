@@ -8,6 +8,7 @@ const {
   isValidMongoId,
   isViewer,
   responseWithCohort,
+  responseWithCohortDetails,
   responseWithCohortMember,
   responseWithCohortMembers,
   responseWithCohorts,
@@ -31,7 +32,9 @@ const {
   itemsMock
 } = require('../../tests/__mocks__/itemsMock');
 const {
+  cohortDetailsMock,
   cohortsMock,
+  expectedCohortDetailsProperties,
   expectedCohortMetaDataProperties
 } = require('../../tests/__mocks__/cohortsMock');
 const {
@@ -398,5 +401,22 @@ describe('function responseWithComment', () => {
     expectedCommentProperties.map(property =>
       expect(result).toHaveProperty(property)
     );
+  });
+});
+
+describe('function responseWithCohortDetails', () => {
+  const { _id: userId } = usersMock[0];
+  const result = responseWithCohortDetails(cohortDetailsMock, userId);
+
+  it('returns cohorts details with desired properties', () => {
+    expectedCohortDetailsProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
+  });
+
+  const notExpected = ['favIds', 'ownerIds', 'memberIds'];
+
+  it('returns cohorts details without sensitive data', () => {
+    notExpected.map(property => expect(result).not.toHaveProperty(property));
   });
 });
