@@ -7,7 +7,7 @@ const currentUser = (state = null, action) => {
     case AuthorizationActionTypes.LOGOUT_SUCCESS:
       return null;
     case AuthorizationActionTypes.FETCH_SUCCESS:
-      return { ...state, ...action.payload };
+      return { ...(state || {}), ...action.payload };
     default:
       return state;
   }
