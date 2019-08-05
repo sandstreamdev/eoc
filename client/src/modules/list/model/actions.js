@@ -632,18 +632,28 @@ export const leaveList = (
       });
     });
 
-export const lockListHeader = (listId, { nameLock, descriptionLock }) => {
+export const lockListHeader = (
+  listId,
+  userId,
+  { nameLock, descriptionLock }
+) => {
   socket.emit(ListHeaderStatusType.LOCK, {
     descriptionLock,
     listId,
-    nameLock
+    nameLock,
+    userId
   });
 };
 
-export const unlockListHeader = (listId, { nameLock, descriptionLock }) => {
+export const unlockListHeader = (
+  listId,
+  userId,
+  { nameLock, descriptionLock }
+) => {
   socket.emit(ListHeaderStatusType.UNLOCK, {
     descriptionLock,
     listId,
-    nameLock
+    nameLock,
+    userId
   });
 };

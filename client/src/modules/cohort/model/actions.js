@@ -199,8 +199,13 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
 
 export const deleteCohort = (cohortId, cohortName) => dispatch =>
   deleteData(`/api/cohorts/${cohortId}/delete`)
-    .then(() => {
-      dispatch(deleteCohortSuccess({ cohortId }));
+    .then(resp => resp.json())
+    .then(members => {
+      const action = deleteCohortSuccess({ cohortId });
+      const { type, payload } = action;
+
+      socket.emit(type, { ...payload, members });
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.delete-cohort',
         data: cohortName
@@ -223,7 +228,11 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
     isArchived: true
   })
     .then(() => {
-      dispatch(archiveCohortSuccess(cohortId));
+      const action = archiveCohortSuccess({ cohortId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.archive-cohort',
         data: cohortName
@@ -245,15 +254,12 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
     .then(() => getData(`/api/cohorts/${cohortId}/data`))
     .then(response => response.json())
     .then(json => {
-      const data = {
-        ...json,
-        members: _keyBy(json.members, '_id')
-      };
-      dispatch(restoreCohortSuccess({ data, _id: cohortId }));
+      dispatch(restoreCohortSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName
       });
+      socket.emit(CohortActionTypes.RESTORE_SUCCESS, { cohortId });
     })
     .catch(err => {
       dispatch(restoreCohortFailure());
@@ -266,14 +272,8 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
 
 export const fetchCohortDetails = cohortId => dispatch =>
   getData(`/api/cohorts/${cohortId}/data`)
-    .then(response => response.json())
-    .then(json => {
-      const data = {
-        ...json,
-        members: _keyBy(json.members, '_id')
-      };
-      dispatch(fetchCohortDetailsSuccess({ data, _id: cohortId }));
-    })
+    .then(resp => resp.json())
+    .then(json => dispatch(fetchCohortDetailsSuccess(json)))
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
         dispatch(fetchCohortDetailsFailure());

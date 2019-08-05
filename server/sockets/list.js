@@ -18,6 +18,8 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 const {
+  getListsDataByViewers,
+  getListIdsByViewers,
   listChannel,
   updateListOnDashboardAndCohortView
 } = require('./helpers');
@@ -251,21 +253,47 @@ const updateList = (socket, dashboardViewClients, cohortViewClients) => {
   });
 };
 
-const updateListHeaderState = socket => {
+const updateListHeaderState = (socket, listClientLocks) => {
   socket.on(ListHeaderStatusTypes.UNLOCK, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ListHeaderStatusTypes.UNLOCK, data);
+
+    if (listClientLocks.has(userId)) {
+      clearTimeout(listClientLocks.get(userId));
+      listClientLocks.delete(userId);
+    }
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ListHeaderStatusTypes.LOCK, data);
+
+    const delayedUnlock = setTimeout(() => {
+      const { listId, nameLock, descriptionLock } = data;
+      const updatedData = { listId };
+
+      if (nameLock !== undefined) {
+        updatedData.nameLock = false;
+      }
+
+      if (descriptionLock !== undefined) {
+        updatedData.descriptionLock = false;
+      }
+
+      socket.broadcast
+        .to(`sack-${listId}`)
+        .emit(ListHeaderStatusTypes.UNLOCK, updatedData);
+
+      listClientLocks.delete(userId);
+    }, 300000);
+
+    listClientLocks.set(userId, delayedUnlock);
   });
 };
 
@@ -805,6 +833,88 @@ const restoreList = (socket, dashboardClients, cohortClients, listClients) =>
       });
   });
 
+const removeListsOnArchiveCohort = (socket, dashboardClients) =>
+  socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    List.find({
+      cohortId
+    })
+      .lean()
+      .exec()
+      .then(docs => {
+        if (docs) {
+          const listIds = docs.map(list => list._id.toString());
+          const listsByViewers = getListIdsByViewers(docs);
+
+          listIds.forEach(listId => {
+            socket.broadcast
+              .to(listChannel(listId))
+              .emit(ListActionTypes.REMOVE_WHEN_COHORT_UNAVAILABLE, {
+                cohortId,
+                listId
+              });
+          });
+
+          Object.keys(listsByViewers).forEach(viewerId => {
+            if (dashboardClients.has(viewerId)) {
+              const { socketId } = dashboardClients.get(viewerId);
+              const listsToRemoved = listsByViewers[viewerId];
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.REMOVE_BY_IDS, listsToRemoved);
+            }
+          });
+        }
+      });
+  });
+
+const emitListsOnRestoreCohort = (socket, dashboardClients, cohortClients) =>
+  socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {
+    const { cohortId } = data;
+
+    List.find({ cohortId, isArchived: false })
+      .populate('cohortId', 'ownerIds')
+      .lean()
+      .exec()
+      .then(docs => {
+        if (docs) {
+          const {
+            cohortId: { ownerIds: cohortOwners }
+          } = docs[0];
+          const listsByUsers = getListsDataByViewers(docs);
+
+          cohortOwners.forEach(id => {
+            const cohortOwnerId = id.toString();
+
+            if (cohortClients.has(cohortOwnerId)) {
+              const { socketId, viewId } = cohortClients.get(cohortOwnerId);
+
+              if (viewId === cohortId) {
+                const listsToSend = listsByUsers[cohortOwnerId];
+
+                socket.broadcast
+                  .to(socketId)
+                  .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listsToSend);
+              }
+            }
+          });
+
+          Object.keys(listsByUsers).forEach(viewerId => {
+            if (dashboardClients.has(viewerId)) {
+              const { socketId } = dashboardClients.get(viewerId);
+              const listsToSend = listsByUsers[viewerId];
+
+              socket.broadcast
+                .to(socketId)
+                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listsToSend);
+            }
+          });
+        }
+      });
+  });
+
 module.exports = {
   addComment,
   addItemToList,
@@ -820,9 +930,11 @@ module.exports = {
   deleteItem,
   deleteList,
   emitListsOnAddCohortMember,
+  emitListsOnRestoreCohort,
   emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeListsOnArchiveCohort,
   removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,

@@ -24,9 +24,11 @@ const {
   deleteItem,
   deleteList,
   emitListsOnAddCohortMember,
+  emitListsOnRestoreCohort,
   emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
+  removeListsOnArchiveCohort,
   removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
@@ -41,10 +43,13 @@ const {
 const {
   addCohortMember,
   addOwnerRoleInCohort,
+  archiveCohort,
+  deleteCohort,
   createListCohort,
   leaveCohort,
   removeCohortMember,
   removeOwnerRoleInCohort,
+  restoreCohort,
   updateCohort,
   updateCohortHeaderStatus
 } = require('./cohort');
@@ -66,6 +71,7 @@ const socketListenTo = server => {
   const allCohortsViewClients = new Map();
   const dashboardViewClients = new Map();
   const listViewClients = new Map();
+  const listClientLocks = new Map();
 
   ioInstance.on('connection', socket => {
     const {
@@ -153,6 +159,7 @@ const socketListenTo = server => {
     deleteItem(socket);
     deleteList(socket, dashboardViewClients, cohortViewClients);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
     emitListsOnRemoveCohortMember(
       socket,
       dashboardViewClients,
@@ -160,6 +167,7 @@ const socketListenTo = server => {
     );
     emitRemoveMemberOnLeaveCohort(socket);
     leaveList(socket);
+    removeListsOnArchiveCohort(socket, dashboardViewClients);
     removeListMember(
       socket,
       dashboardViewClients,
@@ -179,14 +187,17 @@ const socketListenTo = server => {
     updateItem(socket);
     updateItemState(socket);
     updateList(socket, dashboardViewClients, cohortViewClients);
-    updateListHeaderState(socket);
+    updateListHeaderState(socket, listClientLocks);
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
+    archiveCohort(socket, allCohortsViewClients);
+    deleteCohort(socket, allCohortsViewClients);
     createListCohort(socket, dashboardViewClients);
     leaveCohort(socket, allCohortsViewClients);
     removeCohortMember(socket, allCohortsViewClients, cohortViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
+    restoreCohort(socket, allCohortsViewClients, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket);
   });
