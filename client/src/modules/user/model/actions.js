@@ -1,4 +1,9 @@
-import { getData, postData, postRequest } from 'common/utils/fetchMethods';
+import {
+  getData,
+  getJson,
+  postData,
+  postRequest
+} from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
@@ -117,9 +122,8 @@ export const updatePassword = (token, password, passwordConfirmation) =>
 export const resendRecoveryLink = token =>
   postData(`/auth/resend-recovery-link/${token}`);
 
-export const fetchUserDetails = userName => dispatch =>
-  getData('/auth/user-details')
-    .then(resp => resp.json())
+export const fetchUserDetails = () => dispatch =>
+  getJson('/auth/user-details')
     .then(json => dispatch(fetchUserDetailsSuccess(json)))
     .catch(() => {
       dispatch(fetchUserDetailsFailure());

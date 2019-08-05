@@ -1,6 +1,6 @@
 import _keyBy from 'lodash/keyBy';
 
-import { getData } from 'common/utils/fetchMethods';
+import { getJson } from 'common/utils/fetchMethods';
 import { ActivitiesActionTypes } from './actionTypes';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { MessageType as NotificationType } from 'common/constants/enums';
@@ -19,8 +19,7 @@ export const removeActivities = () => ({
 });
 
 export const fetchActivities = page => dispatch =>
-  getData(`/api/activities/data/${page}`)
-    .then(resp => resp.json())
+  getJson(`/api/activities/data/${page}`)
     .then(json => {
       const { activities, isNextPage, nextPage } = json;
       const activitiesData = _keyBy(activities, '_id');
