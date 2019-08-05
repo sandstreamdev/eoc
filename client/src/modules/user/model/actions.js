@@ -20,14 +20,14 @@ const logoutFailure = () => ({
   type: AuthorizationActionTypes.LOGOUT_FAILURE
 });
 
-const loginSuccess = data => ({
+const loginSuccess = payload => ({
   type: AuthorizationActionTypes.LOGIN_SUCCESS,
-  payload: data
+  payload
 });
 
-const fetchUserDetailsSuccess = data => ({
+const fetchUserDetailsSuccess = payload => ({
   type: AuthorizationActionTypes.FETCH_SUCCESS,
-  payload: data
+  payload
 });
 
 const fetchUserDetailsFailure = () => ({
