@@ -78,18 +78,15 @@ class ItemsList extends PureComponent {
   render() {
     const { archived, items } = this.props;
     const { limit } = this.state;
+    const messageId = archived
+      ? 'list.items-list.message-no-arch-items'
+      : 'list.items-list.message-no-items';
 
     return (
       <Fragment>
         {!items.length && (
           <MessageBox type={MessageType.INFO}>
-            <FormattedMessage
-              id={
-                archived
-                  ? 'list.items-list.message-no-arch-items'
-                  : 'list.items-list.message-no-items'
-              }
-            />
+            <FormattedMessage id={messageId} />
           </MessageBox>
         )}
         {this.renderItems()}
