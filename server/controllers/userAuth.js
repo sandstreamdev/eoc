@@ -381,7 +381,7 @@ const getUserDetails = (req, resp) => {
   return resp.sendStatus(400);
 };
 
-const changePassword = (req, resp) => {
+const changePassword = (req, res) => {
   const { password, newPassword, newPasswordConfirm } = req.body;
   const errors = {};
   const { email } = req.user;
@@ -390,7 +390,7 @@ const changePassword = (req, resp) => {
   errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
 
   if (_some(errors, error => error)) {
-    return resp.status(400).send(errors);
+    return res.status(400).send(errors);
   }
 
   User.findOne({ email }, 'password')
@@ -411,8 +411,8 @@ const changePassword = (req, resp) => {
         return doc.save();
       }
     })
-    .then(() => resp.send())
-    .catch(() => resp.sendStatus(400));
+    .then(() => res.send())
+    .catch(() => res.sendStatus(400));
 };
 
 module.exports = {
