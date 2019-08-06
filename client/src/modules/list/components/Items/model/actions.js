@@ -1,6 +1,11 @@
 import _keyBy from 'lodash/keyBy';
 
-import { getJson, patchData, postData } from 'common/utils/fetchMethods';
+import {
+  deleteData,
+  getJson,
+  patchData,
+  postData
+} from 'common/utils/fetchMethods';
 import {
   CommentActionTypes,
   ItemActionTypes,
@@ -358,10 +363,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
     });
 
 export const deleteItem = (listId, itemId, name) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item`, {
-    isDeleted: true,
-    itemId
-  })
+  deleteData(`/api/lists/${listId}/delete-item/${itemId}`)
     .then(() => {
       const action = deleteItemSuccess({ listId, itemId });
       const { type, payload } = action;

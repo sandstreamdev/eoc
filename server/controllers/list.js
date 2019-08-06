@@ -966,7 +966,6 @@ const updateListItem = (req, res) => {
     authorId,
     description,
     isArchived,
-    isDeleted,
     isOrdered,
     itemId,
     name
@@ -1029,11 +1028,6 @@ const updateListItem = (req, res) => {
         editedItemActivity = isArchived
           ? ActivityType.ITEM_ARCHIVE
           : ActivityType.ITEM_RESTORE;
-      }
-
-      if (isDeleted) {
-        itemToUpdate.isDeleted = isDeleted;
-        editedItemActivity = ActivityType.ITEM_DELETE;
       }
 
       return doc.save();
@@ -1224,6 +1218,45 @@ const getArchivedItems = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const deleteItem = (req, res) => {
+  const { id: listId, itemId } = req.params;
+  const { _id: userId } = req.user;
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+
+  List.findOne({
+    _id: sanitizedListId,
+    'items._id': sanitizedItemId,
+    memberIds: userId
+  })
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new BadRequestException();
+      }
+
+      const { items } = doc;
+      const itemToUpdate = items.id(sanitizedItemId);
+      const { name } = itemToUpdate;
+
+      itemToUpdate.isDeleted = true;
+
+      saveActivity(
+        ActivityType.ITEM_DELETE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        doc.cohortId,
+        null,
+        name
+      );
+
+      return doc.save();
+    })
+    .then(() => res.send())
+    .catch(() => res.sendStatus(400));
+};
+
 const leaveList = (req, resp) => {
   const { id: listId } = req.params;
   const { _id: userId } = req.user;
@@ -1290,6 +1323,7 @@ module.exports = {
   clearVote,
   cloneItem,
   createList,
+  deleteItem,
   deleteListById,
   getArchivedItems,
   getArchivedListsMetaData,
