@@ -78,10 +78,10 @@ describe('function responseWithList', () => {
     );
   });
 
-  it('returns list object without sensitive data', () => {
-    const notExpected = 'favIds';
+  it('returns list object without not expected data', () => {
+    const notExpected = ['favIds', 'isDeleted'];
 
-    expect(result).not.toHaveProperty(notExpected);
+    notExpected.map(property => expect(result).not.toHaveProperty(notExpected));
   });
 
   it('returns object with desired properties for cohort list', () => {
@@ -103,9 +103,9 @@ describe('function responseWithListsMetaData', () => {
     );
   });
 
-  const notExpected = ['favIds', 'items'];
+  const notExpected = ['favIds', 'items', 'isDeleted'];
 
-  it('returns list objects without sensitive data', () => {
+  it('returns list objects without not expected data', () => {
     lists.map(list =>
       notExpected.map(property => expect(list).not.toHaveProperty(property))
     );

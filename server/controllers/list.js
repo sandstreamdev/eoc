@@ -99,7 +99,10 @@ const deleteListById = (req, resp) => {
   const sanitizedListId = sanitize(listId);
   let list;
 
-  List.findOneAndDelete({ _id: sanitizedListId, ownerIds: userId })
+  List.findOneAndUpdate(
+    { _id: sanitizedListId, ownerIds: userId },
+    { isDeleted: true }
+  )
     .exec()
     .then(doc => {
       if (!doc) {
@@ -165,7 +168,8 @@ const getArchivedListsMetaData = (req, resp) => {
 
   const query = {
     $or: [{ ownerIds: userId }, { memberIds: userId }],
-    isArchived: true
+    isArchived: true,
+    isDeleted: false
   };
 
   if (cohortId) {
@@ -253,7 +257,8 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: sanitizedListId,
-    viewersIds: userId
+    viewersIds: userId,
+    isDeleted: false
   })
     .lean()
     .populate('viewersIds', 'avatarUrl displayName _id')

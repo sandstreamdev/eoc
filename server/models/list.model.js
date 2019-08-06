@@ -11,6 +11,7 @@ const ListSchema = new Schema(
     description: { type: String },
     favIds: [ObjectId],
     isArchived: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
     items: [ItemSchema],
     memberIds: [{ type: ObjectId, ref: 'User' }],
     name: { type: String, required: true },
