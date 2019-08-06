@@ -196,25 +196,27 @@ class ListItem extends PureComponent {
   lockItem = () => {
     const { nameLock, descriptionLock } = this.state;
     const {
+      currentUser: { id: userId },
       data: { _id: itemId },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    lockItem(itemId, listId, { nameLock, descriptionLock });
+    lockItem(itemId, listId, userId, { nameLock, descriptionLock });
   };
 
   unlockItem = () => {
     const { nameLock, descriptionLock } = this.state;
     const {
+      currentUser: { id: userId },
       data: { _id: itemId },
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    unlockItem(itemId, listId, { nameLock, descriptionLock });
+    unlockItem(itemId, listId, userId, { nameLock, descriptionLock });
   };
 
   renderConfirmation = () => {

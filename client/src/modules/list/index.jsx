@@ -141,13 +141,13 @@ class List extends Component {
   handleListArchivization = listId => () => {
     const {
       archiveList,
-      list: { isOwner, name }
+      list: { cohortId, isOwner, name }
     } = this.props;
 
     if (isOwner) {
       this.setState({ pendingForListArchivization: true });
 
-      archiveList(listId, name).catch(() => {
+      archiveList(listId, name, cohortId).catch(() => {
         this.setState({ pendingForListArchivization: false });
         this.hideDialog();
       });
@@ -215,7 +215,12 @@ class List extends Component {
       <Fragment>
         {this.renderBreadcrumbs()}
         {isArchived ? (
-          <ArchivedList isOwner={isOwner} listId={listId} name={name} />
+          <ArchivedList
+            cohortId={cohortId}
+            isOwner={isOwner}
+            listId={listId}
+            name={name}
+          />
         ) : (
           <div className="wrapper">
             <div className="list">

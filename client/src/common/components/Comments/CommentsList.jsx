@@ -4,7 +4,7 @@ import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
 import Comment from 'common/components/Comments/Comment';
@@ -15,7 +15,7 @@ import {
   addComment,
   fetchComments
 } from 'modules/list/components/Items/model/actions';
-import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
@@ -79,11 +79,7 @@ class CommentsList extends PureComponent {
   };
 
   render() {
-    const {
-      comments,
-      intl: { formatMessage },
-      isFormAccessible
-    } = this.props;
+    const { comments, isFormAccessible } = this.props;
     const { isNewCommentVisible, pending } = this.state;
 
     return (
@@ -114,12 +110,9 @@ class CommentsList extends PureComponent {
               ))}
             </ul>
           ) : (
-            <MessageBox
-              message={formatMessage({
-                id: 'common.comments-list.no-comments'
-              })}
-              type={MessageType.INFO}
-            />
+            <MessageBox type={MessageType.INFO}>
+              <FormattedMessage id="common.comments-list.no-comments" />
+            </MessageBox>
           )}
           {pending && <Preloader />}
         </div>
@@ -130,7 +123,6 @@ class CommentsList extends PureComponent {
 
 CommentsList.propTypes = {
   comments: PropTypes.objectOf(PropTypes.object),
-  intl: IntlPropType.isRequired,
   isFormAccessible: PropTypes.bool,
   itemId: PropTypes.string.isRequired,
   itemName: PropTypes.string.isRequired,
@@ -141,7 +133,6 @@ CommentsList.propTypes = {
 };
 
 export default _flowRight(
-  injectIntl,
   withRouter,
   connect(
     null,

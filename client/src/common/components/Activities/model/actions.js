@@ -5,9 +5,9 @@ import { ActivitiesActionTypes } from './actionTypes';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { MessageType as NotificationType } from 'common/constants/enums';
 
-const fetchActivitiesSuccess = (activities, isNextPage, nextPage) => ({
+const fetchActivitiesSuccess = payload => ({
   type: ActivitiesActionTypes.FETCH_SUCCESS,
-  payload: { activities, isNextPage, nextPage }
+  payload
 });
 
 const fetchActivitiesFailure = () => ({
@@ -22,8 +22,14 @@ export const fetchActivities = page => dispatch =>
   getJson(`/api/activities/data/${page}`)
     .then(json => {
       const { activities, isNextPage, nextPage } = json;
-      const activitiesData = _keyBy(activities, '_id');
-      dispatch(fetchActivitiesSuccess(activitiesData, isNextPage, nextPage));
+
+      dispatch(
+        fetchActivitiesSuccess({
+          activities: _keyBy(activities, '_id'),
+          isNextPage,
+          nextPage
+        })
+      );
     })
     .catch(() => {
       dispatch(fetchActivitiesFailure());

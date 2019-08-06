@@ -10,6 +10,7 @@ import {
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
 import { ListType } from 'modules/list/consts';
+import { filterDefined } from 'common/utils/helpers';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -23,8 +24,7 @@ const membersReducer = (state = {}, action) => {
 
       return { [_id]: viewer, ...state };
     }
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
-    case ListActionTypes.LEAVE_SUCCESS: {
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
         payload: { userId }
       } = action;
@@ -73,11 +73,22 @@ const membersReducer = (state = {}, action) => {
         [userId]: { ...state[userId], isOwner: false, isMember: false }
       };
     }
+    case ListActionTypes.MEMBER_UPDATE_SUCCESS: {
+      const {
+        payload: { userId, listId, isCurrentUserUpdated, ...data }
+      } = action;
+      const previousMember = state[userId];
+      const dataToUpdate = filterDefined(data);
+      const updatedMember = { ...previousMember, ...dataToUpdate };
+
+      return {
+        ...state,
+        [userId]: updatedMember
+      };
+    }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
-        payload: {
-          data: { members }
-        }
+        payload: { members }
       } = action;
 
       return members;
@@ -97,30 +108,25 @@ const lists = (state = {}, action) => {
       return { ...state, [action.payload._id]: { ...action.payload } };
     case ListActionTypes.DELETE_SUCCESS:
     case ListActionTypes.LEAVE_SUCCESS: {
-      const { [action.payload]: removed, ...newState } = state;
+      const { [action.payload.listId]: removed, ...newState } = state;
 
       return newState;
     }
     case ListActionTypes.UPDATE_SUCCESS: {
-      const { description, listId, name } = action.payload;
+      const { listId, ...data } = action.payload;
       const previousList = state[listId];
-      const {
-        name: previousName,
-        description: previousDescription
-      } = previousList;
-      const newDescription = name ? previousDescription : description;
+      const dataToUpdate = filterDefined(data);
 
       const updatedList = {
         ...previousList,
-        name: name || previousName,
-        description: newDescription
+        ...dataToUpdate
       };
 
       return { ...state, [listId]: updatedList };
     }
     case ListActionTypes.ARCHIVE_SUCCESS: {
       const { listId: _id, isArchived } = action.payload;
-      const { cohortId, name } = state[action.payload.listId];
+      const { cohortId, name } = state[_id];
       const archivedList = { cohortId, _id, isArchived, name };
 
       return { ...state, [action.payload.listId]: archivedList };
@@ -130,6 +136,15 @@ const lists = (state = {}, action) => {
       return { ...state, [action.payload.listId]: action.payload.data };
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
+    case ListActionTypes.REMOVE_BY_IDS: {
+      const { payload } = action;
+      const listsToRemove = new Set(payload);
+
+      return _keyBy(
+        _filter(state, list => !listsToRemove.has(list._id)),
+        '_id'
+      );
+    }
     case ListActionTypes.FAVOURITES_SUCCESS: {
       const {
         payload: { listId, isFavourite }
@@ -205,12 +220,25 @@ const lists = (state = {}, action) => {
 
       return { ...state, [listId]: list };
     }
+    case ListActionTypes.MEMBER_UPDATE_SUCCESS: {
+      const {
+        payload: { isCurrentUserUpdated, isGuest, listId }
+      } = action;
+      const { members } = state[listId];
+      const list = {
+        ...state[listId],
+        members: membersReducer(members, action)
+      };
+
+      if (isCurrentUserUpdated) {
+        list.isGuest = isGuest;
+      }
+
+      return { ...state, [listId]: list };
+    }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
-        payload: {
-          data: { type },
-          listId
-        }
+        payload: { type, listId }
       } = action;
       const { members } = state[listId];
 
@@ -223,6 +251,8 @@ const lists = (state = {}, action) => {
         }
       };
     }
+    case ListActionTypes.CLEAR_META_DATA_SUCCESS:
+      return {};
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
     case CohortActionTypes.LEAVE_SUCCESS: {

@@ -8,13 +8,12 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
 import history from 'common/utils/history';
+import { asyncTypes, enumerable } from 'common/utils/helpers';
 
-export const AuthorizationActionTypes = Object.freeze({
-  FETCH_SUCCESS: 'user/FETCH_SUCCESS',
-  LOGIN_FAILURE: 'user/LOGIN_FAILURE',
-  LOGIN_SUCCESS: 'user/LOGIN_SUCCESS',
-  LOGOUT_FAILURE: 'user/LOGOUT_FAILURE'
-});
+export const AuthorizationActionTypes = enumerable('user')(
+  ...asyncTypes('LOGIN'),
+  ...asyncTypes('LOGOUT')
+);
 
 const logoutFailure = () => ({
   type: AuthorizationActionTypes.LOGOUT_FAILURE
@@ -44,7 +43,7 @@ export const loginDemoUser = () => dispatch =>
     email: 'demo@example.com',
     password: 'demo'
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -67,7 +66,7 @@ export const resendConfirmationLink = hash =>
 
 export const signIn = (email, password) => dispatch =>
   postData('/auth/sign-in', { email, password })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -77,11 +76,11 @@ export const signIn = (email, password) => dispatch =>
 
 export const getLoggedUser = () => dispatch =>
   getData('/auth/user')
-    .then(resp => {
-      const contentType = resp.headers.get('content-type');
+    .then(response => {
+      const contentType = response.headers.get('content-type');
 
       if (contentType && contentType.includes('application/json')) {
-        return resp.json();
+        return response.json();
       }
     })
     .then(json => {

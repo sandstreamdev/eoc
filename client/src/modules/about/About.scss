@@ -1,15 +1,15 @@
 .about {
   &__intro {
-    margin-top: 5px;
+    margin-top: four-by(1);
     width: 100%;
     background: url('../../assets/images/hero-bg.png') bottom;
     background-size: auto 260px;
     background-repeat: no-repeat;
-    padding: 0 0 100px;
+    padding: 0 0 four-by(16);
 
     @include breakpoint($small) {
       background-size: auto 350px;
-      padding: 0 0 100px;
+      padding: 0 0 four-by(16);
     }
 
     @include breakpoint($medium) {
@@ -24,7 +24,7 @@
     text-align: center;
     font-size: 35px;
     max-width: 430px;
-    margin: 0 auto;
+    margin: four-by(4) auto;
 
     @include breakpoint($medium) {
       font-size: 45px;
@@ -41,11 +41,11 @@
     text-align: center;
     font-size: $m-font;
     line-height: 1.5;
-    margin: 40px 0 0;
+    margin: four-by(8) 0 0;
 
     @include breakpoint($medium) {
       font-size: 18px;
-      margin: 40px 0 50px;
+      margin: four-by(8) 0 four-by(8);
     }
   }
 
@@ -53,7 +53,7 @@
     position: relative;
     top: -1px;
     background: $orange-bg;
-    padding: 0 0 32px;
+    padding: 0 0 four-by(8);
     box-shadow: 0px 5px 5px $orange-bg;
   }
 
@@ -62,7 +62,7 @@
     line-height: 1.2;
     color: $text-white;
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: four-by(8);
   }
 
   &__content {
@@ -70,12 +70,12 @@
     line-height: 1.2;
     color: $text-white;
     letter-spacing: 0.3px;
-    margin-bottom: 20px;
+    margin-bottom: four-by(4);
   }
 
   &__cta {
-    padding: 32px 20px;
-    margin-bottom: 32px;
+    padding: four-by(8) four-by(4);
+    margin-bottom: four-by(8);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -90,7 +90,7 @@
     }
 
     @include breakpoint($large) {
-      margin-bottom: 50px;
+      margin-bottom: four-by(16);
     }
 
     a {
@@ -115,7 +115,7 @@
     line-height: 1.2;
     text-align: center;
     color: $text-normal;
-    margin-bottom: 16px;
+    margin-bottom: four-by(4);
   }
 
   &__article {

@@ -7,6 +7,7 @@ import {
   ListEvents,
   ListHeaderEvents
 } from './enums';
+import { cohortEventsController, listEventsController } from 'sockets/helpers';
 
 export const receiveEvents = (dispatch, socket) => {
   Object.values(ItemsEvents).forEach(event =>
@@ -22,11 +23,11 @@ export const receiveEvents = (dispatch, socket) => {
   );
 
   Object.values(ListEvents).forEach(event =>
-    socket.on(event, data => dispatch({ type: event, payload: data }))
+    socket.on(event, data => listEventsController(event, data, dispatch))
   );
 
   Object.values(CohortEvents).forEach(event =>
-    socket.on(event, data => dispatch({ type: event, payload: data }))
+    socket.on(event, data => cohortEventsController(event, data, dispatch))
   );
 
   Object.values(ListHeaderEvents).forEach(event =>

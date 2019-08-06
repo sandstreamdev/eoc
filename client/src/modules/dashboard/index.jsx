@@ -6,6 +6,7 @@ import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
 import {
+  clearMetaData,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
@@ -50,10 +51,12 @@ class Dashboard extends Component {
 
   componentWillUnmount() {
     const {
+      clearMetaData,
       currentUser: { id }
     } = this.props;
 
     leaveView(Routes.DASHBOARD, id);
+    clearMetaData();
   }
 
   handleDialogVisibility = () =>
@@ -194,6 +197,7 @@ Dashboard.propTypes = {
   privateLists: PropTypes.objectOf(PropTypes.object),
   viewType: PropTypes.string.isRequired,
 
+  clearMetaData: PropTypes.func.isRequired,
   createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
@@ -212,6 +216,7 @@ export default _flowRight(
   connect(
     mapStateToProps,
     {
+      clearMetaData,
       createList,
       fetchArchivedListsMetaData,
       fetchListsMetaData,

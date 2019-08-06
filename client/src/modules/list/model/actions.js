@@ -14,102 +14,95 @@ import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
 import { ListType } from 'modules/list/consts';
+import { cohortRoute, dashboardRoute } from 'common/utils/helpers';
 
-const fetchListDataFailure = errMessage => ({
-  type: ListActionTypes.FETCH_DATA_FAILURE,
-  payload: errMessage
+const fetchListDataFailure = () => ({
+  type: ListActionTypes.FETCH_DATA_FAILURE
 });
-const fetchListDataSuccess = (data, listId) => ({
+const fetchListDataSuccess = payload => ({
   type: ListActionTypes.FETCH_DATA_SUCCESS,
-  payload: { data, listId }
+  payload
 });
 
-const createListSuccess = data => ({
+const createListSuccess = payload => ({
   type: ListActionTypes.CREATE_SUCCESS,
-  payload: data
+  payload
 });
 
-const createListFailure = errMessage => ({
-  type: ListActionTypes.CREATE_FAILURE,
-  payload: errMessage
+const createListFailure = () => ({
+  type: ListActionTypes.CREATE_FAILURE
 });
 
-const deleteListSuccess = id => ({
+const deleteListSuccess = payload => ({
   type: ListActionTypes.DELETE_SUCCESS,
-  payload: id
+  payload
 });
 
-const deleteListFailure = errMessage => ({
-  type: ListActionTypes.DELETE_FAILURE,
-  payload: errMessage
+const deleteListFailure = () => ({
+  type: ListActionTypes.DELETE_FAILURE
 });
 
-const updateListSuccess = data => ({
+const updateListSuccess = payload => ({
   type: ListActionTypes.UPDATE_SUCCESS,
-  payload: data
+  payload
 });
 
-const updateListFailure = errMessage => ({
-  type: ListActionTypes.UPDATE_FAILURE,
-  payload: errMessage
+const updateListFailure = () => ({
+  type: ListActionTypes.UPDATE_FAILURE
 });
 
-const fetchListsMetaDataSuccess = data => ({
+const fetchListsMetaDataSuccess = payload => ({
   type: ListActionTypes.FETCH_META_DATA_SUCCESS,
-  payload: data
+  payload
 });
 
-const fetchListsMetaDataFailure = errMessage => ({
-  type: ListActionTypes.FETCH_META_DATA_FAILURE,
-  payload: errMessage
+const fetchListsMetaDataFailure = () => ({
+  type: ListActionTypes.FETCH_META_DATA_FAILURE
 });
 
-const fetchArchivedListsMetaDataSuccess = data => ({
+const fetchArchivedListsMetaDataSuccess = payload => ({
   type: ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS,
-  payload: data
+  payload
 });
 
-const fetchArchivedListsMetaDataFailure = errMessage => ({
-  type: ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE,
-  payload: errMessage
+const fetchArchivedListsMetaDataFailure = () => ({
+  type: ListActionTypes.FETCH_ARCHIVED_META_DATA_FAILURE
 });
 
-const archiveListSuccess = data => ({
+const archiveListSuccess = payload => ({
   type: ListActionTypes.ARCHIVE_SUCCESS,
-  payload: data
+  payload
 });
 
-const archiveListFailure = errMessage => ({
-  type: ListActionTypes.ARCHIVE_FAILURE,
-  payload: errMessage
+const archiveListFailure = () => ({
+  type: ListActionTypes.ARCHIVE_FAILURE
 });
 
-const restoreListSuccess = (data, listId) => ({
+const restoreListSuccess = payload => ({
   type: ListActionTypes.RESTORE_SUCCESS,
-  payload: { data, listId }
+  payload
 });
 
-const restoreListFailure = errMessage => ({
-  type: ListActionTypes.RESTORE_FAILURE,
-  payload: errMessage
+const restoreListFailure = () => ({
+  type: ListActionTypes.RESTORE_FAILURE
 });
 
 export const removeArchivedListsMetaData = () => ({
   type: ListActionTypes.REMOVE_ARCHIVED_META_DATA
 });
 
-const favouritesSuccess = data => ({
+const favouritesSuccess = payload => ({
   type: ListActionTypes.FAVOURITES_SUCCESS,
-  payload: data
+  payload
 });
 
 const favouritesFailure = () => ({
   type: ListActionTypes.FAVOURITES_FAILURE
 });
 
-const addViewerSuccess = data => ({
+const addViewerSuccess = payload => ({
   type: ListActionTypes.ADD_VIEWER_SUCCESS,
-  payload: data
+  payload
 });
 
 const addViewerFailure = () => ({
@@ -120,32 +113,32 @@ const removeMemberFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_FAILURE
 });
 
-const removeMemberSuccess = data => ({
+const removeMemberSuccess = payload => ({
   type: ListActionTypes.REMOVE_MEMBER_SUCCESS,
-  payload: data
+  payload
 });
 
-const addOwnerRoleSuccess = data => ({
+const addOwnerRoleSuccess = payload => ({
   type: ListActionTypes.ADD_OWNER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
 const addOwnerRoleFailure = () => ({
   type: ListActionTypes.ADD_OWNER_ROLE_FAILURE
 });
 
-const removeOwnerRoleSuccess = data => ({
+const removeOwnerRoleSuccess = payload => ({
   type: ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
 const removeOwnerRoleFailure = () => ({
   type: ListActionTypes.REMOVE_OWNER_ROLE_FAILURE
 });
 
-const addMemberRoleSuccess = data => ({
+const addMemberRoleSuccess = payload => ({
   type: ListActionTypes.ADD_MEMBER_ROLE_SUCCESS,
-  payload: data
+  payload
 });
 
 const addMemberRoleFailure = () => ({
@@ -161,33 +154,37 @@ const removeMemberRoleFailure = () => ({
   type: ListActionTypes.REMOVE_MEMBER_ROLE_FAILURE
 });
 
-const changeTypeSuccess = (listId, data) => ({
+const changeTypeSuccess = payload => ({
   type: ListActionTypes.CHANGE_TYPE_SUCCESS,
-  payload: { listId, data }
+  payload
 });
 
 const changeTypeFailure = () => ({
   type: ListActionTypes.CHANGE_TYPE_FAILURE
 });
 
-const leaveListSuccess = listId => ({
+const leaveListSuccess = payload => ({
   type: ListActionTypes.LEAVE_SUCCESS,
-  payload: listId
+  payload
 });
 
 const leaveListFailure = () => ({
   type: ListActionTypes.LEAVE_FAILURE
 });
 
+const clearMetaDataSuccess = () => ({
+  type: ListActionTypes.CLEAR_META_DATA_SUCCESS
+});
+
 export const fetchListData = listId => dispatch =>
   getJson(`/api/lists/${listId}/data`)
     .then(json => {
-      const listData = {
+      const data = {
         ...json,
         items: _keyBy(json.items, '_id'),
         members: _keyBy(json.members, '_id')
       };
-      dispatch(fetchListDataSuccess(listData, listId));
+      dispatch(fetchListDataSuccess({ data, listId }));
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
@@ -200,16 +197,23 @@ export const fetchListData = listId => dispatch =>
       throw err;
     });
 
-export const createList = data => dispatch =>
-  postData('/api/lists/create', data)
-    .then(resp => resp.json())
+export const createList = data => dispatch => {
+  const { type: listType } = data;
+
+  return postData('/api/lists/create', data)
+    .then(response => response.json())
     .then(json => {
-      dispatch(createListSuccess(json));
+      const action = createListSuccess(json);
+      const { type, payload } = action;
+
+      if (listType === ListType.SHARED) {
+        socket.emit(type, payload);
+      }
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.create-list',
         data: data.name
       });
-      socket.emit(ListActionTypes.CREATE_SUCCESS, { json });
     })
     .catch(() => {
       dispatch(createListFailure());
@@ -218,6 +222,7 @@ export const createList = data => dispatch =>
         data: data.name
       });
     });
+};
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
@@ -255,15 +260,19 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const deleteList = (id, listName) => dispatch =>
-  deleteData(`/api/lists/${id}/delete`)
+export const deleteList = (listId, listName, cohortId) => dispatch =>
+  deleteData(`/api/lists/${listId}/delete`)
     .then(() => {
-      dispatch(deleteListSuccess(id));
+      const action = deleteListSuccess({ listId, cohortId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.delete-list',
         data: listName
       });
-      history.replace('/dashboard');
+      history.replace(dashboardRoute());
     })
     .catch(() => {
       dispatch(deleteListFailure());
@@ -277,12 +286,15 @@ export const deleteList = (id, listName) => dispatch =>
 export const updateList = (listId, data, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, data)
     .then(() => {
-      dispatch(updateListSuccess({ ...data, listId }));
+      const action = updateListSuccess({ ...data, listId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.update-list',
         data: listName
       });
-      socket.emit(ListActionTypes.UPDATE_SUCCESS, { ...data, listId });
     })
     .catch(() => {
       dispatch(updateListFailure());
@@ -292,17 +304,22 @@ export const updateList = (listId, data, listName) => dispatch =>
       });
     });
 
-export const archiveList = (listId, listName) => dispatch =>
+export const archiveList = (listId, listName, cohortId) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
     .then(() => {
-      dispatch(archiveListSuccess({ isArchived: true, listId }));
+      const action = archiveListSuccess({ cohortId, isArchived: true, listId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.arch-list',
         data: listName
       });
-      history.replace('/dashboard');
+      const url = cohortId ? cohortRoute(cohortId) : dashboardRoute();
+      history.replace(url);
     })
     .catch(() => {
       dispatch(archiveListFailure());
@@ -318,12 +335,16 @@ export const restoreList = (listId, listName) => dispatch =>
   })
     .then(() => getJson(`/api/lists/${listId}/data`))
     .then(json => {
-      const listData = {
+      const data = {
         ...json,
         items: _keyBy(json.items, '_id'),
         members: _keyBy(json.members, '_id')
       };
-      dispatch(restoreListSuccess(listData, listId));
+      const action = restoreListSuccess({ data, listId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.restore-list',
         data: listName
@@ -375,13 +396,14 @@ export const addListViewer = (listId, email) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
       if (json._id) {
-        const data = { listId, viewer: json };
+        const action = addViewerSuccess({ listId, viewer: json });
+        const { type, payload } = action;
 
-        socket.emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
-        dispatch(addViewerSuccess(data));
+        socket.emit(type, payload);
+        dispatch(action);
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',
           data: json.displayName
@@ -417,6 +439,7 @@ export const removeListMember = (
         notificationId: 'list.actions.remove-member',
         data: userName
       });
+      socket.emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
     })
     .catch(() => {
       dispatch(removeMemberFailure());
@@ -432,14 +455,15 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
     userId
   })
     .then(() => {
-      socket.emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, { listId, userId });
-      dispatch(
-        addOwnerRoleSuccess({
-          isCurrentUserRoleChanging: false,
-          listId,
-          userId
-        })
-      );
+      const action = addOwnerRoleSuccess({
+        isCurrentUserRoleChanging: false,
+        listId,
+        userId
+      });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.owner-role',
         data: userName
@@ -463,13 +487,15 @@ export const removeOwnerRole = (
     userId
   })
     .then(() => {
-      socket.emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+      const action = removeOwnerRoleSuccess({
+        isCurrentUserRoleChanging,
         listId,
         userId
       });
-      dispatch(
-        removeOwnerRoleSuccess({ listId, userId, isCurrentUserRoleChanging })
-      );
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.no-owner-role',
         data: userName
@@ -493,11 +519,15 @@ export const addMemberRole = (
     userId
   })
     .then(() => {
-      socket.emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
+      const action = addMemberRoleSuccess({
+        isCurrentUserAnOwner,
         listId,
         userId
       });
-      dispatch(addMemberRoleSuccess({ listId, userId, isCurrentUserAnOwner }));
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.add-member-role',
         data: userName
@@ -521,13 +551,15 @@ export const removeMemberRole = (
     userId
   })
     .then(() => {
-      socket.emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+      const action = removeMemberRoleSuccess({
+        isCurrentUserAnOwner,
         listId,
         userId
       });
-      dispatch(
-        removeMemberRoleSuccess({ listId, userId, isCurrentUserAnOwner })
-      );
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.remove-member-role',
         data: userName
@@ -545,14 +577,17 @@ export const changeType = (listId, listName, type) => dispatch =>
   patchData(`/api/lists/${listId}/change-type`, {
     type
   })
-    .then(resp => resp.json())
+    .then(response => response.json())
     .then(json => {
-      const { data } = json;
       const listData = {
-        ...data,
-        members: _keyBy(data.members, '_id')
+        ...json,
+        members: _keyBy(json.members, '_id')
       };
-      dispatch(changeTypeSuccess(listId, listData));
+      const action = changeTypeSuccess({ listId, ...listData });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.change-type',
         data: listName
@@ -575,19 +610,19 @@ export const leaveList = (
 ) => dispatch =>
   patchData(`/api/lists/${listId}/leave`)
     .then(() => {
-      socket.emit(ListActionTypes.LEAVE_SUCCESS, { listId, userId });
-      dispatch(leaveListSuccess(listId));
+      const action = leaveListSuccess({ listId, userId });
+      const { type, payload } = action;
+
+      socket.emit(type, payload);
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.leave',
         data: userName
       });
-      history.replace(
-        `/${
-          cohortId && type === ListType.LIMITED
-            ? `cohort/${cohortId}`
-            : 'dashboard'
-        }`
-      );
+      const goToCohort = cohortId && type === ListType.LIMITED;
+      const url = goToCohort ? cohortRoute(cohortId) : dashboardRoute();
+
+      history.replace(url);
     })
     .catch(err => {
       dispatch(leaveListFailure());
@@ -597,18 +632,30 @@ export const leaveList = (
       });
     });
 
-export const lockListHeader = (listId, { nameLock, descriptionLock }) => {
+export const lockListHeader = (
+  listId,
+  userId,
+  { nameLock, descriptionLock }
+) => {
   socket.emit(ListHeaderStatusType.LOCK, {
     descriptionLock,
     listId,
-    nameLock
+    nameLock,
+    userId
   });
 };
 
-export const unlockListHeader = (listId, { nameLock, descriptionLock }) => {
+export const unlockListHeader = (
+  listId,
+  userId,
+  { nameLock, descriptionLock }
+) => {
   socket.emit(ListHeaderStatusType.UNLOCK, {
     descriptionLock,
     listId,
-    nameLock
+    nameLock,
+    userId
   });
 };
+
+export const clearMetaData = () => dispatch => dispatch(clearMetaDataSuccess());

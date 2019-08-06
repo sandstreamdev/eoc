@@ -14,23 +14,23 @@ export const ResponseStatusCode = Object.freeze({
   UNAUTHORIZED: 401
 });
 
-const handleFetchErrors = resp => {
-  if (resp.status === ResponseStatusCode.FORBIDDEN) {
+const handleFetchErrors = response => {
+  if (response.status === ResponseStatusCode.FORBIDDEN) {
     setTimeout(() => {
       window.location = '/';
     }, NOTIFICATION_TIMEOUT);
   }
 
-  if (resp.status === ResponseStatusCode.NOT_FOUND) {
+  if (response.status === ResponseStatusCode.NOT_FOUND) {
     history.replace('/page-not-found');
     throw new ResourceNotFoundException();
   }
 
-  if (resp.status === ResponseStatusCode.BAD_REQUEST) {
-    const contentType = resp.headers.get('content-type');
+  if (response.status === ResponseStatusCode.BAD_REQUEST) {
+    const contentType = response.headers.get('content-type');
 
     if (contentType.includes('application/json')) {
-      return resp.json().then(json => {
+      return response.json().then(json => {
         throw new Error(json.message || '');
       });
     }
@@ -38,11 +38,11 @@ const handleFetchErrors = resp => {
     throw new Error();
   }
 
-  if (resp.status === ResponseStatusCode.UNAUTHORIZED) {
-    const contentType = resp.headers.get('content-type');
+  if (response.status === ResponseStatusCode.UNAUTHORIZED) {
+    const contentType = response.headers.get('content-type');
 
     if (contentType.includes('application/json')) {
-      return resp.json().then(json => {
+      return response.json().then(json => {
         throw new UnauthorizedException(json.message || '');
       });
     }
@@ -50,23 +50,26 @@ const handleFetchErrors = resp => {
     throw new UnauthorizedException();
   }
 
-  if (resp.status === ResponseStatusCode.NOT_ACCEPTABLE) {
-    const contentType = resp.headers.get('content-type');
+  if (response.status === ResponseStatusCode.NOT_ACCEPTABLE) {
+    const contentType = response.headers.get('content-type');
 
     if (contentType.includes('application/json')) {
-      return resp.json().then(json => {
-        throw new ValidationException('', json);
+      return response.json().then(json => {
+        throw new ValidationException('', json.errors);
       });
     }
 
     throw new ValidationException();
   }
 
-  if (resp.status > ResponseStatusCode.BAD_REQUEST && resp.status < 600) {
+  if (
+    response.status > ResponseStatusCode.BAD_REQUEST &&
+    response.status < 600
+  ) {
     throw new Error();
   }
 
-  return resp;
+  return response;
 };
 
 export const getData = url =>
