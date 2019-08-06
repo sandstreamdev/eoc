@@ -12,7 +12,6 @@ const {
   cloneItem,
   createList,
   deleteItem,
-  deleteListById,
   getArchivedItems,
   getArchivedListsMetaData,
   getListData,
@@ -33,7 +32,6 @@ router.get('/meta-data/:cohortId?', authorize, getListsMetaData);
 router.get('/archived/:cohortId?', authorize, getArchivedListsMetaData);
 router.post('/create', authorize, createList);
 router.post('/add-item', authorize, addItemToList);
-router.delete('/:id/delete', authorize, deleteListById);
 router.patch('/:id/update', authorize, updateListById);
 router.get('/:id/data', authorize, getListData);
 router.patch('/:id/set-vote', authorize, voteForItem);
