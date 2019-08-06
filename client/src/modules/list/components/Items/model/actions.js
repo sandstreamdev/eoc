@@ -321,9 +321,9 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
 export const fetchArchivedItems = (listId, listName) => dispatch =>
   getJson(`/api/lists/${listId}/archived-items`)
     .then(json => {
-      const dataMap = _keyBy(json, '_id');
+      const data = _keyBy(json, '_id');
 
-      dispatch(fetchArchivedItemsSuccess({ listId, data: dataMap }));
+      dispatch(fetchArchivedItemsSuccess({ listId, data }));
     })
     .catch(() => {
       dispatch(fetchArchivedItemsFailure());

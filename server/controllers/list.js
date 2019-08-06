@@ -1031,7 +1031,7 @@ const updateListItem = (req, res) => {
           : ActivityType.ITEM_RESTORE;
       }
 
-      if (isDeleted !== undefined) {
+      if (isDeleted) {
         itemToUpdate.isDeleted = isDeleted;
         editedItemActivity = ActivityType.ITEM_DELETE;
       }
@@ -1216,9 +1216,8 @@ const getArchivedItems = (req, resp) => {
       }
 
       const { items } = list;
-      const archivedItems = items.filter(
-        item => item.isArchived && !item.isDeleted
-      );
+      const activeItems = items.filter(item => !item.isDeleted);
+      const archivedItems = activeItems.filter(item => item.isArchived);
 
       resp.send(responseWithItems(userId, archivedItems));
     })
