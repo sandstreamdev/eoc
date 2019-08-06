@@ -107,3 +107,5 @@ export const deleteData = url =>
     credentials: 'include',
     method: 'DELETE'
   }).then(handleFetchErrors);
+
+export const getJson = url => getData(url).then(response => response.json());

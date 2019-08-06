@@ -1,6 +1,6 @@
 import _keyBy from 'lodash/keyBy';
 
-import { getData, patchData, postData } from 'common/utils/fetchMethods';
+import { getJson, patchData, postData } from 'common/utils/fetchMethods';
 import {
   CommentActionTypes,
   ItemActionTypes,
@@ -281,8 +281,7 @@ export const addComment = (listId, itemId, text) => dispatch =>
     });
 
 export const fetchComments = (itemName, listId, itemId) => dispatch =>
-  getData(`/api/comments/${listId}/${itemId}/data`)
-    .then(response => response.json())
+  getJson(`/api/comments/${listId}/${itemId}/data`)
     .then(json => {
       const comments = _keyBy(json, '_id');
       dispatch(fetchCommentsSuccess({ listId, itemId, comments }));
@@ -320,8 +319,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
     });
 
 export const fetchArchivedItems = (listId, listName) => dispatch =>
-  getData(`/api/lists/${listId}/archived-items`)
-    .then(response => response.json())
+  getJson(`/api/lists/${listId}/archived-items`)
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedItemsSuccess({ listId, dataMap }));

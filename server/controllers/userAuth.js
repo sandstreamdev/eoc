@@ -7,6 +7,7 @@ const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const User = require('../models/user.model');
+const { validatePassword } = require('../common/utils/userUtils');
 
 const sendUser = (req, resp) => {
   const { avatarUrl, _id: id, displayName: name } = req.user;
@@ -28,7 +29,7 @@ const signUp = (req, resp, next) => {
   const sanitizedEmail = sanitize(email);
   const sanitizedUsername = sanitize(username);
   const errors = {};
-  const { isEmail, isLength, matches } = validator;
+  const { isEmail, isLength } = validator;
 
   if (!isLength(sanitizedUsername, { min: 1, max: 32 })) {
     errors.nameError = true;
@@ -38,7 +39,7 @@ const signUp = (req, resp, next) => {
     errors.emailError = true;
   }
 
-  if (!matches(password, /^[^\s]{4,32}$/)) {
+  if (!validatePassword(password)) {
     errors.passwordError = true;
   }
 
@@ -81,7 +82,7 @@ const signUp = (req, resp, next) => {
         }
 
         throw new BadRequestException(
-          'authorization.actions.sign-up.user-already-exist'
+          'user.actions.sign-up.user-already-exist'
         );
       }
 
@@ -254,15 +255,16 @@ const recoveryPassword = (req, resp) => {
 
 const updatePassword = (req, resp) => {
   const { password: updatedPassword, passwordConfirmation } = req.body;
-  const { matches } = validator;
   const { token } = req.params;
 
   const sanitizedToken = sanitize(token);
-  const validationError = !matches(updatedPassword, /^[^\s]{4,32}$/);
-  const passwordsNoMatch =
-    _trim(updatedPassword) !== _trim(passwordConfirmation);
+  const trimmedPassword = _trim(updatedPassword);
+  const trimmedPasswordConfirmation = _trim(passwordConfirmation);
 
-  if (validationError || passwordsNoMatch) {
+  if (
+    !validatePassword(updatedPassword) ||
+    trimmedPassword !== trimmedPasswordConfirmation
+  ) {
     return resp.sendStatus(400);
   }
 
@@ -335,7 +337,7 @@ const resendRecoveryLink = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error('authorization.actions.reset');
+        throw new Error('user.actions.reset');
       }
       const { isActive } = user;
 
@@ -365,9 +367,59 @@ const resendRecoveryLink = (req, resp, next) => {
     });
 };
 
+const getUserDetails = (req, resp) => {
+  const { user } = req;
+
+  if (user) {
+    const { activatedAt, createdAt, email, password } = user;
+    const activationDate = activatedAt || createdAt;
+    const isPasswordSet = password !== undefined;
+
+    return resp.send({ activationDate, email, isPasswordSet });
+  }
+
+  return resp.sendStatus(400);
+};
+
+const changePassword = (req, res) => {
+  const { password, newPassword, newPasswordConfirm } = req.body;
+  const errors = {};
+  const { email } = req.user;
+
+  errors.isNewPasswordError = !validatePassword(newPassword);
+  errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
+
+  if (_some(errors, error => error)) {
+    return res.status(400).send(errors);
+  }
+
+  User.findOne({ email }, 'password')
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new Error();
+      }
+
+      const { password: dbPassword } = doc;
+
+      if (bcrypt.compareSync(password + email, dbPassword)) {
+        const newHashedPassword = bcrypt.hashSync(newPassword + email, 12);
+
+        // eslint-disable-next-line no-param-reassign
+        doc.password = newHashedPassword;
+
+        return doc.save();
+      }
+    })
+    .then(() => res.send())
+    .catch(() => res.sendStatus(400));
+};
+
 module.exports = {
+  changePassword,
   confirmEmail,
   getLoggedUser,
+  getUserDetails,
   logout,
   recoveryPassword,
   resendRecoveryLink,

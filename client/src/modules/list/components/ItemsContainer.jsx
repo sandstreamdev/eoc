@@ -9,8 +9,8 @@ import ItemsList from 'modules/list/components/Items';
 import SortBox from 'common/components/SortBox';
 import { SortOrderType } from 'common/constants/enums';
 import FilterBox from 'modules/list/components/FilterBox';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
-import { IntlPropType } from 'common/constants/propTypes';
+import { getCurrentUser } from 'modules/user/model/selectors';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 
 const SortOptionType = Object.freeze({
   NAME: 'name',
@@ -156,7 +156,7 @@ class ItemsContainer extends Component {
 ItemsContainer.propTypes = {
   archived: PropTypes.bool,
   children: PropTypes.node,
-  currentUser: PropTypes.objectOf(PropTypes.string).isRequired,
+  currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),

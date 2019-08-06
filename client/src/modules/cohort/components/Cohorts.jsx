@@ -16,7 +16,7 @@ import {
   getActiveCohorts,
   getArchivedCohorts
 } from 'modules/cohort/model/selectors';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';

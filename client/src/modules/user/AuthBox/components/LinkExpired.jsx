@@ -8,7 +8,7 @@ import { PreloaderTheme } from 'common/components/Preloader';
 import {
   resendConfirmationLink,
   resendRecoveryLink
-} from 'modules/authorization/model/actions';
+} from 'modules/user/model/actions';
 import { Routes } from 'common/constants/enums';
 
 class LinkExpired extends PureComponent {
@@ -48,7 +48,7 @@ class LinkExpired extends PureComponent {
 
   renderSuccessMessage = () => (
     <p className="link-expired__confirmation">
-      <FormattedMessage id="authorization.sign-up.confirmation-link-resent" />
+      <FormattedMessage id="user.actions.sign-up.confirmation-link-resent" />
     </p>
   );
 
@@ -58,8 +58,8 @@ class LinkExpired extends PureComponent {
     } = this.props;
     const messageId =
       url === `/${Routes.CONFIRMATION_LINK_EXPIRED}`
-        ? 'authorization.sign-up.result-failed'
-        : 'authorization.link-expired.recovery-expired';
+        ? 'user.actions.sign-up.result-failed'
+        : 'user.actions.link-expired.recovery-expired';
 
     return (
       <Fragment>
@@ -73,7 +73,7 @@ class LinkExpired extends PureComponent {
             preloaderTheme={PreloaderTheme.LIGHT}
             type="button"
           >
-            <FormattedMessage id="authorization.sign-up.button.resend-link" />
+            <FormattedMessage id="user.auth.sign-up.button.resend-link" />
           </PendingButton>
         </div>
       </Fragment>

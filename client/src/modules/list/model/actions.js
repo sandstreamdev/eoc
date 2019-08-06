@@ -2,7 +2,7 @@ import _keyBy from 'lodash/keyBy';
 
 import {
   deleteData,
-  getData,
+  getJson,
   patchData,
   postData
 } from 'common/utils/fetchMethods';
@@ -177,8 +177,7 @@ const clearMetaDataSuccess = () => ({
 });
 
 export const fetchListData = listId => dispatch =>
-  getData(`/api/lists/${listId}/data`)
-    .then(response => response.json())
+  getJson(`/api/lists/${listId}/data`)
     .then(json => {
       const data = {
         ...json,
@@ -230,8 +229,7 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
     ? `/api/lists/meta-data/${cohortId}`
     : '/api/lists/meta-data';
 
-  return getData(url)
-    .then(response => response.json())
+  return getJson(url)
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchListsMetaDataSuccess(dataMap));
@@ -249,8 +247,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     ? `/api/lists/archived/${cohortId}`
     : '/api/lists/archived';
 
-  return getData(url)
-    .then(response => response.json())
+  return getJson(url)
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedListsMetaDataSuccess(dataMap));
@@ -336,8 +333,7 @@ export const restoreList = (listId, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: false
   })
-    .then(() => getData(`/api/lists/${listId}/data`))
-    .then(response => response.json())
+    .then(() => getJson(`/api/lists/${listId}/data`))
     .then(json => {
       const data = {
         ...json,

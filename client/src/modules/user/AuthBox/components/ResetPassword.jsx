@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { resetPassword } from '../model/actions';
+import { resetPassword } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 
@@ -56,11 +56,11 @@ class ResetPassword extends PureComponent {
     return (
       <form className="reset-password" onSubmit={this.handleSubmit}>
         <h2 className="reset-password__heading">
-          <FormattedMessage id="authorization.reset-password.heading" />
+          <FormattedMessage id="user.auth.reset-password.heading" />
         </h2>
         <div className="reset-password__body">
           <label className="reset-password__email-label">
-            <FormattedMessage id="authorization.reset-password.email-label" />
+            <FormattedMessage id="user.auth.reset-password.email-label" />
             <input
               className="reset-password__email-input primary-input"
               disabled={pending}
@@ -71,7 +71,7 @@ class ResetPassword extends PureComponent {
           </label>
           {tipVisible && (
             <span className="reset-password__message-error">
-              <FormattedMessage id="authorization.input.email.invalid" />
+              <FormattedMessage id="user.auth.input.email.invalid" />
             </span>
           )}
           <PendingButton
@@ -80,7 +80,7 @@ class ResetPassword extends PureComponent {
             onClick={this.handleSubmit}
             preloaderTheme={PreloaderTheme.LIGHT}
           >
-            <FormattedMessage id="authorization.reset-password.button-content" />
+            <FormattedMessage id="user.auth.reset-password.button-content" />
           </PendingButton>
         </div>
       </form>

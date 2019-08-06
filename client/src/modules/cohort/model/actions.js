@@ -3,7 +3,7 @@ import _keyBy from 'lodash/keyBy';
 import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
 import {
   deleteData,
-  getData,
+  getJson,
   patchData,
   postData
 } from 'common/utils/fetchMethods';
@@ -153,8 +153,7 @@ export const createCohort = data => dispatch =>
     });
 
 export const fetchCohortsMetaData = () => dispatch =>
-  getData('/api/cohorts/meta-data')
-    .then(response => response.json())
+  getJson('/api/cohorts/meta-data')
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchCohortsMetaDataSuccess(dataMap));
@@ -167,8 +166,7 @@ export const fetchCohortsMetaData = () => dispatch =>
     });
 
 export const fetchArchivedCohortsMetaData = () => dispatch =>
-  getData('/api/cohorts/archived')
-    .then(response => response.json())
+  getJson('/api/cohorts/archived')
     .then(json => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedCohortsMetaDataSuccess(dataMap));
@@ -255,8 +253,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: false
   })
-    .then(() => getData(`/api/cohorts/${cohortId}/data`))
-    .then(response => response.json())
+    .then(() => getJson(`/api/cohorts/${cohortId}/data`))
     .then(json => {
       dispatch(restoreCohortSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -275,8 +272,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
     });
 
 export const fetchCohortDetails = cohortId => dispatch =>
-  getData(`/api/cohorts/${cohortId}/data`)
-    .then(resp => resp.json())
+  getJson(`/api/cohorts/${cohortId}/data`)
     .then(json => dispatch(fetchCohortDetailsSuccess(json)))
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {

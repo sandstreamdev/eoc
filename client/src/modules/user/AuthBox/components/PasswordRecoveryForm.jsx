@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import validator from 'validator';
 import _flowRight from 'lodash/flowRight';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
-import { updatePassword } from '../model/actions';
+import { updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
+import { validatePassword } from 'common/utils/helpers';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -28,7 +28,7 @@ class PasswordRecoveryForm extends PureComponent {
       pending: false
     };
 
-    this.debouncedPasswordValidation = _debounce(this.validatePassword, 500);
+    this.debouncedPasswordValidation = _debounce(this.passwordValidator, 500);
     this.debouncedComparePasswords = _debounce(this.comparePasswords, 500);
   }
 
@@ -87,11 +87,10 @@ class PasswordRecoveryForm extends PureComponent {
     });
   };
 
-  validatePassword = password => {
+  passwordValidator = password => {
     const { errors } = this.state;
-    const { matches } = validator;
 
-    if (matches(password, /^[^\s]{4,32}$/)) {
+    if (validatePassword(password)) {
       this.setState(
         {
           errors: {
@@ -107,7 +106,7 @@ class PasswordRecoveryForm extends PureComponent {
         {
           errors: {
             ...errors,
-            passwordError: 'authorization.input.password.invalid'
+            passwordError: 'user.auth.input.password.invalid'
           },
           passwordSuccess: false
         },
@@ -131,7 +130,7 @@ class PasswordRecoveryForm extends PureComponent {
       this.setState({
         errors: {
           ...errors,
-          comparePasswordsError: 'authorization.input.password.not-match'
+          comparePasswordsError: 'user.auth.input.password.not-match'
         },
         passwordConfirmationSuccess: false
       });
@@ -165,12 +164,12 @@ class PasswordRecoveryForm extends PureComponent {
     return (
       <form className="pass-recovery-form" onSubmit={this.handleSubmit}>
         <h2 className="pass-recovery-form__heading">
-          <FormattedMessage id="authorization.pass-recovery-form.heading" />
+          <FormattedMessage id="user.auth.pass-recovery-form.heading" />
         </h2>
         <div className="pass-recovery-form__body">
           <ValidationInput
             errorId={passwordError}
-            label={formatMessage({ id: 'authorization.input.password.label' })}
+            label={formatMessage({ id: 'user.password' })}
             onChange={this.handlePasswordChange}
             success={passwordSuccess}
             type="password"
@@ -179,7 +178,7 @@ class PasswordRecoveryForm extends PureComponent {
           <ValidationInput
             errorId={comparePasswordsError}
             label={formatMessage({
-              id: 'authorization.input.password.confirm'
+              id: 'user.auth.input.password.confirm'
             })}
             onChange={this.handlePasswordConfirmationChange}
             success={passwordConfirmationSuccess}

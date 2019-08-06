@@ -1,4 +1,9 @@
-import { getData, postData, postRequest } from 'common/utils/fetchMethods';
+import {
+  getData,
+  getJson,
+  postData,
+  postRequest
+} from 'common/utils/fetchMethods';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
@@ -19,6 +24,15 @@ const loginSuccess = payload => ({
   payload
 });
 
+const fetchUserDetailsSuccess = payload => ({
+  type: AuthorizationActionTypes.FETCH_SUCCESS,
+  payload
+});
+
+const fetchUserDetailsFailure = () => ({
+  type: AuthorizationActionTypes.FETCH_FAILURE
+});
+
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
     .then(() => window.location.reload())
@@ -33,7 +47,7 @@ export const loginDemoUser = () => dispatch =>
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'authorization.actions.login'
+        notificationId: 'user.actions.login'
       });
     });
 
@@ -56,7 +70,7 @@ export const signIn = (email, password) => dispatch =>
     .then(json => {
       dispatch(loginSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'authorization.actions.login'
+        notificationId: 'user.actions.login'
       });
     });
 
@@ -79,7 +93,7 @@ export const resetPassword = email => dispatch =>
   postData('/auth/reset-password', { email })
     .then(() => {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'authorization.actions.reset',
+        notificationId: 'user.actions.reset',
         data: email
       });
     })
@@ -92,8 +106,7 @@ export const resetPassword = email => dispatch =>
         dispatch,
         err.message ? NotificationType.ERROR_NO_RETRY : NotificationType.ERROR,
         {
-          notificationId:
-            'authorization.actions.recovery-password-default-error',
+          notificationId: 'user.actions.recovery-password-default-error',
           data: email
         }
       );
@@ -107,3 +120,20 @@ export const updatePassword = (token, password, passwordConfirmation) =>
 
 export const resendRecoveryLink = token =>
   postData(`/auth/resend-recovery-link/${token}`);
+
+export const fetchUserDetails = () => dispatch =>
+  getJson('/auth/user-details')
+    .then(json => dispatch(fetchUserDetailsSuccess(json)))
+    .catch(() => {
+      dispatch(fetchUserDetailsFailure());
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'user.actions.fetch-user-details-error'
+      });
+    });
+
+export const changePassword = (password, newPassword, newPasswordConfirm) =>
+  postData('/auth/change-password', {
+    password,
+    newPassword,
+    newPasswordConfirm
+  });

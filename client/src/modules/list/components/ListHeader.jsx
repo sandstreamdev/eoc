@@ -26,7 +26,7 @@ import { ListType } from '../consts';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
 import Dialog from 'common/components/Dialog';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { getCurrentUser } from 'modules/user/model/selectors';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -351,7 +351,7 @@ class ListHeader extends PureComponent {
       >
         <ListIcon />
         {isNameInputVisible && !nameLock ? (
-          <Fragment>
+          <div className="list-header__name-input">
             <NameInput
               disabled={pendingForName || nameLock}
               name={nameInputValue}
@@ -364,7 +364,7 @@ class ListHeader extends PureComponent {
             {isTipVisible && (
               <p className="error-message">Name can not be empty</p>
             )}
-          </Fragment>
+          </div>
         ) : (
           <h1
             className={classNames('list-header__heading', {

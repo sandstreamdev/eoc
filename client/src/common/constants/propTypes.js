@@ -10,8 +10,11 @@ export const RouterMatchPropType = PropTypes.shape({
   })
 });
 export const UserPropType = PropTypes.shape({
+  activationDate: PropTypes.string,
   avatarUrl: PropTypes.string,
+  email: PropTypes.string,
   id: PropTypes.string.isRequired,
+  isPasswordSet: PropTypes.bool,
   name: PropTypes.string.isRequired
 });
 

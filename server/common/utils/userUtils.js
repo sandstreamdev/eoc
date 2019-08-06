@@ -106,9 +106,12 @@ const removeDemoUserData = id =>
     .then(() => User.deleteOne({ _id: id }).exec())
     .then(() => User.deleteMany({ provider: `demo-${id}` }).exec());
 
+const validatePassword = value => value.match(/^[^\s]{4,32}$/);
+
 module.exports = {
   extractUserProfile,
   findAndAuthenticateUser,
   findOrCreateUser,
-  removeDemoUserData
+  removeDemoUserData,
+  validatePassword
 };

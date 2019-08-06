@@ -20,6 +20,8 @@ export const makeAbortablePromise = promise => {
 
 export const dateFromString = string => new Date(string).toLocaleString();
 
+export const validatePassword = value => value.match(/^[^\s]{4,32}$/);
+
 export const routeGenerator = (route, param = null) =>
   `/${route}${param ? `/${param}` : ''}`;
 

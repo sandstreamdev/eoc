@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
-import { logoutCurrentUser } from 'modules/authorization/model/actions';
-import { getCurrentUser } from 'modules/authorization/model/selectors';
+import { logoutCurrentUser } from 'modules/user/model/actions';
+import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { LogoutIcon, UserIcon, CohortIcon } from 'assets/images/icons';
 import Avatar from 'common/components/Avatar';
@@ -28,18 +29,28 @@ class UserBar extends Component {
 
   renderUserBarMenu = () => {
     const {
-      currentUser: { name }
+      currentUser: { avatarUrl, name }
     } = this.props;
 
     return (
       <ul className="user-bar__menu">
         <li className="user-bar__menu-item">
-          {`Logged as:  ${name}`}
-          <UserIcon />
+          {name}
+          <Avatar
+            avatarUrl={avatarUrl}
+            className="user-bar__avatar"
+            name={name}
+          />
+        </li>
+        <li className="user-bar__menu-item">
+          <Link to="/user-profile">
+            <FormattedMessage id="user.profile" />
+            <UserIcon />
+          </Link>
         </li>
         <li className="user-bar__menu-item">
           <Link to="/cohorts">
-            My cohorts
+            <FormattedMessage id="app.user-bar.my-cohorts" />
             <CohortIcon />
           </Link>
         </li>
@@ -49,7 +60,7 @@ class UserBar extends Component {
             onClick={this.handleLogOut}
             type="button"
           >
-            Logout
+            <FormattedMessage id="app.user-bar.logout" />
             <LogoutIcon />
           </button>
         </li>

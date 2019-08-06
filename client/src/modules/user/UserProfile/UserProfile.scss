@@ -1,0 +1,136 @@
+.user-profile {
+  width: 100%;
+  margin: 26px auto;
+  color: $text-normal;
+  $font-size: $m-font;
+
+  @include breakpoint($large) {
+    width: 60%;
+  }
+
+  &__header {
+    font-size: $xxl-font;
+    margin-bottom: 24px;
+    color: $text-dark;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__avatar {
+      height: 80px;
+    }
+
+    span {
+      margin-bottom: 4px;
+    }
+  }
+
+  &__data-container {
+    margin-bottom: 48px;
+  }
+
+  &__data-list {
+    overflow: hidden;
+  }
+
+  &__data-header {
+    font-size: $xl-font;
+    font-weight: 500;
+    color: $text-dark;
+    margin-bottom: 8px;
+  }
+
+  &__data-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    background-color: $bg-color;
+    border-bottom: 1px solid $border-color;
+    padding: 8px;
+    height: 50px;
+    overflow: hidden;
+
+    @include breakpoint($small) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &--clickable {
+      &::before {
+        position: absolute;
+        left: 50%;
+        bottom: 2px;
+        content: '';
+        height: 16px;
+        width: 16px;
+        z-index: 3;
+        cursor: pointer;
+      }
+
+      &:hover {
+        cursor: pointer;
+        &::before {
+          display: block;
+        }
+      }
+
+      &--form-visible {
+        border: 0;
+
+        &::before {
+          display: none;
+          background: url('../../assets/images/chevron-up-solid.svg') no-repeat
+            center;
+        }
+      }
+
+      &--form-not-visible {
+        &:hover {
+          background-color: $hover-gray-bg;
+        }
+        &::before {
+          display: none;
+          background: url('../../assets/images/chevron-down-solid.svg')
+            no-repeat center;
+        }
+      }
+    }
+  }
+
+  &__photo {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__data-name {
+    text-transform: uppercase;
+    font-size: $s-font;
+    margin-bottom: 4px;
+  }
+
+  &__data-value {
+    color: $text-dark;
+    font-weight: 500;
+    font-size: $s-font;
+
+    @include breakpoint($xsmall) {
+      font-size: $m-font;
+    }
+  }
+
+  &__avatar {
+    height: 40px;
+  }
+
+  &__update-password {
+    padding: 8px 8px 32px;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid $border-color;
+  }
+}
