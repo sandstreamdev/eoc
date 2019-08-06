@@ -29,3 +29,13 @@
 @function four-by($multiplier) {
   @return $multiplier * 4px;
 }
+
+@mixin constant-height($dimension) {
+  width: $dimension;
+  min-width: $dimension;
+  max-width: $dimension;
+  height: $dimension;
+  min-height: $dimension;
+  max-height: $dimension;
+  flex-shrink: 0;
+}
