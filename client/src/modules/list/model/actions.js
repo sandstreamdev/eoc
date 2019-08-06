@@ -261,7 +261,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
 };
 
 export const deleteList = (listId, listName, cohortId) => dispatch =>
-  deleteData(`/api/lists/${listId}/delete-item`)
+  deleteData(`/api/lists/${listId}/delete`)
     .then(() => {
       const action = deleteListSuccess({ listId, cohortId });
       const { type, payload } = action;
