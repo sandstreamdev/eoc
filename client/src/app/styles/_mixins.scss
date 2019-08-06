@@ -30,7 +30,7 @@
   @return $multiplier * 4px;
 }
 
-@mixin constant-height($dimension) {
+@mixin constant-size($dimension) {
   width: $dimension;
   min-width: $dimension;
   max-width: $dimension;
