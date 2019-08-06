@@ -457,7 +457,7 @@ const updateListById = (req, resp) => {
       if (isDeleted !== undefined) {
         listActivity = ActivityType.LIST_DELETE;
 
-        Comment.deleteMany({ listId: sanitizedListId }).exec();
+        Comment.updateMany({ listId: sanitizedListId }, { isDeleted }).exec();
       }
 
       saveActivity(

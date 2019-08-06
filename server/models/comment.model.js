@@ -6,6 +6,7 @@ const { ObjectId } = Schema.Types;
 const CommentSchema = new Schema(
   {
     authorId: { type: ObjectId, ref: 'User', required: true },
+    isDeleted: { type: Boolean, default: false },
     itemId: { type: ObjectId, ref: 'Item', required: true },
     listId: { type: ObjectId, ref: 'List', required: true },
     text: { type: String, required: true }
