@@ -1,11 +1,6 @@
 import _keyBy from 'lodash/keyBy';
 
-import {
-  deleteData,
-  getJson,
-  patchData,
-  postData
-} from 'common/utils/fetchMethods';
+import { getJson, patchData, postData } from 'common/utils/fetchMethods';
 import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
