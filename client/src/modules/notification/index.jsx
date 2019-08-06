@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _map from 'lodash/map';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
 import { getNotifications } from './model/selectors';
@@ -18,17 +18,20 @@ const Notifications = ({ intl: { formatMessage }, notifications }) => (
           <ul className="notification__list">
             {_map(notifications, (item, id) => {
               const {
-                notification: { notificationId, data }
+                notification: { notificationId, data: itemName }
               } = item;
-              let message = formatMessage({ id: notificationId }, { data });
-
-              if (item.type === NotificationType.ERROR) {
-                message += ` ${formatMessage({ id: 'common.try-again' })}`;
-              }
 
               return (
                 <li className="notification__list-item" key={id}>
-                  <MessageBox type={item.type} message={message} />
+                  <MessageBox type={item.type}>
+                    <FormattedMessage
+                      id={notificationId}
+                      values={{ data: <strong>{itemName}</strong> }}
+                    />
+                    {item.type === NotificationType.ERROR && (
+                      <FormattedMessage id="common.try-again" />
+                    )}
+                  </MessageBox>
                 </li>
               );
             })}

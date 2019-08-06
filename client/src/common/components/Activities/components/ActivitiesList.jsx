@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
 import _flowRight from 'lodash/flowRight';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Activity from './Activity';
 import Preloader from 'common/components/Preloader';
@@ -69,12 +69,9 @@ class ActivitiesList extends PureComponent {
         </h2>
         <div className="activities-list__content">
           {_isEmpty(activities) ? (
-            <MessageBox
-              message={formatMessage({
-                id: 'activity.no-activities'
-              })}
-              type={MessageType.INFO}
-            />
+            <MessageBox type={MessageType.INFO}>
+              <FormattedMessage id="activity.no-activities" />
+            </MessageBox>
           ) : (
             <ul className="activities-list__list">
               {_map(activities, activity => (
