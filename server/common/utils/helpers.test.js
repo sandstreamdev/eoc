@@ -123,7 +123,8 @@ describe('function responseWithItems ', () => {
   });
 
   const notExpected = ['voterIds', 'isDeleted'];
-  it('returns items without sensitive data', () => {
+
+  it('returns items without not expected data', () => {
     result.map(item =>
       notExpected.map(property => expect(item).not.toHaveProperty(property))
     );
@@ -143,7 +144,7 @@ describe('function responseWithItem', () => {
 
   const notExpected = ['voterIds', 'isDeleted'];
 
-  it('returns item without sensitive data', () => {
+  it('returns item without not expected data', () => {
     notExpected.map(property => expect(result).not.toHaveProperty(property));
   });
 });
