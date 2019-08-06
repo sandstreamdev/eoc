@@ -122,9 +122,11 @@ describe('function responseWithItems ', () => {
     );
   });
 
-  const notExpected = 'voterIds';
+  const notExpected = ['voterIds', 'isDeleted'];
   it('returns items without sensitive data', () => {
-    result.map(item => expect(item).not.toHaveProperty(notExpected));
+    result.map(item =>
+      notExpected.map(property => expect(item).not.toHaveProperty(property))
+    );
   });
 });
 
@@ -139,10 +141,10 @@ describe('function responseWithItem', () => {
     );
   });
 
-  const notExpected = 'voterIds';
+  const notExpected = ['voterIds', 'isDeleted'];
 
   it('returns item without sensitive data', () => {
-    expect(result).not.toHaveProperty(notExpected);
+    notExpected.map(property => expect(result).not.toHaveProperty(property));
   });
 });
 

@@ -322,7 +322,8 @@ export const fetchArchivedItems = (listId, listName) => dispatch =>
   getJson(`/api/lists/${listId}/archived-items`)
     .then(json => {
       const dataMap = _keyBy(json, '_id');
-      dispatch(fetchArchivedItemsSuccess({ listId, dataMap }));
+
+      dispatch(fetchArchivedItemsSuccess({ listId, data: dataMap }));
     })
     .catch(() => {
       dispatch(fetchArchivedItemsFailure());
@@ -357,7 +358,10 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
     });
 
 export const deleteItem = (listId, itemId, name) => dispatch =>
-  patchData(`/api/lists/${listId}/delete-item/${itemId}`)
+  patchData(`/api/lists/${listId}/update-item`, {
+    isDeleted: true,
+    itemId
+  })
     .then(() => {
       const action = deleteItemSuccess({ listId, itemId });
       const { type, payload } = action;
