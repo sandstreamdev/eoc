@@ -218,8 +218,8 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: sanitizedListId,
-    viewersIds: userId,
-    isDeleted: false
+    isDeleted: false,
+    viewersIds: userId
   })
     .lean()
     .populate('viewersIds', 'avatarUrl displayName _id')
