@@ -1,11 +1,6 @@
 import _keyBy from 'lodash/keyBy';
 
-import {
-  deleteData,
-  getJson,
-  patchData,
-  postData
-} from 'common/utils/fetchMethods';
+import { getJson, patchData, postData } from 'common/utils/fetchMethods';
 import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
@@ -261,7 +256,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
 };
 
 export const deleteList = (listId, listName, cohortId) => dispatch =>
-  deleteData(`/api/lists/${listId}/delete`)
+  patchData(`/api/lists/${listId}/update`, { isDeleted: true, listId })
     .then(() => {
       const action = deleteListSuccess({ listId, cohortId });
       const { type, payload } = action;

@@ -90,42 +90,6 @@ const createList = (req, resp) => {
   }
 };
 
-const deleteListById = (req, resp) => {
-  const {
-    user: { _id: userId },
-    params: { id: listId }
-  } = req;
-
-  const sanitizedListId = sanitize(listId);
-  let list;
-
-  List.findOneAndDelete({ _id: sanitizedListId, ownerIds: userId })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
-
-      list = doc;
-
-      return Comment.deleteMany({ sanitizedListId }).exec();
-    })
-    .then(() => {
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_DELETE,
-        userId,
-        null,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        list.name
-      );
-    })
-    .catch(() => resp.sendStatus(400));
-};
-
 const getListsMetaData = (req, resp) => {
   const { cohortId } = req.params;
   const {
@@ -165,7 +129,8 @@ const getArchivedListsMetaData = (req, resp) => {
 
   const query = {
     $or: [{ ownerIds: userId }, { memberIds: userId }],
-    isArchived: true
+    isArchived: true,
+    isDeleted: false
   };
 
   if (cohortId) {
@@ -253,6 +218,7 @@ const getListData = (req, resp) => {
 
   List.findOne({
     _id: sanitizedListId,
+    isDeleted: false,
     viewersIds: userId
   })
     .lean()
@@ -438,7 +404,7 @@ const clearVote = (req, resp) => {
 };
 
 const updateListById = (req, resp) => {
-  const { description, isArchived, name } = req.body;
+  const { description, isArchived, isDeleted, name } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -447,6 +413,7 @@ const updateListById = (req, resp) => {
   const dataToUpdate = filter(x => x !== undefined)({
     description,
     isArchived,
+    isDeleted,
     name
   });
   let listActivity;
@@ -485,6 +452,12 @@ const updateListById = (req, resp) => {
         listActivity = isArchived
           ? ActivityType.LIST_ARCHIVE
           : ActivityType.LIST_RESTORE;
+      }
+
+      if (isDeleted) {
+        listActivity = ActivityType.LIST_DELETE;
+
+        Comment.updateMany({ listId: sanitizedListId }, { isDeleted }).exec();
       }
 
       saveActivity(
@@ -1320,7 +1293,6 @@ module.exports = {
   cloneItem,
   createList,
   deleteItem,
-  deleteListById,
   getArchivedItems,
   getArchivedListsMetaData,
   getListData,
