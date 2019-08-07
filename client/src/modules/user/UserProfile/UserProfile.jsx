@@ -32,13 +32,10 @@ class UserProfile extends PureComponent {
   }
 
   handleFetchUserDetails = () => {
-    const {
-      currentUser: { name },
-      fetchUserDetails
-    } = this.props;
+    const { fetchUserDetails } = this.props;
 
     this.setState({ pending: true });
-    this.pendingPromise = makeAbortablePromise(fetchUserDetails(name));
+    this.pendingPromise = makeAbortablePromise(fetchUserDetails());
     this.pendingPromise.promise
       .then(() => this.setState({ pending: false }))
       .catch(err => {
