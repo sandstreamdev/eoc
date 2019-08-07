@@ -55,7 +55,7 @@ const {
 } = require('./cohort');
 
 const socketListenTo = server => {
-  const ioInstance = io(server, { forceNew: true });
+  const ioInstance = io(server, { forceNew: true, pingTimeout: 60000 });
 
   ioInstance.use(
     passportSocketIo.authorize({
