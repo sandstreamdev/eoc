@@ -11,6 +11,7 @@ import history from 'common/utils/history';
 import { asyncTypes, enumerable } from 'common/utils/helpers';
 
 export const AuthorizationActionTypes = enumerable('user')(
+  ...asyncTypes('FETCH'),
   ...asyncTypes('LOGIN'),
   ...asyncTypes('LOGOUT')
 );

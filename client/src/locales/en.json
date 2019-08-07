@@ -219,7 +219,7 @@
   "privacy-policy.index.login-btn": "Login page",
   "cohort.actions.set-owner-fail": "Failed to set: '{data}' as owner.",
   "cohort.actions.remove-member-fail": "Failed to remove '{data}'.",
-  "cohort.actions.remove-member": "'{data} successfully removed.'",
+  "cohort.actions.remove-member": "'{data}' successfully removed.",
   "cohort.actions.fetch-details-fail": "Failed to fetch cohort data.",
   "cohort.actions.restore-cohort-fail": "Failed to restore cohort: '{data}'.",
   "cohort.actions.restore-cohort": "Cohort: '{data}' was successfully restored.",
