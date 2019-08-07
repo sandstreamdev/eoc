@@ -363,7 +363,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
     });
 
 export const deleteItem = (listId, itemId, name) => dispatch =>
-  deleteData(`/api/lists/${listId}/delete-item/${itemId}`)
+  deleteData(`/api/lists/${listId}/${itemId}`)
     .then(() => {
       const action = deleteItemSuccess({ listId, itemId });
       const { type, payload } = action;

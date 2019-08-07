@@ -1232,7 +1232,7 @@ const deleteItem = (req, res) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException();
+        throw new NotFoundException();
       }
 
       const { items } = doc;
