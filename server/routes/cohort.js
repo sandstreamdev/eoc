@@ -22,7 +22,7 @@ router.post('/create', authorize, createCohort);
 router.get('/archived', authorize, getArchivedCohortsMetaData);
 router.patch('/:id/update', authorize, updateCohortById);
 router.get('/:id/data', authorize, getCohortDetails);
-router.delete('/:id/delete', authorize, deleteCohortById);
+router.delete('/:id', authorize, deleteCohortById);
 router.patch('/:id/remove-member', authorize, removeMember);
 router.patch('/:id/add-owner-role', authorize, addOwnerRole);
 router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);

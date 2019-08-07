@@ -200,7 +200,7 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
     });
 
 export const deleteCohort = (cohortId, cohortName) => dispatch =>
-  deleteData(`/api/cohorts/${cohortId}/delete`)
+  deleteData(`/api/cohorts/${cohortId}`)
     .then(resp => resp.json())
     .then(members => {
       const action = deleteCohortSuccess({ cohortId });
