@@ -144,7 +144,7 @@ class ListItemDescription extends PureComponent {
     if (isDescriptionUpdated) {
       this.setState({ pending: true });
 
-      const userData = { userId, userName };
+      const userData = { userId, editedBy: userName };
 
       this.pendingPromise = makeAbortablePromise(
         updateListItem(name, listId, itemId, userData, { description })

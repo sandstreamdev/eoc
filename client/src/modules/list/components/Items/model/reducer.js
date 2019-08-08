@@ -90,8 +90,8 @@ const items = (state = {}, action) => {
       const {
         payload: {
           data: { description, name },
-          itemId,
-          editedBy
+          editedBy,
+          itemId
         }
       } = action;
       const previousItem = state[itemId];

@@ -950,18 +950,20 @@ const updateListItem = (req, resp) => {
   const sanitizedUserId = sanitize(userId);
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
-  let editedByName;
+  let editedBy;
   let editedItemActivity;
   let prevItemName;
 
   User.findOne({ _id: sanitizedUserId })
     .exec()
     .then(user => {
-      if (user) {
-        const { displayName } = user;
-
-        editedByName = displayName;
+      if (!user) {
+        throw new NotFoundException();
       }
+
+      const { displayName } = user;
+
+      editedBy = displayName;
     })
     .then(() =>
       List.findOne({
@@ -1015,8 +1017,8 @@ const updateListItem = (req, resp) => {
               : ActivityType.ITEM_RESTORE;
           }
 
-          if (editedByName) {
-            itemToUpdate.editedBy = editedByName;
+          if (editedBy) {
+            itemToUpdate.editedBy = editedBy;
             editedItemActivity = ActivityType.ITEM_EDIT_BY;
           }
 

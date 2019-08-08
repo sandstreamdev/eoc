@@ -70,7 +70,7 @@ class ListItemName extends PureComponent {
     if (canBeUpdated && isNameUpdated) {
       this.setState({ pending: true });
 
-      const userData = { userId, userName };
+      const userData = { userId, editedBy: userName };
 
       onPending();
       updateListItem(name, listId, itemId, userData, {

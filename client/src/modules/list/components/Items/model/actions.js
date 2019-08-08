@@ -216,7 +216,7 @@ export const updateListItem = (
   userData,
   data
 ) => dispatch => {
-  const { userId, userName: editedBy } = userData;
+  const { userId, editedBy } = userData;
 
   return patchData(`/api/lists/${listId}/update-item`, {
     ...data,
@@ -224,10 +224,10 @@ export const updateListItem = (
   })
     .then(() => {
       const action = updateListItemSuccess({
+        data,
         editedBy,
-        listId,
         itemId,
-        data
+        listId
       });
       const { type, payload } = action;
 
