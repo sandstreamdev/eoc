@@ -987,7 +987,7 @@ const updateListItem = (req, res) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException();
+        throw new NotFoundException();
       }
 
       const { items } = doc;
@@ -1034,7 +1034,7 @@ const updateListItem = (req, res) => {
     })
     .then(doc => {
       if (!doc) {
-        return res.sendStatus(400);
+        return res.sendStatus(404);
       }
 
       res.send();

@@ -122,7 +122,7 @@ describe('function responseWithItems ', () => {
     );
   });
 
-  const notExpected = ['voterIds', 'isDeleted'];
+  const notExpected = ['isDeleted', 'voterIds'];
 
   it('returns items without not expected data', () => {
     result.map(item =>
@@ -142,7 +142,7 @@ describe('function responseWithItem', () => {
     );
   });
 
-  const notExpected = ['voterIds', 'isDeleted'];
+  const notExpected = ['isDeleted', 'voterIds'];
 
   it('returns item without not expected data', () => {
     notExpected.map(property => expect(result).not.toHaveProperty(property));
