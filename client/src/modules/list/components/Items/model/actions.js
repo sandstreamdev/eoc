@@ -216,16 +216,15 @@ export const updateListItem = (
   userData,
   data
 ) => dispatch => {
-  const { userId, userName: editedByName } = userData;
+  const { userId, userName: editedBy } = userData;
 
   return patchData(`/api/lists/${listId}/update-item`, {
     ...data,
-    itemId,
-    userId
+    itemId
   })
     .then(() => {
       const action = updateListItemSuccess({
-        editedByName,
+        editedBy,
         listId,
         itemId,
         data

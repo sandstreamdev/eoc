@@ -941,32 +941,33 @@ const updateListItem = (req, resp) => {
     isArchived,
     isOrdered,
     itemId,
-    name,
-    userId: editedById
+    name
   } = req.body;
   const {
     user: { _id: userId }
   } = req;
   const { id: listId } = req.params;
+  const sanitizedUserId = sanitize(userId);
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
-  const sanitizedEditedById = sanitize(editedById);
+  let editedByName;
   let editedItemActivity;
   let prevItemName;
-  let editedByName;
 
-  User.findOne({ _id: sanitizedEditedById })
+  User.findOne({ _id: sanitizedUserId })
     .exec()
     .then(user => {
-      const { displayName } = user;
+      if (user) {
+        const { displayName } = user;
 
-      editedByName = displayName;
+        editedByName = displayName;
+      }
     })
-    .then(() => {
-      return List.findOne({
+    .then(() =>
+      List.findOne({
         _id: sanitizedListId,
         'items._id': sanitizedItemId,
-        memberIds: userId
+        memberIds: sanitizedUserId
       })
         .exec()
         .then(doc => {
@@ -1040,9 +1041,12 @@ const updateListItem = (req, resp) => {
         })
         .catch(() => {
           throw new Error();
-        });
-    })
-    .catch(() => resp.sendStatus(400));
+        })
+    )
+    .catch(err => {
+      console.log(err);
+      return resp.sendStatus(400);
+    });
 };
 
 const cloneItem = (req, resp) => {
