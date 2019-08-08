@@ -4,6 +4,8 @@ const _pickBy = require('lodash/pickBy');
 const _compact = require('lodash/compact');
 const _keyBy = require('lodash/keyBy');
 
+const User = require('../../models/user.model');
+
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
@@ -110,13 +112,31 @@ const responseWithListsMetaData = (lists, userId) =>
 
 const responseWithItems = (userId, items) =>
   _map(items, item => {
-    const { authorId: author, isArchived, voterIds, ...rest } = item;
+    const { authorId: author, editedBy, isArchived, voterIds, ...rest } = item;
     const { _id: authorId, displayName: authorName } = author;
+    let editedByName;
+
+    // TODO: Extract user name from DB, and send to FRONT
+    // Await for responseWithItems method in controllers
+    User.findOne({ _id: editedBy })
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { displayName } = doc;
+
+          editedByName = displayName;
+        }
+      })
+      .catch(() => {
+        editedByName = '';
+      })
+      .finally(() => {});
 
     return {
       ...rest,
       authorId,
       authorName,
+      editedBy: editedByName,
       isArchived,
       isVoted: checkIfArrayContainsUserId(voterIds, userId),
       votesCount: voterIds.length

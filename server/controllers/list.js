@@ -949,101 +949,82 @@ const updateListItem = (req, resp) => {
   const { id: listId } = req.params;
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
-  let editedBy;
   let editedItemActivity;
   let prevItemName;
 
-  User.findOne({ _id: userId })
+  List.findOne({
+    _id: sanitizedListId,
+    'items._id': sanitizedItemId,
+    memberIds: userId
+  })
     .exec()
-    .then(user => {
-      if (!user) {
-        throw new NotFoundException();
+    .then(doc => {
+      if (!doc) {
+        throw new BadRequestException();
       }
 
-      const { displayName } = user;
+      const { items } = doc;
+      const itemToUpdate = items.id(sanitizedItemId);
 
-      editedBy = displayName;
+      if (description !== undefined) {
+        const { description: prevDescription } = itemToUpdate;
+        itemToUpdate.description = description;
+
+        if (!description && prevDescription) {
+          editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
+        } else if (description && !prevDescription) {
+          editedItemActivity = ActivityType.ITEM_ADD_DESCRIPTION;
+        } else {
+          editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
+        }
+      }
+
+      if (isOrdered !== undefined) {
+        itemToUpdate.isOrdered = isOrdered;
+        editedItemActivity = isOrdered
+          ? ActivityType.ITEM_DONE
+          : ActivityType.ITEM_UNHANDLED;
+      }
+
+      if (authorId) {
+        itemToUpdate.authorId = authorId;
+      }
+
+      if (name) {
+        prevItemName = itemToUpdate.name;
+        itemToUpdate.name = name;
+        editedItemActivity = ActivityType.ITEM_EDIT_NAME;
+      }
+
+      if (isArchived !== undefined) {
+        itemToUpdate.isArchived = isArchived;
+        editedItemActivity = isArchived
+          ? ActivityType.ITEM_ARCHIVE
+          : ActivityType.ITEM_RESTORE;
+      }
+
+      itemToUpdate.editedBy = userId;
+      editedItemActivity = ActivityType.ITEM_EDIT_BY;
+
+      return doc.save();
     })
-    .then(() =>
-      List.findOne({
-        _id: sanitizedListId,
-        'items._id': sanitizedItemId,
-        memberIds: userId
-      })
-        .exec()
-        .then(doc => {
-          if (!doc) {
-            throw new BadRequestException();
-          }
+    .then(doc => {
+      if (!doc) {
+        return resp.sendStatus(400);
+      }
 
-          const { items } = doc;
-          const itemToUpdate = items.id(sanitizedItemId);
+      resp.send();
 
-          if (description !== undefined) {
-            const { description: prevDescription } = itemToUpdate;
-            itemToUpdate.description = description;
-
-            if (!description && prevDescription) {
-              editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
-            } else if (description && !prevDescription) {
-              editedItemActivity = ActivityType.ITEM_ADD_DESCRIPTION;
-            } else {
-              editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
-            }
-          }
-
-          if (isOrdered !== undefined) {
-            itemToUpdate.isOrdered = isOrdered;
-            editedItemActivity = isOrdered
-              ? ActivityType.ITEM_DONE
-              : ActivityType.ITEM_UNHANDLED;
-          }
-
-          if (authorId) {
-            itemToUpdate.authorId = authorId;
-          }
-
-          if (name) {
-            prevItemName = itemToUpdate.name;
-            itemToUpdate.name = name;
-            editedItemActivity = ActivityType.ITEM_EDIT_NAME;
-          }
-
-          if (isArchived !== undefined) {
-            itemToUpdate.isArchived = isArchived;
-            editedItemActivity = isArchived
-              ? ActivityType.ITEM_ARCHIVE
-              : ActivityType.ITEM_RESTORE;
-          }
-
-          if (editedBy) {
-            itemToUpdate.editedBy = editedBy;
-            editedItemActivity = ActivityType.ITEM_EDIT_BY;
-          }
-
-          return doc.save();
-        })
-        .then(doc => {
-          if (!doc) {
-            return resp.sendStatus(400);
-          }
-
-          resp.send();
-
-          saveActivity(
-            editedItemActivity,
-            userId,
-            sanitizedItemId,
-            sanitizedListId,
-            doc.cohortId,
-            null,
-            prevItemName
-          );
-        })
-        .catch(() => {
-          throw new Error();
-        })
-    )
+      saveActivity(
+        editedItemActivity,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        doc.cohortId,
+        null,
+        prevItemName
+      );
+    })
     .catch(() => resp.sendStatus(400));
 };
 
