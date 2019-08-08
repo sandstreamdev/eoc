@@ -1,4 +1,5 @@
 const _keyBy = require('lodash/keyBy');
+const sanitize = require('mongo-sanitize');
 
 const {
   CohortActionTypes,
@@ -11,6 +12,7 @@ const {
   LOCK_TIMEOUT
 } = require('../common/variables');
 const List = require('../models/list.model');
+const User = require('../models/user.model');
 const {
   checkIfArrayContainsUserId,
   isMember,
@@ -107,11 +109,25 @@ const updateItemState = (socket, itemClientLocks) => {
 
 const updateItem = socket => {
   socket.on(ItemActionTypes.UPDATE_SUCCESS, data => {
-    const { listId } = data;
+    const { listId, userId } = data;
+    const sanitizedUserId = sanitize(userId);
+    let editedByName;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.UPDATE_SUCCESS, data);
+    User.findById(sanitizedUserId)
+      .then(user => {
+        if (user) {
+          const { displayName } = user;
+          editedByName = displayName;
+        }
+      })
+      .finally(() => {
+        const { userId, ...rest } = data;
+        const dataToSend = { ...rest, editedByName };
+
+        socket.broadcast
+          .to(listChannel(listId))
+          .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
+      });
   });
 };
 

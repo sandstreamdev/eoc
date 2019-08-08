@@ -209,16 +209,30 @@ export const clearVote = (itemId, listId, itemName) => dispatch =>
       });
     });
 
-export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item`, {
+export const updateListItem = (
+  itemName,
+  listId,
+  itemId,
+  userData,
+  data
+) => dispatch => {
+  const { userId, userName: editedByName } = userData;
+
+  return patchData(`/api/lists/${listId}/update-item`, {
     ...data,
-    itemId
+    itemId,
+    userId
   })
     .then(() => {
-      const action = updateListItemSuccess({ listId, itemId, data });
+      const action = updateListItemSuccess({
+        editedByName,
+        listId,
+        itemId,
+        data
+      });
       const { type, payload } = action;
 
-      socket.emit(type, payload);
+      socket.emit(type, { ...payload, userId });
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.update-item',
@@ -232,6 +246,7 @@ export const updateListItem = (itemName, listId, itemId, data) => dispatch =>
         data: itemName
       });
     });
+};
 
 export const cloneItem = (itemName, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {

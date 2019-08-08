@@ -362,7 +362,8 @@ class ListItem extends PureComponent {
         descriptionLock = false,
         isOrdered,
         name,
-        nameLock = false
+        nameLock = false,
+        editedBy
       },
       isMember
     } = this.props;
@@ -414,6 +415,14 @@ class ListItem extends PureComponent {
                   values={{ authorName }}
                 />
               </span>
+              {editedBy && (
+                <span className="list-item__edited-by">
+                  <FormattedMessage
+                    id="list.list-item.edited-by"
+                    values={{ editedBy }}
+                  />
+                </span>
+              )}
             </span>
           </label>
           <div className="list-item__buttons">

@@ -941,86 +941,108 @@ const updateListItem = (req, resp) => {
     isArchived,
     isOrdered,
     itemId,
-    name
+    name,
+    userId: editedById
   } = req.body;
+
   const {
     user: { _id: userId }
   } = req;
   const { id: listId } = req.params;
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
+  const sanitizedEditedById = sanitize(editedById);
   let editedItemActivity;
   let prevItemName;
+  let editedByName;
 
-  List.findOne({
-    _id: sanitizedListId,
-    'items._id': sanitizedItemId,
-    memberIds: userId
-  })
+  User.findOne({ _id: sanitizedEditedById })
     .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new BadRequestException();
-      }
+    .then(user => {
+      const { displayName } = user;
 
-      const { items } = doc;
-      const itemToUpdate = items.id(sanitizedItemId);
-
-      if (description !== undefined) {
-        const { description: prevDescription } = itemToUpdate;
-        itemToUpdate.description = description;
-
-        if (!description && prevDescription) {
-          editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
-        } else if (description && !prevDescription) {
-          editedItemActivity = ActivityType.ITEM_ADD_DESCRIPTION;
-        } else {
-          editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
-        }
-      }
-
-      if (isOrdered !== undefined) {
-        itemToUpdate.isOrdered = isOrdered;
-        editedItemActivity = isOrdered
-          ? ActivityType.ITEM_DONE
-          : ActivityType.ITEM_UNHANDLED;
-      }
-
-      if (authorId) {
-        itemToUpdate.authorId = authorId;
-      }
-
-      if (name) {
-        prevItemName = itemToUpdate.name;
-        itemToUpdate.name = name;
-        editedItemActivity = ActivityType.ITEM_EDIT_NAME;
-      }
-
-      if (isArchived !== undefined) {
-        itemToUpdate.isArchived = isArchived;
-        editedItemActivity = isArchived
-          ? ActivityType.ITEM_ARCHIVE
-          : ActivityType.ITEM_RESTORE;
-      }
-
-      return doc.save();
+      editedByName = displayName;
     })
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+    .then(() => {
+      return List.findOne({
+        _id: sanitizedListId,
+        'items._id': sanitizedItemId,
+        memberIds: userId
+      })
+        .exec()
+        .then(doc => {
+          if (!doc) {
+            throw new BadRequestException();
+          }
 
-      resp.send();
+          const { items } = doc;
+          const itemToUpdate = items.id(sanitizedItemId);
 
-      saveActivity(
-        editedItemActivity,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId,
-        null,
-        prevItemName
-      );
+          if (description !== undefined) {
+            const { description: prevDescription } = itemToUpdate;
+            itemToUpdate.description = description;
+
+            if (!description && prevDescription) {
+              editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
+            } else if (description && !prevDescription) {
+              editedItemActivity = ActivityType.ITEM_ADD_DESCRIPTION;
+            } else {
+              editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
+            }
+          }
+
+          if (isOrdered !== undefined) {
+            itemToUpdate.isOrdered = isOrdered;
+            editedItemActivity = isOrdered
+              ? ActivityType.ITEM_DONE
+              : ActivityType.ITEM_UNHANDLED;
+          }
+
+          if (authorId) {
+            itemToUpdate.authorId = authorId;
+          }
+
+          if (name) {
+            prevItemName = itemToUpdate.name;
+            itemToUpdate.name = name;
+            editedItemActivity = ActivityType.ITEM_EDIT_NAME;
+          }
+
+          if (isArchived !== undefined) {
+            itemToUpdate.isArchived = isArchived;
+            editedItemActivity = isArchived
+              ? ActivityType.ITEM_ARCHIVE
+              : ActivityType.ITEM_RESTORE;
+          }
+
+          if (editedByName) {
+            itemToUpdate.editedBy = editedByName;
+
+            // TODO: dodac activitiy
+          }
+
+          return doc.save();
+        })
+        .then(doc => {
+          if (!doc) {
+            return resp.sendStatus(400);
+          }
+
+          resp.send();
+
+          saveActivity(
+            editedItemActivity,
+            userId,
+            sanitizedItemId,
+            sanitizedListId,
+            doc.cohortId,
+            null,
+            prevItemName
+          );
+        })
+        .catch(() => {
+          throw new Error();
+        });
     })
     .catch(() => resp.sendStatus(400));
 };

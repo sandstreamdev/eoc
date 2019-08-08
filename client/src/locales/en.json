@@ -155,6 +155,7 @@
   "list.list-archived-item.done": "Done",
   "list.list-archived-item.unhandled": "Unhandled",
   "list.list-archived-item.author": "Added by: {authorName}",
+  "list.list-item.edited-by": "Last edit by: {editedBy}",
   "list.list-archived-item.archived": "Archived",
   "list.list-archived-item.restore": "Restore",
   "list.list-archived-item.delete": "Delete",
