@@ -103,8 +103,8 @@ const items = (state = {}, action) => {
         [itemId]: {
           ...previousItem,
           description: newDescription,
-          name: name || previousItem.name,
-          editedBy
+          editedBy,
+          name: name || previousItem.name
         }
       };
     }

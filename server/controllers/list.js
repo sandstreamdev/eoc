@@ -947,14 +947,13 @@ const updateListItem = (req, resp) => {
     user: { _id: userId }
   } = req;
   const { id: listId } = req.params;
-  const sanitizedUserId = sanitize(userId);
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
   let editedBy;
   let editedItemActivity;
   let prevItemName;
 
-  User.findOne({ _id: sanitizedUserId })
+  User.findOne({ _id: userId })
     .exec()
     .then(user => {
       if (!user) {
@@ -969,7 +968,7 @@ const updateListItem = (req, resp) => {
       List.findOne({
         _id: sanitizedListId,
         'items._id': sanitizedItemId,
-        memberIds: sanitizedUserId
+        memberIds: userId
       })
         .exec()
         .then(doc => {

@@ -360,10 +360,10 @@ class ListItem extends PureComponent {
         _id,
         authorName,
         descriptionLock = false,
+        editedBy,
         isOrdered,
         name,
-        nameLock = false,
-        editedBy
+        nameLock = false
       },
       isMember
     } = this.props;
