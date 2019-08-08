@@ -155,7 +155,7 @@ describe('function responseWithCohorts', () => {
     );
   });
 
-  const notExpected = ['favIds', 'isDeleted', 'ownerIds', 'memberIds'];
+  const notExpected = ['favIds', 'isDeleted', 'memberIds', 'ownerIds'];
 
   it('returns cohorts meta data without sensitive data', () => {
     notExpected.map(property =>
@@ -174,7 +174,7 @@ describe('function responseWithCohort', () => {
     );
   });
 
-  const notExpected = ['favIds', 'isDeleted', 'ownerIds', 'memberIds'];
+  const notExpected = ['favIds', 'isDeleted', 'memberIds', 'ownerIds'];
 
   it('returns cohort data without sensitive data', () => {
     notExpected.map(property => expect(result).not.toHaveProperty(property));
