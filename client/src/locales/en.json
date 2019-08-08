@@ -300,6 +300,7 @@
   "activity.item.clear-vote": "{performer} removed vote from '{item}' item.",
   "activity.item.clear-vote.no-item": "{performer} removed vote from item.",
   "activity.item.edit-name": "{performer} changed {value} 'item's name to '{item}'.",
+  "activity.item.edit-by": "{performer} edited item: {item}.",
   "activity.item.edit-name.no-item": "{performer} changed {value} 'item's name.",
   "activity.item.edit-description": "{performer} edited '{item}' item's description.",
   "activity.item.edit-description.no-item": "{performer} edited item's description.",

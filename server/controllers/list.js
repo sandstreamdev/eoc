@@ -944,7 +944,6 @@ const updateListItem = (req, resp) => {
     name,
     userId: editedById
   } = req.body;
-
   const {
     user: { _id: userId }
   } = req;
@@ -1017,8 +1016,7 @@ const updateListItem = (req, resp) => {
 
           if (editedByName) {
             itemToUpdate.editedBy = editedByName;
-
-            // TODO: dodac activitiy
+            editedItemActivity = ActivityType.ITEM_EDIT_BY;
           }
 
           return doc.save();
