@@ -1043,10 +1043,7 @@ const updateListItem = (req, resp) => {
           throw new Error();
         })
     )
-    .catch(err => {
-      console.log(err);
-      return resp.sendStatus(400);
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 const cloneItem = (req, resp) => {
