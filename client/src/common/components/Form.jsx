@@ -57,6 +57,7 @@ class Form extends PureComponent {
     const { description, name } = this.state;
     const {
       disabled,
+      errorMessageId,
       intl: { formatMessage },
       onSelect
     } = this.props;
@@ -74,6 +75,9 @@ class Form extends PureComponent {
             type="text"
             value={name}
           />
+          {errorMessageId && (
+            <span className="error-message ">Please fill this field.</span>
+          )}
         </label>
         <label className="form__label">
           <textarea
@@ -105,6 +109,7 @@ Form.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
   disabled: PropTypes.bool,
+  errorMessageId: PropTypes.string,
   intl: IntlPropType.isRequired,
 
   onDescriptionChange: PropTypes.func.isRequired,
