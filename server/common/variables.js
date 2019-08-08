@@ -128,6 +128,7 @@ const ListHeaderStatusTypes = Object.freeze({
 });
 
 const LOCK_TIMEOUT = 300000;
+const SOCKET_TIMEOUT = 60000;
 
 module.exports = {
   ActivityType,
@@ -144,5 +145,6 @@ module.exports = {
   ListType,
   LOCK_TIMEOUT,
   NUMBER_OF_ACTIVITIES_TO_SEND,
-  PROJECT_NAME
+  PROJECT_NAME,
+  SOCKET_TIMEOUT
 };
