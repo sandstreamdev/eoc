@@ -58,13 +58,13 @@ class SortBox extends Component {
           <button
             className={orderButtonClass}
             onClick={this.handleSortOrderChange}
-            type="button"
             title={formatMessage(
               {
                 id: 'common.sort-box.sort'
               },
               { sortOrder }
             )}
+            type="button"
           >
             <ArrowUpIcon />
           </button>
