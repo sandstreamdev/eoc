@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 import { ListType } from 'modules/list/consts';
 import { IntlPropType } from 'common/constants/propTypes';
@@ -76,7 +76,9 @@ class Form extends PureComponent {
             value={name}
           />
           {errorMessageId && (
-            <span className="error-message ">Please fill this field.</span>
+            <span className="error-message ">
+              <FormattedMessage id="common.form.default-warning" />
+            </span>
           )}
         </label>
         <label className="form__label">
