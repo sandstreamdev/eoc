@@ -7,7 +7,7 @@ const ItemSchema = new Schema(
   {
     authorId: { type: ObjectId, ref: 'User', required: true },
     description: { type: String, default: '' },
-    editedBy: { type: String },
+    editedBy: { type: String, ref: 'User', default: '' },
     isArchived: { type: Boolean, default: false },
     isOrdered: { type: Boolean, default: false },
     name: { type: String, required: true },

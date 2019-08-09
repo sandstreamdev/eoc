@@ -224,6 +224,7 @@ const getListData = (req, resp) => {
     .lean()
     .populate('viewersIds', 'avatarUrl displayName _id')
     .populate('items.authorId', 'displayName')
+    .populate('items.editedBy', 'displayName')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -289,7 +290,6 @@ const getListData = (req, resp) => {
         ownerIds,
         cohortMembers
       );
-
       const items = responseWithItems(userId, activeItems);
 
       return resp.send({
