@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import UserIconPlaceholder from 'assets/images/user.svg';
 import { UserIcon } from 'assets/images/icons';
 
 class Avatar extends PureComponent {
@@ -18,14 +17,14 @@ class Avatar extends PureComponent {
 
     return (
       <span className="avatar">
-        {avatarUrl ? (
+        {avatarUrl && !isAvatarError ? (
           <img
             alt={`${name || 'user'} avatar`}
             className={classNames(`${className} avatar__image`, {
               avatar__placeholder: isAvatarError
             })}
             onError={this.handleAvatarError}
-            src={isAvatarError ? UserIconPlaceholder : avatarUrl}
+            src={avatarUrl}
             title={name}
           />
         ) : (
