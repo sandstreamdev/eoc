@@ -110,21 +110,27 @@ const responseWithListsMetaData = (lists, userId) =>
 
 const responseWithItems = (userId, items) =>
   _map(items, item => {
-    const { authorId: author, editedBy, isArchived, voterIds, ...rest } = item;
+    const {
+      authorId: author,
+      editedBy: editor,
+      isArchived,
+      voterIds,
+      ...rest
+    } = item;
     const { _id: authorId, displayName: authorName } = author;
-    let editorName;
+    let editedBy;
 
-    if (editedBy) {
-      const { displayName } = editedBy;
+    if (editor) {
+      const { displayName } = editor;
 
-      editorName = displayName;
+      editedBy = displayName;
     }
 
     return {
       ...rest,
       authorId,
       authorName,
-      editedBy: editorName,
+      editedBy,
       isArchived,
       isVoted: checkIfArrayContainsUserId(voterIds, userId),
       votesCount: voterIds.length
