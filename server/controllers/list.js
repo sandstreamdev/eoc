@@ -1004,7 +1004,7 @@ const updateListItem = (req, resp) => {
       }
 
       itemToUpdate.editedBy = userId;
-      editedItemActivity = ActivityType.ITEM_EDIT_BY;
+      editedItemActivity = ActivityType.ITEM_EDIT;
 
       return doc.save();
     })

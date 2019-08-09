@@ -120,7 +120,7 @@ const updateItem = socket => {
           editedBy = displayName;
         }
       })
-      .finally(() => {
+      .then(() => {
         const { userId, ...rest } = data;
         const dataToSend = { ...rest, editedBy };
 

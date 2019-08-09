@@ -31,7 +31,7 @@ const ActivityType = Object.freeze({
   ITEM_CLONE: 'activity.item.clone',
   ITEM_DELETE: 'activity.item.delete',
   ITEM_DONE: 'activity.item.done',
-  ITEM_EDIT_BY: 'activity.item.edit-by',
+  ITEM_EDIT: 'activity.item.edit',
   ITEM_EDIT_DESCRIPTION: 'activity.item.edit-description',
   ITEM_EDIT_NAME: 'activity.item.edit-name',
   ITEM_REMOVE_DESCRIPTION: 'activity.item.remove-description',
