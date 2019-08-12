@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Icon = ({ children, ...props }) => (
+const Icon = props => (
   <svg
+    aria-role="img"
     className="svg-inline--fa fa-w-20"
     data-prefix="fas"
     role="img"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-  >
-    {children}
-  </svg>
+  />
 );
 
 Icon.propTypes = {

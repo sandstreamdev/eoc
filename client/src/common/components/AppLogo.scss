@@ -3,7 +3,7 @@
   align-items: center;
 
   span.app-logo__icon {
-    height: 16px;
+    @include constant-size(16px);
     svg path {
       fill: $dark-orange;
     }

@@ -46,7 +46,7 @@
     cursor: pointer;
 
     svg {
-      height: 14px;
+      @include constant-size(14px);
     }
 
     &--obverse {
