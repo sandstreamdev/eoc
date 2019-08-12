@@ -111,23 +111,19 @@ const updateItem = socket => {
   socket.on(ItemActionTypes.UPDATE_SUCCESS, data => {
     const { listId, userId } = data;
     const sanitizedUserId = sanitize(userId);
-    let editedBy;
 
-    User.findById(sanitizedUserId)
-      .then(user => {
-        if (user) {
-          const { displayName } = user;
-          editedBy = displayName;
-        }
-      })
-      .then(() => {
+    User.findById(sanitizedUserId).then(user => {
+      if (user) {
+        const { displayName } = user;
+        const editedBy = displayName;
         const { userId, ...rest } = data;
         const dataToSend = { ...rest, editedBy };
 
         socket.broadcast
           .to(listChannel(listId))
           .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
-      });
+      }
+    });
   });
 };
 

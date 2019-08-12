@@ -77,8 +77,8 @@ class ListItemName extends PureComponent {
         name: updatedName
       }).finally(() => {
         this.setState({
-          pending: false,
-          isTipVisible: false
+          isTipVisible: false,
+          pending: false
         });
 
         this.handleNameInputBlur();
