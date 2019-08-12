@@ -49,7 +49,7 @@ router.patch('/:id/update-item', authorize, updateListItem);
 router.patch('/:id/clone-item', authorize, cloneItem);
 router.patch('/:id/change-type', authorize, changeType);
 router.get('/:id/archived-items', authorize, getArchivedItems);
-router.patch('/:id/delete-item/:itemId', authorize, deleteItem);
+router.delete('/:id/:itemId', authorize, deleteItem);
 router.patch('/:id/leave', authorize, leaveList);
 
 module.exports = router;

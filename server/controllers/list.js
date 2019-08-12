@@ -934,7 +934,7 @@ const addViewer = (req, resp) => {
     });
 };
 
-const updateListItem = (req, resp) => {
+const updateListItem = (req, res) => {
   const {
     authorId,
     description,
@@ -960,7 +960,7 @@ const updateListItem = (req, resp) => {
     .exec()
     .then(doc => {
       if (!doc) {
-        throw new BadRequestException();
+        throw new NotFoundException();
       }
 
       const { items } = doc;
@@ -1007,10 +1007,10 @@ const updateListItem = (req, resp) => {
     })
     .then(doc => {
       if (!doc) {
-        return resp.sendStatus(400);
+        return res.sendStatus(404);
       }
 
-      resp.send();
+      res.send();
 
       saveActivity(
         editedItemActivity,
@@ -1022,7 +1022,7 @@ const updateListItem = (req, resp) => {
         prevItemName
       );
     })
-    .catch(() => resp.sendStatus(400));
+    .catch(() => res.sendStatus(400));
 };
 
 const cloneItem = (req, resp) => {
@@ -1183,47 +1183,51 @@ const getArchivedItems = (req, resp) => {
       }
 
       const { items } = list;
-      const archivedItems = items.filter(item => item.isArchived);
+      const activeItems = items.filter(item => !item.isDeleted);
+      const archivedItems = activeItems.filter(item => item.isArchived);
 
       resp.send(responseWithItems(userId, archivedItems));
     })
     .catch(() => resp.sendStatus(400));
 };
 
-const deleteItem = (req, resp) => {
+const deleteItem = (req, res) => {
   const { id: listId, itemId } = req.params;
   const { _id: userId } = req.user;
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
 
-  List.findOneAndUpdate(
-    {
-      _id: sanitizedListId,
-      memberIds: userId,
-      'items._id': sanitizedItemId
-    },
-    { $pull: { items: { _id: sanitizedItemId } } }
-  )
+  List.findOne({
+    _id: sanitizedListId,
+    'items._id': sanitizedItemId,
+    memberIds: userId
+  })
     .exec()
-    .then(list => {
-      if (!list) {
-        return resp.sendStatus(400);
+    .then(doc => {
+      if (!doc) {
+        throw new NotFoundException();
       }
-      const deletedItem = list.items.id(sanitizedItemId);
 
-      resp.send();
+      const { items } = doc;
+      const itemToUpdate = items.id(sanitizedItemId);
+      const { name } = itemToUpdate;
+
+      itemToUpdate.isDeleted = true;
 
       saveActivity(
         ActivityType.ITEM_DELETE,
         userId,
         sanitizedItemId,
         sanitizedListId,
-        list.cohortId,
+        doc.cohortId,
         null,
-        deletedItem.name
+        name
       );
+
+      return doc.save();
     })
-    .catch(() => resp.sendStatus(400));
+    .then(() => res.send())
+    .catch(() => res.sendStatus(400));
 };
 
 const leaveList = (req, resp) => {

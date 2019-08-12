@@ -110,7 +110,7 @@ const responseWithListsMetaData = (lists, userId) =>
 
 const responseWithItems = (userId, items) =>
   _map(items, item => {
-    const { authorId: author, isArchived, voterIds, ...rest } = item;
+    const { authorId: author, isArchived, isDeleted, voterIds, ...rest } = item;
     const { _id: authorId, displayName: authorName } = author;
 
     return {
@@ -124,7 +124,7 @@ const responseWithItems = (userId, items) =>
   });
 
 const responseWithItem = (item, userId) => {
-  const { authorId: author, isArchived, voterIds, ...rest } = item;
+  const { authorId: author, isArchived, isDeleted, voterIds, ...rest } = item;
   const { _id: authorId, displayName: authorName } = author;
 
   return {
