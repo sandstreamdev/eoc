@@ -76,7 +76,7 @@ class Form extends PureComponent {
             value={name}
           />
           {errorMessageId && (
-            <span className="error-message ">
+            <span className="error-message">
               <FormattedMessage id="common.form.default-warning" />
             </span>
           )}

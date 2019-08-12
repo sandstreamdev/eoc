@@ -42,32 +42,30 @@ class FormDialog extends Component {
 
   handleDescriptionChange = description => this.setState({ description });
 
-  handleNameChange = name => {
-    this.setState({ name }, this.validateName);
-  };
+  handleNameChange = name => this.setState({ name }, this.validateName);
 
-  validateName = () => {
+  validateName = callback => {
     const { name } = this.state;
 
     const errorMessageId = validateWith(value =>
       validator.isLength(value, { min: 1, max: 32 })
     )('user.auth.input.email.invalid')(name);
 
-    this.setState({ errorMessageId });
+    this.setState({ errorMessageId }, callback);
   };
 
   handleConfirm = () => {
     const { defaultDescription, defaultName, onConfirm } = this.props;
     const { description, name, errorMessageId } = this.state;
 
-    this.validateName();
-
     if (!errorMessageId) {
       if (defaultDescription !== description || defaultName !== name) {
-        return name && onConfirm(name, description);
+        name && onConfirm(name, description);
       }
     }
   };
+
+  handleConfirmClick = () => this.validateName(this.handleConfirm);
 
   render() {
     const {
@@ -82,7 +80,7 @@ class FormDialog extends Component {
 
     return (
       <Dialog
-        onConfirm={this.handleConfirm}
+        onConfirm={this.handleConfirmClick}
         onCancel={onCancel}
         pending={pending}
         title={title}
