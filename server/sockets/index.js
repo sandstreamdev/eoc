@@ -53,9 +53,13 @@ const {
   updateCohort,
   updateCohortHeaderStatus
 } = require('./cohort');
+const { SOCKET_TIMEOUT } = require('../common/variables');
 
 const socketListenTo = server => {
-  const ioInstance = io(server, { forceNew: true });
+  const ioInstance = io(server, {
+    forceNew: true,
+    pingTimeout: SOCKET_TIMEOUT
+  });
 
   ioInstance.use(
     passportSocketIo.authorize({

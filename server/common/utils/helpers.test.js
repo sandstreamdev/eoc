@@ -122,9 +122,12 @@ describe('function responseWithItems ', () => {
     );
   });
 
-  const notExpected = 'voterIds';
-  it('returns items without sensitive data', () => {
-    result.map(item => expect(item).not.toHaveProperty(notExpected));
+  const notExpected = ['isDeleted', 'voterIds'];
+
+  it('returns items without not expected data', () => {
+    result.map(item =>
+      notExpected.map(property => expect(item).not.toHaveProperty(property))
+    );
   });
 });
 
@@ -139,10 +142,10 @@ describe('function responseWithItem', () => {
     );
   });
 
-  const notExpected = 'voterIds';
+  const notExpected = ['isDeleted', 'voterIds'];
 
-  it('returns item without sensitive data', () => {
-    expect(result).not.toHaveProperty(notExpected);
+  it('returns item without not expected data', () => {
+    notExpected.map(property => expect(result).not.toHaveProperty(property));
   });
 });
 
@@ -155,7 +158,7 @@ describe('function responseWithCohorts', () => {
     );
   });
 
-  const notExpected = ['favIds', 'ownerIds', 'memberIds'];
+  const notExpected = ['favIds', 'isDeleted', 'memberIds', 'ownerIds'];
 
   it('returns cohorts meta data without sensitive data', () => {
     notExpected.map(property =>
@@ -174,7 +177,7 @@ describe('function responseWithCohort', () => {
     );
   });
 
-  const notExpected = ['favIds', 'ownerIds', 'memberIds'];
+  const notExpected = ['favIds', 'isDeleted', 'memberIds', 'ownerIds'];
 
   it('returns cohort data without sensitive data', () => {
     notExpected.map(property => expect(result).not.toHaveProperty(property));

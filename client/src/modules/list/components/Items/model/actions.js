@@ -1,6 +1,11 @@
 import _keyBy from 'lodash/keyBy';
 
-import { getJson, patchData, postData } from 'common/utils/fetchMethods';
+import {
+  deleteData,
+  getJson,
+  patchData,
+  postData
+} from 'common/utils/fetchMethods';
 import {
   CommentActionTypes,
   ItemActionTypes,
@@ -321,8 +326,9 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
 export const fetchArchivedItems = (listId, listName) => dispatch =>
   getJson(`/api/lists/${listId}/archived-items`)
     .then(json => {
-      const dataMap = _keyBy(json, '_id');
-      dispatch(fetchArchivedItemsSuccess({ listId, dataMap }));
+      const data = _keyBy(json, '_id');
+
+      dispatch(fetchArchivedItemsSuccess({ listId, data }));
     })
     .catch(() => {
       dispatch(fetchArchivedItemsFailure());
@@ -357,7 +363,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
     });
 
 export const deleteItem = (listId, itemId, name) => dispatch =>
-  patchData(`/api/lists/${listId}/delete-item/${itemId}`)
+  deleteData(`/api/lists/${listId}/${itemId}`)
     .then(() => {
       const action = deleteItemSuccess({ listId, itemId });
       const { type, payload } = action;
