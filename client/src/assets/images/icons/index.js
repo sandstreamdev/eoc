@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 const Icon = props => (
   <svg
-    aria-role="img"
     className="svg-inline--fa fa-w-20"
     data-prefix="fas"
     role="img"
