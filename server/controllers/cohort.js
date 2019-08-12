@@ -71,8 +71,9 @@ const getArchivedCohortsMetaData = (req, resp) => {
 
   Cohort.find(
     {
-      ownerIds: userId,
-      isArchived: true
+      isArchived: true,
+      isDeleted: false,
+      ownerIds: userId
     },
     '_id name createdAt description isArchived memberIds ownerIds',
     { sort: { created_at: -1 } }
@@ -218,11 +219,21 @@ const deleteCohortById = (req, resp) => {
       if (lists) {
         const listsIds = lists.map(lists => lists._id);
 
-        return Comment.deleteMany({ listId: { $in: listsIds } });
+        return Comment.updateMany(
+          { listId: { $in: listsIds } },
+          { isDeleted: true }
+        );
       }
     })
-    .then(() => List.deleteMany({ cohortId: sanitizedCohortId }).exec())
-    .then(() => Cohort.deleteOne({ _id: sanitizedCohortId }).exec())
+    .then(() =>
+      List.updateMany(
+        { cohortId: sanitizedCohortId },
+        { isDeleted: true }
+      ).exec()
+    )
+    .then(() =>
+      Cohort.updateMany({ _id: sanitizedCohortId }, { isDeleted: true }).exec()
+    )
     .then(doc => {
       if (!doc) {
         return resp.sendStatus(400);

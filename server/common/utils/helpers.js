@@ -139,7 +139,7 @@ const responseWithItem = (item, userId) => {
 
 const responseWithCohorts = cohorts =>
   _map(cohorts, cohort => {
-    const { memberIds, ownerIds, ...rest } = cohort;
+    const { isDeleted, memberIds, ownerIds, ...rest } = cohort;
     const membersCount = memberIds.length;
 
     return {
@@ -149,7 +149,7 @@ const responseWithCohorts = cohorts =>
   });
 
 const responseWithCohort = cohort => {
-  const { _id, createdAt, description, memberIds, name, isArchived } = cohort;
+  const { _id, createdAt, description, isArchived, memberIds, name } = cohort;
   const membersCount = memberIds.length;
 
   return {
