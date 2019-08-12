@@ -49,19 +49,21 @@ class FormDialog extends Component {
 
     const errorMessageId = validateWith(value =>
       validator.isLength(value, { min: 1, max: 32 })
-    )('user.auth.input.email.invalid')(name);
+    )('common.form.required-warning')(name);
 
     this.setState({ errorMessageId }, callback);
   };
 
   handleConfirm = () => {
     const { defaultDescription, defaultName, onConfirm } = this.props;
-    const { description, name, errorMessageId } = this.state;
+    const { description, name } = this.state;
 
-    if (!errorMessageId) {
-      if (defaultDescription !== description || defaultName !== name) {
-        name && onConfirm(name, description);
-      }
+    const nameDiffers = defaultName !== name;
+    const descriptionDiffers = defaultDescription !== description;
+    const differs = descriptionDiffers || nameDiffers;
+
+    if (name && differs) {
+      onConfirm(name, description);
     }
   };
 
