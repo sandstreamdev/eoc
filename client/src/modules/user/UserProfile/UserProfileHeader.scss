@@ -1,0 +1,16 @@
+.user-profile-header {
+  font-size: $xxl-font;
+  margin-bottom: 24px;
+  color: $text-dark;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__avatar {
+    height: 80px;
+  }
+
+  span {
+    margin-bottom: 4px;
+  }
+}
