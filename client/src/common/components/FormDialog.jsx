@@ -54,7 +54,7 @@ class FormDialog extends Component {
 
     if (name) {
       errorMessageId = validateWith(value =>
-        validator.isLength(value, { min: 1, max: 21 })
+        validator.isLength(value, { min: 1, max: 32 })
       )('common.form.field-min-max')(name);
     }
 
