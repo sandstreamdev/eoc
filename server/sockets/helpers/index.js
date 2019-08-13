@@ -112,7 +112,7 @@ const removeCohort = (socket, cohortId, clients, members) => {
 
       socket.broadcast
         .to(socketId)
-        .emit(CohortActionTypes.DELETE_SUCCESS, cohortId);
+        .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
     }
   });
 };
