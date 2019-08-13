@@ -1,6 +1,6 @@
-import { FormattedMessage, injectIntl } from 'react-intl';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { ListType } from 'modules/list/consts';
 import { IntlPropType } from 'common/constants/propTypes';

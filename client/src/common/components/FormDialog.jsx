@@ -46,23 +46,30 @@ class FormDialog extends Component {
 
   validateName = callback => {
     const { name } = this.state;
+    let errorMessageId;
 
-    const errorMessageId = validateWith(value =>
-      validator.isLength(value, { min: 1, max: 32 })
-    )('common.form.required-warning')(name);
+    errorMessageId = validateWith(value => !validator.isEmpty(value))(
+      'common.form.required-warning'
+    )(name);
+
+    if (name) {
+      errorMessageId = validateWith(value =>
+        validator.isLength(value, { min: 1, max: 21 })
+      )('common.form.field-min-max')(name);
+    }
 
     this.setState({ errorMessageId }, callback);
   };
 
   handleConfirm = () => {
     const { defaultDescription, defaultName, onConfirm } = this.props;
-    const { description, name } = this.state;
+    const { description, name, errorMessageId } = this.state;
 
     const nameDiffers = defaultName !== name;
     const descriptionDiffers = defaultDescription !== description;
     const differs = descriptionDiffers || nameDiffers;
 
-    if (name && differs) {
+    if (!errorMessageId && differs) {
       onConfirm(name, description);
     }
   };
