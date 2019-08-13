@@ -6,9 +6,10 @@ import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
 
 import { updateListItem } from '../model/actions';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
+import { getCurrentUser } from 'modules/user/model/selectors';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -53,6 +54,7 @@ class ListItemName extends PureComponent {
   handleNameUpdate = () => {
     const { name: updatedName } = this.state;
     const {
+      currentUser: { id: userId, name: userName },
       itemId,
       match: {
         params: { id: listId }
@@ -67,18 +69,21 @@ class ListItemName extends PureComponent {
 
     if (canBeUpdated && isNameUpdated) {
       this.setState({ pending: true });
-      onPending();
-      updateListItem(name, listId, itemId, { name: updatedName }).finally(
-        () => {
-          this.setState({
-            pending: false,
-            isTipVisible: false
-          });
 
-          this.handleNameInputBlur();
-          onBlur();
-        }
-      );
+      const userData = { userId, editedBy: userName };
+
+      onPending();
+      updateListItem(name, listId, itemId, userData, {
+        name: updatedName
+      }).finally(() => {
+        this.setState({
+          isTipVisible: false,
+          pending: false
+        });
+
+        this.handleNameInputBlur();
+        onBlur();
+      });
     }
 
     if (!canBeUpdated) {
@@ -169,6 +174,7 @@ class ListItemName extends PureComponent {
 }
 
 ListItemName.propTypes = {
+  currentUser: UserPropType.isRequired,
   isMember: PropTypes.bool.isRequired,
   itemId: PropTypes.string.isRequired,
   locked: PropTypes.bool,
@@ -181,10 +187,14 @@ ListItemName.propTypes = {
   updateListItem: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default _flowRight(
   withRouter,
   connect(
-    null,
+    mapStateToProps,
     { updateListItem }
   )
 )(ListItemName);

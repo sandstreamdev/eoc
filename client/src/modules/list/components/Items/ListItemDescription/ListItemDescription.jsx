@@ -14,11 +14,12 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { updateListItem } from '../model/actions';
 import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
+import { getCurrentUser } from 'modules/user/model/selectors';
 
 class ListItemDescription extends PureComponent {
   pendingPromise = null;
@@ -126,6 +127,7 @@ class ListItemDescription extends PureComponent {
       isDescriptionUpdated
     } = this.state;
     const {
+      currentUser: { id: userId, name: userName },
       disabled,
       itemId,
       match: {
@@ -142,8 +144,10 @@ class ListItemDescription extends PureComponent {
     if (isDescriptionUpdated) {
       this.setState({ pending: true });
 
+      const userData = { userId, editedBy: userName };
+
       this.pendingPromise = makeAbortablePromise(
-        updateListItem(name, listId, itemId, { description })
+        updateListItem(name, listId, itemId, userData, { description })
       );
 
       return this.pendingPromise.promise
@@ -303,6 +307,7 @@ class ListItemDescription extends PureComponent {
 }
 
 ListItemDescription.propTypes = {
+  currentUser: UserPropType.isRequired,
   description: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   itemId: PropTypes.string.isRequired,
@@ -315,10 +320,14 @@ ListItemDescription.propTypes = {
   updateListItem: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default _flowRight(
   withRouter,
   connect(
-    null,
+    mapStateToProps,
     { updateListItem }
   )
 )(ListItemDescription);

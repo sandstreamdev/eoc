@@ -325,7 +325,7 @@ class ListHeader extends PureComponent {
             onClick={descriptionLock ? null : this.showDescriptionTextarea}
             type="button"
           >
-            <FormattedMessage id="list.list-header.add-button" />
+            <FormattedMessage id="list.list-description.add-button" />
           </button>
         )}
       </Fragment>

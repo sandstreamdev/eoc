@@ -360,6 +360,7 @@ class ListItem extends PureComponent {
         _id,
         authorName,
         descriptionLock = false,
+        editedBy,
         isOrdered,
         name,
         nameLock = false
@@ -414,6 +415,14 @@ class ListItem extends PureComponent {
                   values={{ authorName }}
                 />
               </span>
+              {editedBy && (
+                <span className="list-item__edited-by">
+                  <FormattedMessage
+                    id="list.list-item.edited-by"
+                    values={{ editedBy }}
+                  />
+                </span>
+              )}
             </span>
           </label>
           <div className="list-item__buttons">

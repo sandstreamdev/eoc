@@ -130,10 +130,10 @@
     line-height: 1.2;
   }
 
-  &__author {
+  &__author,
+  &__edited-by {
     font-size: $s-font;
     margin-top: four-by(1);
-    text-transform: capitalize;
     text-overflow: ellipsis;
   }
 
