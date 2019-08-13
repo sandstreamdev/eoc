@@ -38,6 +38,10 @@ class SortBox extends Component {
     const orderButtonClass = classNames('sort-box__button', {
       'sort-box__button--obverse': sortOrder === SortOrderType.ASCENDING
     });
+    const sortIconMessageId =
+      sortOrder === SortOrderType.ASCENDING
+        ? 'common.sort-box.sort-ascending'
+        : 'common.sort-box.sort-descending';
 
     return (
       <div className="sort-box">
@@ -58,12 +62,9 @@ class SortBox extends Component {
           <button
             className={orderButtonClass}
             onClick={this.handleSortOrderChange}
-            title={formatMessage(
-              {
-                id: 'common.sort-box.sort'
-              },
-              { sortOrder }
-            )}
+            title={formatMessage({
+              id: sortIconMessageId
+            })}
             type="button"
           >
             <ArrowUpIcon />
