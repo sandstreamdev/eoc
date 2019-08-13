@@ -24,9 +24,9 @@ import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
-import Avatar from 'common/components/Avatar';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import MemberDetailsHeader from './MemberDetailsHeader';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -321,53 +321,6 @@ class MemberDetails extends PureComponent {
     );
   };
 
-  renderHeader = () => {
-    const {
-      avatarUrl,
-      displayName,
-      isCohortList,
-      isGuest,
-      isMember,
-      isOwner
-    } = this.props;
-    let roleToDisplay = (
-      <FormattedMessage id="common.member-details.role-viewer" />
-    );
-
-    if (isMember) {
-      roleToDisplay = (
-        <FormattedMessage id="common.member-details.role-member" />
-      );
-    }
-
-    if (isOwner) {
-      roleToDisplay = (
-        <FormattedMessage id="common.member-details.role-owner" />
-      );
-    }
-
-    return (
-      <header className="member-details__header">
-        <div className="member-details__avatar">
-          <Avatar
-            avatarUrl={avatarUrl}
-            className="member-details__image"
-            name={displayName}
-          />
-        </div>
-        <div>
-          <h3 className="member-details__name">{displayName}</h3>
-          <p className="member-details__role">
-            {roleToDisplay}
-            {isGuest && isCohortList && (
-              <FormattedMessage id="common.member-details.role-guest" />
-            )}
-          </p>
-        </div>
-      </header>
-    );
-  };
-
   renderDetails = () => {
     const { isMemberInfoVisible, isOwnerInfoVisible } = this.state;
     const {
@@ -465,8 +418,13 @@ class MemberDetails extends PureComponent {
 
   render() {
     const {
+      avatarUrl,
+      displayName,
+      isCohortList,
       isCurrentUserAnOwner,
       isGuest,
+      isMember,
+      isOwner,
       isPrivateList,
       onClose,
       route
@@ -491,7 +449,14 @@ class MemberDetails extends PureComponent {
             <CloseIcon />
           </button>
           <div className="member-details__details">
-            {this.renderHeader()}
+            <MemberDetailsHeader
+              avatarUrl={avatarUrl}
+              displayName={displayName}
+              isCohortList={isCohortList}
+              isGuest={isGuest}
+              isMember={isMember}
+              isOwner={isOwner}
+            />
             <div className="member-details__panel">
               {isCurrentUserAnOwner && this.renderDetails()}
               {pending && <Preloader />}
