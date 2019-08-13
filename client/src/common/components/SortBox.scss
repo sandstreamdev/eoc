@@ -45,8 +45,8 @@
     width: 40px;
     cursor: pointer;
 
-    img {
-      width: 14px;
+    svg {
+      @include constant-size(14px);
     }
 
     &--obverse {
