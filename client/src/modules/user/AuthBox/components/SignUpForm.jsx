@@ -201,7 +201,7 @@ class SignUpForm extends PureComponent {
                 ? 'user.auth.input.password.not-match'
                 : '',
               emailError: isEmailError ? 'user.auth.input.email.invalid' : '',
-              nameError: isNameError ? 'user.auth.input.username.invalid' : '',
+              nameError: isNameError ? 'common.form.field-min-max' : '',
               passwordError: isPasswordError
                 ? 'user.auth.input.password.invalid'
                 : ''
