@@ -31,7 +31,6 @@ const sessionStore = new MongoStore({
 // Set up mongodb connection
 const dbUrl = DB_URL;
 mongoose.connect(dbUrl, { useNewUrlParser: true });
-
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
