@@ -4,8 +4,6 @@ const _pickBy = require('lodash/pickBy');
 const _compact = require('lodash/compact');
 const _keyBy = require('lodash/keyBy');
 
-const List = require('../../models/list.model');
-
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
@@ -336,25 +334,6 @@ const setNonExistingSchemaField = (field, collectionSchema) => ({
   $set: { [field]: collectionSchema[field].default }
 });
 
-const migrateListModel = listSchema => {
-  const ListSchemaFields = Object.keys(listSchema);
-
-  ListSchemaFields.map(field => {
-    const queryField = queryNonExistingSchemaField(field);
-    const setField = setNonExistingSchemaField(field, listSchema);
-
-    return (
-      List.updateMany(queryField, setField)
-        .lean()
-        .exec()
-        /* eslint-disable no-console */
-        .then(() => console.log('Successfully migrated list model...'))
-        .catch(err => console.log(err))
-    );
-    /* eslint-enable no-console */
-  });
-};
-
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -363,7 +342,6 @@ module.exports = {
   isOwner,
   isValidMongoId,
   isViewer,
-  migrateListModel,
   queryNonExistingSchemaField,
   responseWithCohort,
   responseWithCohortDetails,

@@ -16,7 +16,6 @@ const cohortsRouter = require('./routes/cohort');
 const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
-const { migrateListModel } = require('./common/utils/index');
 
 const app = express();
 /* eslint-disable import/order */
@@ -31,11 +30,7 @@ const sessionStore = new MongoStore({
 });
 // Set up mongodb connection
 const dbUrl = DB_URL;
-mongoose.connect(dbUrl, { useNewUrlParser: true }).then(() => {
-  const ListSchema = mongoose.modelSchemas.List.obj;
-
-  migrateListModel(ListSchema);
-});
+mongoose.connect(dbUrl, { useNewUrlParser: true });
 
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
