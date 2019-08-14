@@ -8,6 +8,8 @@ const {
   isUserFavourite,
   isValidMongoId,
   isViewer,
+  migrateListModel,
+  queryNonExistingSchemaField,
   responseWithCohort,
   responseWithCohortDetails,
   responseWithCohortMember,
@@ -21,6 +23,7 @@ const {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  setNonExistingSchemaField,
   updateSubdocumentFields
 } = require('./helpers');
 
@@ -34,6 +37,8 @@ module.exports = {
   isUserFavourite,
   isValidMongoId,
   isViewer,
+  migrateListModel,
+  queryNonExistingSchemaField,
   responseWithCohort,
   responseWithCohortDetails,
   responseWithCohortMember,
@@ -47,5 +52,6 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  setNonExistingSchemaField,
   updateSubdocumentFields
 };
