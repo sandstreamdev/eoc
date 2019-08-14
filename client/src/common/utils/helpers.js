@@ -49,4 +49,7 @@ const filter = f => object =>
 
 const defined = x => x !== undefined;
 
+export const validateWith = validator => errorMessageId => value =>
+  validator(value) ? '' : errorMessageId;
+
 export const filterDefined = filter(defined);

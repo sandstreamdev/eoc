@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 
-import ArrowIcon from 'assets/images/arrow-up-solid.svg';
 import { SortOrderPropType, IntlPropType } from '../constants/propTypes';
 import { SortOrderType } from '../constants/enums';
+import { ArrowUpIcon } from 'assets/images/icons';
 
 class SortBox extends Component {
   handleSortByChange = event => {
@@ -38,6 +38,10 @@ class SortBox extends Component {
     const orderButtonClass = classNames('sort-box__button', {
       'sort-box__button--obverse': sortOrder === SortOrderType.ASCENDING
     });
+    const sortIconMessageId =
+      sortOrder === SortOrderType.ASCENDING
+        ? 'common.sort-box.sort-ascending'
+        : 'common.sort-box.sort-descending';
 
     return (
       <div className="sort-box">
@@ -58,17 +62,12 @@ class SortBox extends Component {
           <button
             className={orderButtonClass}
             onClick={this.handleSortOrderChange}
+            title={formatMessage({
+              id: sortIconMessageId
+            })}
             type="button"
           >
-            <img
-              alt={formatMessage(
-                {
-                  id: 'common.sort-box.sort'
-                },
-                { sortOrder }
-              )}
-              src={ArrowIcon}
-            />
+            <ArrowUpIcon />
           </button>
         </div>
       </div>

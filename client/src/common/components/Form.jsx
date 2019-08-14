@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { ListType } from 'modules/list/consts';
 import { IntlPropType } from 'common/constants/propTypes';
@@ -57,6 +57,7 @@ class Form extends PureComponent {
     const { description, name } = this.state;
     const {
       disabled,
+      errorMessageId,
       intl: { formatMessage },
       onSelect
     } = this.props;
@@ -74,6 +75,11 @@ class Form extends PureComponent {
             type="text"
             value={name}
           />
+          {errorMessageId && (
+            <span className="error-message">
+              <FormattedMessage id={errorMessageId} />
+            </span>
+          )}
         </label>
         <label className="form__label">
           <textarea
@@ -105,6 +111,7 @@ Form.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
   disabled: PropTypes.bool,
+  errorMessageId: PropTypes.string,
   intl: IntlPropType.isRequired,
 
   onDescriptionChange: PropTypes.func.isRequired,

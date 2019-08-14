@@ -43,19 +43,21 @@ import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { joinRoom, leaveRoom } from 'sockets';
 
+const initialState = {
+  areArchivedListsVisible: false,
+  breadcrumbs: [],
+  dialogContext: null,
+  pendingForArchivedLists: false,
+  pendingForDetails: false,
+  pendingForListCreation: false,
+  pendingForCohortArchivization: false,
+  type: ListType.LIMITED
+};
+
 class Cohort extends PureComponent {
   pendingPromises = [];
 
-  state = {
-    areArchivedListsVisible: false,
-    breadcrumbs: [],
-    dialogContext: null,
-    pendingForArchivedLists: false,
-    pendingForDetails: false,
-    pendingForListCreation: false,
-    pendingForCohortArchivization: false,
-    type: ListType.LIMITED
-  };
+  state = initialState;
 
   componentDidMount() {
     const {
@@ -172,7 +174,7 @@ class Cohort extends PureComponent {
     this.setState({ pendingForListCreation: true });
 
     createList(data).finally(() => {
-      this.setState({ pendingForListCreation: false });
+      this.setState(initialState);
       this.hideDialog();
     });
   };
