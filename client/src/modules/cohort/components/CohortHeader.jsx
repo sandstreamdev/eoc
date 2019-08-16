@@ -42,19 +42,10 @@ class CohortHeader extends PureComponent {
       errorMessageId: '',
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
-      isTipVisible: false,
       nameInputValue: name,
       pendingForDescription: false,
       pendingForName: false
     };
-  }
-
-  componentDidUpdate() {
-    const { isTipVisible, nameInputValue } = this.state;
-
-    if (isTipVisible && nameInputValue) {
-      this.hideTip();
-    }
   }
 
   handleClick = (event, isClickedOutside) => {
@@ -261,17 +252,6 @@ class CohortHeader extends PureComponent {
       }
     );
   };
-
-  handleTipVisibility = () => {
-    const { nameInputValue } = this.state;
-    const isItemNameEmpty = !_trim(nameInputValue);
-
-    if (isItemNameEmpty) {
-      this.setState({ isTipVisible: true });
-    }
-  };
-
-  hideTip = () => this.setState({ isTipVisible: false });
 
   renderDescription = () => {
     const {
