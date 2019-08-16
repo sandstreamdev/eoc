@@ -27,6 +27,7 @@ import { ListType } from 'modules/list/consts';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import MemberDetailsHeader from './MemberDetailsHeader';
+import MemberRole from 'common/components/Members/components/MemberRole';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -433,6 +434,14 @@ class MemberDetails extends PureComponent {
 
     const isLeaveButtonDisplayed =
       route === Routes.COHORT || isPrivateList || (!isPrivateList && isGuest);
+    const role = (
+      <MemberRole
+        isCohortList={isCohortList}
+        isGuest={isGuest}
+        isMember={isMember}
+        isOwner={isOwner}
+      />
+    );
 
     return (
       <Fragment>
@@ -452,10 +461,7 @@ class MemberDetails extends PureComponent {
             <MemberDetailsHeader
               avatarUrl={avatarUrl}
               displayName={displayName}
-              isCohortList={isCohortList}
-              isGuest={isGuest}
-              isMember={isMember}
-              isOwner={isOwner}
+              role={role}
             />
             <div className="member-details__panel">
               {isCurrentUserAnOwner && this.renderDetails()}
