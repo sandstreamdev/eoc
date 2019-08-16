@@ -2,19 +2,30 @@
   &__intro {
     margin-top: four-by(1);
     width: 100%;
-    background: url('../../assets/images/hero-bg.png') bottom;
-    background-size: auto 260px;
+    background-image: url('../../assets/images/hero-bg.png');
+    background-size: cover;
     background-repeat: no-repeat;
+    background-position: center bottom;
     padding: 0 0 four-by(16);
 
-    @include breakpoint($small) {
-      background-size: auto 350px;
-      padding: 0 0 four-by(16);
-    }
+    .wrapper {
+      padding-bottom: 50px;
 
-    @include breakpoint($medium) {
-      background: url('../../assets/images/hero-bg.png') center -450px;
-      background-size: auto auto;
+      @include breakpoint($medium) {
+        padding-bottom: 100px;
+      }
+
+      @include breakpoint($large) {
+        padding-bottom: 150px;
+      }
+
+      @include breakpoint($quad-hd) {
+        padding-bottom: 250px;
+      }
+
+      @include breakpoint($ultra-hd) {
+        padding-bottom: 380px;
+      }
     }
   }
 
@@ -24,7 +35,7 @@
     text-align: center;
     font-size: 35px;
     max-width: 430px;
-    margin: four-by(4) auto;
+    margin: four-by(8) auto four-by(4);
 
     @include breakpoint($medium) {
       font-size: 45px;
@@ -55,6 +66,18 @@
     background: $orange-bg;
     padding: 0 0 four-by(8);
     box-shadow: 0px 5px 5px $orange-bg;
+
+    @include breakpoint($xxlarge) {
+      top: -50px;
+    }
+
+    @include breakpoint($quad-hd) {
+      top: -100px;
+    }
+
+    @include breakpoint($ultra-hd) {
+      top: -200px;
+    }
   }
 
   &__heading {
