@@ -26,14 +26,4 @@
     white-space: nowrap;
     padding: 0 15px 0 10px;
   }
-
-  &__role {
-    font-weight: 400;
-    font-size: $s-font;
-    padding: 0 15px 0 10px;
-
-    span:nth-child(2) {
-      margin-left: four-by(1);
-    }
-  }
 }
