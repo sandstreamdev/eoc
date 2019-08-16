@@ -12,6 +12,7 @@ import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
 import { fetchUserDetails } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
+import UserProfileHeader from './UserProfileHeader';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;
@@ -50,25 +51,6 @@ class UserProfile extends PureComponent {
     this.setState(({ isPasswordUpdateFormVisible }) => ({
       isPasswordUpdateFormVisible: !isPasswordUpdateFormVisible
     }));
-  };
-
-  renderHeader = () => {
-    const {
-      currentUser: { avatarUrl, name }
-    } = this.props;
-
-    return (
-      <h1 className="user-profile__header">
-        <span>
-          <Avatar
-            avatarUrl={avatarUrl}
-            className="user-profile__header__avatar"
-            name={name}
-          />
-        </span>
-        {name}
-      </h1>
-    );
   };
 
   renderPersonalInfo = () => {
@@ -202,11 +184,14 @@ class UserProfile extends PureComponent {
 
   render() {
     const { pending } = this.state;
+    const {
+      currentUser: { avatarUrl, name }
+    } = this.props;
 
     return (
       <div className="wrapper">
         <article className="user-profile">
-          {this.renderHeader()}
+          <UserProfileHeader avatarUrl={avatarUrl} name={name} />
           {this.renderPersonalInfo()}
           {this.renderContactInfo()}
           {this.renderAccountInfo()}

@@ -79,6 +79,7 @@
 @import '../../common/components/Activities/components/ActivitiesList.scss';
 @import '../../common/components/Activities/components/Activity.scss';
 @import '../../common/components/Avatar.scss';
+@import '../../common/components/Members/components/MemberDetailsHeader.scss';
 @import '../../modules/user/AuthBox/components/SignUpForm.scss';
 @import '../../modules/user/AuthBox/components/SignInForm.scss';
 @import '../../modules/user/AuthBox/components/AuthInput.scss';
@@ -89,3 +90,5 @@
 @import '../../modules/user/AuthBox/components/LinkExpired.scss';
 @import '../../modules/user/AuthBox/components/SuccessMessage.scss';
 @import '../../modules/user/UserProfile/UserProfile.scss';
+@import '../../modules/user/UserProfile/UserProfileHeader.scss';
+@import '../../common/components/Members/components/MemberRole.scss';

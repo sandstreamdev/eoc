@@ -17,23 +17,6 @@
     padding-right: 36px;
   }
 
-  &__avatar {
-    position: relative;
-    align-items: center;
-    background: $bg-color;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-  }
-
-  &__image {
-    width: 100%;
-    height: 100%;
-  }
-
   &__close {
     position: absolute;
     top: 0;
@@ -59,29 +42,6 @@
     box-sizing: border-box;
     width: 100%;
     background-color: $bg-color;
-  }
-
-  &__header {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-  }
-
-  &__name {
-    font-weight: 500;
-    white-space: nowrap;
-    padding: 0 15px 0 10px;
-  }
-
-  &__role {
-    font-weight: 400;
-    font-size: $s-font;
-    padding: 0 15px 0 10px;
-
-    span:nth-child(2) {
-      margin-left: four-by(1);
-    }
   }
 
   &__panel {

@@ -1,0 +1,29 @@
+.member-details-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  &__avatar {
+    position: relative;
+    align-items: center;
+    background: $bg-color;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__name {
+    font-weight: 500;
+    white-space: nowrap;
+    padding: 0 four-by(4) 0 four-by(2);
+  }
+}
