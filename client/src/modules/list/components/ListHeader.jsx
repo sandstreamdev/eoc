@@ -91,12 +91,14 @@ class ListHeader extends PureComponent {
     } = this.state;
     const { code } = event;
 
-    if (code === KeyCodes.ESCAPE && isDescriptionTextareaVisible) {
-      this.handleDescriptionUpdate();
-    }
+    if (code === KeyCodes.ESCAPE) {
+      if (isDescriptionTextareaVisible) {
+        this.handleDescriptionUpdate();
+      }
 
-    if (code === KeyCodes.ESCAPE && isNameInputVisible && !errorMessageId) {
-      this.handleNameUpdate();
+      if (isNameInputVisible && !errorMessageId) {
+        this.handleNameUpdate();
+      }
     }
 
     if (code === KeyCodes.ENTER && !errorMessageId) {
@@ -106,7 +108,6 @@ class ListHeader extends PureComponent {
 
   validateName = () => {
     const { nameInputValue } = this.state;
-
     let errorMessageId;
 
     errorMessageId = validateWith(value => !validator.isEmpty(value))(
@@ -126,12 +127,8 @@ class ListHeader extends PureComponent {
     const {
       errorMessageId,
       isDescriptionTextareaVisible,
-      isNameInputVisible,
-      nameInputValue
+      isNameInputVisible
     } = this.state;
-    const {
-      details: { name }
-    } = this.props;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
@@ -140,10 +137,7 @@ class ListHeader extends PureComponent {
     }
 
     if (isNameInputVisible && isClickedOutside && !errorMessageId) {
-      if (_trim(nameInputValue).length > 0) {
-        return this.handleNameUpdate();
-      }
-      this.setState({ isNameInputVisible: false, nameInputValue: name });
+      this.handleNameUpdate();
     }
   };
 
