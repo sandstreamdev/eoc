@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import validator from 'validator';
 
 import { CohortIcon } from 'assets/images/icons';
 import {
@@ -14,12 +15,18 @@ import {
   unlockCohortHeader,
   updateCohort
 } from '../model/actions';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  RouterMatchPropType,
+  IntlPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
 import { getCurrentUser } from 'modules/user/model/selectors';
+import { validateWith } from 'common/utils/helpers';
+import ErrorMessage from 'common/components/Forms/ErrorMessage';
 
 class CohortHeader extends PureComponent {
   constructor(props) {
@@ -32,6 +39,7 @@ class CohortHeader extends PureComponent {
 
     this.state = {
       descriptionInputValue: trimmedDescription,
+      errorMessageId: '',
       isDescriptionTextareaVisible: false,
       isNameInputVisible: false,
       isTipVisible: false,
@@ -51,13 +59,10 @@ class CohortHeader extends PureComponent {
 
   handleClick = (event, isClickedOutside) => {
     const {
+      errorMessageId,
       isDescriptionTextareaVisible,
-      isNameInputVisible,
-      nameInputValue
+      isNameInputVisible
     } = this.state;
-    const {
-      details: { name }
-    } = this.props;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
@@ -65,29 +70,49 @@ class CohortHeader extends PureComponent {
       return;
     }
 
-    if (isNameInputVisible && isClickedOutside) {
-      if (_trim(nameInputValue).length > 0) {
-        return this.handleNameUpdate();
-      }
-      this.setState({ isNameInputVisible: false, nameInputValue: name });
+    if (isNameInputVisible && isClickedOutside && !errorMessageId) {
+      this.handleNameUpdate();
     }
   };
 
   handleKeyPress = event => {
-    const { isDescriptionTextareaVisible } = this.state;
+    const {
+      errorMessageId,
+      isDescriptionTextareaVisible,
+      isNameInputVisible
+    } = this.state;
     const { code } = event;
 
     if (code === KeyCodes.ESCAPE) {
-      const action = isDescriptionTextareaVisible
-        ? this.handleDescriptionUpdate
-        : this.handleNameUpdate;
+      if (isDescriptionTextareaVisible) {
+        this.handleDescriptionUpdate();
+      }
 
-      return action();
+      if (isNameInputVisible && !errorMessageId) {
+        this.handleNameUpdate();
+      }
     }
 
-    if (code === KeyCodes.ENTER) {
+    if (code === KeyCodes.ENTER && !errorMessageId) {
       this.handleNameUpdate();
     }
+  };
+
+  validateName = () => {
+    const { nameInputValue } = this.state;
+    let errorMessageId;
+
+    errorMessageId = validateWith(value => !validator.isEmpty(value))(
+      'common.form.required-warning'
+    )(nameInputValue);
+
+    if (nameInputValue) {
+      errorMessageId = validateWith(value =>
+        validator.isLength(value, { min: 1, max: 32 })
+      )('common.form.field-min-max')(nameInputValue);
+    }
+
+    this.setState({ errorMessageId });
   };
 
   showNameInput = () =>
@@ -106,7 +131,7 @@ class CohortHeader extends PureComponent {
     } = event;
 
     this.setState({ nameInputValue: value }, () => {
-      this.handleTipVisibility();
+      this.validateName();
     });
   };
 
@@ -171,30 +196,32 @@ class CohortHeader extends PureComponent {
       updateBreadcrumbs,
       updateCohort
     } = this.props;
-    const { nameInputValue } = this.state;
+    const { errorMessageId, nameInputValue } = this.state;
     const nameToUpdate = _trim(nameInputValue);
     const { name: previousName } = details;
 
-    if (_trim(previousName) === nameToUpdate) {
-      this.setState({ isNameInputVisible: false });
+    if (!errorMessageId) {
+      if (_trim(previousName) === nameToUpdate) {
+        this.setState({ isNameInputVisible: false });
 
-      return;
-    }
+        return;
+      }
 
-    if (nameToUpdate.length >= 1) {
-      this.setState({ pendingForName: true });
-      this.handleNameLock();
+      if (nameToUpdate.length >= 1) {
+        this.setState({ pendingForName: true });
+        this.handleNameLock();
 
-      updateCohort(previousName, id, { name: nameToUpdate }).finally(() => {
-        this.setState({
-          isNameInputVisible: false,
-          nameInputValue: nameToUpdate,
-          pendingForName: false
+        updateCohort(previousName, id, { name: nameToUpdate }).finally(() => {
+          this.setState({
+            isNameInputVisible: false,
+            nameInputValue: nameToUpdate,
+            pendingForName: false
+          });
+
+          this.handleNameUnmount();
+          updateBreadcrumbs();
         });
-
-        this.handleNameUnmount();
-        updateBreadcrumbs();
-      });
+      }
     }
   };
 
@@ -303,13 +330,14 @@ class CohortHeader extends PureComponent {
 
   renderName = () => {
     const {
+      errorMessageId,
       isNameInputVisible,
-      isTipVisible,
       nameInputValue,
       pendingForName
     } = this.state;
     const {
-      details: { isOwner, name, nameLock }
+      details: { isOwner, name, nameLock },
+      intl: { formatMessage }
     } = this.props;
 
     return (
@@ -330,8 +358,8 @@ class CohortHeader extends PureComponent {
               onNameChange={this.handleNameChange}
               onUnmount={this.handleNameUnmount}
             />
-            {isTipVisible && (
-              <p className="error-message">Name can not be empty</p>
+            {errorMessageId && (
+              <ErrorMessage message={formatMessage({ id: errorMessageId })} />
             )}
           </div>
         ) : (
@@ -368,6 +396,7 @@ class CohortHeader extends PureComponent {
 CohortHeader.propTypes = {
   currentUser: UserPropType.isRequired,
   details: PropTypes.objectOf(PropTypes.any).isRequired,
+  intl: IntlPropType.isRequired,
   match: RouterMatchPropType.isRequired,
 
   updateBreadcrumbs: PropTypes.func.isRequired,
@@ -379,6 +408,7 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
+  injectIntl,
   withRouter,
   connect(
     mapStateToProps,
