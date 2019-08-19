@@ -70,9 +70,7 @@ class ListHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ nameInputValue: value }, () => {
-      this.validateName();
-    });
+    this.setState({ nameInputValue: value }, this.validateName);
   };
 
   handleDescriptionChange = event => {
@@ -110,11 +108,11 @@ class ListHeader extends PureComponent {
     const { nameInputValue } = this.state;
     let errorMessageId;
 
-    errorMessageId = validateWith(value => !validator.isEmpty(value))(
-      'common.form.required-warning'
-    )(nameInputValue);
+    errorMessageId = validateWith(
+      value => !validator.isEmpty(value, { ignore_whitespace: true })
+    )('common.form.required-warning')(nameInputValue);
 
-    if (nameInputValue) {
+    if (_trim(nameInputValue)) {
       errorMessageId = validateWith(value =>
         validator.isLength(value, { min: 1, max: 32 })
       )('common.form.field-min-max')(nameInputValue);
