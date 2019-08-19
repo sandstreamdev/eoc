@@ -326,10 +326,15 @@ const responseWithCohortDetails = (doc, userId) => {
   };
 };
 
+const defined = x => x !== undefined;
+
+const filterDefined = filter(defined);
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   filter,
+  filterDefined,
   isMember,
   isOwner,
   isValidMongoId,

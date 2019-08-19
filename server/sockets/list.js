@@ -26,6 +26,7 @@ const {
   listChannel,
   updateListOnDashboardAndCohortView
 } = require('./helpers');
+const { filterDefined } = require('../common/utils/helpers');
 
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
@@ -294,7 +295,13 @@ const updateList = (socket, dashboardViewClients, cohortViewClients) => {
 
 const updateListHeaderState = (socket, listClientLocks) => {
   socket.on(ListHeaderStatusTypes.UNLOCK, data => {
-    const { listId, userId } = data;
+    const {
+      descriptionLock: description,
+      listId,
+      nameLock: name,
+      userId
+    } = data;
+    const dataToUpdate = filterDefined({ description, name });
 
     socket.broadcast
       .to(listChannel(listId))
@@ -304,10 +311,20 @@ const updateListHeaderState = (socket, listClientLocks) => {
       clearTimeout(listClientLocks.get(userId));
       listClientLocks.delete(userId);
     }
+
+    List.findOneAndUpdate({ _id: listId }, { locks: dataToUpdate })
+      .lean()
+      .exec();
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
-    const { listId, userId } = data;
+    const {
+      descriptionLock: description,
+      listId,
+      nameLock: name,
+      userId
+    } = data;
+    const dataToUpdate = filterDefined({ description, name });
 
     socket.broadcast
       .to(listChannel(listId))
@@ -333,6 +350,11 @@ const updateListHeaderState = (socket, listClientLocks) => {
     }, LOCK_TIMEOUT);
 
     listClientLocks.set(userId, delayedUnlock);
+
+    // FIXME: use find
+    List.findOneAndUpdate({ _id: listId }, { locks: dataToUpdate })
+      .lean()
+      .exec();
   });
 };
 
