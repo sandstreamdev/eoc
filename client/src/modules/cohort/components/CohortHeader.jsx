@@ -121,9 +121,7 @@ class CohortHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ nameInputValue: value }, () => {
-      this.validateName();
-    });
+    this.setState({ nameInputValue: value }, this.validateName);
   };
 
   handleDescriptionChange = event => {

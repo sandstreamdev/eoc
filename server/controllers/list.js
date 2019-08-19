@@ -419,10 +419,8 @@ const updateListById = (req, resp) => {
   });
   let listActivity;
 
-  if (name !== undefined) {
-    if (!validator.isLength(name, { min: 1, max: 32 })) {
-      return resp.sendStatus(400);
-    }
+  if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
   }
 
   List.findOneAndUpdate(

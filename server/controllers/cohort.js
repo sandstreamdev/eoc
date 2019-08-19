@@ -105,10 +105,8 @@ const updateCohortById = (req, resp) => {
   });
   let cohortActivity;
 
-  if (name !== undefined) {
-    if (!validator.isLength(name, { min: 1, max: 32 })) {
-      return resp.sendStatus(400);
-    }
+  if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
   }
 
   Cohort.findOneAndUpdate(
