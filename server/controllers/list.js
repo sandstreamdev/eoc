@@ -256,6 +256,7 @@ const getListData = (req, resp) => {
         description,
         isArchived,
         items: listItems,
+        locks,
         memberIds,
         name,
         ownerIds,
@@ -302,6 +303,7 @@ const getListData = (req, resp) => {
         isMember: isListMember,
         isOwner: isListOwner,
         items,
+        locks,
         members,
         name,
         type

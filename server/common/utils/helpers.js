@@ -47,6 +47,7 @@ const responseWithList = (list, userId) => {
     description,
     favIds,
     items,
+    locks,
     name,
     type
   } = list;
@@ -61,6 +62,7 @@ const responseWithList = (list, userId) => {
     doneItemsCount,
     isFavourite: checkIfArrayContainsUserId(favIds, userId),
     type,
+    locks,
     name,
     unhandledItemsCount
   };

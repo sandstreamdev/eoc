@@ -285,7 +285,11 @@ class ListHeader extends PureComponent {
       pendingForDescription
     } = this.state;
     const {
-      details: { description, descriptionLock, isOwner }
+      details: {
+        description,
+        locks: { description: descriptionLock },
+        isOwner
+      }
     } = this.props;
 
     if (!description && !isOwner) {
@@ -340,7 +344,11 @@ class ListHeader extends PureComponent {
       pendingForName
     } = this.state;
     const {
-      details: { isOwner, name, nameLock }
+      details: {
+        isOwner,
+        name,
+        locks: { name: nameLock }
+      }
     } = this.props;
 
     return (
@@ -429,6 +437,7 @@ class ListHeader extends PureComponent {
 
   render() {
     const {
+      details,
       details: { isOwner, type },
       isCohortList
     } = this.props;
@@ -438,6 +447,8 @@ class ListHeader extends PureComponent {
       pendingForName,
       pendingForTypeUpdate
     } = this.state;
+
+    console.log(details);
 
     return (
       <div className="list-header">
