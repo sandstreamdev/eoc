@@ -21,12 +21,12 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 const {
-  getListsDataByViewers,
   getListIdsByViewers,
+  getListsDataByViewers,
   listChannel,
   updateListOnDashboardAndCohortView
 } = require('./helpers');
-const { filterDefined } = require('../common/utils/helpers');
+const { isDefined } = require('../common/utils/helpers');
 
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
@@ -301,7 +301,6 @@ const updateListHeaderState = (socket, listClientLocks) => {
       nameLock: name,
       userId
     } = data;
-    const dataToUpdate = filterDefined({ description, name });
 
     socket.broadcast
       .to(listChannel(listId))
@@ -312,9 +311,23 @@ const updateListHeaderState = (socket, listClientLocks) => {
       listClientLocks.delete(userId);
     }
 
-    List.findOneAndUpdate({ _id: listId }, { locks: dataToUpdate })
-      .lean()
-      .exec();
+    List.findOne({ _id: listId })
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { locks } = doc;
+
+          if (isDefined(name)) {
+            locks.name = name;
+          }
+
+          if (isDefined(description)) {
+            locks.description = description;
+          }
+
+          doc.save();
+        }
+      });
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
@@ -324,7 +337,6 @@ const updateListHeaderState = (socket, listClientLocks) => {
       nameLock: name,
       userId
     } = data;
-    const dataToUpdate = filterDefined({ description, name });
 
     socket.broadcast
       .to(listChannel(listId))
@@ -351,10 +363,23 @@ const updateListHeaderState = (socket, listClientLocks) => {
 
     listClientLocks.set(userId, delayedUnlock);
 
-    // FIXME: use find
-    List.findOneAndUpdate({ _id: listId }, { locks: dataToUpdate })
-      .lean()
-      .exec();
+    List.findOne({ _id: listId })
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { locks } = doc;
+
+          if (isDefined(name)) {
+            locks.name = name;
+          }
+
+          if (isDefined(description)) {
+            locks.description = description;
+          }
+
+          doc.save();
+        }
+      });
   });
 };
 

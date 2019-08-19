@@ -326,15 +326,18 @@ const responseWithCohortDetails = (doc, userId) => {
   };
 };
 
-const defined = x => x !== undefined;
-
-const filterDefined = filter(defined);
+/**
+ * isDefined function returns true if value if different
+ * from undefined, so false will return true
+ * @x {boolean or string or object} x Boolean value
+ */
+const isDefined = x => x !== undefined;
 
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   filter,
-  filterDefined,
+  isDefined,
   isMember,
   isOwner,
   isValidMongoId,
