@@ -44,7 +44,7 @@ class Activity extends PureComponent {
         <FormattedMessage
           id={activityType}
           values={{
-            item: item ? <em>{item.name}</em> : null,
+            item: item ? <em className="activity__item">{item.name}</em> : null,
             performer: <em>{performer.name}</em>,
             value: editedValue
           }}
