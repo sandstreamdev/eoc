@@ -211,8 +211,6 @@ class List extends Component {
     const { cohortId, isArchived, isMember, isOwner, name, type } = list;
     const isCohortList = cohortId !== null && cohortId !== undefined;
 
-    console.log(list);
-
     return (
       <Fragment>
         {this.renderBreadcrumbs()}

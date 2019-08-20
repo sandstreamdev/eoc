@@ -437,8 +437,7 @@ class ListHeader extends PureComponent {
 
   render() {
     const {
-      details,
-      details: { isOwner, type },
+      details: { isOwner, locks, type },
       isCohortList
     } = this.props;
     const {
@@ -448,7 +447,9 @@ class ListHeader extends PureComponent {
       pendingForTypeUpdate
     } = this.state;
 
-    console.log(details);
+    if (!locks) {
+      return null;
+    }
 
     return (
       <div className="list-header">
