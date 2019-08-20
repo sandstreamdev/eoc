@@ -23,6 +23,7 @@ const {
 const {
   getListIdsByViewers,
   getListsDataByViewers,
+  handleLocks,
   listChannel,
   updateListOnDashboardAndCohortView
 } = require('./helpers');
@@ -354,23 +355,25 @@ const updateListHeaderState = (socket, listClientLocks) => {
       listClientLocks.delete(userId);
     }
 
-    List.findOne({ _id: listId })
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { locks } = doc;
+    handleLocks(List, { _id: listId })({ description, name });
 
-          if (isDefined(name)) {
-            locks.name = name;
-          }
+    // List.findOne({ _id: listId })
+    //   .exec()
+    //   .then(doc => {
+    //     if (doc) {
+    //       const { locks } = doc;
 
-          if (isDefined(description)) {
-            locks.description = description;
-          }
+    //       if (isDefined(name)) {
+    //         locks.name = name;
+    //       }
 
-          doc.save();
-        }
-      });
+    //       if (isDefined(description)) {
+    //         locks.description = description;
+    //       }
+
+    //       doc.save();
+    //     }
+    //   });
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
@@ -406,23 +409,7 @@ const updateListHeaderState = (socket, listClientLocks) => {
 
     listClientLocks.set(userId, delayedUnlock);
 
-    List.findOne({ _id: listId })
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { locks } = doc;
-
-          if (isDefined(name)) {
-            locks.name = name;
-          }
-
-          if (isDefined(description)) {
-            locks.description = description;
-          }
-
-          doc.save();
-        }
-      });
+    handleLocks(List, { _id: listId })({ description, name });
   });
 };
 

@@ -12,6 +12,7 @@ const {
 const {
   cohortChannel,
   emitCohortMetaData,
+  handleLocks,
   removeCohort
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
@@ -148,23 +149,7 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
       cohortClientLocks.delete(userId);
     }
 
-    Cohort.findOne({ _id: cohortId })
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { locks } = doc;
-
-          if (isDefined(name)) {
-            locks.name = name;
-          }
-
-          if (isDefined(description)) {
-            locks.description = description;
-          }
-
-          doc.save();
-        }
-      });
+    handleLocks(Cohort, { _id: cohortId })({ description, name });
   });
 
   socket.on(CohortHeaderStatusTypes.LOCK, data => {
@@ -200,23 +185,7 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
 
     cohortClientLocks.set(userId, delayedUnlock);
 
-    Cohort.findOne({ _id: cohortId })
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { locks } = doc;
-
-          if (isDefined(name)) {
-            locks.name = name;
-          }
-
-          if (isDefined(description)) {
-            locks.description = description;
-          }
-
-          doc.save();
-        }
-      });
+    handleLocks(Cohort, { _id: cohortId })({ description, name });
   });
 };
 
