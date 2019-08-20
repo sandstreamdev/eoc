@@ -8,6 +8,12 @@ const currentUser = (state = null, action) => {
       return null;
     case AuthorizationActionTypes.FETCH_SUCCESS:
       return { ...(state || {}), ...action.payload };
+    case AuthorizationActionTypes.UPDATE_SETTINGS_SUCCESS: {
+      const { payload: updatedSettings } = action;
+      const { settings } = state;
+
+      return { ...state, settings: { ...settings, ...updatedSettings } };
+    }
     default:
       return state;
   }

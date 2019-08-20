@@ -13,7 +13,8 @@ import { asyncTypes, enumerable } from 'common/utils/helpers';
 export const AuthorizationActionTypes = enumerable('user')(
   ...asyncTypes('FETCH'),
   ...asyncTypes('LOGIN'),
-  ...asyncTypes('LOGOUT')
+  ...asyncTypes('LOGOUT'),
+  ...asyncTypes('UPDATE_SETTINGS')
 );
 
 const logoutFailure = () => ({
@@ -32,6 +33,15 @@ const fetchUserDetailsSuccess = payload => ({
 
 const fetchUserDetailsFailure = () => ({
   type: AuthorizationActionTypes.FETCH_FAILURE
+});
+
+const updateSettingsSuccess = payload => ({
+  type: AuthorizationActionTypes.UPDATE_SETTINGS_SUCCESS,
+  payload
+});
+
+const updateSettingsFailure = () => ({
+  type: AuthorizationActionTypes.UPDATE_SETTINGS_FAILURE
 });
 
 export const logoutCurrentUser = () => dispatch =>
@@ -138,3 +148,14 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
     newPassword,
     newPasswordConfirm
   });
+
+export const updateSettings = settings => dispatch =>
+  postData('/auth/update-settings', { settings })
+    .then(() => dispatch(updateSettingsSuccess(settings)))
+    .catch(() => {
+      dispatch(updateSettingsFailure());
+      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
+        notificationId: 'user.actions.update-settings-failed'
+      });
+      throw new Error();
+    });
