@@ -165,6 +165,7 @@ const getCohortDetails = (req, resp) => {
 
   Cohort.findOne({
     _id: sanitize(cohortId),
+    isDeleted: false,
     memberIds: userId
   })
     .populate('memberIds', 'avatarUrl displayName _id')
