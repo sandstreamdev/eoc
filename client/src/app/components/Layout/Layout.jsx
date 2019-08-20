@@ -37,6 +37,7 @@ export class Layout extends PureComponent {
 
     this.state = {
       pending: false,
+      pendingForViewType: false,
       viewType: ViewType.LIST
     };
   }
@@ -97,10 +98,13 @@ export class Layout extends PureComponent {
     };
 
     this.handleSwitchView(newViewType);
+    this.setState({ pendingForViewType: true });
 
-    updateSettings(settings).catch(() => {
-      this.handleSwitchView(viewType);
-    });
+    updateSettings(settings)
+      .catch(() => {
+        this.handleSwitchView(viewType);
+      })
+      .finally(() => this.setState({ pendingForViewType: false }));
   };
 
   render() {
@@ -108,7 +112,7 @@ export class Layout extends PureComponent {
       currentUser,
       intl: { formatMessage }
     } = this.props;
-    const { pending, viewType } = this.state;
+    const { pending, pendingForViewType, viewType } = this.state;
 
     if (pending) {
       return <Preloader />;
@@ -144,6 +148,7 @@ export class Layout extends PureComponent {
         <Toolbar>
           {this.isListsView() && (
             <ToolbarItem
+              disabled={pendingForViewType}
               mainIcon={
                 viewType === ViewType.LIST ? (
                   <TilesViewIcon />
