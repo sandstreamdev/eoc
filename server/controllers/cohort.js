@@ -1,4 +1,5 @@
 const sanitize = require('mongo-sanitize');
+const validator = require('validator');
 
 const Cohort = require('../models/cohort.model');
 const {
@@ -103,6 +104,10 @@ const updateCohortById = (req, resp) => {
     name
   });
   let cohortActivity;
+
+  if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
+  }
 
   Cohort.findOneAndUpdate(
     {

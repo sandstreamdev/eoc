@@ -1,5 +1,6 @@
 const sanitize = require('mongo-sanitize');
 const _difference = require('lodash/difference');
+const validator = require('validator');
 
 const List = require('../models/list.model');
 const Item = require('../models/item.model');
@@ -417,6 +418,10 @@ const updateListById = (req, resp) => {
     name
   });
   let listActivity;
+
+  if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
+  }
 
   List.findOneAndUpdate(
     {

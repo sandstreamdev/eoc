@@ -7,6 +7,7 @@ import _trim from 'lodash/trim';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import validator from 'validator';
 
 import { ListIcon } from 'assets/images/icons';
 import {
@@ -27,6 +28,8 @@ import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
 import Dialog from 'common/components/Dialog';
 import { getCurrentUser } from 'modules/user/model/selectors';
+import { validateWith } from 'common/utils/helpers';
+import ErrorMessage from 'common/components/Forms/ErrorMessage';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -39,10 +42,10 @@ class ListHeader extends PureComponent {
 
     this.state = {
       descriptionInputValue: trimmedDescription,
+      errorMessageId: '',
       isDescriptionTextareaVisible: false,
       isDialogVisible: false,
       isNameInputVisible: false,
-      isTipVisible: false,
       listType: type,
       nameInputValue: name,
       pendingForDescription: false,
@@ -50,14 +53,6 @@ class ListHeader extends PureComponent {
       pendingForTypeUpdate: false,
       updatedType: null
     };
-  }
-
-  componentDidUpdate() {
-    const { isTipVisible, nameInputValue } = this.state;
-
-    if (isTipVisible && nameInputValue) {
-      this.hideTip();
-    }
   }
 
   showNameInput = () =>
@@ -75,9 +70,7 @@ class ListHeader extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ nameInputValue: value }, () => {
-      this.handleTipVisibility();
-    });
+    this.setState({ nameInputValue: value }, this.validateName);
   };
 
   handleDescriptionChange = event => {
@@ -89,31 +82,51 @@ class ListHeader extends PureComponent {
   };
 
   handleKeyPress = event => {
-    const { isDescriptionTextareaVisible } = this.state;
+    const {
+      errorMessageId,
+      isDescriptionTextareaVisible,
+      isNameInputVisible
+    } = this.state;
     const { code } = event;
 
     if (code === KeyCodes.ESCAPE) {
-      const action = isDescriptionTextareaVisible
-        ? this.handleDescriptionUpdate
-        : this.handleNameUpdate;
+      if (isDescriptionTextareaVisible) {
+        this.handleDescriptionUpdate();
+      }
 
-      return action();
+      if (isNameInputVisible && !errorMessageId) {
+        this.handleNameUpdate();
+      }
     }
 
-    if (code === KeyCodes.ENTER) {
+    if (code === KeyCodes.ENTER && !errorMessageId) {
       this.handleNameUpdate();
     }
   };
 
+  validateName = () => {
+    const { nameInputValue } = this.state;
+    let errorMessageId;
+
+    errorMessageId = validateWith(
+      value => !validator.isEmpty(value, { ignore_whitespace: true })
+    )('common.form.required-warning')(nameInputValue);
+
+    if (_trim(nameInputValue)) {
+      errorMessageId = validateWith(value =>
+        validator.isLength(value, { min: 1, max: 32 })
+      )('common.form.field-min-max')(nameInputValue);
+    }
+
+    this.setState({ errorMessageId });
+  };
+
   handleClick = (event, isClickedOutside) => {
     const {
+      errorMessageId,
       isDescriptionTextareaVisible,
-      isNameInputVisible,
-      nameInputValue
+      isNameInputVisible
     } = this.state;
-    const {
-      details: { name }
-    } = this.props;
 
     if (isDescriptionTextareaVisible && isClickedOutside) {
       this.handleDescriptionUpdate();
@@ -121,11 +134,8 @@ class ListHeader extends PureComponent {
       return;
     }
 
-    if (isNameInputVisible && isClickedOutside) {
-      if (_trim(nameInputValue).length > 0) {
-        return this.handleNameUpdate();
-      }
-      this.setState({ isNameInputVisible: false, nameInputValue: name });
+    if (isNameInputVisible && isClickedOutside && !errorMessageId) {
+      this.handleNameUpdate();
     }
   };
 
@@ -138,17 +148,17 @@ class ListHeader extends PureComponent {
       updateBreadcrumbs,
       updateList
     } = this.props;
-    const { nameInputValue } = this.state;
+    const { errorMessageId, nameInputValue } = this.state;
     const nameToUpdate = _trim(nameInputValue);
     const { name: previousName } = details;
 
-    if (_trim(previousName) === nameToUpdate) {
+    if (!errorMessageId && _trim(previousName) === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
 
       return;
     }
 
-    if (nameToUpdate.length >= 1) {
+    if (!errorMessageId && nameToUpdate.length >= 1) {
       this.setState({ pendingForName: true });
 
       updateList(id, { name: nameToUpdate }, previousName).finally(() => {
@@ -213,17 +223,6 @@ class ListHeader extends PureComponent {
       this.hideDialog();
     });
   };
-
-  handleTipVisibility = () => {
-    const { nameInputValue } = this.state;
-    const isItemNameEmpty = !_trim(nameInputValue);
-
-    if (isItemNameEmpty) {
-      this.setState({ isTipVisible: true });
-    }
-  };
-
-  hideTip = () => this.setState({ isTipVisible: false });
 
   showDialog = event => {
     const { value } = event.target;
@@ -334,13 +333,14 @@ class ListHeader extends PureComponent {
 
   renderName = () => {
     const {
+      errorMessageId,
       isNameInputVisible,
-      isTipVisible,
       nameInputValue,
       pendingForName
     } = this.state;
     const {
-      details: { isOwner, name, nameLock }
+      details: { isOwner, name, nameLock },
+      intl: { formatMessage }
     } = this.props;
 
     return (
@@ -361,8 +361,8 @@ class ListHeader extends PureComponent {
               onNameChange={this.handleNameChange}
               onUnmount={this.handleNameUnmount}
             />
-            {isTipVisible && (
-              <p className="error-message">Name can not be empty</p>
+            {errorMessageId && (
+              <ErrorMessage message={formatMessage({ id: errorMessageId })} />
             )}
           </div>
         ) : (
