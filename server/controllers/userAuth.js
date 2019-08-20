@@ -4,15 +4,20 @@ const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
+const _forEach = require('lodash/forEach');
+const _has = require('lodash/has');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
+const NotFoundException = require('../common/exceptions/NotFoundException');
 const User = require('../models/user.model');
-const { validatePassword } = require('../common/utils/userUtils');
+const {
+  responseWithUserData,
+  validatePassword
+} = require('../common/utils/userUtils');
+const Settings = require('../models/settings.model');
 
 const sendUser = (req, resp) => {
-  const { avatarUrl, _id: id, displayName: name } = req.user;
-
-  resp.send({ avatarUrl, id, name });
+  return resp.send(responseWithUserData(req.user));
 };
 
 const logout = (req, resp) => {
@@ -94,6 +99,7 @@ const signUp = (req, resp, next) => {
         email: sanitizedEmail,
         isActive: false,
         password: hashedPassword,
+        settings: new Settings(),
         signUpHash,
         signUpHashExpirationDate: expirationDate
       });
@@ -181,9 +187,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
 
 const getLoggedUser = (req, resp) => {
   if (req.user) {
-    const { avatarUrl, _id: id, displayName: name } = req.user;
-
-    return resp.send({ avatarUrl, id, name });
+    return resp.send(responseWithUserData(req.user));
   }
 
   return resp.sendStatus(204);
@@ -415,6 +419,33 @@ const changePassword = (req, res) => {
     .catch(() => res.sendStatus(400));
 };
 
+const updateSettings = (req, res) => {
+  const { settings: editedSettings } = req.body;
+  const {
+    user: { _id: userId }
+  } = req;
+
+  User.findById(userId)
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new NotFoundException();
+      }
+
+      const { settings } = doc;
+
+      _forEach(editedSettings, (value, key) => {
+        if (settings[key]) {
+          settings[key] = sanitize(value);
+        }
+      });
+
+      return doc.save();
+    })
+    .then(() => res.send())
+    .catch(() => res.sendStatus(400));
+};
+
 module.exports = {
   changePassword,
   confirmEmail,
@@ -427,5 +458,6 @@ module.exports = {
   resetPassword,
   sendUser,
   signUp,
-  updatePassword
+  updatePassword,
+  updateSettings
 };

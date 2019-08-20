@@ -130,6 +130,11 @@ const ListHeaderStatusTypes = Object.freeze({
 const LOCK_TIMEOUT = 300000;
 const SOCKET_TIMEOUT = 60000;
 
+const ViewType = {
+  LIST: 'viewType/LIST',
+  TILES: 'viewType/TILES'
+};
+
 module.exports = {
   ActivityType,
   CohortActionTypes,
@@ -146,5 +151,6 @@ module.exports = {
   LOCK_TIMEOUT,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME,
-  SOCKET_TIMEOUT
+  SOCKET_TIMEOUT,
+  ViewType
 };
