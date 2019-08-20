@@ -189,28 +189,26 @@ class CohortHeader extends PureComponent {
     const nameToUpdate = _trim(nameInputValue);
     const { name: previousName } = details;
 
-    if (!errorMessageId) {
-      if (_trim(previousName) === nameToUpdate) {
-        this.setState({ isNameInputVisible: false });
+    if (!errorMessageId && _trim(previousName) === nameToUpdate) {
+      this.setState({ isNameInputVisible: false });
 
-        return;
-      }
+      return;
+    }
 
-      if (nameToUpdate.length >= 1) {
-        this.setState({ pendingForName: true });
-        this.handleNameLock();
+    if (!errorMessageId && nameToUpdate.length >= 1) {
+      this.setState({ pendingForName: true });
+      this.handleNameLock();
 
-        updateCohort(previousName, id, { name: nameToUpdate }).finally(() => {
-          this.setState({
-            isNameInputVisible: false,
-            nameInputValue: nameToUpdate,
-            pendingForName: false
-          });
-
-          this.handleNameUnmount();
-          updateBreadcrumbs();
+      updateCohort(previousName, id, { name: nameToUpdate }).finally(() => {
+        this.setState({
+          isNameInputVisible: false,
+          nameInputValue: nameToUpdate,
+          pendingForName: false
         });
-      }
+
+        this.handleNameUnmount();
+        updateBreadcrumbs();
+      });
     }
   };
 

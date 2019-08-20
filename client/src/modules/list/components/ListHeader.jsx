@@ -152,26 +152,24 @@ class ListHeader extends PureComponent {
     const nameToUpdate = _trim(nameInputValue);
     const { name: previousName } = details;
 
-    if (!errorMessageId) {
-      if (_trim(previousName) === nameToUpdate) {
-        this.setState({ isNameInputVisible: false });
+    if (!errorMessageId && _trim(previousName) === nameToUpdate) {
+      this.setState({ isNameInputVisible: false });
 
-        return;
-      }
+      return;
+    }
 
-      if (nameToUpdate.length >= 1) {
-        this.setState({ pendingForName: true });
+    if (!errorMessageId && nameToUpdate.length >= 1) {
+      this.setState({ pendingForName: true });
 
-        updateList(id, { name: nameToUpdate }, previousName).finally(() => {
-          this.setState({
-            isNameInputVisible: false,
-            nameInputValue: nameToUpdate,
-            pendingForName: false
-          });
-
-          updateBreadcrumbs();
+      updateList(id, { name: nameToUpdate }, previousName).finally(() => {
+        this.setState({
+          isNameInputVisible: false,
+          nameInputValue: nameToUpdate,
+          pendingForName: false
         });
-      }
+
+        updateBreadcrumbs();
+      });
     }
   };
 
