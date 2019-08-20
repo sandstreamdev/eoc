@@ -272,7 +272,11 @@ class CohortHeader extends PureComponent {
     } = this.state;
 
     const {
-      details: { description, descriptionLock, isOwner }
+      details: {
+        description,
+        isOwner,
+        locks: { description: descriptionLock }
+      }
     } = this.props;
 
     if (!description && !isOwner) {
@@ -327,7 +331,11 @@ class CohortHeader extends PureComponent {
       pendingForName
     } = this.state;
     const {
-      details: { isOwner, name, nameLock }
+      details: {
+        isOwner,
+        locks: { name: nameLock },
+        name
+      }
     } = this.props;
 
     return (
@@ -370,6 +378,13 @@ class CohortHeader extends PureComponent {
 
   render() {
     const { pendingForDescription } = this.state;
+    const {
+      details: { locks }
+    } = this.props;
+
+    if (!locks) {
+      return null;
+    }
 
     return (
       <header className="cohort-header">

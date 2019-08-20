@@ -14,6 +14,7 @@ const {
   emitCohortMetaData,
   removeCohort
 } = require('./helpers');
+const { isDefined } = require('../common/utils/helpers');
 
 const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
@@ -131,7 +132,12 @@ const updateCohort = (socket, allCohortsViewClients) => {
 
 const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
   socket.on(CohortHeaderStatusTypes.UNLOCK, data => {
-    const { cohortId, userId } = data;
+    const {
+      cohortId,
+      descriptionLock: description,
+      nameLock: name,
+      userId
+    } = data;
 
     socket.broadcast
       .to(cohortChannel(cohortId))
@@ -141,10 +147,33 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
       clearTimeout(cohortClientLocks.get(userId));
       cohortClientLocks.delete(userId);
     }
+
+    Cohort.findOne({ _id: cohortId })
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { locks } = doc;
+
+          if (isDefined(name)) {
+            locks.name = name;
+          }
+
+          if (isDefined(description)) {
+            locks.description = description;
+          }
+
+          doc.save();
+        }
+      });
   });
 
   socket.on(CohortHeaderStatusTypes.LOCK, data => {
-    const { cohortId, userId } = data;
+    const {
+      cohortId,
+      descriptionLock: description,
+      nameLock: name,
+      userId
+    } = data;
 
     socket.broadcast
       .to(cohortChannel(cohortId))
@@ -170,6 +199,24 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
     }, LOCK_TIMEOUT);
 
     cohortClientLocks.set(userId, delayedUnlock);
+
+    Cohort.findOne({ _id: cohortId })
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { locks } = doc;
+
+          if (isDefined(name)) {
+            locks.name = name;
+          }
+
+          if (isDefined(description)) {
+            locks.description = description;
+          }
+
+          doc.save();
+        }
+      });
   });
 };
 

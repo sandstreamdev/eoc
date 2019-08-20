@@ -305,6 +305,7 @@ const responseWithCohortDetails = (doc, userId) => {
     createdAt,
     description,
     isArchived,
+    locks,
     memberIds: membersCollection,
     name,
     ownerIds
@@ -323,6 +324,7 @@ const responseWithCohortDetails = (doc, userId) => {
     isArchived,
     isMember: true,
     isOwner,
+    locks,
     members,
     name
   };
