@@ -5,7 +5,6 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
 const _forEach = require('lodash/forEach');
-const _has = require('lodash/has');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const NotFoundException = require('../common/exceptions/NotFoundException');
