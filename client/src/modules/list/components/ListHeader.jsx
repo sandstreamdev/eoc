@@ -52,13 +52,31 @@ class ListHeader extends PureComponent {
     };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { isTipVisible, nameInputValue } = this.state;
+    const {
+      details: { name, description }
+    } = this.props;
+    const {
+      details: { name: previousName, description: previousDescription }
+    } = prevProps;
 
     if (isTipVisible && nameInputValue) {
       this.hideTip();
     }
+
+    if (name !== previousName || description !== previousDescription) {
+      this.updateHeaderData();
+    }
   }
+
+  updateHeaderData = () => {
+    const {
+      details: { name, description }
+    } = this.props;
+
+    this.setState({ nameInputValue: name, descriptionInputValue: description });
+  };
 
   showNameInput = () =>
     this.setState({
