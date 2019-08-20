@@ -412,9 +412,9 @@ class ListItem extends PureComponent {
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <ListItemName
-                locked={nameLock}
                 isMember={isMember}
                 itemId={_id}
+                locked={nameLock}
                 name={name}
                 onBlur={this.handleNameUnlock}
                 onFocus={this.handleNameLock}

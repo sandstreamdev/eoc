@@ -70,7 +70,7 @@ const restoreItem = socket => {
 
 const updateItemState = (socket, itemClientLocks) => {
   socket.on(ItemStatusType.LOCK, data => {
-    const { itemId, listId, userId, nameLock, descriptionLock } = data;
+    const { descriptionLock, itemId, listId, nameLock, userId } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.LOCK, data);
 

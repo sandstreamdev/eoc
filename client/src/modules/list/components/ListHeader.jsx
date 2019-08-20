@@ -287,8 +287,8 @@ class ListHeader extends PureComponent {
     const {
       details: {
         description,
-        locks: { description: descriptionLock },
-        isOwner
+        isOwner,
+        locks: { description: descriptionLock }
       }
     } = this.props;
 
@@ -346,8 +346,8 @@ class ListHeader extends PureComponent {
     const {
       details: {
         isOwner,
-        name,
-        locks: { name: nameLock }
+        locks: { name: nameLock },
+        name
       }
     } = this.props;
 

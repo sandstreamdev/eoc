@@ -309,7 +309,7 @@ const lists = (state = {}, action) => {
         ...state,
         [listId]: {
           ...state[listId],
-          locks: { name: nameLock, description: descriptionLock }
+          locks: { description: descriptionLock, name: nameLock }
         }
       };
     }

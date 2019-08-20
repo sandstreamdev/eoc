@@ -61,9 +61,9 @@ const responseWithList = (list, userId) => {
     description,
     doneItemsCount,
     isFavourite: checkIfArrayContainsUserId(favIds, userId),
-    type,
     locks,
     name,
+    type,
     unhandledItemsCount
   };
 
@@ -332,7 +332,7 @@ const responseWithCohortDetails = (doc, userId) => {
 
 /**
  * isDefined function returns true if value if different
- * from undefined, so false will return true
+ * from undefined, so 'false' will return true
  * @x {boolean or string or object} x Boolean value
  */
 const isDefined = x => x !== undefined;
