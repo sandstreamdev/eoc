@@ -5,6 +5,7 @@ const User = require('../../models/user.model');
 const List = require('../../models/list.model');
 const Cohort = require('../../models/cohort.model');
 const Comment = require('../../models/comment.model');
+const Settings = require('../../models/settings.model');
 
 // Find or create user
 const findOrCreateUser = (user, done) => {
@@ -43,7 +44,11 @@ const findOrCreateUser = (user, done) => {
         return doc;
       }
 
-      return new User({ ...user, activatedAt: new Date() }).save();
+      return new User({
+        ...user,
+        activatedAt: new Date(),
+        settings: new Settings()
+      }).save();
     })
     .then(user => done(null, user))
     .catch(err => done(null, false, { message: err.message }));
@@ -108,10 +113,23 @@ const removeDemoUserData = id =>
 
 const validatePassword = value => value.match(/^[^\s]{4,32}$/);
 
+const responseWithUserData = user => {
+  const { avatarUrl, _id: id, displayName: name, settings: config } = user;
+  const data = { avatarUrl, id, name };
+
+  if (config) {
+    const { _id, createdAt, updatedAt, ...settings } = config;
+    data.settings = settings;
+  }
+
+  return data;
+};
+
 module.exports = {
   extractUserProfile,
   findAndAuthenticateUser,
   findOrCreateUser,
   removeDemoUserData,
+  responseWithUserData,
   validatePassword
 };

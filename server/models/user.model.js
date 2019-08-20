@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const SettingsSchema = require('./settings.model').schema;
+
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -16,6 +18,7 @@ const UserSchema = new Schema(
     provider: { type: String },
     resetToken: { type: String },
     resetTokenExpirationDate: { type: Date },
+    settings: SettingsSchema,
     signUpHash: { type: String },
     signUpHashExpirationDate: { type: Date },
     surname: { type: String }
