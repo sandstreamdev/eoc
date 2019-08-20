@@ -256,7 +256,11 @@ class ListItem extends PureComponent {
   renderItemFeatures = () => {
     const { isConfirmationVisible } = this.state;
     const {
-      data: { isOrdered, name, nameLock = false, descriptionLock = false },
+      data: {
+        isOrdered,
+        locks: { name: nameLock, description: descriptionLock },
+        name
+      },
       intl: { formatMessage },
       isMember
     } = this.props;
@@ -307,8 +311,8 @@ class ListItem extends PureComponent {
       data: {
         _id: itemId,
         description,
-        descriptionLock = false,
         isOrdered,
+        locks: { description: descriptionLock },
         name
       },
       isMember
@@ -319,10 +323,10 @@ class ListItem extends PureComponent {
       return (
         <div className="list-item__description">
           <ListItemDescription
-            locked={descriptionLock}
             description={description}
             disabled={isFieldDisabled}
             itemId={itemId}
+            locked={descriptionLock}
             name={name}
             onBlur={this.handleDescriptionUnlock}
             onFocus={this.handleDescriptionLock}
@@ -356,14 +360,21 @@ class ListItem extends PureComponent {
 
   render() {
     const {
+      data: { locks }
+    } = this.props;
+
+    if (!locks) {
+      return null;
+    }
+
+    const {
       data: {
         _id,
         authorName,
-        descriptionLock = false,
         editedBy,
         isOrdered,
-        name,
-        nameLock = false
+        locks: { name: nameLock, description: descriptionLock },
+        name
       },
       isMember
     } = this.props;

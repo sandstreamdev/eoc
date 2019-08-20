@@ -70,12 +70,11 @@ const restoreItem = socket => {
 
 const updateItemState = (socket, itemClientLocks) => {
   socket.on(ItemStatusType.LOCK, data => {
-    const { listId, userId } = data;
+    const { itemId, listId, userId, nameLock, descriptionLock } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.LOCK, data);
 
     const delayedUnlock = setTimeout(() => {
-      const { nameLock, descriptionLock } = data;
       const updatedData = { ...data };
 
       if (nameLock !== undefined) {
@@ -94,10 +93,32 @@ const updateItemState = (socket, itemClientLocks) => {
     }, LOCK_TIMEOUT);
 
     itemClientLocks.set(userId, delayedUnlock);
+
+    List.findOne({
+      _id: listId,
+      'items._id': itemId
+    })
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { items } = doc;
+          const { locks } = items.id(itemId);
+
+          if (isDefined(nameLock)) {
+            locks.name = nameLock;
+          }
+
+          if (isDefined(descriptionLock)) {
+            locks.description = descriptionLock;
+          }
+
+          doc.save();
+        }
+      });
   });
 
   socket.on(ItemStatusType.UNLOCK, data => {
-    const { listId, userId } = data;
+    const { descriptionLock, itemId, listId, nameLock, userId } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.UNLOCK, data);
 
@@ -105,6 +126,28 @@ const updateItemState = (socket, itemClientLocks) => {
       clearTimeout(itemClientLocks.get(userId));
       itemClientLocks.delete(userId);
     }
+
+    List.findOne({
+      _id: listId,
+      'items._id': itemId
+    })
+      .exec()
+      .then(doc => {
+        if (doc) {
+          const { items } = doc;
+          const { locks } = items.id(itemId);
+
+          if (isDefined(nameLock)) {
+            locks.name = nameLock;
+          }
+
+          if (isDefined(descriptionLock)) {
+            locks.description = descriptionLock;
+          }
+
+          doc.save();
+        }
+      });
   });
 };
 
