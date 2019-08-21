@@ -259,7 +259,7 @@ class ListItem extends PureComponent {
     const {
       data: {
         isOrdered,
-        locks: { name: nameLock, description: descriptionLock },
+        locks: { name: nameLock, description: descriptionLock } = DefaultLocks,
         name
       },
       intl: { formatMessage },

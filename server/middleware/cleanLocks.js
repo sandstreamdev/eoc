@@ -9,7 +9,7 @@ const unlockLocks = () => {
     }
   ).catch(() => {
     // eslint-disable-next-line no-console
-    console.log('Unlocking locks failed...');
+    console.log('Unlocking list locks failed...');
     process.exitCode(1);
   });
 
@@ -31,7 +31,7 @@ const unlockLocks = () => {
     })
     .catch(() => {
       // eslint-disable-next-line no-console
-      console.log('Unlocking locks failed...');
+      console.log('Unlocking items locks failed...');
       process.exitCode(1);
     });
 
@@ -40,7 +40,7 @@ const unlockLocks = () => {
     { locks: { name: false, description: false } }
   ).catch(() => {
     // eslint-disable-next-line no-console
-    console.log('Unlocking locks failed...');
+    console.log('Unlocking cohort locks failed...');
     process.exitCode(1);
   });
 };

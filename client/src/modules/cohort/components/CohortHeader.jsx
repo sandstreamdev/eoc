@@ -375,10 +375,6 @@ class CohortHeader extends PureComponent {
   render() {
     const { pendingForDescription } = this.state;
 
-    // if (!locks) {
-    //   return null;
-    // }
-
     return (
       <header className="cohort-header">
         {this.renderName()}
