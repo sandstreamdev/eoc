@@ -25,7 +25,7 @@ import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import { ListType } from '../consts';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { KeyCodes } from 'common/constants/enums';
+import { DefaultLocks, KeyCodes } from 'common/constants/enums';
 import Dialog from 'common/components/Dialog';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { validateWith } from 'common/utils/helpers';
@@ -54,6 +54,27 @@ class ListHeader extends PureComponent {
       updatedType: null
     };
   }
+
+  componentDidUpdate(prevProps) {
+    const {
+      details: { name, description }
+    } = this.props;
+    const {
+      details: { name: previousName, description: previousDescription }
+    } = prevProps;
+
+    if (name !== previousName || description !== previousDescription) {
+      this.updateHeaderData();
+    }
+  }
+
+  updateHeaderData = () => {
+    const {
+      details: { name, description }
+    } = this.props;
+
+    this.setState({ nameInputValue: name, descriptionInputValue: description });
+  };
 
   showNameInput = () =>
     this.setState({
@@ -284,7 +305,11 @@ class ListHeader extends PureComponent {
       pendingForDescription
     } = this.state;
     const {
-      details: { description, descriptionLock, isOwner }
+      details: {
+        description,
+        isOwner,
+        locks: { description: descriptionLock } = DefaultLocks
+      }
     } = this.props;
 
     if (!description && !isOwner) {
@@ -339,7 +364,7 @@ class ListHeader extends PureComponent {
       pendingForName
     } = this.state;
     const {
-      details: { isOwner, name, nameLock },
+      details: { isOwner, locks: { name: nameLock } = DefaultLocks, name },
       intl: { formatMessage }
     } = this.props;
 

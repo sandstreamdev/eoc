@@ -28,6 +28,7 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
+import { DefaultLocks } from 'common/constants/enums';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -256,7 +257,11 @@ class ListItem extends PureComponent {
   renderItemFeatures = () => {
     const { isConfirmationVisible } = this.state;
     const {
-      data: { isOrdered, name, nameLock = false, descriptionLock = false },
+      data: {
+        isOrdered,
+        locks: { name: nameLock, description: descriptionLock } = DefaultLocks,
+        name
+      },
       intl: { formatMessage },
       isMember
     } = this.props;
@@ -307,8 +312,8 @@ class ListItem extends PureComponent {
       data: {
         _id: itemId,
         description,
-        descriptionLock = false,
         isOrdered,
+        locks: { description: descriptionLock } = DefaultLocks,
         name
       },
       isMember
@@ -319,10 +324,10 @@ class ListItem extends PureComponent {
       return (
         <div className="list-item__description">
           <ListItemDescription
-            locked={descriptionLock}
             description={description}
             disabled={isFieldDisabled}
             itemId={itemId}
+            locked={descriptionLock}
             name={name}
             onBlur={this.handleDescriptionUnlock}
             onFocus={this.handleDescriptionLock}
@@ -359,11 +364,10 @@ class ListItem extends PureComponent {
       data: {
         _id,
         authorName,
-        descriptionLock = false,
         editedBy,
         isOrdered,
-        name,
-        nameLock = false
+        locks: { name: nameLock, description: descriptionLock } = DefaultLocks,
+        name
       },
       isMember
     } = this.props;
@@ -401,9 +405,9 @@ class ListItem extends PureComponent {
           <label className="list-item__label" id={`option${_id}`}>
             <span className="list-item__data">
               <ListItemName
-                locked={nameLock}
                 isMember={isMember}
                 itemId={_id}
+                locked={nameLock}
                 name={name}
                 onBlur={this.handleNameUnlock}
                 onFocus={this.handleNameLock}

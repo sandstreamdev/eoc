@@ -16,6 +16,7 @@ const cohortsRouter = require('./routes/cohort');
 const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
+const unlockLocks = require('./middleware/cleanLocks');
 
 const app = express();
 /* eslint-disable import/order */
@@ -30,7 +31,7 @@ const sessionStore = new MongoStore({
 });
 // Set up mongodb connection
 const dbUrl = DB_URL;
-mongoose.connect(dbUrl, { useNewUrlParser: true });
+mongoose.connect(dbUrl, { useNewUrlParser: true }, unlockLocks);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 

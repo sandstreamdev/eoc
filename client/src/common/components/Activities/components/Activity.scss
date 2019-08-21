@@ -7,6 +7,7 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    word-wrap: break-word;
   }
 
   &__action {
@@ -21,6 +22,10 @@
       font-style: normal;
       font-weight: 700;
     }
+  }
+
+  &__item {
+    word-wrap: break-word;
   }
 
   &__date {
