@@ -165,11 +165,33 @@ const handleLocks = (model, query) => ({ description, name }) =>
       }
     });
 
+const handleItemLocks = (model, query, itemId) => ({ description, name }) =>
+  model
+    .findOne(query)
+    .exec()
+    .then(doc => {
+      if (doc) {
+        const { items } = doc;
+        const { locks } = items.id(itemId);
+
+        if (isDefined(name)) {
+          locks.name = name;
+        }
+
+        if (isDefined(description)) {
+          locks.description = description;
+        }
+
+        doc.save();
+      }
+    });
+
 module.exports = {
   cohortChannel,
   emitCohortMetaData,
   getListIdsByViewers,
   getListsDataByViewers,
+  handleItemLocks,
   handleLocks,
   listChannel,
   removeCohort,

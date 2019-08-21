@@ -23,6 +23,7 @@ const {
 const {
   getListIdsByViewers,
   getListsDataByViewers,
+  handleItemLocks,
   handleLocks,
   listChannel,
   updateListOnDashboardAndCohortView
@@ -71,18 +72,24 @@ const restoreItem = socket => {
 
 const updateItemState = (socket, itemClientLocks) => {
   socket.on(ItemStatusType.LOCK, data => {
-    const { descriptionLock, itemId, listId, nameLock, userId } = data;
+    const {
+      descriptionLock: description,
+      itemId,
+      listId,
+      nameLock: name,
+      userId
+    } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.LOCK, data);
 
     const delayedUnlock = setTimeout(() => {
       const updatedData = { ...data };
 
-      if (nameLock !== undefined) {
+      if (isDefined(name)) {
         updatedData.nameLock = false;
       }
 
-      if (descriptionLock !== undefined) {
+      if (isDefined(description)) {
         updatedData.descriptionLock = false;
       }
 
@@ -95,31 +102,20 @@ const updateItemState = (socket, itemClientLocks) => {
 
     itemClientLocks.set(userId, delayedUnlock);
 
-    List.findOne({
-      _id: listId,
-      'items._id': itemId
-    })
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { items } = doc;
-          const { locks } = items.id(itemId);
-
-          if (isDefined(nameLock)) {
-            locks.name = nameLock;
-          }
-
-          if (isDefined(descriptionLock)) {
-            locks.description = descriptionLock;
-          }
-
-          doc.save();
-        }
-      });
+    handleItemLocks(List, { _id: listId, 'items._id': itemId }, itemId)({
+      description,
+      name
+    });
   });
 
   socket.on(ItemStatusType.UNLOCK, data => {
-    const { descriptionLock, itemId, listId, nameLock, userId } = data;
+    const {
+      descriptionLock: description,
+      itemId,
+      listId,
+      nameLock: name,
+      userId
+    } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.UNLOCK, data);
 
@@ -128,27 +124,10 @@ const updateItemState = (socket, itemClientLocks) => {
       itemClientLocks.delete(userId);
     }
 
-    List.findOne({
-      _id: listId,
-      'items._id': itemId
-    })
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { items } = doc;
-          const { locks } = items.id(itemId);
-
-          if (isDefined(nameLock)) {
-            locks.name = nameLock;
-          }
-
-          if (isDefined(descriptionLock)) {
-            locks.description = descriptionLock;
-          }
-
-          doc.save();
-        }
-      });
+    handleItemLocks(List, { _id: listId, 'items._id': itemId }, itemId)({
+      description,
+      name
+    });
   });
 };
 
@@ -356,24 +335,6 @@ const updateListHeaderState = (socket, listClientLocks) => {
     }
 
     handleLocks(List, { _id: listId })({ description, name });
-
-    // List.findOne({ _id: listId })
-    //   .exec()
-    //   .then(doc => {
-    //     if (doc) {
-    //       const { locks } = doc;
-
-    //       if (isDefined(name)) {
-    //         locks.name = name;
-    //       }
-
-    //       if (isDefined(description)) {
-    //         locks.description = description;
-    //       }
-
-    //       doc.save();
-    //     }
-    //   });
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
