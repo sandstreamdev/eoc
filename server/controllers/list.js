@@ -35,6 +35,10 @@ const createList = (req, resp) => {
   } = req;
   const isSharedList = type === ListType.SHARED;
 
+  if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
+  }
+
   const list = new List({
     cohortId,
     description,
