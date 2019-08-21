@@ -28,6 +28,7 @@ import CommentsList from 'common/components/Comments/CommentsList';
 import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
+import { DefaultLocks } from 'common/constants/enums';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -312,7 +313,7 @@ class ListItem extends PureComponent {
         _id: itemId,
         description,
         isOrdered,
-        locks: { description: descriptionLock },
+        locks: { description: descriptionLock } = DefaultLocks,
         name
       },
       isMember
@@ -360,20 +361,12 @@ class ListItem extends PureComponent {
 
   render() {
     const {
-      data: { locks }
-    } = this.props;
-
-    if (!locks) {
-      return null;
-    }
-
-    const {
       data: {
         _id,
         authorName,
         editedBy,
         isOrdered,
-        locks: { name: nameLock, description: descriptionLock },
+        locks: { name: nameLock, description: descriptionLock } = DefaultLocks,
         name
       },
       isMember

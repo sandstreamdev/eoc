@@ -18,7 +18,7 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { KeyCodes } from 'common/constants/enums';
+import { DefaultLocks, KeyCodes } from 'common/constants/enums';
 import { getCurrentUser } from 'modules/user/model/selectors';
 
 class CohortHeader extends PureComponent {
@@ -275,7 +275,7 @@ class CohortHeader extends PureComponent {
       details: {
         description,
         isOwner,
-        locks: { description: descriptionLock }
+        locks: { description: descriptionLock } = DefaultLocks
       }
     } = this.props;
 
@@ -331,11 +331,7 @@ class CohortHeader extends PureComponent {
       pendingForName
     } = this.state;
     const {
-      details: {
-        isOwner,
-        locks: { name: nameLock },
-        name
-      }
+      details: { isOwner, locks: { name: nameLock } = DefaultLocks, name }
     } = this.props;
 
     return (
@@ -378,13 +374,10 @@ class CohortHeader extends PureComponent {
 
   render() {
     const { pendingForDescription } = this.state;
-    const {
-      details: { locks }
-    } = this.props;
 
-    if (!locks) {
-      return null;
-    }
+    // if (!locks) {
+    //   return null;
+    // }
 
     return (
       <header className="cohort-header">

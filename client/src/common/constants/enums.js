@@ -63,3 +63,5 @@ export const EventTypes = Object.freeze({
 export const NodeTypes = Object.freeze({
   LINK: 'A'
 });
+
+export const DefaultLocks = Object.freeze({ name: true, description: true });

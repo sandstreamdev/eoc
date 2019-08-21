@@ -24,7 +24,7 @@ import NameInput from 'common/components/NameInput';
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import { ListType } from '../consts';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { KeyCodes } from 'common/constants/enums';
+import { DefaultLocks, KeyCodes } from 'common/constants/enums';
 import Dialog from 'common/components/Dialog';
 import { getCurrentUser } from 'modules/user/model/selectors';
 
@@ -288,7 +288,7 @@ class ListHeader extends PureComponent {
       details: {
         description,
         isOwner,
-        locks: { description: descriptionLock }
+        locks: { description: descriptionLock } = DefaultLocks
       }
     } = this.props;
 
@@ -344,11 +344,7 @@ class ListHeader extends PureComponent {
       pendingForName
     } = this.state;
     const {
-      details: {
-        isOwner,
-        locks: { name: nameLock },
-        name
-      }
+      details: { isOwner, locks: { name: nameLock } = DefaultLocks, name }
     } = this.props;
 
     return (
@@ -437,7 +433,7 @@ class ListHeader extends PureComponent {
 
   render() {
     const {
-      details: { isOwner, locks, type },
+      details: { isOwner, type },
       isCohortList
     } = this.props;
     const {
@@ -446,10 +442,6 @@ class ListHeader extends PureComponent {
       pendingForName,
       pendingForTypeUpdate
     } = this.state;
-
-    if (!locks) {
-      return null;
-    }
 
     return (
       <div className="list-header">
