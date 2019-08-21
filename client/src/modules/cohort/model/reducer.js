@@ -140,7 +140,10 @@ const cohorts = (state = {}, action) => {
 
       return {
         ...state,
-        [cohortId]: { ...state[cohortId], nameLock, descriptionLock }
+        [cohortId]: {
+          ...state[cohortId],
+          locks: { name: nameLock, description: descriptionLock }
+        }
       };
     }
     default:

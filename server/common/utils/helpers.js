@@ -47,6 +47,7 @@ const responseWithList = (list, userId) => {
     description,
     favIds,
     items,
+    locks,
     name,
     type
   } = list;
@@ -60,8 +61,9 @@ const responseWithList = (list, userId) => {
     description,
     doneItemsCount,
     isFavourite: checkIfArrayContainsUserId(favIds, userId),
-    type,
+    locks,
     name,
+    type,
     unhandledItemsCount
   };
 
@@ -303,6 +305,7 @@ const responseWithCohortDetails = (doc, userId) => {
     createdAt,
     description,
     isArchived,
+    locks,
     memberIds: membersCollection,
     name,
     ownerIds
@@ -321,15 +324,24 @@ const responseWithCohortDetails = (doc, userId) => {
     isArchived,
     isMember: true,
     isOwner,
+    locks,
     members,
     name
   };
 };
 
+/**
+ * isDefined function returns true if value if different
+ * from undefined, so 'false' will return true
+ * @x {boolean or string or object} x Boolean value
+ */
+const isDefined = x => x !== undefined;
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   filter,
+  isDefined,
   isMember,
   isOwner,
   isValidMongoId,

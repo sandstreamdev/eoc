@@ -12,8 +12,10 @@ const {
 const {
   cohortChannel,
   emitCohortMetaData,
+  handleLocks,
   removeCohort
 } = require('./helpers');
+const { isDefined } = require('../common/utils');
 
 const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
@@ -131,7 +133,7 @@ const updateCohort = (socket, allCohortsViewClients) => {
 
 const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
   socket.on(CohortHeaderStatusTypes.UNLOCK, data => {
-    const { cohortId, userId } = data;
+    const { cohortId, descriptionLock, nameLock, userId } = data;
 
     socket.broadcast
       .to(cohortChannel(cohortId))
@@ -141,24 +143,28 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
       clearTimeout(cohortClientLocks.get(userId));
       cohortClientLocks.delete(userId);
     }
+
+    const locks = { description: descriptionLock, name: nameLock };
+
+    handleLocks(Cohort, { _id: cohortId })(locks);
   });
 
   socket.on(CohortHeaderStatusTypes.LOCK, data => {
-    const { cohortId, userId } = data;
+    const { cohortId, descriptionLock, nameLock, userId } = data;
 
     socket.broadcast
       .to(cohortChannel(cohortId))
       .emit(CohortHeaderStatusTypes.LOCK, data);
 
     const delayedUnlock = setTimeout(() => {
-      const { cohortId, nameLock, descriptionLock } = data;
+      const { cohortId } = data;
       const updatedData = { cohortId };
 
-      if (nameLock !== undefined) {
+      if (isDefined(nameLock)) {
         updatedData.nameLock = false;
       }
 
-      if (descriptionLock !== undefined) {
+      if (isDefined(descriptionLock)) {
         updatedData.descriptionLock = false;
       }
 
@@ -170,6 +176,10 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
     }, LOCK_TIMEOUT);
 
     cohortClientLocks.set(userId, delayedUnlock);
+
+    const locks = { description: descriptionLock, name: nameLock };
+
+    handleLocks(Cohort, { _id: cohortId })(locks);
   });
 };
 

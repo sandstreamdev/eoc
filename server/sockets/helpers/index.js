@@ -5,6 +5,7 @@ const {
   CohortActionTypes
 } = require('../../common/variables');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
+const { isDefined } = require('../../common/utils/helpers');
 
 const emitCohortMetaData = (cohortId, clients, socket) =>
   Cohort.findById(cohortId)
@@ -144,12 +145,55 @@ const cohortChannel = cohortId => `cohort-${cohortId}`;
 
 const listChannel = listId => `sack-${listId}`;
 
+const handleLocks = (model, query) => ({ description, name }) =>
+  model
+    .findOne(query)
+    .exec()
+    .then(doc => {
+      if (doc) {
+        const { locks } = doc;
+
+        if (isDefined(name)) {
+          locks.name = name;
+        }
+
+        if (isDefined(description)) {
+          locks.description = description;
+        }
+
+        doc.save();
+      }
+    });
+
+const handleItemLocks = (model, query, itemId) => ({ description, name }) =>
+  model
+    .findOne(query)
+    .exec()
+    .then(doc => {
+      if (doc) {
+        const { items } = doc;
+        const { locks } = items.id(itemId);
+
+        if (isDefined(name)) {
+          locks.name = name;
+        }
+
+        if (isDefined(description)) {
+          locks.description = description;
+        }
+
+        doc.save();
+      }
+    });
+
 module.exports = {
   cohortChannel,
   emitCohortMetaData,
-  getListsDataByViewers,
   getListIdsByViewers,
-  removeCohort,
+  getListsDataByViewers,
+  handleItemLocks,
+  handleLocks,
   listChannel,
+  removeCohort,
   updateListOnDashboardAndCohortView
 };

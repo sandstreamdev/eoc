@@ -21,11 +21,14 @@ const {
   responseWithListsMetaData
 } = require('../common/utils');
 const {
-  getListsDataByViewers,
   getListIdsByViewers,
+  getListsDataByViewers,
+  handleItemLocks,
+  handleLocks,
   listChannel,
   updateListOnDashboardAndCohortView
 } = require('./helpers');
+const { isDefined } = require('../common/utils/helpers');
 
 const addItemToList = socket => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
@@ -69,19 +72,18 @@ const restoreItem = socket => {
 
 const updateItemState = (socket, itemClientLocks) => {
   socket.on(ItemStatusType.LOCK, data => {
-    const { listId, userId } = data;
+    const { descriptionLock, itemId, listId, nameLock, userId } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.LOCK, data);
 
     const delayedUnlock = setTimeout(() => {
-      const { nameLock, descriptionLock } = data;
       const updatedData = { ...data };
 
-      if (nameLock !== undefined) {
+      if (isDefined(nameLock)) {
         updatedData.nameLock = false;
       }
 
-      if (descriptionLock !== undefined) {
+      if (isDefined(descriptionLock)) {
         updatedData.descriptionLock = false;
       }
 
@@ -93,10 +95,14 @@ const updateItemState = (socket, itemClientLocks) => {
     }, LOCK_TIMEOUT);
 
     itemClientLocks.set(userId, delayedUnlock);
+
+    const locks = { description: descriptionLock, name: nameLock };
+
+    handleItemLocks(List, { _id: listId, 'items._id': itemId }, itemId)(locks);
   });
 
   socket.on(ItemStatusType.UNLOCK, data => {
-    const { listId, userId } = data;
+    const { descriptionLock, itemId, listId, nameLock, userId } = data;
 
     socket.broadcast.to(listChannel(listId)).emit(ItemStatusType.UNLOCK, data);
 
@@ -104,6 +110,10 @@ const updateItemState = (socket, itemClientLocks) => {
       clearTimeout(itemClientLocks.get(userId));
       itemClientLocks.delete(userId);
     }
+
+    const locks = { description: descriptionLock, name: nameLock };
+
+    handleItemLocks(List, { _id: listId, 'items._id': itemId }, itemId)(locks);
   });
 };
 
@@ -294,7 +304,7 @@ const updateList = (socket, dashboardViewClients, cohortViewClients) => {
 
 const updateListHeaderState = (socket, listClientLocks) => {
   socket.on(ListHeaderStatusTypes.UNLOCK, data => {
-    const { listId, userId } = data;
+    const { descriptionLock, listId, nameLock, userId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
@@ -304,24 +314,28 @@ const updateListHeaderState = (socket, listClientLocks) => {
       clearTimeout(listClientLocks.get(userId));
       listClientLocks.delete(userId);
     }
+
+    const locks = { description: descriptionLock, name: nameLock };
+
+    handleLocks(List, { _id: listId })(locks);
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
-    const { listId, userId } = data;
+    const { descriptionLock, listId, nameLock, userId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ListHeaderStatusTypes.LOCK, data);
 
     const delayedUnlock = setTimeout(() => {
-      const { listId, nameLock, descriptionLock } = data;
+      const { listId } = data;
       const updatedData = { listId };
 
-      if (nameLock !== undefined) {
+      if (isDefined(nameLock)) {
         updatedData.nameLock = false;
       }
 
-      if (descriptionLock !== undefined) {
+      if (isDefined(descriptionLock)) {
         updatedData.descriptionLock = false;
       }
 
@@ -333,6 +347,10 @@ const updateListHeaderState = (socket, listClientLocks) => {
     }, LOCK_TIMEOUT);
 
     listClientLocks.set(userId, delayedUnlock);
+
+    const locks = { description: descriptionLock, name: nameLock };
+
+    handleLocks(List, { _id: listId })(locks);
   });
 };
 

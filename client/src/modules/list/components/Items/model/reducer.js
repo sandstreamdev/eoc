@@ -159,8 +159,10 @@ const items = (state = {}, action) => {
         payload: { itemId, descriptionLock, nameLock }
       } = action;
       const blockedItem = state[itemId];
-      blockedItem.descriptionLock = descriptionLock;
-      blockedItem.nameLock = nameLock;
+      blockedItem.locks = {
+        description: descriptionLock,
+        name: nameLock
+      };
 
       return { [itemId]: blockedItem, ...state };
     }

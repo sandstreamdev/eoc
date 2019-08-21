@@ -13,6 +13,10 @@ const ListSchema = new Schema(
     isArchived: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     items: [ItemSchema],
+    locks: {
+      description: { type: Boolean, default: false },
+      name: { type: Boolean, default: false }
+    },
     memberIds: [{ type: ObjectId, ref: 'User' }],
     name: { type: String, required: true },
     ownerIds: [{ type: ObjectId, ref: 'User' }],

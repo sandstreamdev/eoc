@@ -307,7 +307,10 @@ const lists = (state = {}, action) => {
 
       return {
         ...state,
-        [listId]: { ...state[listId], nameLock, descriptionLock }
+        [listId]: {
+          ...state[listId],
+          locks: { description: descriptionLock, name: nameLock }
+        }
       };
     }
     default:
