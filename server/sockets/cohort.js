@@ -15,7 +15,6 @@ const {
   handleLocks,
   removeCohort
 } = require('./helpers');
-const { isDefined } = require('../common/utils/helpers');
 
 const addCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
