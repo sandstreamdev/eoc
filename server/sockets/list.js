@@ -26,6 +26,8 @@ const {
   handleItemLocks,
   handleLocks,
   listChannel,
+  lockDescription,
+  lockName,
   updateListOnDashboardAndCohortView
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
@@ -305,52 +307,50 @@ const updateList = (socket, dashboardViewClients, cohortViewClients) => {
 const updateListHeaderState = (socket, listClientLocks) => {
   socket.on(ListHeaderStatusTypes.UNLOCK, data => {
     const { descriptionLock, listId, nameLock, userId } = data;
-
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ListHeaderStatusTypes.UNLOCK, data);
-
-    if (listClientLocks.has(userId)) {
-      clearTimeout(listClientLocks.get(userId));
-      listClientLocks.delete(userId);
-    }
-
     const locks = { description: descriptionLock, name: nameLock };
 
-    handleLocks(List, { _id: listId })(locks);
+    handleLocks(List, { _id: listId, ownerIds: userId })(locks).then(() => {
+      socket.broadcast
+        .to(listChannel(listId))
+        .emit(ListHeaderStatusTypes.UNLOCK, { listId, locks });
+
+      const lock = isDefined(nameLock) ? lockName : lockDescription;
+
+      if (listClientLocks.has(lock(listId))) {
+        clearTimeout(listClientLocks.get(lock(listId)));
+        listClientLocks.delete(lock(listId));
+      }
+    });
   });
 
   socket.on(ListHeaderStatusTypes.LOCK, data => {
     const { descriptionLock, listId, nameLock, userId } = data;
-
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ListHeaderStatusTypes.LOCK, data);
-
-    const delayedUnlock = setTimeout(() => {
-      const { listId } = data;
-      const updatedData = { listId };
-
-      if (isDefined(nameLock)) {
-        updatedData.nameLock = false;
-      }
-
-      if (isDefined(descriptionLock)) {
-        updatedData.descriptionLock = false;
-      }
-
-      socket.broadcast
-        .to(`sack-${listId}`)
-        .emit(ListHeaderStatusTypes.UNLOCK, updatedData);
-
-      listClientLocks.delete(userId);
-    }, LOCK_TIMEOUT);
-
-    listClientLocks.set(userId, delayedUnlock);
-
     const locks = { description: descriptionLock, name: nameLock };
 
-    handleLocks(List, { _id: listId })(locks);
+    handleLocks(List, { _id: listId, ownerIds: userId })(locks).then(() => {
+      socket.broadcast
+        .to(listChannel(listId))
+        .emit(ListHeaderStatusTypes.LOCK, { listId, locks });
+
+      const lock = isDefined(nameLock) ? lockName : lockDescription;
+      const delayedUnlock = setTimeout(() => {
+        if (isDefined(nameLock)) {
+          locks.name = false;
+        } else {
+          locks.description = false;
+        }
+
+        handleLocks(List, { _id: listId, ownerIds: userId })(locks).then(() => {
+          socket.broadcast
+            .to(listChannel(listId))
+            .emit(ListHeaderStatusTypes.UNLOCK, { listId, locks });
+          clearTimeout(listClientLocks.get(lock(listId)));
+          listClientLocks.delete(lock(listId));
+        });
+      }, LOCK_TIMEOUT);
+
+      listClientLocks.set(lock(listId), delayedUnlock);
+    });
   });
 };
 

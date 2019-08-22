@@ -186,6 +186,10 @@ const handleItemLocks = (model, query, itemId) => ({ description, name }) =>
       }
     });
 
+const lockName = cohortId => `name-${cohortId}`;
+
+const lockDescription = listId => `description-${listId}`;
+
 module.exports = {
   cohortChannel,
   emitCohortMetaData,
@@ -194,6 +198,8 @@ module.exports = {
   handleItemLocks,
   handleLocks,
   listChannel,
+  lockDescription,
+  lockName,
   removeCohort,
   updateListOnDashboardAndCohortView
 };
