@@ -121,12 +121,8 @@ const socketListenTo = server => {
       allCohortsViewClients.set(userId, { socketId: socket.id })
     );
 
-    socket.on(
-      'leaveCohortsView',
-      userId => allCohortsViewClients.delete(userId)
-
-      // TODO: EXAMPLE
-      // socket.emit('cohort/CLEAR_META_DATA');
+    socket.on('leaveCohortsView', userId =>
+      allCohortsViewClients.delete(userId)
     );
 
     socket.on('enterDashboardView', userId =>
