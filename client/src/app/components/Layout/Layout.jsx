@@ -142,6 +142,21 @@ export class Layout extends PureComponent {
         </Toolbar>
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
+          <Route component={SuccessMessage} path="/account-created" />
+          <Route
+            component={LinkExpired}
+            path="/confirmation-link-expired/:token?"
+          />
+          <Route component={ResetPassword} path="/reset-password" />
+          <Route
+            component={LinkExpired}
+            path="/recovery-link-expired/:token?"
+          />
+          <Route
+            component={PasswordRecoveryForm}
+            path="/password-recovery/:token?"
+          />
+          <Route component={SuccessMessage} path="/password-recovery-success" />
           <Route
             path="/dashboard"
             render={props => <Dashboard {...props} viewType={viewType} />}
