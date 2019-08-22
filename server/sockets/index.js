@@ -6,9 +6,6 @@ const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
-const sessionStore = new MongoStore({
-  mongooseConnection: mongoose.connection
-});
 const {
   addComment,
   addItemToList,
@@ -24,12 +21,12 @@ const {
   deleteItem,
   deleteList,
   emitListsOnAddCohortMember,
-  emitListsOnRestoreCohort,
   emitListsOnRemoveCohortMember,
+  emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
-  removeListsOnArchiveCohort,
   removeListMember,
+  removeListsOnArchiveCohort,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
@@ -44,8 +41,8 @@ const {
   addCohortMember,
   addOwnerRoleInCohort,
   archiveCohort,
-  deleteCohort,
   createListCohort,
+  deleteCohort,
   leaveCohort,
   removeCohortMember,
   removeOwnerRoleInCohort,
@@ -55,35 +52,40 @@ const {
 } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
 
-const initSocket = server => (req, res, next) => {
-  console.log('INIT SOCKET');
+const sessionStore = new MongoStore({
+  mongooseConnection: mongoose.connection
+});
 
-  const ioInstance = io(server, {
-    forceNew: true,
-    pingTimeout: SOCKET_TIMEOUT
-  });
-
-  ioInstance.use(
-    passportSocketIo.authorize({
-      key: 'connect.sid',
-      secret: process.env.EXPRESS_SESSION_KEY,
-      store: sessionStore,
-      passport,
-      cookieParser
-    })
-  );
-
-  if (ioInstance) {
-    req.io = ioInstance;
-    next();
+class Socket {
+  constructor() {
+    this.socketInstance = null;
   }
-};
 
-const handleSocketsActions = (req, res, next) => {
-  console.log('HANDLE SOCKEST');
+  init(server) {
+    this.socketInstance = io(server, {
+      forceNew: true,
+      pingTimeout: SOCKET_TIMEOUT
+    });
 
-  const { io } = req;
+    this.socketInstance.use(
+      passportSocketIo.authorize({
+        key: 'connect.sid',
+        secret: process.env.EXPRESS_SESSION_KEY,
+        store: sessionStore,
+        passport,
+        cookieParser
+      })
+    );
+  }
 
+  getInstance() {
+    if (this.socketInstance) {
+      return this.socketInstance;
+    }
+  }
+}
+
+const handleSockets = io => {
   const cohortViewClients = new Map();
   const allCohortsViewClients = new Map();
   const dashboardViewClients = new Map();
@@ -220,8 +222,6 @@ const handleSocketsActions = (req, res, next) => {
     updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket, cohortClientLocks);
   });
-
-  next();
 };
 
-module.exports = { initSocket, handleSocketsActions };
+module.exports = { Socket, handleSockets };
