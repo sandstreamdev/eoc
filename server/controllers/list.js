@@ -27,6 +27,7 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
+const io = require('../sockets/index').getInstance();
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -45,6 +46,7 @@ const createList = (req, resp) => {
     viewersIds: userId
   });
 
+  console.log(io);
   if (cohortId && isSharedList) {
     Cohort.findOne({ _id: sanitize(cohortId) })
       .exec()

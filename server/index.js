@@ -7,7 +7,15 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+/* eslint-disable import/order */
 const MongoStore = require('connect-mongo')(session);
+
+const io = require('./sockets/index');
+
+const app = express();
+const server = require('http').Server(app);
+
+io.init(server);
 
 const { DB_URL } = require('./common/variables');
 const authRouter = require('./routes/authorization');
@@ -17,11 +25,7 @@ const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
 const unlockLocks = require('./middleware/cleanLocks');
-
-const app = express();
-/* eslint-disable import/order */
-const server = require('http').Server(app);
-const { Socket, handleSockets } = require('./sockets/index');
+require('./sockets/listeners');
 
 /* eslint-enable import/order */
 const sessionStore = new MongoStore({
@@ -32,11 +36,6 @@ const dbUrl = DB_URL;
 mongoose.connect(dbUrl, { useNewUrlParser: true }, unlockLocks);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
-
-const socket = new Socket();
-socket.init(server);
-const socketInstance = socket.getInstance();
-handleSockets(socketInstance);
 
 app.use(cors());
 app.use(cookieParser());
