@@ -21,9 +21,7 @@ const unlockLocks = require('./middleware/cleanLocks');
 const app = express();
 /* eslint-disable import/order */
 const server = require('http').Server(app);
-const socketListenTo = require('./sockets/index');
-
-socketListenTo(server);
+const { initSocket, handleSocketsActions } = require('./sockets/index');
 
 /* eslint-enable import/order */
 const sessionStore = new MongoStore({
@@ -35,6 +33,8 @@ mongoose.connect(dbUrl, { useNewUrlParser: true }, unlockLocks);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
+app.use(initSocket(server));
+app.use(handleSocketsActions);
 app.use(cors());
 app.use(cookieParser());
 app.use(

@@ -55,7 +55,9 @@ const {
 } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
 
-const socketListenTo = server => {
+const initSocket = server => (req, res, next) => {
+  console.log('INIT SOCKET');
+
   const ioInstance = io(server, {
     forceNew: true,
     pingTimeout: SOCKET_TIMEOUT
@@ -71,6 +73,17 @@ const socketListenTo = server => {
     })
   );
 
+  if (ioInstance) {
+    req.io = ioInstance;
+    next();
+  }
+};
+
+const handleSocketsActions = (req, res, next) => {
+  console.log('HANDLE SOCKEST');
+
+  const { io } = req;
+
   const cohortViewClients = new Map();
   const allCohortsViewClients = new Map();
   const dashboardViewClients = new Map();
@@ -79,7 +92,7 @@ const socketListenTo = server => {
   const itemClientLocks = new Map();
   const listClientLocks = new Map();
 
-  ioInstance.on('connection', socket => {
+  io.on('connection', socket => {
     const {
       request: { user }
     } = socket;
@@ -207,6 +220,8 @@ const socketListenTo = server => {
     updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket, cohortClientLocks);
   });
+
+  next();
 };
 
-module.exports = socketListenTo;
+module.exports = { initSocket, handleSocketsActions };
