@@ -3,6 +3,7 @@ import _upperFirst from 'lodash/upperFirst';
 import socket from 'sockets';
 import { ListActionTypes } from 'modules/list/model/actionTypes';
 import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
+import { Routes } from 'common/constants/enums';
 
 const clearListMetaDataSuccess = () => ({
   type: ListActionTypes.CLEAR_META_DATA_SUCCESS
@@ -22,11 +23,11 @@ export const leaveView = (route, userId) => dispatch => {
   const view = _upperFirst(route);
 
   switch (view) {
-    case 'Dashboard': {
+    case _upperFirst(Routes.DASHBOARD): {
       dispatch(clearListMetaDataSuccess());
       break;
     }
-    case 'Cohorts':
+    case _upperFirst(Routes.COHORTS):
       dispatch(clearCohortMetaDataSuccess());
       break;
     default:
@@ -49,7 +50,7 @@ export const leaveRoom = (route, id, userId) => dispatch => {
 
   socket.emit(`leave${room}Room`, data);
 
-  if (room === 'Cohort') {
+  if (room === _upperFirst(Routes.COHORT)) {
     dispatch(clearListMetaDataSuccess());
   }
 };
