@@ -101,9 +101,7 @@ export class Layout extends PureComponent {
     this.setState({ pendingForViewType: true });
 
     updateSettings(settings)
-      .catch(() => {
-        this.handleSwitchView(viewType);
-      })
+      .catch(() => this.handleSwitchView(viewType))
       .finally(() => this.setState({ pendingForViewType: false }));
   };
 

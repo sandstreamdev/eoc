@@ -152,10 +152,10 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
 export const updateSettings = settings => dispatch =>
   postData('/auth/update-settings', { settings })
     .then(() => dispatch(updateSettingsSuccess(settings)))
-    .catch(() => {
+    .catch(err => {
       dispatch(updateSettingsFailure());
       createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
         notificationId: 'user.actions.update-settings-failed'
       });
-      throw new Error();
+      throw err;
     });
