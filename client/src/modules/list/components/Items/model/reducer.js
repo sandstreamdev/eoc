@@ -6,6 +6,7 @@ import {
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
+import { filterDefined } from 'common/utils/helpers';
 
 const comments = (state = {}, action) => {
   switch (action.type) {
@@ -156,15 +157,19 @@ const items = (state = {}, action) => {
     case ItemStatusType.LOCK:
     case ItemStatusType.UNLOCK: {
       const {
-        payload: { itemId, descriptionLock, nameLock }
+        payload: { itemId, locks }
       } = action;
       const blockedItem = state[itemId];
-      blockedItem.locks = {
-        description: descriptionLock,
-        name: nameLock
-      };
+      const { locks: prevLocks } = blockedItem;
+      const updatedLocks = filterDefined(locks);
 
-      return { [itemId]: blockedItem, ...state };
+      return {
+        ...state,
+        [itemId]: {
+          ...blockedItem,
+          locks: { ...prevLocks, ...updatedLocks }
+        }
+      };
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {

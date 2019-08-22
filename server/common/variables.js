@@ -127,7 +127,7 @@ const ListHeaderStatusTypes = Object.freeze({
   UNLOCK: 'list-header/UNLOCK'
 });
 
-const LOCK_TIMEOUT = 5000;
+const LOCK_TIMEOUT = 300000;
 const SOCKET_TIMEOUT = 60000;
 
 module.exports = {
