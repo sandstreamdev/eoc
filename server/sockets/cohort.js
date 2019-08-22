@@ -13,6 +13,8 @@ const {
   cohortChannel,
   emitCohortMetaData,
   handleLocks,
+  lockDescription,
+  lockName,
   removeCohort
 } = require('./helpers');
 const { isDefined } = require('../common/utils');
@@ -134,52 +136,52 @@ const updateCohort = (socket, allCohortsViewClients) => {
 const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
   socket.on(CohortHeaderStatusTypes.UNLOCK, data => {
     const { cohortId, descriptionLock, nameLock, userId } = data;
-
-    socket.broadcast
-      .to(cohortChannel(cohortId))
-      .emit(CohortHeaderStatusTypes.UNLOCK, data);
-
-    if (cohortClientLocks.has(userId)) {
-      clearTimeout(cohortClientLocks.get(userId));
-      cohortClientLocks.delete(userId);
-    }
-
     const locks = { description: descriptionLock, name: nameLock };
 
-    handleLocks(Cohort, { _id: cohortId })(locks);
+    handleLocks(Cohort, { _id: cohortId, ownerIds: userId })(locks).then(() => {
+      socket.broadcast
+        .to(cohortChannel(cohortId))
+        .emit(CohortHeaderStatusTypes.UNLOCK, { cohortId, locks });
+
+      const lock = isDefined(nameLock) ? lockName : lockDescription;
+
+      if (cohortClientLocks.has(lock(cohortId))) {
+        clearTimeout(cohortClientLocks.get(lock(cohortId)));
+        cohortClientLocks.delete(lock(cohortId));
+      }
+    });
   });
 
   socket.on(CohortHeaderStatusTypes.LOCK, data => {
     const { cohortId, descriptionLock, nameLock, userId } = data;
-
-    socket.broadcast
-      .to(cohortChannel(cohortId))
-      .emit(CohortHeaderStatusTypes.LOCK, data);
-
-    const delayedUnlock = setTimeout(() => {
-      const { cohortId } = data;
-      const updatedData = { cohortId };
-
-      if (isDefined(nameLock)) {
-        updatedData.nameLock = false;
-      }
-
-      if (isDefined(descriptionLock)) {
-        updatedData.descriptionLock = false;
-      }
-
-      socket.broadcast
-        .to(`cohort-${cohortId}`)
-        .emit(CohortHeaderStatusTypes.UNLOCK, updatedData);
-
-      cohortClientLocks.delete(userId);
-    }, LOCK_TIMEOUT);
-
-    cohortClientLocks.set(userId, delayedUnlock);
-
     const locks = { description: descriptionLock, name: nameLock };
 
-    handleLocks(Cohort, { _id: cohortId })(locks);
+    handleLocks(Cohort, { _id: cohortId, ownerIds: userId })(locks).then(() => {
+      socket.broadcast
+        .to(cohortChannel(cohortId))
+        .emit(CohortHeaderStatusTypes.LOCK, { cohortId, locks });
+
+      const lock = isDefined(nameLock) ? lockName : lockDescription;
+      const delayedUnlock = setTimeout(() => {
+        if (isDefined(nameLock)) {
+          locks.name = false;
+        } else {
+          locks.description = false;
+        }
+
+        handleLocks(Cohort, { _id: cohortId, ownerIds: userId })(locks).then(
+          () => {
+            socket.broadcast
+              .to(cohortChannel(cohortId))
+              .emit(CohortHeaderStatusTypes.UNLOCK, { cohortId, locks });
+            clearTimeout(cohortClientLocks.get(lock(cohortId)));
+            cohortClientLocks.delete(lock(cohortId));
+          }
+        );
+      }, LOCK_TIMEOUT);
+
+      cohortClientLocks.set(lock(cohortId), delayedUnlock);
+    });
   });
 };
 
