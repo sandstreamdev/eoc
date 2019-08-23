@@ -40,7 +40,8 @@ const {
   changeListType,
   deleteList,
   leaveList: leaveListSocket,
-  removeListMember
+  removeListMember,
+  removeMemberRoleInList
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -881,6 +882,9 @@ const removeMemberRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
+      const data = { listId, userId };
+
+      removeMemberRoleInList(socketInstance, listClients)(data);
       resp.send();
 
       saveActivity(

@@ -533,9 +533,7 @@ export const removeMemberRole = (
         listId,
         userId
       });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.remove-member-role',
