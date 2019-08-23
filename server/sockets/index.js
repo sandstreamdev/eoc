@@ -23,7 +23,6 @@ const {
   setVote,
   updateItem,
   updateItemState,
-  updateList,
   updateListHeaderState
 } = require('./list');
 const {
@@ -166,7 +165,6 @@ const socketListeners = socketInstance => {
     setVote(socket);
     updateItem(socket);
     updateItemState(socket, itemClientLocks);
-    updateList(socket, dashboardViewClients, cohortViewClients);
     updateListHeaderState(socket, listClientLocks);
 
     addCohortMember(socket, allCohortsViewClients);

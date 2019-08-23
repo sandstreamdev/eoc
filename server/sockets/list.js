@@ -271,6 +271,7 @@ const changeItemOrderState = (
       .to(listChannel(listId))
       .emit(ItemActionTypes.TOGGLE_SUCCESS, data);
 
+    // TODO: ZRobic to tez w tym pull requescie
     // send to users on dashboard and cohort view
     updateListOnDashboardAndCohortView(
       socket,
@@ -281,23 +282,17 @@ const changeItemOrderState = (
   });
 };
 
-const updateList = (socket, dashboardViewClients, cohortViewClients) => {
-  socket.on(ListActionTypes.UPDATE_SUCCESS, data => {
-    const { listId } = data;
+const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
+  const { listId } = data;
 
-    // send to users that are on the list view
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ListActionTypes.UPDATE_SUCCESS, data);
+  io.sockets.to(listChannel(listId)).emit(ListActionTypes.UPDATE_SUCCESS, data);
 
-    // send to users on dashboard and cohort view
-    updateListOnDashboardAndCohortView(
-      socket,
-      listId,
-      dashboardViewClients,
-      cohortViewClients
-    );
-  });
+  updateListOnDashboardAndCohortView(
+    io.sockets,
+    listId,
+    dashboardViewClients,
+    cohortViewClients
+  );
 };
 
 const updateListHeaderState = (socket, listClientLocks) => {

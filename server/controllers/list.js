@@ -43,7 +43,8 @@ const {
   removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
-  restoreList
+  restoreList,
+  updateList
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -476,10 +477,16 @@ const updateListById = (req, resp) => {
         } else {
           listActivity = ActivityType.LIST_EDIT_DESCRIPTION;
         }
+
+        const data = { listId, description };
+        updateList(socketInstance, dashboardClients, cohortClients)(data);
       }
 
       if (name) {
         listActivity = ActivityType.LIST_EDIT_NAME;
+
+        const data = { listId, name };
+        updateList(socketInstance, dashboardClients, cohortClients)(data);
       }
 
       if (isArchived !== undefined) {
