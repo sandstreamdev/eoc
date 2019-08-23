@@ -201,11 +201,11 @@ const emitListsOnAddCohortMember = (socket, clients) =>
   });
 
 const addListViewer = (io, dashboardClients, cohortClients) => data => {
-  const { listId, _id: viewerId } = data;
+  const { listId, _id: viewerId, _id } = data;
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
+    .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { ...data, _id });
 
   return List.findById(listId)
     .lean()
@@ -215,8 +215,8 @@ const addListViewer = (io, dashboardClients, cohortClients) => data => {
         const { cohortId } = doc;
         const list = responseWithList(doc, viewerId);
 
-        if (cohortId && cohortClients.has(viewerId)) {
-          const { viewId, socketId } = cohortClients.get(viewerId);
+        if (cohortId && cohortClients.has(viewerId.toString())) {
+          const { viewId, socketId } = cohortClients.get(viewerId.toString());
 
           if (viewId === cohortId.toString()) {
             io.sockets
@@ -227,8 +227,8 @@ const addListViewer = (io, dashboardClients, cohortClients) => data => {
           }
         }
 
-        if (dashboardClients.has(viewerId)) {
-          const { socketId } = dashboardClients.get(viewerId);
+        if (dashboardClients.has(viewerId.toString())) {
+          const { socketId } = dashboardClients.get(viewerId.toString());
 
           io.sockets
             .to(socketId)
@@ -448,14 +448,13 @@ const removeOwnerRoleInList = (socket, clients) => {
   });
 };
 
-const leaveList = socket =>
-  socket.on(ListActionTypes.LEAVE_SUCCESS, data => {
-    const { listId } = data;
+const leaveList = io => data => {
+  const { listId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
-  });
+  io.sockets
+    .to(listChannel(listId))
+    .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+};
 
 const emitRemoveMemberOnLeaveCohort = socket =>
   socket.on(CohortActionTypes.LEAVE_SUCCESS, data => {

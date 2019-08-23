@@ -18,7 +18,6 @@ const {
   emitListsOnRemoveCohortMember,
   emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
-  leaveList,
   removeListMember,
   removeListsOnArchiveCohort,
   removeMemberRoleInList,
@@ -166,7 +165,6 @@ const socketListeners = socketInstance => {
       listViewClients
     );
     emitRemoveMemberOnLeaveCohort(socket);
-    leaveList(socket);
     removeListsOnArchiveCohort(socket, dashboardViewClients);
     removeListMember(
       socket,

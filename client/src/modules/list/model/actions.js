@@ -383,7 +383,7 @@ export const addListViewer = (listId, email) => dispatch =>
     .then(response => response.json())
     .then(json => {
       if (json._id) {
-        const action = addViewerSuccess({ listId, viewer: json });
+        const action = addViewerSuccess({ listId, ...json });
 
         dispatch(action);
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -587,9 +587,8 @@ export const leaveList = (
   patchData(`/api/lists/${listId}/leave`)
     .then(() => {
       const action = leaveListSuccess({ listId, userId });
-      const { type, payload } = action;
+      const { type } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.leave',

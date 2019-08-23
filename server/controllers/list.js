@@ -38,7 +38,8 @@ const {
   addOwnerRoleInList,
   archiveList,
   changeListType,
-  deleteList
+  deleteList,
+  leaveList: leaveListSocket
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -1338,7 +1339,12 @@ const leaveList = (req, resp) => {
 
       return list.save();
     })
-    .then(() => resp.send())
+    .then(() => {
+      const data = { listId, userId };
+      leaveListSocket(socketInstance)(data);
+
+      return resp.send();
+    })
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;
