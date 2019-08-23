@@ -9,12 +9,15 @@ const session = require('express-session');
 const path = require('path');
 /* eslint-disable import/order */
 const MongoStore = require('connect-mongo')(session);
-const io = require('./sockets/index');
+
+const socket = require('./sockets/index');
 
 const app = express();
 const server = require('http').Server(app);
 
-io.init(server);
+socket.init(server);
+const socketInstance = socket.getSocketInstance();
+socket.listen(socketInstance);
 
 const { DB_URL } = require('./common/variables');
 const authRouter = require('./routes/authorization');
@@ -24,7 +27,6 @@ const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
 const unlockLocks = require('./middleware/cleanLocks');
-require('./sockets/listeners');
 
 /* eslint-enable import/order */
 const sessionStore = new MongoStore({

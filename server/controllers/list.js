@@ -27,7 +27,11 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
-// const io = require('../sockets/index').getInstance();
+const socketInstance = require('../sockets/index').getSocketInstance();
+const dashboardClients = require('../sockets/index').getDashboardViewClients();
+const cohortClients = require('../sockets/index').getCohortViewClients();
+const { createListCohort } = require('../sockets/cohort');
+const { addListViewer } = require('../sockets/list');
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -35,7 +39,6 @@ const createList = (req, resp) => {
     user: { _id: userId }
   } = req;
   const isSharedList = type === ListType.SHARED;
-
   const list = new List({
     cohortId,
     description,
@@ -45,6 +48,7 @@ const createList = (req, resp) => {
     type,
     viewersIds: userId
   });
+  let listData;
 
   if (cohortId && isSharedList) {
     Cohort.findOne({ _id: sanitize(cohortId) })
@@ -60,11 +64,19 @@ const createList = (req, resp) => {
 
         throw new BadRequestException();
       })
+      .then(() => {
+        listData = responseWithList(list, userId);
+
+        return createListCohort(socketInstance, dashboardClients)({
+          ...listData,
+          cohortId
+        });
+      })
       .then(() =>
         resp
           .status(201)
           .location(`/lists/${list._id}`)
-          .send(responseWithList(list, userId))
+          .send(listData)
       )
       .catch(err => {
         if (err instanceof BadRequestException) {
@@ -864,6 +876,7 @@ const addViewer = (req, resp) => {
   let list;
   let user;
   let cohortMembers = [];
+  let userToSend;
 
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
@@ -915,21 +928,27 @@ const addViewer = (req, resp) => {
     })
     .then(() => {
       if (user) {
-        const userToSend = responseWithListMember(user, cohortMembers);
+        userToSend = responseWithListMember(user, cohortMembers);
 
-        resp.send(userToSend);
-
-        return saveActivity(
-          ActivityType.LIST_ADD_USER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          list.cohortId,
-          user.id
-        );
+        return addListViewer(socketInstance, dashboardClients, cohortClients)({
+          ...userToSend,
+          listId
+        });
       }
 
       resp.send({ _id: null });
+    })
+    .then(() => {
+      resp.send(userToSend);
+
+      return saveActivity(
+        ActivityType.LIST_ADD_USER,
+        currentUserId,
+        null,
+        sanitizedListId,
+        list.cohortId,
+        user.id
+      );
     })
     .catch(err => {
       if (err instanceof BadRequestException) {

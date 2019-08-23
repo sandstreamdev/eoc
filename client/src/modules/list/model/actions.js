@@ -192,18 +192,12 @@ export const fetchListData = listId => dispatch =>
       throw err;
     });
 
-export const createList = data => dispatch => {
-  const { type: listType } = data;
-
-  return postData('/api/lists/create', data)
+export const createList = data => dispatch =>
+  postData('/api/lists/create', data)
     .then(response => response.json())
     .then(json => {
       const action = createListSuccess(json);
-      const { type, payload } = action;
 
-      if (listType === ListType.SHARED) {
-        socket.emit(type, payload);
-      }
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.create-list',
@@ -217,7 +211,6 @@ export const createList = data => dispatch => {
         data: data.name
       });
     });
-};
 
 export const fetchListsMetaData = (cohortId = null) => dispatch => {
   const url = cohortId
@@ -395,9 +388,7 @@ export const addListViewer = (listId, email) => dispatch =>
     .then(json => {
       if (json._id) {
         const action = addViewerSuccess({ listId, viewer: json });
-        const { type, payload } = action;
 
-        socket.emit(type, payload);
         dispatch(action);
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',

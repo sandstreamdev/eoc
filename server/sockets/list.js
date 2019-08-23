@@ -200,47 +200,45 @@ const emitListsOnAddCohortMember = (socket, clients) =>
       });
   });
 
-const addListMember = (socket, dashboardClients, cohortClients) =>
-  socket.on(ListActionTypes.ADD_VIEWER_SUCCESS, data => {
-    const {
-      listId,
-      viewer: { _id: viewerId }
-    } = data;
+const addListViewer = (io, dashboardClients, cohortClients) => data => {
+  const { listId, _id: viewerId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
+  io.sockets
+    .to(listChannel(listId))
+    .emit(ListActionTypes.ADD_VIEWER_SUCCESS, data);
 
-    List.findById(listId)
-      .lean()
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { cohortId } = doc;
-          const list = responseWithList(doc, viewerId);
+  return List.findById(listId)
+    .lean()
+    .exec()
+    .then(doc => {
+      if (doc) {
+        const { cohortId } = doc;
+        const list = responseWithList(doc, viewerId);
 
-          if (cohortId && cohortClients.has(viewerId)) {
-            const { viewId, socketId } = cohortClients.get(viewerId);
+        if (cohortId && cohortClients.has(viewerId)) {
+          const { viewId, socketId } = cohortClients.get(viewerId);
 
-            if (viewId === cohortId.toString()) {
-              socket
-                .to(socketId)
-                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: list
-                });
-            }
-          }
-
-          if (dashboardClients.has(viewerId)) {
-            const { socketId } = dashboardClients.get(viewerId);
-
-            socket.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: list
-            });
+          if (viewId === cohortId.toString()) {
+            io.sockets
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                [listId]: list
+              });
           }
         }
-      });
-  });
+
+        if (dashboardClients.has(viewerId)) {
+          const { socketId } = dashboardClients.get(viewerId);
+
+          io.sockets
+            .to(socketId)
+            .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+              [listId]: list
+            });
+        }
+      }
+    });
+};
 
 const setVote = socket =>
   socket.on(ItemActionTypes.SET_VOTE_SUCCESS, data => {
@@ -975,7 +973,7 @@ const emitListsOnRestoreCohort = (socket, dashboardClients, cohortClients) =>
 module.exports = {
   addComment,
   addItemToList,
-  addListMember,
+  addListViewer,
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
@@ -987,12 +985,12 @@ module.exports = {
   deleteItem,
   deleteList,
   emitListsOnAddCohortMember,
-  emitListsOnRestoreCohort,
   emitListsOnRemoveCohortMember,
+  emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
-  removeListsOnArchiveCohort,
   removeListMember,
+  removeListsOnArchiveCohort,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreItem,
