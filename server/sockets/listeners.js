@@ -52,9 +52,6 @@ const cohortClientLocks = new Map();
 const itemClientLocks = new Map();
 const listClientLocks = new Map();
 
-// FIXME: This io can also come via module.exports = (ioInstace) =>
-// Consider refactoring this
-
 io.on('connection', socket => {
   const {
     request: { user }

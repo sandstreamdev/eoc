@@ -9,7 +9,6 @@ const session = require('express-session');
 const path = require('path');
 /* eslint-disable import/order */
 const MongoStore = require('connect-mongo')(session);
-
 const io = require('./sockets/index');
 
 const app = express();
