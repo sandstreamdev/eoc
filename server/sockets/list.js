@@ -800,34 +800,31 @@ const archiveList = (
     });
 };
 
-const deleteList = (socket, dashboardClients, cohortClients) =>
-  socket.on(ListActionTypes.DELETE_SUCCESS, data => {
-    const { listId, cohortId } = data;
+const deleteList = (io, dashboardClients, cohortClients) => data => {
+  const { listId, cohortId } = data;
 
-    socket.broadcast
-      .to(`sack-${listId}`)
-      .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
+  io.sockets
+    .to(`sack-${listId}`)
+    .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
 
-    dashboardClients.forEach(client => {
-      const { socketId } = client;
+  dashboardClients.forEach(client => {
+    const { socketId } = client;
 
-      socket.broadcast
-        .to(socketId)
-        .emit(ListActionTypes.DELETE_SUCCESS, { listId });
-    });
-
-    if (cohortId) {
-      cohortClients.forEach(client => {
-        const { socketId, viewId } = client;
-
-        if (viewId === cohortId) {
-          socket.broadcast
-            .to(socketId)
-            .emit(ListActionTypes.DELETE_SUCCESS, { listId });
-        }
-      });
-    }
+    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
   });
+
+  if (cohortId) {
+    cohortClients.forEach(client => {
+      const { socketId, viewId } = client;
+
+      if (viewId === cohortId.toString()) {
+        io.sockets
+          .to(socketId)
+          .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+      }
+    });
+  }
+};
 
 const restoreList = (socket, dashboardClients, cohortClients, listClients) =>
   socket.on(ListActionTypes.RESTORE_SUCCESS, listData => {

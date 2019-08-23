@@ -37,7 +37,8 @@ const {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveList,
-  changeListType
+  changeListType,
+  deleteList
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -494,6 +495,9 @@ const updateListById = (req, resp) => {
       if (isDeleted) {
         listActivity = ActivityType.LIST_DELETE;
 
+        const data = { listId, cohortId };
+
+        deleteList(socketInstance, dashboardClients, cohortClients)(data);
         Comment.updateMany({ listId: sanitizedListId }, { isDeleted }).exec();
       }
 

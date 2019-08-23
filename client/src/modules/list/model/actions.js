@@ -252,9 +252,7 @@ export const deleteList = (listId, listName, cohortId) => dispatch =>
   patchData(`/api/lists/${listId}/update`, { isDeleted: true, listId })
     .then(() => {
       const action = deleteListSuccess({ listId, cohortId });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.delete-list',
