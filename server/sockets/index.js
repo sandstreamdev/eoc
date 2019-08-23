@@ -10,7 +10,6 @@ const {
   addComment,
   addItemToList,
   archiveItem,
-  changeItemOrderState,
   clearVote,
   cloneItem,
   deleteItem,
@@ -148,7 +147,6 @@ const socketListeners = socketInstance => {
     addComment(socket);
     addItemToList(socket);
     archiveItem(socket);
-    changeItemOrderState(socket, dashboardViewClients, cohortViewClients);
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);

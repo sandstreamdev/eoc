@@ -1070,6 +1070,13 @@ const updateListItem = (req, res) => {
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
+
+        // THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
+        // OTHERWISE ITEMS GETS TOGGLED TWICE BY AUTHOR
+        // const data = { listId, itemId };
+        // changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
+        //   data
+        // );
       }
 
       if (authorId) {

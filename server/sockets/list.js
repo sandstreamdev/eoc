@@ -258,29 +258,29 @@ const clearVote = socket =>
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
   });
 
-const changeItemOrderState = (
-  socket,
-  dashboardViewClients,
-  cohortViewClients
-) => {
-  socket.on(ItemActionTypes.TOGGLE_SUCCESS, data => {
-    const { listId } = data;
+// THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
+// OTHERWISE ITEMS GETS TOGGLED TWICE BY AUTHOR
+// const changeItemOrderState = (
+//   io,
+//   dashboardViewClients,
+//   cohortViewClients
+// ) => data => {
+//   const { listId } = data;
+//   console.log(
+//     io.clients((err, clients) => {
+//       console.log(clients);
+//     })
+//   );
 
-    // send to users that are on the list view
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.TOGGLE_SUCCESS, data);
+//   io.sockets.to(listChannel(listId)).emit(ItemActionTypes.TOGGLE_SUCCESS, data);
 
-    // TODO: ZRobic to tez w tym pull requescie
-    // send to users on dashboard and cohort view
-    updateListOnDashboardAndCohortView(
-      socket,
-      listId,
-      dashboardViewClients,
-      cohortViewClients
-    );
-  });
-};
+//   updateListOnDashboardAndCohortView(
+//     io.sockets,
+//     listId,
+//     dashboardViewClients,
+//     cohortViewClients
+//   );
+// };
 
 const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
   const { listId } = data;
@@ -954,7 +954,6 @@ module.exports = {
   addOwnerRoleInList,
   archiveItem,
   archiveList,
-  changeItemOrderState,
   changeListType,
   clearVote,
   cloneItem,
