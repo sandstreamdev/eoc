@@ -20,7 +20,6 @@ const {
   emitRemoveMemberOnLeaveCohort,
   removeListsOnArchiveCohort,
   restoreItem,
-  restoreList,
   setVote,
   updateItem,
   updateItemState,
@@ -164,12 +163,6 @@ const socketListeners = socketInstance => {
     emitRemoveMemberOnLeaveCohort(socket);
     removeListsOnArchiveCohort(socket, dashboardViewClients);
     restoreItem(socket);
-    restoreList(
-      socket,
-      dashboardViewClients,
-      cohortViewClients,
-      listViewClients
-    );
     setVote(socket);
     updateItem(socket);
     updateItemState(socket, itemClientLocks);

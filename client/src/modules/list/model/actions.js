@@ -325,9 +325,7 @@ export const restoreList = (listId, listName) => dispatch =>
         members: _keyBy(json.members, '_id')
       };
       const action = restoreListSuccess({ data, listId });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.restore-list',

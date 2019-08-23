@@ -42,7 +42,8 @@ const {
   leaveList: leaveListSocket,
   removeListMember,
   removeMemberRoleInList,
-  removeOwnerRoleInList
+  removeOwnerRoleInList,
+  restoreList
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -482,13 +483,21 @@ const updateListById = (req, resp) => {
       }
 
       if (isArchived !== undefined) {
-        listActivity = isArchived
-          ? ActivityType.LIST_ARCHIVE
-          : ActivityType.LIST_RESTORE;
-
         const data = { listId, cohortId };
 
-        archiveList(
+        if (isArchived) {
+          listActivity = ActivityType.LIST_ARCHIVE;
+
+          archiveList(
+            socketInstance,
+            dashboardClients,
+            cohortClients,
+            listClients
+          )(data);
+        }
+
+        listActivity = ActivityType.LIST_RESTORE;
+        restoreList(
           socketInstance,
           dashboardClients,
           cohortClients,
