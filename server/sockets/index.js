@@ -157,7 +157,7 @@ const socketListeners = socketInstance => {
 
     addComment(socket);
     addItemToList(socket);
-    addOwnerRoleInList(socket, listViewClients);
+    // addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
     archiveList(
       socket,

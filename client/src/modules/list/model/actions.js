@@ -446,9 +446,7 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
         listId,
         userId
       });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.owner-role',
