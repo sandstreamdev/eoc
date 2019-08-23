@@ -298,9 +298,7 @@ export const archiveList = (listId, listName, cohortId) => dispatch =>
   })
     .then(() => {
       const action = archiveListSuccess({ cohortId, isArchived: true, listId });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.arch-list',

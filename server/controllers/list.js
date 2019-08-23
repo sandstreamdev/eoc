@@ -35,7 +35,8 @@ const { createListCohort } = require('../sockets/cohort');
 const {
   addListViewer,
   addMemberRoleInList,
-  addOwnerRoleInList
+  addOwnerRoleInList,
+  archiveList
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -455,6 +456,7 @@ const updateListById = (req, resp) => {
       if (!doc) {
         return resp.sendStatus(400);
       }
+      const { cohortId } = doc;
 
       resp.send();
 
@@ -477,6 +479,15 @@ const updateListById = (req, resp) => {
         listActivity = isArchived
           ? ActivityType.LIST_ARCHIVE
           : ActivityType.LIST_RESTORE;
+
+        const data = { listId, cohortId };
+
+        archiveList(
+          socketInstance,
+          dashboardClients,
+          cohortClients,
+          listClients
+        )(data);
       }
 
       if (isDeleted) {

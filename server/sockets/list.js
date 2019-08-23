@@ -727,43 +727,62 @@ const removeListMember = (
       .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
   });
 
-const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
-  socket.on(ListActionTypes.ARCHIVE_SUCCESS, data => {
-    const { listId, cohortId } = data;
+const archiveList = (
+  io,
+  dashboardClients,
+  cohortClients,
+  listClients
+) => data => {
+  const { listId, cohortId } = data;
 
-    List.findById(listId)
-      .populate('cohortId')
-      .lean()
-      .exec()
-      .then(doc => {
-        const { viewersIds, cohortId: cohort } = doc;
-        const list = { ...doc, cohortId };
+  List.findById(listId)
+    .populate('cohortId')
+    .lean()
+    .exec()
+    .then(doc => {
+      const { viewersIds, cohortId: cohort } = doc;
+      const list = { ...doc, cohortId };
 
-        viewersIds.forEach(viewerId => {
-          const id = viewerId.toString();
-          let isCohortMember = false;
+      viewersIds.forEach(viewerId => {
+        const id = viewerId.toString();
+        let isCohortMember = false;
 
-          if (cohort) {
-            isCohortMember = isMember(cohort, viewerId);
+        if (cohort) {
+          isCohortMember = isMember(cohort, viewerId);
+        }
+
+        const dataToSend = { isCohortMember, ...data };
+
+        if (listClients.has(id)) {
+          const { socketId, viewId } = listClients.get(id);
+
+          if (viewId === listId) {
+            io.sockets
+              .to(socketId)
+              .emit(ListActionTypes.ARCHIVE_SUCCESS, dataToSend);
           }
+        }
 
-          const dataToSend = { isCohortMember, ...data };
+        if (dashboardClients.has(id)) {
+          const { socketId } = dashboardClients.get(id);
 
-          if (listClients.has(id)) {
-            const { socketId, viewId } = listClients.get(id);
+          // Broadcast to clients on dashboard that have this list
+          io.sockets
+            .to(socketId)
+            .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+              [listId]: {
+                ...responseWithList(list, viewerId),
+                isArchived: true
+              }
+            });
+        }
 
-            if (viewId === listId) {
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.ARCHIVE_SUCCESS, dataToSend);
-            }
-          }
+        if (cohortClients.has(id)) {
+          const { socketId, viewId } = cohortClients.get(id);
 
-          if (dashboardClients.has(id)) {
-            const { socketId } = dashboardClients.get(id);
-
-            // Broadcast to clients on dashboard that have this list
-            socket.broadcast
+          if (viewId === cohortId.toString()) {
+            // Broadcast to clients on cohort view that have this list
+            io.sockets
               .to(socketId)
               .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
                 [listId]: {
@@ -772,25 +791,10 @@ const archiveList = (socket, dashboardClients, cohortClients, listClients) =>
                 }
               });
           }
-
-          if (cohortClients.has(id)) {
-            const { socketId, viewId } = cohortClients.get(id);
-
-            if (viewId === cohortId) {
-              // Broadcast to clients on cohort view that have this list
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
-                  [listId]: {
-                    ...responseWithList(list, viewerId),
-                    isArchived: true
-                  }
-                });
-            }
-          }
-        });
+        }
       });
-  });
+    });
+};
 
 const deleteList = (socket, dashboardClients, cohortClients) =>
   socket.on(ListActionTypes.DELETE_SUCCESS, data => {

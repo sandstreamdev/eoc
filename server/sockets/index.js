@@ -9,9 +9,7 @@ const cookieParser = require('cookie-parser');
 const {
   addComment,
   addItemToList,
-  addOwnerRoleInList,
   archiveItem,
-  archiveList,
   changeItemOrderState,
   changeListType,
   clearVote,
@@ -157,14 +155,7 @@ const socketListeners = socketInstance => {
 
     addComment(socket);
     addItemToList(socket);
-    // addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
-    archiveList(
-      socket,
-      dashboardViewClients,
-      cohortViewClients,
-      listViewClients
-    );
     changeItemOrderState(socket, dashboardViewClients, cohortViewClients);
     changeListType(
       socket,
