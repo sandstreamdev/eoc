@@ -418,30 +418,26 @@ const removeMemberRoleInList = (io, clients) => data => {
   }
 };
 
-const removeOwnerRoleInList = (socket, clients) => {
-  socket.on(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, data => {
-    const { listId, userId } = data;
+const removeOwnerRoleInList = (io, clients) => data => {
+  const { listId, userId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+  io.sockets
+    .to(listChannel(listId))
+    .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+      ...data,
+      isCurrentUserRoleChanging: false
+    });
+
+  if (clients.has(userId)) {
+    const { viewId, socketId } = clients.get(userId);
+
+    if (viewId === listId) {
+      io.sockets.to(socketId).emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
         ...data,
-        isCurrentUserRoleChanging: false
+        isCurrentUserRoleChanging: true
       });
-
-    if (clients.has(userId)) {
-      const { viewId, socketId } = clients.get(userId);
-
-      if (viewId === listId) {
-        socket.broadcast
-          .to(socketId)
-          .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
-            ...data,
-            isCurrentUserRoleChanging: true
-          });
-      }
     }
-  });
+  }
 };
 
 const leaveList = io => data => {

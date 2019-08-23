@@ -41,7 +41,8 @@ const {
   deleteList,
   leaveList: leaveListSocket,
   removeListMember,
-  removeMemberRoleInList
+  removeMemberRoleInList,
+  removeOwnerRoleInList
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -767,9 +768,10 @@ const removeOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send({
-        message: 'User has no owner role.'
-      });
+      const data = { listId, userId };
+
+      removeOwnerRoleInList(socketInstance, listClients)(data);
+      resp.send();
 
       saveActivity(
         ActivityType.LIST_SET_AS_MEMBER,

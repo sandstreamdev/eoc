@@ -471,9 +471,7 @@ export const removeOwnerRole = (
         listId,
         userId
       });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.no-owner-role',
