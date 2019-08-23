@@ -150,15 +150,6 @@ const socketListeners = socketInstance => {
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);
-    emitListsOnAddCohortMember(socket, dashboardViewClients);
-    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
-    emitListsOnRemoveCohortMember(
-      socket,
-      dashboardViewClients,
-      listViewClients
-    );
-    emitRemoveMemberOnLeaveCohort(socket);
-    removeListsOnArchiveCohort(socket, dashboardViewClients);
     restoreItem(socket);
     setVote(socket);
     updateItem(socket);
@@ -172,8 +163,17 @@ const socketListeners = socketInstance => {
     addOwnerRoleInCohort(socket, cohortViewClients);
     archiveCohort(socket, allCohortsViewClients);
     deleteCohort(socket, allCohortsViewClients);
+    emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitListsOnRemoveCohortMember(
+      socket,
+      dashboardViewClients,
+      listViewClients
+    );
+    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
+    emitRemoveMemberOnLeaveCohort(socket);
     leaveCohort(socket, allCohortsViewClients);
     removeCohortMember(socket, allCohortsViewClients, cohortViewClients);
+    removeListsOnArchiveCohort(socket, dashboardViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
     restoreCohort(socket, allCohortsViewClients, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);
