@@ -36,7 +36,8 @@ const {
   addListViewer,
   addMemberRoleInList,
   addOwnerRoleInList,
-  archiveList
+  archiveList,
+  changeListType
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -1199,7 +1200,15 @@ const changeType = (req, resp) => {
         cohortMembers
       );
 
-      resp.send({ members, type, removedViewers });
+      const data = { listId, type, removedViewers };
+
+      changeListType(
+        socketInstance,
+        dashboardClients,
+        cohortClients,
+        listClients
+      )(data);
+      resp.send({ members, type });
 
       saveActivity(
         ActivityType.LIST_CHANGE_TYPE,
