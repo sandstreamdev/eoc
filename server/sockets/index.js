@@ -163,6 +163,9 @@ const socketListeners = socketInstance => {
     setVote(socket);
     updateItem(socket);
     updateItemState(socket, itemClientLocks);
+
+    // This method can not be refactored as it doesn't
+    // have it's own controller
     updateListHeaderState(socket, listClientLocks);
 
     addCohortMember(socket, allCohortsViewClients);
