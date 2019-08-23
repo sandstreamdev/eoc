@@ -50,11 +50,6 @@ class ListItemDescription extends PureComponent {
 
     if (!isPreviousIsTextareaVisible && isTextareaVisible) {
       this.descriptionTextarea.current.focus();
-      this.handleFocus();
-    }
-
-    if (isPreviousIsTextareaVisible && !isTextareaVisible) {
-      this.handleBlur();
     }
 
     if (prevDescription !== description) {
@@ -85,7 +80,6 @@ class ListItemDescription extends PureComponent {
 
   handleFocus = () => {
     const { onFocus } = this.props;
-
     this.setState({ isFocused: true });
     onFocus();
     document.addEventListener('keydown', this.handleEscapePress);

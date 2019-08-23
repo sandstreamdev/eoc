@@ -1185,6 +1185,7 @@ const getArchivedItems = (req, resp) => {
   )
     .lean()
     .populate('items.authorId', 'displayName')
+    .populate('items.editedBy', 'displayName')
     .exec()
     .then(list => {
       if (!list) {
