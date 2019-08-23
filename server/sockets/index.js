@@ -18,7 +18,6 @@ const {
   emitListsOnRemoveCohortMember,
   emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
-  removeListMember,
   removeListsOnArchiveCohort,
   removeMemberRoleInList,
   removeOwnerRoleInList,
@@ -166,13 +165,7 @@ const socketListeners = socketInstance => {
     );
     emitRemoveMemberOnLeaveCohort(socket);
     removeListsOnArchiveCohort(socket, dashboardViewClients);
-    removeListMember(
-      socket,
-      dashboardViewClients,
-      listViewClients,
-      cohortViewClients
-    );
-    removeMemberRoleInList(socket, listViewClients);
+    // removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
     restoreItem(socket);
     restoreList(

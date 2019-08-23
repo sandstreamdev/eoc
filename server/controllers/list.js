@@ -39,7 +39,8 @@ const {
   archiveList,
   changeListType,
   deleteList,
-  leaveList: leaveListSocket
+  leaveList: leaveListSocket,
+  removeListMember
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -657,6 +658,14 @@ const removeMember = (req, resp) => {
         return resp.sendStatus(400);
       }
 
+      const data = { listId, userId };
+
+      removeListMember(
+        socketInstance,
+        dashboardClients,
+        listClients,
+        cohortClients
+      )(data);
       resp.send();
 
       saveActivity(

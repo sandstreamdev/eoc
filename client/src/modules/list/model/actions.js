@@ -421,7 +421,6 @@ export const removeListMember = (
         notificationId: 'list.actions.remove-member',
         data: userName
       });
-      socket.emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
     })
     .catch(() => {
       dispatch(removeMemberFailure());
