@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const {
   addComment,
   addItemToList,
-  addMemberRoleInList,
   addOwnerRoleInList,
   archiveItem,
   archiveList,
@@ -158,7 +157,6 @@ const socketListeners = socketInstance => {
 
     addComment(socket);
     addItemToList(socket);
-    addMemberRoleInList(socket, listViewClients);
     addOwnerRoleInList(socket, listViewClients);
     archiveItem(socket);
     archiveList(

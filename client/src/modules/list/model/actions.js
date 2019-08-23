@@ -510,9 +510,7 @@ export const addMemberRole = (
         listId,
         userId
       });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.add-member-role',

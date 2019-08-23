@@ -30,8 +30,9 @@ const { saveActivity } = require('./activity');
 const socketInstance = require('../sockets/index').getSocketInstance();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const cohortClients = require('../sockets/index').getCohortViewClients();
+const listClients = require('../sockets/index').getListViewClients();
 const { createListCohort } = require('../sockets/cohort');
-const { addListViewer } = require('../sockets/list');
+const { addListViewer, addMemberRoleInList } = require('../sockets/list');
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -788,6 +789,9 @@ const addMemberRole = (req, resp) => {
       if (!doc) {
         return resp.sendStatus(400);
       }
+
+      const data = { listId, userId };
+      addMemberRoleInList(socketInstance, listClients)(data);
 
       resp.send();
 
