@@ -1,5 +1,6 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
+import _upperFirst from 'lodash/upperFirst';
 
 import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
 import {
@@ -11,6 +12,8 @@ import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
 import items from 'modules/list/components/Items/model/reducer';
 import { ListType } from 'modules/list/consts';
 import { filterDefined } from 'common/utils/helpers';
+import { CommonActionTypes } from 'common/model/actionTypes';
+import { Routes } from 'common/constants/enums';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -251,8 +254,19 @@ const lists = (state = {}, action) => {
         }
       };
     }
-    case ListActionTypes.CLEAR_META_DATA_SUCCESS:
-      return {};
+    case CommonActionTypes.LEAVE_VIEW: {
+      const { payload } = action;
+
+      if (
+        payload === _upperFirst(Routes.DASHBOARD) ||
+        payload === _upperFirst(Routes.COHORT)
+      ) {
+        return {};
+      }
+
+      return state;
+    }
+
     case CohortActionTypes.ARCHIVE_SUCCESS:
       return {};
     case CohortActionTypes.LEAVE_SUCCESS: {

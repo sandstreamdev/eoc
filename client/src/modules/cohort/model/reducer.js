@@ -1,8 +1,11 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
+import _upperFirst from 'lodash/upperFirst';
 
 import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
 import { filterDefined } from 'common/utils/helpers';
+import { CommonActionTypes } from 'common/model/actionTypes';
+import { Routes } from 'common/constants/enums';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -130,8 +133,16 @@ const cohorts = (state = {}, action) => {
 
       return { ...state, [cohortId]: cohort };
     }
-    case CohortActionTypes.CLEAR_META_DATA_SUCCESS:
-      return {};
+    case CommonActionTypes.LEAVE_VIEW: {
+      const { payload } = action;
+
+      if (payload === _upperFirst(Routes.COHORTS)) {
+        return {};
+      }
+
+      return state;
+    }
+
     case CohortHeaderStatusTypes.LOCK:
     case CohortHeaderStatusTypes.UNLOCK: {
       const {

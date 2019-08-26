@@ -1,16 +1,11 @@
 import _upperFirst from 'lodash/upperFirst';
 
 import socket from 'sockets';
-import { ListActionTypes } from 'modules/list/model/actionTypes';
-import { CohortActionTypes } from 'modules/cohort/model/actionTypes';
-import { Routes } from 'common/constants/enums';
+import { CommonActionTypes } from 'common/model/actionTypes';
 
-const clearListMetaDataSuccess = () => ({
-  type: ListActionTypes.CLEAR_META_DATA_SUCCESS
-});
-
-const clearCohortMetaDataSuccess = () => ({
-  type: CohortActionTypes.CLEAR_META_DATA_SUCCESS
+const clearMetaDataSuccess = view => ({
+  type: CommonActionTypes.LEAVE_VIEW,
+  payload: view
 });
 
 export const enterView = (route, userId) => dispatch => {
@@ -22,18 +17,7 @@ export const enterView = (route, userId) => dispatch => {
 export const leaveView = (route, userId) => dispatch => {
   const view = _upperFirst(route);
 
-  switch (view) {
-    case _upperFirst(Routes.DASHBOARD): {
-      dispatch(clearListMetaDataSuccess());
-      break;
-    }
-    case _upperFirst(Routes.COHORTS):
-      dispatch(clearCohortMetaDataSuccess());
-      break;
-    default:
-      break;
-  }
-
+  dispatch(clearMetaDataSuccess(view));
   socket.emit('leaveView', { userId, view });
 };
 
@@ -50,7 +34,5 @@ export const leaveRoom = (route, id, userId) => dispatch => {
 
   socket.emit('leaveRoom', { data, room });
 
-  if (room === _upperFirst(Routes.COHORT)) {
-    dispatch(clearListMetaDataSuccess());
-  }
+  dispatch(clearMetaDataSuccess(room));
 };
