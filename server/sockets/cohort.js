@@ -11,10 +11,10 @@ const {
 } = require('../common/utils');
 const {
   cohortChannel,
+  descriptionLockId,
   emitCohortMetaData,
   handleLocks,
-  lockDescription,
-  lockName,
+  nameLockId,
   removeCohort
 } = require('./helpers');
 const { isDefined } = require('../common/utils');
@@ -143,7 +143,7 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
         .to(cohortChannel(cohortId))
         .emit(CohortHeaderStatusTypes.UNLOCK, { cohortId, locks });
 
-      const lock = isDefined(nameLock) ? lockName : lockDescription;
+      const lock = isDefined(nameLock) ? nameLockId : descriptionLockId;
 
       if (cohortClientLocks.has(lock(cohortId))) {
         clearTimeout(cohortClientLocks.get(lock(cohortId)));
@@ -161,7 +161,7 @@ const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
         .to(cohortChannel(cohortId))
         .emit(CohortHeaderStatusTypes.LOCK, { cohortId, locks });
 
-      const lock = isDefined(nameLock) ? lockName : lockDescription;
+      const lock = isDefined(nameLock) ? nameLockId : descriptionLockId;
       const delayedUnlock = setTimeout(() => {
         if (isDefined(nameLock)) {
           locks.name = false;

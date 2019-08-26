@@ -147,9 +147,7 @@ class ListItem extends PureComponent {
 
     this.handleItemLock();
 
-    return archiveItem(listId, itemId, name).finally(() =>
-      this.handleItemUnlock()
-    );
+    return archiveItem(listId, itemId, name).finally(this.handleItemUnlock);
   };
 
   renderVoting = () => {
