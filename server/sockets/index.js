@@ -5,7 +5,6 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
-const _upperFirst = require('lodash/upperFirst');
 
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
@@ -95,11 +94,11 @@ const socketListenTo = server => {
       const { roomId, userId, viewId } = data;
 
       switch (room) {
-        case _upperFirst(Routes.LIST):
+        case Routes.LIST:
           socket.join(roomId);
           listViewClients.set(userId, { socketId: socket.id, viewId });
           break;
-        case _upperFirst(Routes.COHORT):
+        case Routes.COHORT:
           socket.join(roomId);
           cohortViewClients.set(userId, { socketId: socket.id, viewId });
           break;
@@ -112,11 +111,11 @@ const socketListenTo = server => {
       const { roomId, userId } = data;
 
       switch (room) {
-        case _upperFirst(Routes.LIST):
+        case Routes.LIST:
           socket.leave(roomId);
           listViewClients.delete(userId);
           break;
-        case _upperFirst(Routes.COHORT):
+        case Routes.COHORT:
           socket.leave(roomId);
           cohortViewClients.delete(userId);
           break;
@@ -127,10 +126,10 @@ const socketListenTo = server => {
 
     socket.on('enterView', ({ userId, view }) => {
       switch (view) {
-        case _upperFirst(Routes.COHORTS):
+        case Routes.COHORTS:
           allCohortsViewClients.set(userId, { socketId: socket.id });
           break;
-        case _upperFirst(Routes.DASHBOARD):
+        case Routes.DASHBOARD:
           dashboardViewClients.set(userId, { socketId: socket.id });
           break;
         default:
@@ -140,10 +139,10 @@ const socketListenTo = server => {
 
     socket.on('leaveView', ({ userId, view }) => {
       switch (view) {
-        case _upperFirst(Routes.DASHBOARD):
+        case Routes.DASHBOARD:
           dashboardViewClients.delete(userId);
           break;
-        case _upperFirst(Routes.COHORTS):
+        case Routes.COHORTS:
           allCohortsViewClients.delete(userId);
           break;
         default:

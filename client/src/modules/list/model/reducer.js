@@ -257,10 +257,7 @@ const lists = (state = {}, action) => {
     case CommonActionTypes.LEAVE_VIEW: {
       const { payload } = action;
 
-      if (
-        payload === _upperFirst(Routes.DASHBOARD) ||
-        payload === _upperFirst(Routes.COHORT)
-      ) {
+      if (payload === Routes.DASHBOARD || payload === Routes.COHORT) {
         return {};
       }
 

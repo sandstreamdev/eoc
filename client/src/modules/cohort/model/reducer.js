@@ -136,7 +136,7 @@ const cohorts = (state = {}, action) => {
     case CommonActionTypes.LEAVE_VIEW: {
       const { payload } = action;
 
-      if (payload === _upperFirst(Routes.COHORTS)) {
+      if (payload === Routes.COHORTS) {
         return {};
       }
 
