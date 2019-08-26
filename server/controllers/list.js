@@ -27,10 +27,10 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
-const socketInstance = require('../sockets/index').getSocketInstance();
-const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const cohortClients = require('../sockets/index').getCohortViewClients();
+const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const listClients = require('../sockets/index').getListViewClients();
+const socketInstance = require('../sockets/index').getSocketInstance();
 const { createListCohort } = require('../sockets/cohort');
 const {
   addListViewer,
@@ -994,20 +994,22 @@ const addViewer = (req, resp) => {
           listId
         });
       }
-
-      resp.send({ _id: null });
     })
     .then(() => {
-      resp.send(userToSend);
+      if (user) {
+        resp.send(userToSend);
 
-      return saveActivity(
-        ActivityType.LIST_ADD_USER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        list.cohortId,
-        user.id
-      );
+        return saveActivity(
+          ActivityType.LIST_ADD_USER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          list.cohortId,
+          user.id
+        );
+      }
+
+      resp.send({ _id: null });
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -1381,7 +1383,7 @@ const leaveList = (req, resp) => {
       const data = { listId, userId };
       leaveListSocket(socketInstance)(data);
 
-      return resp.send();
+      resp.send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
