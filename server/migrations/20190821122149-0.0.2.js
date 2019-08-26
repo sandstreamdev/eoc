@@ -21,7 +21,7 @@ const up = async db => {
         { $set: { 'items.$[].locks': locks } }
       );
 
-  runAsyncTasks(addLocksToCohorts, addLocksToCLists, addLocksToItems);
+  await runAsyncTasks(addLocksToCohorts, addLocksToCLists, addLocksToItems);
 };
 
 const down = async db => {
@@ -43,7 +43,7 @@ const down = async db => {
         { $unset: { 'items.$[].locks': {} } }
       );
 
-  runAsyncTasks(
+  await runAsyncTasks(
     removeLocksFromCohorts,
     removeLocksFromLists,
     removeLocksFromItems

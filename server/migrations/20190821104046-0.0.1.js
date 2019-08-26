@@ -25,7 +25,11 @@ const up = async db => {
         { $set: { 'items.$[].isDeleted': false } }
       );
 
-  runAsyncTasks(addIsDeleteToCohorts, addIsDeleteToLists, addIsDeleteToItems);
+  await runAsyncTasks(
+    addIsDeleteToCohorts,
+    addIsDeleteToLists,
+    addIsDeleteToItems
+  );
 };
 
 const down = async db => {
@@ -53,7 +57,7 @@ const down = async db => {
         { $unset: { 'items.$[].isDeleted': false } }
       );
 
-  runAsyncTasks(
+  await runAsyncTasks(
     removeIsDeletedFromCohorts,
     removeIsDeleteFromLists,
     removeIsDeletedFromItems

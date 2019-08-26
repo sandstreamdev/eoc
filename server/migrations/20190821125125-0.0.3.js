@@ -10,7 +10,7 @@ const up = async db => {
         { $set: { settings: new Settings() } }
       );
 
-  runAsyncTasks(addSettingsToUser);
+  await runAsyncTasks(addSettingsToUser);
 };
 
 const down = async db => {
@@ -22,7 +22,7 @@ const down = async db => {
         { $unset: { settings: {} } }
       );
 
-  runAsyncTasks(removeSettingsFromUser);
+  await runAsyncTasks(removeSettingsFromUser);
 };
 
 module.exports = {
