@@ -8,17 +8,13 @@ const up = db =>
       { settings: { $exists: false } },
       { $set: { settings: new Settings() } }
     )
-    .catch(() => {
-      console.log('up migration failed...');
-    });
+    .catch(() => console.log('up migration failed...'));
 
 const down = db =>
   db
     .collection('users')
     .updateMany({ settings: { $exists: true } }, { $unset: { settings: {} } })
-    .catch(() => {
-      console.log('down migration failed...');
-    });
+    .catch(() => console.log('down migration failed...'));
 
 module.exports = {
   up,

@@ -6,6 +6,7 @@ const ListType = Object.freeze({
 const DEMO_MODE_ID = '5ce2e16d7d8999071560c9ae';
 const DEMO_USER_ID = '5ce283fee76a2e02c79d8f55';
 const PROJECT_NAME = 'EOC';
+const DB_NAME = 'eoc';
 const NUMBER_OF_ACTIVITIES_TO_SEND = 20;
 
 const ActivityType = Object.freeze({
@@ -140,6 +141,7 @@ module.exports = {
   CohortActionTypes,
   CohortHeaderStatusTypes,
   CommentActionTypes,
+  DB_NAME,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,

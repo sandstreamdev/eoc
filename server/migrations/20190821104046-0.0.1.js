@@ -22,9 +22,7 @@ const up = db =>
           { $set: { 'items.$[].isDeleted': false } }
         )
     )
-    .catch(() => {
-      console.log('up migration failed...');
-    });
+    .catch(() => console.log('up migration failed...'));
 
 const down = db =>
   db
@@ -49,9 +47,7 @@ const down = db =>
           { $unset: { 'items.$[].isDeleted': false } }
         )
     )
-    .catch(() => {
-      console.log('down migration failed...');
-    });
+    .catch(() => console.log('down migration failed...'));
 
 module.exports = {
   up,
