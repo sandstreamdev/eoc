@@ -333,13 +333,13 @@ const enumerable = namespace => (...keys) =>
     fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
   );
 
-const forEach = f => o =>
-  Object.entries(o).reduce(
-    (object, [key, value]) => ({ ...object, [key]: f(value) }),
+const mapObject = callback => object =>
+  Object.entries(object).reduce(
+    (newObject, [key, value]) => ({ ...newObject, [key]: callback(value) }),
     {}
   );
 
-const sanitizeObject = forEach(sanitize);
+const sanitizeObject = mapObject(sanitize);
 
 const updateProperties = (object, updates) => {
   _forEach(updates, (value, key) => {
