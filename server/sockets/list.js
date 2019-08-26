@@ -381,7 +381,9 @@ const updateListHeaderState = (socket, listClientLocks) => {
       const delayedUnlock = setTimeout(() => {
         if (isDefined(nameLock)) {
           locks.name = false;
-        } else {
+        }
+
+        if (isDefined(descriptionLock)) {
           locks.description = false;
         }
 

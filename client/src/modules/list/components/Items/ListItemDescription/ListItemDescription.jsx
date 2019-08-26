@@ -80,6 +80,7 @@ class ListItemDescription extends PureComponent {
 
   handleFocus = () => {
     const { onFocus } = this.props;
+
     this.setState({ isFocused: true });
     onFocus();
     document.addEventListener('keydown', this.handleEscapePress);
