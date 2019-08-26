@@ -7,7 +7,11 @@ import validator from 'validator';
 import AuthInput from './AuthInput';
 import { signUp } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise, validatePassword } from 'common/utils/helpers';
+import {
+  makeAbortablePromise,
+  validatePassword,
+  validateWith
+} from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
@@ -111,15 +115,19 @@ class SignUpForm extends PureComponent {
     );
 
   nameValidator = value =>
-    validator.isLength(value, { min: 1, max: 32 })
-      ? ''
-      : 'user.auth.input.email.invalid';
+    validateWith(value => validator.isLength(value, { min: 1, max: 32 }))(
+      'user.auth.input.email.invalid'
+    )(value);
 
   emailValidator = value =>
-    validator.isEmail(value) ? '' : 'user.auth.input.email.invalid';
+    validateWith(value => validator.isEmail(value))(
+      'user.auth.input.email.invalid'
+    )(value);
 
   passwordValidator = value =>
-    validatePassword(value) ? '' : 'user.auth.input.password.invalid';
+    validateWith(value => validatePassword(value))(
+      'user.auth.input.password.invalid'
+    )(value);
 
   comparePasswords = () => {
     const {

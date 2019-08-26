@@ -5,7 +5,11 @@ import _some from 'lodash/some';
 
 import { changePassword } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise, validatePassword } from 'common/utils/helpers';
+import {
+  makeAbortablePromise,
+  validatePassword,
+  validateWith
+} from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
@@ -86,7 +90,7 @@ class PasswordChangeForm extends PureComponent {
     );
 
   passwordValidator = value =>
-    validatePassword(value) ? '' : 'user.auth.input.password.invalid';
+    validateWith(validatePassword)('user.auth.input.password.invalid')(value);
 
   comparePasswords = () => {
     const {

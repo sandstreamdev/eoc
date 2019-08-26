@@ -3,13 +3,13 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
 import _debounce from 'lodash/debounce';
-import _trim from 'lodash/trim';
+import validator from 'validator';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
-import { validatePassword } from 'common/utils/helpers';
+import { validatePassword, validateWith } from 'common/utils/helpers';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -89,52 +89,35 @@ class PasswordRecoveryForm extends PureComponent {
 
   passwordValidator = password => {
     const { errors } = this.state;
+    const errorMessageId = validateWith(validatePassword)(
+      'user.auth.input.password.invalid'
+    )(password);
 
-    if (validatePassword(password)) {
-      this.setState(
-        {
-          errors: {
-            ...errors,
-            passwordError: ''
-          },
-          passwordSuccess: true
+    this.setState(
+      {
+        errors: {
+          ...errors,
+          passwordError: errorMessageId
         },
-        this.comparePasswords
-      );
-    } else {
-      this.setState(
-        {
-          errors: {
-            ...errors,
-            passwordError: 'user.auth.input.password.invalid'
-          },
-          passwordSuccess: false
-        },
-        this.comparePasswords
-      );
-    }
+        passwordSuccess: errorMessageId === ''
+      },
+      this.comparePasswords
+    );
   };
 
   comparePasswords = () => {
     const { errors, password, passwordConfirmation } = this.state;
+    const errorMessageId = validateWith(() =>
+      validator.equals(password, passwordConfirmation)
+    )('user.auth.input.password.not-match')();
 
-    if (_trim(password) === _trim(passwordConfirmation)) {
-      this.setState({
-        errors: {
-          ...errors,
-          comparePasswordsError: ''
-        },
-        passwordConfirmationSuccess: true
-      });
-    } else {
-      this.setState({
-        errors: {
-          ...errors,
-          comparePasswordsError: 'user.auth.input.password.not-match'
-        },
-        passwordConfirmationSuccess: false
-      });
-    }
+    this.setState({
+      errors: {
+        ...errors,
+        comparePasswordsError: errorMessageId
+      },
+      passwordConfirmationSuccess: errorMessageId === ''
+    });
 
     if (!passwordConfirmation) {
       this.setState({
