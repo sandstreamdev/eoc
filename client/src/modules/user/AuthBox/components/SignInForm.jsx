@@ -9,7 +9,7 @@ import AuthInput from './AuthInput';
 import { signIn } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise } from 'common/utils/helpers';
+import { makeAbortablePromise, validateWith } from 'common/utils/helpers';
 import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
 
 class SignInForm extends PureComponent {
@@ -60,15 +60,10 @@ class SignInForm extends PureComponent {
     );
   };
 
-  emailValidator = value => {
-    const { isEmail } = validator;
-
-    if (!isEmail(value)) {
-      return 'user.auth.input.email.invalid';
-    }
-
-    return '';
-  };
+  emailValidator = value =>
+    validateWith(value => validator.isEmail(value))(
+      'user.auth.input.email.invalid'
+    )(value);
 
   isFormValid = () => {
     const { isEmailValid, isPasswordValid, signInErrorId } = this.state;
