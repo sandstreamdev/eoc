@@ -184,9 +184,14 @@ export const fetchListData = listId => dispatch =>
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
         dispatch(fetchListDataFailure());
-        createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: 'list.actions.fetch-data-fail'
-        });
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.ERROR,
+          {
+            notificationId: 'list.actions.fetch-data-fail'
+          },
+          err
+        );
       }
 
       throw err;
@@ -210,12 +215,17 @@ export const createList = data => dispatch => {
         data: data.name
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(createListFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.create-list-fail',
-        data: data.name
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.create-list-fail',
+          data: data.name
+        },
+        err
+      );
     });
 };
 
@@ -229,11 +239,16 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchListsMetaDataSuccess(dataMap));
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(fetchListsMetaDataFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.fetch-meta-data-fail'
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.fetch-meta-data-fail'
+        },
+        err
+      );
     });
 };
 
@@ -247,11 +262,16 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedListsMetaDataSuccess(dataMap));
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(fetchArchivedListsMetaDataFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.fetch-arch-meta-data-fail'
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.fetch-arch-meta-data-fail'
+        },
+        err
+      );
     });
 };
 
@@ -269,12 +289,17 @@ export const deleteList = (listId, listName, cohortId) => dispatch =>
       });
       history.replace(dashboardRoute());
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(deleteListFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.delete-list-fail',
-        data: listName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.delete-list-fail',
+          data: listName
+        },
+        err
+      );
       throw new Error();
     });
 
@@ -291,12 +316,17 @@ export const updateList = (listId, data, listName) => dispatch =>
         data: listName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(updateListFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.update-list-fail',
-        data: listName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.update-list-fail',
+          data: listName
+        },
+        err
+      );
     });
 
 export const archiveList = (listId, listName, cohortId) => dispatch =>
@@ -316,12 +346,17 @@ export const archiveList = (listId, listName, cohortId) => dispatch =>
       const url = cohortId ? cohortRoute(cohortId) : dashboardRoute();
       history.replace(url);
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(archiveListFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.arch-list-fail',
-        data: listName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.arch-list-fail',
+          data: listName
+        },
+        err
+      );
     });
 
 export const restoreList = (listId, listName) => dispatch =>
@@ -345,12 +380,17 @@ export const restoreList = (listId, listName) => dispatch =>
         data: listName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(restoreListFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.restore-list-fail',
-        data: listName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.restore-list-fail',
+          data: listName
+        },
+        err
+      );
     });
 
 export const addListToFavourites = (listId, listName) => dispatch =>
@@ -362,12 +402,17 @@ export const addListToFavourites = (listId, listName) => dispatch =>
         data: listName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(favouritesFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.add-to-fav-fail',
-        data: listName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.add-to-fav-fail',
+          data: listName
+        },
+        err
+      );
     });
 
 export const removeListFromFavourites = (listId, listName) => dispatch =>
@@ -379,12 +424,17 @@ export const removeListFromFavourites = (listId, listName) => dispatch =>
         data: listName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(favouritesFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.remove-from-fav-fail',
-        data: listName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.remove-from-fav-fail',
+          data: listName
+        },
+        err
+      );
     });
 
 export const addListViewer = (listId, email) => dispatch =>
@@ -411,10 +461,15 @@ export const addListViewer = (listId, email) => dispatch =>
     })
     .catch(err => {
       dispatch(addViewerFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: err.message || 'list.actions.add-viewer-default-fail',
-        data: email
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: err.message || 'list.actions.add-viewer-default-fail',
+          data: email
+        },
+        err
+      );
     });
 
 export const removeListMember = (
@@ -436,12 +491,17 @@ export const removeListMember = (
       });
       socket.emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(removeMemberFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.remove-member-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.remove-member-fail',
+          data: userName
+        },
+        err
+      );
     });
 };
 
@@ -464,12 +524,17 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
         data: userName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(addOwnerRoleFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.add-owner-role-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.add-owner-role-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const removeOwnerRole = (
@@ -498,10 +563,15 @@ export const removeOwnerRole = (
     })
     .catch(err => {
       dispatch(removeOwnerRoleFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: err.message || 'list.actions.remove-owner-role-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: err.message || 'list.actions.remove-owner-role-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const addMemberRole = (
@@ -528,12 +598,17 @@ export const addMemberRole = (
         data: userName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(addMemberRoleFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.add-member-role-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.add-member-role-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const removeMemberRole = (
@@ -562,10 +637,15 @@ export const removeMemberRole = (
     })
     .catch(err => {
       dispatch(removeMemberRoleFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: err.message || 'list.actions.remove-member-role-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: err.message || 'list.actions.remove-member-role-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const changeType = (listId, listName, type) => dispatch =>
@@ -588,12 +668,17 @@ export const changeType = (listId, listName, type) => dispatch =>
         data: listName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(changeTypeFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'list.actions.change-type-fail',
-        data: listName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.change-type-fail',
+          data: listName
+        },
+        err
+      );
     });
 
 export const leaveList = (
@@ -621,10 +706,15 @@ export const leaveList = (
     })
     .catch(err => {
       dispatch(leaveListFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: err.message || 'list.actions.leave-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: err.message || 'list.actions.leave-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const lockListHeader = (

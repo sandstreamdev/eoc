@@ -1,6 +1,7 @@
 import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 import {
+  ForbiddenException,
   ResourceNotFoundException,
   UnauthorizedException,
   ValidationException
@@ -19,6 +20,7 @@ const handleFetchErrors = response => {
     setTimeout(() => {
       window.location = '/';
     }, NOTIFICATION_TIMEOUT);
+    throw new ForbiddenException();
   }
 
   if (response.status === ResponseStatusCode.NOT_FOUND) {
