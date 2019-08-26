@@ -101,7 +101,7 @@ There might be others mongodb proccesses runnig at this port. To stop all runing
 
 ### DB migrations
 
-To perform DB migration we use [migrate-mongo](https://github.com/seppevs/migrate-mongo#readme) tool. To config migrate-mongo edit `migrate-mongo-config.js` file. To create migration file run `npm run migrate create <version>` in your terminal. Migration file will be created at `server/migrations` directory. To run all new migrations run `npm run migrate:up` or `npm run migrate up` in your terminal. To rollback last migration run `npm run migrate:down` or `npm run migrate down` in your terminal. To see migrations status run `npm run migrate status` in your terminal.
+To perform DB migrations we use [migrate-mongo](https://github.com/seppevs/migrate-mongo#readme) tool. To config migrate-mongo edit `migrate-mongo-config.js` file. To create migration file run `npm run migrate create <version>` in your terminal. Migration file will be created at `server/migrations` directory. To run all new migrations run `npm run migrate:up` or `npm run migrate up` in your terminal. To rollback last migration run `npm run migrate:down` or `npm run migrate down` in your terminal. To see migrations status run `npm run migrate status` in your terminal.
 
 ### Testing backend endpoints - POSTMAN
 
