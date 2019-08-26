@@ -9,7 +9,7 @@ import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
-import { validatePassword } from 'common/utils/helpers';
+import { validatePassword, validateWith } from 'common/utils/helpers';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -89,30 +89,20 @@ class PasswordRecoveryForm extends PureComponent {
 
   passwordValidator = password => {
     const { errors } = this.state;
+    const errorMessageId = validateWith(value => validatePassword(value))(
+      'user.auth.input.password.invalid'
+    )(password);
 
-    if (validatePassword(password)) {
-      this.setState(
-        {
-          errors: {
-            ...errors,
-            passwordError: ''
-          },
-          passwordSuccess: true
+    this.setState(
+      {
+        errors: {
+          ...errors,
+          passwordError: errorMessageId
         },
-        this.comparePasswords
-      );
-    } else {
-      this.setState(
-        {
-          errors: {
-            ...errors,
-            passwordError: 'user.auth.input.password.invalid'
-          },
-          passwordSuccess: false
-        },
-        this.comparePasswords
-      );
-    }
+        passwordSuccess: errorMessageId === ''
+      },
+      this.comparePasswords
+    );
   };
 
   comparePasswords = () => {
