@@ -3,6 +3,8 @@ const _map = require('lodash/map');
 const _pickBy = require('lodash/pickBy');
 const _compact = require('lodash/compact');
 const _keyBy = require('lodash/keyBy');
+const _forEach = require('lodash/forEach');
+const sanitize = require('mongo-sanitize');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -331,6 +333,23 @@ const enumerable = namespace => (...keys) =>
     fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
   );
 
+const forEach = f => o =>
+  Object.entries(o).reduce(
+    (object, [key, value]) => ({ ...object, [key]: f(value) }),
+    {}
+  );
+
+const sanitizeObject = forEach(sanitize);
+
+const updateProperties = (object, updates) => {
+  _forEach(updates, (value, key) => {
+    if (object[key]) {
+      // eslint-disable-next-line no-param-reassign
+      object[key] = value;
+    }
+  });
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -353,5 +372,7 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  sanitizeObject,
+  updateProperties,
   updateSubdocumentFields
 };

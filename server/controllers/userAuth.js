@@ -4,7 +4,6 @@ const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
-const _forEach = require('lodash/forEach');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -14,6 +13,7 @@ const {
   validatePassword
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
+const { sanitizeObject, updateProperties } = require('../common/utils');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -431,11 +431,7 @@ const updateSettings = (req, res) => {
 
       const { settings } = doc;
 
-      _forEach(editedSettings, (value, key) => {
-        if (settings[key]) {
-          settings[key] = sanitize(value);
-        }
-      });
+      updateProperties(settings, sanitizeObject(editedSettings));
 
       return doc.save();
     })
