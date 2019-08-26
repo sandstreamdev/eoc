@@ -16,7 +16,7 @@ const clearCohortMetaDataSuccess = () => ({
 export const enterView = (route, userId) => dispatch => {
   const view = _upperFirst(route);
 
-  socket.emit(`enter${view}View`, userId);
+  socket.emit('enterView', { userId, view });
 };
 
 export const leaveView = (route, userId) => dispatch => {
@@ -34,7 +34,7 @@ export const leaveView = (route, userId) => dispatch => {
       break;
   }
 
-  socket.emit(`leave${view}View`, userId);
+  socket.emit('leaveView', { userId, view });
 };
 
 export const joinRoom = (route, id, userId) => dispatch => {

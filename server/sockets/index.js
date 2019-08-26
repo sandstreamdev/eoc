@@ -117,21 +117,31 @@ const socketListenTo = server => {
       cohortViewClients.delete(userId);
     });
 
-    socket.on('enterCohortsView', userId =>
-      allCohortsViewClients.set(userId, { socketId: socket.id })
-    );
+    socket.on('enterView', ({ userId, view }) => {
+      switch (view) {
+        case 'Cohorts':
+          allCohortsViewClients.set(userId, { socketId: socket.id });
+          break;
+        case 'Dashboard':
+          dashboardViewClients.set(userId, { socketId: socket.id });
+          break;
+        default:
+          break;
+      }
+    });
 
-    socket.on('leaveCohortsView', userId =>
-      allCohortsViewClients.delete(userId)
-    );
-
-    socket.on('enterDashboardView', userId =>
-      dashboardViewClients.set(userId, { socketId: socket.id })
-    );
-
-    socket.on('leaveDashboardView', userId =>
-      dashboardViewClients.delete(userId)
-    );
+    socket.on('leaveView', ({ userId, view }) => {
+      switch (view) {
+        case 'Dashboard':
+          dashboardViewClients.delete(userId);
+          break;
+        case 'Cohorts':
+          allCohortsViewClients.delete(userId);
+          break;
+        default:
+          break;
+      }
+    });
 
     socket.on('error', () => {
       /* Ignore error.
