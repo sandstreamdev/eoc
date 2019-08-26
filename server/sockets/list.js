@@ -788,11 +788,9 @@ const deleteList = (io, dashboardClients, cohortClients) => data => {
     .to(`sack-${listId}`)
     .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
 
-  dashboardClients.forEach(client => {
-    const { socketId } = client;
-
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
-  });
+  dashboardClients.forEach(({ socketId }) =>
+    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId })
+  );
 
   if (cohortId) {
     cohortClients.forEach(client => {
