@@ -144,12 +144,17 @@ export const createCohort = data => dispatch =>
   postData('/api/cohorts/create', data)
     .then(response => response.json())
     .then(json => dispatch(createCohortSuccess(json)))
-    .catch(() => {
+    .catch(err => {
       dispatch(createCohortFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.create-fail',
-        data: data.name
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'cohort.actions.create-fail',
+          data: data.name
+        },
+        err
+      );
     });
 
 export const fetchCohortsMetaData = () => dispatch =>
@@ -158,11 +163,16 @@ export const fetchCohortsMetaData = () => dispatch =>
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchCohortsMetaDataSuccess(dataMap));
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(fetchCohortsMetaDataFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.fetch-fail'
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'cohort.actions.fetch-fail'
+        },
+        err
+      );
     });
 
 export const fetchArchivedCohortsMetaData = () => dispatch =>
@@ -171,11 +181,16 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
       const dataMap = _keyBy(json, '_id');
       dispatch(fetchArchivedCohortsMetaDataSuccess(dataMap));
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(fetchArchivedCohortsMetaDataFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.fetch-arch-fail'
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'cohort.actions.fetch-arch-fail'
+        },
+        err
+      );
     });
 
 export const updateCohort = (cohortName, cohortId, data) => dispatch =>
@@ -191,12 +206,17 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
         data: cohortName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(updateCohortFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.update-cohort-fail',
-        data: cohortName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'cohort.actions.update-cohort-fail',
+          data: cohortName
+        },
+        err
+      );
     });
 
 export const deleteCohort = (cohortId, cohortName) => dispatch =>
@@ -217,10 +237,15 @@ export const deleteCohort = (cohortId, cohortName) => dispatch =>
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
         dispatch(deleteCohortFailure());
-        createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: 'cohort.actions.delete-cohort-fail',
-          data: cohortName
-        });
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.ERROR,
+          {
+            notificationId: 'cohort.actions.delete-cohort-fail',
+            data: cohortName
+          },
+          err
+        );
       }
       throw err;
     });
@@ -241,12 +266,17 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
       });
       history.replace(cohortsRoute());
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(archiveCohortFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.archive-cohort-fail',
-        data: cohortName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'cohort.actions.archive-cohort-fail',
+          data: cohortName
+        },
+        err
+      );
     });
 
 export const restoreCohort = (cohortId, cohortName) => dispatch =>
@@ -264,10 +294,15 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
     })
     .catch(err => {
       dispatch(restoreCohortFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.restore-cohort-fail',
-        data: cohortName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'cohort.actions.restore-cohort-fail',
+          data: cohortName
+        },
+        err
+      );
       throw err;
     });
 
@@ -277,9 +312,14 @@ export const fetchCohortDetails = cohortId => dispatch =>
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
         dispatch(fetchCohortDetailsFailure());
-        createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-          notificationId: 'cohort.actions.fetch-details-fail'
-        });
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.ERROR,
+          {
+            notificationId: 'cohort.actions.fetch-details-fail'
+          },
+          err
+        );
       }
       throw err;
     });
@@ -305,10 +345,15 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     })
     .catch(err => {
       dispatch(addMemberFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: err.message || 'cohort.actions.add-member-default',
-        data: email
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: err.message || 'cohort.actions.add-member-default',
+          data: email
+        },
+        err
+      );
     });
 
 export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
@@ -326,12 +371,17 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
         data: userName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(removeMemberFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.remove-member-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'cohort.actions.remove-member-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
@@ -350,12 +400,17 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
         data: userName
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(addOwnerRoleFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'cohort.actions.set-owner-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'cohort.actions.set-owner-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const removeOwnerRole = (
@@ -384,10 +439,15 @@ export const removeOwnerRole = (
     })
     .catch(err => {
       dispatch(removeOwnerRoleFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: err.message || 'cohort.actions.remove-owner-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: err.message || 'cohort.actions.remove-owner-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const leaveCohort = (cohortId, userId, userName) => dispatch =>
@@ -406,10 +466,15 @@ export const leaveCohort = (cohortId, userId, userName) => dispatch =>
     })
     .catch(err => {
       dispatch(leaveCohortFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR_NO_RETRY, {
-        notificationId: err.message || 'cohort.actions.leave-cohort-fail',
-        data: userName
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR_NO_RETRY,
+        {
+          notificationId: err.message || 'cohort.actions.leave-cohort-fail',
+          data: userName
+        },
+        err
+      );
     });
 
 export const lockCohortHeader = (
