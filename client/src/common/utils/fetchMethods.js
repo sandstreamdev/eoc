@@ -1,4 +1,4 @@
-import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
+import { REDIRECT_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 import {
   ForbiddenException,
@@ -19,7 +19,7 @@ const handleFetchErrors = response => {
   if (response.status === ResponseStatusCode.FORBIDDEN) {
     setTimeout(() => {
       window.location = '/';
-    }, NOTIFICATION_TIMEOUT);
+    }, REDIRECT_TIMEOUT);
     throw new ForbiddenException();
   }
 

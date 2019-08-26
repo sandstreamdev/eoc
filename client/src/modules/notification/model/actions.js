@@ -1,7 +1,10 @@
 import uniqueId from 'lodash/uniqueId';
 
 import { NotificationActionTypes } from './actionsTypes';
-import { NOTIFICATION_TIMEOUT } from 'common/constants/variables';
+import {
+  NOTIFICATION_TIMEOUT,
+  REDIRECT_TIMEOUT
+} from 'common/constants/variables';
 import { ForbiddenException } from 'common/exceptions';
 
 const addNotification = payload => ({
@@ -17,15 +20,20 @@ const removeNotification = payload => ({
 export const createNotificationWithTimeout = (
   dispatch,
   type,
-  notification,
+  message,
   err = null,
   timeout = NOTIFICATION_TIMEOUT
 ) => {
   const forbiddenError = err instanceof ForbiddenException;
+
   const id = uniqueId('notification_');
-  const delay = forbiddenError ? 10 : timeout;
-  const messageId = forbiddenError ? 'dupa' : notification;
-  dispatch(addNotification({ id, type, messageId }));
+  const delay = forbiddenError ? REDIRECT_TIMEOUT : timeout;
+  const notification = forbiddenError
+    ? { notificationId: 'user.auth.session-ended' }
+    : message;
+  dispatch(
+    addNotification({ id, type, notification, redirect: forbiddenError })
+  );
   setTimeout(() => {
     dispatch(removeNotification(id));
   }, delay);
