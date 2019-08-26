@@ -326,9 +326,15 @@ const responseWithCohortDetails = (doc, userId) => {
   };
 };
 
+const enumerable = namespace => (...keys) =>
+  Object.freeze(
+    fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
+  );
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  enumerable,
   filter,
   isMember,
   isOwner,

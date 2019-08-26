@@ -10,9 +10,16 @@ const currentUser = (state = null, action) => {
       return { ...(state || {}), ...action.payload };
     case AuthorizationActionTypes.UPDATE_SETTINGS_SUCCESS: {
       const { payload: updatedSettings } = action;
-      const { settings } = state;
+      if (state) {
+        const { settings } = state;
 
-      return { ...state, settings: { ...settings, ...updatedSettings } };
+        return {
+          ...state,
+          settings: { ...(settings || {}), ...updatedSettings }
+        };
+      }
+
+      return state;
     }
     default:
       return state;

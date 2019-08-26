@@ -15,9 +15,7 @@ const {
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
 
-const sendUser = (req, resp) => {
-  return resp.send(responseWithUserData(req.user));
-};
+const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
 const logout = (req, resp) => {
   req.session.destroy(() => {

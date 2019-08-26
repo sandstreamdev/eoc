@@ -1,3 +1,5 @@
+const { enumerable } = require('./utils');
+
 const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/eoc';
 const ListType = Object.freeze({
   LIMITED: 'limited',
@@ -130,10 +132,7 @@ const ListHeaderStatusTypes = Object.freeze({
 const LOCK_TIMEOUT = 300000;
 const SOCKET_TIMEOUT = 60000;
 
-const ViewType = {
-  LIST: 'viewType/LIST',
-  TILES: 'viewType/TILES'
-};
+const ViewType = enumerable('viewType')('LIST', 'TILES');
 
 module.exports = {
   ActivityType,

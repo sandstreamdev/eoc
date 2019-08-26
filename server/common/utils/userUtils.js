@@ -7,7 +7,6 @@ const Cohort = require('../../models/cohort.model');
 const Comment = require('../../models/comment.model');
 const Settings = require('../../models/settings.model');
 
-// Find or create user
 const findOrCreateUser = (user, done) => {
   const { idFromProvider, email } = user;
 
@@ -119,6 +118,7 @@ const responseWithUserData = user => {
 
   if (config) {
     const { _id, createdAt, updatedAt, ...settings } = config;
+
     data.settings = settings;
   }
 
