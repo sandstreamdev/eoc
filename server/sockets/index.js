@@ -89,32 +89,38 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinSackRoom', data => {
-      const { room, userId, viewId } = data;
+    socket.on('joinRoom', ({ data, room }) => {
+      const { roomId, userId, viewId } = data;
 
-      socket.join(room);
-      listViewClients.set(userId, { socketId: socket.id, viewId });
+      switch (room) {
+        case 'Sack':
+          socket.join(roomId);
+          listViewClients.set(userId, { socketId: socket.id, viewId });
+          break;
+        case 'Cohort':
+          socket.join(roomId);
+          cohortViewClients.set(userId, { socketId: socket.id, viewId });
+          break;
+        default:
+          break;
+      }
     });
 
-    socket.on('leaveSackRoom', data => {
-      const { room, userId } = data;
+    socket.on('leaveRoom', ({ data, room }) => {
+      const { roomId, userId } = data;
 
-      socket.leave(room);
-      listViewClients.delete(userId);
-    });
-
-    socket.on('joinCohortRoom', data => {
-      const { room, userId, viewId } = data;
-
-      socket.join(room);
-      cohortViewClients.set(userId, { socketId: socket.id, viewId });
-    });
-
-    socket.on('leaveCohortRoom', data => {
-      const { room, userId } = data;
-
-      socket.leave(room);
-      cohortViewClients.delete(userId);
+      switch (room) {
+        case 'Sack':
+          socket.leave(roomId);
+          listViewClients.delete(userId);
+          break;
+        case 'Cohort':
+          socket.leave(roomId);
+          cohortViewClients.delete(userId);
+          break;
+        default:
+          break;
+      }
     });
 
     socket.on('enterView', ({ userId, view }) => {

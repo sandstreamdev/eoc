@@ -39,16 +39,16 @@ export const leaveView = (route, userId) => dispatch => {
 
 export const joinRoom = (route, id, userId) => dispatch => {
   const room = _upperFirst(route);
-  const data = { room: `${route}-${id}`, userId, viewId: id };
+  const data = { roomId: `${route}-${id}`, userId, viewId: id };
 
-  socket.emit(`join${room}Room`, data);
+  socket.emit('joinRoom', { data, room });
 };
 
 export const leaveRoom = (route, id, userId) => dispatch => {
   const room = _upperFirst(route);
-  const data = { room: `${route}-${id}`, userId, viewId: id };
+  const data = { roomId: `${route}-${id}`, userId, viewId: id };
 
-  socket.emit(`leave${room}Room`, data);
+  socket.emit('leaveRoom', { data, room });
 
   if (room === _upperFirst(Routes.COHORT)) {
     dispatch(clearListMetaDataSuccess());
