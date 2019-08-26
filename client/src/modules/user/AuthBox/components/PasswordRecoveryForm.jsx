@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
+import validator from 'validator';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from 'modules/user/model/actions';
@@ -107,24 +108,17 @@ class PasswordRecoveryForm extends PureComponent {
 
   comparePasswords = () => {
     const { errors, password, passwordConfirmation } = this.state;
+    const errorMessageId = validateWith(() =>
+      validator.equals(password, passwordConfirmation)
+    )('user.auth.input.password.not-match')();
 
-    if (_trim(password) === _trim(passwordConfirmation)) {
-      this.setState({
-        errors: {
-          ...errors,
-          comparePasswordsError: ''
-        },
-        passwordConfirmationSuccess: true
-      });
-    } else {
-      this.setState({
-        errors: {
-          ...errors,
-          comparePasswordsError: 'user.auth.input.password.not-match'
-        },
-        passwordConfirmationSuccess: false
-      });
-    }
+    this.setState({
+      errors: {
+        ...errors,
+        comparePasswordsError: errorMessageId
+      },
+      passwordConfirmationSuccess: errorMessageId === ''
+    });
 
     if (!passwordConfirmation) {
       this.setState({
