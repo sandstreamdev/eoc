@@ -3,7 +3,6 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
 import _debounce from 'lodash/debounce';
-import _trim from 'lodash/trim';
 import validator from 'validator';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
