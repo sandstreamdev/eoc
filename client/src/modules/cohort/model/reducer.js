@@ -1,6 +1,5 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
-import _upperFirst from 'lodash/upperFirst';
 
 import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
 import { filterDefined } from 'common/utils/helpers';

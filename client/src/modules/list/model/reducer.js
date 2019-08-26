@@ -1,6 +1,5 @@
 import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
-import _upperFirst from 'lodash/upperFirst';
 
 import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
 import {
