@@ -90,9 +90,7 @@ class PasswordChangeForm extends PureComponent {
     );
 
   passwordValidator = value =>
-    validateWith(value => validatePassword(value))(
-      'user.auth.input.password.invalid'
-    )(value);
+    validateWith(validatePassword)('user.auth.input.password.invalid')(value);
 
   comparePasswords = () => {
     const {

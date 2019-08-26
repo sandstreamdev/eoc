@@ -89,7 +89,7 @@ class PasswordRecoveryForm extends PureComponent {
 
   passwordValidator = password => {
     const { errors } = this.state;
-    const errorMessageId = validateWith(value => validatePassword(value))(
+    const errorMessageId = validateWith(validatePassword)(
       'user.auth.input.password.invalid'
     )(password);
 
