@@ -38,7 +38,15 @@ class NotificationWithTimer extends PureComponent {
     const { id, redirect, type } = this.props;
     const { time } = this.state;
 
-    return <Notification data={time} id={id} redirect={redirect} type={type} />;
+    const data = (
+      <span>
+        &nbsp;
+        {time}
+        &nbsp;
+      </span>
+    );
+
+    return <Notification data={data} id={id} redirect={redirect} type={type} />;
   }
 }
 
