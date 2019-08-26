@@ -1,20 +1,29 @@
-/* eslint-disable no-console */
+const { runAsyncTasks } = require('../common/utils');
 const Settings = require('../models/settings.model');
 
-const up = db =>
-  db
-    .collection('users')
-    .updateMany(
-      { settings: { $exists: false } },
-      { $set: { settings: new Settings() } }
-    )
-    .catch(() => console.log('up migration failed...'));
+const up = async db => {
+  const addSettingsToUser = async () =>
+    db
+      .collection('users')
+      .updateMany(
+        { settings: { $exists: false } },
+        { $set: { settings: new Settings() } }
+      );
 
-const down = db =>
-  db
-    .collection('users')
-    .updateMany({ settings: { $exists: true } }, { $unset: { settings: {} } })
-    .catch(() => console.log('down migration failed...'));
+  runAsyncTasks(addSettingsToUser);
+};
+
+const down = async db => {
+  const removeSettingsFromUser = async () =>
+    db
+      .collection('users')
+      .updateMany(
+        { settings: { $exists: true } },
+        { $unset: { settings: {} } }
+      );
+
+  runAsyncTasks(removeSettingsFromUser);
+};
 
 module.exports = {
   up,

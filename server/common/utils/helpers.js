@@ -326,6 +326,17 @@ const responseWithCohortDetails = (doc, userId) => {
   };
 };
 
+const runAsyncTasks = async (...tasks) => {
+  tasks.forEach(task => task());
+
+  try {
+    await Promise.all(tasks);
+  } catch {
+    // eslint-disable-next-line no-console
+    console.log('migration failed...');
+  }
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -347,5 +358,6 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
   updateSubdocumentFields
 };

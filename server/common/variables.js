@@ -1,4 +1,6 @@
-const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/eoc';
+const DB_NAME = 'eoc';
+const DB_SERVER_URL = 'mongodb://localhost:27017';
+const DB_URL = process.env.DB_URL || `${DB_SERVER_URL}/${DB_NAME}`;
 const ListType = Object.freeze({
   LIMITED: 'limited',
   SHARED: 'shared'
@@ -6,7 +8,6 @@ const ListType = Object.freeze({
 const DEMO_MODE_ID = '5ce2e16d7d8999071560c9ae';
 const DEMO_USER_ID = '5ce283fee76a2e02c79d8f55';
 const PROJECT_NAME = 'EOC';
-const DB_NAME = 'eoc';
 const NUMBER_OF_ACTIVITIES_TO_SEND = 20;
 
 const ActivityType = Object.freeze({
@@ -142,6 +143,7 @@ module.exports = {
   CohortHeaderStatusTypes,
   CommentActionTypes,
   DB_NAME,
+  DB_SERVER_URL,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,

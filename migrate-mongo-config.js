@@ -1,8 +1,8 @@
-const { DB_NAME, DB_URL } = require('./server/common/variables');
+const { DB_NAME, DB_SERVER_URL } = require('./server/common/variables');
 
 const config = {
   mongodb: {
-    url: DB_URL,
+    url: DB_SERVER_URL,
     databaseName: DB_NAME,
     options: {
       useNewUrlParser: true

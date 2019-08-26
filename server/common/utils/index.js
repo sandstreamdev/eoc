@@ -21,6 +21,7 @@ const {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
   updateSubdocumentFields
 } = require('./helpers');
 
@@ -47,5 +48,6 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
   updateSubdocumentFields
 };
