@@ -333,7 +333,7 @@ const runAsyncTasks = async (...tasks) => {
     await Promise.all(tasks);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error('Migration failed...');
+    console.error('Migration failed...', err);
     throw err;
   }
 };
