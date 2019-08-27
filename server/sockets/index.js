@@ -20,7 +20,6 @@ const {
   removeListsOnArchiveCohort,
   restoreItem,
   setVote,
-  updateItem,
   updateItemState,
   updateListHeaderState
 } = require('./list');
@@ -169,7 +168,6 @@ const socketListeners = socketInstance => {
     deleteItem(socket);
     restoreItem(socket);
     setVote(socket);
-    updateItem(socket);
     updateItemState(socket, itemClientLocks);
 
     // This method can not be refactored as it doesn't

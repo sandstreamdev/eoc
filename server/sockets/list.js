@@ -17,6 +17,7 @@ const {
   checkIfArrayContainsUserId,
   isMember,
   isViewer,
+  responseWithItem,
   responseWithList,
   responseWithListsMetaData
 } = require('../common/utils');
@@ -164,23 +165,40 @@ const updateItemState = (socket, itemClientLocks) => {
   });
 };
 
-const updateItem = socket => {
-  socket.on(ItemActionTypes.UPDATE_SUCCESS, data => {
-    const { listId, userId } = data;
-    const sanitizedUserId = sanitize(userId);
+const updateItem = io => data => {
+  const { listId, userId, itemId } = data;
+  const sanitizedUserId = sanitize(userId);
 
-    User.findById(sanitizedUserId).then(user => {
-      if (user) {
-        const { displayName } = user;
-        const editedBy = displayName;
-        const { userId, ...rest } = data;
-        const dataToSend = { ...rest, editedBy };
+  return User.findById(sanitizedUserId).then(user => {
+    if (user) {
+      const { displayName } = user;
+      const editedBy = displayName;
+      let dataToSend;
 
-        socket.broadcast
-          .to(listChannel(listId))
-          .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
-      }
-    });
+      return List.findOne({ _id: listId })
+        .lean()
+        .exec()
+        .then(doc => {
+          if (doc) {
+            const { items } = doc;
+            const indexOfItem = items.findIndex(
+              item => item._id.toString() === itemId
+            );
+            const item = items[indexOfItem];
+
+            dataToSend = {
+              ...responseWithItem(item, userId),
+              editedBy,
+              listId
+            };
+          }
+        })
+        .then(() => {
+          io.sockets
+            .to(listChannel(listId))
+            .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
+        });
+    }
   });
 };
 

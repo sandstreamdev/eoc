@@ -46,6 +46,7 @@ const {
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreList,
+  updateItem,
   updateList
 } = require('../sockets/list');
 
@@ -1124,6 +1125,8 @@ const updateListItem = (req, res) => {
         } else {
           editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
         }
+
+        // FIXME: call updateItem() here
       }
 
       if (isOrdered !== undefined) {
@@ -1138,26 +1141,41 @@ const updateListItem = (req, res) => {
         // changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
         //   data
         // );
+
+        // FIXME: call updateItem() here
       }
 
       if (authorId) {
         itemToUpdate.authorId = authorId;
+        // FIXME: call updateItem()
       }
 
       if (name) {
         prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
+
+        // FIXME: call updateItem()
       }
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
-        editedItemActivity = isArchived
-          ? ActivityType.ITEM_ARCHIVE
-          : ActivityType.ITEM_RESTORE;
+        const data = { listId, userId, itemId };
+
+        if (isArchived) {
+          editedItemActivity = ActivityType.ITEM_ARCHIVE;
+        }
+
+        if (!isArchived) {
+          editedItemActivity = ActivityType.ITEM_RESTORE;
+        }
+
+        // FIXME: Remove fire and forget function and return updateItem().then
+        fireAndForget(updateItem(socketInstance)(data));
       }
 
       itemToUpdate.editedBy = userId;
+      // FIXME: Call updateItem();
 
       return doc.save();
     })

@@ -234,6 +234,7 @@ export const updateListItem = (
       });
       const { type, payload } = action;
 
+      // FIXME: Remove this socket
       socket.emit(type, { ...payload, userId });
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -320,6 +321,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       const action = archiveItemSuccess({ listId, itemId });
       const { type, payload } = action;
 
+      // FIXME: Remove this socket
       socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -357,9 +359,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
   })
     .then(() => {
       const action = restoreItemSuccess({ listId, itemId });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.restore-item',
