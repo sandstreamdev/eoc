@@ -411,6 +411,8 @@ const removeMemberRoleInList = (io, clients) => data => {
       });
     }
   }
+
+  return Promise.resolve();
 };
 
 const removeOwnerRoleInList = (io, clients) => data => {

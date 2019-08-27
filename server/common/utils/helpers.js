@@ -338,7 +338,11 @@ const responseWithCohortDetails = (doc, userId) => {
 const isDefined = x => x !== undefined;
 
 /* eslint-disable-next-line no-console */
-const fireAndForget = promise => promise.catch(err => console.log(err));
+const fireAndForget = promise => {
+  // Promise.reject();
+
+  return promise.catch(err => console.error(err));
+};
 
 const returnPayload = promise => payload => promise.then(() => payload);
 

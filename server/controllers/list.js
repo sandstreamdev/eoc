@@ -103,18 +103,20 @@ const createList = (req, resp) => {
     list
       .save()
       .then(() => {
+        fireAndForget(
+          saveActivity(
+            ActivityType.LIST_ADD,
+            userId,
+            null,
+            list._id,
+            list.cohortId
+          )
+        );
+
         resp
           .status(201)
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId));
-
-        saveActivity(
-          ActivityType.LIST_ADD,
-          userId,
-          null,
-          list._id,
-          list.cohortId
-        );
       })
       .catch(() => resp.sendStatus(400));
   }
@@ -220,15 +222,17 @@ const addItemToList = (req, resp) => {
       const { cohortId, items } = doc;
       const newItem = items.slice(-1)[0];
 
-      resp.send(responseWithItem(newItem, userId));
-
-      saveActivity(
-        ActivityType.ITEM_ADD,
-        userId,
-        newItem._id,
-        listId,
-        cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_ADD,
+          userId,
+          newItem._id,
+          listId,
+          cohortId
+        )
       );
+
+      resp.send(responseWithItem(newItem, userId));
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -376,15 +380,17 @@ const voteForItem = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.ITEM_ADD_VOTE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_ADD_VOTE,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          doc.cohortId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -422,15 +428,17 @@ const clearVote = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.ITEM_CLEAR_VOTE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_CLEAR_VOTE,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          doc.cohortId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -575,15 +583,17 @@ const addToFavourites = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_ADD_TO_FAV,
-        userId,
-        null,
-        sanitizedListId,
-        doc.cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_ADD_TO_FAV,
+          userId,
+          null,
+          sanitizedListId,
+          doc.cohortId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -610,15 +620,17 @@ const removeFromFavourites = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_REMOVE_FROM_FAV,
-        userId,
-        null,
-        sanitizedListId,
-        doc.cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_REMOVE_FROM_FAV,
+          userId,
+          null,
+          sanitizedListId,
+          doc.cohortId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -653,13 +665,15 @@ const removeOwner = (req, resp) => {
 
       resp.send();
 
-      saveActivity(
-        ActivityType.LIST_REMOVE_USER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_REMOVE_USER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          sanitizedUserId
+        )
       );
     })
     .catch(() => resp.sendStatus(400));
@@ -703,16 +717,19 @@ const removeMember = (req, resp) => {
         listClients,
         cohortClients
       )(data);
-      resp.send();
 
-      saveActivity(
-        ActivityType.LIST_REMOVE_USER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_REMOVE_USER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          sanitizedUserId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -755,16 +772,18 @@ const addOwnerRole = (req, resp) => {
       const data = { listId, userId };
       addOwnerRoleInList(socketInstance, listClients)(data);
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_SET_AS_OWNER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        userId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_SET_AS_OWNER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          userId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -869,16 +888,18 @@ const addMemberRole = (req, resp) => {
       const data = { listId, userId };
       addMemberRoleInList(socketInstance, listClients)(data);
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_SET_AS_MEMBER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        userId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_SET_AS_MEMBER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          userId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -926,17 +947,23 @@ const removeMemberRole = (req, resp) => {
 
       const data = { listId, userId };
 
-      removeMemberRoleInList(socketInstance, listClients)(data);
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_SET_AS_VIEWER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        userId
+      return returnPayload(
+        removeMemberRoleInList(socketInstance, listClients)(data)
+      )(doc);
+    })
+    .then(doc => {
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_SET_AS_VIEWER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          userId
+        )
       );
+
+      resp.send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -1023,13 +1050,15 @@ const addViewer = (req, resp) => {
       if (user) {
         resp.send(userToSend);
 
-        return saveActivity(
-          ActivityType.LIST_ADD_USER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          list.cohortId,
-          user.id
+        return fireAndForget(
+          saveActivity(
+            ActivityType.LIST_ADD_USER,
+            currentUserId,
+            null,
+            sanitizedListId,
+            list.cohortId,
+            user.id
+          )
         );
       }
 
@@ -1131,17 +1160,19 @@ const updateListItem = (req, res) => {
         return res.sendStatus(404);
       }
 
-      res.send();
-
-      saveActivity(
-        editedItemActivity,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId,
-        null,
-        prevItemName
+      fireAndForget(
+        saveActivity(
+          editedItemActivity,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          doc.cohortId,
+          null,
+          prevItemName
+        )
       );
+
+      res.send();
     })
     .catch(() => res.sendStatus(400));
 };
@@ -1193,17 +1224,19 @@ const cloneItem = (req, resp) => {
 
       const newItem = list.items.slice(-1)[0];
 
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_CLONE,
+          userId,
+          newItem._id,
+          sanitizedListId,
+          list.cohortId
+        )
+      );
+
       resp.send({
         item: responseWithItem(newItem, userId)
       });
-
-      saveActivity(
-        ActivityType.ITEM_CLONE,
-        userId,
-        newItem._id,
-        sanitizedListId,
-        list.cohortId
-      );
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -1351,14 +1384,16 @@ const deleteItem = (req, res) => {
 
       itemToUpdate.isDeleted = true;
 
-      saveActivity(
-        ActivityType.ITEM_DELETE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId,
-        null,
-        name
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_DELETE,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          doc.cohortId,
+          null,
+          name
+        )
       );
 
       return doc.save();
