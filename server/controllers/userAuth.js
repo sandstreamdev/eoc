@@ -425,11 +425,7 @@ const changePassword = (req, res) => {
           _id: { $ne: sessionID },
           session: regexp
         })
-        .forEach(session => {
-          const { _id } = session;
-
-          store.destroy(_id);
-        });
+        .forEach(({ _id }) => store.destroy(_id));
     })
     .then(() => res.send())
     .catch(() => res.sendStatus(400));

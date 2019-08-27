@@ -2,16 +2,15 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import Notification from './Notification';
+import { REDIRECT_TIMEOUT } from 'common/constants/variables/';
 
 class NotificationWithTimer extends PureComponent {
   constructor(props) {
     super(props);
 
-    const { time } = this.props;
-
     this.timer = null;
     this.state = {
-      time
+      timeout: REDIRECT_TIMEOUT / 1000
     };
   }
 
@@ -25,36 +24,29 @@ class NotificationWithTimer extends PureComponent {
 
   createInterval = () => {
     this.timer = setInterval(() => {
-      const { time: prevTime } = this.state;
+      const { timeout: prevTimeout } = this.state;
 
-      if (prevTime <= 0) {
+      if (prevTimeout <= 0) {
         return clearInterval(this.timer);
       }
 
-      this.setState({ time: prevTime - 1 });
+      this.setState({ timeout: prevTimeout - 1 });
     }, 1000);
   };
 
   render() {
     const { id, redirect, type } = this.props;
-    const { time } = this.state;
+    const { timeout } = this.state;
 
-    const data = (
-      <span>
-        &nbsp;
-        {time}
-        &nbsp;
-      </span>
+    return (
+      <Notification data={timeout} id={id} redirect={redirect} type={type} />
     );
-
-    return <Notification data={data} id={id} redirect={redirect} type={type} />;
   }
 }
 
 NotificationWithTimer.propTypes = {
   id: PropTypes.string.isRequired,
   redirect: PropTypes.bool,
-  time: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired
 };
 

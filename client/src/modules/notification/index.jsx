@@ -6,7 +6,6 @@ import _map from 'lodash/map';
 import { getNotifications } from './model/selectors';
 import Notification from './components/Notification';
 import NotificationWithTimer from './components/NotificationWithTimer';
-import { REDIRECT_TIMEOUT } from 'common/constants/variables/';
 
 const Notifications = ({ notifications }) => (
   <Fragment>
@@ -27,7 +26,6 @@ const Notifications = ({ notifications }) => (
                     <NotificationWithTimer
                       id={notificationId}
                       redirect={redirect}
-                      time={REDIRECT_TIMEOUT / 1000}
                       type={type}
                     />
                   ) : (

@@ -7,7 +7,7 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 
 const Notification = ({ data, id, redirect, type }) => (
   <MessageBox type={type}>
-    <FormattedMessage id={id} values={{ data: <strong>{data}</strong> }} />
+    <FormattedMessage id={id} values={{ data }} />
     {type === NotificationType.ERROR && !redirect && (
       <FormattedMessage id="common.try-again" />
     )}
