@@ -9,7 +9,7 @@ services:
       - '80'
   eoc-migrate:
     container_name: eoc_migrate_container
-    restart: always
+    restart: on-failure
     build:
       context: .
       dockerfile: Dockerfile.cd
