@@ -287,6 +287,7 @@
   "list.sort-box.createdAt": "date",
   "list.sort-box.author": "author",
   "list.sort-box.votes": "votes",
+  "activity.actions.fetch-fails": "Failed to fetch activities.",
   "activity.title": "Activities",
   "activity.no-activities": "There are no activities.",
   "activity.button.show-activities": "Show activities",

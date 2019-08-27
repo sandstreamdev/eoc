@@ -36,7 +36,7 @@ export const fetchActivities = page => dispatch =>
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        { notificationId: 'Failed to fetch activities. Please try again.' },
+        { notificationId: 'activity.actions.fetch-fails' },
         err
       );
     });

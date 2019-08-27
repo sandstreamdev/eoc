@@ -9,6 +9,7 @@ class NotificationWithTimer extends PureComponent {
 
     const { time } = this.props;
 
+    this.timer = null;
     this.state = {
       time
     };

@@ -15,7 +15,7 @@ const Notification = ({ data, id, redirect, type }) => (
 );
 
 Notification.propTypes = {
-  data: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  data: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   id: PropTypes.string.isRequired,
   redirect: PropTypes.bool,
   type: PropTypes.string.isRequired
