@@ -839,6 +839,7 @@ const removeOwnerRole = (req, resp) => {
           userId
         )
       );
+
       resp.send();
     })
     .catch(err => {
