@@ -40,11 +40,9 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
-      descriptionLock: false,
       done: isOrdered,
       isConfirmationVisible: false,
-      isNameEdited: false,
-      nameLock: false
+      isNameEdited: false
     };
   }
 
@@ -71,17 +69,17 @@ class ListItem extends PureComponent {
       disableToggleButton: true
     }));
 
-    this.lockItem();
+    this.handleItemLock();
 
     const shouldChangeAuthor = isNotSameAuthor && isOrdered;
 
     if (shouldChangeAuthor) {
       return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
-        () => this.unlockItem()
+        this.handleItemUnlock
       );
     }
 
-    toggle(itemName, isOrdered, _id, listId);
+    toggle(itemName, isOrdered, _id, listId).finally(this.handleItemUnlock);
   };
 
   handleDetailsVisibility = event => {
@@ -104,10 +102,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.lockItem();
+    this.handleItemLock();
 
     if (isMember) {
-      return cloneItem(name, listId, itemId).finally(() => this.unlockItem());
+      return cloneItem(name, listId, itemId).finally(this.handleItemUnlock);
     }
   };
 
@@ -125,9 +123,7 @@ class ListItem extends PureComponent {
 
     const action = isVoted ? clearVote : setVote;
 
-    this.lockItem();
-
-    return action(_id, listId, name).finally(() => this.unlockItem());
+    return action(_id, listId, name);
   };
 
   handleConfirmationVisibility = event => {
@@ -149,9 +145,9 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    this.lockItem();
+    this.handleItemLock();
 
-    return archiveItem(listId, itemId, name);
+    return archiveItem(listId, itemId, name).finally(this.handleItemUnlock);
   };
 
   renderVoting = () => {
@@ -178,24 +174,70 @@ class ListItem extends PureComponent {
 
   preventDefault = event => event.preventDefault();
 
+  handleItemLock = () => {
+    const {
+      currentUser: { id: userId },
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    lockItem(itemId, listId, userId, { descriptionLock: true, nameLock: true });
+  };
+
+  handleItemUnlock = () => {
+    const {
+      currentUser: { id: userId },
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    unlockItem(itemId, listId, userId, {
+      descriptionLock: false,
+      nameLock: false
+    });
+  };
+
   handleNameLock = () => {
-    this.setState({ nameLock: true, descriptionLock: false }, this.lockItem);
+    const {
+      currentUser: { id: userId },
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    lockItem(itemId, listId, userId, { nameLock: true });
   };
 
   handleNameUnlock = () => {
-    this.setState({ nameLock: false, descriptionLock: false }, this.unlockItem);
+    const {
+      currentUser: { id: userId },
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    unlockItem(itemId, listId, userId, { nameLock: false });
   };
 
   handleDescriptionLock = () => {
-    this.setState({ nameLock: false, descriptionLock: true }, this.lockItem);
+    const {
+      currentUser: { id: userId },
+      data: { _id: itemId },
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    lockItem(itemId, listId, userId, { descriptionLock: true });
   };
 
   handleDescriptionUnlock = () => {
-    this.setState({ nameLock: false, descriptionLock: false }, this.unlockItem);
-  };
-
-  lockItem = () => {
-    const { nameLock, descriptionLock } = this.state;
     const {
       currentUser: { id: userId },
       data: { _id: itemId },
@@ -204,20 +246,7 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    lockItem(itemId, listId, userId, { nameLock, descriptionLock });
-  };
-
-  unlockItem = () => {
-    const { nameLock, descriptionLock } = this.state;
-    const {
-      currentUser: { id: userId },
-      data: { _id: itemId },
-      match: {
-        params: { id: listId }
-      }
-    } = this.props;
-
-    unlockItem(itemId, listId, userId, { nameLock, descriptionLock });
+    unlockItem(itemId, listId, userId, { descriptionLock: false });
   };
 
   renderConfirmation = () => {
@@ -282,7 +311,7 @@ class ListItem extends PureComponent {
           {!isOrdered && (
             <PendingButton
               className="link-button"
-              disabled={!isMember || isConfirmationVisible}
+              disabled={!isMember || isConfirmationVisible || isEdited}
               onClick={this.handleItemCloning}
               onTouchEnd={this.handleItemCloning}
             >

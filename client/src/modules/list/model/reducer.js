@@ -312,14 +312,16 @@ const lists = (state = {}, action) => {
     case ListHeaderStatusType.LOCK:
     case ListHeaderStatusType.UNLOCK: {
       const {
-        payload: { listId, nameLock = false, descriptionLock = false }
+        payload: { listId, locks }
       } = action;
+      const { locks: prevLocks } = state[listId];
+      const updatedLocks = filterDefined(locks);
 
       return {
         ...state,
         [listId]: {
           ...state[listId],
-          locks: { description: descriptionLock, name: nameLock }
+          locks: { ...prevLocks, ...updatedLocks }
         }
       };
     }
