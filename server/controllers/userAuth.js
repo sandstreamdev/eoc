@@ -6,14 +6,16 @@ const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
+const NotFoundException = require('../common/exceptions/NotFoundException');
 const User = require('../models/user.model');
-const { validatePassword } = require('../common/utils/userUtils');
+const {
+  responseWithUserData,
+  validatePassword
+} = require('../common/utils/userUtils');
+const Settings = require('../models/settings.model');
+const { sanitizeObject, updateProperties } = require('../common/utils');
 
-const sendUser = (req, resp) => {
-  const { avatarUrl, _id: id, displayName: name } = req.user;
-
-  resp.send({ avatarUrl, id, name });
-};
+const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
 const logout = (req, resp) => {
   req.session.destroy(() => {
@@ -94,6 +96,7 @@ const signUp = (req, resp, next) => {
         email: sanitizedEmail,
         isActive: false,
         password: hashedPassword,
+        settings: new Settings(),
         signUpHash,
         signUpHashExpirationDate: expirationDate
       });
@@ -181,9 +184,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
 
 const getLoggedUser = (req, resp) => {
   if (req.user) {
-    const { avatarUrl, _id: id, displayName: name } = req.user;
-
-    return resp.send({ avatarUrl, id, name });
+    return resp.send(responseWithUserData(req.user));
   }
 
   return resp.sendStatus(204);
@@ -415,6 +416,29 @@ const changePassword = (req, res) => {
     .catch(() => res.sendStatus(400));
 };
 
+const updateSettings = (req, res) => {
+  const { settings: editedSettings } = req.body;
+  const {
+    user: { _id: userId }
+  } = req;
+
+  User.findById(userId)
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new NotFoundException();
+      }
+
+      const { settings } = doc;
+
+      updateProperties(settings, sanitizeObject(editedSettings));
+
+      return doc.save();
+    })
+    .then(() => res.send())
+    .catch(() => res.sendStatus(400));
+};
+
 module.exports = {
   changePassword,
   confirmEmail,
@@ -427,5 +451,6 @@ module.exports = {
   resetPassword,
   sendUser,
   signUp,
-  updatePassword
+  updatePassword,
+  updateSettings
 };

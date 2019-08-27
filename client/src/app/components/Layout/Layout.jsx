@@ -17,7 +17,7 @@ import {
   SuccessMessage,
   UserProfile
 } from 'modules/user';
-import { getLoggedUser } from 'modules/user/model/actions';
+import { getLoggedUser, updateSettings } from 'modules/user/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import Footer from '../Footer';
@@ -37,6 +37,7 @@ export class Layout extends PureComponent {
 
     this.state = {
       pending: false,
+      pendingForViewType: false,
       viewType: ViewType.LIST
     };
   }
@@ -59,6 +60,19 @@ export class Layout extends PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { currentUser: prevUser } = prevProps;
+    const { currentUser } = this.props;
+
+    if (!prevUser && currentUser) {
+      const {
+        settings: { viewType }
+      } = currentUser;
+
+      this.handleSwitchView(viewType);
+    }
+  }
+
   isListsView = () => {
     const {
       location: { pathname }
@@ -70,16 +84,25 @@ export class Layout extends PureComponent {
     );
   };
 
-  handleSwitchToListView = () => this.setState({ viewType: ViewType.LIST });
-
-  handleSwitchToTilesView = () => this.setState({ viewType: ViewType.TILES });
+  handleSwitchView = viewType => this.setState({ viewType });
 
   handleViewTypeChange = () => {
+    const { updateSettings } = this.props;
     const { viewType } = this.state;
 
-    return viewType === ViewType.LIST
-      ? this.handleSwitchToTilesView
-      : this.handleSwitchToListView;
+    const newViewType =
+      viewType === ViewType.LIST ? ViewType.TILES : ViewType.LIST;
+
+    const settings = {
+      viewType: newViewType
+    };
+
+    this.handleSwitchView(newViewType);
+    this.setState({ pendingForViewType: true });
+
+    updateSettings(settings)
+      .catch(() => this.handleSwitchView(viewType))
+      .finally(() => this.setState({ pendingForViewType: false }));
   };
 
   render() {
@@ -87,7 +110,7 @@ export class Layout extends PureComponent {
       currentUser,
       intl: { formatMessage }
     } = this.props;
-    const { pending, viewType } = this.state;
+    const { pending, pendingForViewType, viewType } = this.state;
 
     if (pending) {
       return <Preloader />;
@@ -123,6 +146,7 @@ export class Layout extends PureComponent {
         <Toolbar>
           {this.isListsView() && (
             <ToolbarItem
+              disabled={pendingForViewType}
               mainIcon={
                 viewType === ViewType.LIST ? (
                   <TilesViewIcon />
@@ -130,7 +154,7 @@ export class Layout extends PureComponent {
                   <ListViewIcon />
                 )
               }
-              onClick={this.handleViewTypeChange()}
+              onClick={this.handleViewTypeChange}
               title={formatMessage({
                 id:
                   viewType === ViewType.LIST
@@ -188,7 +212,8 @@ Layout.propTypes = {
     pathname: PropTypes.string.isRequired
   }),
 
-  getLoggedUser: PropTypes.func.isRequired
+  getLoggedUser: PropTypes.func.isRequired,
+  updateSettings: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -200,6 +225,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { getLoggedUser }
+    { getLoggedUser, updateSettings }
   )
 )(Layout);

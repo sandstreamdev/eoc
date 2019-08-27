@@ -1,3 +1,5 @@
+const { enumerable } = require('./utils');
+
 const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/eoc';
 const ListType = Object.freeze({
   LIMITED: 'limited',
@@ -137,6 +139,8 @@ const Routes = Object.freeze({
   LIST: 'sack'
 });
 
+const ViewType = enumerable('viewType')('LIST', 'TILES');
+
 module.exports = {
   ActivityType,
   CohortActionTypes,
@@ -154,5 +158,6 @@ module.exports = {
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME,
   Routes,
-  SOCKET_TIMEOUT
+  SOCKET_TIMEOUT,
+  ViewType
 };
