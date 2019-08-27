@@ -135,14 +135,16 @@ const cohorts = (state = {}, action) => {
     case CohortHeaderStatusTypes.LOCK:
     case CohortHeaderStatusTypes.UNLOCK: {
       const {
-        payload: { cohortId, nameLock = false, descriptionLock = false }
+        payload: { cohortId, locks }
       } = action;
+      const { locks: prevLocks } = state[cohortId];
+      const updatedLocks = filterDefined(locks);
 
       return {
         ...state,
         [cohortId]: {
           ...state[cohortId],
-          locks: { name: nameLock, description: descriptionLock }
+          locks: { ...prevLocks, ...updatedLocks }
         }
       };
     }
