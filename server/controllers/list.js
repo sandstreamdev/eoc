@@ -7,6 +7,7 @@ const Item = require('../models/item.model');
 const {
   checkIfArrayContainsUserId,
   filter,
+  fireAndForget,
   isMember,
   isOwner,
   isValidMongoId,
@@ -464,9 +465,8 @@ const updateListById = (req, resp) => {
       if (!doc) {
         return resp.sendStatus(400);
       }
-      const { cohortId } = doc;
 
-      resp.send();
+      const { cohortId } = doc;
 
       if (description !== undefined) {
         const { description: prevDescription } = doc;
@@ -495,7 +495,7 @@ const updateListById = (req, resp) => {
         if (isArchived) {
           listActivity = ActivityType.LIST_ARCHIVE;
 
-          archiveList(
+          return archiveList(
             socketInstance,
             dashboardClients,
             cohortClients,
@@ -521,15 +521,19 @@ const updateListById = (req, resp) => {
         Comment.updateMany({ listId: sanitizedListId }, { isDeleted }).exec();
       }
 
-      saveActivity(
-        listActivity,
-        userId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        null,
-        doc.name
+      fireAndForget(
+        saveActivity(
+          listActivity,
+          userId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          null,
+          doc.name
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };

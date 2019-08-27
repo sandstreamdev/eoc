@@ -337,10 +337,14 @@ const responseWithCohortDetails = (doc, userId) => {
  */
 const isDefined = x => x !== undefined;
 
+/* eslint-disable-next-line no-console */
+const fireAndForget = promise => promise.catch(err => console.log(err));
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   filter,
+  fireAndForget,
   isDefined,
   isMember,
   isOwner,
