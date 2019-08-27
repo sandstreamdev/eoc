@@ -17,6 +17,7 @@ services:
       - mongo
     environment:
       DB_URL: mongodb://mongo/eoc
+      DB_SERVER_URL: mongodb://mongo
     command: npm run migrate:up
   eoc-server:
     container_name: eoc_server_container

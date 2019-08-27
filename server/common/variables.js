@@ -1,7 +1,7 @@
 const { enumerable } = require('./utils');
 
 const DB_NAME = 'eoc';
-const DB_SERVER_URL = 'mongodb://localhost:27017';
+const DB_SERVER_URL = process.env.DB_SERVER_URL || 'mongodb://localhost:27017';
 const DB_URL = process.env.DB_URL || `${DB_SERVER_URL}/${DB_NAME}`;
 const ListType = Object.freeze({
   LIMITED: 'limited',
