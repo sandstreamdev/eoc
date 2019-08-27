@@ -54,6 +54,7 @@ const {
   updateCohortHeaderStatus
 } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
+const { Routes } = require('../common/variables');
 
 const socketListenTo = server => {
   const ioInstance = io(server, {
@@ -89,49 +90,65 @@ const socketListenTo = server => {
       return;
     }
 
-    socket.on('joinSackRoom', data => {
-      const { room, userId, viewId } = data;
+    socket.on('joinRoom', ({ data, room }) => {
+      const { roomId, userId, viewId } = data;
 
-      socket.join(room);
-      listViewClients.set(userId, { socketId: socket.id, viewId });
+      switch (room) {
+        case Routes.LIST:
+          socket.join(roomId);
+          listViewClients.set(userId, { socketId: socket.id, viewId });
+          break;
+        case Routes.COHORT:
+          socket.join(roomId);
+          cohortViewClients.set(userId, { socketId: socket.id, viewId });
+          break;
+        default:
+          break;
+      }
     });
 
-    socket.on('leaveSackRoom', data => {
-      const { room, userId } = data;
+    socket.on('leaveRoom', ({ data, room }) => {
+      const { roomId, userId } = data;
 
-      socket.leave(room);
-      listViewClients.delete(userId);
+      switch (room) {
+        case Routes.LIST:
+          socket.leave(roomId);
+          listViewClients.delete(userId);
+          break;
+        case Routes.COHORT:
+          socket.leave(roomId);
+          cohortViewClients.delete(userId);
+          break;
+        default:
+          break;
+      }
     });
 
-    socket.on('joinCohortRoom', data => {
-      const { room, userId, viewId } = data;
-
-      socket.join(room);
-      cohortViewClients.set(userId, { socketId: socket.id, viewId });
+    socket.on('enterView', ({ userId, view }) => {
+      switch (view) {
+        case Routes.COHORTS:
+          allCohortsViewClients.set(userId, { socketId: socket.id });
+          break;
+        case Routes.DASHBOARD:
+          dashboardViewClients.set(userId, { socketId: socket.id });
+          break;
+        default:
+          break;
+      }
     });
 
-    socket.on('leaveCohortRoom', data => {
-      const { room, userId } = data;
-
-      socket.leave(room);
-      cohortViewClients.delete(userId);
+    socket.on('leaveView', ({ userId, view }) => {
+      switch (view) {
+        case Routes.DASHBOARD:
+          dashboardViewClients.delete(userId);
+          break;
+        case Routes.COHORTS:
+          allCohortsViewClients.delete(userId);
+          break;
+        default:
+          break;
+      }
     });
-
-    socket.on('enterCohortsView', userId =>
-      allCohortsViewClients.set(userId, { socketId: socket.id })
-    );
-
-    socket.on('leaveCohortsView', userId =>
-      allCohortsViewClients.delete(userId)
-    );
-
-    socket.on('enterDashboardView', userId =>
-      dashboardViewClients.set(userId, { socketId: socket.id })
-    );
-
-    socket.on('leaveDashboardView', userId =>
-      dashboardViewClients.delete(userId)
-    );
 
     socket.on('error', () => {
       /* Ignore error.

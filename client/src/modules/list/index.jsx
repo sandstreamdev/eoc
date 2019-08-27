@@ -34,7 +34,7 @@ import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContain
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
-import { joinRoom, leaveRoom } from 'sockets';
+import { joinRoom, leaveRoom } from 'common/model/actions';
 
 class List extends Component {
   state = {
@@ -48,6 +48,7 @@ class List extends Component {
   componentDidMount() {
     const {
       currentUser: { id: userId },
+      joinRoom,
       match: {
         params: { id: cohortId }
       }
@@ -71,6 +72,7 @@ class List extends Component {
 
   componentDidUpdate(prevProps) {
     const {
+      leaveRoom,
       match: {
         params: { id: prevListId }
       }
@@ -91,6 +93,7 @@ class List extends Component {
   componentWillUnmount() {
     const {
       currentUser: { id: userId },
+      leaveRoom,
       match: {
         params: { id: listId }
       }
@@ -318,7 +321,9 @@ List.propTypes = {
 
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
-  leaveList: PropTypes.func.isRequired
+  joinRoom: PropTypes.func.isRequired,
+  leaveList: PropTypes.func.isRequired,
+  leaveRoom: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -345,7 +350,9 @@ export default _flowRight(
     {
       archiveList,
       fetchListData,
-      leaveList
+      joinRoom,
+      leaveList,
+      leaveRoom
     }
   )
 )(List);

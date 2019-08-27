@@ -2,6 +2,7 @@ const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   checkIfCurrentUserVoted,
+  enumerable,
   filter,
   isDefined,
   isMember,
@@ -22,6 +23,9 @@ const {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
+  sanitizeObject,
+  updateProperties,
   updateSubdocumentFields
 } = require('./helpers');
 
@@ -29,6 +33,7 @@ module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   checkIfCurrentUserVoted,
+  enumerable,
   filter,
   isDefined,
   isMember,
@@ -49,5 +54,8 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
+  sanitizeObject,
+  updateProperties,
   updateSubdocumentFields
 };

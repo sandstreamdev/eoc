@@ -10,7 +10,6 @@ import {
   getCohortArchivedLists
 } from 'modules/list/model/selectors';
 import {
-  clearMetaData,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
@@ -41,7 +40,7 @@ import Breadcrumbs from 'common/components/Breadcrumbs';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
-import { joinRoom, leaveRoom } from 'sockets';
+import { joinRoom, leaveRoom } from 'common/model/actions';
 
 const initialState = {
   areArchivedListsVisible: false,
@@ -62,6 +61,7 @@ class Cohort extends PureComponent {
   componentDidMount() {
     const {
       currentUser: { id: userId },
+      joinRoom,
       match: {
         params: { id: cohortId }
       }
@@ -73,6 +73,7 @@ class Cohort extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const {
+      leaveRoom,
       match: {
         params: { id }
       }
@@ -92,15 +93,14 @@ class Cohort extends PureComponent {
 
   componentWillUnmount() {
     const {
-      clearMetaData,
       currentUser: { id: userId },
+      leaveRoom,
       match: {
         params: { id: cohortId }
       }
     } = this.props;
 
     leaveRoom(Routes.COHORT, cohortId, userId);
-    clearMetaData();
     this.pendingPromises.forEach(promise => promise.abort());
   }
 
@@ -405,7 +405,6 @@ Cohort.propTypes = {
     isArchived: PropTypes.bool,
     name: PropTypes.string
   }),
-  createList: PropTypes.func.isRequired,
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   lists: PropTypes.objectOf(PropTypes.object),
@@ -414,11 +413,13 @@ Cohort.propTypes = {
   viewType: PropTypes.string.isRequired,
 
   archiveCohort: PropTypes.func.isRequired,
-  clearMetaData: PropTypes.func.isRequired,
+  createList: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
+  joinRoom: PropTypes.func.isRequired,
   leaveCohort: PropTypes.func.isRequired,
+  leaveRoom: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
@@ -445,12 +446,13 @@ export default _flowRight(
     mapStateToProps,
     {
       archiveCohort,
-      clearMetaData,
       createList,
       fetchArchivedListsMetaData,
       fetchCohortDetails,
       fetchListsMetaData,
+      joinRoom,
       leaveCohort,
+      leaveRoom,
       removeArchivedListsMetaData
     }
   )

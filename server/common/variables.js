@@ -1,4 +1,8 @@
-const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/eoc';
+const { enumerable } = require('./utils');
+
+const DB_NAME = 'eoc';
+const DB_SERVER_URL = process.env.DB_SERVER_URL || 'mongodb://localhost:27017';
+const DB_URL = process.env.DB_URL || `${DB_SERVER_URL}/${DB_NAME}`;
 const ListType = Object.freeze({
   LIMITED: 'limited',
   SHARED: 'shared'
@@ -130,11 +134,22 @@ const ListHeaderStatusTypes = Object.freeze({
 const LOCK_TIMEOUT = 300000;
 const SOCKET_TIMEOUT = 60000;
 
+const Routes = Object.freeze({
+  COHORT: 'cohort',
+  COHORTS: 'cohorts',
+  DASHBOARD: 'dashboard',
+  LIST: 'sack'
+});
+
+const ViewType = enumerable('viewType')('LIST', 'TILES');
+
 module.exports = {
   ActivityType,
   CohortActionTypes,
   CohortHeaderStatusTypes,
   CommentActionTypes,
+  DB_NAME,
+  DB_SERVER_URL,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,
@@ -146,5 +161,7 @@ module.exports = {
   LOCK_TIMEOUT,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME,
-  SOCKET_TIMEOUT
+  Routes,
+  SOCKET_TIMEOUT,
+  ViewType
 };

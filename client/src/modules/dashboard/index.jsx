@@ -6,7 +6,6 @@ import _flowRight from 'lodash/flowRight';
 
 import { ListIcon } from 'assets/images/icons';
 import {
-  clearMetaData,
   createList,
   fetchArchivedListsMetaData,
   fetchListsMetaData,
@@ -23,7 +22,7 @@ import { ColorType, Routes } from 'common/constants/enums';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/user/model/selectors';
-import { enterView, leaveView } from 'sockets';
+import { enterView, leaveView } from 'common/model/actions';
 
 class Dashboard extends Component {
   state = {
@@ -37,6 +36,7 @@ class Dashboard extends Component {
   componentDidMount() {
     const {
       currentUser: { id },
+      enterView,
       fetchListsMetaData
     } = this.props;
 
@@ -51,12 +51,11 @@ class Dashboard extends Component {
 
   componentWillUnmount() {
     const {
-      clearMetaData,
-      currentUser: { id }
+      currentUser: { id },
+      leaveView
     } = this.props;
 
     leaveView(Routes.DASHBOARD, id);
-    clearMetaData();
   }
 
   handleDialogVisibility = () =>
@@ -197,10 +196,11 @@ Dashboard.propTypes = {
   privateLists: PropTypes.objectOf(PropTypes.object),
   viewType: PropTypes.string.isRequired,
 
-  clearMetaData: PropTypes.func.isRequired,
   createList: PropTypes.func.isRequired,
+  enterView: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
+  leaveView: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
@@ -216,10 +216,11 @@ export default _flowRight(
   connect(
     mapStateToProps,
     {
-      clearMetaData,
       createList,
+      enterView,
       fetchArchivedListsMetaData,
       fetchListsMetaData,
+      leaveView,
       removeArchivedListsMetaData
     }
   )

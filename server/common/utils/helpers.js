@@ -3,6 +3,8 @@ const _map = require('lodash/map');
 const _pickBy = require('lodash/pickBy');
 const _compact = require('lodash/compact');
 const _keyBy = require('lodash/keyBy');
+const _forEach = require('lodash/forEach');
+const sanitize = require('mongo-sanitize');
 
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -337,9 +339,43 @@ const responseWithCohortDetails = (doc, userId) => {
  */
 const isDefined = x => x !== undefined;
 
+const enumerable = namespace => (...keys) =>
+  Object.freeze(
+    fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
+  );
+
+const mapObject = callback => object =>
+  Object.entries(object).reduce(
+    (newObject, [key, value]) => ({ ...newObject, [key]: callback(value) }),
+    {}
+  );
+
+const sanitizeObject = mapObject(sanitize);
+
+const updateProperties = (object, updates) => {
+  _forEach(updates, (value, key) => {
+    if (object[key]) {
+      // eslint-disable-next-line no-param-reassign
+      object[key] = value;
+    }
+  });
+};
+const runAsyncTasks = async (...tasks) => {
+  tasks.forEach(task => task());
+
+  try {
+    await Promise.all(tasks);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('Migration failed...', err);
+    throw err;
+  }
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  enumerable,
   filter,
   isDefined,
   isMember,
@@ -359,5 +395,8 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
+  sanitizeObject,
+  updateProperties,
   updateSubdocumentFields
 };
