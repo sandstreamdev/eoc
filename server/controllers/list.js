@@ -448,6 +448,7 @@ const updateListById = (req, resp) => {
     name
   });
   let listActivity;
+  let list;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
@@ -467,6 +468,7 @@ const updateListById = (req, resp) => {
       }
 
       const { cohortId } = doc;
+      list = doc;
 
       if (description !== undefined) {
         const { description: prevDescription } = doc;
@@ -479,14 +481,20 @@ const updateListById = (req, resp) => {
         }
 
         const data = { listId, description };
-        updateList(socketInstance, dashboardClients, cohortClients)(data);
+
+        return updateList(socketInstance, dashboardClients, cohortClients)(
+          data
+        );
       }
 
       if (name) {
         listActivity = ActivityType.LIST_EDIT_NAME;
 
         const data = { listId, name };
-        updateList(socketInstance, dashboardClients, cohortClients)(data);
+
+        return updateList(socketInstance, dashboardClients, cohortClients)(
+          data
+        );
       }
 
       if (isArchived !== undefined) {
@@ -504,7 +512,8 @@ const updateListById = (req, resp) => {
         }
 
         listActivity = ActivityType.LIST_RESTORE;
-        restoreList(
+
+        return restoreList(
           socketInstance,
           dashboardClients,
           cohortClients,
@@ -518,18 +527,23 @@ const updateListById = (req, resp) => {
         const data = { listId, cohortId };
 
         deleteList(socketInstance, dashboardClients, cohortClients)(data);
-        Comment.updateMany({ listId: sanitizedListId }, { isDeleted }).exec();
-      }
 
+        return Comment.updateMany(
+          { listId: sanitizedListId },
+          { isDeleted }
+        ).exec();
+      }
+    })
+    .then(() => {
       fireAndForget(
         saveActivity(
           listActivity,
           userId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          list.cohortId,
           null,
-          doc.name
+          list.name
         )
       );
 
