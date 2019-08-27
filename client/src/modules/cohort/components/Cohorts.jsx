@@ -6,7 +6,6 @@ import _flowRight from 'lodash/flowRight';
 
 import { CohortIcon } from 'assets/images/icons';
 import {
-  clearMetaData,
   createCohort,
   fetchArchivedCohortsMetaData,
   fetchCohortsMetaData,
@@ -22,7 +21,7 @@ import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { ColorType, Routes, ViewType } from 'common/constants/enums';
-import { enterView, leaveView } from 'sockets';
+import { enterView, leaveView } from 'common/model/actions';
 
 class Cohorts extends Component {
   state = {
@@ -36,6 +35,7 @@ class Cohorts extends Component {
   componentDidMount() {
     const {
       currentUser: { id: userId },
+      enterView,
       fetchCohortsMetaData
     } = this.props;
 
@@ -50,11 +50,10 @@ class Cohorts extends Component {
 
   componentWillUnmount() {
     const {
-      clearMetaData,
-      currentUser: { id: userId }
+      currentUser: { id: userId },
+      leaveView
     } = this.props;
 
-    clearMetaData();
     leaveView(Routes.COHORTS, userId);
   }
 
@@ -192,10 +191,11 @@ Cohorts.propTypes = {
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
 
-  clearMetaData: PropTypes.func.isRequired,
   createCohort: PropTypes.func.isRequired,
+  enterView: PropTypes.func.isRequired,
   fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
+  leaveView: PropTypes.func.isRequired,
   removeArchivedCohortsMetaData: PropTypes.func.isRequired
 };
 
@@ -210,10 +210,11 @@ export default _flowRight(
   connect(
     mapStateToProps,
     {
-      clearMetaData,
       createCohort,
+      enterView,
       fetchArchivedCohortsMetaData,
       fetchCohortsMetaData,
+      leaveView,
       removeArchivedCohortsMetaData
     }
   )
