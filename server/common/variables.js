@@ -1,6 +1,8 @@
 const { enumerable } = require('./utils');
 
-const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/eoc';
+const DB_NAME = 'eoc';
+const DB_SERVER_URL = 'mongodb://localhost:27017';
+const DB_URL = process.env.DB_URL || `${DB_SERVER_URL}/${DB_NAME}`;
 const ListType = Object.freeze({
   LIMITED: 'limited',
   SHARED: 'shared'
@@ -146,6 +148,8 @@ module.exports = {
   CohortActionTypes,
   CohortHeaderStatusTypes,
   CommentActionTypes,
+  DB_NAME,
+  DB_SERVER_URL,
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,

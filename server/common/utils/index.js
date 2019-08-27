@@ -23,6 +23,7 @@ const {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
   sanitizeObject,
   updateProperties,
   updateSubdocumentFields
@@ -53,6 +54,7 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
   sanitizeObject,
   updateProperties,
   updateSubdocumentFields

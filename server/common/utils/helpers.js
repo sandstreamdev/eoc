@@ -360,6 +360,17 @@ const updateProperties = (object, updates) => {
     }
   });
 };
+const runAsyncTasks = async (...tasks) => {
+  tasks.forEach(task => task());
+
+  try {
+    await Promise.all(tasks);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('Migration failed...', err);
+    throw err;
+  }
+};
 
 module.exports = {
   checkIfArrayContainsUserId,
@@ -384,6 +395,7 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  runAsyncTasks,
   sanitizeObject,
   updateProperties,
   updateSubdocumentFields
