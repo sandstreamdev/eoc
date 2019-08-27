@@ -6,7 +6,6 @@ RUN npm ci --dev
 
 FROM init AS build
 COPY . .
-RUN npm run migrate:up
 RUN npm run build:prod
 RUN npm prune --production
 

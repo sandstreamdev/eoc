@@ -7,6 +7,17 @@ services:
     build: ./landing
     ports:
       - '80'
+  eoc-migrate:
+    container_name: eoc_migrate_container
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.cd
+    links:
+      - mongo
+    environment:
+      DB_URL: mongodb://mongo/eoc
+    command: npm run migrate:up
   eoc-server:
     container_name: eoc_server_container
     restart: always
