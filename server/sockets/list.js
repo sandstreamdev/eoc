@@ -32,23 +32,37 @@ const {
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
 
-const addItemToList = socket => {
+const addItemToList = (socket, dashboardViewClients, cohortViewClients) => {
   socket.on(ItemActionTypes.ADD_SUCCESS, data => {
     const { listId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ItemActionTypes.ADD_SUCCESS, data);
+
+    updateListOnDashboardAndCohortView(
+      socket,
+      listId,
+      dashboardViewClients,
+      cohortViewClients
+    );
   });
 };
 
-const archiveItem = socket => {
+const archiveItem = (socket, dashboardViewClients, cohortViewClients) => {
   socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
     const { listId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ItemActionTypes.ARCHIVE_SUCCESS, data);
+
+    updateListOnDashboardAndCohortView(
+      socket,
+      listId,
+      dashboardViewClients,
+      cohortViewClients
+    );
   });
 };
 
@@ -62,13 +76,20 @@ const deleteItem = socket => {
   });
 };
 
-const restoreItem = socket => {
+const restoreItem = (socket, dashboardViewClients, cohortViewClients) => {
   socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
     const { listId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ItemActionTypes.RESTORE_SUCCESS, data);
+
+    updateListOnDashboardAndCohortView(
+      socket,
+      listId,
+      dashboardViewClients,
+      cohortViewClients
+    );
   });
 };
 
@@ -193,13 +214,20 @@ const addComment = socket =>
       .emit(CommentActionTypes.ADD_SUCCESS, data);
   });
 
-const cloneItem = socket =>
+const cloneItem = (socket, dashboardViewClients, cohortViewClients) =>
   socket.on(ItemActionTypes.CLONE_SUCCESS, data => {
     const { listId } = data;
 
     socket.broadcast
       .to(listChannel(listId))
       .emit(ItemActionTypes.CLONE_SUCCESS, data);
+
+    updateListOnDashboardAndCohortView(
+      socket,
+      listId,
+      dashboardViewClients,
+      cohortViewClients
+    );
   });
 
 const emitListsOnAddCohortMember = (socket, clients) =>

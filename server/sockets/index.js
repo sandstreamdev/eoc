@@ -159,11 +159,11 @@ const socketListenTo = server => {
     });
 
     addComment(socket);
-    addItemToList(socket);
+    addItemToList(socket, dashboardViewClients, cohortViewClients);
     addListMember(socket, dashboardViewClients, cohortViewClients);
     addMemberRoleInList(socket, listViewClients);
     addOwnerRoleInList(socket, listViewClients);
-    archiveItem(socket);
+    archiveItem(socket, dashboardViewClients, cohortViewClients);
     archiveList(
       socket,
       dashboardViewClients,
@@ -178,7 +178,7 @@ const socketListenTo = server => {
       listViewClients
     );
     clearVote(socket);
-    cloneItem(socket);
+    cloneItem(socket, dashboardViewClients, cohortViewClients);
     deleteItem(socket);
     deleteList(socket, dashboardViewClients, cohortViewClients);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
@@ -199,7 +199,7 @@ const socketListenTo = server => {
     );
     removeMemberRoleInList(socket, listViewClients);
     removeOwnerRoleInList(socket, listViewClients);
-    restoreItem(socket);
+    restoreItem(socket, dashboardViewClients, cohortViewClients);
     restoreList(
       socket,
       dashboardViewClients,
