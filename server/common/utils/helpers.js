@@ -340,6 +340,8 @@ const isDefined = x => x !== undefined;
 /* eslint-disable-next-line no-console */
 const fireAndForget = promise => promise.catch(err => console.log(err));
 
+const returnPayload = promise => payload => promise.then(() => payload);
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -363,5 +365,6 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  returnPayload,
   updateSubdocumentFields
 };

@@ -15,7 +15,8 @@ const {
   responseWithItem,
   responseWithItems,
   responseWithList,
-  responseWithListsMetaData
+  responseWithListsMetaData,
+  returnPayload
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -1214,7 +1215,6 @@ const changeType = (req, resp) => {
   const sanitizedListId = sanitize(listId);
   let cohortMembers;
   let removedViewers;
-  let members;
   let listCohortId;
 
   List.findOneAndUpdate(
@@ -1263,7 +1263,7 @@ const changeType = (req, resp) => {
         type,
         viewersIds: viewersCollection
       } = list;
-      members = responseWithListMembers(
+      const members = responseWithListMembers(
         viewersCollection,
         memberIds,
         ownerIds,
@@ -1273,14 +1273,16 @@ const changeType = (req, resp) => {
       listCohortId = cohortId;
       const data = { listId, type, removedViewers };
 
-      return changeListType(
-        socketInstance,
-        dashboardClients,
-        cohortClients,
-        listClients
-      )(data);
+      return returnPayload(
+        changeListType(
+          socketInstance,
+          dashboardClients,
+          cohortClients,
+          listClients
+        )(data)
+      )({ members, type });
     })
-    .then(() => {
+    .then(payload => {
       fireAndForget(
         saveActivity(
           ActivityType.LIST_CHANGE_TYPE,
@@ -1293,7 +1295,7 @@ const changeType = (req, resp) => {
         )
       );
 
-      resp.send({ members, type });
+      resp.send(payload);
     })
     .catch(() => resp.sendStatus(400));
 };

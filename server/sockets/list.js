@@ -477,7 +477,7 @@ const changeListType = (
 ) => data => {
   const { listId, type, removedViewers } = data;
 
-  List.findById(listId)
+  return List.findById(listId)
     .populate('cohortId', 'memberIds')
     .lean()
     .exec()
