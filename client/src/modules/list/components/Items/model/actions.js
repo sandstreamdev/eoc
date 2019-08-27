@@ -163,9 +163,7 @@ export const toggle = (
     .then(() => {
       const data = { authorId, authorName, itemId, listId };
       const action = toggleItemSuccess(data);
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       setTimeout(() => dispatch(action), ITEM_TOGGLE_TIME);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.toggle',

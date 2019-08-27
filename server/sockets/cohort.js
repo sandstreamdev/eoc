@@ -318,40 +318,39 @@ const restoreCohort = (socket, allCohortsClients, cohortClients) =>
       });
   });
 
-const createListCohort = (socket, dashboardClients) =>
-  socket.on(ListActionTypes.CREATE_SUCCESS, data => {
-    const { cohortId, _id: listId } = data;
+const createListCohort = (io, dashboardClients) => data => {
+  const { cohortId, _id: listId } = data;
 
-    socket.broadcast
-      .to(cohortChannel(cohortId))
-      .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-        [listId]: { ...data }
-      });
+  io.sockets
+    .to(cohortChannel(cohortId))
+    .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+      [listId]: { ...data }
+    });
 
-    Cohort.findById(cohortId)
-      .select('memberIds')
-      .lean()
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { memberIds } = doc;
+  return Cohort.findById(cohortId)
+    .select('memberIds')
+    .lean()
+    .exec()
+    .then(doc => {
+      if (doc) {
+        const { memberIds } = doc;
 
-          memberIds.forEach(id => {
-            const memberId = id.toString();
+        memberIds.forEach(id => {
+          const memberId = id.toString();
 
-            if (dashboardClients.has(memberId)) {
-              const { socketId } = dashboardClients.get(memberId);
+          if (dashboardClients.has(memberId)) {
+            const { socketId } = dashboardClients.get(memberId);
 
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: { ...data }
-                });
-            }
-          });
-        }
-      });
-  });
+            io.sockets
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                [listId]: { ...data }
+              });
+          }
+        });
+      }
+    });
+};
 
 module.exports = {
   addCohortMember,
