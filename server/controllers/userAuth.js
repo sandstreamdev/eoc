@@ -14,6 +14,7 @@ const {
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
 const { sanitizeObject, updateProperties } = require('../common/utils');
+const { BadRequestReason } = require('../common/variables');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -34,23 +35,25 @@ const signUp = (req, resp, next) => {
   const { isEmail, isLength } = validator;
 
   if (!isLength(sanitizedUsername, { min: 1, max: 32 })) {
-    errors.nameError = true;
+    errors.isNameError = true;
   }
 
   if (!isEmail(sanitizedEmail)) {
-    errors.emailError = true;
+    errors.isEmailError = true;
   }
 
   if (!validatePassword(password)) {
-    errors.passwordError = true;
+    errors.isPasswordError = true;
   }
 
   if (password !== passwordConfirm) {
-    errors.confirmPasswordError = true;
+    errors.isConfirmPasswordError = true;
   }
 
   if (_some(errors, error => error !== undefined)) {
-    return resp.status(406).send(errors);
+    return resp
+      .status(400)
+      .send({ reason: BadRequestReason.VALIDATION, errors });
   }
 
   User.findOne({ email: sanitizedEmail })
@@ -196,7 +199,7 @@ const resetPassword = (req, resp, next) => {
   const { isEmail } = validator;
 
   if (!isEmail(sanitizedEmail)) {
-    return resp.sendStatus(406);
+    return resp.status(400).send({ reason: BadRequestReason.VALIDATION });
   }
 
   User.findOne({ email: sanitizedEmail })
@@ -391,7 +394,9 @@ const changePassword = (req, res) => {
   errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
 
   if (_some(errors, error => error)) {
-    return res.status(400).send(errors);
+    return res
+      .status(400)
+      .send({ reason: BadRequestReason.VALIDATION, errors });
   }
 
   User.findOne({ email }, 'password')
@@ -411,6 +416,8 @@ const changePassword = (req, res) => {
 
         return doc.save();
       }
+
+      throw new Error();
     })
     .then(() => res.send())
     .catch(() => res.sendStatus(400));

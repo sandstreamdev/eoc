@@ -128,12 +128,15 @@ class PasswordChangeForm extends PureComponent {
 
   validateForm = () => {
     const {
+      changePasswordErrorId,
       higherLevelErrors,
       isNewPasswordValid,
       isPasswordConfirmValid,
       isPasswordValid
     } = this.state;
-    const isError = _some(higherLevelErrors, error => error !== '');
+    const isError =
+      _some(higherLevelErrors, error => error !== '') ||
+      changePasswordErrorId !== '';
 
     this.setState({
       isFormValid:
