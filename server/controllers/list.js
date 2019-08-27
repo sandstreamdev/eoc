@@ -775,6 +775,7 @@ const removeOwnerRole = (req, resp) => {
     user: { _id: ownerId }
   } = req;
   const sanitizedListId = sanitize(listId);
+  let list;
 
   List.findOne({ _id: sanitizedListId, ownerIds: ownerId })
     .exec()
@@ -783,6 +784,7 @@ const removeOwnerRole = (req, resp) => {
         throw new BadRequestException();
       }
 
+      list = doc;
       const { ownerIds } = doc;
 
       if (ownerIds.length < 2) {
@@ -804,17 +806,20 @@ const removeOwnerRole = (req, resp) => {
 
       const data = { listId, userId };
 
-      removeOwnerRoleInList(socketInstance, listClients)(data);
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_SET_AS_MEMBER,
-        ownerId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        userId
+      return removeOwnerRoleInList(socketInstance, listClients)(data);
+    })
+    .then(() => {
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_SET_AS_MEMBER,
+          ownerId,
+          null,
+          sanitizedListId,
+          list.cohortId,
+          userId
+        )
       );
+      resp.send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -1091,7 +1096,7 @@ const updateListItem = (req, res) => {
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
 
-        // THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
+        // TODO: THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
         // OTHERWISE ITEMS GETS TOGGLED TWICE BY AUTHOR
         // const data = { listId, itemId };
         // changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
@@ -1209,6 +1214,8 @@ const changeType = (req, resp) => {
   const sanitizedListId = sanitize(listId);
   let cohortMembers;
   let removedViewers;
+  let members;
+  let listCohortId;
 
   List.findOneAndUpdate(
     { _id: sanitizedListId, ownerIds: currentUserId },
@@ -1256,32 +1263,37 @@ const changeType = (req, resp) => {
         type,
         viewersIds: viewersCollection
       } = list;
-      const members = responseWithListMembers(
+      members = responseWithListMembers(
         viewersCollection,
         memberIds,
         ownerIds,
         cohortMembers
       );
 
+      listCohortId = cohortId;
       const data = { listId, type, removedViewers };
 
-      changeListType(
+      return changeListType(
         socketInstance,
         dashboardClients,
         cohortClients,
         listClients
       )(data);
-      resp.send({ members, type });
-
-      saveActivity(
-        ActivityType.LIST_CHANGE_TYPE,
-        currentUserId,
-        null,
-        sanitizedListId,
-        cohortId,
-        null,
-        type
+    })
+    .then(() => {
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_CHANGE_TYPE,
+          currentUserId,
+          null,
+          sanitizedListId,
+          listCohortId,
+          null,
+          type
+        )
       );
+
+      resp.send({ members, type });
     })
     .catch(() => resp.sendStatus(400));
 };

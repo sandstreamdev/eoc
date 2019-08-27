@@ -89,7 +89,11 @@ const membersReducer = (state = {}, action) => {
         payload: { members }
       } = action;
 
-      return members;
+      if (members) {
+        return members;
+      }
+
+      return state;
     }
     default:
       return state;
