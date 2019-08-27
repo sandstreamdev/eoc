@@ -24,7 +24,7 @@ const saveActivity = (
     listId
   });
 
-  newActivity.save();
+  return newActivity.save();
 };
 
 const getActivities = (req, resp) => {

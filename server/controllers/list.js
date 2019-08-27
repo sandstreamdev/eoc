@@ -7,6 +7,7 @@ const Item = require('../models/item.model');
 const {
   checkIfArrayContainsUserId,
   filter,
+  fireAndForget,
   isMember,
   isOwner,
   isValidMongoId,
@@ -14,7 +15,8 @@ const {
   responseWithItem,
   responseWithItems,
   responseWithList,
-  responseWithListsMetaData
+  responseWithListsMetaData,
+  returnPayload
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -27,6 +29,25 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
+const cohortClients = require('../sockets/index').getCohortViewClients();
+const dashboardClients = require('../sockets/index').getDashboardViewClients();
+const listClients = require('../sockets/index').getListViewClients();
+const socketInstance = require('../sockets/index').getSocketInstance();
+const { createListCohort } = require('../sockets/cohort');
+const {
+  addListViewer,
+  addMemberRoleInList,
+  addOwnerRoleInList,
+  archiveList,
+  changeListType,
+  deleteList,
+  leaveList: leaveListSocket,
+  removeListMember,
+  removeMemberRoleInList,
+  removeOwnerRoleInList,
+  restoreList,
+  updateList
+} = require('../sockets/list');
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -48,6 +69,7 @@ const createList = (req, resp) => {
     type,
     viewersIds: userId
   });
+  let listData;
 
   if (cohortId && isSharedList) {
     Cohort.findOne({ _id: sanitize(cohortId) })
@@ -63,11 +85,19 @@ const createList = (req, resp) => {
 
         throw new BadRequestException();
       })
+      .then(() => {
+        listData = responseWithList(list, userId);
+
+        return createListCohort(socketInstance, dashboardClients)({
+          ...listData,
+          cohortId
+        });
+      })
       .then(() =>
         resp
           .status(201)
           .location(`/lists/${list._id}`)
-          .send(responseWithList(list, userId))
+          .send(listData)
       )
       .catch(err => {
         if (err instanceof BadRequestException) {
@@ -78,18 +108,20 @@ const createList = (req, resp) => {
     list
       .save()
       .then(() => {
+        fireAndForget(
+          saveActivity(
+            ActivityType.LIST_ADD,
+            userId,
+            null,
+            list._id,
+            list.cohortId
+          )
+        );
+
         resp
           .status(201)
           .location(`/lists/${list._id}`)
           .send(responseWithList(list, userId));
-
-        saveActivity(
-          ActivityType.LIST_ADD,
-          userId,
-          null,
-          list._id,
-          list.cohortId
-        );
       })
       .catch(() => resp.sendStatus(400));
   }
@@ -195,15 +227,17 @@ const addItemToList = (req, resp) => {
       const { cohortId, items } = doc;
       const newItem = items.slice(-1)[0];
 
-      resp.send(responseWithItem(newItem, userId));
-
-      saveActivity(
-        ActivityType.ITEM_ADD,
-        userId,
-        newItem._id,
-        listId,
-        cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_ADD,
+          userId,
+          newItem._id,
+          listId,
+          cohortId
+        )
       );
+
+      resp.send(responseWithItem(newItem, userId));
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -351,15 +385,17 @@ const voteForItem = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.ITEM_ADD_VOTE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_ADD_VOTE,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          doc.cohortId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -397,15 +433,17 @@ const clearVote = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.ITEM_CLEAR_VOTE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_CLEAR_VOTE,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          doc.cohortId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -424,6 +462,7 @@ const updateListById = (req, resp) => {
     name
   });
   let listActivity;
+  let list;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
@@ -442,7 +481,8 @@ const updateListById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      const { cohortId } = doc;
+      list = doc;
 
       if (description !== undefined) {
         const { description: prevDescription } = doc;
@@ -453,33 +493,75 @@ const updateListById = (req, resp) => {
         } else {
           listActivity = ActivityType.LIST_EDIT_DESCRIPTION;
         }
+
+        const data = { listId, description };
+
+        return updateList(socketInstance, dashboardClients, cohortClients)(
+          data
+        );
       }
 
       if (name) {
         listActivity = ActivityType.LIST_EDIT_NAME;
+
+        const data = { listId, name };
+
+        return updateList(socketInstance, dashboardClients, cohortClients)(
+          data
+        );
       }
 
       if (isArchived !== undefined) {
-        listActivity = isArchived
-          ? ActivityType.LIST_ARCHIVE
-          : ActivityType.LIST_RESTORE;
+        const data = { listId, cohortId };
+
+        if (isArchived) {
+          listActivity = ActivityType.LIST_ARCHIVE;
+
+          return archiveList(
+            socketInstance,
+            dashboardClients,
+            cohortClients,
+            listClients
+          )(data);
+        }
+
+        listActivity = ActivityType.LIST_RESTORE;
+
+        return restoreList(
+          socketInstance,
+          dashboardClients,
+          cohortClients,
+          listClients
+        )(data);
       }
 
       if (isDeleted) {
         listActivity = ActivityType.LIST_DELETE;
 
-        Comment.updateMany({ listId: sanitizedListId }, { isDeleted }).exec();
-      }
+        const data = { listId, cohortId };
 
-      saveActivity(
-        listActivity,
-        userId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        null,
-        doc.name
+        deleteList(socketInstance, dashboardClients, cohortClients)(data);
+
+        return Comment.updateMany(
+          { listId: sanitizedListId },
+          { isDeleted }
+        ).exec();
+      }
+    })
+    .then(() => {
+      fireAndForget(
+        saveActivity(
+          listActivity,
+          userId,
+          null,
+          sanitizedListId,
+          list.cohortId,
+          null,
+          list.name
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -506,15 +588,17 @@ const addToFavourites = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_ADD_TO_FAV,
-        userId,
-        null,
-        sanitizedListId,
-        doc.cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_ADD_TO_FAV,
+          userId,
+          null,
+          sanitizedListId,
+          doc.cohortId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -541,15 +625,17 @@ const removeFromFavourites = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
-
-      saveActivity(
-        ActivityType.LIST_REMOVE_FROM_FAV,
-        userId,
-        null,
-        sanitizedListId,
-        doc.cohortId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_REMOVE_FROM_FAV,
+          userId,
+          null,
+          sanitizedListId,
+          doc.cohortId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -584,13 +670,15 @@ const removeOwner = (req, resp) => {
 
       resp.send();
 
-      saveActivity(
-        ActivityType.LIST_REMOVE_USER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_REMOVE_USER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          sanitizedUserId
+        )
       );
     })
     .catch(() => resp.sendStatus(400));
@@ -626,16 +714,27 @@ const removeMember = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      const data = { listId, userId };
 
-      saveActivity(
-        ActivityType.LIST_REMOVE_USER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        sanitizedUserId
+      removeListMember(
+        socketInstance,
+        dashboardClients,
+        listClients,
+        cohortClients
+      )(data);
+
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_REMOVE_USER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          sanitizedUserId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -675,16 +774,21 @@ const addOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      const data = { listId, userId };
+      addOwnerRoleInList(socketInstance, listClients)(data);
 
-      saveActivity(
-        ActivityType.LIST_SET_AS_OWNER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        userId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_SET_AS_OWNER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          userId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -696,6 +800,7 @@ const removeOwnerRole = (req, resp) => {
     user: { _id: ownerId }
   } = req;
   const sanitizedListId = sanitize(listId);
+  let list;
 
   List.findOne({ _id: sanitizedListId, ownerIds: ownerId })
     .exec()
@@ -704,6 +809,7 @@ const removeOwnerRole = (req, resp) => {
         throw new BadRequestException();
       }
 
+      list = doc;
       const { ownerIds } = doc;
 
       if (ownerIds.length < 2) {
@@ -723,18 +829,23 @@ const removeOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send({
-        message: 'User has no owner role.'
-      });
+      const data = { listId, userId };
 
-      saveActivity(
-        ActivityType.LIST_SET_AS_MEMBER,
-        ownerId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        userId
+      return removeOwnerRoleInList(socketInstance, listClients)(data);
+    })
+    .then(() => {
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_SET_AS_MEMBER,
+          ownerId,
+          null,
+          sanitizedListId,
+          list.cohortId,
+          userId
+        )
       );
+
+      resp.send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -780,16 +891,21 @@ const addMemberRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      const data = { listId, userId };
+      addMemberRoleInList(socketInstance, listClients)(data);
 
-      saveActivity(
-        ActivityType.LIST_SET_AS_MEMBER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        userId
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_SET_AS_MEMBER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          userId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -835,16 +951,25 @@ const removeMemberRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      const data = { listId, userId };
 
-      saveActivity(
-        ActivityType.LIST_SET_AS_VIEWER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        doc.cohortId,
-        userId
+      return returnPayload(
+        removeMemberRoleInList(socketInstance, listClients)(data)
+      )(doc);
+    })
+    .then(doc => {
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_SET_AS_VIEWER,
+          currentUserId,
+          null,
+          sanitizedListId,
+          doc.cohortId,
+          userId
+        )
       );
+
+      resp.send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -867,6 +992,7 @@ const addViewer = (req, resp) => {
   let list;
   let user;
   let cohortMembers = [];
+  let userToSend;
 
   if (idFromProvider === DEMO_MODE_ID) {
     return resp
@@ -918,17 +1044,27 @@ const addViewer = (req, resp) => {
     })
     .then(() => {
       if (user) {
-        const userToSend = responseWithListMember(user, cohortMembers);
+        userToSend = responseWithListMember(user, cohortMembers);
 
+        return addListViewer(socketInstance, dashboardClients, cohortClients)({
+          ...userToSend,
+          listId
+        });
+      }
+    })
+    .then(() => {
+      if (user) {
         resp.send(userToSend);
 
-        return saveActivity(
-          ActivityType.LIST_ADD_USER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          list.cohortId,
-          user.id
+        return fireAndForget(
+          saveActivity(
+            ActivityType.LIST_ADD_USER,
+            currentUserId,
+            null,
+            sanitizedListId,
+            list.cohortId,
+            user.id
+          )
         );
       }
 
@@ -995,6 +1131,13 @@ const updateListItem = (req, res) => {
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
+
+        // TODO: THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
+        // OTHERWISE ITEMS GETS TOGGLED TWICE BY AUTHOR
+        // const data = { listId, itemId };
+        // changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
+        //   data
+        // );
       }
 
       if (authorId) {
@@ -1023,17 +1166,19 @@ const updateListItem = (req, res) => {
         return res.sendStatus(404);
       }
 
-      res.send();
-
-      saveActivity(
-        editedItemActivity,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId,
-        null,
-        prevItemName
+      fireAndForget(
+        saveActivity(
+          editedItemActivity,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          doc.cohortId,
+          null,
+          prevItemName
+        )
       );
+
+      res.send();
     })
     .catch(() => res.sendStatus(400));
 };
@@ -1085,17 +1230,19 @@ const cloneItem = (req, resp) => {
 
       const newItem = list.items.slice(-1)[0];
 
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_CLONE,
+          userId,
+          newItem._id,
+          sanitizedListId,
+          list.cohortId
+        )
+      );
+
       resp.send({
         item: responseWithItem(newItem, userId)
       });
-
-      saveActivity(
-        ActivityType.ITEM_CLONE,
-        userId,
-        newItem._id,
-        sanitizedListId,
-        list.cohortId
-      );
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -1107,6 +1254,7 @@ const changeType = (req, resp) => {
   const sanitizedListId = sanitize(listId);
   let cohortMembers;
   let removedViewers;
+  let listCohortId;
 
   List.findOneAndUpdate(
     { _id: sanitizedListId, ownerIds: currentUserId },
@@ -1161,17 +1309,32 @@ const changeType = (req, resp) => {
         cohortMembers
       );
 
-      resp.send({ members, type, removedViewers });
+      listCohortId = cohortId;
+      const data = { listId, type, removedViewers };
 
-      saveActivity(
-        ActivityType.LIST_CHANGE_TYPE,
-        currentUserId,
-        null,
-        sanitizedListId,
-        cohortId,
-        null,
-        type
+      return returnPayload(
+        changeListType(
+          socketInstance,
+          dashboardClients,
+          cohortClients,
+          listClients
+        )(data)
+      )({ members, type });
+    })
+    .then(payload => {
+      fireAndForget(
+        saveActivity(
+          ActivityType.LIST_CHANGE_TYPE,
+          currentUserId,
+          null,
+          sanitizedListId,
+          listCohortId,
+          null,
+          type
+        )
       );
+
+      resp.send(payload);
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -1228,14 +1391,16 @@ const deleteItem = (req, res) => {
 
       itemToUpdate.isDeleted = true;
 
-      saveActivity(
-        ActivityType.ITEM_DELETE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        doc.cohortId,
-        null,
-        name
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_DELETE,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          doc.cohortId,
+          null,
+          name
+        )
       );
 
       return doc.save();
@@ -1288,7 +1453,12 @@ const leaveList = (req, resp) => {
 
       return list.save();
     })
-    .then(() => resp.send())
+    .then(() => {
+      const data = { listId, userId };
+      leaveListSocket(socketInstance)(data);
+
+      resp.send();
+    })
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;

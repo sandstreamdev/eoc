@@ -371,12 +371,17 @@ const runAsyncTasks = async (...tasks) => {
     throw err;
   }
 };
+/* eslint-disable-next-line no-console */
+const fireAndForget = promise => promise.catch(err => console.error(err));
+
+const returnPayload = promise => payload => promise.then(() => payload);
 
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
   enumerable,
   filter,
+  fireAndForget,
   isDefined,
   isMember,
   isOwner,
@@ -395,6 +400,7 @@ module.exports = {
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,
+  returnPayload,
   runAsyncTasks,
   sanitizeObject,
   updateProperties,
