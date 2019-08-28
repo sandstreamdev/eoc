@@ -775,7 +775,7 @@ const archiveList = (
     .lean()
     .exec()
     .then(doc => {
-      const { viewersIds, cohortId: cohort } = doc;
+      const { cohortId: cohort, memberIds, viewersIds } = doc;
       const list = { ...doc, cohortId };
 
       viewersIds.forEach(viewerId => {
@@ -804,14 +804,36 @@ const archiveList = (
           // Broadcast to clients on dashboard that have this list
           io.sockets
             .to(socketId)
+            .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+        }
+
+        if (cohortClients.has(id)) {
+          const { socketId, viewId } = cohortClients.get(id);
+          if (viewId === cohortId.toString()) {
+            // Broadcast to clients on cohort view that have this list
+            io.sockets
+              .to(socketId)
+              .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+          }
+        }
+      });
+
+      memberIds.forEach(memberId => {
+        const id = memberId.toString();
+
+        if (dashboardClients.has(id)) {
+          const { socketId } = dashboardClients.get(id);
+
+          // Broadcast to clients on dashboard that have this list
+          io.sockets
+            .to(socketId)
             .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
               [listId]: {
-                ...responseWithList(list, viewerId),
+                ...responseWithList(list, memberId),
                 isArchived: true
               }
             });
         }
-
         if (cohortClients.has(id)) {
           const { socketId, viewId } = cohortClients.get(id);
 
@@ -821,7 +843,7 @@ const archiveList = (
               .to(socketId)
               .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
                 [listId]: {
-                  ...responseWithList(list, viewerId),
+                  ...responseWithList(list, memberId),
                   isArchived: true
                 }
               });
