@@ -1149,7 +1149,10 @@ const updateListItem = (req, res) => {
 
       if (authorId) {
         itemToUpdate.authorId = authorId;
-        // FIXME: call updateItem()
+        const data = { listId, userId, itemId };
+        // TODO: return updateItem()
+
+        fireAndForget(updateItem(socketInstance)(data));
       }
 
       if (name) {
@@ -1174,12 +1177,17 @@ const updateListItem = (req, res) => {
           editedItemActivity = ActivityType.ITEM_RESTORE;
         }
 
-        // FIXME: Remove fire and forget function and return updateItem().then
+        // TODO: Remove fire and forget function and return updateItem().then
         fireAndForget(updateItem(socketInstance)(data));
       }
 
-      itemToUpdate.editedBy = userId;
-      // FIXME: Call updateItem();
+      if (userId) {
+        itemToUpdate.editedBy = userId;
+        const data = { listId, userId, itemId };
+
+        // TODO: return updateItem();
+        fireAndForget(updateItem(socketInstance)(data));
+      }
 
       return doc.save();
     })
