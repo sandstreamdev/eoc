@@ -165,7 +165,7 @@ const updateItemState = (socket, itemClientLocks) => {
   });
 };
 
-const updateItem = io => data => {
+const updateItem = (io, dashboardViewClients, cohortViewClients) => data => {
   const { listId, userId, itemId } = data;
   const sanitizedUserId = sanitize(userId);
 
@@ -198,6 +198,13 @@ const updateItem = io => data => {
           io.sockets
             .to(listChannel(listId))
             .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
+
+          updateListOnDashboardAndCohortView(
+            io.sockets,
+            listId,
+            dashboardViewClients,
+            cohortViewClients
+          );
         });
     }
   });
@@ -323,25 +330,6 @@ const clearVote = socket =>
       .to(listChannel(listId))
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
   });
-
-const changeItemOrderState = (
-  io,
-  dashboardViewClients,
-  cohortViewClients
-) => data => {
-  const { listId } = data;
-
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ItemActionTypes.UPDATE_SUCCESS, { ...data, _id: data.itemId });
-
-  return updateListOnDashboardAndCohortView(
-    io.sockets,
-    listId,
-    dashboardViewClients,
-    cohortViewClients
-  );
-};
 
 const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
   const { listId } = data;
@@ -1017,7 +1005,6 @@ module.exports = {
   archiveItem,
   archiveList,
   changeListType,
-  changeItemOrderState,
   clearVote,
   cloneItem,
   deleteItem,

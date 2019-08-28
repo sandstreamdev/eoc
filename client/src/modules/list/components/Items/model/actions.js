@@ -180,8 +180,6 @@ export const updateListItem = (
 ) => dispatch => {
   const { editedBy } = userData;
 
-  console.log(data);
-
   return patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId

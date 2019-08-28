@@ -49,23 +49,25 @@ class ListItem extends PureComponent {
   markAsDone = () => {
     const isOrdered = true;
 
-    this.setState({
-      done: isOrdered,
-      disableToggleButton: true
-    });
-
-    return this.updateItem(isOrdered);
+    this.setState(
+      {
+        done: isOrdered,
+        disableToggleButton: true
+      },
+      () => this.updateItem(isOrdered)
+    );
   };
 
   markAsUnhandled = () => {
-    const idOrdered = false;
+    const isOrdered = false;
 
-    this.setState({
-      done: idOrdered,
-      disableToggleButton: true
-    });
-
-    return this.updateItem(idOrdered);
+    this.setState(
+      {
+        done: isOrdered,
+        disableToggleButton: true
+      },
+      () => this.updateItem(isOrdered)
+    );
   };
 
   updateItem = isOrdered => {
@@ -88,8 +90,7 @@ class ListItem extends PureComponent {
     this.handleItemLock();
 
     return updateListItem(itemName, listId, _id, userData, data).finally(() => {
-      this.setState({ disableToggleButton: false });
-      this.handleItemUnlock();
+      this.setState({ disableToggleButton: false }, this.handleItemUnlock);
     });
   };
 
@@ -194,7 +195,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    lockItem(itemId, listId, userId, { descriptionLock: true, nameLock: true });
+    return lockItem(itemId, listId, userId, {
+      descriptionLock: true,
+      nameLock: true
+    });
   };
 
   handleItemUnlock = () => {
@@ -475,8 +479,8 @@ class ListItem extends PureComponent {
               <PendingButton
                 className="list-item__icon"
                 disabled={disableToggleButton || !isMember || isEdited}
-                onClick={done ? this.markAsUnhandled : this.markAsDone}
-                onTouchEnd={this.handleItemToggling}
+                onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
+                onTouchEnd={isOrdered ? this.markAsUnhandled : this.markAsDone}
               />
             </div>
           </div>

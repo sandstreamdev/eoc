@@ -82,7 +82,7 @@ const items = (state = {}, action) => {
         previousDescription = previousItem.description;
       }
 
-      console.log(action.payload);
+      // console.log(action.payload);
 
       return {
         ...state,

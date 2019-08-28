@@ -39,7 +39,7 @@ const {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveList,
-  changeItemOrderState,
+  // changeItemOrderState,
   changeListType,
   deleteList,
   leaveList: leaveListSocket,
@@ -1084,14 +1084,7 @@ const addViewer = (req, resp) => {
 };
 
 const updateListItem = (req, res) => {
-  const {
-    authorId,
-    description,
-    isArchived,
-    isOrdered,
-    itemId,
-    name
-  } = req.body;
+  const { description, isArchived, isOrdered, itemId, name } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -1117,8 +1110,8 @@ const updateListItem = (req, res) => {
 
       if (description !== undefined) {
         const { description: prevDescription } = itemToUpdate;
+        itemToUpdate.editedBy = userId;
         itemToUpdate.description = description;
-        const data = { listId, userId, itemId, description };
 
         if (!description && prevDescription) {
           editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
@@ -1128,42 +1121,41 @@ const updateListItem = (req, res) => {
           editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
         }
 
+        const data = { listId, userId, itemId, description };
+
         return returnPayload(updateItem(socketInstance)(data))(doc);
       }
 
       if (isOrdered !== undefined) {
+        itemToUpdate.editedBy = userId;
         itemToUpdate.isOrdered = isOrdered;
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
+
         const data = { listId, userId, itemId, isOrdered };
 
         return returnPayload(
-          changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
-            data
-          )
+          updateItem(socketInstance, dashboardClients, cohortClients)(data)
         )(doc);
-      }
-
-      if (authorId) {
-        itemToUpdate.authorId = authorId;
-        const data = { listId, userId, itemId };
-
-        return returnPayload(updateItem(socketInstance)(data))(doc);
       }
 
       if (name) {
         prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
+        itemToUpdate.editedBy = userId;
+
         const data = { listId, userId, itemId, name };
 
-        return returnPayload(updateItem(socketInstance)(data))(doc);
+        return returnPayload(
+          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+        )(doc);
       }
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
-        const data = { listId, userId, itemId, isArchived };
+        itemToUpdate.editedBy = userId;
 
         if (isArchived) {
           editedItemActivity = ActivityType.ITEM_ARCHIVE;
@@ -1173,19 +1165,14 @@ const updateListItem = (req, res) => {
           editedItemActivity = ActivityType.ITEM_RESTORE;
         }
 
-        return returnPayload(updateItem(socketInstance)(data))(doc);
-      }
+        const data = { listId, userId, itemId, isArchived };
 
-      if (userId) {
-        itemToUpdate.editedBy = userId;
-        const data = { listId, userId, itemId };
-
-        return returnPayload(updateItem(socketInstance)(data))(doc);
+        return returnPayload(
+          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+        )(doc);
       }
     })
-    .then(payload => {
-      return payload.save();
-    })
+    .then(payload => payload.save())
     .then(doc => {
       if (!doc) {
         return res.sendStatus(404);
