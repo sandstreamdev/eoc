@@ -161,24 +161,27 @@ class PasswordChangeForm extends PureComponent {
       .catch(err => {
         if (!(err instanceof AbortPromiseException)) {
           const newState = { pending: false };
+          const isValidationError = err instanceof ValidationException;
+          const { errors } = err;
 
-          if (err instanceof ValidationException) {
-            const {
-              isNewConfirmPasswordError,
-              isNewPasswordError
-            } = err.errors;
-            newState.higherLevelErrors = {
-              newConfirmPasswordValueError: isNewConfirmPasswordError
-                ? 'user.auth.input.password.not-match'
-                : '',
-              newPasswordError: isNewPasswordError
-                ? 'user.auth.input.password.invalid'
-                : ''
-            };
-          } else {
+          if (isValidationError) {
+            if (errors) {
+              const { isNewConfirmPasswordError, isNewPasswordError } = errors;
+              newState.higherLevelErrors = {
+                newConfirmPasswordValueError: isNewConfirmPasswordError
+                  ? 'user.auth.input.password.not-match'
+                  : '',
+                newPasswordError: isNewPasswordError
+                  ? 'user.auth.input.password.invalid'
+                  : ''
+              };
+            } else {
+              newState.changePasswordErrorId =
+                'common.auth.input.wrong-password';
+            }
+          } else
             newState.changePasswordErrorId =
               err.message || 'common.something-went-wrong';
-          }
 
           this.setState(newState);
         }

@@ -7,6 +7,7 @@ const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const NotFoundException = require('../common/exceptions/NotFoundException');
+const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
 const {
   responseWithUserData,
@@ -408,19 +409,26 @@ const changePassword = (req, res) => {
 
       const { password: dbPassword } = doc;
 
-      if (bcrypt.compareSync(password + email, dbPassword)) {
-        const newHashedPassword = bcrypt.hashSync(newPassword + email, 12);
-
-        // eslint-disable-next-line no-param-reassign
-        doc.password = newHashedPassword;
-
-        return doc.save();
+      if (!bcrypt.compareSync(password + email, dbPassword)) {
+        throw new ValidationException();
       }
 
-      throw new Error();
+      const newHashedPassword = bcrypt.hashSync(newPassword + email, 12);
+
+      // eslint-disable-next-line no-param-reassign
+      doc.password = newHashedPassword;
+
+      return doc.save();
     })
     .then(() => res.send())
-    .catch(() => res.sendStatus(400));
+    .catch(err => {
+      if (err instanceof ValidationException) {
+        const { status } = err;
+
+        res.status(status).send({ reason: BadRequestReason.VALIDATION });
+      }
+      res.sendStatus(400);
+    });
 };
 
 const updateSettings = (req, res) => {
