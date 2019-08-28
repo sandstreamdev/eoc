@@ -94,17 +94,17 @@ const items = (state = {}, action) => {
       const previousItem = state[itemId];
       let previousDescription;
 
+      console.log('REDUCER', action.payload);
+
       if (previousItem) {
         previousDescription = previousItem.description;
       }
-
-      
 
       return {
         ...state,
         [itemId]: {
           ...(previousItem || action.payload),
-          description: previousDescription || description,
+          description: description || previousDescription,
           editedBy,
           name: name || previousItem.name
         }

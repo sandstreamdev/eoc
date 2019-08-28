@@ -221,21 +221,23 @@ export const updateListItem = (
 ) => dispatch => {
   const { userId, editedBy } = userData;
 
+  console.log('ACTION', data);
+
   return patchData(`/api/lists/${listId}/update-item`, {
     ...data,
     itemId
   })
     .then(() => {
       const action = updateListItemSuccess({
-        data,
+        ...data,
         editedBy,
         _id: itemId,
         listId
       });
-      const { type, payload } = action;
+      // const { type, payload } = action;
 
       // FIXME: Remove this socket
-      socket.emit(type, { ...payload, userId });
+      // socket.emit(type, { ...payload, userId });
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.update-item',

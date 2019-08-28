@@ -169,6 +169,8 @@ const updateItem = io => data => {
   const { listId, userId, itemId } = data;
   const sanitizedUserId = sanitize(userId);
 
+  console.log(data);
+
   return User.findById(sanitizedUserId).then(user => {
     if (user) {
       const { displayName } = user;
@@ -189,7 +191,8 @@ const updateItem = io => data => {
             dataToSend = {
               ...responseWithItem(item, userId),
               editedBy,
-              listId
+              listId,
+              ...data
             };
           }
         })

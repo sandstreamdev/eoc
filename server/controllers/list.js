@@ -1117,6 +1117,7 @@ const updateListItem = (req, res) => {
       if (description !== undefined) {
         const { description: prevDescription } = itemToUpdate;
         itemToUpdate.description = description;
+        const data = { listId, userId, itemId, description };
 
         if (!description && prevDescription) {
           editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
@@ -1126,7 +1127,8 @@ const updateListItem = (req, res) => {
           editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
         }
 
-        // FIXME: call updateItem() here
+        // TODO: return  updateItem() here
+        fireAndForget(updateItem(socketInstance)(data));
       }
 
       if (isOrdered !== undefined) {
@@ -1154,13 +1156,15 @@ const updateListItem = (req, res) => {
         prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
+        const data = { listId, userId, itemId, name };
 
-        // FIXME: call updateItem()
+        // TODO: return updateItem()
+        fireAndForget(updateItem(socketInstance)(data));
       }
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
-        const data = { listId, userId, itemId };
+        const data = { listId, userId, itemId, isArchived };
 
         if (isArchived) {
           editedItemActivity = ActivityType.ITEM_ARCHIVE;
