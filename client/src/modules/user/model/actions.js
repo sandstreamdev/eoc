@@ -119,7 +119,8 @@ export const resetPassword = email => dispatch =>
         {
           notificationId: 'user.actions.recovery-password-default-error',
           data: email
-        }
+        },
+        err
       );
     });
 
@@ -135,11 +136,16 @@ export const resendRecoveryLink = token =>
 export const fetchUserDetails = () => dispatch =>
   getJson('/auth/user-details')
     .then(json => dispatch(fetchUserDetailsSuccess(json)))
-    .catch(() => {
+    .catch(err => {
       dispatch(fetchUserDetailsFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'user.actions.fetch-user-details-error'
-      });
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'user.actions.fetch-user-details-error'
+        },
+        err
+      );
     });
 
 export const changePassword = (password, newPassword, newPasswordConfirm) =>

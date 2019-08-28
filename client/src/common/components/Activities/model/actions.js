@@ -31,11 +31,12 @@ export const fetchActivities = page => dispatch =>
         })
       );
     })
-    .catch(() => {
+    .catch(err => {
       dispatch(fetchActivitiesFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
-        'Failed to fetch activities. Please try again.'
+        { notificationId: 'activity.actions.fetch-fails' },
+        err
       );
     });

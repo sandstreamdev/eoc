@@ -3,11 +3,11 @@ import { NotificationActionTypes } from './actionsTypes';
 const notifications = (state = {}, action) => {
   switch (action.type) {
     case NotificationActionTypes.ADD: {
-      const { id, notification, type } = action.payload;
+      const { id, notification, redirect, type } = action.payload;
 
       return {
         ...state,
-        [id]: { type, notification }
+        [id]: { notification, redirect, type }
       };
     }
     case NotificationActionTypes.REMOVE: {

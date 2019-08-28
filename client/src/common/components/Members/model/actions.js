@@ -10,8 +10,13 @@ export const inviteUser = email => dispatch =>
         data: email
       })
     )
-    .catch(() =>
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'common.members.actions.invitation-fail'
-      })
+    .catch(err =>
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'common.members.actions.invitation-fail'
+        },
+        err
+      )
     );
