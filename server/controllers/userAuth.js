@@ -385,7 +385,7 @@ const getUserDetails = (req, resp) => {
 const changePassword = (req, res) => {
   const { password, newPassword, newPasswordConfirm } = req.body;
   const errors = {};
-  const { email } = req.user;
+  const { email, _id: userId } = req.user;
 
   errors.isNewPasswordError = !validatePassword(newPassword);
   errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
@@ -411,6 +411,22 @@ const changePassword = (req, res) => {
 
         return doc.save();
       }
+    })
+    .then(() => {
+      const {
+        sessionID,
+        sessionStore: store,
+        sessionStore: { db }
+      } = req;
+      const regexp = new RegExp(userId);
+
+      return db
+        .collection('sessions')
+        .find({
+          _id: { $ne: sessionID },
+          session: regexp
+        })
+        .forEach(({ _id }) => store.destroy(_id));
     })
     .then(() => res.send())
     .catch(() => res.sendStatus(400));

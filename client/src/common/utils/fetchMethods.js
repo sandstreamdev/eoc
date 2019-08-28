@@ -1,6 +1,7 @@
-import { NOTIFICATION_TIMEOUT } from 'common/constants/variables/';
+import { REDIRECT_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 import {
+  ForbiddenException,
   ResourceNotFoundException,
   UnauthorizedException,
   ValidationException
@@ -18,7 +19,8 @@ const handleFetchErrors = response => {
   if (response.status === ResponseStatusCode.FORBIDDEN) {
     setTimeout(() => {
       window.location = '/';
-    }, NOTIFICATION_TIMEOUT);
+    }, REDIRECT_TIMEOUT);
+    throw new ForbiddenException();
   }
 
   if (response.status === ResponseStatusCode.NOT_FOUND) {
