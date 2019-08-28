@@ -25,7 +25,6 @@ export const createNotificationWithTimeout = (
   timeout = NOTIFICATION_TIMEOUT
 ) => {
   const forbiddenError = err instanceof ForbiddenException;
-
   const id = uniqueId('notification_');
   const delay = forbiddenError ? REDIRECT_TIMEOUT : timeout;
   const notification = forbiddenError
