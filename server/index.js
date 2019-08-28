@@ -26,7 +26,7 @@ const cohortsRouter = require('./routes/cohort');
 const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
-const unlockLocks = require('./middleware/cleanLocks');
+const unlockLocks = require('./common/utils/cleanLocks');
 
 /* eslint-enable import/order */
 const sessionStore = new MongoStore({

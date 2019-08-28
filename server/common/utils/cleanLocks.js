@@ -1,5 +1,5 @@
-const Cohort = require('../models/cohort.model');
-const List = require('../models/list.model');
+const Cohort = require('../../models/cohort.model');
+const List = require('../../models/list.model');
 
 const unlockLocks = () => {
   List.updateMany(
