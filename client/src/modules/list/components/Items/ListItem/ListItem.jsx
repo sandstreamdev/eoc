@@ -34,13 +34,9 @@ class ListItem extends PureComponent {
   constructor(props) {
     super(props);
 
-    const {
-      data: { isOrdered }
-    } = this.props;
-
     this.state = {
       areDetailsVisible: false,
-      done: isOrdered,
+
       isConfirmationVisible: false,
       isNameEdited: false
     };
@@ -49,25 +45,19 @@ class ListItem extends PureComponent {
   markAsDone = () => {
     const isOrdered = true;
 
-    this.setState(
-      {
-        done: isOrdered,
-        disableToggleButton: true
-      },
-      () => this.updateItem(isOrdered)
-    );
+    this.setState({
+      disableToggleButton: true
+    });
+    this.updateItem(isOrdered);
   };
 
   markAsUnhandled = () => {
     const isOrdered = false;
 
-    this.setState(
-      {
-        done: isOrdered,
-        disableToggleButton: true
-      },
-      () => this.updateItem(isOrdered)
-    );
+    this.setState({
+      disableToggleButton: true
+    });
+    this.updateItem(isOrdered);
   };
 
   updateItem = isOrdered => {
@@ -415,19 +405,13 @@ class ListItem extends PureComponent {
       },
       isMember
     } = this.props;
-    const {
-      areDetailsVisible,
-      disableToggleButton,
-      done,
-      isNameEdited
-    } = this.state;
+    const { areDetailsVisible, disableToggleButton, isNameEdited } = this.state;
     const isEdited = nameLock || descriptionLock;
 
     return (
       <li
         className={classNames('list-item', {
-          'list-item--restore': !done && isOrdered,
-          'list-item--done': done || isOrdered,
+          'list-item--done': isOrdered,
           'list-item--details-visible': areDetailsVisible
         })}
       >
