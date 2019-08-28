@@ -229,7 +229,7 @@ export const updateListItem = (
       const action = updateListItemSuccess({
         data,
         editedBy,
-        itemId,
+        _id: itemId,
         listId
       });
       const { type, payload } = action;
