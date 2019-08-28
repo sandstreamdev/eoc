@@ -295,7 +295,6 @@ const lists = (state = {}, action) => {
     case ItemActionTypes.REMOVE_ARCHIVED:
     case ItemActionTypes.RESTORE_SUCCESS:
     case ItemActionTypes.SET_VOTE_SUCCESS:
-    case ItemActionTypes.TOGGLE_SUCCESS:
     case ItemActionTypes.UPDATE_SUCCESS:
     case ItemStatusType.LOCK:
     case ItemStatusType.UNLOCK:

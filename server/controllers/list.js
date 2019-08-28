@@ -1128,8 +1128,7 @@ const updateListItem = (req, res) => {
           editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
         }
 
-        // TODO: return  updateItem() here
-        fireAndForget(updateItem(socketInstance)(data));
+        return returnPayload(updateItem(socketInstance)(data))(doc);
       }
 
       if (isOrdered !== undefined) {
@@ -1139,18 +1138,18 @@ const updateListItem = (req, res) => {
           : ActivityType.ITEM_UNHANDLED;
         const data = { listId, userId, itemId, isOrdered };
 
-        // TODO: Return changeItemOrderState()
-        changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
-          data
-        );
+        return returnPayload(
+          changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
+            data
+          )
+        )(doc);
       }
 
       if (authorId) {
         itemToUpdate.authorId = authorId;
         const data = { listId, userId, itemId };
-        // TODO: return updateItem()
 
-        fireAndForget(updateItem(socketInstance)(data));
+        return returnPayload(updateItem(socketInstance)(data))(doc);
       }
 
       if (name) {
@@ -1159,8 +1158,7 @@ const updateListItem = (req, res) => {
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
         const data = { listId, userId, itemId, name };
 
-        // TODO: return updateItem()
-        fireAndForget(updateItem(socketInstance)(data));
+        return returnPayload(updateItem(socketInstance)(data))(doc);
       }
 
       if (isArchived !== undefined) {
@@ -1175,19 +1173,18 @@ const updateListItem = (req, res) => {
           editedItemActivity = ActivityType.ITEM_RESTORE;
         }
 
-        // TODO: Remove fire and forget function and return updateItem().then
-        fireAndForget(updateItem(socketInstance)(data));
+        return returnPayload(updateItem(socketInstance)(data))(doc);
       }
 
       if (userId) {
         itemToUpdate.editedBy = userId;
         const data = { listId, userId, itemId };
 
-        // TODO: return updateItem();
-        fireAndForget(updateItem(socketInstance)(data));
+        return returnPayload(updateItem(socketInstance)(data))(doc);
       }
-
-      return doc.save();
+    })
+    .then(payload => {
+      return payload.save();
     })
     .then(doc => {
       if (!doc) {

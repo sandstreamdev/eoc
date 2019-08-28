@@ -324,7 +324,6 @@ const clearVote = socket =>
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
   });
 
-// FIXME:
 const changeItemOrderState = (
   io,
   dashboardViewClients,
@@ -332,16 +331,16 @@ const changeItemOrderState = (
 ) => data => {
   const { listId } = data;
 
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.TOGGLE_SUCCESS, data);
+  io.sockets
+    .to(listChannel(listId))
+    .emit(ItemActionTypes.UPDATE_SUCCESS, { ...data, _id: data.itemId });
 
-  updateListOnDashboardAndCohortView(
+  return updateListOnDashboardAndCohortView(
     io.sockets,
     listId,
     dashboardViewClients,
     cohortViewClients
   );
-
-  return Promise.resolve();
 };
 
 const updateList = (io, dashboardViewClients, cohortViewClients) => data => {

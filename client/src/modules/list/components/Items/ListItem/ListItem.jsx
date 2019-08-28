@@ -79,7 +79,7 @@ class ListItem extends PureComponent {
       updateListItem
     } = this.props;
     const userData = { userId, editedBy: userName };
-    const data = { isOrdered };
+    const data = { isOrdered, _id };
 
     if (!isMember) {
       return;
@@ -87,9 +87,10 @@ class ListItem extends PureComponent {
 
     this.handleItemLock();
 
-    return updateListItem(itemName, listId, _id, userData, data).finally(
-      this.handleItemUnlock
-    );
+    return updateListItem(itemName, listId, _id, userData, data).finally(() => {
+      this.setState({ disableToggleButton: false });
+      this.handleItemUnlock();
+    });
   };
 
   handleDetailsVisibility = event => {
