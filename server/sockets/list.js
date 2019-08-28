@@ -169,8 +169,6 @@ const updateItem = io => data => {
   const { listId, userId, itemId } = data;
   const sanitizedUserId = sanitize(userId);
 
-  console.log(data);
-
   return User.findById(sanitizedUserId).then(user => {
     if (user) {
       const { displayName } = user;
@@ -326,29 +324,25 @@ const clearVote = socket =>
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
   });
 
-// THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
-// OTHERWISE ITEMS GETS TOGGLED TWICE BY AUTHOR
-// const changeItemOrderState = (
-//   io,
-//   dashboardViewClients,
-//   cohortViewClients
-// ) => data => {
-//   const { listId } = data;
-//   console.log(
-//     io.clients((err, clients) => {
-//       console.log(clients);
-//     })
-//   );
+  // FIXME:
+const changeItemOrderState = (
+  io,
+  dashboardViewClients,
+  cohortViewClients
+) => data => {
+  const { listId } = data;
 
-//   io.sockets.to(listChannel(listId)).emit(ItemActionTypes.TOGGLE_SUCCESS, data);
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.TOGGLE_SUCCESS, data);
 
-//   updateListOnDashboardAndCohortView(
-//     io.sockets,
-//     listId,
-//     dashboardViewClients,
-//     cohortViewClients
-//   );
-// };
+  updateListOnDashboardAndCohortView(
+    io.sockets,
+    listId,
+    dashboardViewClients,
+    cohortViewClients
+  );
+
+  return Promise.resolve();
+};
 
 const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
   const { listId } = data;
@@ -1024,6 +1018,7 @@ module.exports = {
   archiveItem,
   archiveList,
   changeListType,
+  changeItemOrderState,
   clearVote,
   cloneItem,
   deleteItem,

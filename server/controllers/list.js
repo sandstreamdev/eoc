@@ -39,6 +39,7 @@ const {
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveList,
+  changeItemOrderState,
   changeListType,
   deleteList,
   leaveList: leaveListSocket,
@@ -1136,15 +1137,14 @@ const updateListItem = (req, res) => {
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
+        const data = { listId, userId, itemId, isOrdered };
+       
+        // TODO: Return changeItemOrderState()
+        changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
+          data
+        );
 
-        // TODO: THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
-        // OTHERWISE ITEMS GETS TOGGLED TWICE BY AUTHOR
-        // const data = { listId, itemId };
-        // changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
-        //   data
-        // );
-
-        // FIXME: call updateItem() here
+       
       }
 
       if (authorId) {

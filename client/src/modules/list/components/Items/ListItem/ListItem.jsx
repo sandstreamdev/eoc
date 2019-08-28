@@ -18,8 +18,8 @@ import {
   cloneItem,
   lockItem,
   setVote,
-  toggle,
-  unlockItem
+  unlockItem,
+  updateListItem
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -80,6 +80,70 @@ class ListItem extends PureComponent {
     }
 
     toggle(itemName, isOrdered, _id, listId).finally(this.handleItemUnlock);
+  };
+
+  markAsDone = event => {
+    event.preventDefault();
+
+    const {
+      currentUser: { name: userName, id: userId },
+      data: { _id, name: itemName },
+      isMember,
+      match: {
+        params: { id: listId }
+      },
+      updateListItem
+    } = this.props;
+    const isDone = true;
+    const userData = { userId, editedBy: userName };
+    const data = { isOrdered: isDone };
+
+    if (!isMember) {
+      return;
+    }
+
+    this.setState({
+      done: isDone,
+      disableToggleButton: true
+    });
+
+    this.handleItemLock();
+
+    return updateListItem(itemName, listId, _id, userData, data).finally(
+      this.handleItemUnlock
+    );
+  };
+
+  markAsUnhandled = event => {
+    event.preventDefault();
+
+    const {
+      currentUser: { name: userName, id: userId },
+      data: { _id, name: itemName },
+      isMember,
+      match: {
+        params: { id: listId }
+      },
+      updateListItem
+    } = this.props;
+    const isDone = false;
+    const userData = { userId, editedBy: userName };
+    const data = { isOrdered: isDone };
+
+    if (!isMember) {
+      return;
+    }
+
+    this.setState({
+      done: isDone,
+      disableToggleButton: true
+    });
+
+    this.handleItemLock();
+
+    return updateListItem(itemName, listId, _id, userData, data).finally(
+      this.handleItemUnlock
+    );
   };
 
   handleDetailsVisibility = event => {
@@ -464,7 +528,7 @@ class ListItem extends PureComponent {
               <PendingButton
                 className="list-item__icon"
                 disabled={disableToggleButton || !isMember || isEdited}
-                onClick={this.handleItemToggling}
+                onClick={done ? this.markAsUnhandled : this.markAsDone}
                 onTouchEnd={this.handleItemToggling}
               />
             </div>
@@ -496,7 +560,7 @@ ListItem.propTypes = {
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired
+  updateListItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -513,7 +577,7 @@ export default _flowRight(
       clearVote,
       cloneItem,
       setVote,
-      toggle
+      updateListItem
     }
   )
 )(ListItem);

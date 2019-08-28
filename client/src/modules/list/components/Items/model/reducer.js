@@ -39,22 +39,6 @@ const items = (state = {}, action) => {
 
       return { [item._id]: item, ...state };
     }
-    case ItemActionTypes.TOGGLE_SUCCESS: {
-      const {
-        payload: { authorId, authorName, itemId }
-      } = action;
-      const previousItem = state[itemId];
-
-      return {
-        ...state,
-        [itemId]: {
-          ...state[itemId],
-          authorId: authorId || previousItem.authorId,
-          authorName: authorName || previousItem.authorName,
-          isOrdered: !previousItem.isOrdered
-        }
-      };
-    }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
         payload: { itemId, isVoted }
@@ -89,12 +73,10 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
-        payload: { description, name, editedBy, _id: itemId }
+        payload: { description, isOrdered, name, editedBy, _id: itemId }
       } = action;
       const previousItem = state[itemId];
       let previousDescription;
-
-      console.log('REDUCER', action.payload);
 
       if (previousItem) {
         previousDescription = previousItem.description;
@@ -105,6 +87,7 @@ const items = (state = {}, action) => {
         [itemId]: {
           ...(previousItem || action.payload),
           description: description || previousDescription,
+          isOrdered,
           editedBy,
           name: name || previousItem.name
         }
