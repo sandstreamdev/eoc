@@ -425,7 +425,7 @@ const changePassword = (req, res) => {
       if (err instanceof ValidationException) {
         const { status } = err;
 
-        res.status(status).send({ reason: BadRequestReason.VALIDATION });
+        return res.status(status).send({ reason: BadRequestReason.VALIDATION });
       }
       res.sendStatus(400);
     });

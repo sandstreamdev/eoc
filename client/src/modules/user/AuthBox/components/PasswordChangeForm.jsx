@@ -179,9 +179,10 @@ class PasswordChangeForm extends PureComponent {
               newState.changePasswordErrorId =
                 'common.auth.input.wrong-password';
             }
-          } else
+          } else {
             newState.changePasswordErrorId =
               err.message || 'common.something-went-wrong';
+          }
 
           this.setState(newState);
         }

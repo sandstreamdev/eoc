@@ -100,7 +100,7 @@
   "user.auth.input.password.confirm": "Confirm password",
   "user.auth.input.new-password.confirm": "Confirm new password",
   "user.auth.input.password.invalid": "Please use min 4 and max 32 characters without spaces.",
-  "common.auth.input.wrong-password": "Please enter correct current password.",
+  "common.auth.input.wrong-password": "Please enter the correct password.",
   "user.auth.input.password.not-match": "Passwords do not match.",
   "user.auth.sign-up.result-link": "sign in/sign up page",
   "user.auth.reset-password.heading": "Reset your password",
