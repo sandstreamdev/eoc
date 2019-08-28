@@ -324,7 +324,7 @@ const clearVote = socket =>
       .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
   });
 
-  // FIXME:
+// FIXME:
 const changeItemOrderState = (
   io,
   dashboardViewClients,

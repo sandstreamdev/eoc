@@ -46,45 +46,29 @@ class ListItem extends PureComponent {
     };
   }
 
-  handleItemToggling = event => {
-    event.preventDefault();
+  markAsDone = () => {
+    const isOrdered = true;
 
-    const {
-      currentUser: { name, id: userId },
-      data: { isOrdered, authorId, _id, name: itemName },
-      isMember,
-      match: {
-        params: { id: listId }
-      },
-      toggle
-    } = this.props;
-    const isNotSameAuthor = authorId !== userId;
-
-    if (!isMember) {
-      return;
-    }
-
-    this.setState(({ done }) => ({
-      done: !done,
+    this.setState({
+      done: isOrdered,
       disableToggleButton: true
-    }));
+    });
 
-    this.handleItemLock();
-
-    const shouldChangeAuthor = isNotSameAuthor && isOrdered;
-
-    if (shouldChangeAuthor) {
-      return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
-        this.handleItemUnlock
-      );
-    }
-
-    toggle(itemName, isOrdered, _id, listId).finally(this.handleItemUnlock);
+    return this.updateItem(isOrdered);
   };
 
-  markAsDone = event => {
-    event.preventDefault();
+  markAsUnhandled = () => {
+    const idOrdered = false;
 
+    this.setState({
+      done: idOrdered,
+      disableToggleButton: true
+    });
+
+    return this.updateItem(idOrdered);
+  };
+
+  updateItem = isOrdered => {
     const {
       currentUser: { name: userName, id: userId },
       data: { _id, name: itemName },
@@ -94,50 +78,12 @@ class ListItem extends PureComponent {
       },
       updateListItem
     } = this.props;
-    const isDone = true;
     const userData = { userId, editedBy: userName };
-    const data = { isOrdered: isDone };
+    const data = { isOrdered };
 
     if (!isMember) {
       return;
     }
-
-    this.setState({
-      done: isDone,
-      disableToggleButton: true
-    });
-
-    this.handleItemLock();
-
-    return updateListItem(itemName, listId, _id, userData, data).finally(
-      this.handleItemUnlock
-    );
-  };
-
-  markAsUnhandled = event => {
-    event.preventDefault();
-
-    const {
-      currentUser: { name: userName, id: userId },
-      data: { _id, name: itemName },
-      isMember,
-      match: {
-        params: { id: listId }
-      },
-      updateListItem
-    } = this.props;
-    const isDone = false;
-    const userData = { userId, editedBy: userName };
-    const data = { isOrdered: isDone };
-
-    if (!isMember) {
-      return;
-    }
-
-    this.setState({
-      done: isDone,
-      disableToggleButton: true
-    });
 
     this.handleItemLock();
 

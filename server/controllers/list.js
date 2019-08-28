@@ -1138,13 +1138,11 @@ const updateListItem = (req, res) => {
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
         const data = { listId, userId, itemId, isOrdered };
-       
+
         // TODO: Return changeItemOrderState()
         changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
           data
         );
-
-       
       }
 
       if (authorId) {
