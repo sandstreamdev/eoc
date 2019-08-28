@@ -36,7 +36,6 @@ class ListItem extends PureComponent {
 
     this.state = {
       areDetailsVisible: false,
-
       isConfirmationVisible: false,
       isNameEdited: false
     };

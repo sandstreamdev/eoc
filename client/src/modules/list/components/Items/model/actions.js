@@ -277,7 +277,6 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       const action = archiveItemSuccess({ listId, itemId });
       const { type, payload } = action;
 
-      // FIXME: Remove this socket
       socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
