@@ -210,14 +210,13 @@ const updateItem = (io, dashboardViewClients, cohortViewClients) => data => {
   });
 };
 
-const addComment = socket =>
-  socket.on(CommentActionTypes.ADD_SUCCESS, data => {
-    const { listId } = data;
+const addComment = io => data => {
+  const { listId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(CommentActionTypes.ADD_SUCCESS, data);
-  });
+  io.sockets.to(listChannel(listId)).emit(CommentActionTypes.ADD_SUCCESS, data);
+
+  return Promise.resolve();
+};
 
 const cloneItem = socket =>
   socket.on(ItemActionTypes.CLONE_SUCCESS, data => {

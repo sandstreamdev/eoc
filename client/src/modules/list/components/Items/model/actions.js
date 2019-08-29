@@ -266,9 +266,9 @@ export const addComment = (listId, itemId, text) => dispatch =>
     .then(response => response.json())
     .then(json => {
       const action = addCommentSuccess({ listId, itemId, comment: json });
-      const { type, payload } = action;
+      // const { type, payload } = action;
 
-      socket.emit(type, payload);
+      // socket.emit(type, payload);
       dispatch(action);
     })
     .catch(err => {
