@@ -35,24 +35,24 @@ const listClients = require('../sockets/index').getListViewClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
 const { createListCohort } = require('../sockets/cohort');
 const {
-  addItemToList: addItem,
-  addListViewer,
-  addMemberRoleInList,
-  addOwnerRoleInList,
-  archiveList,
-  changeListType,
+  addItemToList: addItemWS,
+  addListViewer: addListViewerWS,
+  addMemberRoleInList: addMemberRoleInListWS,
+  addOwnerRoleInList: addOwnerRoleInListWS,
+  archiveList: archiveListWS,
+  changeListType: changeListTypeWS,
   clearVote: clearVoteWS,
   cloneItem: cloneItemWS,
   deleteItem: deleteItemWS,
-  deleteList,
-  leaveList: leaveListSocket,
-  removeListMember,
-  removeMemberRoleInList,
-  removeOwnerRoleInList,
-  restoreList,
+  deleteList: deleteListWS,
+  leaveList: leaveListWS,
+  removeListMember: removeListMemberWS,
+  removeMemberRoleInList: removeMemberRoleInListWS,
+  removeOwnerRoleInList: removeOwnerRoleInListWS,
+  restoreList: restoreListWS,
   setVote: setVoteWS,
-  updateItem,
-  updateList
+  updateItem: updateItemWS,
+  updateList: updateListWS
 } = require('../sockets/list');
 
 const createList = (req, resp) => {
@@ -236,7 +236,7 @@ const addItemToList = (req, resp) => {
       const data = { listId, ...itemToSend };
       const payload = { itemToSend, cohortId };
 
-      return returnPayload(addItem(socketInstance)(data))(payload);
+      return returnPayload(addItemWS(socketInstance)(data))(payload);
     })
     .then(payload => {
       const { itemToSend, cohortId } = payload;
@@ -518,7 +518,7 @@ const updateListById = (req, resp) => {
 
         const data = { listId, description };
 
-        return updateList(socketInstance, dashboardClients, cohortClients)(
+        return updateListWS(socketInstance, dashboardClients, cohortClients)(
           data
         );
       }
@@ -528,7 +528,7 @@ const updateListById = (req, resp) => {
 
         const data = { listId, name };
 
-        return updateList(socketInstance, dashboardClients, cohortClients)(
+        return updateListWS(socketInstance, dashboardClients, cohortClients)(
           data
         );
       }
@@ -539,7 +539,7 @@ const updateListById = (req, resp) => {
         if (isArchived) {
           listActivity = ActivityType.LIST_ARCHIVE;
 
-          return archiveList(
+          return archiveListWS(
             socketInstance,
             dashboardClients,
             cohortClients,
@@ -549,7 +549,7 @@ const updateListById = (req, resp) => {
 
         listActivity = ActivityType.LIST_RESTORE;
 
-        return restoreList(
+        return restoreListWS(
           socketInstance,
           dashboardClients,
           cohortClients,
@@ -562,7 +562,7 @@ const updateListById = (req, resp) => {
 
         const data = { listId, cohortId };
 
-        deleteList(socketInstance, dashboardClients, cohortClients)(data);
+        deleteListWS(socketInstance, dashboardClients, cohortClients)(data);
 
         return Comment.updateMany(
           { listId: sanitizedListId },
@@ -738,7 +738,7 @@ const removeMember = (req, resp) => {
 
       const data = { listId, userId };
 
-      removeListMember(
+      removeListMemberWS(
         socketInstance,
         dashboardClients,
         listClients,
@@ -797,7 +797,7 @@ const addOwnerRole = (req, resp) => {
       }
 
       const data = { listId, userId };
-      addOwnerRoleInList(socketInstance, listClients)(data);
+      addOwnerRoleInListWS(socketInstance, listClients)(data);
 
       fireAndForget(
         saveActivity(
@@ -853,7 +853,7 @@ const removeOwnerRole = (req, resp) => {
 
       const data = { listId, userId };
 
-      return removeOwnerRoleInList(socketInstance, listClients)(data);
+      return removeOwnerRoleInListWS(socketInstance, listClients)(data);
     })
     .then(() => {
       fireAndForget(
@@ -914,7 +914,7 @@ const addMemberRole = (req, resp) => {
       }
 
       const data = { listId, userId };
-      addMemberRoleInList(socketInstance, listClients)(data);
+      addMemberRoleInListWS(socketInstance, listClients)(data);
 
       fireAndForget(
         saveActivity(
@@ -976,7 +976,7 @@ const removeMemberRole = (req, resp) => {
       const data = { listId, userId };
 
       return returnPayload(
-        removeMemberRoleInList(socketInstance, listClients)(data)
+        removeMemberRoleInListWS(socketInstance, listClients)(data)
       )(doc);
     })
     .then(doc => {
@@ -1068,10 +1068,12 @@ const addViewer = (req, resp) => {
       if (user) {
         userToSend = responseWithListMember(user, cohortMembers);
 
-        return addListViewer(socketInstance, dashboardClients, cohortClients)({
-          ...userToSend,
-          listId
-        });
+        return addListViewerWS(socketInstance, dashboardClients, cohortClients)(
+          {
+            ...userToSend,
+            listId
+          }
+        );
       }
     })
     .then(() => {
@@ -1143,7 +1145,7 @@ const updateListItem = (req, res) => {
 
         const data = { listId, userId, itemId, description };
 
-        return returnPayload(updateItem(socketInstance)(data))(doc);
+        return returnPayload(updateItemWS(socketInstance)(data))(doc);
       }
 
       if (isOrdered !== undefined) {
@@ -1156,7 +1158,7 @@ const updateListItem = (req, res) => {
         const data = { listId, userId, itemId, isOrdered };
 
         return returnPayload(
-          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+          updateItemWS(socketInstance, dashboardClients, cohortClients)(data)
         )(doc);
       }
 
@@ -1169,7 +1171,7 @@ const updateListItem = (req, res) => {
         const data = { listId, userId, itemId, name };
 
         return returnPayload(
-          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+          updateItemWS(socketInstance, dashboardClients, cohortClients)(data)
         )(doc);
       }
 
@@ -1187,7 +1189,7 @@ const updateListItem = (req, res) => {
         }
 
         return returnPayload(
-          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+          updateItemWS(socketInstance, dashboardClients, cohortClients)(data)
         )(doc);
       }
     })
@@ -1352,7 +1354,7 @@ const changeType = (req, resp) => {
       const data = { listId, type, removedViewers };
 
       return returnPayload(
-        changeListType(
+        changeListTypeWS(
           socketInstance,
           dashboardClients,
           cohortClients,
@@ -1501,7 +1503,7 @@ const leaveList = (req, resp) => {
     })
     .then(() => {
       const data = { listId, userId };
-      leaveListSocket(socketInstance)(data);
+      leaveListWS(socketInstance)(data);
 
       resp.send();
     })
