@@ -195,7 +195,8 @@ const addComment = io => data => {
 };
 
 const cloneItem = (io, listClients, viewersIds) => data => {
-  const { userId } = data;
+  const { userId, item } = data;
+  const dataToSend = { ...data, ...item };
 
   viewersIds.forEach(viewerId => {
     const viewerIdAsString = viewerId.toString();
@@ -204,7 +205,7 @@ const cloneItem = (io, listClients, viewersIds) => data => {
       if (listClients.has(viewerIdAsString)) {
         const { socketId } = listClients.get(viewerIdAsString);
 
-        io.sockets.to(socketId).emit(ItemActionTypes.CLONE_SUCCESS, data);
+        io.sockets.to(socketId).emit(ItemActionTypes.CLONE_SUCCESS, dataToSend);
       }
     }
   });
