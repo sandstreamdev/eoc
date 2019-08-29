@@ -35,6 +35,7 @@ const listClients = require('../sockets/index').getListViewClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
 const { createListCohort } = require('../sockets/cohort');
 const {
+  addItemToList: addItem,
   addListViewer,
   addMemberRoleInList,
   addOwnerRoleInList,
@@ -227,18 +228,26 @@ const addItemToList = (req, resp) => {
 
       const { cohortId, items } = doc;
       const newItem = items.slice(-1)[0];
+      const itemToSend = responseWithItem(newItem, userId);
+      const data = { listId, ...itemToSend };
+      const payload = { itemToSend, cohortId };
+
+      return returnPayload(addItem(socketInstance)(data))(payload);
+    })
+    .then(payload => {
+      const { itemToSend, cohortId } = payload;
 
       fireAndForget(
         saveActivity(
           ActivityType.ITEM_ADD,
           userId,
-          newItem._id,
+          itemToSend._id,
           listId,
           cohortId
         )
       );
 
-      resp.send(responseWithItem(newItem, userId));
+      resp.send(itemToSend);
     })
     .catch(() => resp.sendStatus(400));
 };

@@ -33,14 +33,12 @@ const {
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
 
-const addItemToList = socket => {
-  socket.on(ItemActionTypes.ADD_SUCCESS, data => {
-    const { listId } = data;
+const addItemToList = socket => data => {
+  const { listId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.ADD_SUCCESS, data);
-  });
+  socket.broadcast
+    .to(listChannel(listId))
+    .emit(ItemActionTypes.ADD_SUCCESS, data);
 };
 
 const archiveItem = socket => {

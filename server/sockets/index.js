@@ -7,7 +7,6 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
 const {
-  addItemToList,
   archiveItem,
   clearVote,
   cloneItem,
@@ -159,7 +158,6 @@ const socketListeners = socketInstance => {
        */
     });
 
-    addItemToList(socket);
     archiveItem(socket);
     clearVote(socket);
     cloneItem(socket);
