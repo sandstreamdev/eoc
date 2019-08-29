@@ -6,7 +6,7 @@ import {
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
-import { filterDefined } from 'common/utils/helpers';
+import { filterDefined, isDefined } from 'common/utils/helpers';
 
 const comments = (state = {}, action) => {
   switch (action.type) {
@@ -75,18 +75,18 @@ const items = (state = {}, action) => {
       const {
         payload: { description, isOrdered, name, editedBy, _id: itemId }
       } = action;
-      const previousItem = state[itemId];
-      let previousDescription;
 
-      if (previousItem) {
-        previousDescription = previousItem.description;
-      }
+      const previousItem = state[itemId];
+      const previousDescription = previousItem.description;
+      const newDescription = isDefined(description)
+        ? description
+        : previousDescription;
 
       return {
         ...state,
         [itemId]: {
           ...(previousItem || action.payload),
-          description: description || previousDescription,
+          description: newDescription,
           isOrdered,
           editedBy,
           name: name || previousItem.name

@@ -1104,12 +1104,12 @@ const updateListItem = (req, res) => {
         throw new NotFoundException();
       }
 
-      const { items } = doc;
+      const { items, viewersIds } = doc;
       const itemToUpdate = items.id(sanitizedItemId);
+      itemToUpdate.editedBy = userId;
 
       if (description !== undefined) {
         const { description: prevDescription } = itemToUpdate;
-        itemToUpdate.editedBy = userId;
         itemToUpdate.description = description;
 
         if (!description && prevDescription) {
@@ -1122,11 +1122,18 @@ const updateListItem = (req, res) => {
 
         const data = { listId, userId, itemId, description };
 
-        return returnPayload(updateItem(socketInstance)(data))(doc);
+        return returnPayload(
+          updateItem(
+            socketInstance,
+            dashboardClients,
+            cohortClients,
+            listClients,
+            viewersIds
+          )(data)
+        )(doc);
       }
 
       if (isOrdered !== undefined) {
-        itemToUpdate.editedBy = userId;
         itemToUpdate.isOrdered = isOrdered;
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
@@ -1135,7 +1142,13 @@ const updateListItem = (req, res) => {
         const data = { listId, userId, itemId, isOrdered };
 
         return returnPayload(
-          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+          updateItem(
+            socketInstance,
+            dashboardClients,
+            cohortClients,
+            listClients,
+            viewersIds
+          )(data)
         )(doc);
       }
 
@@ -1143,31 +1156,36 @@ const updateListItem = (req, res) => {
         prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
-        itemToUpdate.editedBy = userId;
 
         const data = { listId, userId, itemId, name };
 
         return returnPayload(
-          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+          updateItem(
+            socketInstance,
+            dashboardClients,
+            cohortClients,
+            listClients,
+            viewersIds
+          )(data)
         )(doc);
       }
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
-        itemToUpdate.editedBy = userId;
-
-        if (isArchived) {
-          editedItemActivity = ActivityType.ITEM_ARCHIVE;
-        }
-
-        if (!isArchived) {
-          editedItemActivity = ActivityType.ITEM_RESTORE;
-        }
+        editedItemActivity = isArchived
+          ? ActivityType.ITEM_ARCHIVE
+          : ActivityType.ITEM_RESTORE;
 
         const data = { listId, userId, itemId, isArchived };
 
         return returnPayload(
-          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+          updateItem(
+            socketInstance,
+            dashboardClients,
+            cohortClients,
+            listClients,
+            viewersIds
+          )(data)
         )(doc);
       }
     })
