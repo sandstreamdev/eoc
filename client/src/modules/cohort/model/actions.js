@@ -193,9 +193,7 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, data)
     .then(() => {
       const action = updateCohortSuccess({ ...data, cohortId });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.update-cohort',
@@ -252,9 +250,7 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
   })
     .then(() => {
       const action = archiveCohortSuccess({ cohortId });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.archive-cohort',
@@ -281,12 +277,13 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
   })
     .then(() => getJson(`/api/cohorts/${cohortId}/data`))
     .then(json => {
-      dispatch(restoreCohortSuccess(json));
+      const action = restoreCohortSuccess(json);
+
+      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName
       });
-      socket.emit(CohortActionTypes.RESTORE_SUCCESS, { cohortId });
     })
     .catch(err => {
       dispatch(restoreCohortFailure());

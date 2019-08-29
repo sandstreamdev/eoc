@@ -15,9 +15,7 @@ const {
   deleteItem,
   emitListsOnAddCohortMember,
   emitListsOnRemoveCohortMember,
-  emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
-  removeListsOnArchiveCohort,
   restoreItem,
   setVote,
   updateItem,
@@ -27,13 +25,10 @@ const {
 const {
   addCohortMember,
   addOwnerRoleInCohort,
-  archiveCohort,
   deleteCohort,
   leaveCohort,
   removeCohortMember,
   removeOwnerRoleInCohort,
-  restoreCohort,
-  updateCohort,
   updateCohortHeaderStatus
 } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
@@ -178,7 +173,6 @@ const socketListeners = socketInstance => {
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
-    archiveCohort(socket, allCohortsViewClients);
     deleteCohort(socket, allCohortsViewClients);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
     emitListsOnRemoveCohortMember(
@@ -186,14 +180,10 @@ const socketListeners = socketInstance => {
       dashboardViewClients,
       listViewClients
     );
-    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
     emitRemoveMemberOnLeaveCohort(socket);
     leaveCohort(socket, allCohortsViewClients);
     removeCohortMember(socket, allCohortsViewClients, cohortViewClients);
-    removeListsOnArchiveCohort(socket, dashboardViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
-    restoreCohort(socket, allCohortsViewClients, cohortViewClients);
-    updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket, cohortClientLocks);
   });
 };

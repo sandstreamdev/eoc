@@ -4,6 +4,7 @@ const validator = require('validator');
 const Cohort = require('../models/cohort.model');
 const {
   filter,
+  fireAndForget,
   isMember,
   isOwner: isCohortOwner,
   isValidMongoId,
@@ -22,6 +23,15 @@ const {
 const { ActivityType, ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
+const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClients();
+const cohortClients = require('../sockets/index').getCohortViewClients();
+const dashboardClients = require('../sockets/index').getDashboardViewClients();
+const socketInstance = require('../sockets/index').getSocketInstance();
+const {
+  archiveCohort,
+  restoreCohort,
+  updateCohort
+} = require('../sockets/cohort');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
@@ -104,6 +114,7 @@ const updateCohortById = (req, resp) => {
     name
   });
   let cohortActivity;
+  let cohort;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
@@ -122,7 +133,7 @@ const updateCohortById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      cohort = doc;
 
       if (description !== undefined) {
         const { description: prevDescription } = doc;
@@ -133,27 +144,63 @@ const updateCohortById = (req, resp) => {
         } else {
           cohortActivity = ActivityType.COHORT_EDIT_DESCRIPTION;
         }
+
+        const data = { cohortId, description };
+
+        return updateCohort(socketInstance, allCohortsViewClients)(data);
       }
 
       if (name) {
         cohortActivity = ActivityType.COHORT_EDIT_NAME;
+
+        const data = { cohortId, name };
+
+        return updateCohort(socketInstance, allCohortsViewClients)(data);
       }
 
       if (isArchived !== undefined) {
-        cohortActivity = isArchived
-          ? ActivityType.COHORT_ARCHIVE
-          : ActivityType.COHORT_RESTORE;
-      }
+        const data = { cohortId };
+        // const promises = [];
 
-      saveActivity(
-        cohortActivity,
-        userId,
-        null,
-        null,
-        sanitizedCohortId,
-        null,
-        doc.name
+        if (isArchived) {
+          cohortActivity = ActivityType.COHORT_ARCHIVE;
+
+          // promises.push(
+          // removeListsOnArchiveCohort(socketInstance, dashboardClients)(data),
+          return archiveCohort(
+            socketInstance,
+            allCohortsViewClients,
+            dashboardClients
+          )(data);
+          // );
+
+          // return Promise.all(promises);
+        }
+
+        cohortActivity = ActivityType.COHORT_RESTORE;
+
+        return restoreCohort(
+          socketInstance,
+          allCohortsViewClients,
+          cohortClients,
+          dashboardClients
+        )(data);
+      }
+    })
+    .then(() => {
+      fireAndForget(
+        saveActivity(
+          cohortActivity,
+          userId,
+          null,
+          null,
+          sanitizedCohortId,
+          null,
+          cohort.name
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
