@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const {
   clearVote,
   cloneItem,
-  deleteItem,
   emitListsOnAddCohortMember,
   emitListsOnRemoveCohortMember,
   emitListsOnRestoreCohort,
@@ -158,7 +157,6 @@ const socketListeners = socketInstance => {
 
     clearVote(socket);
     cloneItem(socket);
-    deleteItem(socket);
 
     setVote(socket);
     updateItemState(socket, itemClientLocks);

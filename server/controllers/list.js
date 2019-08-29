@@ -41,6 +41,7 @@ const {
   addOwnerRoleInList,
   archiveList,
   changeListType,
+  deleteItem: deleteItemWS,
   deleteList,
   leaveList: leaveListSocket,
   removeListMember,
@@ -1411,8 +1412,15 @@ const deleteItem = (req, res) => {
       const { items } = doc;
       const itemToUpdate = items.id(sanitizedItemId);
       const { name } = itemToUpdate;
+      const data = { listId, itemId };
+      const payload = { doc, name };
 
       itemToUpdate.isDeleted = true;
+
+      return returnPayload(deleteItemWS(socketInstance)(data))(payload);
+    })
+    .then(payload => {
+      const { doc, name } = payload;
 
       fireAndForget(
         saveActivity(

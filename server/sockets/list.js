@@ -41,14 +41,12 @@ const addItemToList = socket => data => {
     .emit(ItemActionTypes.ADD_SUCCESS, data);
 };
 
-const deleteItem = socket => {
-  socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
-    const { listId } = data;
+const deleteItem = io => data => {
+  const { listId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.DELETE_SUCCESS, data);
-  });
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.DELETE_SUCCESS, data);
+
+  return Promise.resolve();
 };
 
 const updateItemState = (socket, itemClientLocks) => {
