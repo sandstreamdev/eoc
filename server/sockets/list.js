@@ -175,7 +175,7 @@ const updateItem = (io, dashboardViewClients, cohortViewClients) => data => {
             .to(listChannel(listId))
             .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
 
-          updateListOnDashboardAndCohortView(
+          return updateListOnDashboardAndCohortView(
             io.sockets,
             listId,
             dashboardViewClients,
