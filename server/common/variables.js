@@ -142,8 +142,11 @@ const Routes = Object.freeze({
 
 const ViewType = enumerable('viewType')('LIST', 'TILES');
 
+const BadRequestReason = enumerable('reason')('VALIDATION');
+
 module.exports = {
   ActivityType,
+  BadRequestReason,
   CohortActionTypes,
   CohortHeaderStatusTypes,
   CommentActionTypes,

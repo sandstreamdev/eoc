@@ -89,6 +89,8 @@ const items = (state = {}, action) => {
       const previousDescription = previousItem.description;
       const previousIsArchived = previousItem.isArchived;
       const previousVotesCount = previousItem.votesCount;
+      const previousIsOrdered = previousItem.isOrdered;
+      const newIsOrdered = isDefined(isOrdered) ? isOrdered : previousIsOrdered;
       const newVotesCount = isDefined(votesCount)
         ? votesCount
         : previousVotesCount;
@@ -107,7 +109,7 @@ const items = (state = {}, action) => {
           description: newDescription,
           editedBy,
           isArchived: newIsArchived,
-          isOrdered,
+          isOrdered: newIsOrdered,
           name: newName,
           votesCount: newVotesCount
         }

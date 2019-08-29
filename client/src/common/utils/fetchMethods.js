@@ -6,12 +6,14 @@ import {
   UnauthorizedException,
   ValidationException
 } from 'common/exceptions';
+import { enumerable } from './helpers';
+
+const BadRequestReason = enumerable('reason')('VALIDATION');
 
 export const ResponseStatusCode = Object.freeze({
   BAD_REQUEST: 400,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
-  NOT_ACCEPTABLE: 406,
   UNAUTHORIZED: 401
 });
 
@@ -33,6 +35,9 @@ const handleFetchErrors = response => {
 
     if (contentType.includes('application/json')) {
       return response.json().then(json => {
+        if (json.reason === BadRequestReason.VALIDATION) {
+          throw new ValidationException('', json.errors);
+        }
         throw new Error(json.message || '');
       });
     }
@@ -50,18 +55,6 @@ const handleFetchErrors = response => {
     }
 
     throw new UnauthorizedException();
-  }
-
-  if (response.status === ResponseStatusCode.NOT_ACCEPTABLE) {
-    const contentType = response.headers.get('content-type');
-
-    if (contentType.includes('application/json')) {
-      return response.json().then(json => {
-        throw new ValidationException('', json.errors);
-      });
-    }
-
-    throw new ValidationException();
   }
 
   if (

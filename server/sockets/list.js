@@ -141,7 +141,13 @@ const updateItemState = (socket, itemClientLocks) => {
   });
 };
 
-const updateItem = (io, dashboardViewClients, cohortViewClients) => data => {
+const updateItem = (
+  io,
+  dashboardViewClients,
+  cohortViewClients,
+  listClients,
+  viewersIds
+) => data => {
   const { listId, userId, itemId } = data;
   const sanitizedUserId = sanitize(userId);
 
@@ -171,9 +177,19 @@ const updateItem = (io, dashboardViewClients, cohortViewClients) => data => {
           }
         })
         .then(() => {
-          io.sockets
-            .to(listChannel(listId))
-            .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
+          viewersIds.forEach(viewerId => {
+            const viewerIdAsString = viewerId.toString();
+
+            if (viewerIdAsString !== userId.toString()) {
+              if (listClients.has(viewerIdAsString)) {
+                const { socketId } = listClients.get(viewerIdAsString);
+
+                io.sockets
+                  .to(socketId)
+                  .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
+              }
+            }
+          });
 
           return updateListOnDashboardAndCohortView(
             io.sockets,
