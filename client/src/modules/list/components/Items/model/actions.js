@@ -227,11 +227,8 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
   })
     .then(response => response.json())
     .then(json => {
-      const { item } = json;
-      const action = cloneItemSuccess({ listId, item });
-      const { type, payload } = action;
+      const action = cloneItemSuccess({ listId, item: json });
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.clone-item',

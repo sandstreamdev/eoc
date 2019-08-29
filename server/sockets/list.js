@@ -194,14 +194,23 @@ const addComment = io => data => {
   return Promise.resolve();
 };
 
-const cloneItem = socket =>
-  socket.on(ItemActionTypes.CLONE_SUCCESS, data => {
-    const { listId } = data;
+const cloneItem = (io, listClients, viewersIds) => data => {
+  const { userId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.CLONE_SUCCESS, data);
+  viewersIds.forEach(viewerId => {
+    const viewerIdAsString = viewerId.toString();
+
+    if (viewerIdAsString !== userId.toString()) {
+      if (listClients.has(viewerIdAsString)) {
+        const { socketId } = listClients.get(viewerIdAsString);
+
+        io.sockets.to(socketId).emit(ItemActionTypes.CLONE_SUCCESS, data);
+      }
+    }
   });
+
+  return Promise.resolve();
+};
 
 const emitListsOnAddCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {

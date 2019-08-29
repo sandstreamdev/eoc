@@ -42,6 +42,7 @@ const {
   archiveList,
   changeListType,
   clearVote: clearVoteWS,
+  cloneItem: cloneItemWS,
   deleteItem: deleteItemWS,
   deleteList,
   leaveList: leaveListSocket,
@@ -1257,22 +1258,30 @@ const cloneItem = (req, resp) => {
       if (!list) {
         return resp.sendStatus(400);
       }
-
+      const { viewersIds } = list;
       const newItem = list.items.slice(-1)[0];
+      const newItemToSend = responseWithItem(newItem, userId);
+      const payload = { newItemToSend, list };
+      const data = { listId, item: newItemToSend, userId };
+
+      return returnPayload(
+        cloneItemWS(socketInstance, listClients, viewersIds)(data)
+      )(payload);
+    })
+    .then(payload => {
+      const { newItemToSend, list } = payload;
 
       fireAndForget(
         saveActivity(
           ActivityType.ITEM_CLONE,
           userId,
-          newItem._id,
+          newItemToSend._id,
           sanitizedListId,
           list.cohortId
         )
       );
 
-      resp.send({
-        item: responseWithItem(newItem, userId)
-      });
+      resp.send(newItemToSend);
     })
     .catch(() => resp.sendStatus(400));
 };
