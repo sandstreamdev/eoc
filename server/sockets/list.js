@@ -41,16 +41,6 @@ const addItemToList = socket => data => {
     .emit(ItemActionTypes.ADD_SUCCESS, data);
 };
 
-const archiveItem = socket => {
-  socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
-    const { listId } = data;
-
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.ARCHIVE_SUCCESS, data);
-  });
-};
-
 const deleteItem = socket => {
   socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
     const { listId } = data;
@@ -58,16 +48,6 @@ const deleteItem = socket => {
     socket.broadcast
       .to(listChannel(listId))
       .emit(ItemActionTypes.DELETE_SUCCESS, data);
-  });
-};
-
-const restoreItem = socket => {
-  socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
-    const { listId } = data;
-
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.RESTORE_SUCCESS, data);
   });
 };
 
@@ -1021,7 +1001,6 @@ module.exports = {
   addListViewer,
   addMemberRoleInList,
   addOwnerRoleInList,
-  archiveItem,
   archiveList,
   changeListType,
   clearVote,
@@ -1037,7 +1016,6 @@ module.exports = {
   removeListsOnArchiveCohort,
   removeMemberRoleInList,
   removeOwnerRoleInList,
-  restoreItem,
   restoreList,
   setVote,
   updateItem,

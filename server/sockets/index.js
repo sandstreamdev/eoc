@@ -7,7 +7,6 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
 const {
-  archiveItem,
   clearVote,
   cloneItem,
   deleteItem,
@@ -16,7 +15,6 @@ const {
   emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
   removeListsOnArchiveCohort,
-  restoreItem,
   setVote,
   updateItemState,
   updateListHeaderState
@@ -158,11 +156,10 @@ const socketListeners = socketInstance => {
        */
     });
 
-    archiveItem(socket);
     clearVote(socket);
     cloneItem(socket);
     deleteItem(socket);
-    restoreItem(socket);
+
     setVote(socket);
     updateItemState(socket, itemClientLocks);
 

@@ -1164,6 +1164,7 @@ const updateListItem = (req, res) => {
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
         itemToUpdate.editedBy = userId;
+        const data = { listId, userId, itemId, isArchived };
 
         if (isArchived) {
           editedItemActivity = ActivityType.ITEM_ARCHIVE;
@@ -1172,8 +1173,6 @@ const updateListItem = (req, res) => {
         if (!isArchived) {
           editedItemActivity = ActivityType.ITEM_RESTORE;
         }
-
-        const data = { listId, userId, itemId, isArchived };
 
         return returnPayload(
           updateItem(socketInstance, dashboardClients, cohortClients)(data)
@@ -1200,7 +1199,11 @@ const updateListItem = (req, res) => {
 
       res.send();
     })
-    .catch(() => res.sendStatus(400));
+    .catch(err => {
+      console.log(err);
+
+      return res.sendStatus(400);
+    });
 };
 
 const cloneItem = (req, resp) => {
