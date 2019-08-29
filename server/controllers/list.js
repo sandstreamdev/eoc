@@ -46,6 +46,7 @@ const {
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreList,
+  updateItem,
   updateList
 } = require('../sockets/list');
 
@@ -1082,14 +1083,7 @@ const addViewer = (req, resp) => {
 };
 
 const updateListItem = (req, res) => {
-  const {
-    authorId,
-    description,
-    isArchived,
-    isOrdered,
-    itemId,
-    name
-  } = req.body;
+  const { description, isArchived, isOrdered, itemId, name } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -1115,6 +1109,7 @@ const updateListItem = (req, res) => {
 
       if (description !== undefined) {
         const { description: prevDescription } = itemToUpdate;
+        itemToUpdate.editedBy = userId;
         itemToUpdate.description = description;
 
         if (!description && prevDescription) {
@@ -1124,43 +1119,59 @@ const updateListItem = (req, res) => {
         } else {
           editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
         }
+
+        const data = { listId, userId, itemId, description };
+
+        return returnPayload(updateItem(socketInstance)(data))(doc);
       }
 
       if (isOrdered !== undefined) {
+        itemToUpdate.editedBy = userId;
         itemToUpdate.isOrdered = isOrdered;
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
 
-        // TODO: THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
-        // OTHERWISE ITEMS GETS TOGGLED TWICE BY AUTHOR
-        // const data = { listId, itemId };
-        // changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
-        //   data
-        // );
-      }
+        const data = { listId, userId, itemId, isOrdered };
 
-      if (authorId) {
-        itemToUpdate.authorId = authorId;
+        return returnPayload(
+          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+        )(doc);
       }
 
       if (name) {
         prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
+        itemToUpdate.editedBy = userId;
+
+        const data = { listId, userId, itemId, name };
+
+        return returnPayload(
+          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+        )(doc);
       }
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
-        editedItemActivity = isArchived
-          ? ActivityType.ITEM_ARCHIVE
-          : ActivityType.ITEM_RESTORE;
+        itemToUpdate.editedBy = userId;
+
+        if (isArchived) {
+          editedItemActivity = ActivityType.ITEM_ARCHIVE;
+        }
+
+        if (!isArchived) {
+          editedItemActivity = ActivityType.ITEM_RESTORE;
+        }
+
+        const data = { listId, userId, itemId, isArchived };
+
+        return returnPayload(
+          updateItem(socketInstance, dashboardClients, cohortClients)(data)
+        )(doc);
       }
-
-      itemToUpdate.editedBy = userId;
-
-      return doc.save();
     })
+    .then(payload => payload.save())
     .then(doc => {
       if (!doc) {
         return res.sendStatus(404);

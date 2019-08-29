@@ -18,8 +18,8 @@ import {
   cloneItem,
   lockItem,
   setVote,
-  toggle,
-  unlockItem
+  unlockItem,
+  updateListItem
 } from '../model/actions';
 import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
@@ -34,52 +34,53 @@ class ListItem extends PureComponent {
   constructor(props) {
     super(props);
 
-    const {
-      data: { isOrdered }
-    } = this.props;
-
     this.state = {
       areDetailsVisible: false,
-      done: isOrdered,
       isConfirmationVisible: false,
       isNameEdited: false
     };
   }
 
-  handleItemToggling = event => {
-    event.preventDefault();
+  markAsDone = () => {
+    const isOrdered = true;
 
+    this.setState({
+      disableToggleButton: true
+    });
+    this.updateItem(isOrdered);
+  };
+
+  markAsUnhandled = () => {
+    const isOrdered = false;
+
+    this.setState({
+      disableToggleButton: true
+    });
+    this.updateItem(isOrdered);
+  };
+
+  updateItem = isOrdered => {
     const {
-      currentUser: { name, id: userId },
-      data: { isOrdered, authorId, _id, name: itemName },
+      currentUser: { name: userName, id: userId },
+      data: { _id, name: itemName },
       isMember,
       match: {
         params: { id: listId }
       },
-      toggle
+      updateListItem
     } = this.props;
-    const isNotSameAuthor = authorId !== userId;
+    const userData = { userId, editedBy: userName };
+    const data = { isOrdered, _id };
 
     if (!isMember) {
       return;
     }
 
-    this.setState(({ done }) => ({
-      done: !done,
-      disableToggleButton: true
-    }));
-
     this.handleItemLock();
 
-    const shouldChangeAuthor = isNotSameAuthor && isOrdered;
-
-    if (shouldChangeAuthor) {
-      return toggle(itemName, isOrdered, _id, listId, userId, name).finally(
-        this.handleItemUnlock
-      );
-    }
-
-    toggle(itemName, isOrdered, _id, listId).finally(this.handleItemUnlock);
+    return updateListItem(itemName, listId, _id, userData, data).finally(() => {
+      this.setState({ disableToggleButton: false }, this.handleItemUnlock);
+    });
   };
 
   handleDetailsVisibility = event => {
@@ -183,7 +184,10 @@ class ListItem extends PureComponent {
       }
     } = this.props;
 
-    lockItem(itemId, listId, userId, { descriptionLock: true, nameLock: true });
+    return lockItem(itemId, listId, userId, {
+      descriptionLock: true,
+      nameLock: true
+    });
   };
 
   handleItemUnlock = () => {
@@ -400,19 +404,13 @@ class ListItem extends PureComponent {
       },
       isMember
     } = this.props;
-    const {
-      areDetailsVisible,
-      disableToggleButton,
-      done,
-      isNameEdited
-    } = this.state;
+    const { areDetailsVisible, disableToggleButton, isNameEdited } = this.state;
     const isEdited = nameLock || descriptionLock;
 
     return (
       <li
         className={classNames('list-item', {
-          'list-item--restore': !done && isOrdered,
-          'list-item--done': done || isOrdered,
+          'list-item--done': isOrdered,
           'list-item--details-visible': areDetailsVisible
         })}
       >
@@ -464,8 +462,8 @@ class ListItem extends PureComponent {
               <PendingButton
                 className="list-item__icon"
                 disabled={disableToggleButton || !isMember || isEdited}
-                onClick={this.handleItemToggling}
-                onTouchEnd={this.handleItemToggling}
+                onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
+                onTouchEnd={isOrdered ? this.markAsUnhandled : this.markAsDone}
               />
             </div>
           </div>
@@ -496,7 +494,7 @@ ListItem.propTypes = {
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired
+  updateListItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -513,7 +511,7 @@ export default _flowRight(
       clearVote,
       cloneItem,
       setVote,
-      toggle
+      updateListItem
     }
   )
 )(ListItem);

@@ -13,7 +13,6 @@ import {
 } from 'modules/list/components/Items/model/actionTypes';
 import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
-import { ITEM_TOGGLE_TIME } from '../ListItem/constants';
 import socket from 'sockets';
 
 const addItemFailure = () => ({
@@ -23,15 +22,6 @@ const addItemFailure = () => ({
 export const addItemSuccess = payload => ({
   type: ItemActionTypes.ADD_SUCCESS,
   payload
-});
-
-const toggleItemSuccess = payload => ({
-  type: ItemActionTypes.TOGGLE_SUCCESS,
-  payload
-});
-
-const toggleItemFailure = () => ({
-  type: ItemActionTypes.TOGGLE_FAILURE
 });
 
 const setVoteSuccess = payload => ({
@@ -152,42 +142,6 @@ export const addItem = (item, listId) => dispatch =>
       );
     });
 
-export const toggle = (
-  itemName,
-  isOrdered,
-  itemId,
-  listId,
-  authorId,
-  authorName
-) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item`, {
-    authorId,
-    isOrdered: !isOrdered,
-    itemId
-  })
-    .then(() => {
-      const data = { authorId, authorName, itemId, listId };
-      const action = toggleItemSuccess(data);
-
-      setTimeout(() => dispatch(action), ITEM_TOGGLE_TIME);
-      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'list.items.actions.toggle',
-        data: itemName
-      });
-    })
-    .catch(err => {
-      dispatch(toggleItemFailure());
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.ERROR,
-        {
-          notificationId: 'list.items.actions.toggle-fail',
-          data: itemName
-        },
-        err
-      );
-    });
-
 export const setVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/set-vote`, { itemId })
     .then(() => {
@@ -239,7 +193,7 @@ export const updateListItem = (
   userData,
   data
 ) => dispatch => {
-  const { userId, editedBy } = userData;
+  const { editedBy } = userData;
 
   return patchData(`/api/lists/${listId}/update-item`, {
     ...data,
@@ -247,14 +201,12 @@ export const updateListItem = (
   })
     .then(() => {
       const action = updateListItemSuccess({
-        data,
+        ...data,
         editedBy,
-        itemId,
+        _id: itemId,
         listId
       });
-      const { type, payload } = action;
 
-      socket.emit(type, { ...payload, userId });
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.update-item',
@@ -407,9 +359,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
   })
     .then(() => {
       const action = restoreItemSuccess({ listId, itemId });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.restore-item',
