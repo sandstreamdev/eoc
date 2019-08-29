@@ -74,21 +74,24 @@ const items = (state = {}, action) => {
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
         payload: {
+          _id: itemId,
           description,
-          isOrdered,
-          isArchived,
-          name,
           editedBy,
-          _id: itemId
+          isArchived,
+          isOrdered,
+          name,
+          votesCount
         }
       } = action;
       const previousItem = state[itemId];
       let previousDescription;
       let previousIsArchived;
+      let previousVotesCount;
 
       if (previousItem) {
         previousDescription = previousItem.description;
         previousIsArchived = previousItem.isArchived;
+        previousVotesCount = previousItem.votesCount;
       }
 
       return {
@@ -99,7 +102,8 @@ const items = (state = {}, action) => {
           isOrdered,
           editedBy,
           name: name || previousItem.name,
-          isArchived: isArchived || previousIsArchived
+          isArchived: isArchived || previousIsArchived,
+          votesCount: votesCount || previousVotesCount
         }
       };
     }

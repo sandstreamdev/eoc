@@ -7,14 +7,12 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
 const {
-  clearVote,
   cloneItem,
   emitListsOnAddCohortMember,
   emitListsOnRemoveCohortMember,
   emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
   removeListsOnArchiveCohort,
-  setVote,
   updateItemState,
   updateListHeaderState
 } = require('./list');
@@ -155,10 +153,7 @@ const socketListeners = socketInstance => {
        */
     });
 
-    clearVote(socket);
     cloneItem(socket);
-
-    setVote(socket);
     updateItemState(socket, itemClientLocks);
 
     // This method can not be refactored as it doesn't

@@ -41,6 +41,7 @@ const {
   addOwnerRoleInList,
   archiveList,
   changeListType,
+  clearVote: clearVoteWS,
   deleteItem: deleteItemWS,
   deleteList,
   leaveList: leaveListSocket,
@@ -48,6 +49,7 @@ const {
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreList,
+  setVote: setVoteWS,
   updateItem,
   updateList
 } = require('../sockets/list');
@@ -384,13 +386,17 @@ const voteForItem = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const { items } = doc;
+      const { items, viewersIds } = doc;
       const item = items.id(sanitizedItemId);
+      const data = { listId, userId, itemId };
 
       item.voterIds.push(userId);
 
-      return doc.save();
+      return returnPayload(
+        setVoteWS(socketInstance, listClients, viewersIds)(data)
+      )(doc);
     })
+    .then(payload => payload.save())
     .then(doc => {
       if (!doc) {
         return resp.sendStatus(400);
@@ -431,14 +437,18 @@ const clearVote = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const { items } = doc;
+      const { items, viewersIds } = doc;
       const item = items.id(sanitizedItemId);
       const voterIdIndex = item.voterIds.indexOf(userId);
+      const data = { listId, userId, itemId };
 
       item.voterIds.splice(voterIdIndex, 1);
 
-      return doc.save();
+      return returnPayload(
+        clearVoteWS(socketInstance, listClients, viewersIds)(data)
+      )(doc);
     })
+    .then(payload => payload.save())
     .then(doc => {
       if (!doc) {
         return resp.sendStatus(400);
@@ -1200,11 +1210,7 @@ const updateListItem = (req, res) => {
 
       res.send();
     })
-    .catch(err => {
-      console.log(err);
-
-      return res.sendStatus(400);
-    });
+    .catch(() => res.sendStatus(400));
 };
 
 const cloneItem = (req, resp) => {

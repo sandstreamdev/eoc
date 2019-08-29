@@ -288,23 +288,45 @@ const addListViewer = (io, dashboardClients, cohortClients) => data => {
     });
 };
 
-const setVote = socket =>
-  socket.on(ItemActionTypes.SET_VOTE_SUCCESS, data => {
-    const { listId, itemId } = data;
+const setVote = (io, listClients, viewersIds) => data => {
+  const { listId, itemId, userId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.SET_VOTE_SUCCESS, { listId, itemId });
+  viewersIds.forEach(viewerId => {
+    const viewerIdAsString = viewerId.toString();
+
+    if (viewerIdAsString !== userId.toString()) {
+      if (listClients.has(viewerIdAsString)) {
+        const { socketId } = listClients.get(viewerIdAsString);
+
+        io.sockets
+          .to(socketId)
+          .emit(ItemActionTypes.SET_VOTE_SUCCESS, { listId, itemId });
+      }
+    }
   });
 
-const clearVote = socket =>
-  socket.on(ItemActionTypes.CLEAR_VOTE_SUCCESS, data => {
-    const { listId, itemId } = data;
+  return Promise.resolve();
+};
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
+const clearVote = (io, listClients, viewersIds) => data => {
+  const { listId, itemId, userId } = data;
+
+  viewersIds.forEach(viewerId => {
+    const viewerIdAsString = viewerId.toString();
+
+    if (viewerIdAsString !== userId.toString()) {
+      if (listClients.has(viewerIdAsString)) {
+        const { socketId } = listClients.get(viewerIdAsString);
+
+        io.sockets
+          .to(socketId)
+          .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
+      }
+    }
   });
+
+  return Promise.resolve();
+};
 
 const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
   const { listId } = data;

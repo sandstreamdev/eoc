@@ -144,9 +144,7 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/set-vote`, { itemId })
     .then(() => {
       const action = setVoteSuccess({ itemId, listId, isVoted: true });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
     })
     .catch(err => {
@@ -166,9 +164,7 @@ export const clearVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
     .then(() => {
       const action = clearVoteSuccess({ itemId, listId, isVoted: false });
-      const { type, payload } = action;
 
-      socket.emit(type, payload);
       dispatch(action);
     })
     .catch(err => {
