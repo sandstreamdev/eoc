@@ -738,20 +738,23 @@ const removeMember = (req, resp) => {
 
       const data = { listId, userId };
 
-      removeListMemberWS(
-        socketInstance,
-        dashboardClients,
-        listClients,
-        cohortClients
-      )(data);
-
+      return returnPayload(
+        removeListMemberWS(
+          socketInstance,
+          dashboardClients,
+          listClients,
+          cohortClients
+        )(data)
+      )(doc);
+    })
+    .then(payload => {
       fireAndForget(
         saveActivity(
           ActivityType.LIST_REMOVE_USER,
           currentUserId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          payload.cohortId,
           sanitizedUserId
         )
       );
@@ -797,15 +800,19 @@ const addOwnerRole = (req, resp) => {
       }
 
       const data = { listId, userId };
-      addOwnerRoleInListWS(socketInstance, listClients)(data);
 
+      return returnPayload(
+        addOwnerRoleInListWS(socketInstance, listClients)(data)
+      )(doc);
+    })
+    .then(payload => {
       fireAndForget(
         saveActivity(
           ActivityType.LIST_SET_AS_OWNER,
           currentUserId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          payload.cohortId,
           userId
         )
       );
@@ -914,15 +921,19 @@ const addMemberRole = (req, resp) => {
       }
 
       const data = { listId, userId };
-      addMemberRoleInListWS(socketInstance, listClients)(data);
 
+      return returnPayload(
+        addMemberRoleInListWS(socketInstance, listClients)(data)
+      )(doc);
+    })
+    .then(payload => {
       fireAndForget(
         saveActivity(
           ActivityType.LIST_SET_AS_MEMBER,
           currentUserId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          payload.cohortId,
           userId
         )
       );
@@ -1503,10 +1514,10 @@ const leaveList = (req, resp) => {
     })
     .then(() => {
       const data = { listId, userId };
-      leaveListWS(socketInstance)(data);
 
-      resp.send();
+      return leaveListWS(socketInstance)(data);
     })
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;

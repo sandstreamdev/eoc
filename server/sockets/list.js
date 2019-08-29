@@ -423,6 +423,8 @@ const addMemberRoleInList = (io, clients) => data => {
       });
     }
   }
+
+  return Promise.resolve();
 };
 
 const addOwnerRoleInList = (io, clients) => data => {
@@ -445,6 +447,8 @@ const addOwnerRoleInList = (io, clients) => data => {
       });
     }
   }
+
+  return Promise.resolve();
 };
 
 const removeMemberRoleInList = (io, clients) => data => {
@@ -499,6 +503,8 @@ const leaveList = io => data => {
   io.sockets
     .to(listChannel(listId))
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+
+  return Promise.resolve();
 };
 
 const emitRemoveMemberOnLeaveCohort = socket =>
@@ -768,6 +774,8 @@ const removeListMember = (
   io.sockets
     .to(`sack-${listId}`)
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
+
+  return Promise.resolve();
 };
 
 const archiveList = (

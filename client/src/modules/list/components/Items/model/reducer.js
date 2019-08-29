@@ -99,10 +99,10 @@ const items = (state = {}, action) => {
         [itemId]: {
           ...(previousItem || action.payload),
           description: description || previousDescription,
-          isOrdered,
           editedBy,
-          name: name || previousItem.name,
           isArchived: isArchived || previousIsArchived,
+          isOrdered,
+          name: name || previousItem.name,
           votesCount: votesCount || previousVotesCount
         }
       };
