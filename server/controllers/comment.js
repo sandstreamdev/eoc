@@ -10,7 +10,7 @@ const {
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const { saveActivity } = require('./activity');
 const { ActivityType } = require('../common/variables');
-const { addComment: addCommentWS } = require('../sockets/list');
+const socketActions = require('../sockets/list');
 const socketInstance = require('../sockets/index').getSocketInstance();
 
 const addComment = (req, resp) => {
@@ -52,7 +52,9 @@ const addComment = (req, resp) => {
       );
       const data = { itemId, listId, comment: commentToSend };
 
-      return returnPayload(addCommentWS(socketInstance)(data))(commentToSend);
+      return returnPayload(socketActions.addComment(socketInstance)(data))(
+        commentToSend
+      );
     })
     .then(payload => {
       resp
