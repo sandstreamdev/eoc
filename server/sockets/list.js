@@ -33,12 +33,12 @@ const {
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
 
-const addItemToList = socket => data => {
+const addItemToList = io => data => {
   const { listId } = data;
 
-  socket.broadcast
-    .to(listChannel(listId))
-    .emit(ItemActionTypes.ADD_SUCCESS, data);
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.ADD_SUCCESS, data);
+
+  return Promise.resolve();
 };
 
 const deleteItem = io => data => {

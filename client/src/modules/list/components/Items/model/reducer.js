@@ -34,10 +34,11 @@ const items = (state = {}, action) => {
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS: {
       const {
-        payload: { item }
+        payload,
+        payload: { _id }
       } = action;
 
-      return { [item._id]: item, ...state };
+      return { [_id]: payload, ...state };
     }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
