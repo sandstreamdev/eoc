@@ -152,7 +152,6 @@ const socketListeners = socketInstance => {
        */
     });
 
-    // cloneItem(socket);
     updateItemState(socket, itemClientLocks);
 
     // This method can not be refactored as it doesn't
