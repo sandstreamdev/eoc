@@ -6,7 +6,7 @@ import {
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
-import { filterDefined } from 'common/utils/helpers';
+import { filterDefined, isDefined } from 'common/utils/helpers';
 
 const comments = (state = {}, action) => {
   switch (action.type) {
@@ -85,26 +85,31 @@ const items = (state = {}, action) => {
         }
       } = action;
       const previousItem = state[itemId];
-      let previousDescription;
-      let previousIsArchived;
-      let previousVotesCount;
-
-      if (previousItem) {
-        previousDescription = previousItem.description;
-        previousIsArchived = previousItem.isArchived;
-        previousVotesCount = previousItem.votesCount;
-      }
+      const previousName = previousItem.name;
+      const previousDescription = previousItem.description;
+      const previousIsArchived = previousItem.isArchived;
+      const previousVotesCount = previousItem.votesCount;
+      const newVotesCount = isDefined(votesCount)
+        ? votesCount
+        : previousVotesCount;
+      const newIsArchived = isDefined(isArchived)
+        ? isArchived
+        : previousIsArchived;
+      const newDescription = isDefined(description)
+        ? description
+        : previousDescription;
+      const newName = isDefined(name) ? name : previousName;
 
       return {
         ...state,
         [itemId]: {
           ...(previousItem || action.payload),
-          description: description || previousDescription,
+          description: newDescription,
           editedBy,
-          isArchived: isArchived || previousIsArchived,
+          isArchived: newIsArchived,
           isOrdered,
-          name: name || previousItem.name,
-          votesCount: votesCount || previousVotesCount
+          name: newName,
+          votesCount: newVotesCount
         }
       };
     }

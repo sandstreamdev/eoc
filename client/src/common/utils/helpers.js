@@ -47,9 +47,9 @@ const filter = f => object =>
     Object.entries(object).filter(([key, value]) => f(value, key, object))
   );
 
-const defined = x => x !== undefined;
+export const isDefined = x => x !== undefined;
 
 export const validateWith = validator => errorMessageId => value =>
   validator(value) ? '' : errorMessageId;
 
-export const filterDefined = filter(defined);
+export const filterDefined = filter(isDefined);
