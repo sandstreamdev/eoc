@@ -85,22 +85,19 @@ const items = (state = {}, action) => {
         }
       } = action;
       const previousItem = state[itemId];
-      const previousName = previousItem.name;
-      const previousDescription = previousItem.description;
-      const previousIsArchived = previousItem.isArchived;
-      const previousVotesCount = previousItem.votesCount;
-      const previousIsOrdered = previousItem.isOrdered;
-      const newIsOrdered = isDefined(isOrdered) ? isOrdered : previousIsOrdered;
+      const newIsOrdered = isDefined(isOrdered)
+        ? isOrdered
+        : previousItem.isOrdered;
       const newVotesCount = isDefined(votesCount)
         ? votesCount
-        : previousVotesCount;
+        : previousItem.votesCount;
       const newIsArchived = isDefined(isArchived)
         ? isArchived
-        : previousIsArchived;
+        : previousItem.isArchived;
       const newDescription = isDefined(description)
         ? description
-        : previousDescription;
-      const newName = isDefined(name) ? name : previousName;
+        : previousItem.description;
+      const newName = isDefined(name) ? name : previousItem.name;
 
       return {
         ...state,

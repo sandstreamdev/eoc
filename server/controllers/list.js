@@ -217,7 +217,7 @@ const addItemToList = (req, resp) => {
       const data = { listId, ...itemToSend };
       const payload = { itemToSend, cohortId };
 
-      return returnPayload(socketActions.addItem(socketInstance)(data))(
+      return returnPayload(socketActions.addItemToList(socketInstance)(data))(
         payload
       );
     })
