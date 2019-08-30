@@ -284,11 +284,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
     itemId
   })
     .then(() => {
-      const action = archiveItemSuccess({ listId, itemId });
-      const { type, payload } = action;
-
-      socket.emit(type, payload);
-      dispatch(action);
+      dispatch(archiveItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.archive-item',
         data: name
@@ -355,11 +351,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
 export const deleteItem = (listId, itemId, name) => dispatch =>
   deleteData(`/api/lists/${listId}/${itemId}`)
     .then(() => {
-      const action = deleteItemSuccess({ listId, itemId });
-      const { type, payload } = action;
-
-      socket.emit(type, payload);
-      dispatch(action);
+      dispatch(deleteItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.delete-item',
         data: name
