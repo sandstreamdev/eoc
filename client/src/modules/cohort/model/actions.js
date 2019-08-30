@@ -314,11 +314,8 @@ export const addCohortMember = (cohortId, email) => dispatch =>
     .then(json => {
       if (json._id) {
         const data = { cohortId, member: json };
-        const action = addMemberSuccess(data);
-        const { type, payload } = action;
 
-        socket.emit(type, payload);
-        dispatch(action);
+        dispatch(addMemberSuccess(data));
 
         return UserAddingStatus.ADDED;
       }
@@ -343,11 +340,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
     userId
   })
     .then(() => {
-      const action = removeMemberSuccess({ cohortId, userId });
-      const { type, payload } = action;
-
-      socket.emit(type, payload);
-      dispatch(action);
+      dispatch(removeMemberSuccess({ cohortId, userId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.remove-member',
         data: userName

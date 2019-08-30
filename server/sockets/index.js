@@ -13,7 +13,6 @@ const {
   clearVote,
   cloneItem,
   deleteItem,
-  emitListsOnAddCohortMember,
   emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   restoreItem,
@@ -172,7 +171,6 @@ const socketListeners = socketInstance => {
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
-    emitListsOnAddCohortMember(socket, dashboardViewClients);
     emitListsOnRemoveCohortMember(
       socket,
       dashboardViewClients,

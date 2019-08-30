@@ -1,13 +1,17 @@
+const _keyBy = require('lodash/keyBy');
+
 const {
   CohortActionTypes,
   CohortHeaderStatusTypes,
   ListActionTypes,
+  ListType,
   LOCK_TIMEOUT
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const {
   responseWithCohort,
-  responseWithCohortDetails
+  responseWithCohortDetails,
+  responseWithListsMetaData
 } = require('../common/utils');
 const {
   cohortChannel,
@@ -22,18 +26,62 @@ const {
 const { isDefined } = require('../common/utils');
 const List = require('../models/list.model');
 
-const addCohortMember = (socket, clients) =>
-  socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
-    const { cohortId } = data;
+const addCohortMember = (io, allCohortsClients, dashboardClients) => data => {
+  const {
+    cohortId,
+    member: { _id: userId }
+  } = data;
 
-    socket.broadcast
-      .to(cohortChannel(cohortId))
-      .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
+  io.sockets
+    .to(cohortChannel(cohortId))
+    .emit(CohortActionTypes.ADD_MEMBER_SUCCESS, data);
 
-    if (clients.size > 0) {
-      emitCohortMetaData(cohortId, clients, socket);
-    }
-  });
+  if (allCohortsClients.size > 0) {
+    emitCohortMetaData(cohortId, allCohortsClients, io);
+  }
+
+  List.find(
+    {
+      cohortId,
+      type: ListType.SHARED
+    },
+    '_id created_at cohortId name description items favIds type'
+  )
+    .lean()
+    .exec()
+    .then(docs => {
+      if (docs) {
+        const lists = responseWithListsMetaData(docs, userId);
+        const sharedListIds = lists.map(list => list._id.toString());
+        const { member } = data;
+        const viewer = {
+          ...member,
+          isMember: false,
+          isViewer: true
+        };
+
+        sharedListIds.forEach(listId => {
+          io.sockets
+            .to(listChannel(listId))
+            .emit(ListActionTypes.ADD_VIEWER_SUCCESS, {
+              listId,
+              ...viewer
+            });
+        });
+
+        const id = userId.toString();
+
+        if (dashboardClients.has(id)) {
+          const { socketId } = dashboardClients.get(id);
+          const dataMap = _keyBy(lists, '_id');
+
+          io.sockets
+            .to(socketId)
+            .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, dataMap);
+        }
+      }
+    });
+};
 
 const leaveCohort = (socket, clients) =>
   socket.on(CohortActionTypes.LEAVE_SUCCESS, data => {

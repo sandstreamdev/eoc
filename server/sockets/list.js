@@ -1,4 +1,3 @@
-const _keyBy = require('lodash/keyBy');
 const sanitize = require('mongo-sanitize');
 
 const {
@@ -17,8 +16,7 @@ const {
   checkIfArrayContainsUserId,
   isMember,
   isViewer,
-  responseWithList,
-  responseWithListsMetaData
+  responseWithList
 } = require('../common/utils');
 const {
   descriptionLockId,
@@ -198,51 +196,6 @@ const cloneItem = socket =>
     socket.broadcast
       .to(listChannel(listId))
       .emit(ItemActionTypes.CLONE_SUCCESS, data);
-  });
-
-const emitListsOnAddCohortMember = (socket, clients) =>
-  socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
-    const {
-      cohortId,
-      member: { _id: userId }
-    } = data;
-
-    List.find(
-      {
-        cohortId,
-        type: ListType.SHARED
-      },
-      '_id created_at cohortId name description items favIds type'
-    )
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const lists = responseWithListsMetaData(docs, userId);
-          const sharedListIds = lists.map(list => list._id.toString());
-          const { member } = data;
-          const viewer = {
-            ...member,
-            isMember: false,
-            isViewer: true
-          };
-
-          sharedListIds.forEach(listId => {
-            socket.broadcast
-              .to(listChannel(listId))
-              .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { listId, viewer });
-          });
-
-          if (clients.has(userId)) {
-            const { socketId } = clients.get(userId);
-            const dataMap = _keyBy(lists, '_id');
-
-            socket.broadcast
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, dataMap);
-          }
-        }
-      });
   });
 
 const addListViewer = (io, dashboardClients, cohortClients) => data => {
@@ -945,7 +898,6 @@ module.exports = {
   cloneItem,
   deleteItem,
   deleteList,
-  emitListsOnAddCohortMember,
   emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,

@@ -7,7 +7,7 @@ const {
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
 
-const emitCohortMetaData = (cohortId, clients, socket) =>
+const emitCohortMetaData = (cohortId, clients, io) =>
   Cohort.findById(cohortId)
     .select('_id isArchived createdAt name description memberIds')
     .lean()
@@ -23,7 +23,7 @@ const emitCohortMetaData = (cohortId, clients, socket) =>
           if (clients.has(memberId)) {
             const { socketId } = clients.get(memberId);
 
-            socket.broadcast
+            io.sockets
               .to(socketId)
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
                 [cohortId]: cohort

@@ -28,6 +28,7 @@ const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
 const {
+  addCohortMember,
   archiveCohort,
   deleteCohort,
   restoreCohort,
@@ -453,6 +454,7 @@ const addMember = (req, resp) => {
   const { email } = req.body;
   let currentCohort;
   let newMember;
+  let userToSend;
   const sanitizedCohortId = sanitize(cohortId);
 
   if (idFromProvider === DEMO_MODE_ID) {
@@ -487,16 +489,15 @@ const addMember = (req, resp) => {
         );
       }
 
-      const { _id, avatarUrl, displayName } = user;
+      const { _id } = user;
 
       if (checkIfCohortMember(currentCohort, _id)) {
         throw new BadRequestException(
           'cohort.actions.add-member-already-member'
         );
       }
-
       currentCohort.memberIds.push(_id);
-      newMember = { avatarUrl, _id, displayName };
+      newMember = user;
 
       return currentCohort.save();
     })
@@ -517,19 +518,33 @@ const addMember = (req, resp) => {
     .then(() => {
       if (newMember) {
         const { ownerIds } = currentCohort;
+        userToSend = responseWithCohortMember(newMember, ownerIds);
 
-        resp.send(responseWithCohortMember(newMember, ownerIds));
+        return addCohortMember(
+          socketInstance,
+          allCohortsViewClients,
+          dashboardClients
+        )({
+          cohortId,
+          member: userToSend
+        });
+      }
+    })
+    .then(() => {
+      if (newMember) {
+        resp.send(userToSend);
 
-        return saveActivity(
-          ActivityType.COHORT_ADD_USER,
-          userId,
-          null,
-          null,
-          sanitizedCohortId,
-          newMember._id
+        return fireAndForget(
+          saveActivity(
+            ActivityType.COHORT_ADD_USER,
+            userId,
+            null,
+            null,
+            sanitizedCohortId,
+            newMember._id
+          )
         );
       }
-
       resp.send({ _id: null });
     })
     .catch(err => {
