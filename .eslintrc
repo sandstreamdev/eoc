@@ -83,7 +83,7 @@
       "error",
       {
         "groups": [
-          ["builtin", "external"],
+          ["external", "builtin"],
           ["index", "sibling", "parent", "internal"]
         ],
         "newlines-between": "always"
