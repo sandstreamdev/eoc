@@ -65,3 +65,8 @@ export const NodeTypes = Object.freeze({
 });
 
 export const DefaultLocks = Object.freeze({ name: true, description: true });
+
+export const PasswordValidationValues = Object.freeze({
+  MIN: 4,
+  MAX: 32
+});

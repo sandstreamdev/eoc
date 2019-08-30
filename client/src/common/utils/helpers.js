@@ -1,6 +1,6 @@
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { asyncPostfixes } from 'common/constants/variables';
-import { Routes } from 'common/constants/enums';
+import { Routes, PasswordValidationValues } from 'common/constants/enums';
 
 export const makeAbortablePromise = promise => {
   let _reject;
@@ -20,7 +20,14 @@ export const makeAbortablePromise = promise => {
 
 export const dateFromString = string => new Date(string).toLocaleString();
 
-export const validatePassword = value => value.match(/^[^\s]{4,32}$/);
+export const validatePassword = value =>
+  value.match(
+    new RegExp(
+      `^[^\\s]{${PasswordValidationValues.MIN},${
+        PasswordValidationValues.MAX
+      }}$`
+    )
+  );
 
 export const routeGenerator = (route, param = null) =>
   `/${route}${param ? `/${param}` : ''}`;
