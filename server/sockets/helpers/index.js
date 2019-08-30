@@ -55,18 +55,16 @@ const updateListOnDashboardAndCohortView = (
           if (dashboardClients.has(viewerId)) {
             const { socketId } = dashboardClients.get(viewerId);
 
-            socket.broadcast
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: list
-              });
+            socket.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+              [listId]: list
+            });
           }
 
           if (cohortId && cohortViewClients.has(viewerId)) {
             const { viewId, socketId } = cohortViewClients.get(viewerId);
 
             if (viewId === cohortId.toString()) {
-              socket.broadcast
+              socket
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
                   [listId]: list

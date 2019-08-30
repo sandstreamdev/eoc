@@ -7,6 +7,7 @@ const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const NotFoundException = require('../common/exceptions/NotFoundException');
+const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
 const {
   responseWithUserData,
@@ -14,6 +15,7 @@ const {
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
 const { sanitizeObject, updateProperties } = require('../common/utils');
+const { BadRequestReason } = require('../common/variables');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -34,23 +36,25 @@ const signUp = (req, resp, next) => {
   const { isEmail, isLength } = validator;
 
   if (!isLength(sanitizedUsername, { min: 1, max: 32 })) {
-    errors.nameError = true;
+    errors.isNameError = true;
   }
 
   if (!isEmail(sanitizedEmail)) {
-    errors.emailError = true;
+    errors.isEmailError = true;
   }
 
   if (!validatePassword(password)) {
-    errors.passwordError = true;
+    errors.isPasswordError = true;
   }
 
   if (password !== passwordConfirm) {
-    errors.confirmPasswordError = true;
+    errors.isConfirmPasswordError = true;
   }
 
   if (_some(errors, error => error !== undefined)) {
-    return resp.status(406).send(errors);
+    return resp
+      .status(400)
+      .send({ reason: BadRequestReason.VALIDATION, errors });
   }
 
   User.findOne({ email: sanitizedEmail })
@@ -196,7 +200,7 @@ const resetPassword = (req, resp, next) => {
   const { isEmail } = validator;
 
   if (!isEmail(sanitizedEmail)) {
-    return resp.sendStatus(406);
+    return resp.status(400).send({ reason: BadRequestReason.VALIDATION });
   }
 
   User.findOne({ email: sanitizedEmail })
@@ -385,13 +389,15 @@ const getUserDetails = (req, resp) => {
 const changePassword = (req, res) => {
   const { password, newPassword, newPasswordConfirm } = req.body;
   const errors = {};
-  const { email } = req.user;
+  const { email, _id: userId } = req.user;
 
   errors.isNewPasswordError = !validatePassword(newPassword);
   errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
 
   if (_some(errors, error => error)) {
-    return res.status(400).send(errors);
+    return res
+      .status(400)
+      .send({ reason: BadRequestReason.VALIDATION, errors });
   }
 
   User.findOne({ email }, 'password')
@@ -403,17 +409,42 @@ const changePassword = (req, res) => {
 
       const { password: dbPassword } = doc;
 
-      if (bcrypt.compareSync(password + email, dbPassword)) {
-        const newHashedPassword = bcrypt.hashSync(newPassword + email, 12);
-
-        // eslint-disable-next-line no-param-reassign
-        doc.password = newHashedPassword;
-
-        return doc.save();
+      if (!bcrypt.compareSync(password + email, dbPassword)) {
+        throw new ValidationException();
       }
+
+      const newHashedPassword = bcrypt.hashSync(newPassword + email, 12);
+
+      // eslint-disable-next-line no-param-reassign
+      doc.password = newHashedPassword;
+
+      return doc.save();
+    })
+    .then(() => {
+      const {
+        sessionID,
+        sessionStore: store,
+        sessionStore: { db }
+      } = req;
+      const regexp = new RegExp(userId);
+
+      return db
+        .collection('sessions')
+        .find({
+          _id: { $ne: sessionID },
+          session: regexp
+        })
+        .forEach(({ _id }) => store.destroy(_id));
     })
     .then(() => res.send())
-    .catch(() => res.sendStatus(400));
+    .catch(err => {
+      if (err instanceof ValidationException) {
+        const { status } = err;
+
+        return res.status(status).send({ reason: BadRequestReason.VALIDATION });
+      }
+      res.sendStatus(400);
+    });
 };
 
 const updateSettings = (req, res) => {

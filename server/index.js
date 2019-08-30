@@ -7,7 +7,17 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+/* eslint-disable import/order */
 const MongoStore = require('connect-mongo')(session);
+
+const socket = require('./sockets/index');
+
+const app = express();
+const server = require('http').Server(app);
+
+socket.init(server);
+const socketInstance = socket.getSocketInstance();
+socket.listen(socketInstance);
 
 const { DB_URL } = require('./common/variables');
 const authRouter = require('./routes/authorization');
@@ -16,14 +26,7 @@ const cohortsRouter = require('./routes/cohort');
 const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
-const unlockLocks = require('./middleware/cleanLocks');
-
-const app = express();
-/* eslint-disable import/order */
-const server = require('http').Server(app);
-const socketListenTo = require('./sockets/index');
-
-socketListenTo(server);
+const unlockLocks = require('./common/utils/unlockLocks');
 
 /* eslint-enable import/order */
 const sessionStore = new MongoStore({

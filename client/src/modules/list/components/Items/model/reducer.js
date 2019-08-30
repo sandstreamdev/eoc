@@ -6,7 +6,7 @@ import {
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
-import { filterDefined } from 'common/utils/helpers';
+import { filterDefined, isDefined } from 'common/utils/helpers';
 
 const comments = (state = {}, action) => {
   switch (action.type) {
@@ -38,22 +38,6 @@ const items = (state = {}, action) => {
       } = action;
 
       return { [item._id]: item, ...state };
-    }
-    case ItemActionTypes.TOGGLE_SUCCESS: {
-      const {
-        payload: { authorId, authorName, itemId }
-      } = action;
-      const previousItem = state[itemId];
-
-      return {
-        ...state,
-        [itemId]: {
-          ...state[itemId],
-          authorId: authorId || previousItem.authorId,
-          authorName: authorName || previousItem.authorName,
-          isOrdered: !previousItem.isOrdered
-        }
-      };
     }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
@@ -89,21 +73,21 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
-        payload: {
-          data: { description, name },
-          editedBy,
-          itemId
-        }
+        payload: { description, isOrdered, name, editedBy, _id: itemId }
       } = action;
+
       const previousItem = state[itemId];
       const previousDescription = previousItem.description;
-      const newDescription = name ? previousDescription : description;
+      const newDescription = isDefined(description)
+        ? description
+        : previousDescription;
 
       return {
         ...state,
         [itemId]: {
-          ...previousItem,
+          ...(previousItem || action.payload),
           description: newDescription,
+          isOrdered,
           editedBy,
           name: name || previousItem.name
         }

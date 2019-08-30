@@ -6,38 +6,21 @@ const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
-const sessionStore = new MongoStore({
-  mongooseConnection: mongoose.connection
-});
 const {
   addComment,
   addItemToList,
-  addListMember,
-  addMemberRoleInList,
-  addOwnerRoleInList,
   archiveItem,
-  archiveList,
-  changeItemOrderState,
-  changeListType,
   clearVote,
   cloneItem,
   deleteItem,
-  deleteList,
   emitListsOnAddCohortMember,
-  emitListsOnRestoreCohort,
   emitListsOnRemoveCohortMember,
+  emitListsOnRestoreCohort,
   emitRemoveMemberOnLeaveCohort,
-  leaveList,
   removeListsOnArchiveCohort,
-  removeListMember,
-  removeMemberRoleInList,
-  removeOwnerRoleInList,
   restoreItem,
-  restoreList,
   setVote,
-  updateItem,
   updateItemState,
-  updateList,
   updateListHeaderState
 } = require('./list');
 const {
@@ -45,7 +28,6 @@ const {
   addOwnerRoleInCohort,
   archiveCohort,
   deleteCohort,
-  createListCohort,
   leaveCohort,
   removeCohortMember,
   removeOwnerRoleInCohort,
@@ -56,13 +38,31 @@ const {
 const { SOCKET_TIMEOUT } = require('../common/variables');
 const { Routes } = require('../common/variables');
 
-const socketListenTo = server => {
-  const ioInstance = io(server, {
+const sessionStore = new MongoStore({
+  mongooseConnection: mongoose.connection
+});
+
+let socketInstance;
+const cohortViewClients = new Map();
+const allCohortsViewClients = new Map();
+const dashboardViewClients = new Map();
+const listViewClients = new Map();
+const cohortClientLocks = new Map();
+const itemClientLocks = new Map();
+const listClientLocks = new Map();
+
+const getCohortViewClients = () => cohortViewClients;
+const getAllCohortsViewClients = () => allCohortsViewClients;
+const getDashboardViewClients = () => dashboardViewClients;
+const getListViewClients = () => listViewClients;
+
+const initSocket = server => {
+  socketInstance = io(server, {
     forceNew: true,
     pingTimeout: SOCKET_TIMEOUT
   });
 
-  ioInstance.use(
+  socketInstance.use(
     passportSocketIo.authorize({
       key: 'connect.sid',
       secret: process.env.EXPRESS_SESSION_KEY,
@@ -71,16 +71,18 @@ const socketListenTo = server => {
       cookieParser
     })
   );
+};
 
-  const cohortViewClients = new Map();
-  const allCohortsViewClients = new Map();
-  const dashboardViewClients = new Map();
-  const listViewClients = new Map();
-  const cohortClientLocks = new Map();
-  const itemClientLocks = new Map();
-  const listClientLocks = new Map();
+const getSocketInstance = () => {
+  if (!socketInstance) {
+    throw new Error('Socket not initialized...');
+  }
 
-  ioInstance.on('connection', socket => {
+  return socketInstance;
+};
+
+const socketListeners = socketInstance => {
+  socketInstance.on('connection', socket => {
     const {
       request: { user }
     } = socket;
@@ -159,66 +161,34 @@ const socketListenTo = server => {
     });
 
     addComment(socket);
-    addItemToList(socket, dashboardViewClients, cohortViewClients);
-    addListMember(socket, dashboardViewClients, cohortViewClients);
-    addMemberRoleInList(socket, listViewClients);
-    addOwnerRoleInList(socket, listViewClients);
-    archiveItem(socket, dashboardViewClients, cohortViewClients);
-    archiveList(
-      socket,
-      dashboardViewClients,
-      cohortViewClients,
-      listViewClients
-    );
-    changeItemOrderState(socket, dashboardViewClients, cohortViewClients);
-    changeListType(
-      socket,
-      dashboardViewClients,
-      cohortViewClients,
-      listViewClients
-    );
+    addItemToList(socket);
+    archiveItem(socket);
     clearVote(socket);
     cloneItem(socket, dashboardViewClients, cohortViewClients);
     deleteItem(socket);
-    deleteList(socket, dashboardViewClients, cohortViewClients);
-    emitListsOnAddCohortMember(socket, dashboardViewClients);
-    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
-    emitListsOnRemoveCohortMember(
-      socket,
-      dashboardViewClients,
-      listViewClients
-    );
-    emitRemoveMemberOnLeaveCohort(socket);
-    leaveList(socket);
-    removeListsOnArchiveCohort(socket, dashboardViewClients);
-    removeListMember(
-      socket,
-      dashboardViewClients,
-      listViewClients,
-      cohortViewClients
-    );
-    removeMemberRoleInList(socket, listViewClients);
-    removeOwnerRoleInList(socket, listViewClients);
-    restoreItem(socket, dashboardViewClients, cohortViewClients);
-    restoreList(
-      socket,
-      dashboardViewClients,
-      cohortViewClients,
-      listViewClients
-    );
+    restoreItem(socket);
     setVote(socket);
-    updateItem(socket);
     updateItemState(socket, itemClientLocks);
-    updateList(socket, dashboardViewClients, cohortViewClients);
+
+    // This method can not be refactored as it doesn't
+    // have it's own controller
     updateListHeaderState(socket, listClientLocks);
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
     archiveCohort(socket, allCohortsViewClients);
     deleteCohort(socket, allCohortsViewClients);
-    createListCohort(socket, dashboardViewClients);
+    emitListsOnAddCohortMember(socket, dashboardViewClients);
+    emitListsOnRemoveCohortMember(
+      socket,
+      dashboardViewClients,
+      listViewClients
+    );
+    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
+    emitRemoveMemberOnLeaveCohort(socket);
     leaveCohort(socket, allCohortsViewClients);
     removeCohortMember(socket, allCohortsViewClients, cohortViewClients);
+    removeListsOnArchiveCohort(socket, dashboardViewClients);
     removeOwnerRoleInCohort(socket, cohortViewClients);
     restoreCohort(socket, allCohortsViewClients, cohortViewClients);
     updateCohort(socket, allCohortsViewClients);
@@ -226,4 +196,12 @@ const socketListenTo = server => {
   });
 };
 
-module.exports = socketListenTo;
+module.exports = {
+  getAllCohortsViewClients,
+  getCohortViewClients,
+  getDashboardViewClients,
+  getListViewClients,
+  getSocketInstance,
+  init: initSocket,
+  listen: socketListeners
+};

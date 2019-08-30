@@ -67,7 +67,6 @@ const ItemActionTypes = Object.freeze({
   DELETE_SUCCESS: 'item/DELETE_SUCCESS',
   RESTORE_SUCCESS: 'item/RESTORE_SUCCESS',
   SET_VOTE_SUCCESS: 'item/SET_VOTE_SUCCESS',
-  TOGGLE_SUCCESS: 'item/TOGGLE_SUCCESS',
   UPDATE_SUCCESS: 'item/UPDATE_SUCCESS'
 });
 
@@ -143,8 +142,11 @@ const Routes = Object.freeze({
 
 const ViewType = enumerable('viewType')('LIST', 'TILES');
 
+const BadRequestReason = enumerable('reason')('VALIDATION');
+
 module.exports = {
   ActivityType,
+  BadRequestReason,
   CohortActionTypes,
   CohortHeaderStatusTypes,
   CommentActionTypes,
