@@ -46,6 +46,7 @@ const {
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreList,
+  updateItem,
   updateList
 } = require('../sockets/list');
 
@@ -1082,14 +1083,7 @@ const addViewer = (req, resp) => {
 };
 
 const updateListItem = (req, res) => {
-  const {
-    authorId,
-    description,
-    isArchived,
-    isOrdered,
-    itemId,
-    name
-  } = req.body;
+  const { description, isArchived, isOrdered, itemId, name } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -1110,12 +1104,15 @@ const updateListItem = (req, res) => {
         throw new NotFoundException();
       }
 
-      const { items } = doc;
+      const { items, viewersIds } = doc;
       const itemToUpdate = items.id(sanitizedItemId);
+      let data;
+      itemToUpdate.editedBy = userId;
 
       if (description !== undefined) {
         const { description: prevDescription } = itemToUpdate;
         itemToUpdate.description = description;
+        data = { listId, userId, itemId, description };
 
         if (!description && prevDescription) {
           editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
@@ -1128,39 +1125,41 @@ const updateListItem = (req, res) => {
 
       if (isOrdered !== undefined) {
         itemToUpdate.isOrdered = isOrdered;
+        data = { listId, userId, itemId, isOrdered };
+
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
-
-        // TODO: THIS METHOD NEED TO RECOGNIZE CLIENT SOMEHOW,
-        // OTHERWISE ITEMS GETS TOGGLED TWICE BY AUTHOR
-        // const data = { listId, itemId };
-        // changeItemOrderState(socketInstance, dashboardClients, cohortClients)(
-        //   data
-        // );
-      }
-
-      if (authorId) {
-        itemToUpdate.authorId = authorId;
       }
 
       if (name) {
         prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
+        data = { listId, userId, itemId, name };
+
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
       }
 
       if (isArchived !== undefined) {
         itemToUpdate.isArchived = isArchived;
+        data = { listId, userId, itemId, isArchived };
+
         editedItemActivity = isArchived
           ? ActivityType.ITEM_ARCHIVE
           : ActivityType.ITEM_RESTORE;
       }
 
-      itemToUpdate.editedBy = userId;
-
-      return doc.save();
+      return returnPayload(
+        updateItem(
+          socketInstance,
+          dashboardClients,
+          cohortClients,
+          listClients,
+          viewersIds
+        )(data)
+      )(doc);
     })
+    .then(payload => payload.save())
     .then(doc => {
       if (!doc) {
         return res.sendStatus(404);
