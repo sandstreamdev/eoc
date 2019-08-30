@@ -29,6 +29,7 @@ const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
 const {
   archiveCohort,
+  deleteCohort,
   restoreCohort,
   updateCohort
 } = require('../sockets/cohort');
@@ -160,21 +161,15 @@ const updateCohortById = (req, resp) => {
 
       if (isArchived !== undefined) {
         const data = { cohortId };
-        // const promises = [];
 
         if (isArchived) {
           cohortActivity = ActivityType.COHORT_ARCHIVE;
 
-          // promises.push(
-          // removeListsOnArchiveCohort(socketInstance, dashboardClients)(data),
           return archiveCohort(
             socketInstance,
             allCohortsViewClients,
             dashboardClients
           )(data);
-          // );
-
-          // return Promise.all(promises);
         }
 
         cohortActivity = ActivityType.COHORT_RESTORE;
@@ -253,7 +248,7 @@ const deleteCohortById = (req, resp) => {
     user: { _id: userId }
   } = req;
   const sanitizedCohortId = sanitize(cohortId);
-  let cohortMembers;
+  let cohort;
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
@@ -262,7 +257,7 @@ const deleteCohortById = (req, resp) => {
         throw new NotFoundException();
       }
 
-      cohortMembers = doc.memberIds;
+      cohort = doc;
 
       return List.find({ cohortId: sanitizedCohortId }, '_id')
         .lean()
@@ -287,21 +282,25 @@ const deleteCohortById = (req, resp) => {
     .then(() =>
       Cohort.updateMany({ _id: sanitizedCohortId }, { isDeleted: true }).exec()
     )
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+    .then(() => {
+      const { ownerIds: owners, name } = cohort;
+      const data = { cohortId, owners };
 
-      resp.send(cohortMembers);
+      deleteCohort(socketInstance, allCohortsViewClients)(data);
 
-      saveActivity(
-        ActivityType.COHORT_DELETE,
-        userId,
-        null,
-        null,
-        cohortId,
-        doc.name
+      fireAndForget(
+        saveActivity(
+          ActivityType.COHORT_DELETE,
+          userId,
+          null,
+          null,
+          cohortId,
+          null,
+          name
+        )
       );
+
+      resp.send();
     })
     .catch(err =>
       resp.sendStatus(err instanceof NotFoundException ? 404 : 400)

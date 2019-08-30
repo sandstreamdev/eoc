@@ -192,9 +192,7 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
 export const updateCohort = (cohortName, cohortId, data) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, data)
     .then(() => {
-      const action = updateCohortSuccess({ ...data, cohortId });
-
-      dispatch(action);
+      dispatch(updateCohortSuccess({ ...data, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.update-cohort',
         data: cohortName
@@ -215,13 +213,8 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
 
 export const deleteCohort = (cohortId, cohortName) => dispatch =>
   deleteData(`/api/cohorts/${cohortId}`)
-    .then(resp => resp.json())
-    .then(members => {
-      const action = deleteCohortSuccess({ cohortId });
-      const { type, payload } = action;
-
-      socket.emit(type, { ...payload, members });
-      dispatch(action);
+    .then(() => {
+      dispatch(deleteCohortSuccess({ cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.delete-cohort',
         data: cohortName
@@ -249,9 +242,7 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
     isArchived: true
   })
     .then(() => {
-      const action = archiveCohortSuccess({ cohortId });
-
-      dispatch(action);
+      dispatch(archiveCohortSuccess({ cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.archive-cohort',
         data: cohortName
@@ -277,9 +268,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
   })
     .then(() => getJson(`/api/cohorts/${cohortId}/data`))
     .then(json => {
-      const action = restoreCohortSuccess(json);
-
-      dispatch(action);
+      dispatch(restoreCohortSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: cohortName

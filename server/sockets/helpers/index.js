@@ -98,24 +98,6 @@ const getListIdsByViewers = lists => {
   return listsByViewers;
 };
 
-const removeCohort = (socket, cohortId, clients, members) => {
-  socket.broadcast
-    .to(`cohort-${cohortId}`)
-    .emit(CohortActionTypes.REMOVE_WHEN_COHORT_UNAVAILABLE, cohortId);
-
-  members.forEach(id => {
-    const memberId = id.toString();
-
-    if (clients.has(memberId)) {
-      const { socketId } = clients.get(memberId);
-
-      socket.broadcast
-        .to(socketId)
-        .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
-    }
-  });
-};
-
 const getListsDataByViewers = lists => {
   const listsByViewers = {};
 
@@ -198,6 +180,5 @@ module.exports = {
   handleLocks,
   listChannel,
   nameLockId,
-  removeCohort,
   updateListOnDashboardAndCohortView
 };

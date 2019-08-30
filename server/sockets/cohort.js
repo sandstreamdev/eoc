@@ -17,8 +17,7 @@ const {
   getListIdsByViewers,
   handleLocks,
   nameLockId,
-  listChannel,
-  removeCohort
+  listChannel
 } = require('./helpers');
 const { isDefined } = require('../common/utils');
 const List = require('../models/list.model');
@@ -289,12 +288,25 @@ const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
     }
   });
 
-const deleteCohort = (socket, allCohortsClients) =>
-  socket.on(CohortActionTypes.DELETE_SUCCESS, data => {
-    const { cohortId, members } = data;
+const deleteCohort = (io, allCohortsClients) => data => {
+  const { cohortId, owners } = data;
 
-    removeCohort(socket, cohortId, allCohortsClients, members);
+  io.sockets
+    .to(cohortChannel(cohortId))
+    .emit(CohortActionTypes.REMOVE_WHEN_COHORT_UNAVAILABLE, cohortId);
+
+  owners.forEach(id => {
+    const ownerId = id.toString();
+
+    if (allCohortsClients.has(ownerId)) {
+      const { socketId } = allCohortsClients.get(ownerId);
+
+      io.sockets
+        .to(socketId)
+        .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
+    }
   });
+};
 
 const restoreCohort = (
   io,

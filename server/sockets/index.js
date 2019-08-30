@@ -25,7 +25,6 @@ const {
 const {
   addCohortMember,
   addOwnerRoleInCohort,
-  deleteCohort,
   leaveCohort,
   removeCohortMember,
   removeOwnerRoleInCohort,
@@ -173,7 +172,6 @@ const socketListeners = socketInstance => {
 
     addCohortMember(socket, allCohortsViewClients);
     addOwnerRoleInCohort(socket, cohortViewClients);
-    deleteCohort(socket, allCohortsViewClients);
     emitListsOnAddCohortMember(socket, dashboardViewClients);
     emitListsOnRemoveCohortMember(
       socket,
