@@ -13,20 +13,13 @@ const {
   clearVote,
   cloneItem,
   deleteItem,
-  emitRemoveMemberOnLeaveCohort,
   restoreItem,
   setVote,
   updateItem,
   updateItemState,
   updateListHeaderState
 } = require('./list');
-const {
-  addCohortMember,
-  addOwnerRoleInCohort,
-  leaveCohort,
-  removeOwnerRoleInCohort,
-  updateCohortHeaderStatus
-} = require('./cohort');
+const { updateCohortHeaderStatus } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
 const { Routes } = require('../common/variables');
 
@@ -163,15 +156,9 @@ const socketListeners = socketInstance => {
     updateItem(socket);
     updateItemState(socket, itemClientLocks);
 
-    // This method can not be refactored as it doesn't
-    // have it's own controller
+    // These method can not be refactored as they don't
+    // have their own controllers
     updateListHeaderState(socket, listClientLocks);
-
-    addCohortMember(socket, allCohortsViewClients);
-    addOwnerRoleInCohort(socket, cohortViewClients);
-    emitRemoveMemberOnLeaveCohort(socket);
-    leaveCohort(socket, allCohortsViewClients);
-    removeOwnerRoleInCohort(socket, cohortViewClients);
     updateCohortHeaderStatus(socket, cohortClientLocks);
   });
 };

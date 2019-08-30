@@ -1,7 +1,6 @@
 const sanitize = require('mongo-sanitize');
 
 const {
-  CohortActionTypes,
   CommentActionTypes,
   ItemActionTypes,
   ItemStatusType,
@@ -443,32 +442,6 @@ const leaveList = io => data => {
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
 };
 
-const emitRemoveMemberOnLeaveCohort = socket =>
-  socket.on(CohortActionTypes.LEAVE_SUCCESS, data => {
-    const { cohortId, userId } = data;
-
-    List.find(
-      {
-        cohortId,
-        type: ListType.SHARED
-      },
-      '_id created_at cohortId name description items favIds type'
-    )
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const sharedListIds = docs.map(list => list._id.toString());
-
-          sharedListIds.forEach(listId =>
-            socket.broadcast
-              .to(listChannel(listId))
-              .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId })
-          );
-        }
-      });
-  });
-
 const changeListType = (
   io,
   dashboardClients,
@@ -802,7 +775,6 @@ module.exports = {
   cloneItem,
   deleteItem,
   deleteList,
-  emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeListMember,
   removeMemberRoleInList,

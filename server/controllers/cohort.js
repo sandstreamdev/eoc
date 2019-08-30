@@ -28,14 +28,7 @@ const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const listClients = require('../sockets/index').getListViewClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
-const {
-  addCohortMember,
-  archiveCohort,
-  deleteCohort,
-  removeCohortMember,
-  restoreCohort,
-  updateCohort
-} = require('../sockets/cohort');
+const socketActions = require('../sockets/cohort');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
@@ -151,7 +144,10 @@ const updateCohortById = (req, resp) => {
 
         const data = { cohortId, description };
 
-        return updateCohort(socketInstance, allCohortsViewClients)(data);
+        return socketActions.updateCohort(
+          socketInstance,
+          allCohortsViewClients
+        )(data);
       }
 
       if (name) {
@@ -159,7 +155,10 @@ const updateCohortById = (req, resp) => {
 
         const data = { cohortId, name };
 
-        return updateCohort(socketInstance, allCohortsViewClients)(data);
+        return socketActions.updateCohort(
+          socketInstance,
+          allCohortsViewClients
+        )(data);
       }
 
       if (isArchived !== undefined) {
@@ -168,7 +167,7 @@ const updateCohortById = (req, resp) => {
         if (isArchived) {
           cohortActivity = ActivityType.COHORT_ARCHIVE;
 
-          return archiveCohort(
+          return socketActions.archiveCohort(
             socketInstance,
             allCohortsViewClients,
             dashboardClients
@@ -177,7 +176,7 @@ const updateCohortById = (req, resp) => {
 
         cohortActivity = ActivityType.COHORT_RESTORE;
 
-        return restoreCohort(
+        return socketActions.restoreCohort(
           socketInstance,
           allCohortsViewClients,
           cohortClients,
@@ -289,7 +288,7 @@ const deleteCohortById = (req, resp) => {
       const { ownerIds: owners, name } = cohort;
       const data = { cohortId, owners };
 
-      deleteCohort(socketInstance, allCohortsViewClients)(data);
+      socketActions.deleteCohort(socketInstance, allCohortsViewClients)(data);
 
       fireAndForget(
         saveActivity(
@@ -345,7 +344,7 @@ const removeMember = (req, resp) => {
       ).exec();
     })
     .then(() => {
-      removeCohortMember(
+      socketActions.removeMember(
         socketInstance,
         allCohortsViewClients,
         cohortClients,
@@ -392,16 +391,23 @@ const addOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      socketActions.addOwnerRole(socketInstance, cohortClients)({
+        cohortId: sanitizedCohortId,
+        userId: sanitizedUserId
+      });
 
-      saveActivity(
-        ActivityType.COHORT_SET_AS_OWNER,
-        currentUserId,
-        null,
-        null,
-        sanitizedCohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.COHORT_SET_AS_OWNER,
+          currentUserId,
+          null,
+          null,
+          sanitizedCohortId,
+          sanitizedUserId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -436,16 +442,23 @@ const removeOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() => {
-      resp.send();
+      socketActions.removeOwnerRole(socketInstance, cohortClients)({
+        cohortId: sanitizedCohortId,
+        userId: sanitizedUserId
+      });
 
-      saveActivity(
-        ActivityType.COHORT_SET_AS_MEMBER,
-        currentUserId,
-        null,
-        null,
-        sanitizedCohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.COHORT_SET_AS_MEMBER,
+          currentUserId,
+          null,
+          null,
+          sanitizedCohortId,
+          sanitizedUserId
+        )
       );
+
+      resp.send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -532,7 +545,7 @@ const addMember = (req, resp) => {
         const { ownerIds } = currentCohort;
         userToSend = responseWithCohortMember(newMember, ownerIds);
 
-        return addCohortMember(
+        return socketActions.addMember(
           socketInstance,
           allCohortsViewClients,
           dashboardClients
@@ -614,10 +627,16 @@ const leaveCohort = (req, resp) => {
           ownerIds: { $nin: [userId] }
         },
         { $pull: { viewersIds: userId } }
-      )
-        .exec()
-        .then(() => resp.send())
+      ).exec()
     )
+    .then(() => {
+      socketActions.leaveCohort(socketInstance, allCohortsViewClients)({
+        cohortId: sanitizedCohortId,
+        userId: sanitizedUserId
+      });
+
+      resp.send();
+    })
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;

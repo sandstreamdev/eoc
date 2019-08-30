@@ -364,12 +364,7 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
     userId
   })
     .then(() => {
-      const action = addOwnerRoleSuccess({ userId, cohortId });
-      const { type, payload } = action;
-
-      socket.emit(type, payload);
-      dispatch(action);
-
+      dispatch(addOwnerRoleSuccess({ userId, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.owner-role',
         data: userName
@@ -398,15 +393,13 @@ export const removeOwnerRole = (
     userId
   })
     .then(() => {
-      const action = removeOwnerRoleSuccess({
-        isCurrentUserRoleChanging,
-        cohortId,
-        userId
-      });
-      const { type, payload } = action;
-
-      socket.emit(type, payload);
-      dispatch(action);
+      dispatch(
+        removeOwnerRoleSuccess({
+          isCurrentUserRoleChanging,
+          cohortId,
+          userId
+        })
+      );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.no-owner-role',
         data: userName
@@ -428,11 +421,7 @@ export const removeOwnerRole = (
 export const leaveCohort = (cohortId, userId, userName) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/leave-cohort`, { userId })
     .then(() => {
-      const action = leaveCohortSuccess({ userId, cohortId });
-      const { type, payload } = action;
-
-      socket.emit(type, payload);
-      dispatch(action);
+      dispatch(leaveCohortSuccess({ userId, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.leave-cohort',
         data: userName

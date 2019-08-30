@@ -28,7 +28,7 @@ const {
 const { isDefined } = require('../common/utils');
 const List = require('../models/list.model');
 
-const addCohortMember = (io, allCohortsClients, dashboardClients) => data => {
+const addMember = (io, allCohortsClients, dashboardClients) => data => {
   const {
     cohortId,
     member: { _id: userId }
@@ -52,7 +52,7 @@ const addCohortMember = (io, allCohortsClients, dashboardClients) => data => {
     .lean()
     .exec()
     .then(docs => {
-      if (docs) {
+      if (docs && docs.length > 0) {
         const lists = responseWithListsMetaData(docs, userId);
         const sharedListIds = lists.map(list => list._id.toString());
         const { member } = data;
@@ -85,69 +85,83 @@ const addCohortMember = (io, allCohortsClients, dashboardClients) => data => {
     });
 };
 
-const leaveCohort = (socket, clients) =>
-  socket.on(CohortActionTypes.LEAVE_SUCCESS, data => {
-    const { cohortId } = data;
+const leaveCohort = (io, allCohortsClients) => data => {
+  const { cohortId, userId } = data;
 
-    socket.broadcast
-      .to(cohortChannel(cohortId))
-      .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
+  io.sockets
+    .to(cohortChannel(cohortId))
+    .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
-    if (clients.size > 0) {
-      emitCohortMetaData(cohortId, clients, socket);
-    }
-  });
+  if (allCohortsClients.size > 0) {
+    emitCohortMetaData(cohortId, allCohortsClients, io);
+  }
 
-const addOwnerRoleInCohort = (socket, clients) => {
-  socket.on(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, data => {
-    const { cohortId, userId } = data;
+  List.find(
+    {
+      cohortId,
+      type: ListType.SHARED
+    },
+    '_id created_at cohortId name description items favIds type'
+  )
+    .lean()
+    .exec()
+    .then(docs => {
+      if (docs) {
+        const sharedListIds = docs.map(list => list._id.toString());
 
-    socket.broadcast
-      .to(cohortChannel(cohortId))
-      .emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-        ...data,
-        isCurrentUserRoleChanging: false
-      });
-
-    if (clients.has(userId)) {
-      const { viewId, socketId } = clients.get(userId);
-
-      if (viewId === cohortId) {
-        socket.broadcast
-          .to(socketId)
-          .emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-            ...data,
-            isCurrentUserRoleChanging: true
-          });
+        sharedListIds.forEach(listId =>
+          io.sockets
+            .to(listChannel(listId))
+            .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId })
+        );
       }
-    }
-  });
+    });
 };
 
-const removeOwnerRoleInCohort = (socket, clients) => {
-  socket.on(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, data => {
-    const { cohortId, userId } = data;
+const addOwnerRole = (io, cohortClients) => data => {
+  const { cohortId, userId } = data;
 
-    socket.broadcast
-      .to(cohortChannel(cohortId))
-      .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+  io.sockets
+    .to(cohortChannel(cohortId))
+    .emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
+      ...data,
+      isCurrentUserRoleChanging: false
+    });
+
+  if (cohortClients.has(userId)) {
+    const { viewId, socketId } = cohortClients.get(userId);
+
+    if (viewId === cohortId) {
+      io.sockets.to(socketId).emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
         ...data,
-        isCurrentUserRoleChanging: false
+        isCurrentUserRoleChanging: true
       });
-
-    if (clients.has(userId)) {
-      const { viewId, socketId } = clients.get(userId);
-
-      if (viewId === cohortId) {
-        socket.broadcast
-          .to(socketId)
-          .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
-            ...data,
-            isCurrentUserRoleChanging: true
-          });
-      }
     }
-  });
+  }
+};
+
+const removeOwnerRole = (io, cohortClients) => data => {
+  const { cohortId, userId } = data;
+
+  io.sockets
+    .to(cohortChannel(cohortId))
+    .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+      ...data,
+      isCurrentUserRoleChanging: false
+    });
+
+  if (cohortClients.has(userId)) {
+    const { viewId, socketId } = cohortClients.get(userId);
+
+    if (viewId === cohortId) {
+      io.sockets
+        .to(socketId)
+        .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+          ...data,
+          isCurrentUserRoleChanging: true
+        });
+    }
+  }
 };
 
 const updateCohort = (io, allCohortsViewClients) => data => {
@@ -251,7 +265,7 @@ const archiveCohort = (io, allCohortsClients, dashboardClients) => data => {
     .lean()
     .exec()
     .then(docs => {
-      if (docs) {
+      if (docs && docs.length > 0) {
         const listIds = docs.map(list => list._id.toString());
         const listsByViewers = getListIdsByViewers(docs);
         listIds.forEach(listId => {
@@ -307,7 +321,7 @@ const archiveCohort = (io, allCohortsClients, dashboardClients) => data => {
     });
 };
 
-const removeCohortMember = (
+const removeMember = (
   io,
   allCohortsClients,
   cohortClients,
@@ -346,7 +360,7 @@ const removeCohortMember = (
     .lean()
     .exec()
     .then(docs => {
-      if (docs) {
+      if (docs && docs.length > 0) {
         const {
           cohortId: { memberIds: cohortMemberIds }
         } = docs[0];
@@ -508,7 +522,7 @@ const restoreCohort = (
       }
     })
     .then(docs => {
-      if (docs) {
+      if (docs && docs.length > 0) {
         const {
           cohortId: { ownerIds: cohortOwners }
         } = docs[0];
@@ -579,14 +593,14 @@ const createListCohort = (io, dashboardClients) => data => {
 };
 
 module.exports = {
-  addCohortMember,
-  addOwnerRoleInCohort,
+  addMember,
+  addOwnerRole,
   archiveCohort,
   deleteCohort,
   createListCohort,
   leaveCohort,
-  removeCohortMember,
-  removeOwnerRoleInCohort,
+  removeMember,
+  removeOwnerRole,
   restoreCohort,
   updateCohort,
   updateCohortHeaderStatus
