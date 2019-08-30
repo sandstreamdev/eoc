@@ -9,6 +9,8 @@ const {
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const {
+  checkIfArrayContainsUserId,
+  isViewer,
   responseWithCohort,
   responseWithCohortDetails,
   responseWithListsMetaData
@@ -305,36 +307,130 @@ const archiveCohort = (io, allCohortsClients, dashboardClients) => data => {
     });
 };
 
-const removeCohortMember = (socket, allCohortsClients, cohortClients) =>
-  socket.on(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data => {
-    const { cohortId, userId } = data;
+const removeCohortMember = (
+  io,
+  allCohortsClients,
+  cohortClients,
+  dashboardClients,
+  listClients
+) => data => {
+  const { cohortId, userId } = data;
+  const removedUserId = userId.toString();
 
-    socket.broadcast
-      .to(cohortChannel(cohortId))
-      .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
+  io.sockets
+    .to(cohortChannel(cohortId))
+    .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
-    emitCohortMetaData(cohortId, allCohortsClients, socket);
+  emitCohortMetaData(cohortId, allCohortsClients, io);
 
-    if (cohortClients.has(userId)) {
-      const { viewId, socketId } = cohortClients.get(userId);
+  if (cohortClients.has(removedUserId)) {
+    const { viewId, socketId } = cohortClients.get(removedUserId);
 
-      if (viewId === cohortId) {
-        socket.broadcast
-          .to(socketId)
-          .emit(CohortActionTypes.REMOVED_BY_SOMEONE, {
-            cohortId
+    if (viewId === cohortId) {
+      io.sockets.to(socketId).emit(CohortActionTypes.REMOVED_BY_SOMEONE, {
+        cohortId
+      });
+    }
+  }
+
+  if (allCohortsClients.has(removedUserId)) {
+    const { socketId } = allCohortsClients.get(removedUserId);
+
+    io.sockets
+      .to(socketId)
+      .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
+  }
+
+  List.find({ cohortId })
+    .populate('cohortId', 'memberIds')
+    .lean()
+    .exec()
+    .then(docs => {
+      if (docs) {
+        const {
+          cohortId: { memberIds: cohortMemberIds }
+        } = docs[0];
+        const listIdsUserWasRemovedFrom = [];
+        const listIdsUserRemained = [];
+
+        docs.forEach(doc => {
+          const { type } = doc;
+          const listId = doc._id.toString();
+
+          if (isViewer(doc, userId)) {
+            listIdsUserRemained.push(listId);
+          } else if (type === ListType.SHARED) {
+            listIdsUserWasRemovedFrom.push(listId);
+          }
+        });
+
+        if (listIdsUserWasRemovedFrom.length > 0) {
+          if (dashboardClients.has(userId)) {
+            const { socketId } = dashboardClients.get(userId);
+
+            io.sockets
+              .to(socketId)
+              .emit(ListActionTypes.REMOVE_BY_IDS, listIdsUserWasRemovedFrom);
+          }
+
+          listIdsUserWasRemovedFrom.forEach(listId => {
+            io.sockets
+              .to(listChannel(listId))
+              .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
+                listId,
+                userId
+              });
+
+            if (listClients.has(userId)) {
+              const { socketId, viewId } = listClients.get(userId);
+              const isCohortMember = checkIfArrayContainsUserId(
+                cohortMemberIds,
+                userId
+              );
+
+              if (viewId === listId) {
+                io.sockets
+                  .to(socketId)
+                  .emit(ListActionTypes.REMOVED_BY_SOMEONE, {
+                    cohortId,
+                    isCohortMember,
+                    listId
+                  });
+              }
+            }
           });
+        }
+
+        if (listIdsUserRemained.length > 0) {
+          listIdsUserRemained.forEach(listId => {
+            if (listClients.has(userId)) {
+              const { socketId, viewId } = listClients.get(userId);
+
+              if (viewId === listId) {
+                io.sockets
+                  .to(socketId)
+                  .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
+                    isCurrentUserUpdated: true,
+                    isGuest: true,
+                    listId,
+                    userId
+                  });
+              }
+            }
+
+            io.sockets
+              .to(listChannel(listId))
+              .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
+                isCurrentUserUpdated: false,
+                isGuest: true,
+                listId,
+                userId
+              });
+          });
+        }
       }
-    }
-
-    if (allCohortsClients.has(userId)) {
-      const { socketId } = allCohortsClients.get(userId);
-
-      socket.broadcast
-        .to(socketId)
-        .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
-    }
-  });
+    });
+};
 
 const deleteCohort = (io, allCohortsClients) => data => {
   const { cohortId, owners } = data;

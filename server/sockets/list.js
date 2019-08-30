@@ -15,7 +15,6 @@ const User = require('../models/user.model');
 const {
   checkIfArrayContainsUserId,
   isMember,
-  isViewer,
   responseWithList
 } = require('../common/utils');
 const {
@@ -567,101 +566,6 @@ const changeListType = (
     });
 };
 
-const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
-  socket.on(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data => {
-    const { cohortId, userId } = data;
-
-    List.find({ cohortId })
-      .populate('cohortId', 'memberIds')
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const {
-            cohortId: { memberIds: cohortMemberIds }
-          } = docs[0];
-          const listIdsUserWasRemovedFrom = [];
-          const listIdsUserRemained = [];
-
-          docs.forEach(doc => {
-            const { type } = doc;
-            const listId = doc._id.toString();
-
-            if (isViewer(doc, userId)) {
-              listIdsUserRemained.push(listId);
-            } else if (type === ListType.SHARED) {
-              listIdsUserWasRemovedFrom.push(listId);
-            }
-          });
-
-          if (listIdsUserWasRemovedFrom.length > 0) {
-            if (dashboardClients.has(userId)) {
-              const { socketId } = dashboardClients.get(userId);
-
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.REMOVE_BY_IDS, listIdsUserWasRemovedFrom);
-            }
-
-            listIdsUserWasRemovedFrom.forEach(listId => {
-              socket.broadcast
-                .to(listChannel(listId))
-                .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
-                  listId,
-                  userId
-                });
-
-              if (listClients.has(userId)) {
-                const { socketId, viewId } = listClients.get(userId);
-                const isCohortMember = checkIfArrayContainsUserId(
-                  cohortMemberIds,
-                  userId
-                );
-
-                if (viewId === listId) {
-                  socket.broadcast
-                    .to(socketId)
-                    .emit(ListActionTypes.REMOVED_BY_SOMEONE, {
-                      cohortId,
-                      isCohortMember,
-                      listId
-                    });
-                }
-              }
-            });
-          }
-
-          if (listIdsUserRemained.length > 0) {
-            listIdsUserRemained.forEach(listId => {
-              if (listClients.has(userId)) {
-                const { socketId, viewId } = listClients.get(userId);
-
-                if (viewId === listId) {
-                  socket.broadcast
-                    .to(socketId)
-                    .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
-                      isCurrentUserUpdated: true,
-                      isGuest: true,
-                      listId,
-                      userId
-                    });
-                }
-              }
-
-              socket.broadcast
-                .to(listChannel(listId))
-                .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
-                  isCurrentUserUpdated: false,
-                  isGuest: true,
-                  listId,
-                  userId
-                });
-            });
-          }
-        }
-      });
-  });
-
 const removeListMember = (
   io,
   dashboardClients,
@@ -898,7 +802,6 @@ module.exports = {
   cloneItem,
   deleteItem,
   deleteList,
-  emitListsOnRemoveCohortMember,
   emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeListMember,

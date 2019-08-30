@@ -26,11 +26,13 @@ const { saveActivity } = require('./activity');
 const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClients();
 const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
+const listClients = require('../sockets/index').getListViewClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
 const {
   addCohortMember,
   archiveCohort,
   deleteCohort,
+  removeCohortMember,
   restoreCohort,
   updateCohort
 } = require('../sockets/cohort');
@@ -343,16 +345,26 @@ const removeMember = (req, resp) => {
       ).exec();
     })
     .then(() => {
-      resp.send();
+      removeCohortMember(
+        socketInstance,
+        allCohortsViewClients,
+        cohortClients,
+        dashboardClients,
+        listClients
+      )({ cohortId: sanitizedCohortId, userId: sanitizedUserId });
 
-      saveActivity(
-        ActivityType.COHORT_REMOVE_USER,
-        currentUserId,
-        null,
-        null,
-        sanitizedCohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.COHORT_REMOVE_USER,
+          currentUserId,
+          null,
+          null,
+          sanitizedCohortId,
+          sanitizedUserId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
