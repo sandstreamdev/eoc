@@ -122,11 +122,7 @@ export const removeArchivedItems = payload => ({
 export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(response => response.json())
-    .then(json => {
-      const action = addItemSuccess({ item: json, listId });
-
-      dispatch(action);
-    })
+    .then(json => dispatch(addItemSuccess({ item: json, listId })))
     .catch(err => {
       dispatch(addItemFailure());
       createNotificationWithTimeout(
@@ -142,11 +138,7 @@ export const addItem = (item, listId) => dispatch =>
 
 export const setVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/set-vote`, { itemId })
-    .then(() => {
-      const action = setVoteSuccess({ itemId, listId, isVoted: true });
-
-      dispatch(action);
-    })
+    .then(() => dispatch(setVoteSuccess({ itemId, listId, isVoted: true })))
     .catch(err => {
       dispatch(setVoteFailure());
       createNotificationWithTimeout(
@@ -162,11 +154,7 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
 
 export const clearVote = (itemId, listId, itemName) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
-    .then(() => {
-      const action = clearVoteSuccess({ itemId, listId, isVoted: false });
-
-      dispatch(action);
-    })
+    .then(() => dispatch(clearVoteSuccess({ itemId, listId, isVoted: false })))
     .catch(err => {
       dispatch(clearVoteFailure());
       createNotificationWithTimeout(
@@ -194,14 +182,15 @@ export const updateListItem = (
     itemId
   })
     .then(() => {
-      const action = updateListItemSuccess({
-        ...data,
-        editedBy,
-        _id: itemId,
-        listId
-      });
+      dispatch(
+        updateListItemSuccess({
+          ...data,
+          editedBy,
+          _id: itemId,
+          listId
+        })
+      );
 
-      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.update-item',
         data: itemName
@@ -227,9 +216,8 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
   })
     .then(response => response.json())
     .then(json => {
-      const action = cloneItemSuccess({ listId, ...json });
+      dispatch(cloneItemSuccess({ listId, ...json }));
 
-      dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.clone-item',
         data: itemName
@@ -255,11 +243,9 @@ export const addComment = (listId, itemId, text) => dispatch =>
     text
   })
     .then(response => response.json())
-    .then(json => {
-      const action = addCommentSuccess({ listId, itemId, comment: json });
-
-      dispatch(action);
-    })
+    .then(json =>
+      dispatch(addCommentSuccess({ listId, itemId, comment: json }))
+    )
     .catch(err => {
       dispatch(addCommentFailure());
       createNotificationWithTimeout(
@@ -347,9 +333,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
     itemId
   })
     .then(() => {
-      const action = restoreItemSuccess({ listId, itemId });
-
-      dispatch(action);
+      dispatch(restoreItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.restore-item',
         data: name
