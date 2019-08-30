@@ -211,7 +211,7 @@ const addComment = io => data => {
 };
 
 const cloneItem = (io, listClients, viewersIds) => data => {
-  const { userId, item } = data;
+  const { userId, item, listId } = data;
   const dataToSend = { ...data, ...item };
 
   viewersIds.forEach(viewerId => {
@@ -219,9 +219,13 @@ const cloneItem = (io, listClients, viewersIds) => data => {
 
     if (viewerIdAsString !== userId.toString()) {
       if (listClients.has(viewerIdAsString)) {
-        const { socketId } = listClients.get(viewerIdAsString);
+        const { socketId, viewId } = listClients.get(viewerIdAsString);
 
-        io.sockets.to(socketId).emit(ItemActionTypes.CLONE_SUCCESS, dataToSend);
+        if (viewId === listId) {
+          io.sockets
+            .to(socketId)
+            .emit(ItemActionTypes.CLONE_SUCCESS, dataToSend);
+        }
       }
     }
   });
@@ -322,11 +326,13 @@ const setVote = (io, listClients, viewersIds) => data => {
 
     if (viewerIdAsString !== userId.toString()) {
       if (listClients.has(viewerIdAsString)) {
-        const { socketId } = listClients.get(viewerIdAsString);
+        const { socketId, viewId } = listClients.get(viewerIdAsString);
 
-        io.sockets
-          .to(socketId)
-          .emit(ItemActionTypes.SET_VOTE_SUCCESS, { listId, itemId });
+        if (viewId === listId) {
+          io.sockets
+            .to(socketId)
+            .emit(ItemActionTypes.SET_VOTE_SUCCESS, { listId, itemId });
+        }
       }
     }
   });
@@ -342,11 +348,13 @@ const clearVote = (io, listClients, viewersIds) => data => {
 
     if (viewerIdAsString !== userId.toString()) {
       if (listClients.has(viewerIdAsString)) {
-        const { socketId } = listClients.get(viewerIdAsString);
+        const { socketId, viewId } = listClients.get(viewerIdAsString);
 
-        io.sockets
-          .to(socketId)
-          .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
+        if (viewId === listId) {
+          io.sockets
+            .to(socketId)
+            .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
+        }
       }
     }
   });
@@ -748,12 +756,14 @@ const removeListMember = (
   listClients,
   cohortClients
 ) => data => {
-  const { listId, userId } = data;
+  const { listId, userId, cohortId } = data;
 
   if (dashboardClients.has(userId)) {
-    const { socketId } = dashboardClients.get(userId);
+    const { socketId, viewId } = dashboardClients.get(userId);
 
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    if (viewId === listId) {
+      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    }
   }
 
   if (listClients.has(userId)) {
@@ -783,9 +793,11 @@ const removeListMember = (
   }
 
   if (cohortClients.has(userId)) {
-    const { socketId } = cohortClients.get(userId);
+    const { socketId, viewId } = cohortClients.get(userId);
 
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    if (viewId === cohortId.toString()) {
+      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    }
   }
 
   io.sockets
