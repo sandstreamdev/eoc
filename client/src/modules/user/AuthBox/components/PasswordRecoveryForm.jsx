@@ -6,7 +6,7 @@ import _debounce from 'lodash/debounce';
 import validator from 'validator';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
-import { updatePassword, getUserName } from 'modules/user/model/actions';
+import { getUserName, updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
 import {
