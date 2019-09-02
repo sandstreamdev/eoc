@@ -9,7 +9,12 @@ import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
-import { validatePassword, validateWith } from 'common/utils/helpers';
+import {
+  makeAbortablePromise,
+  validatePassword,
+  validateWith
+} from 'common/utils/helpers';
+import { getUserName } from 'common/model/actions';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {
@@ -25,17 +30,46 @@ class PasswordRecoveryForm extends PureComponent {
       passwordConfirmation: '',
       passwordConfirmationSuccess: false,
       passwordSuccess: false,
-      pending: false
+      pending: false,
+      userName: null
     };
 
     this.debouncedPasswordValidation = _debounce(this.passwordValidator, 500);
     this.debouncedComparePasswords = _debounce(this.comparePasswords, 500);
+    this.pendingPromise = null;
+  }
+
+  componentDidMount() {
+    this.handleUserName();
   }
 
   componentWillUnmount() {
     this.debouncedPasswordValidation.cancel();
     this.debouncedComparePasswords.cancel();
+
+    if (this.pendingPromise) {
+      this.pendingPromise.abort();
+    }
   }
+
+  handleUserName = () => {
+    const {
+      match: {
+        params: { token }
+      }
+    } = this.props;
+
+    const abortable = makeAbortablePromise(getUserName(token));
+    this.pendingPromise = abortable;
+
+    abortable.promise
+      .then(userName => this.setState({ userName }))
+      .catch(() => {
+        /**
+         * Ignore error
+         */
+      });
+  };
 
   handlePasswordChange = event => {
     const {
@@ -137,7 +171,8 @@ class PasswordRecoveryForm extends PureComponent {
       passwordConfirmation,
       passwordConfirmationSuccess,
       passwordSuccess,
-      pending
+      pending,
+      userName
     } = this.state;
     const isButtonDisabled = !passwordSuccess || !passwordConfirmationSuccess;
     const {
@@ -147,7 +182,14 @@ class PasswordRecoveryForm extends PureComponent {
     return (
       <form className="pass-recovery-form" onSubmit={this.handleSubmit}>
         <h2 className="pass-recovery-form__heading">
-          <FormattedMessage id="user.auth.pass-recovery-form.heading" />
+          {userName ? (
+            <FormattedMessage
+              id="user.auth.pass-recovery-form.heading-user-name"
+              values={{ name: userName }}
+            />
+          ) : (
+            <FormattedMessage id="user.auth.pass-recovery-form.heading" />
+          )}
         </h2>
         <div className="pass-recovery-form__body">
           <ValidationInput
