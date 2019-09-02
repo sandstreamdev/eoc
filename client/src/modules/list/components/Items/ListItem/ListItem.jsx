@@ -3,15 +3,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
-import {
-  RouterMatchPropType,
-  UserPropType,
-  IntlPropType
-} from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import {
   archiveItem,
   clearVote,
@@ -295,7 +291,6 @@ class ListItem extends PureComponent {
         locks: { name: nameLock, description: descriptionLock } = DefaultLocks,
         name
       },
-      intl: { formatMessage },
       isMember
     } = this.props;
     const isEdited = nameLock || descriptionLock;
@@ -328,13 +323,12 @@ class ListItem extends PureComponent {
             disabled={!isMember}
             onCancel={this.handleConfirmationVisibility}
             onConfirm={this.handleArchiveItem}
-            title={formatMessage(
-              {
-                id: 'list.list-item.confirmation'
-              },
-              { name }
-            )}
-          />
+          >
+            <FormattedMessage
+              id="list.list-item.confirmation"
+              values={{ name: <em>{name}</em> }}
+            />
+          </Confirmation>
         )}
       </div>
     );
@@ -486,7 +480,6 @@ ListItem.propTypes = {
       PropTypes.object
     ])
   ),
-  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
@@ -502,7 +495,6 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
-  injectIntl,
   withRouter,
   connect(
     mapStateToProps,
