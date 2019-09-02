@@ -165,3 +165,6 @@ export const updateSettings = settings => dispatch =>
       });
       throw err;
     });
+
+export const getUserName = token =>
+  getJson(`/auth/user-name/${token}`).then(({ displayName }) => displayName);

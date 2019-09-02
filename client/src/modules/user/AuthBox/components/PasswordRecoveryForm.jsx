@@ -6,7 +6,7 @@ import _debounce from 'lodash/debounce';
 import validator from 'validator';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
-import { updatePassword } from 'modules/user/model/actions';
+import { updatePassword, getUserName } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
 import {
@@ -14,7 +14,6 @@ import {
   validatePassword,
   validateWith
 } from 'common/utils/helpers';
-import { getUserName } from 'common/model/actions';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {

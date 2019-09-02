@@ -1,6 +1,5 @@
 import socket from 'sockets';
 import { CommonActionTypes } from 'common/model/actionTypes';
-import { getJson } from 'common/utils/fetchMethods';
 
 const clearMetaDataSuccess = view => ({
   type: CommonActionTypes.LEAVE_VIEW,
@@ -28,6 +27,3 @@ export const leaveRoom = (route, id, userId) => dispatch => {
 
   dispatch(clearMetaDataSuccess(route));
 };
-
-export const getUserName = token =>
-  getJson(`/auth/user-name/${token}`).then(({ displayName }) => displayName);
