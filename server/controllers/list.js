@@ -1179,11 +1179,7 @@ const updateListItem = (req, res) => {
       }
 
       return returnPayload(
-<<<<<<< HEAD
-        updateItem(
-=======
         socketActions.updateItem(
->>>>>>> eoc_404_improvement_refactor_event_emmiting_from_actions_to_controllers_for_items
           socketInstance,
           dashboardClients,
           cohortClients,
