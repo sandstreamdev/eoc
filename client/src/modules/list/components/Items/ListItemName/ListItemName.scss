@@ -9,6 +9,9 @@
     font-weight: 500;
     line-height: 1.2;
     margin-bottom: four-by(1);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 
     &--disabled {
       color: $button-disabled;
