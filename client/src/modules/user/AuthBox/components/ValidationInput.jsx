@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
 import { CheckIcon } from 'assets/images/icons';
+import { PasswordValidationValues } from 'common/constants/enums';
 
 const ValidationInput = ({
   errorId,
@@ -29,7 +30,15 @@ const ValidationInput = ({
     <div className="validation-input__check-icon">
       <CheckIcon />
     </div>
-    {errorId && <FormattedMessage id={errorId} />}
+    {errorId && (
+      <FormattedMessage
+        id={errorId}
+        values={{
+          min: PasswordValidationValues.MIN,
+          max: PasswordValidationValues.MAX
+        }}
+      />
+    )}
   </label>
 );
 
