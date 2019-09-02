@@ -1,5 +1,4 @@
 const _keyBy = require('lodash/keyBy');
-const sanitize = require('mongo-sanitize');
 
 const {
   CohortActionTypes,
@@ -12,7 +11,6 @@ const {
   LOCK_TIMEOUT
 } = require('../common/variables');
 const List = require('../models/list.model');
-const User = require('../models/user.model');
 const {
   checkIfArrayContainsUserId,
   isMember,
@@ -33,65 +31,25 @@ const {
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
 
-const addItemToList = (socket, dashboardViewClients, cohortViewClients) => {
-  socket.on(ItemActionTypes.ADD_SUCCESS, data => {
-    const { listId } = data;
+const addItemToList = (io, cohortClients, dashboardClients) => data => {
+  const { listId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.ADD_SUCCESS, data);
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.ADD_SUCCESS, data);
 
-    updateListOnDashboardAndCohortView(
-      socket,
-      listId,
-      dashboardViewClients,
-      cohortViewClients
-    );
-  });
+  return updateListOnDashboardAndCohortView(
+    io,
+    listId,
+    dashboardClients,
+    cohortClients
+  );
 };
 
-const archiveItem = (socket, dashboardViewClients, cohortViewClients) => {
-  socket.on(ItemActionTypes.ARCHIVE_SUCCESS, data => {
-    const { listId } = data;
+const deleteItem = io => data => {
+  const { listId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.ARCHIVE_SUCCESS, data);
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.DELETE_SUCCESS, data);
 
-    updateListOnDashboardAndCohortView(
-      socket,
-      listId,
-      dashboardViewClients,
-      cohortViewClients
-    );
-  });
-};
-
-const deleteItem = socket => {
-  socket.on(ItemActionTypes.DELETE_SUCCESS, data => {
-    const { listId } = data;
-
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.DELETE_SUCCESS, data);
-  });
-};
-
-const restoreItem = (socket, dashboardViewClients, cohortViewClients) => {
-  socket.on(ItemActionTypes.RESTORE_SUCCESS, data => {
-    const { listId } = data;
-
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.RESTORE_SUCCESS, data);
-
-    updateListOnDashboardAndCohortView(
-      socket,
-      listId,
-      dashboardViewClients,
-      cohortViewClients
-    );
-  });
+  return Promise.resolve();
 };
 
 const updateItemState = (socket, itemClientLocks) => {
@@ -188,89 +146,91 @@ const updateItemState = (socket, itemClientLocks) => {
 
 const updateItem = (
   io,
-  dashboardViewClients,
-  cohortViewClients,
+  cohortClients,
+  dashboardClients,
+  listClients
+) => data => {
+  const { itemId, listId, userId } = data;
+
+  return List.findById(listId)
+    .lean()
+    .populate('items.authorId', 'displayName')
+    .populate('items.editedBy', 'displayName')
+    .exec()
+    .then(doc => {
+      if (doc) {
+        const { items, viewersIds } = doc;
+        const indexOfItem = items.findIndex(
+          item => item._id.toString() === itemId
+        );
+        const item = items[indexOfItem];
+
+        viewersIds.forEach(id => {
+          const viewerId = id.toString();
+
+          if (viewerId !== userId.toString()) {
+            if (listClients.has(viewerId)) {
+              const { socketId } = listClients.get(viewerId);
+
+              io.sockets.to(socketId).emit(ItemActionTypes.UPDATE_SUCCESS, {
+                listId,
+                item: responseWithItem(item, viewerId)
+              });
+            }
+          }
+        });
+
+        return updateListOnDashboardAndCohortView(
+          io,
+          listId,
+          dashboardClients,
+          cohortClients
+        );
+      }
+    });
+};
+
+const addComment = io => data => {
+  const { listId } = data;
+
+  io.sockets.to(listChannel(listId)).emit(CommentActionTypes.ADD_SUCCESS, data);
+
+  return Promise.resolve();
+};
+
+const cloneItem = (
+  io,
+  cohortClients,
+  dashboardClients,
   listClients,
   viewersIds
 ) => data => {
-  const { listId, userId, itemId } = data;
-  const sanitizedUserId = sanitize(userId);
+  const { userId, item, listId } = data;
+  const dataToSend = { listId, item };
 
-  return User.findById(sanitizedUserId).then(user => {
-    if (user) {
-      const { displayName } = user;
-      const editedBy = displayName;
-      let dataToSend;
+  viewersIds.forEach(viewerId => {
+    const viewerIdAsString = viewerId.toString();
 
-      return List.findOne({ _id: listId })
-        .lean()
-        .exec()
-        .then(doc => {
-          if (doc) {
-            const { items } = doc;
-            const indexOfItem = items.findIndex(
-              item => item._id.toString() === itemId
-            );
-            const item = items[indexOfItem];
+    if (viewerIdAsString !== userId.toString()) {
+      if (listClients.has(viewerIdAsString)) {
+        const { socketId, viewId } = listClients.get(viewerIdAsString);
 
-            dataToSend = {
-              ...responseWithItem(item, userId),
-              editedBy,
-              listId,
-              ...data
-            };
-          }
-        })
-        .then(() => {
-          viewersIds.forEach(viewerId => {
-            const viewerIdAsString = viewerId.toString();
-
-            if (viewerIdAsString !== userId.toString()) {
-              if (listClients.has(viewerIdAsString)) {
-                const { socketId } = listClients.get(viewerIdAsString);
-
-                io.sockets
-                  .to(socketId)
-                  .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
-              }
-            }
-          });
-
-          updateListOnDashboardAndCohortView(
-            io.sockets,
-            listId,
-            dashboardViewClients,
-            cohortViewClients
-          );
-        });
+        if (viewId === listId) {
+          io.sockets
+            .to(socketId)
+            .emit(ItemActionTypes.CLONE_SUCCESS, dataToSend);
+        }
+      }
     }
   });
+
+  return updateListOnDashboardAndCohortView(
+    io,
+    listId,
+    dashboardClients,
+    cohortClients
+  );
 };
-
-const addComment = socket =>
-  socket.on(CommentActionTypes.ADD_SUCCESS, data => {
-    const { listId } = data;
-
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(CommentActionTypes.ADD_SUCCESS, data);
-  });
-
-const cloneItem = (socket, dashboardViewClients, cohortViewClients) =>
-  socket.on(ItemActionTypes.CLONE_SUCCESS, data => {
-    const { listId } = data;
-
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.CLONE_SUCCESS, data);
-
-    updateListOnDashboardAndCohortView(
-      socket,
-      listId,
-      dashboardViewClients,
-      cohortViewClients
-    );
-  });
 
 const emitListsOnAddCohortMember = (socket, clients) =>
   socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
@@ -357,23 +317,49 @@ const addListViewer = (io, dashboardClients, cohortClients) => data => {
     });
 };
 
-const setVote = socket =>
-  socket.on(ItemActionTypes.SET_VOTE_SUCCESS, data => {
-    const { listId, itemId } = data;
+const setVote = (io, listClients, viewersIds) => data => {
+  const { listId, itemId, userId } = data;
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.SET_VOTE_SUCCESS, { listId, itemId });
+  viewersIds.forEach(viewerId => {
+    const viewerIdAsString = viewerId.toString();
+
+    if (viewerIdAsString !== userId.toString()) {
+      if (listClients.has(viewerIdAsString)) {
+        const { socketId, viewId } = listClients.get(viewerIdAsString);
+
+        if (viewId === listId) {
+          io.sockets
+            .to(socketId)
+            .emit(ItemActionTypes.SET_VOTE_SUCCESS, { listId, itemId });
+        }
+      }
+    }
   });
 
-const clearVote = socket =>
-  socket.on(ItemActionTypes.CLEAR_VOTE_SUCCESS, data => {
-    const { listId, itemId } = data;
+  return Promise.resolve();
+};
 
-    socket.broadcast
-      .to(listChannel(listId))
-      .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
+const clearVote = (io, listClients, viewersIds) => data => {
+  const { listId, itemId, userId } = data;
+
+  viewersIds.forEach(viewerId => {
+    const viewerIdAsString = viewerId.toString();
+
+    if (viewerIdAsString !== userId.toString()) {
+      if (listClients.has(viewerIdAsString)) {
+        const { socketId, viewId } = listClients.get(viewerIdAsString);
+
+        if (viewId === listId) {
+          io.sockets
+            .to(socketId)
+            .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
+        }
+      }
+    }
   });
+
+  return Promise.resolve();
+};
 
 const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
   const { listId } = data;
@@ -461,6 +447,8 @@ const addMemberRoleInList = (io, clients) => data => {
       });
     }
   }
+
+  return Promise.resolve();
 };
 
 const addOwnerRoleInList = (io, clients) => data => {
@@ -483,6 +471,8 @@ const addOwnerRoleInList = (io, clients) => data => {
       });
     }
   }
+
+  return Promise.resolve();
 };
 
 const removeMemberRoleInList = (io, clients) => data => {
@@ -537,6 +527,8 @@ const leaveList = io => data => {
   io.sockets
     .to(listChannel(listId))
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+
+  return Promise.resolve();
 };
 
 const emitRemoveMemberOnLeaveCohort = socket =>
@@ -763,12 +755,14 @@ const removeListMember = (
   listClients,
   cohortClients
 ) => data => {
-  const { listId, userId } = data;
+  const { listId, userId, cohortId } = data;
 
   if (dashboardClients.has(userId)) {
-    const { socketId } = dashboardClients.get(userId);
+    const { socketId, viewId } = dashboardClients.get(userId);
 
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    if (viewId === listId) {
+      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    }
   }
 
   if (listClients.has(userId)) {
@@ -798,14 +792,18 @@ const removeListMember = (
   }
 
   if (cohortClients.has(userId)) {
-    const { socketId } = cohortClients.get(userId);
+    const { socketId, viewId } = cohortClients.get(userId);
 
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    if (viewId === cohortId.toString()) {
+      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    }
   }
 
   io.sockets
     .to(`sack-${listId}`)
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
+
+  return Promise.resolve();
 };
 
 const archiveList = (
@@ -1068,7 +1066,6 @@ module.exports = {
   addListViewer,
   addMemberRoleInList,
   addOwnerRoleInList,
-  archiveItem,
   archiveList,
   changeListType,
   clearVote,
@@ -1084,7 +1081,6 @@ module.exports = {
   removeListsOnArchiveCohort,
   removeMemberRoleInList,
   removeOwnerRoleInList,
-  restoreItem,
   restoreList,
   setVote,
   updateItem,

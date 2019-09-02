@@ -34,7 +34,7 @@ const emitCohortMetaData = (cohortId, clients, socket) =>
     });
 
 const updateListOnDashboardAndCohortView = (
-  socket,
+  io,
   listId,
   dashboardClients,
   cohortViewClients
@@ -50,21 +50,23 @@ const updateListOnDashboardAndCohortView = (
 
         viewersIds.forEach(id => {
           const viewerId = id.toString();
-          const list = responseWithList(doc, id);
+          const list = responseWithList(doc, viewerId);
 
           if (dashboardClients.has(viewerId)) {
             const { socketId } = dashboardClients.get(viewerId);
 
-            socket.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: list
-            });
+            io.sockets
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                [listId]: list
+              });
           }
 
           if (cohortId && cohortViewClients.has(viewerId)) {
             const { viewId, socketId } = cohortViewClients.get(viewerId);
 
             if (viewId === cohortId.toString()) {
-              socket
+              io.sockets
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
                   [listId]: list

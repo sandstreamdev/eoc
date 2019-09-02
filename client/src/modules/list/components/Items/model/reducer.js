@@ -6,7 +6,7 @@ import {
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
-import { filterDefined, isDefined } from 'common/utils/helpers';
+import { filterDefined } from 'common/utils/helpers';
 
 const comments = (state = {}, action) => {
   switch (action.type) {
@@ -34,10 +34,13 @@ const items = (state = {}, action) => {
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS: {
       const {
-        payload: { item }
+        payload: {
+          item,
+          item: { _id }
+        }
       } = action;
 
-      return { [item._id]: item, ...state };
+      return { [_id]: item, ...state };
     }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
@@ -73,23 +76,20 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
-        payload: { description, isOrdered, name, editedBy, _id: itemId }
+        payload: {
+          item,
+          item: { _id: itemId }
+        }
       } = action;
 
+      const updatedItem = filterDefined(item);
       const previousItem = state[itemId];
-      const previousDescription = previousItem.description;
-      const newDescription = isDefined(description)
-        ? description
-        : previousDescription;
 
       return {
         ...state,
         [itemId]: {
-          ...(previousItem || action.payload),
-          description: newDescription,
-          isOrdered,
-          editedBy,
-          name: name || previousItem.name
+          ...previousItem,
+          ...updatedItem
         }
       };
     }
