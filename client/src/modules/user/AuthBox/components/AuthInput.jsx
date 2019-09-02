@@ -8,6 +8,7 @@ import _trimStart from 'lodash/trimStart';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import { CheckIcon, ErrorIcon } from 'assets/images/icons';
+import { PasswordValidationValues } from 'common/constants/enums';
 
 class AuthInput extends PureComponent {
   constructor(props) {
@@ -101,7 +102,13 @@ class AuthInput extends PureComponent {
             <ErrorIcon />
           </span>
           <span className="auth-input__feedback-info--invalid">
-            {formatMessage({ id: feedbackMessageId })}
+            {formatMessage(
+              { id: feedbackMessageId },
+              {
+                min: PasswordValidationValues.MIN,
+                max: PasswordValidationValues.MAX
+              }
+            )}
           </span>
         </p>
       );
