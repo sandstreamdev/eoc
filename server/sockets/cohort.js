@@ -42,7 +42,7 @@ const addMember = (io, allCohortsClients, dashboardClients) => data => {
     emitCohortMetaData(cohortId, allCohortsClients, io);
   }
 
-  List.find(
+  return List.find(
     {
       cohortId,
       type: ListType.SHARED
@@ -196,6 +196,8 @@ const updateCohort = (io, allCohortsViewClients) => data => {
         }
       });
   }
+
+  return Promise.resolve();
 };
 
 const updateCohortHeaderStatus = (socket, cohortClientLocks) => {
@@ -474,7 +476,7 @@ const restoreCohort = (
 ) => data => {
   const { cohortId } = data;
 
-  Cohort.findById(cohortId)
+  return Cohort.findById(cohortId)
     .populate('memberIds', 'avatarUrl displayName _id')
     .lean()
     .exec()

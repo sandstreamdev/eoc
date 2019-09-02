@@ -5,12 +5,14 @@ const Cohort = require('../models/cohort.model');
 const {
   filter,
   fireAndForget,
+  isDefined,
   isMember,
   isOwner: isCohortOwner,
   isValidMongoId,
   responseWithCohort,
   responseWithCohortDetails,
-  responseWithCohorts
+  responseWithCohorts,
+  returnPayload
 } = require('../common/utils');
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -111,7 +113,6 @@ const updateCohortById = (req, resp) => {
     name
   });
   let cohortActivity;
-  let cohort;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
@@ -130,9 +131,9 @@ const updateCohortById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      cohort = doc;
+      const data = { cohortId, description };
 
-      if (description !== undefined) {
+      if (isDefined(description)) {
         const { description: prevDescription } = doc;
         if (!description && prevDescription) {
           cohortActivity = ActivityType.COHORT_REMOVE_DESCRIPTION;
@@ -142,49 +143,53 @@ const updateCohortById = (req, resp) => {
           cohortActivity = ActivityType.COHORT_EDIT_DESCRIPTION;
         }
 
-        const data = { cohortId, description };
+        data.description = description;
 
-        return socketActions.updateCohort(
-          socketInstance,
-          allCohortsViewClients
-        )(data);
+        return returnPayload(
+          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
+            data
+          )
+        )(doc);
       }
 
       if (name) {
         cohortActivity = ActivityType.COHORT_EDIT_NAME;
 
-        const data = { cohortId, name };
+        data.name = name;
 
-        return socketActions.updateCohort(
-          socketInstance,
-          allCohortsViewClients
-        )(data);
+        return returnPayload(
+          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
+            data
+          )
+        )(doc);
       }
 
-      if (isArchived !== undefined) {
-        const data = { cohortId };
-
+      if (isDefined(isArchived)) {
         if (isArchived) {
           cohortActivity = ActivityType.COHORT_ARCHIVE;
 
-          return socketActions.archiveCohort(
-            socketInstance,
-            allCohortsViewClients,
-            dashboardClients
-          )(data);
+          return returnPayload(
+            socketActions.archiveCohort(
+              socketInstance,
+              allCohortsViewClients,
+              dashboardClients
+            )(data)
+          )(doc);
         }
 
         cohortActivity = ActivityType.COHORT_RESTORE;
 
-        return socketActions.restoreCohort(
-          socketInstance,
-          allCohortsViewClients,
-          cohortClients,
-          dashboardClients
-        )(data);
+        return returnPayload(
+          socketActions.restoreCohort(
+            socketInstance,
+            allCohortsViewClients,
+            cohortClients,
+            dashboardClients
+          )(data)
+        )(doc);
       }
     })
-    .then(() => {
+    .then(doc => {
       fireAndForget(
         saveActivity(
           cohortActivity,
@@ -193,13 +198,13 @@ const updateCohortById = (req, resp) => {
           null,
           sanitizedCohortId,
           null,
-          cohort.name
+          doc.name
         )
       );
 
       resp.send();
     })
-    .catch(() => resp.sendStatus(400));
+    .catch(err => resp.sendStatus(400));
 };
 
 const getCohortDetails = (req, resp) => {
@@ -478,8 +483,6 @@ const addMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { email } = req.body;
   let currentCohort;
-  let newMember;
-  let userToSend;
   const sanitizedCohortId = sanitize(cohortId);
 
   if (idFromProvider === DEMO_MODE_ID) {
@@ -514,49 +517,52 @@ const addMember = (req, resp) => {
         );
       }
 
-      const { _id } = user;
+      const { _id: itemId } = user;
 
-      if (checkIfCohortMember(currentCohort, _id)) {
+      if (checkIfCohortMember(currentCohort, itemId)) {
         throw new BadRequestException(
           'cohort.actions.add-member-already-member'
         );
       }
-      currentCohort.memberIds.push(_id);
-      newMember = user;
+      currentCohort.memberIds.push(itemId);
 
-      return currentCohort.save();
+      return returnPayload(currentCohort.save())(user);
     })
-    .then(() => {
-      if (newMember) {
-        const { _id: newMemberId } = newMember;
+    .then(user => {
+      if (user) {
+        const { _id: newMemberId } = user;
 
-        return List.updateMany(
-          {
-            cohortId: sanitizedCohortId,
-            type: ListType.SHARED,
-            viewersIds: { $nin: [newMemberId] }
-          },
-          { $push: { viewersIds: newMemberId } }
-        ).exec();
+        return returnPayload(
+          List.updateMany(
+            {
+              cohortId: sanitizedCohortId,
+              type: ListType.SHARED,
+              viewersIds: { $nin: [newMemberId] }
+            },
+            { $push: { viewersIds: newMemberId } }
+          ).exec()
+        )(user);
       }
     })
-    .then(() => {
-      if (newMember) {
+    .then(user => {
+      if (user) {
         const { ownerIds } = currentCohort;
-        userToSend = responseWithCohortMember(newMember, ownerIds);
+        const userToSend = responseWithCohortMember(user, ownerIds);
 
-        return socketActions.addMember(
-          socketInstance,
-          allCohortsViewClients,
-          dashboardClients
-        )({
-          cohortId,
-          member: userToSend
-        });
+        return returnPayload(
+          socketActions.addMember(
+            socketInstance,
+            allCohortsViewClients,
+            dashboardClients
+          )({
+            cohortId,
+            member: userToSend
+          })
+        )(userToSend);
       }
     })
-    .then(() => {
-      if (newMember) {
+    .then(userToSend => {
+      if (userToSend) {
         resp.send(userToSend);
 
         return fireAndForget(
@@ -566,7 +572,7 @@ const addMember = (req, resp) => {
             null,
             null,
             sanitizedCohortId,
-            newMember._id
+            userToSend._id
           )
         );
       }
