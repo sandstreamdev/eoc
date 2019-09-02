@@ -188,6 +188,29 @@ const nameLockId = cohortId => `name-${cohortId}`;
 
 const descriptionLockId = listId => `description-${listId}`;
 
+const votingBroadcast = io => data => listClients => viewersIds => (
+  action,
+  payload
+) => {
+  const { listId, userId } = data;
+
+  viewersIds.forEach(viewerId => {
+    const viewerIdAsString = viewerId.toString();
+
+    if (viewerIdAsString !== userId.toString()) {
+      if (listClients.has(viewerIdAsString)) {
+        const { socketId, viewId } = listClients.get(viewerIdAsString);
+
+        if (viewId === listId) {
+          io.sockets.to(socketId).emit(action, payload);
+        }
+      }
+    }
+  });
+
+  return Promise.resolve();
+};
+
 module.exports = {
   cohortChannel,
   descriptionLockId,
@@ -199,5 +222,6 @@ module.exports = {
   listChannel,
   nameLockId,
   removeCohort,
-  updateListOnDashboardAndCohortView
+  updateListOnDashboardAndCohortView,
+  votingBroadcast
 };

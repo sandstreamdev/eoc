@@ -34,21 +34,7 @@ const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const listClients = require('../sockets/index').getListViewClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
 const { createListCohort } = require('../sockets/cohort');
-const {
-  addListViewer,
-  addMemberRoleInList,
-  addOwnerRoleInList,
-  archiveList,
-  changeListType,
-  deleteList,
-  leaveList: leaveListSocket,
-  removeListMember,
-  removeMemberRoleInList,
-  removeOwnerRoleInList,
-  restoreList,
-  updateItem,
-  updateList
-} = require('../sockets/list');
+const socketActions = require('../sockets/list');
 
 const createList = (req, resp) => {
   const { cohortId, description, name, type } = req.body;
@@ -227,18 +213,28 @@ const addItemToList = (req, resp) => {
 
       const { cohortId, items } = doc;
       const newItem = items.slice(-1)[0];
+      const itemToSend = responseWithItem(newItem, userId);
+      const data = { listId, ...itemToSend };
+      const payload = { itemToSend, cohortId };
+
+      return returnPayload(socketActions.addItemToList(socketInstance)(data))(
+        payload
+      );
+    })
+    .then(payload => {
+      const { itemToSend, cohortId } = payload;
 
       fireAndForget(
         saveActivity(
           ActivityType.ITEM_ADD,
           userId,
-          newItem._id,
+          itemToSend._id,
           listId,
           cohortId
         )
       );
 
-      resp.send(responseWithItem(newItem, userId));
+      resp.send(itemToSend);
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -374,13 +370,17 @@ const voteForItem = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const { items } = doc;
+      const { items, viewersIds } = doc;
       const item = items.id(sanitizedItemId);
+      const data = { listId, userId, itemId };
 
       item.voterIds.push(userId);
 
-      return doc.save();
+      return returnPayload(
+        socketActions.setVote(socketInstance, listClients, viewersIds)(data)
+      )(doc);
     })
+    .then(payload => payload.save())
     .then(doc => {
       if (!doc) {
         return resp.sendStatus(400);
@@ -421,14 +421,18 @@ const clearVote = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const { items } = doc;
+      const { items, viewersIds } = doc;
       const item = items.id(sanitizedItemId);
       const voterIdIndex = item.voterIds.indexOf(userId);
+      const data = { listId, userId, itemId };
 
       item.voterIds.splice(voterIdIndex, 1);
 
-      return doc.save();
+      return returnPayload(
+        socketActions.clearVote(socketInstance, listClients, viewersIds)(data)
+      )(doc);
     })
+    .then(payload => payload.save())
     .then(doc => {
       if (!doc) {
         return resp.sendStatus(400);
@@ -497,9 +501,11 @@ const updateListById = (req, resp) => {
 
         const data = { listId, description };
 
-        return updateList(socketInstance, dashboardClients, cohortClients)(
-          data
-        );
+        return socketActions.updateList(
+          socketInstance,
+          dashboardClients,
+          cohortClients
+        )(data);
       }
 
       if (name) {
@@ -507,9 +513,11 @@ const updateListById = (req, resp) => {
 
         const data = { listId, name };
 
-        return updateList(socketInstance, dashboardClients, cohortClients)(
-          data
-        );
+        return socketActions.updateList(
+          socketInstance,
+          dashboardClients,
+          cohortClients
+        )(data);
       }
 
       if (isArchived !== undefined) {
@@ -518,7 +526,7 @@ const updateListById = (req, resp) => {
         if (isArchived) {
           listActivity = ActivityType.LIST_ARCHIVE;
 
-          return archiveList(
+          return socketActions.archiveList(
             socketInstance,
             dashboardClients,
             cohortClients,
@@ -528,7 +536,7 @@ const updateListById = (req, resp) => {
 
         listActivity = ActivityType.LIST_RESTORE;
 
-        return restoreList(
+        return socketActions.restoreList(
           socketInstance,
           dashboardClients,
           cohortClients,
@@ -541,7 +549,11 @@ const updateListById = (req, resp) => {
 
         const data = { listId, cohortId };
 
-        deleteList(socketInstance, dashboardClients, cohortClients)(data);
+        socketActions.deleteList(
+          socketInstance,
+          dashboardClients,
+          cohortClients
+        )(data);
 
         return Comment.updateMany(
           { listId: sanitizedListId },
@@ -717,20 +729,23 @@ const removeMember = (req, resp) => {
 
       const data = { listId, userId };
 
-      removeListMember(
-        socketInstance,
-        dashboardClients,
-        listClients,
-        cohortClients
-      )(data);
-
+      return returnPayload(
+        socketActions.removeListMember(
+          socketInstance,
+          dashboardClients,
+          listClients,
+          cohortClients
+        )(data)
+      )(doc);
+    })
+    .then(payload => {
       fireAndForget(
         saveActivity(
           ActivityType.LIST_REMOVE_USER,
           currentUserId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          payload.cohortId,
           sanitizedUserId
         )
       );
@@ -776,15 +791,19 @@ const addOwnerRole = (req, resp) => {
       }
 
       const data = { listId, userId };
-      addOwnerRoleInList(socketInstance, listClients)(data);
 
+      return returnPayload(
+        socketActions.addOwnerRoleInList(socketInstance, listClients)(data)
+      )(doc);
+    })
+    .then(payload => {
       fireAndForget(
         saveActivity(
           ActivityType.LIST_SET_AS_OWNER,
           currentUserId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          payload.cohortId,
           userId
         )
       );
@@ -832,7 +851,9 @@ const removeOwnerRole = (req, resp) => {
 
       const data = { listId, userId };
 
-      return removeOwnerRoleInList(socketInstance, listClients)(data);
+      return socketActions.removeOwnerRoleInList(socketInstance, listClients)(
+        data
+      );
     })
     .then(() => {
       fireAndForget(
@@ -893,15 +914,19 @@ const addMemberRole = (req, resp) => {
       }
 
       const data = { listId, userId };
-      addMemberRoleInList(socketInstance, listClients)(data);
 
+      return returnPayload(
+        socketActions.addMemberRoleInList(socketInstance, listClients)(data)
+      )(doc);
+    })
+    .then(payload => {
       fireAndForget(
         saveActivity(
           ActivityType.LIST_SET_AS_MEMBER,
           currentUserId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          payload.cohortId,
           userId
         )
       );
@@ -955,7 +980,7 @@ const removeMemberRole = (req, resp) => {
       const data = { listId, userId };
 
       return returnPayload(
-        removeMemberRoleInList(socketInstance, listClients)(data)
+        socketActions.removeMemberRoleInList(socketInstance, listClients)(data)
       )(doc);
     })
     .then(doc => {
@@ -1047,7 +1072,11 @@ const addViewer = (req, resp) => {
       if (user) {
         userToSend = responseWithListMember(user, cohortMembers);
 
-        return addListViewer(socketInstance, dashboardClients, cohortClients)({
+        return socketActions.addListViewer(
+          socketInstance,
+          dashboardClients,
+          cohortClients
+        )({
           ...userToSend,
           listId
         });
@@ -1150,7 +1179,11 @@ const updateListItem = (req, res) => {
       }
 
       return returnPayload(
+<<<<<<< HEAD
         updateItem(
+=======
+        socketActions.updateItem(
+>>>>>>> eoc_404_improvement_refactor_event_emmiting_from_actions_to_controllers_for_items
           socketInstance,
           dashboardClients,
           cohortClients,
@@ -1226,22 +1259,30 @@ const cloneItem = (req, resp) => {
       if (!list) {
         return resp.sendStatus(400);
       }
-
+      const { viewersIds } = list;
       const newItem = list.items.slice(-1)[0];
+      const newItemToSend = responseWithItem(newItem, userId);
+      const payload = { newItemToSend, list };
+      const data = { listId, item: newItemToSend, userId };
+
+      return returnPayload(
+        socketActions.cloneItem(socketInstance, listClients, viewersIds)(data)
+      )(payload);
+    })
+    .then(payload => {
+      const { newItemToSend, list } = payload;
 
       fireAndForget(
         saveActivity(
           ActivityType.ITEM_CLONE,
           userId,
-          newItem._id,
+          newItemToSend._id,
           sanitizedListId,
           list.cohortId
         )
       );
 
-      resp.send({
-        item: responseWithItem(newItem, userId)
-      });
+      resp.send(newItemToSend);
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -1312,7 +1353,7 @@ const changeType = (req, resp) => {
       const data = { listId, type, removedViewers };
 
       return returnPayload(
-        changeListType(
+        socketActions.changeListType(
           socketInstance,
           dashboardClients,
           cohortClients,
@@ -1387,9 +1428,16 @@ const deleteItem = (req, res) => {
       const { items } = doc;
       const itemToUpdate = items.id(sanitizedItemId);
       const { name } = itemToUpdate;
+      const data = { listId, itemId };
+      const payload = { doc, name };
 
       itemToUpdate.isDeleted = true;
 
+      return returnPayload(socketActions.deleteItem(socketInstance)(data))(
+        payload
+      );
+    })
+    .then(({ doc, name }) => {
       fireAndForget(
         saveActivity(
           ActivityType.ITEM_DELETE,
@@ -1454,10 +1502,10 @@ const leaveList = (req, resp) => {
     })
     .then(() => {
       const data = { listId, userId };
-      leaveListSocket(socketInstance)(data);
 
-      resp.send();
+      return socketActions.leaveList(socketInstance)(data);
     })
+    .then(() => resp.send())
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;

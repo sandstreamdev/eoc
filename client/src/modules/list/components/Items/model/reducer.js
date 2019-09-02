@@ -34,10 +34,11 @@ const items = (state = {}, action) => {
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS: {
       const {
-        payload: { item }
+        payload,
+        payload: { _id }
       } = action;
 
-      return { [item._id]: item, ...state };
+      return { [_id]: payload, ...state };
     }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
@@ -73,23 +74,41 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
-        payload: { description, isOrdered, name, editedBy, _id: itemId }
+        payload: {
+          _id: itemId,
+          description,
+          editedBy,
+          isArchived,
+          isOrdered,
+          name,
+          votesCount
+        }
       } = action;
-
       const previousItem = state[itemId];
-      const previousDescription = previousItem.description;
+      const newIsOrdered = isDefined(isOrdered)
+        ? isOrdered
+        : previousItem.isOrdered;
+      const newVotesCount = isDefined(votesCount)
+        ? votesCount
+        : previousItem.votesCount;
+      const newIsArchived = isDefined(isArchived)
+        ? isArchived
+        : previousItem.isArchived;
       const newDescription = isDefined(description)
         ? description
-        : previousDescription;
+        : previousItem.description;
+      const newName = isDefined(name) ? name : previousItem.name;
 
       return {
         ...state,
         [itemId]: {
           ...(previousItem || action.payload),
           description: newDescription,
-          isOrdered,
           editedBy,
-          name: name || previousItem.name
+          isArchived: newIsArchived,
+          isOrdered: newIsOrdered,
+          name: newName,
+          votesCount: newVotesCount
         }
       };
     }

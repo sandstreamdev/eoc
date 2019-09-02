@@ -4,11 +4,14 @@ const Comment = require('../models/comment.model');
 const List = require('../models/list.model');
 const {
   responseWithComment,
-  responseWithComments
+  responseWithComments,
+  returnPayload
 } = require('../common/utils/index');
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const { saveActivity } = require('./activity');
 const { ActivityType } = require('../common/variables');
+const socketActions = require('../sockets/list');
+const socketInstance = require('../sockets/index').getSocketInstance();
 
 const addComment = (req, resp) => {
   const { itemId, listId, text } = req.body;
@@ -42,10 +45,22 @@ const addComment = (req, resp) => {
       return comment.save();
     })
     .then(comment => {
+      const commentToSend = responseWithComment(
+        comment,
+        avatarUrl,
+        displayName
+      );
+      const data = { itemId, listId, comment: commentToSend };
+
+      return returnPayload(socketActions.addComment(socketInstance)(data))(
+        commentToSend
+      );
+    })
+    .then(payload => {
       resp
-        .location(`/comment/${comment._id}`)
+        .location(`/comment/${payload._id}`)
         .status(201)
-        .send(responseWithComment(comment, avatarUrl, displayName));
+        .send(payload);
 
       saveActivity(
         ActivityType.ITEM_ADD_COMMENT,
@@ -55,7 +70,7 @@ const addComment = (req, resp) => {
         list.cohortId
       );
     })
-    .catch(err => resp.sendStatus(400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const getComments = (req, resp) => {
