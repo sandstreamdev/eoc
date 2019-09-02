@@ -19,8 +19,7 @@ const {
   resetPassword,
   sendUser,
   signUp,
-  updatePassword,
-  updateSettings
+  updatePassword
 } = require('../controllers/userAuth');
 const {
   removeDemoUserChanges
@@ -54,6 +53,5 @@ router.post(
 );
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
-router.post('/update-settings', authorize, updateSettings);
 
 module.exports = router;

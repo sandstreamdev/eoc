@@ -6,7 +6,6 @@ const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
-const NotFoundException = require('../common/exceptions/NotFoundException');
 const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
 const {
@@ -14,7 +13,6 @@ const {
   validatePassword
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
-const { sanitizeObject, updateProperties } = require('../common/utils');
 const { BadRequestReason } = require('../common/variables');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
@@ -447,29 +445,6 @@ const changePassword = (req, res) => {
     });
 };
 
-const updateSettings = (req, res) => {
-  const { settings: editedSettings } = req.body;
-  const {
-    user: { _id: userId }
-  } = req;
-
-  User.findById(userId)
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new NotFoundException();
-      }
-
-      const { settings } = doc;
-
-      updateProperties(settings, sanitizeObject(editedSettings));
-
-      return doc.save();
-    })
-    .then(() => res.send())
-    .catch(() => res.sendStatus(400));
-};
-
 module.exports = {
   changePassword,
   confirmEmail,
@@ -482,6 +457,5 @@ module.exports = {
   resetPassword,
   sendUser,
   signUp,
-  updatePassword,
-  updateSettings
+  updatePassword
 };
