@@ -160,10 +160,10 @@ const updateItem = (
     .then(doc => {
       if (doc) {
         const { items, viewersIds } = doc;
-        const indexOfItem = items.findIndex(
+        const itemIndex = items.findIndex(
           item => item._id.toString() === itemId
         );
-        const item = items[indexOfItem];
+        const item = items[itemIndex];
 
         viewersIds.forEach(id => {
           const viewerId = id.toString();

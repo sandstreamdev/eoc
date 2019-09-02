@@ -146,7 +146,6 @@ const responseWithItem = (item, userId) => {
     ...rest
   } = item;
   const { _id: authorId, displayName: authorName } = author;
-
   const newItem = {
     ...rest,
     authorId,
@@ -158,6 +157,7 @@ const responseWithItem = (item, userId) => {
 
   if (editor) {
     const { displayName } = editor;
+
     newItem.editedBy = displayName;
   }
 
