@@ -2,6 +2,7 @@
 
 An app made by Sandstream Development team, to track office inventory, groceries, and even your daily tasks!
 
+![Eoc custom badge](https://img.shields.io/badge/EOC-App-orange)
 ![main language](https://img.shields.io/github/languages/top/sandstreamdev/eoc)
 ![dependencies status](https://img.shields.io/david/sandstreamdev/eoc)
 ![repository size](https://img.shields.io/github/repo-size/sandstreamdev/eoc)
