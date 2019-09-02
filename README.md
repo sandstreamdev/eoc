@@ -90,6 +90,6 @@ Please make sure to update tests as appropriate.
 
 ## License and trademarks info
 
-- FontAwesome Free. Check [license]('https://fontawesome.com/license') ,
+- FontAwesome Free. Check [Font Awesome license]('https://fontawesome.com/license') ,
 - Google [Trademark Logo]('https://www.google.com/permissions/logos-trademarks/') : ©2018 Google LLC All rights reserved. Google and the Google logo are registered trademarks of Google LLC.
 - [Pravatar API](https://pravatar.cc/). It is published under [CC0 license](https://creativecommons.org/share-your-work/public-domain/cc0/). Pravatar uses photos from [Pexels](https://www.pexels.com/).
