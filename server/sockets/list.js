@@ -32,6 +32,7 @@ const {
   updateListOnDashboardAndCohortView
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
+const { votingBroadcast } = require('./helpers');
 
 const addItemToList = io => data => {
   const { listId } = data;
@@ -319,47 +320,19 @@ const addListViewer = (io, dashboardClients, cohortClients) => data => {
 };
 
 const setVote = (io, listClients, viewersIds) => data => {
-  const { listId, itemId, userId } = data;
+  const { listId, itemId } = data;
+  const action = ItemActionTypes.SET_VOTE_SUCCESS;
+  const payload = { listId, itemId };
 
-  viewersIds.forEach(viewerId => {
-    const viewerIdAsString = viewerId.toString();
-
-    if (viewerIdAsString !== userId.toString()) {
-      if (listClients.has(viewerIdAsString)) {
-        const { socketId, viewId } = listClients.get(viewerIdAsString);
-
-        if (viewId === listId) {
-          io.sockets
-            .to(socketId)
-            .emit(ItemActionTypes.SET_VOTE_SUCCESS, { listId, itemId });
-        }
-      }
-    }
-  });
-
-  return Promise.resolve();
+  return votingBroadcast(io)(data)(listClients)(viewersIds)(action, payload);
 };
 
 const clearVote = (io, listClients, viewersIds) => data => {
-  const { listId, itemId, userId } = data;
+  const { listId, itemId } = data;
+  const action = ItemActionTypes.CLEAR_VOTE_SUCCESS;
+  const payload = { listId, itemId };
 
-  viewersIds.forEach(viewerId => {
-    const viewerIdAsString = viewerId.toString();
-
-    if (viewerIdAsString !== userId.toString()) {
-      if (listClients.has(viewerIdAsString)) {
-        const { socketId, viewId } = listClients.get(viewerIdAsString);
-
-        if (viewId === listId) {
-          io.sockets
-            .to(socketId)
-            .emit(ItemActionTypes.CLEAR_VOTE_SUCCESS, { listId, itemId });
-        }
-      }
-    }
-  });
-
-  return Promise.resolve();
+  return votingBroadcast(io)(data)(listClients)(viewersIds)(action, payload);
 };
 
 const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
@@ -756,7 +729,7 @@ const removeListMember = (
   listClients,
   cohortClients
 ) => data => {
-  const { listId, userId, cohortId } = data;
+  const { cohortId, listId, userId } = data;
 
   if (dashboardClients.has(userId)) {
     const { socketId, viewId } = dashboardClients.get(userId);

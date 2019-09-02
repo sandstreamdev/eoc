@@ -1433,9 +1433,7 @@ const deleteItem = (req, res) => {
         payload
       );
     })
-    .then(payload => {
-      const { doc, name } = payload;
-
+    .then(({ doc, name }) => {
       fireAndForget(
         saveActivity(
           ActivityType.ITEM_DELETE,
