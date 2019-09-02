@@ -17,7 +17,7 @@ import {
   SuccessMessage,
   UserProfile
 } from 'modules/user';
-import { getLoggedUser, updateSettings } from 'modules/user/model/actions';
+import { getLoggedUser } from 'modules/user/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import Footer from '../Footer';
@@ -30,6 +30,7 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
+import { loadSettings, saveSettings } from 'common/utils/localStorage';
 
 export class Layout extends PureComponent {
   constructor(props) {
@@ -43,6 +44,7 @@ export class Layout extends PureComponent {
   }
 
   componentDidMount() {
+    const settings = loadSettings();
     const {
       currentUser,
       getLoggedUser,
@@ -58,18 +60,10 @@ export class Layout extends PureComponent {
         })
         .finally(() => this.setState({ pending: false }));
     }
-  }
 
-  componentDidUpdate(prevProps) {
-    const { currentUser: prevUser } = prevProps;
-    const { currentUser } = this.props;
-
-    if (!prevUser && currentUser) {
-      const {
-        settings: { viewType }
-      } = currentUser;
-
-      this.handleSwitchView(viewType);
+    if (settings) {
+      const { viewType } = settings;
+      this.setState({ viewType });
     }
   }
 
@@ -84,10 +78,7 @@ export class Layout extends PureComponent {
     );
   };
 
-  handleSwitchView = viewType => this.setState({ viewType });
-
   handleViewTypeChange = () => {
-    const { updateSettings } = this.props;
     const { viewType } = this.state;
 
     const newViewType =
@@ -97,13 +88,7 @@ export class Layout extends PureComponent {
       viewType: newViewType
     };
 
-    this.handleSwitchView(newViewType);
-    this.setState({ pendingForViewType: true });
-
-    lo;
-    // updateSettings(settings)
-    //   .catch(() => this.handleSwitchView(viewType))
-    //   .finally(() => this.setState({ pendingForViewType: false }));
+    this.setState({ viewType: newViewType }, saveSettings(settings));
   };
 
   render() {
@@ -212,9 +197,11 @@ Layout.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired
   }),
+  settings: PropTypes.shape({
+    viewType: PropTypes.string
+  }),
 
-  getLoggedUser: PropTypes.func.isRequired,
-  updateSettings: PropTypes.func.isRequired
+  getLoggedUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -226,6 +213,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { getLoggedUser, updateSettings }
+    { getLoggedUser }
   )
 )(Layout);
