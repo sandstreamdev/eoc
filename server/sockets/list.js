@@ -205,8 +205,8 @@ const cloneItem = (
   listClients,
   viewersIds
 ) => data => {
-  const { userId, item, listId } = data;
-  const dataToSend = { listId, item };
+  const { item, listId, userId } = data;
+  const dataToSend = { item, listId };
 
   viewersIds.forEach(viewerId => {
     const viewerIdAsString = viewerId.toString();
