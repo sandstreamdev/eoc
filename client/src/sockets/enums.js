@@ -77,4 +77,8 @@ export const CommentEvents = Object.freeze({
   ADD_SUCCESS: CommentActionTypes.ADD_SUCCESS
 });
 
+export const NotificationEvents = Object.freeze({
+  ADD_COHORT_MEMBER: 'notification/ADD_COHORT_MEMBER';
+})
+
 export { ItemStatusType };

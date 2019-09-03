@@ -555,8 +555,9 @@ const addMember = (req, resp) => {
             allCohortsViewClients,
             dashboardClients
           )({
-            cohortId,
-            member: userToSend
+            cohortId: sanitizedCohortId,
+            member: userToSend,
+            userId
           })
         )(userToSend);
       }

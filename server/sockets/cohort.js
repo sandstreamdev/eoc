@@ -32,8 +32,18 @@ const List = require('../models/list.model');
 const addMember = (io, allCohortsClients, dashboardClients) => data => {
   const {
     cohortId,
-    member: { _id: userId }
+    member: { _id: userId },
+    userId: performerId
   } = data;
+
+  if (dashboardClients.has(userId)) {
+    const { socketId } = dashboardClients;
+    io.sockets.to(socketId).emit('notification/ADD_COHORT_MEMBER', {
+      performerId,
+      userId,
+      cohortId
+    });
+  }
 
   io.sockets
     .to(cohortChannel(cohortId))
