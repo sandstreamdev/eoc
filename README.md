@@ -25,29 +25,45 @@ Database:
 
 - MongoDB
 
-All of the used technologies you can find in package.json files.
+All of the used libraries and packages you can find in the package.json file.
 
 ## Installation
 
 Please remember first to create .env file in the root directory of the project and add necessary .env keys that you can find in the .env-example file.
 
+#### 1. Clone the repository
+
 ```
-# Clone the repository
 git clone https://github.com/sandstreamdev/eoc.git
+```
 
-# Go inside the directory
+#### 2. Go inside the directory
+
+```
 cd [project-folder]
+```
 
-# Install dependencies
+#### 3. Install dependencies
+
+```
 npm install
+```
 
-# Run database
+#### 4. Run database
+
+```
 monogod
+```
 
-# Start the development server
+#### 5. Start the development server
+
+```
 npm run dev
+```
 
-# Build for production
+## Build for production
+
+```
 npm run build
 ```
 
