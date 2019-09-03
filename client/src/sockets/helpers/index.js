@@ -25,7 +25,7 @@ export const listEventsController = (event, data, dispatch) => {
     case ListEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
       const { cohortId, listId } = data;
 
-      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: cohortId });
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
       dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
 
       return history.replace('/cohorts');

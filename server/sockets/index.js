@@ -6,27 +6,8 @@ const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
-const {
-  emitListsOnAddCohortMember,
-  emitListsOnRemoveCohortMember,
-  emitListsOnRestoreCohort,
-  emitRemoveMemberOnLeaveCohort,
-  removeListsOnArchiveCohort,
-  updateItemState,
-  updateListHeaderState
-} = require('./list');
-const {
-  addCohortMember,
-  addOwnerRoleInCohort,
-  archiveCohort,
-  deleteCohort,
-  leaveCohort,
-  removeCohortMember,
-  removeOwnerRoleInCohort,
-  restoreCohort,
-  updateCohort,
-  updateCohortHeaderStatus
-} = require('./cohort');
+const { updateItemState, updateListHeaderState } = require('./list');
+const { updateCohortHeaderStatus } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
 const { Routes } = require('../common/variables');
 
@@ -154,28 +135,9 @@ const socketListeners = socketInstance => {
 
     updateItemState(socket, itemClientLocks);
 
-    // This method can not be refactored as it doesn't
-    // have it's own controller
+    // These method can not be refactored as they don't
+    // have their own controllers
     updateListHeaderState(socket, listClientLocks);
-
-    addCohortMember(socket, allCohortsViewClients);
-    addOwnerRoleInCohort(socket, cohortViewClients);
-    archiveCohort(socket, allCohortsViewClients);
-    deleteCohort(socket, allCohortsViewClients);
-    emitListsOnAddCohortMember(socket, dashboardViewClients);
-    emitListsOnRemoveCohortMember(
-      socket,
-      dashboardViewClients,
-      listViewClients
-    );
-    emitListsOnRestoreCohort(socket, dashboardViewClients, cohortViewClients);
-    emitRemoveMemberOnLeaveCohort(socket);
-    leaveCohort(socket, allCohortsViewClients);
-    removeCohortMember(socket, allCohortsViewClients, cohortViewClients);
-    removeListsOnArchiveCohort(socket, dashboardViewClients);
-    removeOwnerRoleInCohort(socket, cohortViewClients);
-    restoreCohort(socket, allCohortsViewClients, cohortViewClients);
-    updateCohort(socket, allCohortsViewClients);
     updateCohortHeaderStatus(socket, cohortClientLocks);
   });
 };
