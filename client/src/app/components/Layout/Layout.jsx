@@ -80,15 +80,17 @@ export class Layout extends PureComponent {
 
   handleViewTypeChange = () => {
     const { viewType } = this.state;
-
     const newViewType =
       viewType === ViewType.LIST ? ViewType.TILES : ViewType.LIST;
 
-    const settings = {
-      viewType: newViewType
-    };
+    this.setState({ viewType: newViewType }, this.handleSaveSettings);
+  };
 
-    this.setState({ viewType: newViewType }, saveSettings(settings));
+  handleSaveSettings = () => {
+    const { viewType } = this.state;
+    const settings = { viewType };
+
+    saveSettings(settings);
   };
 
   render() {
@@ -196,9 +198,6 @@ Layout.propTypes = {
   intl: IntlPropType,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired
-  }),
-  settings: PropTypes.shape({
-    viewType: PropTypes.string
   }),
 
   getLoggedUser: PropTypes.func.isRequired
