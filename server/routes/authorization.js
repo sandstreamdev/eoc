@@ -12,6 +12,7 @@ const {
   confirmEmail,
   getLoggedUser,
   getUserDetails,
+  getUserName,
   logout,
   recoveryPassword,
   resendRecoveryLink,
@@ -55,5 +56,6 @@ router.post(
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.post('/update-settings', authorize, updateSettings);
+router.get('/user-name/:token?', authorize, getUserName);
 
 module.exports = router;

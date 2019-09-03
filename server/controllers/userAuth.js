@@ -470,11 +470,32 @@ const updateSettings = (req, res) => {
     .catch(() => res.sendStatus(400));
 };
 
+const getUserName = (req, resp) => {
+  const {
+    params: { token }
+  } = req;
+
+  User.findOne({ resetToken: token })
+    .lean()
+    .exec()
+    .then(user => {
+      if (user) {
+        const { displayName } = user;
+
+        return resp.send({ displayName });
+      }
+
+      resp.sendStatus(400);
+    })
+    .catch(() => resp.sendStatus(400));
+};
+
 module.exports = {
   changePassword,
   confirmEmail,
   getLoggedUser,
   getUserDetails,
+  getUserName,
   logout,
   recoveryPassword,
   resendRecoveryLink,
