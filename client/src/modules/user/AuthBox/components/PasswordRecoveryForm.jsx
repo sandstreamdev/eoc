@@ -39,7 +39,7 @@ class PasswordRecoveryForm extends PureComponent {
   }
 
   componentDidMount() {
-    this.handleUserName();
+    this.fetchUserName();
   }
 
   componentWillUnmount() {
@@ -51,7 +51,7 @@ class PasswordRecoveryForm extends PureComponent {
     }
   }
 
-  handleUserName = () => {
+  fetchUserName = () => {
     const {
       match: {
         params: { token }
