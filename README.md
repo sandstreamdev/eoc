@@ -27,8 +27,6 @@ Database:
 
 - MongoDB
 
-All of the used libraries and packages you can find in the package.json file.
-
 ## Installation
 
 Please remember first to create .env file in the root directory of the project and add necessary .env keys that you can find in the .env-example file.
