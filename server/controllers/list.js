@@ -8,6 +8,7 @@ const {
   checkIfArrayContainsUserId,
   filter,
   fireAndForget,
+  isDefined,
   isMember,
   isOwner,
   isValidMongoId,
@@ -1141,7 +1142,7 @@ const updateListItem = (req, res) => {
       const itemToUpdate = items.id(sanitizedItemId);
       itemToUpdate.editedBy = userId;
 
-      if (description !== undefined) {
+      if (isDefined(description)) {
         const { description: prevDescription } = itemToUpdate;
         itemToUpdate.description = description;
 
@@ -1154,7 +1155,7 @@ const updateListItem = (req, res) => {
         }
       }
 
-      if (isOrdered !== undefined) {
+      if (isDefined(isOrdered)) {
         itemToUpdate.isOrdered = isOrdered;
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
@@ -1167,7 +1168,7 @@ const updateListItem = (req, res) => {
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
       }
 
-      if (isArchived !== undefined) {
+      if (isDefined(isArchived)) {
         itemToUpdate.isArchived = isArchived;
         editedItemActivity = isArchived
           ? ActivityType.ITEM_ARCHIVE
