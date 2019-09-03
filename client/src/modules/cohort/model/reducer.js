@@ -86,7 +86,7 @@ const cohorts = (state = {}, action) => {
         payload: { _id }
       } = action;
 
-      return { ...state, [_id]: { ...state[_id], payload } };
+      return { ...state, [_id]: { ...(state[_id] || {}), ...payload } };
     }
     case CohortActionTypes.FETCH_DETAILS_SUCCESS: {
       const {

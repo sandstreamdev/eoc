@@ -19,6 +19,7 @@ const {
   cohortChannel,
   descriptionLockId,
   emitCohortMetaData,
+  emitRoleChange,
   getListsDataByViewers,
   getListIdsByViewers,
   handleLocks,
@@ -119,49 +120,21 @@ const leaveCohort = (io, allCohortsClients) => data => {
 };
 
 const addOwnerRole = (io, cohortClients) => data => {
-  const { cohortId, userId } = data;
-
-  io.sockets
-    .to(cohortChannel(cohortId))
-    .emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-      ...data,
-      isCurrentUserRoleChanging: false
-    });
-
-  if (cohortClients.has(userId)) {
-    const { viewId, socketId } = cohortClients.get(userId);
-
-    if (viewId === cohortId) {
-      io.sockets.to(socketId).emit(CohortActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-        ...data,
-        isCurrentUserRoleChanging: true
-      });
-    }
-  }
+  emitRoleChange(
+    io,
+    cohortClients,
+    data,
+    CohortActionTypes.ADD_OWNER_ROLE_SUCCESS
+  );
 };
 
 const removeOwnerRole = (io, cohortClients) => data => {
-  const { cohortId, userId } = data;
-
-  io.sockets
-    .to(cohortChannel(cohortId))
-    .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
-      ...data,
-      isCurrentUserRoleChanging: false
-    });
-
-  if (cohortClients.has(userId)) {
-    const { viewId, socketId } = cohortClients.get(userId);
-
-    if (viewId === cohortId) {
-      io.sockets
-        .to(socketId)
-        .emit(CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
-          ...data,
-          isCurrentUserRoleChanging: true
-        });
-    }
-  }
+  emitRoleChange(
+    io,
+    cohortClients,
+    data,
+    CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS
+  );
 };
 
 const updateCohort = (io, allCohortsViewClients) => data => {

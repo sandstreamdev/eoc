@@ -8,6 +8,7 @@ const {
   checkIfArrayContainsUserId,
   filter,
   fireAndForget,
+  isDefined,
   isMember,
   isOwner,
   isValidMongoId,
@@ -214,12 +215,16 @@ const addItemToList = (req, resp) => {
       const { cohortId, items } = doc;
       const newItem = items.slice(-1)[0];
       const itemToSend = responseWithItem(newItem, userId);
-      const data = { listId, ...itemToSend };
+      const data = { listId, item: itemToSend };
       const payload = { itemToSend, cohortId };
 
-      return returnPayload(socketActions.addItemToList(socketInstance)(data))(
-        payload
-      );
+      return returnPayload(
+        socketActions.addItemToList(
+          socketInstance,
+          cohortClients,
+          dashboardClients
+        )(data)
+      )(payload);
     })
     .then(payload => {
       const { itemToSend, cohortId } = payload;
@@ -1133,15 +1138,13 @@ const updateListItem = (req, res) => {
         throw new NotFoundException();
       }
 
-      const { items, viewersIds } = doc;
+      const { items } = doc;
       const itemToUpdate = items.id(sanitizedItemId);
-      let data;
       itemToUpdate.editedBy = userId;
 
-      if (description !== undefined) {
+      if (isDefined(description)) {
         const { description: prevDescription } = itemToUpdate;
         itemToUpdate.description = description;
-        data = { listId, userId, itemId, description };
 
         if (!description && prevDescription) {
           editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
@@ -1152,10 +1155,8 @@ const updateListItem = (req, res) => {
         }
       }
 
-      if (isOrdered !== undefined) {
+      if (isDefined(isOrdered)) {
         itemToUpdate.isOrdered = isOrdered;
-        data = { listId, userId, itemId, isOrdered };
-
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
@@ -1164,31 +1165,18 @@ const updateListItem = (req, res) => {
       if (name) {
         prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
-        data = { listId, userId, itemId, name };
-
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
       }
 
-      if (isArchived !== undefined) {
+      if (isDefined(isArchived)) {
         itemToUpdate.isArchived = isArchived;
-        data = { listId, userId, itemId, isArchived };
-
         editedItemActivity = isArchived
           ? ActivityType.ITEM_ARCHIVE
           : ActivityType.ITEM_RESTORE;
       }
 
-      return returnPayload(
-        socketActions.updateItem(
-          socketInstance,
-          dashboardClients,
-          cohortClients,
-          listClients,
-          viewersIds
-        )(data)
-      )(doc);
+      return doc.save();
     })
-    .then(payload => payload.save())
     .then(doc => {
       if (!doc) {
         return res.sendStatus(404);
@@ -1206,8 +1194,14 @@ const updateListItem = (req, res) => {
         )
       );
 
-      res.send();
+      return socketActions.updateItem(
+        socketInstance,
+        cohortClients,
+        dashboardClients,
+        listClients
+      )({ itemId: sanitizedItemId, listId: sanitizedListId, userId });
     })
+    .then(() => res.send())
     .catch(() => res.sendStatus(400));
 };
 
@@ -1262,7 +1256,13 @@ const cloneItem = (req, resp) => {
       const data = { listId, item: newItemToSend, userId };
 
       return returnPayload(
-        socketActions.cloneItem(socketInstance, listClients, viewersIds)(data)
+        socketActions.cloneItem(
+          socketInstance,
+          cohortClients,
+          dashboardClients,
+          listClients,
+          viewersIds
+        )(data)
       )(payload);
     })
     .then(payload => {

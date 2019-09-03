@@ -1,5 +1,3 @@
-const sanitize = require('mongo-sanitize');
-
 const {
   CommentActionTypes,
   ItemActionTypes,
@@ -10,7 +8,6 @@ const {
   LOCK_TIMEOUT
 } = require('../common/variables');
 const List = require('../models/list.model');
-const User = require('../models/user.model');
 const {
   checkIfArrayContainsUserId,
   isMember,
@@ -28,12 +25,17 @@ const {
 const { isDefined } = require('../common/utils/helpers');
 const { votingBroadcast } = require('./helpers');
 
-const addItemToList = io => data => {
+const addItemToList = (io, cohortClients, dashboardClients) => data => {
   const { listId } = data;
 
   io.sockets.to(listChannel(listId)).emit(ItemActionTypes.ADD_SUCCESS, data);
 
-  return Promise.resolve();
+  return updateListOnDashboardAndCohortView(
+    io,
+    listId,
+    dashboardClients,
+    cohortClients
+  );
 };
 
 const deleteItem = io => data => {
@@ -138,63 +140,48 @@ const updateItemState = (socket, itemClientLocks) => {
 
 const updateItem = (
   io,
-  dashboardViewClients,
-  cohortViewClients,
-  listClients,
-  viewersIds
+  cohortClients,
+  dashboardClients,
+  listClients
 ) => data => {
-  const { listId, userId, itemId } = data;
-  const sanitizedUserId = sanitize(userId);
+  const { itemId, listId, userId } = data;
 
-  return User.findById(sanitizedUserId).then(user => {
-    if (user) {
-      const { displayName } = user;
-      const editedBy = displayName;
-      let dataToSend;
+  return List.findById(listId)
+    .lean()
+    .populate('items.authorId', 'displayName')
+    .populate('items.editedBy', 'displayName')
+    .exec()
+    .then(doc => {
+      if (doc) {
+        const { items, viewersIds } = doc;
+        const itemIndex = items.findIndex(
+          item => item._id.toString() === itemId
+        );
+        const item = items[itemIndex];
 
-      return List.findOne({ _id: listId })
-        .lean()
-        .exec()
-        .then(doc => {
-          if (doc) {
-            const { items } = doc;
-            const indexOfItem = items.findIndex(
-              item => item._id.toString() === itemId
-            );
-            const item = items[indexOfItem];
+        viewersIds.forEach(id => {
+          const viewerId = id.toString();
 
-            dataToSend = {
-              ...responseWithItem(item, userId),
-              editedBy,
-              listId,
-              ...data
-            };
-          }
-        })
-        .then(() => {
-          viewersIds.forEach(viewerId => {
-            const viewerIdAsString = viewerId.toString();
+          if (viewerId !== userId.toString()) {
+            if (listClients.has(viewerId)) {
+              const { socketId } = listClients.get(viewerId);
 
-            if (viewerIdAsString !== userId.toString()) {
-              if (listClients.has(viewerIdAsString)) {
-                const { socketId } = listClients.get(viewerIdAsString);
-
-                io.sockets
-                  .to(socketId)
-                  .emit(ItemActionTypes.UPDATE_SUCCESS, dataToSend);
-              }
+              io.sockets.to(socketId).emit(ItemActionTypes.UPDATE_SUCCESS, {
+                listId,
+                item: responseWithItem(item, viewerId)
+              });
             }
-          });
-
-          return updateListOnDashboardAndCohortView(
-            io.sockets,
-            listId,
-            dashboardViewClients,
-            cohortViewClients
-          );
+          }
         });
-    }
-  });
+
+        return updateListOnDashboardAndCohortView(
+          io,
+          listId,
+          dashboardClients,
+          cohortClients
+        );
+      }
+    });
 };
 
 const addComment = io => data => {
@@ -205,9 +192,15 @@ const addComment = io => data => {
   return Promise.resolve();
 };
 
-const cloneItem = (io, listClients, viewersIds) => data => {
-  const { userId, item, listId } = data;
-  const dataToSend = { ...data, ...item };
+const cloneItem = (
+  io,
+  cohortClients,
+  dashboardClients,
+  listClients,
+  viewersIds
+) => data => {
+  const { item, listId, userId } = data;
+  const dataToSend = { item, listId };
 
   viewersIds.forEach(viewerId => {
     const viewerIdAsString = viewerId.toString();
@@ -225,7 +218,12 @@ const cloneItem = (io, listClients, viewersIds) => data => {
     }
   });
 
-  return Promise.resolve();
+  return updateListOnDashboardAndCohortView(
+    io,
+    listId,
+    dashboardClients,
+    cohortClients
+  );
 };
 
 const addListViewer = (io, dashboardClients, cohortClients) => data => {

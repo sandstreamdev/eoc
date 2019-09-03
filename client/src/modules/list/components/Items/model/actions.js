@@ -184,10 +184,12 @@ export const updateListItem = (
     .then(() => {
       dispatch(
         updateListItemSuccess({
-          ...data,
-          editedBy,
-          _id: itemId,
-          listId
+          listId,
+          item: {
+            ...data,
+            editedBy,
+            _id: itemId
+          }
         })
       );
 
@@ -216,7 +218,7 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
   })
     .then(response => response.json())
     .then(json => {
-      dispatch(cloneItemSuccess({ listId, ...json }));
+      dispatch(cloneItemSuccess({ item: json, listId }));
 
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.clone-item',

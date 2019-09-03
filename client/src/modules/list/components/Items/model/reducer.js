@@ -6,7 +6,7 @@ import {
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
-import { filterDefined, isDefined } from 'common/utils/helpers';
+import { filterDefined } from 'common/utils/helpers';
 
 const comments = (state = {}, action) => {
   switch (action.type) {
@@ -34,11 +34,13 @@ const items = (state = {}, action) => {
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS: {
       const {
-        payload,
-        payload: { _id }
+        payload: {
+          item,
+          item: { _id }
+        }
       } = action;
 
-      return { [_id]: payload, ...state };
+      return { [_id]: item, ...state };
     }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
@@ -75,40 +77,19 @@ const items = (state = {}, action) => {
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
         payload: {
-          _id: itemId,
-          description,
-          editedBy,
-          isArchived,
-          isOrdered,
-          name,
-          votesCount
+          item,
+          item: { _id: itemId }
         }
       } = action;
+
+      const updatedItem = filterDefined(item);
       const previousItem = state[itemId];
-      const newIsOrdered = isDefined(isOrdered)
-        ? isOrdered
-        : previousItem.isOrdered;
-      const newVotesCount = isDefined(votesCount)
-        ? votesCount
-        : previousItem.votesCount;
-      const newIsArchived = isDefined(isArchived)
-        ? isArchived
-        : previousItem.isArchived;
-      const newDescription = isDefined(description)
-        ? description
-        : previousItem.description;
-      const newName = isDefined(name) ? name : previousItem.name;
 
       return {
         ...state,
         [itemId]: {
-          ...(previousItem || action.payload),
-          description: newDescription,
-          editedBy,
-          isArchived: newIsArchived,
-          isOrdered: newIsOrdered,
-          name: newName,
-          votesCount: newVotesCount
+          ...previousItem,
+          ...updatedItem
         }
       };
     }

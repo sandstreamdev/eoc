@@ -202,7 +202,7 @@ const updateCohortById = (req, resp) => {
         )
       );
 
-      resp.send();
+      return resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };

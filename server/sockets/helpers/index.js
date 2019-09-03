@@ -34,7 +34,7 @@ const emitCohortMetaData = (cohortId, clients, io) =>
     });
 
 const updateListOnDashboardAndCohortView = (
-  socket,
+  io,
   listId,
   dashboardClients,
   cohortViewClients
@@ -50,21 +50,23 @@ const updateListOnDashboardAndCohortView = (
 
         viewersIds.forEach(id => {
           const viewerId = id.toString();
-          const list = responseWithList(doc, id);
+          const list = responseWithList(doc, viewerId);
 
           if (dashboardClients.has(viewerId)) {
             const { socketId } = dashboardClients.get(viewerId);
 
-            socket.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: list
-            });
+            io.sockets
+              .to(socketId)
+              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+                [listId]: list
+              });
           }
 
           if (cohortId && cohortViewClients.has(viewerId)) {
             const { viewId, socketId } = cohortViewClients.get(viewerId);
 
             if (viewId === cohortId.toString()) {
-              socket
+              io.sockets
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
                   [listId]: list
@@ -193,10 +195,31 @@ const votingBroadcast = io => data => listClients => viewersIds => (
   return Promise.resolve();
 };
 
+const emitRoleChange = (io, cohortClients, data, event) => {
+  const { cohortId, userId } = data;
+
+  io.sockets.to(cohortChannel(cohortId)).emit(event, {
+    ...data,
+    isCurrentUserRoleChanging: false
+  });
+
+  if (cohortClients.has(userId)) {
+    const { viewId, socketId } = cohortClients.get(userId);
+
+    if (viewId === cohortId) {
+      io.sockets.to(socketId).emit(event, {
+        ...data,
+        isCurrentUserRoleChanging: true
+      });
+    }
+  }
+};
+
 module.exports = {
   cohortChannel,
   descriptionLockId,
   emitCohortMetaData,
+  emitRoleChange,
   getListIdsByViewers,
   getListsDataByViewers,
   handleItemLocks,
