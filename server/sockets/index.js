@@ -23,11 +23,13 @@ const listViewClients = new Map();
 const cohortClientLocks = new Map();
 const itemClientLocks = new Map();
 const listClientLocks = new Map();
+const onlineClients = new Map();
 
 const getCohortViewClients = () => cohortViewClients;
 const getAllCohortsViewClients = () => allCohortsViewClients;
 const getDashboardViewClients = () => dashboardViewClients;
 const getListViewClients = () => listViewClients;
+const getOnlineClients = () => onlineClients;
 
 const initSocket = server => {
   socketInstance = io(server, {
@@ -125,6 +127,12 @@ const socketListeners = socketInstance => {
       }
     });
 
+    socket.on('enterApp', ({ userId }) =>
+      onlineClients.set(userId, { socketId: socket.id })
+    );
+
+    socket.on('leaveApp', ({ userId }) => onlineClients.delete(userId));
+
     socket.on('error', () => {
       /* Ignore error.
        * Don't show any information to a user
@@ -147,6 +155,7 @@ module.exports = {
   getCohortViewClients,
   getDashboardViewClients,
   getListViewClients,
+  getOnlineClients,
   getSocketInstance,
   init: initSocket,
   listen: socketListeners

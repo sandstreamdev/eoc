@@ -9,6 +9,7 @@ import { createNotificationWithTimeout } from 'modules/notification/model/action
 import { ValidationException } from 'common/exceptions/ValidationException';
 import history from 'common/utils/history';
 import { asyncTypes, enumerable } from 'common/utils/helpers';
+import { leaveApp } from 'sockets';
 
 export const AuthorizationActionTypes = enumerable('user')(
   ...asyncTypes('FETCH'),
@@ -44,9 +45,12 @@ const updateSettingsFailure = () => ({
   type: AuthorizationActionTypes.UPDATE_SETTINGS_FAILURE
 });
 
-export const logoutCurrentUser = () => dispatch =>
+export const logoutCurrentUser = id => dispatch =>
   postRequest('/auth/logout')
-    .then(() => window.location.reload())
+    .then(() => {
+      leaveApp(id);
+      window.location.reload();
+    })
     .catch(err => dispatch(logoutFailure(err.message)));
 
 export const loginDemoUser = () => dispatch =>

@@ -5,7 +5,8 @@ const {
   ListActionTypes,
   ListHeaderStatusTypes,
   ListType,
-  LOCK_TIMEOUT
+  LOCK_TIMEOUT,
+  NotificationEvents
 } = require('../common/variables');
 const List = require('../models/list.model');
 const {
@@ -226,12 +227,30 @@ const cloneItem = (
   );
 };
 
-const addListViewer = (io, dashboardClients, cohortClients) => data => {
-  const { listId, _id: viewerId, _id } = data;
+const addListViewer = (
+  io,
+  dashboardClients,
+  cohortClients,
+  onlineClients
+) => data => {
+  const {
+    listId,
+    notificationData,
+    userToSend,
+    userToSend: { _id: viewerId, _id }
+  } = data;
+
+  if (onlineClients.has(viewerId.toString())) {
+    const { socketId } = onlineClients.get(viewerId.toString());
+
+    io.sockets
+      .to(socketId)
+      .emit(NotificationEvents.ADD_LIST_VIEWER, notificationData);
+  }
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { ...data, _id });
+    .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { ...userToSend, _id });
 
   return List.findById(listId)
     .lean()

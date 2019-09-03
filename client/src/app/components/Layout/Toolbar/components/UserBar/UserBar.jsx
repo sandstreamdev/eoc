@@ -13,8 +13,12 @@ import Dropdown from 'common/components/Dropdown';
 
 class UserBar extends Component {
   handleLogOut = () => {
+    const {
+      currentUser: { id }
+    } = this.props;
     const { logoutCurrentUser } = this.props;
-    logoutCurrentUser();
+
+    logoutCurrentUser(id);
   };
 
   renderAvatar = () => {

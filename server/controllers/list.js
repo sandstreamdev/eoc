@@ -34,6 +34,7 @@ const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const listClients = require('../sockets/index').getListViewClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
+const onlineClients = require('../sockets/index').getOnlineClients();
 const { createListCohort } = require('../sockets/cohort');
 const socketActions = require('../sockets/list');
 
@@ -1015,7 +1016,7 @@ const removeMemberRole = (req, resp) => {
 
 const addViewer = (req, resp) => {
   const {
-    user: { _id: currentUserId, idFromProvider }
+    user: { _id: currentUserId, displayName, idFromProvider }
   } = req;
   const { id: listId } = req.params;
   const { email } = req.body;
@@ -1077,13 +1078,20 @@ const addViewer = (req, resp) => {
       if (user) {
         userToSend = responseWithListMember(user, cohortMembers);
 
+        const notificationData = {
+          performerName: displayName,
+          resourceName: list.name
+        };
+
         return socketActions.addListViewer(
           socketInstance,
           dashboardClients,
-          cohortClients
+          cohortClients,
+          onlineClients
         )({
-          ...userToSend,
-          listId
+          userToSend,
+          listId,
+          notificationData
         });
       }
     })

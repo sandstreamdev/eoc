@@ -6,6 +6,8 @@ import {
   dashboardRoute
 } from 'common/utils/helpers';
 import { ListActionTypes } from '../../modules/list/model/actionTypes';
+import { MessageType as NotificationType } from 'common/constants/enums';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 
 export const listEventsController = (event, data, dispatch) => {
   switch (event) {
@@ -70,3 +72,9 @@ export const cohortEventsController = (event, data, dispatch) => {
       return dispatch({ type: event, payload: data });
   }
 };
+
+export const notificationEventsController = (event, data, dispatch) =>
+  createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+    notificationId: event,
+    data
+  });

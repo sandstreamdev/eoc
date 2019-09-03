@@ -355,5 +355,7 @@
   "activity.cohort.invite-user": "{performer} invited {user} to '{cohort}' cohort.",
   "activity.cohort.remove-user": "{performer} removed {user} from '{cohort}' cohort.",
   "activity.cohort.set-as-owner": "{performer} made {user} an owner in '{cohort}' cohort.",
-  "activity.cohort.set-as-member": "{performer} made {user} a member in '{cohort}' cohort."
+  "activity.cohort.set-as-member": "{performer} made {user} a member in '{cohort}' cohort.",
+  "notification.add-to-cohort": "{performerName} has added you to '{resourceName}' cohort.",
+  "notification.add-to-list": "{performerName} has added you to '{resourceName}' list."
 }

@@ -78,7 +78,8 @@ export const CommentEvents = Object.freeze({
 });
 
 export const NotificationEvents = Object.freeze({
-  ADD_COHORT_MEMBER: 'notification/ADD_COHORT_MEMBER';
-})
+  ADD_COHORT_MEMBER: 'notification.add-to-cohort',
+  ADD_LIST_VIEWER: 'notification.add-to-list'
+});
 
 export { ItemStatusType };

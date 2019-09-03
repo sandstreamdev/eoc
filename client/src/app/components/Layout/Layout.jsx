@@ -30,6 +30,7 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
+import { enterApp } from 'sockets';
 
 export class Layout extends PureComponent {
   constructor(props) {
@@ -66,10 +67,12 @@ export class Layout extends PureComponent {
 
     if (!prevUser && currentUser) {
       const {
+        id,
         settings: { viewType }
       } = currentUser;
 
       this.handleSwitchView(viewType);
+      enterApp(id);
     }
   }
 

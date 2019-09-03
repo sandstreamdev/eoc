@@ -144,6 +144,11 @@ const ViewType = enumerable('viewType')('LIST', 'TILES');
 
 const BadRequestReason = enumerable('reason')('VALIDATION');
 
+const NotificationEvents = Object.freeze({
+  ADD_COHORT_MEMBER: 'notification.add-to-cohort',
+  ADD_LIST_VIEWER: 'notification.add-to-list'
+});
+
 module.exports = {
   ActivityType,
   BadRequestReason,
@@ -161,6 +166,7 @@ module.exports = {
   ListHeaderStatusTypes,
   ListType,
   LOCK_TIMEOUT,
+  NotificationEvents,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME,
   Routes,

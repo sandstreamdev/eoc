@@ -29,6 +29,7 @@ const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClien
 const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const listClients = require('../sockets/index').getListViewClients();
+const onlineClients = require('../sockets/index').getOnlineClients();
 const socketInstance = require('../sockets/index').getSocketInstance();
 const socketActions = require('../sockets/cohort');
 
@@ -478,7 +479,7 @@ const removeOwnerRole = (req, resp) => {
 
 const addMember = (req, resp) => {
   const {
-    user: { _id: userId, idFromProvider }
+    user: { _id: userId, idFromProvider, displayName }
   } = req;
   const { id: cohortId } = req.params;
   const { email } = req.body;
@@ -549,15 +550,21 @@ const addMember = (req, resp) => {
         const { ownerIds } = currentCohort;
         const userToSend = responseWithCohortMember(user, ownerIds);
 
+        const notificationData = {
+          performerName: displayName,
+          resourceName: currentCohort.name
+        };
+
         return returnPayload(
           socketActions.addMember(
             socketInstance,
             allCohortsViewClients,
-            dashboardClients
+            dashboardClients,
+            onlineClients
           )({
             cohortId: sanitizedCohortId,
             member: userToSend,
-            userId
+            notificationData
           })
         )(userToSend);
       }

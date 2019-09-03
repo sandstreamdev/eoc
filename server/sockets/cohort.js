@@ -5,7 +5,8 @@ const {
   CohortHeaderStatusTypes,
   ListActionTypes,
   ListType,
-  LOCK_TIMEOUT
+  LOCK_TIMEOUT,
+  NotificationEvents
 } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const {
@@ -29,20 +30,25 @@ const {
 const { isDefined } = require('../common/utils');
 const List = require('../models/list.model');
 
-const addMember = (io, allCohortsClients, dashboardClients) => data => {
+const addMember = (
+  io,
+  allCohortsClients,
+  dashboardClients,
+  onlineClients
+) => data => {
   const {
     cohortId,
     member: { _id: userId },
-    userId: performerId
+    notificationData
   } = data;
+  const id = userId.toString();
 
-  if (dashboardClients.has(userId)) {
-    const { socketId } = dashboardClients;
-    io.sockets.to(socketId).emit('notification/ADD_COHORT_MEMBER', {
-      performerId,
-      userId,
-      cohortId
-    });
+  if (onlineClients.has(id)) {
+    const { socketId } = onlineClients.get(id);
+
+    io.sockets
+      .to(socketId)
+      .emit(NotificationEvents.ADD_COHORT_MEMBER, notificationData);
   }
 
   io.sockets
@@ -81,8 +87,6 @@ const addMember = (io, allCohortsClients, dashboardClients) => data => {
               ...viewer
             });
         });
-
-        const id = userId.toString();
 
         if (dashboardClients.has(id)) {
           const { socketId } = dashboardClients.get(id);
