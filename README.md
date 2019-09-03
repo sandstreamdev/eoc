@@ -11,6 +11,8 @@ An app made by Sandstream Development team, to track office inventory, groceries
 
 ## Main application tech stack
 
+App uses WebSockets technology via `Socket.io` library to provide a better user experience.
+
 Client:
 
 - React.js,
@@ -40,7 +42,7 @@ git clone https://github.com/sandstreamdev/eoc.git
 #### 2. Go inside the directory
 
 ```
-cd [project-folder]
+cd eoc
 ```
 
 #### 3. Install dependencies
