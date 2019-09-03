@@ -7,7 +7,7 @@ const {
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
 
-const emitCohortMetaData = (cohortId, clients, socket) =>
+const emitCohortMetaData = (cohortId, clients, io) =>
   Cohort.findById(cohortId)
     .select('_id isArchived createdAt name description memberIds')
     .lean()
@@ -23,7 +23,7 @@ const emitCohortMetaData = (cohortId, clients, socket) =>
           if (clients.has(memberId)) {
             const { socketId } = clients.get(memberId);
 
-            socket.broadcast
+            io.sockets
               .to(socketId)
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
                 [cohortId]: cohort
@@ -96,24 +96,6 @@ const getListIdsByViewers = lists => {
   });
 
   return listsByViewers;
-};
-
-const removeCohort = (socket, cohortId, clients, members) => {
-  socket.broadcast
-    .to(`cohort-${cohortId}`)
-    .emit(CohortActionTypes.REMOVE_WHEN_COHORT_UNAVAILABLE, cohortId);
-
-  members.forEach(id => {
-    const memberId = id.toString();
-
-    if (clients.has(memberId)) {
-      const { socketId } = clients.get(memberId);
-
-      socket.broadcast
-        .to(socketId)
-        .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
-    }
-  });
 };
 
 const getListsDataByViewers = lists => {
@@ -221,7 +203,6 @@ module.exports = {
   handleLocks,
   listChannel,
   nameLockId,
-  removeCohort,
-  updateListOnDashboardAndCohortView,
-  votingBroadcast
+  votingBroadcast,
+  updateListOnDashboardAndCohortView
 };

@@ -4,12 +4,15 @@ const validator = require('validator');
 const Cohort = require('../models/cohort.model');
 const {
   filter,
+  fireAndForget,
+  isDefined,
   isMember,
   isOwner: isCohortOwner,
   isValidMongoId,
   responseWithCohort,
   responseWithCohortDetails,
-  responseWithCohorts
+  responseWithCohorts,
+  returnPayload
 } = require('../common/utils');
 const List = require('../models/list.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -22,6 +25,12 @@ const {
 const { ActivityType, ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
+const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClients();
+const cohortClients = require('../sockets/index').getCohortViewClients();
+const dashboardClients = require('../sockets/index').getDashboardViewClients();
+const listClients = require('../sockets/index').getListViewClients();
+const socketInstance = require('../sockets/index').getSocketInstance();
+const socketActions = require('../sockets/cohort');
 
 const createCohort = (req, resp) => {
   const { description, name, userId } = req.body;
@@ -122,9 +131,9 @@ const updateCohortById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      const data = { cohortId, description };
 
-      if (description !== undefined) {
+      if (isDefined(description)) {
         const { description: prevDescription } = doc;
         if (!description && prevDescription) {
           cohortActivity = ActivityType.COHORT_REMOVE_DESCRIPTION;
@@ -133,27 +142,67 @@ const updateCohortById = (req, resp) => {
         } else {
           cohortActivity = ActivityType.COHORT_EDIT_DESCRIPTION;
         }
+
+        data.description = description;
+
+        return returnPayload(
+          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
+            data
+          )
+        )(doc);
       }
 
       if (name) {
         cohortActivity = ActivityType.COHORT_EDIT_NAME;
+
+        data.name = name;
+
+        return returnPayload(
+          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
+            data
+          )
+        )(doc);
       }
 
-      if (isArchived !== undefined) {
-        cohortActivity = isArchived
-          ? ActivityType.COHORT_ARCHIVE
-          : ActivityType.COHORT_RESTORE;
-      }
+      if (isDefined(isArchived)) {
+        if (isArchived) {
+          cohortActivity = ActivityType.COHORT_ARCHIVE;
 
-      saveActivity(
-        cohortActivity,
-        userId,
-        null,
-        null,
-        sanitizedCohortId,
-        null,
-        doc.name
+          return returnPayload(
+            socketActions.archiveCohort(
+              socketInstance,
+              allCohortsViewClients,
+              dashboardClients
+            )(data)
+          )(doc);
+        }
+
+        cohortActivity = ActivityType.COHORT_RESTORE;
+
+        return returnPayload(
+          socketActions.restoreCohort(
+            socketInstance,
+            allCohortsViewClients,
+            cohortClients,
+            dashboardClients
+          )(data)
+        )(doc);
+      }
+    })
+    .then(doc => {
+      fireAndForget(
+        saveActivity(
+          cohortActivity,
+          userId,
+          null,
+          null,
+          sanitizedCohortId,
+          null,
+          doc.name
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -206,7 +255,7 @@ const deleteCohortById = (req, resp) => {
     user: { _id: userId }
   } = req;
   const sanitizedCohortId = sanitize(cohortId);
-  let cohortMembers;
+  let cohort;
 
   Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
     .exec()
@@ -215,7 +264,7 @@ const deleteCohortById = (req, resp) => {
         throw new NotFoundException();
       }
 
-      cohortMembers = doc.memberIds;
+      cohort = doc;
 
       return List.find({ cohortId: sanitizedCohortId }, '_id')
         .lean()
@@ -240,21 +289,25 @@ const deleteCohortById = (req, resp) => {
     .then(() =>
       Cohort.updateMany({ _id: sanitizedCohortId }, { isDeleted: true }).exec()
     )
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+    .then(() => {
+      const { ownerIds: owners, name } = cohort;
+      const data = { cohortId, owners };
 
-      resp.send(cohortMembers);
+      socketActions.deleteCohort(socketInstance, allCohortsViewClients)(data);
 
-      saveActivity(
-        ActivityType.COHORT_DELETE,
-        userId,
-        null,
-        null,
-        cohortId,
-        doc.name
+      fireAndForget(
+        saveActivity(
+          ActivityType.COHORT_DELETE,
+          userId,
+          null,
+          null,
+          cohortId,
+          null,
+          name
+        )
       );
+
+      resp.send();
     })
     .catch(err =>
       resp.sendStatus(err instanceof NotFoundException ? 404 : 400)
@@ -296,16 +349,26 @@ const removeMember = (req, resp) => {
       ).exec();
     })
     .then(() => {
-      resp.send();
+      socketActions.removeMember(
+        socketInstance,
+        allCohortsViewClients,
+        cohortClients,
+        dashboardClients,
+        listClients
+      )({ cohortId: sanitizedCohortId, userId: sanitizedUserId });
 
-      saveActivity(
-        ActivityType.COHORT_REMOVE_USER,
-        currentUserId,
-        null,
-        null,
-        sanitizedCohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.COHORT_REMOVE_USER,
+          currentUserId,
+          null,
+          null,
+          sanitizedCohortId,
+          sanitizedUserId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -333,16 +396,23 @@ const addOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      resp.send();
+      socketActions.addOwnerRole(socketInstance, cohortClients)({
+        cohortId: sanitizedCohortId,
+        userId: sanitizedUserId
+      });
 
-      saveActivity(
-        ActivityType.COHORT_SET_AS_OWNER,
-        currentUserId,
-        null,
-        null,
-        sanitizedCohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.COHORT_SET_AS_OWNER,
+          currentUserId,
+          null,
+          null,
+          sanitizedCohortId,
+          sanitizedUserId
+        )
       );
+
+      resp.send();
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -377,16 +447,23 @@ const removeOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() => {
-      resp.send();
+      socketActions.removeOwnerRole(socketInstance, cohortClients)({
+        cohortId: sanitizedCohortId,
+        userId: sanitizedUserId
+      });
 
-      saveActivity(
-        ActivityType.COHORT_SET_AS_MEMBER,
-        currentUserId,
-        null,
-        null,
-        sanitizedCohortId,
-        sanitizedUserId
+      fireAndForget(
+        saveActivity(
+          ActivityType.COHORT_SET_AS_MEMBER,
+          currentUserId,
+          null,
+          null,
+          sanitizedCohortId,
+          sanitizedUserId
+        )
       );
+
+      resp.send();
     })
     .catch(err => {
       if (err instanceof BadRequestException) {
@@ -406,7 +483,6 @@ const addMember = (req, resp) => {
   const { id: cohortId } = req.params;
   const { email } = req.body;
   let currentCohort;
-  let newMember;
   const sanitizedCohortId = sanitize(cohortId);
 
   if (idFromProvider === DEMO_MODE_ID) {
@@ -441,49 +517,65 @@ const addMember = (req, resp) => {
         );
       }
 
-      const { _id, avatarUrl, displayName } = user;
+      const { _id: itemId } = user;
 
-      if (checkIfCohortMember(currentCohort, _id)) {
+      if (checkIfCohortMember(currentCohort, itemId)) {
         throw new BadRequestException(
           'cohort.actions.add-member-already-member'
         );
       }
+      currentCohort.memberIds.push(itemId);
 
-      currentCohort.memberIds.push(_id);
-      newMember = { avatarUrl, _id, displayName };
-
-      return currentCohort.save();
+      return returnPayload(currentCohort.save())(user);
     })
-    .then(() => {
-      if (newMember) {
-        const { _id: newMemberId } = newMember;
+    .then(user => {
+      if (user) {
+        const { _id: newMemberId } = user;
 
-        return List.updateMany(
-          {
-            cohortId: sanitizedCohortId,
-            type: ListType.SHARED,
-            viewersIds: { $nin: [newMemberId] }
-          },
-          { $push: { viewersIds: newMemberId } }
-        ).exec();
+        return returnPayload(
+          List.updateMany(
+            {
+              cohortId: sanitizedCohortId,
+              type: ListType.SHARED,
+              viewersIds: { $nin: [newMemberId] }
+            },
+            { $push: { viewersIds: newMemberId } }
+          ).exec()
+        )(user);
       }
     })
-    .then(() => {
-      if (newMember) {
+    .then(user => {
+      if (user) {
         const { ownerIds } = currentCohort;
+        const userToSend = responseWithCohortMember(user, ownerIds);
 
-        resp.send(responseWithCohortMember(newMember, ownerIds));
+        return returnPayload(
+          socketActions.addMember(
+            socketInstance,
+            allCohortsViewClients,
+            dashboardClients
+          )({
+            cohortId,
+            member: userToSend
+          })
+        )(userToSend);
+      }
+    })
+    .then(userToSend => {
+      if (userToSend) {
+        resp.send(userToSend);
 
-        return saveActivity(
-          ActivityType.COHORT_ADD_USER,
-          userId,
-          null,
-          null,
-          sanitizedCohortId,
-          newMember._id
+        return fireAndForget(
+          saveActivity(
+            ActivityType.COHORT_ADD_USER,
+            userId,
+            null,
+            null,
+            sanitizedCohortId,
+            userToSend._id
+          )
         );
       }
-
       resp.send({ _id: null });
     })
     .catch(err => {
@@ -541,10 +633,16 @@ const leaveCohort = (req, resp) => {
           ownerIds: { $nin: [userId] }
         },
         { $pull: { viewersIds: userId } }
-      )
-        .exec()
-        .then(() => resp.send())
+      ).exec()
     )
+    .then(() => {
+      socketActions.leaveCohort(socketInstance, allCohortsViewClients)({
+        cohortId: sanitizedCohortId,
+        userId: sanitizedUserId
+      });
+
+      resp.send();
+    })
     .catch(err => {
       if (err instanceof BadRequestException) {
         const { message } = err;

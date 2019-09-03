@@ -1,8 +1,6 @@
-const _keyBy = require('lodash/keyBy');
 const sanitize = require('mongo-sanitize');
 
 const {
-  CohortActionTypes,
   CommentActionTypes,
   ItemActionTypes,
   ItemStatusType,
@@ -16,15 +14,11 @@ const User = require('../models/user.model');
 const {
   checkIfArrayContainsUserId,
   isMember,
-  isViewer,
   responseWithItem,
-  responseWithList,
-  responseWithListsMetaData
+  responseWithList
 } = require('../common/utils');
 const {
   descriptionLockId,
-  getListIdsByViewers,
-  getListsDataByViewers,
   handleItemLocks,
   handleLocks,
   listChannel,
@@ -233,51 +227,6 @@ const cloneItem = (io, listClients, viewersIds) => data => {
 
   return Promise.resolve();
 };
-
-const emitListsOnAddCohortMember = (socket, clients) =>
-  socket.on(CohortActionTypes.ADD_MEMBER_SUCCESS, data => {
-    const {
-      cohortId,
-      member: { _id: userId }
-    } = data;
-
-    List.find(
-      {
-        cohortId,
-        type: ListType.SHARED
-      },
-      '_id created_at cohortId name description items favIds type'
-    )
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const lists = responseWithListsMetaData(docs, userId);
-          const sharedListIds = lists.map(list => list._id.toString());
-          const { member } = data;
-          const viewer = {
-            ...member,
-            isMember: false,
-            isViewer: true
-          };
-
-          sharedListIds.forEach(listId => {
-            socket.broadcast
-              .to(listChannel(listId))
-              .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { listId, viewer });
-          });
-
-          if (clients.has(userId)) {
-            const { socketId } = clients.get(userId);
-            const dataMap = _keyBy(lists, '_id');
-
-            socket.broadcast
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, dataMap);
-          }
-        }
-      });
-  });
 
 const addListViewer = (io, dashboardClients, cohortClients) => data => {
   const { listId, _id: viewerId, _id } = data;
@@ -505,32 +454,6 @@ const leaveList = io => data => {
   return Promise.resolve();
 };
 
-const emitRemoveMemberOnLeaveCohort = socket =>
-  socket.on(CohortActionTypes.LEAVE_SUCCESS, data => {
-    const { cohortId, userId } = data;
-
-    List.find(
-      {
-        cohortId,
-        type: ListType.SHARED
-      },
-      '_id created_at cohortId name description items favIds type'
-    )
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const sharedListIds = docs.map(list => list._id.toString());
-
-          sharedListIds.forEach(listId =>
-            socket.broadcast
-              .to(listChannel(listId))
-              .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId })
-          );
-        }
-      });
-  });
-
 const changeListType = (
   io,
   dashboardClients,
@@ -627,101 +550,6 @@ const changeListType = (
       }
     });
 };
-
-const emitListsOnRemoveCohortMember = (socket, dashboardClients, listClients) =>
-  socket.on(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data => {
-    const { cohortId, userId } = data;
-
-    List.find({ cohortId })
-      .populate('cohortId', 'memberIds')
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const {
-            cohortId: { memberIds: cohortMemberIds }
-          } = docs[0];
-          const listIdsUserWasRemovedFrom = [];
-          const listIdsUserRemained = [];
-
-          docs.forEach(doc => {
-            const { type } = doc;
-            const listId = doc._id.toString();
-
-            if (isViewer(doc, userId)) {
-              listIdsUserRemained.push(listId);
-            } else if (type === ListType.SHARED) {
-              listIdsUserWasRemovedFrom.push(listId);
-            }
-          });
-
-          if (listIdsUserWasRemovedFrom.length > 0) {
-            if (dashboardClients.has(userId)) {
-              const { socketId } = dashboardClients.get(userId);
-
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.REMOVE_BY_IDS, listIdsUserWasRemovedFrom);
-            }
-
-            listIdsUserWasRemovedFrom.forEach(listId => {
-              socket.broadcast
-                .to(listChannel(listId))
-                .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, {
-                  listId,
-                  userId
-                });
-
-              if (listClients.has(userId)) {
-                const { socketId, viewId } = listClients.get(userId);
-                const isCohortMember = checkIfArrayContainsUserId(
-                  cohortMemberIds,
-                  userId
-                );
-
-                if (viewId === listId) {
-                  socket.broadcast
-                    .to(socketId)
-                    .emit(ListActionTypes.REMOVED_BY_SOMEONE, {
-                      cohortId,
-                      isCohortMember,
-                      listId
-                    });
-                }
-              }
-            });
-          }
-
-          if (listIdsUserRemained.length > 0) {
-            listIdsUserRemained.forEach(listId => {
-              if (listClients.has(userId)) {
-                const { socketId, viewId } = listClients.get(userId);
-
-                if (viewId === listId) {
-                  socket.broadcast
-                    .to(socketId)
-                    .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
-                      isCurrentUserUpdated: true,
-                      isGuest: true,
-                      listId,
-                      userId
-                    });
-                }
-              }
-
-              socket.broadcast
-                .to(listChannel(listId))
-                .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
-                  isCurrentUserUpdated: false,
-                  isGuest: true,
-                  listId,
-                  userId
-                });
-            });
-          }
-        }
-      });
-  });
 
 const removeListMember = (
   io,
@@ -952,88 +780,6 @@ const restoreList = (
     });
 };
 
-const removeListsOnArchiveCohort = (socket, dashboardClients) =>
-  socket.on(CohortActionTypes.ARCHIVE_SUCCESS, data => {
-    const { cohortId } = data;
-
-    List.find({
-      cohortId
-    })
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const listIds = docs.map(list => list._id.toString());
-          const listsByViewers = getListIdsByViewers(docs);
-
-          listIds.forEach(listId => {
-            socket.broadcast
-              .to(listChannel(listId))
-              .emit(ListActionTypes.REMOVE_WHEN_COHORT_UNAVAILABLE, {
-                cohortId,
-                listId
-              });
-          });
-
-          Object.keys(listsByViewers).forEach(viewerId => {
-            if (dashboardClients.has(viewerId)) {
-              const { socketId } = dashboardClients.get(viewerId);
-              const listsToRemoved = listsByViewers[viewerId];
-
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.REMOVE_BY_IDS, listsToRemoved);
-            }
-          });
-        }
-      });
-  });
-
-const emitListsOnRestoreCohort = (socket, dashboardClients, cohortClients) =>
-  socket.on(CohortActionTypes.RESTORE_SUCCESS, data => {
-    const { cohortId } = data;
-
-    List.find({ cohortId, isArchived: false })
-      .populate('cohortId', 'ownerIds')
-      .lean()
-      .exec()
-      .then(docs => {
-        if (docs) {
-          const {
-            cohortId: { ownerIds: cohortOwners }
-          } = docs[0];
-          const listsByUsers = getListsDataByViewers(docs);
-
-          cohortOwners.forEach(id => {
-            const cohortOwnerId = id.toString();
-
-            if (cohortClients.has(cohortOwnerId)) {
-              const { socketId, viewId } = cohortClients.get(cohortOwnerId);
-
-              if (viewId === cohortId) {
-                const listsToSend = listsByUsers[cohortOwnerId];
-
-                socket.broadcast
-                  .to(socketId)
-                  .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listsToSend);
-              }
-            }
-          });
-
-          Object.keys(listsByUsers).forEach(viewerId => {
-            if (dashboardClients.has(viewerId)) {
-              const { socketId } = dashboardClients.get(viewerId);
-              const listsToSend = listsByUsers[viewerId];
-
-              socket.broadcast
-                .to(socketId)
-                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listsToSend);
-            }
-          });
-        }
-      });
-  });
-
 module.exports = {
   addComment,
   addItemToList,
@@ -1046,13 +792,8 @@ module.exports = {
   cloneItem,
   deleteItem,
   deleteList,
-  emitListsOnAddCohortMember,
-  emitListsOnRemoveCohortMember,
-  emitListsOnRestoreCohort,
-  emitRemoveMemberOnLeaveCohort,
   leaveList,
   removeListMember,
-  removeListsOnArchiveCohort,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   restoreList,
