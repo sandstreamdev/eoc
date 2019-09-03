@@ -204,7 +204,7 @@ const updateCohortById = (req, resp) => {
 
       resp.send();
     })
-    .catch(err => resp.sendStatus(400));
+    .catch(() => resp.sendStatus(400));
 };
 
 const getCohortDetails = (req, resp) => {
