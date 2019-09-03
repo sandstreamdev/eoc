@@ -482,7 +482,7 @@ const getUserName = (req, resp) => {
       if (user) {
         const { displayName } = user;
 
-        return resp.send({ displayName }).status(200);
+        return resp.send({ displayName });
       }
 
       resp.sendStatus(400);
