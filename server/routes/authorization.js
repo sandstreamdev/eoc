@@ -56,6 +56,6 @@ router.post(
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.post('/update-settings', authorize, updateSettings);
-router.get('/user-name/:token?', authorize, getUserName);
+router.get('/user-name/:token?', getUserName);
 
 module.exports = router;
