@@ -11,11 +11,10 @@ const Confirmation = ({
   className,
   disabled,
   onCancel,
-  onConfirm,
-  title
+  onConfirm
 }) => (
   <div className={classNames('confirmation', { className })}>
-    <h4>{title || children}</h4>
+    <h4>{children}</h4>
     <PendingButton
       className="primary-button"
       disabled={disabled}
@@ -40,7 +39,6 @@ Confirmation.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   disabled: PropTypes.bool,
-  title: PropTypes.string,
 
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired
