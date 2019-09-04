@@ -37,6 +37,10 @@ class ListItem extends PureComponent {
     };
   }
 
+  componentWillUnmount() {
+    this.handleItemUnlock();
+  }
+
   markAsDone = () => {
     const isOrdered = true;
 
