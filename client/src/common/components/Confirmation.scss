@@ -17,4 +17,14 @@
   button:first-of-type {
     margin-right: four-by(4);
   }
+
+  em {
+    display: inline-block;
+    max-width: 150px;
+    font-style: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: sub;
+  }
 }

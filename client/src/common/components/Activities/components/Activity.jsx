@@ -46,7 +46,7 @@ class Activity extends PureComponent {
           values={{
             item: item ? <em className="activity__item">{item.name}</em> : null,
             performer: <em>{performer.name}</em>,
-            value: editedValue
+            value: <em>{editedValue}</em>
           }}
         />
         {list && (

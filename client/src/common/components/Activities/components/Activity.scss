@@ -19,8 +19,15 @@
     }
 
     em {
+      display: inline-block;
+      width: auto;
+      max-width: 150px;
       font-style: normal;
       font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: sub;
     }
   }
 

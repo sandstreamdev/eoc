@@ -25,5 +25,14 @@
 
   &__list-item {
     margin-bottom: four-by(4);
+
+    em {
+      max-width: 150px;
+      display: inline-block;
+      vertical-align: sub;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 }

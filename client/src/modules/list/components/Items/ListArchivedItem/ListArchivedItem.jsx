@@ -120,13 +120,12 @@ class ListArchivedItem extends PureComponent {
             disabled={!isMember}
             onCancel={this.hideConfirmation}
             onConfirm={this.handleDeletingItem}
-            title={formatMessage(
-              {
-                id: 'list.list-archived-item.confirmation'
-              },
-              { name }
-            )}
-          />
+          >
+            <FormattedMessage
+              id="list.list-archived-item.confirmation"
+              values={{ name: <em>{name}</em> }}
+            />
+          </Confirmation>
         )}
       </li>
     );

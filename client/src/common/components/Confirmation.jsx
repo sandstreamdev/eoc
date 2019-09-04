@@ -6,9 +6,15 @@ import { FormattedMessage } from 'react-intl';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 
-const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
+const Confirmation = ({
+  children,
+  className,
+  disabled,
+  onCancel,
+  onConfirm
+}) => (
   <div className={classNames('confirmation', { className })}>
-    <h4>{title}</h4>
+    <h4>{children}</h4>
     <PendingButton
       className="primary-button"
       disabled={disabled}
@@ -30,9 +36,9 @@ const Confirmation = ({ className, disabled, onCancel, onConfirm, title }) => (
 );
 
 Confirmation.propTypes = {
+  children: PropTypes.any,
   className: PropTypes.string,
   disabled: PropTypes.bool,
-  title: PropTypes.string.isRequired,
 
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired
