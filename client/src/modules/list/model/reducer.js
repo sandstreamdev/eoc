@@ -110,6 +110,7 @@ const lists = (state = {}, action) => {
       return { ...state, ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
       return { ...state, [action.payload._id]: { ...action.payload } };
+    case ListActionTypes.ARCHIVE_SUCCESS:
     case ListActionTypes.DELETE_SUCCESS:
     case ListActionTypes.LEAVE_SUCCESS: {
       const { [action.payload.listId]: removed, ...newState } = state;
@@ -127,13 +128,6 @@ const lists = (state = {}, action) => {
       };
 
       return { ...state, [listId]: updatedList };
-    }
-    case ListActionTypes.ARCHIVE_SUCCESS: {
-      const { listId: _id, isArchived } = action.payload;
-      const { cohortId, name } = state[_id];
-      const archivedList = { cohortId, _id, isArchived, name };
-
-      return { ...state, [action.payload.listId]: archivedList };
     }
     case ListActionTypes.RESTORE_SUCCESS:
     case ListActionTypes.FETCH_DATA_SUCCESS:
