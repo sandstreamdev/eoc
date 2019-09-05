@@ -21,9 +21,11 @@ class Dropdown extends PureComponent {
     if (isVisible) {
       document.addEventListener('keydown', this.handleEscapePress);
       document.addEventListener('click', this.handleClickOutside);
+      document.addEventListener('touchend', this.handleClickOutside);
     } else {
       document.removeEventListener('keydown', this.handleEscapePress);
       document.removeEventListener('click', this.handleClickOutside);
+      document.removeEventListener('touchend', this.handleClickOutside);
     }
   }
 
