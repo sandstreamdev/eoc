@@ -26,6 +26,6 @@ const down = async db => {
 };
 
 module.exports = {
-  up,
-  down
+  down,
+  up
 };
