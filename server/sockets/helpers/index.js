@@ -6,6 +6,7 @@ const {
 } = require('../../common/variables');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
+const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
 
 const emitCohortMetaData = (cohortId, clients, io) =>
   Cohort.findById(cohortId)
@@ -215,8 +216,32 @@ const emitRoleChange = (io, cohortClients, data, event) => {
   }
 };
 
+const delayedUnlock = socket => data => itemClientLocks => locks => {
+  const { itemId, listId, userId } = data;
+
+  setTimeout(() => {
+    handleItemLocks(
+      List,
+      {
+        _id: listId,
+        'items._id': itemId,
+        memberIds: userId
+      },
+      itemId
+    )(locks).then(() => {
+      socket.broadcast
+        .to(listChannel(listId))
+        .emit(ItemStatusType.UNLOCK, { itemId, listId, locks });
+
+      clearTimeout(itemClientLocks.get(nameLockId(itemId)));
+      itemClientLocks.delete(nameLockId(itemId));
+    });
+  }, LOCK_TIMEOUT);
+};
+
 module.exports = {
   cohortChannel,
+  delayedUnlock,
   descriptionLockId,
   emitCohortMetaData,
   emitRoleChange,
@@ -226,6 +251,6 @@ module.exports = {
   handleLocks,
   listChannel,
   nameLockId,
-  votingBroadcast,
-  updateListOnDashboardAndCohortView
+  updateListOnDashboardAndCohortView,
+  votingBroadcast
 };
