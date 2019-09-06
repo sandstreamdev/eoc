@@ -16,15 +16,15 @@ import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Lists from './Lists';
 
-class MoveToPanel extends PureComponent {
+class MoveToListPanel extends PureComponent {
   pendingPromise = null;
 
   state = {
     isConfirmationVisible: false,
-    listsToDisplay: [],
-    pending: false,
     listId: null,
-    listName: null
+    listName: null,
+    listsToDisplay: [],
+    pending: false
   };
 
   componentDidMount() {
@@ -156,7 +156,7 @@ class MoveToPanel extends PureComponent {
   }
 }
 
-MoveToPanel.propTypes = {
+MoveToListPanel.propTypes = {
   data: PropTypes.objectOf(
     PropTypes.oneOfType([
       PropTypes.string,
@@ -195,4 +195,4 @@ export default _flowRight(
     mapStateToProps,
     { fetchListsForItem, moveItemToList }
   )
-)(MoveToPanel);
+)(MoveToListPanel);

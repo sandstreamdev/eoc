@@ -24,7 +24,7 @@ import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
 import { DefaultLocks } from 'common/constants/enums';
-import MoveToPanel from '../MoveToListPanel';
+import MoveToListPanel from '../MoveToListPanel';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -33,7 +33,7 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       isConfirmationVisible: false,
-      isMoveToPanelVisible: false,
+      isMoveToListPanelVisible: false,
       isNameEdited: false
     };
   }
@@ -97,7 +97,7 @@ class ListItem extends PureComponent {
     if (!areDetailsVisible) {
       this.setState({
         isConfirmationVisible: false,
-        isMoveToPanelVisible: false
+        isMoveToListPanelVisible: false
       });
     }
   };
@@ -146,11 +146,11 @@ class ListItem extends PureComponent {
     }));
   };
 
-  handleMoveToVisibility = event => {
+  handleMoveToListPanelVisibility = event => {
     event.preventDefault();
 
-    this.setState(({ isMoveToPanelVisible }) => ({
-      isMoveToPanelVisible: !isMoveToPanelVisible
+    this.setState(({ isMoveToListPanelVisible }) => ({
+      isMoveToListPanelVisible: !isMoveToListPanelVisible
     }));
   };
 
@@ -273,17 +273,20 @@ class ListItem extends PureComponent {
   };
 
   renderMenuButtons = () => {
-    const { isConfirmationVisible, isMoveToPanelVisible } = this.state;
+    const { isConfirmationVisible, isMoveToListPanelVisible } = this.state;
     const {
       data: {
         isOrdered,
-        locks: { name: nameLock, description: descriptionLock } = DefaultLocks
+        locks: { description: descriptionLock, name: nameLock } = DefaultLocks
       },
       isMember
     } = this.props;
     const isEdited = nameLock || descriptionLock;
     const disabled =
-      isEdited || isMoveToPanelVisible || isConfirmationVisible || !isMember;
+      isEdited ||
+      isMoveToListPanelVisible ||
+      isConfirmationVisible ||
+      !isMember;
 
     return (
       <div className="list-item__feature-buttons">
@@ -309,8 +312,8 @@ class ListItem extends PureComponent {
         <button
           className="link-button"
           disabled={disabled}
-          onClick={this.handleMoveToVisibility}
-          onTouchEnd={this.handleMoveToVisibility}
+          onClick={this.handleMoveToListPanelVisibility}
+          onTouchEnd={this.handleMoveToListPanelVisibility}
           type="button"
         >
           <FormattedMessage id="list.list-item.move" />
@@ -342,23 +345,26 @@ class ListItem extends PureComponent {
   renderMoveToPanel = () => {
     const { data } = this.props;
 
-    return <MoveToPanel data={data} onClose={this.handleMoveToVisibility} />;
+    return (
+      <MoveToListPanel
+        data={data}
+        onClose={this.handleMoveToListPanelVisibility}
+      />
+    );
   };
 
   renderItemFeatures = () => {
-    const { isConfirmationVisible, isMoveToPanelVisible } = this.state;
-
-    if (!isConfirmationVisible && !isMoveToPanelVisible) {
-      return this.renderMenuButtons();
-    }
+    const { isConfirmationVisible, isMoveToListPanelVisible } = this.state;
 
     if (isConfirmationVisible) {
       return this.renderConfirmation();
     }
 
-    if (isMoveToPanelVisible) {
+    if (isMoveToListPanelVisible) {
       return this.renderMoveToPanel();
     }
+
+    return this.renderMenuButtons();
   };
 
   renderDescription = () => {
@@ -491,18 +497,6 @@ class ListItem extends PureComponent {
             </div>
           </div>
         </div>
-        {/* {isMember && (
-          <div className="list-item__menu">
-            <Dropdown
-              buttonClassName="list-item__menu-button"
-              buttonContent={<MenuIcon />}
-              dropdownClassName="list-item__menu-wrapper"
-              dropdownName="menu"
-            >
-              {this.renderItemMenu()}
-            </Dropdown>
-          </div>
-        )} */}
         {areDetailsVisible && (
           <div className="list-item__details">{this.renderDetails()}</div>
         )}

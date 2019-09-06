@@ -697,16 +697,7 @@ export const leaveList = (
 export const fetchListsForItem = () => dispatch =>
   getJson('/api/lists/for-item')
     .then(lists => {
-      const data = _keyBy(
-        lists,
-        // _map(lists, list => {
-        //   const { _id, name } = list;
-
-        //   return { _id, name };
-        // }),
-        '_id'
-      );
-      dispatch(fetchListsForItemSuccess(data));
+      dispatch(fetchListsForItemSuccess(_keyBy(lists, '_id')));
     })
     .catch(err => {
       dispatch(fetchListsForItemFailure());
