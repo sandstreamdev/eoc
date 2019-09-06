@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
-import { injectIntl } from 'react-intl';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import Filter from './Filter';
 import { fetchListsForItem } from 'modules/list/model/actions';
+import { moveItemToList } from 'modules/list/components/Items/model/actions';
 import { getListsForItem } from 'modules/list/model/selectors';
 import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import Preloader from 'common/components/Preloader';
@@ -83,16 +83,19 @@ class MoveToPanel extends PureComponent {
 
   handleFilterLists = listsToDisplay => this.setState({ listsToDisplay });
 
-  handleMoveToList = () => {
-    const { listId: newListId } = this.state;
+  handleMoveToList = event => {
+    event.preventDefault();
+    const { listId: newListId, listName } = this.state;
     const {
-      data: { _id: itemId },
+      data: { _id: itemId, name: itemName },
       match: {
         params: { id: listId }
-      }
+      },
+      moveItemToList
     } = this.props;
+    const notificationData = { item: itemName, list: listName };
 
-    return moveItemToList(itemId, listId, newListId);
+    return moveItemToList(itemId, listId, newListId, notificationData);
   };
 
   render() {
@@ -192,6 +195,7 @@ MoveToPanel.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   fetchListsForItem: PropTypes.func.isRequired,
+  moveItemToList: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired
 };
 
@@ -212,6 +216,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { fetchListsForItem }
+    { fetchListsForItem, moveItemToList }
   )
 )(MoveToPanel);

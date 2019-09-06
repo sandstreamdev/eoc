@@ -7,7 +7,10 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 
 const Notification = ({ data, id, redirect, type }) => (
   <MessageBox type={type}>
-    <FormattedMessage id={id} values={{ data: <em>{data}</em> }} />
+    <FormattedMessage
+      id={id}
+      values={typeof data === 'string' ? { data } : { ...data }}
+    />
     {type === NotificationType.ERROR && !redirect && (
       <FormattedMessage id="common.try-again" />
     )}
@@ -15,7 +18,11 @@ const Notification = ({ data, id, redirect, type }) => (
 );
 
 Notification.propTypes = {
-  data: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  data: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node,
+    PropTypes.objectOf(PropTypes.string)
+  ]),
   id: PropTypes.string.isRequired,
   redirect: PropTypes.bool,
   type: PropTypes.string.isRequired

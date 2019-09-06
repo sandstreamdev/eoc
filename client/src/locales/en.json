@@ -186,6 +186,8 @@
   "list.items.actions.toggle": "Item '{data}' updated successfully.",
   "list.items.actions.update-item-fail": "Failed to update '{data}' item.",
   "list.items.actions.update-item": "Item '{data}' updated successfully.",
+  "list.items.actions.move-item": "Item '{item}' successfully moved to '{list}' list.",
+  "list.items.action.move-item-fail": "Failed to move item '{item}' to '{list}' list.",
   "list.list-archived-item.archived": "Archived",
   "list.list-archived-item.author": "Added by: {authorName}",
   "list.list-archived-item.confirmation": "Do you really want to delete '{name}' item?",
