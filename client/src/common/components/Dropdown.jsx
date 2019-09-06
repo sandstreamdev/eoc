@@ -29,14 +29,14 @@ class Dropdown extends PureComponent {
       document.addEventListener('keydown', this.handleEscapePress);
       document.addEventListener('click', this.handleClickOutside);
       document.addEventListener('touchend', this.handleClickOutside);
+
+      if (pathname !== prevPathname) {
+        this.hide();
+      }
     } else {
       document.removeEventListener('keydown', this.handleEscapePress);
       document.removeEventListener('click', this.handleClickOutside);
       document.removeEventListener('touchend', this.handleClickOutside);
-    }
-
-    if (pathname !== prevPathname) {
-      this.hideDropdown();
     }
   }
 
@@ -45,15 +45,17 @@ class Dropdown extends PureComponent {
     document.removeEventListener('click', this.handleClickOutside);
   }
 
-  hideDropdown = () => this.setState({ isVisible: false });
+  setVisibility = isVisible => this.setState({ isVisible });
 
-  showDropdown = () => this.setState({ isVisible: true });
+  hide = () => this.setVisibility(false);
+
+  show = () => this.setVisibility(true);
 
   handleEscapePress = event => {
     const { code } = event;
 
     if (code === KeyCodes.ESCAPE) {
-      this.hideDropdown();
+      this.hide();
     }
   };
 
@@ -61,7 +63,7 @@ class Dropdown extends PureComponent {
     const isClickedOutside = !this.dropdown.current.contains(event.target);
 
     if (isClickedOutside) {
-      this.hideDropdown();
+      this.hide();
     }
   };
 
@@ -74,12 +76,13 @@ class Dropdown extends PureComponent {
       dropdownClassName,
       dropdownName
     } = this.props;
+    const toggle = isVisible ? this.hide : this.show;
 
     return (
       <div className="dropdown">
         <button
           className={classNames(buttonClassName)}
-          onClick={isVisible ? this.hideDropdown : this.showDropdown}
+          onClick={toggle}
           type="button"
           title={
             dropdownName && `${isVisible ? 'Hide' : 'Show'} ${dropdownName}`
@@ -111,7 +114,7 @@ Dropdown.propTypes = {
   dropdownName: PropTypes.string,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired
-  })
+  }).isRequired
 };
 
-export default withRouter(props => <Dropdown {...props} />);
+export default withRouter(Dropdown);
