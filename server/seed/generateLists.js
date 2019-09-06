@@ -69,11 +69,11 @@ const generateLists = cohortId => [
       description: false,
       name: false
     },
-    memberIds: [],
+    memberIds: [userId],
     name: 'Private sack 1',
     ownerIds: [userId],
     type: ListType.LIMITED,
-    viewersIds: []
+    viewersIds: [userId]
   },
   {
     _id: ObjectId(),
@@ -87,11 +87,11 @@ const generateLists = cohortId => [
       description: false,
       name: false
     },
-    memberIds: [],
+    memberIds: [userId],
     name: 'Private sack 2',
     ownerIds: [userId],
     type: ListType.LIMITED,
-    viewersIds: []
+    viewersIds: [userId]
   },
   {
     _id: ObjectId(),
@@ -105,11 +105,11 @@ const generateLists = cohortId => [
       description: false,
       name: false
     },
-    memberIds: [],
+    memberIds: [userId],
     name: 'Private sack 3',
     ownerIds: [userId],
     type: ListType.LIMITED,
-    viewersIds: []
+    viewersIds: [userId]
   },
   {
     _id: ObjectId(),
@@ -123,11 +123,11 @@ const generateLists = cohortId => [
       description: false,
       name: false
     },
-    memberIds: [],
+    memberIds: [userId],
     name: 'Sack 1 in cohort 2',
     ownerIds: [userId],
     type: ListType.SHARED,
-    viewersIds: []
+    viewersIds: [userId]
   },
   {
     _id: ObjectId(),
@@ -141,11 +141,11 @@ const generateLists = cohortId => [
       description: false,
       name: false
     },
-    memberIds: [],
+    memberIds: [userId],
     name: 'Sack 2 in cohort 2',
     ownerIds: [userId],
     type: ListType.SHARED,
-    viewersIds: []
+    viewersIds: [userId]
   },
   {
     _id: ObjectId(),
@@ -159,11 +159,11 @@ const generateLists = cohortId => [
       description: false,
       name: false
     },
-    memberIds: [],
+    memberIds: [userId],
     name: 'Archived sack 3 in cohort 2',
     ownerIds: [userId],
     type: ListType.SHARED,
-    viewersIds: []
+    viewersIds: [userId]
   }
 ];
 

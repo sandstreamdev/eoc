@@ -17,7 +17,7 @@ const generateCohorts = length => {
         description: false,
         name: false
       },
-      memberIds: [],
+      memberIds: [userId],
       name: `Cohort ${i}`,
       ownerIds: [userId]
     });
