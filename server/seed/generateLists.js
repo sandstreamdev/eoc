@@ -2,6 +2,7 @@ const userId = process.env.USER_ID;
 const mongoose = require('mongoose');
 
 const { ListType } = require('../common/variables');
+const generateItems = require('./generateItems');
 
 const {
   Types: { ObjectId }
@@ -15,56 +16,7 @@ const generateLists = cohortId => [
     favIds: [userId],
     isArchived: false,
     isDeleted: false,
-    items: [
-      {
-        _id: ObjectId(),
-        authorId: userId,
-        authorName: 'Adam',
-        description: '',
-        isArchived: false,
-        isDeleted: false,
-        isOrdered: true,
-        locks: {
-          description: false,
-          name: false
-        },
-        name: 'item 1',
-        purchaserId: '',
-        voterIds: []
-      },
-      {
-        _id: ObjectId(),
-        authorId: userId,
-        authorName: 'Adam',
-        description: '',
-        isArchived: false,
-        isDeleted: false,
-        isOrdered: false,
-        locks: {
-          description: false,
-          name: false
-        },
-        name: 'item 2',
-        purchaserId: '',
-        voterIds: []
-      },
-      {
-        _id: ObjectId(),
-        authorId: userId,
-        authorName: 'Adam',
-        description: '',
-        isArchived: false,
-        isDeleted: false,
-        isOrdered: false,
-        locks: {
-          description: false,
-          name: false
-        },
-        name: 'item 3',
-        purchaserId: '',
-        voterIds: [userId]
-      }
-    ],
+    items: generateItems(userId)(3),
     locks: {
       description: false,
       name: false
