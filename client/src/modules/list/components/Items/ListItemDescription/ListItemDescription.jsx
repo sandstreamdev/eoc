@@ -50,11 +50,6 @@ class ListItemDescription extends PureComponent {
 
     if (!isPreviousIsTextareaVisible && isTextareaVisible) {
       this.descriptionTextarea.current.focus();
-      this.handleFocus();
-    }
-
-    if (isPreviousIsTextareaVisible && !isTextareaVisible) {
-      this.handleBlur();
     }
 
     if (prevDescription !== description) {
