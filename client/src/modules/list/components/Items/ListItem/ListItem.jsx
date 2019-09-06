@@ -17,7 +17,6 @@ import {
   unlockItem,
   updateListItem
 } from '../model/actions';
-import { PreloaderTheme } from 'common/components/Preloader';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import CommentsList from 'common/components/Comments/CommentsList';
@@ -25,6 +24,9 @@ import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
 import { DefaultLocks } from 'common/constants/enums';
+import Dropdown from 'common/components/Dropdown';
+import { MenuIcon } from 'assets/images/icons';
+import MoveToPanel from '../MoveToPanel/MoveToPanel';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -33,6 +35,7 @@ class ListItem extends PureComponent {
     this.state = {
       areDetailsVisible: false,
       isConfirmationVisible: false,
+      isMoveToPanelVisible: false,
       isNameEdited: false
     };
   }
@@ -128,6 +131,14 @@ class ListItem extends PureComponent {
 
     this.setState(({ isConfirmationVisible }) => ({
       isConfirmationVisible: !isConfirmationVisible
+    }));
+  };
+
+  handleMoveToVisibility = event => {
+    event.preventDefault();
+
+    this.setState(({ isMoveToPanelVisible }) => ({
+      isMoveToPanelVisible: !isMoveToPanelVisible
     }));
   };
 
@@ -249,6 +260,59 @@ class ListItem extends PureComponent {
     unlockItem(itemId, listId, userId, { descriptionLock: false });
   };
 
+  renderMenuButtons = () => {
+    const { isConfirmationVisible, isMoveToPanelVisible } = this.state;
+    const {
+      data: {
+        isOrdered,
+        locks: { name: nameLock, description: descriptionLock } = DefaultLocks
+      },
+      isMember
+    } = this.props;
+    const isEdited = nameLock || descriptionLock;
+    const disabled =
+      isEdited || isMoveToPanelVisible || isConfirmationVisible || !isMember;
+
+    return (
+      <ul className="list-item__features">
+        <li className="feature-button__feature">
+          <button
+            className="list-item__feature-button"
+            disabled={disabled}
+            onClick={this.handleConfirmationVisibility}
+            onTouchEnd={this.handleConfirmationVisibility}
+            type="button"
+          >
+            <FormattedMessage id="list.list-item.archive" />
+          </button>
+        </li>
+        {!isOrdered && (
+          <li>
+            <PendingButton
+              className="list-item__feature-button"
+              disabled={disabled}
+              onClick={this.handleItemCloning}
+              onTouchEnd={this.handleItemCloning}
+            >
+              <FormattedMessage id="list.list-item.clone" />
+            </PendingButton>
+          </li>
+        )}
+        <li className="feature-button__feature">
+          <button
+            className="list-item__feature-button"
+            disabled={disabled}
+            onClick={this.handleMoveToVisibility}
+            onTouchEnd={this.handleMoveToVisibility}
+            type="button"
+          >
+            <FormattedMessage id="list.list-item.move-to" />
+          </button>
+        </li>
+      </ul>
+    );
+  };
+
   renderConfirmation = () => {
     const {
       data: { name },
@@ -256,82 +320,35 @@ class ListItem extends PureComponent {
     } = this.props;
 
     return (
-      <div className="list-item__confirmation">
-        <h4>
-          <FormattedMessage id="list.list-item.header" values={{ name }} />
-        </h4>
-        <PendingButton
-          className="primary-button"
-          disabled={!isMember}
-          onClick={this.handleArchiveItem}
-          onTouchEnd={this.handleArchiveItem}
-          preloaderTheme={PreloaderTheme.LIGHT}
-          type="button"
-        >
-          <FormattedMessage id="common.button.confirm" />
-        </PendingButton>
-        <button
-          className="primary-button"
-          disabled={!isMember}
-          onClick={this.handleConfirmationVisibility}
-          onTouchEnd={this.handleConfirmationVisibility}
-          type="button"
-        >
-          <FormattedMessage id="common.button.cancel" />
-        </button>
-      </div>
+      <Confirmation
+        disabled={!isMember}
+        onCancel={this.handleConfirmationVisibility}
+        onConfirm={this.handleArchiveItem}
+      >
+        <FormattedMessage
+          id="list.list-item.confirmation"
+          values={{ name: <em>{name}</em> }}
+        />
+      </Confirmation>
     );
   };
 
-  renderItemFeatures = () => {
-    const { isConfirmationVisible } = this.state;
-    const {
-      data: {
-        isOrdered,
-        locks: { name: nameLock, description: descriptionLock } = DefaultLocks,
-        name
-      },
-      isMember
-    } = this.props;
-    const isEdited = nameLock || descriptionLock;
+  renderMoveToPanel = () => <MoveToPanel />;
 
-    return (
-      <div className="list-item__features">
-        <div className="list-item__feature-buttons">
-          <button
-            className="link-button"
-            disabled={!isMember || isConfirmationVisible || isEdited}
-            onClick={this.handleConfirmationVisibility}
-            onTouchEnd={this.handleConfirmationVisibility}
-            type="button"
-          >
-            <FormattedMessage id="list.list-item.archive" />
-          </button>
-          {!isOrdered && (
-            <PendingButton
-              className="link-button"
-              disabled={!isMember || isConfirmationVisible || isEdited}
-              onClick={this.handleItemCloning}
-              onTouchEnd={this.handleItemCloning}
-            >
-              <FormattedMessage id="list.list-item.clone" />
-            </PendingButton>
-          )}
-        </div>
-        {isConfirmationVisible && (
-          <Confirmation
-            disabled={!isMember}
-            onCancel={this.handleConfirmationVisibility}
-            onConfirm={this.handleArchiveItem}
-          >
-            <FormattedMessage
-              id="list.list-item.confirmation"
-              values={{ name: <em>{name}</em> }}
-            />
-          </Confirmation>
-        )}
-      </div>
-    );
+  renderItemMenu = () => {
+    const { isConfirmationVisible, isMoveToPanelVisible } = this.state;
+
+    if (!isConfirmationVisible && !isMoveToPanelVisible) {
+      return this.renderMenuButtons();
+    }
+
+    if (isConfirmationVisible) {
+      return this.renderConfirmation();
+    }
+
+    if (isMoveToPanelVisible) {
+      return this.renderMoveToPanel();
+    }
   };
 
   renderDescription = () => {
@@ -373,7 +390,6 @@ class ListItem extends PureComponent {
     return (
       <Fragment>
         {this.renderDescription()}
-        {isMember && this.renderItemFeatures()}
         <div className="list-item__comments">
           <CommentsList
             comments={comments}
@@ -405,7 +421,8 @@ class ListItem extends PureComponent {
       <li
         className={classNames('list-item', {
           'list-item--done': isOrdered,
-          'list-item--details-visible': areDetailsVisible
+          'list-item--details-visible': areDetailsVisible,
+          'list-item--menu': isMember
         })}
       >
         <div
@@ -462,6 +479,18 @@ class ListItem extends PureComponent {
             </div>
           </div>
         </div>
+        {isMember && (
+          <div className="list-item__menu">
+            <Dropdown
+              buttonClassName="list-item__menu-button"
+              buttonContent={<MenuIcon />}
+              dropdownClassName="list-item__menu-wrapper"
+              dropdownName="menu"
+            >
+              {this.renderItemMenu()}
+            </Dropdown>
+          </div>
+        )}
         {areDetailsVisible && (
           <div className="list-item__details">{this.renderDetails()}</div>
         )}

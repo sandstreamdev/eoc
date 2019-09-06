@@ -5,6 +5,10 @@
   border-bottom: 1px solid $item-border;
   padding: 0 four-by(4) 0;
 
+  &--menu {
+    padding-right: four-by(8);
+  }
+
   &:first-child {
     margin-top: 0;
   }
@@ -158,22 +162,30 @@
     padding-bottom: four-by(4);
   }
 
-  &__features {
+  &__feature {
     &:not(:last-child) {
       border-bottom: 1px solid $border-light;
     }
   }
 
-  &__feature-buttons {
+  &__feature-button {
     position: relative;
+    font-family: $font-family;
+    font-size: $m-font;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     width: 100%;
+    height: 40px;
     align-items: center;
-    min-height: 45px;
+    padding: 0 four-by(4);
+    background: none;
+    color: $text-normal;
+    border: 0;
+    cursor: pointer;
 
-    button:not(:last-of-type) {
-      margin-right: four-by(4);
+    &:hover {
+      text-decoration: underline;
+      background-color: $hover-gray-bg;
     }
   }
 
@@ -278,6 +290,63 @@
       font-size: $m-font;
       width: 100%;
       height: 44px;
+    }
+  }
+
+  &__menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &__menu-button {
+    border: 0;
+    position: relative;
+    text-align: left;
+    cursor: pointer;
+    color: $text-white;
+    font-size: $s-font;
+    line-height: 1.2;
+    text-decoration: none;
+    outline: none;
+    background: transparent;
+    padding: four-by(1);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      height: 16px;
+
+      path {
+        fill: $text-normal;
+      }
+    }
+  }
+
+  &__menu-wrapper {
+    width: 250px;
+    //padding: four-by(1) four-by(4);
+    background: $bg-color;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    filter: drop-shadow(0 0 4px $shadow-color-light);
+    z-index: 20;
+
+    &::before {
+      right: 4px;
+      top: -10px;
+      position: absolute;
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid $bg-color;
     }
   }
 }

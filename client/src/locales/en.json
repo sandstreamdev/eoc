@@ -200,6 +200,7 @@
   "list.list-item.archive": "Archive item",
   "list.list-item.author": "Added by: {authorName}",
   "list.list-item.clone": "Clone item",
+  "list.list-item.move-to": "Move item to",
   "list.list-item.confirmation": "Do you really want to archive '{name}' item?",
   "list.list-item.edited-by": "Last edit by: {editedBy}",
   "list.list-item.header": "Do you really want to archive '{name}' item?",
