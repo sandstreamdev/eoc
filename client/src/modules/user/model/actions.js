@@ -35,15 +35,6 @@ const fetchUserDetailsFailure = () => ({
   type: AuthorizationActionTypes.FETCH_FAILURE
 });
 
-const updateSettingsSuccess = payload => ({
-  type: AuthorizationActionTypes.UPDATE_SETTINGS_SUCCESS,
-  payload
-});
-
-const updateSettingsFailure = () => ({
-  type: AuthorizationActionTypes.UPDATE_SETTINGS_FAILURE
-});
-
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
     .then(() => window.location.reload())
@@ -154,17 +145,6 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
     newPassword,
     newPasswordConfirm
   });
-
-export const updateSettings = settings => dispatch =>
-  postData('/auth/update-settings', { settings })
-    .then(() => dispatch(updateSettingsSuccess(settings)))
-    .catch(err => {
-      dispatch(updateSettingsFailure());
-      createNotificationWithTimeout(dispatch, NotificationType.ERROR, {
-        notificationId: 'user.actions.update-settings-failed'
-      });
-      throw err;
-    });
 
 export const getUserName = token =>
   getJson(`/auth/user-name/${token}`).then(({ displayName }) => displayName);
