@@ -10,11 +10,11 @@ import { fetchListsForItem } from 'modules/list/model/actions';
 import { moveItemToList } from 'modules/list/components/Items/model/actions';
 import { getListsForItem } from 'modules/list/model/selectors';
 import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
-import Preloader from 'common/components/Preloader';
 import { CloseIcon } from 'assets/images/icons';
 import Confirmation from 'common/components/Confirmation';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
+import Lists from './Lists';
 
 class MoveToPanel extends PureComponent {
   pendingPromise = null;
@@ -115,9 +115,9 @@ class MoveToPanel extends PureComponent {
       <div className="move-to-list-panel">
         {isConfirmationVisible ? (
           <Confirmation
+            confirmLabel="list.list-item.move-button"
             onCancel={this.handleCloseConfirmation}
             onConfirm={this.handleMoveToList}
-            confirmLabel="list.list-item.move-button"
           >
             <FormattedMessage
               id="list.list-item.move-to-confirmation"
@@ -138,40 +138,17 @@ class MoveToPanel extends PureComponent {
               />
               <button
                 className="primary-button"
-                type="button"
                 onClick={this.handleClosePanel}
+                type="button"
               >
                 <FormattedMessage id="common.button.cancel" />
               </button>
             </div>
-            <div className="move-to-list-panel__lists">
-              {pending ? (
-                <Preloader />
-              ) : (
-                <ul>
-                  {listsToDisplay.map(list => (
-                    <li className="move-to-list-panel__list" key={list._id}>
-                      <button
-                        disabled={pending}
-                        type="button"
-                        onClick={this.handleShowConfirmation(
-                          list._id,
-                          list.name
-                        )}
-                        title={formatMessage(
-                          {
-                            id: 'list.list-item.move-list-button-title'
-                          },
-                          { list: list.name }
-                        )}
-                      >
-                        {list.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <Lists
+              lists={listsToDisplay}
+              onClick={this.handleShowConfirmation}
+              pending={pending}
+            />
           </Fragment>
         )}
       </div>
