@@ -1513,6 +1513,75 @@ const leaveList = (req, resp) => {
     });
 };
 
+const getListsForItem = (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+
+  const query = {
+    memberIds: userId,
+    isArchived: false
+  };
+
+  List.find(query, 'name')
+    .lean()
+    .exec()
+    .then(docs => {
+      if (!docs) {
+        return resp.sendStatus(400);
+      }
+
+      return resp.send(docs);
+    })
+    .catch(() => resp.sendStatus(400));
+};
+
+const moveItem = (req, resp) => {
+  const { itemId, newListId } = req.body;
+  const { id: listId } = req.params;
+  const { _id: userId } = req.user;
+
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+  const sanitizedNewListId = sanitize(newListId);
+
+  List.findOne({
+    _id: sanitizedListId,
+    memberIds: userId,
+    'items._id': sanitizedItemId
+  })
+    .exec()
+    .then(doc => {
+      if (!doc) {
+        throw new BadRequestException();
+      }
+
+      const { items } = doc;
+      const itemToMove = items.id(sanitizedItemId);
+
+      return returnPayload(
+        List.findOneAndUpdate(
+          {
+            _id: sanitizedNewListId,
+            memberIds: userId
+          },
+          { $push: { items: itemToMove } }
+        ).exec()
+      )(doc);
+    })
+    .then(doc => {
+      const { items } = doc;
+
+      const itemIndex = items.findIndex(item => item._id.toString() === itemId);
+
+      items.splice(itemIndex, 1);
+
+      return doc.save();
+    })
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
@@ -1527,8 +1596,10 @@ module.exports = {
   getArchivedItems,
   getArchivedListsMetaData,
   getListData,
+  getListsForItem,
   getListsMetaData,
   leaveList,
+  moveItem,
   removeFromFavourites,
   removeMember,
   removeMemberRole,
