@@ -445,11 +445,7 @@ class MemberDetails extends PureComponent {
 
     return (
       <Fragment>
-        <div
-          className={classNames('member-details', {
-            'member-details--flexible': !isCurrentUserAnOwner
-          })}
-        >
+        <div className="member-details">
           <button
             className="member-details__close"
             onClick={onClose}

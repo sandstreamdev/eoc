@@ -12,11 +12,6 @@
     width: 270px;
   }
 
-  &--flexible {
-    width: auto;
-    padding-right: 36px;
-  }
-
   &__close {
     position: absolute;
     top: 0;
@@ -51,7 +46,6 @@
   &__options {
     display: flex;
     flex-direction: column;
-    padding: 15px 0 0;
   }
 
   &__preloader {
