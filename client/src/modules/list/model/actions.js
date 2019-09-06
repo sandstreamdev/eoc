@@ -1,4 +1,5 @@
 import _keyBy from 'lodash/keyBy';
+import _filter from 'lodash/filter';
 
 import { getJson, patchData, postData } from 'common/utils/fetchMethods';
 import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
@@ -165,6 +166,16 @@ const leaveListSuccess = payload => ({
 
 const leaveListFailure = () => ({
   type: ListActionTypes.LEAVE_FAILURE
+});
+
+const fetchListsForItemSuccess = payload => ({
+  type: ListActionTypes.FETCH_FOR_ITEM_SUCCESS,
+  payload
+});
+
+const fetchListsForItemFailure = payload => ({
+  type: ListActionTypes.FETCH_FOR_ITEM_FAILURE,
+  payload
 });
 
 export const fetchListData = listId => dispatch =>
@@ -679,6 +690,31 @@ export const leaveList = (
         {
           notificationId: err.message || 'list.actions.leave-fail',
           data: userName
+        },
+        err
+      );
+    });
+
+export const fetchListsForItem = listId => dispatch =>
+  getJson('/api/lists/meta-data')
+    .then(lists => {
+      const data = _keyBy(
+        _filter(lists, list => {
+          const { _id, name } = list;
+
+          return { _id, name };
+        }),
+        '_id'
+      );
+      dispatch(fetchListsForItemSuccess({ listId, data }));
+    })
+    .catch(err => {
+      dispatch(fetchListsForItemFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.fetch-meta-data-fail'
         },
         err
       );
