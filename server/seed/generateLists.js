@@ -1,9 +1,15 @@
 const userId = process.env.USER_ID;
+const mongoose = require('mongoose');
+
 const { ListType } = require('../common/variables');
+
+const {
+  Types: { ObjectId }
+} = mongoose;
 
 const generateLists = cohortId => [
   {
-    _id: '5c9a1299341674ba31ff6aas',
+    _id: ObjectId(),
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     favIds: [userId],
@@ -11,7 +17,7 @@ const generateLists = cohortId => [
     isDeleted: false,
     items: [
       {
-        _id: '5c9a123b074ce3b9ff43ce30',
+        _id: ObjectId(),
         authorId: userId,
         authorName: 'Adam',
         description: '',
@@ -27,7 +33,7 @@ const generateLists = cohortId => [
         voterIds: []
       },
       {
-        _id: '5c9a123e074ce3b9ff43ce32',
+        _id: ObjectId(),
         authorId: userId,
         authorName: 'Adam',
         description: '',
@@ -43,7 +49,7 @@ const generateLists = cohortId => [
         voterIds: []
       },
       {
-        _id: '5c9a1240074ce3b9ff43ce34',
+        _id: ObjectId(),
         authorId: userId,
         authorName: 'Adam',
         description: '',
@@ -70,7 +76,7 @@ const generateLists = cohortId => [
     viewersIds: []
   },
   {
-    _id: '5c9a1299341674ba31ff6aa7',
+    _id: ObjectId(),
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     favIds: [userId],
@@ -88,7 +94,7 @@ const generateLists = cohortId => [
     viewersIds: []
   },
   {
-    _id: '5c9a1299341674ba31ff6aa8',
+    _id: ObjectId(),
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     favIds: [userId],
@@ -106,7 +112,7 @@ const generateLists = cohortId => [
     viewersIds: []
   },
   {
-    _id: '5c9a130146e555ba24992a2e',
+    _id: ObjectId(),
     cohortId,
     description: '',
     favIds: [],
@@ -124,7 +130,7 @@ const generateLists = cohortId => [
     viewersIds: []
   },
   {
-    _id: '5c9a130746e555ba24992a2f',
+    _id: ObjectId(),
     cohortId,
     description: '',
     favIds: [],
@@ -142,7 +148,7 @@ const generateLists = cohortId => [
     viewersIds: []
   },
   {
-    _id: '5c9a131346e555ba24992a30',
+    _id: ObjectId(),
     cohortId,
     description: '',
     favIds: [],
