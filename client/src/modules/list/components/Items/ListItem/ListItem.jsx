@@ -24,8 +24,6 @@ import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
 import { DefaultLocks } from 'common/constants/enums';
-import Dropdown from 'common/components/Dropdown';
-import { MenuIcon } from 'assets/images/icons';
 import MoveToPanel from '../MoveToPanel/MoveToPanel';
 
 class ListItem extends PureComponent {
@@ -85,9 +83,23 @@ class ListItem extends PureComponent {
   handleDetailsVisibility = event => {
     event.preventDefault();
 
-    this.setState(({ areDetailsVisible }) => ({
-      areDetailsVisible: !areDetailsVisible
-    }));
+    this.setState(
+      ({ areDetailsVisible }) => ({
+        areDetailsVisible: !areDetailsVisible
+      }),
+      this.handleResetDetails
+    );
+  };
+
+  handleResetDetails = () => {
+    const { areDetailsVisible } = this.state;
+
+    if (!areDetailsVisible) {
+      this.setState({
+        isConfirmationVisible: false,
+        isMoveToPanelVisible: false
+      });
+    }
   };
 
   handleItemCloning = event => {
@@ -274,42 +286,36 @@ class ListItem extends PureComponent {
       isEdited || isMoveToPanelVisible || isConfirmationVisible || !isMember;
 
     return (
-      <ul className="list-item__features">
-        <li className="feature-button__feature">
-          <button
-            className="list-item__feature-button"
-            disabled={disabled}
-            onClick={this.handleConfirmationVisibility}
-            onTouchEnd={this.handleConfirmationVisibility}
-            type="button"
-          >
-            <FormattedMessage id="list.list-item.archive" />
-          </button>
-        </li>
+      <div className="list-item__feature-buttons">
+        <button
+          className="link-button"
+          disabled={disabled}
+          onClick={this.handleConfirmationVisibility}
+          onTouchEnd={this.handleConfirmationVisibility}
+          type="button"
+        >
+          <FormattedMessage id="list.list-item.archive" />
+        </button>
         {!isOrdered && (
-          <li>
-            <PendingButton
-              className="list-item__feature-button"
-              disabled={disabled}
-              onClick={this.handleItemCloning}
-              onTouchEnd={this.handleItemCloning}
-            >
-              <FormattedMessage id="list.list-item.clone" />
-            </PendingButton>
-          </li>
-        )}
-        <li className="feature-button__feature">
-          <button
-            className="list-item__feature-button"
+          <PendingButton
+            className="link-button"
             disabled={disabled}
-            onClick={this.handleMoveToVisibility}
-            onTouchEnd={this.handleMoveToVisibility}
-            type="button"
+            onClick={this.handleItemCloning}
+            onTouchEnd={this.handleItemCloning}
           >
-            <FormattedMessage id="list.list-item.move-to" />
-          </button>
-        </li>
-      </ul>
+            <FormattedMessage id="list.list-item.clone" />
+          </PendingButton>
+        )}
+        <button
+          className="link-button"
+          disabled={disabled}
+          onClick={this.handleMoveToVisibility}
+          onTouchEnd={this.handleMoveToVisibility}
+          type="button"
+        >
+          <FormattedMessage id="list.list-item.move" />
+        </button>
+      </div>
     );
   };
 
@@ -333,9 +339,13 @@ class ListItem extends PureComponent {
     );
   };
 
-  renderMoveToPanel = () => <MoveToPanel />;
+  renderMoveToPanel = () => {
+    const { data } = this.props;
 
-  renderItemMenu = () => {
+    return <MoveToPanel data={data} onClose={this.handleMoveToVisibility} />;
+  };
+
+  renderItemFeatures = () => {
     const { isConfirmationVisible, isMoveToPanelVisible } = this.state;
 
     if (!isConfirmationVisible && !isMoveToPanelVisible) {
@@ -390,6 +400,9 @@ class ListItem extends PureComponent {
     return (
       <Fragment>
         {this.renderDescription()}
+        <div className="list-item__features">
+          {isMember && this.renderItemFeatures()}
+        </div>
         <div className="list-item__comments">
           <CommentsList
             comments={comments}
@@ -421,8 +434,7 @@ class ListItem extends PureComponent {
       <li
         className={classNames('list-item', {
           'list-item--done': isOrdered,
-          'list-item--details-visible': areDetailsVisible,
-          'list-item--menu': isMember
+          'list-item--details-visible': areDetailsVisible
         })}
       >
         <div
@@ -479,7 +491,7 @@ class ListItem extends PureComponent {
             </div>
           </div>
         </div>
-        {isMember && (
+        {/* {isMember && (
           <div className="list-item__menu">
             <Dropdown
               buttonClassName="list-item__menu-button"
@@ -490,7 +502,7 @@ class ListItem extends PureComponent {
               {this.renderItemMenu()}
             </Dropdown>
           </div>
-        )}
+        )} */}
         {areDetailsVisible && (
           <div className="list-item__details">{this.renderDetails()}</div>
         )}

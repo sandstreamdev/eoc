@@ -1,6 +1,5 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
 
@@ -16,7 +15,7 @@ class Filter extends PureComponent {
   }
 
   componentDidMount() {
-    this.input.focus();
+    this.input.current.focus();
   }
 
   componentWillUnmount() {
@@ -33,7 +32,7 @@ class Filter extends PureComponent {
     } else {
       filteredElements = elements;
     }
-    // this.setState({ visibleElements: filteredElements });
+
     onFilter(filteredElements);
   };
 
@@ -57,55 +56,42 @@ class Filter extends PureComponent {
 
   render() {
     const { query } = this.state;
+    const { buttonContent, classes, placeholder, resetButton } = this.props;
 
     return (
-      <div className="filter-lists">
+      <div className={classes}>
         <input
-          className="filter-input"
-          placeholder="Filter lists"
-          type="text"
           name="filter"
-          value={query}
           onChange={this.handleInputChange}
+          placeholder={placeholder || ''}
           ref={this.input}
+          type="text"
+          value={query}
         />
-        <button
-          className="filter-reset"
-          onClick={this.resetFilter}
-          title="reset filter"
-          type="button"
-        >
-          reset
-        </button>
+        {resetButton && buttonContent && (
+          <button onClick={this.resetFilter} title="reset filter" type="button">
+            {buttonContent}
+          </button>
+        )}
       </div>
     );
   }
 }
 
+Filter.defaultProps = {
+  resetButton: true
+};
+
 Filter.propTypes = {
+  buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  classes: PropTypes.string.isRequired,
   elements: PropTypes.arrayOf(
     PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
   ).isRequired,
+  placeholder: PropTypes.string,
+  resetButton: PropTypes.bool,
 
   onFilter: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-  activePark: state.activePark,
-  visibleParks: state.visibleParks,
-  isPanelVisibleOnMobile: state.isPanelVisibleOnMobile
-});
-
-const mapDispatchToProps = dispatch => ({
-  setActivePark: activePark => {
-    dispatch({ type: 'SET_ACTIVE_PARK', activePark: activePark });
-  },
-  setVisibleParks: visibleParks => {
-    dispatch({ type: 'SET_VISIBLE_PARKS', visibleParks });
-  }
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Filter);
+export default Filter;

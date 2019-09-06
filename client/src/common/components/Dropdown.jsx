@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import { KeyCodes } from 'common/constants/enums';
 
 class Dropdown extends PureComponent {
-  subscription = undefined;
-
   constructor(props) {
     super(props);
 
@@ -20,33 +18,18 @@ class Dropdown extends PureComponent {
   componentDidUpdate() {
     const { isVisible } = this.state;
 
-    const unsubscribe = () => {
-      document.removeEventListener('keydown', this.handleEscapePress, true);
-      document.removeEventListener('click', this.handleClickOutside, true);
-
-      this.subscription = undefined;
-    };
-
-    const subscribe = () => {
-      document.addEventListener('keydown', this.handleEscapePress, true);
-      document.addEventListener('click', this.handleClickOutside, true);
-
-      return unsubscribe;
-    };
-
     if (isVisible) {
-      if (!this.subscription) {
-        this.subscription = subscribe();
-      }
-    } else if (this.subscription) {
-      this.subscription();
+      document.addEventListener('keydown', this.handleEscapePress);
+      document.addEventListener('click', this.handleClickOutside);
+    } else {
+      document.removeEventListener('keydown', this.handleEscapePress);
+      document.removeEventListener('click', this.handleClickOutside);
     }
   }
 
   componentWillUnmount() {
-    if (this.subscription) {
-      this.subscription();
-    }
+    document.removeEventListener('keydown', this.handleEscapePress);
+    document.removeEventListener('click', this.handleClickOutside);
   }
 
   handleEscapePress = event => {
@@ -58,20 +41,15 @@ class Dropdown extends PureComponent {
   };
 
   handleClickOutside = event => {
-    const { isVisible } = this.state;
     const isClickedOutside = !this.dropdown.current.contains(event.target);
 
     if (isClickedOutside) {
-      if (isVisible) {
-        event.stopPropagation();
-      }
       this.setState({ isVisible: false });
     }
   };
 
-  showDropdown = () => this.setState({ isVisible: true });
-
-  hideDropdown = () => this.setState({ isVisible: false });
+  handleDropdownVisibility = () =>
+    this.setState(({ isVisible }) => ({ isVisible: !isVisible }));
 
   render() {
     const { isVisible } = this.state;
@@ -87,7 +65,7 @@ class Dropdown extends PureComponent {
       <div className="dropdown">
         <button
           className={classNames(buttonClassName)}
-          onClick={isVisible ? this.hideDropdown : this.showDropdown}
+          onClick={this.handleDropdownVisibility}
           type="button"
           title={
             dropdownName && `${isVisible ? 'Hide' : 'Show'} ${dropdownName}`

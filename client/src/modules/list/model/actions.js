@@ -1,5 +1,5 @@
 import _keyBy from 'lodash/keyBy';
-import _filter from 'lodash/filter';
+import _map from 'lodash/map';
 
 import { getJson, patchData, postData } from 'common/utils/fetchMethods';
 import { ListActionTypes, ListHeaderStatusType } from './actionTypes';
@@ -695,18 +695,18 @@ export const leaveList = (
       );
     });
 
-export const fetchListsForItem = listId => dispatch =>
+export const fetchListsForItem = () => dispatch =>
   getJson('/api/lists/meta-data')
     .then(lists => {
       const data = _keyBy(
-        _filter(lists, list => {
+        _map(lists, list => {
           const { _id, name } = list;
 
           return { _id, name };
         }),
         '_id'
       );
-      dispatch(fetchListsForItemSuccess({ listId, data }));
+      dispatch(fetchListsForItemSuccess(data));
     })
     .catch(err => {
       dispatch(fetchListsForItemFailure());

@@ -9,6 +9,7 @@ import { PreloaderTheme } from 'common/components/Preloader';
 const Confirmation = ({
   children,
   className,
+  confirmLabel,
   disabled,
   onCancel,
   onConfirm
@@ -22,7 +23,7 @@ const Confirmation = ({
       preloaderTheme={PreloaderTheme.LIGHT}
       type="button"
     >
-      <FormattedMessage id="common.button.confirm" />
+      <FormattedMessage id={confirmLabel || 'common.button.confirm'} />
     </PendingButton>
     <button
       className="primary-button"
@@ -38,6 +39,7 @@ const Confirmation = ({
 Confirmation.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
+  confirmLabel: PropTypes.string,
   disabled: PropTypes.bool,
 
   onCancel: PropTypes.func.isRequired,
