@@ -2,7 +2,6 @@ import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
@@ -445,11 +444,7 @@ class MemberDetails extends PureComponent {
 
     return (
       <Fragment>
-        <div
-          className={classNames('member-details', {
-            'member-details--flexible': !isCurrentUserAnOwner
-          })}
-        >
+        <div className="member-details">
           <button
             className="member-details__close"
             onClick={onClose}

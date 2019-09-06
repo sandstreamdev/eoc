@@ -23,7 +23,7 @@ const {
   updateListOnDashboardAndCohortView
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
-const { votingBroadcast } = require('./helpers');
+const { votingBroadcast, delayedUnlock } = require('./helpers');
 
 const addItemToList = (io, cohortClients, dashboardClients) => data => {
   const { listId } = data;
@@ -61,53 +61,26 @@ const updateItemState = (socket, itemClientLocks) => {
         .emit(ItemStatusType.LOCK, { itemId, listId, locks });
     });
 
+    if (isDefined(nameLock) && isDefined(descriptionLock)) {
+      const locks = { name: false, description: false };
+
+      delayedUnlock(socket)(data)(itemClientLocks)(locks);
+      itemClientLocks.set(nameLockId(itemId), delayedUnlock);
+
+      return;
+    }
+
     if (isDefined(nameLock)) {
-      const delayedUnlock = setTimeout(() => {
-        locks.name = false;
+      const locks = { description: descriptionLock, name: false };
 
-        handleItemLocks(
-          List,
-          {
-            _id: listId,
-            'items._id': itemId,
-            memberIds: userId
-          },
-          itemId
-        )(locks).then(() => {
-          socket.broadcast
-            .to(listChannel(listId))
-            .emit(ItemStatusType.UNLOCK, { itemId, listId, locks });
-
-          clearTimeout(itemClientLocks.get(nameLockId(itemId)));
-          itemClientLocks.delete(nameLockId(itemId));
-        });
-      }, LOCK_TIMEOUT);
-
+      delayedUnlock(socket)(data)(itemClientLocks)(locks);
       itemClientLocks.set(nameLockId(itemId), delayedUnlock);
     }
 
     if (isDefined(descriptionLock)) {
-      const delayedUnlock = setTimeout(() => {
-        locks.description = false;
+      const locks = { description: false, name: nameLock };
 
-        handleItemLocks(
-          List,
-          {
-            _id: listId,
-            'items._id': itemId,
-            memberIds: userId
-          },
-          { itemId }
-        )(locks).then(() => {
-          socket.broadcast
-            .to(listChannel(listId))
-            .emit(ItemStatusType.UNLOCK, { itemId, listId, locks });
-
-          clearTimeout(itemClientLocks.get(descriptionLockId(itemId)));
-          itemClientLocks.delete(descriptionLockId(itemId));
-        });
-      }, LOCK_TIMEOUT);
-
+      delayedUnlock(socket)(data)(itemClientLocks)(locks);
       itemClientLocks.set(nameLockId(itemId), delayedUnlock);
     }
   });
