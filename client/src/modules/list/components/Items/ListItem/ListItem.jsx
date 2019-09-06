@@ -24,7 +24,7 @@ import Confirmation from 'common/components/Confirmation';
 import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
 import { DefaultLocks } from 'common/constants/enums';
-import MoveToPanel from '../MoveToPanel/MoveToPanel';
+import MoveToPanel from '../MoveToListPanel';
 
 class ListItem extends PureComponent {
   constructor(props) {

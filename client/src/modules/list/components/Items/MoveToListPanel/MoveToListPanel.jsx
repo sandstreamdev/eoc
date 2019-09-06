@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
-import Filter from './Filter';
+import Filter from 'common/components/Filter';
 import { fetchListsForItem } from 'modules/list/model/actions';
 import { moveItemToList } from 'modules/list/components/Items/model/actions';
 import { getListsForItem } from 'modules/list/model/selectors';
