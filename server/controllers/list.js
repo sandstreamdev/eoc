@@ -1224,12 +1224,11 @@ const cloneItem = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { description, link, name } = list.items.id(sanitizedItemId);
+      const { description, name } = list.items.id(sanitizedItemId);
 
       const item = new Item({
         authorId: userId,
         description,
-        link,
         name
       });
 
@@ -1540,7 +1539,6 @@ const moveItem = (req, resp) => {
   const { itemId, newListId } = req.body;
   const { id: listId } = req.params;
   const { _id: userId } = req.user;
-
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
   const sanitizedNewListId = sanitize(newListId);
@@ -1551,13 +1549,79 @@ const moveItem = (req, resp) => {
     'items._id': sanitizedItemId
   })
     .exec()
-    .then(doc => {
-      if (!doc) {
+    .then(oldList => {
+      if (!oldList) {
         throw new BadRequestException();
       }
 
-      const { items } = doc;
-      const itemToMove = items.id(sanitizedItemId);
+      const { items } = oldList;
+      const {
+        authorId,
+        createdAt,
+        description,
+        editedBy,
+        isArchived,
+        isDeleted,
+        isOrdered,
+        locks,
+        name,
+        purchaserId,
+        status,
+        updatedAt,
+        voterIds
+      } = items.id(sanitizedItemId);
+      const newItem = new Item({
+        authorId,
+        createdAt,
+        description,
+        editedBy,
+        isArchived,
+        isDeleted,
+        isOrdered,
+        locks,
+        name,
+        purchaserId,
+        status,
+        updatedAt,
+        voterIds
+      });
+
+      return returnPayload(
+        Comment.find({ itemId: sanitizedItemId })
+          .lean()
+          .exec(),
+        true
+      )({
+        newItem,
+        oldList
+      });
+    })
+    .then(data => {
+      const {
+        payload,
+        payload: { newItem },
+        result: comments
+      } = data;
+      const promises = [];
+
+      if (comments.length > 0) {
+        comments.forEach(comment => {
+          const { _id, ...commentData } = comment;
+          const newComment = new Comment({
+            ...commentData,
+            itemId: newItem._id
+          });
+
+          promises.push(newComment.save());
+        });
+      }
+
+      return returnPayload(
+        promises.length > 0 ? Promise.all(promises) : Promise.resolve()
+      )({ ...payload });
+    })
+    .then(data => {
+      const { newItem } = data;
 
       return returnPayload(
         List.findOneAndUpdate(
@@ -1565,20 +1629,46 @@ const moveItem = (req, resp) => {
             _id: sanitizedNewListId,
             memberIds: userId
           },
-          { $push: { items: itemToMove } }
-        ).exec()
-      )(doc);
+          { $push: { items: newItem } },
+          { new: true }
+        ).exec(),
+        true
+      )({ ...data });
     })
-    .then(doc => {
-      const { items } = doc;
+    .then(data => {
+      const {
+        payload,
+        payload: { oldList },
+        result: newList
+      } = data;
+      const { items } = oldList;
+      const itemToUpdate = items.id(sanitizedItemId);
 
-      const itemIndex = items.findIndex(item => item._id.toString() === itemId);
+      itemToUpdate.isDeleted = true;
+      itemToUpdate.isArchived = true;
 
-      items.splice(itemIndex, 1);
-
-      return doc.save();
+      return returnPayload(oldList.save())({ newList, ...payload });
     })
-    .then(() => resp.send())
+    .then(data => {
+      const {
+        newItem: { _id: itemId },
+        newList: { cohortId },
+        oldList: { name }
+      } = data;
+
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_MOVE,
+          userId,
+          itemId,
+          sanitizedNewListId,
+          cohortId,
+          null,
+          name
+        )
+      );
+      resp.send();
+    })
     .catch(() => resp.sendStatus(400));
 };
 

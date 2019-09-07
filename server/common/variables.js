@@ -37,6 +37,7 @@ const ActivityType = Object.freeze({
   ITEM_DONE: 'activity.item.done',
   ITEM_EDIT_DESCRIPTION: 'activity.item.edit-description',
   ITEM_EDIT_NAME: 'activity.item.edit-name',
+  ITEM_MOVE: 'activity.item.move-to-list',
   ITEM_REMOVE_DESCRIPTION: 'activity.item.remove-description',
   ITEM_RESTORE: 'activity.item.restore',
   ITEM_UNHANDLED: 'activity.item.unhandled',

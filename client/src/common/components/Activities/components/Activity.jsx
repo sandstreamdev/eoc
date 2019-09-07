@@ -45,6 +45,7 @@ class Activity extends PureComponent {
           id={activityType}
           values={{
             item: item ? <em className="activity__item">{item.name}</em> : null,
+            list: list ? <em className="activity__item">{list.name}</em> : null,
             performer: <em>{performer.name}</em>,
             value: <em>{editedValue}</em>
           }}
