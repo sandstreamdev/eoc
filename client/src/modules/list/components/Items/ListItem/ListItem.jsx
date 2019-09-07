@@ -272,7 +272,7 @@ class ListItem extends PureComponent {
     unlockItem(itemId, listId, userId, { descriptionLock: false });
   };
 
-  renderMenuButtons = () => {
+  renderFeatureButtons = () => {
     const { isConfirmationVisible, isMoveToListPanelVisible } = this.state;
     const {
       data: {
@@ -364,7 +364,7 @@ class ListItem extends PureComponent {
       return this.renderMoveToPanel();
     }
 
-    return this.renderMenuButtons();
+    return this.renderFeatureButtons();
   };
 
   renderDescription = () => {
