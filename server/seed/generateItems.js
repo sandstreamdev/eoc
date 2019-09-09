@@ -13,6 +13,7 @@ const generateItems = userId => itemsCount => {
       authorId: userId,
       authorName: 'Adam',
       description: '',
+      editedBy: ObjectId(),
       isArchived: false,
       isDeleted: false,
       isOrdered: false,
