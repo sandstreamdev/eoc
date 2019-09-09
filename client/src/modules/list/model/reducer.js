@@ -106,7 +106,7 @@ const lists = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
       return { ...state, ...action.payload };
-    case ListActionTypes.FETCH_FOR_ITEM_SUCCESS:
+    case ListActionTypes.FETCH_AVAILABLE_SUCCESS:
       return { ...action.payload, ...state };
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...state, ...action.payload };

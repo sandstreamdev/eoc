@@ -167,13 +167,13 @@ const leaveListFailure = () => ({
   type: ListActionTypes.LEAVE_FAILURE
 });
 
-const fetchListsForItemSuccess = payload => ({
-  type: ListActionTypes.FETCH_FOR_ITEM_SUCCESS,
+const fetchAvailableListsSuccess = payload => ({
+  type: ListActionTypes.FETCH_AVAILABLE_SUCCESS,
   payload
 });
 
-const fetchListsForItemFailure = payload => ({
-  type: ListActionTypes.FETCH_FOR_ITEM_FAILURE,
+const fetchAvailableListsFailure = payload => ({
+  type: ListActionTypes.FETCH_AVAILABLE_FAILURE,
   payload
 });
 
@@ -694,11 +694,11 @@ export const leaveList = (
       );
     });
 
-export const fetchListsForItem = () => dispatch =>
+export const fetchAvailableLists = () => dispatch =>
   getJson('/api/lists/for-item')
-    .then(lists => dispatch(fetchListsForItemSuccess(_keyBy(lists, '_id'))))
+    .then(lists => dispatch(fetchAvailableListsSuccess(_keyBy(lists, '_id'))))
     .catch(err => {
-      dispatch(fetchListsForItemFailure());
+      dispatch(fetchAvailableListsFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,

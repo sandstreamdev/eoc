@@ -11,7 +11,7 @@ export const ListActionTypes = enumerable('list')(
   ...asyncTypes('FAVOURITES'),
   ...asyncTypes('FETCH_ARCHIVED_META_DATA'),
   ...asyncTypes('FETCH_DATA'),
-  ...asyncTypes('FETCH_FOR_ITEM'),
+  ...asyncTypes('FETCH_AVAILABLE'),
   ...asyncTypes('FETCH_META_DATA'),
   ...asyncTypes('LEAVE'),
   'LEAVE_VIEW',

@@ -109,7 +109,7 @@ export const getMembers = createSelector(
   list => list && list.members
 );
 
-export const getListsForItem = createSelector(
+export const getListsNames = createSelector(
   [getList, getLists],
   (currentList, lists) =>
     _sortBy(_filter(lists, list => list._id !== currentList._id), el => el.name)

@@ -23,32 +23,34 @@ class Filter extends PureComponent {
   }
 
   filter = query => {
-    const { elements, onFilter } = this.props;
-    let filteredElements;
+    const { options, onFilter } = this.props;
+    let filteredOptions;
 
     if (query) {
       const match = new RegExp(query, 'i');
-      filteredElements = elements.filter(el => match.test(el.name));
+
+      filteredOptions = options.filter(option => match.test(option.name));
     } else {
-      filteredElements = elements;
+      filteredOptions = options;
     }
 
-    onFilter(filteredElements);
+    onFilter(filteredOptions);
   };
 
   resetFilter = () => {
-    const { elements, onFilter } = this.props;
-    this.setState({ query: '' }, () => onFilter(elements));
+    const { options, onFilter } = this.props;
+
+    this.setState({ query: '' }, () => onFilter(options));
   };
 
   handleInputChange = event => {
     const { value } = event.target;
     const query = _trim(value);
 
-    this.setState(() => ({ query }), this.handleFilterElements);
+    this.setState(() => ({ query }), this.handleFilterOptions);
   };
 
-  handleFilterElements = () => {
+  handleFilterOptions = () => {
     const { query } = this.state;
 
     this.debouncedFilter(query);
@@ -56,7 +58,12 @@ class Filter extends PureComponent {
 
   render() {
     const { query } = this.state;
-    const { buttonContent, classes, placeholder, resetButton } = this.props;
+    const {
+      buttonContent,
+      classes,
+      clearFilterButton,
+      placeholder
+    } = this.props;
 
     return (
       <div className={classes}>
@@ -68,7 +75,7 @@ class Filter extends PureComponent {
           type="text"
           value={query}
         />
-        {resetButton && buttonContent && (
+        {clearFilterButton && buttonContent && (
           <button onClick={this.resetFilter} title="reset filter" type="button">
             {buttonContent}
           </button>
@@ -79,17 +86,17 @@ class Filter extends PureComponent {
 }
 
 Filter.defaultProps = {
-  resetButton: true
+  clearFilterButton: true
 };
 
 Filter.propTypes = {
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   classes: PropTypes.string.isRequired,
-  elements: PropTypes.arrayOf(
+  options: PropTypes.arrayOf(
     PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
   ).isRequired,
   placeholder: PropTypes.string,
-  resetButton: PropTypes.bool,
+  clearFilterButton: PropTypes.bool,
 
   onFilter: PropTypes.func.isRequired
 };

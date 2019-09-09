@@ -331,7 +331,7 @@
   "activity.item.unhandled.no-item": "{performer} marked item as 'unhandled'.",
   "activity.item.add-comment": "{performer} commented {item} item.",
   "activity.item.add-comment.no-item": "{performer} commented item.",
-  "activity.item.move-to-list": "{performer} move item {item} from {value} sack to {list} sack.",
+  "activity.item.move-to-list": "{performer} moved item {item} from {value} sack to {list} sack.",
   "activity.list": " Sack: {list}.",
   "activity.list.add": "{performer} created {list} sack.",
   "activity.list.delete": "{performer} deleted {value} sack.",
