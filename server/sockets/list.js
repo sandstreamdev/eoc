@@ -16,6 +16,7 @@ const {
 } = require('../common/utils');
 const {
   descriptionLockId,
+  emitListsMetaData,
   handleItemLocks,
   handleLocks,
   listChannel,
@@ -776,28 +777,6 @@ const restoreList = (
         }
       });
     });
-};
-
-const emitListsMetaData = (io, cohortClients, dashboardClients, list) => {
-  const { _id: listId, cohortId, viewersIds } = list;
-
-  viewersIds.forEach(viewerId => {
-    const id = viewerId.toString();
-
-    if (dashboardClients.has(id)) {
-      const { socketId } = dashboardClients.get(id);
-      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-        [listId]: responseWithList(list, id)
-      });
-    }
-
-    if (cohortId && cohortClients.has(id)) {
-      const { socketId } = cohortClients.get(id);
-      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-        [listId]: responseWithList(list, id)
-      });
-    }
-  });
 };
 
 const moveToList = (
