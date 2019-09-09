@@ -38,6 +38,20 @@
     color: $danger;
     width: 100%;
     text-align: left;
+
+    span {
+      color: $danger;
+    }
+
+    a {
+      text-decoration: underline;
+      cursor: pointer;
+      text-decoration-color: $danger;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
   }
 
   &__confirmation {

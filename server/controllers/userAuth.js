@@ -340,7 +340,7 @@ const resendRecoveryLink = (req, resp, next) => {
     .exec()
     .then(user => {
       if (!user) {
-        throw new Error('user.actions.reset');
+        throw new Error();
       }
       const { isActive } = user;
 
@@ -359,15 +359,7 @@ const resendRecoveryLink = (req, resp, next) => {
 
       next();
     })
-    .catch(err => {
-      const { message } = err;
-
-      if (message) {
-        return resp.status(400).send({ message });
-      }
-
-      resp.sendStatus(400);
-    });
+    .catch(() => resp.sendStatus(400));
 };
 
 const getUserDetails = (req, resp) => {

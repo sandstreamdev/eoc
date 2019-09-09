@@ -1,5 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import AppLogo from 'common/components/AppLogo';
 import { RouterMatchPropType } from 'common/constants/propTypes';
@@ -14,7 +15,7 @@ import { Routes } from 'common/constants/enums';
 class LinkExpired extends PureComponent {
   state = {
     isLinkSuccessfullySent: false,
-    sendingFailed: false
+    sendingFailed: ''
   };
 
   handleResendLink = () => {
@@ -42,7 +43,16 @@ class LinkExpired extends PureComponent {
 
   renderResendingError = () => (
     <p className="link-expired__error">
-      <FormattedMessage id="common.something-went-wrong" />
+      <FormattedMessage
+        id="user.actions.token-revoked"
+        values={{
+          link: (
+            <Link className="success-message__link" to="/reset-password">
+              <FormattedMessage id="user.auth.sign-up.reset-password" />
+            </Link>
+          )
+        }}
+      />
     </p>
   );
 
