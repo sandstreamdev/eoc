@@ -1631,7 +1631,7 @@ const moveItem = (req, resp) => {
         cohortClients,
         dashboardClients,
         listClients
-      )({ oldItemId: sanitizedItemId, newItem, newList, oldList, userId });
+      )({ oldItemId: sanitizedItemId, newItem, newList, oldList });
     })
     .then(() => resp.send())
     .catch(() => resp.sendStatus(400));

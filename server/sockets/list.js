@@ -785,7 +785,7 @@ const moveToList = (
   dashboardClients,
   listClients
 ) => data => {
-  const { newItem, newList, oldItemId, oldList, userId } = data;
+  const { newItem, newList, oldItemId, oldList } = data;
   const { _id: listId } = oldList;
   const { _id: newListId, viewersIds } = newList;
 
@@ -797,22 +797,20 @@ const moveToList = (
   viewersIds.forEach(viewerId => {
     const id = viewerId.toString();
 
-    if (id !== userId.toString()) {
-      if (listClients.has(id)) {
-        const { socketId, viewId } = listClients.get(id);
+    if (listClients.has(id)) {
+      const { socketId, viewId } = listClients.get(id);
 
-        if (viewId === newListId.toString()) {
-          io.sockets.to(socketId).emit(ItemActionTypes.ADD_SUCCESS, {
-            listId: newListId,
-            item: responseWithItem(newItem._doc, id)
-          });
-        }
+      if (viewId === newListId.toString()) {
+        io.sockets.to(socketId).emit(ItemActionTypes.ADD_SUCCESS, {
+          listId: newListId,
+          item: responseWithItem(newItem._doc, id)
+        });
       }
     }
   });
 
-  emitListsMetaData(io, cohortClients, dashboardClients, oldList);
-  emitListsMetaData(io, cohortClients, dashboardClients, newList);
+  emitListsMetaData(io)(cohortClients, dashboardClients)(oldList);
+  emitListsMetaData(io)(cohortClients, dashboardClients)(newList);
 
   return Promise.resolve();
 };

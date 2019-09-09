@@ -145,6 +145,7 @@ const items = (state = {}, action) => {
         payload: { itemId, locks }
       } = action;
       const blockedItem = state[itemId];
+
       if (blockedItem) {
         const { locks: prevLocks } = blockedItem;
         const updatedLocks = filterDefined(locks);
