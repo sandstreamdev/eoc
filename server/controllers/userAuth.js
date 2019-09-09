@@ -457,8 +457,27 @@ const getUserName = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const checkToken = (req, resp) => {
+  const {
+    params: { token }
+  } = req;
+
+  User.findOne({ resetToken: token })
+    .lean()
+    .exec()
+    .then(user => {
+      if (user) {
+        return resp.send();
+      }
+
+      resp.sendStatus(400);
+    })
+    .catch(() => resp.sendStatus(400));
+};
+
 module.exports = {
   changePassword,
+  checkToken,
   confirmEmail,
   getLoggedUser,
   getUserDetails,

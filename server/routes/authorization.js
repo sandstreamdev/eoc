@@ -9,6 +9,7 @@ const {
 } = require('../config/auth');
 const {
   changePassword,
+  checkToken,
   confirmEmail,
   getLoggedUser,
   getUserDetails,
@@ -55,5 +56,6 @@ router.post(
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/user-name/:token?', getUserName);
+router.get('/check-token/:token?', checkToken);
 
 module.exports = router;
