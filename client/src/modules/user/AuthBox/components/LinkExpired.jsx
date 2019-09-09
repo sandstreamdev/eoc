@@ -15,7 +15,7 @@ import { Routes } from 'common/constants/enums';
 class LinkExpired extends PureComponent {
   state = {
     isLinkSuccessfullySent: false,
-    sendingFailed: ''
+    sendingFailed: false
   };
 
   handleResendLink = () => {
