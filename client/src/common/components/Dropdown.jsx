@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import { KeyCodes } from 'common/constants/enums';
 
@@ -15,15 +16,27 @@ class Dropdown extends PureComponent {
     this.dropdown = React.createRef();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { isVisible } = this.state;
+    const {
+      location: { pathname }
+    } = this.props;
+    const {
+      location: { pathname: prevPathname }
+    } = prevProps;
 
     if (isVisible) {
       document.addEventListener('keydown', this.handleEscapePress);
       document.addEventListener('click', this.handleClickOutside);
+      document.addEventListener('touchend', this.handleClickOutside);
+
+      if (pathname !== prevPathname) {
+        this.hide();
+      }
     } else {
       document.removeEventListener('keydown', this.handleEscapePress);
       document.removeEventListener('click', this.handleClickOutside);
+      document.removeEventListener('touchend', this.handleClickOutside);
     }
   }
 
@@ -32,11 +45,17 @@ class Dropdown extends PureComponent {
     document.removeEventListener('click', this.handleClickOutside);
   }
 
+  setVisibility = isVisible => this.setState({ isVisible });
+
+  hide = () => this.setVisibility(false);
+
+  show = () => this.setVisibility(true);
+
   handleEscapePress = event => {
     const { code } = event;
 
     if (code === KeyCodes.ESCAPE) {
-      this.setState({ isVisible: false });
+      this.hide();
     }
   };
 
@@ -44,12 +63,9 @@ class Dropdown extends PureComponent {
     const isClickedOutside = !this.dropdown.current.contains(event.target);
 
     if (isClickedOutside) {
-      this.setState({ isVisible: false });
+      this.hide();
     }
   };
-
-  handleDropdownVisibility = () =>
-    this.setState(({ isVisible }) => ({ isVisible: !isVisible }));
 
   render() {
     const { isVisible } = this.state;
@@ -60,12 +76,13 @@ class Dropdown extends PureComponent {
       dropdownClassName,
       dropdownName
     } = this.props;
+    const toggle = isVisible ? this.hide : this.show;
 
     return (
       <div className="dropdown">
         <button
           className={classNames(buttonClassName)}
-          onClick={this.handleDropdownVisibility}
+          onClick={toggle}
           type="button"
           title={
             dropdownName && `${isVisible ? 'Hide' : 'Show'} ${dropdownName}`
@@ -94,7 +111,10 @@ Dropdown.propTypes = {
     .isRequired,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
   dropdownClassName: PropTypes.string,
-  dropdownName: PropTypes.string
+  dropdownName: PropTypes.string,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
+  }).isRequired
 };
 
-export default Dropdown;
+export default withRouter(Dropdown);
