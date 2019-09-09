@@ -137,8 +137,8 @@ class MoveToListPanel extends PureComponent {
               <Filter
                 buttonContent={<CloseIcon />}
                 classes="move-to-list-panel__filter"
-                options={lists}
                 onFilter={this.handleFilterLists}
+                options={lists}
                 placeholder={formatMessage({
                   id: 'list.list-item.input-find-list'
                 })}

@@ -92,11 +92,11 @@ Filter.defaultProps = {
 Filter.propTypes = {
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   classes: PropTypes.string.isRequired,
+  clearFilterButton: PropTypes.bool,
   options: PropTypes.arrayOf(
     PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
   ).isRequired,
   placeholder: PropTypes.string,
-  clearFilterButton: PropTypes.bool,
 
   onFilter: PropTypes.func.isRequired
 };

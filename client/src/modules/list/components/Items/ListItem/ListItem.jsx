@@ -138,29 +138,13 @@ class ListItem extends PureComponent {
     return action(_id, listId, name);
   };
 
-  hideConfirmation = event => {
-    event.preventDefault();
+  hideConfirmation = () => this.setState({ isConfirmationVisible: false });
 
-    this.setState({ isConfirmationVisible: false });
-  };
+  showConfirmation = () => this.setState({ isConfirmationVisible: true });
 
-  showConfirmation = event => {
-    event.preventDefault();
+  hideMoveToPanel = () => this.setState({ isMoveToListPanelVisible: false });
 
-    this.setState({ isConfirmationVisible: true });
-  };
-
-  hideMoveToPanel = event => {
-    event.preventDefault();
-
-    this.setState({ isMoveToListPanelVisible: false });
-  };
-
-  showMoveToPanel = event => {
-    event.preventDefault();
-
-    this.setState({ isMoveToListPanelVisible: true });
-  };
+  showMoveToPanel = () => this.setState({ isMoveToListPanelVisible: true });
 
   handleArchiveItem = event => {
     event.preventDefault();
