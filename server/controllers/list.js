@@ -1549,8 +1549,9 @@ const moveItem = (req, resp) => {
       }
 
       const { items } = oldList;
+      const { _id, ...itemToMove } = items.id(sanitizedItemId)._doc;
       const newItem = new Item({
-        ...items.id(sanitizedItemId)._doc,
+        ...itemToMove,
         locks: { description: false, name: false }
       });
 
