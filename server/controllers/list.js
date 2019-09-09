@@ -1525,13 +1525,7 @@ const getListsForItem = (req, resp) => {
   List.find(query, 'name')
     .lean()
     .exec()
-    .then(docs => {
-      if (!docs) {
-        return resp.sendStatus(400);
-      }
-
-      return resp.send(docs);
-    })
+    .then(docs => (docs ? resp.send(docs) : resp.sendStatus(400)))
     .catch(() => resp.sendStatus(400));
 };
 
@@ -1555,34 +1549,9 @@ const moveItem = (req, resp) => {
       }
 
       const { items } = oldList;
-      const {
-        authorId,
-        createdAt,
-        description,
-        editedBy,
-        isArchived,
-        isDeleted,
-        isOrdered,
-        name,
-        purchaserId,
-        status,
-        updatedAt,
-        voterIds
-      } = items.id(sanitizedItemId);
       const newItem = new Item({
-        authorId,
-        createdAt,
-        description,
-        editedBy,
-        isArchived,
-        isDeleted,
-        isOrdered,
-        locks: { description: false, name: false },
-        name,
-        purchaserId,
-        status,
-        updatedAt,
-        voterIds
+        ...items.id(sanitizedItemId)._doc,
+        locks: { description: false, name: false }
       });
 
       return returnPayload(
@@ -1668,7 +1637,7 @@ const moveItem = (req, resp) => {
       );
       resp.send();
     })
-    .catch(() => resp.sendStatus(400));
+    .catch(err => resp.sendStatus(400));
 };
 
 module.exports = {
