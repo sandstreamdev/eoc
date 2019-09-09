@@ -1554,22 +1554,13 @@ const moveItem = (req, resp) => {
         locks: { description: false, name: false }
       });
 
-      return returnPayload(
-        Comment.find({ itemId: sanitizedItemId })
-          .lean()
-          .exec(),
-        true
-      )({
-        newItem,
-        oldList
-      });
+      return Comment.find({ itemId: sanitizedItemId })
+        .lean()
+        .exec()
+        .then(comments => ({ comments, newItem, oldList }));
     })
-    .then(data => {
-      const {
-        payload,
-        payload: { newItem },
-        result: comments
-      } = data;
+    .then(result => {
+      const { comments, newItem, oldList } = result;
       const promises = [];
 
       if (comments.length > 0) {
@@ -1584,45 +1575,40 @@ const moveItem = (req, resp) => {
         });
       }
 
-      return returnPayload(
-        promises.length > 0 ? Promise.all(promises) : Promise.resolve()
-      )({ ...payload });
+      return promises.length > 0
+        ? Promise.all(promises).then(() => ({ newItem, oldList }))
+        : { newItem, oldList };
     })
-    .then(data => {
-      const { newItem } = data;
+    .then(result => {
+      const { newItem } = result;
 
-      return returnPayload(
-        List.findOneAndUpdate(
-          {
-            _id: sanitizedNewListId,
-            memberIds: userId
-          },
-          { $push: { items: newItem } },
-          { new: true }
-        ).exec(),
-        true
-      )({ ...data });
+      return List.findOneAndUpdate(
+        {
+          _id: sanitizedNewListId,
+          memberIds: userId
+        },
+        { $push: { items: newItem } },
+        { new: true }
+      )
+        .exec()
+        .then(newList => ({ newList, ...result }));
     })
-    .then(data => {
-      const {
-        payload,
-        payload: { oldList },
-        result: newList
-      } = data;
-      const { items } = oldList;
+    .then(result => {
+      const { newItem, newList, oldList: prevList } = result;
+      const { items } = prevList;
       const itemToUpdate = items.id(sanitizedItemId);
 
       itemToUpdate.isDeleted = true;
       itemToUpdate.isArchived = true;
 
-      return returnPayload(oldList.save())({ newList, ...payload });
+      return prevList.save().then(oldList => ({ newItem, newList, oldList }));
     })
-    .then(data => {
+    .then(result => {
       const {
         newItem: { _id: itemId },
         newList: { cohortId },
         oldList: { name }
-      } = data;
+      } = result;
 
       fireAndForget(
         saveActivity(
@@ -1637,7 +1623,7 @@ const moveItem = (req, resp) => {
       );
       resp.send();
     })
-    .catch(err => resp.sendStatus(400));
+    .catch(() => resp.sendStatus(400));
 };
 
 module.exports = {
