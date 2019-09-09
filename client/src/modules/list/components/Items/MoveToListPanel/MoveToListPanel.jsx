@@ -85,17 +85,24 @@ class MoveToListPanel extends PureComponent {
 
   handleMoveToList = event => {
     event.preventDefault();
+
     const { listId: newListId, listName } = this.state;
     const {
       data: { _id: itemId, name: itemName },
+      lockItem,
       match: {
         params: { id: listId }
       },
-      moveItemToList
+      moveItemToList,
+      unlockItem
     } = this.props;
     const notificationData = { item: itemName, list: listName };
 
-    return moveItemToList(itemId, listId, newListId, notificationData);
+    lockItem();
+
+    return moveItemToList(itemId, listId, newListId, notificationData).finally(
+      unlockItem
+    );
   };
 
   render() {
@@ -169,7 +176,9 @@ MoveToListPanel.propTypes = {
   lists: PropTypes.arrayOf(
     PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
   ).isRequired,
+  lockItem: PropTypes.func.isRequired,
   match: RouterMatchPropType.isRequired,
+  unlockItem: PropTypes.func.isRequired,
 
   fetchListsForItem: PropTypes.func.isRequired,
   moveItemToList: PropTypes.func.isRequired,

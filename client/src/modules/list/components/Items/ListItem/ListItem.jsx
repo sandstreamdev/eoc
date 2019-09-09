@@ -348,7 +348,9 @@ class ListItem extends PureComponent {
     return (
       <MoveToListPanel
         data={data}
+        lockItem={this.handleItemLock}
         onClose={this.handleMoveToListPanelVisibility}
+        unlockItem={this.handleItemUnlock}
       />
     );
   };
