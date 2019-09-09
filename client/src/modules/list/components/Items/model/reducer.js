@@ -145,16 +145,20 @@ const items = (state = {}, action) => {
         payload: { itemId, locks }
       } = action;
       const blockedItem = state[itemId];
-      const { locks: prevLocks } = blockedItem;
-      const updatedLocks = filterDefined(locks);
+      if (blockedItem) {
+        const { locks: prevLocks } = blockedItem;
+        const updatedLocks = filterDefined(locks);
 
-      return {
-        ...state,
-        [itemId]: {
-          ...blockedItem,
-          locks: { ...prevLocks, ...updatedLocks }
-        }
-      };
+        return {
+          ...state,
+          [itemId]: {
+            ...blockedItem,
+            locks: { ...prevLocks, ...updatedLocks }
+          }
+        };
+      }
+
+      return state;
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
