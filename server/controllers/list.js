@@ -1636,8 +1636,7 @@ const moveItem = (req, resp) => {
     })
     .then(data => {
       const {
-        payload,
-        payload: { oldList },
+        payload: { newItem, oldList },
         result: newList
       } = data;
       const { items } = oldList;
@@ -1646,13 +1645,18 @@ const moveItem = (req, resp) => {
       itemToUpdate.isDeleted = true;
       itemToUpdate.isArchived = true;
 
-      return returnPayload(oldList.save())({ newList, ...payload });
+      return returnPayload(oldList.save(), true)({ newList, newItem });
     })
     .then(data => {
       const {
-        newItem: { _id: itemId },
-        newList: { cohortId },
-        oldList: { name }
+        payload: {
+          newItem,
+          newItem: { _id: itemId },
+          newList,
+          newList: { cohortId }
+        },
+        result: oldList,
+        result: { name }
       } = data;
 
       fireAndForget(
@@ -1666,8 +1670,15 @@ const moveItem = (req, resp) => {
           name
         )
       );
-      resp.send();
+
+      return socketActions.moveToList(
+        socketInstance,
+        cohortClients,
+        dashboardClients,
+        listClients
+      )({ oldItemId: sanitizedItemId, newItem, newList, oldList, userId });
     })
+    .then(() => resp.send())
     .catch(() => resp.sendStatus(400));
 };
 

@@ -600,7 +600,7 @@ const removeListMember = (
   }
 
   io.sockets
-    .to(`sack-${listId}`)
+    .to(listChannel(listId))
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
 
   return Promise.resolve();
@@ -701,7 +701,7 @@ const deleteList = (io, dashboardClients, cohortClients) => data => {
   const { listId, cohortId } = data;
 
   io.sockets
-    .to(`sack-${listId}`)
+    .to(listChannel(listId))
     .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
 
   dashboardClients.forEach(({ socketId }) =>
@@ -778,6 +778,66 @@ const restoreList = (
     });
 };
 
+const emitListsMetaData = (io, cohortClients, dashboardClients, list) => {
+  const { _id: listId, cohortId, viewersIds } = list;
+
+  viewersIds.forEach(viewerId => {
+    const id = viewerId.toString();
+
+    if (dashboardClients.has(id)) {
+      const { socketId } = dashboardClients.get(id);
+      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+        [listId]: responseWithList(list, id)
+      });
+    }
+
+    if (cohortId && cohortClients.has(id)) {
+      const { socketId } = cohortClients.get(id);
+      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+        [listId]: responseWithList(list, id)
+      });
+    }
+  });
+};
+
+const moveToList = (
+  io,
+  cohortClients,
+  dashboardClients,
+  listClients
+) => data => {
+  const { newItem, newList, oldItemId, oldList, userId } = data;
+  const { _id: listId } = oldList;
+  const { _id: newListId, viewersIds } = newList;
+
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.DELETE_SUCCESS, {
+    listId,
+    itemId: oldItemId
+  });
+
+  viewersIds.forEach(viewerId => {
+    const id = viewerId.toString();
+
+    if (id !== userId.toString()) {
+      if (listClients.has(id)) {
+        const { socketId, viewId } = listClients.get(id);
+
+        if (viewId === newListId.toString()) {
+          io.sockets.to(socketId).emit(ItemActionTypes.ADD_SUCCESS, {
+            listId: newListId,
+            item: responseWithItem(newItem._doc, id)
+          });
+        }
+      }
+    }
+  });
+
+  emitListsMetaData(io, cohortClients, dashboardClients, oldList);
+  emitListsMetaData(io, cohortClients, dashboardClients, newList);
+
+  return Promise.resolve();
+};
+
 module.exports = {
   addComment,
   addItemToList,
@@ -791,6 +851,7 @@ module.exports = {
   deleteItem,
   deleteList,
   leaveList,
+  moveToList,
   removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
