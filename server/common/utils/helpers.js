@@ -388,8 +388,7 @@ const runAsyncTasks = async (...tasks) => {
 /* eslint-disable-next-line no-console */
 const fireAndForget = promise => promise.catch(err => console.error(err));
 
-const returnPayload = (promise, returnResult = false) => payload =>
-  promise.then(result => (returnResult ? { payload, result } : payload));
+const returnPayload = promise => payload => promise.then(() => payload);
 
 module.exports = {
   checkIfArrayContainsUserId,

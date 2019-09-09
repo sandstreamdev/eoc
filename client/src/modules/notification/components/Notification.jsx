@@ -5,17 +5,18 @@ import { FormattedMessage } from 'react-intl';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType as NotificationType } from 'common/constants/enums';
 
-const Notification = ({ data, id, redirect, type }) => (
-  <MessageBox type={type}>
-    <FormattedMessage
-      id={id}
-      values={typeof data === 'string' ? { data } : { ...data }}
-    />
-    {type === NotificationType.ERROR && !redirect && (
-      <FormattedMessage id="common.try-again" />
-    )}
-  </MessageBox>
-);
+const Notification = ({ data, id, redirect, type }) => {
+  const values = typeof data === 'string' ? { data } : { ...data };
+
+  return (
+    <MessageBox type={type}>
+      <FormattedMessage id={id} values={values} />
+      {type === NotificationType.ERROR && !redirect && (
+        <FormattedMessage id="common.try-again" />
+      )}
+    </MessageBox>
+  );
+};
 
 Notification.propTypes = {
   data: PropTypes.oneOfType([

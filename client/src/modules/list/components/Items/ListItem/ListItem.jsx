@@ -138,20 +138,28 @@ class ListItem extends PureComponent {
     return action(_id, listId, name);
   };
 
-  handleConfirmationVisibility = event => {
+  hideConfirmation = event => {
     event.preventDefault();
 
-    this.setState(({ isConfirmationVisible }) => ({
-      isConfirmationVisible: !isConfirmationVisible
-    }));
+    this.setState({ isConfirmationVisible: false });
   };
 
-  handleMoveToListPanelVisibility = event => {
+  showConfirmation = event => {
     event.preventDefault();
 
-    this.setState(({ isMoveToListPanelVisible }) => ({
-      isMoveToListPanelVisible: !isMoveToListPanelVisible
-    }));
+    this.setState({ isConfirmationVisible: true });
+  };
+
+  hideMoveToPanel = event => {
+    event.preventDefault();
+
+    this.setState({ isMoveToListPanelVisible: false });
+  };
+
+  showMoveToPanel = event => {
+    event.preventDefault();
+
+    this.setState({ isMoveToListPanelVisible: true });
   };
 
   handleArchiveItem = event => {
@@ -293,8 +301,8 @@ class ListItem extends PureComponent {
         <button
           className="link-button"
           disabled={disabled}
-          onClick={this.handleConfirmationVisibility}
-          onTouchEnd={this.handleConfirmationVisibility}
+          onClick={this.showConfirmation}
+          onTouchEnd={this.showConfirmation}
           type="button"
         >
           <FormattedMessage id="list.list-item.archive" />
@@ -312,8 +320,8 @@ class ListItem extends PureComponent {
         <button
           className="link-button"
           disabled={disabled}
-          onClick={this.handleMoveToListPanelVisibility}
-          onTouchEnd={this.handleMoveToListPanelVisibility}
+          onClick={this.showMoveToPanel}
+          onTouchEnd={this.showMoveToPanel}
           type="button"
         >
           <FormattedMessage id="list.list-item.move" />
@@ -331,7 +339,7 @@ class ListItem extends PureComponent {
     return (
       <Confirmation
         disabled={!isMember}
-        onCancel={this.handleConfirmationVisibility}
+        onCancel={this.hideConfirmation}
         onConfirm={this.handleArchiveItem}
       >
         <FormattedMessage
@@ -349,7 +357,7 @@ class ListItem extends PureComponent {
       <MoveToListPanel
         data={data}
         lockItem={this.handleItemLock}
-        onClose={this.handleMoveToListPanelVisibility}
+        onClose={this.hideMoveToPanel}
         unlockItem={this.handleItemUnlock}
       />
     );

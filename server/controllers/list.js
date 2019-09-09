@@ -1512,7 +1512,7 @@ const leaveList = (req, resp) => {
     });
 };
 
-const getListsForItem = (req, resp) => {
+const getAvailableLists = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
@@ -1650,8 +1650,8 @@ module.exports = {
   deleteItem,
   getArchivedItems,
   getArchivedListsMetaData,
+  getAvailableLists,
   getListData,
-  getListsForItem,
   getListsMetaData,
   leaveList,
   moveItem,

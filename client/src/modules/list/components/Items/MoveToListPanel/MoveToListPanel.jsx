@@ -6,9 +6,9 @@ import _flowRight from 'lodash/flowRight';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import Filter from 'common/components/Filter';
-import { fetchListsForItem } from 'modules/list/model/actions';
+import { fetchAvailableLists } from 'modules/list/model/actions';
 import { moveItemToList } from 'modules/list/components/Items/model/actions';
-import { getListsForItem } from 'modules/list/model/selectors';
+import { getListsNames } from 'modules/list/model/selectors';
 import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import { CloseIcon } from 'assets/images/icons';
 import Confirmation from 'common/components/Confirmation';
@@ -28,11 +28,11 @@ class MoveToListPanel extends PureComponent {
   };
 
   componentDidMount() {
-    const { fetchListsForItem, lists } = this.props;
+    const { fetchAvailableLists, lists } = this.props;
 
     this.setState({ pending: true });
 
-    this.pendingPromise = makeAbortablePromise(fetchListsForItem());
+    this.pendingPromise = makeAbortablePromise(fetchAvailableLists());
     this.pendingPromise.promise
       .then(() => this.setState({ pending: false }))
       .catch(err => {
@@ -50,7 +50,7 @@ class MoveToListPanel extends PureComponent {
     const { lists: prevLists } = prevProps;
     const { lists } = this.props;
 
-    if (prevLists.length === 0 && lists.length > 0) {
+    if (!prevLists.length && lists.length) {
       this.handleFilterLists(lists);
     }
   }
@@ -137,7 +137,7 @@ class MoveToListPanel extends PureComponent {
               <Filter
                 buttonContent={<CloseIcon />}
                 classes="move-to-list-panel__filter"
-                elements={lists}
+                options={lists}
                 onFilter={this.handleFilterLists}
                 placeholder={formatMessage({
                   id: 'list.list-item.input-find-list'
@@ -180,7 +180,7 @@ MoveToListPanel.propTypes = {
   match: RouterMatchPropType.isRequired,
   unlockItem: PropTypes.func.isRequired,
 
-  fetchListsForItem: PropTypes.func.isRequired,
+  fetchAvailableLists: PropTypes.func.isRequired,
   moveItemToList: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired
 };
@@ -193,7 +193,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
 
   return {
-    lists: getListsForItem(state, id)
+    lists: getListsNames(state, id)
   };
 };
 
@@ -202,6 +202,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { fetchListsForItem, moveItemToList }
+    { fetchAvailableLists, moveItemToList }
   )
 )(MoveToListPanel);
