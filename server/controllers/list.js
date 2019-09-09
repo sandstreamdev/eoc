@@ -1525,13 +1525,7 @@ const getListsForItem = (req, resp) => {
   List.find(query, 'name')
     .lean()
     .exec()
-    .then(docs => {
-      if (!docs) {
-        return resp.sendStatus(400);
-      }
-
-      return resp.send(docs);
-    })
+    .then(docs => (docs ? resp.send(docs) : resp.sendStatus(400)))
     .catch(() => resp.sendStatus(400));
 };
 
@@ -1555,52 +1549,19 @@ const moveItem = (req, resp) => {
       }
 
       const { items } = oldList;
-      const {
-        authorId,
-        createdAt,
-        description,
-        editedBy,
-        isArchived,
-        isDeleted,
-        isOrdered,
-        name,
-        purchaserId,
-        status,
-        updatedAt,
-        voterIds
-      } = items.id(sanitizedItemId);
+      const { _id, ...itemToMove } = items.id(sanitizedItemId)._doc;
       const newItem = new Item({
-        authorId,
-        createdAt,
-        description,
-        editedBy,
-        isArchived,
-        isDeleted,
-        isOrdered,
-        locks: { description: false, name: false },
-        name,
-        purchaserId,
-        status,
-        updatedAt,
-        voterIds
+        ...itemToMove,
+        locks: { description: false, name: false }
       });
 
-      return returnPayload(
-        Comment.find({ itemId: sanitizedItemId })
-          .lean()
-          .exec(),
-        true
-      )({
-        newItem,
-        oldList
-      });
+      return Comment.find({ itemId: sanitizedItemId })
+        .lean()
+        .exec()
+        .then(comments => ({ comments, newItem, oldList }));
     })
-    .then(data => {
-      const {
-        payload,
-        payload: { newItem },
-        result: comments
-      } = data;
+    .then(result => {
+      const { comments, newItem, oldList } = result;
       const promises = [];
 
       if (comments.length > 0) {
@@ -1615,49 +1576,43 @@ const moveItem = (req, resp) => {
         });
       }
 
-      return returnPayload(
-        promises.length > 0 ? Promise.all(promises) : Promise.resolve()
-      )({ ...payload });
+      return promises.length > 0
+        ? Promise.all(promises).then(() => ({ newItem, oldList }))
+        : { newItem, oldList };
     })
-    .then(data => {
-      const { newItem } = data;
+    .then(result => {
+      const { newItem } = result;
 
-      return returnPayload(
-        List.findOneAndUpdate(
-          {
-            _id: sanitizedNewListId,
-            memberIds: userId
-          },
-          { $push: { items: newItem } },
-          { new: true }
-        ).exec(),
-        true
-      )({ ...data });
+      return List.findOneAndUpdate(
+        {
+          _id: sanitizedNewListId,
+          memberIds: userId
+        },
+        { $push: { items: newItem } },
+        { new: true }
+      )
+        .exec()
+        .then(newList => ({ newList, ...result }));
     })
-    .then(data => {
-      const {
-        payload: { newItem, oldList },
-        result: newList
-      } = data;
-      const { items } = oldList;
+    .then(result => {
+      const { newItem, newList, oldList: prevList } = result;
+      const { items } = prevList;
       const itemToUpdate = items.id(sanitizedItemId);
 
       itemToUpdate.isDeleted = true;
       itemToUpdate.isArchived = true;
 
-      return returnPayload(oldList.save(), true)({ newList, newItem });
+      return prevList.save().then(oldList => ({ newItem, newList, oldList }));
     })
-    .then(data => {
+    .then(result => {
       const {
-        payload: {
-          newItem,
-          newItem: { _id: itemId },
-          newList,
-          newList: { cohortId }
-        },
-        result: oldList,
-        result: { name }
-      } = data;
+        newItem,
+        newItem: { _id: itemId },
+        newList,
+        newList: { cohortId },
+        oldList,
+        oldList: { name }
+      } = result;
 
       fireAndForget(
         saveActivity(

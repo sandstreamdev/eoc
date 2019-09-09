@@ -696,9 +696,7 @@ export const leaveList = (
 
 export const fetchListsForItem = () => dispatch =>
   getJson('/api/lists/for-item')
-    .then(lists => {
-      dispatch(fetchListsForItemSuccess(_keyBy(lists, '_id')));
-    })
+    .then(lists => dispatch(fetchListsForItemSuccess(_keyBy(lists, '_id'))))
     .catch(err => {
       dispatch(fetchListsForItemFailure());
       createNotificationWithTimeout(
