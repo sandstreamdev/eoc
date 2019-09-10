@@ -3,7 +3,6 @@
   display: block;
   position: relative;
   border-bottom: 1px solid $item-border;
-  padding: 0 four-by(4) 0;
 
   &:first-child {
     margin-top: 0;
@@ -41,22 +40,22 @@
     border-left: 1px solid $item-border;
   }
 
-  &__input {
-    width: 32px;
-    height: 32px;
-    order: 1;
-    z-index: 2;
-    position: absolute;
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    visibility: hidden;
-  }
+  // &__input {
+  //   width: 32px;
+  //   height: 32px;
+  //   order: 1;
+  //   z-index: 2;
+  //   position: absolute;
+  //   right: 30px;
+  //   top: 50%;
+  //   transform: translateY(-50%);
+  //   cursor: pointer;
+  //   visibility: hidden;
+  // }
 
   &__label {
     box-sizing: border-box;
-    padding: four-by(4) 0;
+    padding: four-by(4) 0 four-by(2);
     display: flex;
     align-items: center;
     text-align: left;
@@ -67,6 +66,7 @@
     overflow: hidden;
     background: $bg-color;
     transition: all 0.1s;
+    flex: 80%;
   }
 
   &__data {
@@ -74,6 +74,7 @@
     flex-direction: column;
     font-size: $m-font;
     line-height: 1.2;
+    flex: 100%;
   }
 
   &__author,
@@ -150,6 +151,10 @@
     }
   }
 
+  &__details-wrapper {
+    padding: 0 four-by(4);
+  }
+
   &__details {
     display: flex;
     justify-content: space-between;
@@ -198,10 +203,9 @@
     }
   }
 
-  &__top {
+  &__wrapper {
     position: relative;
-    display: flex;
-    justify-content: space-between;
+    padding: 0 four-by(4) 0;
 
     &::before {
       position: absolute;
@@ -219,7 +223,7 @@
         display: block;
       }
     }
-
+    //
     &--details-visible {
       &::before {
         display: none;
@@ -235,6 +239,25 @@
           center;
       }
     }
+  }
+
+  &__top {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+  }
+
+  &__performers {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   &__description {
