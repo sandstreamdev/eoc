@@ -167,6 +167,16 @@ const leaveListFailure = () => ({
   type: ListActionTypes.LEAVE_FAILURE
 });
 
+const fetchAvailableListsSuccess = payload => ({
+  type: ListActionTypes.FETCH_AVAILABLE_SUCCESS,
+  payload
+});
+
+const fetchAvailableListsFailure = payload => ({
+  type: ListActionTypes.FETCH_AVAILABLE_FAILURE,
+  payload
+});
+
 export const fetchListData = listId => dispatch =>
   getJson(`/api/lists/${listId}/data`)
     .then(json => {
@@ -679,6 +689,21 @@ export const leaveList = (
         {
           notificationId: err.message || 'list.actions.leave-fail',
           data: userName
+        },
+        err
+      );
+    });
+
+export const fetchAvailableLists = () => dispatch =>
+  getJson('/api/lists/for-item')
+    .then(lists => dispatch(fetchAvailableListsSuccess(_keyBy(lists, '_id'))))
+    .catch(err => {
+      dispatch(fetchAvailableListsFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.actions.fetch-meta-data-fail'
         },
         err
       );

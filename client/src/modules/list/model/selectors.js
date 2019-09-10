@@ -108,3 +108,9 @@ export const getMembers = createSelector(
   getList,
   list => list && list.members
 );
+
+export const getListsNames = createSelector(
+  [getList, getLists],
+  (currentList, lists) =>
+    _sortBy(_filter(lists, list => list._id !== currentList._id), el => el.name)
+);

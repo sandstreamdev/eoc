@@ -114,6 +114,15 @@ const fetchArchivedItemsFailure = () => ({
   type: ItemActionTypes.FETCH_ARCHIVE_FAILURE
 });
 
+const moveItemToListSuccess = payload => ({
+  type: ItemActionTypes.MOVE_SUCCESS,
+  payload
+});
+
+const moveItemToListFailure = () => ({
+  type: ItemActionTypes.MOVE_FAILURE
+});
+
 export const removeArchivedItems = payload => ({
   type: ItemActionTypes.REMOVE_ARCHIVED,
   payload
@@ -367,6 +376,28 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
         {
           notificationId: 'list.items.actions.delete-item-fail',
           data: name
+        },
+        err
+      );
+    });
+
+export const moveItemToList = (itemId, listId, newListId, data) => dispatch =>
+  patchData(`/api/lists/${listId}/move-item`, { itemId, newListId })
+    .then(() => {
+      dispatch(moveItemToListSuccess({ listId, itemId }));
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.items.actions.move-item',
+        data
+      });
+    })
+    .catch(err => {
+      dispatch(moveItemToListFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.items.action.move-item-fail',
+          data
         },
         err
       );

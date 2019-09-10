@@ -1224,12 +1224,11 @@ const cloneItem = (req, resp) => {
         throw new BadRequestException();
       }
 
-      const { description, link, name } = list.items.id(sanitizedItemId);
+      const { description, name } = list.items.id(sanitizedItemId);
 
       const item = new Item({
         authorId: userId,
         description,
-        link,
         name
       });
 
@@ -1513,6 +1512,121 @@ const leaveList = (req, resp) => {
     });
 };
 
+const getAvailableLists = (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+
+  const query = {
+    memberIds: userId,
+    isArchived: false
+  };
+
+  List.find(query, 'name')
+    .lean()
+    .exec()
+    .then(docs => (docs ? resp.send(docs) : resp.sendStatus(400)))
+    .catch(() => resp.sendStatus(400));
+};
+
+const moveItem = (req, resp) => {
+  const { itemId, newListId } = req.body;
+  const { id: listId } = req.params;
+  const { _id: userId } = req.user;
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+  const sanitizedNewListId = sanitize(newListId);
+
+  List.findOne({
+    _id: sanitizedListId,
+    memberIds: userId,
+    'items._id': sanitizedItemId
+  })
+    .exec()
+    .then(oldList => {
+      if (!oldList) {
+        throw new BadRequestException();
+      }
+
+      const { items } = oldList;
+      const { _id, ...itemToMove } = items.id(sanitizedItemId)._doc;
+      const newItem = new Item({
+        ...itemToMove,
+        locks: { description: false, name: false }
+      });
+
+      return Comment.find({ itemId: sanitizedItemId })
+        .lean()
+        .exec()
+        .then(comments => ({ comments, newItem, oldList }));
+    })
+    .then(result => {
+      const { comments, newItem, oldList } = result;
+      const promises = [];
+
+      if (comments.length > 0) {
+        comments.forEach(comment => {
+          const { _id, ...commentData } = comment;
+          const newComment = new Comment({
+            ...commentData,
+            itemId: newItem._id
+          });
+
+          promises.push(newComment.save());
+        });
+      }
+
+      return promises.length > 0
+        ? Promise.all(promises).then(() => ({ newItem, oldList }))
+        : { newItem, oldList };
+    })
+    .then(result => {
+      const { newItem } = result;
+
+      return List.findOneAndUpdate(
+        {
+          _id: sanitizedNewListId,
+          memberIds: userId
+        },
+        { $push: { items: newItem } },
+        { new: true }
+      )
+        .exec()
+        .then(newList => ({ newList, ...result }));
+    })
+    .then(result => {
+      const { newItem, newList, oldList: prevList } = result;
+      const { items } = prevList;
+      const itemToUpdate = items.id(sanitizedItemId);
+
+      itemToUpdate.isDeleted = true;
+      itemToUpdate.isArchived = true;
+
+      return prevList.save().then(oldList => ({ newItem, newList, oldList }));
+    })
+    .then(result => {
+      const {
+        newItem: { _id: itemId },
+        newList: { cohortId },
+        oldList: { name }
+      } = result;
+
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_MOVE,
+          userId,
+          itemId,
+          sanitizedNewListId,
+          cohortId,
+          null,
+          name
+        )
+      );
+      resp.send();
+    })
+    .catch(() => resp.sendStatus(400));
+};
+
 module.exports = {
   addItemToList,
   addMemberRole,
@@ -1526,9 +1640,11 @@ module.exports = {
   deleteItem,
   getArchivedItems,
   getArchivedListsMetaData,
+  getAvailableLists,
   getListData,
   getListsMetaData,
   leaveList,
+  moveItem,
   removeFromFavourites,
   removeMember,
   removeMemberRole,

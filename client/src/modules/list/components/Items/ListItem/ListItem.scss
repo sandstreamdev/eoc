@@ -158,6 +158,12 @@
     padding-bottom: four-by(4);
   }
 
+  &__feature {
+    &:not(:last-child) {
+      border-bottom: 1px solid $border-light;
+    }
+  }
+
   &__features {
     &:not(:last-child) {
       border-bottom: 1px solid $border-light;
@@ -278,6 +284,64 @@
       font-size: $m-font;
       width: 100%;
       height: 44px;
+    }
+  }
+
+  &__menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &__menu-button {
+    border: 0;
+    position: relative;
+    text-align: left;
+    cursor: pointer;
+    color: $text-white;
+    font-size: $s-font;
+    line-height: 1.2;
+    text-decoration: none;
+    outline: none;
+    background: transparent;
+    padding: four-by(1);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      height: 16px;
+
+      path {
+        fill: $text-normal;
+      }
+    }
+  }
+
+  &__menu-wrapper {
+    box-sizing: border-box;
+    width: 250px;
+    padding: four-by(2);
+    background: $bg-color;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    filter: drop-shadow(0 0 4px $shadow-color-light);
+    z-index: 20;
+
+    &::before {
+      right: 4px;
+      top: -10px;
+      position: absolute;
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid $bg-color;
     }
   }
 }

@@ -106,6 +106,8 @@ const lists = (state = {}, action) => {
   switch (action.type) {
     case ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS:
       return { ...state, ...action.payload };
+    case ListActionTypes.FETCH_AVAILABLE_SUCCESS:
+      return { ...action.payload, ...state };
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...state, ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
@@ -286,6 +288,7 @@ const lists = (state = {}, action) => {
     case ItemActionTypes.CLONE_SUCCESS:
     case ItemActionTypes.DELETE_SUCCESS:
     case ItemActionTypes.FETCH_ARCHIVED_SUCCESS:
+    case ItemActionTypes.MOVE_SUCCESS:
     case ItemActionTypes.REMOVE_ARCHIVED:
     case ItemActionTypes.RESTORE_SUCCESS:
     case ItemActionTypes.SET_VOTE_SUCCESS:

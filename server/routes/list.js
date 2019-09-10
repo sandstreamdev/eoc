@@ -14,9 +14,11 @@ const {
   deleteItem,
   getArchivedItems,
   getArchivedListsMetaData,
+  getAvailableLists,
   getListData,
   getListsMetaData,
   leaveList,
+  moveItem,
   removeFromFavourites,
   removeMember,
   removeMemberRole,
@@ -51,5 +53,7 @@ router.patch('/:id/change-type', authorize, changeType);
 router.get('/:id/archived-items', authorize, getArchivedItems);
 router.delete('/:id/:itemId', authorize, deleteItem);
 router.patch('/:id/leave', authorize, leaveList);
+router.get('/for-item', authorize, getAvailableLists);
+router.patch('/:id/move-item', authorize, moveItem);
 
 module.exports = router;
