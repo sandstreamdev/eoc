@@ -1,4 +1,3 @@
-const List = require('../../models/list.model');
 const Cohort = require('../../models/cohort.model');
 const {
   ListActionTypes,
@@ -28,50 +27,6 @@ const emitCohortMetaData = (cohortId, clients, io) =>
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
                 [cohortId]: cohort
               });
-          }
-        });
-      }
-    });
-
-const updateListOnDashboardAndCohortView = (
-  io,
-  listId,
-  dashboardClients,
-  cohortViewClients
-) =>
-  List.findOne({
-    _id: listId
-  })
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { viewersIds, cohortId } = doc;
-
-        viewersIds.forEach(id => {
-          const viewerId = id.toString();
-          const list = responseWithList(doc, viewerId);
-
-          if (dashboardClients.has(viewerId)) {
-            const { socketId } = dashboardClients.get(viewerId);
-
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: list
-              });
-          }
-
-          if (cohortId && cohortViewClients.has(viewerId)) {
-            const { viewId, socketId } = cohortViewClients.get(viewerId);
-
-            if (viewId === cohortId.toString()) {
-              io.sockets
-                .to(socketId)
-                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: list
-                });
-            }
           }
         });
       }
@@ -251,6 +206,5 @@ module.exports = {
   handleLocks,
   listChannel,
   nameLockId,
-  votingBroadcast,
-  updateListOnDashboardAndCohortView
+  votingBroadcast
 };

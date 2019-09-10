@@ -215,7 +215,7 @@ const addItemToList = (req, resp) => {
       const { cohortId, items } = doc;
       const newItem = items.slice(-1)[0];
       const itemToSend = responseWithItem(newItem, userId);
-      const data = { listId, item: itemToSend };
+      const data = { doc, item: itemToSend, listId };
       const payload = { itemToSend, cohortId };
 
       return returnPayload(
@@ -504,7 +504,7 @@ const updateListById = (req, resp) => {
           listActivity = ActivityType.LIST_EDIT_DESCRIPTION;
         }
 
-        const data = { listId, description };
+        const data = { description, doc, listId };
 
         return socketActions.updateList(
           socketInstance,
@@ -516,7 +516,7 @@ const updateListById = (req, resp) => {
       if (name) {
         listActivity = ActivityType.LIST_EDIT_NAME;
 
-        const data = { listId, name };
+        const data = { doc, listId, name };
 
         return socketActions.updateList(
           socketInstance,
@@ -526,7 +526,7 @@ const updateListById = (req, resp) => {
       }
 
       if (isArchived !== undefined) {
-        const data = { listId, cohortId };
+        const data = { cohortId, doc, listId };
 
         if (isArchived) {
           listActivity = ActivityType.LIST_ARCHIVE;
@@ -552,7 +552,7 @@ const updateListById = (req, resp) => {
       if (isDeleted) {
         listActivity = ActivityType.LIST_DELETE;
 
-        const data = { listId, cohortId };
+        const data = { cohortId, doc, listId };
 
         socketActions.deleteList(
           socketInstance,
@@ -1132,6 +1132,8 @@ const updateListItem = (req, res) => {
     'items._id': sanitizedItemId,
     memberIds: userId
   })
+    .populate('items.authorId', 'displayName')
+    .populate('items.editedBy', 'displayName')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -1175,12 +1177,13 @@ const updateListItem = (req, res) => {
           : ActivityType.ITEM_RESTORE;
       }
 
-      return doc.save();
+      return doc.save().then(list => ({ list, item: itemToUpdate._doc }));
     })
-    .then(doc => {
-      if (!doc) {
+    .then(result => {
+      if (!result) {
         return res.sendStatus(404);
       }
+      const { item, list } = result;
 
       fireAndForget(
         saveActivity(
@@ -1188,7 +1191,7 @@ const updateListItem = (req, res) => {
           userId,
           sanitizedItemId,
           sanitizedListId,
-          doc.cohortId,
+          list.cohortId,
           null,
           prevItemName
         )
@@ -1199,7 +1202,13 @@ const updateListItem = (req, res) => {
         cohortClients,
         dashboardClients,
         listClients
-      )({ itemId: sanitizedItemId, listId: sanitizedListId, userId });
+      )({
+        list,
+        item,
+        itemId: sanitizedItemId,
+        listId: sanitizedListId,
+        userId
+      });
     })
     .then(() => res.send())
     .catch(() => res.sendStatus(400));
@@ -1252,7 +1261,7 @@ const cloneItem = (req, resp) => {
       const newItem = list.items.slice(-1)[0];
       const newItemToSend = responseWithItem(newItem, userId);
       const payload = { newItemToSend, list };
-      const data = { listId, item: newItemToSend, userId };
+      const data = { item: newItemToSend, list, listId, userId };
 
       return returnPayload(
         socketActions.cloneItem(
