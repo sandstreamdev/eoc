@@ -170,7 +170,10 @@ const emitRoleChange = (io, cohortClients, data, event) => {
   }
 };
 
-const emitListsMetaData = io => (cohortClients, dashboardClients) => list => {
+const updateListOnDashboardAndCohortView = io => (
+  cohortClients,
+  dashboardClients
+) => list => {
   const { _id: listId, cohortId, viewersIds } = list;
 
   viewersIds.forEach(viewerId => {
@@ -198,7 +201,7 @@ module.exports = {
   cohortChannel,
   descriptionLockId,
   emitCohortMetaData,
-  emitListsMetaData,
+  updateListOnDashboardAndCohortView,
   emitRoleChange,
   getListIdsByViewers,
   getListsDataByViewers,

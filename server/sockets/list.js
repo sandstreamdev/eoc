@@ -16,7 +16,7 @@ const {
 } = require('../common/utils');
 const {
   descriptionLockId,
-  emitListsMetaData,
+  updateListOnDashboardAndCohortView,
   handleItemLocks,
   handleLocks,
   listChannel,
@@ -32,7 +32,7 @@ const addItemToList = (io, cohortClients, dashboardClients) => data => {
     .to(listChannel(listId))
     .emit(ItemActionTypes.ADD_SUCCESS, { item, listId });
 
-  emitListsMetaData(io)(cohortClients, dashboardClients)(list);
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -161,7 +161,7 @@ const updateItem = (
     }
   });
 
-  emitListsMetaData(io)(cohortClients, dashboardClients)(list);
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -200,7 +200,7 @@ const cloneItem = (
     }
   });
 
-  emitListsMetaData(io)(cohortClients, dashboardClients)(list);
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -268,7 +268,10 @@ const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
     .to(listChannel(listId))
     .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...rest });
 
-  emitListsMetaData(io)(cohortViewClients, dashboardViewClients)(list);
+  updateListOnDashboardAndCohortView(io)(
+    cohortViewClients,
+    dashboardViewClients
+  )(list);
 };
 
 const updateListHeaderState = (socket, listClientLocks) => {
@@ -784,8 +787,12 @@ const moveToList = (
     }
   });
 
-  emitListsMetaData(io)(cohortClients, dashboardClients)(oldList);
-  emitListsMetaData(io)(cohortClients, dashboardClients)(newList);
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(
+    oldList
+  );
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(
+    newList
+  );
 
   return Promise.resolve();
 };
