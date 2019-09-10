@@ -20,17 +20,10 @@ class ItemsList extends PureComponent {
     };
   }
 
-  showMore = event => {
-    event.preventDefault();
-
+  showMore = () =>
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
-  };
 
-  showLess = event => {
-    event.preventDefault();
-
-    this.setState({ limit: DISPLAY_LIMIT });
-  };
+  showLess = () => this.setState({ limit: DISPLAY_LIMIT });
 
   renderItems = () => {
     const { archived, isMember, items } = this.props;

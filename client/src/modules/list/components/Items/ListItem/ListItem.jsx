@@ -83,17 +83,12 @@ class ListItem extends PureComponent {
     );
   };
 
-  handleDetailsVisibility = event => {
-    event.preventDefault();
-
+  handleDetailsVisibility = () =>
     this.setState(({ areDetailsVisible }) => ({
       areDetailsVisible: !areDetailsVisible
     }));
-  };
 
-  handleItemCloning = event => {
-    event.preventDefault();
-
+  handleItemCloning = () => {
     const {
       cloneItem,
       data: { _id: itemId, name },
@@ -127,17 +122,12 @@ class ListItem extends PureComponent {
     return action(_id, listId, name);
   };
 
-  handleConfirmationVisibility = event => {
-    event.preventDefault();
-
+  handleConfirmationVisibility = () =>
     this.setState(({ isConfirmationVisible }) => ({
       isConfirmationVisible: !isConfirmationVisible
     }));
-  };
 
-  handleArchiveItem = event => {
-    event.preventDefault();
-
+  handleArchiveItem = () => {
     const {
       archiveItem,
       data: { _id: itemId, name },

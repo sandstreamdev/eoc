@@ -131,7 +131,6 @@ class ListItemName extends PureComponent {
 
   handleOnClick = event => {
     event.stopPropagation();
-    event.preventDefault();
     this.nameInput.current.focus();
   };
 

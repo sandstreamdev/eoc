@@ -102,8 +102,6 @@ class ListItemDescription extends PureComponent {
       return;
     }
 
-    event.preventDefault();
-
     this.setState({ isTextareaVisible: true });
   };
 

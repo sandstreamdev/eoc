@@ -22,9 +22,7 @@ class ListArchivedItem extends PureComponent {
     };
   }
 
-  handleRestoringItem = event => {
-    event.preventDefault();
-
+  handleRestoringItem = () => {
     const {
       restoreItem,
       data: { _id: itemId, name },
@@ -36,15 +34,9 @@ class ListArchivedItem extends PureComponent {
     return restoreItem(listId, itemId, name);
   };
 
-  showConfirmation = event => {
-    event.preventDefault();
+  showConfirmation = () => this.setState({ isConfirmationVisible: true });
 
-    this.setState({ isConfirmationVisible: true });
-  };
-
-  hideConfirmation = () => {
-    this.setState({ isConfirmationVisible: false });
-  };
+  hideConfirmation = () => this.setState({ isConfirmationVisible: false });
 
   handleDeletingItem = () => {
     const {

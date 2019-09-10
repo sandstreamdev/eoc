@@ -92,11 +92,7 @@ class InputBar extends Component {
     setTimeout(() => this.setState({ isTipVisible: false }), 5000);
 
   handleFormSubmit = event => {
-    const { type } = event;
-
-    if (type === EventTypes.SUBMIT || type === EventTypes.CLICK) {
-      event.preventDefault();
-    }
+    event.preventDefault();
 
     const {
       addItem,
