@@ -16,7 +16,7 @@ import {
 import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
-import { EventTypes, KeyCodes } from 'common/constants/enums';
+import { KeyCodes } from 'common/constants/enums';
 
 class InputBar extends Component {
   constructor(props) {
@@ -92,11 +92,7 @@ class InputBar extends Component {
     setTimeout(() => this.setState({ isTipVisible: false }), 5000);
 
   handleFormSubmit = event => {
-    const { type } = event;
-
-    if (type === EventTypes.SUBMIT || type === EventTypes.CLICK) {
-      event.preventDefault();
-    }
+    event.preventDefault();
 
     const {
       addItem,
@@ -180,8 +176,7 @@ class InputBar extends Component {
               'input-bar__submit--disabled': isButtonDisabled
             })}
             disabled={isButtonDisabled}
-            onMouseDown={this.handleFormSubmit}
-            onTouchStart={this.handleFormSubmit}
+            onClick={this.handleFormSubmit}
             type="submit"
             value={formatMessage({ id: 'list.input-bar.button' })}
           />
@@ -196,7 +191,6 @@ class InputBar extends Component {
       <button
         className="input-bar__button"
         onClick={this.showForm}
-        onTouchEnd={this.showForm}
         type="button"
       >
         <PlusIcon />

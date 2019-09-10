@@ -22,9 +22,7 @@ class ListArchivedItem extends PureComponent {
     };
   }
 
-  handleRestoringItem = event => {
-    event.preventDefault();
-
+  handleRestoringItem = () => {
     const {
       restoreItem,
       data: { _id: itemId, name },
@@ -36,15 +34,9 @@ class ListArchivedItem extends PureComponent {
     return restoreItem(listId, itemId, name);
   };
 
-  showConfirmation = event => {
-    event.preventDefault();
+  showConfirmation = () => this.setState({ isConfirmationVisible: true });
 
-    this.setState({ isConfirmationVisible: true });
-  };
-
-  hideConfirmation = () => {
-    this.setState({ isConfirmationVisible: false });
-  };
+  hideConfirmation = () => this.setState({ isConfirmationVisible: false });
 
   handleDeletingItem = () => {
     const {
@@ -100,7 +92,6 @@ class ListArchivedItem extends PureComponent {
             <PendingButton
               className="link-button"
               onClick={this.handleRestoringItem}
-              onTouchEnd={this.handleRestoringItem}
               type="button"
             >
               <FormattedMessage id="list.list-archived-item.restore" />
@@ -108,7 +99,6 @@ class ListArchivedItem extends PureComponent {
             <button
               className="link-button"
               onClick={this.showConfirmation}
-              onTouchEnd={this.showConfirmation}
               type="button"
             >
               <FormattedMessage id="list.list-archived-item.delete" />

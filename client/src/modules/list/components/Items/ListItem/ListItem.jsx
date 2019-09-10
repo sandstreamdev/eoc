@@ -84,16 +84,13 @@ class ListItem extends PureComponent {
     );
   };
 
-  handleDetailsVisibility = event => {
-    event.preventDefault();
-
+  handleDetailsVisibility = () =>
     this.setState(
       ({ areDetailsVisible }) => ({
         areDetailsVisible: !areDetailsVisible
       }),
       this.handleResetDetails
     );
-  };
 
   handleResetDetails = () => {
     const { areDetailsVisible } = this.state;
@@ -106,9 +103,7 @@ class ListItem extends PureComponent {
     }
   };
 
-  handleItemCloning = event => {
-    event.preventDefault();
-
+  handleItemCloning = () => {
     const {
       cloneItem,
       data: { _id: itemId, name },
@@ -150,9 +145,7 @@ class ListItem extends PureComponent {
 
   showMoveToPanel = () => this.setState({ isMoveToListPanelVisible: true });
 
-  handleArchiveItem = event => {
-    event.preventDefault();
-
+  handleArchiveItem = () => {
     const {
       archiveItem,
       data: { _id: itemId, name },
@@ -290,7 +283,6 @@ class ListItem extends PureComponent {
           className="link-button"
           disabled={disabled}
           onClick={this.showConfirmation}
-          onTouchEnd={this.showConfirmation}
           type="button"
         >
           <FormattedMessage id="list.list-item.archive" />
@@ -301,7 +293,6 @@ class ListItem extends PureComponent {
               className="link-button"
               disabled={disabled}
               onClick={this.handleItemCloning}
-              onTouchEnd={this.handleItemCloning}
             >
               <FormattedMessage id="list.list-item.clone" />
             </PendingButton>
@@ -309,7 +300,6 @@ class ListItem extends PureComponent {
               className="link-button"
               disabled={disabled}
               onClick={this.showMoveToPanel}
-              onTouchEnd={this.showMoveToPanel}
               type="button"
             >
               <FormattedMessage id="list.list-item.move" />
@@ -449,7 +439,6 @@ class ListItem extends PureComponent {
             'list-item__wrapper--details-not-visible': !areDetailsVisible
           })}
           onClick={isNameEdited ? null : this.handleDetailsVisibility}
-          onTouchEnd={isNameEdited ? null : this.handleDetailsVisibility}
           role="listitem"
         >
           <div className="list-item__top">
@@ -491,9 +480,6 @@ class ListItem extends PureComponent {
                   className="list-item__icon"
                   disabled={disableToggleButton || !isMember || isEdited}
                   onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
-                  onTouchEnd={
-                    isOrdered ? this.markAsUnhandled : this.markAsDone
-                  }
                 />
               </div>
             </div>

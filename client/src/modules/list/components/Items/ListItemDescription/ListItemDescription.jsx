@@ -102,8 +102,6 @@ class ListItemDescription extends PureComponent {
       return;
     }
 
-    event.preventDefault();
-
     this.setState({ isTextareaVisible: true });
   };
 
@@ -181,7 +179,6 @@ class ListItemDescription extends PureComponent {
           className="primary-button"
           disabled={disabled || pending}
           onClick={this.handleDescriptionUpdate}
-          onTouchEnd={this.handleDescriptionUpdate}
           type="button"
         >
           Save
@@ -226,7 +223,6 @@ class ListItemDescription extends PureComponent {
         className="link-button"
         disabled={disabled || locked}
         onClick={this.handleShowTextarea}
-        onTouchEnd={this.handleShowTextarea}
         type="button"
       >
         <FormattedMessage id="list.list-description.add-button" />
@@ -280,7 +276,6 @@ class ListItemDescription extends PureComponent {
             'list-item-description--disabled': locked
           })}
           onClick={disabled ? null : this.handleShowTextarea}
-          onTouchEnd={disabled ? null : this.handleShowTextarea}
         >
           {isTitleVisible && (
             <h2 className="list-item-description__title">

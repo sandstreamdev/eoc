@@ -20,17 +20,10 @@ class ItemsList extends PureComponent {
     };
   }
 
-  showMore = event => {
-    event.preventDefault();
-
+  showMore = () =>
     this.setState(({ limit }) => ({ limit: limit + DISPLAY_LIMIT }));
-  };
 
-  showLess = event => {
-    event.preventDefault();
-
-    this.setState({ limit: DISPLAY_LIMIT });
-  };
+  showLess = () => this.setState({ limit: DISPLAY_LIMIT });
 
   renderItems = () => {
     const { archived, isMember, items } = this.props;
@@ -94,7 +87,6 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-more"
             onClick={this.showMore}
-            onTouchEnd={this.showMore}
             type="button"
           />
         )}
@@ -102,7 +94,6 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-less"
             onClick={this.showLess}
-            onTouchEnd={this.showLess}
             type="button"
           />
         )}
