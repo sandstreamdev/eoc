@@ -21,8 +21,7 @@ const ListSchema = new Schema(
     name: { type: String, required: true },
     ownerIds: [{ type: ObjectId, ref: 'User' }],
     type: { type: String, default: ListType.LIMITED },
-    viewersIds: [{ type: ObjectId, ref: 'User' }],
-    visibility: { type: String }
+    viewersIds: [{ type: ObjectId, ref: 'User' }]
   },
   { timestamps: { createdAt: 'created_at' }, collection: 'lists' }
 );
