@@ -9,15 +9,30 @@ const generateItems = (demoUserId, userIds) => [
     _id: ObjectId(),
     authorId: demoUserId,
     description: '',
+    editedBy: userIds[1],
+    isArchived: false,
+    isDeleted: false,
     isOrdered: false,
+    locks: {
+      description: false,
+      name: false
+    },
     name: 'Task 1',
+    purchaserId: '',
     voterIds: [demoUserId, ...userIds]
   },
   {
     _id: ObjectId(),
     authorId: userIds[0],
     description: '',
+    editedBy: userIds[1],
+    isArchived: false,
+    isDeleted: false,
     isOrdered: false,
+    locks: {
+      description: false,
+      name: false
+    },
     name: 'Task 2',
     voterIds: [userIds[0], userIds[1], userIds[2]]
   },
@@ -25,7 +40,14 @@ const generateItems = (demoUserId, userIds) => [
     _id: ObjectId(),
     authorId: demoUserId,
     description: '',
-    isOrdered: true,
+    editedBy: userIds[1],
+    isArchived: false,
+    isDeleted: false,
+    isOrdered: false,
+    locks: {
+      description: false,
+      name: false
+    },
     name: 'Task 3',
     voterIds: [demoUserId, userIds[2]]
   },
@@ -33,7 +55,14 @@ const generateItems = (demoUserId, userIds) => [
     _id: ObjectId(),
     authorId: userIds[3],
     description: '',
-    isOrdered: true,
+    editedBy: userIds[1],
+    isArchived: false,
+    isDeleted: false,
+    isOrdered: false,
+    locks: {
+      description: false,
+      name: false
+    },
     name: 'Task 4',
     voterIds: [...userIds]
   }

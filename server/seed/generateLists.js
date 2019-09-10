@@ -1,93 +1,121 @@
 const userId = process.env.USER_ID;
+const mongoose = require('mongoose');
+
+const { ListType } = require('../common/variables');
+const generateItems = require('./generateItems');
+
+const {
+  Types: { ObjectId }
+} = mongoose;
 
 const generateLists = cohortId => [
   {
-    _id: '5c9a1299341674ba31ff6aas',
+    _id: ObjectId(),
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     favIds: [userId],
     isArchived: false,
+    isDeleted: false,
+    items: generateItems(userId)(3),
+    locks: {
+      description: false,
+      name: false
+    },
+    memberIds: [userId],
+    name: 'Private sack 1',
     ownerIds: [userId],
-    items: [
-      {
-        _id: '5c9a123b074ce3b9ff43ce30',
-        authorId: userId,
-        authorName: 'Adam',
-        description: '',
-        isOrdered: true,
-        name: 'item 1',
-        voterIds: []
-      },
-      {
-        _id: '5c9a123e074ce3b9ff43ce32',
-        authorId: userId,
-        authorName: 'Adam',
-        description: '',
-        isOrdered: false,
-        name: 'item 2',
-        voterIds: []
-      },
-      {
-        _id: '5c9a1240074ce3b9ff43ce34',
-        authorId: userId,
-        authorName: 'Adam',
-        description: '',
-        isOrdered: false,
-        name: 'item 3',
-        voterIds: [userId]
-      }
-    ],
-    name: 'Private sack 1'
+    type: ListType.LIMITED,
+    viewersIds: [userId]
   },
   {
-    _id: '5c9a1299341674ba31ff6aa7',
-    ownerIds: [userId],
+    _id: ObjectId(),
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     favIds: [userId],
     isArchived: false,
+    isDeleted: false,
     items: [],
-    name: 'Private sack 2'
+    locks: {
+      description: false,
+      name: false
+    },
+    memberIds: [userId],
+    name: 'Private sack 2',
+    ownerIds: [userId],
+    type: ListType.LIMITED,
+    viewersIds: [userId]
   },
   {
-    _id: '5c9a1299341674ba31ff6aa8',
-    ownerIds: [userId],
+    _id: ObjectId(),
     cohortId: null,
     description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.',
     favIds: [userId],
     isArchived: true,
+    isDeleted: false,
     items: [],
-    name: 'Private sack 3'
+    locks: {
+      description: false,
+      name: false
+    },
+    memberIds: [userId],
+    name: 'Private sack 3',
+    ownerIds: [userId],
+    type: ListType.LIMITED,
+    viewersIds: [userId]
   },
   {
-    _id: '5c9a130146e555ba24992a2e',
-    ownerIds: [userId],
+    _id: ObjectId(),
     cohortId,
     description: '',
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: [],
-    name: 'Sack 1 in cohort 2'
+    locks: {
+      description: false,
+      name: false
+    },
+    memberIds: [userId],
+    name: 'Sack 1 in cohort 2',
+    ownerIds: [userId],
+    type: ListType.SHARED,
+    viewersIds: [userId]
   },
   {
-    _id: '5c9a130746e555ba24992a2f',
-    ownerIds: [userId],
+    _id: ObjectId(),
     cohortId,
     description: '',
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: [],
-    name: 'Sack 2 in cohort 2'
+    locks: {
+      description: false,
+      name: false
+    },
+    memberIds: [userId],
+    name: 'Sack 2 in cohort 2',
+    ownerIds: [userId],
+    type: ListType.SHARED,
+    viewersIds: [userId]
   },
   {
-    _id: '5c9a131346e555ba24992a30',
-    ownerIds: [userId],
+    _id: ObjectId(),
     cohortId,
     description: '',
     favIds: [],
     isArchived: true,
+    isDeleted: false,
     items: [],
-    name: 'Archived sack 3 in cohort 2'
+    locks: {
+      description: false,
+      name: false
+    },
+    memberIds: [userId],
+    name: 'Archived sack 3 in cohort 2',
+    ownerIds: [userId],
+    type: ListType.SHARED,
+    viewersIds: [userId]
   }
 ];
 

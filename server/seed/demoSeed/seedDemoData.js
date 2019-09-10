@@ -30,7 +30,9 @@ const seedDemoData = demoUserId => {
       });
 
       return seedComments(listData);
-    });
+    })
+    // eslint-disable-next-line no-console
+    .catch(err => console.error(err));
 };
 
 module.exports = { seedDemoData };

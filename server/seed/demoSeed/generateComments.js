@@ -15,6 +15,7 @@ const generateComments = listData => {
       comments.push({
         _id: ObjectId(),
         authorId: listData[i].memberIds[0],
+        isDeleted: false,
         itemId: listData[i].itemIds[j],
         listId: listData[i].id,
         text:

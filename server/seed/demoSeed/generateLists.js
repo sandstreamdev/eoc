@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const { generateItems } = require('./generateItems');
+const { ListType } = require('../../common/variables');
 
 const {
   Types: { ObjectId }
@@ -14,11 +15,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       'You are the owner of this private sack. You can modify and archive the sack, add items and modify them, add members and change their permissions.',
     favIds: [demoUserId],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [demoUserId],
     name: 'Private sack example - owner',
     ownerIds: [demoUserId],
-    type: 'limited',
+    type: ListType.LIMITED,
     viewersIds: [demoUserId, ...userIds]
   },
   {
@@ -28,11 +34,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       'You are the owner of this private sack. You can modify and archive the sack, add items and modify them, add members and change their permissions.',
     favIds: [],
     isArchived: true,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [demoUserId],
     name: 'Archive sack example',
     ownerIds: [demoUserId],
-    type: 'limited',
+    type: ListType.LIMITED,
     viewersIds: [demoUserId]
   },
   {
@@ -42,11 +53,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       'You are a member of this private sack. You can add and modify items, add members. You can not modify and archive sack, change members permissions.',
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [demoUserId, ...userIds],
     name: 'Private sack example - member',
     ownerIds: [userIds[2]],
-    type: 'limited',
+    type: ListType.LIMITED,
     viewersIds: [demoUserId, ...userIds]
   },
   {
@@ -56,11 +72,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       'You are a viewer of this private sack. You can only view sack, items and members. You can not modify sack, items or members.',
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [userIds[1]],
     name: 'Private sack example - viewer',
     ownerIds: [userIds[1]],
-    type: 'limited',
+    type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[1]]
   },
   {
@@ -70,11 +91,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       "You are the owner of this cohort's limited sack. You can modify and archive the sack, add items and modify them, add members and change their permissions. This sack is limited, so it means that you have to add members manually.",
     favIds: [demoUserId],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [demoUserId, userIds[1]],
     name: 'Cohort sack example - owner',
     ownerIds: [demoUserId],
-    type: 'limited',
+    type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[1], userIds[2]]
   },
   {
@@ -84,11 +110,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       "You are the owner of this cohort's shared sack. You can modify and archive the sack, add items and modify them, add members and change their permissions. This sack is shared, so it means that here are all cohort members.",
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [demoUserId, userIds[1]],
     name: 'Cohort sack example - owner',
     ownerIds: [demoUserId],
-    type: 'shared',
+    type: ListType.SHARED,
     viewersIds: [demoUserId, ...userIds]
   },
   {
@@ -98,11 +129,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       "You are the member of this cohort's limited sack. You can add and modify items, add members. You can not modify and archive sack, change members permissions. This sack is limited, so it means that you have to add members manually.",
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [demoUserId, userIds[3]],
     name: 'Cohort sack example - member',
     ownerIds: [userIds[3]],
-    type: 'limited',
+    type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[3], userIds[1]]
   },
   {
@@ -112,11 +148,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       "You are the viewer of this cohort's limited sack. You can only view sack, items and members. You can not modify sack, items or members. This sack is limited, so it means that here are only members that were added.",
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [userIds[2]],
     name: 'Cohort sack example - viewer',
     ownerIds: [userIds[2]],
-    type: 'limited',
+    type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[2]]
   },
   {
@@ -126,11 +167,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       "You are the viewer of this cohort's shared sack. You can only view sack, items and members. You can not modify sack, items or members. This sack is shared, so it means that here are all cohort members.",
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [userIds[0]],
     name: 'Cohort sack example - viewer',
     ownerIds: [userIds[0]],
-    type: 'shared',
+    type: ListType.SHARED,
     viewersIds: [demoUserId, ...userIds]
   },
   {
@@ -140,11 +186,16 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       'You are the owner of this private sack. You can modify and archive the sack, add items and modify them, add members and change their permissions. This sack is limited, so it means that you have to add members manually.',
     favIds: [],
     isArchived: false,
+    isDeleted: false,
     items: generateItems(demoUserId, userIds),
+    locks: {
+      description: false,
+      name: false
+    },
     memberIds: [demoUserId],
     name: 'Cohort sack example - owner',
     ownerIds: [demoUserId],
-    type: 'limited',
+    type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[0], userIds[1]]
   }
 ];

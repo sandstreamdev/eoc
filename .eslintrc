@@ -49,6 +49,7 @@
     "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     "no-multi-spaces": ["error", { "ignoreEOLComments": false }],
     "no-multiple-empty-lines": ["error", { "max": 1 }],
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "no-shadow": "off",
     "no-underscore-dangle": "off",
     "no-unused-expressions": "off",
