@@ -40,19 +40,6 @@
     border-left: 1px solid $item-border;
   }
 
-  // &__input {
-  //   width: 32px;
-  //   height: 32px;
-  //   order: 1;
-  //   z-index: 2;
-  //   position: absolute;
-  //   right: 30px;
-  //   top: 50%;
-  //   transform: translateY(-50%);
-  //   cursor: pointer;
-  //   visibility: hidden;
-  // }
-
   &__label {
     box-sizing: border-box;
     padding: four-by(4) 0 four-by(2);
@@ -81,6 +68,7 @@
   &__edited-by {
     font-size: $s-font;
     margin-top: four-by(1);
+    color: $text-dark;
     text-overflow: ellipsis;
   }
 
@@ -206,6 +194,7 @@
   &__wrapper {
     position: relative;
     padding: 0 four-by(4) 0;
+    cursor: pointer;
 
     &::before {
       position: absolute;
@@ -223,7 +212,7 @@
         display: block;
       }
     }
-    //
+
     &--details-visible {
       &::before {
         display: none;
