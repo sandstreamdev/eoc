@@ -1,5 +1,5 @@
-const List = require('../../models/list.model');
 const Cohort = require('../../models/cohort.model');
+const List = require('../../models/list.model');
 const {
   ListActionTypes,
   CohortActionTypes
@@ -29,50 +29,6 @@ const emitCohortMetaData = (cohortId, clients, io) =>
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
                 [cohortId]: cohort
               });
-          }
-        });
-      }
-    });
-
-const updateListOnDashboardAndCohortView = (
-  io,
-  listId,
-  dashboardClients,
-  cohortViewClients
-) =>
-  List.findOne({
-    _id: listId
-  })
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { viewersIds, cohortId } = doc;
-
-        viewersIds.forEach(id => {
-          const viewerId = id.toString();
-          const list = responseWithList(doc, viewerId);
-
-          if (dashboardClients.has(viewerId)) {
-            const { socketId } = dashboardClients.get(viewerId);
-
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: list
-              });
-          }
-
-          if (cohortId && cohortViewClients.has(viewerId)) {
-            const { viewId, socketId } = cohortViewClients.get(viewerId);
-
-            if (viewId === cohortId.toString()) {
-              io.sockets
-                .to(socketId)
-                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [listId]: list
-                });
-            }
           }
         });
       }
@@ -239,11 +195,39 @@ const delayedUnlock = socket => data => itemClientLocks => locks => {
   }, LOCK_TIMEOUT);
 };
 
+const updateListOnDashboardAndCohortView = io => (
+  cohortClients,
+  dashboardClients
+) => list => {
+  const { _id: listId, cohortId, viewersIds } = list;
+
+  viewersIds.forEach(viewerId => {
+    const id = viewerId.toString();
+
+    if (dashboardClients.has(id)) {
+      const { socketId } = dashboardClients.get(id);
+
+      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+        [listId]: responseWithList(list, id)
+      });
+    }
+
+    if (cohortId && cohortClients.has(id)) {
+      const { socketId } = cohortClients.get(id);
+
+      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+        [listId]: responseWithList(list, id)
+      });
+    }
+  });
+};
+
 module.exports = {
   cohortChannel,
   delayedUnlock,
   descriptionLockId,
   emitCohortMetaData,
+  updateListOnDashboardAndCohortView,
   emitRoleChange,
   getListIdsByViewers,
   getListsDataByViewers,
@@ -251,6 +235,5 @@ module.exports = {
   handleLocks,
   listChannel,
   nameLockId,
-  updateListOnDashboardAndCohortView,
   votingBroadcast
 };
