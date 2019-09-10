@@ -444,31 +444,31 @@ class ListItem extends PureComponent {
         })}
       >
         <div
-          className={classNames('list-item__top', {
-            'list-item__top--details-visible': areDetailsVisible,
-            'list-item__top--details-not-visible': !areDetailsVisible
+          className={classNames('list-item__wrapper', {
+            'list-item__wrapper--details-visible': areDetailsVisible,
+            'list-item__wrapper--details-not-visible': !areDetailsVisible
           })}
           onClick={isNameEdited ? null : this.handleDetailsVisibility}
           onTouchEnd={isNameEdited ? null : this.handleDetailsVisibility}
           role="listitem"
         >
-          <input
-            className="list-item__input"
-            id={`option${_id}`}
-            name={`option${_id}`}
-            type="checkbox"
-          />
-          <label className="list-item__label" id={`option${_id}`}>
-            <span className="list-item__data">
-              <ListItemName
-                isMember={isMember}
-                itemId={_id}
-                locked={nameLock}
-                name={name}
-                onBlur={this.handleNameUnlock}
-                onFocus={this.handleNameLock}
-                onPending={this.handleNameLock}
-              />
+          <div className="list-item__top">
+            <label className="list-item__label" id={`option${_id}`}>
+              <span className="list-item__data">
+                <ListItemName
+                  isMember={isMember}
+                  itemId={_id}
+                  locked={nameLock}
+                  name={name}
+                  onBlur={this.handleNameUnlock}
+                  onFocus={this.handleNameLock}
+                  onPending={this.handleNameLock}
+                />
+              </span>
+            </label>
+          </div>
+          <div className="list-item__bottom">
+            <div className="list-item__performers">
               <span className="list-item__author">
                 <FormattedMessage
                   id="list.list-item.author"
@@ -483,23 +483,27 @@ class ListItem extends PureComponent {
                   />
                 </span>
               )}
-            </span>
-          </label>
-          <div className="list-item__buttons">
-            {this.renderVoting()}
-            <div className="list-item__toggle">
-              <PendingButton
-                className="list-item__icon"
-                disabled={disableToggleButton || !isMember || isEdited}
-                onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
-                onTouchEnd={isOrdered ? this.markAsUnhandled : this.markAsDone}
-              />
+            </div>
+            <div className="list-item__buttons">
+              {this.renderVoting()}
+              <div className="list-item__toggle">
+                <PendingButton
+                  className="list-item__icon"
+                  disabled={disableToggleButton || !isMember || isEdited}
+                  onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
+                  onTouchEnd={
+                    isOrdered ? this.markAsUnhandled : this.markAsDone
+                  }
+                />
+              </div>
             </div>
           </div>
         </div>
-        {areDetailsVisible && (
-          <div className="list-item__details">{this.renderDetails()}</div>
-        )}
+        <div className="list-item__details-wrapper">
+          {areDetailsVisible && (
+            <div className="list-item__details">{this.renderDetails()}</div>
+          )}
+        </div>
       </li>
     );
   }
