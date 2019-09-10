@@ -465,13 +465,7 @@ const checkToken = (req, resp) => {
   User.findOne({ resetToken: token })
     .lean()
     .exec()
-    .then(user => {
-      if (user) {
-        return resp.send();
-      }
-
-      resp.sendStatus(400);
-    })
+    .then(user => (user ? resp.send() : resp.sendStatus(400)))
     .catch(() => resp.sendStatus(400));
 };
 
