@@ -292,24 +292,26 @@ class ListItem extends PureComponent {
           <FormattedMessage id="list.list-item.archive" />
         </button>
         {!isOrdered && (
-          <PendingButton
-            className="link-button"
-            disabled={disabled}
-            onClick={this.handleItemCloning}
-            onTouchEnd={this.handleItemCloning}
-          >
-            <FormattedMessage id="list.list-item.clone" />
-          </PendingButton>
+          <Fragment>
+            <PendingButton
+              className="link-button"
+              disabled={disabled}
+              onClick={this.handleItemCloning}
+              onTouchEnd={this.handleItemCloning}
+            >
+              <FormattedMessage id="list.list-item.clone" />
+            </PendingButton>
+            <button
+              className="link-button"
+              disabled={disabled}
+              onClick={this.showMoveToPanel}
+              onTouchEnd={this.showMoveToPanel}
+              type="button"
+            >
+              <FormattedMessage id="list.list-item.move" />
+            </button>
+          </Fragment>
         )}
-        <button
-          className="link-button"
-          disabled={disabled}
-          onClick={this.showMoveToPanel}
-          onTouchEnd={this.showMoveToPanel}
-          type="button"
-        >
-          <FormattedMessage id="list.list-item.move" />
-        </button>
       </div>
     );
   };
