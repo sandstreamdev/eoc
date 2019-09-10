@@ -286,7 +286,6 @@ class ListItem extends PureComponent {
           className="link-button"
           disabled={disabled}
           onClick={this.showConfirmation}
-          onTouchEnd={this.showConfirmation}
           type="button"
         >
           <FormattedMessage id="list.list-item.archive" />
@@ -297,7 +296,6 @@ class ListItem extends PureComponent {
               className="link-button"
               disabled={disabled}
               onClick={this.handleItemCloning}
-              onTouchEnd={this.handleItemCloning}
             >
               <FormattedMessage id="list.list-item.clone" />
             </PendingButton>
@@ -305,7 +303,6 @@ class ListItem extends PureComponent {
               className="link-button"
               disabled={disabled}
               onClick={this.showMoveToPanel}
-              onTouchEnd={this.showMoveToPanel}
               type="button"
             >
               <FormattedMessage id="list.list-item.move" />
@@ -445,7 +442,6 @@ class ListItem extends PureComponent {
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
           onClick={isNameEdited ? null : this.handleDetailsVisibility}
-          onTouchEnd={isNameEdited ? null : this.handleDetailsVisibility}
           role="listitem"
         >
           <input
@@ -488,7 +484,6 @@ class ListItem extends PureComponent {
                 className="list-item__icon"
                 disabled={disableToggleButton || !isMember || isEdited}
                 onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
-                onTouchEnd={isOrdered ? this.markAsUnhandled : this.markAsDone}
               />
             </div>
           </div>
