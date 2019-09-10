@@ -1,11 +1,13 @@
 import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import AppLogo from 'common/components/AppLogo';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import {
+  checkToken,
   resendConfirmationLink,
   resendRecoveryLink
 } from 'modules/user/model/actions';
@@ -14,7 +16,24 @@ import { Routes } from 'common/constants/enums';
 class LinkExpired extends PureComponent {
   state = {
     isLinkSuccessfullySent: false,
-    sendingFailed: false
+    sendingFailed: false,
+    isTokenValid: false
+  };
+
+  componentDidMount() {
+    this.checkToken();
+  }
+
+  checkToken = () => {
+    const {
+      match: {
+        params: { token }
+      }
+    } = this.props;
+
+    checkToken(token)
+      .then(() => this.setState({ isTokenValid: true }))
+      .catch(() => this.setState({ isTokenValid: false }));
   };
 
   handleResendLink = () => {
@@ -42,7 +61,16 @@ class LinkExpired extends PureComponent {
 
   renderResendingError = () => (
     <p className="link-expired__error">
-      <FormattedMessage id="common.something-went-wrong" />
+      <FormattedMessage
+        id="user.actions.token-revoked"
+        values={{
+          link: (
+            <Link className="success-message__link" to="/reset-password">
+              <FormattedMessage id="user.auth.sign-up.reset-password" />
+            </Link>
+          )
+        }}
+      />
     </p>
   );
 
@@ -81,7 +109,10 @@ class LinkExpired extends PureComponent {
   };
 
   render() {
-    const { isLinkSuccessfullySent, sendingFailed } = this.state;
+    const { isLinkSuccessfullySent, sendingFailed, isTokenValid } = this.state;
+    const resendButton = isTokenValid
+      ? this.renderResendButton()
+      : this.renderResendingError();
 
     return (
       <div className="link-expired">
@@ -89,9 +120,7 @@ class LinkExpired extends PureComponent {
           <AppLogo />
         </h1>
         {sendingFailed && this.renderResendingError()}
-        {isLinkSuccessfullySent
-          ? this.renderSuccessMessage()
-          : this.renderResendButton()}
+        {isLinkSuccessfullySent ? this.renderSuccessMessage() : resendButton}
       </div>
     );
   }

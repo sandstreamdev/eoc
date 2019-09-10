@@ -148,3 +148,5 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
 
 export const getUserName = token =>
   getJson(`/auth/user-name/${token}`).then(({ displayName }) => displayName);
+
+export const checkToken = token => getData(`/auth/check-token/${token}`);
