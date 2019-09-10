@@ -162,6 +162,7 @@ class InputBar extends Component {
       <Fragment>
         <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
           <input
+            autoComplete="off"
             className="input-bar__input primary-input"
             disabled={pending}
             name="item name"
@@ -179,8 +180,8 @@ class InputBar extends Component {
               'input-bar__submit--disabled': isButtonDisabled
             })}
             disabled={isButtonDisabled}
-            onClick={this.handleFormSubmit}
-            onTouchEnd={this.handleFormSubmit}
+            onMouseDown={this.handleFormSubmit}
+            onTouchStart={this.handleFormSubmit}
             type="submit"
             value={formatMessage({ id: 'list.input-bar.button' })}
           />
