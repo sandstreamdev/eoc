@@ -107,7 +107,7 @@
   "user.auth.reset-password.email-label": "Enter email",
   "user.auth.reset-password.button-content": "Reset password",
   "user.auth.pass-recovery-form.heading": "Set new password",
-  "user.auth.pass-recovery-form.heading-user-name": "Set new password for {name}",
+  "user.auth.pass-recovery-form.heading-user-name": "Set new password for {name} ({email})",
   "user.auth.session-ended": "Your session has ended, you will be redirected to the login page in {data}s.",
   "user.actions.fetch-user-details-error": "Failed to fetch your profile data.",
   "user.actions.logout-fail": "Logout failed.",
