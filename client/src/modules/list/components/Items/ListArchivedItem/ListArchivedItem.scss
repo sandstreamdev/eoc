@@ -29,8 +29,17 @@
   }
 
   &__name {
-    font-weight: 500;
+    max-width: 210px;
+    font-family: 'Montserrat', sans-serif;
+    border: 0;
     color: $text-dark;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   &__author {
