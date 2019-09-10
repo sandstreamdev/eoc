@@ -29,10 +29,11 @@
     em {
       max-width: 150px;
       display: inline-block;
-      vertical-align: sub;
+      vertical-align: bottom;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+      font-style: normal;
     }
   }
 }
