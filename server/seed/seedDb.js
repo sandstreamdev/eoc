@@ -33,6 +33,6 @@ const seedDatabase = async () => {
 };
 
 seedDatabase().catch(error => {
-  console.error('☠️  Something went terribly wrong:', error);
+  console.error('☠️  Something went wrong:', error);
   process.exit(1);
 });
