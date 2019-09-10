@@ -7,7 +7,7 @@ const {
 const generateItems = userId => itemsCount => {
   const items = [];
 
-  for (let i = 0; i < itemsCount; i += 1) {
+  for (let i = 0; i < itemsCount; i++) {
     items.push({
       _id: ObjectId(),
       authorId: userId,
