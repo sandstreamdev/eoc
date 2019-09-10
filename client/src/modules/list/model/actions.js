@@ -638,7 +638,7 @@ export const changeType = (listId, listName, type) => dispatch =>
         ...json,
         members: _keyBy(json.members, '_id')
       };
-      const action = changeTypeSuccess({ listId, ...listData });
+      const action = changeTypeSuccess({ listId, ...listData, type });
 
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
