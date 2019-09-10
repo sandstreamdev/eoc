@@ -465,12 +465,6 @@ class ListItem extends PureComponent {
                   }
                 />
               </div>
-              {/* <input
-              className="list-item__input"
-              id={`option${_id}`}
-              name={`option${_id}`}
-              type="checkbox"
-            /> */}
             </div>
           </div>
         </div>
