@@ -268,7 +268,6 @@ class ListItem extends PureComponent {
           className="primary-button"
           disabled={!isMember}
           onClick={this.handleArchiveItem}
-          onTouchEnd={this.handleArchiveItem}
           preloaderTheme={PreloaderTheme.LIGHT}
           type="button"
         >
@@ -278,7 +277,6 @@ class ListItem extends PureComponent {
           className="primary-button"
           disabled={!isMember}
           onClick={this.handleConfirmationVisibility}
-          onTouchEnd={this.handleConfirmationVisibility}
           type="button"
         >
           <FormattedMessage id="common.button.cancel" />
@@ -306,7 +304,6 @@ class ListItem extends PureComponent {
             className="link-button"
             disabled={!isMember || isConfirmationVisible || isEdited}
             onClick={this.handleConfirmationVisibility}
-            onTouchEnd={this.handleConfirmationVisibility}
             type="button"
           >
             <FormattedMessage id="list.list-item.archive" />
@@ -316,7 +313,6 @@ class ListItem extends PureComponent {
               className="link-button"
               disabled={!isMember || isConfirmationVisible || isEdited}
               onClick={this.handleItemCloning}
-              onTouchEnd={this.handleItemCloning}
             >
               <FormattedMessage id="list.list-item.clone" />
             </PendingButton>
@@ -418,7 +414,6 @@ class ListItem extends PureComponent {
             'list-item__top--details-not-visible': !areDetailsVisible
           })}
           onClick={isNameEdited ? null : this.handleDetailsVisibility}
-          onTouchEnd={isNameEdited ? null : this.handleDetailsVisibility}
           role="listitem"
         >
           <input
@@ -461,7 +456,6 @@ class ListItem extends PureComponent {
                 className="list-item__icon"
                 disabled={disableToggleButton || !isMember || isEdited}
                 onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
-                onTouchEnd={isOrdered ? this.markAsUnhandled : this.markAsDone}
               />
             </div>
           </div>

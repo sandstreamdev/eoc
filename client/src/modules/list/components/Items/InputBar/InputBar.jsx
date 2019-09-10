@@ -180,8 +180,7 @@ class InputBar extends Component {
               'input-bar__submit--disabled': isButtonDisabled
             })}
             disabled={isButtonDisabled}
-            onMouseDown={this.handleFormSubmit}
-            onTouchStart={this.handleFormSubmit}
+            onClick={this.handleFormSubmit}
             type="submit"
             value={formatMessage({ id: 'list.input-bar.button' })}
           />
@@ -196,7 +195,6 @@ class InputBar extends Component {
       <button
         className="input-bar__button"
         onClick={this.showForm}
-        onTouchEnd={this.showForm}
         type="button"
       >
         <PlusIcon />

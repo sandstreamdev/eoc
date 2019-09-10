@@ -159,7 +159,6 @@ class ListItemName extends PureComponent {
             onBlur={this.handleNameInputBlur}
             onChange={this.handleNameChange}
             onClick={this.handleOnClick}
-            onTouchEnd={this.handleOnClick}
             onFocus={this.handleNameInputFocus}
             ref={this.nameInput}
             type="text"
