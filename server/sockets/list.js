@@ -1,3 +1,5 @@
+const _keyBy = require('lodash/keyBy');
+
 const {
   CommentActionTypes,
   ItemActionTypes,
@@ -410,7 +412,7 @@ const changeListType = (
   cohortClients,
   listClients
 ) => data => {
-  const { listId, type, removedViewers } = data;
+  const { listId, members, type, removedViewers } = data;
 
   return List.findById(listId)
     .populate('cohortId', 'memberIds')
@@ -427,7 +429,11 @@ const changeListType = (
 
         io.sockets
           .to(listChannel(listId))
-          .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, data);
+          .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, {
+            listId,
+            members: _keyBy(members, '_id'),
+            type
+          });
 
         if (type === ListType.LIMITED) {
           removedViewers.forEach(id => {

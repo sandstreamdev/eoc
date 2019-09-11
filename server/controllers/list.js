@@ -1354,7 +1354,7 @@ const changeType = (req, resp) => {
       );
 
       listCohortId = cohortId;
-      const data = { listId, type, removedViewers };
+      const data = { listId, members, removedViewers, type };
 
       return returnPayload(
         socketActions.changeListType(
