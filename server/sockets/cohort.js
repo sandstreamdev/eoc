@@ -17,6 +17,7 @@ const {
 } = require('../common/utils');
 const {
   cohortChannel,
+  cohortMetaDataChannel,
   descriptionLockId,
   emitCohortMetaData,
   emitRoleChange,
@@ -137,38 +138,16 @@ const removeOwnerRole = (io, cohortClients) => data => {
   );
 };
 
-const updateCohort = (io, allCohortsViewClients) => data => {
+const updateCohort = io => data => {
   const { cohortId } = data;
 
   io.sockets
     .to(cohortChannel(cohortId))
     .emit(CohortActionTypes.UPDATE_SUCCESS, data);
 
-  if (allCohortsViewClients.size > 0) {
-    Cohort.findOne({
-      _id: cohortId
-    })
-      .lean()
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { memberIds } = doc;
-          const cohort = responseWithCohort(doc);
-
-          memberIds.forEach(id => {
-            const memberId = id.toString();
-
-            if (allCohortsViewClients.has(memberId)) {
-              const { socketId } = allCohortsViewClients.get(memberId);
-
-              io.sockets
-                .to(socketId)
-                .emit(CohortActionTypes.UPDATE_SUCCESS, cohort);
-            }
-          });
-        }
-      });
-  }
+  io.sockets
+    .to(cohortMetaDataChannel(cohortId))
+    .emit(CohortActionTypes.UPDATE_SUCCESS, data);
 
   return Promise.resolve();
 };
