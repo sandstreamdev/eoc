@@ -760,7 +760,7 @@ const moveToList = (
       if (viewId === newListId.toString()) {
         io.sockets.to(socketId).emit(ItemActionTypes.ADD_SUCCESS, {
           listId: newListId,
-          item: responseWithItem(newItem._doc, id)
+          item: responseWithItem(newItem, id)
         });
       }
     }

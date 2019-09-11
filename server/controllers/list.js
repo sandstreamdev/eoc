@@ -1590,7 +1590,11 @@ const moveItem = (req, resp) => {
         : { newItem, oldList };
     })
     .then(result => {
-      const { newItem } = result;
+      const {
+        newItem,
+        newItem: { _id: newItemId },
+        oldList
+      } = result;
 
       return List.findOneAndUpdate(
         {
@@ -1601,33 +1605,41 @@ const moveItem = (req, resp) => {
         { new: true }
       )
         .exec()
-        .then(newList => ({ newList, ...result }));
+        .then(() => ({ newItemId, oldList }));
     })
     .then(result => {
-      const { newItem, newList, oldList: prevList } = result;
-      const { items } = prevList;
+      const { oldList: previousList } = result;
+      const { items } = previousList;
       const itemToUpdate = items.id(sanitizedItemId);
 
       itemToUpdate.isDeleted = true;
       itemToUpdate.isArchived = true;
 
-      return prevList.save().then(oldList => ({ newItem, newList, oldList }));
+      return previousList.save().then(oldList => ({ ...result, oldList }));
+    })
+    .then(result => {
+      const { newItemId } = result;
+
+      return List.findOne({ _id: sanitizedNewListId, 'items._id': newItemId })
+        .populate('items.authorId', 'displayName')
+        .populate('items.editedBy', 'displayName')
+        .exec()
+        .then(newList => ({ ...result, newList }));
     })
     .then(result => {
       const {
-        newItem,
-        newItem: { _id: itemId },
-        newList,
-        newList: { cohortId },
+        newItemId,
+        newList: { _doc: newList, cohortId, items },
         oldList,
         oldList: { name }
       } = result;
+      const newItem = items.id(newItemId)._doc;
 
       fireAndForget(
         saveActivity(
           ActivityType.ITEM_MOVE,
           userId,
-          itemId,
+          newItemId,
           sanitizedNewListId,
           cohortId,
           null,
