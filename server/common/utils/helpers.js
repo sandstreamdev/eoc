@@ -62,12 +62,17 @@ const responseWithList = (list, userId) => {
     createdAt,
     description,
     doneItemsCount,
-    isFavourite: checkIfArrayContainsUserId(favIds, userId),
     locks,
     name,
     type,
     unhandledItemsCount
   };
+
+  // TODO: I finished here. Is user exists he gets isFavourite.
+  // or check if sending some default value of isFavourite fix this problem.
+  if (userId) {
+    listToSend.isFavourite = checkIfArrayContainsUserId(favIds, userId);
+  }
 
   if (cohortId) {
     listToSend.cohortId =

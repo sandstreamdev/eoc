@@ -109,6 +109,7 @@ const lists = (state = {}, action) => {
     case ListActionTypes.FETCH_AVAILABLE_SUCCESS:
       return { ...action.payload, ...state };
     case ListActionTypes.FETCH_META_DATA_SUCCESS:
+      // TODO: refactor reducer to update only the data that exists
       return { ...state, ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
       return { ...state, [action.payload._id]: { ...action.payload } };
