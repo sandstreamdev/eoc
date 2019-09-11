@@ -150,15 +150,13 @@ const responseWithItem = (item, userId) => {
     ...rest,
     authorId,
     authorName,
+    editor: editor ? editor.displayName : '',
     isArchived,
-    isVoted: checkIfArrayContainsUserId(voterIds, userId),
     votesCount: voterIds.length
   };
 
-  if (editor) {
-    const { displayName } = editor;
-
-    newItem.editedBy = displayName;
+  if (userId) {
+    newItem.isVoted = checkIfArrayContainsUserId(voterIds, userId);
   }
 
   return newItem;
