@@ -10,7 +10,7 @@ const { updateItemState, updateListHeaderState } = require('./list');
 const { updateCohortHeaderStatus } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
 const { Routes } = require('../common/variables');
-const { associateSocketWithSession } = require('./helpers');
+const { associateSocketWithSession, joinMetaDataRooms } = require('./helpers');
 
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
@@ -56,7 +56,7 @@ const getSocketInstance = () => {
 };
 
 const socketListeners = socketInstance => {
-  socketInstance.on('connection', socket => {
+  socketInstance.on('connection', async socket => {
     const {
       request: { user }
     } = socket;
@@ -66,7 +66,8 @@ const socketListeners = socketInstance => {
       return;
     }
 
-    associateSocketWithSession(socket);
+    await associateSocketWithSession(socket);
+    await joinMetaDataRooms(socket);
 
     socket.on('joinRoom', ({ data, room }) => {
       const { roomId, userId, viewId } = data;
