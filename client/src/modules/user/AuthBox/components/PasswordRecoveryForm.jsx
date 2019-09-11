@@ -6,7 +6,7 @@ import _debounce from 'lodash/debounce';
 import validator from 'validator';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
-import { getAccountData, updatePassword } from 'modules/user/model/actions';
+import { getAccountDetails, updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
 import {
@@ -59,7 +59,7 @@ class PasswordRecoveryForm extends PureComponent {
       }
     } = this.props;
 
-    const abortable = makeAbortablePromise(getAccountData(token));
+    const abortable = makeAbortablePromise(getAccountDetails(token));
     this.pendingPromise = abortable;
 
     abortable.promise

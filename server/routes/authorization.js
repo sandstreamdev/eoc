@@ -10,7 +10,7 @@ const {
 const {
   changePassword,
   confirmEmail,
-  getAccountData,
+  getAccountDetails,
   getLoggedUser,
   getUserDetails,
   logout,
@@ -54,6 +54,6 @@ router.post(
 );
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
-router.get('/account-details/:token?', getAccountData);
+router.get('/account-details/:token?', getAccountDetails);
 
 module.exports = router;

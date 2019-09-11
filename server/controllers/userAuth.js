@@ -445,7 +445,7 @@ const changePassword = (req, res) => {
     });
 };
 
-const getAccountData = (req, resp) => {
+const getAccountDetails = (req, resp) => {
   const {
     params: { token }
   } = req;
@@ -468,7 +468,7 @@ const getAccountData = (req, resp) => {
 module.exports = {
   changePassword,
   confirmEmail,
-  getAccountData,
+  getAccountDetails,
   getLoggedUser,
   getUserDetails,
   logout,
