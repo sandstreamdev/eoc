@@ -55,7 +55,7 @@ class ListHeader extends PureComponent {
     };
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(previousProps) {
     const {
       details: { name, description, type }
     } = this.props;
@@ -63,14 +63,14 @@ class ListHeader extends PureComponent {
       details: {
         name: previousName,
         description: previousDescription,
-        type: prevType
+        type: previousType
       }
-    } = prevProps;
+    } = previousProps;
 
     if (
       name !== previousName ||
       description !== previousDescription ||
-      type !== prevType
+      type !== previousType
     ) {
       this.updateHeaderData();
     }
