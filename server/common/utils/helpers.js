@@ -150,7 +150,7 @@ const responseWithItem = (item, userId) => {
     ...rest,
     authorId,
     authorName,
-    editor: editor ? editor.displayName : '',
+    editedBy: editor ? editor.displayName : '',
     isArchived,
     votesCount: voterIds.length
   };
