@@ -54,6 +54,6 @@ router.post(
 );
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
-router.get('/account-data/:token?', getAccountData);
+router.get('/account-details/:token?', getAccountData);
 
 module.exports = router;

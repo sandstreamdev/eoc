@@ -185,7 +185,7 @@ class PasswordRecoveryForm extends PureComponent {
     return (
       <form className="pass-recovery-form" onSubmit={this.handleSubmit}>
         <h2 className="pass-recovery-form__heading">
-          {userName && email ? (
+          {userName ? (
             <FormattedMessage
               id="user.auth.pass-recovery-form.heading-user-name"
               values={{ name: userName, email }}

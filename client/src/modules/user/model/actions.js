@@ -147,4 +147,4 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
   });
 
 export const getAccountData = token =>
-  getJson(`/auth/account-data/${token}`).then(data => data);
+  getJson(`/auth/account-details/${token}`);
