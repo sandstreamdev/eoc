@@ -7,10 +7,9 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { mapObject } from 'common/utils/helpers';
 
 const Notification = ({ data, id, redirect, type }) => {
-  const values =
-    typeof data === 'string'
-      ? { data: <em>{data}</em> }
-      : { ...mapObject(value => <em>{value}</em>)(data) };
+  const wrap = value => <em>{value}</em>;
+  const dataSource = typeof data === 'string' ? { data } : data;
+  const values = mapObject(wrap)(dataSource);
 
   return (
     <MessageBox type={type}>
