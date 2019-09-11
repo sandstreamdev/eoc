@@ -8,7 +8,7 @@ import { mapObject } from 'common/utils/helpers';
 
 const Notification = ({ data, id, redirect, type }) => {
   const wrap = value => <em>{value}</em>;
-  const dataSource = typeof data === 'string' ? { data } : data;
+  const dataSource = typeof data === 'object' ? data : { data };
   const values = mapObject(wrap)(dataSource);
 
   return (
