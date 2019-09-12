@@ -61,21 +61,16 @@ const responseWithList = (list, userId) => {
     name,
     type
   } = list;
-  // const activeItems = items.filter(item => !item.isArchived);
-  // const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
-  // const unhandledItemsCount = activeItems.length - doneItemsCount;
 
   const listToSend = {
     _id,
     createdAt,
     description,
     ...countItems(items),
-    // doneItemsCount,
     isFavourite: checkIfArrayContainsUserId(favIds, userId),
     locks,
     name,
     type
-    // unhandledItemsCount
   };
 
   if (cohortId) {
@@ -101,17 +96,11 @@ const responseWithListsMetaData = (lists, userId) =>
         return;
       }
 
-      // const activeItems = items.filter(item => !item.isArchived);
-      // const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
-      // const unhandledItemsCount = activeItems.length - doneItemsCount;
-
       const listToSend = {
         ...rest,
         ...countItems(items),
         createdAt,
-        // doneItemsCount,
         isFavourite: checkIfArrayContainsUserId(favIds, userId)
-        // unhandledItemsCount
       };
 
       if (cohort) {
