@@ -6,55 +6,22 @@ import AppLogo from 'common/components/AppLogo';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
-import {
-  checkToken,
-  resendConfirmationLink,
-  resendRecoveryLink
-} from 'modules/user/model/actions';
-import { Routes } from 'common/constants/enums';
+import { resendConfirmationLink } from 'modules/user/model/actions';
 
 class LinkExpired extends PureComponent {
   state = {
     isLinkSuccessfullySent: false,
-    sendingFailed: false,
-    isTokenValid: false
+    sendingFailed: false
   };
 
-  componentDidMount() {
-    this.checkToken();
-  }
-
-  checkToken = () => {
+  handleResendLink = () => {
     const {
       match: {
         params: { token }
       }
     } = this.props;
 
-    checkToken(token)
-      .then(() => this.setState({ isTokenValid: true }))
-      .catch(() => this.setState({ isTokenValid: false }));
-  };
-
-  handleResendLink = () => {
-    const {
-      match: {
-        params: { token },
-        path
-      }
-    } = this.props;
-
-    let action;
-
-    if (path.includes(Routes.CONFIRMATION_LINK_EXPIRED)) {
-      action = resendConfirmationLink;
-    }
-
-    if (path.includes(Routes.PASSWORD_RECOVERY_EXPIRED)) {
-      action = resendRecoveryLink;
-    }
-
-    return action(token)
+    return resendConfirmationLink(token)
       .then(() => this.setState({ isLinkSuccessfullySent: true }))
       .catch(() => this.setState({ sendingFailed: true }));
   };
@@ -80,39 +47,26 @@ class LinkExpired extends PureComponent {
     </p>
   );
 
-  renderResendButton = () => {
-    const {
-      match: { url }
-    } = this.props;
-    const messageId =
-      url === `/${Routes.CONFIRMATION_LINK_EXPIRED}`
-        ? 'user.actions.sign-up.result-failed'
-        : 'user.actions.link-expired.recovery-expired';
-
-    return (
-      <Fragment>
-        <p className="link-expired__message">
-          <FormattedMessage id={messageId} />
-        </p>
-        <div>
-          <PendingButton
-            className="primary-button link-expired__button"
-            onClick={this.handleResendLink}
-            preloaderTheme={PreloaderTheme.LIGHT}
-            type="button"
-          >
-            <FormattedMessage id="user.auth.sign-up.button.resend-link" />
-          </PendingButton>
-        </div>
-      </Fragment>
-    );
-  };
+  renderResendButton = () => (
+    <Fragment>
+      <p className="link-expired__message">
+        <FormattedMessage id="user.actions.sign-up.result-failed" />
+      </p>
+      <div>
+        <PendingButton
+          className="primary-button link-expired__button"
+          onClick={this.handleResendLink}
+          preloaderTheme={PreloaderTheme.LIGHT}
+          type="button"
+        >
+          <FormattedMessage id="user.auth.sign-up.button.resend-link" />
+        </PendingButton>
+      </div>
+    </Fragment>
+  );
 
   render() {
-    const { isLinkSuccessfullySent, sendingFailed, isTokenValid } = this.state;
-    const resendButton = isTokenValid
-      ? this.renderResendButton()
-      : this.renderResendingError();
+    const { isLinkSuccessfullySent, sendingFailed } = this.state;
 
     return (
       <div className="link-expired">
@@ -120,7 +74,9 @@ class LinkExpired extends PureComponent {
           <AppLogo />
         </h1>
         {sendingFailed && this.renderResendingError()}
-        {isLinkSuccessfullySent ? this.renderSuccessMessage() : resendButton}
+        {isLinkSuccessfullySent
+          ? this.renderSuccessMessage()
+          : this.renderResendButton()}
       </div>
     );
   }

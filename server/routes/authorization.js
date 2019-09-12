@@ -9,14 +9,12 @@ const {
 } = require('../config/auth');
 const {
   changePassword,
-  checkToken,
   confirmEmail,
   getLoggedUser,
   getUserDetails,
   getUserName,
   logout,
   recoveryPassword,
-  resendRecoveryLink,
   resendSignUpConfirmationLink,
   resetPassword,
   sendUser,
@@ -48,14 +46,8 @@ router.get('/user', getLoggedUser);
 router.post('/reset-password', resetPassword, sendResetPasswordLink);
 router.get('/recovery-password/:token?', recoveryPassword);
 router.post('/update-password/:token?', updatePassword);
-router.post(
-  '/resend-recovery-link/:token?',
-  resendRecoveryLink,
-  sendResetPasswordLink
-);
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/user-name/:token?', getUserName);
-router.get('/check-token/:token?', checkToken);
 
 module.exports = router;
