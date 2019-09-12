@@ -16,7 +16,7 @@ import socket from 'sockets';
 addLocaleData([...en]);
 const store = configureStore();
 
-receiveEvents(store.dispatch, socket);
+receiveEvents(store, socket);
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,5 +1,6 @@
 import socket from 'sockets';
 import { CommonActionTypes } from 'common/model/actionTypes';
+import { AppEvents } from 'sockets/enums';
 
 export const clearMetaDataSuccess = () => ({
   type: CommonActionTypes.LEAVE_VIEW
@@ -16,13 +17,13 @@ export const leaveView = (route, userId) => dispatch => {
 export const joinRoom = (route, id, userId) => dispatch => {
   const data = { roomId: `${route}-${id}`, userId, viewId: id };
 
-  socket.emit('joinRoom', { data, room: route });
+  socket.emit(AppEvents.JOIN_ROOM, { data, room: route });
 };
 
 export const leaveRoom = (route, id, userId) => dispatch => {
   const data = { roomId: `${route}-${id}`, userId, viewId: id };
 
-  socket.emit('leaveRoom', { data, room: route });
+  socket.emit(AppEvents.LEAVE_ROOM, { data, room: route });
 
   dispatch(clearMetaDataSuccess());
 };

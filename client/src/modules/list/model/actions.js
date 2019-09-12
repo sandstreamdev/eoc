@@ -433,14 +433,14 @@ export const addListViewer = (listId, email) => dispatch =>
     email
   })
     .then(response => response.json())
-    .then(json => {
-      if (json._id) {
-        const action = addViewerSuccess({ listId, ...json });
+    .then(viewer => {
+      if (viewer._id) {
+        const action = addViewerSuccess({ listId, viewer });
 
         dispatch(action);
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',
-          data: json.displayName
+          data: viewer.displayName
         });
 
         return UserAddingStatus.ADDED;
