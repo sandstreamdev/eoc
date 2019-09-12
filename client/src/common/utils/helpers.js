@@ -44,9 +44,11 @@ const fromEntries = convertedArray =>
 export const asyncTypes = key =>
   asyncPostfixes.map(postfix => [key, postfix].join('_'));
 
-export const enumerable = namespace => (...keys) =>
+export const enumerable = (namespace = null) => (...keys) =>
   Object.freeze(
-    fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
+    fromEntries(
+      keys.map(key => [key, namespace ? [namespace, key].join('/') : key])
+    )
   );
 
 const filter = f => object =>

@@ -1,12 +1,12 @@
+const { ListType, LOCK_TIMEOUT } = require('../common/variables');
 const {
-  CommentActionTypes,
-  ItemActionTypes,
-  ItemStatusType,
-  ListActionTypes,
-  ListHeaderStatusTypes,
-  ListType,
-  LOCK_TIMEOUT
-} = require('../common/variables');
+  AppEvents,
+  CommentEvents,
+  ItemEvents,
+  ItemStatusEvents,
+  ListEvents,
+  ListHeaderStatusEvents
+} = require('./eventTypes');
 const List = require('../models/list.model');
 const {
   checkIfArrayContainsUserId,
@@ -17,9 +17,11 @@ const {
 const {
   descriptionLockId,
   updateListOnDashboardAndCohortView,
+  getUserSockets,
   handleItemLocks,
   handleLocks,
   listChannel,
+  listMetaDataChannel,
   nameLockId
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
@@ -30,7 +32,7 @@ const addItemToList = (io, cohortClients, dashboardClients) => data => {
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ItemActionTypes.ADD_SUCCESS, { item, listId });
+    .emit(ItemEvents.ADD_SUCCESS, { item, listId });
 
   updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
@@ -40,13 +42,13 @@ const addItemToList = (io, cohortClients, dashboardClients) => data => {
 const deleteItem = io => data => {
   const { listId } = data;
 
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.DELETE_SUCCESS, data);
+  io.sockets.to(listChannel(listId)).emit(ItemEvents.DELETE_SUCCESS, data);
 
   return Promise.resolve();
 };
 
 const updateItemState = (socket, itemClientLocks) => {
-  socket.on(ItemStatusType.LOCK, data => {
+  socket.on(ItemStatusEvents.LOCK, data => {
     const { descriptionLock, itemId, listId, nameLock, userId } = data;
     const locks = { description: descriptionLock, name: nameLock };
 
@@ -57,7 +59,7 @@ const updateItemState = (socket, itemClientLocks) => {
     )(locks).then(() => {
       socket.broadcast
         .to(listChannel(listId))
-        .emit(ItemStatusType.LOCK, { itemId, listId, locks });
+        .emit(ItemStatusEvents.LOCK, { itemId, listId, locks });
     });
 
     if (isDefined(nameLock) && isDefined(descriptionLock)) {
@@ -84,7 +86,7 @@ const updateItemState = (socket, itemClientLocks) => {
     }
   });
 
-  socket.on(ItemStatusType.UNLOCK, data => {
+  socket.on(ItemStatusEvents.UNLOCK, data => {
     const { descriptionLock, itemId, listId, nameLock, userId } = data;
     const locks = { description: descriptionLock, name: nameLock };
 
@@ -95,7 +97,7 @@ const updateItemState = (socket, itemClientLocks) => {
     )(locks).then(() => {
       socket.broadcast
         .to(listChannel(listId))
-        .emit(ItemStatusType.UNLOCK, { itemId, listId, locks });
+        .emit(ItemStatusEvents.UNLOCK, { itemId, listId, locks });
     });
 
     if (itemClientLocks.has(nameLockId(itemId))) {
@@ -126,7 +128,7 @@ const updateItem = (
       if (listClients.has(viewerId)) {
         const { socketId } = listClients.get(viewerId);
 
-        io.sockets.to(socketId).emit(ItemActionTypes.UPDATE_SUCCESS, {
+        io.sockets.to(socketId).emit(ItemEvents.UPDATE_SUCCESS, {
           listId,
           item: responseWithItem(item, viewerId)
         });
@@ -142,7 +144,7 @@ const updateItem = (
 const addComment = io => data => {
   const { listId } = data;
 
-  io.sockets.to(listChannel(listId)).emit(CommentActionTypes.ADD_SUCCESS, data);
+  io.sockets.to(listChannel(listId)).emit(CommentEvents.ADD_SUCCESS, data);
 
   return Promise.resolve();
 };
@@ -165,9 +167,7 @@ const cloneItem = (
         const { socketId, viewId } = listClients.get(viewerIdAsString);
 
         if (viewId === listId) {
-          io.sockets
-            .to(socketId)
-            .emit(ItemActionTypes.CLONE_SUCCESS, dataToSend);
+          io.sockets.to(socketId).emit(ItemEvents.CLONE_SUCCESS, dataToSend);
         }
       }
     }
@@ -178,49 +178,41 @@ const cloneItem = (
   return Promise.resolve();
 };
 
-const addListViewer = (io, dashboardClients, cohortClients) => data => {
-  const { listId, _id: viewerId, _id } = data;
+const addViewer = io => async data => {
+  const {
+    list,
+    list: { _id: listId },
+    performerId,
+    userToSend,
+    userToSend: { _id: viewerId }
+  } = data;
 
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.ADD_VIEWER_SUCCESS, { ...data, _id });
+  io.sockets.to(listChannel(listId)).emit(ListEvents.ADD_VIEWER_SUCCESS, {
+    listId,
+    performerId,
+    viewer: { ...userToSend }
+  });
 
-  return List.findById(listId)
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { cohortId } = doc;
-        const list = responseWithList(doc, viewerId);
+  const socketIds = await getUserSockets(viewerId);
 
-        if (cohortId && cohortClients.has(viewerId.toString())) {
-          const { viewId, socketId } = cohortClients.get(viewerId.toString());
+  socketIds.forEach(socketId =>
+    io.sockets
+      .to(socketId)
+      .emit(AppEvents.JOIN_ROOM, listMetaDataChannel(listId))
+  );
 
-          if (viewId === cohortId.toString()) {
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: list
-              });
-          }
-        }
+  socketIds.forEach(socketId =>
+    io.sockets.to(socketId).emit(ListEvents.FETCH_META_DATA_SUCCESS, {
+      [listId]: responseWithList(list, viewerId)
+    })
+  );
 
-        if (dashboardClients.has(viewerId.toString())) {
-          const { socketId } = dashboardClients.get(viewerId.toString());
-
-          io.sockets
-            .to(socketId)
-            .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: list
-            });
-        }
-      }
-    });
+  return Promise.resolve();
 };
 
 const setVote = (io, listClients, viewersIds) => data => {
   const { listId, itemId } = data;
-  const action = ItemActionTypes.SET_VOTE_SUCCESS;
+  const action = ItemEvents.SET_VOTE_SUCCESS;
   const payload = { listId, itemId };
 
   return votingBroadcast(io)(data)(listClients)(viewersIds)(action, payload);
@@ -228,7 +220,7 @@ const setVote = (io, listClients, viewersIds) => data => {
 
 const clearVote = (io, listClients, viewersIds) => data => {
   const { listId, itemId } = data;
-  const action = ItemActionTypes.CLEAR_VOTE_SUCCESS;
+  const action = ItemEvents.CLEAR_VOTE_SUCCESS;
   const payload = { listId, itemId };
 
   return votingBroadcast(io)(data)(listClients)(viewersIds)(action, payload);
@@ -239,7 +231,7 @@ const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...rest });
+    .emit(ListEvents.UPDATE_SUCCESS, { listId, ...rest });
 
   updateListOnDashboardAndCohortView(io)(
     cohortViewClients,
@@ -248,14 +240,14 @@ const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
 };
 
 const updateListHeaderState = (socket, listClientLocks) => {
-  socket.on(ListHeaderStatusTypes.UNLOCK, data => {
+  socket.on(ListHeaderStatusEvents.UNLOCK, data => {
     const { descriptionLock, listId, nameLock, userId } = data;
     const locks = { description: descriptionLock, name: nameLock };
 
     handleLocks(List, { _id: listId, ownerIds: userId })(locks).then(() => {
       socket.broadcast
         .to(listChannel(listId))
-        .emit(ListHeaderStatusTypes.UNLOCK, { listId, locks });
+        .emit(ListHeaderStatusEvents.UNLOCK, { listId, locks });
 
       const lock = isDefined(nameLock) ? nameLockId : descriptionLockId;
 
@@ -266,14 +258,14 @@ const updateListHeaderState = (socket, listClientLocks) => {
     });
   });
 
-  socket.on(ListHeaderStatusTypes.LOCK, data => {
+  socket.on(ListHeaderStatusEvents.LOCK, data => {
     const { descriptionLock, listId, nameLock, userId } = data;
     const locks = { description: descriptionLock, name: nameLock };
 
     handleLocks(List, { _id: listId, ownerIds: userId })(locks).then(() => {
       socket.broadcast
         .to(listChannel(listId))
-        .emit(ListHeaderStatusTypes.LOCK, { listId, locks });
+        .emit(ListHeaderStatusEvents.LOCK, { listId, locks });
 
       const lock = isDefined(nameLock) ? nameLockId : descriptionLockId;
       const delayedUnlock = setTimeout(() => {
@@ -288,7 +280,7 @@ const updateListHeaderState = (socket, listClientLocks) => {
         handleLocks(List, { _id: listId, ownerIds: userId })(locks).then(() => {
           socket.broadcast
             .to(listChannel(listId))
-            .emit(ListHeaderStatusTypes.UNLOCK, { listId, locks });
+            .emit(ListHeaderStatusEvents.UNLOCK, { listId, locks });
 
           clearTimeout(listClientLocks.get(lock(listId)));
           listClientLocks.delete(lock(listId));
@@ -303,18 +295,16 @@ const updateListHeaderState = (socket, listClientLocks) => {
 const addMemberRoleInList = (io, clients) => data => {
   const { listId, userId } = data;
 
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
-      ...data,
-      isCurrentUserRoleChanging: false
-    });
+  io.sockets.to(listChannel(listId)).emit(ListEvents.ADD_MEMBER_ROLE_SUCCESS, {
+    ...data,
+    isCurrentUserRoleChanging: false
+  });
 
   if (clients.has(userId)) {
     const { viewId, socketId } = clients.get(userId);
 
     if (viewId === listId) {
-      io.sockets.to(socketId).emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
+      io.sockets.to(socketId).emit(ListEvents.ADD_MEMBER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: true
       });
@@ -327,18 +317,16 @@ const addMemberRoleInList = (io, clients) => data => {
 const addOwnerRoleInList = (io, clients) => data => {
   const { listId, userId } = data;
 
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-      ...data,
-      isCurrentUserRoleChanging: false
-    });
+  io.sockets.to(listChannel(listId)).emit(ListEvents.ADD_OWNER_ROLE_SUCCESS, {
+    ...data,
+    isCurrentUserRoleChanging: false
+  });
 
   if (clients.has(userId)) {
     const { viewId, socketId } = clients.get(userId);
 
     if (viewId === listId) {
-      io.sockets.to(socketId).emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
+      io.sockets.to(socketId).emit(ListEvents.ADD_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: true
       });
@@ -353,7 +341,7 @@ const removeMemberRoleInList = (io, clients) => data => {
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+    .emit(ListEvents.REMOVE_MEMBER_ROLE_SUCCESS, {
       ...data,
       isCurrentUserRoleChanging: false
     });
@@ -362,7 +350,7 @@ const removeMemberRoleInList = (io, clients) => data => {
     const { viewId, socketId } = clients.get(userId);
 
     if (viewId === listId) {
-      io.sockets.to(socketId).emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
+      io.sockets.to(socketId).emit(ListEvents.REMOVE_MEMBER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: true
       });
@@ -377,7 +365,7 @@ const removeOwnerRoleInList = (io, clients) => data => {
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+    .emit(ListEvents.REMOVE_OWNER_ROLE_SUCCESS, {
       ...data,
       isCurrentUserRoleChanging: false
     });
@@ -386,7 +374,7 @@ const removeOwnerRoleInList = (io, clients) => data => {
     const { viewId, socketId } = clients.get(userId);
 
     if (viewId === listId) {
-      io.sockets.to(socketId).emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
+      io.sockets.to(socketId).emit(ListEvents.REMOVE_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: true
       });
@@ -394,12 +382,23 @@ const removeOwnerRoleInList = (io, clients) => data => {
   }
 };
 
-const leaveList = io => data => {
-  const { listId } = data;
+const leaveList = io => async data => {
+  const { listId, userId } = data;
+  const socketIds = await getUserSockets(userId);
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+    .emit(ListEvents.REMOVE_MEMBER_SUCCESS, data);
+
+  socketIds.forEach(socketId =>
+    io.sockets
+      .to(socketId)
+      .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
+  );
+
+  socketIds.forEach(socketId =>
+    io.sockets.to(socketId).emit(ListEvents.DELETE_SUCCESS, data)
+  );
 
   return Promise.resolve();
 };
@@ -427,7 +426,7 @@ const changeListType = (
 
         io.sockets
           .to(listChannel(listId))
-          .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, data);
+          .emit(ListEvents.CHANGE_TYPE_SUCCESS, data);
 
         if (type === ListType.LIMITED) {
           removedViewers.forEach(id => {
@@ -443,7 +442,7 @@ const changeListType = (
               if (viewId === listId) {
                 io.sockets
                   .to(socketId)
-                  .emit(ListActionTypes.LEAVE_ON_TYPE_CHANGE_SUCCESS, {
+                  .emit(ListEvents.LEAVE_ON_TYPE_CHANGE_SUCCESS, {
                     cohortId,
                     isCohortMember,
                     listId,
@@ -457,7 +456,7 @@ const changeListType = (
 
               io.sockets
                 .to(socketId)
-                .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+                .emit(ListEvents.DELETE_SUCCESS, { listId });
             }
 
             if (cohortClients.has(userId)) {
@@ -466,7 +465,7 @@ const changeListType = (
               if (viewId === cohortId.toString()) {
                 io.sockets
                   .to(socketId)
-                  .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+                  .emit(ListEvents.DELETE_SUCCESS, { listId });
               }
             }
           });
@@ -478,22 +477,18 @@ const changeListType = (
           if (dashboardClients.has(userId)) {
             const { socketId } = dashboardClients.get(userId);
 
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [list._id]: responseWithList(list, userId)
-              });
+            io.sockets.to(socketId).emit(ListEvents.FETCH_META_DATA_SUCCESS, {
+              [list._id]: responseWithList(list, userId)
+            });
           }
 
           if (cohortClients.has(userId)) {
             const { viewId, socketId } = cohortClients.get(userId);
 
             if (viewId === cohortId.toString()) {
-              io.sockets
-                .to(socketId)
-                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [list._id]: responseWithList(list, userId)
-                });
+              io.sockets.to(socketId).emit(ListEvents.FETCH_META_DATA_SUCCESS, {
+                [list._id]: responseWithList(list, userId)
+              });
             }
           }
         });
@@ -501,59 +496,23 @@ const changeListType = (
     });
 };
 
-const removeListMember = (
-  io,
-  dashboardClients,
-  listClients,
-  cohortClients
-) => data => {
-  const { cohortId, listId, userId } = data;
-
-  if (dashboardClients.has(userId)) {
-    const { socketId, viewId } = dashboardClients.get(userId);
-
-    if (viewId === listId) {
-      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
-    }
-  }
-
-  if (listClients.has(userId)) {
-    List.findById(listId)
-      .populate('cohortId')
-      .lean()
-      .exec()
-      .then(doc => {
-        if (doc) {
-          const { socketId, viewId } = listClients.get(userId);
-          const { cohortId: cohort } = doc;
-          const data = { listId };
-
-          if (viewId === listId) {
-            if (cohort) {
-              const { _id: cohortId } = cohort;
-              data.isCohortMember = isMember(cohort, userId);
-              data.cohortId = cohortId;
-            }
-
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.REMOVED_BY_SOMEONE, data);
-          }
-        }
-      });
-  }
-
-  if (cohortClients.has(userId)) {
-    const { socketId, viewId } = cohortClients.get(userId);
-
-    if (viewId === cohortId.toString()) {
-      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId });
-    }
-  }
+const removeViewer = io => async data => {
+  const { listId, userId } = data;
+  const socketIds = await getUserSockets(userId);
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
+    .emit(ListEvents.REMOVE_MEMBER_SUCCESS, data);
+
+  socketIds.forEach(socketId =>
+    io.sockets
+      .to(socketId)
+      .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
+  );
+
+  socketIds.forEach(socketId =>
+    io.sockets.to(socketId).emit(ListEvents.DELETE_SUCCESS, data)
+  );
 
   return Promise.resolve();
 };
@@ -590,7 +549,7 @@ const archiveList = (
           if (viewId === listId) {
             io.sockets
               .to(socketId)
-              .emit(ListActionTypes.ARCHIVE_SUCCESS, dataToSend);
+              .emit(ListEvents.ARCHIVE_SUCCESS, dataToSend);
           }
         }
 
@@ -598,18 +557,14 @@ const archiveList = (
           const { socketId } = dashboardClients.get(id);
 
           // Broadcast to clients on dashboard that have this list
-          io.sockets
-            .to(socketId)
-            .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+          io.sockets.to(socketId).emit(ListEvents.DELETE_SUCCESS, { listId });
         }
 
         if (cohortClients.has(id)) {
           const { socketId, viewId } = cohortClients.get(id);
           if (viewId === cohortId.toString()) {
             // Broadcast to clients on cohort view that have this list
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+            io.sockets.to(socketId).emit(ListEvents.DELETE_SUCCESS, { listId });
           }
         }
       });
@@ -623,7 +578,7 @@ const archiveList = (
           // Broadcast to clients on dashboard that have this list
           io.sockets
             .to(socketId)
-            .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+            .emit(ListEvents.FETCH_ARCHIVED_META_DATA_SUCCESS, {
               [listId]: {
                 ...responseWithList(list, memberId),
                 isArchived: true
@@ -637,7 +592,7 @@ const archiveList = (
             // Broadcast to clients on cohort view that have this list
             io.sockets
               .to(socketId)
-              .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
+              .emit(ListEvents.FETCH_ARCHIVED_META_DATA_SUCCESS, {
                 [listId]: {
                   ...responseWithList(list, memberId),
                   isArchived: true
@@ -652,12 +607,10 @@ const archiveList = (
 const deleteList = (io, dashboardClients, cohortClients) => data => {
   const { listId, cohortId } = data;
 
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
+  io.sockets.to(listChannel(listId)).emit(ListEvents.DELETE_AND_REDIRECT, data);
 
   dashboardClients.forEach(({ socketId }) =>
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId })
+    io.sockets.to(socketId).emit(ListEvents.DELETE_SUCCESS, { listId })
   );
 
   if (cohortId) {
@@ -665,9 +618,7 @@ const deleteList = (io, dashboardClients, cohortClients) => data => {
       const { socketId, viewId } = client;
 
       if (viewId === cohortId.toString()) {
-        io.sockets
-          .to(socketId)
-          .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+        io.sockets.to(socketId).emit(ListEvents.DELETE_SUCCESS, { listId });
       }
     });
   }
@@ -693,22 +644,18 @@ const restoreList = (
         if (dashboardClients.has(id)) {
           const { socketId } = dashboardClients.get(id);
 
-          io.sockets
-            .to(socketId)
-            .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: responseWithList(doc, id)
-            });
+          io.sockets.to(socketId).emit(ListEvents.FETCH_META_DATA_SUCCESS, {
+            [listId]: responseWithList(doc, id)
+          });
         }
 
         if (cohortClients.has(id)) {
           const { socketId, viewId } = cohortClients.get(id);
 
           if (viewId === cohortId.toString()) {
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: responseWithList(doc, id)
-              });
+            io.sockets.to(socketId).emit(ListEvents.FETCH_META_DATA_SUCCESS, {
+              [listId]: responseWithList(doc, id)
+            });
           }
         }
       });
@@ -720,7 +667,7 @@ const restoreList = (
           const { socketId, viewId } = listClients.get(id);
 
           if (viewId === listId) {
-            io.sockets.to(socketId).emit(ListActionTypes.RESTORE_SUCCESS, {
+            io.sockets.to(socketId).emit(ListEvents.RESTORE_SUCCESS, {
               data: responseWithList(doc, id),
               listId
             });
@@ -740,7 +687,7 @@ const moveToList = (
   const { _id: listId } = oldList;
   const { _id: newListId, viewersIds } = newList;
 
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.DELETE_SUCCESS, {
+  io.sockets.to(listChannel(listId)).emit(ItemEvents.DELETE_SUCCESS, {
     listId,
     itemId: oldItemId
   });
@@ -752,7 +699,7 @@ const moveToList = (
       const { socketId, viewId } = listClients.get(id);
 
       if (viewId === newListId.toString()) {
-        io.sockets.to(socketId).emit(ItemActionTypes.ADD_SUCCESS, {
+        io.sockets.to(socketId).emit(ItemEvents.ADD_SUCCESS, {
           listId: newListId,
           item: responseWithItem(newItem._doc, id)
         });
@@ -773,7 +720,7 @@ const moveToList = (
 module.exports = {
   addComment,
   addItemToList,
-  addListViewer,
+  addViewer,
   addMemberRoleInList,
   addOwnerRoleInList,
   archiveList,
@@ -784,9 +731,9 @@ module.exports = {
   deleteList,
   leaveList,
   moveToList,
-  removeListMember,
   removeMemberRoleInList,
   removeOwnerRoleInList,
+  removeViewer,
   restoreList,
   setVote,
   updateItem,

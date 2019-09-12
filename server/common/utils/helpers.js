@@ -353,9 +353,11 @@ const responseWithCohortDetails = (doc, userId) => {
  */
 const isDefined = x => x !== undefined;
 
-const enumerable = namespace => (...keys) =>
+const enumerable = (namespace = null) => (...keys) =>
   Object.freeze(
-    fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
+    fromEntries(
+      keys.map(key => [key, namespace ? [namespace, key].join('/') : key])
+    )
   );
 
 const mapObject = callback => object =>

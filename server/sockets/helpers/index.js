@@ -1,10 +1,7 @@
 const Cohort = require('../../models/cohort.model');
 const List = require('../../models/list.model');
 const Session = require('../../models/session.model');
-const {
-  ListActionTypes,
-  CohortActionTypes
-} = require('../../common/variables');
+const { ListEvents, CohortEvents } = require('../eventTypes');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
 const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
@@ -25,11 +22,9 @@ const emitCohortMetaData = (cohortId, clients, io) =>
           if (clients.has(memberId)) {
             const { socketId } = clients.get(memberId);
 
-            io.sockets
-              .to(socketId)
-              .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
-                [cohortId]: cohort
-              });
+            io.sockets.to(socketId).emit(CohortEvents.FETCH_META_DATA_SUCCESS, {
+              [cohortId]: cohort
+            });
           }
         });
       }
@@ -212,7 +207,7 @@ const updateListOnDashboardAndCohortView = io => (
     if (dashboardClients.has(id)) {
       const { socketId } = dashboardClients.get(id);
 
-      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+      io.sockets.to(socketId).emit(ListEvents.FETCH_META_DATA_SUCCESS, {
         [listId]: responseWithList(list, id)
       });
     }
@@ -220,7 +215,7 @@ const updateListOnDashboardAndCohortView = io => (
     if (cohortId && cohortClients.has(id)) {
       const { socketId } = cohortClients.get(id);
 
-      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+      io.sockets.to(socketId).emit(ListEvents.FETCH_META_DATA_SUCCESS, {
         [listId]: responseWithList(list, id)
       });
     }
@@ -276,6 +271,18 @@ const joinMetaDataRooms = async socket => {
   }
 };
 
+const getUserSockets = async userId => {
+  const regexp = new RegExp(userId);
+
+  try {
+    const sessions = await Session.find({ session: regexp }, 'socketId').exec();
+
+    return sessions.map(session => session.socketId);
+  } catch {
+    // Ignore error
+  }
+};
+
 module.exports = {
   associateSocketWithSession,
   cohortChannel,
@@ -286,6 +293,7 @@ module.exports = {
   emitRoleChange,
   getListIdsByViewers,
   getListsDataByViewers,
+  getUserSockets,
   handleItemLocks,
   handleLocks,
   joinMetaDataRooms,
