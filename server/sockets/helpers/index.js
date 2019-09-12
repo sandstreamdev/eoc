@@ -5,7 +5,7 @@ const {
   CohortActionTypes
 } = require('../../common/variables');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
-const { countItems, isDefined } = require('../../common/utils/helpers');
+const { isDefined } = require('../../common/utils/helpers');
 const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
 
 const emitCohortMetaData = (cohortId, clients, io) =>
@@ -226,7 +226,7 @@ const updateListOnDashboardAndCohortView = io => (
   cohortClients,
   dashboardClients
 ) => list => {
-  const { _id: listId, cohortId, items, viewersIds } = list;
+  const { _id: listId, cohortId, viewersIds, ...rest } = list;
 
   viewersIds.forEach(viewerId => {
     const id = viewerId.toString();
@@ -236,7 +236,7 @@ const updateListOnDashboardAndCohortView = io => (
 
       io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
         listId,
-        ...countItems(items)
+        ...rest
       });
     }
 
@@ -245,7 +245,7 @@ const updateListOnDashboardAndCohortView = io => (
 
       io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
         listId,
-        ...countItems(items)
+        ...rest
       });
     }
   });

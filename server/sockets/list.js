@@ -12,6 +12,7 @@ const {
 const List = require('../models/list.model');
 const {
   checkIfArrayContainsUserId,
+  countItems,
   isMember,
   responseWithItem,
   responseWithList
@@ -743,8 +744,8 @@ const moveToList = (
   listClients
 ) => data => {
   const { movedItem, targetList, sourceItemId, sourceList } = data;
-  const { _id: sourceListId } = sourceList;
-  const { _id: targetListId, viewersIds } = targetList;
+  const { _id: sourceListId, items: sourceListItems } = sourceList;
+  const { _id: targetListId, items: targetListItems, viewersIds } = targetList;
 
   io.sockets
     .to(listChannel(sourceListId))
@@ -768,12 +769,18 @@ const moveToList = (
     }
   });
 
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(
-    sourceList
-  );
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(
-    targetList
-  );
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)({
+    ...countItems(sourceListItems),
+    _id: sourceListId,
+    cohortId: sourceList.cohortId,
+    viewersIds: sourceList.viewersIds
+  });
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)({
+    ...countItems(targetListItems),
+    _id: targetListId,
+    cohortId: sourceList.targetId,
+    viewersIds
+  });
 
   return Promise.resolve();
 };
