@@ -52,20 +52,14 @@ export const cohortEventsController = (event, data, dispatch) => {
     case CohortEvents.REMOVED_BY_SOMEONE: {
       const { cohortId } = data;
 
-      dispatch({
-        type: CohortEvents.DELETE_SUCCESS,
-        payload: { cohortId }
-      });
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
 
       return history.replace(cohortsRoute());
     }
     case CohortEvents.REMOVE_ON_ARCHIVE_COHORT: {
       const { cohortId, listId } = data;
 
-      dispatch({
-        type: CohortEvents.DELETE_SUCCESS,
-        payload: { cohortId }
-      });
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
       dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
 
       return history.replace(cohortsRoute());
@@ -83,10 +77,7 @@ export const cohortEventsController = (event, data, dispatch) => {
     case CohortEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
       const { cohortId } = data;
 
-      dispatch({
-        type: CohortEvents.DELETE_SUCCESS,
-        payload: { cohortId }
-      });
+      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
 
       return history.replace(cohortsRoute());
     }

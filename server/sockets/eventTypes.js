@@ -1,6 +1,6 @@
 const { enumerable } = require('../common/utils');
 
-const ItemEvents = enumerable('item')(
+const ItemActionTypes = enumerable('item')(
   'ADD_SUCCESS',
   'ARCHIVE_SUCCESS',
   'CLEAR_VOTE_SUCCESS',
@@ -11,9 +11,9 @@ const ItemEvents = enumerable('item')(
   'UPDATE_SUCCESS'
 );
 
-const ItemStatusEvents = enumerable('item')('LOCK', 'UNLOCK');
+const ItemStatusType = enumerable('item')('LOCK', 'UNLOCK');
 
-const CohortEvents = enumerable('cohort')(
+const CohortActionTypes = enumerable('cohort')(
   'ADD_MEMBER_SUCCESS',
   'ADD_OWNER_ROLE_SUCCESS',
   'ARCHIVE_SUCCESS',
@@ -29,11 +29,11 @@ const CohortEvents = enumerable('cohort')(
   'UPDATE_SUCCESS'
 );
 
-const CohortHeaderStatusEvents = enumerable('cohort-header')('LOCK', 'UNLOCK');
+const CohortHeaderStatusTypes = enumerable('cohort-header')('LOCK', 'UNLOCK');
 
-const CommentEvents = enumerable('comment')('ADD_SUCCESS');
+const CommentActionTypes = enumerable('comment')('ADD_SUCCESS');
 
-const ListEvents = enumerable('list')(
+const ListActionTypes = enumerable('list')(
   'ADD_MEMBER_ROLE_SUCCESS',
   'ADD_OWNER_ROLE_SUCCESS',
   'ADD_VIEWER_SUCCESS',
@@ -57,17 +57,17 @@ const ListEvents = enumerable('list')(
   'UPDATE_SUCCESS'
 );
 
-const ListHeaderStatusEvents = enumerable('list-header')('LOCK', 'UNLOCK');
+const ListHeaderStatusTypes = enumerable('list-header')('LOCK', 'UNLOCK');
 
 const AppEvents = enumerable()('JOIN_ROOM', 'LEAVE_ROOM');
 
 module.exports = {
   AppEvents,
-  CohortEvents,
-  CohortHeaderStatusEvents,
-  CommentEvents,
-  ItemEvents,
-  ItemStatusEvents,
-  ListEvents,
-  ListHeaderStatusEvents
+  CohortActionTypes,
+  CohortHeaderStatusTypes,
+  CommentActionTypes,
+  ItemActionTypes,
+  ItemStatusType,
+  ListActionTypes,
+  ListHeaderStatusTypes
 };
