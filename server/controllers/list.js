@@ -483,7 +483,8 @@ const updateListById = (req, resp) => {
       _id: sanitizedListId,
       ownerIds: userId
     },
-    dataToUpdate
+    dataToUpdate,
+    { new: true }
   )
     .exec()
     .then(doc => {
@@ -1634,7 +1635,8 @@ const moveItem = (req, resp) => {
     .then(result => {
       const {
         movedItemId,
-        targetList: { _doc: targetList, cohortId, items },
+        targetList,
+        targetList: { cohortId, items },
         sourceList,
         sourceList: { name }
       } = result;
@@ -1657,7 +1659,12 @@ const moveItem = (req, resp) => {
         cohortClients,
         dashboardClients,
         listClients
-      )({ sourceItemId: sanitizedItemId, movedItem, targetList, sourceList });
+      )({
+        sourceItemId: sanitizedItemId,
+        movedItem,
+        targetList,
+        sourceList
+      });
     })
     .then(() => resp.send())
     .catch(() => resp.sendStatus(400));

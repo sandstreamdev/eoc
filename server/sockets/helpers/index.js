@@ -5,7 +5,7 @@ const {
   CohortActionTypes
 } = require('../../common/variables');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
-const { isDefined } = require('../../common/utils/helpers');
+const { countItems, isDefined } = require('../../common/utils/helpers');
 const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
 
 const emitCohortMetaData = (cohortId, clients, io) =>
@@ -195,7 +195,7 @@ const delayedUnlock = socket => data => itemClientLocks => locks => {
   }, LOCK_TIMEOUT);
 };
 
-const updateListOnDashboardAndCohortView = io => (
+const sendListOnDashboardAndCohortView = io => (
   cohortClients,
   dashboardClients
 ) => list => {
@@ -222,12 +222,40 @@ const updateListOnDashboardAndCohortView = io => (
   });
 };
 
+const updateListOnDashboardAndCohortView = io => (
+  cohortClients,
+  dashboardClients
+) => list => {
+  const { _id: listId, cohortId, items, viewersIds } = list;
+
+  viewersIds.forEach(viewerId => {
+    const id = viewerId.toString();
+
+    if (dashboardClients.has(id)) {
+      const { socketId } = dashboardClients.get(id);
+
+      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
+        listId,
+        ...countItems(items)
+      });
+    }
+
+    if (cohortId && cohortClients.has(id)) {
+      const { socketId } = cohortClients.get(id);
+
+      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
+        listId,
+        ...countItems(items)
+      });
+    }
+  });
+};
+
 module.exports = {
   cohortChannel,
   delayedUnlock,
   descriptionLockId,
   emitCohortMetaData,
-  updateListOnDashboardAndCohortView,
   emitRoleChange,
   getListIdsByViewers,
   getListsDataByViewers,
@@ -235,5 +263,7 @@ module.exports = {
   handleLocks,
   listChannel,
   nameLockId,
+  sendListOnDashboardAndCohortView,
+  updateListOnDashboardAndCohortView,
   votingBroadcast
 };

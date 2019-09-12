@@ -18,11 +18,12 @@ const {
 } = require('../common/utils');
 const {
   descriptionLockId,
-  updateListOnDashboardAndCohortView,
   handleItemLocks,
   handleLocks,
   listChannel,
-  nameLockId
+  nameLockId,
+  sendListOnDashboardAndCohortView,
+  updateListOnDashboardAndCohortView
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
 const { votingBroadcast, delayedUnlock } = require('./helpers');
@@ -34,7 +35,7 @@ const addItemToList = (io, cohortClients, dashboardClients) => data => {
     .to(listChannel(listId))
     .emit(ItemActionTypes.ADD_SUCCESS, { item, listId });
 
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
+  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -136,7 +137,7 @@ const updateItem = (
     }
   });
 
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
+  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -175,7 +176,7 @@ const cloneItem = (
     }
   });
 
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
+  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -243,10 +244,9 @@ const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
     .to(listChannel(listId))
     .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...rest });
 
-  updateListOnDashboardAndCohortView(io)(
-    cohortViewClients,
-    dashboardViewClients
-  )(list);
+  sendListOnDashboardAndCohortView(io)(cohortViewClients, dashboardViewClients)(
+    list
+  );
 };
 
 const updateListHeaderState = (socket, listClientLocks) => {
