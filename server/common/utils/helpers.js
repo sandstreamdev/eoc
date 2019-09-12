@@ -103,9 +103,12 @@ const responseWithListsMetaData = (lists, userId) =>
         ...rest,
         createdAt,
         doneItemsCount,
-        isFavourite: checkIfArrayContainsUserId(favIds, userId),
         unhandledItemsCount
       };
+
+      if (userId) {
+        listToSend.isFavourite = checkIfArrayContainsUserId(favIds, userId);
+      }
 
       if (cohort) {
         listToSend.cohortId = cohort._id;
