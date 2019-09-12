@@ -483,7 +483,8 @@ const updateListById = (req, resp) => {
       _id: sanitizedListId,
       ownerIds: userId
     },
-    dataToUpdate
+    dataToUpdate,
+    { new: true }
   )
     .exec()
     .then(doc => {
