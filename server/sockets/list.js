@@ -742,14 +742,16 @@ const moveToList = (
   dashboardClients,
   listClients
 ) => data => {
-  const { newItem, newList, oldItemId, oldList } = data;
-  const { _id: listId } = oldList;
-  const { _id: newListId, viewersIds } = newList;
+  const { movedItem, targetList, sourceItemId, sourceList } = data;
+  const { _id: sourceListId } = sourceList;
+  const { _id: targetListId, viewersIds } = targetList;
 
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.DELETE_SUCCESS, {
-    listId,
-    itemId: oldItemId
-  });
+  io.sockets
+    .to(listChannel(sourceListId))
+    .emit(ItemActionTypes.DELETE_SUCCESS, {
+      sourceListId,
+      itemId: sourceItemId
+    });
 
   viewersIds.forEach(viewerId => {
     const id = viewerId.toString();
@@ -757,20 +759,20 @@ const moveToList = (
     if (listClients.has(id)) {
       const { socketId, viewId } = listClients.get(id);
 
-      if (viewId === newListId.toString()) {
+      if (viewId === targetListId.toString()) {
         io.sockets.to(socketId).emit(ItemActionTypes.ADD_SUCCESS, {
-          listId: newListId,
-          item: responseWithItem(newItem, id)
+          listId: targetListId,
+          item: responseWithItem(movedItem, id)
         });
       }
     }
   });
 
   updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(
-    oldList
+    sourceList
   );
   updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(
-    newList
+    targetList
   );
 
   return Promise.resolve();
