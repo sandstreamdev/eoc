@@ -31,6 +31,7 @@ import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import { loadSettings, saveSettings } from 'common/utils/localStorage';
+import { clearMetaDataSuccess } from 'common/model/actions';
 
 export class Layout extends PureComponent {
   constructor(props) {
@@ -64,6 +65,20 @@ export class Layout extends PureComponent {
     if (settings) {
       const { viewType } = settings;
       this.setState({ viewType });
+    }
+  }
+
+  componentDidUpdate(previousProps) {
+    const {
+      clearMetaDataSuccess,
+      location: { pathname }
+    } = this.props;
+    const {
+      location: { previousPathname }
+    } = previousProps;
+
+    if (previousPathname !== pathname) {
+      clearMetaDataSuccess();
     }
   }
 
@@ -200,6 +215,7 @@ Layout.propTypes = {
     pathname: PropTypes.string.isRequired
   }),
 
+  clearMetaDataSuccess: PropTypes.func.isRequired,
   getLoggedUser: PropTypes.func.isRequired
 };
 
@@ -212,6 +228,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { getLoggedUser }
+    { clearMetaDataSuccess, getLoggedUser }
   )
 )(Layout);

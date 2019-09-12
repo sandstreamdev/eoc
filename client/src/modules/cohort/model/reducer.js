@@ -4,7 +4,6 @@ import _keyBy from 'lodash/keyBy';
 import { CohortActionTypes, CohortHeaderStatusTypes } from './actionTypes';
 import { filterDefined } from 'common/utils/helpers';
 import { CommonActionTypes } from 'common/model/actionTypes';
-import { Routes } from 'common/constants/enums';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -131,13 +130,7 @@ const cohorts = (state = {}, action) => {
       return { ...state, [cohortId]: cohort };
     }
     case CommonActionTypes.LEAVE_VIEW: {
-      const { payload } = action;
-
-      if (payload === Routes.COHORTS) {
-        return {};
-      }
-
-      return state;
+      return {};
     }
 
     case CohortHeaderStatusTypes.LOCK:
