@@ -155,7 +155,6 @@ const updateCohort = (io, allCohortsViewClients) => data => {
           const { memberIds } = doc;
           const cohort = responseWithCohort(doc);
 
-          // TODO:
           memberIds.forEach(id => {
             const memberId = id.toString();
 

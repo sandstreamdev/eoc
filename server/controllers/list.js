@@ -1197,6 +1197,8 @@ const updateListItem = (req, res) => {
 
             return { list, item: updatedItem };
           }
+
+          throw new Error();
         })
     )
     .then(result => {
