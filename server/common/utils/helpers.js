@@ -68,8 +68,6 @@ const responseWithList = (list, userId) => {
     unhandledItemsCount
   };
 
-  // TODO: I finished here. Is user exists he gets isFavourite.
-  // or check if sending some default value of isFavourite fix this problem.
   if (userId) {
     listToSend.isFavourite = checkIfArrayContainsUserId(favIds, userId);
   }
@@ -329,24 +327,27 @@ const responseWithCohortDetails = (doc, userId) => {
     name,
     ownerIds
   } = doc;
-
-  const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
   const members = _keyBy(
     responseWithCohortMembers(membersCollection, ownerIds),
     '_id'
   );
 
-  return {
+  const cohortToReturn = {
     _id,
     createdAt,
     description,
     isArchived,
     isMember: true,
-    isOwner,
     locks,
     members,
     name
   };
+
+  if (userId) {
+    cohortToReturn.isOwner = checkIfArrayContainsUserId(ownerIds, userId);
+  }
+
+  return cohortToReturn;
 };
 
 /**
