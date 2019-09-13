@@ -1,19 +1,38 @@
 import React, { PureComponent } from 'react';
 import validator from 'validator';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import _flowRight from 'lodash/flowRight';
 
 import { resetPassword } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
+import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
+import ErrorMessage from 'common/components/Forms/ErrorMessage';
 
 class ResetPassword extends PureComponent {
   state = {
     email: '',
     pending: false,
-    tipVisible: false
+    tipVisible: false,
+    tokenExpired: false
   };
+
+  componentDidMount() {
+    const {
+      match: {
+        params: { tokenExpired }
+      }
+    } = this.props;
+
+    if (tokenExpired) {
+      this.handleExpiredToken();
+    }
+  }
+
+  handleExpiredToken = () => this.setState({ tokenExpired: true });
 
   handleInputChange = event => {
     const {
@@ -50,8 +69,11 @@ class ResetPassword extends PureComponent {
   hideTip = () => this.setState({ tipVisible: false });
 
   render() {
-    const { email, pending, tipVisible } = this.state;
+    const { email, pending, tipVisible, tokenExpired } = this.state;
     const isEmailEmpty = email.length === 0;
+    const {
+      intl: { formatMessage }
+    } = this.props;
 
     return (
       <form className="reset-password" onSubmit={this.handleSubmit}>
@@ -59,6 +81,13 @@ class ResetPassword extends PureComponent {
           <FormattedMessage id="user.auth.reset-password.heading" />
         </h2>
         <div className="reset-password__body">
+          {tokenExpired && (
+            <ErrorMessage
+              message={formatMessage({
+                id: 'user.actions.reset-token-expired'
+              })}
+            />
+          )}
           <label className="reset-password__email-label">
             <FormattedMessage id="user.auth.reset-password.email-label" />
             <input
@@ -89,10 +118,16 @@ class ResetPassword extends PureComponent {
 }
 
 ResetPassword.propTypes = {
+  intl: IntlPropType.isRequired,
+  match: RouterMatchPropType.isRequired,
   resetPassword: PropTypes.func
 };
 
-export default connect(
-  null,
-  { resetPassword }
+export default _flowRight(
+  injectIntl,
+  withRouter,
+  connect(
+    null,
+    { resetPassword }
+  )
 )(ResetPassword);

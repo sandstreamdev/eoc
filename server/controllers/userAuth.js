@@ -253,7 +253,7 @@ const recoveryPassword = (req, resp) => {
       }
       resp.redirect(`/password-recovery/${resetToken}`);
     })
-    .catch(() => resp.redirect(`/recovery-link-expired/${resetToken}`));
+    .catch(() => resp.redirect('/reset-password/token-expired'));
 };
 
 const updatePassword = (req, resp) => {
@@ -319,47 +319,6 @@ const updatePassword = (req, resp) => {
 
       resp.sendStatus(400);
     });
-};
-
-const resendRecoveryLink = (req, resp, next) => {
-  const { token } = req.params;
-  const sanitizedToken = sanitize(token);
-  const newToken = crypto.randomBytes(32).toString('hex');
-  const newExpirationDate = new Date().getTime() + 3600000;
-
-  User.findOneAndUpdate(
-    {
-      resetToken: sanitizedToken
-    },
-    {
-      resetToken: newToken,
-      resetTokenExpirationDate: newExpirationDate
-    }
-  )
-    .lean()
-    .exec()
-    .then(user => {
-      if (!user) {
-        throw new Error();
-      }
-      const { isActive } = user;
-
-      if (!isActive) {
-        throw new Error();
-      }
-
-      const { displayName, email } = user;
-
-      // eslint-disable-next-line no-param-reassign
-      resp.locales = {
-        displayName,
-        email,
-        resetToken: newToken
-      };
-
-      next();
-    })
-    .catch(() => resp.sendStatus(400));
 };
 
 const getUserDetails = (req, resp) => {
@@ -478,7 +437,6 @@ module.exports = {
   getUserDetails,
   logout,
   recoveryPassword,
-  resendRecoveryLink,
   resendSignUpConfirmationLink,
   resetPassword,
   sendUser,

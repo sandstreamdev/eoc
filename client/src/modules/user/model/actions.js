@@ -121,9 +121,6 @@ export const updatePassword = (token, password, passwordConfirmation) =>
     passwordConfirmation
   }).then(() => history.replace('/password-recovery-success'));
 
-export const resendRecoveryLink = token =>
-  postData(`/auth/resend-recovery-link/${token}`);
-
 export const fetchUserDetails = () => dispatch =>
   getJson('/auth/user-details')
     .then(json => dispatch(fetchUserDetailsSuccess(json)))
@@ -145,8 +142,6 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
     newPassword,
     newPasswordConfirm
   });
-
-export const checkToken = token => getData(`/auth/check-token/${token}`);
 
 export const getAccountDetails = token =>
   getJson(`/auth/account-details/${token}`);

@@ -115,10 +115,9 @@ export class Layout extends PureComponent {
             component={LinkExpired}
             path="/confirmation-link-expired/:token?"
           />
-          <Route component={ResetPassword} path="/reset-password" />
           <Route
-            component={LinkExpired}
-            path="/recovery-link-expired/:token?"
+            component={ResetPassword}
+            path="/reset-password/:tokenExpired?"
           />
           <Route
             component={PasswordRecoveryForm}
