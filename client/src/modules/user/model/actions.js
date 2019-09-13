@@ -96,7 +96,7 @@ export const resetPassword = email => dispatch =>
     .then(() => {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'user.actions.reset',
-        data: email
+        data: { email }
       });
     })
     .catch(err => {
@@ -109,7 +109,7 @@ export const resetPassword = email => dispatch =>
         err.message ? NotificationType.ERROR_NO_RETRY : NotificationType.ERROR,
         {
           notificationId: 'user.actions.recovery-password-default-error',
-          data: email
+          data: { email }
         },
         err
       );

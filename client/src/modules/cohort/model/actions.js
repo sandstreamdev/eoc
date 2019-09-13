@@ -141,13 +141,15 @@ export const createCohort = data => dispatch =>
     .then(response => response.json())
     .then(json => dispatch(createCohortSuccess(json)))
     .catch(err => {
+      const { name } = data;
+
       dispatch(createCohortFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
         {
           notificationId: 'cohort.actions.create-fail',
-          data: data.name
+          data: { name }
         },
         err
       );
@@ -189,13 +191,13 @@ export const fetchArchivedCohortsMetaData = () => dispatch =>
       );
     });
 
-export const updateCohort = (cohortName, cohortId, data) => dispatch =>
+export const updateCohort = (name, cohortId, data) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, data)
     .then(() => {
       dispatch(updateCohortSuccess({ ...data, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.update-cohort',
-        data: cohortName
+        data: { name }
       });
     })
     .catch(err => {
@@ -205,19 +207,19 @@ export const updateCohort = (cohortName, cohortId, data) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'cohort.actions.update-cohort-fail',
-          data: cohortName
+          data: { name }
         },
         err
       );
     });
 
-export const deleteCohort = (cohortId, cohortName) => dispatch =>
+export const deleteCohort = (cohortId, name) => dispatch =>
   deleteData(`/api/cohorts/${cohortId}`)
     .then(() => {
       dispatch(deleteCohortSuccess({ cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.delete-cohort',
-        data: cohortName
+        data: { name }
       });
       history.replace(cohortsRoute());
     })
@@ -229,7 +231,7 @@ export const deleteCohort = (cohortId, cohortName) => dispatch =>
           NotificationType.ERROR,
           {
             notificationId: 'cohort.actions.delete-cohort-fail',
-            data: cohortName
+            data: { name }
           },
           err
         );
@@ -237,7 +239,7 @@ export const deleteCohort = (cohortId, cohortName) => dispatch =>
       throw err;
     });
 
-export const archiveCohort = (cohortId, cohortName) => dispatch =>
+export const archiveCohort = (cohortId, name) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: true
   })
@@ -245,7 +247,7 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
       dispatch(archiveCohortSuccess({ cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.archive-cohort',
-        data: cohortName
+        data: { name }
       });
       history.replace(cohortsRoute());
     })
@@ -256,13 +258,13 @@ export const archiveCohort = (cohortId, cohortName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'cohort.actions.archive-cohort-fail',
-          data: cohortName
+          data: { name }
         },
         err
       );
     });
 
-export const restoreCohort = (cohortId, cohortName) => dispatch =>
+export const restoreCohort = (cohortId, name) => dispatch =>
   patchData(`/api/cohorts/${cohortId}/update`, {
     isArchived: false
   })
@@ -271,7 +273,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
       dispatch(restoreCohortSuccess(json));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
-        data: cohortName
+        data: { name }
       });
     })
     .catch(err => {
@@ -281,7 +283,7 @@ export const restoreCohort = (cohortId, cohortName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'cohort.actions.restore-cohort-fail',
-          data: cohortName
+          data: { name }
         },
         err
       );
@@ -329,7 +331,7 @@ export const addCohortMember = (cohortId, email) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: err.message || 'cohort.actions.add-member-default',
-          data: email
+          data: { email }
         },
         err
       );
@@ -343,7 +345,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
       dispatch(removeMemberSuccess({ cohortId, userId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.remove-member',
-        data: userName
+        data: { userName }
       });
     })
     .catch(err => {
@@ -353,7 +355,7 @@ export const removeCohortMember = (cohortId, userName, userId) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'cohort.actions.remove-member-fail',
-          data: userName
+          data: { userName }
         },
         err
       );
@@ -367,7 +369,7 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
       dispatch(addOwnerRoleSuccess({ userId, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.owner-role',
-        data: userName
+        data: { userName }
       });
     })
     .catch(err => {
@@ -377,7 +379,7 @@ export const addOwnerRole = (cohortId, userId, userName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'cohort.actions.set-owner-fail',
-          data: userName
+          data: { userName }
         },
         err
       );
@@ -402,7 +404,7 @@ export const removeOwnerRole = (
       );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.no-owner-role',
-        data: userName
+        data: { userName }
       });
     })
     .catch(err => {
@@ -412,7 +414,7 @@ export const removeOwnerRole = (
         NotificationType.ERROR,
         {
           notificationId: err.message || 'cohort.actions.remove-owner-fail',
-          data: userName
+          data: { userName }
         },
         err
       );
@@ -424,7 +426,7 @@ export const leaveCohort = (cohortId, userId, userName) => dispatch =>
       dispatch(leaveCohortSuccess({ userId, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.leave-cohort',
-        data: userName
+        data: { userName }
       });
       history.replace(cohortsRoute());
     })
@@ -435,7 +437,7 @@ export const leaveCohort = (cohortId, userId, userName) => dispatch =>
         NotificationType.ERROR_NO_RETRY,
         {
           notificationId: err.message || 'cohort.actions.leave-cohort-fail',
-          data: userName
+          data: { userName }
         },
         err
       );

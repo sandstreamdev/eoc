@@ -133,19 +133,20 @@ export const addItem = (item, listId) => dispatch =>
     .then(response => response.json())
     .then(json => dispatch(addItemSuccess({ item: json, listId })))
     .catch(err => {
+      const { name } = item;
       dispatch(addItemFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.add-item-fail',
-          data: item.name
+          data: { name }
         },
         err
       );
     });
 
-export const setVote = (itemId, listId, itemName) => dispatch =>
+export const setVote = (itemId, listId, name) => dispatch =>
   patchData(`/api/lists/${listId}/set-vote`, { itemId })
     .then(() => dispatch(setVoteSuccess({ itemId, listId, isVoted: true })))
     .catch(err => {
@@ -155,13 +156,13 @@ export const setVote = (itemId, listId, itemName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.set-vote-fail',
-          data: itemName
+          data: { name }
         },
         err
       );
     });
 
-export const clearVote = (itemId, listId, itemName) => dispatch =>
+export const clearVote = (itemId, listId, name) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
     .then(() => dispatch(clearVoteSuccess({ itemId, listId, isVoted: false })))
     .catch(err => {
@@ -171,14 +172,14 @@ export const clearVote = (itemId, listId, itemName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.clear-vote-fail',
-          data: itemName
+          data: { name }
         },
         err
       );
     });
 
 export const updateListItem = (
-  itemName,
+  name,
   listId,
   itemId,
   userData,
@@ -204,7 +205,7 @@ export const updateListItem = (
 
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.update-item',
-        data: itemName
+        data: { name }
       });
     })
     .catch(err => {
@@ -214,14 +215,14 @@ export const updateListItem = (
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.update-item-fail',
-          data: itemName
+          data: { name }
         },
         err
       );
     });
 };
 
-export const cloneItem = (itemName, listId, itemId) => dispatch =>
+export const cloneItem = (name, listId, itemId) => dispatch =>
   patchData(`/api/lists/${listId}/clone-item`, {
     itemId
   })
@@ -231,7 +232,7 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
 
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.clone-item',
-        data: itemName
+        data: { name }
       });
     })
     .catch(err => {
@@ -241,7 +242,7 @@ export const cloneItem = (itemName, listId, itemId) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.clone-item-fail',
-          data: itemName
+          data: { name }
         },
         err
       );
@@ -264,13 +265,13 @@ export const addComment = (listId, itemId, text) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.add-comment-fail',
-          data: text
+          data: { text }
         },
         err
       );
     });
 
-export const fetchComments = (itemName, listId, itemId) => dispatch =>
+export const fetchComments = (name, listId, itemId) => dispatch =>
   getJson(`/api/comments/${listId}/${itemId}/data`)
     .then(json => {
       const comments = _keyBy(json, '_id');
@@ -283,7 +284,7 @@ export const fetchComments = (itemName, listId, itemId) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.fetch-comments-fails',
-          data: itemName
+          data: { name }
         },
         err
       );
@@ -298,7 +299,7 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
       dispatch(archiveItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.archive-item',
-        data: name
+        data: { name }
       });
     })
     .catch(err => {
@@ -308,13 +309,13 @@ export const archiveItem = (listId, itemId, name) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.archive-item-fail',
-          data: name
+          data: { name }
         },
         err
       );
     });
 
-export const fetchArchivedItems = (listId, listName) => dispatch =>
+export const fetchArchivedItems = (listId, name) => dispatch =>
   getJson(`/api/lists/${listId}/archived-items`)
     .then(json => {
       const data = _keyBy(json, '_id');
@@ -328,7 +329,7 @@ export const fetchArchivedItems = (listId, listName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.fetch-archived',
-          data: listName
+          data: { name }
         },
         err
       );
@@ -343,7 +344,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
       dispatch(restoreItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.restore-item',
-        data: name
+        data: { name }
       });
     })
     .catch(err => {
@@ -353,7 +354,7 @@ export const restoreItem = (listId, itemId, name) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.action.restore-item-fail',
-          data: name
+          data: { name }
         },
         err
       );
@@ -365,7 +366,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
       dispatch(deleteItemSuccess({ listId, itemId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.delete-item',
-        data: name
+        data: { name }
       });
     })
     .catch(err => {
@@ -375,7 +376,7 @@ export const deleteItem = (listId, itemId, name) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.items.actions.delete-item-fail',
-          data: name
+          data: { name }
         },
         err
       );
