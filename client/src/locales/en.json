@@ -122,7 +122,7 @@
   "user.actions.sign-in.invalid-credentials": "Wrong email or password. Try again or click {link} to reset password.",
   "user.actions.password-recovery-success": "Password successfully updated. Please go to the {link} and sign in to app.",
   "user.actions.recovery-password-default-error": "Account does not exist or is not activated.",
-  "user.actions.reset": "An email with instructions to reset password has been sent to {data} if it is associated with an EOC account. Your existing password has not been changed.",
+  "user.actions.reset": "An email with instructions to reset password has been sent to {email} if it is associated with an EOC account. Your existing password has not been changed.",
   "user.actions.token-revoked": "This reset link has expired. To reset your password please go to the {link}.",
   "user.actions.change-password-success": "Password successfully changed.",
   "cohort.cohort-header.add-description": "Add description",
