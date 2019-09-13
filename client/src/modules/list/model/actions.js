@@ -208,21 +208,23 @@ export const createList = data => dispatch =>
     .then(response => response.json())
     .then(json => {
       const action = createListSuccess(json);
+      const { name } = data;
 
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.create-list',
-        data: data.name
+        data: { name }
       });
     })
     .catch(err => {
+      const { name } = data;
       dispatch(createListFailure());
       createNotificationWithTimeout(
         dispatch,
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.create-list-fail',
-          data: data.name
+          data: { name }
         },
         err
       );
@@ -236,6 +238,7 @@ export const fetchListsMetaData = (cohortId = null) => dispatch => {
   return getJson(url)
     .then(json => {
       const dataMap = _keyBy(json, '_id');
+
       dispatch(fetchListsMetaDataSuccess(dataMap));
     })
     .catch(err => {
@@ -274,7 +277,7 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
     });
 };
 
-export const deleteList = (listId, listName, cohortId) => dispatch =>
+export const deleteList = (listId, name, cohortId) => dispatch =>
   patchData(`/api/lists/${listId}/update`, { isDeleted: true, listId })
     .then(() => {
       const action = deleteListSuccess({ listId, cohortId });
@@ -282,7 +285,7 @@ export const deleteList = (listId, listName, cohortId) => dispatch =>
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.delete-list',
-        data: listName
+        data: { name }
       });
       history.replace(dashboardRoute());
     })
@@ -293,14 +296,14 @@ export const deleteList = (listId, listName, cohortId) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.delete-list-fail',
-          data: listName
+          data: { name }
         },
         err
       );
       throw new Error();
     });
 
-export const updateList = (listId, data, listName) => dispatch =>
+export const updateList = (listId, data, name) => dispatch =>
   patchData(`/api/lists/${listId}/update`, data)
     .then(() => {
       const action = updateListSuccess({ ...data, listId });
@@ -308,7 +311,7 @@ export const updateList = (listId, data, listName) => dispatch =>
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.update-list',
-        data: listName
+        data: { name }
       });
     })
     .catch(err => {
@@ -318,13 +321,13 @@ export const updateList = (listId, data, listName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.update-list-fail',
-          data: listName
+          data: { name }
         },
         err
       );
     });
 
-export const archiveList = (listId, listName, cohortId) => dispatch =>
+export const archiveList = (listId, name, cohortId) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
@@ -334,7 +337,7 @@ export const archiveList = (listId, listName, cohortId) => dispatch =>
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.arch-list',
-        data: listName
+        data: { name }
       });
       const url = cohortId ? cohortRoute(cohortId) : dashboardRoute();
       history.replace(url);
@@ -346,13 +349,13 @@ export const archiveList = (listId, listName, cohortId) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.arch-list-fail',
-          data: listName
+          data: { name }
         },
         err
       );
     });
 
-export const restoreList = (listId, listName) => dispatch =>
+export const restoreList = (listId, name) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: false
   })
@@ -368,7 +371,7 @@ export const restoreList = (listId, listName) => dispatch =>
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.restore-list',
-        data: listName
+        data: { name }
       });
     })
     .catch(err => {
@@ -378,19 +381,19 @@ export const restoreList = (listId, listName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.restore-list-fail',
-          data: listName
+          data: { name }
         },
         err
       );
     });
 
-export const addListToFavourites = (listId, listName) => dispatch =>
+export const addListToFavourites = (listId, name) => dispatch =>
   patchData(`/api/lists/${listId}/add-to-fav`)
     .then(() => {
       dispatch(favouritesSuccess({ listId, isFavourite: true }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.add-to-fav',
-        data: listName
+        data: { name }
       });
     })
     .catch(err => {
@@ -400,19 +403,19 @@ export const addListToFavourites = (listId, listName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.add-to-fav-fail',
-          data: listName
+          data: { name }
         },
         err
       );
     });
 
-export const removeListFromFavourites = (listId, listName) => dispatch =>
+export const removeListFromFavourites = (listId, name) => dispatch =>
   patchData(`/api/lists/${listId}/remove-from-fav`)
     .then(() => {
       dispatch(favouritesSuccess({ listId, isFavourite: false }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.remove-from-fav',
-        data: listName
+        data: { name }
       });
     })
     .catch(err => {
@@ -422,7 +425,7 @@ export const removeListFromFavourites = (listId, listName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.remove-from-fav-fail',
-          data: listName
+          data: { name }
         },
         err
       );
@@ -440,7 +443,7 @@ export const addListViewer = (listId, email) => dispatch =>
         dispatch(action);
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',
-          data: json.displayName
+          data: { userName: json.displayName }
         });
 
         return UserAddingStatus.ADDED;
@@ -455,7 +458,7 @@ export const addListViewer = (listId, email) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: err.message || 'list.actions.add-viewer-default-fail',
-          data: email
+          data: { email }
         },
         err
       );
@@ -476,7 +479,7 @@ export const removeListMember = (
       dispatch(removeMemberSuccess({ listId, userId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.remove-member',
-        data: userName
+        data: { userName }
       });
     })
     .catch(err => {
@@ -486,7 +489,7 @@ export const removeListMember = (
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.remove-member-fail',
-          data: userName
+          data: { userName }
         },
         err
       );
@@ -507,7 +510,7 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.owner-role',
-        data: userName
+        data: { userName }
       });
     })
     .catch(err => {
@@ -517,7 +520,7 @@ export const addOwnerRole = (listId, userId, userName) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.add-owner-role-fail',
-          data: userName
+          data: { userName }
         },
         err
       );
@@ -542,7 +545,7 @@ export const removeOwnerRole = (
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.no-owner-role',
-        data: userName
+        data: { userName }
       });
     })
     .catch(err => {
@@ -552,7 +555,7 @@ export const removeOwnerRole = (
         NotificationType.ERROR,
         {
           notificationId: err.message || 'list.actions.remove-owner-role-fail',
-          data: userName
+          data: { userName }
         },
         err
       );
@@ -577,7 +580,7 @@ export const addMemberRole = (
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.add-member-role',
-        data: userName
+        data: { userName }
       });
     })
     .catch(err => {
@@ -587,7 +590,7 @@ export const addMemberRole = (
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.add-member-role-fail',
-          data: userName
+          data: { userName }
         },
         err
       );
@@ -612,7 +615,7 @@ export const removeMemberRole = (
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.remove-member-role',
-        data: userName
+        data: { userName }
       });
     })
     .catch(err => {
@@ -622,13 +625,13 @@ export const removeMemberRole = (
         NotificationType.ERROR,
         {
           notificationId: err.message || 'list.actions.remove-member-role-fail',
-          data: userName
+          data: { userName }
         },
         err
       );
     });
 
-export const changeType = (listId, listName, type) => dispatch =>
+export const changeType = (listId, name, type) => dispatch =>
   patchData(`/api/lists/${listId}/change-type`, {
     type
   })
@@ -643,7 +646,7 @@ export const changeType = (listId, listName, type) => dispatch =>
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.change-type',
-        data: listName
+        data: { name }
       });
     })
     .catch(err => {
@@ -653,7 +656,7 @@ export const changeType = (listId, listName, type) => dispatch =>
         NotificationType.ERROR,
         {
           notificationId: 'list.actions.change-type-fail',
-          data: listName
+          data: { name }
         },
         err
       );
@@ -674,7 +677,7 @@ export const leaveList = (
       dispatch(action);
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.leave',
-        data: userName
+        data: { userName }
       });
       const goToCohort = cohortId && type === ListType.LIMITED;
       const url = goToCohort ? cohortRoute(cohortId) : dashboardRoute();
@@ -688,7 +691,7 @@ export const leaveList = (
         NotificationType.ERROR,
         {
           notificationId: err.message || 'list.actions.leave-fail',
-          data: userName
+          data: { userName }
         },
         err
       );

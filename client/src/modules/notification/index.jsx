@@ -15,10 +15,13 @@ const Notifications = ({ notifications }) => (
           <ul className="notification__list">
             {_map(notifications, (item, id) => {
               const {
+                notification,
                 notification: { notificationId, data },
                 redirect,
                 type
               } = item;
+
+              console.log(notification);
 
               return (
                 <li className="notification__list-item" key={id}>
