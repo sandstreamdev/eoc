@@ -109,7 +109,7 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.RESTORE_SUCCESS: {
       const {
-        payload: { itemId }
+        payload: { editedBy, itemId }
       } = action;
       const previousItem = state[itemId];
 
@@ -117,6 +117,7 @@ const items = (state = {}, action) => {
         ...state,
         [itemId]: {
           ...previousItem,
+          editedBy,
           isArchived: false
         }
       };
