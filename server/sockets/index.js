@@ -79,19 +79,22 @@ const socketListeners = socketInstance => {
         const { roomId, userId, viewId } = data;
 
         switch (room) {
-          case Routes.LIST:
+          case Routes.LIST: {
             socket.join(roomId);
-            listViewClients.set(userId, { socketId: socket.id, viewId });
-            break;
-          case Routes.COHORT:
-            socket.join(roomId);
-            cohortViewClients.set(userId, { socketId: socket.id, viewId });
-            break;
-          default:
-            break;
-        }
 
-        return;
+            return listViewClients.set(userId, { socketId: socket.id, viewId });
+          }
+          case Routes.COHORT: {
+            socket.join(roomId);
+
+            return cohortViewClients.set(userId, {
+              socketId: socket.id,
+              viewId
+            });
+          }
+          default:
+            return;
+        }
       }
       socket.join(emittedData);
     });
@@ -102,19 +105,19 @@ const socketListeners = socketInstance => {
         const { roomId, userId } = data;
 
         switch (room) {
-          case Routes.LIST:
+          case Routes.LIST: {
             socket.leave(roomId);
-            listViewClients.delete(userId);
-            break;
-          case Routes.COHORT:
-            socket.leave(roomId);
-            cohortViewClients.delete(userId);
-            break;
-          default:
-            break;
-        }
 
-        return;
+            return listViewClients.delete(userId);
+          }
+          case Routes.COHORT: {
+            socket.leave(roomId);
+
+            return cohortViewClients.delete(userId);
+          }
+          default:
+            return;
+        }
       }
 
       socket.leave(emittedData);
