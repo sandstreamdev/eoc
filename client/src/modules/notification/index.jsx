@@ -21,8 +21,6 @@ const Notifications = ({ notifications }) => (
                 type
               } = item;
 
-              console.log(notification);
-
               return (
                 <li className="notification__list-item" key={id}>
                   {redirect ? (
