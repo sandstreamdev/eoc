@@ -10,6 +10,7 @@ const { updateItemState, updateListHeaderState } = require('./list');
 const { updateCohortHeaderStatus } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
 const { Routes } = require('../common/variables');
+const { associateSocketWithSession } = require('./helpers');
 
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
@@ -64,6 +65,8 @@ const socketListeners = socketInstance => {
     if (!userExist) {
       return;
     }
+
+    associateSocketWithSession(socket);
 
     socket.on('joinRoom', ({ data, room }) => {
       const { roomId, userId, viewId } = data;

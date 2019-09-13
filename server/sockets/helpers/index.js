@@ -1,5 +1,6 @@
 const Cohort = require('../../models/cohort.model');
 const List = require('../../models/list.model');
+const Session = require('../../models/session.model');
 const {
   ListActionTypes,
   CohortActionTypes
@@ -222,7 +223,21 @@ const updateListOnDashboardAndCohortView = io => (
   });
 };
 
+const associateSocketWithSession = socket => {
+  const {
+    request: { sessionID },
+    id: socketId
+  } = socket;
+
+  Session.findOneAndUpdate({ _id: sessionID.toString() }, { socketId })
+    .exec()
+    .catch(() => {
+      // Ignore error
+    });
+};
+
 module.exports = {
+  associateSocketWithSession,
   cohortChannel,
   delayedUnlock,
   descriptionLockId,
