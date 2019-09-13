@@ -7,7 +7,7 @@ export const inviteUser = email => dispatch =>
     .then(() =>
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.members.actions.invitation',
-        data: email
+        data: { email }
       })
     )
     .catch(err =>

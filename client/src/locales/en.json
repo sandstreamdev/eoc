@@ -56,7 +56,7 @@
   "common.tile-view-item.remove-fav": "Remove from favourites",
   "common.breadcrumbs.cohorts": "cohorts",
   "common.breadcrumbs.dashboard": "dashboard",
-  "common.members.actions.invitation": "Invitation email to: {data} successfully sent.",
+  "common.members.actions.invitation": "Invitation email to: {email} successfully sent.",
   "common.members.actions.invitation-fail": "Something went wrong while sending invitation email.",
   "common.app-name": "End of coffee",
   "common.try-again": "Please try again.",
