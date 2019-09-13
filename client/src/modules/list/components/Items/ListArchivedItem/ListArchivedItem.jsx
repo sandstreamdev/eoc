@@ -6,12 +6,17 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
 import PendingButton from 'common/components/PendingButton';
-import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  RouterMatchPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import {
   deleteItem,
   restoreItem
 } from 'modules/list/components/Items/model/actions';
 import Confirmation from 'common/components/Confirmation';
+import { getCurrentUser } from 'modules/user/model/selectors';
 
 class ListArchivedItem extends PureComponent {
   constructor(props) {
@@ -24,14 +29,15 @@ class ListArchivedItem extends PureComponent {
 
   handleRestoringItem = () => {
     const {
-      restoreItem,
+      currentUser: { name: userName },
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
-      }
+      },
+      restoreItem
     } = this.props;
 
-    return restoreItem(listId, itemId, name);
+    return restoreItem(listId, itemId, name, userName);
   };
 
   showConfirmation = () => this.setState({ isConfirmationVisible: true });
@@ -123,6 +129,7 @@ class ListArchivedItem extends PureComponent {
 }
 
 ListArchivedItem.propTypes = {
+  currentUser: UserPropType.isRequired,
   data: PropTypes.objectOf(
     PropTypes.oneOfType([
       PropTypes.string,
@@ -139,11 +146,15 @@ ListArchivedItem.propTypes = {
   restoreItem: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default _flowRight(
   injectIntl,
   withRouter,
   connect(
-    null,
+    mapStateToProps,
     { deleteItem, restoreItem }
   )
 )(ListArchivedItem);

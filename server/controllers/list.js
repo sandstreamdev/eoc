@@ -1120,7 +1120,7 @@ const addViewer = (req, resp) => {
 const updateListItem = (req, res) => {
   const { description, isArchived, isOrdered, itemId, name } = req.body;
   const {
-    user: { _id: userId }
+    user: { _id: userId, displayName }
   } = req;
   const { id: listId } = req.params;
   const sanitizedItemId = sanitize(itemId);
@@ -1176,7 +1176,11 @@ const updateListItem = (req, res) => {
           : ActivityType.ITEM_RESTORE;
       }
 
-      return doc.save();
+      const editedBy = { _id: userId, displayName };
+
+      return doc
+        .save()
+        .then(list => ({ list, item: { ...itemToUpdate._doc, editedBy } }));
     })
     .then(() =>
       List.findOne({

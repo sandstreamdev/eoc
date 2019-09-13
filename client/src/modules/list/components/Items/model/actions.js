@@ -335,13 +335,13 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
       );
     });
 
-export const restoreItem = (listId, itemId, name) => dispatch =>
+export const restoreItem = (listId, itemId, name, editedBy) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: false,
     itemId
   })
     .then(() => {
-      dispatch(restoreItemSuccess({ listId, itemId }));
+      dispatch(restoreItemSuccess({ listId, itemId, editedBy }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.restore-item',
         data: { name }
