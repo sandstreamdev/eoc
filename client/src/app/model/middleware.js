@@ -1,23 +1,23 @@
 export const preventDispatchForPerformer = store => next => action => {
-  if (typeof action !== 'function') {
-    const { payload } = action;
-    if (typeof payload === 'object') {
-      const {
-        payload: { performerId, ...rest },
-        type
-      } = action;
-      const { currentUser: user } = store.getState();
-
-      if (user && performerId && performerId === user.id) {
-        return;
-      }
-
-      return next({
-        type,
-        payload: { ...rest }
-      });
-    }
+  if (typeof action === 'function') {
+    return next(action);
   }
+  const { payload } = action;
 
-  return next(action);
+  if (typeof payload === 'object') {
+    const {
+      payload: { performerId, ...rest },
+      type
+    } = action;
+    const { currentUser } = store.getState();
+
+    if (currentUser && performerId && performerId === currentUser.id) {
+      return;
+    }
+
+    return next({
+      type,
+      payload: { ...rest }
+    });
+  }
 };

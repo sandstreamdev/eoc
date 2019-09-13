@@ -85,9 +85,9 @@ const cohortChannel = cohortId => `cohort-${cohortId}`;
 
 const listChannel = listId => `sack-${listId}`;
 
-const listMetaDataChannel = listId => `${listChannel(listId)}-metadata`;
+const listMetaDataChannel = listId => `sack-meta-data-${listId}`;
 
-const cohortMetaDataChannel = cohortId => `${cohortChannel(cohortId)}-metadata`;
+const cohortMetaDataChannel = cohortId => `cohort-meta-data-${cohortId}`;
 
 const handleLocks = (model, query) => ({ description, name }) =>
   model
