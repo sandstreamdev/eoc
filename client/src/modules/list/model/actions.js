@@ -303,9 +303,7 @@ export const deleteList = (listId, listName, cohortId) => dispatch =>
 export const updateList = (listId, data, listName) => dispatch =>
   patchData(`/api/lists/${listId}/update`, data)
     .then(() => {
-      const action = updateListSuccess({ ...data, listId });
-
-      dispatch(action);
+      dispatch(updateListSuccess({ ...data, listId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.update-list',
         data: listName

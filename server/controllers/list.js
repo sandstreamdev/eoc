@@ -1133,8 +1133,6 @@ const updateListItem = (req, res) => {
     'items._id': sanitizedItemId,
     memberIds: userId
   })
-    .populate('items.authorId', 'displayName')
-    .populate('items.editedBy', 'displayName')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -1178,8 +1176,31 @@ const updateListItem = (req, res) => {
           : ActivityType.ITEM_RESTORE;
       }
 
-      return doc.save().then(list => ({ list, item: itemToUpdate._doc }));
+      return doc.save();
     })
+    .then(() =>
+      List.findOne({
+        _id: sanitizedListId,
+        'items._id': sanitizedItemId,
+        memberIds: userId
+      })
+        .populate('items.authorId', 'displayName')
+        .populate('items.editedBy', 'displayName')
+        .lean()
+        .exec()
+        .then(list => {
+          if (list) {
+            const { items } = list;
+            const updatedItem = items.find(
+              item => item._id.toString() === sanitizedItemId
+            );
+
+            return { list, item: updatedItem };
+          }
+
+          throw new Error();
+        })
+    )
     .then(result => {
       if (!result) {
         return res.sendStatus(404);

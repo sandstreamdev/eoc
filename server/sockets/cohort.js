@@ -469,7 +469,7 @@ const restoreCohort = (
                 .to(socketId)
                 .emit(
                   CohortActionTypes.FETCH_DETAILS_SUCCESS,
-                  responseWithCohortDetails(doc, ownerId)
+                  responseWithCohortDetails(doc)
                 );
             }
           }

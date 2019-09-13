@@ -67,11 +67,14 @@ const responseWithList = (list, userId) => {
     createdAt,
     description,
     ...countItems(items),
-    isFavourite: checkIfArrayContainsUserId(favIds, userId),
     locks,
     name,
     type
   };
+
+  if (userId) {
+    listToSend.isFavourite = checkIfArrayContainsUserId(favIds, userId);
+  }
 
   if (cohortId) {
     listToSend.cohortId =
@@ -99,9 +102,12 @@ const responseWithListsMetaData = (lists, userId) =>
       const listToSend = {
         ...rest,
         ...countItems(items),
-        createdAt,
-        isFavourite: checkIfArrayContainsUserId(favIds, userId)
+        createdAt
       };
+
+      if (userId) {
+        listToSend.isFavourite = checkIfArrayContainsUserId(favIds, userId);
+      }
 
       if (cohort) {
         listToSend.cohortId = cohort._id;
@@ -149,15 +155,13 @@ const responseWithItem = (item, userId) => {
     ...rest,
     authorId,
     authorName,
+    editedBy: editor ? editor.displayName : '',
     isArchived,
-    isVoted: checkIfArrayContainsUserId(voterIds, userId),
     votesCount: voterIds.length
   };
 
-  if (editor) {
-    const { displayName } = editor;
-
-    newItem.editedBy = displayName;
+  if (userId) {
+    newItem.isVoted = checkIfArrayContainsUserId(voterIds, userId);
   }
 
   return newItem;
@@ -325,24 +329,27 @@ const responseWithCohortDetails = (doc, userId) => {
     name,
     ownerIds
   } = doc;
-
-  const isOwner = checkIfArrayContainsUserId(ownerIds, userId);
   const members = _keyBy(
     responseWithCohortMembers(membersCollection, ownerIds),
     '_id'
   );
 
-  return {
+  const cohortToReturn = {
     _id,
     createdAt,
     description,
     isArchived,
     isMember: true,
-    isOwner,
     locks,
     members,
     name
   };
+
+  if (userId) {
+    cohortToReturn.isOwner = checkIfArrayContainsUserId(ownerIds, userId);
+  }
+
+  return cohortToReturn;
 };
 
 /**

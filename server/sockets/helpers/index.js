@@ -208,16 +208,18 @@ const sendListOnDashboardAndCohortView = io => (
     if (dashboardClients.has(id)) {
       const { socketId } = dashboardClients.get(id);
 
-      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-        [listId]: responseWithList(list, id)
+      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
+        listId,
+        ...responseWithList(list)
       });
     }
 
     if (cohortId && cohortClients.has(id)) {
       const { socketId } = cohortClients.get(id);
 
-      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-        [listId]: responseWithList(list, id)
+      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
+        listId,
+        ...responseWithList(list)
       });
     }
   });
