@@ -196,7 +196,7 @@ const delayedUnlock = socket => data => itemClientLocks => locks => {
   }, LOCK_TIMEOUT);
 };
 
-const updateListOnDashboardAndCohortView = io => (
+const sendListOnDashboardAndCohortView = io => (
   cohortClients,
   dashboardClients
 ) => list => {
@@ -223,6 +223,35 @@ const updateListOnDashboardAndCohortView = io => (
   });
 };
 
+const updateListOnDashboardAndCohortView = io => (
+  cohortClients,
+  dashboardClients
+) => list => {
+  const { _id: listId, cohortId, viewersIds, ...rest } = list;
+
+  viewersIds.forEach(viewerId => {
+    const id = viewerId.toString();
+
+    if (dashboardClients.has(id)) {
+      const { socketId } = dashboardClients.get(id);
+
+      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
+        listId,
+        ...rest
+      });
+    }
+
+    if (cohortId && cohortClients.has(id)) {
+      const { socketId } = cohortClients.get(id);
+
+      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
+        listId,
+        ...rest
+      });
+    }
+  });
+};
+
 const associateSocketWithSession = socket => {
   const {
     request: { sessionID },
@@ -242,7 +271,6 @@ module.exports = {
   delayedUnlock,
   descriptionLockId,
   emitCohortMetaData,
-  updateListOnDashboardAndCohortView,
   emitRoleChange,
   getListIdsByViewers,
   getListsDataByViewers,
@@ -250,5 +278,7 @@ module.exports = {
   handleLocks,
   listChannel,
   nameLockId,
+  sendListOnDashboardAndCohortView,
+  updateListOnDashboardAndCohortView,
   votingBroadcast
 };

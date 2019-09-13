@@ -483,7 +483,8 @@ const updateListById = (req, resp) => {
       _id: sanitizedListId,
       ownerIds: userId
     },
-    dataToUpdate
+    dataToUpdate,
+    { new: true }
   )
     .exec()
     .then(doc => {
@@ -1543,23 +1544,23 @@ const moveItem = (req, resp) => {
   const { id: listId } = req.params;
   const { _id: userId } = req.user;
   const sanitizedItemId = sanitize(itemId);
-  const sanitizedListId = sanitize(listId);
-  const sanitizedNewListId = sanitize(newListId);
+  const sanitizedSourceListId = sanitize(listId);
+  const sanitizedTargetListId = sanitize(newListId);
 
   List.findOne({
-    _id: sanitizedListId,
+    _id: sanitizedSourceListId,
     memberIds: userId,
     'items._id': sanitizedItemId
   })
     .exec()
-    .then(oldList => {
-      if (!oldList) {
+    .then(sourceList => {
+      if (!sourceList) {
         throw new BadRequestException();
       }
 
-      const { items } = oldList;
+      const { items } = sourceList;
       const { _id, ...itemToMove } = items.id(sanitizedItemId)._doc;
-      const newItem = new Item({
+      const movedItem = new Item({
         ...itemToMove,
         locks: { description: false, name: false }
       });
@@ -1567,10 +1568,10 @@ const moveItem = (req, resp) => {
       return Comment.find({ itemId: sanitizedItemId })
         .lean()
         .exec()
-        .then(comments => ({ comments, newItem, oldList }));
+        .then(comments => ({ comments, movedItem, sourceList }));
     })
     .then(result => {
-      const { comments, newItem, oldList } = result;
+      const { comments, movedItem, sourceList } = result;
       const promises = [];
 
       if (comments.length > 0) {
@@ -1578,7 +1579,7 @@ const moveItem = (req, resp) => {
           const { _id, ...commentData } = comment;
           const newComment = new Comment({
             ...commentData,
-            itemId: newItem._id
+            itemId: movedItem._id
           });
 
           promises.push(newComment.save());
@@ -1586,49 +1587,67 @@ const moveItem = (req, resp) => {
       }
 
       return promises.length > 0
-        ? Promise.all(promises).then(() => ({ newItem, oldList }))
-        : { newItem, oldList };
+        ? Promise.all(promises).then(() => ({ movedItem, sourceList }))
+        : { movedItem, sourceList };
     })
     .then(result => {
-      const { newItem } = result;
+      const {
+        movedItem,
+        movedItem: { _id: movedItemId },
+        sourceList
+      } = result;
 
       return List.findOneAndUpdate(
         {
-          _id: sanitizedNewListId,
+          _id: sanitizedTargetListId,
           memberIds: userId
         },
-        { $push: { items: newItem } },
+        { $push: { items: movedItem } },
         { new: true }
       )
         .exec()
-        .then(newList => ({ newList, ...result }));
+        .then(() => ({ movedItemId, sourceList }));
     })
     .then(result => {
-      const { newItem, newList, oldList: prevList } = result;
-      const { items } = prevList;
+      const { sourceList } = result;
+      const { items } = sourceList;
       const itemToUpdate = items.id(sanitizedItemId);
 
       itemToUpdate.isDeleted = true;
       itemToUpdate.isArchived = true;
 
-      return prevList.save().then(oldList => ({ newItem, newList, oldList }));
+      return sourceList
+        .save()
+        .then(savedSourceList => ({ ...result, sourceList: savedSourceList }));
+    })
+    .then(result => {
+      const { movedItemId } = result;
+
+      return List.findOne({
+        _id: sanitizedTargetListId,
+        'items._id': movedItemId
+      })
+        .populate('items.authorId', 'displayName')
+        .populate('items.editedBy', 'displayName')
+        .exec()
+        .then(targetList => ({ ...result, targetList }));
     })
     .then(result => {
       const {
-        newItem,
-        newItem: { _id: itemId },
-        newList,
-        newList: { cohortId },
-        oldList,
-        oldList: { name }
+        movedItemId,
+        targetList,
+        targetList: { cohortId, items },
+        sourceList,
+        sourceList: { name }
       } = result;
+      const movedItem = items.id(movedItemId)._doc;
 
       fireAndForget(
         saveActivity(
           ActivityType.ITEM_MOVE,
           userId,
-          itemId,
-          sanitizedNewListId,
+          movedItemId,
+          sanitizedTargetListId,
           cohortId,
           null,
           name
@@ -1640,7 +1659,12 @@ const moveItem = (req, resp) => {
         cohortClients,
         dashboardClients,
         listClients
-      )({ oldItemId: sanitizedItemId, newItem, newList, oldList });
+      )({
+        sourceItemId: sanitizedItemId,
+        movedItem,
+        targetList,
+        sourceList
+      });
     })
     .then(() => resp.send())
     .catch(() => resp.sendStatus(400));

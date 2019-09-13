@@ -12,17 +12,19 @@ const {
 const List = require('../models/list.model');
 const {
   checkIfArrayContainsUserId,
+  countItems,
   isMember,
   responseWithItem,
   responseWithList
 } = require('../common/utils');
 const {
   descriptionLockId,
-  updateListOnDashboardAndCohortView,
   handleItemLocks,
   handleLocks,
   listChannel,
-  nameLockId
+  nameLockId,
+  sendListOnDashboardAndCohortView,
+  updateListOnDashboardAndCohortView
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
 const { votingBroadcast, delayedUnlock } = require('./helpers');
@@ -34,7 +36,7 @@ const addItemToList = (io, cohortClients, dashboardClients) => data => {
     .to(listChannel(listId))
     .emit(ItemActionTypes.ADD_SUCCESS, { item, listId });
 
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
+  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -136,7 +138,7 @@ const updateItem = (
     }
   });
 
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
+  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -175,7 +177,7 @@ const cloneItem = (
     }
   });
 
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
+  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
 
   return Promise.resolve();
 };
@@ -243,10 +245,9 @@ const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
     .to(listChannel(listId))
     .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...rest });
 
-  updateListOnDashboardAndCohortView(io)(
-    cohortViewClients,
-    dashboardViewClients
-  )(list);
+  sendListOnDashboardAndCohortView(io)(cohortViewClients, dashboardViewClients)(
+    list
+  );
 };
 
 const updateListHeaderState = (socket, listClientLocks) => {
@@ -742,14 +743,16 @@ const moveToList = (
   dashboardClients,
   listClients
 ) => data => {
-  const { newItem, newList, oldItemId, oldList } = data;
-  const { _id: listId } = oldList;
-  const { _id: newListId, viewersIds } = newList;
+  const { movedItem, sourceItemId, sourceList, targetList } = data;
+  const { _id: sourceListId, items: sourceListItems } = sourceList;
+  const { _id: targetListId, items: targetListItems, viewersIds } = targetList;
 
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.DELETE_SUCCESS, {
-    listId,
-    itemId: oldItemId
-  });
+  io.sockets
+    .to(listChannel(sourceListId))
+    .emit(ItemActionTypes.DELETE_SUCCESS, {
+      sourceListId,
+      itemId: sourceItemId
+    });
 
   viewersIds.forEach(viewerId => {
     const id = viewerId.toString();
@@ -757,21 +760,27 @@ const moveToList = (
     if (listClients.has(id)) {
       const { socketId, viewId } = listClients.get(id);
 
-      if (viewId === newListId.toString()) {
+      if (viewId === targetListId.toString()) {
         io.sockets.to(socketId).emit(ItemActionTypes.ADD_SUCCESS, {
-          listId: newListId,
-          item: responseWithItem(newItem._doc, id)
+          listId: targetListId,
+          item: responseWithItem(movedItem, id)
         });
       }
     }
   });
 
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(
-    oldList
-  );
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(
-    newList
-  );
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)({
+    ...countItems(sourceListItems),
+    _id: sourceListId,
+    cohortId: sourceList.cohortId,
+    viewersIds: sourceList.viewersIds
+  });
+  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)({
+    ...countItems(targetListItems),
+    _id: targetListId,
+    cohortId: sourceList.targetId,
+    viewersIds
+  });
 
   return Promise.resolve();
 };

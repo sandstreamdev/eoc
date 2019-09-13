@@ -41,6 +41,14 @@ const isViewer = (doc, userId) => {
   return checkIfArrayContainsUserId(viewersIds, userId);
 };
 
+const countItems = items => {
+  const activeItems = items.filter(item => !item.isArchived);
+  const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
+  const unhandledItemsCount = activeItems.length - doneItemsCount;
+
+  return { doneItemsCount, unhandledItemsCount };
+};
+
 const responseWithList = (list, userId) => {
   const {
     _id,
@@ -53,20 +61,16 @@ const responseWithList = (list, userId) => {
     name,
     type
   } = list;
-  const activeItems = items.filter(item => !item.isArchived);
-  const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
-  const unhandledItemsCount = activeItems.length - doneItemsCount;
 
   const listToSend = {
     _id,
     createdAt,
     description,
-    doneItemsCount,
+    ...countItems(items),
     isFavourite: checkIfArrayContainsUserId(favIds, userId),
     locks,
     name,
-    type,
-    unhandledItemsCount
+    type
   };
 
   if (cohortId) {
@@ -92,16 +96,11 @@ const responseWithListsMetaData = (lists, userId) =>
         return;
       }
 
-      const activeItems = items.filter(item => !item.isArchived);
-      const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
-      const unhandledItemsCount = activeItems.length - doneItemsCount;
-
       const listToSend = {
         ...rest,
+        ...countItems(items),
         createdAt,
-        doneItemsCount,
-        isFavourite: checkIfArrayContainsUserId(favIds, userId),
-        unhandledItemsCount
+        isFavourite: checkIfArrayContainsUserId(favIds, userId)
       };
 
       if (cohort) {
@@ -393,6 +392,7 @@ const returnPayload = promise => payload => promise.then(() => payload);
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  countItems,
   enumerable,
   filter,
   fireAndForget,
