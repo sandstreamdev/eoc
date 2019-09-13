@@ -60,3 +60,9 @@ export const validateWith = validator => errorMessageId => value =>
   validator(value) ? '' : errorMessageId;
 
 export const filterDefined = filter(isDefined);
+
+export const mapObject = callback => object =>
+  Object.entries(object).reduce(
+    (newObject, [key, value]) => ({ ...newObject, [key]: callback(value) }),
+    {}
+  );

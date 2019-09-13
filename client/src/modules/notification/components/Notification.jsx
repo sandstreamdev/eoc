@@ -4,9 +4,13 @@ import { FormattedMessage } from 'react-intl';
 
 import MessageBox from 'common/components/MessageBox';
 import { MessageType as NotificationType } from 'common/constants/enums';
+import { mapObject } from 'common/utils/helpers';
+
+const wrap = value => <em>{value}</em>;
 
 const Notification = ({ data, id, redirect, type }) => {
-  const values = typeof data === 'string' ? { data } : { ...data };
+  const dataSource = typeof data === 'object' ? data : { data };
+  const values = mapObject(wrap)(dataSource);
 
   return (
     <MessageBox type={type}>
