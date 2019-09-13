@@ -300,12 +300,16 @@ const lists = (state = {}, action) => {
       const {
         payload: { listId }
       } = action;
-      const { items: previousItems } = state[listId];
+      if (state[listId]) {
+        const { items: previousItems } = state[listId];
 
-      return {
-        ...state,
-        [listId]: { ...state[listId], items: items(previousItems, action) }
-      };
+        return {
+          ...state,
+          [listId]: { ...state[listId], items: items(previousItems, action) }
+        };
+      }
+
+      return state;
     }
     case ListHeaderStatusType.LOCK:
     case ListHeaderStatusType.UNLOCK: {
