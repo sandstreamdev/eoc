@@ -71,9 +71,11 @@ const socketListeners = socketInstance => {
     await joinMetaDataRooms(socket);
 
     socket.on(AppEvents.JOIN_ROOM, emittedData => {
-      // This check is for the old functionality to work.
-      // After refactoring this handler will be simplified to:
-      // socket.on('joinRoom', room => socket.join(room));
+      /**
+       * This check is for the old functionality to work.
+       * After refactoring this handler will be simplified to:
+       * socket.on('joinRoom', room => socket.join(room));
+       */
       if (typeof emittedData === 'object') {
         const { room, data } = emittedData;
         const { roomId, userId, viewId } = data;
@@ -82,7 +84,10 @@ const socketListeners = socketInstance => {
           case Routes.LIST: {
             socket.join(roomId);
 
-            return listViewClients.set(userId, { socketId: socket.id, viewId });
+            return listViewClients.set(userId, {
+              socketId: socket.id,
+              viewId
+            });
           }
           case Routes.COHORT: {
             socket.join(roomId);

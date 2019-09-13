@@ -44,6 +44,14 @@ const fromEntries = convertedArray =>
 export const asyncTypes = key =>
   asyncPostfixes.map(postfix => [key, postfix].join('_'));
 
+/**
+ * Create object with key/value pairs.
+ * If the namespace is missing value is equal key
+ * In other case it's created by joining namespace with a key.
+ * @param {string} namespace - current enums' namespace
+ * @param {string} keys - individual enums
+ * @return {object} - object of enums
+ */
 export const enumerable = (namespace = null) => (...keys) =>
   Object.freeze(
     fromEntries(
