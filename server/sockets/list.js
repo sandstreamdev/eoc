@@ -743,7 +743,7 @@ const moveToList = (
   dashboardClients,
   listClients
 ) => data => {
-  const { movedItem, targetList, sourceItemId, sourceList } = data;
+  const { movedItem, sourceItemId, sourceList, targetList } = data;
   const { _id: sourceListId, items: sourceListItems } = sourceList;
   const { _id: targetListId, items: targetListItems, viewersIds } = targetList;
 
