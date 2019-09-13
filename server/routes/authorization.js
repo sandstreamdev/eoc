@@ -11,9 +11,9 @@ const {
   changePassword,
   checkToken,
   confirmEmail,
+  getAccountDetails,
   getLoggedUser,
   getUserDetails,
-  getUserName,
   logout,
   recoveryPassword,
   resendRecoveryLink,
@@ -55,7 +55,7 @@ router.post(
 );
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
-router.get('/user-name/:token?', getUserName);
 router.get('/check-token/:token?', checkToken);
+router.get('/account-details/:token?', getAccountDetails);
 
 module.exports = router;

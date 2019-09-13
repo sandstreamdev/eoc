@@ -6,7 +6,7 @@ import _debounce from 'lodash/debounce';
 import validator from 'validator';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
-import { getUserName, updatePassword } from 'modules/user/model/actions';
+import { getAccountDetails, updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
 import {
@@ -20,6 +20,7 @@ class PasswordRecoveryForm extends PureComponent {
     super(props);
 
     this.state = {
+      email: null,
       errors: {
         comparePasswordsError: '',
         passwordError: '',
@@ -39,7 +40,7 @@ class PasswordRecoveryForm extends PureComponent {
   }
 
   componentDidMount() {
-    this.fetchUserName();
+    this.fetchAccountData();
   }
 
   componentWillUnmount() {
@@ -51,18 +52,20 @@ class PasswordRecoveryForm extends PureComponent {
     }
   }
 
-  fetchUserName = () => {
+  fetchAccountData = () => {
     const {
       match: {
         params: { token }
       }
     } = this.props;
 
-    const abortable = makeAbortablePromise(getUserName(token));
+    const abortable = makeAbortablePromise(getAccountDetails(token));
     this.pendingPromise = abortable;
 
     abortable.promise
-      .then(userName => this.setState({ userName }))
+      .then(({ displayName, email }) =>
+        this.setState({ userName: displayName, email })
+      )
       .catch(() => {
         /**
          * Ignore error
@@ -165,6 +168,7 @@ class PasswordRecoveryForm extends PureComponent {
 
   render() {
     const {
+      email,
       errors: { passwordError, comparePasswordsError, passwordUpdateError },
       password,
       passwordConfirmation,
@@ -184,7 +188,7 @@ class PasswordRecoveryForm extends PureComponent {
           {userName ? (
             <FormattedMessage
               id="user.auth.pass-recovery-form.heading-user-name"
-              values={{ name: userName }}
+              values={{ name: userName, email }}
             />
           ) : (
             <FormattedMessage id="user.auth.pass-recovery-form.heading" />

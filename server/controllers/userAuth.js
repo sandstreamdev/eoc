@@ -437,7 +437,7 @@ const changePassword = (req, res) => {
     });
 };
 
-const getUserName = (req, resp) => {
+const getAccountDetails = (req, resp) => {
   const {
     params: { token }
   } = req;
@@ -447,9 +447,9 @@ const getUserName = (req, resp) => {
     .exec()
     .then(user => {
       if (user) {
-        const { displayName } = user;
+        const { displayName, email } = user;
 
-        return resp.send({ displayName });
+        return resp.send({ displayName, email });
       }
 
       resp.sendStatus(400);
@@ -473,9 +473,9 @@ module.exports = {
   changePassword,
   checkToken,
   confirmEmail,
+  getAccountDetails,
   getLoggedUser,
   getUserDetails,
-  getUserName,
   logout,
   recoveryPassword,
   resendRecoveryLink,

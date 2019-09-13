@@ -102,7 +102,7 @@
   "user.auth.input.password.invalid": "Please use min {min} and max {max} characters without spaces.",
   "common.auth.input.wrong-password": "Please enter the correct password.",
   "user.auth.input.password.not-match": "Passwords do not match.",
-  "user.auth.pass-recovery-form.heading-user-name": "Set new password for {name}",
+  "user.auth.pass-recovery-form.heading-user-name": "Set new password for {name} ({email})",
   "user.auth.pass-recovery-form.heading": "Set new password",
   "user.auth.reset-password.button-content": "Reset password",
   "user.auth.reset-password.email-label": "Enter email",
