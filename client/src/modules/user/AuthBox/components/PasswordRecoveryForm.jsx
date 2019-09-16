@@ -188,7 +188,7 @@ class PasswordRecoveryForm extends PureComponent {
           {userName ? (
             <FormattedMessage
               id="user.auth.pass-recovery-form.heading-user-name"
-              values={{ name: userName, email }}
+              values={{ name: userName, email: <em title={email}>{email}</em> }}
             />
           ) : (
             <FormattedMessage id="user.auth.pass-recovery-form.heading" />
