@@ -137,8 +137,8 @@ const removeOwnerRole = (io, cohortClients) => data => {
   );
 };
 
-const updateCohort = io => data => {
-  const { cohortId } = data;
+const updateCohort = io => async data => {
+  const { cohortId, name } = data;
 
   io.sockets
     .to(cohortChannel(cohortId))
@@ -148,7 +148,27 @@ const updateCohort = io => data => {
     .to(cohortMetaDataChannel(cohortId))
     .emit(CohortActionTypes.UPDATE_SUCCESS, data);
 
-  return Promise.resolve();
+  if (isDefined(name)) {
+    try {
+      const lists = await List.find(
+        { cohortId, isDeleted: false },
+        '_id'
+      ).exec();
+
+      lists.forEach(list =>
+        io.sockets
+          .to(listChannel(list._id))
+          .emit(ListActionTypes.UPDATE_SUCCESS, {
+            listId: list._id,
+            cohortName: name
+          })
+      );
+    } catch {
+      // Ignore error
+    }
+
+    return Promise.resolve();
+  }
 };
 
 const updateCohortHeaderStatus = (socket, cohortClientLocks) => {

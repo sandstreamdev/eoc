@@ -89,8 +89,18 @@ class List extends Component {
       this.fetchData();
     }
 
-    if (previousList && list && previousList.name !== list.name) {
-      this.handleBreadcrumbs();
+    if (previousList && list) {
+      const {
+        name: previousName,
+        cohortName: previousCohortName
+      } = previousList;
+      const { name, cohortName } = list;
+      const updateBreadcrumbs =
+        previousName !== name || previousCohortName !== cohortName;
+
+      if (updateBreadcrumbs) {
+        this.handleBreadcrumbs();
+      }
     }
   }
 
