@@ -69,22 +69,28 @@ class List extends Component {
     joinRoom(Routes.LIST, cohortId, userId);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(previousProps) {
     const {
+      list: previousList,
       match: {
-        params: { id: prevListId }
+        params: { id: previousListId }
       }
-    } = prevProps;
+    } = previousProps;
     const {
       currentUser: { id: userId },
+      list,
       match: {
         params: { id: listId }
       }
     } = this.props;
 
-    if (prevListId !== listId) {
+    if (previousListId !== listId) {
       leaveRoom(Routes.LIST, listId, userId);
       this.fetchData();
+    }
+
+    if (previousList && list && previousList.name !== list.name) {
+      this.handleBreadcrumbs();
     }
   }
 
