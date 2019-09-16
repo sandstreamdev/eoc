@@ -1,10 +1,7 @@
 const Cohort = require('../../models/cohort.model');
 const List = require('../../models/list.model');
 const Session = require('../../models/session.model');
-const {
-  ListActionTypes,
-  CohortActionTypes
-} = require('../../common/variables');
+const { ListActionTypes, CohortActionTypes } = require('../eventTypes');
 const { responseWithList, responseWithCohort } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
 const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
@@ -307,6 +304,18 @@ const joinMetaDataRooms = async socket => {
   }
 };
 
+const getUserSockets = async userId => {
+  const regexp = new RegExp(userId);
+
+  try {
+    const sessions = await Session.find({ session: regexp }, 'socketId').exec();
+
+    return sessions.map(session => session.socketId);
+  } catch {
+    // Ignore error
+  }
+};
+
 module.exports = {
   associateSocketWithSession,
   cohortChannel,
@@ -317,6 +326,7 @@ module.exports = {
   emitRoleChange,
   getListIdsByViewers,
   getListsDataByViewers,
+  getUserSockets,
   handleItemLocks,
   handleLocks,
   joinMetaDataRooms,

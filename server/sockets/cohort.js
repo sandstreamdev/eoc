@@ -1,12 +1,11 @@
 const _keyBy = require('lodash/keyBy');
 
+const { ListType, LOCK_TIMEOUT } = require('../common/variables');
 const {
   CohortActionTypes,
   CohortHeaderStatusTypes,
-  ListActionTypes,
-  ListType,
-  LOCK_TIMEOUT
-} = require('../common/variables');
+  ListActionTypes
+} = require('./eventTypes');
 const Cohort = require('../models/cohort.model');
 const {
   checkIfArrayContainsUserId,

@@ -11,6 +11,7 @@ import {
   ItemStatusType,
   CommentActionTypes
 } from 'modules/list/components/Items/model/actionTypes';
+import { enumerable } from 'common/utils/helpers';
 
 export const ItemsEvents = Object.freeze({
   ADD_SUCCESS: ItemActionTypes.ADD_SUCCESS,
@@ -47,7 +48,6 @@ export const ListEvents = Object.freeze({
   REMOVE_MEMBER_SUCCESS: ListActionTypes.REMOVE_MEMBER_SUCCESS,
   REMOVE_WHEN_COHORT_UNAVAILABLE: 'list/REMOVE_WHEN_COHORT_UNAVAILABLE',
   REMOVE_OWNER_ROLE_SUCCESS: ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
-  REMOVED_BY_SOMEONE: 'list/REMOVED_BY_SOMEONE',
   RESTORE_SUCCESS: ListActionTypes.RESTORE_SUCCESS,
   UPDATE_SUCCESS: ListActionTypes.UPDATE_SUCCESS
 });
@@ -76,5 +76,7 @@ export const CohortHeaderEvents = Object.freeze({
 export const CommentEvents = Object.freeze({
   ADD_SUCCESS: CommentActionTypes.ADD_SUCCESS
 });
+
+export const AppEvents = enumerable()('JOIN_ROOM', 'LEAVE_ROOM');
 
 export { ItemStatusType };

@@ -733,16 +733,11 @@ const removeMember = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const data = { listId, userId };
+      const data = { listId, performerId: currentUserId, userId };
 
-      return returnPayload(
-        socketActions.removeListMember(
-          socketInstance,
-          dashboardClients,
-          listClients,
-          cohortClients
-        )(data)
-      )(doc);
+      return returnPayload(socketActions.removeViewer(socketInstance)(data))(
+        doc
+      );
     })
     .then(payload => {
       fireAndForget(
@@ -1074,17 +1069,15 @@ const addViewer = (req, resp) => {
 
       return list.save();
     })
-    .then(() => {
+    .then(list => {
       if (user) {
         userToSend = responseWithListMember(user, cohortMembers);
 
-        return socketActions.addListViewer(
-          socketInstance,
-          dashboardClients,
-          cohortClients
-        )({
-          ...userToSend,
-          listId
+        return socketActions.addViewer(socketInstance)({
+          listId,
+          list: list._doc,
+          userToSend,
+          performerId: currentUserId
         });
       }
     })

@@ -11,6 +11,7 @@ const { updateCohortHeaderStatus } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
 const { Routes } = require('../common/variables');
 const { associateSocketWithSession, joinMetaDataRooms } = require('./helpers');
+const { AppEvents } = require('./eventTypes');
 
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
@@ -69,38 +70,62 @@ const socketListeners = socketInstance => {
     await associateSocketWithSession(socket);
     await joinMetaDataRooms(socket);
 
-    socket.on('joinRoom', ({ data, room }) => {
-      const { roomId, userId, viewId } = data;
+    socket.on(AppEvents.JOIN_ROOM, emittedData => {
+      /**
+       * This check is for the old functionality to work.
+       * After refactoring this handler will be simplified to:
+       * socket.on('joinRoom', room => socket.join(room));
+       */
+      if (typeof emittedData === 'object') {
+        const { room, data } = emittedData;
+        const { roomId, userId, viewId } = data;
 
-      switch (room) {
-        case Routes.LIST:
-          socket.join(roomId);
-          listViewClients.set(userId, { socketId: socket.id, viewId });
-          break;
-        case Routes.COHORT:
-          socket.join(roomId);
-          cohortViewClients.set(userId, { socketId: socket.id, viewId });
-          break;
-        default:
-          break;
+        switch (room) {
+          case Routes.LIST: {
+            socket.join(roomId);
+
+            return listViewClients.set(userId, {
+              socketId: socket.id,
+              viewId
+            });
+          }
+          case Routes.COHORT: {
+            socket.join(roomId);
+
+            return cohortViewClients.set(userId, {
+              socketId: socket.id,
+              viewId
+            });
+          }
+          default:
+            return;
+        }
       }
+      socket.join(emittedData);
     });
 
-    socket.on('leaveRoom', ({ data, room }) => {
-      const { roomId, userId } = data;
+    socket.on(AppEvents.LEAVE_ROOM, emittedData => {
+      if (typeof emittedData === 'object') {
+        const { room, data } = emittedData;
+        const { roomId, userId } = data;
 
-      switch (room) {
-        case Routes.LIST:
-          socket.leave(roomId);
-          listViewClients.delete(userId);
-          break;
-        case Routes.COHORT:
-          socket.leave(roomId);
-          cohortViewClients.delete(userId);
-          break;
-        default:
-          break;
+        switch (room) {
+          case Routes.LIST: {
+            socket.leave(roomId);
+
+            return listViewClients.delete(userId);
+          }
+          case Routes.COHORT: {
+            socket.leave(roomId);
+
+            return cohortViewClients.delete(userId);
+          }
+          default:
+            return;
+        }
       }
+
+      socket.leave(emittedData);
     });
 
     socket.on('enterView', ({ userId, view }) => {

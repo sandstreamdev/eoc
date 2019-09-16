@@ -359,9 +359,19 @@ const responseWithCohortDetails = (doc, userId) => {
  */
 const isDefined = x => x !== undefined;
 
-const enumerable = namespace => (...keys) =>
+/**
+ * Create object with key/value pairs.
+ * If the namespace is missing value is equal to the key
+ * In other case it's created by joining namespace with a key.
+ * @param {string} namespace - current enums' namespace
+ * @param {string} keys - individual enums
+ * @return {object} - object of enums
+ */
+const enumerable = (namespace = null) => (...keys) =>
   Object.freeze(
-    fromEntries(keys.map(key => [key, [namespace, key].join('/')]))
+    fromEntries(
+      keys.map(key => [key, namespace ? [namespace, key].join('/') : key])
+    )
   );
 
 const mapObject = callback => object =>

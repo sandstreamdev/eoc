@@ -48,7 +48,6 @@ class List extends Component {
   componentDidMount() {
     const {
       currentUser: { id: userId },
-      joinRoom,
       match: {
         params: { id: cohortId }
       }
@@ -72,7 +71,6 @@ class List extends Component {
 
   componentDidUpdate(prevProps) {
     const {
-      leaveRoom,
       match: {
         params: { id: prevListId }
       }
@@ -93,7 +91,6 @@ class List extends Component {
   componentWillUnmount() {
     const {
       currentUser: { id: userId },
-      leaveRoom,
       match: {
         params: { id: listId }
       }
@@ -321,9 +318,7 @@ List.propTypes = {
 
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
-  joinRoom: PropTypes.func.isRequired,
-  leaveList: PropTypes.func.isRequired,
-  leaveRoom: PropTypes.func.isRequired
+  leaveList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -350,9 +345,7 @@ export default _flowRight(
     {
       archiveList,
       fetchListData,
-      joinRoom,
-      leaveList,
-      leaveRoom
+      leaveList
     }
   )
 )(List);

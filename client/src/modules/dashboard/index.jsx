@@ -36,7 +36,6 @@ class Dashboard extends Component {
   componentDidMount() {
     const {
       currentUser: { id },
-      enterView,
       fetchListsMetaData
     } = this.props;
 
@@ -51,8 +50,7 @@ class Dashboard extends Component {
 
   componentWillUnmount() {
     const {
-      currentUser: { id },
-      leaveView
+      currentUser: { id }
     } = this.props;
 
     leaveView(Routes.DASHBOARD, id);
@@ -197,10 +195,8 @@ Dashboard.propTypes = {
   viewType: PropTypes.string.isRequired,
 
   createList: PropTypes.func.isRequired,
-  enterView: PropTypes.func.isRequired,
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
-  leaveView: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
@@ -217,10 +213,8 @@ export default _flowRight(
     mapStateToProps,
     {
       createList,
-      enterView,
       fetchArchivedListsMetaData,
       fetchListsMetaData,
-      leaveView,
       removeArchivedListsMetaData
     }
   )

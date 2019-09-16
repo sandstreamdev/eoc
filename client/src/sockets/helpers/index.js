@@ -7,10 +7,22 @@ import {
 } from 'common/utils/helpers';
 import { ListActionTypes } from '../../modules/list/model/actionTypes';
 
-export const listEventsController = (event, data, dispatch) => {
+export const listEventsController = (event, data, { dispatch, getState }) => {
+  const { currentUser } = getState();
+
   switch (event) {
     case ListEvents.LEAVE_ON_TYPE_CHANGE_SUCCESS:
-    case ListEvents.REMOVED_BY_SOMEONE:
+    case ListEvents.REMOVE_MEMBER_SUCCESS: {
+      const { listId, userId } = data;
+
+      if (currentUser.id === userId) {
+        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
+
+        return history.replace(dashboardRoute());
+      }
+
+      return dispatch({ type: event, payload: data });
+    }
     case ListEvents.ARCHIVE_SUCCESS:
     case ListEvents.DELETE_AND_REDIRECT: {
       const { cohortId, isCohortMember, listId } = data;
@@ -55,7 +67,10 @@ export const cohortEventsController = (event, data, dispatch) => {
     case CohortEvents.ARCHIVE_SUCCESS: {
       const { cohortId } = data;
 
-      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
+      dispatch({
+        type: CohortEvents.DELETE_SUCCESS,
+        payload: { cohortId }
+      });
 
       return history.replace(cohortsRoute());
     }

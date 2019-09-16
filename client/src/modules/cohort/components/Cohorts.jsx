@@ -35,7 +35,6 @@ class Cohorts extends Component {
   componentDidMount() {
     const {
       currentUser: { id: userId },
-      enterView,
       fetchCohortsMetaData
     } = this.props;
 
@@ -50,8 +49,7 @@ class Cohorts extends Component {
 
   componentWillUnmount() {
     const {
-      currentUser: { id: userId },
-      leaveView
+      currentUser: { id: userId }
     } = this.props;
 
     leaveView(Routes.COHORTS, userId);
@@ -192,10 +190,8 @@ Cohorts.propTypes = {
   intl: IntlPropType.isRequired,
 
   createCohort: PropTypes.func.isRequired,
-  enterView: PropTypes.func.isRequired,
   fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
   fetchCohortsMetaData: PropTypes.func.isRequired,
-  leaveView: PropTypes.func.isRequired,
   removeArchivedCohortsMetaData: PropTypes.func.isRequired
 };
 
@@ -211,10 +207,8 @@ export default _flowRight(
     mapStateToProps,
     {
       createCohort,
-      enterView,
       fetchArchivedCohortsMetaData,
       fetchCohortsMetaData,
-      leaveView,
       removeArchivedCohortsMetaData
     }
   )

@@ -61,7 +61,6 @@ class Cohort extends PureComponent {
   componentDidMount() {
     const {
       currentUser: { id: userId },
-      joinRoom,
       match: {
         params: { id: cohortId }
       }
@@ -73,7 +72,6 @@ class Cohort extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const {
-      leaveRoom,
       match: {
         params: { id }
       }
@@ -94,7 +92,6 @@ class Cohort extends PureComponent {
   componentWillUnmount() {
     const {
       currentUser: { id: userId },
-      leaveRoom,
       match: {
         params: { id: cohortId }
       }
@@ -417,9 +414,7 @@ Cohort.propTypes = {
   fetchArchivedListsMetaData: PropTypes.func.isRequired,
   fetchCohortDetails: PropTypes.func.isRequired,
   fetchListsMetaData: PropTypes.func.isRequired,
-  joinRoom: PropTypes.func.isRequired,
   leaveCohort: PropTypes.func.isRequired,
-  leaveRoom: PropTypes.func.isRequired,
   removeArchivedListsMetaData: PropTypes.func.isRequired
 };
 
@@ -450,9 +445,7 @@ export default _flowRight(
       fetchArchivedListsMetaData,
       fetchCohortDetails,
       fetchListsMetaData,
-      joinRoom,
       leaveCohort,
-      leaveRoom,
       removeArchivedListsMetaData
     }
   )
