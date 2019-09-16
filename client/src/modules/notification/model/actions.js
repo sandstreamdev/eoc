@@ -34,6 +34,6 @@ export const createNotificationWithTimeout = (
     addNotification({ id, type, notification, redirect: forbiddenError })
   );
   setTimeout(() => {
-    dispatch(removeNotification(id));
+    dispatch(removeNotification({ id }));
   }, delay);
 };

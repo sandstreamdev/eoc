@@ -12,7 +12,6 @@ import items from 'modules/list/components/Items/model/reducer';
 import { ListType } from 'modules/list/consts';
 import { filterDefined } from 'common/utils/helpers';
 import { CommonActionTypes } from 'common/model/actionTypes';
-import { Routes } from 'common/constants/enums';
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -252,13 +251,7 @@ const lists = (state = {}, action) => {
       };
     }
     case CommonActionTypes.LEAVE_VIEW: {
-      const { payload } = action;
-
-      if (payload === Routes.DASHBOARD || payload === Routes.COHORT) {
-        return {};
-      }
-
-      return state;
+      return {};
     }
 
     case CohortActionTypes.ARCHIVE_SUCCESS:

@@ -11,7 +11,7 @@ const notifications = (state = {}, action) => {
       };
     }
     case NotificationActionTypes.REMOVE: {
-      const { [action.payload]: removed, ...newState } = state;
+      const { [action.payload.id]: removed, ...newState } = state;
 
       return newState;
     }

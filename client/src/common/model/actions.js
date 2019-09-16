@@ -1,16 +1,15 @@
 import socket from 'sockets';
 import { CommonActionTypes } from 'common/model/actionTypes';
 
-const clearMetaDataSuccess = view => ({
-  type: CommonActionTypes.LEAVE_VIEW,
-  payload: view
+export const clearMetaDataSuccess = () => ({
+  type: CommonActionTypes.LEAVE_VIEW
 });
 
 export const enterView = (route, userId) => dispatch =>
   socket.emit('enterView', { userId, view: route });
 
 export const leaveView = (route, userId) => dispatch => {
-  dispatch(clearMetaDataSuccess(route));
+  dispatch(clearMetaDataSuccess());
   socket.emit('leaveView', { userId, view: route });
 };
 
@@ -25,5 +24,5 @@ export const leaveRoom = (route, id, userId) => dispatch => {
 
   socket.emit('leaveRoom', { data, room: route });
 
-  dispatch(clearMetaDataSuccess(route));
+  dispatch(clearMetaDataSuccess());
 };

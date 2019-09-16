@@ -85,6 +85,10 @@ const cohortChannel = cohortId => `cohort-${cohortId}`;
 
 const listChannel = listId => `sack-${listId}`;
 
+const listMetaDataChannel = listId => `sack-meta-data-${listId}`;
+
+const cohortMetaDataChannel = cohortId => `cohort-meta-data-${cohortId}`;
+
 const handleLocks = (model, query) => ({ description, name }) =>
   model
     .findOne(query)
@@ -254,22 +258,59 @@ const updateListOnDashboardAndCohortView = io => (
   });
 };
 
-const associateSocketWithSession = socket => {
+const associateSocketWithSession = async socket => {
   const {
     request: { sessionID },
     id: socketId
   } = socket;
 
-  Session.findOneAndUpdate({ _id: sessionID.toString() }, { socketId })
-    .exec()
-    .catch(() => {
-      // Ignore error
-    });
+  try {
+    await Session.findOneAndUpdate(
+      { _id: sessionID.toString() },
+      { socketId }
+    ).exec();
+  } catch {
+    // Ignore error
+  }
+};
+
+const joinMetaDataRooms = async socket => {
+  const {
+    request: {
+      user: { _id: userId }
+    }
+  } = socket;
+
+  try {
+    const lists = await List.find(
+      { viewersIds: userId, isDeleted: false },
+      '_id'
+    )
+      .lean()
+      .exec();
+
+    lists.forEach(list => socket.join(listMetaDataChannel(list._id)));
+
+    const cohorts = await Cohort.find(
+      {
+        memberIds: userId,
+        isDeleted: false
+      },
+      '_id'
+    )
+      .lean()
+      .exec();
+
+    cohorts.forEach(cohort => socket.join(cohortMetaDataChannel(cohort._id)));
+  } catch {
+    // Ignore error
+  }
 };
 
 module.exports = {
   associateSocketWithSession,
   cohortChannel,
+  cohortMetaDataChannel,
   delayedUnlock,
   descriptionLockId,
   emitCohortMetaData,
@@ -278,7 +319,9 @@ module.exports = {
   getListsDataByViewers,
   handleItemLocks,
   handleLocks,
+  joinMetaDataRooms,
   listChannel,
+  listMetaDataChannel,
   nameLockId,
   sendListOnDashboardAndCohortView,
   updateListOnDashboardAndCohortView,
