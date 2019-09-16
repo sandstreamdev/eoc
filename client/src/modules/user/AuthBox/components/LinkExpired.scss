@@ -22,10 +22,6 @@
     width: 60%;
   }
 
-  @include breakpoint($large) {
-    width: 50%;
-  }
-
   &__heading {
     margin-bottom: four-by(4);
   }
