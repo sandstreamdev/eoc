@@ -355,7 +355,7 @@ const isDefined = x => x !== undefined;
 
 /**
  * Create object with key/value pairs.
- * If the namespace is missing value is equal key
+ * If the namespace is missing value is equal to the key
  * In other case it's created by joining namespace with a key.
  * @param {string} namespace - current enums' namespace
  * @param {string} keys - individual enums
