@@ -8,12 +8,18 @@
   box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
   text-align: center;
   flex-direction: column;
-  width: 250px;
+  width: 90%;
+  max-width: 900px;
   align-items: center;
   padding: four-by(8);
+  box-sizing: border-box;
 
-  @include breakpoint($xsmall) {
-    width: 300px;
+  @include breakpoint($small) {
+    width: 70%;
+  }
+
+  @include breakpoint($medium) {
+    width: 60%;
   }
 
   &__heading {
