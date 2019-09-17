@@ -141,13 +141,13 @@ class List extends Component {
   handleListArchivization = listId => () => {
     const {
       archiveList,
-      list: { cohortId, isOwner, name }
+      list: { cohortId, isOwner, name, isGuest }
     } = this.props;
 
     if (isOwner) {
       this.setState({ pendingForListArchivization: true });
 
-      archiveList(listId, name, cohortId).catch(() => {
+      archiveList(listId, name, cohortId, isGuest).catch(() => {
         this.setState({ pendingForListArchivization: false });
         this.hideDialog();
       });

@@ -325,7 +325,7 @@ export const updateList = (listId, data, name) => dispatch =>
       );
     });
 
-export const archiveList = (listId, name, cohortId) => dispatch =>
+export const archiveList = (listId, name, cohortId, isGuest) => dispatch =>
   patchData(`/api/lists/${listId}/update`, {
     isArchived: true
   })
@@ -337,7 +337,8 @@ export const archiveList = (listId, name, cohortId) => dispatch =>
         notificationId: 'list.actions.arch-list',
         data: { name }
       });
-      const url = cohortId ? cohortRoute(cohortId) : dashboardRoute();
+      const url =
+        cohortId && !isGuest ? cohortRoute(cohortId) : dashboardRoute();
       history.replace(url);
     })
     .catch(err => {
