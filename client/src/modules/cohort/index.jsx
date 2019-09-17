@@ -70,22 +70,28 @@ class Cohort extends PureComponent {
     joinRoom(Routes.COHORT, cohortId, userId);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(previousProps) {
     const {
+      cohortDetails: cohort,
       match: {
         params: { id }
       }
     } = this.props;
     const {
+      cohortDetails: previousCohort,
       currentUser: { id: userId },
       match: {
-        params: { id: prevId }
+        params: { id: previousId }
       }
-    } = prevProps;
+    } = previousProps;
 
-    if (id !== prevId) {
-      leaveRoom(Routes.COHORT, prevId, userId);
+    if (id !== previousId) {
+      leaveRoom(Routes.COHORT, previousId, userId);
       this.fetchData();
+    }
+
+    if (previousCohort && cohort && previousCohort.name !== cohort.name) {
+      this.handleBreadcrumbs();
     }
   }
 
