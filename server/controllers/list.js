@@ -687,6 +687,17 @@ const removeOwner = (req, resp) => {
         return resp.sendStatus(400);
       }
 
+      const data = {
+        listId,
+        performerId: currentUserId,
+        userId: sanitizedUserId
+      };
+
+      return returnPayload(socketActions.removeViewer(socketInstance)(data))(
+        doc
+      );
+    })
+    .then(payload => {
       resp.send();
 
       fireAndForget(
@@ -695,7 +706,7 @@ const removeOwner = (req, resp) => {
           currentUserId,
           null,
           sanitizedListId,
-          doc.cohortId,
+          payload.cohortId,
           sanitizedUserId
         )
       );
@@ -733,7 +744,11 @@ const removeMember = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const data = { listId, performerId: currentUserId, userId };
+      const data = {
+        listId,
+        performerId: currentUserId,
+        userId: sanitizedUserId
+      };
 
       return returnPayload(socketActions.removeViewer(socketInstance)(data))(
         doc
