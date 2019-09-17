@@ -750,7 +750,7 @@ const moveToList = (
   io.sockets
     .to(listChannel(sourceListId))
     .emit(ItemActionTypes.DELETE_SUCCESS, {
-      sourceListId,
+      listId: sourceListId,
       itemId: sourceItemId
     });
 
