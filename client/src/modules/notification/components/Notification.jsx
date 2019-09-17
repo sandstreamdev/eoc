@@ -9,7 +9,7 @@ import { mapObject } from 'common/utils/helpers';
 const wrap = value => <em>{value}</em>;
 
 const Notification = ({ data, id, redirect, type }) => {
-  const values = mapObject(wrap)(data);
+  const values = data ? mapObject(wrap)(data) : {};
 
   return (
     <MessageBox type={type}>
