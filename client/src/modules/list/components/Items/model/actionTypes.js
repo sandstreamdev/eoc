@@ -20,4 +20,10 @@ export const ItemActionTypes = enumerable('item')(
   ...asyncTypes('UPDATE')
 );
 
+export const AnimationActionTypes = enumerable('animations')(
+  'DISABLE_FOR_ARCHIVE_ITEMS',
+  'DISABLE_FOR_DONE_ITEMS',
+  'DISABLE_FOR_UNHANDLED_ITEMS'
+);
+
 export const ItemStatusType = enumerable('item')('LOCK', 'UNLOCK');

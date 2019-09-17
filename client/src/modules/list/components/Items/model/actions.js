@@ -7,6 +7,7 @@ import {
   postData
 } from 'common/utils/fetchMethods';
 import {
+  AnimationActionTypes,
   CommentActionTypes,
   ItemActionTypes,
   ItemStatusType
@@ -126,6 +127,18 @@ const moveItemToListFailure = () => ({
 export const removeArchivedItems = payload => ({
   type: ItemActionTypes.REMOVE_ARCHIVED,
   payload
+});
+
+export const disableAnimationForArchivedItems = () => ({
+  type: AnimationActionTypes.DISABLE_FOR_ARCHIVE_ITEMS
+});
+
+export const disableAnimationForDoneItems = () => ({
+  type: AnimationActionTypes.DISABLE_FOR_DONE_ITEMS
+});
+
+export const disableAnimationForUnhandledItems = () => ({
+  type: AnimationActionTypes.DISABLE_FOR_UNHANDLED_ITEMS
 });
 
 export const addItem = (item, listId) => dispatch =>
@@ -335,13 +348,19 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
       );
     });
 
-export const restoreItem = (listId, itemId, name, editedBy) => dispatch =>
+export const restoreItem = (
+  listId,
+  itemId,
+  name,
+  editedBy,
+  isOrdered
+) => dispatch =>
   patchData(`/api/lists/${listId}/update-item`, {
     isArchived: false,
     itemId
   })
     .then(() => {
-      dispatch(restoreItemSuccess({ listId, itemId, editedBy }));
+      dispatch(restoreItemSuccess({ listId, itemId, editedBy, isOrdered }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.restore-item',
         data: { name }

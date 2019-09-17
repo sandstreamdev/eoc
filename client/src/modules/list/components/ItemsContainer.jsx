@@ -108,8 +108,10 @@ class ItemsContainer extends Component {
 
   render() {
     const {
+      animate,
       archived,
       children,
+      disableAnimations,
       intl: { formatMessage },
       isMember,
       items
@@ -143,7 +145,9 @@ class ItemsContainer extends Component {
         {children}
         <div className="items__body">
           <ItemsList
+            animate={animate}
             archived={archived}
+            disableAnimations={disableAnimations}
             isMember={isMember}
             items={sortedList}
           />
@@ -154,9 +158,11 @@ class ItemsContainer extends Component {
 }
 
 ItemsContainer.propTypes = {
+  animate: PropTypes.bool,
   archived: PropTypes.bool,
   children: PropTypes.node,
   currentUser: UserPropType.isRequired,
+  disableAnimations: PropTypes.func.isRequired,
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),

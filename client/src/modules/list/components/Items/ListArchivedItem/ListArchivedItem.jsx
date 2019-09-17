@@ -30,14 +30,14 @@ class ListArchivedItem extends PureComponent {
   handleRestoringItem = () => {
     const {
       currentUser: { name: userName },
-      data: { _id: itemId, name },
+      data: { _id: itemId, isOrdered, name },
       match: {
         params: { id: listId }
       },
       restoreItem
     } = this.props;
 
-    return restoreItem(listId, itemId, name, userName);
+    return restoreItem(listId, itemId, name, userName, isOrdered);
   };
 
   showConfirmation = () => this.setState({ isConfirmationVisible: true });
