@@ -693,9 +693,9 @@ const removeOwner = (req, resp) => {
         userId: sanitizedUserId
       };
 
-      return returnPayload(socketActions.removeViewer(socketInstance)(data))(
-        doc
-      );
+      return socketActions
+        .removeViewer(socketInstance)(data)
+        .then(() => doc);
     })
     .then(payload => {
       resp.send();
@@ -750,9 +750,9 @@ const removeMember = (req, resp) => {
         userId: sanitizedUserId
       };
 
-      return returnPayload(socketActions.removeViewer(socketInstance)(data))(
-        doc
-      );
+      return socketActions
+        .removeViewer(socketInstance)(data)
+        .then(() => doc);
     })
     .then(payload => {
       fireAndForget(
