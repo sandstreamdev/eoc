@@ -16,8 +16,7 @@ import {
   markAsDone,
   markAsUnhandled,
   setVote,
-  unlockItem,
-  updateListItem
+  unlockItem
 } from '../model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/user/model/selectors';
@@ -67,30 +66,6 @@ class ListItem extends PureComponent {
     });
 
     return action(listId, itemId, itemName, editedBy).finally(() =>
-      this.setState({ disableToggleButton: false }, this.handleItemUnlock)
-    );
-  };
-
-  updateItem = isOrdered => {
-    const {
-      currentUser: { name: userName, id: userId },
-      data: { _id, name: itemName },
-      isMember,
-      match: {
-        params: { id: listId }
-      },
-      updateListItem
-    } = this.props;
-    const userData = { userId, editedBy: userName };
-    const data = { isOrdered, _id };
-
-    if (!isMember) {
-      return;
-    }
-
-    this.handleItemLock();
-
-    return updateListItem(itemName, listId, _id, userData, data).finally(() =>
       this.setState({ disableToggleButton: false }, this.handleItemUnlock)
     );
   };
@@ -527,8 +502,7 @@ ListItem.propTypes = {
   cloneItem: PropTypes.func.isRequired,
   markAsDone: PropTypes.func.isRequired,
   markAsUnhandled: PropTypes.func.isRequired,
-  setVote: PropTypes.func.isRequired,
-  updateListItem: PropTypes.func.isRequired
+  setVote: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -545,8 +519,7 @@ export default _flowRight(
       cloneItem,
       markAsDone,
       markAsUnhandled,
-      setVote,
-      updateListItem
+      setVote
     }
   )
 )(ListItem);

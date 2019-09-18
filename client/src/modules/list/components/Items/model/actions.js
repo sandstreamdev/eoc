@@ -226,10 +226,10 @@ export const updateListItem = (
       dispatch(
         updateListItemSuccess({
           listId,
-          item: {
+          itemId,
+          updatedData: {
             ...data,
-            editedBy,
-            _id: itemId
+            editedBy
           }
         })
       );

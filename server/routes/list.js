@@ -28,8 +28,8 @@ const {
   removeOwner,
   removeOwnerRole,
   restoreItem,
+  updateItem,
   updateListById,
-  updateListItem,
   voteForItem
 } = require('../controllers/list');
 const { authorize } = require('../middleware/authorize');
@@ -51,7 +51,7 @@ router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);
 router.patch('/:id/add-member-role', authorize, addMemberRole);
 router.patch('/:id/remove-member-role', authorize, removeMemberRole);
 router.patch('/:id/add-viewer', authorize, addViewer);
-router.patch('/:id/update-item', authorize, updateListItem);
+router.patch('/:id/update-item', authorize, updateItem);
 router.patch('/:id/clone-item', authorize, cloneItem);
 router.patch('/:id/change-type', authorize, changeType);
 router.get('/:id/archived-items', authorize, getArchivedItems);

@@ -78,13 +78,10 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
-        payload: {
-          item,
-          item: { _id: itemId }
-        }
+        payload: { itemId, updatedData }
       } = action;
 
-      const updatedItem = filterDefined(item);
+      const updatedItem = filterDefined(updatedData);
       const previousItem = state[itemId];
 
       return {
@@ -206,7 +203,9 @@ export const animations = (state = initialState, action) => {
     case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS:
       return { ...state, animateUnhandledItems: true };
     case ItemActionTypes.RESTORE_SUCCESS: {
-      const { isOrdered } = action.payload;
+      const {
+        item: { isOrdered }
+      } = action.payload;
 
       return isOrdered
         ? { ...state, animateDoneItems: true }

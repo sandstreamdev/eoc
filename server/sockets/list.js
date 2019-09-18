@@ -116,56 +116,6 @@ const updateItemState = (socket, itemClientLocks) => {
   });
 };
 
-const updateItem = (
-  io,
-  cohortClients,
-  dashboardClients,
-  listClients
-) => data => {
-  const { item, list, listId, userId } = data;
-  const { viewersIds } = list;
-
-  viewersIds.forEach(id => {
-    const viewerId = id.toString();
-
-    if (viewerId !== userId.toString()) {
-      if (listClients.has(viewerId)) {
-        const { socketId } = listClients.get(viewerId);
-
-        io.sockets.to(socketId).emit(ItemActionTypes.UPDATE_SUCCESS, {
-          listId,
-          item: responseWithItem(item, viewerId)
-        });
-      }
-    }
-  });
-
-  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
-
-  return Promise.resolve();
-};
-
-const archiveItem = io => data => {
-  const {
-    editedBy,
-    itemId,
-    list: { items },
-    listId,
-    performerId
-  } = data;
-
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.ARCHIVE_SUCCESS, {
-    editedBy,
-    itemId,
-    listId,
-    performerId
-  });
-
-  io.sockets
-    .to(listMetaDataChannel(listId))
-    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
-};
-
 const markAsDone = io => data => {
   const {
     editedBy,
@@ -212,6 +162,27 @@ const markAsUnhandled = io => data => {
     .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
 };
 
+const archiveItem = io => data => {
+  const {
+    editedBy,
+    itemId,
+    list: { items },
+    listId,
+    performerId
+  } = data;
+
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.ARCHIVE_SUCCESS, {
+    editedBy,
+    itemId,
+    listId,
+    performerId
+  });
+
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
+};
+
 const restoreItem = io => async data => {
   const {
     item,
@@ -241,6 +212,12 @@ const restoreItem = io => async data => {
     .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
 
   return Promise.resolve();
+};
+
+const updateItem = io => data => {
+  const { listId } = data;
+
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.UPDATE_SUCCESS, data);
 };
 
 const addComment = io => data => {

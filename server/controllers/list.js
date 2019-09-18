@@ -1110,6 +1110,104 @@ const addViewer = (req, resp) => {
     });
 };
 
+const markItemAsDone = async (req, res) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId, displayName }
+  } = req;
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      'items._id': sanitizedItemId,
+      memberIds: userId
+    }).exec();
+
+    const { items } = list;
+    const itemToUpdate = items.id(sanitizedItemId);
+    itemToUpdate.editedBy = userId;
+    itemToUpdate.isOrdered = true;
+
+    const savedList = await list.save();
+    const data = {
+      editedBy: displayName,
+      itemId: sanitizedItemId,
+      list: savedList._doc,
+      listId: sanitizedListId,
+      performerId: userId
+    };
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_DONE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId,
+        null,
+        null
+      )
+    );
+
+    res.send();
+    socketActions.markAsDone(socketInstance)(data);
+  } catch {
+    res.sendStatus(400);
+  }
+};
+
+const markItemAsUnhandled = async (req, res) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId, displayName }
+  } = req;
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      'items._id': sanitizedItemId,
+      memberIds: userId
+    }).exec();
+
+    const { items } = list;
+    const itemToUpdate = items.id(sanitizedItemId);
+    itemToUpdate.editedBy = userId;
+    itemToUpdate.isOrdered = false;
+
+    const savedList = await list.save();
+    const data = {
+      editedBy: displayName,
+      itemId: sanitizedItemId,
+      list: savedList._doc,
+      listId: sanitizedListId,
+      performerId: userId
+    };
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_UNHANDLED,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId,
+        null,
+        null
+      )
+    );
+
+    res.send();
+    socketActions.markAsUnhandled(socketInstance)(data);
+  } catch {
+    res.sendStatus(400);
+  }
+};
+
 const archiveItem = async (req, res) => {
   const { itemId } = req.body;
   const { id: listId } = req.params;
@@ -1211,105 +1309,7 @@ const restoreItem = async (req, res) => {
   }
 };
 
-const markItemAsDone = async (req, res) => {
-  const { itemId } = req.body;
-  const { id: listId } = req.params;
-  const {
-    user: { _id: userId, displayName }
-  } = req;
-  const sanitizedItemId = sanitize(itemId);
-  const sanitizedListId = sanitize(listId);
-
-  try {
-    const list = await List.findOne({
-      _id: sanitizedListId,
-      'items._id': sanitizedItemId,
-      memberIds: userId
-    }).exec();
-
-    const { items } = list;
-    const itemToUpdate = items.id(sanitizedItemId);
-    itemToUpdate.editedBy = userId;
-    itemToUpdate.isOrdered = true;
-
-    const savedList = await list.save();
-    const data = {
-      editedBy: displayName,
-      itemId: sanitizedItemId,
-      list: savedList._doc,
-      listId: sanitizedListId,
-      performerId: userId
-    };
-
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_DONE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        null
-      )
-    );
-
-    res.send();
-    socketActions.markAsDone(socketInstance)(data);
-  } catch {
-    res.sendStatus(400);
-  }
-};
-
-const markItemAsUnhandled = async (req, res) => {
-  const { itemId } = req.body;
-  const { id: listId } = req.params;
-  const {
-    user: { _id: userId, displayName }
-  } = req;
-  const sanitizedItemId = sanitize(itemId);
-  const sanitizedListId = sanitize(listId);
-
-  try {
-    const list = await List.findOne({
-      _id: sanitizedListId,
-      'items._id': sanitizedItemId,
-      memberIds: userId
-    }).exec();
-
-    const { items } = list;
-    const itemToUpdate = items.id(sanitizedItemId);
-    itemToUpdate.editedBy = userId;
-    itemToUpdate.isOrdered = false;
-
-    const savedList = await list.save();
-    const data = {
-      editedBy: displayName,
-      itemId: sanitizedItemId,
-      list: savedList._doc,
-      listId: sanitizedListId,
-      performerId: userId
-    };
-
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_UNHANDLED,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        null
-      )
-    );
-
-    res.send();
-    socketActions.markAsUnhandled(socketInstance)(data);
-  } catch {
-    res.sendStatus(400);
-  }
-};
-
-const updateListItem = (req, res) => {
+const updateItem = async (req, res) => {
   const { description, itemId, name } = req.body;
   const {
     user: { _id: userId, displayName }
@@ -1318,104 +1318,66 @@ const updateListItem = (req, res) => {
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
   let editedItemActivity;
-  let prevItemName;
+  let prevItemName = null;
 
-  List.findOne({
-    _id: sanitizedListId,
-    'items._id': sanitizedItemId,
-    memberIds: userId
-  })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new NotFoundException();
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      'items._id': sanitizedItemId,
+      memberIds: userId
+    }).exec();
+
+    const updatedData = { editedBy: displayName };
+    const { items } = list;
+    const itemToUpdate = items.id(sanitizedItemId);
+    itemToUpdate.editedBy = userId;
+
+    if (isDefined(description)) {
+      const { description: prevDescription } = itemToUpdate;
+      itemToUpdate.description = description;
+
+      if (!description && prevDescription) {
+        editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
+      } else if (description && !prevDescription) {
+        editedItemActivity = ActivityType.ITEM_ADD_DESCRIPTION;
+      } else {
+        editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
       }
 
-      const { items } = doc;
-      const itemToUpdate = items.id(sanitizedItemId);
-      itemToUpdate.editedBy = userId;
+      updatedData.description = description;
+    }
 
-      if (isDefined(description)) {
-        const { description: prevDescription } = itemToUpdate;
-        itemToUpdate.description = description;
+    if (name) {
+      prevItemName = itemToUpdate.name;
+      itemToUpdate.name = name;
+      editedItemActivity = ActivityType.ITEM_EDIT_NAME;
+      updatedData.name = name;
+    }
 
-        if (!description && prevDescription) {
-          editedItemActivity = ActivityType.ITEM_REMOVE_DESCRIPTION;
-        } else if (description && !prevDescription) {
-          editedItemActivity = ActivityType.ITEM_ADD_DESCRIPTION;
-        } else {
-          editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
-        }
-      }
+    await list.save();
 
-      if (name) {
-        prevItemName = itemToUpdate.name;
-        itemToUpdate.name = name;
-        editedItemActivity = ActivityType.ITEM_EDIT_NAME;
-      }
+    fireAndForget(
+      saveActivity(
+        editedItemActivity,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId,
+        null,
+        prevItemName
+      )
+    );
 
-      const editedBy = { _id: userId, displayName };
-
-      return doc.save().then(() => ({
-        editedBy
-      }));
-    })
-    .then(() =>
-      List.findOne({
-        _id: sanitizedListId,
-        'items._id': sanitizedItemId,
-        memberIds: userId
-      })
-        .populate('items.authorId', 'displayName')
-        .populate('items.editedBy', 'displayName')
-        .lean()
-        .exec()
-        .then(list => {
-          if (list) {
-            const { items } = list;
-            const updatedItem = items.find(
-              item => item._id.toString() === sanitizedItemId
-            );
-
-            return { list, item: updatedItem };
-          }
-
-          throw new Error();
-        })
-    )
-    .then(result => {
-      if (!result) {
-        return res.sendStatus(404);
-      }
-      const { item, list } = result;
-
-      fireAndForget(
-        saveActivity(
-          editedItemActivity,
-          userId,
-          sanitizedItemId,
-          sanitizedListId,
-          list.cohortId,
-          null,
-          prevItemName
-        )
-      );
-
-      return socketActions.updateItem(
-        socketInstance,
-        cohortClients,
-        dashboardClients,
-        listClients
-      )({
-        list,
-        item,
-        itemId: sanitizedItemId,
-        listId: sanitizedListId,
-        userId
-      });
-    })
-    .then(() => res.send())
-    .catch(() => res.sendStatus(400));
+    res.send();
+    socketActions.updateItem(socketInstance)({
+      updatedData,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    });
+  } catch {
+    res.sendStatus(400);
+  }
 };
 
 const cloneItem = (req, resp) => {
@@ -1900,7 +1862,7 @@ module.exports = {
   removeOwner,
   removeOwnerRole,
   restoreItem,
+  updateItem,
   updateListById,
-  updateListItem,
   voteForItem
 };
