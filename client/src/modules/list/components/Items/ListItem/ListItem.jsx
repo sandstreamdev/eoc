@@ -13,6 +13,8 @@ import {
   clearVote,
   cloneItem,
   lockItem,
+  markAsDone,
+  markAsUnhandled,
   setVote,
   unlockItem,
   updateListItem
@@ -42,22 +44,31 @@ class ListItem extends PureComponent {
     this.handleItemUnlock();
   }
 
-  markAsDone = () => {
-    const isOrdered = true;
+  handleItemStatus = () => {
+    const {
+      currentUser: { name: editedBy },
+      data: { _id: itemId, name: itemName, isOrdered },
+      isMember,
+      markAsDone,
+      markAsUnhandled,
+      match: {
+        params: { id: listId }
+      }
+    } = this.props;
+
+    if (!isMember) {
+      return;
+    }
+
+    const action = isOrdered ? markAsUnhandled : markAsDone;
 
     this.setState({
       disableToggleButton: true
     });
-    this.updateItem(isOrdered);
-  };
 
-  markAsUnhandled = () => {
-    const isOrdered = false;
-
-    this.setState({
-      disableToggleButton: true
-    });
-    this.updateItem(isOrdered);
+    return action(listId, itemId, itemName, editedBy).finally(() =>
+      this.setState({ disableToggleButton: false }, this.handleItemUnlock)
+    );
   };
 
   updateItem = isOrdered => {
@@ -482,7 +493,7 @@ class ListItem extends PureComponent {
                 <PendingButton
                   className="list-item__icon"
                   disabled={disableToggleButton || !isMember || isEdited}
-                  onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
+                  onClick={this.handleItemStatus}
                 />
               </div>
             </div>
@@ -514,6 +525,8 @@ ListItem.propTypes = {
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
+  markAsDone: PropTypes.func.isRequired,
+  markAsUnhandled: PropTypes.func.isRequired,
   setVote: PropTypes.func.isRequired,
   updateListItem: PropTypes.func.isRequired
 };
@@ -530,6 +543,8 @@ export default _flowRight(
       archiveItem,
       clearVote,
       cloneItem,
+      markAsDone,
+      markAsUnhandled,
       setVote,
       updateListItem
     }

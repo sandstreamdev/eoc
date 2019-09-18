@@ -166,6 +166,83 @@ const archiveItem = io => data => {
     .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
 };
 
+const markAsDone = io => data => {
+  const {
+    editedBy,
+    itemId,
+    list: { items },
+    listId,
+    performerId
+  } = data;
+
+  io.sockets
+    .to(listChannel(listId))
+    .emit(ItemActionTypes.MARK_AS_DONE_SUCCESS, {
+      editedBy,
+      itemId,
+      listId,
+      performerId
+    });
+
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
+};
+
+const markAsUnhandled = io => data => {
+  const {
+    editedBy,
+    itemId,
+    list: { items },
+    listId,
+    performerId
+  } = data;
+
+  io.sockets
+    .to(listChannel(listId))
+    .emit(ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS, {
+      editedBy,
+      itemId,
+      listId,
+      performerId
+    });
+
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
+};
+
+const restoreItem = io => async data => {
+  const {
+    item,
+    itemId,
+    list: { items, viewersIds },
+    listId,
+    performerId
+  } = data;
+
+  viewersIds.forEach(async id => {
+    const viewerId = id.toString();
+    const itemToSend = responseWithItem(item, viewerId);
+    const socketIds = await getUserSockets(viewerId);
+
+    socketIds.forEach(socketId =>
+      io.sockets.to(socketId).emit(ItemActionTypes.RESTORE_SUCCESS, {
+        listId,
+        item: itemToSend,
+        itemId,
+        performerId
+      })
+    );
+  });
+
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
+
+  return Promise.resolve();
+};
+
 const addComment = io => data => {
   const { listId } = data;
 
@@ -789,10 +866,13 @@ module.exports = {
   deleteItem,
   deleteList,
   leaveList,
+  markAsDone,
+  markAsUnhandled,
   moveToList,
   removeMemberRoleInList,
   removeOwnerRoleInList,
   removeViewer,
+  restoreItem,
   restoreList,
   setVote,
   updateItem,

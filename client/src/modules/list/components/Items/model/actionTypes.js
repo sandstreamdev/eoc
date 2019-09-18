@@ -11,6 +11,8 @@ export const ItemActionTypes = enumerable('item')(
   ...asyncTypes('CLEAR_VOTE'),
   ...asyncTypes('CLONE'),
   ...asyncTypes('DELETE'),
+  ...asyncTypes('MARK_AS_DONE'),
+  ...asyncTypes('MARK_AS_UNHANDLED'),
   ...asyncTypes('FETCH_ARCHIVED'),
   ...asyncTypes('MOVE'),
   'REMOVE_ARCHIVED',

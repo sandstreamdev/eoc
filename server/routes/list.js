@@ -19,12 +19,15 @@ const {
   getListData,
   getListsMetaData,
   leaveList,
+  markItemAsDone,
+  markItemAsUnhandled,
   moveItem,
   removeFromFavourites,
   removeMember,
   removeMemberRole,
   removeOwner,
   removeOwnerRole,
+  restoreItem,
   updateListById,
   updateListItem,
   voteForItem
@@ -57,5 +60,8 @@ router.patch('/:id/leave', authorize, leaveList);
 router.get('/for-item', authorize, getAvailableLists);
 router.patch('/:id/move-item', authorize, moveItem);
 router.patch('/:id/archive-item', authorize, archiveItem);
+router.patch('/:id/restore-item', authorize, restoreItem);
+router.patch('/:id/mark-item-as-unhandled', authorize, markItemAsUnhandled);
+router.patch('/:id/mark-item-as-done', authorize, markItemAsDone);
 
 module.exports = router;

@@ -7,7 +7,7 @@ import {
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
-import { filterDefined, isDefined } from 'common/utils/helpers';
+import { filterDefined } from 'common/utils/helpers';
 import initialState from './initialState';
 
 const comments = (state = {}, action) => {
@@ -112,16 +112,17 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.RESTORE_SUCCESS: {
       const {
-        payload: { editedBy, itemId }
+        payload: { item, itemId }
       } = action;
       const previousItem = state[itemId];
+      const restoredItem = previousItem
+        ? { ...previousItem, ...item, isArchived: false }
+        : { ...item };
 
       return {
         ...state,
         [itemId]: {
-          ...previousItem,
-          editedBy,
-          isArchived: false
+          ...restoredItem
         }
       };
     }
@@ -165,6 +166,18 @@ const items = (state = {}, action) => {
 
       return state;
     }
+    case ItemActionTypes.MARK_AS_DONE_SUCCESS: {
+      const { itemId, editedBy } = action.payload;
+      const item = state[itemId];
+
+      return { ...state, [itemId]: { ...item, editedBy, isOrdered: true } };
+    }
+    case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS: {
+      const { itemId, editedBy } = action.payload;
+      const item = state[itemId];
+
+      return { ...state, [itemId]: { ...item, editedBy, isOrdered: false } };
+    }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
       const {
@@ -190,6 +203,7 @@ export const animations = (state = initialState, action) => {
     case ItemActionTypes.ADD_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS:
     case ItemActionTypes.MOVE_SUCCESS:
+    case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS:
       return { ...state, animateUnhandledItems: true };
     case ItemActionTypes.RESTORE_SUCCESS: {
       const { isOrdered } = action.payload;
@@ -200,25 +214,8 @@ export const animations = (state = initialState, action) => {
     }
     case ItemActionTypes.ARCHIVE_SUCCESS:
       return { ...state, animateArchivedItems: true };
-    case ItemActionTypes.UPDATE_SUCCESS: {
-      const {
-        item: { isArchived, isOrdered }
-      } = action.payload;
-
-      if (isDefined(isArchived)) {
-        return isArchived
-          ? { ...state, animateArchivedItems: true }
-          : { ...state, animateUnhandledItems: true };
-      }
-
-      if (isDefined(isOrdered)) {
-        return isOrdered
-          ? { ...state, animateDoneItems: true }
-          : { ...state, animateUnhandledItems: true };
-      }
-
-      return state;
-    }
+    case ItemActionTypes.MARK_AS_DONE_SUCCESS:
+      return { ...state, animateDoneItems: true };
     case AnimationActionTypes.DISABLE_FOR_ARCHIVE_ITEMS:
       return { ...state, animateArchivedItems: false };
     case AnimationActionTypes.DISABLE_FOR_DONE_ITEMS:
