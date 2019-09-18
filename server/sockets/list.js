@@ -145,6 +145,27 @@ const updateItem = (
   return Promise.resolve();
 };
 
+const archiveItem = io => data => {
+  const {
+    editedBy,
+    itemId,
+    list: { items },
+    listId,
+    performerId
+  } = data;
+
+  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.ARCHIVE_SUCCESS, {
+    editedBy,
+    itemId,
+    listId,
+    performerId
+  });
+
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
+};
+
 const addComment = io => data => {
   const { listId } = data;
 
@@ -760,6 +781,7 @@ module.exports = {
   addViewer,
   addMemberRoleInList,
   addOwnerRoleInList,
+  archiveItem,
   archiveList,
   changeListType,
   clearVote,

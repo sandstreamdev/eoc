@@ -148,6 +148,7 @@ class ListItem extends PureComponent {
   handleArchiveItem = () => {
     const {
       archiveItem,
+      currentUser: { name: editedBy },
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
@@ -156,7 +157,9 @@ class ListItem extends PureComponent {
 
     this.handleItemLock();
 
-    return archiveItem(listId, itemId, name).finally(this.handleItemUnlock);
+    return archiveItem(listId, itemId, name, editedBy).finally(
+      this.handleItemUnlock
+    );
   };
 
   renderVoting = () => {

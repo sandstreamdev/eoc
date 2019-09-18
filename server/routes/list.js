@@ -7,6 +7,7 @@ const {
   addOwnerRole,
   addToFavourites,
   addViewer,
+  archiveItem,
   changeType,
   clearVote,
   cloneItem,
@@ -55,5 +56,6 @@ router.delete('/:id/:itemId', authorize, deleteItem);
 router.patch('/:id/leave', authorize, leaveList);
 router.get('/for-item', authorize, getAvailableLists);
 router.patch('/:id/move-item', authorize, moveItem);
+router.patch('/:id/archive-item', authorize, archiveItem);
 
 module.exports = router;

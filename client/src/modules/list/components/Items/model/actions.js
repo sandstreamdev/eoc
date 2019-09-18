@@ -303,13 +303,13 @@ export const fetchComments = (name, listId, itemId) => dispatch =>
       );
     });
 
-export const archiveItem = (listId, itemId, name) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item`, {
+export const archiveItem = (listId, itemId, name, editedBy) => dispatch =>
+  patchData(`/api/lists/${listId}/archive-item`, {
     isArchived: true,
     itemId
   })
     .then(() => {
-      dispatch(archiveItemSuccess({ listId, itemId }));
+      dispatch(archiveItemSuccess({ listId, itemId, editedBy }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.archive-item',
         data: { name }

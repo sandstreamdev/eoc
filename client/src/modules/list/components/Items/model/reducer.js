@@ -97,7 +97,7 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.ARCHIVE_SUCCESS: {
       const {
-        payload: { itemId }
+        payload: { itemId, editedBy }
       } = action;
       const previousItem = state[itemId];
 
@@ -105,6 +105,7 @@ const items = (state = {}, action) => {
         ...state,
         [itemId]: {
           ...previousItem,
+          editedBy,
           isArchived: true
         }
       };

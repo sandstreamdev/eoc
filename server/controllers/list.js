@@ -1110,8 +1110,57 @@ const addViewer = (req, resp) => {
     });
 };
 
+const archiveItem = async (req, res) => {
+  const { itemId } = req.body;
+  const { id: listId } = req.params;
+  const {
+    user: { _id: userId, displayName }
+  } = req;
+  const sanitizedItemId = sanitize(itemId);
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      'items._id': sanitizedItemId,
+      memberIds: userId
+    }).exec();
+
+    const { items } = list;
+    const itemToUpdate = items.id(sanitizedItemId);
+    itemToUpdate.editedBy = userId;
+    itemToUpdate.isArchived = true;
+
+    const savedList = await list.save();
+    const data = {
+      editedBy: displayName,
+      itemId: sanitizedItemId,
+      list: savedList._doc,
+      listId: sanitizedListId,
+      performerId: userId
+    };
+
+    socketActions.archiveItem(socketInstance)(data);
+    res.send();
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_ARCHIVE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        list.cohortId,
+        null,
+        null
+      )
+    );
+  } catch {
+    res.sendStatus(400);
+  }
+};
+
 const updateListItem = (req, res) => {
-  const { description, isArchived, isOrdered, itemId, name } = req.body;
+  const { description, isOrdered, itemId, name } = req.body;
   const {
     user: { _id: userId, displayName }
   } = req;
@@ -1135,6 +1184,11 @@ const updateListItem = (req, res) => {
       const { items } = doc;
       const itemToUpdate = items.id(sanitizedItemId);
       itemToUpdate.editedBy = userId;
+      const dataToSend = {
+        listId,
+        itemId: sanitizedItemId,
+        performerId: userId
+      };
 
       if (isDefined(description)) {
         const { description: prevDescription } = itemToUpdate;
@@ -1147,6 +1201,7 @@ const updateListItem = (req, res) => {
         } else {
           editedItemActivity = ActivityType.ITEM_EDIT_DESCRIPTION;
         }
+        dataToSend.description = description;
       }
 
       if (isDefined(isOrdered)) {
@@ -1154,26 +1209,22 @@ const updateListItem = (req, res) => {
         editedItemActivity = isOrdered
           ? ActivityType.ITEM_DONE
           : ActivityType.ITEM_UNHANDLED;
+        dataToSend.isOrdered = isOrdered;
       }
 
       if (name) {
         prevItemName = itemToUpdate.name;
         itemToUpdate.name = name;
         editedItemActivity = ActivityType.ITEM_EDIT_NAME;
-      }
-
-      if (isDefined(isArchived)) {
-        itemToUpdate.isArchived = isArchived;
-        editedItemActivity = isArchived
-          ? ActivityType.ITEM_ARCHIVE
-          : ActivityType.ITEM_RESTORE;
+        dataToSend.name = name;
       }
 
       const editedBy = { _id: userId, displayName };
 
-      return doc
-        .save()
-        .then(list => ({ list, item: { ...itemToUpdate._doc, editedBy } }));
+      return doc.save().then(() => ({
+        dataToSend,
+        editedBy
+      }));
     })
     .then(() =>
       List.findOne({
@@ -1694,6 +1745,7 @@ module.exports = {
   addOwnerRole,
   addToFavourites,
   addViewer,
+  archiveItem,
   changeType,
   clearVote,
   cloneItem,
