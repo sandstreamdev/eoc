@@ -391,6 +391,7 @@ const updateProperties = (object, updates) => {
   });
 };
 const runAsyncTasks = async (...tasks) => {
+  console.log(tasks);
   tasks.forEach(task => task());
 
   try {
