@@ -83,9 +83,9 @@ class ArchivedItemsContainer extends PureComponent {
             <ItemsContainer
               animate={animate}
               archived
-              disableAnimations={disableAnimationForArchivedItems}
               isMember={isMember}
               items={archivedItems}
+              onDisableAnimations={disableAnimationForArchivedItems}
             />
             {pending && <Preloader />}
           </div>

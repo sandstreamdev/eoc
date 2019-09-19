@@ -245,17 +245,17 @@ class List extends Component {
                 <div className="list__items">
                   <ItemsContainer
                     animate={animateUnhandledItems}
-                    disableAnimations={disableAnimationForUnhandledItems}
                     isMember={isMember}
                     items={undoneItems}
+                    onDisableAnimations={disableAnimationForUnhandledItems}
                   >
                     {isMember && <InputBar />}
                   </ItemsContainer>
                   <ItemsContainer
                     animate={animateDoneItems}
-                    disableAnimations={disableAnimationForDoneItems}
                     isMember={isMember}
                     items={doneItems}
+                    onDisableAnimations={disableAnimationForDoneItems}
                     ordered
                   />
                 </div>

@@ -215,7 +215,7 @@ export const animations = (state = initialState, action) => {
       return { ...state, animateArchivedItems: true };
     case ItemActionTypes.MARK_AS_DONE_SUCCESS:
       return { ...state, animateDoneItems: true };
-    case AnimationActionTypes.DISABLE_FOR_ARCHIVE_ITEMS:
+    case AnimationActionTypes.DISABLE_FOR_ARCHIVED_ITEMS:
       return { ...state, animateArchivedItems: false };
     case AnimationActionTypes.DISABLE_FOR_DONE_ITEMS:
       return { ...state, animateDoneItems: false };
