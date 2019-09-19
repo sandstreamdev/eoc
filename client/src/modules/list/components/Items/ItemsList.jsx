@@ -29,9 +29,9 @@ class ItemsList extends PureComponent {
     const {
       animate,
       archived,
-      disableAnimations,
       isMember,
-      items
+      items,
+      onDisableAnimations
     } = this.props;
     const { limit } = this.state;
 
@@ -47,7 +47,7 @@ class ItemsList extends PureComponent {
               enter={animate}
               classNames="animated-item"
               key={item._id}
-              onEntered={disableAnimations}
+              onEntered={onDisableAnimations}
               timeout={1000}
             >
               <ListArchivedItem
@@ -67,7 +67,7 @@ class ItemsList extends PureComponent {
               enter={animate}
               classNames="animated-item"
               key={item._id}
-              onEntered={disableAnimations}
+              onEntered={onDisableAnimations}
               timeout={2000}
             >
               <ListItem data={item} isMember={isMember} key={item._id} />
@@ -115,9 +115,10 @@ class ItemsList extends PureComponent {
 ItemsList.propTypes = {
   animate: PropTypes.bool,
   archived: PropTypes.bool,
-  disableAnimations: PropTypes.func.isRequired,
   isMember: PropTypes.bool,
-  items: PropTypes.arrayOf(PropTypes.object)
+  items: PropTypes.arrayOf(PropTypes.object),
+
+  onDisableAnimations: PropTypes.func.isRequired
 };
 
 export default withRouter(ItemsList);

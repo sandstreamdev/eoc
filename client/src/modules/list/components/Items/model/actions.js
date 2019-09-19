@@ -130,7 +130,7 @@ export const removeArchivedItems = payload => ({
 });
 
 export const disableAnimationForArchivedItems = () => ({
-  type: AnimationActionTypes.DISABLE_FOR_ARCHIVE_ITEMS
+  type: AnimationActionTypes.DISABLE_FOR_ARCHIVED_ITEMS
 });
 
 export const disableAnimationForDoneItems = () => ({
