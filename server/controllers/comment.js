@@ -3,10 +3,10 @@ const sanitize = require('mongo-sanitize');
 const Comment = require('../models/comment.model');
 const List = require('../models/list.model');
 const {
+  fireAndForget,
   responseWithComment,
-  responseWithComments,
-  returnPayload
-} = require('../common/utils/index');
+  responseWithComments
+} = require('../common/utils');
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const { saveActivity } = require('./activity');
 const { ActivityType } = require('../common/variables');
@@ -52,23 +52,22 @@ const addComment = (req, resp) => {
       );
       const data = { itemId, listId, comment: commentToSend };
 
-      return returnPayload(socketActions.addComment(socketInstance)(data))(
-        commentToSend
+      fireAndForget(
+        saveActivity(
+          ActivityType.ITEM_ADD_COMMENT,
+          userId,
+          sanitizedItemId,
+          sanitizedListId,
+          list.cohortId
+        )
       );
-    })
-    .then(payload => {
-      resp
-        .location(`/comment/${payload._id}`)
-        .status(201)
-        .send(payload);
 
-      saveActivity(
-        ActivityType.ITEM_ADD_COMMENT,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        list.cohortId
-      );
+      resp
+        .location(`/comment/${commentToSend._id}`)
+        .status(201)
+        .send(commentToSend);
+
+      socketActions.addComment(socketInstance)(data);
     })
     .catch(() => resp.sendStatus(400));
 };

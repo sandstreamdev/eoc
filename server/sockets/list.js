@@ -143,8 +143,6 @@ const addComment = io => data => {
   const { listId } = data;
 
   io.sockets.to(listChannel(listId)).emit(CommentActionTypes.ADD_SUCCESS, data);
-
-  return Promise.resolve();
 };
 
 const cloneItem = io => data =>
