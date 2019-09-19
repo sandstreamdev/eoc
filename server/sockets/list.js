@@ -34,13 +34,8 @@ const { votingBroadcast, delayedUnlock, emitItemUpdate } = require('./helpers');
 const addItemToList = io => data =>
   emitItemUpdate(io)(ItemActionTypes.ADD_SUCCESS)(data);
 
-const deleteItem = io => data => {
-  const { listId } = data;
-
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.DELETE_SUCCESS, data);
-
-  return Promise.resolve();
-};
+const deleteItem = io => data =>
+  emitItemUpdate(io)(ItemActionTypes.DELETE_SUCCESS)(data);
 
 const updateItemState = (socket, itemClientLocks) => {
   socket.on(ItemStatusType.LOCK, data => {

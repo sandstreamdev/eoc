@@ -1563,52 +1563,47 @@ const getArchivedItems = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const deleteItem = (req, resp) => {
+const deleteItem = async (req, resp) => {
   const { id: listId, itemId } = req.params;
   const { _id: userId } = req.user;
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
 
-  List.findOne({
-    _id: sanitizedListId,
-    'items._id': sanitizedItemId,
-    memberIds: userId
-  })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new NotFoundException();
-      }
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      'items._id': sanitizedItemId,
+      memberIds: userId
+    }).exec();
 
-      const { items } = doc;
-      const itemToUpdate = items.id(sanitizedItemId);
-      const { name } = itemToUpdate;
-      const data = { listId, itemId };
-      const payload = { doc, name };
+    const { items } = list;
+    const itemToUpdate = items.id(sanitizedItemId);
+    itemToUpdate.isDeleted = true;
 
-      itemToUpdate.isDeleted = true;
+    const savedList = await list.save();
+    const { name } = itemToUpdate;
+    const data = {
+      itemData: { itemId: sanitizedItemId, performerId: userId },
+      listId
+    };
 
-      return returnPayload(socketActions.deleteItem(socketInstance)(data))(
-        payload
-      );
-    })
-    .then(({ doc, name }) => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.ITEM_DELETE,
-          userId,
-          sanitizedItemId,
-          sanitizedListId,
-          doc.cohortId,
-          null,
-          name
-        )
-      );
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_DELETE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        savedList.cohortId,
+        null,
+        name
+      )
+    );
 
-      return doc.save();
-    })
-    .then(() => resp.send())
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    socketActions.deleteItem(socketInstance)(data);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const leaveList = (req, resp) => {
