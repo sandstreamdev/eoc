@@ -46,7 +46,7 @@ class ListItem extends PureComponent {
   handleItemStatus = () => {
     const {
       currentUser: { name: editedBy },
-      data: { _id: itemId, name: itemName, isOrdered },
+      data: { _id: itemId, name: itemName, done },
       isMember,
       markAsDone,
       markAsUnhandled,
@@ -59,7 +59,7 @@ class ListItem extends PureComponent {
       return;
     }
 
-    const action = isOrdered ? markAsUnhandled : markAsDone;
+    const action = done ? markAsUnhandled : markAsDone;
 
     this.setState({
       disableToggleButton: true
@@ -150,11 +150,11 @@ class ListItem extends PureComponent {
 
   renderVoting = () => {
     const {
-      data: { isOrdered, isVoted, votesCount },
+      data: { done, isVoted, votesCount },
       isMember
     } = this.props;
 
-    if (isOrdered) {
+    if (done) {
       return null;
     }
 
@@ -254,7 +254,7 @@ class ListItem extends PureComponent {
     const { isConfirmationVisible, isMoveToListPanelVisible } = this.state;
     const {
       data: {
-        isOrdered,
+        done,
         locks: { description: descriptionLock, name: nameLock } = DefaultLocks
       },
       isMember
@@ -276,7 +276,7 @@ class ListItem extends PureComponent {
         >
           <FormattedMessage id="list.list-item.archive" />
         </button>
-        {!isOrdered && (
+        {!done && (
           <Fragment>
             <PendingButton
               className="link-button"
@@ -351,13 +351,13 @@ class ListItem extends PureComponent {
       data: {
         _id: itemId,
         description,
-        isOrdered,
+        done,
         locks: { description: descriptionLock } = DefaultLocks,
         name
       },
       isMember
     } = this.props;
-    const isFieldDisabled = !isMember || isOrdered;
+    const isFieldDisabled = !isMember || done;
 
     if (description || !isFieldDisabled) {
       return (
@@ -378,7 +378,7 @@ class ListItem extends PureComponent {
 
   renderDetails = () => {
     const {
-      data: { _id: itemId, comments, isOrdered, name },
+      data: { _id: itemId, comments, done, name },
       isMember
     } = this.props;
 
@@ -391,7 +391,7 @@ class ListItem extends PureComponent {
         <div className="list-item__comments">
           <CommentsList
             comments={comments}
-            isFormAccessible={isMember && !isOrdered}
+            isFormAccessible={isMember && !done}
             itemId={itemId}
             itemName={name}
           />
@@ -406,7 +406,7 @@ class ListItem extends PureComponent {
         _id,
         authorName,
         editedBy,
-        isOrdered,
+        done,
         locks: { name: nameLock, description: descriptionLock } = DefaultLocks,
         name
       },
@@ -418,7 +418,7 @@ class ListItem extends PureComponent {
     return (
       <li
         className={classNames('list-item', {
-          'list-item--done': isOrdered,
+          'list-item--done': done,
           'list-item--details-visible': areDetailsVisible
         })}
       >

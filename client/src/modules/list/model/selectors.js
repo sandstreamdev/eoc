@@ -45,12 +45,12 @@ export const getArchivedItems = createSelector(
 
 export const getDoneItems = createSelector(
   [getActiveItems],
-  items => _filter(items, item => item.isOrdered)
+  items => _filter(items, item => item.done)
 );
 
 export const getUndoneItems = createSelector(
   [getActiveItems],
-  items => _filter(items, item => !item.isOrdered)
+  items => _filter(items, item => !item.done)
 );
 
 export const getLists = state => state.lists;

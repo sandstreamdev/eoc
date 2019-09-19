@@ -167,13 +167,13 @@ const items = (state = {}, action) => {
       const { itemId, editedBy } = action.payload;
       const item = state[itemId];
 
-      return { ...state, [itemId]: { ...item, editedBy, isOrdered: true } };
+      return { ...state, [itemId]: { ...item, editedBy, done: true } };
     }
     case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS: {
       const { itemId, editedBy } = action.payload;
       const item = state[itemId];
 
-      return { ...state, [itemId]: { ...item, editedBy, isOrdered: false } };
+      return { ...state, [itemId]: { ...item, editedBy, done: false } };
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {
@@ -204,10 +204,10 @@ export const animations = (state = initialState, action) => {
       return { ...state, animateUnhandledItems: true };
     case ItemActionTypes.RESTORE_SUCCESS: {
       const {
-        item: { isOrdered }
+        item: { done }
       } = action.payload;
 
-      return isOrdered
+      return done
         ? { ...state, animateDoneItems: true }
         : { ...state, animateUnhandledItems: true };
     }

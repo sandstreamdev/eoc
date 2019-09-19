@@ -26,7 +26,7 @@ const addComment = (req, resp) => {
     _id: sanitizedListId,
     memberIds: userId,
     'items._id': sanitizedItemId,
-    'items.isOrdered': false
+    'items.done': false
   })
     .exec()
     .then(doc => {
