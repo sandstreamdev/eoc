@@ -182,7 +182,7 @@ const getArchivedListsMetaData = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const addItemToList = (req, resp) => {
+const addItemToList = async (req, resp) => {
   const {
     item: { name, authorId },
     listId
@@ -190,58 +190,53 @@ const addItemToList = (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
+  const sanitizedListId = sanitize(listId);
 
   const item = new Item({
     authorId,
     name
   });
 
-  List.findOneAndUpdate(
-    {
-      _id: sanitize(listId),
-      memberIds: userId
-    },
-    { $push: { items: item } },
-    { new: true }
-  )
-    .lean()
-    .populate('items.authorId', 'displayName')
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        memberIds: userId
+      },
+      { $push: { items: item } },
+      { new: true }
+    )
+      .lean()
+      .populate('items.authorId', 'displayName')
+      .exec();
 
-      const { cohortId, items } = doc;
-      const newItem = items.slice(-1)[0];
-      const itemToSend = responseWithItem(newItem, userId);
-      const data = { doc, item: itemToSend, listId };
-      const payload = { itemToSend, cohortId };
+    const { _id: listId, cohortId, items } = list;
+    const newItem = items.slice(-1)[0];
+    const itemToSend = responseWithItem(newItem, userId);
+    const data = {
+      itemData: {
+        item: itemToSend,
+        performerId: userId
+      },
+      items,
+      listId
+    };
 
-      return returnPayload(
-        socketActions.addItemToList(
-          socketInstance,
-          cohortClients,
-          dashboardClients
-        )(data)
-      )(payload);
-    })
-    .then(payload => {
-      const { itemToSend, cohortId } = payload;
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_ADD,
+        userId,
+        itemToSend._id,
+        listId,
+        cohortId
+      )
+    );
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.ITEM_ADD,
-          userId,
-          itemToSend._id,
-          listId,
-          cohortId
-        )
-      );
-
-      resp.send(itemToSend);
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send(itemToSend);
+    socketActions.addItemToList(socketInstance)(data);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const getListData = (req, resp) => {
@@ -1110,7 +1105,7 @@ const addViewer = (req, resp) => {
     });
 };
 
-const markItemAsDone = async (req, res) => {
+const markItemAsDone = async (req, resp) => {
   const { itemId } = req.body;
   const { id: listId } = req.params;
   const {
@@ -1133,11 +1128,13 @@ const markItemAsDone = async (req, res) => {
 
     const savedList = await list.save();
     const data = {
-      editedBy: displayName,
-      itemId: sanitizedItemId,
-      list: savedList._doc,
-      listId: sanitizedListId,
-      performerId: userId
+      itemData: {
+        editedBy: displayName,
+        itemId: sanitizedItemId,
+        performerId: userId
+      },
+      items: savedList._doc.items,
+      listId: sanitizedListId
     };
 
     fireAndForget(
@@ -1152,14 +1149,14 @@ const markItemAsDone = async (req, res) => {
       )
     );
 
-    res.send();
+    resp.send();
     socketActions.markAsDone(socketInstance)(data);
   } catch {
-    res.sendStatus(400);
+    resp.sendStatus(400);
   }
 };
 
-const markItemAsUnhandled = async (req, res) => {
+const markItemAsUnhandled = async (req, resp) => {
   const { itemId } = req.body;
   const { id: listId } = req.params;
   const {
@@ -1182,11 +1179,13 @@ const markItemAsUnhandled = async (req, res) => {
 
     const savedList = await list.save();
     const data = {
-      editedBy: displayName,
-      itemId: sanitizedItemId,
-      list: savedList._doc,
-      listId: sanitizedListId,
-      performerId: userId
+      itemData: {
+        editedBy: displayName,
+        itemId: sanitizedItemId,
+        performerId: userId
+      },
+      items: savedList._doc.items,
+      listId: sanitizedListId
     };
 
     fireAndForget(
@@ -1201,14 +1200,14 @@ const markItemAsUnhandled = async (req, res) => {
       )
     );
 
-    res.send();
+    resp.send();
     socketActions.markAsUnhandled(socketInstance)(data);
   } catch {
-    res.sendStatus(400);
+    resp.sendStatus(400);
   }
 };
 
-const archiveItem = async (req, res) => {
+const archiveItem = async (req, resp) => {
   const { itemId } = req.body;
   const { id: listId } = req.params;
   const {
@@ -1231,11 +1230,13 @@ const archiveItem = async (req, res) => {
 
     const savedList = await list.save();
     const data = {
-      editedBy: displayName,
-      itemId: sanitizedItemId,
-      list: savedList._doc,
-      listId: sanitizedListId,
-      performerId: userId
+      itemData: {
+        editedBy: displayName,
+        itemId: sanitizedItemId,
+        performerId: userId
+      },
+      items: savedList._doc.items,
+      listId: sanitizedListId
     };
 
     fireAndForget(
@@ -1250,14 +1251,14 @@ const archiveItem = async (req, res) => {
       )
     );
 
-    res.send();
+    resp.send();
     socketActions.archiveItem(socketInstance)(data);
   } catch {
-    res.sendStatus(400);
+    resp.sendStatus(400);
   }
 };
 
-const restoreItem = async (req, res) => {
+const restoreItem = async (req, resp) => {
   const { itemId } = req.body;
   const { id: listId } = req.params;
   const {
@@ -1302,14 +1303,14 @@ const restoreItem = async (req, res) => {
       )
     );
 
-    res.send();
+    resp.send();
     await socketActions.restoreItem(socketInstance)(data);
   } catch {
-    res.sendStatus(400);
+    resp.sendStatus(400);
   }
 };
 
-const updateItem = async (req, res) => {
+const updateItem = async (req, resp) => {
   const { description, itemId, name } = req.body;
   const {
     user: { _id: userId, displayName }
@@ -1368,19 +1369,21 @@ const updateItem = async (req, res) => {
       )
     );
 
-    res.send();
+    resp.send();
     socketActions.updateItem(socketInstance)({
-      updatedData,
-      itemId: sanitizedItemId,
-      listId: sanitizedListId,
-      performerId: userId
+      itemData: {
+        updatedData,
+        itemId: sanitizedItemId,
+        performerId: userId
+      },
+      listId: sanitizedListId
     });
   } catch {
-    res.sendStatus(400);
+    resp.sendStatus(400);
   }
 };
 
-const cloneItem = (req, resp) => {
+const cloneItem = async (req, resp) => {
   const { itemId } = req.body;
   const { id: listId } = req.params;
   const { _id: userId } = req.user;
@@ -1388,73 +1391,55 @@ const cloneItem = (req, resp) => {
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
 
-  List.findOne({
-    _id: sanitize(sanitizedListId),
-    'items._id': sanitize(sanitizedItemId),
-    memberIds: userId
-  })
-    .exec()
-    .then(list => {
-      if (!list) {
-        throw new BadRequestException();
-      }
+  try {
+    const sourceList = await List.findOne({
+      _id: sanitizedListId,
+      'items._id': sanitizedItemId,
+      memberIds: userId
+    }).exec();
 
-      const { description, name } = list.items.id(sanitizedItemId);
+    const { description, name } = sourceList.items.id(sanitizedItemId);
+    const item = new Item({
+      authorId: userId,
+      description,
+      name
+    });
 
-      const item = new Item({
-        authorId: userId,
-        description,
-        name
-      });
+    const savedList = await List.findByIdAndUpdate(
+      {
+        _id: sanitizedListId,
+        memberIds: userId
+      },
+      { $push: { items: item } },
+      { new: true }
+    )
+      .lean()
+      .populate('items.authorId', 'displayName')
+      .exec();
 
-      return List.findByIdAndUpdate(
-        {
-          _id: sanitizedListId,
-          memberIds: userId
-        },
-        { $push: { items: item } },
-        { new: true }
+    const newItem = savedList.items.slice(-1)[0];
+    const newItemToSend = responseWithItem(newItem, userId);
+    const data = {
+      itemData: { item: newItemToSend, performerId: userId },
+      items: savedList.items,
+      listId
+    };
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_CLONE,
+        userId,
+        newItemToSend._id,
+        sanitizedListId,
+        savedList.cohortId
       )
-        .lean()
-        .populate('items.authorId', 'displayName')
-        .exec();
-    })
-    .then(list => {
-      if (!list) {
-        return resp.sendStatus(400);
-      }
-      const { viewersIds } = list;
-      const newItem = list.items.slice(-1)[0];
-      const newItemToSend = responseWithItem(newItem, userId);
-      const payload = { newItemToSend, list };
-      const data = { item: newItemToSend, list, listId, userId };
+    );
 
-      return returnPayload(
-        socketActions.cloneItem(
-          socketInstance,
-          cohortClients,
-          dashboardClients,
-          listClients,
-          viewersIds
-        )(data)
-      )(payload);
-    })
-    .then(payload => {
-      const { newItemToSend, list } = payload;
-
-      fireAndForget(
-        saveActivity(
-          ActivityType.ITEM_CLONE,
-          userId,
-          newItemToSend._id,
-          sanitizedListId,
-          list.cohortId
-        )
-      );
-
-      resp.send(newItemToSend);
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send(newItemToSend);
+    socketActions.cloneItem(socketInstance)(data);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const changeType = (req, resp) => {
@@ -1578,7 +1563,7 @@ const getArchivedItems = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, resp) => {
   const { id: listId, itemId } = req.params;
   const { _id: userId } = req.user;
   const sanitizedItemId = sanitize(itemId);
@@ -1622,8 +1607,8 @@ const deleteItem = (req, res) => {
 
       return doc.save();
     })
-    .then(() => res.send())
-    .catch(() => res.sendStatus(400));
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
 };
 
 const leaveList = (req, resp) => {

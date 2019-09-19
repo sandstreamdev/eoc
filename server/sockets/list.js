@@ -29,19 +29,10 @@ const {
   updateListOnDashboardAndCohortView
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
-const { votingBroadcast, delayedUnlock } = require('./helpers');
+const { votingBroadcast, delayedUnlock, emitItemUpdate } = require('./helpers');
 
-const addItemToList = (io, cohortClients, dashboardClients) => data => {
-  const { doc: list, item, listId } = data;
-
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ItemActionTypes.ADD_SUCCESS, { item, listId });
-
-  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
-
-  return Promise.resolve();
-};
+const addItemToList = io => data =>
+  emitItemUpdate(io)(ItemActionTypes.ADD_SUCCESS)(data);
 
 const deleteItem = io => data => {
   const { listId } = data;
@@ -116,72 +107,14 @@ const updateItemState = (socket, itemClientLocks) => {
   });
 };
 
-const markAsDone = io => data => {
-  const {
-    editedBy,
-    itemId,
-    list: { items },
-    listId,
-    performerId
-  } = data;
+const markAsDone = io => data =>
+  emitItemUpdate(io)(ItemActionTypes.MARK_AS_DONE_SUCCESS)(data);
 
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ItemActionTypes.MARK_AS_DONE_SUCCESS, {
-      editedBy,
-      itemId,
-      listId,
-      performerId
-    });
+const markAsUnhandled = io => data =>
+  emitItemUpdate(io)(ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS)(data);
 
-  io.sockets
-    .to(listMetaDataChannel(listId))
-    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
-};
-
-const markAsUnhandled = io => data => {
-  const {
-    editedBy,
-    itemId,
-    list: { items },
-    listId,
-    performerId
-  } = data;
-
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS, {
-      editedBy,
-      itemId,
-      listId,
-      performerId
-    });
-
-  io.sockets
-    .to(listMetaDataChannel(listId))
-    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
-};
-
-const archiveItem = io => data => {
-  const {
-    editedBy,
-    itemId,
-    list: { items },
-    listId,
-    performerId
-  } = data;
-
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.ARCHIVE_SUCCESS, {
-    editedBy,
-    itemId,
-    listId,
-    performerId
-  });
-
-  io.sockets
-    .to(listMetaDataChannel(listId))
-    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
-};
+const archiveItem = io => data =>
+  emitItemUpdate(io)(ItemActionTypes.ARCHIVE_SUCCESS)(data);
 
 const restoreItem = io => async data => {
   const {
@@ -215,9 +148,7 @@ const restoreItem = io => async data => {
 };
 
 const updateItem = io => data => {
-  const { listId } = data;
-
-  io.sockets.to(listChannel(listId)).emit(ItemActionTypes.UPDATE_SUCCESS, data);
+  emitItemUpdate(io)(ItemActionTypes.UPDATE_SUCCESS)(data);
 };
 
 const addComment = io => data => {
@@ -228,36 +159,8 @@ const addComment = io => data => {
   return Promise.resolve();
 };
 
-const cloneItem = (
-  io,
-  cohortClients,
-  dashboardClients,
-  listClients,
-  viewersIds
-) => data => {
-  const { item, list, listId, userId } = data;
-  const dataToSend = { item, listId };
-
-  viewersIds.forEach(viewerId => {
-    const viewerIdAsString = viewerId.toString();
-
-    if (viewerIdAsString !== userId.toString()) {
-      if (listClients.has(viewerIdAsString)) {
-        const { socketId, viewId } = listClients.get(viewerIdAsString);
-
-        if (viewId === listId) {
-          io.sockets
-            .to(socketId)
-            .emit(ItemActionTypes.CLONE_SUCCESS, dataToSend);
-        }
-      }
-    }
-  });
-
-  sendListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)(list);
-
-  return Promise.resolve();
-};
+const cloneItem = io => data =>
+  emitItemUpdate(io)(ItemActionTypes.CLONE_SUCCESS)(data);
 
 const addViewer = io => async data => {
   const {

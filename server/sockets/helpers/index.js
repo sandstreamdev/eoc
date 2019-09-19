@@ -2,7 +2,11 @@ const Cohort = require('../../models/cohort.model');
 const List = require('../../models/list.model');
 const Session = require('../../models/session.model');
 const { ListActionTypes, CohortActionTypes } = require('../eventTypes');
-const { responseWithList, responseWithCohort } = require('../../common/utils');
+const {
+  countItems,
+  responseWithList,
+  responseWithCohort
+} = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
 const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
 
@@ -316,6 +320,21 @@ const getUserSockets = async userId => {
   }
 };
 
+const emitItemUpdate = io => event => data => {
+  const { itemData, items, listId } = data;
+
+  io.sockets.to(listChannel(listId)).emit(event, {
+    ...itemData,
+    listId
+  });
+
+  if (items) {
+    io.sockets
+      .to(listMetaDataChannel(listId))
+      .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
+  }
+};
+
 module.exports = {
   associateSocketWithSession,
   cohortChannel,
@@ -323,6 +342,7 @@ module.exports = {
   delayedUnlock,
   descriptionLockId,
   emitCohortMetaData,
+  emitItemUpdate,
   emitRoleChange,
   getListIdsByViewers,
   getListsDataByViewers,
