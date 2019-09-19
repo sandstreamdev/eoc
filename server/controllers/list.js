@@ -370,6 +370,11 @@ const voteForItem = async (req, resp) => {
 
     const { items, viewersIds } = list;
     const item = items.id(sanitizedItemId);
+
+    if (checkIfArrayContainsUserId(item.voterIds, userId)) {
+      throw new Error();
+    }
+
     item.voterIds.push(userId);
 
     const savedList = await list.save();
@@ -1673,130 +1678,102 @@ const getAvailableLists = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const moveItem = (req, resp) => {
+const moveItem = async (req, resp) => {
   const { itemId, newListId } = req.body;
   const { id: listId } = req.params;
   const { _id: userId } = req.user;
-  const sanitizedItemId = sanitize(itemId);
+  const sanitizedSourceItemId = sanitize(itemId);
   const sanitizedSourceListId = sanitize(listId);
   const sanitizedTargetListId = sanitize(newListId);
 
-  List.findOne({
-    _id: sanitizedSourceListId,
-    memberIds: userId,
-    'items._id': sanitizedItemId
-  })
-    .exec()
-    .then(sourceList => {
-      if (!sourceList) {
-        throw new BadRequestException();
-      }
+  try {
+    // Get source list data
+    const sourceList = await List.findOne({
+      _id: sanitizedSourceListId,
+      memberIds: userId,
+      'items._id': sanitizedSourceItemId
+    }).exec();
 
-      const { items } = sourceList;
-      const { _id, ...itemToMove } = items.id(sanitizedItemId)._doc;
-      const movedItem = new Item({
-        ...itemToMove,
-        locks: { description: false, name: false }
-      });
+    // Create item for target list
+    const { items, name: sourceListName } = sourceList;
+    const sourceItem = items.id(sanitizedSourceItemId);
+    const { _id, ...dataToMove } = sourceItem._doc;
+    const targetItem = new Item({
+      ...dataToMove,
+      locks: { description: false, name: false }
+    });
+    const targetItemId = targetItem._id;
 
-      return Comment.find({ itemId: sanitizedItemId })
-        .lean()
-        .exec()
-        .then(comments => ({ comments, movedItem, sourceList }));
-    })
-    .then(result => {
-      const { comments, movedItem, sourceList } = result;
-      const promises = [];
+    // Copy comments for moved item
+    const comments = await Comment.find({ itemId: sanitizedSourceItemId })
+      .lean()
+      .exec();
 
-      if (comments.length > 0) {
-        comments.forEach(comment => {
+    if (comments.length > 0) {
+      await Promise.all(
+        comments.map(comment => {
           const { _id, ...commentData } = comment;
           const newComment = new Comment({
             ...commentData,
-            itemId: movedItem._id
+            itemId: targetItemId
           });
 
-          promises.push(newComment.save());
-        });
-      }
-
-      return promises.length > 0
-        ? Promise.all(promises).then(() => ({ movedItem, sourceList }))
-        : { movedItem, sourceList };
-    })
-    .then(result => {
-      const {
-        movedItem,
-        movedItem: { _id: movedItemId },
-        sourceList
-      } = result;
-
-      return List.findOneAndUpdate(
-        {
-          _id: sanitizedTargetListId,
-          memberIds: userId
-        },
-        { $push: { items: movedItem } },
-        { new: true }
-      )
-        .exec()
-        .then(() => ({ movedItemId, sourceList }));
-    })
-    .then(result => {
-      const { sourceList } = result;
-      const { items } = sourceList;
-      const itemToUpdate = items.id(sanitizedItemId);
-
-      itemToUpdate.isDeleted = true;
-      itemToUpdate.isArchived = true;
-
-      return sourceList
-        .save()
-        .then(savedSourceList => ({ ...result, sourceList: savedSourceList }));
-    })
-    .then(result => {
-      const { movedItemId } = result;
-
-      return List.findOne({
-        _id: sanitizedTargetListId,
-        'items._id': movedItemId
-      })
-        .populate('items.authorId', 'displayName')
-        .populate('items.editedBy', 'displayName')
-        .exec()
-        .then(targetList => ({ ...result, targetList }));
-    })
-    .then(result => {
-      const {
-        movedItemId,
-        targetList,
-        targetList: { cohortId, items },
-        sourceList,
-        sourceList: { name }
-      } = result;
-      const movedItem = items.id(movedItemId)._doc;
-
-      fireAndForget(
-        saveActivity(
-          ActivityType.ITEM_MOVE,
-          userId,
-          movedItemId,
-          sanitizedTargetListId,
-          cohortId,
-          null,
-          name
-        )
+          return newComment.save();
+        })
       );
+    }
 
-      return socketActions.moveToList(socketInstance)({
-        sourceItemId: sanitizedItemId,
-        movedItem,
-        targetList,
-        sourceList
-      });
+    // Save moved item in target list
+    await List.findOneAndUpdate(
+      {
+        _id: sanitizedTargetListId,
+        memberIds: userId
+      },
+      { $push: { items: targetItem } },
+      { new: true }
+    ).exec();
+
+    // Mark item as deleted in source list
+    sourceItem.isDeleted = true;
+    sourceItem.isArchived = true;
+    const savedSourceList = await sourceList.save();
+
+    // Get movedItem data with all populated data
+    const targetList = await List.findOne({
+      _id: sanitizedTargetListId,
+      'items._id': targetItemId
     })
-    .then(() => resp.send())
-    .catch(() => resp.sendStatus(400));
+      .populate('items.authorId', 'displayName')
+      .populate('items.editedBy', 'displayName')
+      .exec();
+
+    // prepare data to save activity and for socket
+    const { cohortId, items: targetListItems } = targetList;
+    const itemData = targetListItems.id(targetItemId)._doc;
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_MOVE,
+        userId,
+        targetItemId,
+        sanitizedTargetListId,
+        cohortId,
+        null,
+        sourceListName
+      )
+    );
+
+    // send response and emit data via socket
+    resp.send();
+    await socketActions.moveToList(socketInstance)({
+      sourceItemId: sanitizedSourceItemId,
+      movedItem: itemData,
+      targetList,
+      sourceList: savedSourceList
+    });
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 module.exports = {
