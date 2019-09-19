@@ -215,8 +215,7 @@ const addItemToList = async (req, resp) => {
     const itemToSend = responseWithItem(newItem, userId);
     const data = {
       itemData: {
-        item: itemToSend,
-        performerId: userId
+        item: itemToSend
       },
       items,
       listId
@@ -350,8 +349,11 @@ const getListData = (req, resp) => {
     );
 };
 
-const voteForItem = (req, resp) => {
-  const { itemId } = req.body;
+const voteForItem = async (req, resp) => {
+  const {
+    body: { itemId },
+    sessionID
+  } = req;
   const { id: listId } = req.params;
   const {
     user: { _id: userId }
@@ -359,50 +361,48 @@ const voteForItem = (req, resp) => {
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
 
-  List.findOne({
-    _id: sanitizedListId,
-    memberIds: userId,
-    'items._id': sanitizedItemId
-  })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      memberIds: userId,
+      'items._id': sanitizedItemId
+    }).exec();
 
-      const { items, viewersIds } = doc;
-      const item = items.id(sanitizedItemId);
-      const data = { listId, userId, itemId };
+    const { items, viewersIds } = list;
+    const item = items.id(sanitizedItemId);
+    item.voterIds.push(userId);
 
-      item.voterIds.push(userId);
+    const savedList = await list.save();
+    const data = {
+      itemId,
+      listId,
+      performerId: userId,
+      sessionId: sessionID,
+      viewersIds
+    };
 
-      return returnPayload(
-        socketActions.setVote(socketInstance, listClients, viewersIds)(data)
-      )(doc);
-    })
-    .then(payload => payload.save())
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_ADD_VOTE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        savedList.cohortId
+      )
+    );
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.ITEM_ADD_VOTE,
-          userId,
-          sanitizedItemId,
-          sanitizedListId,
-          doc.cohortId
-        )
-      );
-
-      resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    socketActions.setVote(socketInstance)(data);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
-const clearVote = (req, resp) => {
-  const { itemId } = req.body;
+const clearVote = async (req, resp) => {
+  const {
+    body: { itemId },
+    sessionID
+  } = req;
   const { id: listId } = req.params;
   const {
     user: { _id: userId }
@@ -410,47 +410,42 @@ const clearVote = (req, resp) => {
   const sanitizedItemId = sanitize(itemId);
   const sanitizedListId = sanitize(listId);
 
-  List.findOne({
-    _id: sanitizedListId,
-    memberIds: userId,
-    'items._id': sanitizedItemId
-  })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      memberIds: userId,
+      'items._id': sanitizedItemId
+    }).exec();
 
-      const { items, viewersIds } = doc;
-      const item = items.id(sanitizedItemId);
-      const voterIdIndex = item.voterIds.indexOf(userId);
-      const data = { listId, userId, itemId };
+    const { items, viewersIds } = list;
+    const item = items.id(sanitizedItemId);
+    const voterIdIndex = item.voterIds.indexOf(userId);
+    item.voterIds.splice(voterIdIndex, 1);
 
-      item.voterIds.splice(voterIdIndex, 1);
+    const savedList = await list.save();
+    const data = {
+      itemId,
+      listId,
+      performerId: userId,
+      sessionId: sessionID,
+      viewersIds
+    };
 
-      return returnPayload(
-        socketActions.clearVote(socketInstance, listClients, viewersIds)(data)
-      )(doc);
-    })
-    .then(payload => payload.save())
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+    fireAndForget(
+      saveActivity(
+        ActivityType.ITEM_CLEAR_VOTE,
+        userId,
+        sanitizedItemId,
+        sanitizedListId,
+        savedList.cohortId
+      )
+    );
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.ITEM_CLEAR_VOTE,
-          userId,
-          sanitizedItemId,
-          sanitizedListId,
-          doc.cohortId
-        )
-      );
-
-      resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    socketActions.clearVote(socketInstance)(data);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const updateListById = (req, resp) => {
@@ -728,7 +723,7 @@ const removeMember = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const data = { listId, performerId: currentUserId, userId };
+      const data = { listId, userId };
 
       return returnPayload(socketActions.removeViewer(socketInstance)(data))(
         doc
@@ -1071,8 +1066,7 @@ const addViewer = (req, resp) => {
         return socketActions.addViewer(socketInstance)({
           listId,
           list: list._doc,
-          userToSend,
-          performerId: currentUserId
+          userToSend
         });
       }
     })
@@ -1130,8 +1124,7 @@ const markItemAsDone = async (req, resp) => {
     const data = {
       itemData: {
         editedBy: displayName,
-        itemId: sanitizedItemId,
-        performerId: userId
+        itemId: sanitizedItemId
       },
       items: savedList._doc.items,
       listId: sanitizedListId
@@ -1181,8 +1174,7 @@ const markItemAsUnhandled = async (req, resp) => {
     const data = {
       itemData: {
         editedBy: displayName,
-        itemId: sanitizedItemId,
-        performerId: userId
+        itemId: sanitizedItemId
       },
       items: savedList._doc.items,
       listId: sanitizedListId
@@ -1232,8 +1224,7 @@ const archiveItem = async (req, resp) => {
     const data = {
       itemData: {
         editedBy: displayName,
-        itemId: sanitizedItemId,
-        performerId: userId
+        itemId: sanitizedItemId
       },
       items: savedList._doc.items,
       listId: sanitizedListId
@@ -1287,8 +1278,7 @@ const restoreItem = async (req, resp) => {
       itemId: sanitizedItemId,
       item: { ...itemToUpdate._doc, editedBy },
       list: savedList._doc,
-      listId: sanitizedListId,
-      performerId: userId
+      listId: sanitizedListId
     };
 
     fireAndForget(
@@ -1373,8 +1363,7 @@ const updateItem = async (req, resp) => {
     socketActions.updateItem(socketInstance)({
       itemData: {
         updatedData,
-        itemId: sanitizedItemId,
-        performerId: userId
+        itemId: sanitizedItemId
       },
       listId: sanitizedListId
     });
@@ -1420,7 +1409,7 @@ const cloneItem = async (req, resp) => {
     const newItem = savedList.items.slice(-1)[0];
     const newItemToSend = responseWithItem(newItem, userId);
     const data = {
-      itemData: { item: newItemToSend, performerId: userId },
+      itemData: { item: newItemToSend },
       items: savedList.items,
       listId
     };
@@ -1583,7 +1572,7 @@ const deleteItem = async (req, resp) => {
     const savedList = await list.save();
     const { name } = itemToUpdate;
     const data = {
-      itemData: { itemId: sanitizedItemId, performerId: userId },
+      itemData: { itemId: sanitizedItemId },
       listId
     };
 
@@ -1799,12 +1788,7 @@ const moveItem = (req, resp) => {
         )
       );
 
-      return socketActions.moveToList(
-        socketInstance,
-        cohortClients,
-        dashboardClients,
-        listClients
-      )({
+      return socketActions.moveToList(socketInstance)({
         sourceItemId: sanitizedItemId,
         movedItem,
         targetList,

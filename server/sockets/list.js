@@ -14,7 +14,6 @@ const {
   checkIfArrayContainsUserId,
   countItems,
   isMember,
-  responseWithItem,
   responseWithList
 } = require('../common/utils');
 const {
@@ -25,11 +24,15 @@ const {
   listChannel,
   listMetaDataChannel,
   nameLockId,
-  sendListOnDashboardAndCohortView,
-  updateListOnDashboardAndCohortView
+  sendListOnDashboardAndCohortView
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
-const { votingBroadcast, delayedUnlock, emitItemUpdate } = require('./helpers');
+const {
+  delayedUnlock,
+  emitItemPerUser,
+  emitItemUpdate,
+  emitVoteChange
+} = require('./helpers');
 
 const addItemToList = io => data =>
   emitItemUpdate(io)(ItemActionTypes.ADD_SUCCESS)(data);
@@ -116,28 +119,18 @@ const restoreItem = io => async data => {
     item,
     itemId,
     list: { items, viewersIds },
-    listId,
-    performerId
+    listId
   } = data;
-
-  viewersIds.forEach(async id => {
-    const viewerId = id.toString();
-    const itemToSend = responseWithItem(item, viewerId);
-    const socketIds = await getUserSockets(viewerId);
-
-    socketIds.forEach(socketId =>
-      io.sockets.to(socketId).emit(ItemActionTypes.RESTORE_SUCCESS, {
-        listId,
-        item: itemToSend,
-        itemId,
-        performerId
-      })
-    );
-  });
 
   io.sockets
     .to(listMetaDataChannel(listId))
     .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
+
+  await emitItemPerUser(io)(ItemActionTypes.RESTORE_SUCCESS)(viewersIds, {
+    item,
+    itemId,
+    listId
+  });
 
   return Promise.resolve();
 };
@@ -161,48 +154,66 @@ const addViewer = io => async data => {
   const {
     list,
     list: { _id: listId },
-    performerId,
     userToSend,
     userToSend: { _id: viewerId }
   } = data;
 
   io.sockets.to(listChannel(listId)).emit(ListActionTypes.ADD_VIEWER_SUCCESS, {
     listId,
-    performerId,
     viewer: { ...userToSend }
   });
 
-  const socketIds = await getUserSockets(viewerId);
+  try {
+    const socketIds = await getUserSockets(viewerId);
 
-  socketIds.forEach(socketId =>
-    io.sockets
-      .to(socketId)
-      .emit(AppEvents.JOIN_ROOM, listMetaDataChannel(listId))
-  );
+    socketIds.forEach(socketId =>
+      io.sockets
+        .to(socketId)
+        .emit(AppEvents.JOIN_ROOM, listMetaDataChannel(listId))
+    );
 
-  socketIds.forEach(socketId =>
-    io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-      [listId]: responseWithList(list, viewerId)
-    })
-  );
+    socketIds.forEach(socketId =>
+      io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+        [listId]: responseWithList(list, viewerId)
+      })
+    );
+  } catch {
+    // Ignore error
+  }
 
   return Promise.resolve();
 };
 
-const setVote = (io, listClients, viewersIds) => data => {
-  const { listId, itemId } = data;
-  const action = ItemActionTypes.SET_VOTE_SUCCESS;
-  const payload = { listId, itemId };
+const setVote = io => async data => {
+  const { sessionId, viewersIds, ...rest } = data;
 
-  return votingBroadcast(io)(data)(listClients)(viewersIds)(action, payload);
+  try {
+    await emitVoteChange(io)(ItemActionTypes.SET_VOTE_SUCCESS)(
+      viewersIds,
+      { ...rest, isVoted: true },
+      sessionId
+    );
+  } catch {
+    // Ignore error
+  }
+
+  return Promise.resolve();
 };
 
-const clearVote = (io, listClients, viewersIds) => data => {
-  const { listId, itemId } = data;
-  const action = ItemActionTypes.CLEAR_VOTE_SUCCESS;
-  const payload = { listId, itemId };
+const clearVote = io => async data => {
+  const { sessionId, viewersIds, ...rest } = data;
 
-  return votingBroadcast(io)(data)(listClients)(viewersIds)(action, payload);
+  try {
+    await emitVoteChange(io)(ItemActionTypes.CLEAR_VOTE_SUCCESS)(
+      viewersIds,
+      { ...rest, isVoted: false },
+      sessionId
+    );
+  } catch {
+    // Ignore error
+  }
+
+  return Promise.resolve();
 };
 
 const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
@@ -366,21 +377,26 @@ const removeOwnerRoleInList = (io, clients) => data => {
 
 const leaveList = io => async data => {
   const { listId, userId } = data;
-  const socketIds = await getUserSockets(userId);
 
   io.sockets
     .to(listChannel(listId))
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
-  socketIds.forEach(socketId =>
-    io.sockets
-      .to(socketId)
-      .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
-  );
+  try {
+    const socketIds = await getUserSockets(userId);
 
-  socketIds.forEach(socketId =>
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, data)
-  );
+    socketIds.forEach(socketId =>
+      io.sockets
+        .to(socketId)
+        .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
+    );
+
+    socketIds.forEach(socketId =>
+      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, data)
+    );
+  } catch {
+    // Ignore error
+  }
 
   return Promise.resolve();
 };
@@ -488,21 +504,26 @@ const changeListType = (
 
 const removeViewer = io => async data => {
   const { listId, userId } = data;
-  const socketIds = await getUserSockets(userId);
 
   io.sockets
     .to(listChannel(listId))
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
-  socketIds.forEach(socketId =>
-    io.sockets
-      .to(socketId)
-      .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
-  );
+  try {
+    const socketIds = await getUserSockets(userId);
 
-  socketIds.forEach(socketId =>
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, data)
-  );
+    socketIds.forEach(socketId =>
+      io.sockets
+        .to(socketId)
+        .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
+    );
+
+    socketIds.forEach(socketId =>
+      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, data)
+    );
+  } catch {
+    // Ignore error
+  }
 
   return Promise.resolve();
 };
@@ -679,49 +700,35 @@ const restoreList = (
     });
 };
 
-const moveToList = (
-  io,
-  cohortClients,
-  dashboardClients,
-  listClients
-) => data => {
+const moveToList = io => async data => {
   const { movedItem, sourceItemId, sourceList, targetList } = data;
   const { _id: sourceListId, items: sourceListItems } = sourceList;
   const { _id: targetListId, items: targetListItems, viewersIds } = targetList;
 
   io.sockets
-    .to(listChannel(sourceListId))
-    .emit(ItemActionTypes.DELETE_SUCCESS, {
-      sourceListId,
-      itemId: sourceItemId
+    .to(listMetaDataChannel(sourceListId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, {
+      listId: sourceListId,
+      ...countItems(sourceListItems)
     });
 
-  viewersIds.forEach(viewerId => {
-    const id = viewerId.toString();
+  io.sockets
+    .to(listMetaDataChannel(targetListId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, {
+      listId: targetListId,
+      ...countItems(targetListItems)
+    });
 
-    if (listClients.has(id)) {
-      const { socketId, viewId } = listClients.get(id);
+  io.sockets
+    .to(listChannel(sourceListId))
+    .emit(ItemActionTypes.DELETE_SUCCESS, {
+      itemId: sourceItemId,
+      listId: sourceListId
+    });
 
-      if (viewId === targetListId.toString()) {
-        io.sockets.to(socketId).emit(ItemActionTypes.ADD_SUCCESS, {
-          listId: targetListId,
-          item: responseWithItem(movedItem, id)
-        });
-      }
-    }
-  });
-
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)({
-    ...countItems(sourceListItems),
-    _id: sourceListId,
-    cohortId: sourceList.cohortId,
-    viewersIds: sourceList.viewersIds
-  });
-  updateListOnDashboardAndCohortView(io)(cohortClients, dashboardClients)({
-    ...countItems(targetListItems),
-    _id: targetListId,
-    cohortId: sourceList.targetId,
-    viewersIds
+  await emitItemPerUser(io)(ItemActionTypes.ADD_SUCCESS)(viewersIds, {
+    item: movedItem,
+    listId: targetListId
   });
 
   return Promise.resolve();
