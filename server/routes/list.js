@@ -7,6 +7,7 @@ const {
   addOwnerRole,
   addToFavourites,
   addViewer,
+  archiveItem,
   changeType,
   clearVote,
   cloneItem,
@@ -18,14 +19,17 @@ const {
   getListData,
   getListsMetaData,
   leaveList,
+  markItemAsDone,
+  markItemAsUnhandled,
   moveItem,
   removeFromFavourites,
   removeMember,
   removeMemberRole,
   removeOwner,
   removeOwnerRole,
+  restoreItem,
+  updateItem,
   updateListById,
-  updateListItem,
   voteForItem
 } = require('../controllers/list');
 const { authorize } = require('../middleware/authorize');
@@ -47,7 +51,7 @@ router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);
 router.patch('/:id/add-member-role', authorize, addMemberRole);
 router.patch('/:id/remove-member-role', authorize, removeMemberRole);
 router.patch('/:id/add-viewer', authorize, addViewer);
-router.patch('/:id/update-item', authorize, updateListItem);
+router.patch('/:id/update-item', authorize, updateItem);
 router.patch('/:id/clone-item', authorize, cloneItem);
 router.patch('/:id/change-type', authorize, changeType);
 router.get('/:id/archived-items', authorize, getArchivedItems);
@@ -55,5 +59,9 @@ router.delete('/:id/:itemId', authorize, deleteItem);
 router.patch('/:id/leave', authorize, leaveList);
 router.get('/for-item', authorize, getAvailableLists);
 router.patch('/:id/move-item', authorize, moveItem);
+router.patch('/:id/archive-item', authorize, archiveItem);
+router.patch('/:id/restore-item', authorize, restoreItem);
+router.patch('/:id/mark-item-as-unhandled', authorize, markItemAsUnhandled);
+router.patch('/:id/mark-item-as-done', authorize, markItemAsDone);
 
 module.exports = router;

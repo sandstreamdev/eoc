@@ -74,7 +74,7 @@ export class Layout extends PureComponent {
       location: { pathname }
     } = this.props;
     const {
-      location: { previousPathname }
+      location: { pathname: previousPathname }
     } = previousProps;
 
     if (previousPathname !== pathname) {

@@ -1,8 +1,15 @@
+const _compact = require('lodash/compact');
+
 const Cohort = require('../../models/cohort.model');
 const List = require('../../models/list.model');
 const Session = require('../../models/session.model');
 const { ListActionTypes, CohortActionTypes } = require('../eventTypes');
-const { responseWithList, responseWithCohort } = require('../../common/utils');
+const {
+  countItems,
+  responseWithItem,
+  responseWithList,
+  responseWithCohort
+} = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
 const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
 
@@ -130,29 +137,6 @@ const handleItemLocks = (model, query, itemId) => ({ description, name }) =>
 const nameLockId = cohortId => `name-${cohortId}`;
 
 const descriptionLockId = listId => `description-${listId}`;
-
-const votingBroadcast = io => data => listClients => viewersIds => (
-  action,
-  payload
-) => {
-  const { listId, userId } = data;
-
-  viewersIds.forEach(viewerId => {
-    const viewerIdAsString = viewerId.toString();
-
-    if (viewerIdAsString !== userId.toString()) {
-      if (listClients.has(viewerIdAsString)) {
-        const { socketId, viewId } = listClients.get(viewerIdAsString);
-
-        if (viewId === listId) {
-          io.sockets.to(socketId).emit(action, payload);
-        }
-      }
-    }
-  });
-
-  return Promise.resolve();
-};
 
 const emitRoleChange = (io, cohortClients, data, event) => {
   const { cohortId, userId } = data;
@@ -303,17 +287,84 @@ const joinMetaDataRooms = async socket => {
     // Ignore error
   }
 };
-
-const getUserSockets = async userId => {
+/**
+ * Get array of all socket ids for given user.
+ * @param {string} userId - current enums' namespace
+ * @param {string} excludedSessionId - sessionId to exclude
+ * @return {object} - array of socketIds
+ */
+const getUserSockets = async (userId, excludedSessionId = null) => {
   const regexp = new RegExp(userId);
 
   try {
     const sessions = await Session.find({ session: regexp }, 'socketId').exec();
 
-    return sessions.map(session => session.socketId);
+    return _compact(
+      sessions.map(session =>
+        session._id !== excludedSessionId ? session.socketId : null
+      )
+    );
   } catch {
     // Ignore error
   }
+};
+
+const emitItemUpdate = io => event => data => {
+  const { itemData, items, listId } = data;
+
+  io.sockets.to(listChannel(listId)).emit(event, {
+    ...itemData,
+    listId
+  });
+
+  if (items) {
+    io.sockets
+      .to(listMetaDataChannel(listId))
+      .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...countItems(items) });
+  }
+};
+
+const emitItemPerUser = io => event => (userIds, data, sessionId = null) => {
+  const { item } = data;
+
+  userIds.forEach(async id => {
+    const userId = id.toString();
+
+    try {
+      const socketIds = await getUserSockets(userId, sessionId);
+
+      socketIds.forEach(socketId =>
+        io.sockets
+          .to(socketId)
+          .emit(event, { ...data, item: responseWithItem(item, userId) })
+      );
+    } catch {
+      // Ignore error
+    }
+  });
+};
+
+const emitVoteChange = io => event => (userIds, data, sessionId = null) => {
+  const { isVoted, itemId, listId, performerId } = data;
+
+  userIds.forEach(async id => {
+    const userId = id.toString();
+    const dataToSend = { itemId, listId };
+
+    if (userId === performerId.toString()) {
+      dataToSend.isVoted = isVoted;
+    }
+
+    try {
+      const socketIds = await getUserSockets(userId, sessionId);
+
+      socketIds.forEach(socketId =>
+        io.sockets.to(socketId).emit(event, { ...dataToSend })
+      );
+    } catch {
+      // Ignore error
+    }
+  });
 };
 
 module.exports = {
@@ -323,7 +374,10 @@ module.exports = {
   delayedUnlock,
   descriptionLockId,
   emitCohortMetaData,
+  emitItemPerUser,
+  emitItemUpdate,
   emitRoleChange,
+  emitVoteChange,
   getListIdsByViewers,
   getListsDataByViewers,
   getUserSockets,
@@ -334,6 +388,5 @@ module.exports = {
   listMetaDataChannel,
   nameLockId,
   sendListOnDashboardAndCohortView,
-  updateListOnDashboardAndCohortView,
-  votingBroadcast
+  updateListOnDashboardAndCohortView
 };

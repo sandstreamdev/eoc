@@ -76,13 +76,10 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.UPDATE_SUCCESS: {
       const {
-        payload: {
-          item,
-          item: { _id: itemId }
-        }
+        payload: { itemId, updatedData }
       } = action;
 
-      const updatedItem = filterDefined(item);
+      const updatedItem = filterDefined(updatedData);
       const previousItem = state[itemId];
 
       return {
@@ -95,21 +92,7 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.ARCHIVE_SUCCESS: {
       const {
-        payload: { itemId }
-      } = action;
-      const previousItem = state[itemId];
-
-      return {
-        ...state,
-        [itemId]: {
-          ...previousItem,
-          isArchived: true
-        }
-      };
-    }
-    case ItemActionTypes.RESTORE_SUCCESS: {
-      const {
-        payload: { editedBy, itemId }
+        payload: { itemId, editedBy }
       } = action;
       const previousItem = state[itemId];
 
@@ -118,7 +101,23 @@ const items = (state = {}, action) => {
         [itemId]: {
           ...previousItem,
           editedBy,
-          isArchived: false
+          isArchived: true
+        }
+      };
+    }
+    case ItemActionTypes.RESTORE_SUCCESS: {
+      const {
+        payload: { item, itemId }
+      } = action;
+      const previousItem = state[itemId];
+      const restoredItem = previousItem
+        ? { ...previousItem, ...item, isArchived: false }
+        : { ...item };
+
+      return {
+        ...state,
+        [itemId]: {
+          ...restoredItem
         }
       };
     }
@@ -161,6 +160,18 @@ const items = (state = {}, action) => {
       }
 
       return state;
+    }
+    case ItemActionTypes.MARK_AS_DONE_SUCCESS: {
+      const { itemId, editedBy } = action.payload;
+      const item = state[itemId];
+
+      return { ...state, [itemId]: { ...item, editedBy, isOrdered: true } };
+    }
+    case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS: {
+      const { itemId, editedBy } = action.payload;
+      const item = state[itemId];
+
+      return { ...state, [itemId]: { ...item, editedBy, isOrdered: false } };
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {

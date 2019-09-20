@@ -131,7 +131,7 @@ const updateCohortById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const data = { cohortId, description, performerId: userId };
+      const data = { cohortId, description };
 
       if (isDefined(description)) {
         const { description: prevDescription } = doc;

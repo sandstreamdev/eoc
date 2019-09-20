@@ -190,6 +190,8 @@
   "list.items.actions.update-item": "Item '{name}' updated successfully.",
   "list.items.actions.move-item": "Item '{item}' successfully moved to '{list}' list.",
   "list.items.action.move-item-fail": "Failed to move item '{item}' to '{list}' list.",
+  "list.items.actions.mark-item-as-done": "Item '{name}' was marked as 'done'.",
+  "list.items.actions.mark-item-as-unhandled": "Item '{name}' was marked as 'unhandled'.",
   "list.list-archived-item.archived": "Archived",
   "list.list-archived-item.author": "Added by: {authorName}",
   "list.list-archived-item.confirmation": "Are you sure you want to delete '{name}' item?",

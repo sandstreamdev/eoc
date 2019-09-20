@@ -13,9 +13,10 @@ import {
   clearVote,
   cloneItem,
   lockItem,
+  markAsDone,
+  markAsUnhandled,
   setVote,
-  unlockItem,
-  updateListItem
+  unlockItem
 } from '../model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { getCurrentUser } from 'modules/user/model/selectors';
@@ -42,44 +43,29 @@ class ListItem extends PureComponent {
     this.handleItemUnlock();
   }
 
-  markAsDone = () => {
-    const isOrdered = true;
-
-    this.setState({
-      disableToggleButton: true
-    });
-    this.updateItem(isOrdered);
-  };
-
-  markAsUnhandled = () => {
-    const isOrdered = false;
-
-    this.setState({
-      disableToggleButton: true
-    });
-    this.updateItem(isOrdered);
-  };
-
-  updateItem = isOrdered => {
+  handleItemStatus = () => {
     const {
-      currentUser: { name: userName, id: userId },
-      data: { _id, name: itemName },
+      currentUser: { name: editedBy },
+      data: { _id: itemId, name: itemName, isOrdered },
       isMember,
+      markAsDone,
+      markAsUnhandled,
       match: {
         params: { id: listId }
-      },
-      updateListItem
+      }
     } = this.props;
-    const userData = { userId, editedBy: userName };
-    const data = { isOrdered, _id };
 
     if (!isMember) {
       return;
     }
 
-    this.handleItemLock();
+    const action = isOrdered ? markAsUnhandled : markAsDone;
 
-    return updateListItem(itemName, listId, _id, userData, data).finally(() =>
+    this.setState({
+      disableToggleButton: true
+    });
+
+    return action(listId, itemId, itemName, editedBy).finally(() =>
       this.setState({ disableToggleButton: false }, this.handleItemUnlock)
     );
   };
@@ -148,6 +134,7 @@ class ListItem extends PureComponent {
   handleArchiveItem = () => {
     const {
       archiveItem,
+      currentUser: { name: editedBy },
       data: { _id: itemId, name },
       match: {
         params: { id: listId }
@@ -156,7 +143,9 @@ class ListItem extends PureComponent {
 
     this.handleItemLock();
 
-    return archiveItem(listId, itemId, name).finally(this.handleItemUnlock);
+    return archiveItem(listId, itemId, name, editedBy).finally(
+      this.handleItemUnlock
+    );
   };
 
   renderVoting = () => {
@@ -479,7 +468,7 @@ class ListItem extends PureComponent {
                 <PendingButton
                   className="list-item__icon"
                   disabled={disableToggleButton || !isMember || isEdited}
-                  onClick={isOrdered ? this.markAsUnhandled : this.markAsDone}
+                  onClick={this.handleItemStatus}
                 />
               </div>
             </div>
@@ -511,8 +500,9 @@ ListItem.propTypes = {
   archiveItem: PropTypes.func.isRequired,
   clearVote: PropTypes.func.isRequired,
   cloneItem: PropTypes.func.isRequired,
-  setVote: PropTypes.func.isRequired,
-  updateListItem: PropTypes.func.isRequired
+  markAsDone: PropTypes.func.isRequired,
+  markAsUnhandled: PropTypes.func.isRequired,
+  setVote: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -527,8 +517,9 @@ export default _flowRight(
       archiveItem,
       clearVote,
       cloneItem,
-      setVote,
-      updateListItem
+      markAsDone,
+      markAsUnhandled,
+      setVote
     }
   )
 )(ListItem);

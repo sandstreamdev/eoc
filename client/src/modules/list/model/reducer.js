@@ -121,14 +121,18 @@ const lists = (state = {}, action) => {
     case ListActionTypes.UPDATE_SUCCESS: {
       const { listId, ...data } = action.payload;
       const previousList = state[listId];
-      const dataToUpdate = filterDefined(data);
+      if (previousList) {
+        const dataToUpdate = filterDefined(data);
 
-      const updatedList = {
-        ...previousList,
-        ...dataToUpdate
-      };
+        const updatedList = {
+          ...previousList,
+          ...dataToUpdate
+        };
 
-      return { ...state, [listId]: updatedList };
+        return { ...state, [listId]: updatedList };
+      }
+
+      return state;
     }
     case ListActionTypes.RESTORE_SUCCESS:
     case ListActionTypes.FETCH_DATA_SUCCESS:
@@ -281,6 +285,8 @@ const lists = (state = {}, action) => {
     case ItemActionTypes.CLONE_SUCCESS:
     case ItemActionTypes.DELETE_SUCCESS:
     case ItemActionTypes.FETCH_ARCHIVED_SUCCESS:
+    case ItemActionTypes.MARK_AS_DONE_SUCCESS:
+    case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS:
     case ItemActionTypes.MOVE_SUCCESS:
     case ItemActionTypes.REMOVE_ARCHIVED:
     case ItemActionTypes.RESTORE_SUCCESS:
@@ -294,7 +300,7 @@ const lists = (state = {}, action) => {
         payload: { listId }
       } = action;
 
-      if (state[listId]) {
+      if (state[listId] && state[listId].items) {
         const { items: previousItems } = state[listId];
 
         return {

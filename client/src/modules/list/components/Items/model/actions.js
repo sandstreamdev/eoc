@@ -128,6 +128,24 @@ export const removeArchivedItems = payload => ({
   payload
 });
 
+const markAsDoneSuccess = payload => ({
+  type: ItemActionTypes.MARK_AS_DONE_SUCCESS,
+  payload
+});
+
+const markAsDoneFailure = () => ({
+  type: ItemActionTypes.MARK_AS_DONE_FAILURE
+});
+
+const markAsUnhandledSuccess = payload => ({
+  type: ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS,
+  payload
+});
+
+const markAsUnhandledFailure = () => ({
+  type: ItemActionTypes.MARK_AS_UNHANDLED_FAILURE
+});
+
 export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(response => response.json())
@@ -195,10 +213,10 @@ export const updateListItem = (
       dispatch(
         updateListItemSuccess({
           listId,
-          item: {
+          itemId,
+          updatedData: {
             ...data,
-            editedBy,
-            _id: itemId
+            editedBy
           }
         })
       );
@@ -290,13 +308,60 @@ export const fetchComments = (name, listId, itemId) => dispatch =>
       );
     });
 
-export const archiveItem = (listId, itemId, name) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item`, {
-    isArchived: true,
+export const markAsDone = (listId, itemId, name, editedBy) => dispatch =>
+  patchData(`/api/lists/${listId}/mark-item-as-done`, {
     itemId
   })
     .then(() => {
-      dispatch(archiveItemSuccess({ listId, itemId }));
+      dispatch(markAsDoneSuccess({ listId, itemId, editedBy }));
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.items.actions.mark-item-as-done',
+        data: { name }
+      });
+    })
+    .catch(err => {
+      dispatch(markAsDoneFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.items.actions.mark-item-as-done-fail',
+          data: { name }
+        },
+        err
+      );
+    });
+
+export const markAsUnhandled = (listId, itemId, name, editedBy) => dispatch =>
+  patchData(`/api/lists/${listId}/mark-item-as-unhandled`, {
+    itemId
+  })
+    .then(() => {
+      dispatch(markAsUnhandledSuccess({ listId, itemId, editedBy }));
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'list.items.actions.mark-item-as-unhandled',
+        data: { name }
+      });
+    })
+    .catch(err => {
+      dispatch(markAsUnhandledFailure());
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.ERROR,
+        {
+          notificationId: 'list.items.actions.mark-item-as-unhandled-fail',
+          data: { name }
+        },
+        err
+      );
+    });
+
+export const archiveItem = (listId, itemId, name, editedBy) => dispatch =>
+  patchData(`/api/lists/${listId}/archive-item`, {
+    itemId
+  })
+    .then(() => {
+      dispatch(archiveItemSuccess({ listId, itemId, editedBy }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.archive-item',
         data: { name }
@@ -319,7 +384,6 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
   getJson(`/api/lists/${listId}/archived-items`)
     .then(json => {
       const data = _keyBy(json, '_id');
-
       dispatch(fetchArchivedItemsSuccess({ listId, data }));
     })
     .catch(err => {
@@ -335,13 +399,20 @@ export const fetchArchivedItems = (listId, name) => dispatch =>
       );
     });
 
-export const restoreItem = (listId, itemId, name, editedBy) => dispatch =>
-  patchData(`/api/lists/${listId}/update-item`, {
-    isArchived: false,
+export const restoreItem = (
+  listId,
+  itemId,
+  name,
+  editedBy,
+  isOrdered
+) => dispatch =>
+  patchData(`/api/lists/${listId}/restore-item`, {
     itemId
   })
     .then(() => {
-      dispatch(restoreItemSuccess({ listId, itemId, editedBy }));
+      dispatch(
+        restoreItemSuccess({ listId, itemId, item: { editedBy, isOrdered } })
+      );
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.items.actions.restore-item',
         data: { name }
