@@ -2,11 +2,13 @@ import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 
 import {
+  AnimationActionTypes,
   CommentActionTypes,
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
 import { filterDefined } from 'common/utils/helpers';
+import initialState from './initialState';
 
 const comments = (state = {}, action) => {
   switch (action.type) {
@@ -188,6 +190,37 @@ const items = (state = {}, action) => {
         }
       };
     }
+    default:
+      return state;
+  }
+};
+
+export const animations = (state = initialState, action) => {
+  switch (action.type) {
+    case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.CLONE_SUCCESS:
+    case ItemActionTypes.MOVE_SUCCESS:
+    case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS:
+      return { ...state, animateUnhandledItems: true };
+    case ItemActionTypes.RESTORE_SUCCESS: {
+      const {
+        item: { isOrdered }
+      } = action.payload;
+
+      return isOrdered
+        ? { ...state, animateDoneItems: true }
+        : { ...state, animateUnhandledItems: true };
+    }
+    case ItemActionTypes.ARCHIVE_SUCCESS:
+      return { ...state, animateArchivedItems: true };
+    case ItemActionTypes.MARK_AS_DONE_SUCCESS:
+      return { ...state, animateDoneItems: true };
+    case AnimationActionTypes.DISABLE_FOR_ARCHIVED_ITEMS:
+      return { ...state, animateArchivedItems: false };
+    case AnimationActionTypes.DISABLE_FOR_DONE_ITEMS:
+      return { ...state, animateDoneItems: false };
+    case AnimationActionTypes.DISABLE_FOR_UNHANDLED_ITEMS:
+      return { ...state, animateUnhandledItems: false };
     default:
       return state;
   }

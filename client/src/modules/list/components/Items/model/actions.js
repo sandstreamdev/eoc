@@ -7,6 +7,7 @@ import {
   postData
 } from 'common/utils/fetchMethods';
 import {
+  AnimationActionTypes,
   CommentActionTypes,
   ItemActionTypes,
   ItemStatusType
@@ -144,6 +145,18 @@ const markAsUnhandledSuccess = payload => ({
 
 const markAsUnhandledFailure = () => ({
   type: ItemActionTypes.MARK_AS_UNHANDLED_FAILURE
+});
+
+export const disableAnimationForArchivedItems = () => ({
+  type: AnimationActionTypes.DISABLE_FOR_ARCHIVED_ITEMS
+});
+
+export const disableAnimationForDoneItems = () => ({
+  type: AnimationActionTypes.DISABLE_FOR_DONE_ITEMS
+});
+
+export const disableAnimationForUnhandledItems = () => ({
+  type: AnimationActionTypes.DISABLE_FOR_UNHANDLED_ITEMS
 });
 
 export const addItem = (item, listId) => dispatch =>
