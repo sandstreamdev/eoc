@@ -43,9 +43,10 @@
     }
 
     &:visited {
-      color: $text-black;
+      color: $link-color;
+
       &:hover {
-        color: $link-color;
+        color: $text-black;
       }
     }
   }
