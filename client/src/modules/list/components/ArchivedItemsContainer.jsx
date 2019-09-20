@@ -9,13 +9,11 @@ import _flowRight from 'lodash/flowRight';
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getArchivedItems } from 'modules/list/model/selectors';
 import {
-  disableAnimationForArchivedItems,
   fetchArchivedItems,
   removeArchivedItems
 } from 'modules/list/components/Items/model/actions';
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import Preloader from 'common/components/Preloader';
-import { getAnimationForArchived } from 'modules/list/components/Items/model/selectors';
 
 class ArchivedItemsContainer extends PureComponent {
   state = {
@@ -56,9 +54,7 @@ class ArchivedItemsContainer extends PureComponent {
   render() {
     const { areArchivedItemsVisible, pending } = this.state;
     const {
-      animate,
       archivedItems,
-      disableAnimationForArchivedItems,
       intl: { formatMessage },
       isMember
     } = this.props;
@@ -81,11 +77,9 @@ class ArchivedItemsContainer extends PureComponent {
             })}
           >
             <ItemsContainer
-              animate={animate}
               archived
               isMember={isMember}
               items={archivedItems}
-              onDisableAnimations={disableAnimationForArchivedItems}
             />
             {pending && <Preloader />}
           </div>
@@ -96,14 +90,12 @@ class ArchivedItemsContainer extends PureComponent {
 }
 
 ArchivedItemsContainer.propTypes = {
-  animate: PropTypes.bool,
   archivedItems: PropTypes.arrayOf(PropTypes.object),
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
   name: PropTypes.string.isRequired,
 
-  disableAnimationForArchivedItems: PropTypes.func.isRequired,
   fetchArchivedItems: PropTypes.func.isRequired,
   removeArchivedItems: PropTypes.func.isRequired
 };
@@ -116,7 +108,6 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
 
   return {
-    animate: getAnimationForArchived(state),
     archivedItems: getArchivedItems(state, listId)
   };
 };
@@ -127,7 +118,6 @@ export default _flowRight(
   connect(
     mapStateToProps,
     {
-      disableAnimationForArchivedItems,
       fetchArchivedItems,
       removeArchivedItems
     }

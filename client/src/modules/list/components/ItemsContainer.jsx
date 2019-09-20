@@ -108,13 +108,11 @@ class ItemsContainer extends Component {
 
   render() {
     const {
-      animate,
       archived,
       children,
       intl: { formatMessage },
       isMember,
-      items,
-      onDisableAnimations
+      items
     } = this.props;
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterItems(items, filterBy);
@@ -145,11 +143,9 @@ class ItemsContainer extends Component {
         {children}
         <div className="items__body">
           <ItemsList
-            animate={animate}
             archived={archived}
             isMember={isMember}
             items={sortedList}
-            onDisableAnimations={onDisableAnimations}
           />
         </div>
       </div>
@@ -158,16 +154,13 @@ class ItemsContainer extends Component {
 }
 
 ItemsContainer.propTypes = {
-  animate: PropTypes.bool,
   archived: PropTypes.bool,
   children: PropTypes.node,
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),
-  ordered: PropTypes.bool,
-
-  onDisableAnimations: PropTypes.func.isRequired
+  ordered: PropTypes.bool
 };
 
 const mapStateToProps = state => ({

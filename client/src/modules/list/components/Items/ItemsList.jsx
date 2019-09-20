@@ -26,13 +26,7 @@ class ItemsList extends PureComponent {
   showLess = () => this.setState({ limit: DISPLAY_LIMIT });
 
   renderItems = () => {
-    const {
-      animate,
-      archived,
-      isMember,
-      items,
-      onDisableAnimations
-    } = this.props;
+    const { archived, isMember, items } = this.props;
     const { limit } = this.state;
 
     if (!items) {
@@ -44,10 +38,8 @@ class ItemsList extends PureComponent {
         <TransitionGroup component={null}>
           {items.slice(0, limit).map(item => (
             <CSSTransition
-              enter={animate}
               classNames="animated-item"
               key={item._id}
-              onEntered={onDisableAnimations}
               timeout={1000}
             >
               <ListArchivedItem
@@ -64,10 +56,8 @@ class ItemsList extends PureComponent {
         <TransitionGroup component={null}>
           {items.slice(0, limit).map(item => (
             <CSSTransition
-              enter={animate}
               classNames="animated-item"
               key={item._id}
-              onEntered={onDisableAnimations}
               timeout={2000}
             >
               <ListItem data={item} isMember={isMember} key={item._id} />
@@ -113,12 +103,9 @@ class ItemsList extends PureComponent {
 }
 
 ItemsList.propTypes = {
-  animate: PropTypes.bool,
   archived: PropTypes.bool,
   isMember: PropTypes.bool,
-  items: PropTypes.arrayOf(PropTypes.object),
-
-  onDisableAnimations: PropTypes.func.isRequired
+  items: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default withRouter(ItemsList);
