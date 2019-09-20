@@ -79,6 +79,7 @@ export class Layout extends PureComponent {
 
     if (previousPathname !== pathname) {
       clearMetaDataSuccess();
+      window.scrollTo(0, 0);
     }
   }
 
