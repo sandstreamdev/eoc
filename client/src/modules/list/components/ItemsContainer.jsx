@@ -89,7 +89,7 @@ class ItemsContainer extends Component {
   };
 
   renderHeadingText = () => {
-    const { archived, ordered } = this.props;
+    const { archived, done } = this.props;
 
     if (archived) {
       return <FormattedMessage id="list.items-container.arch-items" />;
@@ -98,9 +98,7 @@ class ItemsContainer extends Component {
     return (
       <FormattedMessage
         id={
-          ordered
-            ? 'list.items-container.done'
-            : 'list.items-container.unhandled'
+          done ? 'list.items-container.done' : 'list.items-container.unhandled'
         }
       />
     );
@@ -157,10 +155,10 @@ ItemsContainer.propTypes = {
   archived: PropTypes.bool,
   children: PropTypes.node,
   currentUser: UserPropType.isRequired,
+  done: PropTypes.bool,
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
-  items: PropTypes.arrayOf(PropTypes.object),
-  ordered: PropTypes.bool
+  items: PropTypes.arrayOf(PropTypes.object)
 };
 
 const mapStateToProps = state => ({

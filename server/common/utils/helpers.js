@@ -43,7 +43,7 @@ const isViewer = (doc, userId) => {
 
 const countItems = items => {
   const activeItems = items.filter(item => !item.isArchived);
-  const doneItemsCount = activeItems.filter(item => item.isOrdered).length;
+  const doneItemsCount = activeItems.filter(item => item.done).length;
   const unhandledItemsCount = activeItems.length - doneItemsCount;
 
   return { doneItemsCount, unhandledItemsCount };

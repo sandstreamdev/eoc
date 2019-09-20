@@ -12,52 +12,52 @@ const listMock = [
     name: 'Test list',
     items: [
       {
-        description: '',
-        isOrdered: false,
-        voterIds: [],
         _id: { $oid: '5ccd61134663533f995b1756' },
         authorName: 'Adam Klepacz',
         authorId: '5c9dc5a619ae7924074940f4',
+        createdAt: { $date: { $numberLong: '1556963603400' } },
+        description: '',
+        done: false,
         isArchived: false,
         name: 'Milk',
         updatedAt: { $date: { $numberLong: '1556963603400' } },
-        createdAt: { $date: { $numberLong: '1556963603400' } }
+        voterIds: []
       },
       {
-        description: '',
-        isOrdered: false,
-        voterIds: [],
         _id: { $oid: '5ccd61174663533f995b1758' },
         authorName: 'Adam Klepacz',
         authorId: '5c9dc5a619ae7924074940f4',
+        createdAt: { $date: { $numberLong: '1556963607250' } },
+        description: '',
+        done: false,
         isArchived: false,
         name: 'Coffee',
         updatedAt: { $date: { $numberLong: '1556963607250' } },
-        createdAt: { $date: { $numberLong: '1556963607250' } }
+        voterIds: []
       },
       {
-        description: '',
-        isOrdered: false,
-        voterIds: [],
         _id: { $oid: '5ccd611a4663533f995b175a' },
         authorName: 'Adam Klepacz',
         authorId: '5c9dc5a619ae7924074940f4',
+        createdAt: { $date: { $numberLong: '1556963610226' } },
+        description: '',
+        done: false,
         isArchived: false,
         name: 'Bread',
         updatedAt: { $date: { $numberLong: '1556963610226' } },
-        createdAt: { $date: { $numberLong: '1556963610226' } }
+        voterIds: []
       },
       {
-        description: '',
-        isOrdered: false,
-        voterIds: [],
         _id: { $oid: '5ccd611e4663533f995b175c' },
         authorName: 'Adam Klepacz',
         authorId: '5c9dc5a619ae7924074940f4',
+        createdAt: { $date: { $numberLong: '1556963614753' } },
+        description: '',
+        done: false,
         isArchived: false,
         name: 'A4 Sheets',
         updatedAt: { $date: { $numberLong: '1556963614753' } },
-        createdAt: { $date: { $numberLong: '1556963614753' } }
+        voterIds: []
       }
     ],
     created_at: { $date: { $numberLong: '1556963599739' } },

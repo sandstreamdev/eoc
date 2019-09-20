@@ -9,10 +9,10 @@ const generateItems = (demoUserId, userIds) => [
     _id: ObjectId(),
     authorId: demoUserId,
     description: '',
+    done: false,
     editedBy: userIds[1],
     isArchived: false,
     isDeleted: false,
-    isOrdered: false,
     locks: {
       description: false,
       name: false
@@ -25,10 +25,10 @@ const generateItems = (demoUserId, userIds) => [
     _id: ObjectId(),
     authorId: userIds[0],
     description: '',
+    done: false,
     editedBy: userIds[1],
     isArchived: false,
     isDeleted: false,
-    isOrdered: false,
     locks: {
       description: false,
       name: false
@@ -40,10 +40,10 @@ const generateItems = (demoUserId, userIds) => [
     _id: ObjectId(),
     authorId: demoUserId,
     description: '',
+    done: false,
     editedBy: userIds[1],
     isArchived: false,
     isDeleted: false,
-    isOrdered: false,
     locks: {
       description: false,
       name: false
@@ -55,10 +55,10 @@ const generateItems = (demoUserId, userIds) => [
     _id: ObjectId(),
     authorId: userIds[3],
     description: '',
+    done: false,
     editedBy: userIds[1],
     isArchived: false,
     isDeleted: false,
-    isOrdered: false,
     locks: {
       description: false,
       name: false

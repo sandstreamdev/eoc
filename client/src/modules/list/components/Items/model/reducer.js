@@ -165,13 +165,13 @@ const items = (state = {}, action) => {
       const { itemId, editedBy } = action.payload;
       const item = state[itemId];
 
-      return { ...state, [itemId]: { ...item, editedBy, isOrdered: true } };
+      return { ...state, [itemId]: { ...item, editedBy, done: true } };
     }
     case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS: {
       const { itemId, editedBy } = action.payload;
       const item = state[itemId];
 
-      return { ...state, [itemId]: { ...item, editedBy, isOrdered: false } };
+      return { ...state, [itemId]: { ...item, editedBy, done: false } };
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {

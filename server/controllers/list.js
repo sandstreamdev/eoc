@@ -1134,7 +1134,7 @@ const markItemAsDone = async (req, resp) => {
     const { items } = list;
     const itemToUpdate = items.id(sanitizedItemId);
     itemToUpdate.editedBy = userId;
-    itemToUpdate.isOrdered = true;
+    itemToUpdate.done = true;
 
     const savedList = await list.save();
     const data = {
@@ -1184,7 +1184,7 @@ const markItemAsUnhandled = async (req, resp) => {
     const { items } = list;
     const itemToUpdate = items.id(sanitizedItemId);
     itemToUpdate.editedBy = userId;
-    itemToUpdate.isOrdered = false;
+    itemToUpdate.done = false;
 
     const savedList = await list.save();
     const data = {

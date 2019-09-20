@@ -30,14 +30,14 @@ class ListArchivedItem extends PureComponent {
   handleRestoringItem = () => {
     const {
       currentUser: { name: userName },
-      data: { _id: itemId, isOrdered, name },
+      data: { _id: itemId, done, name },
       match: {
         params: { id: listId }
       },
       restoreItem
     } = this.props;
 
-    return restoreItem(listId, itemId, name, userName, isOrdered);
+    return restoreItem(listId, itemId, name, userName, done);
   };
 
   showConfirmation = () => this.setState({ isConfirmationVisible: true });
@@ -58,7 +58,7 @@ class ListArchivedItem extends PureComponent {
 
   render() {
     const {
-      data: { authorName, name, isOrdered, votesCount },
+      data: { authorName, name, done, votesCount },
       intl: { formatMessage },
       isMember
     } = this.props;
@@ -87,7 +87,7 @@ class ListArchivedItem extends PureComponent {
               </span>
               <FormattedMessage
                 id={
-                  isOrdered
+                  done
                     ? 'list.list-archived-item.done'
                     : 'list.list-archived-item.unhandled'
                 }

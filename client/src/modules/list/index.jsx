@@ -250,11 +250,7 @@ class List extends Component {
                   <ItemsContainer isMember={isMember} items={undoneItems}>
                     {isMember && <InputBar />}
                   </ItemsContainer>
-                  <ItemsContainer
-                    isMember={isMember}
-                    items={doneItems}
-                    ordered
-                  />
+                  <ItemsContainer done isMember={isMember} items={doneItems} />
                 </div>
                 {isMember && (
                   <ArchivedItemsContainer isMember={isMember} name={name} />

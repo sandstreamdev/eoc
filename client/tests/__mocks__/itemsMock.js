@@ -1,15 +1,15 @@
 export const itemsMock = [
   {
     authorName: 'John Smith',
+    done: false,
     id: '5678',
-    isOrdered: false,
     name: 'Coffe',
     voterIds: ['abcd', 'efgh']
   },
   {
     authorName: 'Joan Smith',
+    done: true,
     id: '9876',
-    isOrdered: true,
     name: 'Tea',
     voterIds: []
   }
@@ -17,8 +17,8 @@ export const itemsMock = [
 
 export const newItemMock = {
   authorName: 'Marry Smith',
+  done: false,
   id: '1234',
-  isOrdered: false,
   name: 'Sugar',
   voterIds: ['abcd', 'efgh']
 };
@@ -36,8 +36,8 @@ export const listMockPopulated = {
     items: [
       {
         authorName: 'Marry Smith',
+        done: false,
         id: '1234',
-        isOrdered: false,
         name: 'Sugar',
         voterIds: ['abcd', 'efgh']
       }
@@ -51,8 +51,8 @@ export const listMockItemToggled = {
     items: [
       {
         authorName: 'Marry Smith',
+        done: true,
         id: '1234',
-        isOrdered: true,
         name: 'Sugar',
         voterIds: ['abcd', 'efgh']
       }
@@ -66,8 +66,8 @@ export const listMockItemVoted = {
     items: [
       {
         authorName: 'Marry Smith',
+        done: false,
         id: '1234',
-        isOrdered: false,
         name: 'Sugar',
         voterIds: ['abcd', 'efgh', 'ijkl']
       }
