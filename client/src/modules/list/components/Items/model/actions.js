@@ -7,7 +7,6 @@ import {
   postData
 } from 'common/utils/fetchMethods';
 import {
-  AnimationActionTypes,
   CommentActionTypes,
   ItemActionTypes,
   ItemStatusType
@@ -127,18 +126,6 @@ const moveItemToListFailure = () => ({
 export const removeArchivedItems = payload => ({
   type: ItemActionTypes.REMOVE_ARCHIVED,
   payload
-});
-
-export const disableAnimationForArchivedItems = () => ({
-  type: AnimationActionTypes.DISABLE_FOR_ARCHIVED_ITEMS
-});
-
-export const disableAnimationForDoneItems = () => ({
-  type: AnimationActionTypes.DISABLE_FOR_DONE_ITEMS
-});
-
-export const disableAnimationForUnhandledItems = () => ({
-  type: AnimationActionTypes.DISABLE_FOR_UNHANDLED_ITEMS
 });
 
 const markAsDoneSuccess = payload => ({
