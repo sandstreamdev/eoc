@@ -70,9 +70,11 @@ class ListHeader extends PureComponent {
     if (name !== previousName) {
       this.updateName();
     }
+
     if (description !== previousDescription) {
       this.updateDescription();
     }
+
     if (type !== previousType) {
       this.updateType();
     }

@@ -56,17 +56,33 @@ class CohortHeader extends PureComponent {
       details: { name: previousName, description: previousDescription }
     } = prevProps;
 
-    if (name !== previousName || description !== previousDescription) {
-      this.updateHeaderData();
+    if (name !== previousName) {
+      this.updateName();
+    }
+
+    if (description !== previousDescription) {
+      this.updateDescription();
     }
   }
 
-  updateHeaderData = () => {
+  updateName = () => {
     const {
-      details: { name, description }
+      details: { name }
     } = this.props;
 
-    this.setState({ nameInputValue: name, descriptionInputValue: description });
+    this.setState({
+      nameInputValue: name
+    });
+  };
+
+  updateDescription = () => {
+    const {
+      details: { description }
+    } = this.props;
+
+    this.setState({
+      descriptionInputValue: description
+    });
   };
 
   handleClick = (event, isClickedOutside) => {
