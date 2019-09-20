@@ -35,6 +35,14 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
 import { joinRoom, leaveRoom } from 'common/model/actions';
+import {
+  getAnimationForDone,
+  getAnimationForUnhandled
+} from 'modules/list/components/Items/model/selectors';
+import {
+  disableAnimationForDoneItems,
+  disableAnimationForUnhandledItems
+} from 'modules/list/components/Items/model/actions';
 
 class List extends Component {
   state = {
@@ -210,6 +218,10 @@ class List extends Component {
       pendingForListArchivization
     } = this.state;
     const {
+      animateDoneItems,
+      animateUnhandledItems,
+      disableAnimationForDoneItems,
+      disableAnimationForUnhandledItems,
       doneItems,
       intl: { formatMessage },
       match: {
@@ -247,10 +259,21 @@ class List extends Component {
               />
               <div className="list__details">
                 <div className="list__items">
-                  <ItemsContainer isMember={isMember} items={undoneItems}>
+                  <ItemsContainer
+                    animate={animateUnhandledItems}
+                    isMember={isMember}
+                    items={undoneItems}
+                    onDisableAnimations={disableAnimationForUnhandledItems}
+                  >
                     {isMember && <InputBar />}
                   </ItemsContainer>
-                  <ItemsContainer done isMember={isMember} items={doneItems} />
+                  <ItemsContainer
+                    animate={animateDoneItems}
+                    done
+                    isMember={isMember}
+                    items={doneItems}
+                    onDisableAnimations={disableAnimationForDoneItems}
+                  />
                 </div>
                 {isMember && (
                   <ArchivedItemsContainer isMember={isMember} name={name} />
@@ -320,6 +343,8 @@ class List extends Component {
 }
 
 List.propTypes = {
+  animateDoneItems: PropTypes.bool,
+  animateUnhandledItems: PropTypes.bool,
   currentUser: UserPropType.isRequired,
   doneItems: PropTypes.arrayOf(PropTypes.object),
   intl: IntlPropType.isRequired,
@@ -329,6 +354,8 @@ List.propTypes = {
   undoneItems: PropTypes.arrayOf(PropTypes.object),
 
   archiveList: PropTypes.func.isRequired,
+  disableAnimationForDoneItems: PropTypes.func.isRequired,
+  disableAnimationForUnhandledItems: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
   leaveList: PropTypes.func.isRequired
 };
@@ -341,6 +368,8 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
 
   return {
+    animateDoneItems: getAnimationForDone(state),
+    animateUnhandledItems: getAnimationForUnhandled(state),
     currentUser: getCurrentUser(state),
     doneItems: getDoneItems(state, id),
     list: getList(state, id),
@@ -356,6 +385,8 @@ export default _flowRight(
     mapStateToProps,
     {
       archiveList,
+      disableAnimationForDoneItems,
+      disableAnimationForUnhandledItems,
       fetchListData,
       leaveList
     }
