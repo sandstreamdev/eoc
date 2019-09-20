@@ -120,7 +120,7 @@ class SignInForm extends PureComponent {
   renderForgotPassword = () => (
     <p className="sign-in__forgot-password">
       <Link className="sign-in__link" to="/reset-password">
-        <FormattedMessage id="user.auth.forgot-password.question" />
+        <FormattedMessage id="user.auth.forgot-password" />
       </Link>
     </p>
   );
