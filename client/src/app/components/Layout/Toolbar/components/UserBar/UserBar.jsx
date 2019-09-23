@@ -10,6 +10,7 @@ import { UserPropType } from 'common/constants/propTypes';
 import { LogoutIcon, UserIcon, CohortIcon } from 'assets/images/icons';
 import Avatar from 'common/components/Avatar';
 import Dropdown from 'common/components/Dropdown';
+import './UserBar.scss';
 
 class UserBar extends Component {
   handleLogOut = () => {

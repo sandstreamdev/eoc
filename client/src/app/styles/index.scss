@@ -15,28 +15,20 @@
 @import './buttons';
 @import './forms';
 
-// 3. Containers
-@import '../../app/components/Layout/Layout.scss';
-
 // 4. Components
 @import '../../common/components/AppLogo.scss';
-@import '../../app/components/Footer.scss';
 @import '../../modules/user/AuthBox/AuthBox.scss';
 @import '../../common/components/MessageBox.scss';
 @import '../../common/components/Preloader.scss';
 @import '../../modules/list/components/ItemsContainer.scss';
 @import '../../modules/list/components/Items/InputBar/InputBar.scss';
-@import '../../app/components/Layout/Toolbar/components/UserBar/UserBar.scss';
 @import '../../common/components/Dropdown.scss';
 @import '../../common/components/SortBox.scss';
 @import '../../modules/list/components/Items/VotingBox/VotingBox.scss';
 @import '../../modules/list/components/FilterBox.scss';
-@import '../../app/components/Layout/Toolbar/Toolbar.scss';
 @import '../../common/components/TilesViewItem.scss';
 @import '../../common/components/Overlay.scss';
-@import '../../app/components/Layout/Toolbar/components/ToolbarItem/ToolbarItem.scss';
 @import '../../modules/cohort/Cohort.scss';
-@import '../../app/components/Layout/Toolbar/components/ToolbarLink/ToolbarLink.scss';
 @import '../../common/components/CollectionView.scss';
 @import '../../modules/notification/Notification.scss';
 @import '../../common/components/Dialog.scss';
