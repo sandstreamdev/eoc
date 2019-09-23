@@ -1,9 +1,8 @@
 /**
  * Table of content
- * 1. Global
+ * 1. Reset styles
  * 2. Partials
- * 3. Containers
- * 4. Components
+ * 3. Global styles
  */
 
 // 1. Global
@@ -11,6 +10,8 @@
 
 // 2. Partials
 @import 'partials';
+
+// 3. Global styles
 @import './utils';
 @import './buttons';
 @import './forms';
