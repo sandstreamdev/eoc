@@ -7,15 +7,13 @@
  */
 
 // 1. Global
-@import './reset';
+@import 'reset';
 
 // 2. Partials
-@import './colors';
-@import './variables';
-@import './mixins';
+@import 'partials';
 @import './utils';
-@import './forms';
 @import './buttons';
+@import './forms';
 
 // 3. Containers
 @import '../../app/components/Layout/Layout.scss';
