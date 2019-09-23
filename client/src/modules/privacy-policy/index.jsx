@@ -8,6 +8,7 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { checkIfCookieSet } from 'common/utils/cookie';
 import CookieConsentBox from 'common/components/CookieConsentBox';
+import './PrivacyPolicy.scss';
 
 class PrivacyPolicy extends PureComponent {
   state = {

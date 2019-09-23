@@ -23,6 +23,7 @@ import Breadcrumbs from 'common/components/Breadcrumbs';
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { enterView, leaveView } from 'common/model/actions';
+import './Dashboard.scss';
 
 class Dashboard extends Component {
   state = {

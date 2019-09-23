@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { IntlPropType } from 'common/constants/propTypes';
+import './About.scss';
 
 const About = ({ intl: { formatMessage } }) => (
   <div className="about">
