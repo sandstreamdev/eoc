@@ -35,6 +35,7 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
 import { joinRoom, leaveRoom } from 'common/model/actions';
+import './List.scss';
 
 class List extends Component {
   state = {

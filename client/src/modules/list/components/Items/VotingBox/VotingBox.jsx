@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 import { ThumbIcon } from 'assets/images/icons';
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
+import './VotingBox.scss';
 
 const VotingBox = ({
   intl: { formatMessage },

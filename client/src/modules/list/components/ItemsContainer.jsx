@@ -11,6 +11,7 @@ import { SortOrderType } from 'common/constants/enums';
 import FilterBox from 'modules/list/components/FilterBox';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
+import './ItemsContainer.scss';
 
 const SortOptionType = Object.freeze({
   NAME: 'name',

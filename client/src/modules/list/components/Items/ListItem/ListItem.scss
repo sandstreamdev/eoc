@@ -1,3 +1,5 @@
+@import 'partials';
+
 .list-item {
   background-color: $bg-color;
   display: block;
@@ -17,14 +19,14 @@
       &::after {
         background-color: $success;
         border-color: $success;
-        background-image: url('../../assets/images/check-solid.svg');
+        background-image: url('../../../../../assets/images/check-solid.svg');
         background-size: 18px;
         background-position: center;
       }
 
       &:hover {
         &::after {
-          background-image: url('../../assets/images/undo-alt-solid.svg');
+          background-image: url('../../../../../assets/images/undo-alt-solid.svg');
           background-size: 18px;
           background-position: center;
           background-color: $restore-blue;
@@ -109,7 +111,7 @@
       &::after {
         background-color: $success;
         border-color: $success;
-        background-image: url('../../assets/images/check-solid.svg');
+        background-image: url('../../../../../assets/images/check-solid.svg');
         background-size: 18px;
         background-position: center;
       }
@@ -222,16 +224,16 @@
     &--details-visible {
       &::before {
         display: none;
-        background: url('../../assets/images/chevron-up-solid.svg') no-repeat
-          center;
+        background: url('../../../../../assets/images/chevron-up-solid.svg')
+          no-repeat center;
       }
     }
 
     &--details-not-visible {
       &::before {
         display: none;
-        background: url('../../assets/images/chevron-down-solid.svg') no-repeat
-          center;
+        background: url('../../../../../assets/images/chevron-down-solid.svg')
+          no-repeat center;
       }
     }
   }

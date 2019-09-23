@@ -14,6 +14,7 @@ import {
 } from 'modules/list/components/Items/model/actions';
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import Preloader from 'common/components/Preloader';
+import './ArchivedItemsContainer.scss';
 
 class ArchivedItemsContainer extends PureComponent {
   state = {
