@@ -15,6 +15,7 @@ import { Routes } from 'common/constants/enums';
 import { UserAddingStatus, MEMBERS_DISPLAY_LIMIT } from './const';
 import InviteNewUser from './components/InviteNewUser';
 import { inviteUser } from './model/actions';
+import './MembersBox.scss';
 
 class MembersBox extends PureComponent {
   constructor(props) {

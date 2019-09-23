@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import './TextInput.scss';
 
 class TextInput extends PureComponent {
   constructor(props) {

@@ -5,6 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import Dialog from 'common/components/Dialog';
 import Preloader from 'common/components/Preloader';
 import { IntlPropType } from 'common/constants/propTypes';
+import './ArchivedMessage.scss';
 
 class ArchivedMessage extends PureComponent {
   state = {

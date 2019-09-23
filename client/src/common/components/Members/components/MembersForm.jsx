@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
+import './MembersForm.scss';
 
 import Preloader, {
   PreloaderSize,

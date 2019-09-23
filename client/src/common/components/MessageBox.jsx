@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { MessageType } from 'common/constants/enums';
 import { MessagePropType } from 'common/constants/propTypes';
 import { InfoIcon } from 'assets/images/icons';
+import './MessageBox.scss';
 
 const MessageBox = ({ children, type }) => (
   <div

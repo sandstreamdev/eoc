@@ -2,6 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PlusIcon } from 'assets/images/icons';
+import './CardPlus.scss';
 
 const CardPlus = () => (
   <div className="plus-card">

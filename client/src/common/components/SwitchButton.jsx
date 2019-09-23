@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import './SwitchButton.scss';
+
 const SwitchButton = ({ checked, disabled, label, onChange, value }) => (
   <div className="ss-switch">
     <label className="ss-switch__label">

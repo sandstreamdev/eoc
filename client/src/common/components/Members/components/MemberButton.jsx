@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Avatar from 'common/components/Avatar';
+import './MemberButton.scss';
 
 const MemberButton = ({ member, onDisplayDetails }) => (
   <button

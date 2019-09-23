@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 
 import Avatar from 'common/components/Avatar';
+import './Activity.scss';
 
 class Activity extends PureComponent {
   renderCohortLink = () => {

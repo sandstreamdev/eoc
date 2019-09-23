@@ -27,6 +27,7 @@ import { makeAbortablePromise } from 'common/utils/helpers';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import MemberDetailsHeader from './MemberDetailsHeader';
 import MemberRole from 'common/components/Members/components/MemberRole';
+import './MemberDetails.scss';
 
 const infoText = {
   [Routes.COHORT]: {
