@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { CheckIcon } from 'assets/images/icons';
 import { PasswordValidationValues } from 'common/constants/enums';
+import './ValidationInput.scss';
 
 const ValidationInput = ({
   errorId,

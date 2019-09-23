@@ -5,6 +5,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { Routes } from 'common/constants/enums';
 import AppLogo from 'common/components/AppLogo';
+import './SuccessMessage.scss';
 
 const SuccessMessage = ({ match: { path } }) => (
   <div className="success-message">

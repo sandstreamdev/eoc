@@ -1,3 +1,5 @@
+@import 'partials';
+
 .authbox {
   display: flex;
   position: absolute;
@@ -26,7 +28,7 @@
     box-sizing: border-box;
     height: 50%;
     padding: four-by(4);
-    background: url('../../assets/images/auth-intro.jpg') center;
+    background: url('../../../assets/images/auth-intro.jpg') center;
     position: relative;
 
     @include breakpoint($large) {

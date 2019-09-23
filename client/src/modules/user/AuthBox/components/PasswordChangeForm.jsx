@@ -14,6 +14,7 @@ import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
 import AuthInput from './AuthInput';
+import './PasswordChangeForm.scss';
 
 class PasswordChangeForm extends PureComponent {
   pendingPromise = null;

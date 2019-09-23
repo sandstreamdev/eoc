@@ -19,6 +19,7 @@ import GoogleButtonImg from 'assets/images/google-btn.png';
 import SignUpForm from './components/SignUpForm';
 import SignInForm from './components/SignInForm';
 import { IntlPropType } from 'common/constants/propTypes';
+import './AuthBox.scss';
 
 class AuthBox extends PureComponent {
   state = {

@@ -9,6 +9,7 @@ import _trimStart from 'lodash/trimStart';
 import { IntlPropType } from 'common/constants/propTypes';
 import { CheckIcon, ErrorIcon } from 'assets/images/icons';
 import { PasswordValidationValues } from 'common/constants/enums';
+import './AuthInput.scss';
 
 class AuthInput extends PureComponent {
   constructor(props) {

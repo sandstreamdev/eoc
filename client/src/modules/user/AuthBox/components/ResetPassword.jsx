@@ -11,6 +11,7 @@ import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
+import './ResetPassword.scss';
 
 class ResetPassword extends PureComponent {
   state = {

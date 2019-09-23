@@ -15,6 +15,7 @@ import {
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
+import './SignUpForm.scss';
 
 class SignUpForm extends PureComponent {
   pendingPromise = null;
