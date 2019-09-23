@@ -12,12 +12,13 @@ import items from 'modules/list/components/Items/model/reducer';
 import { ListType } from 'modules/list/consts';
 import { filterDefined } from 'common/utils/helpers';
 import { CommonActionTypes } from 'common/model/actionTypes';
+import { DISPLAY_LIMIT } from 'modules/list/components/Items/ItemsList';
 
 const listState = {
-  archivedLimit: 3,
+  archivedLimit: DISPLAY_LIMIT,
   areArchiveDisplayed: false,
-  doneLimit: 3,
-  unhandledLimit: 3
+  doneLimit: DISPLAY_LIMIT,
+  unhandledLimit: DISPLAY_LIMIT
 };
 
 const membersReducer = (state = {}, action) => {

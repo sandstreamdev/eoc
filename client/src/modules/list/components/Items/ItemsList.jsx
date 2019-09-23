@@ -14,7 +14,7 @@ import { disableItemAnimations } from './model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { updateLimit } from 'modules/list/model/actions';
 
-const DISPLAY_LIMIT = 3;
+export const DISPLAY_LIMIT = 3;
 
 class ItemsList extends PureComponent {
   constructor(props) {
