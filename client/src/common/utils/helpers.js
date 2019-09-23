@@ -1,3 +1,6 @@
+import _orderBy from 'lodash/orderBy';
+import _filter from 'lodash/filter';
+
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { asyncPostfixes } from 'common/constants/variables';
 import { Routes, PasswordValidationValues } from 'common/constants/enums';
@@ -76,3 +79,51 @@ export const mapObject = callback => object =>
     (newObject, [key, value]) => ({ ...newObject, [key]: callback(value) }),
     {}
   );
+
+export const shouldAnimate = (items, item, listState) => {
+  const { _id, isArchived, done } = item;
+  const {
+    archivedLimit,
+    areArchiveDisplayed,
+    doneLimit,
+    unhandledLimit
+  } = listState;
+
+  if (isArchived) {
+    if (!areArchiveDisplayed) {
+      return false;
+    }
+
+    const displayedItems = _orderBy(
+      _filter(items, item => item.isArchived),
+      item => new Date(item.createdAt).getTime(),
+      ['desc']
+    )
+      .slice(0, archivedLimit)
+      .map(item => item._id);
+
+    return displayedItems.includes(_id);
+  }
+
+  if (done) {
+    const displayedItems = _orderBy(
+      _filter(items, item => item.done),
+      item => new Date(item.createdAt).getTime(),
+      ['desc']
+    )
+      .slice(0, doneLimit)
+      .map(item => item._id);
+
+    return displayedItems.includes(_id);
+  }
+
+  const displayedItems = _orderBy(
+    _filter(items, item => !item.done),
+    item => new Date(item.createdAt).getTime(),
+    ['desc']
+  )
+    .slice(0, unhandledLimit)
+    .map(item => item._id);
+
+  return displayedItems.includes(_id);
+};

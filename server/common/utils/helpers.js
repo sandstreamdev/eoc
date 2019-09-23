@@ -132,6 +132,7 @@ const responseWithItems = (userId, items) =>
 
     return {
       ...rest,
+      animate: false,
       authorId,
       authorName,
       editedBy: editorDisplayName,
@@ -153,6 +154,7 @@ const responseWithItem = (item, userId) => {
   const { _id: authorId, displayName: authorName } = author;
   const newItem = {
     ...rest,
+    animate: false,
     authorId,
     authorName,
     editedBy: editor ? editor.displayName : '',

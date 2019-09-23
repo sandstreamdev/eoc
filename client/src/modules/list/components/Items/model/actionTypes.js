@@ -8,6 +8,7 @@ export const CommentActionTypes = enumerable('comment')(
 export const ItemActionTypes = enumerable('item')(
   ...asyncTypes('ADD'),
   ...asyncTypes('ARCHIVE'),
+  'DISABLE_ANIMATIONS',
   ...asyncTypes('CLEAR_VOTE'),
   ...asyncTypes('CLONE'),
   ...asyncTypes('DELETE'),
@@ -20,12 +21,6 @@ export const ItemActionTypes = enumerable('item')(
   ...asyncTypes('SET_VOTE'),
   ...asyncTypes('TOGGLE'),
   ...asyncTypes('UPDATE')
-);
-
-export const AnimationActionTypes = enumerable('animations')(
-  'DISABLE_FOR_ARCHIVED_ITEMS',
-  'DISABLE_FOR_DONE_ITEMS',
-  'DISABLE_FOR_UNHANDLED_ITEMS'
 );
 
 export const ItemStatusType = enumerable('item')('LOCK', 'UNLOCK');
