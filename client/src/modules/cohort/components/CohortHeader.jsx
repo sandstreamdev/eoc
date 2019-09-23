@@ -27,6 +27,7 @@ import { DefaultLocks, KeyCodes } from 'common/constants/enums';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { validateWith } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
+import './CohortHeader.scss';
 
 class CohortHeader extends PureComponent {
   constructor(props) {

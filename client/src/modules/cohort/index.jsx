@@ -41,6 +41,7 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { joinRoom, leaveRoom } from 'common/model/actions';
+import './Cohort.scss';
 
 const initialState = {
   areArchivedListsVisible: false,
