@@ -214,13 +214,12 @@ const items = (state = {}, action) => {
         }
       };
     }
-    case ItemActionTypes.DISABLE_ANIMATIONS: {
+    case ItemActionTypes.DISABLE_ANIMATIONS_SUCCESS: {
       const {
         payload: { itemId }
       } = action;
-      const item = state[itemId];
 
-      return { ...state, [itemId]: { ...item, animate: false } };
+      return { ...state, [itemId]: { ...state[itemId], animate: false } };
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {

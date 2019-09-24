@@ -35,7 +35,8 @@ class ItemsList extends PureComponent {
     this.setState({ limit: DISPLAY_LIMIT }, this.handleLimitUpdate);
 
   handleDisableAnimations = item => () => {
-    if (item.animate) {
+    const { _id: itemId, animate } = item;
+    if (animate) {
       const {
         disableItemAnimations,
         match: {
@@ -43,14 +44,14 @@ class ItemsList extends PureComponent {
         }
       } = this.props;
 
-      disableItemAnimations({ itemId: item._id, listId });
+      disableItemAnimations(itemId, listId);
     }
   };
 
   handleLimitUpdate = () => {
     const {
-      archived: archivedItemsList,
-      done: doneItemsList,
+      archived: archivedItems,
+      done: doneItems,
       match: {
         params: { id: listId }
       },
@@ -59,15 +60,15 @@ class ItemsList extends PureComponent {
     const { limit: currentLimit } = this.state;
     const limit = {};
 
-    if (archivedItemsList) {
+    if (archivedItems) {
       limit.archivedLimit = currentLimit;
-    } else if (doneItemsList) {
+    } else if (doneItems) {
       limit.doneLimit = currentLimit;
     } else {
       limit.unhandledLimit = currentLimit;
     }
 
-    updateLimit({ listId, limit });
+    updateLimit(limit, listId);
   };
 
   renderItems = () => {
@@ -83,9 +84,9 @@ class ItemsList extends PureComponent {
         <TransitionGroup component={null}>
           {items.slice(0, limit).map(item => (
             <CSSTransition
+              classNames="animated-item"
               enter={item.animate}
               exit={item.animate}
-              classNames="animated-item"
               key={item._id}
               onEntered={this.handleDisableAnimations(item)}
               timeout={1000}
@@ -104,9 +105,9 @@ class ItemsList extends PureComponent {
         <TransitionGroup component={null}>
           {items.slice(0, limit).map(item => (
             <CSSTransition
+              classNames="animated-item"
               enter={item.animate}
               exit={item.animate}
-              classNames="animated-item"
               key={item._id}
               onEntered={this.handleDisableAnimations(item)}
               timeout={2000}

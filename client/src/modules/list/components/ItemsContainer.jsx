@@ -142,8 +142,8 @@ class ItemsContainer extends Component {
         {children}
         <div className="items__body">
           <ItemsList
-            done={done}
             archived={archived}
+            done={done}
             isMember={isMember}
             items={sortedList}
           />

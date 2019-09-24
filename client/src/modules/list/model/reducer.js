@@ -143,14 +143,17 @@ const lists = (state = {}, action) => {
       return state;
     }
     case ListActionTypes.RESTORE_SUCCESS:
-    case ListActionTypes.FETCH_DATA_SUCCESS:
+    case ListActionTypes.FETCH_DATA_SUCCESS: {
+      const { data, listId } = action.payload;
+
       return {
         ...state,
-        [action.payload.listId]: {
-          ...action.payload.data,
+        [listId]: {
+          ...data,
           listState
         }
       };
+    }
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
     case ListActionTypes.REMOVE_BY_IDS: {
@@ -293,19 +296,17 @@ const lists = (state = {}, action) => {
         '_id'
       );
     }
-    case ListActionTypes.UPDATE_LIMIT: {
+    case ListActionTypes.UPDATE_LIMIT_SUCCESS: {
       const {
         payload: { listId, limit }
       } = action;
 
-      const list = state[listId];
-      const previousState = list.listState;
-      const updatedState = { ...previousState, ...limit };
+      const updatedState = { ...state[listId].listState, ...limit };
 
       return {
         ...state,
         [listId]: {
-          ...list,
+          ...state[listId],
           listState: updatedState
         }
       };
@@ -323,7 +324,6 @@ const lists = (state = {}, action) => {
       const {
         payload: { listId }
       } = action;
-
       const list = state[listId];
 
       if (list && list.items) {
