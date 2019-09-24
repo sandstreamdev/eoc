@@ -11,7 +11,7 @@ const BadRequestException = require('../common/exceptions/BadRequestException');
 const { saveActivity } = require('./activity');
 const { ActivityType } = require('../common/variables');
 const socketActions = require('../sockets/list');
-const socketInstance = require('../sockets/index').getSocketInstance();
+const io = require('../sockets/index');
 
 const addComment = (req, resp) => {
   const { itemId, listId, text } = req.body;
@@ -67,7 +67,7 @@ const addComment = (req, resp) => {
         .status(201)
         .send(commentToSend);
 
-      socketActions.addComment(socketInstance)(data);
+      socketActions.addComment(io.getSocketInstance())(data);
     })
     .catch(() => resp.sendStatus(400));
 };

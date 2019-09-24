@@ -29,7 +29,7 @@ const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClien
 const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const listClients = require('../sockets/index').getListViewClients();
-const socketInstance = require('../sockets/index').getSocketInstance();
+const io = require('../sockets/index');
 const socketActions = require('../sockets/cohort');
 
 const createCohort = (req, resp) => {
@@ -146,9 +146,10 @@ const updateCohortById = (req, resp) => {
         data.description = description;
 
         return returnPayload(
-          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
-            data
-          )
+          socketActions.updateCohort(
+            io.getSocketInstance(),
+            allCohortsViewClients
+          )(data)
         )(doc);
       }
 
@@ -158,9 +159,10 @@ const updateCohortById = (req, resp) => {
         data.name = name;
 
         return returnPayload(
-          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
-            data
-          )
+          socketActions.updateCohort(
+            io.getSocketInstance(),
+            allCohortsViewClients
+          )(data)
         )(doc);
       }
 
@@ -170,7 +172,7 @@ const updateCohortById = (req, resp) => {
 
           return returnPayload(
             socketActions.archiveCohort(
-              socketInstance,
+              io.getSocketInstance(),
               allCohortsViewClients,
               dashboardClients
             )(data)
@@ -181,7 +183,7 @@ const updateCohortById = (req, resp) => {
 
         return returnPayload(
           socketActions.restoreCohort(
-            socketInstance,
+            io.getSocketInstance(),
             allCohortsViewClients,
             cohortClients,
             dashboardClients
@@ -293,7 +295,9 @@ const deleteCohortById = (req, resp) => {
       const { ownerIds: owners, name } = cohort;
       const data = { cohortId, owners };
 
-      socketActions.deleteCohort(socketInstance, allCohortsViewClients)(data);
+      socketActions.deleteCohort(io.getSocketInstance(), allCohortsViewClients)(
+        data
+      );
 
       fireAndForget(
         saveActivity(
@@ -350,7 +354,7 @@ const removeMember = (req, resp) => {
     })
     .then(() => {
       socketActions.removeMember(
-        socketInstance,
+        io.getSocketInstance(),
         allCohortsViewClients,
         cohortClients,
         dashboardClients,
@@ -396,7 +400,7 @@ const addOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      socketActions.addOwnerRole(socketInstance, cohortClients)({
+      socketActions.addOwnerRole(io.getSocketInstance(), cohortClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });
@@ -447,7 +451,7 @@ const removeOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() => {
-      socketActions.removeOwnerRole(socketInstance, cohortClients)({
+      socketActions.removeOwnerRole(io.getSocketInstance(), cohortClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });
@@ -551,7 +555,7 @@ const addMember = (req, resp) => {
 
         return returnPayload(
           socketActions.addMember(
-            socketInstance,
+            io.getSocketInstance(),
             allCohortsViewClients,
             dashboardClients
           )({
@@ -636,7 +640,7 @@ const leaveCohort = (req, resp) => {
       ).exec()
     )
     .then(() => {
-      socketActions.leaveCohort(socketInstance, allCohortsViewClients)({
+      socketActions.leaveCohort(io.getSocketInstance(), allCohortsViewClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });
