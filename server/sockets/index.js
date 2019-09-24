@@ -48,7 +48,7 @@ const initSocket = server => {
   );
 };
 
-const getSocketInstance = () => {
+const getInstance = () => {
   if (!socketInstance) {
     throw new Error('Socket not initialized...');
   }
@@ -176,7 +176,7 @@ module.exports = {
   getCohortViewClients,
   getDashboardViewClients,
   getListViewClients,
-  getSocketInstance,
+  getInstance,
   init: initSocket,
   listen: socketListeners
 };

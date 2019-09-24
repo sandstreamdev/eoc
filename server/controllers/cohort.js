@@ -112,7 +112,7 @@ const updateCohortById = (req, resp) => {
     isArchived,
     name
   });
-  const socketInstance = io.getSocketInstance();
+  const socketInstance = io.getInstance();
   let cohortActivity;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
@@ -294,7 +294,7 @@ const deleteCohortById = (req, resp) => {
       const { ownerIds: owners, name } = cohort;
       const data = { cohortId, owners };
 
-      socketActions.deleteCohort(io.getSocketInstance(), allCohortsViewClients)(
+      socketActions.deleteCohort(io.getInstance(), allCohortsViewClients)(
         data
       );
 
@@ -353,7 +353,7 @@ const removeMember = (req, resp) => {
     })
     .then(() => {
       socketActions.removeMember(
-        io.getSocketInstance(),
+        io.getInstance(),
         allCohortsViewClients,
         cohortClients,
         dashboardClients,
@@ -399,7 +399,7 @@ const addOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      socketActions.addOwnerRole(io.getSocketInstance(), cohortClients)({
+      socketActions.addOwnerRole(io.getInstance(), cohortClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });
@@ -450,7 +450,7 @@ const removeOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() => {
-      socketActions.removeOwnerRole(io.getSocketInstance(), cohortClients)({
+      socketActions.removeOwnerRole(io.getInstance(), cohortClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });
@@ -554,7 +554,7 @@ const addMember = (req, resp) => {
 
         return returnPayload(
           socketActions.addMember(
-            io.getSocketInstance(),
+            io.getInstance(),
             allCohortsViewClients,
             dashboardClients
           )({
@@ -639,7 +639,7 @@ const leaveCohort = (req, resp) => {
       ).exec()
     )
     .then(() => {
-      socketActions.leaveCohort(io.getSocketInstance(), allCohortsViewClients)({
+      socketActions.leaveCohort(io.getInstance(), allCohortsViewClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });

@@ -76,7 +76,7 @@ const createList = (req, resp) => {
       .then(() => {
         listData = responseWithList(list, userId);
 
-        return createListCohort(io.getSocketInstance(), dashboardClients)({
+        return createListCohort(io.getInstance(), dashboardClients)({
           ...listData,
           cohortId
         });
@@ -232,7 +232,7 @@ const addItemToList = async (req, resp) => {
     );
 
     resp.send(itemToSend);
-    socketActions.addItemToList(io.getSocketInstance())(data);
+    socketActions.addItemToList(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -397,7 +397,7 @@ const voteForItem = async (req, resp) => {
     );
 
     resp.send();
-    socketActions.setVote(io.getSocketInstance())(data);
+    socketActions.setVote(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -447,7 +447,7 @@ const clearVote = async (req, resp) => {
     );
 
     resp.send();
-    socketActions.clearVote(io.getSocketInstance())(data);
+    socketActions.clearVote(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -466,7 +466,7 @@ const updateListById = (req, resp) => {
     isDeleted,
     name
   });
-  const socketInstance = io.getSocketInstance();
+  const socketInstance = io.getInstance();
   let listActivity;
   let list;
 
@@ -690,7 +690,7 @@ const removeOwner = (req, resp) => {
       };
 
       return socketActions
-        .removeViewer(io.getSocketInstance())(data)
+        .removeViewer(io.getInstance())(data)
         .then(() => doc);
     })
     .then(payload => {
@@ -743,7 +743,7 @@ const removeMember = (req, resp) => {
       const data = { listId, userId };
 
       return socketActions
-        .removeViewer(io.getSocketInstance())(data)
+        .removeViewer(io.getInstance())(data)
         .then(() => doc);
     })
     .then(payload => {
@@ -801,7 +801,7 @@ const addOwnerRole = (req, resp) => {
       const data = { listId, userId };
 
       return returnPayload(
-        socketActions.addOwnerRoleInList(io.getSocketInstance(), listClients)(
+        socketActions.addOwnerRoleInList(io.getInstance(), listClients)(
           data
         )
       )(doc);
@@ -862,7 +862,7 @@ const removeOwnerRole = (req, resp) => {
       const data = { listId, userId };
 
       return socketActions.removeOwnerRoleInList(
-        io.getSocketInstance(),
+        io.getInstance(),
         listClients
       )(data);
     })
@@ -927,7 +927,7 @@ const addMemberRole = (req, resp) => {
       const data = { listId, userId };
 
       return returnPayload(
-        socketActions.addMemberRoleInList(io.getSocketInstance(), listClients)(
+        socketActions.addMemberRoleInList(io.getInstance(), listClients)(
           data
         )
       )(doc);
@@ -994,7 +994,7 @@ const removeMemberRole = (req, resp) => {
 
       return returnPayload(
         socketActions.removeMemberRoleInList(
-          io.getSocketInstance(),
+          io.getInstance(),
           listClients
         )(data)
       )(doc);
@@ -1088,7 +1088,7 @@ const addViewer = (req, resp) => {
       if (user) {
         userToSend = responseWithListMember(user, cohortMembers);
 
-        return socketActions.addViewer(io.getSocketInstance())({
+        return socketActions.addViewer(io.getInstance())({
           listId,
           list: list._doc,
           userToSend
@@ -1168,7 +1168,7 @@ const markItemAsDone = async (req, resp) => {
     );
 
     resp.send();
-    socketActions.markAsDone(io.getSocketInstance())(data);
+    socketActions.markAsDone(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -1218,7 +1218,7 @@ const markItemAsUnhandled = async (req, resp) => {
     );
 
     resp.send();
-    socketActions.markAsUnhandled(io.getSocketInstance())(data);
+    socketActions.markAsUnhandled(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -1268,7 +1268,7 @@ const archiveItem = async (req, resp) => {
     );
 
     resp.send();
-    socketActions.archiveItem(io.getSocketInstance())(data);
+    socketActions.archiveItem(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -1319,7 +1319,7 @@ const restoreItem = async (req, resp) => {
     );
 
     resp.send();
-    await socketActions.restoreItem(io.getSocketInstance())(data);
+    await socketActions.restoreItem(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -1385,7 +1385,7 @@ const updateItem = async (req, resp) => {
     );
 
     resp.send();
-    socketActions.updateItem(io.getSocketInstance())({
+    socketActions.updateItem(io.getInstance())({
       itemData: {
         updatedData,
         itemId: sanitizedItemId
@@ -1450,7 +1450,7 @@ const cloneItem = async (req, resp) => {
     );
 
     resp.send(newItemToSend);
-    socketActions.cloneItem(io.getSocketInstance())(data);
+    socketActions.cloneItem(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -1523,7 +1523,7 @@ const changeType = (req, resp) => {
 
       return returnPayload(
         socketActions.changeListType(
-          io.getSocketInstance(),
+          io.getInstance(),
           dashboardClients,
           cohortClients,
           listClients
@@ -1614,7 +1614,7 @@ const deleteItem = async (req, resp) => {
     );
 
     resp.send();
-    socketActions.deleteItem(io.getSocketInstance())(data);
+    socketActions.deleteItem(io.getInstance())(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -1667,7 +1667,7 @@ const leaveList = (req, resp) => {
     .then(() => {
       const data = { listId, userId };
 
-      return socketActions.leaveList(io.getSocketInstance())(data);
+      return socketActions.leaveList(io.getInstance())(data);
     })
     .then(() => resp.send())
     .catch(err => {
@@ -1785,7 +1785,7 @@ const moveItem = async (req, resp) => {
 
     // send response and emit data via socket
     resp.send();
-    await socketActions.moveToList(io.getSocketInstance())({
+    await socketActions.moveToList(io.getInstance())({
       sourceItemId: sanitizedSourceItemId,
       movedItem: itemData,
       targetList,

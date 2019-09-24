@@ -24,7 +24,7 @@ const app = express();
 const server = http.Server(app);
 
 socket.init(server);
-const socketInstance = socket.getSocketInstance(server);
+const socketInstance = socket.getInstance(server);
 socket.listen(socketInstance);
 
 const sessionStore = new MongoStore({
