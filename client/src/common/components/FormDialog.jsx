@@ -41,7 +41,11 @@ class FormDialog extends Component {
     }
   };
 
-  handleDescriptionChange = description => this.setState({ description });
+  handleDescriptionChange = value => {
+    const description = _trim(value) === '' ? '' : value;
+
+    this.setState({ description });
+  };
 
   handleNameChange = name => this.setState({ name }, this.validateName);
 
