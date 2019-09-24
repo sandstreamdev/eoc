@@ -112,6 +112,7 @@ const updateCohortById = (req, resp) => {
     isArchived,
     name
   });
+  const socketInstance = io.getSocketInstance();
   let cohortActivity;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
@@ -146,10 +147,9 @@ const updateCohortById = (req, resp) => {
         data.description = description;
 
         return returnPayload(
-          socketActions.updateCohort(
-            io.getSocketInstance(),
-            allCohortsViewClients
-          )(data)
+          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
+            data
+          )
         )(doc);
       }
 
@@ -159,10 +159,9 @@ const updateCohortById = (req, resp) => {
         data.name = name;
 
         return returnPayload(
-          socketActions.updateCohort(
-            io.getSocketInstance(),
-            allCohortsViewClients
-          )(data)
+          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
+            data
+          )
         )(doc);
       }
 
@@ -172,7 +171,7 @@ const updateCohortById = (req, resp) => {
 
           return returnPayload(
             socketActions.archiveCohort(
-              io.getSocketInstance(),
+              socketInstance,
               allCohortsViewClients,
               dashboardClients
             )(data)
@@ -183,7 +182,7 @@ const updateCohortById = (req, resp) => {
 
         return returnPayload(
           socketActions.restoreCohort(
-            io.getSocketInstance(),
+            socketInstance,
             allCohortsViewClients,
             cohortClients,
             dashboardClients

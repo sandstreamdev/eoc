@@ -466,6 +466,7 @@ const updateListById = (req, resp) => {
     isDeleted,
     name
   });
+  const socketInstance = io.getSocketInstance();
   let listActivity;
   let list;
 
@@ -503,7 +504,7 @@ const updateListById = (req, resp) => {
         const data = { description, doc, listId };
 
         return socketActions.updateList(
-          io.getSocketInstance(),
+          socketInstance,
           dashboardClients,
           cohortClients
         )(data);
@@ -515,7 +516,7 @@ const updateListById = (req, resp) => {
         const data = { doc, listId, name };
 
         return socketActions.updateList(
-          io.getSocketInstance(),
+          socketInstance,
           dashboardClients,
           cohortClients
         )(data);
@@ -528,7 +529,7 @@ const updateListById = (req, resp) => {
           listActivity = ActivityType.LIST_ARCHIVE;
 
           return socketActions.archiveList(
-            io.getSocketInstance(),
+            socketInstance,
             dashboardClients,
             cohortClients,
             listClients
@@ -538,7 +539,7 @@ const updateListById = (req, resp) => {
         listActivity = ActivityType.LIST_RESTORE;
 
         return socketActions.restoreList(
-          io.getSocketInstance(),
+          socketInstance,
           dashboardClients,
           cohortClients,
           listClients
@@ -551,7 +552,7 @@ const updateListById = (req, resp) => {
         const data = { cohortId, doc, listId };
 
         socketActions.deleteList(
-          io.getSocketInstance(),
+          socketInstance,
           dashboardClients,
           cohortClients
         )(data);
