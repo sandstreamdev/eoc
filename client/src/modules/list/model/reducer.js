@@ -12,7 +12,7 @@ import items from 'modules/list/components/Items/model/reducer';
 import { ListType } from 'modules/list/consts';
 import { filterDefined } from 'common/utils/helpers';
 import { CommonActionTypes } from 'common/model/actionTypes';
-import { DISPLAY_LIMIT } from 'modules/list/components/Items/ItemsList';
+import { DISPLAY_LIMIT } from 'common/constants/variables';
 
 const listState = {
   archivedLimit: DISPLAY_LIMIT,

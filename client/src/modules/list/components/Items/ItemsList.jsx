@@ -13,8 +13,7 @@ import { MessageType } from 'common/constants/enums';
 import { disableItemAnimations } from './model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { updateLimit } from 'modules/list/model/actions';
-
-export const DISPLAY_LIMIT = 3;
+import { DISPLAY_LIMIT } from 'common/constants/variables';
 
 class ItemsList extends PureComponent {
   constructor(props) {
