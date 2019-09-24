@@ -294,9 +294,7 @@ const deleteCohortById = (req, resp) => {
       const { ownerIds: owners, name } = cohort;
       const data = { cohortId, owners };
 
-      socketActions.deleteCohort(io.getInstance(), allCohortsViewClients)(
-        data
-      );
+      socketActions.deleteCohort(io.getInstance(), allCohortsViewClients)(data);
 
       fireAndForget(
         saveActivity(

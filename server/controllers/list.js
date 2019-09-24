@@ -801,9 +801,7 @@ const addOwnerRole = (req, resp) => {
       const data = { listId, userId };
 
       return returnPayload(
-        socketActions.addOwnerRoleInList(io.getInstance(), listClients)(
-          data
-        )
+        socketActions.addOwnerRoleInList(io.getInstance(), listClients)(data)
       )(doc);
     })
     .then(payload => {
@@ -861,10 +859,9 @@ const removeOwnerRole = (req, resp) => {
 
       const data = { listId, userId };
 
-      return socketActions.removeOwnerRoleInList(
-        io.getInstance(),
-        listClients
-      )(data);
+      return socketActions.removeOwnerRoleInList(io.getInstance(), listClients)(
+        data
+      );
     })
     .then(() => {
       fireAndForget(
@@ -927,9 +924,7 @@ const addMemberRole = (req, resp) => {
       const data = { listId, userId };
 
       return returnPayload(
-        socketActions.addMemberRoleInList(io.getInstance(), listClients)(
-          data
-        )
+        socketActions.addMemberRoleInList(io.getInstance(), listClients)(data)
       )(doc);
     })
     .then(payload => {
@@ -993,10 +988,9 @@ const removeMemberRole = (req, resp) => {
       const data = { listId, userId };
 
       return returnPayload(
-        socketActions.removeMemberRoleInList(
-          io.getInstance(),
-          listClients
-        )(data)
+        socketActions.removeMemberRoleInList(io.getInstance(), listClients)(
+          data
+        )
       )(doc);
     })
     .then(doc => {

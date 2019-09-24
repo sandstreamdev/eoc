@@ -21,17 +21,12 @@ const activitiesRouter = require('./routes/activity');
 const unlockLocks = require('./common/utils/unlockLocks');
 
 const app = express();
+const dbUrl = DB_URL;
 const server = http.Server(app);
-
-socket.init(server);
-const socketInstance = socket.getInstance(server);
-socket.listen(socketInstance);
-
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
-// Set up mongodb connection
-const dbUrl = DB_URL;
+
 mongoose.connect(dbUrl, { useNewUrlParser: true }, unlockLocks);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
@@ -60,6 +55,7 @@ app.use('/api/cohorts', cohortsRouter);
 app.use('/api/lists', listsRouter);
 app.use('/api', mailerRouter);
 app.use('*', (_, res) => res.sendFile(path.resolve('dist/index.html')));
+socket.init(server);
 
 const PORT = 8080;
 
