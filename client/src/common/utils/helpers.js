@@ -84,13 +84,13 @@ export const shouldAnimate = (items, item, listState) => {
   const { _id, isArchived, done } = item;
   const {
     archivedLimit,
-    areArchiveDisplayed,
+    areArchivedItemsDisplayed,
     doneLimit,
     unhandledLimit
   } = listState;
 
   if (isArchived) {
-    if (!areArchiveDisplayed) {
+    if (!areArchivedItemsDisplayed) {
       return false;
     }
 

@@ -83,7 +83,7 @@ class ItemsList extends PureComponent {
         <TransitionGroup component={null}>
           {items.slice(0, limit).map(item => (
             <CSSTransition
-              enter={item.animate === true}
+              enter={item.animate}
               exit={item.animate}
               classNames="animated-item"
               key={item._id}
@@ -104,7 +104,7 @@ class ItemsList extends PureComponent {
         <TransitionGroup component={null}>
           {items.slice(0, limit).map(item => (
             <CSSTransition
-              enter={item.animate === true}
+              enter={item.animate}
               exit={item.animate}
               classNames="animated-item"
               key={item._id}

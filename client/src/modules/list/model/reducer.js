@@ -16,7 +16,7 @@ import { DISPLAY_LIMIT } from 'modules/list/components/Items/ItemsList';
 
 const listState = {
   archivedLimit: DISPLAY_LIMIT,
-  areArchiveDisplayed: false,
+  areArchivedItemsDisplayed: false,
   doneLimit: DISPLAY_LIMIT,
   unhandledLimit: DISPLAY_LIMIT
 };
@@ -347,7 +347,7 @@ const lists = (state = {}, action) => {
       if (list && list.items) {
         const { items: previousItems, listState } = list;
 
-        listState.areArchiveDisplayed = true;
+        listState.areArchivedItemsDisplayed = true;
 
         return {
           ...state,
@@ -371,7 +371,7 @@ const lists = (state = {}, action) => {
       if (list && list.items) {
         const { items: previousItems, listState } = list;
 
-        listState.areArchiveDisplayed = false;
+        listState.areArchivedItemsDisplayed = false;
 
         return {
           ...state,
