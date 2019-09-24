@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
 const MongoStore = require('connect-mongo')(session);
-const http = require('http');
+const { Server } = require('http');
 
 const socket = require('./sockets/index');
 const { DB_URL } = require('./common/variables');
@@ -22,7 +22,7 @@ const unlockLocks = require('./common/utils/unlockLocks');
 
 const app = express();
 const dbUrl = DB_URL;
-const server = http.Server(app);
+const server = Server(app);
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
