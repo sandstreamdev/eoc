@@ -15,6 +15,7 @@ import {
 } from 'modules/list/model/actions';
 import Preloader from 'common/components/Preloader';
 import ListViewItem from 'common/components/ListViewItem';
+import './CollectionView.scss';
 
 class CollectionView extends PureComponent {
   handleFavClick = (itemId, isFavourite, listName) => event => {

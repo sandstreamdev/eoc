@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Avatar from 'common/components/Avatar';
+import './MemberDetailsHeader.scss';
 
 const MemberDetailsHeader = ({ avatarUrl, displayName, role }) => (
   <header className="member-details-header">

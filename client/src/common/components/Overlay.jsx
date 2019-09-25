@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import './Overlay.scss';
+
 export const OverlayStyleType = {
   LIGHT: 'overlay/LIGHT',
   DARK: 'overlay/DARK',

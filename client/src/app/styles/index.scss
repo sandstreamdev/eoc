@@ -1,96 +1,17 @@
 /**
  * Table of content
- * 1. Global
+ * 1. Reset styles
  * 2. Partials
- * 3. Containers
- * 4. Components
+ * 3. Global styles
  */
 
-// 1. Global
-@import './reset';
+// 1. Reset
+@import 'reset';
 
 // 2. Partials
-@import './colors';
-@import './variables';
-@import './mixins';
+@import 'partials';
+
+// 3. Global styles
 @import './utils';
-@import './forms';
 @import './buttons';
-
-// 3. Containers
-@import '../../app/components/Layout/Layout.scss';
-
-// 4. Components
-@import '../../common/components/AppLogo.scss';
-@import '../../app/components/Footer.scss';
-@import '../../modules/user/AuthBox/AuthBox.scss';
-@import '../../common/components/MessageBox.scss';
-@import '../../common/components/Preloader.scss';
-@import '../../modules/list/components/ItemsContainer.scss';
-@import '../../modules/list/components/Items/InputBar/InputBar.scss';
-@import '../../app/components/Layout/Toolbar/components/UserBar/UserBar.scss';
-@import '../../common/components/Dropdown.scss';
-@import '../../common/components/SortBox.scss';
-@import '../../modules/list/components/Items/VotingBox/VotingBox.scss';
-@import '../../modules/list/components/FilterBox.scss';
-@import '../../app/components/Layout/Toolbar/Toolbar.scss';
-@import '../../common/components/TilesViewItem.scss';
-@import '../../common/components/Overlay.scss';
-@import '../../app/components/Layout/Toolbar/components/ToolbarItem/ToolbarItem.scss';
-@import '../../modules/cohort/Cohort.scss';
-@import '../../app/components/Layout/Toolbar/components/ToolbarLink/ToolbarLink.scss';
-@import '../../common/components/CollectionView.scss';
-@import '../../modules/notification/Notification.scss';
-@import '../../common/components/Dialog.scss';
-@import '../../common/components/Form.scss';
-@import '../../modules/list/List.scss';
-@import '../../modules/about/About.scss';
-@import '../../common/components/ArchivedMessage.scss';
-@import '../../common/components/Page404.scss';
-@import '../../common/components/CardPlus.scss';
-@import '../../common/components/CookieConsentBox.scss';
-@import '../../modules/privacy-policy/PrivacyPolicy.scss';
-@import '../../common/components/Members/MembersBox.scss';
-@import '../../common/components/Members/components/MembersForm.scss';
-@import '../../common/components/Members/components/MemberDetails.scss';
-@import '../../common/components/Members/components/MemberButton.scss';
-@import '../../modules/cohort/components/CohortHeader.scss';
-@import '../../modules/list/components/Items/ListItem/ListItem.scss';
-@import '../../modules/list/components/ListHeader.scss';
-@import '../../common/components/NameInput.scss';
-@import '../../common/components/DescriptionTextarea.scss';
-@import '../../common/components/Forms/Textarea.scss';
-@import '../../common/components/Forms/TextInput.scss';
-@import '../../common/components/Comments/NewComment.scss';
-@import '../../common/components/Comments/Comment.scss';
-@import '../../common/components/Comments/CommentsList.scss';
-@import '../../common/components/Forms/ErrorMessage.scss';
-@import '../../common/components/SwitchButton.scss';
-@import '../../modules/dashboard/Dashboard.scss';
-@import '../../common/components/Breadcrumbs/Breadcrumbs.scss';
-@import '../../common/components/ListViewItem.scss';
-@import '../../modules/list/components/Items/ListArchivedItem/ListArchivedItem.scss';
-@import '../../modules/list/components/ArchivedItemsContainer.scss';
-@import '../../common/components/Members/components/InviteNewUser.scss';
-@import '../../common/components/Confirmation.scss';
-@import '../../modules/list/components/Items/ListItemName/ListItemName.scss';
-@import '../../modules/list/components/Items/ListItemDescription/ListItemDescription.scss';
-@import '../../common/components/Activities/Activities.scss';
-@import '../../common/components/Activities/components/ActivitiesList.scss';
-@import '../../common/components/Activities/components/Activity.scss';
-@import '../../common/components/Avatar.scss';
-@import '../../common/components/Members/components/MemberDetailsHeader.scss';
-@import '../../modules/user/AuthBox/components/SignUpForm.scss';
-@import '../../modules/user/AuthBox/components/SignInForm.scss';
-@import '../../modules/user/AuthBox/components/AuthInput.scss';
-@import '../../modules/user/AuthBox/components/ResetPassword.scss';
-@import '../../modules/user/AuthBox/components/PasswordRecoveryForm.scss';
-@import '../../modules/user/AuthBox/components/PasswordChangeForm.scss';
-@import '../../modules/user/AuthBox/components/ValidationInput.scss';
-@import '../../modules/user/AuthBox/components/LinkExpired.scss';
-@import '../../modules/user/AuthBox/components/SuccessMessage.scss';
-@import '../../modules/user/UserProfile/UserProfile.scss';
-@import '../../modules/user/UserProfile/UserProfileHeader.scss';
-@import '../../common/components/Members/components/MemberRole.scss';
-@import '../../modules/list/components/Items/MoveToListPanel/MoveToListPanel.scss';
-@import '../../modules/list/components/Items/MoveToListPanel/Lists.scss';
+@import './forms';

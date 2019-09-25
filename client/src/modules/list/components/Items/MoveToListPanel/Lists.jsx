@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 
 import Preloader from 'common/components/Preloader';
 import { IntlPropType } from 'common/constants/propTypes';
+import './Lists.scss';
 
 const Lists = ({ intl: { formatMessage }, lists, onClick, pending }) => (
   <div className="lists">

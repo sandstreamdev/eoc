@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { UserIcon } from 'assets/images/icons';
+import './Avatar.scss';
 
 class Avatar extends PureComponent {
   state = {

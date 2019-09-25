@@ -8,6 +8,7 @@ import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { ListType } from 'modules/list/consts';
 import { ColorType, Routes } from 'common/constants/enums';
 import { IntlPropType } from 'common/constants/propTypes';
+import './ListViewItem.scss';
 
 class ListViewItem extends PureComponent {
   state = {

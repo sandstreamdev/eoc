@@ -7,6 +7,7 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import { resendConfirmationLink } from 'modules/user/model/actions';
+import './LinkExpired.scss';
 
 class LinkExpired extends PureComponent {
   state = {

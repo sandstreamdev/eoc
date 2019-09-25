@@ -6,6 +6,7 @@ import _map from 'lodash/map';
 import { getNotifications } from './model/selectors';
 import Notification from './components/Notification';
 import NotificationWithTimer from './components/NotificationWithTimer';
+import './Notification.scss';
 
 const Notifications = ({ notifications }) => (
   <Fragment>

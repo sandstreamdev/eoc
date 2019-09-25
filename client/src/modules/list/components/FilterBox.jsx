@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
 import { IntlPropType } from 'common/constants/propTypes';
+import './FilterBox.scss';
 
 class FilterBox extends Component {
   handleFilterByChange = event => {

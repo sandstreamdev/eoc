@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
+import './CookieConsentBox.scss';
 
 const CookieConsentBox = ({ isAuthPage, onAccept }) => (
   <Fragment>

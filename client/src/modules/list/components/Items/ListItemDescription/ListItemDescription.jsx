@@ -20,6 +20,7 @@ import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { getCurrentUser } from 'modules/user/model/selectors';
+import './ListItemDescription.scss';
 
 class ListItemDescription extends PureComponent {
   pendingPromise = null;

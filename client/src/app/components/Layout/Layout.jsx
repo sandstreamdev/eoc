@@ -32,6 +32,7 @@ import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import { loadSettings, saveSettings } from 'common/utils/localStorage';
 import { clearMetaDataSuccess } from 'common/model/actions';
+import './Layout.scss';
 
 export class Layout extends PureComponent {
   constructor(props) {

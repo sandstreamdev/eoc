@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 
 import { ChevronRight } from 'assets/images/icons';
 import { IntlPropType } from 'common/constants/propTypes';
+import './Breadcrumbs.scss';
 
 const Breadcrumbs = ({ breadcrumbs, isGuest, intl: { formatMessage } }) => {
   if (breadcrumbs.length <= 1) {

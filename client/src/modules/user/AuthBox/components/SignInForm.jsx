@@ -11,6 +11,7 @@ import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise, validateWith } from 'common/utils/helpers';
 import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
+import './SignInForm.scss';
 
 class SignInForm extends PureComponent {
   pendingPromise = null;

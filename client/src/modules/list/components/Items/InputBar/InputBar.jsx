@@ -17,6 +17,7 @@ import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
+import './InputBar.scss';
 
 class InputBar extends Component {
   constructor(props) {

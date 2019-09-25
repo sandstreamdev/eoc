@@ -2,6 +2,8 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 
+import './MemberRole.scss';
+
 const MemberRole = ({ isCohortList, isGuest, isMember, isOwner }) => {
   let messageId = 'common.member-details.role-viewer';
 

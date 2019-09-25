@@ -14,6 +14,7 @@ import {
   validatePassword,
   validateWith
 } from 'common/utils/helpers';
+import './PasswordRecoveryForm.scss';
 
 class PasswordRecoveryForm extends PureComponent {
   constructor(props) {

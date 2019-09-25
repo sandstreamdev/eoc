@@ -11,6 +11,7 @@ import Preloader, {
 } from 'common/components/Preloader';
 import { ListType } from 'modules/list/consts';
 import { IntlPropType } from 'common/constants/propTypes';
+import './TilesViewItem.scss';
 
 class TilesViewItem extends PureComponent {
   state = {

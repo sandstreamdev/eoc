@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 import { SortOrderPropType, IntlPropType } from '../constants/propTypes';
 import { SortOrderType } from '../constants/enums';
 import { ArrowUpIcon } from 'assets/images/icons';
+import './SortBox.scss';
 
 class SortBox extends Component {
   handleSortByChange = event => {

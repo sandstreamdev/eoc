@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import Preloader from 'common/components/Preloader';
+import './Dialog.scss';
 
 export const DialogContext = Object.freeze({
   ARCHIVE: 'dialog/ARCHIVE',

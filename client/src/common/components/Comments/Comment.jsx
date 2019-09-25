@@ -4,6 +4,7 @@ import Linkify from 'react-linkify';
 
 import { dateFromString } from 'common/utils/helpers';
 import Avatar from 'common/components/Avatar';
+import './Comment.scss';
 
 class Comment extends PureComponent {
   render() {

@@ -17,6 +17,7 @@ import {
 } from 'modules/list/components/Items/model/actions';
 import Confirmation from 'common/components/Confirmation';
 import { getCurrentUser } from 'modules/user/model/selectors';
+import './ListArchivedItem.scss';
 
 class ListArchivedItem extends PureComponent {
   constructor(props) {

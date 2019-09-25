@@ -30,6 +30,7 @@ import Dialog from 'common/components/Dialog';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { validateWith } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
+import './ListHeader.scss';
 
 class ListHeader extends PureComponent {
   constructor(props) {

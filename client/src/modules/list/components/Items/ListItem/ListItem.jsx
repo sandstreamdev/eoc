@@ -26,6 +26,7 @@ import ListItemName from '../ListItemName';
 import ListItemDescription from '../ListItemDescription';
 import { DefaultLocks } from 'common/constants/enums';
 import MoveToListPanel from '../MoveToListPanel';
+import './ListItem.scss';
 
 class ListItem extends PureComponent {
   constructor(props) {

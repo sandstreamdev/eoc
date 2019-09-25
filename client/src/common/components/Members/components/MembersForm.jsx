@@ -11,6 +11,7 @@ import Preloader, {
 } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
 import { IntlPropType } from 'common/constants/propTypes';
+import './MembersForm.scss';
 
 class MembersForm extends PureComponent {
   constructor(props) {

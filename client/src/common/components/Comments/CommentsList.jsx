@@ -19,6 +19,7 @@ import { RouterMatchPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
+import './CommentsList.scss';
 
 class CommentsList extends PureComponent {
   pendingPromise = null;

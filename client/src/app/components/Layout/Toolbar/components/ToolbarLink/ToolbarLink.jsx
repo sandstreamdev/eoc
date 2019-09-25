@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import './ToolbarLink.scss';
+
 const ToolbarLink = ({ additionalIconSrc, mainIcon, path, title }) => (
   <div className="toolbar-link">
     <Link className="toolbar-link__icon-link" title={title} to={path}>

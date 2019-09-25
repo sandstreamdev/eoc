@@ -12,6 +12,7 @@ import ToolbarLink from './components/ToolbarLink';
 import ToolbarItem from './components/ToolbarItem';
 import { IntlPropType } from 'common/constants/propTypes';
 import Activities from 'common/components/Activities';
+import './Toolbar.scss';
 
 const Toolbar = ({ children, intl: { formatMessage } }) => (
   <div className="toolbar">

@@ -4,6 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { ListType } from 'modules/list/consts';
 import { IntlPropType } from 'common/constants/propTypes';
+import './Form.scss';
 
 class Form extends PureComponent {
   constructor(props) {

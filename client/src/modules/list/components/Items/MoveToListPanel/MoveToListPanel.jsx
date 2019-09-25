@@ -15,6 +15,7 @@ import Confirmation from 'common/components/Confirmation';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Lists from './Lists';
+import './MoveToListPanel.scss';
 
 class MoveToListPanel extends PureComponent {
   pendingPromise = null;

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Avatar from 'common/components/Avatar';
+import './UserProfileHeader.scss';
 
 const UserProfileHeader = ({ avatarUrl, name }) => (
   <h1 className="user-profile-header">

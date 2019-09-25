@@ -2,6 +2,7 @@ import React from 'react';
 
 import { PROJECT_NAME } from '../constants/variables';
 import { AppIcon } from 'assets/images/icons';
+import './AppLogo.scss';
 
 const AppLogo = () => (
   <div className="app-logo">

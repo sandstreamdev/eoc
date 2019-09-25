@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
+import './Confirmation.scss';
 
 const Confirmation = ({
   children,

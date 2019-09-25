@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
+import './Page404.scss';
+
 const Page404 = () => (
   <div className="page-404">
     <div className="page-404__wrapper">

@@ -16,6 +16,7 @@ import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType } from 'common/constants/propTypes';
+import './ActivitiesList.scss';
 
 class ActivitiesList extends PureComponent {
   pendingPromise = null;

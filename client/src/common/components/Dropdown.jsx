@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import { KeyCodes } from 'common/constants/enums';
+import './Dropdown.scss';
 
 class Dropdown extends PureComponent {
   constructor(props) {

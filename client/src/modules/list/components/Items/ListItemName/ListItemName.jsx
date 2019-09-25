@@ -10,6 +10,7 @@ import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import { getCurrentUser } from 'modules/user/model/selectors';
+import './ListItemName.scss';
 
 class ListItemName extends PureComponent {
   constructor(props) {

@@ -6,6 +6,7 @@ import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import { PROJECT_NAME } from 'common/constants/variables';
 import { IntlPropType } from 'common/constants/propTypes';
+import './InviteNewUser.scss';
 
 const InviteNewUser = ({
   email,

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { PENDING_DELAY } from 'common/constants/variables';
+import './Preloader.scss';
 
 export const PreloaderTheme = {
   DARK: 'preloader/DARK',

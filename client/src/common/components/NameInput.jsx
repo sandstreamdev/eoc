@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import './NameInput.scss';
+
 class NameInput extends PureComponent {
   constructor(props) {
     super(props);

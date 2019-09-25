@@ -5,6 +5,7 @@ import { ActivitiesIcon } from 'assets/images/icons';
 import Dropdown from 'common/components/Dropdown';
 import ActivitiesList from './components/ActivitiesList';
 import { IntlPropType } from 'common/constants/propTypes';
+import './Activities.scss';
 
 const Activities = ({ intl: { formatMessage } }) => (
   <Dropdown
