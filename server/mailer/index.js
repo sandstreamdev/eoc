@@ -92,7 +92,36 @@ const sendResetPasswordLink = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const sendAddViewerNotification = (req, resp) => {
+  const { email: receiver } = req.body;
+  const { displayName } = resp.locales;
+  const host = req.get('host');
+  const title = PROJECT_NAME;
+  const info =
+    'USER X added you to collaborate in EOC app. Please click the button bellow and login to the app.';
+  const value = 'GO TO APP';
+
+  const message = {
+    to: receiver,
+    from: 'no.reply@app.eoc.com',
+    subject: title,
+    html: mailTemplate(
+      displayName,
+      `${PROJECT_NAME} team`,
+      host,
+      title,
+      info,
+      value
+    )
+  };
+
+  SendGridMail.send(message)
+    .then(() => resp.send())
+    .catch(() => resp.sendStatus(400));
+};
+
 module.exports = {
+  sendAddViewerNotification,
   sendInvitation,
   sendResetPasswordLink,
   sendSignUpConfirmationLink

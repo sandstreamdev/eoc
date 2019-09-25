@@ -1029,7 +1029,7 @@ const removeMemberRole = (req, resp) => {
     });
 };
 
-const addViewer = (req, resp) => {
+const addViewer = (req, resp, next) => {
   const {
     user: { _id: currentUserId, idFromProvider }
   } = req;
@@ -1104,6 +1104,10 @@ const addViewer = (req, resp) => {
     .then(() => {
       if (user) {
         resp.send(userToSend);
+        // eslint-disable-next-line no-param-reassign
+        resp.locales = userToSend;
+
+        next();
 
         return fireAndForget(
           saveActivity(

@@ -33,6 +33,7 @@ const {
   voteForItem
 } = require('../controllers/list');
 const { authorize } = require('../middleware/authorize');
+const { sendAddViewerNotification } = require('../mailer');
 
 router.get('/meta-data/:cohortId?', authorize, getListsMetaData);
 router.get('/archived/:cohortId?', authorize, getArchivedListsMetaData);
@@ -50,7 +51,12 @@ router.patch('/:id/add-owner-role', authorize, addOwnerRole);
 router.patch('/:id/remove-owner-role', authorize, removeOwnerRole);
 router.patch('/:id/add-member-role', authorize, addMemberRole);
 router.patch('/:id/remove-member-role', authorize, removeMemberRole);
-router.patch('/:id/add-viewer', authorize, addViewer);
+router.patch(
+  '/:id/add-viewer',
+  authorize,
+  addViewer,
+  sendAddViewerNotification
+);
 router.patch('/:id/update-item', authorize, updateItem);
 router.patch('/:id/clone-item', authorize, cloneItem);
 router.patch('/:id/change-type', authorize, changeType);
