@@ -84,6 +84,39 @@ const responseWithList = (list, userId) => {
   return listToSend;
 };
 
+const responseWithListMetaData = (list, userId) => {
+  const {
+    _id,
+    cohortId,
+    created_at: createdAt,
+    description,
+    favIds,
+    items,
+    name,
+    type
+  } = list;
+
+  const listToSend = {
+    _id,
+    createdAt,
+    description,
+    ...countItems(items),
+    name,
+    type
+  };
+
+  if (userId) {
+    listToSend.isFavourite = checkIfArrayContainsUserId(favIds, userId);
+  }
+
+  if (cohortId) {
+    listToSend.cohortId =
+      typeof cohortId === 'string' ? cohortId : cohortId._id;
+  }
+
+  return listToSend;
+};
+
 const responseWithListsMetaData = (lists, userId) =>
   _compact(
     _map(lists, list => {
@@ -432,6 +465,7 @@ module.exports = {
   responseWithList,
   responseWithListMember,
   responseWithListMembers,
+  responseWithListMetaData,
   responseWithListsMetaData,
   returnPayload,
   runAsyncTasks,

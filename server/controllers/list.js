@@ -16,8 +16,7 @@ const {
   responseWithItem,
   responseWithItems,
   responseWithList,
-  responseWithListsMetaData,
-  returnPayload
+  responseWithListsMetaData
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -1435,97 +1434,85 @@ const cloneItem = async (req, resp) => {
   }
 };
 
-const changeType = (req, resp) => {
+const changeType = async (req, resp) => {
   const { type } = req.body;
   const { id: listId } = req.params;
   const { _id: currentUserId } = req.user;
   const sanitizedListId = sanitize(listId);
-  let cohortMembers;
-  let removedViewers;
-  let listCohortId;
+  const sanitizedType = sanitize(type);
 
-  List.findOneAndUpdate(
-    { _id: sanitizedListId, ownerIds: currentUserId },
-    { type },
-    { new: true }
-  )
-    .populate('cohortId', 'memberIds')
-    .exec()
-    .then(list => {
-      if (!list) {
-        throw new BadRequestException();
-      }
-      const {
-        cohortId: { memberIds: cohortMembersCollection },
-        type,
-        viewersIds
-      } = list;
+  try {
+    const list = await List.findOneAndUpdate(
+      { _id: sanitizedListId, ownerIds: currentUserId },
+      { type: sanitizedType },
+      { new: true }
+    )
+      .populate('cohortId', 'memberIds')
+      .exec();
 
-      cohortMembers = cohortMembersCollection;
+    const {
+      cohortId: { memberIds: cohortMembersCollection },
+      type,
+      viewersIds
+    } = list;
+    const cohortMembers = cohortMembersCollection;
+    const newViewers =
+      type === ListType.SHARED
+        ? [...cohortMembers.filter(id => !isViewer(list, id))]
+        : null;
+    const updatedViewersIds =
+      type === ListType.LIMITED
+        ? viewersIds.filter(id => isMember(list, id))
+        : [...viewersIds, ...newViewers];
+    const removedViewers =
+      type === ListType.LIMITED
+        ? _difference(viewersIds, updatedViewersIds)
+        : null;
 
-      const updatedViewersIds =
-        type === ListType.LIMITED
-          ? viewersIds.filter(id => isMember(list, id))
-          : [...viewersIds, ...cohortMembers.filter(id => !isViewer(list, id))];
+    const updatedList = await List.findOneAndUpdate(
+      { _id: listId, ownerIds: currentUserId },
+      { viewersIds: updatedViewersIds },
+      { new: true }
+    )
+      .lean()
+      .populate('viewersIds', 'avatarUrl displayName _id')
+      .exec();
 
-      removedViewers =
-        type === ListType.LIMITED
-          ? _difference(viewersIds, updatedViewersIds)
-          : null;
+    const { cohortId } = updatedList;
 
-      return List.findOneAndUpdate(
-        { _id: listId, ownerIds: currentUserId },
-        { viewersIds: updatedViewersIds },
-        { new: true }
-      )
-        .lean()
-        .populate('viewersIds', 'avatarUrl displayName _id')
-        .exec();
-    })
-    .then(list => {
-      const {
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_CHANGE_TYPE,
+        currentUserId,
+        null,
+        sanitizedListId,
         cohortId,
-        memberIds,
-        ownerIds,
-        type,
-        viewersIds: viewersCollection
-      } = list;
-      const members = responseWithListMembers(
-        viewersCollection,
-        memberIds,
-        ownerIds,
-        cohortMembers
-      );
+        null,
+        type
+      )
+    );
 
-      listCohortId = cohortId;
-      const data = { listId, members, removedViewers, type };
-      const socketInstance = io.getInstance();
+    const { memberIds, ownerIds, viewersIds: viewersCollection } = updatedList;
+    const members = responseWithListMembers(
+      viewersCollection,
+      memberIds,
+      ownerIds,
+      cohortMembers
+    );
+    const data = {
+      list: updatedList,
+      members,
+      newViewers,
+      removedViewers,
+      type
+    };
+    const socketInstance = io.getInstance();
 
-      return returnPayload(
-        socketActions.changeListType(
-          socketInstance,
-          dashboardClients,
-          cohortClients,
-          listClients
-        )(data)
-      )({ members, type });
-    })
-    .then(payload => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_CHANGE_TYPE,
-          currentUserId,
-          null,
-          sanitizedListId,
-          listCohortId,
-          null,
-          type
-        )
-      );
-
-      resp.send(payload);
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send({ members, type });
+    fireAndForget(socketActions.changeListType(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const getArchivedItems = (req, resp) => {

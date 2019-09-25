@@ -19,6 +19,7 @@ const {
   responseWithList,
   responseWithListMember,
   responseWithListMembers,
+  responseWithListMetaData,
   responseWithListsMetaData
 } = require('./index');
 const {
@@ -80,6 +81,33 @@ describe('function responseWithList', () => {
 
   it('returns list object without not expected data', () => {
     const notExpected = ['favIds', 'isDeleted'];
+
+    notExpected.map(property => expect(result).not.toHaveProperty(notExpected));
+  });
+
+  it('returns object with desired properties for cohort list', () => {
+    expectedCohortListProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
+  });
+});
+
+describe('function responseWithListMetaData', () => {
+  const list = listMock[0];
+  const userId = ObjectId();
+
+  list.cohortId = ObjectId();
+
+  const result = responseWithListMetaData(list, userId);
+
+  it('returns list object with desired properties', () => {
+    expectedListMetaDataProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
+  });
+
+  it('returns list object without not expected data', () => {
+    const notExpected = ['favIds', 'items', 'isDeleted'];
 
     notExpected.map(property => expect(result).not.toHaveProperty(notExpected));
   });

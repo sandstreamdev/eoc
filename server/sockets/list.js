@@ -11,10 +11,10 @@ const {
 } = require('./eventTypes');
 const List = require('../models/list.model');
 const {
-  checkIfArrayContainsUserId,
   countItems,
   isMember,
-  responseWithList
+  responseWithList,
+  responseWithListMetaData
 } = require('../common/utils');
 const {
   descriptionLockId,
@@ -409,105 +409,66 @@ const leaveList = io => async data => {
   return Promise.resolve();
 };
 
-const changeListType = (
-  io,
-  dashboardClients,
-  cohortClients,
-  listClients
-) => data => {
-  const { listId, members, type, removedViewers } = data;
+const changeListType = io => async data => {
+  const { list, members, newViewers, removedViewers, type } = data;
+  const { _id: listId } = list;
 
-  return List.findById(listId)
-    .populate('cohortId', 'memberIds')
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const {
-          cohortId: { _id: cohortId, memberIds: cohortMemberIds },
-          viewersIds
-        } = doc;
+  io.sockets.to(listChannel(listId)).emit(ListActionTypes.CHANGE_TYPE_SUCCESS, {
+    listId,
+    members: _keyBy(members, '_id'),
+    removedViewers,
+    type
+  });
 
-        const list = { ...doc, cohortId };
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, type });
 
-        io.sockets
-          .to(listChannel(listId))
-          .emit(ListActionTypes.CHANGE_TYPE_SUCCESS, {
-            listId,
-            members: _keyBy(members, '_id'),
-            type
-          });
+  if (type === ListType.LIMITED) {
+    removedViewers.forEach(async id => {
+      const removedViewerId = id.toString();
 
-        if (type === ListType.LIMITED) {
-          removedViewers.forEach(id => {
-            const userId = id.toString();
-            const isCohortMember = checkIfArrayContainsUserId(
-              cohortMemberIds,
-              userId
-            );
+      try {
+        const socketIds = await getUserSockets(removedViewerId);
 
-            if (listClients.has(userId)) {
-              const { viewId, socketId } = listClients.get(userId);
+        socketIds.forEach(socketId => {
+          io.sockets
+            .to(socketId)
+            .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId));
 
-              if (viewId === listId) {
-                io.sockets
-                  .to(socketId)
-                  .emit(ListActionTypes.LEAVE_ON_TYPE_CHANGE_SUCCESS, {
-                    cohortId,
-                    isCohortMember,
-                    listId,
-                    type
-                  });
-              }
-            }
-
-            if (dashboardClients.has(userId)) {
-              const { socketId } = dashboardClients.get(userId);
-
-              io.sockets
-                .to(socketId)
-                .emit(ListActionTypes.DELETE_SUCCESS, { listId });
-            }
-
-            if (cohortClients.has(userId)) {
-              const { viewId, socketId } = cohortClients.get(userId);
-
-              if (viewId === cohortId.toString()) {
-                io.sockets
-                  .to(socketId)
-                  .emit(ListActionTypes.DELETE_SUCCESS, { listId });
-              }
-            }
-          });
-        }
-
-        viewersIds.forEach(id => {
-          const userId = id.toString();
-
-          if (dashboardClients.has(userId)) {
-            const { socketId } = dashboardClients.get(userId);
-
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [list._id]: responseWithList(list, userId)
-              });
-          }
-
-          if (cohortClients.has(userId)) {
-            const { viewId, socketId } = cohortClients.get(userId);
-
-            if (viewId === cohortId.toString()) {
-              io.sockets
-                .to(socketId)
-                .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                  [list._id]: responseWithList(list, userId)
-                });
-            }
-          }
+          io.sockets
+            .to(socketId)
+            .emit(ListActionTypes.DELETE_SUCCESS, { listId });
         });
+      } catch {
+        // Ignore errors
       }
     });
+  } else {
+    newViewers.forEach(async id => {
+      const newViewerId = id.toString();
+      const listToSend = {
+        [listId]: responseWithListMetaData(list, newViewerId)
+      };
+      try {
+        const socketIds = await getUserSockets(newViewerId);
+
+        socketIds.forEach(socketId => {
+          io.sockets
+            .to(socketId)
+            .emit(AppEvents.JOIN_ROOM, listMetaDataChannel(listId));
+
+          io.sockets
+            .to(socketId)
+            .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listToSend);
+        });
+      } catch {
+        // Ignore errors
+      }
+    });
+  }
+
+  return Promise.resolve();
 };
 
 const removeViewer = io => async data => {

@@ -11,7 +11,17 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
   const { currentUser } = getState();
 
   switch (event) {
-    case ListEvents.LEAVE_ON_TYPE_CHANGE_SUCCESS:
+    case ListEvents.CHANGE_TYPE_SUCCESS: {
+      const { listId, removedViewers, ...rest } = data;
+
+      if (removedViewers.includes(currentUser.id)) {
+        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
+
+        return history.replace(dashboardRoute());
+      }
+
+      return dispatch({ type: event, payload: { listId, ...rest } });
+    }
     case ListEvents.REMOVE_MEMBER_SUCCESS: {
       const { listId, userId } = data;
 
