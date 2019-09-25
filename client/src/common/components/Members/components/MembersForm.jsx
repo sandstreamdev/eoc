@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
-import './MembersForm.scss';
 
 import Preloader, {
   PreloaderSize,
@@ -12,6 +11,7 @@ import Preloader, {
 } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
 import { IntlPropType } from 'common/constants/propTypes';
+import './MembersForm.scss';
 
 class MembersForm extends PureComponent {
   constructor(props) {
