@@ -473,7 +473,6 @@ const updateListById = (req, resp) => {
     isDeleted,
     name
   });
-  const socketInstance = io.getInstance();
   let listActivity;
   let list;
 
@@ -495,6 +494,7 @@ const updateListById = (req, resp) => {
         return resp.sendStatus(400);
       }
 
+      const socketInstance = io.getInstance();
       const { cohortId } = doc;
       list = doc;
 
