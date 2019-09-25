@@ -305,7 +305,7 @@ const addMemberRoleInList = io => async data => {
   return Promise.resolve();
 };
 
-const addOwnerRoleInList = (io, clients) => data => {
+const addOwnerRoleInList = io => async data => {
   const { listId, userId } = data;
 
   io.sockets
@@ -315,21 +315,23 @@ const addOwnerRoleInList = (io, clients) => data => {
       isCurrentUserRoleChanging: false
     });
 
-  if (clients.has(userId)) {
-    const { viewId, socketId } = clients.get(userId);
+  try {
+    const socketIds = await getUserSockets(userId);
 
-    if (viewId === listId) {
+    socketIds.forEach(socketId =>
       io.sockets.to(socketId).emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: true
-      });
-    }
+      })
+    );
+  } catch {
+    // Ignore errors
   }
 
   return Promise.resolve();
 };
 
-const removeMemberRoleInList = (io, clients) => data => {
+const removeMemberRoleInList = io => async data => {
   const { listId, userId } = data;
 
   io.sockets
@@ -339,21 +341,23 @@ const removeMemberRoleInList = (io, clients) => data => {
       isCurrentUserRoleChanging: false
     });
 
-  if (clients.has(userId)) {
-    const { viewId, socketId } = clients.get(userId);
+  try {
+    const socketIds = await getUserSockets(userId);
 
-    if (viewId === listId) {
+    socketIds.forEach(socketId =>
       io.sockets.to(socketId).emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: true
-      });
-    }
+      })
+    );
+  } catch {
+    // Ignore errors
   }
 
   return Promise.resolve();
 };
 
-const removeOwnerRoleInList = (io, clients) => data => {
+const removeOwnerRoleInList = io => async data => {
   const { listId, userId } = data;
 
   io.sockets
@@ -363,16 +367,20 @@ const removeOwnerRoleInList = (io, clients) => data => {
       isCurrentUserRoleChanging: false
     });
 
-  if (clients.has(userId)) {
-    const { viewId, socketId } = clients.get(userId);
+  try {
+    const socketIds = await getUserSockets(userId);
 
-    if (viewId === listId) {
+    socketIds.forEach(socketId =>
       io.sockets.to(socketId).emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: true
-      });
-    }
+      })
+    );
+  } catch {
+    // Ignore errors
   }
+
+  return Promise.resolve();
 };
 
 const leaveList = io => async data => {
