@@ -146,6 +146,14 @@ const markAsUnhandledFailure = () => ({
   type: ItemActionTypes.MARK_AS_UNHANDLED_FAILURE
 });
 
+const disableItemAnimationsSuccess = payload => ({
+  type: ItemActionTypes.DISABLE_ANIMATIONS_SUCCESS,
+  payload
+});
+
+export const disableItemAnimations = (itemId, listId) => dispatch =>
+  dispatch(disableItemAnimationsSuccess({ itemId, listId }));
+
 export const addItem = (item, listId) => dispatch =>
   postData('/api/lists/add-item', { item, listId })
     .then(response => response.json())

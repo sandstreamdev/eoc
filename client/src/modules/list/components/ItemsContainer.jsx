@@ -108,6 +108,7 @@ class ItemsContainer extends Component {
     const {
       archived,
       children,
+      done,
       intl: { formatMessage },
       isMember,
       items
@@ -142,6 +143,7 @@ class ItemsContainer extends Component {
         <div className="items__body">
           <ItemsList
             archived={archived}
+            done={done}
             isMember={isMember}
             items={sortedList}
           />

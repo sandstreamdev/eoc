@@ -12,6 +12,14 @@ import items from 'modules/list/components/Items/model/reducer';
 import { ListType } from 'modules/list/consts';
 import { filterDefined } from 'common/utils/helpers';
 import { CommonActionTypes } from 'common/model/actionTypes';
+import { DISPLAY_LIMIT } from 'common/constants/variables';
+
+const listState = {
+  archivedLimit: DISPLAY_LIMIT,
+  areArchivedItemsDisplayed: false,
+  doneLimit: DISPLAY_LIMIT,
+  unhandledLimit: DISPLAY_LIMIT
+};
 
 const membersReducer = (state = {}, action) => {
   switch (action.type) {
@@ -135,8 +143,17 @@ const lists = (state = {}, action) => {
       return state;
     }
     case ListActionTypes.RESTORE_SUCCESS:
-    case ListActionTypes.FETCH_DATA_SUCCESS:
-      return { ...state, [action.payload.listId]: action.payload.data };
+    case ListActionTypes.FETCH_DATA_SUCCESS: {
+      const { data, listId } = action.payload;
+
+      return {
+        ...state,
+        [listId]: {
+          ...data,
+          listState
+        }
+      };
+    }
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, list => !list.isArchived), '_id');
     case ListActionTypes.REMOVE_BY_IDS: {
@@ -279,33 +296,121 @@ const lists = (state = {}, action) => {
         '_id'
       );
     }
-    case ItemActionTypes.ADD_SUCCESS:
-    case ItemActionTypes.ARCHIVE_SUCCESS:
+    case ListActionTypes.UPDATE_LIMIT_SUCCESS: {
+      const {
+        payload: { listId, limit }
+      } = action;
+
+      const updatedState = { ...state[listId].listState, ...limit };
+
+      return {
+        ...state,
+        [listId]: {
+          ...state[listId],
+          listState: updatedState
+        }
+      };
+    }
+    case CommentActionTypes.ADD_SUCCESS:
+    case CommentActionTypes.FETCH_SUCCESS:
     case ItemActionTypes.CLEAR_VOTE_SUCCESS:
     case ItemActionTypes.CLONE_SUCCESS:
     case ItemActionTypes.DELETE_SUCCESS:
-    case ItemActionTypes.FETCH_ARCHIVED_SUCCESS:
-    case ItemActionTypes.MARK_AS_DONE_SUCCESS:
-    case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS:
-    case ItemActionTypes.MOVE_SUCCESS:
-    case ItemActionTypes.REMOVE_ARCHIVED:
-    case ItemActionTypes.RESTORE_SUCCESS:
     case ItemActionTypes.SET_VOTE_SUCCESS:
     case ItemActionTypes.UPDATE_SUCCESS:
     case ItemStatusType.LOCK:
     case ItemStatusType.UNLOCK:
-    case CommentActionTypes.ADD_SUCCESS:
-    case CommentActionTypes.FETCH_SUCCESS: {
+    case ItemActionTypes.DISABLE_ANIMATIONS: {
+      const {
+        payload: { listId }
+      } = action;
+      const list = state[listId];
+
+      if (list && list.items) {
+        const { items: previousItems } = list;
+
+        return {
+          ...state,
+          [listId]: { ...list, items: items(previousItems, action) }
+        };
+      }
+
+      return state;
+    }
+    case ItemActionTypes.FETCH_ARCHIVED_SUCCESS: {
       const {
         payload: { listId }
       } = action;
 
-      if (state[listId] && state[listId].items) {
-        const { items: previousItems } = state[listId];
+      const list = state[listId];
+
+      if (list && list.items) {
+        const { items: previousItems, listState } = list;
+
+        listState.areArchivedItemsDisplayed = true;
 
         return {
           ...state,
-          [listId]: { ...state[listId], items: items(previousItems, action) }
+          [listId]: {
+            ...list,
+            listState,
+            items: items(previousItems, action)
+          }
+        };
+      }
+
+      return state;
+    }
+    case ItemActionTypes.REMOVE_ARCHIVED: {
+      const {
+        payload: { listId }
+      } = action;
+
+      const list = state[listId];
+
+      if (list && list.items) {
+        const { items: previousItems, listState } = list;
+
+        listState.areArchivedItemsDisplayed = false;
+
+        return {
+          ...state,
+          [listId]: {
+            ...list,
+            listState,
+            items: items(previousItems, action)
+          }
+        };
+      }
+
+      return state;
+    }
+    case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.ARCHIVE_SUCCESS:
+    case ItemActionTypes.MARK_AS_DONE_SUCCESS:
+    case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS:
+    case ItemActionTypes.RESTORE_SUCCESS: {
+      const {
+        payload,
+        payload: { listId },
+        type
+      } = action;
+
+      const list = state[listId];
+
+      if (list && list.items) {
+        const { items: previousItems } = list;
+        const { listState } = list;
+
+        return {
+          ...state,
+          [listId]: {
+            ...list,
+            items: items(previousItems, {
+              payload: { ...payload, listState },
+              type
+            })
+          }
         };
       }
 

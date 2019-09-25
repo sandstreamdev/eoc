@@ -114,3 +114,8 @@ export const getListsNames = createSelector(
   (currentList, lists) =>
     _sortBy(_filter(lists, list => list._id !== currentList._id), el => el.name)
 );
+
+export const getLimits = createSelector(
+  getList,
+  list => list && list.limits
+);

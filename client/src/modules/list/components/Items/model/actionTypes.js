@@ -8,6 +8,7 @@ export const CommentActionTypes = enumerable('comment')(
 export const ItemActionTypes = enumerable('item')(
   ...asyncTypes('ADD'),
   ...asyncTypes('ARCHIVE'),
+  ...asyncTypes('DISABLE_ANIMATIONS'),
   ...asyncTypes('CLEAR_VOTE'),
   ...asyncTypes('CLONE'),
   ...asyncTypes('DELETE'),

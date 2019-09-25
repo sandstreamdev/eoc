@@ -6,7 +6,7 @@ import {
   ItemActionTypes,
   ItemStatusType
 } from 'modules/list/components/Items/model/actionTypes';
-import { filterDefined } from 'common/utils/helpers';
+import { filterDefined, shouldAnimate } from 'common/utils/helpers';
 
 const comments = (state = {}, action) => {
   switch (action.type) {
@@ -31,7 +31,21 @@ const comments = (state = {}, action) => {
 
 const items = (state = {}, action) => {
   switch (action.type) {
-    case ItemActionTypes.ADD_SUCCESS:
+    case ItemActionTypes.ADD_SUCCESS: {
+      const {
+        payload: {
+          item,
+          item: { _id },
+          listState
+        }
+      } = action;
+      const items = { [_id]: item, ...state };
+
+      return {
+        ...items,
+        [_id]: { ...item, animate: shouldAnimate(items, item, listState) }
+      };
+    }
     case ItemActionTypes.CLONE_SUCCESS: {
       const {
         payload: {
@@ -40,7 +54,7 @@ const items = (state = {}, action) => {
         }
       } = action;
 
-      return { [_id]: item, ...state };
+      return { [_id]: { ...item, animate: true }, ...state };
     }
     case ItemActionTypes.SET_VOTE_SUCCESS: {
       const {
@@ -92,32 +106,45 @@ const items = (state = {}, action) => {
     }
     case ItemActionTypes.ARCHIVE_SUCCESS: {
       const {
-        payload: { itemId, editedBy }
+        payload: { itemId, editedBy, listState }
       } = action;
-      const previousItem = state[itemId];
+      const archivedItem = {
+        ...state[itemId],
+        editedBy,
+        isArchived: true
+      };
+      const items = {
+        ...state,
+        [itemId]: archivedItem
+      };
 
       return {
-        ...state,
+        ...items,
         [itemId]: {
-          ...previousItem,
-          editedBy,
-          isArchived: true
+          ...items[itemId],
+          animate: shouldAnimate(items, archivedItem, listState)
         }
       };
     }
     case ItemActionTypes.RESTORE_SUCCESS: {
       const {
-        payload: { item, itemId }
+        payload: { item, itemId, listState }
       } = action;
       const previousItem = state[itemId];
       const restoredItem = previousItem
         ? { ...previousItem, ...item, isArchived: false }
         : { ...item };
 
-      return {
+      const items = {
         ...state,
+        [itemId]: restoredItem
+      };
+
+      return {
+        ...items,
         [itemId]: {
-          ...restoredItem
+          ...restoredItem,
+          animate: shouldAnimate(items, restoredItem, listState)
         }
       };
     }
@@ -162,16 +189,37 @@ const items = (state = {}, action) => {
       return state;
     }
     case ItemActionTypes.MARK_AS_DONE_SUCCESS: {
-      const { itemId, editedBy } = action.payload;
-      const item = state[itemId];
+      const { itemId, editedBy, listState } = action.payload;
+      const item = { ...state[itemId], editedBy, done: true };
+      const items = { ...state, [itemId]: item };
 
-      return { ...state, [itemId]: { ...item, editedBy, done: true } };
+      return {
+        ...items,
+        [itemId]: {
+          ...items[itemId],
+          animate: shouldAnimate(items, item, listState)
+        }
+      };
     }
     case ItemActionTypes.MARK_AS_UNHANDLED_SUCCESS: {
-      const { itemId, editedBy } = action.payload;
-      const item = state[itemId];
+      const { itemId, editedBy, listState } = action.payload;
+      const item = { ...state[itemId], editedBy, done: false };
+      const items = { ...state, [itemId]: item };
 
-      return { ...state, [itemId]: { ...item, editedBy, done: false } };
+      return {
+        ...items,
+        [itemId]: {
+          ...items[itemId],
+          animate: shouldAnimate(items, item, listState)
+        }
+      };
+    }
+    case ItemActionTypes.DISABLE_ANIMATIONS_SUCCESS: {
+      const {
+        payload: { itemId }
+      } = action;
+
+      return { ...state, [itemId]: { ...state[itemId], animate: false } };
     }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS: {

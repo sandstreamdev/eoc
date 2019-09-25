@@ -61,12 +61,8 @@ class ListItem extends PureComponent {
 
     const action = done ? markAsUnhandled : markAsDone;
 
-    this.setState({
-      disableToggleButton: true
-    });
-
-    return action(listId, itemId, itemName, editedBy).finally(() =>
-      this.setState({ disableToggleButton: false }, this.handleItemUnlock)
+    return action(listId, itemId, itemName, editedBy).finally(
+      this.handleItemUnlock
     );
   };
 
@@ -412,7 +408,7 @@ class ListItem extends PureComponent {
       },
       isMember
     } = this.props;
-    const { areDetailsVisible, disableToggleButton, isNameEdited } = this.state;
+    const { areDetailsVisible, isNameEdited } = this.state;
     const isEdited = nameLock || descriptionLock;
 
     return (
@@ -467,7 +463,7 @@ class ListItem extends PureComponent {
               <div className="list-item__toggle">
                 <PendingButton
                   className="list-item__icon"
-                  disabled={disableToggleButton || !isMember || isEdited}
+                  disabled={!isMember || isEdited}
                   onClick={this.handleItemStatus}
                 />
               </div>
