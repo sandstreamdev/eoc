@@ -899,61 +899,53 @@ const removeOwnerRole = (req, resp) => {
     });
 };
 
-const addMemberRole = (req, resp) => {
+const addMemberRole = async (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
     user: { _id: currentUserId }
   } = req;
   const sanitizedListId = sanitize(listId);
+  const sanitizedUserId = sanitize(listId);
 
-  List.findOne({ _id: sanitizedListId, ownerIds: { $in: [currentUserId] } })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new BadRequestException();
-      }
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      ownerIds: { $in: [currentUserId] }
+    }).exec();
 
-      const { ownerIds, memberIds } = doc;
-      const userIsNotAMember = !isMember(doc, userId);
+    const { ownerIds, memberIds } = list;
+    const userIsNotAMember = !isMember(list, sanitizedUserId);
 
-      if (userIsNotAMember) {
-        memberIds.push(userId);
-      }
+    if (userIsNotAMember) {
+      memberIds.push(sanitizedUserId);
+    }
 
-      if (isOwner(doc, userId)) {
-        ownerIds.splice(ownerIds.indexOf(userId), 1);
-      }
+    if (isOwner(list, sanitizedUserId)) {
+      ownerIds.splice(ownerIds.indexOf(sanitizedUserId), 1);
+    }
 
-      return doc.save();
-    })
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+    await list.save();
 
-      const data = { listId, userId };
-      const socketInstance = io.getInstance();
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_SET_AS_MEMBER,
+        currentUserId,
+        null,
+        sanitizedListId,
+        list.cohortId,
+        sanitizedUserId
+      )
+    );
 
-      return returnPayload(
-        socketActions.addMemberRoleInList(socketInstance, listClients)(data)
-      )(doc);
-    })
-    .then(payload => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_SET_AS_MEMBER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          payload.cohortId,
-          userId
-        )
-      );
+    const data = { listId, userId };
+    const socketInstance = io.getInstance();
 
-      resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    fireAndForget(socketActions.addMemberRoleInList(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const removeMemberRole = (req, resp) => {

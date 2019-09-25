@@ -279,7 +279,7 @@ const updateListHeaderState = (socket, listClientLocks) => {
   });
 };
 
-const addMemberRoleInList = (io, clients) => data => {
+const addMemberRoleInList = io => async data => {
   const { listId, userId } = data;
 
   io.sockets
@@ -289,15 +289,17 @@ const addMemberRoleInList = (io, clients) => data => {
       isCurrentUserRoleChanging: false
     });
 
-  if (clients.has(userId)) {
-    const { viewId, socketId } = clients.get(userId);
+  try {
+    const socketIds = await getUserSockets(userId);
 
-    if (viewId === listId) {
+    socketIds.forEach(socketId =>
       io.sockets.to(socketId).emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
         ...data,
         isCurrentUserRoleChanging: true
-      });
-    }
+      })
+    );
+  } catch {
+    // Ignore errors
   }
 
   return Promise.resolve();
