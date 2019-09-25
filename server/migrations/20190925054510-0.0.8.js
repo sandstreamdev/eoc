@@ -2,38 +2,27 @@
 const { runAsyncTasks } = require('../common/utils');
 
 const up = async db => {
-  const promises = [];
-
-  await db
-    .collection('lists')
-    .find({ created_at: { $exists: true } })
-    .forEach(list => {
-      // eslint-disable-next-line camelcase
-      const { _id, created_at } = list;
-
-      promises.push(async () =>
-        db
-          .collection('lists')
-          .updateOne(
-            { _id },
-            { $set: { createdAt: created_at }, $unset: { created_at: '' } }
-          )
-      );
-    });
-
-  await runAsyncTasks(...promises);
-};
-
-const down = async db => {
-  const renameCreatedAtProperty = async () =>
+  const renameCreatedAt = async () =>
     db
       .collection('lists')
       .updateMany(
-        { visibility: { $exists: false } },
-        { $set: { visibility: '' } }
+        { created_at: { $exists: true } },
+        { $rename: { created_at: 'createdAt' } }
       );
 
-  await runAsyncTasks(renameCreatedAtProperty);
+  await runAsyncTasks(renameCreatedAt);
+};
+
+const down = async db => {
+  const renameCreatedAt = async () =>
+    db
+      .collection('lists')
+      .updateMany(
+        { createdAt: { $exists: true } },
+        { $rename: { createdAt: 'created_at' } }
+      );
+
+  await runAsyncTasks(renameCreatedAt);
 };
 
 module.exports = {
