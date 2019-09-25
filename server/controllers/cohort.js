@@ -293,8 +293,9 @@ const deleteCohortById = (req, resp) => {
     .then(() => {
       const { ownerIds: owners, name } = cohort;
       const data = { cohortId, owners };
+      const socketInstance = io.getInstance();
 
-      socketActions.deleteCohort(io.getInstance(), allCohortsViewClients)(data);
+      socketActions.deleteCohort(socketInstance, allCohortsViewClients)(data);
 
       fireAndForget(
         saveActivity(
@@ -350,8 +351,10 @@ const removeMember = (req, resp) => {
       ).exec();
     })
     .then(() => {
+      const socketInstance = io.getInstance();
+
       socketActions.removeMember(
-        io.getInstance(),
+        socketInstance,
         allCohortsViewClients,
         cohortClients,
         dashboardClients,
@@ -397,7 +400,9 @@ const addOwnerRole = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      socketActions.addOwnerRole(io.getInstance(), cohortClients)({
+      const socketInstance = io.getInstance();
+
+      socketActions.addOwnerRole(socketInstance, cohortClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });
@@ -448,7 +453,9 @@ const removeOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() => {
-      socketActions.removeOwnerRole(io.getInstance(), cohortClients)({
+      const socketInstance = io.getInstance();
+
+      socketActions.removeOwnerRole(socketInstance, cohortClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });
@@ -549,10 +556,11 @@ const addMember = (req, resp) => {
       if (user) {
         const { ownerIds } = currentCohort;
         const userToSend = responseWithCohortMember(user, ownerIds);
+        const socketInstance = io.getInstance();
 
         return returnPayload(
           socketActions.addMember(
-            io.getInstance(),
+            socketInstance,
             allCohortsViewClients,
             dashboardClients
           )({
@@ -637,7 +645,9 @@ const leaveCohort = (req, resp) => {
       ).exec()
     )
     .then(() => {
-      socketActions.leaveCohort(io.getInstance(), allCohortsViewClients)({
+      const socketInstance = io.getInstance();
+
+      socketActions.leaveCohort(socketInstance, allCohortsViewClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
       });

@@ -67,7 +67,9 @@ const addComment = (req, resp) => {
         .status(201)
         .send(commentToSend);
 
-      socketActions.addComment(io.getInstance())(data);
+      const socketInstance = io.getInstance();
+
+      socketActions.addComment(socketInstance)(data);
     })
     .catch(() => resp.sendStatus(400));
 };
