@@ -29,7 +29,7 @@ const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClien
 const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const listClients = require('../sockets/index').getListViewClients();
-const socketInstance = require('../sockets/index').getSocketInstance();
+const io = require('../sockets/index');
 const socketActions = require('../sockets/cohort');
 
 const createCohort = (req, resp) => {
@@ -112,6 +112,7 @@ const updateCohortById = (req, resp) => {
     isArchived,
     name
   });
+  const socketInstance = io.getInstance();
   let cohortActivity;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
@@ -292,6 +293,7 @@ const deleteCohortById = (req, resp) => {
     .then(() => {
       const { ownerIds: owners, name } = cohort;
       const data = { cohortId, owners };
+      const socketInstance = io.getInstance();
 
       socketActions.deleteCohort(socketInstance, allCohortsViewClients)(data);
 
@@ -349,6 +351,8 @@ const removeMember = (req, resp) => {
       ).exec();
     })
     .then(() => {
+      const socketInstance = io.getInstance();
+
       socketActions.removeMember(
         socketInstance,
         allCohortsViewClients,
@@ -395,6 +399,8 @@ const addOwnerRole = (req, resp) => {
       if (!doc) {
         return resp.sendStatus(400);
       }
+
+      const socketInstance = io.getInstance();
 
       socketActions.addOwnerRole(socketInstance, cohortClients)({
         cohortId: sanitizedCohortId,
@@ -447,6 +453,8 @@ const removeOwnerRole = (req, resp) => {
       return doc.save();
     })
     .then(() => {
+      const socketInstance = io.getInstance();
+
       socketActions.removeOwnerRole(socketInstance, cohortClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId
@@ -548,6 +556,7 @@ const addMember = (req, resp) => {
       if (user) {
         const { ownerIds } = currentCohort;
         const userToSend = responseWithCohortMember(user, ownerIds);
+        const socketInstance = io.getInstance();
 
         return returnPayload(
           socketActions.addMember(
@@ -636,6 +645,8 @@ const leaveCohort = (req, resp) => {
       ).exec()
     )
     .then(() => {
+      const socketInstance = io.getInstance();
+
       socketActions.leaveCohort(socketInstance, allCohortsViewClients)({
         cohortId: sanitizedCohortId,
         userId: sanitizedUserId

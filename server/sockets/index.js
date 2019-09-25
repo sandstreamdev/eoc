@@ -31,24 +31,7 @@ const getAllCohortsViewClients = () => allCohortsViewClients;
 const getDashboardViewClients = () => dashboardViewClients;
 const getListViewClients = () => listViewClients;
 
-const initSocket = server => {
-  socketInstance = io(server, {
-    forceNew: true,
-    pingTimeout: SOCKET_TIMEOUT
-  });
-
-  socketInstance.use(
-    passportSocketIo.authorize({
-      key: 'connect.sid',
-      secret: process.env.EXPRESS_SESSION_KEY,
-      store: sessionStore,
-      passport,
-      cookieParser
-    })
-  );
-};
-
-const getSocketInstance = () => {
+const getInstance = () => {
   if (!socketInstance) {
     throw new Error('Socket not initialized...');
   }
@@ -171,12 +154,30 @@ const socketListeners = socketInstance => {
   });
 };
 
+const initSocket = server => {
+  socketInstance = io(server, {
+    forceNew: true,
+    pingTimeout: SOCKET_TIMEOUT
+  });
+
+  socketInstance.use(
+    passportSocketIo.authorize({
+      key: 'connect.sid',
+      secret: process.env.EXPRESS_SESSION_KEY,
+      store: sessionStore,
+      passport,
+      cookieParser
+    })
+  );
+
+  socketListeners(socketInstance);
+};
+
 module.exports = {
   getAllCohortsViewClients,
   getCohortViewClients,
   getDashboardViewClients,
   getListViewClients,
-  getSocketInstance,
-  init: initSocket,
-  listen: socketListeners
+  getInstance,
+  init: initSocket
 };

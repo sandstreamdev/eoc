@@ -7,18 +7,10 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
-/* eslint-disable import/order */
 const MongoStore = require('connect-mongo')(session);
+const { Server } = require('http');
 
 const socket = require('./sockets/index');
-
-const app = express();
-const server = require('http').Server(app);
-
-socket.init(server);
-const socketInstance = socket.getSocketInstance();
-socket.listen(socketInstance);
-
 const { DB_URL } = require('./common/variables');
 const authRouter = require('./routes/authorization');
 const commentsRouter = require('./routes/comment');
@@ -28,12 +20,13 @@ const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
 const unlockLocks = require('./common/utils/unlockLocks');
 
-/* eslint-enable import/order */
+const app = express();
+const dbUrl = DB_URL;
+const server = Server(app);
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
-// Set up mongodb connection
-const dbUrl = DB_URL;
+
 mongoose.connect(dbUrl, { useNewUrlParser: true }, unlockLocks);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
@@ -62,6 +55,7 @@ app.use('/api/cohorts', cohortsRouter);
 app.use('/api/lists', listsRouter);
 app.use('/api', mailerRouter);
 app.use('*', (_, res) => res.sendFile(path.resolve('dist/index.html')));
+socket.init(server);
 
 const PORT = 8080;
 
