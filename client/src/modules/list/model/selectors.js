@@ -53,7 +53,8 @@ export const getUndoneItems = createSelector(
   items => _filter(items, item => !item.done)
 );
 
-export const getLists = state => state.lists;
+export const getLists = state =>
+  _orderBy(state.lists, el => new Date(el.createdAt).getTime(), ['desc']);
 
 export const getActiveLists = createSelector(
   getLists,

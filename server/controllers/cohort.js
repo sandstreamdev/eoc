@@ -85,8 +85,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
       isDeleted: false,
       ownerIds: userId
     },
-    '_id name createdAt description isArchived memberIds ownerIds',
-    { sort: { created_at: -1 } }
+    '_id name createdAt description isArchived memberIds ownerIds'
   )
     .lean()
     .exec()

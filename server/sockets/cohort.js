@@ -2,7 +2,6 @@ const _keyBy = require('lodash/keyBy');
 
 const { ListType, LOCK_TIMEOUT } = require('../common/variables');
 const {
-  AppEvents,
   CohortActionTypes,
   CohortHeaderStatusTypes,
   ListActionTypes
@@ -23,11 +22,9 @@ const {
   emitRoleChange,
   getListsDataByViewers,
   getListIdsByViewers,
-  getUserSockets,
   handleLocks,
   nameLockId,
-  listChannel,
-  listMetaDataChannel
+  listChannel
 } = require('./helpers');
 const { isDefined } = require('../common/utils');
 const List = require('../models/list.model');
@@ -51,7 +48,7 @@ const addMember = (io, allCohortsClients, dashboardClients) => data => {
       cohortId,
       type: ListType.SHARED
     },
-    '_id created_at cohortId name description items favIds type'
+    '_id createdAt cohortId name description items favIds type'
   )
     .lean()
     .exec()
@@ -105,7 +102,7 @@ const leaveCohort = (io, allCohortsClients) => data => {
       cohortId,
       type: ListType.SHARED
     },
-    '_id created_at cohortId name description items favIds type'
+    '_id createdAt cohortId name description items favIds type'
   )
     .lean()
     .exec()

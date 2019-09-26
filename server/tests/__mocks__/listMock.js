@@ -60,7 +60,7 @@ const listMock = [
         voterIds: []
       }
     ],
-    created_at: { $date: { $numberLong: '1556963599739' } },
+    createdAt: { $date: { $numberLong: '1556963599739' } },
     updatedAt: { $date: { $numberLong: '1556963614753' } },
     __v: { $numberInt: '0' }
   }
@@ -132,7 +132,7 @@ const listDetailsMock = {
       voterIds: []
     }
   ],
-  created_at: { $date: { $numberLong: '1556963599739' } },
+  createdAt: { $date: { $numberLong: '1556963599739' } },
   updatedAt: { $date: { $numberLong: '1556963614753' } },
   __v: { $numberInt: '0' }
 };
