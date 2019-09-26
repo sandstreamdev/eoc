@@ -403,7 +403,7 @@ const voteForItem = async (req, resp) => {
     const socketInstance = io.getInstance();
 
     socketActions.setVote(socketInstance)(data);
-  } catch  {
+  } catch {
     resp.sendStatus(400);
   }
 };

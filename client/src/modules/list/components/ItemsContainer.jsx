@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import _sortBy from 'lodash/sortBy';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 import _isEqual from 'lodash/isEqual';

@@ -176,8 +176,6 @@ export const setVote = (itemId, listId, name) => dispatch => {
   return patchData(`/api/lists/${listId}/set-vote`, { itemId })
     .then(() => dispatch(setVoteSuccess({ itemId, listId, isVoted: true })))
     .catch(err => {
-      console.log(err);
-
       dispatch(setVoteFailure());
       createNotificationWithTimeout(
         dispatch,
