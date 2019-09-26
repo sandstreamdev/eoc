@@ -119,6 +119,8 @@ class MoveToListPanel extends PureComponent {
       lists
     } = this.props;
 
+    console.log(lists);
+
     return (
       <div className="move-to-list-panel">
         {isConfirmationVisible ? (

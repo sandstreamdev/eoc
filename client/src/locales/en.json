@@ -208,6 +208,7 @@
   "list.list-item.move": "Move item",
   "list.list-item.confirmation": "Are you sure you want to archive '{name}' item?",
   "list.list-item.move-to-confirmation": "Are you sure you want to move '{item}' item to '{list}' list?",
+  "list.list-item.input-find-items": "Find items",
   "list.list-item.input-find-list": "Find list",
   "list.list-item.edited-by": "Last edit by: {editedBy}",
   "list.list-item.header": "Are you sure you want to archive '{name}' item?",

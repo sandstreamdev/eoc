@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _debounce from 'lodash/debounce';
-import _trim from 'lodash/trim';
+import _trimStart from 'lodash/trimStart';
 
 class Filter extends PureComponent {
   constructor(props) {
@@ -26,14 +26,24 @@ class Filter extends PureComponent {
     const { options, onFilter } = this.props;
     let filteredOptions;
 
+    console.log('Options', options);
     if (query) {
       const match = new RegExp(query, 'i');
 
       // TODO: option.name || option.authorName
-      filteredOptions = options.filter(option => match.test(option.name));
+      filteredOptions = options.filter(option => {
+        // console.log('OPTION_TO_FILTER_THROUGH', option);
+        // console.log('FILTER RESULT', match.test(option.name));
+
+        return match.test(option.name);
+      });
+
+      console.log('FILTERED OPTIONS', filteredOptions);
     } else {
       filteredOptions = options;
     }
+
+    console.log(filteredOptions);
 
     onFilter(filteredOptions);
   };
@@ -46,7 +56,7 @@ class Filter extends PureComponent {
 
   handleInputChange = event => {
     const { value } = event.target;
-    const query = _trim(value);
+    const query = _trimStart(value);
 
     this.setState(() => ({ query }), this.handleFilterOptions);
   };

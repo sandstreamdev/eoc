@@ -9,15 +9,27 @@ import ItemsList from 'modules/list/components/Items';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import './ItemsContainer.scss';
+import Filter from 'common/components/Filter';
+import { CloseIcon } from 'assets/images/icons';
 
 // FIXME: Remove sortbox and filterBox components and styles files
 
 class ItemsContainer extends Component {
-  state = {
-    // sortBy: SortOptionType.DATE,
-    // sortOrder: SortOrderType.DESCENDING
-    // filterBy: FilterOptionType.ALL_ITEMS
-  };
+  constructor(props) {
+    super(props);
+
+    const { items } = this.props;
+
+    this.state = {
+      items
+      // sortBy: SortOptionType.DATE,
+      // sortOrder: SortOrderType.DESCENDING
+      // filterBy: FilterOptionType.ALL_ITEMS
+    };
+  }
+
+  handleFilterLists = itemsToDisplay =>
+    this.setState({ items: itemsToDisplay });
 
   renderHeadingText = () => {
     const { archived, done } = this.props;
@@ -41,9 +53,9 @@ class ItemsContainer extends Component {
       children,
       done,
       intl: { formatMessage },
-      isMember,
-      items
+      isMember
     } = this.props;
+    const { items } = this.state;
 
     return (
       <div className="items">
@@ -52,7 +64,17 @@ class ItemsContainer extends Component {
             {this.renderHeadingText()}
           </h2>
           <div className="items__header-controls">
-            {/*TODO: Search box here*/}
+            <Filter
+              buttonContent={<CloseIcon />}
+              classes="items__filter"
+              onFilter={this.handleFilterLists}
+              options={items}
+              // TODO: add fields options for sorting
+              // fields={[name, authorName]}
+              placeholder={formatMessage({
+                id: 'list.list-item.input-find-items'
+              })}
+            />
           </div>
         </header>
         {children}
