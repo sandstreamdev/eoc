@@ -118,6 +118,7 @@ class MoveToListPanel extends PureComponent {
       intl: { formatMessage },
       lists
     } = this.props;
+    const filterByFields = ['name'];
 
     return (
       <div className="move-to-list-panel">
@@ -140,7 +141,7 @@ class MoveToListPanel extends PureComponent {
                 classes="move-to-list-panel__filter"
                 onFilter={this.handleFilterLists}
                 options={lists}
-                fields={['name', 'authorName']}
+                fields={filterByFields}
                 placeholder={formatMessage({
                   id: 'list.list-item.input-find-list'
                 })}

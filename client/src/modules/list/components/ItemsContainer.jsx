@@ -70,6 +70,7 @@ class ItemsContainer extends Component {
       items: itemsToSearch
     } = this.props;
     const { items } = this.state;
+    const filterByFields = ['authorName', 'name'];
 
     return (
       <div className="items">
@@ -83,7 +84,7 @@ class ItemsContainer extends Component {
               classes="items__filter"
               onFilter={this.handleFilterLists}
               options={itemsToSearch}
-              fields={['name', 'authorName']}
+              fields={filterByFields}
               placeholder={formatMessage({
                 id: 'list.list-item.input-find-items'
               })}
