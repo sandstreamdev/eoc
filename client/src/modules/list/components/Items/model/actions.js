@@ -172,8 +172,8 @@ export const addItem = (item, listId) => dispatch =>
       );
     });
 
-export const setVote = (itemId, listId, name) => dispatch => {
-  return patchData(`/api/lists/${listId}/set-vote`, { itemId })
+export const setVote = (itemId, listId, name) => dispatch =>
+  patchData(`/api/lists/${listId}/set-vote`, { itemId })
     .then(() => dispatch(setVoteSuccess({ itemId, listId, isVoted: true })))
     .catch(err => {
       dispatch(setVoteFailure());
@@ -187,7 +187,6 @@ export const setVote = (itemId, listId, name) => dispatch => {
         err
       );
     });
-};
 
 export const clearVote = (itemId, listId, name) => dispatch =>
   patchData(`/api/lists/${listId}/clear-vote`, { itemId })
