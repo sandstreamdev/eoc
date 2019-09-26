@@ -31,9 +31,15 @@ class ItemsContainer extends Component {
     const { items: prevItems } = prevProps;
 
     if (!_isEqual(items, prevItems)) {
-      this.setState({ items });
+      this.updateItems();
     }
   }
+
+  updateItems = () => {
+    const { items } = this.props;
+
+    this.setState({ items });
+  };
 
   handleFilterLists = itemsToDisplay =>
     this.setState({ items: itemsToDisplay });
@@ -77,8 +83,7 @@ class ItemsContainer extends Component {
               classes="items__filter"
               onFilter={this.handleFilterLists}
               options={itemsToSearch}
-              // TODO: add fields options for sorting
-              // fields={[name, authorName]}
+              fields={['name', 'authorName']}
               placeholder={formatMessage({
                 id: 'list.list-item.input-find-items'
               })}

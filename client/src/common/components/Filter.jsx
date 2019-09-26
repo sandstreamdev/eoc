@@ -22,17 +22,29 @@ class Filter extends PureComponent {
     this.debouncedFilter.cancel();
   }
 
+  filterByFields = query => {
+    const { options, fields } = this.props;
+    const match = new RegExp(query, 'i');
+
+    return options.filter(option => {
+      let testString = '';
+
+      fields.forEach(field => {
+        if (option[field]) {
+          testString += option[field];
+        }
+      });
+
+      return match.test(testString);
+    });
+  };
+
   filter = query => {
     const { options, onFilter } = this.props;
     let filteredOptions;
 
     if (query) {
-      const match = new RegExp(query, 'i');
-
-      filteredOptions = options.filter(option => {
-        // TODO: Test if this is a good way to search for multiple options from object
-        return match.test(`${option.name}${option.authorName}`);
-      });
+      filteredOptions = this.filterByFields(query);
     } else {
       filteredOptions = options;
     }
@@ -96,6 +108,7 @@ Filter.propTypes = {
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   classes: PropTypes.string.isRequired,
   clearFilterButton: PropTypes.bool,
+  fields: PropTypes.arrayOf(PropTypes.string).isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
   ).isRequired,
