@@ -106,7 +106,7 @@ const signUp = (req, resp, next) => {
       return newUser.save().then(user => {
         const { displayName, email, signUpHash } = user;
 
-        return { displayName, email, signUpHash };
+        return { displayName, email, expirationDate, signUpHash };
       });
     })
     .then(dataToSend => {
@@ -155,6 +155,7 @@ const confirmEmail = (req, resp) => {
 const resendSignUpConfirmationLink = (req, resp, next) => {
   const { hash } = req.body;
   const sanitizedHash = sanitize(hash);
+  const expirationTime = new Date().getTime() + 3600000;
 
   User.findOneAndUpdate(
     {
@@ -163,7 +164,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
     },
     {
       signUpHash: crypto.randomBytes(32).toString('hex'),
-      signUpHashExpirationDate: new Date().getTime() + 3600000
+      signUpHashExpirationDate: expirationTime
     },
     { new: true }
   )
@@ -177,7 +178,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
       const { displayName, email, signUpHash } = user;
 
       // eslint-disable-next-line no-param-reassign
-      resp.locals = { displayName, email, signUpHash };
+      resp.locals = { displayName, email, expirationTime, signUpHash };
 
       next();
     })

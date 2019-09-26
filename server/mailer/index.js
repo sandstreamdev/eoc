@@ -38,11 +38,17 @@ const sendInvitation = (req, resp) => {
 };
 
 const sendSignUpConfirmationLink = (req, resp) => {
-  const { displayName: name, email: receiver, signUpHash } = resp.locals;
+  const {
+    displayName: name,
+    email: receiver,
+    expirationDate,
+    signUpHash
+  } = resp.locals;
+  const expirationDay = new Date(expirationDate).toLocaleString();
   const host = req.get('host');
   const confirmUrl = `${host}/auth/confirm-email/${signUpHash}`;
   const title = `Welcome to ${PROJECT_NAME}!`;
-  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!`;
+  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}! Remember that confirmation button will be only active until ${expirationDay}.`;
   const value = 'Confirm your account';
 
   const message = {
