@@ -122,22 +122,34 @@ const leaveCohort = (io, allCohortsClients) => data => {
     });
 };
 
-const addOwnerRole = (io, cohortClients) => data => {
-  emitRoleChange(
-    io,
-    cohortClients,
-    data,
-    CohortActionTypes.ADD_OWNER_ROLE_SUCCESS
-  );
+const addOwnerRole = io => async data => {
+  const { cohortId } = data;
+
+  try {
+    await emitRoleChange(io)(
+      cohortChannel(cohortId),
+      CohortActionTypes.ADD_OWNER_ROLE_SUCCESS
+    )(data);
+  } catch {
+    // Ignore errors
+  }
+
+  return Promise.resolve();
 };
 
-const removeOwnerRole = (io, cohortClients) => data => {
-  emitRoleChange(
-    io,
-    cohortClients,
-    data,
-    CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS
-  );
+const removeOwnerRole = io => async data => {
+  const { cohortId } = data;
+
+  try {
+    await emitRoleChange(io)(
+      cohortChannel(cohortId),
+      CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS
+    )(data);
+  } catch {
+    // Ignore errors
+  }
+
+  return Promise.resolve();
 };
 
 const updateCohort = io => async data => {

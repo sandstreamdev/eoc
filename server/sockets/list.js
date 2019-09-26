@@ -30,6 +30,7 @@ const {
   delayedUnlock,
   emitItemPerUser,
   emitItemUpdate,
+  emitRoleChange,
   emitVoteChange
 } = require('./helpers');
 
@@ -277,24 +278,13 @@ const updateListHeaderState = (socket, listClientLocks) => {
 };
 
 const addMemberRoleInList = io => async data => {
-  const { listId, userId } = data;
-
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
-      ...data,
-      isCurrentUserRoleChanging: false
-    });
+  const { listId } = data;
 
   try {
-    const socketIds = await getUserSockets(userId);
-
-    socketIds.forEach(socketId =>
-      io.sockets.to(socketId).emit(ListActionTypes.ADD_MEMBER_ROLE_SUCCESS, {
-        ...data,
-        isCurrentUserRoleChanging: true
-      })
-    );
+    await emitRoleChange(io)(
+      listChannel(listId),
+      ListActionTypes.ADD_MEMBER_ROLE_SUCCESS
+    )(data);
   } catch {
     // Ignore errors
   }
@@ -303,24 +293,13 @@ const addMemberRoleInList = io => async data => {
 };
 
 const addOwnerRoleInList = io => async data => {
-  const { listId, userId } = data;
-
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-      ...data,
-      isCurrentUserRoleChanging: false
-    });
+  const { listId } = data;
 
   try {
-    const socketIds = await getUserSockets(userId);
-
-    socketIds.forEach(socketId =>
-      io.sockets.to(socketId).emit(ListActionTypes.ADD_OWNER_ROLE_SUCCESS, {
-        ...data,
-        isCurrentUserRoleChanging: true
-      })
-    );
+    await emitRoleChange(io)(
+      listChannel(listId),
+      ListActionTypes.ADD_OWNER_ROLE_SUCCESS
+    )(data);
   } catch {
     // Ignore errors
   }
@@ -329,24 +308,13 @@ const addOwnerRoleInList = io => async data => {
 };
 
 const removeMemberRoleInList = io => async data => {
-  const { listId, userId } = data;
-
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
-      ...data,
-      isCurrentUserRoleChanging: false
-    });
+  const { listId } = data;
 
   try {
-    const socketIds = await getUserSockets(userId);
-
-    socketIds.forEach(socketId =>
-      io.sockets.to(socketId).emit(ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS, {
-        ...data,
-        isCurrentUserRoleChanging: true
-      })
-    );
+    await emitRoleChange(io)(
+      listChannel(listId),
+      ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS
+    )(data);
   } catch {
     // Ignore errors
   }
@@ -355,24 +323,13 @@ const removeMemberRoleInList = io => async data => {
 };
 
 const removeOwnerRoleInList = io => async data => {
-  const { listId, userId } = data;
-
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
-      ...data,
-      isCurrentUserRoleChanging: false
-    });
+  const { listId } = data;
 
   try {
-    const socketIds = await getUserSockets(userId);
-
-    socketIds.forEach(socketId =>
-      io.sockets.to(socketId).emit(ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS, {
-        ...data,
-        isCurrentUserRoleChanging: true
-      })
-    );
+    await emitRoleChange(io)(
+      listChannel(listId),
+      ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS
+    )(data);
   } catch {
     // Ignore errors
   }
