@@ -149,7 +149,7 @@
     box-sizing: border-box;
     height: 40px;
     width: 100%;
-    background-color: #fff;
+    background-color: $app-bg;
     border: 1px solid $border-color;
 
     &:focus-within {
