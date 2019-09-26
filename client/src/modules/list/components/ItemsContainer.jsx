@@ -25,11 +25,11 @@ class ItemsContainer extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(previousProps) {
     const { items } = this.props;
-    const { items: prevItems } = prevProps;
+    const { items: previousItems } = previousProps;
 
-    if (!_isEqual(items, prevItems)) {
+    if (!_isEqual(items, previousItems)) {
       this.updateItems();
     }
   }
@@ -81,9 +81,9 @@ class ItemsContainer extends Component {
             <Filter
               buttonContent={<CloseIcon />}
               classes="items__filter"
+              fields={filterByFields}
               onFilter={this.handleFilterLists}
               options={itemsToSearch}
-              fields={filterByFields}
               placeholder={formatMessage({
                 id: 'list.list-item.input-find-items'
               })}

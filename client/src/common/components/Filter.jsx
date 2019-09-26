@@ -23,7 +23,7 @@ class Filter extends PureComponent {
   }
 
   filterByFields = query => {
-    const { options, fields } = this.props;
+    const { fields, options } = this.props;
     const match = new RegExp(query, 'i');
 
     return options.filter(option => {
@@ -40,7 +40,7 @@ class Filter extends PureComponent {
   };
 
   handleFilter = query => {
-    const { options, onFilter } = this.props;
+    const { onFilter, options } = this.props;
     let filteredOptions;
 
     if (query) {

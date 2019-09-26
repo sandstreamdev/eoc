@@ -15,13 +15,10 @@
     width: 100%;
     padding: four-by(4) 0 four-by(2);
     display: flex;
-    align-items: center;
     flex-direction: column;
     border-bottom: 1px solid $border-light;
 
-    // TODO: Please check those styles after implmentation of SearchBox
     @include breakpoint($small) {
-      flex-direction: row;
       justify-content: space-between;
     }
     @include breakpoint($medium) {
@@ -29,7 +26,6 @@
       justify-content: left;
     }
     @include breakpoint($xlarge) {
-      flex-direction: row;
       justify-content: space-between;
     }
   }
