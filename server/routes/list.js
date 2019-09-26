@@ -8,6 +8,7 @@ const {
   addToFavourites,
   addViewer,
   archiveItem,
+  archiveList,
   changeType,
   clearVote,
   cloneItem,
@@ -28,6 +29,7 @@ const {
   removeOwner,
   removeOwnerRole,
   restoreItem,
+  restoreList,
   updateItem,
   updateListById,
   voteForItem
@@ -63,5 +65,7 @@ router.patch('/:id/archive-item', authorize, archiveItem);
 router.patch('/:id/restore-item', authorize, restoreItem);
 router.patch('/:id/mark-item-as-unhandled', authorize, markItemAsUnhandled);
 router.patch('/:id/mark-item-as-done', authorize, markItemAsDone);
+router.patch('/:id/archive', authorize, archiveList);
+router.patch('/:id/restore', authorize, restoreList);
 
 module.exports = router;

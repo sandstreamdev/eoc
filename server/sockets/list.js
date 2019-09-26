@@ -12,8 +12,8 @@ const {
 const List = require('../models/list.model');
 const {
   countItems,
-  isMember,
   responseWithList,
+  responseWithListDetails,
   responseWithListMetaData
 } = require('../common/utils');
 const {
@@ -497,95 +497,37 @@ const removeViewer = io => async data => {
   return Promise.resolve();
 };
 
-const archiveList = (
-  io,
-  dashboardClients,
-  cohortClients,
-  listClients
-) => data => {
-  const { listId, cohortId } = data;
+const archiveList = io => async data => {
+  const { listId, cohortId, viewersOnly } = data;
 
-  List.findById(listId)
-    .populate('cohortId')
-    .lean()
-    .exec()
-    .then(doc => {
-      const { cohortId: cohort, memberIds, viewersIds } = doc;
-      const list = { ...doc, cohortId };
+  io.sockets.to(listChannel(listId)).emit(ListActionTypes.ARCHIVE_SUCCESS, {
+    cohortId,
+    listId,
+    redirect: true
+  });
 
-      viewersIds.forEach(viewerId => {
-        const id = viewerId.toString();
-        let isCohortMember = false;
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.ARCHIVE_SUCCESS, { cohortId, listId });
 
-        if (cohort) {
-          isCohortMember = isMember(cohort, viewerId);
-        }
+  viewersOnly.forEach(async id => {
+    const viewerId = id.toString();
 
-        const dataToSend = { isCohortMember, ...data };
+    try {
+      const socketIds = await getUserSockets(viewerId);
 
-        if (listClients.has(id)) {
-          const { socketId, viewId } = listClients.get(id);
+      socketIds.forEach(socketId =>
+        io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, {
+          cohortId,
+          listId
+        })
+      );
+    } catch {
+      // Ignore errors
+    }
+  });
 
-          if (viewId === listId) {
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.ARCHIVE_SUCCESS, dataToSend);
-          }
-        }
-
-        if (dashboardClients.has(id)) {
-          const { socketId } = dashboardClients.get(id);
-
-          // Broadcast to clients on dashboard that have this list
-          io.sockets
-            .to(socketId)
-            .emit(ListActionTypes.DELETE_SUCCESS, { listId });
-        }
-
-        if (cohortClients.has(id)) {
-          const { socketId, viewId } = cohortClients.get(id);
-          if (viewId === cohortId.toString()) {
-            // Broadcast to clients on cohort view that have this list
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.DELETE_SUCCESS, { listId });
-          }
-        }
-      });
-
-      memberIds.forEach(memberId => {
-        const id = memberId.toString();
-
-        if (dashboardClients.has(id)) {
-          const { socketId } = dashboardClients.get(id);
-
-          // Broadcast to clients on dashboard that have this list
-          io.sockets
-            .to(socketId)
-            .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
-              [listId]: {
-                ...responseWithList(list, memberId),
-                isArchived: true
-              }
-            });
-        }
-        if (cohortClients.has(id)) {
-          const { socketId, viewId } = cohortClients.get(id);
-
-          if (viewId === cohortId.toString()) {
-            // Broadcast to clients on cohort view that have this list
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_ARCHIVED_META_DATA_SUCCESS, {
-                [listId]: {
-                  ...responseWithList(list, memberId),
-                  isArchived: true
-                }
-              });
-          }
-        }
-      });
-    });
+  return Promise.resolve();
 };
 
 const deleteList = (io, dashboardClients, cohortClients) => data => {
@@ -612,61 +554,28 @@ const deleteList = (io, dashboardClients, cohortClients) => data => {
   }
 };
 
-const restoreList = (
-  io,
-  dashboardClients,
-  cohortClients,
-  listClients
-) => listData => {
-  const { listId, cohortId } = listData;
+const restoreList = io => async data => {
+  const { cohort, list, listId } = data;
+  const { viewersIds } = list;
 
-  List.findById(listId)
-    .lean()
-    .exec()
-    .then(doc => {
-      const { viewersIds, memberIds } = doc;
+  viewersIds.forEach(async id => {
+    const viewerId = id.toString();
+    const listToSend = responseWithListDetails(list, viewerId)(cohort);
 
-      viewersIds.forEach(viewerId => {
-        const id = viewerId.toString();
+    try {
+      const socketIds = await getUserSockets(viewerId);
 
-        if (dashboardClients.has(id)) {
-          const { socketId } = dashboardClients.get(id);
+      socketIds.forEach(socketId =>
+        io.sockets
+          .to(socketId)
+          .emit(ListActionTypes.RESTORE_SUCCESS, { listId, data: listToSend })
+      );
+    } catch {
+      // Ignore errors
+    }
+  });
 
-          io.sockets
-            .to(socketId)
-            .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-              [listId]: responseWithList(doc, id)
-            });
-        }
-
-        if (cohortClients.has(id)) {
-          const { socketId, viewId } = cohortClients.get(id);
-
-          if (viewId === cohortId.toString()) {
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: responseWithList(doc, id)
-              });
-          }
-        }
-      });
-
-      memberIds.forEach(memberId => {
-        const id = memberId.toString();
-
-        if (listClients.has(id)) {
-          const { socketId, viewId } = listClients.get(id);
-
-          if (viewId === listId) {
-            io.sockets.to(socketId).emit(ListActionTypes.RESTORE_SUCCESS, {
-              data: responseWithList(doc, id),
-              listId
-            });
-          }
-        }
-      });
-    });
+  return Promise.resolve();
 };
 
 const moveToList = io => async data => {

@@ -33,7 +33,18 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
       return dispatch({ type: event, payload: data });
     }
-    case ListEvents.ARCHIVE_SUCCESS:
+    case ListEvents.ARCHIVE_SUCCESS: {
+      const { listId, redirect } = data;
+
+      if (redirect) {
+        return history.replace(dashboardRoute());
+      }
+
+      return dispatch({
+        type: ListActionTypes.ARCHIVE_SUCCESS,
+        payload: { listId }
+      });
+    }
     case ListEvents.DELETE_AND_REDIRECT: {
       const { cohortId, isCohortMember, listId } = data;
 

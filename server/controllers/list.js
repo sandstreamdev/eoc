@@ -1,5 +1,6 @@
 const sanitize = require('mongo-sanitize');
 const _difference = require('lodash/difference');
+const _some = require('lodash/some');
 const validator = require('validator');
 
 const List = require('../models/list.model');
@@ -454,6 +455,108 @@ const clearVote = async (req, resp) => {
     const socketInstance = io.getInstance();
 
     socketActions.clearVote(socketInstance)(data);
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
+const archiveList = async (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+  const { id: listId } = req.params;
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        ownerIds: userId
+      },
+      { isArchived: true },
+      { new: true }
+    ).exec();
+
+    const { cohortId, memberIds, viewersIds } = list;
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_ARCHIVE,
+        userId,
+        null,
+        sanitizedListId,
+        cohortId,
+        null,
+        list.name
+      )
+    );
+
+    const data = {
+      cohortId,
+      listId,
+      viewersOnly: viewersIds.filter(id => !_some(memberIds, id))
+    };
+    const socketInstance = io.getInstance();
+
+    resp.send();
+    fireAndForget(socketActions.archiveList(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
+const restoreList = async (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+  const { id: listId } = req.params;
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        isDeleted: false,
+        ownerIds: userId
+      },
+      { isArchived: false },
+      { new: true }
+    )
+      .lean()
+      .populate('viewersIds', 'avatarUrl displayName _id')
+      .populate('items.authorId', 'displayName')
+      .populate('items.editedBy', 'displayName')
+      .exec();
+
+    const { cohortId } = list;
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_RESTORE,
+        userId,
+        null,
+        sanitizedListId,
+        cohortId,
+        null,
+        list.name
+      )
+    );
+
+    const cohort = cohortId
+      ? await Cohort.findOne({ _id: cohortId }, 'memberIds name')
+          .lean()
+          .exec()
+      : null;
+
+    const data = {
+      cohort,
+      list,
+      listId
+    };
+    const socketInstance = io.getInstance();
+
+    resp.send();
+    fireAndForget(socketActions.restoreList(socketInstance)(data));
   } catch {
     resp.sendStatus(400);
   }
@@ -1775,6 +1878,7 @@ module.exports = {
   addToFavourites,
   addViewer,
   archiveItem,
+  archiveList,
   changeType,
   clearVote,
   cloneItem,
@@ -1795,6 +1899,7 @@ module.exports = {
   removeOwner,
   removeOwnerRole,
   restoreItem,
+  restoreList,
   updateItem,
   updateListById,
   voteForItem
