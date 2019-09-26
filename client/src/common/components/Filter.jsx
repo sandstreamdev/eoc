@@ -29,6 +29,7 @@ class Filter extends PureComponent {
     if (query) {
       const match = new RegExp(query, 'i');
 
+      // TODO: option.name || option.authorName
       filteredOptions = options.filter(option => match.test(option.name));
     } else {
       filteredOptions = options;

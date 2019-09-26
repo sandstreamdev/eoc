@@ -140,6 +140,8 @@ class MoveToListPanel extends PureComponent {
                 classes="move-to-list-panel__filter"
                 onFilter={this.handleFilterLists}
                 options={lists}
+                // TODO: add fields options for sorting
+                // fields={[name, authorName]}
                 placeholder={formatMessage({
                   id: 'list.list-item.input-find-list'
                 })}
