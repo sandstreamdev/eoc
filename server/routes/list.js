@@ -14,6 +14,7 @@ const {
   cloneItem,
   createList,
   deleteItem,
+  deleteList,
   getArchivedItems,
   getArchivedListsMetaData,
   getAvailableLists,
@@ -31,7 +32,7 @@ const {
   restoreItem,
   restoreList,
   updateItem,
-  updateListById,
+  updateList,
   voteForItem
 } = require('../controllers/list');
 const { authorize } = require('../middleware/authorize');
@@ -40,7 +41,7 @@ router.get('/meta-data/:cohortId?', authorize, getListsMetaData);
 router.get('/archived/:cohortId?', authorize, getArchivedListsMetaData);
 router.post('/create', authorize, createList);
 router.post('/add-item', authorize, addItemToList);
-router.patch('/:id/update', authorize, updateListById);
+router.patch('/:id/update', authorize, updateList);
 router.get('/:id/data', authorize, getListData);
 router.patch('/:id/set-vote', authorize, voteForItem);
 router.patch('/:id/clear-vote', authorize, clearVote);
@@ -67,5 +68,6 @@ router.patch('/:id/mark-item-as-unhandled', authorize, markItemAsUnhandled);
 router.patch('/:id/mark-item-as-done', authorize, markItemAsDone);
 router.patch('/:id/archive', authorize, archiveList);
 router.patch('/:id/restore', authorize, restoreList);
+router.patch('/:id/delete', authorize, deleteList);
 
 module.exports = router;

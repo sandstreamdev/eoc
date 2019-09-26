@@ -286,11 +286,9 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
 };
 
 export const deleteList = (listId, name, cohortId) => dispatch =>
-  patchData(`/api/lists/${listId}/update`, { isDeleted: true, listId })
+  patchData(`/api/lists/${listId}/delete`)
     .then(() => {
-      const action = deleteListSuccess({ listId, cohortId });
-
-      dispatch(action);
+      dispatch(deleteListSuccess({ listId, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.delete-list',
         data: { name }

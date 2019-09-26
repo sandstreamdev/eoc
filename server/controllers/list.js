@@ -30,9 +30,7 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
-const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
-const listClients = require('../sockets/index').getListViewClients();
 const io = require('../sockets/index');
 const { createListCohort } = require('../sockets/cohort');
 const socketActions = require('../sockets/list');
@@ -562,7 +560,51 @@ const restoreList = async (req, resp) => {
   }
 };
 
-const updateListById = (req, resp) => {
+const deleteList = async (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+  const { id: listId } = req.params;
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        ownerIds: userId
+      },
+      { isDeleted: true },
+      { new: true }
+    ).exec();
+
+    const { cohortId, viewersIds } = list;
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_DELETE,
+        userId,
+        null,
+        sanitizedListId,
+        cohortId,
+        null,
+        list.name
+      )
+    );
+
+    const data = {
+      listId: sanitizedListId,
+      viewersIds
+    };
+    const socketInstance = io.getInstance();
+
+    resp.send();
+    fireAndForget(socketActions.deleteList(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
+const updateList = async (req, resp) => {
   const { description, isArchived, isDeleted, name } = req.body;
   const {
     user: { _id: userId }
@@ -575,119 +617,59 @@ const updateListById = (req, resp) => {
     isDeleted,
     name
   });
-  let listActivity;
-  let list;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
   }
 
-  List.findOneAndUpdate(
-    {
-      _id: sanitizedListId,
-      ownerIds: userId
-    },
-    dataToUpdate,
-    { new: true }
-  )
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        ownerIds: userId
+      },
+      dataToUpdate,
+      { new: true }
+    ).exec();
+    const socketInstance = io.getInstance();
+    const data = { listId };
+    let listActivity;
+
+    if (isDefined(description)) {
+      const { description: prevDescription } = list;
+      if (!description && prevDescription) {
+        listActivity = ActivityType.LIST_REMOVE_DESCRIPTION;
+      } else if (description && !prevDescription) {
+        listActivity = ActivityType.LIST_ADD_DESCRIPTION;
+      } else {
+        listActivity = ActivityType.LIST_EDIT_DESCRIPTION;
       }
 
-      const socketInstance = io.getInstance();
-      const { cohortId } = doc;
-      list = doc;
+      data.description = description;
+    }
 
-      if (description !== undefined) {
-        const { description: prevDescription } = doc;
-        if (!description && prevDescription) {
-          listActivity = ActivityType.LIST_REMOVE_DESCRIPTION;
-        } else if (description && !prevDescription) {
-          listActivity = ActivityType.LIST_ADD_DESCRIPTION;
-        } else {
-          listActivity = ActivityType.LIST_EDIT_DESCRIPTION;
-        }
+    if (name) {
+      listActivity = ActivityType.LIST_EDIT_NAME;
+      data.name = name;
+    }
 
-        const data = { description, doc, listId };
+    fireAndForget(
+      saveActivity(
+        listActivity,
+        userId,
+        null,
+        sanitizedListId,
+        list.cohortId,
+        null,
+        list.name
+      )
+    );
 
-        return socketActions.updateList(
-          socketInstance,
-          dashboardClients,
-          cohortClients
-        )(data);
-      }
-
-      if (name) {
-        listActivity = ActivityType.LIST_EDIT_NAME;
-
-        const data = { doc, listId, name };
-
-        return socketActions.updateList(
-          socketInstance,
-          dashboardClients,
-          cohortClients
-        )(data);
-      }
-
-      if (isArchived !== undefined) {
-        const data = { cohortId, doc, listId };
-
-        if (isArchived) {
-          listActivity = ActivityType.LIST_ARCHIVE;
-
-          return socketActions.archiveList(
-            socketInstance,
-            dashboardClients,
-            cohortClients,
-            listClients
-          )(data);
-        }
-
-        listActivity = ActivityType.LIST_RESTORE;
-
-        return socketActions.restoreList(
-          socketInstance,
-          dashboardClients,
-          cohortClients,
-          listClients
-        )(data);
-      }
-
-      if (isDeleted) {
-        listActivity = ActivityType.LIST_DELETE;
-
-        const data = { cohortId, doc, listId };
-
-        socketActions.deleteList(
-          socketInstance,
-          dashboardClients,
-          cohortClients
-        )(data);
-
-        return Comment.updateMany(
-          { listId: sanitizedListId },
-          { isDeleted }
-        ).exec();
-      }
-    })
-    .then(() => {
-      fireAndForget(
-        saveActivity(
-          listActivity,
-          userId,
-          null,
-          sanitizedListId,
-          list.cohortId,
-          null,
-          list.name
-        )
-      );
-
-      resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    socketActions.updateList(socketInstance)(data);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const addToFavourites = (req, resp) => {
@@ -1413,6 +1395,10 @@ const updateItem = async (req, resp) => {
   let editedItemActivity;
   let prevItemName = null;
 
+  if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
+  }
+
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
@@ -1884,6 +1870,7 @@ module.exports = {
   cloneItem,
   createList,
   deleteItem,
+  deleteList,
   getArchivedItems,
   getArchivedListsMetaData,
   getAvailableLists,
@@ -1901,6 +1888,6 @@ module.exports = {
   restoreItem,
   restoreList,
   updateItem,
-  updateListById,
+  updateList,
   voteForItem
 };

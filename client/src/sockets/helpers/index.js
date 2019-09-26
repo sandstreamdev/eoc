@@ -1,11 +1,6 @@
 import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
-import {
-  cohortRoute,
-  cohortsRoute,
-  dashboardRoute
-} from 'common/utils/helpers';
-import { ListActionTypes } from '../../modules/list/model/actionTypes';
+import { cohortsRoute, dashboardRoute } from 'common/utils/helpers';
 
 export const listEventsController = (event, data, { dispatch, getState }) => {
   const { currentUser } = getState();
@@ -33,7 +28,8 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
       return dispatch({ type: event, payload: data });
     }
-    case ListEvents.ARCHIVE_SUCCESS: {
+    case ListEvents.ARCHIVE_SUCCESS:
+    case ListEvents.DELETE_SUCCESS: {
       const { listId, redirect } = data;
 
       if (redirect) {
@@ -41,19 +37,9 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
       }
 
       return dispatch({
-        type: ListActionTypes.ARCHIVE_SUCCESS,
+        type: event,
         payload: { listId }
       });
-    }
-    case ListEvents.DELETE_AND_REDIRECT: {
-      const { cohortId, isCohortMember, listId } = data;
-
-      dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: { listId } });
-
-      const goToCohort = cohortId && isCohortMember;
-      const url = goToCohort ? cohortRoute(cohortId) : dashboardRoute();
-
-      return history.replace(url);
     }
     case ListEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
       const { cohortId, listId } = data;

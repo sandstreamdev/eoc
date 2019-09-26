@@ -131,7 +131,17 @@ const lists = (state = {}, action) => {
 
       return state;
     }
-    case ListActionTypes.DELETE_SUCCESS:
+    case ListActionTypes.DELETE_SUCCESS: {
+      const { listId } = action.payload;
+
+      if (state[listId]) {
+        const { [listId]: removed, ...newState } = state;
+
+        return newState;
+      }
+
+      return state;
+    }
     case ListActionTypes.LEAVE_SUCCESS: {
       const { [action.payload.listId]: removed, ...newState } = state;
 

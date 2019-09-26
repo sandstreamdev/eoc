@@ -23,8 +23,7 @@ const {
   handleLocks,
   listChannel,
   listMetaDataChannel,
-  nameLockId,
-  sendListOnDashboardAndCohortView
+  nameLockId
 } = require('./helpers');
 const { isDefined } = require('../common/utils/helpers');
 const {
@@ -214,16 +213,14 @@ const clearVote = io => async data => {
   return Promise.resolve();
 };
 
-const updateList = (io, dashboardViewClients, cohortViewClients) => data => {
-  const { listId, doc: list, ...rest } = data;
+const updateList = io => data => {
+  const { listId } = data;
+
+  io.sockets.to(listChannel(listId)).emit(ListActionTypes.UPDATE_SUCCESS, data);
 
   io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.UPDATE_SUCCESS, { listId, ...rest });
-
-  sendListOnDashboardAndCohortView(io)(cohortViewClients, dashboardViewClients)(
-    list
-  );
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.UPDATE_SUCCESS, data);
 };
 
 const updateListHeaderState = (socket, listClientLocks) => {
@@ -530,36 +527,42 @@ const archiveList = io => async data => {
   return Promise.resolve();
 };
 
-const deleteList = (io, dashboardClients, cohortClients) => data => {
-  const { listId, cohortId } = data;
+const deleteList = io => async data => {
+  const { listId, viewersIds } = data;
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.DELETE_AND_REDIRECT, data);
+    .emit(ListActionTypes.DELETE_SUCCESS, { listId, redirect: true });
 
-  dashboardClients.forEach(({ socketId }) =>
-    io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, { listId })
-  );
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.DELETE_SUCCESS, { listId });
 
-  if (cohortId) {
-    cohortClients.forEach(client => {
-      const { socketId, viewId } = client;
+  viewersIds.forEach(async id => {
+    const viewerId = id.toString();
 
-      if (viewId === cohortId.toString()) {
+    try {
+      const socketIds = await getUserSockets(viewerId);
+
+      socketIds.forEach(socketId =>
         io.sockets
           .to(socketId)
-          .emit(ListActionTypes.DELETE_SUCCESS, { listId });
-      }
-    });
-  }
+          .emit(ListActionTypes.LEAVE_ROOM, listMetaDataChannel(listId))
+      );
+    } catch {
+      // Ignore errors
+    }
+  });
+
+  return Promise.resolve();
 };
 
 const restoreList = io => async data => {
   const { cohort, list, listId } = data;
-  const { viewersIds } = list;
+  const { viewersIds: viewers } = list;
 
-  viewersIds.forEach(async id => {
-    const viewerId = id.toString();
+  viewers.forEach(async viewer => {
+    const viewerId = viewer._id.toString();
     const listToSend = responseWithListDetails(list, viewerId)(cohort);
 
     try {
