@@ -26,24 +26,16 @@ class Filter extends PureComponent {
     const { options, onFilter } = this.props;
     let filteredOptions;
 
-    console.log('Options', options);
     if (query) {
       const match = new RegExp(query, 'i');
 
-      // TODO: option.name || option.authorName
       filteredOptions = options.filter(option => {
-        // console.log('OPTION_TO_FILTER_THROUGH', option);
-        // console.log('FILTER RESULT', match.test(option.name));
-
-        return match.test(option.name);
+        // TODO: Test if this is a good way to search for multiple options from object
+        return match.test(`${option.name}${option.authorName}`);
       });
-
-      console.log('FILTERED OPTIONS', filteredOptions);
     } else {
       filteredOptions = options;
     }
-
-    console.log(filteredOptions);
 
     onFilter(filteredOptions);
   };

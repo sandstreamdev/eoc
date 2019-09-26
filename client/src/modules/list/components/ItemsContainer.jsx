@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import _sortBy from 'lodash/sortBy';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import _isEqual from 'lodash/isEqual';
 
 import ItemsList from 'modules/list/components/Items';
 import { getCurrentUser } from 'modules/user/model/selectors';
-import { IntlPropType, UserPropType } from 'common/constants/propTypes';
+import { IntlPropType } from 'common/constants/propTypes';
 import './ItemsContainer.scss';
 import Filter from 'common/components/Filter';
 import { CloseIcon } from 'assets/images/icons';
@@ -22,10 +23,16 @@ class ItemsContainer extends Component {
 
     this.state = {
       items
-      // sortBy: SortOptionType.DATE,
-      // sortOrder: SortOrderType.DESCENDING
-      // filterBy: FilterOptionType.ALL_ITEMS
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { items } = this.props;
+    const { items: prevItems } = prevProps;
+
+    if (!_isEqual(items, prevItems)) {
+      this.setState({ items });
+    }
   }
 
   handleFilterLists = itemsToDisplay =>
@@ -53,7 +60,8 @@ class ItemsContainer extends Component {
       children,
       done,
       intl: { formatMessage },
-      isMember
+      isMember,
+      items: itemsToSearch
     } = this.props;
     const { items } = this.state;
 
@@ -68,7 +76,7 @@ class ItemsContainer extends Component {
               buttonContent={<CloseIcon />}
               classes="items__filter"
               onFilter={this.handleFilterLists}
-              options={items}
+              options={itemsToSearch}
               // TODO: add fields options for sorting
               // fields={[name, authorName]}
               placeholder={formatMessage({
@@ -94,7 +102,6 @@ class ItemsContainer extends Component {
 ItemsContainer.propTypes = {
   archived: PropTypes.bool,
   children: PropTypes.node,
-  // currentUser: UserPropType.isRequired,
   done: PropTypes.bool,
   intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
