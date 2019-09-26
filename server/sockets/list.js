@@ -615,6 +615,40 @@ const moveToList = io => async data => {
   return Promise.resolve();
 };
 
+const createListCohort = io => async data => {
+  const {
+    listData,
+    listData: { _id: listId, cohortId, type },
+    viewersIds
+  } = data;
+
+  if (cohortId && type === ListType.SHARED) {
+    viewersIds.forEach(async id => {
+      const viewerId = id.toString();
+
+      try {
+        const socketIds = await getUserSockets(viewerId);
+
+        socketIds.forEach(socketId => {
+          io.sockets
+            .to(socketId)
+            .emit(AppEvents.JOIN_ROOM, listMetaDataChannel(listId));
+
+          io.sockets
+            .to(socketId)
+            .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
+              [listId]: { ...listData }
+            });
+        });
+      } catch {
+        // Ignore errors
+      }
+    });
+  }
+
+  return Promise.resolve();
+};
+
 module.exports = {
   addComment,
   addItemToList,
@@ -626,6 +660,7 @@ module.exports = {
   changeListType,
   clearVote,
   cloneItem,
+  createListCohort,
   deleteItem,
   deleteList,
   leaveList,

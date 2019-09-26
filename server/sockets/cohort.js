@@ -2,6 +2,7 @@ const _keyBy = require('lodash/keyBy');
 
 const { ListType, LOCK_TIMEOUT } = require('../common/variables');
 const {
+  AppEvents,
   CohortActionTypes,
   CohortHeaderStatusTypes,
   ListActionTypes
@@ -22,9 +23,11 @@ const {
   emitRoleChange,
   getListsDataByViewers,
   getListIdsByViewers,
+  getUserSockets,
   handleLocks,
   nameLockId,
-  listChannel
+  listChannel,
+  listMetaDataChannel
 } = require('./helpers');
 const { isDefined } = require('../common/utils');
 const List = require('../models/list.model');
@@ -531,46 +534,11 @@ const restoreCohort = (
     });
 };
 
-const createListCohort = (io, dashboardClients) => data => {
-  const { cohortId, _id: listId } = data;
-
-  io.sockets
-    .to(cohortChannel(cohortId))
-    .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-      [listId]: { ...data }
-    });
-
-  return Cohort.findById(cohortId)
-    .select('memberIds')
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { memberIds } = doc;
-
-        memberIds.forEach(id => {
-          const memberId = id.toString();
-
-          if (dashboardClients.has(memberId)) {
-            const { socketId } = dashboardClients.get(memberId);
-
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: { ...data }
-              });
-          }
-        });
-      }
-    });
-};
-
 module.exports = {
   addMember,
   addOwnerRole,
   archiveCohort,
   deleteCohort,
-  createListCohort,
   leaveCohort,
   removeMember,
   removeOwnerRole,

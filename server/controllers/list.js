@@ -30,12 +30,10 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
-const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const io = require('../sockets/index');
-const { createListCohort } = require('../sockets/cohort');
 const socketActions = require('../sockets/list');
 
-const createList = (req, resp) => {
+const createList = async (req, resp) => {
   const { cohortId, description, name, type } = req.body;
   const {
     user: { _id: userId }
@@ -46,7 +44,7 @@ const createList = (req, resp) => {
     return resp.sendStatus(400);
   }
 
-  const list = new List({
+  const newList = new List({
     cohortId,
     description,
     memberIds: userId,
@@ -55,62 +53,37 @@ const createList = (req, resp) => {
     type,
     viewersIds: userId
   });
-  let listData;
 
-  if (cohortId && isSharedList) {
-    Cohort.findOne({ _id: sanitize(cohortId) })
-      .exec()
-      .then(cohort => {
-        const { memberIds } = cohort;
+  try {
+    if (cohortId && isSharedList) {
+      const cohort = await Cohort.findOne({ _id: sanitize(cohortId) }).exec();
+      const { memberIds } = cohort;
 
-        if (isMember(cohort, userId)) {
-          list.viewersIds = memberIds;
+      if (isMember(cohort, userId)) {
+        newList.viewersIds = memberIds;
+      }
+    }
 
-          return list.save();
-        }
+    const list = await newList.save();
 
-        throw new BadRequestException();
-      })
-      .then(() => {
-        listData = responseWithList(list, userId);
-        const socketInstance = io.getInstance();
+    fireAndForget(
+      saveActivity(ActivityType.LIST_ADD, userId, null, list._id, list.cohortId)
+    );
 
-        return createListCohort(socketInstance, dashboardClients)({
-          ...listData,
-          cohortId
-        });
-      })
-      .then(() =>
-        resp
-          .status(201)
-          .location(`/lists/${list._id}`)
-          .send(listData)
-      )
-      .catch(err => {
-        if (err instanceof BadRequestException) {
-          resp.sendStatus(400);
-        }
-      });
-  } else {
-    list
-      .save()
-      .then(() => {
-        fireAndForget(
-          saveActivity(
-            ActivityType.LIST_ADD,
-            userId,
-            null,
-            list._id,
-            list.cohortId
-          )
-        );
+    const { viewersIds } = list;
+    const listData = responseWithList(list, userId);
+    const socketInstance = io.getInstance();
 
-        resp
-          .status(201)
-          .location(`/lists/${list._id}`)
-          .send(responseWithList(list, userId));
-      })
-      .catch(() => resp.sendStatus(400));
+    resp
+      .status(201)
+      .location(`/lists/${list._id}`)
+      .send(listData);
+
+    fireAndForget(
+      socketActions.createListCohort(socketInstance)({ listData, viewersIds })
+    );
+  } catch {
+    resp.sendStatus(400);
   }
 };
 
