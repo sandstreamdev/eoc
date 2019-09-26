@@ -10,7 +10,7 @@ class Filter extends PureComponent {
     this.state = {
       query: ''
     };
-    this.debouncedFilter = _debounce(this.filter, 500);
+    this.debouncedFilter = _debounce(this.handleFilter, 500);
     this.input = React.createRef();
   }
 
@@ -39,7 +39,7 @@ class Filter extends PureComponent {
     });
   };
 
-  filter = query => {
+  handleFilter = query => {
     const { options, onFilter } = this.props;
     let filteredOptions;
 
