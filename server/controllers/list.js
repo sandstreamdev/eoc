@@ -131,9 +131,7 @@ const getListsMetaData = (req, resp) => {
     query.cohortId = sanitize(cohortId);
   }
 
-  List.find(query, '_id name created_at description items favIds type', {
-    sort: { created_at: -1 }
-  })
+  List.find(query, '_id name createdAt description items favIds type')
     .populate('cohortId', 'isArchived')
     .lean()
     .exec()

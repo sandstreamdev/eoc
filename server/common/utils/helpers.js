@@ -87,13 +87,7 @@ const responseWithList = (list, userId) => {
 const responseWithListsMetaData = (lists, userId) =>
   _compact(
     _map(lists, list => {
-      const {
-        cohortId: cohort,
-        favIds,
-        items,
-        created_at: createdAt,
-        ...rest
-      } = list;
+      const { cohortId: cohort, favIds, items, ...rest } = list;
 
       if (cohort && cohort.isArchived) {
         return;
@@ -101,8 +95,7 @@ const responseWithListsMetaData = (lists, userId) =>
 
       const listToSend = {
         ...rest,
-        ...countItems(items),
-        createdAt
+        ...countItems(items)
       };
 
       if (userId) {
