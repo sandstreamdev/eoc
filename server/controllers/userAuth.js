@@ -13,7 +13,7 @@ const {
   validatePassword
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
-const { BadRequestReason } = require('../common/variables');
+const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -64,7 +64,7 @@ const signUp = (req, resp, next) => {
         if (!idFromProvider && !isActive) {
           const hashedPassword = bcrypt.hashSync(password + email, 12);
           const signUpHash = crypto.randomBytes(32).toString('hex');
-          const expirationDate = new Date().getTime() + 3600000;
+          const expirationDate = new Date().getTime() + EXPIRATION_TIME;
 
           return User.findOneAndUpdate(
             { _id },
@@ -92,7 +92,7 @@ const signUp = (req, resp, next) => {
 
       const hashedPassword = bcrypt.hashSync(password + email, 12);
       const signUpHash = crypto.randomBytes(32).toString('hex');
-      const expirationDate = new Date().getTime() + 3600000;
+      const expirationDate = new Date().getTime() + EXPIRATION_TIME;
       const newUser = new User({
         displayName: sanitizedUsername,
         email: sanitizedEmail,
@@ -106,7 +106,7 @@ const signUp = (req, resp, next) => {
       return newUser.save().then(user => {
         const { displayName, email, signUpHash } = user;
 
-        return { displayName, email, expirationDate, signUpHash };
+        return { displayName, email, signUpHash };
       });
     })
     .then(dataToSend => {
@@ -155,7 +155,7 @@ const confirmEmail = (req, resp) => {
 const resendSignUpConfirmationLink = (req, resp, next) => {
   const { hash } = req.body;
   const sanitizedHash = sanitize(hash);
-  const expirationDate = new Date().getTime() + 3600000;
+  const expirationDate = new Date().getTime() + EXPIRATION_TIME;
 
   User.findOneAndUpdate(
     {
@@ -178,7 +178,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
       const { displayName, email, signUpHash } = user;
 
       // eslint-disable-next-line no-param-reassign
-      resp.locals = { displayName, email, expirationDate, signUpHash };
+      resp.locals = { displayName, email, signUpHash };
 
       next();
     })
@@ -216,7 +216,7 @@ const resetPassword = (req, resp, next) => {
       }
 
       const resetToken = crypto.randomBytes(32).toString('hex');
-      const resetTokenExpirationDate = new Date().getTime() + 3600000;
+      const resetTokenExpirationDate = new Date().getTime() + EXPIRATION_TIME;
 
       return User.findOneAndUpdate(
         {
@@ -230,7 +230,6 @@ const resetPassword = (req, resp, next) => {
           resp.locales = {
             displayName,
             email,
-            expirationDate: resetTokenExpirationDate,
             resetToken
           };
 

@@ -401,6 +401,8 @@ const fireAndForget = promise => promise.catch(err => console.error(err));
 
 const returnPayload = promise => payload => promise.then(() => payload);
 
+const howManyHours = milliseconds => Math.floor(milliseconds / 3600000);
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -408,6 +410,7 @@ module.exports = {
   enumerable,
   filter,
   fireAndForget,
+  howManyHours,
   isDefined,
   isMember,
   isOwner,

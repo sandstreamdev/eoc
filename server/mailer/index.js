@@ -2,6 +2,8 @@ const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
 const { PROJECT_NAME } = require('../common/variables');
+const { howManyHours } = require('../common/utils/helpers');
+const { EXPIRATION_TIME } = require('../common/variables');
 
 const { SENDGRID_API_KEY } = process.env;
 
@@ -38,17 +40,14 @@ const sendInvitation = (req, resp) => {
 };
 
 const sendSignUpConfirmationLink = (req, resp) => {
-  const {
-    displayName: name,
-    email: receiver,
-    expirationDate,
-    signUpHash
-  } = resp.locals;
-  const expirationTime = new Date(expirationDate).toLocaleString();
+  const { displayName: name, email: receiver, signUpHash } = resp.locals;
   const host = req.get('host');
   const confirmUrl = `${host}/auth/confirm-email/${signUpHash}`;
+  const hours = howManyHours(EXPIRATION_TIME);
   const title = `Welcome to ${PROJECT_NAME}!`;
-  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}! <b>Remember that confirmation button will be only active until ${expirationTime}.</b>`;
+  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}! <b>Remember that confirmation button will be active only ${
+    hours === 1 ? `${hours} hour` : `${hours} hours`
+  }.</b>`;
   const value = 'Confirm your account';
 
   const message = {
@@ -71,17 +70,14 @@ const sendSignUpConfirmationLink = (req, resp) => {
 };
 
 const sendResetPasswordLink = (req, resp) => {
-  const {
-    email: receiver,
-    expirationDate,
-    displayName,
-    resetToken
-  } = resp.locales;
+  const { email: receiver, displayName, resetToken } = resp.locales;
   const host = req.get('host');
-  const expirationTime = new Date(expirationDate).toLocaleString();
+  const hours = howManyHours(EXPIRATION_TIME);
   const resetUrl = `${host}/auth/recovery-password/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
-  const info = `Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message. <b>Remember that reset button will be only active until ${expirationTime}.</b> `;
+  const info = `Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message. <b>Remember that reset button will be active only ${
+    hours === 1 ? `${hours} hour` : `${hours} hours`
+  }.</b> `;
   const value = 'Reset password';
 
   const message = {
