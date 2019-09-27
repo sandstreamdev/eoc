@@ -12,8 +12,6 @@ import './ItemsContainer.scss';
 import Filter from 'common/components/Filter';
 import { CloseIcon } from 'assets/images/icons';
 
-// FIXME: Remove sortbox and filterBox components and styles files
-
 class ItemsContainer extends Component {
   constructor(props) {
     super(props);
@@ -81,7 +79,7 @@ class ItemsContainer extends Component {
             <Filter
               buttonContent={<CloseIcon />}
               classes="items__filter"
-              fields={filterByFields}
+              filterBy={filterByFields}
               onFilter={this.handleFilterLists}
               options={itemsToSearch}
               placeholder={formatMessage({

@@ -23,13 +23,13 @@ class Filter extends PureComponent {
   }
 
   filterByFields = query => {
-    const { fields, options } = this.props;
+    const { filterBy, options } = this.props;
     const match = new RegExp(query, 'i');
 
     return options.filter(option => {
       let testString = '';
 
-      fields.forEach(field => {
+      filterBy.forEach(field => {
         if (option[field]) {
           testString += option[field];
         }
@@ -108,7 +108,7 @@ Filter.propTypes = {
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   classes: PropTypes.string.isRequired,
   clearFilterButton: PropTypes.bool,
-  fields: PropTypes.arrayOf(PropTypes.string).isRequired,
+  filterBy: PropTypes.arrayOf(PropTypes.string).isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
   ).isRequired,
