@@ -8,6 +8,7 @@
 
   &__filter {
     display: flex;
+    align-items: center;
     box-sizing: border-box;
     height: 40px;
     width: 100%;
@@ -17,6 +18,16 @@
 
     &:focus-within {
       border-color: $border-focus;
+    }
+
+    svg {
+      margin-left: 8px;
+      display: block;
+      height: 16px;
+
+      path {
+        fill: $text-normal;
+      }
     }
 
     input {

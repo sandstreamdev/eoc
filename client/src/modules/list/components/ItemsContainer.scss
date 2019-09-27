@@ -13,7 +13,7 @@
 
   &__header {
     width: 100%;
-    padding: four-by(4) 0 four-by(2);
+    padding: four-by(4) 0 four-by(4);
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid $border-light;
@@ -146,6 +146,7 @@
 
   &__filter {
     display: flex;
+    align-items: center;
     box-sizing: border-box;
     height: 40px;
     width: 100%;
@@ -154,6 +155,16 @@
 
     &:focus-within {
       border-color: $border-focus;
+    }
+
+    svg {
+      margin-left: 8px;
+      display: block;
+      height: 16px;
+
+      path {
+        fill: $text-normal;
+      }
     }
 
     input {

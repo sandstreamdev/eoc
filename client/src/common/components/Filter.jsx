@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import _debounce from 'lodash/debounce';
 import _trimStart from 'lodash/trimStart';
 
+import { SearchIcon } from 'assets/images/icons';
+
 class Filter extends PureComponent {
   constructor(props) {
     super(props);
@@ -82,6 +84,7 @@ class Filter extends PureComponent {
 
     return (
       <div className={classes}>
+        <SearchIcon />
         <input
           name="filter"
           onChange={this.handleInputChange}
