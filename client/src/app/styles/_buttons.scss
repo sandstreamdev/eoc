@@ -50,7 +50,7 @@
   cursor: pointer;
   padding: four-by(2) 0;
   text-decoration: underline;
-  text-transform: capitalize;
+  text-transform: initial;
 
   &:hover {
     color: $text-orange;
