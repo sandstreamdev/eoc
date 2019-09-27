@@ -16,7 +16,7 @@ const {
   isViewer,
   responseWithItem,
   responseWithItems,
-  responseWithList,
+  responseWithListMetaData,
   responseWithListsMetaData
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
@@ -39,6 +39,7 @@ const createList = async (req, resp) => {
     user: { _id: userId }
   } = req;
   const isSharedList = type === ListType.SHARED;
+  const cohortForList = cohortId ? { _id: cohortId } : null;
 
   if (!validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
@@ -59,6 +60,8 @@ const createList = async (req, resp) => {
       const cohort = await Cohort.findOne({ _id: sanitize(cohortId) }).exec();
       const { memberIds } = cohort;
 
+      cohortForList.memberIds = memberIds || [];
+
       if (isMember(cohort, userId)) {
         newList.viewersIds = memberIds;
       }
@@ -69,9 +72,11 @@ const createList = async (req, resp) => {
     fireAndForget(
       saveActivity(ActivityType.LIST_ADD, userId, null, list._id, list.cohortId)
     );
-
     const { viewersIds } = list;
-    const listData = responseWithList(list, userId);
+    const listData = responseWithListMetaData(
+      { ...list._doc, cohortId: cohortForList },
+      userId
+    );
     const socketInstance = io.getInstance();
 
     resp
@@ -102,8 +107,11 @@ const getListsMetaData = (req, resp) => {
     query.cohortId = sanitize(cohortId);
   }
 
-  List.find(query, '_id name createdAt description items favIds type')
-    .populate('cohortId', 'isArchived')
+  List.find(
+    query,
+    '_id name createdAt description favIds items memberIds ownerIds type'
+  )
+    .populate('cohortId', 'isArchived memberIds')
     .lean()
     .exec()
     .then(docs => {
@@ -134,9 +142,9 @@ const getArchivedListsMetaData = (req, resp) => {
 
   List.find(
     query,
-    '_id name createdAt description type items favIds isArchived'
+    '_id name createdAt description favIds items isArchived memberIds ownerIds type'
   )
-    .populate('cohortId', 'isArchived')
+    .populate('cohortId', 'isArchived memberIds')
     .lean()
     .exec()
     .then(docs => {
@@ -1106,10 +1114,17 @@ const addViewer = (req, resp) => {
       if (user) {
         userToSend = responseWithListMember(user, cohortMembers);
         const socketInstance = io.getInstance();
+        const { cohortId } = list;
+        const cohortForList = cohortId
+          ? { _id: cohortId, memberIds: cohortMembers }
+          : null;
 
         return socketActions.addViewer(socketInstance)({
           listId,
-          list: list._doc,
+          list: {
+            ...list._doc,
+            cohortId: cohortForList
+          },
           userToSend
         });
       }
@@ -1532,6 +1547,7 @@ const changeType = async (req, resp) => {
       { new: true }
     )
       .lean()
+      .populate('cohortId', 'memberIds')
       .populate('viewersIds', 'avatarUrl displayName _id')
       .exec();
 

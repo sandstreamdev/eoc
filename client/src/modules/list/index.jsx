@@ -102,6 +102,10 @@ class List extends Component {
       if (updateBreadcrumbs) {
         this.handleBreadcrumbs();
       }
+
+      if (!previousList.isArchived && list.isArchived) {
+        console.log('dupa');
+      }
     }
   }
 

@@ -9,7 +9,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
     case ListEvents.CHANGE_TYPE_SUCCESS: {
       const { listId, removedViewers, ...rest } = data;
 
-      if (removedViewers.includes(currentUser.id)) {
+      if (removedViewers && removedViewers.includes(currentUser.id)) {
         dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
 
         return history.replace(dashboardRoute());
@@ -28,13 +28,9 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
       return dispatch({ type: event, payload: data });
     }
-    case ListEvents.ARCHIVE_SUCCESS:
+    // case ListEvents.ARCHIVE_SUCCESS:
     case ListEvents.DELETE_SUCCESS: {
-      const { listId, redirect } = data;
-
-      if (redirect) {
-        return history.replace(dashboardRoute());
-      }
+      const { listId } = data;
 
       return dispatch({
         type: event,

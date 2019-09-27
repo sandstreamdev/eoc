@@ -501,7 +501,7 @@ const restoreCohort = (
         });
 
         return List.find({ cohortId, isArchived: false })
-          .populate('cohortId', 'ownerIds')
+          .populate('cohortId', 'memberIds ownerIds')
           .lean()
           .exec();
       }

@@ -12,7 +12,6 @@ const {
 const List = require('../models/list.model');
 const {
   countItems,
-  responseWithList,
   responseWithListDetails,
   responseWithListMetaData
 } = require('../common/utils');
@@ -172,7 +171,7 @@ const addViewer = io => async data => {
 
     socketIds.forEach(socketId =>
       io.sockets.to(socketId).emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-        [listId]: responseWithList(list, viewerId)
+        [listId]: responseWithListMetaData(list, viewerId)
       })
     );
   } catch {
@@ -456,8 +455,7 @@ const archiveList = io => async data => {
 
   io.sockets.to(listChannel(listId)).emit(ListActionTypes.ARCHIVE_SUCCESS, {
     cohortId,
-    listId,
-    redirect: true
+    listId
   });
 
   io.sockets

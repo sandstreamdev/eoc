@@ -7,7 +7,7 @@ const { ListActionTypes, CohortActionTypes } = require('../eventTypes');
 const {
   countItems,
   responseWithItem,
-  responseWithList,
+  responseWithListMetaData,
   responseWithCohort
 } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
@@ -77,7 +77,10 @@ const getListsDataByViewers = lists => {
       }
 
       if (!listsByViewers[viewerId][listId]) {
-        listsByViewers[viewerId][listId] = responseWithList(list, viewerId);
+        listsByViewers[viewerId][listId] = responseWithListMetaData(
+          list,
+          viewerId
+        );
       }
     });
   });
@@ -159,64 +162,6 @@ const delayedUnlock = socket => data => itemClientLocks => locks => {
       itemClientLocks.delete(nameLockId(itemId));
     });
   }, LOCK_TIMEOUT);
-};
-
-const sendListOnDashboardAndCohortView = io => (
-  cohortClients,
-  dashboardClients
-) => list => {
-  const { _id: listId, cohortId, viewersIds } = list;
-
-  viewersIds.forEach(viewerId => {
-    const id = viewerId.toString();
-
-    if (dashboardClients.has(id)) {
-      const { socketId } = dashboardClients.get(id);
-
-      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
-        listId,
-        ...responseWithList(list)
-      });
-    }
-
-    if (cohortId && cohortClients.has(id)) {
-      const { socketId } = cohortClients.get(id);
-
-      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
-        listId,
-        ...responseWithList(list)
-      });
-    }
-  });
-};
-
-const updateListOnDashboardAndCohortView = io => (
-  cohortClients,
-  dashboardClients
-) => list => {
-  const { _id: listId, cohortId, viewersIds, ...rest } = list;
-
-  viewersIds.forEach(viewerId => {
-    const id = viewerId.toString();
-
-    if (dashboardClients.has(id)) {
-      const { socketId } = dashboardClients.get(id);
-
-      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
-        listId,
-        ...rest
-      });
-    }
-
-    if (cohortId && cohortClients.has(id)) {
-      const { socketId } = cohortClients.get(id);
-
-      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
-        listId,
-        ...rest
-      });
-    }
-  });
 };
 
 const associateSocketWithSession = async socket => {
@@ -388,7 +333,5 @@ module.exports = {
   joinMetaDataRooms,
   listChannel,
   listMetaDataChannel,
-  nameLockId,
-  sendListOnDashboardAndCohortView,
-  updateListOnDashboardAndCohortView
+  nameLockId
 };
