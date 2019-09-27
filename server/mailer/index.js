@@ -48,7 +48,7 @@ const sendSignUpConfirmationLink = (req, resp) => {
   const host = req.get('host');
   const confirmUrl = `${host}/auth/confirm-email/${signUpHash}`;
   const title = `Welcome to ${PROJECT_NAME}!`;
-  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}! Remember that confirmation button will be only active until ${expirationTime}.`;
+  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}! <b>Remember that confirmation button will be only active until ${expirationTime}.</b>`;
   const value = 'Confirm your account';
 
   const message = {
@@ -81,7 +81,7 @@ const sendResetPasswordLink = (req, resp) => {
   const expirationTime = new Date(expirationDate).toLocaleString();
   const resetUrl = `${host}/auth/recovery-password/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
-  const info = `Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message. Remember that reset button will be only active until ${expirationTime}.`;
+  const info = `Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message. <b>Remember that reset button will be only active until ${expirationTime}.</b> `;
   const value = 'Reset password';
 
   const message = {
