@@ -230,6 +230,7 @@ const resetPassword = (req, resp, next) => {
           resp.locales = {
             displayName,
             email,
+            expirationDate: resetTokenExpirationDate,
             resetToken
           };
 
