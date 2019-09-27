@@ -155,7 +155,7 @@ const confirmEmail = (req, resp) => {
 const resendSignUpConfirmationLink = (req, resp, next) => {
   const { hash } = req.body;
   const sanitizedHash = sanitize(hash);
-  const expirationTime = new Date().getTime() + 3600000;
+  const expirationDate = new Date().getTime() + 3600000;
 
   User.findOneAndUpdate(
     {
@@ -164,7 +164,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
     },
     {
       signUpHash: crypto.randomBytes(32).toString('hex'),
-      signUpHashExpirationDate: expirationTime
+      signUpHashExpirationDate: expirationDate
     },
     { new: true }
   )
@@ -178,7 +178,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
       const { displayName, email, signUpHash } = user;
 
       // eslint-disable-next-line no-param-reassign
-      resp.locals = { displayName, email, expirationTime, signUpHash };
+      resp.locals = { displayName, email, expirationDate, signUpHash };
 
       next();
     })
