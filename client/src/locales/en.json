@@ -294,6 +294,7 @@
   "list.actions.not-available": "The sack '{name}' is not available.",
   "list.actions.not-available-contact-owner": "To get access to the data please contact the sack owner.",
   "list.actions.archived-by-someone": "The '{name}' sack was archived by {performer}.",
+  "list.actions.user-removed-by-someone": "You were removed from the '{name}' sack by {performer}.",
   "list.type.limited": "Limited",
   "list.type.shared": "Shared",
   "list.filter-box.my_items": "my",

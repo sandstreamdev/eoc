@@ -80,14 +80,16 @@ class List extends Component {
       list: previousList,
       match: {
         params: { id: previousListId }
-      }
+      },
+      members: previousMembers
     } = previousProps;
     const {
       currentUser: { id: userId },
       list,
       match: {
         params: { id: listId }
-      }
+      },
+      members
     } = this.props;
 
     if (previousListId !== listId) {
@@ -97,8 +99,8 @@ class List extends Component {
 
     if (previousList && list) {
       const {
-        name: previousName,
-        cohortName: previousCohortName
+        cohortName: previousCohortName,
+        name: previousName
       } = previousList;
       const { name, cohortName } = list;
       const updateBreadcrumbs =
@@ -108,11 +110,17 @@ class List extends Component {
         this.handleBreadcrumbs();
       }
 
-      if (!previousList.isArchived && list.isArchived) {
+      if (
+        (!previousList.isArchived && list.isArchived) ||
+        (previousMembers[userId] && !members[userId])
+      ) {
         this.handleDisableList();
       }
 
-      if (previousList.isArchived && !list.isArchived) {
+      if (
+        (previousList.isArchived && !list.isArchived) ||
+        (!previousMembers[userId] && members[userId])
+      ) {
         this.handleEnableList();
       }
     }
@@ -265,12 +273,12 @@ class List extends Component {
     }
 
     const {
-      action,
       cohortId,
       isArchived,
       isMember,
       isOwner,
       name,
+      performedAction,
       type
     } = list;
     const isCohortList = cohortId !== null && cohortId !== undefined;
@@ -364,13 +372,13 @@ class List extends Component {
         )}
         {(isDisabled || pendingForListRestoring) &&
           !pendingForListArchivization &&
-          action && (
+          performedAction && (
             <Dialog
               cancelLabel="common.button.dashboard"
               confirmLabel="common.button.restore"
               hasPermissions={isOwner && isArchived}
               onCancel={this.handleRedirect}
-              onConfirm={this.handleRestoreList}
+              onConfirm={isArchived ? this.handleRestoreList : null}
               pending={pendingForListRestoring}
               title={formatMessage(
                 {
@@ -380,8 +388,8 @@ class List extends Component {
               )}
             >
               <FormattedMessage
-                id={action.messageId}
-                values={{ name, performer: action.performer }}
+                id={performedAction.messageId}
+                values={{ name, performer: performedAction.performer }}
               />
               {!isOwner && (
                 <FormattedMessage

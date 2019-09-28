@@ -18,21 +18,36 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
       return dispatch({ type: event, payload: { listId, ...rest } });
     }
     case ListEvents.REMOVE_MEMBER_SUCCESS: {
-      const { listId, userId } = data;
+      const {
+        location: { pathname }
+      } = history;
+      const { listId, performer, userId } = data;
+      const performedAction = {
+        messageId: 'list.actions.user-removed-by-someone',
+        performer
+      };
 
-      if (currentUser.id === userId) {
-        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
-
-        return history.replace(dashboardRoute());
+      if (currentUser.id === userId && !pathname.includes(listId)) {
+        return dispatch({
+          type: ListEvents.DELETE_SUCCESS,
+          payload: { listId }
+        });
       }
 
-      return dispatch({ type: event, payload: data });
+      return dispatch({
+        type: event,
+        payload: { ...data, performedAction }
+      });
     }
     case ListEvents.ARCHIVE_SUCCESS: {
       const {
         location: { pathname }
       } = history;
-      const { listId } = data;
+      const { listId, performer } = data;
+      const performedAction = {
+        messageId: 'list.actions.removed-by-someone',
+        performer
+      };
       const {
         lists: {
           [listId]: { isMember }
@@ -48,7 +63,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
       return dispatch({
         type: event,
-        payload: { ...data, messageId: 'list.actions.archived-by-someone' }
+        payload: { ...data, performedAction }
       });
     }
     case ListEvents.DELETE_SUCCESS: {

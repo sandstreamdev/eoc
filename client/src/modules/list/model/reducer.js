@@ -120,12 +120,12 @@ const lists = (state = {}, action) => {
     case ListActionTypes.CREATE_SUCCESS:
       return { ...state, [action.payload._id]: { ...action.payload } };
     case ListActionTypes.ARCHIVE_SUCCESS: {
-      const { listId, ...rest } = action.payload;
+      const { listId, performedAction } = action.payload;
 
       if (state[listId]) {
         return {
           ...state,
-          [listId]: { ...state[listId], isArchived: true, action: rest }
+          [listId]: { ...state[listId], isArchived: true, performedAction }
         };
       }
 
@@ -194,7 +194,19 @@ const lists = (state = {}, action) => {
       return { ...state, [listId]: { ...state[listId], isFavourite } };
     }
     case ListActionTypes.ADD_VIEWER_SUCCESS:
-    case ListActionTypes.REMOVE_MEMBER_SUCCESS:
+    case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
+      const {
+        payload: { listId, performedAction }
+      } = action;
+      const { members } = state[listId];
+      const list = {
+        ...state[listId],
+        members: membersReducer(members, action),
+        performedAction
+      };
+
+      return { ...state, [listId]: list };
+    }
     case ListActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
         payload: { isCurrentUserRoleChanging, listId }

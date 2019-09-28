@@ -431,6 +431,10 @@ const removeViewer = io => async data => {
     .to(listChannel(listId))
     .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
 
+  io.sockets
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+
   try {
     const socketIds = await getUserSockets(userId);
 
@@ -438,10 +442,6 @@ const removeViewer = io => async data => {
       io.sockets
         .to(socketId)
         .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
-    );
-
-    socketIds.forEach(socketId =>
-      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, data)
     );
   } catch {
     // Ignore error

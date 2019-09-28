@@ -35,7 +35,7 @@ const Dialog = ({
         <div className="dialog__body">
           {children && <div className="dialog__children">{children}</div>}
           <div className="dialog__footer">
-            {hasPermissions && (
+            {hasPermissions && onConfirm && (
               <button
                 className="dialog__button primary-button"
                 disabled={pending}
@@ -76,7 +76,7 @@ Dialog.propTypes = {
   title: PropTypes.string,
 
   onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired
+  onConfirm: PropTypes.func
 };
 
 export default Dialog;
