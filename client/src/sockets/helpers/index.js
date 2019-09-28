@@ -28,7 +28,29 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
       return dispatch({ type: event, payload: data });
     }
-    // case ListEvents.ARCHIVE_SUCCESS:
+    case ListEvents.ARCHIVE_SUCCESS: {
+      const {
+        location: { pathname }
+      } = history;
+      const { listId } = data;
+      const {
+        lists: {
+          [listId]: { isMember }
+        }
+      } = getState();
+
+      if (!pathname.includes(listId) && !isMember) {
+        return dispatch({
+          type: ListEvents.DELETE_SUCCESS,
+          payload: { listId }
+        });
+      }
+
+      return dispatch({
+        type: event,
+        payload: { ...data, messageId: 'list.actions.archived-by-someone' }
+      });
+    }
     case ListEvents.DELETE_SUCCESS: {
       const { listId } = data;
 

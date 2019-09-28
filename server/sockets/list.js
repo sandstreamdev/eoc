@@ -451,35 +451,15 @@ const removeViewer = io => async data => {
 };
 
 const archiveList = io => async data => {
-  const { listId, cohortId, viewersOnly } = data;
+  const { listId } = data;
 
-  io.sockets.to(listChannel(listId)).emit(ListActionTypes.ARCHIVE_SUCCESS, {
-    cohortId,
-    listId
-  });
+  io.sockets
+    .to(listChannel(listId))
+    .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
 
   io.sockets
     .to(listMetaDataChannel(listId))
-    .emit(ListActionTypes.ARCHIVE_SUCCESS, { cohortId, listId });
-
-  viewersOnly.forEach(async id => {
-    const viewerId = id.toString();
-
-    try {
-      const socketIds = await getUserSockets(viewerId);
-
-      socketIds.forEach(socketId =>
-        io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, {
-          cohortId,
-          listId
-        })
-      );
-    } catch {
-      // Ignore errors
-    }
-  });
-
-  return Promise.resolve();
+    .emit(ListActionTypes.ARCHIVE_SUCCESS, data);
 };
 
 const deleteList = io => async data => {

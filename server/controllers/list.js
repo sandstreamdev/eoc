@@ -1,6 +1,5 @@
 const sanitize = require('mongo-sanitize');
 const _difference = require('lodash/difference');
-const _some = require('lodash/some');
 const validator = require('validator');
 
 const List = require('../models/list.model');
@@ -87,8 +86,7 @@ const createList = async (req, resp) => {
     fireAndForget(
       socketActions.createListCohort(socketInstance)({ listData, viewersIds })
     );
-  } catch (err) {
-    console.log(err);
+  } catch {
     resp.sendStatus(400);
   }
 };
@@ -363,7 +361,6 @@ const voteForItem = async (req, resp) => {
     const data = {
       itemId,
       listId,
-      performerId: userId,
       sessionId: sessionID,
       viewersIds
     };
@@ -418,7 +415,6 @@ const clearVote = async (req, resp) => {
     const data = {
       itemId,
       listId,
-      performerId: userId,
       sessionId: sessionID,
       viewersIds
     };
@@ -444,7 +440,7 @@ const clearVote = async (req, resp) => {
 
 const archiveList = async (req, resp) => {
   const {
-    user: { _id: userId }
+    user: { _id: userId, displayName }
   } = req;
   const { id: listId } = req.params;
   const sanitizedListId = sanitize(listId);
@@ -459,7 +455,7 @@ const archiveList = async (req, resp) => {
       { new: true }
     ).exec();
 
-    const { cohortId, memberIds, viewersIds } = list;
+    const { cohortId } = list;
 
     fireAndForget(
       saveActivity(
@@ -473,15 +469,11 @@ const archiveList = async (req, resp) => {
       )
     );
 
-    const data = {
-      cohortId,
-      listId,
-      viewersOnly: viewersIds.filter(id => !_some(memberIds, id))
-    };
+    const data = { listId, performer: displayName };
     const socketInstance = io.getInstance();
 
     resp.send();
-    fireAndForget(socketActions.archiveList(socketInstance)(data));
+    socketActions.archiveList(socketInstance)(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -546,7 +538,7 @@ const restoreList = async (req, resp) => {
 
 const deleteList = async (req, resp) => {
   const {
-    user: { _id: userId }
+    user: { _id: userId, displayName }
   } = req;
   const { id: listId } = req.params;
   const sanitizedListId = sanitize(listId);
@@ -577,6 +569,7 @@ const deleteList = async (req, resp) => {
 
     const data = {
       listId: sanitizedListId,
+      performer: displayName,
       viewersIds
     };
     const socketInstance = io.getInstance();
@@ -735,7 +728,7 @@ const removeOwner = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -762,7 +755,7 @@ const removeOwner = (req, resp) => {
 
       const data = {
         listId,
-        performerId: currentUserId,
+        performer: displayName,
         userId: sanitizedUserId
       };
       const socketInstance = io.getInstance();
@@ -792,7 +785,7 @@ const removeMember = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -819,7 +812,7 @@ const removeMember = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const data = { listId, userId };
+      const data = { listId, performer: displayName, userId };
       const socketInstance = io.getInstance();
 
       return socketActions
@@ -1541,7 +1534,7 @@ const cloneItem = async (req, resp) => {
 const changeType = async (req, resp) => {
   const { type } = req.body;
   const { id: listId } = req.params;
-  const { _id: currentUserId } = req.user;
+  const { _id: currentUserId, displayName } = req.user;
   const sanitizedListId = sanitize(listId);
   const sanitizedType = sanitize(type);
 
@@ -1609,6 +1602,7 @@ const changeType = async (req, resp) => {
       members,
       newViewers,
       removedViewers,
+      performer: displayName,
       type
     };
     const socketInstance = io.getInstance();

@@ -120,12 +120,12 @@ const lists = (state = {}, action) => {
     case ListActionTypes.CREATE_SUCCESS:
       return { ...state, [action.payload._id]: { ...action.payload } };
     case ListActionTypes.ARCHIVE_SUCCESS: {
-      const { listId } = action.payload;
+      const { listId, ...rest } = action.payload;
 
       if (state[listId]) {
         return {
           ...state,
-          [listId]: { ...state[listId], isArchived: true }
+          [listId]: { ...state[listId], isArchived: true, action: rest }
         };
       }
 

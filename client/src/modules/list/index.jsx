@@ -16,7 +16,8 @@ import InputBar from 'modules/list/components/Items/InputBar';
 import {
   archiveList,
   fetchListData,
-  leaveList
+  leaveList,
+  restoreList
 } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedList from 'modules/list/components/ArchivedList';
@@ -35,15 +36,19 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
 import { joinRoom, leaveRoom } from 'common/model/actions';
+import history from 'common/utils/history';
+import { dashboardRoute } from 'common/utils/helpers';
 import './List.scss';
 
 class List extends Component {
   state = {
     breadcrumbs: [],
     dialogContext: null,
+    isDisabled: false,
     isMembersBoxVisible: false,
     pendingForDetails: false,
-    pendingForListArchivization: false
+    pendingForListArchivization: false,
+    pendingForListRestoring: false
   };
 
   componentDidMount() {
@@ -104,7 +109,11 @@ class List extends Component {
       }
 
       if (!previousList.isArchived && list.isArchived) {
-        console.log('dupa');
+        this.handleDisableList();
+      }
+
+      if (previousList.isArchived && !list.isArchived) {
+        this.handleEnableList();
       }
     }
   }
@@ -207,12 +216,38 @@ class List extends Component {
     return <Breadcrumbs breadcrumbs={breadcrumbs} isGuest={isGuest} />;
   };
 
+  handleRedirect = () => history.replace(dashboardRoute());
+
+  handleDisableList = () => this.setState({ isDisabled: true });
+
+  handleEnableList = () => this.setState({ isDisabled: false });
+
+  handleRestoreList = () => {
+    const {
+      list: { name, isOwner },
+      match: {
+        params: { id: listId }
+      },
+      restoreList
+    } = this.props;
+
+    if (isOwner) {
+      this.setState({ pendingForListRestoring: true });
+
+      restoreList(listId, name)
+        .then(this.handleEnableList)
+        .finally(() => this.setState({ pendingForListRestoring: false }));
+    }
+  };
+
   render() {
     const {
       dialogContext,
+      isDisabled,
       isMembersBoxVisible,
       pendingForDetails,
-      pendingForListArchivization
+      pendingForListArchivization,
+      pendingForListRestoring
     } = this.state;
     const {
       doneItems,
@@ -229,13 +264,21 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, isArchived, isMember, isOwner, name, type } = list;
+    const {
+      action,
+      cohortId,
+      isArchived,
+      isMember,
+      isOwner,
+      name,
+      type
+    } = list;
     const isCohortList = cohortId !== null && cohortId !== undefined;
 
     return (
       <Fragment>
         {this.renderBreadcrumbs()}
-        {isArchived ? (
+        {isArchived && !isDisabled ? (
           <ArchivedList
             cohortId={cohortId}
             isOwner={isOwner}
@@ -319,6 +362,35 @@ class List extends Component {
             )}
           />
         )}
+        {(isDisabled || pendingForListRestoring) &&
+          !pendingForListArchivization &&
+          action && (
+            <Dialog
+              cancelLabel="common.button.dashboard"
+              confirmLabel="common.button.restore"
+              hasPermissions={isOwner && isArchived}
+              onCancel={this.handleRedirect}
+              onConfirm={this.handleRestoreList}
+              pending={pendingForListRestoring}
+              title={formatMessage(
+                {
+                  id: 'list.actions.not-available'
+                },
+                { name }
+              )}
+            >
+              <FormattedMessage
+                id={action.messageId}
+                values={{ name, performer: action.performer }}
+              />
+              {!isOwner && (
+                <FormattedMessage
+                  id="list.actions.not-available-contact-owner"
+                  values={{ name }}
+                />
+              )}
+            </Dialog>
+          )}
       </Fragment>
     );
   }
@@ -335,7 +407,8 @@ List.propTypes = {
 
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
-  leaveList: PropTypes.func.isRequired
+  leaveList: PropTypes.func.isRequired,
+  restoreList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -362,7 +435,8 @@ export default _flowRight(
     {
       archiveList,
       fetchListData,
-      leaveList
+      leaveList,
+      restoreList
     }
   )
 )(List);

@@ -101,7 +101,7 @@ class ListArchivedItem extends PureComponent {
               onClick={this.handleRestoringItem}
               type="button"
             >
-              <FormattedMessage id="list.list-archived-item.restore" />
+              <FormattedMessage id="common.button.restore" />
             </PendingButton>
             <button
               className="link-button"

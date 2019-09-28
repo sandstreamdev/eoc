@@ -93,6 +93,9 @@ class ArchivedMessage extends PureComponent {
         </div>
         {isDialogVisible && (
           <Dialog
+            pending={pending}
+            onCancel={this.hideDialog}
+            onConfirm={this.handleDeletion}
             title={formatMessage(
               {
                 id: pending
@@ -101,9 +104,6 @@ class ArchivedMessage extends PureComponent {
               },
               { name, item }
             )}
-            pending={pending}
-            onCancel={this.hideDialog}
-            onConfirm={this.handleDeletion}
           />
         )}
       </Fragment>
