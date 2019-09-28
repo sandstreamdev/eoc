@@ -27,7 +27,7 @@
     border-bottom: 1px solid $border-light;
 
     @include breakpoint($xsmall) {
-      font-size: 18px;
+      font-size: $l-font;
     }
   }
 
@@ -37,7 +37,7 @@
 
   &__children {
     position: relative;
-    font-size: 13px;
+    font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
     padding: four-by(4) four-by(4) 0;
@@ -57,9 +57,9 @@
   }
 
   &__heading {
+    color: $text-dark;
     font-weight: 700;
     text-align: center;
-    text-transform: uppercase;
   }
 
   &__button {
