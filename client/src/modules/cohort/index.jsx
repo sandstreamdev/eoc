@@ -47,6 +47,7 @@ const initialState = {
   areArchivedListsVisible: false,
   breadcrumbs: [],
   dialogContext: null,
+  isDisabled: false,
   pendingForArchivedLists: false,
   pendingForDetails: false,
   pendingForListCreation: false,
@@ -85,9 +86,10 @@ class Cohort extends PureComponent {
         params: { id: previousId }
       }
     } = previousProps;
+    const { isDisabled } = this.state;
 
     if (id !== previousId) {
-      leaveRoom(Routes.COHORT, previousId, userId);
+      leaveRoom(Routes.COHORT, previousId, userId)(isDisabled);
       this.fetchData();
     }
 
@@ -103,8 +105,9 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
+    const { isDisabled } = this.state;
 
-    leaveRoom(Routes.COHORT, cohortId, userId);
+    leaveRoom(Routes.COHORT, cohortId, userId)(isDisabled);
     this.pendingPromises.forEach(promise => promise.abort());
   }
 

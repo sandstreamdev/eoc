@@ -20,9 +20,12 @@ export const joinRoom = (route, id, userId) => {
   socket.emit(AppEvents.LEAVE_ROOM, metaDataChannel(id, route));
 };
 
-export const leaveRoom = (route, id, userId) => {
+export const leaveRoom = (route, id, userId) => isDisabled => {
   const data = { roomId: `${route}-${id}`, userId, viewId: id };
 
   socket.emit(AppEvents.LEAVE_ROOM, { data, room: route });
-  socket.emit(AppEvents.JOIN_ROOM, metaDataChannel(id, route));
+
+  if (!isDisabled) {
+    socket.emit(AppEvents.JOIN_ROOM, metaDataChannel(id, route));
+  }
 };

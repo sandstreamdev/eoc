@@ -91,9 +91,10 @@ class List extends Component {
       },
       members
     } = this.props;
+    const { isDisabled } = this.state;
 
     if (previousListId !== listId) {
-      leaveRoom(Routes.LIST, listId, userId);
+      leaveRoom(Routes.LIST, listId, userId)(isDisabled);
       this.fetchData();
     }
 
@@ -135,8 +136,9 @@ class List extends Component {
         params: { id: listId }
       }
     } = this.props;
+    const { isDisabled } = this.state;
 
-    leaveRoom(Routes.LIST, listId, userId);
+    leaveRoom(Routes.LIST, listId, userId)(isDisabled);
   }
 
   handleBreadcrumbs = () => {
