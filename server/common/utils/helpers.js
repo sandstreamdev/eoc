@@ -53,7 +53,7 @@ const responseWithList = (list, userId) => {
   const {
     _id,
     cohortId,
-    created_at: createdAt,
+    createdAt,
     description,
     favIds,
     items,
@@ -401,6 +401,38 @@ const fireAndForget = promise => promise.catch(err => console.error(err));
 
 const returnPayload = promise => payload => promise.then(() => payload);
 
+const responseWithListDetails = (list, userId) => cohort => {
+  const {
+    isArchived,
+    items: listItems,
+    memberIds,
+    ownerIds,
+    viewersIds: viewersCollection
+  } = list;
+  const activeItems = listItems.filter(item => !item.isArchived);
+  const items = responseWithItems(userId, activeItems);
+  const cohortMembers = cohort ? cohort.memberIds : [];
+
+  const members = responseWithListMembers(
+    viewersCollection,
+    memberIds,
+    ownerIds,
+    cohortMembers
+  );
+
+  return {
+    ...responseWithList(list, userId),
+    cohortId: cohort ? cohort.cohortId : null,
+    cohortName: cohort ? cohort.name : null,
+    isArchived,
+    isGuest: !cohort || (cohort && !isMember(cohort, userId)),
+    isMember: isMember(list, userId),
+    isOwner: isOwner(list, userId),
+    items: _keyBy(items, '_id'),
+    members: _keyBy(members, '_id')
+  };
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -423,6 +455,7 @@ module.exports = {
   responseWithItem,
   responseWithItems,
   responseWithList,
+  responseWithListDetails,
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData,

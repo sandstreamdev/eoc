@@ -1,17 +1,22 @@
 import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
-import {
-  cohortRoute,
-  cohortsRoute,
-  dashboardRoute
-} from 'common/utils/helpers';
-import { ListActionTypes } from '../../modules/list/model/actionTypes';
+import { cohortsRoute, dashboardRoute } from 'common/utils/helpers';
 
 export const listEventsController = (event, data, { dispatch, getState }) => {
   const { currentUser } = getState();
 
   switch (event) {
-    case ListEvents.LEAVE_ON_TYPE_CHANGE_SUCCESS:
+    case ListEvents.CHANGE_TYPE_SUCCESS: {
+      const { listId, removedViewers, ...rest } = data;
+
+      if (removedViewers.includes(currentUser.id)) {
+        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
+
+        return history.replace(dashboardRoute());
+      }
+
+      return dispatch({ type: event, payload: { listId, ...rest } });
+    }
     case ListEvents.REMOVE_MEMBER_SUCCESS: {
       const { listId, userId } = data;
 
@@ -24,15 +29,17 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
       return dispatch({ type: event, payload: data });
     }
     case ListEvents.ARCHIVE_SUCCESS:
-    case ListEvents.DELETE_AND_REDIRECT: {
-      const { cohortId, isCohortMember, listId } = data;
+    case ListEvents.DELETE_SUCCESS: {
+      const { listId, redirect } = data;
 
-      dispatch({ type: ListActionTypes.DELETE_SUCCESS, payload: { listId } });
+      if (redirect) {
+        return history.replace(dashboardRoute());
+      }
 
-      const goToCohort = cohortId && isCohortMember;
-      const url = goToCohort ? cohortRoute(cohortId) : dashboardRoute();
-
-      return history.replace(url);
+      return dispatch({
+        type: event,
+        payload: { listId }
+      });
     }
     case ListEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
       const { cohortId, listId } = data;

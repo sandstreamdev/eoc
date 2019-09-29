@@ -17,14 +17,17 @@ const {
   responseWithItem,
   responseWithItems,
   responseWithList,
+  responseWithListDetails,
   responseWithListMember,
   responseWithListMembers,
   responseWithListsMetaData
 } = require('./index');
 const {
   expectedCohortListProperties,
+  expectedListDetailsProperties,
   expectedListMetaDataProperties,
   expectedListProperties,
+  listDetailsMock,
   listMock
 } = require('../../tests/__mocks__/listMock');
 const {
@@ -420,6 +423,44 @@ describe('function responseWithCohortDetails', () => {
   const notExpected = ['favIds', 'ownerIds', 'memberIds'];
 
   it('returns cohorts details without sensitive data', () => {
+    notExpected.map(property => expect(result).not.toHaveProperty(property));
+  });
+});
+
+describe('function responseWithListDetails', () => {
+  const list = listDetailsMock;
+  const userId = ObjectId();
+  const cohort = cohortsMock[1];
+  const notExpected = [
+    'favIds',
+    'isDeleted',
+    'memberIds',
+    'ownerIds',
+    'updatedAt',
+    'viewersIds'
+  ];
+
+  let result = responseWithListDetails(list, userId)(null);
+
+  it('returns private list details with desired properties', () => {
+    expectedListDetailsProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
+  });
+
+  it('returns private list details without sensitive data', () => {
+    notExpected.map(property => expect(result).not.toHaveProperty(property));
+  });
+
+  result = responseWithListDetails(list, userId)(cohort);
+
+  it('returns cohort list details with desired properties', () => {
+    expectedListDetailsProperties.map(property =>
+      expect(result).toHaveProperty(property)
+    );
+  });
+
+  it('returns cohort list details without sensitive data', () => {
     notExpected.map(property => expect(result).not.toHaveProperty(property));
   });
 });
