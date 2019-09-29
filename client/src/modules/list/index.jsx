@@ -112,14 +112,16 @@ class List extends Component {
 
       if (
         (!previousList.isArchived && list.isArchived) ||
-        (previousMembers[userId] && !members[userId])
+        (previousMembers[userId] && !members[userId]) ||
+        (!previousList.isDeleted && list.isDeleted)
       ) {
         this.handleDisableList();
       }
 
       if (
         (previousList.isArchived && !list.isArchived) ||
-        (!previousMembers[userId] && members[userId])
+        (!previousMembers[userId] && members[userId]) ||
+        (previousList.isDeleted && !list.isDeleted)
       ) {
         this.handleEnableList();
       }
@@ -275,18 +277,21 @@ class List extends Component {
     const {
       cohortId,
       isArchived,
+      isDeleted,
       isMember,
       isOwner,
       name,
-      performedAction,
+      externalAction,
       type
     } = list;
     const isCohortList = cohortId !== null && cohortId !== undefined;
+    const idDialogForRemovedListVisible =
+      isDisabled && externalAction && !pendingForListArchivization;
 
     return (
       <Fragment>
         {this.renderBreadcrumbs()}
-        {isArchived && !isDisabled ? (
+        {(isArchived && !isDisabled) || isDeleted ? (
           <ArchivedList
             cohortId={cohortId}
             isOwner={isOwner}
@@ -370,35 +375,33 @@ class List extends Component {
             )}
           />
         )}
-        {(isDisabled || pendingForListRestoring) &&
-          !pendingForListArchivization &&
-          performedAction && (
-            <Dialog
-              cancelLabel="common.button.dashboard"
-              confirmLabel="common.button.restore"
-              hasPermissions={isOwner && isArchived}
-              onCancel={this.handleRedirect}
-              onConfirm={isArchived ? this.handleRestoreList : null}
-              pending={pendingForListRestoring}
-              title={formatMessage(
-                {
-                  id: 'list.actions.not-available'
-                },
-                { name }
-              )}
-            >
+        {idDialogForRemovedListVisible && (
+          <Dialog
+            cancelLabel="common.button.dashboard"
+            confirmLabel="common.button.restore"
+            hasPermissions={isOwner}
+            onCancel={this.handleRedirect}
+            onConfirm={isArchived && !isDeleted ? this.handleRestoreList : null}
+            pending={pendingForListRestoring}
+            title={formatMessage(
+              {
+                id: 'list.actions.not-available'
+              },
+              { name }
+            )}
+          >
+            <FormattedMessage
+              id={externalAction.messageId}
+              values={{ name, performer: externalAction.performer }}
+            />
+            {!isOwner && (
               <FormattedMessage
-                id={performedAction.messageId}
-                values={{ name, performer: performedAction.performer }}
+                id="list.actions.not-available-contact-owner"
+                values={{ name }}
               />
-              {!isOwner && (
-                <FormattedMessage
-                  id="list.actions.not-available-contact-owner"
-                  values={{ name }}
-                />
-              )}
-            </Dialog>
-          )}
+            )}
+          </Dialog>
+        )}
       </Fragment>
     );
   }

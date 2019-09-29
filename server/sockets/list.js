@@ -389,9 +389,9 @@ const changeListType = io => async data => {
             .to(socketId)
             .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId));
 
-          io.sockets
-            .to(socketId)
-            .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+          // io.sockets
+          //   .to(socketId)
+          //   .emit(ListActionTypes.DELETE_SUCCESS, { listId });
         });
       } catch {
         // Ignore errors
@@ -463,15 +463,15 @@ const archiveList = io => async data => {
 };
 
 const deleteList = io => async data => {
-  const { listId, viewersIds } = data;
+  const { listId, performer, viewersIds } = data;
 
   io.sockets
     .to(listChannel(listId))
-    .emit(ListActionTypes.DELETE_SUCCESS, { listId, redirect: true });
+    .emit(ListActionTypes.DELETE_SUCCESS, { listId, performer });
 
   io.sockets
     .to(listMetaDataChannel(listId))
-    .emit(ListActionTypes.DELETE_SUCCESS, { listId });
+    .emit(ListActionTypes.DELETE_SUCCESS, { listId, performer });
 
   viewersIds.forEach(async id => {
     const viewerId = id.toString();

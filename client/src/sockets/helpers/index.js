@@ -1,28 +1,49 @@
 import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
-import { cohortsRoute, dashboardRoute } from 'common/utils/helpers';
+import { cohortsRoute } from 'common/utils/helpers';
 
 export const listEventsController = (event, data, { dispatch, getState }) => {
   const { currentUser } = getState();
 
   switch (event) {
     case ListEvents.CHANGE_TYPE_SUCCESS: {
-      const { listId, removedViewers, ...rest } = data;
+      const { listId, performer, removedViewers, ...rest } = data;
+      const {
+        location: { pathname }
+      } = history;
+      const externalAction = {
+        messageId: 'list.actions.list-changed-to-limited',
+        performer
+      };
 
-      if (removedViewers && removedViewers.includes(currentUser.id)) {
-        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
-
-        return history.replace(dashboardRoute());
+      if (
+        !pathname.includes(listId) &&
+        removedViewers &&
+        removedViewers.includes(currentUser.id)
+      ) {
+        return dispatch({
+          type: ListEvents.DELETE_SUCCESS,
+          payload: { listId }
+        });
       }
 
-      return dispatch({ type: event, payload: { listId, ...rest } });
+      // if (removedViewers && removedViewers.includes(currentUser.id)) {
+      //   dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
+
+      //   return history.replace(dashboardRoute());
+      // }
+
+      return dispatch({
+        type: event,
+        payload: { listId, externalAction, ...rest }
+      });
     }
     case ListEvents.REMOVE_MEMBER_SUCCESS: {
       const {
         location: { pathname }
       } = history;
       const { listId, performer, userId } = data;
-      const performedAction = {
+      const externalAction = {
         messageId: 'list.actions.user-removed-by-someone',
         performer
       };
@@ -36,7 +57,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
       return dispatch({
         type: event,
-        payload: { ...data, performedAction }
+        payload: { ...data, externalAction }
       });
     }
     case ListEvents.ARCHIVE_SUCCESS: {
@@ -44,8 +65,8 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         location: { pathname }
       } = history;
       const { listId, performer } = data;
-      const performedAction = {
-        messageId: 'list.actions.removed-by-someone',
+      const externalAction = {
+        messageId: 'list.actions.archived-by-someone',
         performer
       };
       const {
@@ -63,15 +84,25 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
       return dispatch({
         type: event,
-        payload: { ...data, performedAction }
+        payload: { ...data, externalAction }
       });
     }
     case ListEvents.DELETE_SUCCESS: {
-      const { listId } = data;
+      const { listId, performer } = data;
+      const {
+        location: { pathname }
+      } = history;
+      const externalAction = {
+        messageId: 'list.actions.deleted-by-someone',
+        performer
+      };
+      const payload = !pathname.includes(listId)
+        ? { listId }
+        : { listId, externalAction };
 
       return dispatch({
         type: event,
-        payload: { listId }
+        payload
       });
     }
     case ListEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {

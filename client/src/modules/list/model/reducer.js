@@ -120,24 +120,31 @@ const lists = (state = {}, action) => {
     case ListActionTypes.CREATE_SUCCESS:
       return { ...state, [action.payload._id]: { ...action.payload } };
     case ListActionTypes.ARCHIVE_SUCCESS: {
-      const { listId, performedAction } = action.payload;
+      const { listId, externalAction } = action.payload;
 
       if (state[listId]) {
         return {
           ...state,
-          [listId]: { ...state[listId], isArchived: true, performedAction }
+          [listId]: { ...state[listId], isArchived: true, externalAction }
         };
       }
 
       return state;
     }
     case ListActionTypes.DELETE_SUCCESS: {
-      const { listId } = action.payload;
+      const { listId, externalAction } = action.payload;
 
       if (state[listId]) {
-        const { [listId]: removed, ...newState } = state;
+        if (!externalAction) {
+          const { [listId]: removed, ...newState } = state;
 
-        return newState;
+          return newState;
+        }
+
+        return {
+          ...state,
+          [listId]: { ...state[listId], isDeleted: true, externalAction }
+        };
       }
 
       return state;
@@ -196,13 +203,13 @@ const lists = (state = {}, action) => {
     case ListActionTypes.ADD_VIEWER_SUCCESS:
     case ListActionTypes.REMOVE_MEMBER_SUCCESS: {
       const {
-        payload: { listId, performedAction }
+        payload: { listId, externalAction }
       } = action;
       const { members } = state[listId];
       const list = {
         ...state[listId],
         members: membersReducer(members, action),
-        performedAction
+        externalAction
       };
 
       return { ...state, [listId]: list };
@@ -291,7 +298,7 @@ const lists = (state = {}, action) => {
     }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
-        payload: { type, listId }
+        payload: { externalAction, listId, type }
       } = action;
       const { members } = state[listId];
 
@@ -299,6 +306,7 @@ const lists = (state = {}, action) => {
         ...state,
         [listId]: {
           ...state[listId],
+          externalAction,
           type,
           members: membersReducer(members, action)
         }
