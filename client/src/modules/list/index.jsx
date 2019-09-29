@@ -390,16 +390,18 @@ class List extends Component {
               { name }
             )}
           >
-            <FormattedMessage
-              id={externalAction.messageId}
-              values={{ name, performer: externalAction.performer }}
-            />
-            {!isOwner && (
+            <p>
               <FormattedMessage
-                id="list.actions.not-available-contact-owner"
-                values={{ name }}
+                id={externalAction.messageId}
+                values={{ name, performer: externalAction.performer }}
               />
-            )}
+              {!isOwner && (
+                <FormattedMessage
+                  id="list.actions.not-available-contact-owner"
+                  values={{ name }}
+                />
+              )}
+            </p>
           </Dialog>
         )}
       </Fragment>

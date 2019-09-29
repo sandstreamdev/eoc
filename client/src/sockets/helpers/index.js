@@ -27,12 +27,6 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         });
       }
 
-      // if (removedViewers && removedViewers.includes(currentUser.id)) {
-      //   dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
-
-      //   return history.replace(dashboardRoute());
-      // }
-
       return dispatch({
         type: event,
         payload: { listId, externalAction, ...rest }

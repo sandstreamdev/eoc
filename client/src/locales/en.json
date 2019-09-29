@@ -293,7 +293,7 @@
   "list.actions.leave-fail": "Failed to leave sack for user: '{userName}'.",
   "list.actions.not-available": "The sack '{name}' is not available.",
   "list.actions.not-available-contact-owner": "To get access to the data please contact the sack owner.",
-  "list.actions.archived-by-someone": "The '{name}' sack had been archived by {performer}.",
+  "list.actions.archived-by-someone": "The '{name}' sack has been archived by {performer}.",
   "list.actions.deleted-by-someone": "The '{name}' sack has been deleted by {performer}.",
   "list.actions.user-removed-by-someone": "{performer} has removed you from the '{name}' sack.",
   "list.actions.list-changed-to-limited": "The '{name}' sack is no longer a shared sack.",
