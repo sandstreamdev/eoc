@@ -155,7 +155,6 @@ const confirmEmail = (req, resp) => {
 const resendSignUpConfirmationLink = (req, resp, next) => {
   const { hash } = req.body;
   const sanitizedHash = sanitize(hash);
-  const expirationDate = new Date().getTime() + EXPIRATION_TIME;
 
   User.findOneAndUpdate(
     {
@@ -164,7 +163,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
     },
     {
       signUpHash: crypto.randomBytes(32).toString('hex'),
-      signUpHashExpirationDate: expirationDate
+      signUpHashExpirationDate: new Date().getTime() + EXPIRATION_TIME
     },
     { new: true }
   )
