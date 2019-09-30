@@ -436,14 +436,14 @@ describe('function getHours should return hours count based on provided millisec
   it('returns two hours', () => {
     const milliseconds = 7250000;
     const result = getHours(milliseconds);
-    
+
     expect(result).toEqual(2);
   });
 
-   it('returns zero hours', () => {
+  it('returns zero hours', () => {
     const milliseconds = 4000;
     const result = getHours(milliseconds);
-    
+
     expect(result).toEqual(0);
   });
-})
+});
