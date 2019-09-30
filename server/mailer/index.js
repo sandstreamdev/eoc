@@ -45,9 +45,7 @@ const sendSignUpConfirmationLink = (req, resp) => {
   const confirmUrl = `${host}/auth/confirm-email/${signUpHash}`;
   const hours = howManyHours(EXPIRATION_TIME);
   const title = `Welcome to ${PROJECT_NAME}!`;
-  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}! <b>Remember that confirmation button will be active only ${
-    hours === 1 ? `${hours} hour` : `${hours} hours`
-  }.</b>`;
+  const info = `<p>It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!</p><p><b>Remember that confirmation button will be active only ${hours === 1 ? `${hours} hour` : `${hours} hours`}.</b></p>`;
   const value = 'Confirm your account';
 
   const message = {
@@ -75,9 +73,7 @@ const sendResetPasswordLink = (req, resp) => {
   const hours = howManyHours(EXPIRATION_TIME);
   const resetUrl = `${host}/auth/recovery-password/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
-  const info = `Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message. <b>Remember that reset button will be active only ${
-    hours === 1 ? `${hours} hour` : `${hours} hours`
-  }.</b> `;
+  const info = `<p>Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.</p><p><b>Remember that reset button will be active only ${hours === 1 ? `${hours} hour` : `${hours} hours`}.</b></p>`;
   const value = 'Reset password';
 
   const message = {
