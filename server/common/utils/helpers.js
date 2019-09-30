@@ -402,7 +402,7 @@ const fireAndForget = promise => promise.catch(err => console.error(err));
 const returnPayload = promise => payload => promise.then(() => payload);
 
 // TODO: Write test to this function
-const howManyHours = milliseconds => Math.floor(milliseconds / 3600000);
+const getHours = milliseconds => Math.floor(milliseconds / 3600000);
 
 module.exports = {
   checkIfArrayContainsUserId,
@@ -411,7 +411,7 @@ module.exports = {
   enumerable,
   filter,
   fireAndForget,
-  howManyHours,
+  getHours,
   isDefined,
   isMember,
   isOwner,
