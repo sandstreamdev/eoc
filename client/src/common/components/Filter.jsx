@@ -26,13 +26,13 @@ class Filter extends PureComponent {
   }
 
   filterByFields = query => {
-    const { filterBy, options } = this.props;
+    const { fields, options } = this.props;
     const normalizedQuery = query.toLowerCase();
 
     return options.filter(option => {
       let testString = '';
 
-      filterBy.forEach(field => {
+      fields.forEach(field => {
         if (option[field]) {
           testString += option[field];
         }
@@ -100,7 +100,7 @@ Filter.defaultProps = {
 Filter.propTypes = {
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   clearFilterButton: PropTypes.bool,
-  filterBy: PropTypes.arrayOf(PropTypes.string).isRequired,
+  fields: PropTypes.arrayOf(PropTypes.string).isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
   ).isRequired,
