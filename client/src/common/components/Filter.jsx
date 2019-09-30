@@ -4,6 +4,7 @@ import _debounce from 'lodash/debounce';
 import _trimStart from 'lodash/trimStart';
 
 import { SearchIcon } from 'assets/images/icons';
+import './Filter.scss';
 
 class Filter extends PureComponent {
   constructor(props) {
@@ -83,7 +84,7 @@ class Filter extends PureComponent {
     } = this.props;
 
     return (
-      <div className={classes}>
+      <div className="filter">
         <SearchIcon />
         <input
           name="filter"
