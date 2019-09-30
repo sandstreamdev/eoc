@@ -27,7 +27,7 @@ class Filter extends PureComponent {
 
   filterByFields = query => {
     const { filterBy, options } = this.props;
-    const match = new RegExp(query, 'i');
+    const normalizedQuery = query.toLowerCase();
 
     return options.filter(option => {
       let testString = '';
@@ -38,7 +38,7 @@ class Filter extends PureComponent {
         }
       });
 
-      return match.test(testString);
+      return testString.toLowerCase().includes(normalizedQuery);
     });
   };
 
