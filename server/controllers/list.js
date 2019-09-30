@@ -838,9 +838,9 @@ const removeMember = (req, resp) => {
 
 const addOwnerRole = async (req, resp) => {
   const { id: listId } = req.params;
-  const { userId } = req.body;
+  const { userId, userName } = req.body;
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -877,7 +877,15 @@ const addOwnerRole = async (req, resp) => {
       )
     );
 
-    const data = { listId, userId: sanitizedUserId };
+    const data = {
+      listId,
+      notificationData: {
+        listName: list.name,
+        performer: displayName,
+        userName
+      },
+      userId: sanitizedUserId
+    };
     const socketInstance = io.getInstance();
 
     resp.send();
@@ -889,9 +897,9 @@ const addOwnerRole = async (req, resp) => {
 
 const removeOwnerRole = async (req, resp) => {
   const { id: listId } = req.params;
-  const { userId } = req.body;
+  const { userId, userName } = req.body;
   const {
-    user: { _id: ownerId }
+    user: { _id: ownerId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -928,7 +936,15 @@ const removeOwnerRole = async (req, resp) => {
       )
     );
 
-    const data = { listId, userId: sanitizedUserId };
+    const data = {
+      listId,
+      notificationData: {
+        listName: list.name,
+        performer: displayName,
+        userName
+      },
+      userId: sanitizedUserId
+    };
     const socketInstance = io.getInstance();
 
     resp.send();
@@ -946,9 +962,9 @@ const removeOwnerRole = async (req, resp) => {
 
 const addMemberRole = async (req, resp) => {
   const { id: listId } = req.params;
-  const { userId } = req.body;
+  const { userId, userName } = req.body;
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -984,7 +1000,15 @@ const addMemberRole = async (req, resp) => {
       )
     );
 
-    const data = { listId, userId: sanitizedUserId };
+    const data = {
+      listId,
+      notificationData: {
+        listName: list.name,
+        performer: displayName,
+        userName
+      },
+      userId: sanitizedUserId
+    };
     const socketInstance = io.getInstance();
 
     resp.send();
@@ -996,9 +1020,9 @@ const addMemberRole = async (req, resp) => {
 
 const removeMemberRole = async (req, resp) => {
   const { id: listId } = req.params;
-  const { userId } = req.body;
+  const { userId, userName } = req.body;
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -1042,7 +1066,15 @@ const removeMemberRole = async (req, resp) => {
       )
     );
 
-    const data = { listId, userId: sanitizedUserId };
+    const data = {
+      listId,
+      notificationData: {
+        listName: list.name,
+        performer: displayName,
+        userName
+      },
+      userId: sanitizedUserId
+    };
     const socketInstance = io.getInstance();
 
     resp.send();

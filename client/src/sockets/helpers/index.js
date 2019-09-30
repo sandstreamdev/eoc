@@ -1,10 +1,121 @@
 import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+import { MessageType as NotificationType } from 'common/constants/enums';
 
 export const listEventsController = (event, data, { dispatch, getState }) => {
   const { currentUser } = getState();
 
   switch (event) {
+    case ListEvents.ADD_OWNER_ROLE_SUCCESS: {
+      const {
+        notificationData: { listName, performer, userName },
+        userId,
+        ...rest
+      } = data;
+      const notificationId =
+        currentUser.id === userId
+          ? 'list.actions.current-user-add-to-owners'
+          : 'list.actions.user-add-to-owners';
+      const notificationData = {
+        data: {
+          listName,
+          performer,
+          userName
+        },
+        notificationId
+      };
+
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        notificationData
+      );
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+    case ListEvents.REMOVE_OWNER_ROLE_SUCCESS: {
+      const {
+        notificationData: { listName, performer, userName },
+        userId,
+        ...rest
+      } = data;
+      const notificationId =
+        currentUser.id === userId
+          ? 'list.actions.current-user-removed-from-owners'
+          : 'list.actions.user-removed-from-owners';
+      const notificationData = {
+        data: {
+          listName,
+          performer,
+          userName
+        },
+        notificationId
+      };
+
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        notificationData
+      );
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+    case ListEvents.ADD_MEMBER_ROLE_SUCCESS: {
+      const {
+        notificationData: { listName, performer, userName },
+        userId,
+        ...rest
+      } = data;
+      const notificationId =
+        currentUser.id === userId
+          ? 'list.actions.current-user-add-to-members'
+          : 'list.actions.user-add-to-members';
+      const notificationData = {
+        data: {
+          listName,
+          performer,
+          userName
+        },
+        notificationId
+      };
+
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        notificationData
+      );
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+    case ListEvents.REMOVE_MEMBER_ROLE_SUCCESS: {
+      const {
+        notificationData: { listName, performer, userName },
+        userId,
+        ...rest
+      } = data;
+      const notificationId =
+        currentUser.id === userId
+          ? 'list.actions.current-user-removed-from-members'
+          : 'list.actions.user-removed-from-members';
+      const notificationData = {
+        data: {
+          listName,
+          performer,
+          userName
+        },
+        notificationId
+      };
+
+      createNotificationWithTimeout(
+        dispatch,
+        NotificationType.SUCCESS,
+        notificationData
+      );
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+
     case ListEvents.CHANGE_TYPE_SUCCESS: {
       const { listId, performer, removedViewers, ...rest } = data;
       const {

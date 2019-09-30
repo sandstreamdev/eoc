@@ -496,7 +496,8 @@ export const removeListMember = (
 
 export const addOwnerRole = (listId, userId, userName) => dispatch =>
   patchData(`/api/lists/${listId}/add-owner-role`, {
-    userId
+    userId,
+    userName
   })
     .then(() => {
       const action = addOwnerRoleSuccess({
@@ -531,7 +532,8 @@ export const removeOwnerRole = (
   isCurrentUserRoleChanging
 ) => dispatch =>
   patchData(`/api/lists/${listId}/remove-owner-role`, {
-    userId
+    userId,
+    userName
   })
     .then(() => {
       const action = removeOwnerRoleSuccess({
@@ -566,7 +568,8 @@ export const addMemberRole = (
   isCurrentUserAnOwner
 ) => dispatch =>
   patchData(`/api/lists/${listId}/add-member-role`, {
-    userId
+    userId,
+    userName
   })
     .then(() => {
       const action = addMemberRoleSuccess({
@@ -601,7 +604,8 @@ export const removeMemberRole = (
   isCurrentUserAnOwner
 ) => dispatch =>
   patchData(`/api/lists/${listId}/remove-member-role`, {
-    userId
+    userId,
+    userName
   })
     .then(() => {
       const action = removeMemberRoleSuccess({
