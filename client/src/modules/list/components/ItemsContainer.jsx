@@ -12,6 +12,8 @@ import './ItemsContainer.scss';
 import Filter from 'common/components/Filter';
 import { CloseIcon } from 'assets/images/icons';
 
+const filterByFields = ['authorName', 'name'];
+
 class ItemsContainer extends Component {
   constructor(props) {
     super(props);
@@ -67,7 +69,6 @@ class ItemsContainer extends Component {
       items: itemsToSearch
     } = this.props;
     const { items } = this.state;
-    const filterByFields = ['authorName', 'name'];
 
     return (
       <div className="items">

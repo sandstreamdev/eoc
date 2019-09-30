@@ -17,6 +17,8 @@ import { makeAbortablePromise } from 'common/utils/helpers';
 import Lists from './Lists';
 import './MoveToListPanel.scss';
 
+const filterByFields = ['name'];
+
 class MoveToListPanel extends PureComponent {
   pendingPromise = null;
 
@@ -118,7 +120,6 @@ class MoveToListPanel extends PureComponent {
       intl: { formatMessage },
       lists
     } = this.props;
-    const filterByFields = ['name'];
 
     return (
       <div className="move-to-list-panel">

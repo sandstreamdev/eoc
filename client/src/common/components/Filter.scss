@@ -17,7 +17,7 @@
   svg {
     margin-left: 8px;
     display: block;
-    height: 16px;
+    @include constant-size(16px);
 
     path {
       fill: $text-normal;
@@ -51,7 +51,7 @@
     cursor: pointer;
 
     svg {
-      height: 14px;
+      @include constant-size(14px);
 
       path {
         fill: $text-normal;
@@ -60,7 +60,7 @@
 
     &:hover {
       svg {
-        height: 20px;
+        transform: scale(1.5);
       }
     }
   }

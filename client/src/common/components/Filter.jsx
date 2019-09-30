@@ -65,7 +65,7 @@ class Filter extends PureComponent {
   handleInputChange = event => {
     const { value } = event.target;
 
-    this.setState(() => ({ query: value }), () => this.debouncedFilter(value));
+    this.setState({ query: value }, () => this.debouncedFilter(value));
   };
 
   render() {
