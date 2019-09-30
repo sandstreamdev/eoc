@@ -21,7 +21,6 @@ class ItemsList extends PureComponent {
 
     this.state = {
       displayedItems: null,
-      itemsCount: null,
       limit: DISPLAY_LIMIT
     };
   }
@@ -44,17 +43,14 @@ class ItemsList extends PureComponent {
     const { items } = this.props;
     const displayedItems = items.slice(0, limit).map(item => item);
 
-    this.setState(
-      { displayedItems, itemsCount: displayedItems.length },
-      this.displayedItemsCount
-    );
+    this.setState({ displayedItems }, this.displayedItemsCount);
   };
 
   displayedItemsCount = () => {
-    const { itemsCount } = this.state;
     const { updateItemsCount } = this.props;
+    const { displayedItems } = this.state;
 
-    updateItemsCount(itemsCount);
+    updateItemsCount(displayedItems.length);
   };
 
   showMore = () =>
