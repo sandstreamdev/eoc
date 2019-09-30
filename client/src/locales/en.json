@@ -255,7 +255,7 @@
   "cohort.actions.add-member-no-user-of-email": "There is no user of email: {email}",
   "cohort.actions.add-member-already-member": "User is already a member.",
   "cohort.actions.add-member-default": "Failed to add: '{email}' as member.",
-  "cohort.actions.not-available": "The cohort '{name}' is not available.",
+  "cohort.actions.not-available": "The cohort '{name}' is unavailable.",
   "cohort.actions.not-available-contact-owner": "To get access to the data please contact the cohort owner.",
   "cohort.actions.user-removed-by-someone": "{performer} has removed you from the '{name}' cohort.",
   "cohort.actions.archived-by-someone": "The '{name}' cohort has been archived by {performer}.",
