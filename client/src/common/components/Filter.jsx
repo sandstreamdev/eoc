@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _debounce from 'lodash/debounce';
-import _trimStart from 'lodash/trimStart';
+import _trim from 'lodash/trim';
 
 import { SearchIcon } from 'assets/images/icons';
 import './Filter.scss';
@@ -44,10 +44,11 @@ class Filter extends PureComponent {
 
   handleFilter = query => {
     const { onFilter, options } = this.props;
+    const trimmedQuery = _trim(query);
     let filteredOptions;
 
     if (query) {
-      filteredOptions = this.filterByFields(query);
+      filteredOptions = this.filterByFields(trimmedQuery);
     } else {
       filteredOptions = options;
     }
@@ -63,15 +64,8 @@ class Filter extends PureComponent {
 
   handleInputChange = event => {
     const { value } = event.target;
-    const query = _trimStart(value);
 
-    this.setState(() => ({ query }), this.handleFilterOptions);
-  };
-
-  handleFilterOptions = () => {
-    const { query } = this.state;
-
-    this.debouncedFilter(query);
+    this.setState(() => ({ query: value }), () => this.debouncedFilter(value));
   };
 
   render() {
