@@ -1,5 +1,6 @@
 const sanitize = require('mongo-sanitize');
 const _difference = require('lodash/difference');
+const _some = require('lodash/some');
 const validator = require('validator');
 
 const List = require('../models/list.model');
@@ -16,8 +17,7 @@ const {
   responseWithItem,
   responseWithItems,
   responseWithList,
-  responseWithListsMetaData,
-  returnPayload
+  responseWithListsMetaData
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
 const NotFoundException = require('../common/exceptions/NotFoundException');
@@ -30,14 +30,10 @@ const {
 const { ActivityType, DEMO_MODE_ID, ListType } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
-const cohortClients = require('../sockets/index').getCohortViewClients();
-const dashboardClients = require('../sockets/index').getDashboardViewClients();
-const listClients = require('../sockets/index').getListViewClients();
 const io = require('../sockets/index');
-const { createListCohort } = require('../sockets/cohort');
 const socketActions = require('../sockets/list');
 
-const createList = (req, resp) => {
+const createList = async (req, resp) => {
   const { cohortId, description, name, type } = req.body;
   const {
     user: { _id: userId }
@@ -48,7 +44,7 @@ const createList = (req, resp) => {
     return resp.sendStatus(400);
   }
 
-  const list = new List({
+  const newList = new List({
     cohortId,
     description,
     memberIds: userId,
@@ -57,62 +53,37 @@ const createList = (req, resp) => {
     type,
     viewersIds: userId
   });
-  let listData;
 
-  if (cohortId && isSharedList) {
-    Cohort.findOne({ _id: sanitize(cohortId) })
-      .exec()
-      .then(cohort => {
-        const { memberIds } = cohort;
+  try {
+    if (cohortId && isSharedList) {
+      const cohort = await Cohort.findOne({ _id: sanitize(cohortId) }).exec();
+      const { memberIds } = cohort;
 
-        if (isMember(cohort, userId)) {
-          list.viewersIds = memberIds;
+      if (isMember(cohort, userId)) {
+        newList.viewersIds = memberIds;
+      }
+    }
 
-          return list.save();
-        }
+    const list = await newList.save();
 
-        throw new BadRequestException();
-      })
-      .then(() => {
-        listData = responseWithList(list, userId);
-        const socketInstance = io.getInstance();
+    fireAndForget(
+      saveActivity(ActivityType.LIST_ADD, userId, null, list._id, list.cohortId)
+    );
 
-        return createListCohort(socketInstance, dashboardClients)({
-          ...listData,
-          cohortId
-        });
-      })
-      .then(() =>
-        resp
-          .status(201)
-          .location(`/lists/${list._id}`)
-          .send(listData)
-      )
-      .catch(err => {
-        if (err instanceof BadRequestException) {
-          resp.sendStatus(400);
-        }
-      });
-  } else {
-    list
-      .save()
-      .then(() => {
-        fireAndForget(
-          saveActivity(
-            ActivityType.LIST_ADD,
-            userId,
-            null,
-            list._id,
-            list.cohortId
-          )
-        );
+    const { viewersIds } = list;
+    const listData = responseWithList(list, userId);
+    const socketInstance = io.getInstance();
 
-        resp
-          .status(201)
-          .location(`/lists/${list._id}`)
-          .send(responseWithList(list, userId));
-      })
-      .catch(() => resp.sendStatus(400));
+    resp
+      .status(201)
+      .location(`/lists/${list._id}`)
+      .send(listData);
+
+    fireAndForget(
+      socketActions.createListCohort(socketInstance)({ listData, viewersIds })
+    );
+  } catch {
+    resp.sendStatus(400);
   }
 };
 
@@ -131,9 +102,7 @@ const getListsMetaData = (req, resp) => {
     query.cohortId = sanitize(cohortId);
   }
 
-  List.find(query, '_id name created_at description items favIds type', {
-    sort: { created_at: -1 }
-  })
+  List.find(query, '_id name createdAt description items favIds type')
     .populate('cohortId', 'isArchived')
     .lean()
     .exec()
@@ -165,10 +134,7 @@ const getArchivedListsMetaData = (req, resp) => {
 
   List.find(
     query,
-    '_id name created_at description type items favIds isArchived',
-    {
-      sort: { created_at: -1 }
-    }
+    '_id name createdAt description type items favIds isArchived'
   )
     .populate('cohortId', 'isArchived')
     .lean()
@@ -460,7 +426,153 @@ const clearVote = async (req, resp) => {
   }
 };
 
-const updateListById = (req, resp) => {
+const archiveList = async (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+  const { id: listId } = req.params;
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        ownerIds: userId
+      },
+      { isArchived: true },
+      { new: true }
+    ).exec();
+
+    const { cohortId, memberIds, viewersIds } = list;
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_ARCHIVE,
+        userId,
+        null,
+        sanitizedListId,
+        cohortId,
+        null,
+        list.name
+      )
+    );
+
+    const data = {
+      cohortId,
+      listId,
+      viewersOnly: viewersIds.filter(id => !_some(memberIds, id))
+    };
+    const socketInstance = io.getInstance();
+
+    resp.send();
+    fireAndForget(socketActions.archiveList(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
+const restoreList = async (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+  const { id: listId } = req.params;
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        isDeleted: false,
+        ownerIds: userId
+      },
+      { isArchived: false },
+      { new: true }
+    )
+      .lean()
+      .populate('viewersIds', 'avatarUrl displayName _id')
+      .populate('items.authorId', 'displayName')
+      .populate('items.editedBy', 'displayName')
+      .exec();
+
+    const { cohortId } = list;
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_RESTORE,
+        userId,
+        null,
+        sanitizedListId,
+        cohortId,
+        null,
+        list.name
+      )
+    );
+
+    const cohort = cohortId
+      ? await Cohort.findOne({ _id: cohortId }, 'memberIds name')
+          .lean()
+          .exec()
+      : null;
+
+    const data = {
+      cohort,
+      list,
+      listId
+    };
+    const socketInstance = io.getInstance();
+
+    resp.send();
+    fireAndForget(socketActions.restoreList(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
+const deleteList = async (req, resp) => {
+  const {
+    user: { _id: userId }
+  } = req;
+  const { id: listId } = req.params;
+  const sanitizedListId = sanitize(listId);
+
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        ownerIds: userId
+      },
+      { isDeleted: true },
+      { new: true }
+    ).exec();
+
+    const { cohortId, viewersIds } = list;
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_DELETE,
+        userId,
+        null,
+        sanitizedListId,
+        cohortId,
+        null,
+        list.name
+      )
+    );
+
+    const data = {
+      listId: sanitizedListId,
+      viewersIds
+    };
+    const socketInstance = io.getInstance();
+
+    resp.send();
+    fireAndForget(socketActions.deleteList(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
+const updateList = async (req, resp) => {
   const { description, isArchived, isDeleted, name } = req.body;
   const {
     user: { _id: userId }
@@ -473,119 +585,59 @@ const updateListById = (req, resp) => {
     isDeleted,
     name
   });
-  let listActivity;
-  let list;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
   }
 
-  List.findOneAndUpdate(
-    {
-      _id: sanitizedListId,
-      ownerIds: userId
-    },
-    dataToUpdate,
-    { new: true }
-  )
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
+  try {
+    const list = await List.findOneAndUpdate(
+      {
+        _id: sanitizedListId,
+        ownerIds: userId
+      },
+      dataToUpdate,
+      { new: true }
+    ).exec();
+    const socketInstance = io.getInstance();
+    const data = { listId };
+    let listActivity;
+
+    if (isDefined(description)) {
+      const { description: prevDescription } = list;
+      if (!description && prevDescription) {
+        listActivity = ActivityType.LIST_REMOVE_DESCRIPTION;
+      } else if (description && !prevDescription) {
+        listActivity = ActivityType.LIST_ADD_DESCRIPTION;
+      } else {
+        listActivity = ActivityType.LIST_EDIT_DESCRIPTION;
       }
 
-      const socketInstance = io.getInstance();
-      const { cohortId } = doc;
-      list = doc;
+      data.description = description;
+    }
 
-      if (description !== undefined) {
-        const { description: prevDescription } = doc;
-        if (!description && prevDescription) {
-          listActivity = ActivityType.LIST_REMOVE_DESCRIPTION;
-        } else if (description && !prevDescription) {
-          listActivity = ActivityType.LIST_ADD_DESCRIPTION;
-        } else {
-          listActivity = ActivityType.LIST_EDIT_DESCRIPTION;
-        }
+    if (name) {
+      listActivity = ActivityType.LIST_EDIT_NAME;
+      data.name = name;
+    }
 
-        const data = { description, doc, listId };
+    fireAndForget(
+      saveActivity(
+        listActivity,
+        userId,
+        null,
+        sanitizedListId,
+        list.cohortId,
+        null,
+        list.name
+      )
+    );
 
-        return socketActions.updateList(
-          socketInstance,
-          dashboardClients,
-          cohortClients
-        )(data);
-      }
-
-      if (name) {
-        listActivity = ActivityType.LIST_EDIT_NAME;
-
-        const data = { doc, listId, name };
-
-        return socketActions.updateList(
-          socketInstance,
-          dashboardClients,
-          cohortClients
-        )(data);
-      }
-
-      if (isArchived !== undefined) {
-        const data = { cohortId, doc, listId };
-
-        if (isArchived) {
-          listActivity = ActivityType.LIST_ARCHIVE;
-
-          return socketActions.archiveList(
-            socketInstance,
-            dashboardClients,
-            cohortClients,
-            listClients
-          )(data);
-        }
-
-        listActivity = ActivityType.LIST_RESTORE;
-
-        return socketActions.restoreList(
-          socketInstance,
-          dashboardClients,
-          cohortClients,
-          listClients
-        )(data);
-      }
-
-      if (isDeleted) {
-        listActivity = ActivityType.LIST_DELETE;
-
-        const data = { cohortId, doc, listId };
-
-        socketActions.deleteList(
-          socketInstance,
-          dashboardClients,
-          cohortClients
-        )(data);
-
-        return Comment.updateMany(
-          { listId: sanitizedListId },
-          { isDeleted }
-        ).exec();
-      }
-    })
-    .then(() => {
-      fireAndForget(
-        saveActivity(
-          listActivity,
-          userId,
-          null,
-          sanitizedListId,
-          list.cohortId,
-          null,
-          list.name
-        )
-      );
-
-      resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    socketActions.updateList(socketInstance)(data);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const addToFavourites = (req, resp) => {
@@ -772,261 +824,222 @@ const removeMember = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const addOwnerRole = (req, resp) => {
+const addOwnerRole = async (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
     user: { _id: currentUserId }
   } = req;
   const sanitizedListId = sanitize(listId);
+  const sanitizedUserId = sanitize(userId);
 
-  List.findOne({ _id: sanitizedListId, ownerIds: currentUserId })
-    .populate('cohortId', 'memberIds ownerIds')
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new BadRequestException();
-      }
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      ownerIds: currentUserId
+    }).exec();
 
-      const userIsNotAnOwner = !isOwner(doc, userId);
+    const userIsNotAnOwner = !isOwner(list, sanitizedUserId);
 
-      if (userIsNotAnOwner) {
-        doc.ownerIds.push(userId);
-      }
+    if (userIsNotAnOwner) {
+      list.ownerIds.push(sanitizedUserId);
+    }
 
-      const userIsNotAMember = !isMember(doc, userId);
+    const userIsNotAMember = !isMember(list, sanitizedUserId);
 
-      if (userIsNotAMember) {
-        doc.memberIds.push(userId);
-      }
+    if (userIsNotAMember) {
+      list.memberIds.push(sanitizedUserId);
+    }
 
-      return doc.save();
-    })
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+    await list.save();
 
-      const data = { listId, userId };
-      const socketInstance = io.getInstance();
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_SET_AS_OWNER,
+        currentUserId,
+        null,
+        sanitizedListId,
+        list.cohortId,
+        sanitizedUserId
+      )
+    );
 
-      return returnPayload(
-        socketActions.addOwnerRoleInList(socketInstance, listClients)(data)
-      )(doc);
-    })
-    .then(payload => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_SET_AS_OWNER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          payload.cohortId,
-          userId
-        )
-      );
+    const data = { listId, userId: sanitizedUserId };
+    const socketInstance = io.getInstance();
 
-      resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    fireAndForget(socketActions.addOwnerRoleInList(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
-const removeOwnerRole = (req, resp) => {
+const removeOwnerRole = async (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
     user: { _id: ownerId }
   } = req;
   const sanitizedListId = sanitize(listId);
-  let list;
+  const sanitizedUserId = sanitize(userId);
 
-  List.findOne({ _id: sanitizedListId, ownerIds: ownerId })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new BadRequestException();
-      }
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      ownerIds: ownerId
+    }).exec();
 
-      list = doc;
-      const { ownerIds } = doc;
+    const { ownerIds } = list;
 
-      if (ownerIds.length < 2) {
-        throw new BadRequestException(
-          'list.actions.remove-owner-role-only-one-owner'
-        );
-      }
-
-      if (isOwner(doc, userId)) {
-        ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
-      }
-
-      return doc.save();
-    })
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
-
-      const data = { listId, userId };
-      const socketInstance = io.getInstance();
-
-      return socketActions.removeOwnerRoleInList(socketInstance, listClients)(
-        data
+    if (ownerIds.length < 2) {
+      throw new BadRequestException(
+        'list.actions.remove-owner-role-only-one-owner'
       );
-    })
-    .then(() => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_SET_AS_MEMBER,
-          ownerId,
-          null,
-          sanitizedListId,
-          list.cohortId,
-          userId
-        )
-      );
+    }
 
-      resp.send();
-    })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { message } = err;
+    if (isOwner(list, sanitizedUserId)) {
+      ownerIds.splice(list.ownerIds.indexOf(sanitizedUserId), 1);
+    }
 
-        return resp.status(400).send({ message });
-      }
+    await list.save();
 
-      resp.sendStatus(400);
-    });
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_SET_AS_MEMBER,
+        ownerId,
+        null,
+        sanitizedListId,
+        list.cohortId,
+        sanitizedUserId
+      )
+    );
+
+    const data = { listId, userId: sanitizedUserId };
+    const socketInstance = io.getInstance();
+
+    resp.send();
+    fireAndForget(socketActions.removeOwnerRoleInList(socketInstance)(data));
+  } catch (err) {
+    if (err instanceof BadRequestException) {
+      const { message } = err;
+
+      return resp.status(400).send({ message });
+    }
+
+    resp.sendStatus(400);
+  }
 };
 
-const addMemberRole = (req, resp) => {
+const addMemberRole = async (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
     user: { _id: currentUserId }
   } = req;
   const sanitizedListId = sanitize(listId);
+  const sanitizedUserId = sanitize(userId);
 
-  List.findOne({ _id: sanitizedListId, ownerIds: { $in: [currentUserId] } })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new BadRequestException();
-      }
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      ownerIds: { $in: [currentUserId] }
+    }).exec();
 
-      const { ownerIds, memberIds } = doc;
-      const userIsNotAMember = !isMember(doc, userId);
+    const { ownerIds, memberIds } = list;
+    const userIsNotAMember = !isMember(list, sanitizedUserId);
 
-      if (userIsNotAMember) {
-        memberIds.push(userId);
-      }
+    if (userIsNotAMember) {
+      memberIds.push(sanitizedUserId);
+    }
 
-      if (isOwner(doc, userId)) {
-        ownerIds.splice(ownerIds.indexOf(userId), 1);
-      }
+    if (isOwner(list, sanitizedUserId)) {
+      ownerIds.splice(ownerIds.indexOf(sanitizedUserId), 1);
+    }
 
-      return doc.save();
-    })
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+    await list.save();
 
-      const data = { listId, userId };
-      const socketInstance = io.getInstance();
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_SET_AS_MEMBER,
+        currentUserId,
+        null,
+        sanitizedListId,
+        list.cohortId,
+        sanitizedUserId
+      )
+    );
 
-      return returnPayload(
-        socketActions.addMemberRoleInList(socketInstance, listClients)(data)
-      )(doc);
-    })
-    .then(payload => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_SET_AS_MEMBER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          payload.cohortId,
-          userId
-        )
-      );
+    const data = { listId, userId: sanitizedUserId };
+    const socketInstance = io.getInstance();
 
-      resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    fireAndForget(socketActions.addMemberRoleInList(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
-const removeMemberRole = (req, resp) => {
+const removeMemberRole = async (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
     user: { _id: currentUserId }
   } = req;
   const sanitizedListId = sanitize(listId);
+  const sanitizedUserId = sanitize(userId);
 
-  List.findOne({ _id: sanitizedListId, ownerIds: { $in: [currentUserId] } })
-    .populate('cohortId', 'memberIds ownerIds')
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new BadRequestException();
-      }
-
-      const { memberIds, ownerIds } = doc;
-
-      const userIsOwner = isOwner(doc, userId);
-
-      if (userIsOwner && ownerIds.length < 2) {
-        throw new BadRequestException(
-          'list.actions.remove-member-role-only-one-owner'
-        );
-      }
-
-      if (isMember(doc, userId)) {
-        memberIds.splice(memberIds.indexOf(userId), 1);
-      }
-
-      if (userIsOwner) {
-        ownerIds.splice(ownerIds.indexOf(userId), 1);
-      }
-
-      return doc.save();
+  try {
+    const list = await List.findOne({
+      _id: sanitizedListId,
+      ownerIds: { $in: [currentUserId] }
     })
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
-      }
+      .populate('cohortId', 'memberIds ownerIds')
+      .exec();
 
-      const data = { listId, userId };
-      const socketInstance = io.getInstance();
+    const { memberIds, ownerIds } = list;
+    const userIsOwner = isOwner(list, sanitizedUserId);
 
-      return returnPayload(
-        socketActions.removeMemberRoleInList(socketInstance, listClients)(data)
-      )(doc);
-    })
-    .then(doc => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_SET_AS_VIEWER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          doc.cohortId,
-          userId
-        )
+    if (userIsOwner && ownerIds.length < 2) {
+      throw new BadRequestException(
+        'list.actions.remove-member-role-only-one-owner'
       );
+    }
 
-      resp.send();
-    })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { message } = err;
+    if (isMember(list, sanitizedUserId)) {
+      memberIds.splice(memberIds.indexOf(sanitizedUserId), 1);
+    }
 
-        return resp.status(400).send({ message });
-      }
+    if (userIsOwner) {
+      ownerIds.splice(ownerIds.indexOf(sanitizedUserId), 1);
+    }
 
-      resp.sendStatus(400);
-    });
+    await list.save();
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_SET_AS_VIEWER,
+        currentUserId,
+        null,
+        sanitizedListId,
+        list.cohortId,
+        sanitizedUserId
+      )
+    );
+
+    const data = { listId, userId: sanitizedUserId };
+    const socketInstance = io.getInstance();
+
+    resp.send();
+    fireAndForget(socketActions.removeMemberRoleInList(socketInstance)(data));
+  } catch (err) {
+    if (err instanceof BadRequestException) {
+      const { message } = err;
+
+      return resp.status(400).send({ message });
+    }
+
+    resp.sendStatus(400);
+  }
 };
 
 const addViewer = (req, resp) => {
@@ -1350,6 +1363,10 @@ const updateItem = async (req, resp) => {
   let editedItemActivity;
   let prevItemName = null;
 
+  if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
+  }
+
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
@@ -1474,97 +1491,85 @@ const cloneItem = async (req, resp) => {
   }
 };
 
-const changeType = (req, resp) => {
+const changeType = async (req, resp) => {
   const { type } = req.body;
   const { id: listId } = req.params;
   const { _id: currentUserId } = req.user;
   const sanitizedListId = sanitize(listId);
-  let cohortMembers;
-  let removedViewers;
-  let listCohortId;
+  const sanitizedType = sanitize(type);
 
-  List.findOneAndUpdate(
-    { _id: sanitizedListId, ownerIds: currentUserId },
-    { type },
-    { new: true }
-  )
-    .populate('cohortId', 'memberIds')
-    .exec()
-    .then(list => {
-      if (!list) {
-        throw new BadRequestException();
-      }
-      const {
-        cohortId: { memberIds: cohortMembersCollection },
-        type,
-        viewersIds
-      } = list;
+  try {
+    const list = await List.findOneAndUpdate(
+      { _id: sanitizedListId, ownerIds: currentUserId },
+      { type: sanitizedType },
+      { new: true }
+    )
+      .populate('cohortId', 'memberIds')
+      .exec();
 
-      cohortMembers = cohortMembersCollection;
+    const {
+      cohortId: { memberIds: cohortMembersCollection },
+      type,
+      viewersIds
+    } = list;
+    const cohortMembers = cohortMembersCollection;
+    const newViewers =
+      type === ListType.SHARED
+        ? [...cohortMembers.filter(id => !isViewer(list, id))]
+        : null;
+    const updatedViewersIds =
+      type === ListType.LIMITED
+        ? viewersIds.filter(id => isMember(list, id))
+        : [...viewersIds, ...newViewers];
+    const removedViewers =
+      type === ListType.LIMITED
+        ? _difference(viewersIds, updatedViewersIds)
+        : null;
 
-      const updatedViewersIds =
-        type === ListType.LIMITED
-          ? viewersIds.filter(id => isMember(list, id))
-          : [...viewersIds, ...cohortMembers.filter(id => !isViewer(list, id))];
+    const updatedList = await List.findOneAndUpdate(
+      { _id: listId, ownerIds: currentUserId },
+      { viewersIds: updatedViewersIds },
+      { new: true }
+    )
+      .lean()
+      .populate('viewersIds', 'avatarUrl displayName _id')
+      .exec();
 
-      removedViewers =
-        type === ListType.LIMITED
-          ? _difference(viewersIds, updatedViewersIds)
-          : null;
+    const { cohortId } = updatedList;
 
-      return List.findOneAndUpdate(
-        { _id: listId, ownerIds: currentUserId },
-        { viewersIds: updatedViewersIds },
-        { new: true }
-      )
-        .lean()
-        .populate('viewersIds', 'avatarUrl displayName _id')
-        .exec();
-    })
-    .then(list => {
-      const {
+    fireAndForget(
+      saveActivity(
+        ActivityType.LIST_CHANGE_TYPE,
+        currentUserId,
+        null,
+        sanitizedListId,
         cohortId,
-        memberIds,
-        ownerIds,
-        type,
-        viewersIds: viewersCollection
-      } = list;
-      const members = responseWithListMembers(
-        viewersCollection,
-        memberIds,
-        ownerIds,
-        cohortMembers
-      );
+        null,
+        type
+      )
+    );
 
-      listCohortId = cohortId;
-      const data = { listId, members, removedViewers, type };
-      const socketInstance = io.getInstance();
+    const { memberIds, ownerIds, viewersIds: viewersCollection } = updatedList;
+    const members = responseWithListMembers(
+      viewersCollection,
+      memberIds,
+      ownerIds,
+      cohortMembers
+    );
+    const data = {
+      list: updatedList,
+      members,
+      newViewers,
+      removedViewers,
+      type
+    };
+    const socketInstance = io.getInstance();
 
-      return returnPayload(
-        socketActions.changeListType(
-          socketInstance,
-          dashboardClients,
-          cohortClients,
-          listClients
-        )(data)
-      )({ members, type });
-    })
-    .then(payload => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_CHANGE_TYPE,
-          currentUserId,
-          null,
-          sanitizedListId,
-          listCohortId,
-          null,
-          type
-        )
-      );
-
-      resp.send(payload);
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send({ members, type });
+    fireAndForget(socketActions.changeListType(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const getArchivedItems = (req, resp) => {
@@ -1827,11 +1832,13 @@ module.exports = {
   addToFavourites,
   addViewer,
   archiveItem,
+  archiveList,
   changeType,
   clearVote,
   cloneItem,
   createList,
   deleteItem,
+  deleteList,
   getArchivedItems,
   getArchivedListsMetaData,
   getAvailableLists,
@@ -1847,7 +1854,8 @@ module.exports = {
   removeOwner,
   removeOwnerRole,
   restoreItem,
+  restoreList,
   updateItem,
-  updateListById,
+  updateList,
   voteForItem
 };

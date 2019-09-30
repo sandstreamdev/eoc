@@ -48,7 +48,7 @@ const addMember = (io, allCohortsClients, dashboardClients) => data => {
       cohortId,
       type: ListType.SHARED
     },
-    '_id created_at cohortId name description items favIds type'
+    '_id createdAt cohortId name description items favIds type'
   )
     .lean()
     .exec()
@@ -102,7 +102,7 @@ const leaveCohort = (io, allCohortsClients) => data => {
       cohortId,
       type: ListType.SHARED
     },
-    '_id created_at cohortId name description items favIds type'
+    '_id createdAt cohortId name description items favIds type'
   )
     .lean()
     .exec()
@@ -119,22 +119,34 @@ const leaveCohort = (io, allCohortsClients) => data => {
     });
 };
 
-const addOwnerRole = (io, cohortClients) => data => {
-  emitRoleChange(
-    io,
-    cohortClients,
-    data,
-    CohortActionTypes.ADD_OWNER_ROLE_SUCCESS
-  );
+const addOwnerRole = io => async data => {
+  const { cohortId } = data;
+
+  try {
+    await emitRoleChange(io)(
+      cohortChannel(cohortId),
+      CohortActionTypes.ADD_OWNER_ROLE_SUCCESS
+    )(data);
+  } catch {
+    // Ignore errors
+  }
+
+  return Promise.resolve();
 };
 
-const removeOwnerRole = (io, cohortClients) => data => {
-  emitRoleChange(
-    io,
-    cohortClients,
-    data,
-    CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS
-  );
+const removeOwnerRole = io => async data => {
+  const { cohortId } = data;
+
+  try {
+    await emitRoleChange(io)(
+      cohortChannel(cohortId),
+      CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS
+    )(data);
+  } catch {
+    // Ignore errors
+  }
+
+  return Promise.resolve();
 };
 
 const updateCohort = io => async data => {
@@ -531,46 +543,11 @@ const restoreCohort = (
     });
 };
 
-const createListCohort = (io, dashboardClients) => data => {
-  const { cohortId, _id: listId } = data;
-
-  io.sockets
-    .to(cohortChannel(cohortId))
-    .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-      [listId]: { ...data }
-    });
-
-  return Cohort.findById(cohortId)
-    .select('memberIds')
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { memberIds } = doc;
-
-        memberIds.forEach(id => {
-          const memberId = id.toString();
-
-          if (dashboardClients.has(memberId)) {
-            const { socketId } = dashboardClients.get(memberId);
-
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, {
-                [listId]: { ...data }
-              });
-          }
-        });
-      }
-    });
-};
-
 module.exports = {
   addMember,
   addOwnerRole,
   archiveCohort,
   deleteCohort,
-  createListCohort,
   leaveCohort,
   removeMember,
   removeOwnerRole,

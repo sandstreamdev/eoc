@@ -138,26 +138,6 @@ const nameLockId = cohortId => `name-${cohortId}`;
 
 const descriptionLockId = listId => `description-${listId}`;
 
-const emitRoleChange = (io, cohortClients, data, event) => {
-  const { cohortId, userId } = data;
-
-  io.sockets.to(cohortChannel(cohortId)).emit(event, {
-    ...data,
-    isCurrentUserRoleChanging: false
-  });
-
-  if (cohortClients.has(userId)) {
-    const { viewId, socketId } = cohortClients.get(userId);
-
-    if (viewId === cohortId) {
-      io.sockets.to(socketId).emit(event, {
-        ...data,
-        isCurrentUserRoleChanging: true
-      });
-    }
-  }
-};
-
 const delayedUnlock = socket => data => itemClientLocks => locks => {
   const { itemId, listId, userId } = data;
 
@@ -365,6 +345,28 @@ const emitVoteChange = io => event => (userIds, data, sessionId = null) => {
       // Ignore error
     }
   });
+};
+
+const emitRoleChange = io => (room, event) => async data => {
+  const { userId } = data;
+
+  io.sockets.to(room).emit(event, {
+    ...data,
+    isCurrentUserRoleChanging: false
+  });
+
+  try {
+    const socketIds = await getUserSockets(userId);
+
+    socketIds.forEach(socketId =>
+      io.sockets.to(socketId).emit(event, {
+        ...data,
+        isCurrentUserRoleChanging: true
+      })
+    );
+  } catch {
+    // Ignore errors
+  }
 };
 
 module.exports = {

@@ -23,7 +23,7 @@ const ListSchema = new Schema(
     type: { type: String, default: ListType.LIMITED },
     viewersIds: [{ type: ObjectId, ref: 'User' }]
   },
-  { timestamps: { createdAt: 'created_at' }, collection: 'lists' }
+  { timestamps: true, collection: 'lists' }
 );
 
 module.exports = mongoose.model('List', ListSchema);

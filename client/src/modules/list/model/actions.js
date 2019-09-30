@@ -286,11 +286,9 @@ export const fetchArchivedListsMetaData = (cohortId = null) => dispatch => {
 };
 
 export const deleteList = (listId, name, cohortId) => dispatch =>
-  patchData(`/api/lists/${listId}/update`, { isDeleted: true, listId })
+  patchData(`/api/lists/${listId}/delete`)
     .then(() => {
-      const action = deleteListSuccess({ listId, cohortId });
-
-      dispatch(action);
+      dispatch(deleteListSuccess({ listId, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.delete-list',
         data: { name }
@@ -334,13 +332,9 @@ export const updateList = (listId, data, name) => dispatch =>
     });
 
 export const archiveList = (listId, name, cohortId, isGuest) => dispatch =>
-  patchData(`/api/lists/${listId}/update`, {
-    isArchived: true
-  })
+  patchData(`/api/lists/${listId}/archive`)
     .then(() => {
-      const action = archiveListSuccess({ cohortId, isArchived: true, listId });
-
-      dispatch(action);
+      dispatch(archiveListSuccess({ listId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.arch-list',
         data: { name }
@@ -363,9 +357,7 @@ export const archiveList = (listId, name, cohortId, isGuest) => dispatch =>
     });
 
 export const restoreList = (listId, name) => dispatch =>
-  patchData(`/api/lists/${listId}/update`, {
-    isArchived: false
-  })
+  patchData(`/api/lists/${listId}/restore`)
     .then(() => getJson(`/api/lists/${listId}/data`))
     .then(json => {
       const data = {
@@ -373,9 +365,8 @@ export const restoreList = (listId, name) => dispatch =>
         items: _keyBy(json.items, '_id'),
         members: _keyBy(json.members, '_id')
       };
-      const action = restoreListSuccess({ data, listId });
 
-      dispatch(action);
+      dispatch(restoreListSuccess({ data, listId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'list.actions.restore-list',
         data: { name }
