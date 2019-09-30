@@ -67,23 +67,24 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         messageId: 'list.actions.archived-by-someone',
         performer
       };
-      const {
-        lists: {
-          [listId]: { isMember }
-        }
-      } = getState();
+      const { lists } = getState();
 
-      if (!pathname.includes(listId) && !isMember) {
+      if (lists[listId]) {
+        const { isMember } = lists[listId];
+
+        if (!pathname.includes(listId) && !isMember) {
+          return dispatch({
+            type: ListEvents.DELETE_SUCCESS,
+            payload: { listId }
+          });
+        }
+
         return dispatch({
-          type: ListEvents.DELETE_SUCCESS,
-          payload: { listId }
+          type: event,
+          payload: { ...data, externalAction }
         });
       }
-
-      return dispatch({
-        type: event,
-        payload: { ...data, externalAction }
-      });
+      break;
     }
     case ListEvents.ARCHIVE_COHORT:
     case ListEvents.DELETE_SUCCESS: {
