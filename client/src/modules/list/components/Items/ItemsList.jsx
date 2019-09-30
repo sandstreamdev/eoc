@@ -176,6 +176,6 @@ export default _flowRight(
   withRouter,
   connect(
     null,
-    { disableItemAnimations, updateLimit }
+    { disableItemAnimations }
   )
 )(ItemsList);
