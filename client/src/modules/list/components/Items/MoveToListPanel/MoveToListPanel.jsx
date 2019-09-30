@@ -118,6 +118,7 @@ class MoveToListPanel extends PureComponent {
       intl: { formatMessage },
       lists
     } = this.props;
+    const filterByFields = ['name'];
 
     return (
       <div className="move-to-list-panel">
@@ -137,7 +138,7 @@ class MoveToListPanel extends PureComponent {
             <div className="move-to-list-panel__filter-box">
               <Filter
                 buttonContent={<CloseIcon />}
-                classes="move-to-list-panel__filter"
+                filterBy={filterByFields}
                 onFilter={this.handleFilterLists}
                 options={lists}
                 placeholder={formatMessage({
