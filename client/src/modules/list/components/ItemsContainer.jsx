@@ -12,6 +12,8 @@ import FilterBox from 'modules/list/components/FilterBox';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import './ItemsContainer.scss';
+import Chips from 'common/components/Chips';
+import { ListItemsIcon } from 'assets/images/icons';
 
 const SortOptionType = Object.freeze({
   NAME: 'name',
@@ -117,6 +119,7 @@ class ItemsContainer extends Component {
     const { filterBy, sortBy, sortOrder } = this.state;
     const filteredList = this.filterItems(items, filterBy);
     const sortedList = this.sortItems(filteredList, sortBy, sortOrder);
+    const itemsCount = sortedList.length;
 
     return (
       <div className="items">
@@ -137,6 +140,11 @@ class ItemsContainer extends Component {
               options={sortOptions}
               sortBy={sortBy}
               sortOrder={sortOrder}
+            />
+            <Chips
+              count={itemsCount}
+              icon={<ListItemsIcon />}
+              title={formatMessage({ id: 'list.items-counter-label' })}
             />
           </div>
         </header>
