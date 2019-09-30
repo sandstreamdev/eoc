@@ -175,18 +175,20 @@ const responseWithItem = (item, userId) => {
   return newItem;
 };
 
-const responseWithCohorts = cohorts =>
+const responseWithCohorts = (cohorts, userId) =>
   _map(cohorts, cohort => {
     const { isDeleted, memberIds, ownerIds, ...rest } = cohort;
     const membersCount = memberIds.length;
 
     return {
       ...rest,
+      isMember: isMember(cohort, userId),
+      isOwner: isOwner(cohort, userId),
       membersCount
     };
   });
 
-const responseWithCohort = cohort => {
+const responseWithCohort = (cohort, userId) => {
   const { _id, createdAt, description, isArchived, memberIds, name } = cohort;
   const membersCount = memberIds.length;
 
@@ -195,6 +197,8 @@ const responseWithCohort = cohort => {
     createdAt,
     description,
     isArchived,
+    isMember: isMember(cohort, userId),
+    isOwner: isOwner(cohort, userId),
     membersCount,
     name
   };

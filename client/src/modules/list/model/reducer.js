@@ -205,112 +205,158 @@ const lists = (state = {}, action) => {
       const {
         payload: { listId, externalAction }
       } = action;
-      const { members } = state[listId];
-      const list = {
-        ...state[listId],
-        members: membersReducer(members, action),
-        externalAction
-      };
 
-      return { ...state, [listId]: list };
+      if (state[listId]) {
+        const { members } = state[listId];
+        const list = {
+          ...state[listId],
+          members: membersReducer(members, action),
+          externalAction
+        };
+
+        return { ...state, [listId]: list };
+      }
+
+      return state;
     }
     case ListActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
         payload: { isCurrentUserRoleChanging, listId }
       } = action;
-      const { members } = state[listId];
-      const list = {
-        ...state[listId],
-        members: membersReducer(members, action)
-      };
 
-      if (isCurrentUserRoleChanging) {
-        list.isOwner = true;
-        list.isMember = true;
+      if (state[listId]) {
+        const { members } = state[listId];
+        if (members) {
+          const list = {
+            ...state[listId],
+            members: membersReducer(members, action)
+          };
+
+          if (isCurrentUserRoleChanging) {
+            list.isOwner = true;
+            list.isMember = true;
+          }
+
+          return { ...state, [listId]: list };
+        }
       }
 
-      return { ...state, [listId]: list };
+      return state;
     }
     case ListActionTypes.ADD_MEMBER_ROLE_SUCCESS: {
       const {
         payload: { isCurrentUserRoleChanging, listId }
       } = action;
-      const { members } = state[listId];
-      const list = {
-        ...state[listId],
-        members: membersReducer(members, action)
-      };
 
-      if (isCurrentUserRoleChanging) {
-        list.isMember = true;
+      if (state[listId]) {
+        const { members } = state[listId];
+
+        if (members) {
+          const list = {
+            ...state[listId],
+            members: membersReducer(members, action)
+          };
+
+          if (isCurrentUserRoleChanging) {
+            list.isMember = true;
+          }
+
+          return { ...state, [listId]: list };
+        }
       }
 
-      return { ...state, [listId]: list };
+      return state;
     }
     case ListActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
         payload: { isCurrentUserRoleChanging, listId }
       } = action;
-      const { members } = state[listId];
-      const list = {
-        ...state[listId],
-        members: membersReducer(members, action)
-      };
 
-      if (isCurrentUserRoleChanging) {
-        list.isOwner = false;
+      if (state[listId]) {
+        const { members } = state[listId];
+
+        if (members) {
+          const list = {
+            ...state[listId],
+            members: membersReducer(members, action)
+          };
+
+          if (isCurrentUserRoleChanging) {
+            list.isOwner = false;
+          }
+
+          return { ...state, [listId]: list };
+        }
       }
 
-      return { ...state, [listId]: list };
+      return state;
     }
     case ListActionTypes.REMOVE_MEMBER_ROLE_SUCCESS: {
       const {
         payload: { isCurrentUserRoleChanging, listId }
       } = action;
-      const { members } = state[listId];
-      const list = {
-        ...state[listId],
-        members: membersReducer(members, action)
-      };
 
-      if (isCurrentUserRoleChanging) {
-        list.isMember = false;
-        list.isOwner = false;
+      if (state[listId]) {
+        const { members } = state[listId];
+
+        if (members) {
+          const list = {
+            ...state[listId],
+            members: membersReducer(members, action)
+          };
+
+          if (isCurrentUserRoleChanging) {
+            list.isMember = false;
+            list.isOwner = false;
+          }
+
+          return { ...state, [listId]: list };
+        }
       }
 
-      return { ...state, [listId]: list };
+      return state;
     }
     case ListActionTypes.MEMBER_UPDATE_SUCCESS: {
       const {
         payload: { isCurrentUserUpdated, isGuest, listId }
       } = action;
-      const { members } = state[listId];
-      const list = {
-        ...state[listId],
-        members: membersReducer(members, action)
-      };
 
-      if (isCurrentUserUpdated) {
-        list.isGuest = isGuest;
+      if (state[listId]) {
+        const { members } = state[listId];
+        const list = {
+          ...state[listId],
+          members: membersReducer(members, action)
+        };
+
+        if (isCurrentUserUpdated) {
+          list.isGuest = isGuest;
+        }
+
+        return { ...state, [listId]: list };
       }
 
-      return { ...state, [listId]: list };
+      return state;
     }
     case ListActionTypes.CHANGE_TYPE_SUCCESS: {
       const {
         payload: { externalAction, listId, type }
       } = action;
-      const { members } = state[listId];
 
-      return {
-        ...state,
-        [listId]: {
-          ...state[listId],
-          externalAction,
-          type,
-          members: membersReducer(members, action)
-        }
-      };
+      if (state[listId]) {
+        const { members } = state[listId];
+
+        return {
+          ...state,
+          [listId]: {
+            ...state[listId],
+            externalAction,
+            type,
+            members: membersReducer(members, action)
+          }
+        };
+      }
+
+      return state;
     }
     case CommonActionTypes.LEAVE_VIEW: {
       return {};

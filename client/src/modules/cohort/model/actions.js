@@ -214,7 +214,7 @@ export const updateCohort = (name, cohortId, data) => dispatch =>
     });
 
 export const deleteCohort = (cohortId, name) => dispatch =>
-  deleteData(`/api/cohorts/${cohortId}`)
+  deleteData(`/api/cohorts/${cohortId}/delete`)
     .then(() => {
       dispatch(deleteCohortSuccess({ cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
@@ -240,9 +240,7 @@ export const deleteCohort = (cohortId, name) => dispatch =>
     });
 
 export const archiveCohort = (cohortId, name) => dispatch =>
-  patchData(`/api/cohorts/${cohortId}/update`, {
-    isArchived: true
-  })
+  patchData(`/api/cohorts/${cohortId}/archive`)
     .then(() => {
       dispatch(archiveCohortSuccess({ cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {

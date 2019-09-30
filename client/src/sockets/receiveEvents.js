@@ -28,9 +28,7 @@ export const receiveEvents = (store, socket) => {
   );
 
   Object.values(CohortEvents).forEach(event =>
-    socket.on(event, data =>
-      cohortEventsController(event, data, store.dispatch)
-    )
+    socket.on(event, data => cohortEventsController(event, data, store))
   );
 
   Object.values(ListHeaderEvents).forEach(event =>

@@ -278,6 +278,7 @@ class List extends Component {
 
     const {
       cohortId,
+      cohortName,
       isArchived,
       isDeleted,
       isMember,
@@ -289,11 +290,12 @@ class List extends Component {
     const isCohortList = cohortId !== null && cohortId !== undefined;
     const idDialogForRemovedListVisible =
       isDisabled && externalAction && !pendingForListArchivization;
+    const archivedListView = (isArchived && !isDisabled) || isDeleted;
 
     return (
       <Fragment>
         {this.renderBreadcrumbs()}
-        {(isArchived && !isDisabled) || isDeleted ? (
+        {archivedListView ? (
           <ArchivedList
             cohortId={cohortId}
             isOwner={isOwner}
@@ -395,7 +397,11 @@ class List extends Component {
             <p>
               <FormattedMessage
                 id={externalAction.messageId}
-                values={{ name, performer: externalAction.performer }}
+                values={{
+                  name,
+                  cohortName,
+                  performer: externalAction.performer
+                }}
               />
               {!isOwner && (
                 <FormattedMessage

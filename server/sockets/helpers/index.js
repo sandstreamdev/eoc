@@ -3,7 +3,11 @@ const _compact = require('lodash/compact');
 const Cohort = require('../../models/cohort.model');
 const List = require('../../models/list.model');
 const Session = require('../../models/session.model');
-const { ListActionTypes, CohortActionTypes } = require('../eventTypes');
+const {
+  AppEvents,
+  ListActionTypes,
+  CohortActionTypes
+} = require('../eventTypes');
 const {
   countItems,
   responseWithItem,
@@ -15,13 +19,12 @@ const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
 
 const emitCohortMetaData = (cohortId, clients, io) =>
   Cohort.findById(cohortId)
-    .select('_id isArchived createdAt name description memberIds')
+    .select('_id isArchived createdAt name description memberIds ownerIds')
     .lean()
     .exec()
     .then(doc => {
       if (doc) {
         const { memberIds } = doc;
-        const cohort = responseWithCohort(doc);
 
         memberIds.forEach(id => {
           const memberId = id.toString();
@@ -32,7 +35,7 @@ const emitCohortMetaData = (cohortId, clients, io) =>
             io.sockets
               .to(socketId)
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
-                [cohortId]: cohort
+                [cohortId]: responseWithCohort(doc, memberId)
               });
           }
         });
@@ -314,6 +317,26 @@ const emitRoleChange = io => (room, event) => async data => {
   }
 };
 
+const emitRemoveListViewer = (io, event) => async data => {
+  const { listId, userId } = data;
+
+  io.sockets.to(listChannel(listId)).emit(event, data);
+
+  io.sockets.to(listMetaDataChannel(listId)).emit(event, data);
+
+  try {
+    const socketIds = await getUserSockets(userId);
+
+    socketIds.forEach(socketId =>
+      io.sockets
+        .to(socketId)
+        .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
+    );
+  } catch {
+    // Ignore error
+  }
+};
+
 module.exports = {
   associateSocketWithSession,
   cohortChannel,
@@ -323,6 +346,7 @@ module.exports = {
   emitCohortMetaData,
   emitItemPerUser,
   emitItemUpdate,
+  emitRemoveListViewer,
   emitRoleChange,
   emitVoteChange,
   getListIdsByViewers,

@@ -56,6 +56,8 @@ const expectedCohortMetaDataProperties = [
   'createdAt',
   'description',
   'isArchived',
+  'isMember',
+  'isOwner',
   'membersCount',
   'name'
 ];

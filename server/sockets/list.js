@@ -29,6 +29,7 @@ const {
   delayedUnlock,
   emitItemPerUser,
   emitItemUpdate,
+  emitRemoveListViewer,
   emitRoleChange,
   emitVoteChange
 } = require('./helpers');
@@ -388,10 +389,6 @@ const changeListType = io => async data => {
           io.sockets
             .to(socketId)
             .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId));
-
-          // io.sockets
-          //   .to(socketId)
-          //   .emit(ListActionTypes.DELETE_SUCCESS, { listId });
         });
       } catch {
         // Ignore errors
@@ -425,26 +422,10 @@ const changeListType = io => async data => {
 };
 
 const removeViewer = io => async data => {
-  const { listId, userId } = data;
-
-  io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
-
-  io.sockets
-    .to(listMetaDataChannel(listId))
-    .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
-
   try {
-    const socketIds = await getUserSockets(userId);
-
-    socketIds.forEach(socketId =>
-      io.sockets
-        .to(socketId)
-        .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
-    );
+    await emitRemoveListViewer(io, ListActionTypes.REMOVE_MEMBER_SUCCESS)(data);
   } catch {
-    // Ignore error
+    // Ignore errors
   }
 
   return Promise.resolve();
@@ -482,7 +463,7 @@ const deleteList = io => async data => {
       socketIds.forEach(socketId =>
         io.sockets
           .to(socketId)
-          .emit(ListActionTypes.LEAVE_ROOM, listMetaDataChannel(listId))
+          .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
       );
     } catch {
       // Ignore errors
