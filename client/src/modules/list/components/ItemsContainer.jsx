@@ -93,7 +93,10 @@ class ItemsContainer extends Component {
             <Badge
               count={displayedItemsCount}
               totalCount={totalItemsCount}
-              title={formatMessage({ id: 'list.items-counter-label' })}
+              title={formatMessage(
+                { id: 'list.items-counter-label' },
+                { displayedItemsCount, totalItemsCount }
+              )}
             />
           </div>
         </header>
