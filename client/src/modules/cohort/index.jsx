@@ -71,16 +71,25 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
+    const { isDisabled } = this.state;
 
     this.fetchData();
-    joinRoom(Routes.COHORT, cohortId, userId);
+
+    const roomConfig = {
+      isRoomMetaDataNeeded: !isDisabled,
+      resourceId: cohortId,
+      roomPrefix: Routes.COHORT,
+      userId
+    };
+
+    joinRoom(roomConfig);
   }
 
   componentDidUpdate(previousProps) {
     const {
       cohortDetails: cohort,
       match: {
-        params: { id }
+        params: { id: cohortId }
       },
       members
     } = this.props;
@@ -88,35 +97,44 @@ class Cohort extends PureComponent {
       cohortDetails: previousCohort,
       currentUser: { id: userId },
       match: {
-        params: { id: previousId }
+        params: { id: previousCohortId }
       },
       members: previousMembers
     } = previousProps;
     const { isDisabled } = this.state;
+    const hasCohortChanged = cohortId !== previousCohortId;
+    const roomConfig = {
+      isRoomMetaDataNeeded: !isDisabled,
+      resourceId: previousCohortId,
+      roomPrefix: Routes.COHORT,
+      userId
+    };
 
-    if (id !== previousId) {
-      leaveRoom(Routes.COHORT, previousId, userId)(isDisabled);
+    if (hasCohortChanged) {
+      leaveRoom(roomConfig);
+      joinRoom({ ...roomConfig, resourceId: cohortId });
       this.fetchData();
     }
 
-    if (previousCohort && cohort && previousCohort.name !== cohort.name) {
-      this.handleBreadcrumbs();
-    }
-
     if (previousCohort && cohort) {
-      if (
-        (!previousCohort.isArchived && cohort.isArchived) ||
-        (previousMembers[userId] && !members[userId]) ||
-        (!previousCohort.isDeleted && cohort.isDeleted)
-      ) {
+      const updateBreadcrumbs = previousCohort.name !== cohort.name;
+      const hasCohortBeenArchived =
+        !previousCohort.isArchived && cohort.isArchived;
+      const hasCohortBeenRestored =
+        previousCohort.isArchived && !cohort.isArchived;
+      const hasUserBeenRemoved = previousMembers[userId] && !members[userId];
+      const hasUserBeenAddedBack = !previousMembers[userId] && members[userId];
+      const hasCohortBeenDelete = !previousCohort.isDeleted && cohort.isDeleted;
+
+      if (updateBreadcrumbs) {
+        this.handleBreadcrumbs();
+      }
+
+      if (hasCohortBeenArchived || hasUserBeenRemoved || hasCohortBeenDelete) {
         this.handleDisableCohort();
       }
 
-      if (
-        (previousCohort.isArchived && !cohort.isArchived) ||
-        (!previousMembers[userId] && members[userId]) ||
-        (previousCohort.isDeleted && !cohort.isDeleted)
-      ) {
+      if (hasCohortBeenRestored || hasUserBeenAddedBack) {
         this.handleEnableCohort();
       }
     }
@@ -130,8 +148,14 @@ class Cohort extends PureComponent {
       }
     } = this.props;
     const { isDisabled } = this.state;
+    const roomConfig = {
+      isRoomMetaDataNeeded: !isDisabled,
+      resourceId: cohortId,
+      roomPrefix: Routes.COHORT,
+      userId
+    };
 
-    leaveRoom(Routes.COHORT, cohortId, userId)(isDisabled);
+    leaveRoom(roomConfig);
     this.pendingPromises.forEach(promise => promise.abort());
   }
 
@@ -482,10 +506,13 @@ class Cohort extends PureComponent {
                 values={{ name, performer: externalAction.performer }}
               />
               {!isOwner && (
-                <FormattedMessage
-                  id="cohort.actions.not-available-contact-owner"
-                  values={{ name }}
-                />
+                <Fragment>
+                  {' '}
+                  <FormattedMessage
+                    id="cohort.actions.not-available-contact-owner"
+                    values={{ name }}
+                  />
+                </Fragment>
               )}
             </p>
           </Dialog>

@@ -1,7 +1,7 @@
 import socket from 'sockets';
 import { CommonActionTypes } from 'common/model/actionTypes';
 import { AppEvents } from 'sockets/enums';
-import { metaDataChannel } from 'common/utils/helpers';
+import { channel, metaDataChannel } from 'common/utils/helpers';
 
 export const clearMetaDataSuccess = () => ({
   type: CommonActionTypes.LEAVE_VIEW
@@ -13,19 +13,46 @@ export const enterView = (route, userId) =>
 export const leaveView = (route, userId) =>
   socket.emit('leaveView', { userId, view: route });
 
-export const joinRoom = (route, id, userId) => {
-  const data = { roomId: `${route}-${id}`, userId, viewId: id };
+export const joinRoom = roomConfig => {
+  const { isRoomMetaDataNeeded, resourceId, roomPrefix, userId } = roomConfig;
+  const room = channel(resourceId, roomPrefix);
 
-  socket.emit(AppEvents.JOIN_ROOM, { data, room: route });
-  socket.emit(AppEvents.LEAVE_ROOM, metaDataChannel(id, route));
+  /**
+   * This code is for the old functionality to work.
+   * After refactoring socket emission it will be removed
+   */
+  const data = {
+    userId,
+    viewId: resourceId,
+    viewName: roomPrefix
+  };
+
+  socket.emit(AppEvents.JOIN_ROOM, {
+    data,
+    room
+  });
+
+  if (isRoomMetaDataNeeded) {
+    const metaDataRoom = metaDataChannel(resourceId, roomPrefix);
+
+    socket.emit(AppEvents.LEAVE_ROOM, metaDataRoom);
+  }
 };
 
-export const leaveRoom = (route, id, userId) => isDisabled => {
-  const data = { roomId: `${route}-${id}`, userId, viewId: id };
+export const leaveRoom = roomConfig => {
+  const { isRoomMetaDataNeeded, resourceId, roomPrefix, userId } = roomConfig;
+  const room = channel(resourceId, roomPrefix);
+  const data = {
+    userId,
+    viewId: resourceId,
+    viewName: roomPrefix
+  };
 
-  socket.emit(AppEvents.LEAVE_ROOM, { data, room: route });
+  socket.emit(AppEvents.LEAVE_ROOM, { data, room });
 
-  if (!isDisabled) {
-    socket.emit(AppEvents.JOIN_ROOM, metaDataChannel(id, route));
+  if (isRoomMetaDataNeeded) {
+    const metaDataRoom = metaDataChannel(resourceId, roomPrefix);
+
+    socket.emit(AppEvents.JOIN_ROOM, metaDataRoom);
   }
 };

@@ -55,9 +55,10 @@ class List extends Component {
     const {
       currentUser: { id: userId },
       match: {
-        params: { id: cohortId }
+        params: { id: listId }
       }
     } = this.props;
+    const { isDisabled } = this.state;
 
     this.setState({ pendingForDetails: true });
 
@@ -72,7 +73,14 @@ class List extends Component {
         }
       });
 
-    joinRoom(Routes.LIST, cohortId, userId);
+    const roomConfig = {
+      isRoomMetaDataNeeded: !isDisabled,
+      resourceId: listId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
+
+    joinRoom(roomConfig);
   }
 
   componentDidUpdate(previousProps) {
@@ -92,9 +100,17 @@ class List extends Component {
       members
     } = this.props;
     const { isDisabled } = this.state;
+    const hasListChanged = listId !== previousListId;
+    const roomConfig = {
+      isRoomMetaDataNeeded: !isDisabled,
+      resourceId: previousListId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
 
-    if (previousListId !== listId) {
-      leaveRoom(Routes.LIST, listId, userId)(isDisabled);
+    if (hasListChanged) {
+      leaveRoom(roomConfig);
+      joinRoom({ ...roomConfig, resourceId: listId });
       this.fetchData();
     }
 
@@ -106,24 +122,21 @@ class List extends Component {
       const { name, cohortName } = list;
       const updateBreadcrumbs =
         previousName !== name || previousCohortName !== cohortName;
+      const hasListBeenArchived = !previousList.isArchived && list.isArchived;
+      const hasListBeenRestored = previousList.isArchived && !list.isArchived;
+      const hasUserBeenRemoved = previousMembers[userId] && !members[userId];
+      const hasUserBeenAddedBack = !previousMembers[userId] && members[userId];
+      const hasListBeenDelete = !previousList.isDeleted && list.isDeleted;
 
       if (updateBreadcrumbs) {
         this.handleBreadcrumbs();
       }
 
-      if (
-        (!previousList.isArchived && list.isArchived) ||
-        (previousMembers[userId] && !members[userId]) ||
-        (!previousList.isDeleted && list.isDeleted)
-      ) {
+      if (hasListBeenArchived || hasUserBeenRemoved || hasListBeenDelete) {
         this.handleDisableList();
       }
 
-      if (
-        (previousList.isArchived && !list.isArchived) ||
-        (!previousMembers[userId] && members[userId]) ||
-        (previousList.isDeleted && !list.isDeleted)
-      ) {
+      if (hasListBeenRestored || hasUserBeenAddedBack) {
         this.handleEnableList();
       }
     }
@@ -137,8 +150,14 @@ class List extends Component {
       }
     } = this.props;
     const { isDisabled } = this.state;
+    const roomConfig = {
+      isRoomMetaDataNeeded: !isDisabled,
+      resourceId: listId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
 
-    leaveRoom(Routes.LIST, listId, userId)(isDisabled);
+    leaveRoom(roomConfig);
   }
 
   handleBreadcrumbs = () => {
@@ -394,7 +413,7 @@ class List extends Component {
               { name }
             )}
           >
-            <p>
+            <p style={{ whiteSpace: 'pre-line' }}>
               <FormattedMessage
                 id={externalAction.messageId}
                 values={{
@@ -404,10 +423,13 @@ class List extends Component {
                 }}
               />
               {!isOwner && (
-                <FormattedMessage
-                  id="list.actions.not-available-contact-owner"
-                  values={{ name }}
-                />
+                <Fragment>
+                  {' '}
+                  <FormattedMessage
+                    id="list.actions.not-available-contact-owner"
+                    values={{ name }}
+                  />
+                </Fragment>
               )}
             </p>
           </Dialog>

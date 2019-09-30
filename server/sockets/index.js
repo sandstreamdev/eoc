@@ -60,12 +60,12 @@ const socketListeners = socketInstance => {
        * socket.on('joinRoom', room => socket.join(room));
        */
       if (typeof emittedData === 'object') {
-        const { room, data } = emittedData;
-        const { roomId, userId, viewId } = data;
+        const { data, room } = emittedData;
+        const { userId, viewId, viewName } = data;
 
-        switch (room) {
+        switch (viewName) {
           case Routes.LIST: {
-            socket.join(roomId);
+            socket.join(room);
 
             return listViewClients.set(userId, {
               socketId: socket.id,
@@ -73,7 +73,7 @@ const socketListeners = socketInstance => {
             });
           }
           case Routes.COHORT: {
-            socket.join(roomId);
+            socket.join(room);
 
             return cohortViewClients.set(userId, {
               socketId: socket.id,
@@ -89,17 +89,17 @@ const socketListeners = socketInstance => {
 
     socket.on(AppEvents.LEAVE_ROOM, emittedData => {
       if (typeof emittedData === 'object') {
-        const { room, data } = emittedData;
-        const { roomId, userId } = data;
+        const { data, room } = emittedData;
+        const { userId, viewName } = data;
 
-        switch (room) {
+        switch (viewName) {
           case Routes.LIST: {
-            socket.leave(roomId);
+            socket.leave(room);
 
             return listViewClients.delete(userId);
           }
           case Routes.COHORT: {
-            socket.leave(roomId);
+            socket.leave(room);
 
             return cohortViewClients.delete(userId);
           }
