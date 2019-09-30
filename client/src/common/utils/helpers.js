@@ -117,3 +117,7 @@ export const shouldAnimate = (items, item, listState) => {
 
   return isItemDisplayed(items, unhandledLimit)(filter)(_id);
 };
+
+export const channel = (id, route) => `${route}-${id}`;
+
+export const metaDataChannel = (id, route) => `${route}-meta-data-${id}`;

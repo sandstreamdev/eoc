@@ -119,8 +119,29 @@ const lists = (state = {}, action) => {
       return { ...state, ...action.payload };
     case ListActionTypes.CREATE_SUCCESS:
       return { ...state, [action.payload._id]: { ...action.payload } };
-    case ListActionTypes.ARCHIVE_SUCCESS:
-    case ListActionTypes.DELETE_SUCCESS:
+    case ListActionTypes.ARCHIVE_SUCCESS: {
+      const { listId } = action.payload;
+
+      if (state[listId]) {
+        return {
+          ...state,
+          [listId]: { ...state[listId], isArchived: true }
+        };
+      }
+
+      return state;
+    }
+    case ListActionTypes.DELETE_SUCCESS: {
+      const { listId } = action.payload;
+
+      if (state[listId]) {
+        const { [listId]: removed, ...newState } = state;
+
+        return newState;
+      }
+
+      return state;
+    }
     case ListActionTypes.LEAVE_SUCCESS: {
       const { [action.payload.listId]: removed, ...newState } = state;
 

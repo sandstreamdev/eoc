@@ -85,8 +85,7 @@ const getArchivedCohortsMetaData = (req, resp) => {
       isDeleted: false,
       ownerIds: userId
     },
-    '_id name createdAt description isArchived memberIds ownerIds',
-    { sort: { created_at: -1 } }
+    '_id name createdAt description isArchived memberIds ownerIds'
   )
     .lean()
     .exec()
@@ -402,10 +401,12 @@ const addOwnerRole = (req, resp) => {
 
       const socketInstance = io.getInstance();
 
-      socketActions.addOwnerRole(socketInstance, cohortClients)({
-        cohortId: sanitizedCohortId,
-        userId: sanitizedUserId
-      });
+      fireAndForget(
+        socketActions.addOwnerRole(socketInstance)({
+          cohortId: sanitizedCohortId,
+          userId: sanitizedUserId
+        })
+      );
 
       fireAndForget(
         saveActivity(
@@ -455,10 +456,12 @@ const removeOwnerRole = (req, resp) => {
     .then(() => {
       const socketInstance = io.getInstance();
 
-      socketActions.removeOwnerRole(socketInstance, cohortClients)({
-        cohortId: sanitizedCohortId,
-        userId: sanitizedUserId
-      });
+      fireAndForget(
+        socketActions.removeOwnerRole(socketInstance)({
+          cohortId: sanitizedCohortId,
+          userId: sanitizedUserId
+        })
+      );
 
       fireAndForget(
         saveActivity(
