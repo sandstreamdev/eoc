@@ -2,7 +2,7 @@ const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
 const { PROJECT_NAME } = require('../common/variables');
-const { getHours } = require('../common/utils/helpers');
+const { getHours } = require('../common/utils');
 const { EXPIRATION_TIME } = require('../common/variables');
 
 const { SENDGRID_API_KEY } = process.env;
