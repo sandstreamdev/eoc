@@ -78,7 +78,6 @@ class ItemsContainer extends Component {
           <div className="items__header-controls">
             <Filter
               buttonContent={<CloseIcon />}
-              classes="items__filter"
               filterBy={filterByFields}
               onFilter={this.handleFilterLists}
               options={itemsToSearch}

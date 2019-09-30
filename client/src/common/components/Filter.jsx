@@ -76,12 +76,7 @@ class Filter extends PureComponent {
 
   render() {
     const { query } = this.state;
-    const {
-      buttonContent,
-      classes,
-      clearFilterButton,
-      placeholder
-    } = this.props;
+    const { buttonContent, clearFilterButton, placeholder } = this.props;
 
     return (
       <div className="filter">
@@ -110,7 +105,6 @@ Filter.defaultProps = {
 
 Filter.propTypes = {
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  classes: PropTypes.string.isRequired,
   clearFilterButton: PropTypes.bool,
   filterBy: PropTypes.arrayOf(PropTypes.string).isRequired,
   options: PropTypes.arrayOf(
