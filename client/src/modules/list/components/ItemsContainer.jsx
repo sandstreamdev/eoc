@@ -9,7 +9,7 @@ import ItemsList from 'modules/list/components/Items';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { IntlPropType } from 'common/constants/propTypes';
 import './ItemsContainer.scss';
-import Chips from 'common/components/Chips';
+import Badge from 'common/components/Badge';
 import { CloseIcon } from 'assets/images/icons';
 import Filter from 'common/components/Filter';
 
@@ -90,7 +90,7 @@ class ItemsContainer extends Component {
                 id: 'list.list-item.input-find-items'
               })}
             />
-            <Chips
+            <Badge
               count={displayedItemsCount}
               totalCount={totalItemsCount}
               title={formatMessage({ id: 'list.items-counter-label' })}
