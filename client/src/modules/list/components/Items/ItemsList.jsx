@@ -13,7 +13,6 @@ import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 import { disableItemAnimations } from './model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { updateLimit } from 'modules/list/model/actions';
 import { DISPLAY_LIMIT } from 'common/constants/variables';
 
 class ItemsList extends PureComponent {
@@ -79,8 +78,6 @@ class ItemsList extends PureComponent {
       disableItemAnimations(itemId, listId);
     }
   };
-
-  // TODO: Remove updateItem action
 
   renderItems = () => {
     const { archived, isMember, items } = this.props;
@@ -167,14 +164,12 @@ class ItemsList extends PureComponent {
 
 ItemsList.propTypes = {
   archived: PropTypes.bool,
-  done: PropTypes.bool,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
   disableItemAnimations: PropTypes.func.isRequired,
-  updateItemsCount: PropTypes.func.isRequired,
-  updateLimit: PropTypes.func.isRequired
+  updateItemsCount: PropTypes.func.isRequired
 };
 
 export default _flowRight(

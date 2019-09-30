@@ -177,14 +177,6 @@ const fetchAvailableListsFailure = payload => ({
   payload
 });
 
-const updateLimitSuccess = payload => ({
-  type: ListActionTypes.UPDATE_LIMIT_SUCCESS,
-  payload
-});
-
-export const updateLimit = (limit, listId) => dispatch =>
-  dispatch(updateLimitSuccess({ limit, listId }));
-
 export const fetchListData = listId => dispatch =>
   getJson(`/api/lists/${listId}/data`)
     .then(json => {

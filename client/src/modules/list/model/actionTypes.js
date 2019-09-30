@@ -22,8 +22,7 @@ export const ListActionTypes = enumerable('list')(
   ...asyncTypes('REMOVE_MEMBER'),
   ...asyncTypes('REMOVE_OWNER_ROLE'),
   ...asyncTypes('RESTORE'),
-  ...asyncTypes('UPDATE'),
-  ...asyncTypes('UPDATE_LIMIT')
+  ...asyncTypes('UPDATE')
 );
 
 export const ListHeaderStatusType = enumerable('list-header')('LOCK', 'UNLOCK');
