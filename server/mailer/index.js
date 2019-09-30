@@ -2,7 +2,7 @@ const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
 const { PROJECT_NAME } = require('../common/variables');
-const { getHours } = require('../common/utils');
+const { formatHours, getHours } = require('../common/utils');
 const { EXPIRATION_TIME } = require('../common/variables');
 
 const { SENDGRID_API_KEY } = process.env;
@@ -45,9 +45,8 @@ const sendSignUpConfirmationLink = (req, resp) => {
   const confirmUrl = `${host}/auth/confirm-email/${signUpHash}`;
   const hours = getHours(EXPIRATION_TIME);
   const title = `Welcome to ${PROJECT_NAME}!`;
-  const info = `<p>It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!</p><p><b>Remember that confirmation button will be active only for ${
-    hours === 1 ? `${hours} hour` : `${hours} hours`
-  }.</b></p>`;
+  const formattedHours = formatHours(hours);
+  const info = `<p>It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!</p><p><b>Remember that confirmation button will be active only for ${formattedHours}.</b></p>`;
   const value = 'Confirm your account';
 
   const message = {
@@ -75,9 +74,8 @@ const sendResetPasswordLink = (req, resp) => {
   const hours = getHours(EXPIRATION_TIME);
   const resetUrl = `${host}/auth/recovery-password/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
-  const info = `<p>Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.</p><p><b>Remember that reset button will be active only for ${
-    hours === 1 ? `${hours} hour` : `${hours} hours`
-  }.</b></p>`;
+  const formattedHours = formatHours(hours);
+  const info = `<p>Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.</p><p><b>Remember that reset button will be active only for ${formattedHours}.</b></p>`;
   const value = 'Reset password';
 
   const message = {

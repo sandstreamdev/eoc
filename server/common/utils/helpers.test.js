@@ -440,7 +440,7 @@ describe('function getHours should return hours count based on provided millisec
     expect(result).toEqual(2);
   });
 
-  it('returns zero hours', () => {
+  it('rounds towards zero', () => {
     const milliseconds = 4000;
     const result = getHours(milliseconds);
 

@@ -403,6 +403,8 @@ const returnPayload = promise => payload => promise.then(() => payload);
 
 const getHours = milliseconds => Math.floor(milliseconds / 3600000);
 
+const formatHours = hours => (hours === 1 ? `${hours} hour` : `${hours} hours`);
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -410,6 +412,7 @@ module.exports = {
   enumerable,
   filter,
   fireAndForget,
+  formatHours,
   getHours,
   isDefined,
   isMember,
