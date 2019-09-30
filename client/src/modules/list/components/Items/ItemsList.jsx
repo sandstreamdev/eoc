@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _flowRight from 'lodash/flowRight';
+import _isEqual from 'lodash/isEqual';
 
 import ListItem from 'modules/list/components/Items/ListItem';
 import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
@@ -20,18 +21,50 @@ class ItemsList extends PureComponent {
     super(props);
 
     this.state = {
+      displayedItems: null,
+      itemsCount: null,
       limit: DISPLAY_LIMIT
     };
   }
 
+  componentDidMount() {
+    this.handleItems();
+  }
+
+  componentDidUpdate(previousProps) {
+    const { items: previousItems } = previousProps;
+    const { items } = this.props;
+
+    if (!_isEqual(previousItems, items)) {
+      this.handleItems();
+    }
+  }
+
+  handleItems = () => {
+    const { limit } = this.state;
+    const { items } = this.props;
+    const displayedItems = items.slice(0, limit).map(item => item);
+
+    this.setState(
+      { displayedItems, itemsCount: displayedItems.length },
+      this.displayedItemsCount
+    );
+  };
+
+  displayedItemsCount = () => {
+    const { itemsCount } = this.state;
+    const { updateItemsCount } = this.props;
+
+    updateItemsCount(itemsCount);
+  };
+
   showMore = () =>
     this.setState(
       ({ limit }) => ({ limit: limit + DISPLAY_LIMIT }),
-      this.handleLimitUpdate
+      this.handleItems
     );
 
-  showLess = () =>
-    this.setState({ limit: DISPLAY_LIMIT }, this.handleLimitUpdate);
+  showLess = () => this.setState({ limit: DISPLAY_LIMIT }, this.handleItems);
 
   handleDisableAnimations = item => () => {
     const { _id: itemId, animate } = item;
@@ -47,32 +80,11 @@ class ItemsList extends PureComponent {
     }
   };
 
-  handleLimitUpdate = () => {
-    const {
-      archived: archivedItems,
-      done: doneItems,
-      match: {
-        params: { id: listId }
-      },
-      updateLimit
-    } = this.props;
-    const { limit: currentLimit } = this.state;
-    const limit = {};
-
-    if (archivedItems) {
-      limit.archivedLimit = currentLimit;
-    } else if (doneItems) {
-      limit.doneLimit = currentLimit;
-    } else {
-      limit.unhandledLimit = currentLimit;
-    }
-
-    updateLimit(limit, listId);
-  };
+  // TODO: Remove updateItem action
 
   renderItems = () => {
     const { archived, isMember, items } = this.props;
-    const { limit } = this.state;
+    const { limit, displayedItems } = this.state;
 
     if (!items) {
       return null;
@@ -81,7 +93,7 @@ class ItemsList extends PureComponent {
     return archived ? (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {items.slice(0, limit).map(item => (
+          {displayedItems.map(item => (
             <CSSTransition
               classNames="animated-item"
               enter={item.animate}
@@ -161,6 +173,7 @@ ItemsList.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   disableItemAnimations: PropTypes.func.isRequired,
+  updateItemsCount: PropTypes.func.isRequired,
   updateLimit: PropTypes.func.isRequired
 };
 

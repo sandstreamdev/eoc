@@ -10,7 +10,7 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { IntlPropType } from 'common/constants/propTypes';
 import './ItemsContainer.scss';
 import Chips from 'common/components/Chips';
-import { CloseIcon, ListItemsIcon } from 'assets/images/icons';
+import { CloseIcon } from 'assets/images/icons';
 import Filter from 'common/components/Filter';
 
 class ItemsContainer extends Component {
@@ -20,7 +20,8 @@ class ItemsContainer extends Component {
     const { items } = this.props;
 
     this.state = {
-      items
+      items,
+      displayedItemsCount: 0
     };
   }
 
@@ -41,6 +42,9 @@ class ItemsContainer extends Component {
 
   handleFilterLists = itemsToDisplay =>
     this.setState({ items: itemsToDisplay });
+
+  handleDisplayedItemsCount = displayedItemsCount =>
+    this.setState({ displayedItemsCount });
 
   renderHeadingText = () => {
     const { archived, done } = this.props;
@@ -67,9 +71,9 @@ class ItemsContainer extends Component {
       isMember,
       items: itemsToSearch
     } = this.props;
-    const { items } = this.state;
+    const { items, displayedItemsCount } = this.state;
     const filterByFields = ['authorName', 'name'];
-    const itemsCount = items.length;
+    const totalItemsCount = itemsToSearch.length;
 
     return (
       <div className="items">
@@ -88,8 +92,8 @@ class ItemsContainer extends Component {
               })}
             />
             <Chips
-              count={itemsCount}
-              icon={<ListItemsIcon />}
+              count={displayedItemsCount}
+              totalCount={totalItemsCount}
               title={formatMessage({ id: 'list.items-counter-label' })}
             />
           </div>
@@ -101,6 +105,7 @@ class ItemsContainer extends Component {
             done={done}
             isMember={isMember}
             items={items}
+            updateItemsCount={this.handleDisplayedItemsCount}
           />
         </div>
       </div>
