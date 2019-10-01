@@ -9,23 +9,23 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
   switch (event) {
     case ListEvents.ADD_OWNER_ROLE_SUCCESS: {
       const {
-        notificationData: { listName, performer, userName },
+        notificationData: { listName, performer },
         userId,
         ...rest
       } = data;
-      const notificationId = 'list.actions.current-user-add-to-owners';
-      const notificationData = {
-        data: {
-          listName,
-          performer,
-          userName
-        },
-        notificationId
-      };
-      const { id } = currentUser;
-      const displayNotification = userId === id;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId;
 
       if (displayNotification) {
+        const notificationId = 'list.actions.current-user-add-to-owners';
+        const notificationData = {
+          data: {
+            listName,
+            performer
+          },
+          notificationId
+        };
+
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
@@ -37,23 +37,23 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
     }
     case ListEvents.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
-        notificationData: { listName, performer, userName },
+        notificationData: { listName, performer },
         userId,
         ...rest
       } = data;
-      const notificationId = 'list.actions.current-user-removed-from-owners';
-      const notificationData = {
-        data: {
-          listName,
-          performer,
-          userName
-        },
-        notificationId
-      };
-      const { id } = currentUser;
-      const displayNotification = userId === id;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId;
 
       if (displayNotification) {
+        const notificationId = 'list.actions.current-user-removed-from-owners';
+        const notificationData = {
+          data: {
+            listName,
+            performer
+          },
+          notificationId
+        };
+
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
@@ -65,23 +65,23 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
     }
     case ListEvents.ADD_MEMBER_ROLE_SUCCESS: {
       const {
-        notificationData: { listName, performer, userName },
+        notificationData: { listName, performer },
         userId,
         ...rest
       } = data;
-      const notificationId = 'list.actions.current-user-add-to-members';
-      const notificationData = {
-        data: {
-          listName,
-          performer,
-          userName
-        },
-        notificationId
-      };
-      const { id } = currentUser;
-      const displayNotification = userId === id;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId;
 
       if (displayNotification) {
+        const notificationId = 'list.actions.current-user-add-to-members';
+        const notificationData = {
+          data: {
+            listName,
+            performer
+          },
+          notificationId
+        };
+
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
@@ -93,23 +93,23 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
     }
     case ListEvents.REMOVE_MEMBER_ROLE_SUCCESS: {
       const {
-        notificationData: { listName, performer, userName },
+        notificationData: { listName, performer },
         userId,
         ...rest
       } = data;
-      const notificationId = 'list.actions.current-user-removed-from-members';
-      const notificationData = {
-        data: {
-          listName,
-          performer,
-          userName
-        },
-        notificationId
-      };
-      const { id } = currentUser;
-      const displayNotification = userId === id;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId;
 
       if (displayNotification) {
+        const notificationId = 'list.actions.current-user-removed-from-members';
+        const notificationData = {
+          data: {
+            listName,
+            performer
+          },
+          notificationId
+        };
+
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
