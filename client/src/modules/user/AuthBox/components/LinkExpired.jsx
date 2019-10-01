@@ -2,11 +2,11 @@ import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import AppLogo from 'common/components/AppLogo';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import { resendConfirmationLink } from 'modules/user/model/actions';
+import HomeLink from 'common/components/HomeLink';
 import './LinkExpired.scss';
 
 class LinkExpired extends PureComponent {
@@ -72,7 +72,7 @@ class LinkExpired extends PureComponent {
     return (
       <div className="link-expired">
         <h1 className="link-expired__heading">
-          <AppLogo />
+          <HomeLink />
         </h1>
         {sendingFailed && this.renderResendingError()}
         {isLinkSuccessfullySent

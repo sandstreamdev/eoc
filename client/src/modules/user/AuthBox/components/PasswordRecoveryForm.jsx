@@ -14,6 +14,7 @@ import {
   validatePassword,
   validateWith
 } from 'common/utils/helpers';
+import HomeLink from 'common/components/HomeLink';
 import './PasswordRecoveryForm.scss';
 
 class PasswordRecoveryForm extends PureComponent {
@@ -185,6 +186,7 @@ class PasswordRecoveryForm extends PureComponent {
 
     return (
       <form className="pass-recovery-form" onSubmit={this.handleSubmit}>
+        <HomeLink />
         <h2 className="pass-recovery-form__heading">
           {userName ? (
             <FormattedMessage
