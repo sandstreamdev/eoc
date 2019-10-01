@@ -14,6 +14,7 @@ import { disableItemAnimations } from './model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { updateLimit } from 'modules/list/model/actions';
 import { DISPLAY_LIMIT } from 'common/constants/variables';
+import { ChevronDown, ChevronUp } from 'assets/images/icons';
 
 class ItemsList extends PureComponent {
   constructor(props) {
@@ -139,14 +140,20 @@ class ItemsList extends PureComponent {
             className="items__show-more"
             onClick={this.showMore}
             type="button"
-          />
+          >
+            <FormattedMessage id="common.show-more" />
+            <ChevronDown />
+          </button>
         )}
         {limit > DISPLAY_LIMIT && items.length > 3 && (
           <button
             className="items__show-less"
             onClick={this.showLess}
             type="button"
-          />
+          >
+            <FormattedMessage id="common.show-less" />
+            <ChevronUp />
+          </button>
         )}
       </Fragment>
     );

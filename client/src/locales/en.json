@@ -61,6 +61,8 @@
   "common.app-name": "End of coffee",
   "common.try-again": "Please try again.",
   "common.something-went-wrong": "Something went wrong.",
+  "common.show-more": " Show more",
+  "common.show-less": " Show less",
   "common.no-owner-role": "'{userName}' has no owner role.",
   "common.owner-role": "'{userName}' has owner role.",
   "about.heading": "App history",
