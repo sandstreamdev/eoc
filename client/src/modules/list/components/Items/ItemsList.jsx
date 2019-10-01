@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _flowRight from 'lodash/flowRight';
@@ -11,7 +11,7 @@ import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 import { disableItemAnimations } from './model/actions';
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { updateLimit } from 'modules/list/model/actions';
 import { DISPLAY_LIMIT } from 'common/constants/variables';
 import { ChevronDown, ChevronUp } from 'assets/images/icons';
@@ -121,7 +121,11 @@ class ItemsList extends PureComponent {
   };
 
   render() {
-    const { archived, items } = this.props;
+    const {
+      archived,
+      intl: { formatMessage },
+      items
+    } = this.props;
     const { limit } = this.state;
     const messageId = archived
       ? 'list.items-list.message-no-arch-items'
@@ -139,6 +143,7 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-more"
             onClick={this.showMore}
+            title={formatMessage({ id: 'common.show-more' })}
             type="button"
           >
             <FormattedMessage id="common.show-more" />
@@ -149,6 +154,7 @@ class ItemsList extends PureComponent {
           <button
             className="items__show-less"
             onClick={this.showLess}
+            title={formatMessage({ id: 'common.show-less' })}
             type="button"
           >
             <FormattedMessage id="common.show-less" />
@@ -163,6 +169,7 @@ class ItemsList extends PureComponent {
 ItemsList.propTypes = {
   archived: PropTypes.bool,
   done: PropTypes.bool,
+  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
@@ -172,6 +179,7 @@ ItemsList.propTypes = {
 };
 
 export default _flowRight(
+  injectIntl,
   withRouter,
   connect(
     null,
