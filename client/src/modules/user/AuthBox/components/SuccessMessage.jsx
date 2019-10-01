@@ -4,13 +4,13 @@ import { Link, withRouter } from 'react-router-dom';
 
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { Routes } from 'common/constants/enums';
-import AppLogo from 'common/components/AppLogo';
+import HomeLink from 'common/components/HomeLink';
 import './SuccessMessage.scss';
 
 const SuccessMessage = ({ match: { path } }) => (
   <div className="success-message">
     <h1 className="success-message__heading">
-      <AppLogo />
+      <HomeLink />
     </h1>
     <p className="success-message__message">
       <FormattedMessage
