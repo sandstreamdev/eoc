@@ -75,10 +75,10 @@ class ItemsList extends PureComponent {
   };
 
   updateDisplayItemsCount = () => {
-    const { updateItemsCount } = this.props;
+    const { onUpdateItemsCount } = this.props;
     const { displayItems } = this.state;
 
-    updateItemsCount(displayItems.length);
+    onUpdateItemsCount(displayItems.length);
   };
 
   showMore = () =>
@@ -106,7 +106,7 @@ class ItemsList extends PureComponent {
 
   renderItems = () => {
     const { archived, isMember, items } = this.props;
-    const { limit, displayItems } = this.state;
+    const { limit } = this.state;
 
     if (!items) {
       return null;
@@ -115,7 +115,7 @@ class ItemsList extends PureComponent {
     return archived ? (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {displayItems.map(item => (
+          {items.slice(0, limit).map(item => (
             <CSSTransition
               classNames="animated-item"
               enter={item.animate}
@@ -195,7 +195,7 @@ ItemsList.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   disableItemAnimations: PropTypes.func.isRequired,
-  updateItemsCount: PropTypes.func.isRequired,
+  onUpdateItemsCount: PropTypes.func.isRequired,
   updateLimit: PropTypes.func.isRequired
 };
 

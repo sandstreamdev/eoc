@@ -43,7 +43,7 @@ class ItemsContainer extends Component {
   handleFilterLists = itemsToDisplay =>
     this.setState({ items: itemsToDisplay });
 
-  handleDisplayedItemsCount = displayedItemCount =>
+  handleDisplayItemsCount = displayedItemCount =>
     this.setState({ displayedItemCount });
 
   renderHeadingText = () => {
@@ -106,7 +106,7 @@ class ItemsContainer extends Component {
             archived={archived}
             isMember={isMember}
             items={items}
-            updateItemsCount={this.handleDisplayedItemsCount}
+            onUpdateItemsCount={this.handleDisplayItemsCount}
           />
         </div>
       </div>
