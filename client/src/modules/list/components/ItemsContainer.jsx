@@ -21,7 +21,7 @@ class ItemsContainer extends Component {
 
     this.state = {
       items,
-      displayedItemCount: 0
+      displayedItemCount: items.length
     };
   }
 

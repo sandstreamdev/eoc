@@ -16,17 +16,13 @@ import { DISPLAY_LIMIT } from 'common/constants/variables';
 import { updateLimit } from 'modules/list/model/actions';
 
 class ItemsList extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      displayItems: null,
-      limit: DISPLAY_LIMIT
-    };
-  }
+  state = {
+    limit: DISPLAY_LIMIT
+  };
 
   componentDidMount() {
-    this.prepareDisplayItems();
+    this.updateDisplayItemsCount();
+    this.handleLimitUpdate();
   }
 
   componentDidUpdate(previousProps) {
@@ -34,18 +30,10 @@ class ItemsList extends PureComponent {
     const { items } = this.props;
 
     if (previousItems.length !== items.length) {
-      this.prepareDisplayItems();
+      this.updateDisplayItemsCount();
+      this.handleLimitUpdate();
     }
   }
-
-  prepareDisplayItems = () => {
-    const { limit } = this.state;
-    const { items } = this.props;
-    const displayItems = items.slice(0, limit).map(item => item);
-
-    this.setState({ displayItems }, this.updateDisplayItemsCount);
-    this.handleLimitUpdate();
-  };
 
   /**
    * Do not remove handleLimitUpdate method,
@@ -75,20 +63,27 @@ class ItemsList extends PureComponent {
   };
 
   updateDisplayItemsCount = () => {
-    const { onUpdateItemsCount } = this.props;
-    const { displayItems } = this.state;
+    const { onUpdateItemsCount, items } = this.props;
+    const { limit } = this.state;
+    let displayedItemsCount;
 
-    onUpdateItemsCount(displayItems.length);
+    if (items.length < limit) {
+      displayedItemsCount = items.length;
+    } else {
+      displayedItemsCount = limit;
+    }
+
+    onUpdateItemsCount(displayedItemsCount);
   };
 
   showMore = () =>
     this.setState(
       ({ limit }) => ({ limit: limit + DISPLAY_LIMIT }),
-      this.prepareDisplayItems
+      this.updateDisplayItemsCount
     );
 
   showLess = () =>
-    this.setState({ limit: DISPLAY_LIMIT }, this.prepareDisplayItems);
+    this.setState({ limit: DISPLAY_LIMIT }, this.updateDisplayItemsCount);
 
   handleDisableAnimations = item => () => {
     const { _id: itemId, animate } = item;
