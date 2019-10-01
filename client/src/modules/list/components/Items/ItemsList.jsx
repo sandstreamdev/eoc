@@ -26,7 +26,7 @@ class ItemsList extends PureComponent {
   }
 
   componentDidMount() {
-    this.handleItems();
+    this.prepareDisplayedItems();
   }
 
   componentDidUpdate(previousProps) {
@@ -34,11 +34,11 @@ class ItemsList extends PureComponent {
     const { items } = this.props;
 
     if (previousItems.length !== items.length) {
-      this.handleItems();
+      this.prepareDisplayedItems();
     }
   }
 
-  handleItems = () => {
+  prepareDisplayedItems = () => {
     const { limit } = this.state;
     const { items } = this.props;
     const displayedItems = items.slice(0, limit).map(item => item);
@@ -84,10 +84,11 @@ class ItemsList extends PureComponent {
   showMore = () =>
     this.setState(
       ({ limit }) => ({ limit: limit + DISPLAY_LIMIT }),
-      this.handleItems
+      this.prepareDisplayedItems
     );
 
-  showLess = () => this.setState({ limit: DISPLAY_LIMIT }, this.handleItems);
+  showLess = () =>
+    this.setState({ limit: DISPLAY_LIMIT }, this.prepareDisplayedItems);
 
   handleDisableAnimations = item => () => {
     const { _id: itemId, animate } = item;
