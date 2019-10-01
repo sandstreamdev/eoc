@@ -167,7 +167,7 @@
   "list.items-container.filter-box": "Filter by:",
   "list.items-container.sort-box": "Sort by:",
   "list.items-container.unhandled": "Unhandled",
-  "list.items-counter-label": "Showing {displayedItemsCount} of {totalItemsCount} items",
+  "list.items-counter-label": "Showing {count} of {totalCount} {context}",
   "list.items-list.message-no-arch-items": "There are no archived items.",
   "list.items-list.message-no-items": "There are no items.",
   "list.items.action.restore-item-fail": "Failed to restore item: '{name}'.",

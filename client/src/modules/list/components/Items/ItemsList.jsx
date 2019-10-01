@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _flowRight from 'lodash/flowRight';
-import _isEqual from 'lodash/isEqual';
 
 import ListItem from 'modules/list/components/Items/ListItem';
 import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
@@ -34,7 +33,7 @@ class ItemsList extends PureComponent {
     const { items: previousItems } = previousProps;
     const { items } = this.props;
 
-    if (!_isEqual(previousItems, items)) {
+    if (previousItems.length !== items.length) {
       this.handleItems();
     }
   }

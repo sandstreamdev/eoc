@@ -13,6 +13,8 @@ import Badge from 'common/components/Badge';
 import { CloseIcon } from 'assets/images/icons';
 import Filter from 'common/components/Filter';
 
+const badgeContext = 'items';
+
 class ItemsContainer extends Component {
   constructor(props) {
     super(props);
@@ -93,10 +95,7 @@ class ItemsContainer extends Component {
             <Badge
               count={displayedItemsCount}
               totalCount={totalItemsCount}
-              title={formatMessage(
-                { id: 'list.items-counter-label' },
-                { displayedItemsCount, totalItemsCount }
-              )}
+              context={badgeContext}
             />
           </div>
         </header>
