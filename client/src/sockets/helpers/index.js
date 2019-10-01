@@ -13,10 +13,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         userId,
         ...rest
       } = data;
-      const notificationId =
-        currentUser.id === userId
-          ? 'list.actions.current-user-add-to-owners'
-          : 'list.actions.user-add-to-owners';
+      const notificationId = 'list.actions.current-user-add-to-owners';
       const notificationData = {
         data: {
           listName,
@@ -25,12 +22,16 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         },
         notificationId
       };
+      const { id } = currentUser;
+      const displayNotification = userId === id;
 
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        notificationData
-      );
+      if (displayNotification) {
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notificationData
+        );
+      }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
@@ -40,10 +41,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         userId,
         ...rest
       } = data;
-      const notificationId =
-        currentUser.id === userId
-          ? 'list.actions.current-user-removed-from-owners'
-          : 'list.actions.user-removed-from-owners';
+      const notificationId = 'list.actions.current-user-removed-from-owners';
       const notificationData = {
         data: {
           listName,
@@ -52,12 +50,16 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         },
         notificationId
       };
+      const { id } = currentUser;
+      const displayNotification = userId === id;
 
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        notificationData
-      );
+      if (displayNotification) {
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notificationData
+        );
+      }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
@@ -67,10 +69,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         userId,
         ...rest
       } = data;
-      const notificationId =
-        currentUser.id === userId
-          ? 'list.actions.current-user-add-to-members'
-          : 'list.actions.user-add-to-members';
+      const notificationId = 'list.actions.current-user-add-to-members';
       const notificationData = {
         data: {
           listName,
@@ -79,12 +78,16 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         },
         notificationId
       };
+      const { id } = currentUser;
+      const displayNotification = userId === id;
 
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        notificationData
-      );
+      if (displayNotification) {
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notificationData
+        );
+      }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
@@ -94,10 +97,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         userId,
         ...rest
       } = data;
-      const notificationId =
-        currentUser.id === userId
-          ? 'list.actions.current-user-removed-from-members'
-          : 'list.actions.user-removed-from-members';
+      const notificationId = 'list.actions.current-user-removed-from-members';
       const notificationData = {
         data: {
           listName,
@@ -106,12 +106,16 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         },
         notificationId
       };
+      const { id } = currentUser;
+      const displayNotification = userId === id;
 
-      createNotificationWithTimeout(
-        dispatch,
-        NotificationType.SUCCESS,
-        notificationData
-      );
+      if (displayNotification) {
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notificationData
+        );
+      }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }

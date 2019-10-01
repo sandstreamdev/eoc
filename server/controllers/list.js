@@ -838,7 +838,7 @@ const removeMember = (req, resp) => {
 
 const addOwnerRole = async (req, resp) => {
   const { id: listId } = req.params;
-  const { userId, userName } = req.body;
+  const { userId } = req.body;
   const {
     user: { _id: currentUserId, displayName }
   } = req;
@@ -881,8 +881,7 @@ const addOwnerRole = async (req, resp) => {
       listId,
       notificationData: {
         listName: list.name,
-        performer: displayName,
-        userName
+        performer: displayName
       },
       userId: sanitizedUserId
     };
@@ -897,9 +896,9 @@ const addOwnerRole = async (req, resp) => {
 
 const removeOwnerRole = async (req, resp) => {
   const { id: listId } = req.params;
-  const { userId, userName } = req.body;
+  const { userId } = req.body;
   const {
-    user: { _id: ownerId, displayName }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -908,7 +907,7 @@ const removeOwnerRole = async (req, resp) => {
     const list = await List.findOne({
       _id: sanitizedListId,
       isArchived: false,
-      ownerIds: ownerId
+      ownerIds: currentUserId
     }).exec();
 
     const { ownerIds } = list;
@@ -928,7 +927,7 @@ const removeOwnerRole = async (req, resp) => {
     fireAndForget(
       saveActivity(
         ActivityType.LIST_SET_AS_MEMBER,
-        ownerId,
+        currentUserId,
         null,
         sanitizedListId,
         list.cohortId,
@@ -940,8 +939,7 @@ const removeOwnerRole = async (req, resp) => {
       listId,
       notificationData: {
         listName: list.name,
-        performer: displayName,
-        userName
+        performer: displayName
       },
       userId: sanitizedUserId
     };
@@ -962,7 +960,7 @@ const removeOwnerRole = async (req, resp) => {
 
 const addMemberRole = async (req, resp) => {
   const { id: listId } = req.params;
-  const { userId, userName } = req.body;
+  const { userId } = req.body;
   const {
     user: { _id: currentUserId, displayName }
   } = req;
@@ -1004,8 +1002,7 @@ const addMemberRole = async (req, resp) => {
       listId,
       notificationData: {
         listName: list.name,
-        performer: displayName,
-        userName
+        performer: displayName
       },
       userId: sanitizedUserId
     };
@@ -1071,6 +1068,7 @@ const removeMemberRole = async (req, resp) => {
       notificationData: {
         listName: list.name,
         performer: displayName,
+        performerId: currentUserId,
         userName
       },
       userId: sanitizedUserId
