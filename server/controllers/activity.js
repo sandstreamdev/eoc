@@ -5,15 +5,15 @@ const List = require('../models/list.model');
 const Cohort = require('../models/cohort.model');
 const { NUMBER_OF_ACTIVITIES_TO_SEND } = require('../common/variables');
 
-const saveActivity = (
+const saveActivity = ({
   activityType,
   performerId,
-  itemId = null,
-  listId = null,
-  cohortId = null,
-  editedUserId = null,
-  editedValue = null
-) => {
+  itemId,
+  listId,
+  cohortId,
+  editedUserId,
+  editedValue
+}) => {
   const newActivity = new Activity({
     activityType,
     performerId,
