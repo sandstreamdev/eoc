@@ -12,14 +12,13 @@
   }
 
   &__header {
-    padding: four-by(4) 0 four-by(2);
+    width: 100%;
+    padding: four-by(4) 0 four-by(4);
     display: flex;
-    align-items: center;
     flex-direction: column;
     border-bottom: 1px solid $border-light;
 
     @include breakpoint($small) {
-      flex-direction: row;
       justify-content: space-between;
     }
     @include breakpoint($medium) {
@@ -27,7 +26,6 @@
       justify-content: left;
     }
     @include breakpoint($xlarge) {
-      flex-direction: row;
       justify-content: space-between;
     }
   }
@@ -41,7 +39,6 @@
     align-content: space-between;
 
     @include breakpoint($xsmall) {
-      width: auto;
       height: auto;
       flex-direction: row;
       justify-content: center;
@@ -145,5 +142,13 @@
     transition: color 200ms ease-in;
     font-size: 12px;
     line-height: 1.2;
+  }
+
+  .filter {
+    border-right-color: $gray-bg;
+
+    &:focus-within {
+      border-color: $border-focus;
+    }
   }
 }

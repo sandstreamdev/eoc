@@ -1,0 +1,67 @@
+@import 'partials';
+
+.filter {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 40px;
+  width: 100%;
+  background-color: $app-bg;
+  border: 1px solid $border-color;
+  border-right-color: $border-focus;
+
+  &:focus-within {
+    border-color: $border-focus;
+  }
+
+  svg {
+    margin-left: 8px;
+    display: block;
+    @include constant-size(16px);
+
+    path {
+      fill: $text-normal;
+    }
+  }
+
+  input {
+    font-family: $font-family;
+    color: $text-normal;
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    border: 0;
+    outline: 0;
+    background: 0;
+    font-size: $m-font;
+    padding: four-by(2);
+    display: block;
+  }
+
+  button {
+    display: block;
+    box-sizing: border-box;
+    background: 0;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 40px;
+    height: 40px;
+    cursor: pointer;
+
+    svg {
+      @include constant-size(14px);
+
+      path {
+        fill: $text-normal;
+      }
+    }
+
+    &:hover {
+      svg {
+        transform: scale(1.5);
+      }
+    }
+  }
+}
