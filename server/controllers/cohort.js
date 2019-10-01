@@ -49,7 +49,17 @@ const createCohort = (req, resp) => {
         .status(201)
         .send(responseWithCohort(doc, userId));
 
-      saveActivity(ActivityType.COHORT_ADD, userId, null, null, doc._id);
+      const activity = {
+        activityType: ActivityType.COHORT_ADD,
+        performerId: userId,
+        itemId: null,
+        listId: null,
+        cohortId: doc._id,
+        editedUserId: null,
+        editedValue: null
+      };
+
+      saveActivity(activity);
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -190,17 +200,17 @@ const updateCohortById = (req, resp) => {
       }
     })
     .then(doc => {
-      fireAndForget(
-        saveActivity(
-          cohortActivity,
-          userId,
-          null,
-          null,
-          sanitizedCohortId,
-          null,
-          doc.name
-        )
-      );
+      const activity = {
+        activityType: cohortActivity,
+        performerId: userId,
+        itemId: null,
+        listId: null,
+        cohortId: sanitizedCohortId,
+        editedUserId: null,
+        editedValue: doc.name
+      };
+
+      fireAndForget(saveActivity(activity));
 
       return resp.send();
     })
@@ -293,20 +303,19 @@ const deleteCohortById = (req, resp) => {
       const { ownerIds: owners, name } = cohort;
       const data = { cohortId, owners };
       const socketInstance = io.getInstance();
+      const activity = {
+        activityType: ActivityType.COHORT_DELETE,
+        performerId: userId,
+        itemId: null,
+        listId: null,
+        cohortId,
+        editedUserId: null,
+        editedValue: name
+      };
 
       socketActions.deleteCohort(socketInstance, allCohortsViewClients)(data);
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.COHORT_DELETE,
-          userId,
-          null,
-          null,
-          cohortId,
-          null,
-          name
-        )
-      );
+      fireAndForget(saveActivity(activity));
 
       resp.send();
     })
@@ -360,16 +369,17 @@ const removeMember = (req, resp) => {
         listClients
       )({ cohortId: sanitizedCohortId, userId: sanitizedUserId });
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.COHORT_REMOVE_USER,
-          currentUserId,
-          null,
-          null,
-          sanitizedCohortId,
-          sanitizedUserId
-        )
-      );
+      const activity = {
+        activityType: ActivityType.COHORT_REMOVE_USER,
+        performerId: currentUserId,
+        itemId: null,
+        listId: null,
+        cohortId: sanitizedCohortId,
+        editedUserId: sanitizedUserId,
+        editedValue: null
+      };
+
+      fireAndForget(saveActivity(activity));
 
       resp.send();
     })
@@ -408,16 +418,17 @@ const addOwnerRole = (req, resp) => {
         })
       );
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.COHORT_SET_AS_OWNER,
-          currentUserId,
-          null,
-          null,
-          sanitizedCohortId,
-          sanitizedUserId
-        )
-      );
+      const activity = {
+        activityType: ActivityType.COHORT_SET_AS_OWNER,
+        performerId: currentUserId,
+        itemId: null,
+        listId: null,
+        cohortId: sanitizedCohortId,
+        editedUserId: sanitizedUserId,
+        editedValue: null
+      };
+
+      fireAndForget(saveActivity(activity));
 
       resp.send();
     })
@@ -463,16 +474,17 @@ const removeOwnerRole = (req, resp) => {
         })
       );
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.COHORT_SET_AS_MEMBER,
-          currentUserId,
-          null,
-          null,
-          sanitizedCohortId,
-          sanitizedUserId
-        )
-      );
+      const activity = {
+        activityType: ActivityType.COHORT_SET_AS_MEMBER,
+        performerId: currentUserId,
+        itemId: null,
+        listId: null,
+        cohortId: sanitizedCohortId,
+        editedUserId: sanitizedUserId,
+        editedValue: null
+      };
+
+      fireAndForget(saveActivity(activity));
 
       resp.send();
     })
@@ -577,16 +589,17 @@ const addMember = (req, resp) => {
       if (userToSend) {
         resp.send(userToSend);
 
-        return fireAndForget(
-          saveActivity(
-            ActivityType.COHORT_ADD_USER,
-            userId,
-            null,
-            null,
-            sanitizedCohortId,
-            userToSend._id
-          )
-        );
+        const activity = {
+          activityType: ActivityType.COHORT_ADD_USER,
+          performerId: userId,
+          itemId: null,
+          listId: null,
+          cohortId: sanitizedCohortId,
+          editedUserId: userToSend._id,
+          editedValue: null
+        };
+
+        return fireAndForget(saveActivity(activity));
       }
       resp.send({ _id: null });
     })
