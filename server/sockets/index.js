@@ -58,6 +58,7 @@ const socketListeners = socketInstance => {
        * This check is for the old functionality to work.
        * After refactoring this handler will be simplified to:
        * socket.on('joinRoom', room => socket.join(room));
+       * https://jira2.sanddev.com/browse/EOC-469
        */
       if (typeof emittedData === 'object') {
         const { data, room } = emittedData;

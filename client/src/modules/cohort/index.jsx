@@ -118,7 +118,7 @@ class Cohort extends PureComponent {
     }
 
     if (cohortUpdated) {
-      const updateBreadcrumbs = previousCohort.name !== cohort.name;
+      const hasNameBeenChanged = previousCohort.name !== cohort.name;
       const hasCohortBeenArchived =
         !previousCohort.isArchived && cohort.isArchived;
       const hasCohortBeenRestored =
@@ -127,7 +127,7 @@ class Cohort extends PureComponent {
       const hasCohortBeenDeleted =
         !previousCohort.isDeleted && cohort.isDeleted;
 
-      if (updateBreadcrumbs) {
+      if (hasNameBeenChanged) {
         this.handleBreadcrumbs();
       }
 
@@ -374,6 +374,12 @@ class Cohort extends PureComponent {
     const dialogContextMessage = formatMessage({
       id: 'cohort.label'
     });
+    const dialogTitle = formatMessage(
+      {
+        id: 'common.actions.not-available'
+      },
+      { context: dialogContextMessage, name }
+    );
 
     return (
       <Fragment>
@@ -492,15 +498,10 @@ class Cohort extends PureComponent {
             hasPermissions={isOwner}
             onCancel={this.handleRedirect}
             onConfirm={
-              isArchived && !isDeleted ? this.handleRestoreCohort : null
+              isArchived && !isDeleted ? this.handleRestoreCohort : undefined
             }
             pending={pendingForCohortRestoration}
-            title={formatMessage(
-              {
-                id: 'common.actions.not-available'
-              },
-              { context: dialogContextMessage, name }
-            )}
+            title={dialogTitle}
           >
             <p>
               <FormattedMessage
@@ -532,7 +533,10 @@ Cohort.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortDetails: PropTypes.shape({
     description: PropTypes.string,
-    externalAction: PropTypes.objectOf(PropTypes.string),
+    externalAction: PropTypes.shape({
+      messageId: PropTypes.string.isRequired,
+      performer: PropTypes.string.isRequired
+    }),
     isDeleted: PropTypes.bool,
     isArchived: PropTypes.bool,
     name: PropTypes.string

@@ -120,14 +120,14 @@ class List extends Component {
         name: previousName
       } = previousList;
       const { name, cohortName } = list;
-      const updateBreadcrumbs =
+      const hasNamesBeenChanged =
         previousName !== name || previousCohortName !== cohortName;
       const hasListBeenArchived = !previousList.isArchived && list.isArchived;
       const hasListBeenRestored = previousList.isArchived && !list.isArchived;
       const hasUserBeenRemoved = previousMembers[userId] && !members[userId];
       const hasListBeenDeleted = !previousList.isDeleted && list.isDeleted;
 
-      if (updateBreadcrumbs) {
+      if (hasNamesBeenChanged) {
         this.handleBreadcrumbs();
       }
 
@@ -310,6 +310,12 @@ class List extends Component {
     const dialogContextMessage = formatMessage({
       id: 'list.label'
     });
+    const dialogTitle = formatMessage(
+      {
+        id: 'common.actions.not-available'
+      },
+      { context: dialogContextMessage, name }
+    );
 
     return (
       <Fragment>
@@ -404,14 +410,11 @@ class List extends Component {
             confirmLabel="common.button.restore"
             hasPermissions={isOwner}
             onCancel={this.handleRedirect}
-            onConfirm={isArchived && !isDeleted ? this.handleRestoreList : null}
+            onConfirm={
+              isArchived && !isDeleted ? this.handleRestoreList : undefined
+            }
             pending={pendingForListRestoration}
-            title={formatMessage(
-              {
-                id: 'common.actions.not-available'
-              },
-              { context: dialogContextMessage, name }
-            )}
+            title={dialogTitle}
           >
             <p>
               <FormattedMessage

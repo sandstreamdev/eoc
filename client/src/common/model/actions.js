@@ -24,6 +24,7 @@ export const joinRoom = ({
   /**
    * This code is for the old functionality to work.
    * After refactoring socket emission it will be removed
+   * https://jira2.sanddev.com/browse/EOC-469
    */
   const data = {
     userId,
