@@ -432,6 +432,9 @@ const responseWithListDetails = (list, userId) => cohort => {
     members: _keyBy(members, '_id')
   };
 };
+const getHours = milliseconds => Math.floor(milliseconds / 3600000);
+
+const formatHours = hours => (hours === 1 ? `${hours} hour` : `${hours} hours`);
 
 module.exports = {
   checkIfArrayContainsUserId,
@@ -440,6 +443,8 @@ module.exports = {
   enumerable,
   filter,
   fireAndForget,
+  formatHours,
+  getHours,
   isDefined,
   isMember,
   isOwner,

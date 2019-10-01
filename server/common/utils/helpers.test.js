@@ -3,6 +3,7 @@ const { ObjectId } = require('mongoose').Types;
 const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  getHours,
   isMember,
   isOwner,
   isValidMongoId,
@@ -462,5 +463,28 @@ describe('function responseWithListDetails', () => {
 
   it('returns cohort list details without sensitive data', () => {
     notExpected.map(property => expect(result).not.toHaveProperty(property));
+  });
+});
+
+describe('getHours', () => {
+  it('returns one hour', () => {
+    const milliseconds = 3600000;
+    const result = getHours(milliseconds);
+
+    expect(result).toEqual(1);
+  });
+
+  it('returns two hours', () => {
+    const milliseconds = 7250000;
+    const result = getHours(milliseconds);
+
+    expect(result).toEqual(2);
+  });
+
+  it('rounds towards zero', () => {
+    const milliseconds = 4000;
+    const result = getHours(milliseconds);
+
+    expect(result).toEqual(0);
   });
 });

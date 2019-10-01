@@ -13,7 +13,7 @@ const {
   validatePassword
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
-const { BadRequestReason } = require('../common/variables');
+const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -64,7 +64,7 @@ const signUp = (req, resp, next) => {
         if (!idFromProvider && !isActive) {
           const hashedPassword = bcrypt.hashSync(password + email, 12);
           const signUpHash = crypto.randomBytes(32).toString('hex');
-          const expirationDate = new Date().getTime() + 3600000;
+          const expirationDate = new Date().getTime() + EXPIRATION_TIME;
 
           return User.findOneAndUpdate(
             { _id },
@@ -92,7 +92,7 @@ const signUp = (req, resp, next) => {
 
       const hashedPassword = bcrypt.hashSync(password + email, 12);
       const signUpHash = crypto.randomBytes(32).toString('hex');
-      const expirationDate = new Date().getTime() + 3600000;
+      const expirationDate = new Date().getTime() + EXPIRATION_TIME;
       const newUser = new User({
         displayName: sanitizedUsername,
         email: sanitizedEmail,
@@ -163,7 +163,7 @@ const resendSignUpConfirmationLink = (req, resp, next) => {
     },
     {
       signUpHash: crypto.randomBytes(32).toString('hex'),
-      signUpHashExpirationDate: new Date().getTime() + 3600000
+      signUpHashExpirationDate: new Date().getTime() + EXPIRATION_TIME
     },
     { new: true }
   )
@@ -215,7 +215,7 @@ const resetPassword = (req, resp, next) => {
       }
 
       const resetToken = crypto.randomBytes(32).toString('hex');
-      const resetTokenExpirationDate = new Date().getTime() + 3600000;
+      const resetTokenExpirationDate = new Date().getTime() + EXPIRATION_TIME;
 
       return User.findOneAndUpdate(
         {

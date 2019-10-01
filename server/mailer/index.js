@@ -2,6 +2,8 @@ const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
 const { PROJECT_NAME } = require('../common/variables');
+const { formatHours, getHours } = require('../common/utils');
+const { EXPIRATION_TIME } = require('../common/variables');
 
 const { SENDGRID_API_KEY } = process.env;
 
@@ -41,8 +43,12 @@ const sendSignUpConfirmationLink = (req, resp) => {
   const { displayName: name, email: receiver, signUpHash } = resp.locals;
   const host = req.get('host');
   const confirmUrl = `${host}/auth/confirm-email/${signUpHash}`;
+  const hours = getHours(EXPIRATION_TIME);
   const title = `Welcome to ${PROJECT_NAME}!`;
-  const info = `It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!`;
+  const formattedHours = formatHours(hours);
+  const info1 = `<p>It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!</p>`;
+  const info2 = `<p>Remember that confirmation button will be active only for ${formattedHours}.</p>`;
+  const infoToSend = info1 + info2;
   const value = 'Confirm your account';
 
   const message = {
@@ -54,7 +60,7 @@ const sendSignUpConfirmationLink = (req, resp) => {
       `${PROJECT_NAME} team`,
       confirmUrl,
       title,
-      info,
+      infoToSend,
       value
     )
   };
@@ -67,10 +73,14 @@ const sendSignUpConfirmationLink = (req, resp) => {
 const sendResetPasswordLink = (req, resp) => {
   const { email: receiver, displayName, resetToken } = resp.locales;
   const host = req.get('host');
+  const hours = getHours(EXPIRATION_TIME);
   const resetUrl = `${host}/auth/recovery-password/${resetToken}`;
   const title = `${PROJECT_NAME} - Reset your password`;
-  const info =
-    'Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.';
+  const formattedHours = formatHours(hours);
+  const info1 =
+    '<p>Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.</p>';
+  const info2 = `<p>Remember that reset button will be active only for ${formattedHours}.</p>`;
+  const infoToSend = info1 + info2;
   const value = 'Reset password';
 
   const message = {
@@ -82,7 +92,7 @@ const sendResetPasswordLink = (req, resp) => {
       `${PROJECT_NAME} team`,
       resetUrl,
       title,
-      info,
+      infoToSend,
       value
     )
   };
