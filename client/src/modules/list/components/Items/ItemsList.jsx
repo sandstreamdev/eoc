@@ -48,6 +48,10 @@ class ItemsList extends PureComponent {
     this.handleLimitUpdate();
   };
 
+  /**
+   * Do not remove handleLimitUpdate method,
+   * it is necessary for animations to work
+   */
   handleLimitUpdate = () => {
     const {
       archived: archivedItems,
