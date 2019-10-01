@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import './Badge.scss';
 
 import { IntlPropType } from 'common/constants/propTypes';
+import './Badge.scss';
 
 const Badge = ({ context, count, icon, intl: { formatMessage }, total }) => (
   <span

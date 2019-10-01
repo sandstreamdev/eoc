@@ -20,13 +20,13 @@ class ItemsList extends PureComponent {
     super(props);
 
     this.state = {
-      displayedItems: null,
+      displayItems: null,
       limit: DISPLAY_LIMIT
     };
   }
 
   componentDidMount() {
-    this.prepareDisplayedItems();
+    this.prepareDisplayItems();
   }
 
   componentDidUpdate(previousProps) {
@@ -34,16 +34,16 @@ class ItemsList extends PureComponent {
     const { items } = this.props;
 
     if (previousItems.length !== items.length) {
-      this.prepareDisplayedItems();
+      this.prepareDisplayItems();
     }
   }
 
-  prepareDisplayedItems = () => {
+  prepareDisplayItems = () => {
     const { limit } = this.state;
     const { items } = this.props;
-    const displayedItems = items.slice(0, limit).map(item => item);
+    const displayItems = items.slice(0, limit).map(item => item);
 
-    this.setState({ displayedItems }, this.displayedItemsCount);
+    this.setState({ displayItems }, this.updateDisplayItemsCount);
     this.handleLimitUpdate();
   };
 
@@ -74,21 +74,21 @@ class ItemsList extends PureComponent {
     updateLimit(limit, listId);
   };
 
-  displayedItemsCount = () => {
+  updateDisplayItemsCount = () => {
     const { updateItemsCount } = this.props;
-    const { displayedItems } = this.state;
+    const { displayItems } = this.state;
 
-    updateItemsCount(displayedItems.length);
+    updateItemsCount(displayItems.length);
   };
 
   showMore = () =>
     this.setState(
       ({ limit }) => ({ limit: limit + DISPLAY_LIMIT }),
-      this.prepareDisplayedItems
+      this.prepareDisplayItems
     );
 
   showLess = () =>
-    this.setState({ limit: DISPLAY_LIMIT }, this.prepareDisplayedItems);
+    this.setState({ limit: DISPLAY_LIMIT }, this.prepareDisplayItems);
 
   handleDisableAnimations = item => () => {
     const { _id: itemId, animate } = item;
@@ -106,7 +106,7 @@ class ItemsList extends PureComponent {
 
   renderItems = () => {
     const { archived, isMember, items } = this.props;
-    const { limit, displayedItems } = this.state;
+    const { limit, displayItems } = this.state;
 
     if (!items) {
       return null;
@@ -115,7 +115,7 @@ class ItemsList extends PureComponent {
     return archived ? (
       <ul className="items-list">
         <TransitionGroup component={null}>
-          {displayedItems.map(item => (
+          {displayItems.map(item => (
             <CSSTransition
               classNames="animated-item"
               enter={item.animate}

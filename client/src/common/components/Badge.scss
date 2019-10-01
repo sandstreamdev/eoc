@@ -17,7 +17,7 @@
     justify-content: center;
 
     svg {
-      height: 14px;
+      @include constant-size(14px);
 
       path {
         fill: $text-dark;
