@@ -92,10 +92,10 @@ class ItemsContainer extends Component {
             />
             <Badge
               count={displayedItemCount}
-              totalCount={totalItemsCount}
+              total={totalItemsCount}
               context={formatMessage(
                 { id: 'list.badge-items' },
-                { totalCount: totalItemsCount }
+                { total: totalItemsCount }
               )}
             />
           </div>

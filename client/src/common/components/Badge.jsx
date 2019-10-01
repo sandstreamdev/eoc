@@ -5,22 +5,16 @@ import './Badge.scss';
 
 import { IntlPropType } from 'common/constants/propTypes';
 
-const Badge = ({
-  context,
-  count,
-  icon,
-  intl: { formatMessage },
-  totalCount
-}) => (
+const Badge = ({ context, count, icon, intl: { formatMessage }, total }) => (
   <span
     className="badge"
     title={formatMessage(
       { id: 'list.items-counter-label' },
-      { count, totalCount, context }
+      { count, total, context }
     )}
   >
     {icon && <span className="badge__icon">{icon}</span>}
-    <span className="badge__counter">{`${count}/${totalCount}`}</span>
+    <span className="badge__counter">{`${count}/${total}`}</span>
   </span>
 );
 
@@ -29,7 +23,7 @@ Badge.propTypes = {
   count: PropTypes.number.isRequired,
   icon: PropTypes.any,
   intl: IntlPropType.isRequired,
-  totalCount: PropTypes.number.isRequired
+  total: PropTypes.number.isRequired
 };
 
 export default injectIntl(Badge);
