@@ -425,7 +425,7 @@ describe('function responseWithCohortDetails', () => {
   });
 });
 
-describe('function getHours should return hours count based on provided milliseconds', () => {
+describe('getHours', () => {
   it('returns one hour', () => {
     const milliseconds = 3600000;
     const result = getHours(milliseconds);
