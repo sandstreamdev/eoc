@@ -76,7 +76,7 @@ class Cohort extends PureComponent {
     this.fetchData();
 
     const roomConfig = {
-      isRoomMetaDataNeeded: !isDisabled,
+      subscribeMetaData: !isDisabled,
       resourceId: cohortId,
       roomPrefix: Routes.COHORT,
       userId
@@ -103,8 +103,9 @@ class Cohort extends PureComponent {
     } = previousProps;
     const { isDisabled } = this.state;
     const hasCohortChanged = cohortId !== previousCohortId;
+    const cohortUpdated = previousCohort && cohort;
     const roomConfig = {
-      isRoomMetaDataNeeded: !isDisabled,
+      subscribeMetaData: !isDisabled,
       resourceId: previousCohortId,
       roomPrefix: Routes.COHORT,
       userId
@@ -116,14 +117,13 @@ class Cohort extends PureComponent {
       this.fetchData();
     }
 
-    if (previousCohort && cohort) {
+    if (cohortUpdated) {
       const updateBreadcrumbs = previousCohort.name !== cohort.name;
       const hasCohortBeenArchived =
         !previousCohort.isArchived && cohort.isArchived;
       const hasCohortBeenRestored =
         previousCohort.isArchived && !cohort.isArchived;
       const hasUserBeenRemoved = previousMembers[userId] && !members[userId];
-      const hasUserBeenAddedBack = !previousMembers[userId] && members[userId];
       const hasCohortBeenDelete = !previousCohort.isDeleted && cohort.isDeleted;
 
       if (updateBreadcrumbs) {
@@ -132,9 +132,7 @@ class Cohort extends PureComponent {
 
       if (hasCohortBeenArchived || hasUserBeenRemoved || hasCohortBeenDelete) {
         this.handleDisableCohort();
-      }
-
-      if (hasCohortBeenRestored || hasUserBeenAddedBack) {
+      } else if (hasCohortBeenRestored) {
         this.handleEnableCohort();
       }
     }
@@ -149,7 +147,7 @@ class Cohort extends PureComponent {
     } = this.props;
     const { isDisabled } = this.state;
     const roomConfig = {
-      isRoomMetaDataNeeded: !isDisabled,
+      subscribeMetaData: !isDisabled,
       resourceId: cohortId,
       roomPrefix: Routes.COHORT,
       userId

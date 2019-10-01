@@ -14,7 +14,7 @@ export const leaveView = (route, userId) =>
   socket.emit('leaveView', { userId, view: route });
 
 export const joinRoom = roomConfig => {
-  const { isRoomMetaDataNeeded, resourceId, roomPrefix, userId } = roomConfig;
+  const { subscribeMetaData, resourceId, roomPrefix, userId } = roomConfig;
   const room = channel(resourceId, roomPrefix);
 
   /**
@@ -32,7 +32,7 @@ export const joinRoom = roomConfig => {
     room
   });
 
-  if (isRoomMetaDataNeeded) {
+  if (subscribeMetaData) {
     const metaDataRoom = metaDataChannel(resourceId, roomPrefix);
 
     socket.emit(AppEvents.LEAVE_ROOM, metaDataRoom);
@@ -40,7 +40,7 @@ export const joinRoom = roomConfig => {
 };
 
 export const leaveRoom = roomConfig => {
-  const { isRoomMetaDataNeeded, resourceId, roomPrefix, userId } = roomConfig;
+  const { subscribeMetaData, resourceId, roomPrefix, userId } = roomConfig;
   const room = channel(resourceId, roomPrefix);
   const data = {
     userId,
@@ -50,7 +50,7 @@ export const leaveRoom = roomConfig => {
 
   socket.emit(AppEvents.LEAVE_ROOM, { data, room });
 
-  if (isRoomMetaDataNeeded) {
+  if (subscribeMetaData) {
     const metaDataRoom = metaDataChannel(resourceId, roomPrefix);
 
     socket.emit(AppEvents.JOIN_ROOM, metaDataRoom);

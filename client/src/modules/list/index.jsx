@@ -74,7 +74,7 @@ class List extends Component {
       });
 
     const roomConfig = {
-      isRoomMetaDataNeeded: !isDisabled,
+      subscribeMetaData: !isDisabled,
       resourceId: listId,
       roomPrefix: Routes.LIST,
       userId
@@ -102,7 +102,7 @@ class List extends Component {
     const { isDisabled } = this.state;
     const hasListChanged = listId !== previousListId;
     const roomConfig = {
-      isRoomMetaDataNeeded: !isDisabled,
+      subscribeMetaData: !isDisabled,
       resourceId: previousListId,
       roomPrefix: Routes.LIST,
       userId
@@ -125,7 +125,6 @@ class List extends Component {
       const hasListBeenArchived = !previousList.isArchived && list.isArchived;
       const hasListBeenRestored = previousList.isArchived && !list.isArchived;
       const hasUserBeenRemoved = previousMembers[userId] && !members[userId];
-      const hasUserBeenAddedBack = !previousMembers[userId] && members[userId];
       const hasListBeenDelete = !previousList.isDeleted && list.isDeleted;
 
       if (updateBreadcrumbs) {
@@ -134,9 +133,7 @@ class List extends Component {
 
       if (hasListBeenArchived || hasUserBeenRemoved || hasListBeenDelete) {
         this.handleDisableList();
-      }
-
-      if (hasListBeenRestored || hasUserBeenAddedBack) {
+      } else if (hasListBeenRestored) {
         this.handleEnableList();
       }
     }
@@ -151,7 +148,7 @@ class List extends Component {
     } = this.props;
     const { isDisabled } = this.state;
     const roomConfig = {
-      isRoomMetaDataNeeded: !isDisabled,
+      subscribeMetaData: !isDisabled,
       resourceId: listId,
       roomPrefix: Routes.LIST,
       userId
