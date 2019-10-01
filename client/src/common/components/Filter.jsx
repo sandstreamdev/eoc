@@ -13,7 +13,7 @@ class Filter extends PureComponent {
     this.state = {
       query: ''
     };
-    this.debouncedFilter = _debounce(this.handleFilter, 500);
+    this.debouncedFilter = _debounce(this.handleFilterChange, 500);
     this.input = React.createRef();
   }
 
@@ -42,7 +42,7 @@ class Filter extends PureComponent {
     });
   };
 
-  handleFilter = query => {
+  handleFilterChange = query => {
     const { onFilter, options } = this.props;
     const trimmedQuery = _trim(query);
     let filteredOptions;
