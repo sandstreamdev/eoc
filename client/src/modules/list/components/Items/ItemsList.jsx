@@ -65,13 +65,7 @@ class ItemsList extends PureComponent {
   updateDisplayItemsCount = () => {
     const { onUpdateItemsCount, items } = this.props;
     const { limit } = this.state;
-    let displayedItemsCount;
-
-    if (items.length < limit) {
-      displayedItemsCount = items.length;
-    } else {
-      displayedItemsCount = limit;
-    }
+    const displayedItemsCount = Math.min(items.length, limit);
 
     onUpdateItemsCount(displayedItemsCount);
   };
