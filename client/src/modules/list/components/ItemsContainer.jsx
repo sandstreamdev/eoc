@@ -21,7 +21,7 @@ class ItemsContainer extends Component {
 
     this.state = {
       items,
-      displayedItemsCount: 0
+      displayedItemCount: 0
     };
   }
 
@@ -43,8 +43,8 @@ class ItemsContainer extends Component {
   handleFilterLists = itemsToDisplay =>
     this.setState({ items: itemsToDisplay });
 
-  handleDisplayedItemsCount = displayedItemsCount =>
-    this.setState({ displayedItemsCount });
+  handleDisplayedItemsCount = displayedItemCount =>
+    this.setState({ displayedItemCount });
 
   renderHeadingText = () => {
     const { archived, done } = this.props;
@@ -70,7 +70,7 @@ class ItemsContainer extends Component {
       isMember,
       items: itemsToSearch
     } = this.props;
-    const { items, displayedItemsCount } = this.state;
+    const { items, displayedItemCount } = this.state;
     const filterByFields = ['authorName', 'name'];
     const totalItemsCount = itemsToSearch.length;
 
@@ -91,7 +91,7 @@ class ItemsContainer extends Component {
               })}
             />
             <Badge
-              count={displayedItemsCount}
+              count={displayedItemCount}
               totalCount={totalItemsCount}
               context={formatMessage(
                 { id: 'list.badge-items' },
