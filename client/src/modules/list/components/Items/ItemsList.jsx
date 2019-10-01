@@ -14,6 +14,7 @@ import { MessageType } from 'common/constants/enums';
 import { disableItemAnimations } from './model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
 import { DISPLAY_LIMIT } from 'common/constants/variables';
+import { updateLimit } from 'modules/list/model/actions';
 
 class ItemsList extends PureComponent {
   constructor(props) {
@@ -44,6 +45,30 @@ class ItemsList extends PureComponent {
     const displayedItems = items.slice(0, limit).map(item => item);
 
     this.setState({ displayedItems }, this.displayedItemsCount);
+    this.handleLimitUpdate();
+  };
+
+  handleLimitUpdate = () => {
+    const {
+      archived: archivedItems,
+      done: doneItems,
+      match: {
+        params: { id: listId }
+      },
+      updateLimit
+    } = this.props;
+    const { limit: currentLimit } = this.state;
+    const limit = {};
+
+    if (archivedItems) {
+      limit.archivedLimit = currentLimit;
+    } else if (doneItems) {
+      limit.doneLimit = currentLimit;
+    } else {
+      limit.unhandledLimit = currentLimit;
+    }
+
+    updateLimit(limit, listId);
   };
 
   displayedItemsCount = () => {
@@ -160,18 +185,20 @@ class ItemsList extends PureComponent {
 
 ItemsList.propTypes = {
   archived: PropTypes.bool,
+  done: PropTypes.bool,
   isMember: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object),
   match: RouterMatchPropType.isRequired,
 
   disableItemAnimations: PropTypes.func.isRequired,
-  updateItemsCount: PropTypes.func.isRequired
+  updateItemsCount: PropTypes.func.isRequired,
+  updateLimit: PropTypes.func.isRequired
 };
 
 export default _flowRight(
   withRouter,
   connect(
     null,
-    { disableItemAnimations }
+    { disableItemAnimations, updateLimit }
   )
 )(ItemsList);

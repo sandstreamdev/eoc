@@ -317,6 +317,21 @@ const lists = (state = {}, action) => {
         '_id'
       );
     }
+    case ListActionTypes.UPDATE_LIMIT_SUCCESS: {
+      const {
+        payload: { listId, limit }
+      } = action;
+
+      const updatedState = { ...state[listId].listState, ...limit };
+
+      return {
+        ...state,
+        [listId]: {
+          ...state[listId],
+          listState: updatedState
+        }
+      };
+    }
     case CommentActionTypes.ADD_SUCCESS:
     case CommentActionTypes.FETCH_SUCCESS:
     case ItemActionTypes.CLEAR_VOTE_SUCCESS:
