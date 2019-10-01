@@ -37,6 +37,7 @@
     flex-direction: column;
     height: 90px;
     align-content: space-between;
+    align-items: center;
 
     @include breakpoint($xsmall) {
       height: auto;
@@ -51,6 +52,10 @@
     }
     @include breakpoint($xlarge) {
       justify-content: flex-end;
+    }
+
+    .badge {
+      margin-left: four-by(2);
     }
   }
 

@@ -12,41 +12,33 @@ import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
 import { disableItemAnimations } from './model/actions';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-import { updateLimit } from 'modules/list/model/actions';
 import { DISPLAY_LIMIT } from 'common/constants/variables';
+import { updateLimit } from 'modules/list/model/actions';
 
 class ItemsList extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      limit: DISPLAY_LIMIT
-    };
-  }
-
-  showMore = () =>
-    this.setState(
-      ({ limit }) => ({ limit: limit + DISPLAY_LIMIT }),
-      this.handleLimitUpdate
-    );
-
-  showLess = () =>
-    this.setState({ limit: DISPLAY_LIMIT }, this.handleLimitUpdate);
-
-  handleDisableAnimations = item => () => {
-    const { _id: itemId, animate } = item;
-    if (animate) {
-      const {
-        disableItemAnimations,
-        match: {
-          params: { id: listId }
-        }
-      } = this.props;
-
-      disableItemAnimations(itemId, listId);
-    }
+  state = {
+    limit: DISPLAY_LIMIT
   };
 
+  componentDidMount() {
+    this.updateDisplayItemsCount();
+    this.handleLimitUpdate();
+  }
+
+  componentDidUpdate(previousProps) {
+    const { items: previousItems } = previousProps;
+    const { items } = this.props;
+
+    if (previousItems.length !== items.length) {
+      this.updateDisplayItemsCount();
+      this.handleLimitUpdate();
+    }
+  }
+
+  /**
+   * Do not remove handleLimitUpdate method,
+   * it is necessary for animations to work
+   */
   handleLimitUpdate = () => {
     const {
       archived: archivedItems,
@@ -68,6 +60,37 @@ class ItemsList extends PureComponent {
     }
 
     updateLimit(limit, listId);
+  };
+
+  updateDisplayItemsCount = () => {
+    const { onUpdateItemsCount, items } = this.props;
+    const { limit } = this.state;
+    const displayedItemsCount = Math.min(items.length, limit);
+
+    onUpdateItemsCount(displayedItemsCount);
+  };
+
+  showMore = () =>
+    this.setState(
+      ({ limit }) => ({ limit: limit + DISPLAY_LIMIT }),
+      this.updateDisplayItemsCount
+    );
+
+  showLess = () =>
+    this.setState({ limit: DISPLAY_LIMIT }, this.updateDisplayItemsCount);
+
+  handleDisableAnimations = item => () => {
+    const { _id: itemId, animate } = item;
+    if (animate) {
+      const {
+        disableItemAnimations,
+        match: {
+          params: { id: listId }
+        }
+      } = this.props;
+
+      disableItemAnimations(itemId, listId);
+    }
   };
 
   renderItems = () => {
@@ -161,6 +184,7 @@ ItemsList.propTypes = {
   match: RouterMatchPropType.isRequired,
 
   disableItemAnimations: PropTypes.func.isRequired,
+  onUpdateItemsCount: PropTypes.func.isRequired,
   updateLimit: PropTypes.func.isRequired
 };
 

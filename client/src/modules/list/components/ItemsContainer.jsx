@@ -9,8 +9,9 @@ import ItemsList from 'modules/list/components/Items';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { IntlPropType } from 'common/constants/propTypes';
 import './ItemsContainer.scss';
-import Filter from 'common/components/Filter';
+import Badge from 'common/components/Badge';
 import { CloseIcon } from 'assets/images/icons';
+import Filter from 'common/components/Filter';
 
 const filterByFields = ['authorName', 'name'];
 
@@ -21,7 +22,8 @@ class ItemsContainer extends Component {
     const { items } = this.props;
 
     this.state = {
-      items
+      items,
+      displayedItemCount: items.length
     };
   }
 
@@ -43,6 +45,9 @@ class ItemsContainer extends Component {
   handleFilterLists = itemsToDisplay =>
     this.setState({ items: itemsToDisplay });
 
+  updateDisplayItemsCount = displayedItemCount =>
+    this.setState({ displayedItemCount });
+
   renderHeadingText = () => {
     const { archived, done } = this.props;
 
@@ -63,12 +68,12 @@ class ItemsContainer extends Component {
     const {
       archived,
       children,
-      done,
       intl: { formatMessage },
       isMember,
       items: itemsToSearch
     } = this.props;
-    const { items } = this.state;
+    const { items, displayedItemCount } = this.state;
+    const totalItemsCount = itemsToSearch.length;
 
     return (
       <div className="items">
@@ -86,15 +91,23 @@ class ItemsContainer extends Component {
                 id: 'list.list-item.input-find-items'
               })}
             />
+            <Badge
+              count={displayedItemCount}
+              total={totalItemsCount}
+              context={formatMessage(
+                { id: 'list.badge-items' },
+                { total: totalItemsCount }
+              )}
+            />
           </div>
         </header>
         {children}
         <div className="items__body">
           <ItemsList
             archived={archived}
-            done={done}
             isMember={isMember}
             items={items}
+            onUpdateItemsCount={this.updateDisplayItemsCount}
           />
         </div>
       </div>
