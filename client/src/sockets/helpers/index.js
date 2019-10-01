@@ -40,7 +40,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
       const messageId =
         event === ListEvents.REMOVE_COHORT_MEMBER
           ? 'list.actions.user-removed-from-cohort-by-someone'
-          : 'list.actions.user-removed-by-someone';
+          : 'common.actions.user-removed-by-someone';
       const externalAction = {
         messageId,
         performer
@@ -64,7 +64,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
       } = history;
       const { listId, performer } = data;
       const externalAction = {
-        messageId: 'list.actions.archived-by-someone',
+        messageId: 'common.actions.archived-by-someone',
         performer
       };
       const { lists } = getState();
@@ -94,7 +94,7 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
       } = history;
       const messageId =
         event === ListEvents.REMOVE_COHORT_MEMBER
-          ? 'list.actions.deleted-by-someone'
+          ? 'common.actions.deleted-by-someone'
           : 'list.actions.delete-on-archive-cohort';
       const externalAction = {
         messageId,
@@ -132,7 +132,7 @@ export const cohortEventsController = (event, data, { dispatch, getState }) => {
       } = history;
       const { cohortId, performer, userId } = data;
       const externalAction = {
-        messageId: 'cohort.actions.user-removed-by-someone',
+        messageId: 'common.actions.user-removed-by-someone',
         performer
       };
 
@@ -154,7 +154,7 @@ export const cohortEventsController = (event, data, { dispatch, getState }) => {
       } = history;
       const { cohortId, performer } = data;
       const externalAction = {
-        messageId: 'cohort.actions.archived-by-someone',
+        messageId: 'common.actions.archived-by-someone',
         performer
       };
       const { cohorts } = getState();
@@ -187,7 +187,7 @@ export const cohortEventsController = (event, data, { dispatch, getState }) => {
         location: { pathname }
       } = history;
       const externalAction = {
-        messageId: 'cohort.actions.deleted-by-someone',
+        messageId: 'common.actions.deleted-by-someone',
         performer
       };
       const payload = pathname.includes(cohortId)
