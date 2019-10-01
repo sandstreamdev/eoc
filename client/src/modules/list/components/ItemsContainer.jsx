@@ -94,7 +94,7 @@ class ItemsContainer extends Component {
               count={displayedItemsCount}
               totalCount={totalItemsCount}
               context={formatMessage(
-                { id: 'list.badge-context' },
+                { id: 'list.badge-items' },
                 { totalCount: totalItemsCount }
               )}
             />

@@ -151,7 +151,7 @@
   "dashboard.index.add": "Add new sack",
   "list.archived-items-container.hide": "Hide archived items",
   "list.archived-items-container.show": "Show archived items",
-  "list.badge-context": "{totalCount, plural, =0 {''} one {item} other {items}}",
+  "list.badge-items": "{totalCount, plural, =0 {''} one {item} other {items}}",
   "list.index.arch-sack": "Archive the '{name}' sack",
   "list.index.archivization": "'{name}' sack archivization...",
   "list.index.change-type-question": "Are you sure you want to change the '{name}' sack to {value}?",
