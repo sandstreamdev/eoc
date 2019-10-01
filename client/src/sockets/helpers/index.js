@@ -168,6 +168,7 @@ export const cohortEventsController = (event, data, { dispatch, getState }) => {
 
       if (cohorts[cohortId]) {
         const { isOwner } = cohorts[cohortId];
+
         if (!isOwner) {
           return dispatch({
             type: CohortEvents.DELETE_SUCCESS,

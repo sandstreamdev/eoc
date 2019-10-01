@@ -13,8 +13,12 @@ export const enterView = (route, userId) =>
 export const leaveView = (route, userId) =>
   socket.emit('leaveView', { userId, view: route });
 
-export const joinRoom = roomConfig => {
-  const { subscribeMetaData, resourceId, roomPrefix, userId } = roomConfig;
+export const joinRoom = ({
+  resourceId,
+  roomPrefix,
+  subscribeMetaData,
+  userId
+}) => {
   const room = channel(resourceId, roomPrefix);
 
   /**
@@ -39,8 +43,12 @@ export const joinRoom = roomConfig => {
   }
 };
 
-export const leaveRoom = roomConfig => {
-  const { subscribeMetaData, resourceId, roomPrefix, userId } = roomConfig;
+export const leaveRoom = ({
+  resourceId,
+  roomPrefix,
+  subscribeMetaData,
+  userId
+}) => {
   const room = channel(resourceId, roomPrefix);
   const data = {
     userId,
