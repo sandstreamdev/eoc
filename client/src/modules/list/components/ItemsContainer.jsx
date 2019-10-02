@@ -83,6 +83,7 @@ class ItemsContainer extends Component {
           </h2>
           <div className="items__header-controls">
             <Filter
+              autofocus={false}
               buttonContent={<CloseIcon />}
               fields={filterByFields}
               onFilter={this.handleFilterLists}
