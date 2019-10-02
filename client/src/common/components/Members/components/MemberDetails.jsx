@@ -2,9 +2,14 @@ import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  RouterMatchPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import { CloseIcon, InfoIcon } from 'assets/images/icons';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import {
@@ -23,12 +28,11 @@ import { Routes, UserRoles, UserRolesToDisplay } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import SwitchButton from 'common/components/SwitchButton';
 import { ListType } from 'modules/list/consts';
-import { makeAbortablePromise } from 'common/utils/helpers';
+import { formatName, makeAbortablePromise } from 'common/utils/helpers';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import MemberDetailsHeader from './MemberDetailsHeader';
 import MemberRole from 'common/components/Members/components/MemberRole';
 import './MemberDetails.scss';
-import { formatName } from 'common/utils/helpers';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -68,6 +72,7 @@ class MemberDetails extends PureComponent {
   handleMemberRemoving = () => {
     const {
       displayName,
+      intl: { formatMessage },
       isOwner,
       match: {
         params: { id }
@@ -77,7 +82,7 @@ class MemberDetails extends PureComponent {
       route,
       _id: userId
     } = this.props;
-    const formattedName = formatName(displayName);
+    const formattedName = formatName(displayName, formatMessage);
     const action =
       route === Routes.COHORT ? removeCohortMember : removeListMember;
 
@@ -122,6 +127,7 @@ class MemberDetails extends PureComponent {
       addOwnerRoleInCohort,
       currentUser: { id: currentUserId },
       displayName,
+      intl: { formatMessage },
       isOwner,
       match: {
         params: { id }
@@ -129,7 +135,7 @@ class MemberDetails extends PureComponent {
       removeOwnerRoleInCohort
     } = this.props;
     const isCurrentUserRoleChanging = currentUserId === userId;
-    const formattedUserName = formatName(displayName);
+    const formattedUserName = formatName(displayName, formatMessage);
 
     this.setState({ pending: true });
 
@@ -153,6 +159,7 @@ class MemberDetails extends PureComponent {
       addOwnerRoleInList,
       currentUser: { id: currentUserId },
       displayName,
+      intl: { formatMessage },
       isMember,
       isOwner,
       match: {
@@ -162,7 +169,7 @@ class MemberDetails extends PureComponent {
       removeOwnerRoleInList
     } = this.props;
     const isCurrentUserRoleChanging = currentUserId === userId;
-    const formattedName = formatName(displayName);
+    const formattedName = formatName(displayName, formatMessage);
     let action;
 
     this.setState({ pending: true });
@@ -293,11 +300,15 @@ class MemberDetails extends PureComponent {
 
   renderRemoveOption = () => {
     const { isConfirmationVisible, pending } = this.state;
-    const { displayName } = this.props;
+    const {
+      displayName,
+      intl: { formatMessage }
+    } = this.props;
+    const formattedName = formatName(displayName, formatMessage);
 
     return isConfirmationVisible ? (
       <div className="member-details__confirmation">
-        <h4>{`Do you really want to remove ${displayName}?`}</h4>
+        <h4>{`Do you really want to remove ${formattedName}?`}</h4>
         <button
           className="primary-button"
           onClick={this.handleMemberRemoving}
@@ -424,6 +435,7 @@ class MemberDetails extends PureComponent {
     const {
       avatarUrl,
       displayName,
+      intl: { formatMessage },
       isCohortList,
       isCurrentUserAnOwner,
       isGuest,
@@ -434,7 +446,7 @@ class MemberDetails extends PureComponent {
       route
     } = this.props;
     const { pending } = this.state;
-
+    const formattedName = formatName(displayName, formatMessage);
     const isLeaveButtonDisplayed =
       route === Routes.COHORT || isPrivateList || (!isPrivateList && isGuest);
     const role = (
@@ -459,7 +471,7 @@ class MemberDetails extends PureComponent {
           <div className="member-details__details">
             <MemberDetailsHeader
               avatarUrl={avatarUrl}
-              displayName={displayName}
+              displayName={formattedName}
               role={role}
             />
             <div className="member-details__panel">
@@ -479,6 +491,7 @@ MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
+  intl: IntlPropType.isRequired,
   isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool,
@@ -506,7 +519,9 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default withRouter(
+export default _flowRight(
+  injectIntl,
+  withRouter,
   connect(
     mapStateToProps,
     {
@@ -519,5 +534,5 @@ export default withRouter(
       removeOwnerRoleInCohort,
       removeOwnerRoleInList
     }
-  )(MemberDetails)
-);
+  )
+)(MemberDetails);
