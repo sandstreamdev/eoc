@@ -100,39 +100,21 @@
 
   &__show-more,
   &__show-less {
+    display: inline-flex;
+    align-items: center;
     background: transparent;
     color: $text-normal;
-    width: 36px;
-    height: 36px;
-    border: 2px solid $border-color;
-    border-radius: 100%;
+    width: auto;
+    border: 0;
     cursor: pointer;
     text-align: center;
-    margin: four-by(2);
+    margin: four-by(3);
+    font-size: $s-font;
+    text-transform: uppercase;
 
-    &:hover {
-      box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-    }
-
-    &::before {
-      border-style: solid;
-      border-width: 4px 4px 0 0;
-      content: '';
-      display: inline-block;
-      left: 0;
-      height: 7px;
-      transform: rotate(135deg);
-      position: relative;
-      vertical-align: top;
-      width: 7px;
-    }
-  }
-
-  &__show-less {
-    &::before {
-      top: 3px;
-      bottom: 0;
-      transform: rotate(315deg);
+    svg {
+      @include constant-size(16px);
+      margin-left: four-by(1);
     }
   }
 
