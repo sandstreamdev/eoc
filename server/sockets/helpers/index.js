@@ -12,8 +12,7 @@ const {
   countItems,
   isViewer,
   responseWithItem,
-  responseWithListMetaData,
-  responseWithCohort
+  responseWithListMetaData
 } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
 const {
@@ -21,54 +20,6 @@ const {
   ListType,
   LOCK_TIMEOUT
 } = require('../../common/variables');
-
-const emitCohortMetaData = (cohortId, clients, io) =>
-  Cohort.findById(cohortId)
-    .select('_id isArchived createdAt name description memberIds ownerIds')
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { memberIds } = doc;
-
-        memberIds.forEach(id => {
-          const memberId = id.toString();
-
-          if (clients.has(memberId)) {
-            const { socketId } = clients.get(memberId);
-
-            io.sockets
-              .to(socketId)
-              .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
-                [cohortId]: responseWithCohort(doc, memberId)
-              });
-          }
-        });
-      }
-    });
-
-const getListIdsByViewers = lists => {
-  const listsByViewers = {};
-
-  lists.forEach(list => {
-    const { _id, viewersIds } = list;
-    const listId = _id.toString();
-
-    viewersIds.forEach(id => {
-      const viewerId = id.toString();
-
-      if (!listsByViewers[viewerId]) {
-        listsByViewers[viewerId] = [];
-      }
-
-      if (!listsByViewers[viewerId].includes(listId)) {
-        listsByViewers[viewerId].push(listId);
-      }
-    });
-  });
-
-  return listsByViewers;
-};
 
 const getListsDataByViewers = lists => {
   const listsByViewers = {};
@@ -415,14 +366,12 @@ module.exports = {
   cohortMetaDataChannel,
   delayedUnlock,
   descriptionLockId,
-  emitCohortMetaData,
   emitItemPerUser,
   emitItemUpdate,
   emitRemoveCohortMember,
   emitRemoveListViewer,
   emitRoleChange,
   emitVoteChange,
-  getListIdsByViewers,
   getListsDataByViewers,
   getUserSockets,
   handleItemLocks,

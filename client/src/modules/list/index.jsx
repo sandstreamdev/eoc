@@ -35,7 +35,7 @@ import ArchivedItemsContainer from 'modules/list/components/ArchivedItemsContain
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
-import { joinRoom, leaveRoom } from 'common/model/actions';
+import { joinRoom, leaveRoom } from 'sockets';
 import history from 'common/utils/history';
 import { dashboardRoute } from 'common/utils/helpers';
 import './List.scss';
@@ -53,7 +53,6 @@ class List extends Component {
 
   componentDidMount() {
     const {
-      currentUser: { id: userId },
       match: {
         params: { id: listId }
       }
@@ -76,8 +75,7 @@ class List extends Component {
     const roomConfig = {
       subscribeMetaData: !isUnavailable,
       resourceId: listId,
-      roomPrefix: Routes.LIST,
-      userId
+      roomPrefix: Routes.LIST
     };
 
     joinRoom(roomConfig);
@@ -104,8 +102,7 @@ class List extends Component {
     const roomConfig = {
       subscribeMetaData: !isUnavailable,
       resourceId: previousListId,
-      roomPrefix: Routes.LIST,
-      userId
+      roomPrefix: Routes.LIST
     };
 
     if (hasListChanged) {
@@ -141,7 +138,6 @@ class List extends Component {
 
   componentWillUnmount() {
     const {
-      currentUser: { id: userId },
       match: {
         params: { id: listId }
       }
@@ -150,8 +146,7 @@ class List extends Component {
     const roomConfig = {
       subscribeMetaData: !isUnavailable,
       resourceId: listId,
-      roomPrefix: Routes.LIST,
-      userId
+      roomPrefix: Routes.LIST
     };
 
     leaveRoom(roomConfig);

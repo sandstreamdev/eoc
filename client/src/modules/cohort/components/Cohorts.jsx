@@ -21,7 +21,6 @@ import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { ColorType, Routes, ViewType } from 'common/constants/enums';
-import { enterView, leaveView } from 'common/model/actions';
 
 class Cohorts extends Component {
   state = {
@@ -33,26 +32,13 @@ class Cohorts extends Component {
   };
 
   componentDidMount() {
-    const {
-      currentUser: { id: userId },
-      fetchCohortsMetaData
-    } = this.props;
+    const { fetchCohortsMetaData } = this.props;
 
     this.setState({ pendingForCohorts: true });
 
     fetchCohortsMetaData().finally(() =>
       this.setState({ pendingForCohorts: false })
     );
-
-    enterView(Routes.COHORTS, userId);
-  }
-
-  componentWillUnmount() {
-    const {
-      currentUser: { id: userId }
-    } = this.props;
-
-    leaveView(Routes.COHORTS, userId);
   }
 
   handleDialogVisibility = () =>

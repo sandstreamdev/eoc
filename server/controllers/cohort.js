@@ -25,7 +25,6 @@ const {
 const { ActivityType, ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
-const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClients();
 const io = require('../sockets/index');
 const socketActions = require('../sockets/cohort');
 
