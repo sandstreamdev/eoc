@@ -304,7 +304,7 @@ class List extends Component {
       type
     } = list;
     const isCohortList = cohortId !== null && cohortId !== undefined;
-    const idDialogForRemovedListVisible =
+    const isDialogForRemovedListVisible =
       isUnavailable && externalAction && !pendingForListArchivization;
     const archivedListView = (isArchived && !isUnavailable) || isDeleted;
     const dialogContextMessage = formatMessage({
@@ -404,7 +404,7 @@ class List extends Component {
             )}
           />
         )}
-        {idDialogForRemovedListVisible && (
+        {isDialogForRemovedListVisible && (
           <Dialog
             cancelLabel="common.button.dashboard"
             confirmLabel="common.button.restore"
