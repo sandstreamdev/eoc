@@ -208,13 +208,16 @@ const lists = (state = {}, action) => {
 
       if (state[listId]) {
         const { members } = state[listId];
-        const list = {
-          ...state[listId],
-          members: membersReducer(members, action),
-          externalAction
-        };
 
-        return { ...state, [listId]: list };
+        if (members) {
+          const list = {
+            ...state[listId],
+            members: membersReducer(members, action),
+            externalAction
+          };
+
+          return { ...state, [listId]: list };
+        }
       }
 
       return state;

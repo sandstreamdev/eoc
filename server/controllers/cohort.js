@@ -656,72 +656,67 @@ const addMember = async (req, resp) => {
     });
 };
 
-const leaveCohort = (req, resp) => {
+const leaveCohort = async (req, resp) => {
   const { id: cohortId } = req.params;
-  const { userId } = req.body;
-  const sanitizedUserId = sanitize(userId);
+  const {
+    user: { _id: userId, displayName }
+  } = req;
   const sanitizedCohortId = sanitize(cohortId);
 
-  Cohort.findOne({
-    _id: sanitizedCohortId,
-    isArchived: false,
-    memberIds: { $in: [sanitizedUserId] }
-  })
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new BadRequestException();
+  try {
+    const cohort = await Cohort.findOne({
+      _id: sanitizedCohortId,
+      isArchived: false,
+      memberIds: { $in: [userId] }
+    }).exec();
+    const { memberIds, ownerIds } = cohort;
+    const isOwner = isCohortOwner(cohort, userId);
+
+    if (isOwner) {
+      if (ownerIds.length === 1) {
+        throw new BadRequestException(
+          'cohort.actions.leave-cohort-only-one-owner'
+        );
       }
+      ownerIds.splice(cohort.ownerIds.indexOf(userId), 1);
+    }
 
-      const { memberIds, ownerIds } = doc;
-      const isOwner = isCohortOwner(doc, userId);
+    if (isMember(cohort, userId)) {
+      memberIds.splice(cohort.memberIds.indexOf(userId), 1);
+    }
 
-      if (isOwner) {
-        if (ownerIds.length === 1) {
-          throw new BadRequestException(
-            'cohort.actions.leave-cohort-only-one-owner'
-          );
-        }
-        ownerIds.splice(doc.ownerIds.indexOf(userId), 1);
-      }
+    const savedCohort = await cohort.save();
 
-      if (isMember(doc, userId)) {
-        memberIds.splice(doc.memberIds.indexOf(userId), 1);
-      }
-
-      return doc.save();
-    })
-    .then(() =>
-      List.updateMany(
-        {
-          cohortId: sanitizedCohortId,
-          type: ListType.SHARED,
-          viewersIds: { $in: [userId] },
-          memberIds: { $nin: [userId] },
-          ownerIds: { $nin: [userId] }
-        },
-        { $pull: { viewersIds: userId } }
-      ).exec()
-    )
-    .then(() => {
-      const socketInstance = io.getInstance();
-
-      socketActions.leaveCohort(socketInstance, allCohortsViewClients)({
+    await List.updateMany(
+      {
         cohortId: sanitizedCohortId,
-        userId: sanitizedUserId
-      });
+        type: ListType.SHARED,
+        viewersIds: { $in: [userId] },
+        memberIds: { $nin: [userId] },
+        ownerIds: { $nin: [userId] }
+      },
+      { $pull: { viewersIds: userId } }
+    ).exec();
 
-      resp.send();
-    })
-    .catch(err => {
-      if (err instanceof BadRequestException) {
-        const { message } = err;
+    const socketInstance = io.getInstance();
+    const data = {
+      cohortId: sanitizedCohortId,
+      membersCount: savedCohort.memberIds.length,
+      performer: displayName,
+      userId
+    };
 
-        return resp.status(400).send({ message });
-      }
+    resp.send();
+    fireAndForget(socketActions.leaveCohort(socketInstance)(data));
+  } catch (err) {
+    if (err instanceof BadRequestException) {
+      const { message } = err;
 
-      resp.sendStatus(400);
-    });
+      return resp.status(400).send({ message });
+    }
+
+    resp.sendStatus(400);
+  }
 };
 
 module.exports = {

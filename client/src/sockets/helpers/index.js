@@ -146,6 +146,36 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         payload: { listId, externalAction, ...rest }
       });
     }
+    case ListEvents.LEAVE_COHORT:
+    case ListEvents.LEAVE_SUCCESS: {
+      const {
+        location: { pathname }
+      } = history;
+      const { listId, performer, userId } = data;
+      const externalAction = {
+        messageId: 'common.actions.leave',
+        performer
+      };
+
+      if (currentUser.id === userId) {
+        if (pathname.includes(listId)) {
+          return dispatch({
+            type: ListEvents.REMOVE_MEMBER_SUCCESS,
+            payload: { listId, userId, externalAction }
+          });
+        }
+
+        return dispatch({
+          type: CohortEvents.DELETE_SUCCESS,
+          payload: { listId }
+        });
+      }
+
+      return dispatch({
+        type: CohortEvents.REMOVE_MEMBER_SUCCESS,
+        payload: { listId, userId }
+      });
+    }
     case ListEvents.REMOVE_COHORT_MEMBER:
     case ListEvents.REMOVE_MEMBER_SUCCESS: {
       const {
@@ -240,6 +270,36 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
 export const cohortEventsController = (event, data, { dispatch, getState }) => {
   switch (event) {
+    case CohortEvents.LEAVE_SUCCESS: {
+      const { currentUser } = getState();
+      const {
+        location: { pathname }
+      } = history;
+      const { cohortId, performer, userId } = data;
+      const externalAction = {
+        messageId: 'common.actions.leave',
+        performer
+      };
+
+      if (currentUser.id === userId) {
+        if (pathname.includes(cohortId)) {
+          return dispatch({
+            type: CohortEvents.REMOVE_MEMBER_SUCCESS,
+            payload: { cohortId, userId, externalAction }
+          });
+        }
+
+        return dispatch({
+          type: CohortEvents.DELETE_SUCCESS,
+          payload: { cohortId }
+        });
+      }
+
+      return dispatch({
+        type: CohortEvents.REMOVE_MEMBER_SUCCESS,
+        payload: { cohortId, userId }
+      });
+    }
     case CohortEvents.REMOVE_MEMBER_SUCCESS: {
       const { currentUser } = getState();
       const {

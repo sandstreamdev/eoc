@@ -135,13 +135,16 @@ const cohorts = (state = {}, action) => {
 
       if (state[cohortId]) {
         const { members } = state[cohortId];
-        const cohort = {
-          ...state[cohortId],
-          members: membersReducer(members, action),
-          externalAction
-        };
 
-        return { ...state, [cohortId]: cohort };
+        if (members) {
+          const cohort = {
+            ...state[cohortId],
+            members: membersReducer(members, action),
+            externalAction
+          };
+
+          return { ...state, [cohortId]: cohort };
+        }
       }
 
       return state;

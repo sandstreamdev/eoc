@@ -10,12 +10,17 @@ const {
 } = require('../eventTypes');
 const {
   countItems,
+  isViewer,
   responseWithItem,
   responseWithListMetaData,
   responseWithCohort
 } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
-const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
+const {
+  ItemStatusType,
+  ListType,
+  LOCK_TIMEOUT
+} = require('../../common/variables');
 
 const emitCohortMetaData = (cohortId, clients, io) =>
   Cohort.findById(cohortId)
@@ -336,6 +341,74 @@ const emitRemoveListViewer = (io, event) => async data => {
   }
 };
 
+const emitRemoveCohortMember = (io, event) => async data => {
+  const { cohortId, membersCount, performer, userId } = data;
+
+  io.sockets.to(cohortChannel(cohortId)).emit(event, {
+    cohortId,
+    performer,
+    userId
+  });
+
+  io.sockets
+    .to(cohortMetaDataChannel(cohortId))
+    .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, { cohortId, userId });
+
+  io.sockets
+    .to(cohortMetaDataChannel(cohortId))
+    .emit(CohortActionTypes.UPDATE_SUCCESS, { cohortId, membersCount });
+
+  try {
+    const socketIds = await getUserSockets(userId);
+
+    socketIds.forEach(socketId => {
+      io.sockets
+        .to(socketId)
+        .emit(AppEvents.LEAVE_ROOM, cohortMetaDataChannel(cohortId));
+    });
+
+    const listIdsUserRemained = [];
+    const listIdsUserWasRemovedFrom = [];
+    const lists = await List.find({ cohortId })
+      .lean()
+      .exec();
+
+    lists.forEach(list => {
+      const { type } = list;
+      const listId = list._id.toString();
+
+      if (isViewer(list, userId)) {
+        listIdsUserRemained.push(listId);
+      } else if (type === ListType.SHARED) {
+        listIdsUserWasRemovedFrom.push(listId);
+      }
+    });
+
+    await Promise.all(
+      listIdsUserWasRemovedFrom.map(async listId => {
+        const data = { listId, performer, userId };
+        try {
+          await emitRemoveListViewer(io, event)(data);
+        } catch {
+          // Ignore errors
+        }
+      })
+    );
+
+    listIdsUserRemained.foreach(listId => {
+      io.sockets
+        .to(listChannel(listId))
+        .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
+          isGuest: true,
+          listId,
+          userId
+        });
+    });
+  } catch {
+    // Ignore error
+  }
+};
+
 module.exports = {
   associateSocketWithSession,
   cohortChannel,
@@ -345,6 +418,7 @@ module.exports = {
   emitCohortMetaData,
   emitItemPerUser,
   emitItemUpdate,
+  emitRemoveCohortMember,
   emitRemoveListViewer,
   emitRoleChange,
   emitVoteChange,

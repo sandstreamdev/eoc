@@ -9,7 +9,6 @@ const {
 } = require('./eventTypes');
 const Cohort = require('../models/cohort.model');
 const {
-  isViewer,
   responseWithCohort,
   responseWithCohortDetails,
   responseWithListsMetaData
@@ -18,8 +17,7 @@ const {
   cohortChannel,
   cohortMetaDataChannel,
   descriptionLockId,
-  emitCohortMetaData,
-  emitRemoveListViewer,
+  emitRemoveCohortMember,
   emitRoleChange,
   getListsDataByViewers,
   getUserSockets,
@@ -111,37 +109,12 @@ const addMember = io => async data => {
   }
 };
 
-const leaveCohort = (io, allCohortsClients) => data => {
-  const { cohortId, userId } = data;
-
-  io.sockets
-    .to(cohortChannel(cohortId))
-    .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, data);
-
-  if (allCohortsClients.size > 0) {
-    emitCohortMetaData(cohortId, allCohortsClients, io);
+const leaveCohort = io => async data => {
+  try {
+    await emitRemoveCohortMember(io, CohortActionTypes.LEAVE_SUCCESS)(data);
+  } catch {
+    // Ignore errors
   }
-
-  List.find(
-    {
-      cohortId,
-      type: ListType.SHARED
-    },
-    '_id createdAt cohortId name description items favIds type'
-  )
-    .lean()
-    .exec()
-    .then(docs => {
-      if (docs) {
-        const sharedListIds = docs.map(list => list._id.toString());
-
-        sharedListIds.forEach(listId =>
-          io.sockets
-            .to(listChannel(listId))
-            .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId })
-        );
-      }
-    });
 };
 
 const addOwnerRole = io => async data => {
@@ -296,67 +269,12 @@ const archiveCohort = io => async data => {
 };
 
 const removeMember = io => async data => {
-  const { cohortId, membersCount, performer, userId } = data;
-
-  io.sockets
-    .to(cohortChannel(cohortId))
-    .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, {
-      cohortId,
-      performer,
-      userId
-    });
-
-  io.sockets
-    .to(cohortMetaDataChannel(cohortId))
-    .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, { cohortId, userId });
-
-  io.sockets
-    .to(cohortMetaDataChannel(cohortId))
-    .emit(CohortActionTypes.UPDATE_SUCCESS, { cohortId, membersCount });
-
   try {
-    const listIdsUserRemained = [];
-    const listIdsUserWasRemovedFrom = [];
-    const lists = await List.find({ cohortId })
-      .lean()
-      .exec();
-
-    lists.forEach(list => {
-      const { type } = list;
-      const listId = list._id.toString();
-
-      if (isViewer(list, userId)) {
-        listIdsUserRemained.push(listId);
-      } else if (type === ListType.SHARED) {
-        listIdsUserWasRemovedFrom.push(listId);
-      }
-    });
-
-    await Promise.all(
-      listIdsUserWasRemovedFrom.map(async listId => {
-        const data = { listId, performer, userId };
-        try {
-          await emitRemoveListViewer(
-            io,
-            CohortActionTypes.REMOVE_MEMBER_SUCCESS
-          )(data);
-        } catch {
-          // Ignore errors
-        }
-      })
+    await emitRemoveCohortMember(io, CohortActionTypes.REMOVE_MEMBER_SUCCESS)(
+      data
     );
-
-    listIdsUserRemained.foreach(listId => {
-      io.sockets
-        .to(listChannel(listId))
-        .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
-          isGuest: true,
-          listId,
-          userId
-        });
-    });
   } catch {
-    // Ignore error
+    // Ignore errors
   }
 };
 
