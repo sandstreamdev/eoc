@@ -416,7 +416,7 @@ describe('function responseWithComment', () => {
   });
 });
 
-describe('function responseWithCohortDetails', () => {
+describe('responseWithCohortDetails', () => {
   const { _id: userId } = usersMock[0];
   const result = responseWithCohortDetails(cohortDetailsMock, userId);
 

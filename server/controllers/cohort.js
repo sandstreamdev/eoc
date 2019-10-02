@@ -26,8 +26,6 @@ const { ActivityType, ListType, DEMO_MODE_ID } = require('../common/variables');
 const Comment = require('../models/comment.model');
 const { saveActivity } = require('./activity');
 const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClients();
-const cohortClients = require('../sockets/index').getCohortViewClients();
-const dashboardClients = require('../sockets/index').getDashboardViewClients();
 const io = require('../sockets/index');
 const socketActions = require('../sockets/cohort');
 
@@ -125,17 +123,17 @@ const archiveCohort = async (req, resp) => {
       { isArchived: true }
     ).exec();
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.COHORT_ARCHIVE,
-        userId,
-        null,
-        null,
-        sanitizedCohortId,
-        null,
-        cohort.name
-      )
-    );
+    const activity = {
+      activityType: ActivityType.COHORT_ARCHIVE,
+      performerId: userId,
+      itemId: null,
+      listId: null,
+      cohortId: sanitizedCohortId,
+      editedUserId: null,
+      editedValue: cohort.name
+    };
+
+    fireAndForget(saveActivity(activity));
 
     const socketInstance = io.getInstance();
     const data = {
@@ -150,8 +148,51 @@ const archiveCohort = async (req, resp) => {
   }
 };
 
-const updateCohortById = (req, resp) => {
-  const { description, isArchived, name } = req.body;
+const restoreCohort = async (req, resp) => {
+  const { id: cohortId } = req.params;
+  const {
+    user: { _id: userId }
+  } = req;
+  const sanitizedCohortId = sanitize(cohortId);
+  const socketInstance = io.getInstance();
+
+  try {
+    const cohort = await Cohort.findOneAndUpdate(
+      {
+        _id: sanitizedCohortId,
+        isArchived: true,
+        isDeleted: false,
+        ownerIds: userId
+      },
+      { isArchived: false },
+      { new: true }
+    )
+      .populate('memberIds', 'avatarUrl displayName _id')
+      .lean()
+      .exec();
+
+    const activity = {
+      activityType: ActivityType.COHORT_RESTORE,
+      performerId: userId,
+      itemId: null,
+      listId: null,
+      cohortId: sanitizedCohortId,
+      editedUserId: null,
+      editedValue: cohort.name
+    };
+    const data = { cohort, cohortId };
+
+    fireAndForget(saveActivity(activity));
+
+    resp.send();
+    fireAndForget(socketActions.restoreCohort(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
+const updateCohort = async (req, resp) => {
+  const { description, name } = req.body;
   const { id: cohortId } = req.params;
   const {
     user: { _id: userId }
@@ -159,103 +200,61 @@ const updateCohortById = (req, resp) => {
   const sanitizedCohortId = sanitize(cohortId);
   const dataToUpdate = filter(x => x !== undefined)({
     description,
-    isArchived,
     name
   });
-  const socketInstance = io.getInstance();
-  let cohortActivity;
 
   if (name !== undefined && !validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
   }
 
-  Cohort.findOneAndUpdate(
-    {
-      _id: sanitizedCohortId,
-      ownerIds: userId
-    },
-    dataToUpdate
-  )
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        return resp.sendStatus(400);
+  try {
+    const cohort = await Cohort.findOneAndUpdate(
+      {
+        _id: sanitizedCohortId,
+        isArchived: false,
+        ownerIds: userId
+      },
+      dataToUpdate
+    ).exec();
+    const socketInstance = io.getInstance();
+    const data = { cohortId };
+    let cohortActivity;
+
+    if (isDefined(description)) {
+      const { description: prevDescription } = cohort;
+      if (!description && prevDescription) {
+        cohortActivity = ActivityType.COHORT_REMOVE_DESCRIPTION;
+      } else if (description && !prevDescription) {
+        cohortActivity = ActivityType.COHORT_ADD_DESCRIPTION;
+      } else {
+        cohortActivity = ActivityType.COHORT_EDIT_DESCRIPTION;
       }
 
-      const data = { cohortId, description };
+      data.description = description;
+    }
 
-      if (isDefined(description)) {
-        const { description: prevDescription } = doc;
-        if (!description && prevDescription) {
-          cohortActivity = ActivityType.COHORT_REMOVE_DESCRIPTION;
-        } else if (description && !prevDescription) {
-          cohortActivity = ActivityType.COHORT_ADD_DESCRIPTION;
-        } else {
-          cohortActivity = ActivityType.COHORT_EDIT_DESCRIPTION;
-        }
+    if (name) {
+      cohortActivity = ActivityType.COHORT_EDIT_NAME;
+      data.name = name;
+    }
 
-        data.description = description;
+    const activity = {
+      activityType: cohortActivity,
+      performerId: userId,
+      itemId: null,
+      listId: null,
+      cohortId: sanitizedCohortId,
+      editedUserId: null,
+      editedValue: cohort.name
+    };
 
-        return returnPayload(
-          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
-            data
-          )
-        )(doc);
-      }
+    fireAndForget(saveActivity(activity));
 
-      if (name) {
-        cohortActivity = ActivityType.COHORT_EDIT_NAME;
-
-        data.name = name;
-
-        return returnPayload(
-          socketActions.updateCohort(socketInstance, allCohortsViewClients)(
-            data
-          )
-        )(doc);
-      }
-
-      if (isDefined(isArchived)) {
-        if (isArchived) {
-          cohortActivity = ActivityType.COHORT_ARCHIVE;
-
-          return returnPayload(
-            socketActions.archiveCohort(
-              socketInstance,
-              allCohortsViewClients,
-              dashboardClients
-            )(data)
-          )(doc);
-        }
-
-        cohortActivity = ActivityType.COHORT_RESTORE;
-
-        return returnPayload(
-          socketActions.restoreCohort(
-            socketInstance,
-            allCohortsViewClients,
-            cohortClients,
-            dashboardClients
-          )(data)
-        )(doc);
-      }
-    })
-    .then(doc => {
-      const activity = {
-        activityType: cohortActivity,
-        performerId: userId,
-        itemId: null,
-        listId: null,
-        cohortId: sanitizedCohortId,
-        editedUserId: null,
-        editedValue: doc.name
-      };
-
-      fireAndForget(saveActivity(activity));
-
-      return resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    fireAndForget(socketActions.updateCohort(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const getCohortDetails = (req, resp) => {
@@ -737,5 +736,6 @@ module.exports = {
   leaveCohort,
   removeMember,
   removeOwnerRole,
-  updateCohortById
+  restoreCohort,
+  updateCohort
 };

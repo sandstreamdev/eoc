@@ -155,8 +155,6 @@ const addOwnerRole = io => async data => {
   } catch {
     // Ignore errors
   }
-
-  return Promise.resolve();
 };
 
 const removeOwnerRole = io => async data => {
@@ -170,8 +168,6 @@ const removeOwnerRole = io => async data => {
   } catch {
     // Ignore errors
   }
-
-  return Promise.resolve();
 };
 
 const updateCohort = io => async data => {
@@ -203,8 +199,6 @@ const updateCohort = io => async data => {
     } catch {
       // Ignore error
     }
-
-    return Promise.resolve();
   }
 };
 
@@ -299,8 +293,6 @@ const archiveCohort = io => async data => {
   } catch {
     // Ignore errors
   }
-
-  return Promise.resolve();
 };
 
 const removeMember = io => async data => {
@@ -340,16 +332,19 @@ const removeMember = io => async data => {
       }
     });
 
-    listIdsUserWasRemovedFrom.forEach(async listId => {
-      const data = { listId, performer, userId };
-      try {
-        await emitRemoveListViewer(io, CohortActionTypes.REMOVE_MEMBER_SUCCESS)(
-          data
-        );
-      } catch {
-        // Ignore errors
-      }
-    });
+    await Promise.all(
+      listIdsUserWasRemovedFrom.map(async listId => {
+        const data = { listId, performer, userId };
+        try {
+          await emitRemoveListViewer(
+            io,
+            CohortActionTypes.REMOVE_MEMBER_SUCCESS
+          )(data);
+        } catch {
+          // Ignore errors
+        }
+      })
+    );
 
     listIdsUserRemained.foreach(listId => {
       io.sockets
@@ -363,11 +358,9 @@ const removeMember = io => async data => {
   } catch {
     // Ignore error
   }
-
-  return Promise.resolve();
 };
 
-const deleteCohort = io => data => {
+const deleteCohort = io => async data => {
   const { cohortId, memberIds, performer } = data;
 
   io.sockets
@@ -378,114 +371,79 @@ const deleteCohort = io => data => {
     .to(cohortMetaDataChannel(cohortId))
     .emit(CohortActionTypes.DELETE_SUCCESS, { cohortId });
 
-  memberIds.forEach(async id => {
-    const memberId = id.toString();
+  await Promise.all(
+    memberIds.map(async id => {
+      const memberId = id.toString();
 
-    try {
-      const socketIds = await getUserSockets(memberId);
+      try {
+        const socketIds = await getUserSockets(memberId);
 
-      socketIds.forEach(socketId =>
-        io.sockets
-          .to(socketId)
-          .emit(CohortActionTypes.LEAVE_ROOM, cohortMetaDataChannel(cohortId))
-      );
-    } catch {
-      // Ignore errors
-    }
-  });
-
-  return Promise.resolve();
-};
-
-const restoreCohort = (
-  io,
-  allCohortsClients,
-  cohortClients,
-  dashboardClients
-) => data => {
-  const { cohortId } = data;
-
-  return Cohort.findById(cohortId)
-    .populate('memberIds', 'avatarUrl displayName _id')
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { memberIds, ownerIds } = doc;
-
-        ownerIds.forEach(id => {
-          const ownerId = id.toString();
-
-          if (cohortClients.has(ownerId)) {
-            const { socketId, viewId } = cohortClients.get(ownerId);
-
-            if (viewId === cohortId) {
-              io.sockets
-                .to(socketId)
-                .emit(
-                  CohortActionTypes.FETCH_DETAILS_SUCCESS,
-                  responseWithCohortDetails(doc)
-                );
-            }
-          }
-        });
-
-        memberIds.forEach(member => {
-          const { _id } = member;
-          const memberId = _id.toString();
-
-          if (allCohortsClients.has(memberId)) {
-            const { socketId } = allCohortsClients.get(memberId);
-
-            io.sockets
-              .to(socketId)
-              .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
-                [cohortId]: responseWithCohort(doc, memberId)
-              });
-          }
-        });
-
-        return List.find({ cohortId, isArchived: false })
-          .populate('cohortId', 'memberIds ownerIds')
-          .lean()
-          .exec();
+        socketIds.forEach(socketId =>
+          io.sockets
+            .to(socketId)
+            .emit(CohortActionTypes.LEAVE_ROOM, cohortMetaDataChannel(cohortId))
+        );
+      } catch {
+        // Ignore errors
       }
     })
-    .then(docs => {
-      if (docs && docs.length > 0) {
-        const {
-          cohortId: { ownerIds: cohortOwners }
-        } = docs[0];
-        const listsByUsers = getListsDataByViewers(docs);
+  );
+};
 
-        cohortOwners.forEach(id => {
-          const cohortOwnerId = id.toString();
+const restoreCohort = io => async data => {
+  const { cohortId, cohort } = data;
+  const { memberIds: members } = cohort;
 
-          if (cohortClients.has(cohortOwnerId)) {
-            const { socketId, viewId } = cohortClients.get(cohortOwnerId);
+  try {
+    await Promise.all(
+      members.map(async member => {
+        const memberId = member._id.toString();
+        const cohortToSend = responseWithCohortDetails(cohort, memberId);
 
-            if (viewId === cohortId) {
-              const listsToSend = listsByUsers[cohortOwnerId];
+        try {
+          const socketIds = await getUserSockets(memberId);
 
+          socketIds.forEach(socketId =>
+            io.sockets.to(socketId).emit(CohortActionTypes.RESTORE_SUCCESS, {
+              cohortId,
+              data: cohortToSend
+            })
+          );
+        } catch {
+          // Ignore errors
+        }
+      })
+    );
+
+    const lists = await List.find({ cohortId, isArchived: false })
+      .populate('cohortId', 'memberIds name, ownerIds')
+      .lean()
+      .exec();
+
+    if (lists && lists.length > 0) {
+      const listsByUsers = getListsDataByViewers(lists);
+
+      await Promise.all(
+        Object.keys(listsByUsers).map(async viewerId => {
+          const listsToSend = listsByUsers[viewerId];
+
+          try {
+            const socketIds = await getUserSockets(viewerId);
+
+            socketIds.forEach(socketId => {
               io.sockets
                 .to(socketId)
                 .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listsToSend);
-            }
+            });
+          } catch {
+            // Ignore errors
           }
-        });
-
-        Object.keys(listsByUsers).forEach(viewerId => {
-          if (dashboardClients.has(viewerId)) {
-            const { socketId } = dashboardClients.get(viewerId);
-            const listsToSend = listsByUsers[viewerId];
-
-            io.sockets
-              .to(socketId)
-              .emit(ListActionTypes.FETCH_META_DATA_SUCCESS, listsToSend);
-          }
-        });
-      }
-    });
+        })
+      );
+    }
+  } catch {
+    // Ignore errors
+  }
 };
 
 module.exports = {

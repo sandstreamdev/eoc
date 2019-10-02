@@ -63,6 +63,7 @@ export const CohortEvents = Object.freeze({
   LEAVE_SUCCESS: CohortActionTypes.LEAVE_SUCCESS,
   REMOVE_MEMBER_SUCCESS: CohortActionTypes.REMOVE_MEMBER_SUCCESS,
   REMOVE_OWNER_ROLE_SUCCESS: CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS,
+  RESTORE_SUCCESS: CohortActionTypes.RESTORE_SUCCESS,
   UPDATE_SUCCESS: CohortActionTypes.UPDATE_SUCCESS
 });
 
