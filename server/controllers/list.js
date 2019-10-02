@@ -1,6 +1,5 @@
 const sanitize = require('mongo-sanitize');
 const _difference = require('lodash/difference');
-const _some = require('lodash/some');
 const validator = require('validator');
 
 const List = require('../models/list.model');
@@ -16,7 +15,7 @@ const {
   isViewer,
   responseWithItem,
   responseWithItems,
-  responseWithList,
+  responseWithListMetaData,
   responseWithListsMetaData
 } = require('../common/utils');
 const Cohort = require('../models/cohort.model');
@@ -39,6 +38,7 @@ const createList = async (req, resp) => {
     user: { _id: userId }
   } = req;
   const isSharedList = type === ListType.SHARED;
+  const cohortForList = cohortId ? { _id: cohortId, memberIds: [] } : null;
 
   if (!validator.isLength(name, { min: 1, max: 32 })) {
     return resp.sendStatus(400);
@@ -59,6 +59,8 @@ const createList = async (req, resp) => {
       const cohort = await Cohort.findOne({ _id: sanitize(cohortId) }).exec();
       const { memberIds } = cohort;
 
+      cohortForList.memberIds = memberIds;
+
       if (isMember(cohort, userId)) {
         newList.viewersIds = memberIds;
       }
@@ -69,9 +71,11 @@ const createList = async (req, resp) => {
     fireAndForget(
       saveActivity(ActivityType.LIST_ADD, userId, null, list._id, list.cohortId)
     );
-
     const { viewersIds } = list;
-    const listData = responseWithList(list, userId);
+    const listData = responseWithListMetaData(
+      { ...list._doc, cohortId: cohortForList },
+      userId
+    );
     const socketInstance = io.getInstance();
 
     resp
@@ -102,8 +106,11 @@ const getListsMetaData = (req, resp) => {
     query.cohortId = sanitize(cohortId);
   }
 
-  List.find(query, '_id name createdAt description items favIds type')
-    .populate('cohortId', 'isArchived')
+  List.find(
+    query,
+    '_id name createdAt description favIds items memberIds ownerIds type'
+  )
+    .populate('cohortId', 'isArchived memberIds')
     .lean()
     .exec()
     .then(docs => {
@@ -134,9 +141,9 @@ const getArchivedListsMetaData = (req, resp) => {
 
   List.find(
     query,
-    '_id name createdAt description type items favIds isArchived'
+    '_id name createdAt description favIds items isArchived memberIds ownerIds type'
   )
-    .populate('cohortId', 'isArchived')
+    .populate('cohortId', 'isArchived memberIds')
     .lean()
     .exec()
     .then(docs => {
@@ -168,6 +175,7 @@ const addItemToList = async (req, resp) => {
     const list = await List.findOneAndUpdate(
       {
         _id: sanitizedListId,
+        isArchived: false,
         memberIds: userId
       },
       { $push: { items: item } },
@@ -333,8 +341,11 @@ const voteForItem = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       memberIds: userId,
-      'items._id': sanitizedItemId
+      'items._id': sanitizedItemId,
+      'items.done': false,
+      'items.isArchived': false
     }).exec();
 
     const { items, viewersIds } = list;
@@ -350,7 +361,6 @@ const voteForItem = async (req, resp) => {
     const data = {
       itemId,
       listId,
-      performerId: userId,
       sessionId: sessionID,
       viewersIds
     };
@@ -389,8 +399,11 @@ const clearVote = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       memberIds: userId,
-      'items._id': sanitizedItemId
+      'items._id': sanitizedItemId,
+      'items.done': false,
+      'items.isArchived': false
     }).exec();
 
     const { items, viewersIds } = list;
@@ -402,7 +415,6 @@ const clearVote = async (req, resp) => {
     const data = {
       itemId,
       listId,
-      performerId: userId,
       sessionId: sessionID,
       viewersIds
     };
@@ -428,7 +440,7 @@ const clearVote = async (req, resp) => {
 
 const archiveList = async (req, resp) => {
   const {
-    user: { _id: userId }
+    user: { _id: userId, displayName }
   } = req;
   const { id: listId } = req.params;
   const sanitizedListId = sanitize(listId);
@@ -443,7 +455,7 @@ const archiveList = async (req, resp) => {
       { new: true }
     ).exec();
 
-    const { cohortId, memberIds, viewersIds } = list;
+    const { cohortId } = list;
 
     fireAndForget(
       saveActivity(
@@ -457,15 +469,11 @@ const archiveList = async (req, resp) => {
       )
     );
 
-    const data = {
-      cohortId,
-      listId,
-      viewersOnly: viewersIds.filter(id => !_some(memberIds, id))
-    };
+    const data = { listId, performer: displayName };
     const socketInstance = io.getInstance();
 
     resp.send();
-    fireAndForget(socketActions.archiveList(socketInstance)(data));
+    socketActions.archiveList(socketInstance)(data);
   } catch {
     resp.sendStatus(400);
   }
@@ -530,7 +538,7 @@ const restoreList = async (req, resp) => {
 
 const deleteList = async (req, resp) => {
   const {
-    user: { _id: userId }
+    user: { _id: userId, displayName }
   } = req;
   const { id: listId } = req.params;
   const sanitizedListId = sanitize(listId);
@@ -561,6 +569,7 @@ const deleteList = async (req, resp) => {
 
     const data = {
       listId: sanitizedListId,
+      performer: displayName,
       viewersIds
     };
     const socketInstance = io.getInstance();
@@ -573,7 +582,7 @@ const deleteList = async (req, resp) => {
 };
 
 const updateList = async (req, resp) => {
-  const { description, isArchived, isDeleted, name } = req.body;
+  const { description, name } = req.body;
   const {
     user: { _id: userId }
   } = req;
@@ -581,8 +590,6 @@ const updateList = async (req, resp) => {
   const sanitizedListId = sanitize(listId);
   const dataToUpdate = filter(x => x !== undefined)({
     description,
-    isArchived,
-    isDeleted,
     name
   });
 
@@ -594,6 +601,7 @@ const updateList = async (req, resp) => {
     const list = await List.findOneAndUpdate(
       {
         _id: sanitizedListId,
+        isArchived: false,
         ownerIds: userId
       },
       dataToUpdate,
@@ -650,6 +658,7 @@ const addToFavourites = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: sanitizedListId,
+      isArchived: false,
       viewersIds: userId
     },
     {
@@ -687,6 +696,7 @@ const removeFromFavourites = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: sanitizedListId,
+      isArchived: false,
       viewersIds: userId
     },
     {
@@ -718,7 +728,7 @@ const removeOwner = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -726,6 +736,7 @@ const removeOwner = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: sanitize(listId),
+      isArchived: false,
       ownerIds: { $all: [currentUserId, sanitizedUserId] }
     },
     {
@@ -744,7 +755,7 @@ const removeOwner = (req, resp) => {
 
       const data = {
         listId,
-        performerId: currentUserId,
+        performer: displayName,
         userId: sanitizedUserId
       };
       const socketInstance = io.getInstance();
@@ -774,7 +785,7 @@ const removeMember = (req, resp) => {
   const { id: listId } = req.params;
   const { userId } = req.body;
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedListId = sanitize(listId);
   const sanitizedUserId = sanitize(userId);
@@ -782,6 +793,7 @@ const removeMember = (req, resp) => {
   List.findOneAndUpdate(
     {
       _id: sanitizedListId,
+      isArchived: false,
       ownerIds: currentUserId,
       viewersIds: sanitizedUserId
     },
@@ -800,7 +812,7 @@ const removeMember = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      const data = { listId, userId };
+      const data = { listId, performer: displayName, userId };
       const socketInstance = io.getInstance();
 
       return socketActions
@@ -836,6 +848,7 @@ const addOwnerRole = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       ownerIds: currentUserId
     }).exec();
 
@@ -886,6 +899,7 @@ const removeOwnerRole = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       ownerIds: ownerId
     }).exec();
 
@@ -942,6 +956,7 @@ const addMemberRole = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       ownerIds: { $in: [currentUserId] }
     }).exec();
 
@@ -991,6 +1006,7 @@ const removeMemberRole = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       ownerIds: { $in: [currentUserId] }
     })
       .populate('cohortId', 'memberIds ownerIds')
@@ -1066,6 +1082,7 @@ const addViewer = (req, resp) => {
 
   List.findOne({
     _id: sanitizedListId,
+    isArchived: false,
     memberIds: currentUserId
   })
     .populate('cohortId', 'ownerIds memberIds')
@@ -1106,10 +1123,17 @@ const addViewer = (req, resp) => {
       if (user) {
         userToSend = responseWithListMember(user, cohortMembers);
         const socketInstance = io.getInstance();
+        const { cohortId } = list;
+        const cohortForList = cohortId
+          ? { _id: cohortId, memberIds: cohortMembers }
+          : null;
 
         return socketActions.addViewer(socketInstance)({
           listId,
-          list: list._doc,
+          list: {
+            ...list._doc,
+            cohortId: cohortForList
+          },
           userToSend
         });
       }
@@ -1155,7 +1179,10 @@ const markItemAsDone = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       'items._id': sanitizedItemId,
+      'items.done': false,
+      'items.isArchived': false,
       memberIds: userId
     }).exec();
 
@@ -1207,7 +1234,10 @@ const markItemAsUnhandled = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       'items._id': sanitizedItemId,
+      'items.done': true,
+      'items.isArchived': false,
       memberIds: userId
     }).exec();
 
@@ -1259,7 +1289,9 @@ const archiveItem = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       'items._id': sanitizedItemId,
+      'items.isArchived': false,
       memberIds: userId
     }).exec();
 
@@ -1311,8 +1343,10 @@ const restoreItem = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       memberIds: userId,
-      'items._id': sanitizedItemId
+      'items._id': sanitizedItemId,
+      'items.isArchived': false
     })
       .populate('items.authorId', 'displayName')
       .exec();
@@ -1370,7 +1404,10 @@ const updateItem = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       'items._id': sanitizedItemId,
+      'items.done': false,
+      'items.isArchived': false,
       memberIds: userId
     }).exec();
 
@@ -1441,7 +1478,10 @@ const cloneItem = async (req, resp) => {
   try {
     const sourceList = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       'items._id': sanitizedItemId,
+      'items.done': false,
+      'items.isArchived': false,
       memberIds: userId
     }).exec();
 
@@ -1494,13 +1534,13 @@ const cloneItem = async (req, resp) => {
 const changeType = async (req, resp) => {
   const { type } = req.body;
   const { id: listId } = req.params;
-  const { _id: currentUserId } = req.user;
+  const { _id: currentUserId, displayName } = req.user;
   const sanitizedListId = sanitize(listId);
   const sanitizedType = sanitize(type);
 
   try {
     const list = await List.findOneAndUpdate(
-      { _id: sanitizedListId, ownerIds: currentUserId },
+      { _id: sanitizedListId, isArchived: false, ownerIds: currentUserId },
       { type: sanitizedType },
       { new: true }
     )
@@ -1532,6 +1572,7 @@ const changeType = async (req, resp) => {
       { new: true }
     )
       .lean()
+      .populate('cohortId', 'memberIds')
       .populate('viewersIds', 'avatarUrl displayName _id')
       .exec();
 
@@ -1561,6 +1602,7 @@ const changeType = async (req, resp) => {
       members,
       newViewers,
       removedViewers,
+      performer: displayName,
       type
     };
     const socketInstance = io.getInstance();
@@ -1579,6 +1621,7 @@ const getArchivedItems = (req, resp) => {
   List.findOne(
     {
       _id: sanitize(listId),
+      isArchived: false,
       memberIds: userId
     },
     'items name'
@@ -1610,7 +1653,9 @@ const deleteItem = async (req, resp) => {
   try {
     const list = await List.findOne({
       _id: sanitizedListId,
+      isArchived: false,
       'items._id': sanitizedItemId,
+      'items.isArchived': true,
       memberIds: userId
     }).exec();
 
@@ -1653,6 +1698,7 @@ const leaveList = (req, resp) => {
 
   List.findOne({
     _id: sanitizedListId,
+    isArchived: false,
     viewersIds: userId
   })
     .populate('cohortId', 'memberIds')
@@ -1737,8 +1783,11 @@ const moveItem = async (req, resp) => {
     // Get source list data
     const sourceList = await List.findOne({
       _id: sanitizedSourceListId,
+      isArchived: false,
       memberIds: userId,
-      'items._id': sanitizedSourceItemId
+      'items._id': sanitizedSourceItemId,
+      'items.done': false,
+      'items.isArchived': false
     }).exec();
 
     // Create item for target list

@@ -20,7 +20,9 @@ export const getCohortDetails = (state, cohortId) => {
   if (cohort) {
     const {
       description,
+      externalAction,
       isArchived,
+      isDeleted,
       isMember,
       isOwner,
       locks,
@@ -30,7 +32,9 @@ export const getCohortDetails = (state, cohortId) => {
 
     return {
       description,
+      externalAction,
       isArchived,
+      isDeleted,
       isMember,
       isOwner,
       locks,

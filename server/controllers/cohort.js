@@ -28,7 +28,6 @@ const { saveActivity } = require('./activity');
 const allCohortsViewClients = require('../sockets/index').getAllCohortsViewClients();
 const cohortClients = require('../sockets/index').getCohortViewClients();
 const dashboardClients = require('../sockets/index').getDashboardViewClients();
-const listClients = require('../sockets/index').getListViewClients();
 const io = require('../sockets/index');
 const socketActions = require('../sockets/cohort');
 
@@ -69,7 +68,7 @@ const getCohortsMetaData = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      return resp.send(responseWithCohorts(docs));
+      return resp.send(responseWithCohorts(docs, currentUserId));
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -94,9 +93,51 @@ const getArchivedCohortsMetaData = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      return resp.send(responseWithCohorts(docs));
+      return resp.send(responseWithCohorts(docs, userId));
     })
     .catch(() => resp.sendStatus(400));
+};
+
+const archiveCohort = async (req, resp) => {
+  const { id: cohortId } = req.params;
+  const {
+    user: { _id: userId, displayName }
+  } = req;
+  const sanitizedCohortId = sanitize(cohortId);
+
+  try {
+    const cohort = await Cohort.findOneAndUpdate(
+      {
+        _id: sanitizedCohortId,
+        isArchived: false,
+        ownerIds: userId
+      },
+      { isArchived: true }
+    ).exec();
+
+    fireAndForget(
+      saveActivity(
+        ActivityType.COHORT_ARCHIVE,
+        userId,
+        null,
+        null,
+        sanitizedCohortId,
+        null,
+        cohort.name
+      )
+    );
+
+    const socketInstance = io.getInstance();
+    const data = {
+      cohortId: sanitizedCohortId,
+      performer: displayName
+    };
+
+    resp.send();
+    fireAndForget(socketActions.archiveCohort(socketInstance)(data));
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const updateCohortById = (req, resp) => {
@@ -249,15 +290,15 @@ const getCohortDetails = (req, resp) => {
     );
 };
 
-const deleteCohortById = (req, resp) => {
+const deleteCohort = (req, resp) => {
   const {
     params: { id: cohortId },
-    user: { _id: userId }
+    user: { _id: userId, displayName }
   } = req;
   const sanitizedCohortId = sanitize(cohortId);
   let cohort;
 
-  Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
+  Cohort.findOne({ _id: sanitizedCohortId, isArchived: true, ownerIds: userId })
     .exec()
     .then(doc => {
       if (!doc) {
@@ -290,11 +331,11 @@ const deleteCohortById = (req, resp) => {
       Cohort.updateMany({ _id: sanitizedCohortId }, { isDeleted: true }).exec()
     )
     .then(() => {
-      const { ownerIds: owners, name } = cohort;
-      const data = { cohortId, owners };
+      const { memberIds, name } = cohort;
+      const data = { cohortId, memberIds, performer: displayName };
       const socketInstance = io.getInstance();
 
-      socketActions.deleteCohort(socketInstance, allCohortsViewClients)(data);
+      fireAndForget(socketActions.deleteCohort(socketInstance)(data));
 
       fireAndForget(
         saveActivity(
@@ -315,65 +356,65 @@ const deleteCohortById = (req, resp) => {
     );
 };
 
-const removeMember = (req, resp) => {
+const removeMember = async (req, resp) => {
   const { id: cohortId } = req.params;
   const { userId } = req.body;
   const sanitizedUserId = sanitize(userId);
   const sanitizedCohortId = sanitize(cohortId);
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
 
-  Cohort.findOneAndUpdate(
-    {
-      _id: sanitizedCohortId,
-      ownerIds: currentUserId,
-      memberIds: sanitizedUserId
-    },
-    { $pull: { memberIds: userId, ownerIds: userId } }
-  )
-    .exec()
-    .then(doc => {
-      if (!doc) {
-        throw new BadRequestException();
-      }
+  try {
+    const cohort = await Cohort.findOneAndUpdate(
+      {
+        _id: sanitizedCohortId,
+        isArchived: false,
+        ownerIds: currentUserId,
+        memberIds: sanitizedUserId
+      },
+      { $pull: { memberIds: userId, ownerIds: userId } },
+      { new: true }
+    )
+      .lean()
+      .exec();
 
-      return List.updateMany(
-        {
-          cohortId: sanitizedCohortId,
-          type: ListType.SHARED,
-          viewersIds: { $in: [userId] },
-          memberIds: { $nin: [userId] },
-          ownerIds: { $nin: [userId] }
-        },
-        { $pull: { viewersIds: userId } }
-      ).exec();
-    })
-    .then(() => {
-      const socketInstance = io.getInstance();
+    await List.updateMany(
+      {
+        cohortId: sanitizedCohortId,
+        type: ListType.SHARED,
+        viewersIds: { $in: [userId] },
+        memberIds: { $nin: [userId] },
+        ownerIds: { $nin: [userId] }
+      },
+      { $pull: { viewersIds: userId } }
+    ).exec();
 
-      socketActions.removeMember(
-        socketInstance,
-        allCohortsViewClients,
-        cohortClients,
-        dashboardClients,
-        listClients
-      )({ cohortId: sanitizedCohortId, userId: sanitizedUserId });
+    fireAndForget(
+      saveActivity(
+        ActivityType.COHORT_REMOVE_USER,
+        currentUserId,
+        null,
+        null,
+        sanitizedCohortId,
+        sanitizedUserId
+      )
+    );
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.COHORT_REMOVE_USER,
-          currentUserId,
-          null,
-          null,
-          sanitizedCohortId,
-          sanitizedUserId
-        )
-      );
+    const socketInstance = io.getInstance();
+    const membersCount = cohort.memberIds.length;
+    const data = {
+      cohortId: sanitizedCohortId,
+      membersCount,
+      performer: displayName,
+      userId: sanitizedUserId
+    };
 
-      resp.send();
-    })
-    .catch(() => resp.sendStatus(400));
+    resp.send();
+    fireAndForget(socketActions.removeMember(socketInstance)(data));
+  } catch (err) {
+    resp.sendStatus(400);
+  }
 };
 
 const addOwnerRole = (req, resp) => {
@@ -388,6 +429,7 @@ const addOwnerRole = (req, resp) => {
   Cohort.findOneAndUpdate(
     {
       _id: sanitize(cohortId),
+      isArchived: false,
       ownerIds: { $in: [currentUserId], $nin: [sanitizedUserId] },
       memberIds: sanitizedUserId
     },
@@ -435,6 +477,7 @@ const removeOwnerRole = (req, resp) => {
 
   Cohort.findOne({
     _id: sanitizedCohortId,
+    isArchived: false,
     ownerIds: { $all: [currentUserId, sanitizedUserId] }
   })
     .exec()
@@ -487,7 +530,7 @@ const removeOwnerRole = (req, resp) => {
     });
 };
 
-const addMember = (req, resp) => {
+const addMember = async (req, resp) => {
   const {
     user: { _id: userId, idFromProvider }
   } = req;
@@ -506,7 +549,11 @@ const addMember = (req, resp) => {
     return resp.status(400).send({ message: 'Email can not be empty.' });
   }
 
-  Cohort.findOne({ _id: sanitizedCohortId, ownerIds: userId })
+  Cohort.findOne({
+    _id: sanitizedCohortId,
+    isArchived: false,
+    ownerIds: userId
+  })
     .exec()
     .then(cohort => {
       if (!cohort) {
@@ -562,11 +609,7 @@ const addMember = (req, resp) => {
         const socketInstance = io.getInstance();
 
         return returnPayload(
-          socketActions.addMember(
-            socketInstance,
-            allCohortsViewClients,
-            dashboardClients
-          )({
+          socketActions.addMember(socketInstance)({
             cohortId,
             member: userToSend
           })
@@ -609,6 +652,7 @@ const leaveCohort = (req, resp) => {
 
   Cohort.findOne({
     _id: sanitizedCohortId,
+    isArchived: false,
     memberIds: { $in: [sanitizedUserId] }
   })
     .exec()
@@ -671,8 +715,9 @@ const leaveCohort = (req, resp) => {
 module.exports = {
   addMember,
   addOwnerRole,
+  archiveCohort,
   createCohort,
-  deleteCohortById,
+  deleteCohort,
   getArchivedCohortsMetaData,
   getCohortDetails,
   getCohortsMetaData,

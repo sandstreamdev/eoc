@@ -57,17 +57,49 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.UPDATE_SUCCESS: {
       const { cohortId, ...data } = action.payload;
       const previousCohort = state[cohortId];
-      const dataToUpdate = filterDefined(data);
 
-      const updatedCohort = {
-        ...previousCohort,
-        ...dataToUpdate
-      };
+      if (previousCohort) {
+        const dataToUpdate = filterDefined(data);
+        const updatedCohort = {
+          ...previousCohort,
+          ...dataToUpdate
+        };
 
-      return { ...state, [cohortId]: updatedCohort };
+        return { ...state, [cohortId]: updatedCohort };
+      }
+
+      return state;
     }
-    case CohortActionTypes.ARCHIVE_SUCCESS:
-    case CohortActionTypes.DELETE_SUCCESS:
+    case CohortActionTypes.ARCHIVE_SUCCESS: {
+      const { cohortId, externalAction } = action.payload;
+
+      if (state[cohortId]) {
+        return {
+          ...state,
+          [cohortId]: { ...state[cohortId], isArchived: true, externalAction }
+        };
+      }
+
+      return state;
+    }
+    case CohortActionTypes.DELETE_SUCCESS: {
+      const { cohortId, externalAction } = action.payload;
+
+      if (state[cohortId]) {
+        if (!externalAction) {
+          const { [cohortId]: removed, ...newState } = state;
+
+          return newState;
+        }
+
+        return {
+          ...state,
+          [cohortId]: { ...state[cohortId], isDeleted: true, externalAction }
+        };
+      }
+
+      return state;
+    }
     case CohortActionTypes.LEAVE_SUCCESS: {
       const { [action.payload.cohortId]: removed, ...newState } = state;
 
@@ -96,38 +128,71 @@ const cohorts = (state = {}, action) => {
       return { ...state, [_id]: payload };
     }
     case CohortActionTypes.ADD_MEMBER_SUCCESS:
-    case CohortActionTypes.REMOVE_MEMBER_SUCCESS:
+    case CohortActionTypes.REMOVE_MEMBER_SUCCESS: {
+      const {
+        payload: { cohortId, externalAction }
+      } = action;
+
+      if (state[cohortId]) {
+        const { members } = state[cohortId];
+        const cohort = {
+          ...state[cohortId],
+          members: membersReducer(members, action),
+          externalAction
+        };
+
+        return { ...state, [cohortId]: cohort };
+      }
+
+      return state;
+    }
     case CohortActionTypes.ADD_OWNER_ROLE_SUCCESS: {
       const {
         payload: { cohortId, isCurrentUserRoleChanging }
       } = action;
-      const { members } = state[cohortId];
-      const cohort = {
-        ...state[cohortId],
-        members: membersReducer(members, action)
-      };
 
-      if (isCurrentUserRoleChanging) {
-        cohort.isOwner = true;
+      if (state[cohortId]) {
+        const { members } = state[cohortId];
+
+        if (members) {
+          const cohort = {
+            ...state[cohortId],
+            members: membersReducer(members, action)
+          };
+
+          if (isCurrentUserRoleChanging) {
+            cohort.isOwner = true;
+          }
+
+          return { ...state, [cohortId]: cohort };
+        }
       }
 
-      return { ...state, [cohortId]: cohort };
+      return state;
     }
     case CohortActionTypes.REMOVE_OWNER_ROLE_SUCCESS: {
       const {
         payload: { cohortId, isCurrentUserRoleChanging }
       } = action;
-      const { members } = state[cohortId];
-      const cohort = {
-        ...state[cohortId],
-        members: membersReducer(members, action)
-      };
 
-      if (isCurrentUserRoleChanging) {
-        cohort.isOwner = false;
+      if (state[cohortId]) {
+        const { members } = state[cohortId];
+
+        if (members) {
+          const cohort = {
+            ...state[cohortId],
+            members: membersReducer(members, action)
+          };
+
+          if (isCurrentUserRoleChanging) {
+            cohort.isOwner = false;
+          }
+
+          return { ...state, [cohortId]: cohort };
+        }
       }
 
-      return { ...state, [cohortId]: cohort };
+      return state;
     }
     case CommonActionTypes.LEAVE_VIEW: {
       return {};

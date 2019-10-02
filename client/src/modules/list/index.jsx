@@ -16,7 +16,8 @@ import InputBar from 'modules/list/components/Items/InputBar';
 import {
   archiveList,
   fetchListData,
-  leaveList
+  leaveList,
+  restoreList
 } from 'modules/list/model/actions';
 import Dialog, { DialogContext } from 'common/components/Dialog';
 import ArchivedList from 'modules/list/components/ArchivedList';
@@ -35,24 +36,29 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
 import { joinRoom, leaveRoom } from 'common/model/actions';
+import history from 'common/utils/history';
+import { dashboardRoute } from 'common/utils/helpers';
 import './List.scss';
 
 class List extends Component {
   state = {
     breadcrumbs: [],
     dialogContext: null,
+    isUnavailable: false,
     isMembersBoxVisible: false,
     pendingForDetails: false,
-    pendingForListArchivization: false
+    pendingForListArchivization: false,
+    pendingForListRestoration: false
   };
 
   componentDidMount() {
     const {
       currentUser: { id: userId },
       match: {
-        params: { id: cohortId }
+        params: { id: listId }
       }
     } = this.props;
+    const { isUnavailable } = this.state;
 
     this.setState({ pendingForDetails: true });
 
@@ -67,7 +73,14 @@ class List extends Component {
         }
       });
 
-    joinRoom(Routes.LIST, cohortId, userId);
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: listId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
+
+    joinRoom(roomConfig);
   }
 
   componentDidUpdate(previousProps) {
@@ -75,32 +88,53 @@ class List extends Component {
       list: previousList,
       match: {
         params: { id: previousListId }
-      }
+      },
+      members: previousMembers
     } = previousProps;
     const {
       currentUser: { id: userId },
       list,
       match: {
         params: { id: listId }
-      }
+      },
+      members
     } = this.props;
+    const { isUnavailable } = this.state;
+    const hasListChanged = listId !== previousListId;
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: previousListId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
 
-    if (previousListId !== listId) {
-      leaveRoom(Routes.LIST, listId, userId);
+    if (hasListChanged) {
+      leaveRoom(roomConfig);
+      joinRoom({ ...roomConfig, resourceId: listId });
       this.fetchData();
     }
 
     if (previousList && list) {
       const {
-        name: previousName,
-        cohortName: previousCohortName
+        cohortName: previousCohortName,
+        name: previousName
       } = previousList;
       const { name, cohortName } = list;
-      const updateBreadcrumbs =
+      const hasNamesBeenChanged =
         previousName !== name || previousCohortName !== cohortName;
+      const hasListBeenArchived = !previousList.isArchived && list.isArchived;
+      const hasListBeenRestored = previousList.isArchived && !list.isArchived;
+      const hasUserBeenRemoved = previousMembers[userId] && !members[userId];
+      const hasListBeenDeleted = !previousList.isDeleted && list.isDeleted;
 
-      if (updateBreadcrumbs) {
+      if (hasNamesBeenChanged) {
         this.handleBreadcrumbs();
+      }
+
+      if (hasListBeenArchived || hasUserBeenRemoved || hasListBeenDeleted) {
+        this.handleMakeListUnavailable();
+      } else if (hasListBeenRestored) {
+        this.handleMakeListAvailable();
       }
     }
   }
@@ -112,8 +146,15 @@ class List extends Component {
         params: { id: listId }
       }
     } = this.props;
+    const { isUnavailable } = this.state;
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: listId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
 
-    leaveRoom(Routes.LIST, listId, userId);
+    leaveRoom(roomConfig);
   }
 
   handleBreadcrumbs = () => {
@@ -203,12 +244,38 @@ class List extends Component {
     return <Breadcrumbs breadcrumbs={breadcrumbs} isGuest={isGuest} />;
   };
 
+  handleRedirect = () => history.replace(dashboardRoute());
+
+  handleMakeListUnavailable = () => this.setState({ isUnavailable: true });
+
+  handleMakeListAvailable = () => this.setState({ isUnavailable: false });
+
+  handleRestoreList = () => {
+    const {
+      list: { name, isOwner },
+      match: {
+        params: { id: listId }
+      },
+      restoreList
+    } = this.props;
+
+    if (isOwner) {
+      this.setState({ pendingForListRestoration: true });
+
+      restoreList(listId, name)
+        .then(this.handleMakeListAvailable)
+        .finally(() => this.setState({ pendingForListRestoration: false }));
+    }
+  };
+
   render() {
     const {
       dialogContext,
+      isUnavailable,
       isMembersBoxVisible,
       pendingForDetails,
-      pendingForListArchivization
+      pendingForListArchivization,
+      pendingForListRestoration
     } = this.state;
     const {
       doneItems,
@@ -225,13 +292,35 @@ class List extends Component {
       return null;
     }
 
-    const { cohortId, isArchived, isMember, isOwner, name, type } = list;
+    const {
+      cohortId,
+      cohortName,
+      isArchived,
+      isDeleted,
+      isMember,
+      isOwner,
+      name,
+      externalAction,
+      type
+    } = list;
     const isCohortList = cohortId !== null && cohortId !== undefined;
+    const isDialogForRemovedListVisible =
+      isUnavailable && externalAction && !pendingForListArchivization;
+    const archivedListView = (isArchived && !isUnavailable) || isDeleted;
+    const dialogContextMessage = formatMessage({
+      id: 'list.label'
+    });
+    const dialogTitle = formatMessage(
+      {
+        id: 'common.actions.not-available'
+      },
+      { context: dialogContextMessage, name }
+    );
 
     return (
       <Fragment>
         {this.renderBreadcrumbs()}
-        {isArchived ? (
+        {archivedListView ? (
           <ArchivedList
             cohortId={cohortId}
             isOwner={isOwner}
@@ -315,6 +404,40 @@ class List extends Component {
             )}
           />
         )}
+        {isDialogForRemovedListVisible && (
+          <Dialog
+            cancelLabel="common.button.dashboard"
+            confirmLabel="common.button.restore"
+            hasPermissions={isOwner}
+            onCancel={this.handleRedirect}
+            onConfirm={
+              isArchived && !isDeleted ? this.handleRestoreList : undefined
+            }
+            pending={pendingForListRestoration}
+            title={dialogTitle}
+          >
+            <p>
+              <FormattedMessage
+                id={externalAction.messageId}
+                values={{
+                  name,
+                  cohortName,
+                  context: dialogContextMessage,
+                  performer: externalAction.performer
+                }}
+              />
+              {!isOwner && (
+                <Fragment>
+                  {' '}
+                  <FormattedMessage
+                    id="common.actions.not-available-contact-owner"
+                    values={{ context: dialogContextMessage, name }}
+                  />
+                </Fragment>
+              )}
+            </p>
+          </Dialog>
+        )}
       </Fragment>
     );
   }
@@ -331,7 +454,8 @@ List.propTypes = {
 
   archiveList: PropTypes.func.isRequired,
   fetchListData: PropTypes.func.isRequired,
-  leaveList: PropTypes.func.isRequired
+  leaveList: PropTypes.func.isRequired,
+  restoreList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -358,7 +482,8 @@ export default _flowRight(
     {
       archiveList,
       fetchListData,
-      leaveList
+      leaveList,
+      restoreList
     }
   )
 )(List);

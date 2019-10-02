@@ -17,7 +17,7 @@ const Page404 = () => (
         <FormattedMessage id="common.page-404.message" />
       </p>
       <Link className="primary-button" to="/dashboard">
-        <FormattedMessage id="common.page-404.dashboard" />
+        <FormattedMessage id="common.button.dashboard" />
       </Link>
     </div>
   </div>
