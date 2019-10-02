@@ -296,10 +296,11 @@ const emitVoteChange = io => event => (userIds, data, sessionId = null) => {
 };
 
 const emitRoleChange = io => (room, event) => async data => {
-  const { userId } = data;
+  const { userId, notificationData, ...rest } = data;
 
   io.sockets.to(room).emit(event, {
-    ...data,
+    ...rest,
+    userId,
     isCurrentUserRoleChanging: false
   });
 
