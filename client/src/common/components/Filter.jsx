@@ -71,6 +71,7 @@ class Filter extends PureComponent {
   render() {
     const { query } = this.state;
     const { buttonContent, clearFilterButton, placeholder } = this.props;
+    const isClearButtonVisible = clearFilterButton && buttonContent && query;
 
     return (
       <div className="filter">
@@ -83,7 +84,7 @@ class Filter extends PureComponent {
           type="text"
           value={query}
         />
-        {clearFilterButton && buttonContent && (
+        {isClearButtonVisible && (
           <button onClick={this.resetFilter} title="reset filter" type="button">
             {buttonContent}
           </button>
