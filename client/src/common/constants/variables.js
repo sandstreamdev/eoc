@@ -6,3 +6,4 @@ export const PENDING_DELAY = 1000;
 export const PROJECT_NAME = 'EOC';
 export const REDIRECT_TIMEOUT = 10000;
 export const DISPLAY_LIMIT = 3;
+export const USER_ANONYMOUS = 'user.anonymous';

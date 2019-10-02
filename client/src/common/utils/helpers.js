@@ -2,7 +2,7 @@ import _orderBy from 'lodash/orderBy';
 import _filter from 'lodash/filter';
 
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { asyncPostfixes } from 'common/constants/variables';
+import { asyncPostfixes, USER_ANONYMOUS } from 'common/constants/variables';
 import { Routes, PasswordValidationValues } from 'common/constants/enums';
 
 export const makeAbortablePromise = promise => {
@@ -121,3 +121,6 @@ export const shouldAnimate = (items, item, listState) => {
 export const channel = (id, route) => `${route}-${id}`;
 
 export const metaDataChannel = (id, route) => `${route}-meta-data-${id}`;
+
+export const formatUserName = (name, formatMessage) =>
+  name || formatMessage({ id: USER_ANONYMOUS });

@@ -3,18 +3,19 @@ import PropTypes from 'prop-types';
 
 import Avatar from 'common/components/Avatar';
 import './MemberButton.scss';
+import { formatUserName } from 'common/utils/helpers';
 
 const MemberButton = ({ member, onDisplayDetails }) => (
   <button
     className="member-button"
     onClick={onDisplayDetails}
-    title={member.displayName}
+    title={formatUserName(member.displayName)}
     type="button"
   >
     <Avatar
       avatarUrl={member.avatarUrl}
       className="member-button__avatar"
-      name={member.displayName}
+      name={formatUserName(member.displayName)}
     />
   </button>
 );
