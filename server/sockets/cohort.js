@@ -271,7 +271,7 @@ const archiveCohort = io => async data => {
 
   io.sockets
     .to(cohortMetaDataChannel(cohortId))
-    .emit(CohortActionTypes.ARCHIVE_SUCCESS, { cohortId });
+    .emit(CohortActionTypes.ARCHIVE_SUCCESS, { cohortId, performer });
 
   try {
     const lists = await List.find({ cohortId, isDeleted: false }, '_id')
@@ -285,14 +285,14 @@ const archiveCohort = io => async data => {
 
       io.sockets
         .to(listChannel(listId))
-        .emit(CohortActionTypes.ARCHIVE_SUCCESS, {
+        .emit(ListActionTypes.ARCHIVE_COHORT_SUCCESS, {
           listId,
           performer
         });
 
       io.sockets
         .to(listMetaDataChannel(listId))
-        .emit(CohortActionTypes.ARCHIVE_SUCCESS, {
+        .emit(ListActionTypes.ARCHIVE_COHORT_SUCCESS, {
           listId
         });
     });

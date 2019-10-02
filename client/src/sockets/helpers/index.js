@@ -201,23 +201,23 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
       }
       break;
     }
-    case ListEvents.ARCHIVE_COHORT:
+    case ListEvents.ARCHIVE_COHORT_SUCCESS:
     case ListEvents.DELETE_SUCCESS: {
       const { listId, performer } = data;
       const {
         location: { pathname }
       } = history;
       const messageId =
-        event === ListEvents.REMOVE_COHORT_MEMBER
-          ? 'common.actions.deleted-by-someone'
-          : 'list.actions.delete-on-archive-cohort';
+        event === ListEvents.ARCHIVE_COHORT_SUCCESS
+          ? 'list.actions.delete-on-archive-cohort'
+          : 'common.actions.deleted-by-someone';
       const externalAction = {
         messageId,
         performer
       };
       const payload = pathname.includes(listId)
         ? { listId, externalAction }
-        : { listId, externalAction };
+        : { listId };
 
       return dispatch({
         type: ListEvents.DELETE_SUCCESS,
