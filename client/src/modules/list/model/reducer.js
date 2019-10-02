@@ -362,8 +362,16 @@ const lists = (state = {}, action) => {
       return {};
     }
 
-    case CohortActionTypes.ARCHIVE_SUCCESS:
+    case CohortActionTypes.ARCHIVE_SUCCESS: {
+      const { performer } = action.payload;
+
+      if (performer) {
+        return state;
+      }
+
       return {};
+    }
+
     case CohortActionTypes.LEAVE_SUCCESS: {
       const { payload: leavedCohortId } = action;
 
