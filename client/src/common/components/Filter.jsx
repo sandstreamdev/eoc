@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
 
+import { SearchIcon } from 'assets/images/icons';
+import './Filter.scss';
+
 class Filter extends PureComponent {
   constructor(props) {
     super(props);
@@ -10,7 +13,7 @@ class Filter extends PureComponent {
     this.state = {
       query: ''
     };
-    this.debouncedFilter = _debounce(this.filter, 500);
+    this.debouncedFilter = _debounce(this.handleFilterChange, 500);
     this.input = React.createRef();
   }
 
@@ -22,14 +25,30 @@ class Filter extends PureComponent {
     this.debouncedFilter.cancel();
   }
 
-  filter = query => {
-    const { options, onFilter } = this.props;
+  filterByFields = query => {
+    const { fields, options } = this.props;
+    const normalizedQuery = query.toLowerCase();
+
+    return options.filter(option => {
+      let testString = '';
+
+      fields.forEach(field => {
+        if (option[field]) {
+          testString += option[field];
+        }
+      });
+
+      return testString.toLowerCase().includes(normalizedQuery);
+    });
+  };
+
+  handleFilterChange = query => {
+    const { onFilter, options } = this.props;
+    const trimmedQuery = _trim(query);
     let filteredOptions;
 
     if (query) {
-      const match = new RegExp(query, 'i');
-
-      filteredOptions = options.filter(option => match.test(option.name));
+      filteredOptions = this.filterByFields(trimmedQuery);
     } else {
       filteredOptions = options;
     }
@@ -45,28 +64,17 @@ class Filter extends PureComponent {
 
   handleInputChange = event => {
     const { value } = event.target;
-    const query = _trim(value);
 
-    this.setState(() => ({ query }), this.handleFilterOptions);
-  };
-
-  handleFilterOptions = () => {
-    const { query } = this.state;
-
-    this.debouncedFilter(query);
+    this.setState({ query: value }, () => this.debouncedFilter(value));
   };
 
   render() {
     const { query } = this.state;
-    const {
-      buttonContent,
-      classes,
-      clearFilterButton,
-      placeholder
-    } = this.props;
+    const { buttonContent, clearFilterButton, placeholder } = this.props;
 
     return (
-      <div className={classes}>
+      <div className="filter">
+        <SearchIcon />
         <input
           name="filter"
           onChange={this.handleInputChange}
@@ -91,8 +99,8 @@ Filter.defaultProps = {
 
 Filter.propTypes = {
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  classes: PropTypes.string.isRequired,
   clearFilterButton: PropTypes.bool,
+  fields: PropTypes.arrayOf(PropTypes.string).isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
   ).isRequired,

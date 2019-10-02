@@ -214,7 +214,7 @@ export const updateCohort = (name, cohortId, data) => dispatch =>
     });
 
 export const deleteCohort = (cohortId, name) => dispatch =>
-  deleteData(`/api/cohorts/${cohortId}/delete`)
+  deleteData(`/api/cohorts/${cohortId}`)
     .then(() => {
       dispatch(deleteCohortSuccess({ cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {

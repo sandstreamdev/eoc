@@ -3,6 +3,7 @@ const { ObjectId } = require('mongoose').Types;
 const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  getHours,
   isMember,
   isOwner,
   isValidMongoId,
@@ -66,7 +67,7 @@ describe('function isValidMongoId', () => {
   });
 });
 
-describe('function responseWithListMetaData', () => {
+describe('responseWithListMetaData', () => {
   const list = listMock[0];
   const userId = ObjectId();
 
@@ -155,7 +156,7 @@ describe('function responseWithItem', () => {
   });
 });
 
-describe('function responseWithCohorts', () => {
+describe('responseWithCohorts', () => {
   const userId = cohortsMock[0].memberIds[0];
   const result = responseWithCohorts(cohortsMock, userId);
 
@@ -174,7 +175,7 @@ describe('function responseWithCohorts', () => {
   });
 });
 
-describe('function responseWithCohort', () => {
+describe('responseWithCohort', () => {
   const cohort = cohortsMock[0];
   const userId = cohortsMock[0].memberIds[0];
   const result = responseWithCohort(cohort, userId);
@@ -467,5 +468,28 @@ describe('function responseWithListDetails', () => {
 
   it('returns cohort list details without sensitive data', () => {
     notExpected.map(property => expect(result).not.toHaveProperty(property));
+  });
+});
+
+describe('getHours', () => {
+  it('returns one hour', () => {
+    const milliseconds = 3600000;
+    const result = getHours(milliseconds);
+
+    expect(result).toEqual(1);
+  });
+
+  it('returns two hours', () => {
+    const milliseconds = 7250000;
+    const result = getHours(milliseconds);
+
+    expect(result).toEqual(2);
+  });
+
+  it('rounds towards zero', () => {
+    const milliseconds = 4000;
+    const result = getHours(milliseconds);
+
+    expect(result).toEqual(0);
   });
 });

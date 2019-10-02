@@ -12,14 +12,13 @@
   }
 
   &__header {
-    padding: four-by(4) 0 four-by(2);
+    width: 100%;
+    padding: four-by(4) 0 four-by(4);
     display: flex;
-    align-items: center;
     flex-direction: column;
     border-bottom: 1px solid $border-light;
 
     @include breakpoint($small) {
-      flex-direction: row;
       justify-content: space-between;
     }
     @include breakpoint($medium) {
@@ -27,7 +26,6 @@
       justify-content: left;
     }
     @include breakpoint($xlarge) {
-      flex-direction: row;
       justify-content: space-between;
     }
   }
@@ -39,9 +37,9 @@
     flex-direction: column;
     height: 90px;
     align-content: space-between;
+    align-items: center;
 
     @include breakpoint($xsmall) {
-      width: auto;
       height: auto;
       flex-direction: row;
       justify-content: center;
@@ -54,6 +52,10 @@
     }
     @include breakpoint($xlarge) {
       justify-content: flex-end;
+    }
+
+    .badge {
+      margin-left: four-by(2);
     }
   }
 
@@ -98,39 +100,21 @@
 
   &__show-more,
   &__show-less {
+    display: inline-flex;
+    align-items: center;
     background: transparent;
     color: $text-normal;
-    width: 36px;
-    height: 36px;
-    border: 2px solid $border-color;
-    border-radius: 100%;
+    width: auto;
+    border: 0;
     cursor: pointer;
     text-align: center;
-    margin: four-by(2);
+    margin: four-by(3);
+    font-size: $s-font;
+    text-transform: uppercase;
 
-    &:hover {
-      box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-    }
-
-    &::before {
-      border-style: solid;
-      border-width: 4px 4px 0 0;
-      content: '';
-      display: inline-block;
-      left: 0;
-      height: 7px;
-      transform: rotate(135deg);
-      position: relative;
-      vertical-align: top;
-      width: 7px;
-    }
-  }
-
-  &__show-less {
-    &::before {
-      top: 3px;
-      bottom: 0;
-      transform: rotate(315deg);
+    svg {
+      @include constant-size(16px);
+      margin-left: four-by(1);
     }
   }
 
@@ -145,5 +129,13 @@
     transition: color 200ms ease-in;
     font-size: 12px;
     line-height: 1.2;
+  }
+
+  .filter {
+    border-right-color: $gray-bg;
+
+    &:focus-within {
+      border-color: $border-focus;
+    }
   }
 }

@@ -62,6 +62,7 @@ const ActivityType = Object.freeze({
 
 const LOCK_TIMEOUT = 300000;
 const SOCKET_TIMEOUT = 60000;
+const EXPIRATION_TIME = 3600000;
 
 const Routes = Object.freeze({
   COHORT: 'cohort',
@@ -82,6 +83,7 @@ module.exports = {
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,
+  EXPIRATION_TIME,
   ListType,
   LOCK_TIMEOUT,
   NUMBER_OF_ACTIVITIES_TO_SEND,

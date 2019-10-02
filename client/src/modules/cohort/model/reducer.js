@@ -60,7 +60,6 @@ const cohorts = (state = {}, action) => {
 
       if (previousCohort) {
         const dataToUpdate = filterDefined(data);
-
         const updatedCohort = {
           ...previousCohort,
           ...dataToUpdate
@@ -154,6 +153,7 @@ const cohorts = (state = {}, action) => {
 
       if (state[cohortId]) {
         const { members } = state[cohortId];
+
         if (members) {
           const cohort = {
             ...state[cohortId],

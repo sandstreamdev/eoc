@@ -17,6 +17,8 @@ import { makeAbortablePromise } from 'common/utils/helpers';
 import Lists from './Lists';
 import './MoveToListPanel.scss';
 
+const filterByFields = ['name'];
+
 class MoveToListPanel extends PureComponent {
   pendingPromise = null;
 
@@ -137,7 +139,7 @@ class MoveToListPanel extends PureComponent {
             <div className="move-to-list-panel__filter-box">
               <Filter
                 buttonContent={<CloseIcon />}
-                classes="move-to-list-panel__filter"
+                fields={filterByFields}
                 onFilter={this.handleFilterLists}
                 options={lists}
                 placeholder={formatMessage({

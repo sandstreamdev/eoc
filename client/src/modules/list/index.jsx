@@ -44,20 +44,21 @@ class List extends Component {
   state = {
     breadcrumbs: [],
     dialogContext: null,
-    isDisabled: false,
+    isUnavailable: false,
     isMembersBoxVisible: false,
     pendingForDetails: false,
     pendingForListArchivization: false,
-    pendingForListRestoring: false
+    pendingForListRestoration: false
   };
 
   componentDidMount() {
     const {
       currentUser: { id: userId },
       match: {
-        params: { id: cohortId }
+        params: { id: listId }
       }
     } = this.props;
+    const { isUnavailable } = this.state;
 
     this.setState({ pendingForDetails: true });
 
@@ -72,7 +73,14 @@ class List extends Component {
         }
       });
 
-    joinRoom(Routes.LIST, cohortId, userId);
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: listId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
+
+    joinRoom(roomConfig);
   }
 
   componentDidUpdate(previousProps) {
@@ -91,10 +99,18 @@ class List extends Component {
       },
       members
     } = this.props;
-    const { isDisabled } = this.state;
+    const { isUnavailable } = this.state;
+    const hasListChanged = listId !== previousListId;
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: previousListId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
 
-    if (previousListId !== listId) {
-      leaveRoom(Routes.LIST, listId, userId)(isDisabled);
+    if (hasListChanged) {
+      leaveRoom(roomConfig);
+      joinRoom({ ...roomConfig, resourceId: listId });
       this.fetchData();
     }
 
@@ -104,27 +120,21 @@ class List extends Component {
         name: previousName
       } = previousList;
       const { name, cohortName } = list;
-      const updateBreadcrumbs =
+      const hasNamesBeenChanged =
         previousName !== name || previousCohortName !== cohortName;
+      const hasListBeenArchived = !previousList.isArchived && list.isArchived;
+      const hasListBeenRestored = previousList.isArchived && !list.isArchived;
+      const hasUserBeenRemoved = previousMembers[userId] && !members[userId];
+      const hasListBeenDeleted = !previousList.isDeleted && list.isDeleted;
 
-      if (updateBreadcrumbs) {
+      if (hasNamesBeenChanged) {
         this.handleBreadcrumbs();
       }
 
-      if (
-        (!previousList.isArchived && list.isArchived) ||
-        (previousMembers[userId] && !members[userId]) ||
-        (!previousList.isDeleted && list.isDeleted)
-      ) {
-        this.handleDisableList();
-      }
-
-      if (
-        (previousList.isArchived && !list.isArchived) ||
-        (!previousMembers[userId] && members[userId]) ||
-        (previousList.isDeleted && !list.isDeleted)
-      ) {
-        this.handleEnableList();
+      if (hasListBeenArchived || hasUserBeenRemoved || hasListBeenDeleted) {
+        this.handleMakeListUnavailable();
+      } else if (hasListBeenRestored) {
+        this.handleMakeListAvailable();
       }
     }
   }
@@ -136,9 +146,15 @@ class List extends Component {
         params: { id: listId }
       }
     } = this.props;
-    const { isDisabled } = this.state;
+    const { isUnavailable } = this.state;
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: listId,
+      roomPrefix: Routes.LIST,
+      userId
+    };
 
-    leaveRoom(Routes.LIST, listId, userId)(isDisabled);
+    leaveRoom(roomConfig);
   }
 
   handleBreadcrumbs = () => {
@@ -230,9 +246,9 @@ class List extends Component {
 
   handleRedirect = () => history.replace(dashboardRoute());
 
-  handleDisableList = () => this.setState({ isDisabled: true });
+  handleMakeListUnavailable = () => this.setState({ isUnavailable: true });
 
-  handleEnableList = () => this.setState({ isDisabled: false });
+  handleMakeListAvailable = () => this.setState({ isUnavailable: false });
 
   handleRestoreList = () => {
     const {
@@ -244,22 +260,22 @@ class List extends Component {
     } = this.props;
 
     if (isOwner) {
-      this.setState({ pendingForListRestoring: true });
+      this.setState({ pendingForListRestoration: true });
 
       restoreList(listId, name)
-        .then(this.handleEnableList)
-        .finally(() => this.setState({ pendingForListRestoring: false }));
+        .then(this.handleMakeListAvailable)
+        .finally(() => this.setState({ pendingForListRestoration: false }));
     }
   };
 
   render() {
     const {
       dialogContext,
-      isDisabled,
+      isUnavailable,
       isMembersBoxVisible,
       pendingForDetails,
       pendingForListArchivization,
-      pendingForListRestoring
+      pendingForListRestoration
     } = this.state;
     const {
       doneItems,
@@ -288,9 +304,18 @@ class List extends Component {
       type
     } = list;
     const isCohortList = cohortId !== null && cohortId !== undefined;
-    const idDialogForRemovedListVisible =
-      isDisabled && externalAction && !pendingForListArchivization;
-    const archivedListView = (isArchived && !isDisabled) || isDeleted;
+    const isDialogForRemovedListVisible =
+      isUnavailable && externalAction && !pendingForListArchivization;
+    const archivedListView = (isArchived && !isUnavailable) || isDeleted;
+    const dialogContextMessage = formatMessage({
+      id: 'list.label'
+    });
+    const dialogTitle = formatMessage(
+      {
+        id: 'common.actions.not-available'
+      },
+      { context: dialogContextMessage, name }
+    );
 
     return (
       <Fragment>
@@ -379,20 +404,17 @@ class List extends Component {
             )}
           />
         )}
-        {idDialogForRemovedListVisible && (
+        {isDialogForRemovedListVisible && (
           <Dialog
             cancelLabel="common.button.dashboard"
             confirmLabel="common.button.restore"
             hasPermissions={isOwner}
             onCancel={this.handleRedirect}
-            onConfirm={isArchived && !isDeleted ? this.handleRestoreList : null}
-            pending={pendingForListRestoring}
-            title={formatMessage(
-              {
-                id: 'list.actions.not-available'
-              },
-              { name }
-            )}
+            onConfirm={
+              isArchived && !isDeleted ? this.handleRestoreList : undefined
+            }
+            pending={pendingForListRestoration}
+            title={dialogTitle}
           >
             <p>
               <FormattedMessage
@@ -400,14 +422,18 @@ class List extends Component {
                 values={{
                   name,
                   cohortName,
+                  context: dialogContextMessage,
                   performer: externalAction.performer
                 }}
               />
               {!isOwner && (
-                <FormattedMessage
-                  id="list.actions.not-available-contact-owner"
-                  values={{ name }}
-                />
+                <Fragment>
+                  {' '}
+                  <FormattedMessage
+                    id="common.actions.not-available-contact-owner"
+                    values={{ context: dialogContextMessage, name }}
+                  />
+                </Fragment>
               )}
             </p>
           </Dialog>

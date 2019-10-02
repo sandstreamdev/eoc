@@ -321,7 +321,6 @@ const emitRemoveListViewer = (io, event) => async data => {
   const { listId, userId } = data;
 
   io.sockets.to(listChannel(listId)).emit(event, data);
-
   io.sockets.to(listMetaDataChannel(listId)).emit(event, data);
 
   try {

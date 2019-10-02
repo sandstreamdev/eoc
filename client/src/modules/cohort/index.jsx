@@ -50,10 +50,10 @@ const initialState = {
   areArchivedListsVisible: false,
   breadcrumbs: [],
   dialogContext: null,
-  isDisabled: false,
+  isUnavailable: false,
   pendingForArchivedLists: false,
   pendingForCohortArchivization: false,
-  pendingForCohortRestoring: false,
+  pendingForCohortRestoration: false,
   pendingForDetails: false,
   pendingForListCreation: false,
   type: ListType.LIMITED
@@ -71,16 +71,25 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
+    const { isUnavailable } = this.state;
 
     this.fetchData();
-    joinRoom(Routes.COHORT, cohortId, userId);
+
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: cohortId,
+      roomPrefix: Routes.COHORT,
+      userId
+    };
+
+    joinRoom(roomConfig);
   }
 
   componentDidUpdate(previousProps) {
     const {
       cohortDetails: cohort,
       match: {
-        params: { id }
+        params: { id: cohortId }
       },
       members
     } = this.props;
@@ -88,36 +97,44 @@ class Cohort extends PureComponent {
       cohortDetails: previousCohort,
       currentUser: { id: userId },
       match: {
-        params: { id: previousId }
+        params: { id: previousCohortId }
       },
       members: previousMembers
     } = previousProps;
-    const { isDisabled } = this.state;
+    const { isUnavailable } = this.state;
+    const hasCohortChanged = cohortId !== previousCohortId;
+    const cohortUpdated = previousCohort && cohort;
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: previousCohortId,
+      roomPrefix: Routes.COHORT,
+      userId
+    };
 
-    if (id !== previousId) {
-      leaveRoom(Routes.COHORT, previousId, userId)(isDisabled);
+    if (hasCohortChanged) {
+      leaveRoom(roomConfig);
+      joinRoom({ ...roomConfig, resourceId: cohortId });
       this.fetchData();
     }
 
-    if (previousCohort && cohort && previousCohort.name !== cohort.name) {
-      this.handleBreadcrumbs();
-    }
+    if (cohortUpdated) {
+      const hasNameBeenChanged = previousCohort.name !== cohort.name;
+      const hasCohortBeenArchived =
+        !previousCohort.isArchived && cohort.isArchived;
+      const hasCohortBeenRestored =
+        previousCohort.isArchived && !cohort.isArchived;
+      const hasUserBeenRemoved = previousMembers[userId] && !members[userId];
+      const hasCohortBeenDeleted =
+        !previousCohort.isDeleted && cohort.isDeleted;
 
-    if (previousCohort && cohort) {
-      if (
-        (!previousCohort.isArchived && cohort.isArchived) ||
-        (previousMembers[userId] && !members[userId]) ||
-        (!previousCohort.isDeleted && cohort.isDeleted)
-      ) {
-        this.handleDisableCohort();
+      if (hasNameBeenChanged) {
+        this.handleBreadcrumbs();
       }
 
-      if (
-        (previousCohort.isArchived && !cohort.isArchived) ||
-        (!previousMembers[userId] && members[userId]) ||
-        (previousCohort.isDeleted && !cohort.isDeleted)
-      ) {
-        this.handleEnableCohort();
+      if (hasCohortBeenArchived || hasUserBeenRemoved || hasCohortBeenDeleted) {
+        this.handleMakeCohortUnavailable();
+      } else if (hasCohortBeenRestored) {
+        this.handleMakeCohortAvailable();
       }
     }
   }
@@ -129,9 +146,15 @@ class Cohort extends PureComponent {
         params: { id: cohortId }
       }
     } = this.props;
-    const { isDisabled } = this.state;
+    const { isUnavailable } = this.state;
+    const roomConfig = {
+      subscribeMetaData: !isUnavailable,
+      resourceId: cohortId,
+      roomPrefix: Routes.COHORT,
+      userId
+    };
 
-    leaveRoom(Routes.COHORT, cohortId, userId)(isDisabled);
+    leaveRoom(roomConfig);
     this.pendingPromises.forEach(promise => promise.abort());
   }
 
@@ -289,9 +312,9 @@ class Cohort extends PureComponent {
 
   handleRedirect = () => history.replace(cohortsRoute());
 
-  handleDisableCohort = () => this.setState({ isDisabled: true });
+  handleMakeCohortUnavailable = () => this.setState({ isUnavailable: true });
 
-  handleEnableCohort = () => this.setState({ isDisabled: false });
+  handleMakeCohortAvailable = () => this.setState({ isUnavailable: false });
 
   handleRestoreCohort = () => {
     const {
@@ -303,11 +326,11 @@ class Cohort extends PureComponent {
     } = this.props;
 
     if (isOwner) {
-      this.setState({ pendingForCohortRestoring: true });
+      this.setState({ pendingForCohortRestoration: true });
 
       restoreCohort(cohortId, name)
-        .then(this.handleEnableCohort)
-        .finally(() => this.setState({ pendingForCohortRestoring: false }));
+        .then(this.handleMakeCohortAvailable)
+        .finally(() => this.setState({ pendingForCohortRestoration: false }));
     }
   };
 
@@ -338,16 +361,25 @@ class Cohort extends PureComponent {
     const {
       areArchivedListsVisible,
       dialogContext,
-      isDisabled,
+      isUnavailable,
       pendingForArchivedLists,
       pendingForCohortArchivization,
-      pendingForCohortRestoring,
+      pendingForCohortRestoration,
       pendingForDetails,
       pendingForListCreation
     } = this.state;
-    const idDialogForRemovedListVisible =
-      isDisabled && externalAction && !pendingForCohortArchivization;
-    const archivedCohortView = (isArchived && !isDisabled) || isDeleted;
+    const isDialogForRemovedListVisible =
+      isUnavailable && externalAction && !pendingForCohortArchivization;
+    const archivedCohortView = (isArchived && !isUnavailable) || isDeleted;
+    const dialogContextMessage = formatMessage({
+      id: 'cohort.label'
+    });
+    const dialogTitle = formatMessage(
+      {
+        id: 'common.actions.not-available'
+      },
+      { context: dialogContextMessage, name }
+    );
 
     return (
       <Fragment>
@@ -459,33 +491,35 @@ class Cohort extends PureComponent {
             </div>
           </div>
         )}
-        {idDialogForRemovedListVisible && (
+        {isDialogForRemovedListVisible && (
           <Dialog
             cancelLabel="common.button.cohorts"
             confirmLabel="common.button.restore"
             hasPermissions={isOwner}
             onCancel={this.handleRedirect}
             onConfirm={
-              isArchived && !isDeleted ? this.handleRestoreCohort : null
+              isArchived && !isDeleted ? this.handleRestoreCohort : undefined
             }
-            pending={pendingForCohortRestoring}
-            title={formatMessage(
-              {
-                id: 'cohort.actions.not-available'
-              },
-              { name }
-            )}
+            pending={pendingForCohortRestoration}
+            title={dialogTitle}
           >
             <p>
               <FormattedMessage
                 id={externalAction.messageId}
-                values={{ name, performer: externalAction.performer }}
+                values={{
+                  context: dialogContextMessage,
+                  name,
+                  performer: externalAction.performer
+                }}
               />
               {!isOwner && (
-                <FormattedMessage
-                  id="cohort.actions.not-available-contact-owner"
-                  values={{ name }}
-                />
+                <Fragment>
+                  {' '}
+                  <FormattedMessage
+                    id="common.actions.not-available-contact-owner"
+                    values={{ context: dialogContextMessage, name }}
+                  />
+                </Fragment>
               )}
             </p>
           </Dialog>
@@ -499,7 +533,10 @@ Cohort.propTypes = {
   archivedLists: PropTypes.objectOf(PropTypes.object),
   cohortDetails: PropTypes.shape({
     description: PropTypes.string,
-    externalAction: PropTypes.objectOf(PropTypes.string),
+    externalAction: PropTypes.shape({
+      messageId: PropTypes.string.isRequired,
+      performer: PropTypes.string.isRequired
+    }),
     isDeleted: PropTypes.bool,
     isArchived: PropTypes.bool,
     name: PropTypes.string

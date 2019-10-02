@@ -1,0 +1,34 @@
+@import 'partials';
+
+.badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background: $gray2;
+  width: auto;
+  padding: 0 four-by(3);
+  height: 32px;
+  border-radius: 16px;
+
+  &__icon {
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      @include constant-size(14px);
+
+      path {
+        fill: $text-dark;
+      }
+    }
+  }
+
+  &__counter {
+    font-size: $m-font;
+    color: $text-dark;
+    vertical-align: middle;
+    height: 14px;
+  }
+}

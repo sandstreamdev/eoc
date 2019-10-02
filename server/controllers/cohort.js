@@ -412,78 +412,9 @@ const removeMember = async (req, resp) => {
 
     resp.send();
     fireAndForget(socketActions.removeMember(socketInstance)(data));
-
-    // const lists = List.find({ cohortId: sanitizedCohortId })
-    //   .lean()
-    //   .exec();
-
-    // const listIdsUserRemained = [];
-    // const listIdsUserWasRemovedFrom = [];
-
-    // lists.forEach(list => {
-    //   const { type } = list;
-    //   const listId = list._id.toString();
-
-    //   if (isViewer(list, userId)) {
-    //     listIdsUserRemained.push(listId);
-    //   } else if (type === ListType.SHARED) {
-    //     listIdsUserWasRemovedFrom.push(listId);
-    //   }
-    // });
   } catch (err) {
     resp.sendStatus(400);
   }
-
-  // Cohort.findOneAndUpdate(
-  //   {
-  //     _id: sanitizedCohortId,
-  //     ownerIds: currentUserId,
-  //     memberIds: sanitizedUserId
-  //   },
-  //   { $pull: { memberIds: userId, ownerIds: userId } }
-  // )
-  //   .exec()
-  //   .then(doc => {
-  //     if (!doc) {
-  //       throw new BadRequestException();
-  //     }
-
-  //     return List.updateMany(
-  //       {
-  //         cohortId: sanitizedCohortId,
-  //         type: ListType.SHARED,
-  //         viewersIds: { $in: [userId] },
-  //         memberIds: { $nin: [userId] },
-  //         ownerIds: { $nin: [userId] }
-  //       },
-  //       { $pull: { viewersIds: userId } }
-  //     ).exec();
-  //   })
-  //   .then(() => {
-  //     const socketInstance = io.getInstance();
-
-  //     socketActions.removeMember(
-  //       socketInstance,
-  //       allCohortsViewClients,
-  //       cohortClients,
-  //       dashboardClients,
-  //       listClients
-  //     )({ cohortId: sanitizedCohortId, userId: sanitizedUserId });
-
-  //     fireAndForget(
-  //       saveActivity(
-  //         ActivityType.COHORT_REMOVE_USER,
-  //         currentUserId,
-  //         null,
-  //         null,
-  //         sanitizedCohortId,
-  //         sanitizedUserId
-  //       )
-  //     );
-
-  //     resp.send();
-  //   })
-  //   .catch(() => resp.sendStatus(400));
 };
 
 const addOwnerRole = (req, resp) => {
