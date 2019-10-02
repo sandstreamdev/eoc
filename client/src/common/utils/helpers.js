@@ -122,5 +122,5 @@ export const channel = (id, route) => `${route}-${id}`;
 
 export const metaDataChannel = (id, route) => `${route}-meta-data-${id}`;
 
-export const formatUserName = (name, formatMessage) =>
+export const formatName = (name, formatMessage) =>
   name || formatMessage({ id: USER_ANONYMOUS });

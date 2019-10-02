@@ -1,30 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import Avatar from 'common/components/Avatar';
 import './MemberButton.scss';
-import { formatUserName } from 'common/utils/helpers';
+import { formatName } from 'common/utils/helpers';
+import { IntlPropType } from 'common/constants/propTypes';
 
-const MemberButton = ({ member, onDisplayDetails }) => (
+const MemberButton = ({
+  intl: { formatMessage },
+  member,
+  onDisplayDetails
+}) => (
   <button
     className="member-button"
     onClick={onDisplayDetails}
-    title={formatUserName(member.displayName)}
+    title={formatName(undefined, formatMessage)}
     type="button"
   >
     <Avatar
       avatarUrl={member.avatarUrl}
       className="member-button__avatar"
-      name={formatUserName(member.displayName)}
+      name={formatName(member.displayName, formatMessage)}
     />
   </button>
 );
 
 MemberButton.propTypes = {
+  intl: IntlPropType.isRequired,
   member: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
   ).isRequired,
   onDisplayDetails: PropTypes.func.isRequired
 };
 
-export default MemberButton;
+export default injectIntl(MemberButton);

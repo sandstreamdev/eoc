@@ -79,6 +79,7 @@
   "about.cta-button": "Go to app",
   "about.intro-heading": "{appName} Office inventory tracking app",
   "about.intro-subheading": "{appName} helps you track all the office inventory you need!",
+  "user.anonymous": "Anonymous",
   "user.name": "Name",
   "user.email": "Email",
   "user.password": "Password",

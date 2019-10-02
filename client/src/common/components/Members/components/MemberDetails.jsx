@@ -28,6 +28,7 @@ import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import MemberDetailsHeader from './MemberDetailsHeader';
 import MemberRole from 'common/components/Members/components/MemberRole';
 import './MemberDetails.scss';
+import { formatName } from 'common/utils/helpers';
 
 const infoText = {
   [Routes.COHORT]: {
@@ -76,14 +77,14 @@ class MemberDetails extends PureComponent {
       route,
       _id: userId
     } = this.props;
-
+    const formattedName = formatName(displayName);
     const action =
       route === Routes.COHORT ? removeCohortMember : removeListMember;
 
     this.setState({ pending: true });
 
     const abortablePromise = makeAbortablePromise(
-      action(id, displayName, userId, isOwner)
+      action(id, formattedName, userId, isOwner)
     );
     this.pendingPromises.push(abortablePromise);
 
@@ -128,6 +129,7 @@ class MemberDetails extends PureComponent {
       removeOwnerRoleInCohort
     } = this.props;
     const isCurrentUserRoleChanging = currentUserId === userId;
+    const formattedUserName = formatName(displayName);
 
     this.setState({ pending: true });
 
@@ -135,11 +137,11 @@ class MemberDetails extends PureComponent {
       ? this.removeRole(
           isCurrentUserRoleChanging,
           removeOwnerRoleInCohort,
-          displayName
+          formattedUserName
         )
       : addOwnerRoleInCohort;
 
-    action(id, userId, displayName).finally(() =>
+    action(id, userId, formattedUserName).finally(() =>
       this.setState({ pending: false })
     );
   };
@@ -160,6 +162,7 @@ class MemberDetails extends PureComponent {
       removeOwnerRoleInList
     } = this.props;
     const isCurrentUserRoleChanging = currentUserId === userId;
+    const formattedName = formatName(displayName);
     let action;
 
     this.setState({ pending: true });
@@ -170,7 +173,7 @@ class MemberDetails extends PureComponent {
           ? this.removeRole(
               isCurrentUserRoleChanging,
               removeOwnerRoleInList,
-              displayName
+              formattedName
             )
           : addOwnerRoleInList;
         break;
@@ -179,7 +182,7 @@ class MemberDetails extends PureComponent {
           ? this.removeRole(
               isCurrentUserRoleChanging,
               removeMemberRoleInList,
-              displayName
+              formattedName
             )
           : addMemberRoleInList;
         break;
@@ -187,7 +190,7 @@ class MemberDetails extends PureComponent {
         break;
     }
 
-    action(id, userId, displayName).finally(() =>
+    action(id, userId, formattedName).finally(() =>
       this.setState({ pending: false })
     );
   };
