@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
 import { logoutCurrentUser } from 'modules/user/model/actions';
 import { getCurrentUser } from 'modules/user/model/selectors';
-import { UserPropType } from 'common/constants/propTypes';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import { LogoutIcon, UserIcon, CohortIcon } from 'assets/images/icons';
 import Avatar from 'common/components/Avatar';
 import Dropdown from 'common/components/Dropdown';
 import './UserBar.scss';
+import { formatName } from 'common/utils/helpers';
 
 class UserBar extends Component {
   handleLogOut = () => {
@@ -20,27 +22,35 @@ class UserBar extends Component {
 
   renderAvatar = () => {
     const {
-      currentUser: { avatarUrl, name }
+      currentUser: { avatarUrl, name },
+      intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(name, formatMessage);
 
     return (
-      <Avatar avatarUrl={avatarUrl} className="user-bar__avatar" name={name} />
+      <Avatar
+        avatarUrl={avatarUrl}
+        className="user-bar__avatar"
+        name={formattedName}
+      />
     );
   };
 
   renderUserBarMenu = () => {
     const {
-      currentUser: { avatarUrl, name }
+      currentUser: { avatarUrl, name },
+      intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(name, formatMessage);
 
     return (
       <ul className="user-bar__menu">
         <li className="user-bar__menu-item">
-          {name}
+          {formattedName}
           <Avatar
             avatarUrl={avatarUrl}
             className="user-bar__avatar"
-            name={name}
+            name={formattedName}
           />
         </li>
         <li className="user-bar__menu-item">
@@ -85,6 +95,7 @@ class UserBar extends Component {
 
 UserBar.propTypes = {
   currentUser: UserPropType.isRequired,
+  intl: IntlPropType.isRequired,
 
   logoutCurrentUser: PropTypes.func.isRequired
 };
@@ -93,7 +104,10 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { logoutCurrentUser }
+export default _flowRight(
+  injectIntl,
+  connect(
+    mapStateToProps,
+    { logoutCurrentUser }
+  )
 )(UserBar);
