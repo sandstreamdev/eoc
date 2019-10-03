@@ -132,7 +132,6 @@ class ListItemDescription extends PureComponent {
       match: {
         params: { id: listId }
       },
-      name,
       updateListItem
     } = this.props;
 

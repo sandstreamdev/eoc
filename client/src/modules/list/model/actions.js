@@ -9,7 +9,7 @@ import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
 import { ListType } from 'modules/list/consts';
-import { cohortRoute, dashboardRoute, formatName } from 'common/utils/helpers';
+import { cohortRoute, dashboardRoute } from 'common/utils/helpers';
 
 const fetchListDataFailure = () => ({
   type: ListActionTypes.FETCH_DATA_FAILURE
