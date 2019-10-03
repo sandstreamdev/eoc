@@ -8,17 +8,21 @@ import _flowRight from 'lodash/flowRight';
 import Linkify from 'react-linkify';
 import Textarea from 'react-textarea-autosize';
 import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  RouterMatchPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import { updateListItem } from '../model/actions';
 import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise } from 'common/utils/helpers';
+import { formatName, makeAbortablePromise } from 'common/utils/helpers';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import './ListItemDescription.scss';
 
@@ -123,6 +127,7 @@ class ListItemDescription extends PureComponent {
     const {
       currentUser: { id: userId, name: userName },
       disabled,
+      intl: { formatMessage },
       itemId,
       match: {
         params: { id: listId }
@@ -138,7 +143,8 @@ class ListItemDescription extends PureComponent {
     if (isDescriptionUpdated) {
       this.setState({ pending: true });
 
-      const userData = { userId, editedBy: userName };
+      const formattedName = formatName(userName, formatMessage);
+      const userData = { userId, editedBy: formattedName };
 
       this.pendingPromise = makeAbortablePromise(
         updateListItem(name, listId, itemId, userData, { description })
@@ -301,6 +307,7 @@ ListItemDescription.propTypes = {
   currentUser: UserPropType.isRequired,
   description: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
+  intl: IntlPropType.isRequired,
   itemId: PropTypes.string.isRequired,
   locked: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
@@ -316,6 +323,7 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
+  injectIntl,
   withRouter,
   connect(
     mapStateToProps,
