@@ -147,7 +147,7 @@ class ListItemDescription extends PureComponent {
       const userData = { userId, editedBy: formattedName };
 
       this.pendingPromise = makeAbortablePromise(
-        updateListItem(name, listId, itemId, userData, { description })
+        updateListItem(formattedName, listId, itemId, userData, { description })
       );
 
       return this.pendingPromise.promise
