@@ -10,6 +10,7 @@ import { getAccountDetails, updatePassword } from 'modules/user/model/actions';
 import ValidationInput from './ValidationInput';
 import PendingButton from 'common/components/PendingButton';
 import {
+  formatName,
   makeAbortablePromise,
   validatePassword,
   validateWith
@@ -56,6 +57,7 @@ class PasswordRecoveryForm extends PureComponent {
 
   fetchAccountData = () => {
     const {
+      intl: { formatMessage },
       match: {
         params: { token }
       }
@@ -65,9 +67,11 @@ class PasswordRecoveryForm extends PureComponent {
     this.pendingPromise = abortable;
 
     abortable.promise
-      .then(({ displayName, email }) =>
-        this.setState({ userName: displayName, email })
-      )
+      .then(({ displayName, email }) => {
+        const formattedName = formatName(displayName, formatMessage);
+
+        this.setState({ userName: formattedName, email });
+      })
       .catch(() => {
         /**
          * Ignore error
