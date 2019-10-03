@@ -1747,7 +1747,7 @@ const leaveList = (req, resp) => {
     });
 };
 
-const getAvailableLists = (req, resp) => {
+const getAvailableLists = async (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
@@ -1757,11 +1757,22 @@ const getAvailableLists = (req, resp) => {
     isArchived: false
   };
 
-  List.find(query, 'name')
-    .lean()
-    .exec()
-    .then(docs => (docs ? resp.send(docs) : resp.sendStatus(400)))
-    .catch(() => resp.sendStatus(400));
+  try {
+    const lists = await List.find(query, 'name')
+      .lean()
+      .populate('cohortId', 'isArchived')
+      .exec();
+
+    const listToSend = lists
+      .filter(
+        list => !list.cohortId || (list.cohortId && !list.cohortId.isArchived)
+      )
+      .map(({ _id, name }) => ({ _id, name }));
+
+    resp.send(listToSend);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const moveItem = async (req, resp) => {
