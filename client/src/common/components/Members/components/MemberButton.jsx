@@ -11,20 +11,24 @@ const MemberButton = ({
   intl: { formatMessage },
   member,
   onDisplayDetails
-}) => (
-  <button
-    className="member-button"
-    onClick={onDisplayDetails}
-    title={formatName(undefined, formatMessage)}
-    type="button"
-  >
-    <Avatar
-      avatarUrl={member.avatarUrl}
-      className="member-button__avatar"
-      name={formatName(member.displayName, formatMessage)}
-    />
-  </button>
-);
+}) => {
+  const formattedName = formatName(member.displayName, formatMessage);
+
+  return (
+    <button
+      className="member-button"
+      onClick={onDisplayDetails}
+      title={formatName(undefined, formatMessage)}
+      type="button"
+    >
+      <Avatar
+        avatarUrl={member.avatarUrl}
+        className="member-button__avatar"
+        name={formattedName}
+      />
+    </button>
+  );
+};
 
 MemberButton.propTypes = {
   intl: IntlPropType.isRequired,
