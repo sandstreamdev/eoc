@@ -429,7 +429,7 @@ export const removeListFromFavourites = (listId, name) => dispatch =>
       );
     });
 
-export const addListViewer = (listId, email, formatMessage) => dispatch =>
+export const addListViewer = (listId, email) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
@@ -437,12 +437,11 @@ export const addListViewer = (listId, email, formatMessage) => dispatch =>
     .then(viewer => {
       if (viewer._id) {
         const action = addViewerSuccess({ listId, viewer });
-        const formattedName = formatName(viewer.displayName, formatMessage);
 
         dispatch(action);
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',
-          data: { userName: formattedName }
+          data: { userName: viewer.displayName }
         });
 
         return UserAddingStatus.ADDED;
