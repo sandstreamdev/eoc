@@ -421,6 +421,7 @@ class ListItem extends PureComponent {
     const { areDetailsVisible, isNameEdited } = this.state;
     const isEdited = nameLock || descriptionLock;
     const formattedName = formatName(editedBy, formatMessage);
+    const formattedAuthorName = formatName(authorName, formatMessage);
 
     return (
       <li
@@ -457,14 +458,14 @@ class ListItem extends PureComponent {
               <span className="list-item__author">
                 <FormattedMessage
                   id="list.list-item.author"
-                  values={{ authorName }}
+                  values={{ authorName: formattedAuthorName }}
                 />
               </span>
               {editedBy && (
                 <span className="list-item__edited-by">
                   <FormattedMessage
                     id="list.list-item.edited-by"
-                    values={{ formattedName }}
+                    values={{ editedBy: formattedName }}
                   />
                 </span>
               )}
