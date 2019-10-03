@@ -386,6 +386,10 @@ class Cohort extends PureComponent {
       },
       { context: dialogContextMessage, name }
     );
+    const performerFormattedName = formatName(
+      externalAction.performer,
+      formatMessage
+    );
 
     return (
       <Fragment>
@@ -515,7 +519,7 @@ class Cohort extends PureComponent {
                 values={{
                   context: dialogContextMessage,
                   name,
-                  performer: externalAction.performer
+                  performer: performerFormattedName
                 }}
               />
               {!isOwner && (

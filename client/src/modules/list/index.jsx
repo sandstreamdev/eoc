@@ -37,7 +37,7 @@ import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
 import { joinRoom, leaveRoom } from 'common/model/actions';
 import history from 'common/utils/history';
-import { dashboardRoute } from 'common/utils/helpers';
+import { dashboardRoute, formatName } from 'common/utils/helpers';
 import './List.scss';
 
 class List extends Component {
@@ -316,6 +316,10 @@ class List extends Component {
       },
       { context: dialogContextMessage, name }
     );
+    const performerFormattedName = formatName(
+      externalAction.performer,
+      formatMessage
+    );
 
     return (
       <Fragment>
@@ -423,7 +427,7 @@ class List extends Component {
                   name,
                   cohortName,
                   context: dialogContextMessage,
-                  performer: externalAction.performer
+                  performer: performerFormattedName
                 }}
               />
               {!isOwner && (
