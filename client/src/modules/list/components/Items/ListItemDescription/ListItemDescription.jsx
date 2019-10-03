@@ -310,7 +310,6 @@ ListItemDescription.propTypes = {
   itemId: PropTypes.string.isRequired,
   locked: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
-  name: PropTypes.string.isRequired,
 
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,

@@ -225,14 +225,16 @@ class List extends Component {
   handleLeave = () => {
     const {
       currentUser: { id: currentUserId, name },
+      intl: { formatMessage },
       leaveList,
       list: { cohortId, type },
       match: {
         params: { id }
       }
     } = this.props;
+    const formattedName = formatName(name, formatMessage);
 
-    return leaveList(id, currentUserId, cohortId, name, type);
+    return leaveList(id, currentUserId, cohortId, formattedName, type);
   };
 
   renderBreadcrumbs = () => {
