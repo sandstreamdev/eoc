@@ -138,6 +138,7 @@ class MoveToListPanel extends PureComponent {
           <Fragment>
             <div className="move-to-list-panel__filter-box">
               <Filter
+                autofocus
                 buttonContent={<CloseIcon />}
                 fields={filterByFields}
                 onFilter={this.handleFilterLists}

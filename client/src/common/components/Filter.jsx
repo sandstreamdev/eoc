@@ -18,7 +18,11 @@ class Filter extends PureComponent {
   }
 
   componentDidMount() {
-    this.input.current.focus();
+    const { autofocus } = this.props;
+
+    if (autofocus) {
+      this.input.current.focus();
+    }
   }
 
   componentWillUnmount() {
@@ -99,6 +103,7 @@ Filter.defaultProps = {
 };
 
 Filter.propTypes = {
+  autofocus: PropTypes.bool,
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   clearFilterButton: PropTypes.bool,
   fields: PropTypes.arrayOf(PropTypes.string).isRequired,
