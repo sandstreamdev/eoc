@@ -52,16 +52,15 @@ const addComment = (req, resp) => {
         displayName
       );
       const data = { itemId, listId, comment: commentToSend };
+      const activity = {
+        activityType: ActivityType.ITEM_ADD_COMMENT,
+        cohortId: list.cohortId,
+        itemId: sanitizedItemId,
+        listId: sanitizedListId,
+        performerId: userId
+      };
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.ITEM_ADD_COMMENT,
-          userId,
-          sanitizedItemId,
-          sanitizedListId,
-          list.cohortId
-        )
-      );
+      fireAndForget(saveActivity(activity));
 
       resp
         .location(`/comment/${commentToSend._id}`)
