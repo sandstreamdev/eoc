@@ -18,6 +18,7 @@ import {
 import Confirmation from 'common/components/Confirmation';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import './ListArchivedItem.scss';
+import { formatName } from 'common/utils/helpers';
 
 class ListArchivedItem extends PureComponent {
   constructor(props) {
@@ -32,13 +33,15 @@ class ListArchivedItem extends PureComponent {
     const {
       currentUser: { name: userName },
       data: { _id: itemId, done, name },
+      intl: { formatMessage },
       match: {
         params: { id: listId }
       },
       restoreItem
     } = this.props;
+    const formattedName = formatName(userName, formatMessage);
 
-    return restoreItem(listId, itemId, name, userName, done);
+    return restoreItem(listId, itemId, name, formattedName, done);
   };
 
   showConfirmation = () => this.setState({ isConfirmationVisible: true });
