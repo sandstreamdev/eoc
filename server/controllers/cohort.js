@@ -54,7 +54,7 @@ const createCohort = (req, resp) => {
         performerId: userId
       };
 
-      saveActivity(activity);
+      fireAndForget(saveActivity(activity));
     })
     .catch(() => resp.sendStatus(400));
 };
