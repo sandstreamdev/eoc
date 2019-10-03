@@ -52,7 +52,7 @@ export const PlusIcon = () => (
 );
 
 export const RegularStarIcon = () => (
-  <Icon aria-label="fot favourite" viewBox="0 0 576 512">
+  <Icon aria-label="not favourite" viewBox="0 0 576 512">
     <path
       d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
       fill="currentColor"
@@ -97,7 +97,7 @@ export const UserIcon = () => (
 );
 
 export const DotsIcon = () => (
-  <Icon aria-label="ellipsis" rviewBox="0 0 512 512">
+  <Icon aria-label="ellipsis" viewBox="0 0 512 512">
     <path
       d="M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z"
       fill="currentColor"
@@ -124,7 +124,7 @@ export const LogoutIcon = () => (
 );
 
 export const ChevronRight = () => (
-  <Icon viewBox="0 0 320 512">
+  <Icon aria-label="breadcrumbs" viewBox="0 0 320 512">
     <path
       d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"
       fill="currentColor"
@@ -210,7 +210,7 @@ export const ErrorIcon = () => (
 );
 
 export const AppIcon = () => (
-  <Icon aria-label="eoc" viewBox="0 0 640 512">
+  <Icon aria-label="eoc logo" viewBox="0 0 640 512">
     <path
       d="M192 384h192c53 0 96-43 96-96h32c70.6 0 128-57.4 128-128S582.6 32 512 32H120c-13.3 0-24 10.7-24 24v232c0 53 43 96 96 96zM512 96c35.3 0 64 28.7 64 64s-28.7 64-64 64h-32V96h32zm47.7 384H48.3c-47.6 0-61-64-36-64h583.3c25 0 11.8 64-35.9 64z"
       fill="#ef9b1f"
