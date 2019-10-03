@@ -386,10 +386,9 @@ class Cohort extends PureComponent {
       },
       { context: dialogContextMessage, name }
     );
-    const performerFormattedName = formatName(
-      externalAction.performer,
-      formatMessage
-    );
+    const performerFormattedName = externalAction
+      ? formatName(externalAction.performer, formatMessage)
+      : null;
 
     return (
       <Fragment>

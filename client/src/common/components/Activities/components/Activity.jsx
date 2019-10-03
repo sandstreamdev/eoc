@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedRelative } from 'react-intl';
+import { injectIntl, FormattedMessage, FormattedRelative } from 'react-intl';
 
 import Avatar from 'common/components/Avatar';
 import './Activity.scss';
@@ -77,7 +77,9 @@ class Activity extends PureComponent {
       intl: { formatMessage }
     } = this.props;
     const formattedName = formatName(performer.name, formatMessage);
-    const formattedUserName = formatName(editedUser.name, formatMessage);
+    const formattedUserName = editedUser
+      ? formatName(editedUser.name, formatMessage)
+      : null;
 
     return (
       <Fragment>
@@ -86,7 +88,7 @@ class Activity extends PureComponent {
           values={{
             list: <em>{this.renderListLink()}</em>,
             performer: <em>{formattedName}</em>,
-            user: editedUser ? formattedUserName : null,
+            user: formattedUserName,
             value: editedValue
           }}
         />
@@ -171,4 +173,4 @@ Activity.propTypes = {
   intl: IntlPropType.isRequired
 };
 
-export default Activity;
+export default injectIntl(Activity);
