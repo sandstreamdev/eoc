@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
+import { injectIntl } from 'react-intl';
 
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import { PlusIcon, DotsIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberDetails from './components/MemberDetails';
@@ -16,6 +17,7 @@ import { UserAddingStatus, MEMBERS_DISPLAY_LIMIT } from './const';
 import InviteNewUser from './components/InviteNewUser';
 import { inviteUser } from './model/actions';
 import './MembersBox.scss';
+import { formatName } from 'common/utils/helpers';
 
 class MembersBox extends PureComponent {
   constructor(props) {
@@ -128,24 +130,31 @@ class MembersBox extends PureComponent {
   };
 
   renderMemberList = () => {
-    const { members } = this.props;
+    const {
+      intl: { formatMessage },
+      members
+    } = this.props;
     const { membersDisplayLimit } = this.state;
     const membersList = Object.values(members);
 
-    return membersList.slice(0, membersDisplayLimit).map(member => (
-      <li
-        className="members-box__list-item"
-        key={member._id}
-        title={member.displayName}
-      >
-        <div className="members-box__button-mobile">
-          <MemberButton
-            member={member}
-            onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
-          />
-        </div>
-      </li>
-    ));
+    return membersList.slice(0, membersDisplayLimit).map(member => {
+      const formattedName = formatName(member.displayName, formatMessage);
+
+      return (
+        <li
+          className="members-box__list-item"
+          key={member._id}
+          title={formattedName}
+        >
+          <div className="members-box__button-mobile">
+            <MemberButton
+              member={member}
+              onDisplayDetails={this.handleDisplayingMemberDetails(member._id)}
+            />
+          </div>
+        </li>
+      );
+    });
   };
 
   renderShowMoreUsers = () => {
@@ -230,6 +239,7 @@ class MembersBox extends PureComponent {
 }
 
 MembersBox.propTypes = {
+  intl: IntlPropType.isRequired,
   isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool,
   isMember: PropTypes.bool,
@@ -247,6 +257,7 @@ MembersBox.propTypes = {
 };
 
 export default _flowRight(
+  injectIntl,
   withRouter,
   connect(
     null,
