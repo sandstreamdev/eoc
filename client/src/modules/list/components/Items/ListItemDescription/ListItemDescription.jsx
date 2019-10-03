@@ -14,14 +14,18 @@ import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
-import { IntlPropType, RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  RouterMatchPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import { updateListItem } from '../model/actions';
 import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { formatName, makeAbortablePromise } from 'common/utils/helpers';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import './ListItemDescription.scss';
-'
+
 class ListItemDescription extends PureComponent {
   pendingPromise = null;
 
