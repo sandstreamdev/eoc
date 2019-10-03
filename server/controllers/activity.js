@@ -6,7 +6,7 @@ const Cohort = require('../models/cohort.model');
 const { NUMBER_OF_ACTIVITIES_TO_SEND } = require('../common/variables');
 
 const saveActivity = activity => {
-  const newActivity = new Activity({ ...activity });
+  const newActivity = new Activity(activity);
 
   return newActivity.save();
 };
