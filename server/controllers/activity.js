@@ -5,24 +5,8 @@ const List = require('../models/list.model');
 const Cohort = require('../models/cohort.model');
 const { NUMBER_OF_ACTIVITIES_TO_SEND } = require('../common/variables');
 
-const saveActivity = ({
-  activityType,
-  performerId,
-  itemId,
-  listId,
-  cohortId,
-  editedUserId,
-  editedValue
-}) => {
-  const newActivity = new Activity({
-    activityType,
-    performerId,
-    cohortId,
-    editedUserId,
-    editedValue,
-    itemId,
-    listId
-  });
+const saveActivity = activity => {
+  const newActivity = new Activity({ ...activity });
 
   return newActivity.save();
 };
@@ -150,7 +134,6 @@ const getActivities = (req, resp) => {
 
       const isNextPage =
         activitiesCount > NUMBER_OF_ACTIVITIES_TO_SEND * sanitizedPage;
-
       resp.send({ activities, isNextPage, nextPage });
     })
     .catch(() => resp.sendStatus(400));
