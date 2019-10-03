@@ -597,8 +597,7 @@ const updateList = async (req, resp) => {
         isArchived: false,
         ownerIds: userId
       },
-      dataToUpdate,
-      { new: true }
+      dataToUpdate
     ).exec();
     const socketInstance = io.getInstance();
     const data = { listId };
