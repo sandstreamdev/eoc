@@ -1,0 +1,44 @@
+@import 'partials';
+
+.cohort-name {
+  border-bottom: 1px solid $border-light;
+  margin-bottom: four-by(2);
+  svg {
+    height: 20px;
+    margin-right: four-by(4);
+
+    path {
+      fill: $text-dark;
+    }
+  }
+
+  &__top {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    &--disabled {
+      svg path {
+        fill: $gray-bg2;
+      }
+    }
+  }
+
+  &__heading {
+    padding: four-by(2) 0;
+    display: inline-flex;
+    align-items: center;
+    font-size: $xl-font;
+    font-weight: 700;
+    line-height: 1;
+    color: $text-dark;
+
+    &--disabled {
+      color: $gray-bg2;
+    }
+  }
+
+  &--clickable {
+    cursor: pointer;
+  }
+}
