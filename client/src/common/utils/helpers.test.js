@@ -1,6 +1,11 @@
 import { formatName } from './helpers';
 import { USER_ANONYMOUS } from '../constants/variables';
 
+/**
+ * This 'fakeFormatMessage' is to simualate formatMessage
+ * function from react-intl library, because we don't have
+ * access to an instance of this function here.
+ */
 const fakeFormatMessage = () => USER_ANONYMOUS;
 
 describe('formatName', () => {
