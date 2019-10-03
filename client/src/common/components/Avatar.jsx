@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 
 import { UserIcon } from 'assets/images/icons';
 import './Avatar.scss';
+import { formatName } from 'common/utils/helpers';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class Avatar extends PureComponent {
   state = {
@@ -14,19 +17,25 @@ class Avatar extends PureComponent {
 
   render() {
     const { isAvatarError } = this.state;
-    const { avatarUrl, className, name } = this.props;
+    const {
+      avatarUrl,
+      className,
+      intl: { formatMessage },
+      name
+    } = this.props;
+    const formattedName = formatName(name, formatMessage);
 
     return (
       <span className="avatar">
         {avatarUrl && !isAvatarError ? (
           <img
-            alt={`${name || 'user'} avatar`}
+            alt={`${formattedName || 'user'} avatar`}
             className={classNames(`${className} avatar__image`, {
               avatar__placeholder: isAvatarError
             })}
             onError={this.handleAvatarError}
             src={avatarUrl}
-            title={name}
+            title={formattedName}
           />
         ) : (
           <UserIcon />
@@ -39,7 +48,8 @@ class Avatar extends PureComponent {
 Avatar.propTypes = {
   avatarUrl: PropTypes.string,
   className: PropTypes.string,
+  intl: IntlPropType.isRequired,
   name: PropTypes.string
 };
 
-export default Avatar;
+export default injectIntl(Avatar);
