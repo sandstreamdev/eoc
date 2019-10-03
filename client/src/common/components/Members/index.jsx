@@ -52,6 +52,7 @@ class MembersBox extends PureComponent {
   handleAddMember = () => email => {
     const { addCohortMember, addListViewer } = this.props;
     const {
+      intl: { formatMessage },
       match: {
         params: { id }
       },
@@ -61,7 +62,7 @@ class MembersBox extends PureComponent {
     const action = route === Routes.COHORT ? addCohortMember : addListViewer;
 
     this.setState({ pending: true });
-    action(id, email).then(response => {
+    action(id, email, formatMessage).then(response => {
       if (response === UserAddingStatus.ADDED) {
         this.setState({ pending: false });
         this.hideForm();

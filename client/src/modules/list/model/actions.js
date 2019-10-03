@@ -9,7 +9,7 @@ import { UserAddingStatus } from 'common/components/Members/const';
 import { ResourceNotFoundException } from 'common/exceptions';
 import socket from 'sockets';
 import { ListType } from 'modules/list/consts';
-import { cohortRoute, dashboardRoute } from 'common/utils/helpers';
+import { cohortRoute, dashboardRoute, formatName } from 'common/utils/helpers';
 
 const fetchListDataFailure = () => ({
   type: ListActionTypes.FETCH_DATA_FAILURE
@@ -429,7 +429,7 @@ export const removeListFromFavourites = (listId, name) => dispatch =>
       );
     });
 
-export const addListViewer = (listId, email) => dispatch =>
+export const addListViewer = (listId, email, formatMessage) => dispatch =>
   patchData(`/api/lists/${listId}/add-viewer`, {
     email
   })
@@ -437,11 +437,12 @@ export const addListViewer = (listId, email) => dispatch =>
     .then(viewer => {
       if (viewer._id) {
         const action = addViewerSuccess({ listId, viewer });
+        const formattedName = formatName(viewer.displayName, formatMessage);
 
         dispatch(action);
         createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
           notificationId: 'list.actions.add-viewer',
-          data: { userName: viewer.displayName }
+          data: { userName: formattedName }
         });
 
         return UserAddingStatus.ADDED;
