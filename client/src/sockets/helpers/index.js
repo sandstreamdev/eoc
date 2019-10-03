@@ -1,3 +1,6 @@
+import _filter from 'lodash/filter';
+import _keyBy from 'lodash/keyBy';
+
 import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
@@ -119,7 +122,6 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
-
     case ListEvents.CHANGE_TYPE_SUCCESS: {
       const { listId, performer, removedViewers, ...rest } = data;
       const {
@@ -166,13 +168,13 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         }
 
         return dispatch({
-          type: CohortEvents.DELETE_SUCCESS,
+          type: ListEvents.DELETE_SUCCESS,
           payload: { listId }
         });
       }
 
       return dispatch({
-        type: CohortEvents.REMOVE_MEMBER_SUCCESS,
+        type: ListEvents.REMOVE_MEMBER_SUCCESS,
         payload: { listId, userId }
       });
     }
@@ -262,6 +264,18 @@ export const listEventsController = (event, data, { dispatch, getState }) => {
         type: event,
         payload: { ...data, isCurrentUserUpdated }
       });
+    }
+    case ListEvents.FETCH_META_DATA_SUCCESS: {
+      const {
+        location: { pathname }
+      } = history;
+
+      const listsToSave = _keyBy(
+        _filter(data, list => !pathname.includes(list._id)),
+        'id'
+      );
+
+      return dispatch({ type: event, payload: listsToSave });
     }
     default:
       return dispatch({ type: event, payload: data });
@@ -374,6 +388,18 @@ export const cohortEventsController = (event, data, { dispatch, getState }) => {
         type: event,
         payload
       });
+    }
+    case CohortEvents.FETCH_META_DATA_SUCCESS: {
+      const {
+        location: { pathname }
+      } = history;
+
+      const cohortsToSave = _keyBy(
+        _filter(data, list => !pathname.includes(list._id)),
+        'id'
+      );
+
+      return dispatch({ type: event, payload: cohortsToSave });
     }
     default:
       return dispatch({ type: event, payload: data });

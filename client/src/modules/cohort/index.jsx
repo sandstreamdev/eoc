@@ -55,6 +55,7 @@ const initialState = {
   pendingForCohortArchivization: false,
   pendingForCohortRestoration: false,
   pendingForDetails: false,
+  pendingForLeaving: false,
   pendingForListCreation: false,
   type: ListType.LIMITED
 };
@@ -296,7 +297,11 @@ class Cohort extends PureComponent {
       }
     } = this.props;
 
-    return leaveCohort(id, currentUserId, name);
+    this.setState({ pendingForLeaving: true });
+
+    return leaveCohort(id, currentUserId, name).catch(() =>
+      this.setState({ pendingForLeaving: false })
+    );
   };
 
   renderBreadcrumbs = () => {
@@ -361,10 +366,14 @@ class Cohort extends PureComponent {
       pendingForCohortArchivization,
       pendingForCohortRestoration,
       pendingForDetails,
+      pendingForLeaving,
       pendingForListCreation
     } = this.state;
     const isDialogForRemovedListVisible =
-      isUnavailable && externalAction && !pendingForCohortArchivization;
+      isUnavailable &&
+      externalAction &&
+      !pendingForCohortArchivization &&
+      !pendingForLeaving;
     const archivedCohortView = (isArchived && !isUnavailable) || isDeleted;
     const dialogContextMessage = formatMessage({
       id: 'cohort.label'

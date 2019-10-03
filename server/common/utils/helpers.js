@@ -358,7 +358,6 @@ const responseWithCohortDetails = (doc, userId) => {
     members,
     name
   };
-  // console.log('response', ownerIds, userId);
 
   if (userId) {
     cohortToReturn.isOwner = checkIfArrayContainsUserId(ownerIds, userId);

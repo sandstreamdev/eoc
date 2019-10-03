@@ -354,12 +354,6 @@ const leaveList = io => async data => {
         .to(socketId)
         .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
     );
-
-    // socketIds.forEach(socketId =>
-    //   io.sockets
-    //     .to(socketId)
-    //     .emit(ListActionTypes.LEAVE_SUCCESS, { listId, userId })
-    // );
   } catch {
     // Ignore error
   }

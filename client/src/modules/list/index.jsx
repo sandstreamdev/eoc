@@ -47,6 +47,7 @@ class List extends Component {
     isUnavailable: false,
     isMembersBoxVisible: false,
     pendingForDetails: false,
+    pendingForLeaving: false,
     pendingForListArchivization: false,
     pendingForListRestoration: false
   };
@@ -227,7 +228,11 @@ class List extends Component {
       }
     } = this.props;
 
-    return leaveList(id, currentUserId, cohortId, name, type);
+    this.setState({ pendingForLeaving: true });
+
+    return leaveList(id, currentUserId, cohortId, name, type).catch(() =>
+      this.setState({ pendingForLeaving: false })
+    );
   };
 
   renderBreadcrumbs = () => {
@@ -269,6 +274,7 @@ class List extends Component {
       isUnavailable,
       isMembersBoxVisible,
       pendingForDetails,
+      pendingForLeaving,
       pendingForListArchivization,
       pendingForListRestoration
     } = this.state;
@@ -300,7 +306,10 @@ class List extends Component {
     } = list;
     const isCohortList = cohortId !== null && cohortId !== undefined;
     const isDialogForRemovedListVisible =
-      isUnavailable && externalAction && !pendingForListArchivization;
+      isUnavailable &&
+      externalAction &&
+      !pendingForListArchivization &&
+      !pendingForLeaving;
     const archivedListView = (isArchived && !isUnavailable) || isDeleted;
     const dialogContextMessage = formatMessage({
       id: 'list.label'
