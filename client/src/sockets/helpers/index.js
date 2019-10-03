@@ -1,92 +1,319 @@
 import { CohortEvents, ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
-import { cohortsRoute, dashboardRoute } from 'common/utils/helpers';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+import { MessageType as NotificationType } from 'common/constants/enums';
 
 export const listEventsController = (event, data, { dispatch, getState }) => {
   const { currentUser } = getState();
 
   switch (event) {
+    case ListEvents.ADD_OWNER_ROLE_SUCCESS: {
+      const {
+        notificationData: { listName, performer },
+        userId,
+        ...rest
+      } = data;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId;
+
+      if (displayNotification) {
+        const notificationId = 'list.actions.current-user-add-to-owners';
+        const notificationData = {
+          data: {
+            listName,
+            performer
+          },
+          notificationId
+        };
+
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notificationData
+        );
+      }
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+    case ListEvents.REMOVE_OWNER_ROLE_SUCCESS: {
+      const {
+        notificationData: { listName, performer },
+        userId,
+        ...rest
+      } = data;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId;
+
+      if (displayNotification) {
+        const notificationId = 'list.actions.current-user-removed-from-owners';
+        const notificationData = {
+          data: {
+            listName,
+            performer
+          },
+          notificationId
+        };
+
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notificationData
+        );
+      }
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+    case ListEvents.ADD_MEMBER_ROLE_SUCCESS: {
+      const {
+        notificationData: { listName, performer },
+        userId,
+        ...rest
+      } = data;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId;
+
+      if (displayNotification) {
+        const notificationId = 'list.actions.current-user-add-to-members';
+        const notificationData = {
+          data: {
+            listName,
+            performer
+          },
+          notificationId
+        };
+
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notificationData
+        );
+      }
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+    case ListEvents.REMOVE_MEMBER_ROLE_SUCCESS: {
+      const {
+        notificationData: { listName, performer },
+        userId,
+        ...rest
+      } = data;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId;
+
+      if (displayNotification) {
+        const notificationId = 'list.actions.current-user-removed-from-members';
+        const notificationData = {
+          data: {
+            listName,
+            performer
+          },
+          notificationId
+        };
+
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notificationData
+        );
+      }
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+
     case ListEvents.CHANGE_TYPE_SUCCESS: {
-      const { listId, removedViewers, ...rest } = data;
+      const { listId, performer, removedViewers, ...rest } = data;
+      const {
+        location: { pathname }
+      } = history;
+      const externalAction = {
+        messageId: 'list.actions.list-changed-to-limited',
+        performer
+      };
 
-      if (removedViewers.includes(currentUser.id)) {
-        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
-
-        return history.replace(dashboardRoute());
-      }
-
-      return dispatch({ type: event, payload: { listId, ...rest } });
-    }
-    case ListEvents.REMOVE_MEMBER_SUCCESS: {
-      const { listId, userId } = data;
-
-      if (currentUser.id === userId) {
-        dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
-
-        return history.replace(dashboardRoute());
-      }
-
-      return dispatch({ type: event, payload: data });
-    }
-    case ListEvents.ARCHIVE_SUCCESS:
-    case ListEvents.DELETE_SUCCESS: {
-      const { listId, redirect } = data;
-
-      if (redirect) {
-        return history.replace(dashboardRoute());
+      if (
+        !pathname.includes(listId) &&
+        removedViewers &&
+        removedViewers.includes(currentUser.id)
+      ) {
+        return dispatch({
+          type: ListEvents.DELETE_SUCCESS,
+          payload: { listId }
+        });
       }
 
       return dispatch({
         type: event,
-        payload: { listId }
+        payload: { listId, externalAction, ...rest }
       });
     }
-    case ListEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
-      const { cohortId, listId } = data;
+    case ListEvents.REMOVE_COHORT_MEMBER:
+    case ListEvents.REMOVE_MEMBER_SUCCESS: {
+      const {
+        location: { pathname }
+      } = history;
+      const { listId, performer, userId } = data;
+      const messageId =
+        event === ListEvents.REMOVE_COHORT_MEMBER
+          ? 'list.actions.user-removed-from-cohort-by-someone'
+          : 'common.actions.user-removed-by-someone';
+      const externalAction = {
+        messageId,
+        performer
+      };
 
-      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
-      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: listId });
+      if (currentUser.id === userId && !pathname.includes(listId)) {
+        return dispatch({
+          type: ListEvents.DELETE_SUCCESS,
+          payload: { listId }
+        });
+      }
 
-      return history.replace('/cohorts');
+      return dispatch({
+        type: ListEvents.REMOVE_MEMBER_SUCCESS,
+        payload: { ...data, externalAction }
+      });
+    }
+    case ListEvents.ARCHIVE_SUCCESS: {
+      const {
+        location: { pathname }
+      } = history;
+      const { listId, performer } = data;
+      const externalAction = {
+        messageId: 'common.actions.archived-by-someone',
+        performer
+      };
+      const { lists } = getState();
+
+      if (lists[listId]) {
+        const { isMember } = lists[listId];
+
+        if (!pathname.includes(listId) && !isMember) {
+          return dispatch({
+            type: ListEvents.DELETE_SUCCESS,
+            payload: { listId }
+          });
+        }
+
+        return dispatch({
+          type: event,
+          payload: { ...data, externalAction }
+        });
+      }
+      break;
+    }
+    case ListEvents.ARCHIVE_COHORT_SUCCESS:
+    case ListEvents.DELETE_SUCCESS: {
+      const { listId, performer } = data;
+      const {
+        location: { pathname }
+      } = history;
+      const messageId =
+        event === ListEvents.ARCHIVE_COHORT_SUCCESS
+          ? 'list.actions.delete-on-archive-cohort'
+          : 'common.actions.deleted-by-someone';
+      const externalAction = {
+        messageId,
+        performer
+      };
+      const payload = pathname.includes(listId)
+        ? { listId, externalAction }
+        : { listId };
+
+      return dispatch({
+        type: ListEvents.DELETE_SUCCESS,
+        payload
+      });
+    }
+    case ListEvents.MEMBER_UPDATE_SUCCESS: {
+      const { userId } = data;
+      const isCurrentUserUpdated = currentUser.id === userId;
+
+      return dispatch({
+        type: event,
+        payload: { ...data, isCurrentUserUpdated }
+      });
     }
     default:
       return dispatch({ type: event, payload: data });
   }
 };
 
-export const cohortEventsController = (event, data, dispatch) => {
+export const cohortEventsController = (event, data, { dispatch, getState }) => {
   switch (event) {
-    case CohortEvents.REMOVED_BY_SOMEONE: {
-      const { cohortId } = data;
+    case CohortEvents.REMOVE_MEMBER_SUCCESS: {
+      const { currentUser } = getState();
+      const {
+        location: { pathname }
+      } = history;
+      const { cohortId, performer, userId } = data;
+      const externalAction = {
+        messageId: 'common.actions.user-removed-by-someone',
+        performer
+      };
 
-      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
+      if (currentUser.id === userId && !pathname.includes(cohortId)) {
+        return dispatch({
+          type: CohortEvents.DELETE_SUCCESS,
+          payload: { cohortId }
+        });
+      }
 
-      return history.replace(cohortsRoute());
-    }
-    case CohortEvents.REMOVE_ON_ARCHIVE_COHORT: {
-      const { cohortId, listId } = data;
-
-      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
-      dispatch({ type: ListEvents.DELETE_SUCCESS, payload: { listId } });
-
-      return history.replace(cohortsRoute());
+      return dispatch({
+        type: event,
+        payload: { ...data, externalAction }
+      });
     }
     case CohortEvents.ARCHIVE_SUCCESS: {
-      const { cohortId } = data;
+      const {
+        location: { pathname }
+      } = history;
+      const { cohortId, performer } = data;
+      const externalAction = {
+        messageId: 'common.actions.archived-by-someone',
+        performer
+      };
+      const { cohorts } = getState();
 
-      dispatch({
-        type: CohortEvents.DELETE_SUCCESS,
-        payload: { cohortId }
+      if (pathname.includes(cohortId)) {
+        return dispatch({
+          type: event,
+          payload: { ...data, externalAction }
+        });
+      }
+
+      if (cohorts[cohortId]) {
+        const { isOwner } = cohorts[cohortId];
+
+        if (!isOwner) {
+          return dispatch({
+            type: CohortEvents.DELETE_SUCCESS,
+            payload: { cohortId }
+          });
+        }
+      }
+
+      return dispatch({
+        type: event,
+        payload: { ...data, externalAction }
       });
-
-      return history.replace(cohortsRoute());
     }
-    case CohortEvents.REMOVE_WHEN_COHORT_UNAVAILABLE: {
-      const { cohortId } = data;
+    case CohortEvents.DELETE_SUCCESS: {
+      const { cohortId, performer } = data;
+      const {
+        location: { pathname }
+      } = history;
+      const externalAction = {
+        messageId: 'common.actions.deleted-by-someone',
+        performer
+      };
+      const payload = pathname.includes(cohortId)
+        ? { cohortId, externalAction }
+        : { cohortId };
 
-      dispatch({ type: CohortEvents.DELETE_SUCCESS, payload: { cohortId } });
-
-      return history.replace(cohortsRoute());
+      return dispatch({
+        type: event,
+        payload
+      });
     }
     default:
       return dispatch({ type: event, payload: data });

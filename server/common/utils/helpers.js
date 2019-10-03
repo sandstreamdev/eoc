@@ -49,7 +49,7 @@ const countItems = items => {
   return { doneItemsCount, unhandledItemsCount };
 };
 
-const responseWithList = (list, userId) => {
+const responseWithListMetaData = (list, userId) => {
   const {
     _id,
     cohortId,
@@ -67,6 +67,9 @@ const responseWithList = (list, userId) => {
     createdAt,
     description,
     ...countItems(items),
+    isGuest: !cohortId || (cohortId && !isMember(cohortId, userId)),
+    isMember: isMember(list, userId),
+    isOwner: isOwner(list, userId),
     locks,
     name,
     type
@@ -87,7 +90,14 @@ const responseWithList = (list, userId) => {
 const responseWithListsMetaData = (lists, userId) =>
   _compact(
     _map(lists, list => {
-      const { cohortId: cohort, favIds, items, ...rest } = list;
+      const {
+        cohortId: cohort,
+        favIds,
+        items,
+        memberIds,
+        ownerIds,
+        ...rest
+      } = list;
 
       if (cohort && cohort.isArchived) {
         return;
@@ -95,7 +105,10 @@ const responseWithListsMetaData = (lists, userId) =>
 
       const listToSend = {
         ...rest,
-        ...countItems(items)
+        ...countItems(items),
+        isGuest: !cohort || (cohort && !isMember(cohort, userId)),
+        isMember: isMember(list, userId),
+        isOwner: isOwner(list, userId)
       };
 
       if (userId) {
@@ -162,18 +175,20 @@ const responseWithItem = (item, userId) => {
   return newItem;
 };
 
-const responseWithCohorts = cohorts =>
+const responseWithCohorts = (cohorts, userId) =>
   _map(cohorts, cohort => {
     const { isDeleted, memberIds, ownerIds, ...rest } = cohort;
     const membersCount = memberIds.length;
 
     return {
       ...rest,
+      isMember: isMember(cohort, userId),
+      isOwner: isOwner(cohort, userId),
       membersCount
     };
   });
 
-const responseWithCohort = cohort => {
+const responseWithCohort = (cohort, userId) => {
   const { _id, createdAt, description, isArchived, memberIds, name } = cohort;
   const membersCount = memberIds.length;
 
@@ -182,6 +197,8 @@ const responseWithCohort = cohort => {
     createdAt,
     description,
     isArchived,
+    isMember: isMember(cohort, userId),
+    isOwner: isOwner(cohort, userId),
     membersCount,
     name
   };
@@ -421,13 +438,10 @@ const responseWithListDetails = (list, userId) => cohort => {
   );
 
   return {
-    ...responseWithList(list, userId),
+    ...responseWithListMetaData(list, userId),
     cohortId: cohort ? cohort.cohortId : null,
     cohortName: cohort ? cohort.name : null,
     isArchived,
-    isGuest: !cohort || (cohort && !isMember(cohort, userId)),
-    isMember: isMember(list, userId),
-    isOwner: isOwner(list, userId),
     items: _keyBy(items, '_id'),
     members: _keyBy(members, '_id')
   };
@@ -459,10 +473,10 @@ module.exports = {
   responseWithComments,
   responseWithItem,
   responseWithItems,
-  responseWithList,
   responseWithListDetails,
   responseWithListMember,
   responseWithListMembers,
+  responseWithListMetaData,
   responseWithListsMetaData,
   returnPayload,
   runAsyncTasks,

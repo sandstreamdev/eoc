@@ -26,7 +26,8 @@ const addComment = (req, resp) => {
     _id: sanitizedListId,
     memberIds: userId,
     'items._id': sanitizedItemId,
-    'items.done': false
+    'items.done': false,
+    'items.isArchived': false
   })
     .exec()
     .then(doc => {
@@ -85,7 +86,8 @@ const getComments = (req, resp) => {
   List.findOne({
     _id: sanitize(listId),
     viewersIds: userId,
-    'items._id': sanitizedItemId
+    'items._id': sanitizedItemId,
+    'items.isArchived': false
   })
     .exec()
     .then(list => {

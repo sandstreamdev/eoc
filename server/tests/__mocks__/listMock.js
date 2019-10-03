@@ -1,7 +1,10 @@
 const listMock = [
   {
     _id: { $oid: '5ccd610f4663533f995b1755' },
-    cohortId: null,
+    cohortId: {
+      _id: { $oid: '5ccd610f4663533f995b1755' },
+      memberIds: ['5c9dc5a619ae7924074940f4']
+    },
     favIds: [],
     isArchived: false,
     type: 'limited',
@@ -137,23 +140,15 @@ const listDetailsMock = {
   __v: { $numberInt: '0' }
 };
 
-const expectedListProperties = [
-  '_id',
-  'createdAt',
-  'description',
-  'doneItemsCount',
-  'isFavourite',
-  'name',
-  'type',
-  'unhandledItemsCount'
-];
-
 const expectedCohortListProperties = [
   '_id',
   'cohortId',
   'description',
   'doneItemsCount',
   'isFavourite',
+  'isGuest',
+  'isMember',
+  'isOwner',
   'name',
   'type',
   'unhandledItemsCount'
@@ -161,11 +156,13 @@ const expectedCohortListProperties = [
 
 const expectedListMetaDataProperties = [
   '_id',
-  'cohortId',
   'createdAt',
   'description',
   'doneItemsCount',
   'isFavourite',
+  'isGuest',
+  'isMember',
+  'isOwner',
   'name',
   'type',
   'unhandledItemsCount'
@@ -194,7 +191,6 @@ module.exports = {
   expectedCohortListProperties,
   expectedListDetailsProperties,
   expectedListMetaDataProperties,
-  expectedListProperties,
   listDetailsMock,
   listMock
 };

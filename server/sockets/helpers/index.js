@@ -3,11 +3,15 @@ const _compact = require('lodash/compact');
 const Cohort = require('../../models/cohort.model');
 const List = require('../../models/list.model');
 const Session = require('../../models/session.model');
-const { ListActionTypes, CohortActionTypes } = require('../eventTypes');
+const {
+  AppEvents,
+  ListActionTypes,
+  CohortActionTypes
+} = require('../eventTypes');
 const {
   countItems,
   responseWithItem,
-  responseWithList,
+  responseWithListMetaData,
   responseWithCohort
 } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
@@ -15,13 +19,12 @@ const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
 
 const emitCohortMetaData = (cohortId, clients, io) =>
   Cohort.findById(cohortId)
-    .select('_id isArchived createdAt name description memberIds')
+    .select('_id isArchived createdAt name description memberIds ownerIds')
     .lean()
     .exec()
     .then(doc => {
       if (doc) {
         const { memberIds } = doc;
-        const cohort = responseWithCohort(doc);
 
         memberIds.forEach(id => {
           const memberId = id.toString();
@@ -32,7 +35,7 @@ const emitCohortMetaData = (cohortId, clients, io) =>
             io.sockets
               .to(socketId)
               .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
-                [cohortId]: cohort
+                [cohortId]: responseWithCohort(doc, memberId)
               });
           }
         });
@@ -77,7 +80,10 @@ const getListsDataByViewers = lists => {
       }
 
       if (!listsByViewers[viewerId][listId]) {
-        listsByViewers[viewerId][listId] = responseWithList(list, viewerId);
+        listsByViewers[viewerId][listId] = responseWithListMetaData(
+          list,
+          viewerId
+        );
       }
     });
   });
@@ -159,64 +165,6 @@ const delayedUnlock = socket => data => itemClientLocks => locks => {
       itemClientLocks.delete(nameLockId(itemId));
     });
   }, LOCK_TIMEOUT);
-};
-
-const sendListOnDashboardAndCohortView = io => (
-  cohortClients,
-  dashboardClients
-) => list => {
-  const { _id: listId, cohortId, viewersIds } = list;
-
-  viewersIds.forEach(viewerId => {
-    const id = viewerId.toString();
-
-    if (dashboardClients.has(id)) {
-      const { socketId } = dashboardClients.get(id);
-
-      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
-        listId,
-        ...responseWithList(list)
-      });
-    }
-
-    if (cohortId && cohortClients.has(id)) {
-      const { socketId } = cohortClients.get(id);
-
-      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
-        listId,
-        ...responseWithList(list)
-      });
-    }
-  });
-};
-
-const updateListOnDashboardAndCohortView = io => (
-  cohortClients,
-  dashboardClients
-) => list => {
-  const { _id: listId, cohortId, viewersIds, ...rest } = list;
-
-  viewersIds.forEach(viewerId => {
-    const id = viewerId.toString();
-
-    if (dashboardClients.has(id)) {
-      const { socketId } = dashboardClients.get(id);
-
-      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
-        listId,
-        ...rest
-      });
-    }
-
-    if (cohortId && cohortClients.has(id)) {
-      const { socketId } = cohortClients.get(id);
-
-      io.sockets.to(socketId).emit(ListActionTypes.UPDATE_SUCCESS, {
-        listId,
-        ...rest
-      });
-    }
-  });
 };
 
 const associateSocketWithSession = async socket => {
@@ -369,6 +317,25 @@ const emitRoleChange = io => (room, event) => async data => {
   }
 };
 
+const emitRemoveListViewer = (io, event) => async data => {
+  const { listId, userId } = data;
+
+  io.sockets.to(listChannel(listId)).emit(event, data);
+  io.sockets.to(listMetaDataChannel(listId)).emit(event, data);
+
+  try {
+    const socketIds = await getUserSockets(userId);
+
+    socketIds.forEach(socketId =>
+      io.sockets
+        .to(socketId)
+        .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
+    );
+  } catch {
+    // Ignore error
+  }
+};
+
 module.exports = {
   associateSocketWithSession,
   cohortChannel,
@@ -378,6 +345,7 @@ module.exports = {
   emitCohortMetaData,
   emitItemPerUser,
   emitItemUpdate,
+  emitRemoveListViewer,
   emitRoleChange,
   emitVoteChange,
   getListIdsByViewers,
@@ -388,7 +356,5 @@ module.exports = {
   joinMetaDataRooms,
   listChannel,
   listMetaDataChannel,
-  nameLockId,
-  sendListOnDashboardAndCohortView,
-  updateListOnDashboardAndCohortView
+  nameLockId
 };

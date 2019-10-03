@@ -17,17 +17,16 @@ const {
   responseWithComments,
   responseWithItem,
   responseWithItems,
-  responseWithList,
   responseWithListDetails,
   responseWithListMember,
   responseWithListMembers,
+  responseWithListMetaData,
   responseWithListsMetaData
 } = require('./index');
 const {
   expectedCohortListProperties,
   expectedListDetailsProperties,
   expectedListMetaDataProperties,
-  expectedListProperties,
   listDetailsMock,
   listMock
 } = require('../../tests/__mocks__/listMock');
@@ -68,22 +67,26 @@ describe('function isValidMongoId', () => {
   });
 });
 
-describe('function responseWithList', () => {
+describe('responseWithListMetaData', () => {
   const list = listMock[0];
   const userId = ObjectId();
 
-  list.cohortId = ObjectId();
-
-  const result = responseWithList(list, userId);
+  const result = responseWithListMetaData(list, userId);
 
   it('returns list object with desired properties', () => {
-    expectedListProperties.map(property =>
+    expectedListMetaDataProperties.map(property =>
       expect(result).toHaveProperty(property)
     );
   });
 
   it('returns list object without not expected data', () => {
-    const notExpected = ['favIds', 'isDeleted'];
+    const notExpected = [
+      'favIds',
+      'isDeleted',
+      'memberIds',
+      'ownerIds',
+      'viewerIds'
+    ];
 
     notExpected.map(property => expect(result).not.toHaveProperty(notExpected));
   });
@@ -153,8 +156,9 @@ describe('function responseWithItem', () => {
   });
 });
 
-describe('function responseWithCohorts', () => {
-  const result = responseWithCohorts(cohortsMock);
+describe('responseWithCohorts', () => {
+  const userId = cohortsMock[0].memberIds[0];
+  const result = responseWithCohorts(cohortsMock, userId);
 
   it('returns cohorts meta data with desired properties', () => {
     expectedCohortMetaDataProperties.map(property =>
@@ -171,9 +175,10 @@ describe('function responseWithCohorts', () => {
   });
 });
 
-describe('function responseWithCohort', () => {
+describe('responseWithCohort', () => {
   const cohort = cohortsMock[0];
-  const result = responseWithCohort(cohort);
+  const userId = cohortsMock[0].memberIds[0];
+  const result = responseWithCohort(cohort, userId);
 
   it('returns cohort data with desired properties', () => {
     expectedCohortMetaDataProperties.map(property =>

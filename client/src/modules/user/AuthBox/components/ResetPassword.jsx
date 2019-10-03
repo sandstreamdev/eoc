@@ -11,6 +11,7 @@ import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
 import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
+import HomeLink from 'common/components/HomeLink';
 import './ResetPassword.scss';
 
 class ResetPassword extends PureComponent {
@@ -78,6 +79,7 @@ class ResetPassword extends PureComponent {
 
     return (
       <form className="reset-password" onSubmit={this.handleSubmit}>
+        <HomeLink />
         <h2 className="reset-password__heading">
           <FormattedMessage id="user.auth.reset-password.heading" />
         </h2>
