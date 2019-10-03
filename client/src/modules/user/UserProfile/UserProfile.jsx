@@ -1,14 +1,20 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
+import {
+  injectIntl,
+  FormattedDate,
+  FormattedMessage,
+  FormattedTime
+} from 'react-intl';
 import classNames from 'classnames';
+import _flowRight from 'lodash/flowRight';
 
 import Avatar from 'common/components/Avatar';
 import { getCurrentUser } from 'modules/user/model/selectors';
-import { UserPropType } from 'common/constants/propTypes';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise } from 'common/utils/helpers';
+import { formatName, makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
 import { fetchUserDetails } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
@@ -56,8 +62,10 @@ class UserProfile extends PureComponent {
 
   renderPersonalInfo = () => {
     const {
-      currentUser: { avatarUrl, name }
+      currentUser: { avatarUrl, name },
+      intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(name, formatMessage);
 
     return (
       <section className="user-profile__data-container">
@@ -73,7 +81,7 @@ class UserProfile extends PureComponent {
               <Avatar
                 avatarUrl={avatarUrl}
                 className="user-profile__avatar"
-                name={name}
+                name={formattedName}
               />
             </span>
           </li>
@@ -81,7 +89,7 @@ class UserProfile extends PureComponent {
             <span className="user-profile__data-name">
               <FormattedMessage id="user.name" />
             </span>
-            <span className="user-profile__data-value">{name}</span>
+            <span className="user-profile__data-value">{formattedName}</span>
           </li>
         </ul>
       </section>
@@ -186,13 +194,15 @@ class UserProfile extends PureComponent {
   render() {
     const { pending } = this.state;
     const {
-      currentUser: { avatarUrl, name }
+      currentUser: { avatarUrl, name },
+      intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(name, formatMessage);
 
     return (
       <div className="wrapper">
         <article className="user-profile">
-          <UserProfileHeader avatarUrl={avatarUrl} name={name} />
+          <UserProfileHeader avatarUrl={avatarUrl} name={formattedName} />
           {this.renderPersonalInfo()}
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
@@ -205,6 +215,7 @@ class UserProfile extends PureComponent {
 
 UserProfile.propTypes = {
   currentUser: UserPropType.isRequired,
+  intl: IntlPropType.isRequired,
 
   fetchUserDetails: PropTypes.func.isRequired
 };
@@ -213,7 +224,10 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchUserDetails }
+export default _flowRight(
+  injectIntl,
+  connect(
+    mapStateToProps,
+    { fetchUserDetails }
+  )
 )(UserProfile);

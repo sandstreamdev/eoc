@@ -187,6 +187,7 @@ class PasswordRecoveryForm extends PureComponent {
     const {
       intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(userName, formatMessage);
 
     return (
       <form className="pass-recovery-form" onSubmit={this.handleSubmit}>
@@ -195,7 +196,10 @@ class PasswordRecoveryForm extends PureComponent {
           {userName ? (
             <FormattedMessage
               id="user.auth.pass-recovery-form.heading-user-name"
-              values={{ name: userName, email: <em title={email}>{email}</em> }}
+              values={{
+                name: formattedName,
+                email: <em title={email}>{email}</em>
+              }}
             />
           ) : (
             <FormattedMessage id="user.auth.pass-recovery-form.heading" />

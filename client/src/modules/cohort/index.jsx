@@ -40,7 +40,11 @@ import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { cohortsRoute, makeAbortablePromise } from 'common/utils/helpers';
+import {
+  cohortsRoute,
+  formatName,
+  makeAbortablePromise
+} from 'common/utils/helpers';
 import { joinRoom, leaveRoom } from 'common/model/actions';
 import history from 'common/utils/history';
 
@@ -295,13 +299,15 @@ class Cohort extends PureComponent {
   handleLeave = () => {
     const {
       currentUser: { id: currentUserId, name },
+      intl: { formatMessage },
       leaveCohort,
       match: {
         params: { id }
       }
     } = this.props;
+    const formattedName = formatName(name, formatMessage);
 
-    return leaveCohort(id, currentUserId, name);
+    return leaveCohort(id, currentUserId, formattedName);
   };
 
   renderBreadcrumbs = () => {
