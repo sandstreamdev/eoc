@@ -69,12 +69,9 @@ const createList = async (req, resp) => {
     const list = await newList.save();
     const activity = {
       activityType: ActivityType.LIST_ADD,
-      performerId: userId,
-      itemId: null,
-      listId: list._id,
       cohortId: list.cohortId,
-      editedUserId: null,
-      editedValue: null
+      listId: list._id,
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -205,12 +202,10 @@ const addItemToList = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_ADD,
-      performerId: userId,
+      cohortId,
       itemId: itemToSend._id,
       listId: list._id,
-      cohortId,
-      editedUserId: null,
-      editedValue: null
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -375,12 +370,10 @@ const voteForItem = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_ADD_VOTE,
-      performerId: userId,
+      cohortId: savedList.cohortId,
       itemId: sanitizedItemId,
       listId: sanitizedListId,
-      cohortId: savedList.cohortId,
-      editedUserId: null,
-      editedValue: null
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -430,12 +423,10 @@ const clearVote = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_CLEAR_VOTE,
-      performerId: userId,
+      cohortId: savedList.cohortId,
       itemId: sanitizedItemId,
       listId: sanitizedListId,
-      cohortId: savedList.cohortId,
-      editedUserId: null,
-      editedValue: null
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -469,12 +460,10 @@ const archiveList = async (req, resp) => {
     const { cohortId } = list;
     const activity = {
       activityType: ActivityType.LIST_ARCHIVE,
-      performerId: userId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId,
-      editedUserId: null,
-      editedValue: list.name
+      editedValue: list.name,
+      listId: sanitizedListId,
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -515,12 +504,10 @@ const restoreList = async (req, resp) => {
     const { cohortId } = list;
     const activity = {
       activityType: ActivityType.LIST_RESTORE,
-      performerId: userId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId,
-      editedUserId: null,
-      editedValue: list.name
+      editedValue: list.name,
+      listId: sanitizedListId,
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -565,12 +552,10 @@ const deleteList = async (req, resp) => {
     const { cohortId, viewersIds } = list;
     const activity = {
       activityType: ActivityType.LIST_DELETE,
-      performerId: userId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId,
-      editedUserId: null,
-      editedValue: list.name
+      editedValue: list.name,
+      listId: sanitizedListId,
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -639,12 +624,10 @@ const updateList = async (req, resp) => {
 
     const activity = {
       activityType: listActivity,
-      performerId: userId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId: list.cohortId,
-      editedUserId: null,
-      editedValue: list.name
+      editedValue: list.name,
+      listId: sanitizedListId,
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -681,12 +664,9 @@ const addToFavourites = (req, resp) => {
 
       const activity = {
         activityType: ActivityType.LIST_ADD_TO_FAV,
-        performerId: userId,
-        itemId: null,
-        listId: sanitizedListId,
         cohortId: doc.cohortId,
-        editedUserId: null,
-        editedValue: null
+        listId: sanitizedListId,
+        performerId: userId
       };
 
       fireAndForget(saveActivity(activity));
@@ -721,12 +701,9 @@ const removeFromFavourites = (req, resp) => {
 
       const activity = {
         activityType: ActivityType.LIST_REMOVE_FROM_FAV,
-        performerId: userId,
-        itemId: null,
-        listId: sanitizedListId,
         cohortId: doc.cohortId,
-        editedUserId: null,
-        editedValue: null
+        listId: sanitizedListId,
+        performerId: userId
       };
 
       fireAndForget(saveActivity(activity));
@@ -781,12 +758,10 @@ const removeOwner = (req, resp) => {
 
       const activity = {
         activityType: ActivityType.LIST_REMOVE_USER,
-        performerId: currentUserId,
-        itemId: null,
-        listId: sanitizedListId,
         cohortId: payload.cohortId,
         editedUserId: sanitizedUserId,
-        editedValue: null
+        listId: sanitizedListId,
+        performerId: currentUserId
       };
 
       fireAndForget(saveActivity(activity));
@@ -835,12 +810,10 @@ const removeMember = (req, resp) => {
     .then(payload => {
       const activity = {
         activityType: ActivityType.LIST_REMOVE_USER,
-        performerId: currentUserId,
-        itemId: null,
-        listId: sanitizedListId,
         cohortId: payload.cohortId,
         editedUserId: sanitizedUserId,
-        editedValue: null
+        listId: sanitizedListId,
+        performerId: currentUserId
       };
 
       fireAndForget(saveActivity(activity));
@@ -882,12 +855,10 @@ const addOwnerRole = async (req, resp) => {
 
     const activity = {
       activityType: ActivityType.LIST_SET_AS_OWNER,
-      performerId: currentUserId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId: list.cohortId,
       editedUserId: sanitizedUserId,
-      editedValue: null
+      listId: sanitizedListId,
+      performerId: currentUserId
     };
 
     fireAndForget(saveActivity(activity));
@@ -941,12 +912,10 @@ const removeOwnerRole = async (req, resp) => {
 
     const activity = {
       activityType: ActivityType.LIST_SET_AS_MEMBER,
-      performerId: currentUserId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId: list.cohortId,
       editedUserId: sanitizedUserId,
-      editedValue: null
+      listId: sanitizedListId,
+      performerId: currentUserId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1005,12 +974,10 @@ const addMemberRole = async (req, resp) => {
 
     const activity = {
       activityType: ActivityType.LIST_SET_AS_MEMBER,
-      performerId: currentUserId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId: list.cohortId,
       editedUserId: sanitizedUserId,
-      editedValue: null
+      listId: sanitizedListId,
+      performerId: currentUserId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1071,12 +1038,10 @@ const removeMemberRole = async (req, resp) => {
 
     const activity = {
       activityType: ActivityType.LIST_SET_AS_VIEWER,
-      performerId: currentUserId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId: list.cohortId,
       editedUserId: sanitizedUserId,
-      editedValue: null
+      listId: sanitizedListId,
+      performerId: currentUserId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1192,12 +1157,10 @@ const addViewer = (req, resp) => {
 
         const activity = {
           activityType: ActivityType.LIST_ADD_USER,
-          performerId: currentUserId,
-          itemId: null,
-          listId: sanitizedListId,
           cohortId: list.cohortId,
           editedUserId: user.id,
-          editedValue: null
+          listId: sanitizedListId,
+          performerId: currentUserId
         };
 
         return fireAndForget(saveActivity(activity));
@@ -1251,12 +1214,10 @@ const markItemAsDone = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_DONE,
-      performerId: userId,
+      cohortId: list.cohortId,
       itemId: sanitizedItemId,
       listId: sanitizedListId,
-      cohortId: list.cohortId,
-      editedUserId: null,
-      editedValue: null
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1305,12 +1266,10 @@ const markItemAsUnhandled = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_UNHANDLED,
-      performerId: userId,
+      cohortId: list.cohortId,
       itemId: sanitizedItemId,
       listId: sanitizedListId,
-      cohortId: list.cohortId,
-      editedUserId: null,
-      editedValue: null
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1358,12 +1317,10 @@ const archiveItem = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_ARCHIVE,
-      performerId: userId,
+      cohortId: list.cohortId,
       itemId: sanitizedItemId,
       listId: sanitizedListId,
-      cohortId: list.cohortId,
-      editedUserId: null,
-      editedValue: null
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1412,12 +1369,10 @@ const restoreItem = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_RESTORE,
-      performerId: userId,
+      cohortId: list.cohortId,
       itemId: sanitizedItemId,
       listId: sanitizedListId,
-      cohortId: list.cohortId,
-      editedUserId: null,
-      editedValue: null
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1487,12 +1442,11 @@ const updateItem = async (req, resp) => {
 
     const activity = {
       activityType: editedItemActivity,
-      performerId: userId,
+      cohortId: list.cohortId,
+      editedValue: prevItemName,
       itemId: sanitizedItemId,
       listId: sanitizedListId,
-      cohortId: list.cohortId,
-      editedUserId: null,
-      editedValue: prevItemName
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1558,12 +1512,10 @@ const cloneItem = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_CLONE,
-      performerId: userId,
+      cohortId: savedList.cohortId,
       itemId: newItemToSend._id,
       listId: sanitizedListId,
-      cohortId: savedList.cohortId,
-      editedUserId: null,
-      editedValue: null
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1625,12 +1577,10 @@ const changeType = async (req, resp) => {
     const { cohortId } = updatedList;
     const activity = {
       activityType: ActivityType.LIST_CHANGE_TYPE,
-      performerId: currentUserId,
-      itemId: null,
-      listId: sanitizedListId,
       cohortId,
-      editedUserId: null,
-      editedValue: type
+      editedValue: type,
+      listId: sanitizedListId,
+      performerId: currentUserId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1716,12 +1666,11 @@ const deleteItem = async (req, resp) => {
     };
     const activity = {
       activityType: ActivityType.ITEM_DELETE,
-      performerId: userId,
+      cohortId: savedList.cohortId,
+      editedValue: name,
       itemId: sanitizedItemId,
       listId: sanitizedListId,
-      cohortId: savedList.cohortId,
-      editedUserId: null,
-      editedValue: name
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -1892,12 +1841,11 @@ const moveItem = async (req, resp) => {
     const itemData = targetListItems.id(targetItemId)._doc;
     const activity = {
       activityType: ActivityType.ITEM_MOVE,
-      performerId: userId,
+      cohortId,
+      editedValue: sourceListName,
       itemId: targetItemId,
       listId: sanitizedTargetListId,
-      cohortId,
-      editedUserId: null,
-      editedValue: sourceListName
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));

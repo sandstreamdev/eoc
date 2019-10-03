@@ -367,7 +367,7 @@
   "activity.list.remove-description": "{performer} removed description from {list} sack.",
   "activity.list.change-type": "{performer} changed {list} sack's type to {value}.",
   "activity.list.add-to-fav": "{performer} added {list} sack to favourites.",
-  "activity.list.remove-from-fav": "{performer} added {list} sack to favourites.",
+  "activity.list.remove-from-fav": "{performer} removed {list} sack from favourites.",
   "activity.list.add-user": "{performer} added {user} to {list} sack.",
   "activity.list.invite-user": "{performer} invited {user} to {list} sack.",
   "activity.list.remove-user": "{performer} removed {user} from {list} sack.",

@@ -47,12 +47,8 @@ const createCohort = (req, resp) => {
 
       const activity = {
         activityType: ActivityType.COHORT_ADD,
-        performerId: userId,
-        itemId: null,
-        listId: null,
         cohortId: doc._id,
-        editedUserId: null,
-        editedValue: null
+        performerId: userId
       };
 
       saveActivity(activity);
@@ -124,12 +120,9 @@ const archiveCohort = async (req, resp) => {
 
     const activity = {
       activityType: ActivityType.COHORT_ARCHIVE,
-      performerId: userId,
-      itemId: null,
-      listId: null,
       cohortId: sanitizedCohortId,
-      editedUserId: null,
-      editedValue: cohort.name
+      editedValue: cohort.name,
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -172,12 +165,9 @@ const restoreCohort = async (req, resp) => {
 
     const activity = {
       activityType: ActivityType.COHORT_RESTORE,
-      performerId: userId,
-      itemId: null,
-      listId: null,
       cohortId: sanitizedCohortId,
-      editedUserId: null,
-      editedValue: cohort.name
+      editedValue: cohort.name,
+      performerId: userId
     };
     const data = { cohort, cohortId };
 
@@ -239,12 +229,9 @@ const updateCohort = async (req, resp) => {
 
     const activity = {
       activityType: cohortActivity,
-      performerId: userId,
-      itemId: null,
-      listId: null,
       cohortId: sanitizedCohortId,
-      editedUserId: null,
-      editedValue: cohort.name
+      editedValue: cohort.name,
+      performerId: userId
     };
 
     fireAndForget(saveActivity(activity));
@@ -344,12 +331,9 @@ const deleteCohort = (req, resp) => {
       const socketInstance = io.getInstance();
       const activity = {
         activityType: ActivityType.COHORT_DELETE,
-        performerId: userId,
-        itemId: null,
-        listId: null,
         cohortId,
-        editedUserId: null,
-        editedValue: name
+        editedValue: name,
+        performerId: userId
       };
 
       fireAndForget(socketActions.deleteCohort(socketInstance)(data));
@@ -399,12 +383,9 @@ const removeMember = async (req, resp) => {
 
     const activity = {
       activityType: ActivityType.COHORT_REMOVE_USER,
-      performerId: currentUserId,
-      itemId: null,
-      listId: null,
       cohortId: sanitizedCohortId,
       editedUserId: sanitizedUserId,
-      editedValue: null
+      performerId: currentUserId
     };
 
     fireAndForget(saveActivity(activity));
@@ -460,12 +441,9 @@ const addOwnerRole = (req, resp) => {
 
       const activity = {
         activityType: ActivityType.COHORT_SET_AS_OWNER,
-        performerId: currentUserId,
-        itemId: null,
-        listId: null,
         cohortId: sanitizedCohortId,
         editedUserId: sanitizedUserId,
-        editedValue: null
+        performerId: currentUserId
       };
 
       fireAndForget(saveActivity(activity));
@@ -517,12 +495,9 @@ const removeOwnerRole = (req, resp) => {
 
       const activity = {
         activityType: ActivityType.COHORT_SET_AS_MEMBER,
-        performerId: currentUserId,
-        itemId: null,
-        listId: null,
         cohortId: sanitizedCohortId,
         editedUserId: sanitizedUserId,
-        editedValue: null
+        performerId: currentUserId
       };
 
       fireAndForget(saveActivity(activity));
@@ -632,12 +607,9 @@ const addMember = async (req, resp) => {
 
         const activity = {
           activityType: ActivityType.COHORT_ADD_USER,
-          performerId: userId,
-          itemId: null,
-          listId: null,
           cohortId: sanitizedCohortId,
           editedUserId: userToSend._id,
-          editedValue: null
+          performerId: userId
         };
 
         return fireAndForget(saveActivity(activity));

@@ -54,12 +54,10 @@ const addComment = (req, resp) => {
       const data = { itemId, listId, comment: commentToSend };
       const activity = {
         activityType: ActivityType.ITEM_ADD_COMMENT,
-        performerId: userId,
+        cohortId: list.cohortId,
         itemId: sanitizedItemId,
         listId: sanitizedListId,
-        cohortId: list.cohortId,
-        editedUserId: null,
-        editedValue: null
+        performerId: userId
       };
 
       fireAndForget(saveActivity(activity));
