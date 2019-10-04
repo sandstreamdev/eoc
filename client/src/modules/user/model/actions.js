@@ -147,4 +147,4 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
 export const getAccountDetails = token =>
   getJson(`/auth/account-details/${token}`);
 
-export const deleteAccount = async () => getData('/auth/delete-account');
+export const deleteAccount = async () => deleteData('/auth/delete-account');
