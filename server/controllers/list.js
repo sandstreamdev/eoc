@@ -67,10 +67,15 @@ const createList = async (req, resp) => {
     }
 
     const list = await newList.save();
+    const activity = {
+      activityType: ActivityType.LIST_ADD,
+      cohortId: list.cohortId,
+      listId: list._id,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(ActivityType.LIST_ADD, userId, null, list._id, list.cohortId)
-    );
+    fireAndForget(saveActivity(activity));
+
     const { viewersIds } = list;
     const listData = responseWithListMetaData(
       { ...list._doc, cohortId: cohortForList },
@@ -195,16 +200,15 @@ const addItemToList = async (req, resp) => {
       items,
       listId
     };
+    const activity = {
+      activityType: ActivityType.ITEM_ADD,
+      cohortId,
+      itemId: itemToSend._id,
+      listId: list._id,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_ADD,
-        userId,
-        itemToSend._id,
-        listId,
-        cohortId
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send(itemToSend);
     const socketInstance = io.getInstance();
@@ -364,16 +368,15 @@ const voteForItem = async (req, resp) => {
       sessionId: sessionID,
       viewersIds
     };
+    const activity = {
+      activityType: ActivityType.ITEM_ADD_VOTE,
+      cohortId: savedList.cohortId,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_ADD_VOTE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        savedList.cohortId
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     const socketInstance = io.getInstance();
@@ -418,16 +421,15 @@ const clearVote = async (req, resp) => {
       sessionId: sessionID,
       viewersIds
     };
+    const activity = {
+      activityType: ActivityType.ITEM_CLEAR_VOTE,
+      cohortId: savedList.cohortId,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_CLEAR_VOTE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        savedList.cohortId
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     const socketInstance = io.getInstance();
@@ -456,18 +458,15 @@ const archiveList = async (req, resp) => {
     ).exec();
 
     const { cohortId } = list;
+    const activity = {
+      activityType: ActivityType.LIST_ARCHIVE,
+      cohortId,
+      editedValue: list.name,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.LIST_ARCHIVE,
-        userId,
-        null,
-        sanitizedListId,
-        cohortId,
-        null,
-        list.name
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     const data = { listId, performer: displayName };
     const socketInstance = io.getInstance();
@@ -503,18 +502,15 @@ const restoreList = async (req, resp) => {
       .exec();
 
     const { cohortId } = list;
+    const activity = {
+      activityType: ActivityType.LIST_RESTORE,
+      cohortId,
+      editedValue: list.name,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.LIST_RESTORE,
-        userId,
-        null,
-        sanitizedListId,
-        cohortId,
-        null,
-        list.name
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     const cohort = cohortId
       ? await Cohort.findOne({ _id: cohortId }, 'memberIds name')
@@ -554,18 +550,15 @@ const deleteList = async (req, resp) => {
     ).exec();
 
     const { cohortId, viewersIds } = list;
+    const activity = {
+      activityType: ActivityType.LIST_DELETE,
+      cohortId,
+      editedValue: list.name,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.LIST_DELETE,
-        userId,
-        null,
-        sanitizedListId,
-        cohortId,
-        null,
-        list.name
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     const data = {
       listId: sanitizedListId,
@@ -604,8 +597,7 @@ const updateList = async (req, resp) => {
         isArchived: false,
         ownerIds: userId
       },
-      dataToUpdate,
-      { new: true }
+      dataToUpdate
     ).exec();
     const socketInstance = io.getInstance();
     const data = { listId };
@@ -629,17 +621,15 @@ const updateList = async (req, resp) => {
       data.name = name;
     }
 
-    fireAndForget(
-      saveActivity(
-        listActivity,
-        userId,
-        null,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        list.name
-      )
-    );
+    const activity = {
+      activityType: listActivity,
+      cohortId: list.cohortId,
+      editedValue: list.name,
+      listId: sanitizedListId,
+      performerId: userId
+    };
+
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     socketActions.updateList(socketInstance)(data);
@@ -671,15 +661,14 @@ const addToFavourites = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_ADD_TO_FAV,
-          userId,
-          null,
-          sanitizedListId,
-          doc.cohortId
-        )
-      );
+      const activity = {
+        activityType: ActivityType.LIST_ADD_TO_FAV,
+        cohortId: doc.cohortId,
+        listId: sanitizedListId,
+        performerId: userId
+      };
+
+      fireAndForget(saveActivity(activity));
 
       resp.send();
     })
@@ -709,15 +698,14 @@ const removeFromFavourites = (req, resp) => {
         return resp.sendStatus(400);
       }
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_REMOVE_FROM_FAV,
-          userId,
-          null,
-          sanitizedListId,
-          doc.cohortId
-        )
-      );
+      const activity = {
+        activityType: ActivityType.LIST_REMOVE_FROM_FAV,
+        cohortId: doc.cohortId,
+        listId: sanitizedListId,
+        performerId: userId
+      };
+
+      fireAndForget(saveActivity(activity));
 
       resp.send();
     })
@@ -767,16 +755,15 @@ const removeOwner = (req, resp) => {
     .then(payload => {
       resp.send();
 
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_REMOVE_USER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          payload.cohortId,
-          sanitizedUserId
-        )
-      );
+      const activity = {
+        activityType: ActivityType.LIST_REMOVE_USER,
+        cohortId: payload.cohortId,
+        editedUserId: sanitizedUserId,
+        listId: sanitizedListId,
+        performerId: currentUserId
+      };
+
+      fireAndForget(saveActivity(activity));
     })
     .catch(() => resp.sendStatus(400));
 };
@@ -820,16 +807,15 @@ const removeMember = (req, resp) => {
         .then(() => doc);
     })
     .then(payload => {
-      fireAndForget(
-        saveActivity(
-          ActivityType.LIST_REMOVE_USER,
-          currentUserId,
-          null,
-          sanitizedListId,
-          payload.cohortId,
-          sanitizedUserId
-        )
-      );
+      const activity = {
+        activityType: ActivityType.LIST_REMOVE_USER,
+        cohortId: payload.cohortId,
+        editedUserId: sanitizedUserId,
+        listId: sanitizedListId,
+        performerId: currentUserId
+      };
+
+      fireAndForget(saveActivity(activity));
 
       resp.send();
     })
@@ -866,16 +852,15 @@ const addOwnerRole = async (req, resp) => {
 
     await list.save();
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.LIST_SET_AS_OWNER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        list.cohortId,
-        sanitizedUserId
-      )
-    );
+    const activity = {
+      activityType: ActivityType.LIST_SET_AS_OWNER,
+      cohortId: list.cohortId,
+      editedUserId: sanitizedUserId,
+      listId: sanitizedListId,
+      performerId: currentUserId
+    };
+
+    fireAndForget(saveActivity(activity));
 
     const data = {
       listId,
@@ -924,16 +909,15 @@ const removeOwnerRole = async (req, resp) => {
 
     await list.save();
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.LIST_SET_AS_MEMBER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        list.cohortId,
-        sanitizedUserId
-      )
-    );
+    const activity = {
+      activityType: ActivityType.LIST_SET_AS_MEMBER,
+      cohortId: list.cohortId,
+      editedUserId: sanitizedUserId,
+      listId: sanitizedListId,
+      performerId: currentUserId
+    };
+
+    fireAndForget(saveActivity(activity));
 
     const data = {
       listId,
@@ -987,16 +971,15 @@ const addMemberRole = async (req, resp) => {
 
     await list.save();
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.LIST_SET_AS_MEMBER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        list.cohortId,
-        sanitizedUserId
-      )
-    );
+    const activity = {
+      activityType: ActivityType.LIST_SET_AS_MEMBER,
+      cohortId: list.cohortId,
+      editedUserId: sanitizedUserId,
+      listId: sanitizedListId,
+      performerId: currentUserId
+    };
+
+    fireAndForget(saveActivity(activity));
 
     const data = {
       listId,
@@ -1052,16 +1035,15 @@ const removeMemberRole = async (req, resp) => {
 
     await list.save();
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.LIST_SET_AS_VIEWER,
-        currentUserId,
-        null,
-        sanitizedListId,
-        list.cohortId,
-        sanitizedUserId
-      )
-    );
+    const activity = {
+      activityType: ActivityType.LIST_SET_AS_VIEWER,
+      cohortId: list.cohortId,
+      editedUserId: sanitizedUserId,
+      listId: sanitizedListId,
+      performerId: currentUserId
+    };
+
+    fireAndForget(saveActivity(activity));
 
     const data = {
       listId,
@@ -1172,16 +1154,15 @@ const addViewer = (req, resp) => {
       if (user) {
         resp.send(userToSend);
 
-        return fireAndForget(
-          saveActivity(
-            ActivityType.LIST_ADD_USER,
-            currentUserId,
-            null,
-            sanitizedListId,
-            list.cohortId,
-            user.id
-          )
-        );
+        const activity = {
+          activityType: ActivityType.LIST_ADD_USER,
+          cohortId: list.cohortId,
+          editedUserId: user.id,
+          listId: sanitizedListId,
+          performerId: currentUserId
+        };
+
+        return fireAndForget(saveActivity(activity));
       }
 
       resp.send({ _id: null });
@@ -1230,18 +1211,15 @@ const markItemAsDone = async (req, resp) => {
       items: savedList._doc.items,
       listId: sanitizedListId
     };
+    const activity = {
+      activityType: ActivityType.ITEM_DONE,
+      cohortId: list.cohortId,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_DONE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        null
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     const socketInstance = io.getInstance();
@@ -1285,18 +1263,15 @@ const markItemAsUnhandled = async (req, resp) => {
       items: savedList._doc.items,
       listId: sanitizedListId
     };
+    const activity = {
+      activityType: ActivityType.ITEM_UNHANDLED,
+      cohortId: list.cohortId,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_UNHANDLED,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        null
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     const socketInstance = io.getInstance();
@@ -1339,18 +1314,15 @@ const archiveItem = async (req, resp) => {
       items: savedList._doc.items,
       listId: sanitizedListId
     };
+    const activity = {
+      activityType: ActivityType.ITEM_ARCHIVE,
+      cohortId: list.cohortId,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_ARCHIVE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        null
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     const socketInstance = io.getInstance();
@@ -1394,18 +1366,15 @@ const restoreItem = async (req, resp) => {
       list: savedList._doc,
       listId: sanitizedListId
     };
+    const activity = {
+      activityType: ActivityType.ITEM_RESTORE,
+      cohortId: list.cohortId,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_RESTORE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        null
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     const socketInstance = io.getInstance();
@@ -1470,17 +1439,16 @@ const updateItem = async (req, resp) => {
 
     await list.save();
 
-    fireAndForget(
-      saveActivity(
-        editedItemActivity,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        list.cohortId,
-        null,
-        prevItemName
-      )
-    );
+    const activity = {
+      activityType: editedItemActivity,
+      cohortId: list.cohortId,
+      editedValue: prevItemName,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    };
+
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     const socketInstance = io.getInstance();
@@ -1541,16 +1509,15 @@ const cloneItem = async (req, resp) => {
       items: savedList.items,
       listId
     };
+    const activity = {
+      activityType: ActivityType.ITEM_CLONE,
+      cohortId: savedList.cohortId,
+      itemId: newItemToSend._id,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_CLONE,
-        userId,
-        newItemToSend._id,
-        sanitizedListId,
-        savedList.cohortId
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send(newItemToSend);
     const socketInstance = io.getInstance();
@@ -1607,18 +1574,15 @@ const changeType = async (req, resp) => {
       .exec();
 
     const { cohortId } = updatedList;
+    const activity = {
+      activityType: ActivityType.LIST_CHANGE_TYPE,
+      cohortId,
+      editedValue: type,
+      listId: sanitizedListId,
+      performerId: currentUserId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.LIST_CHANGE_TYPE,
-        currentUserId,
-        null,
-        sanitizedListId,
-        cohortId,
-        null,
-        type
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     const { memberIds, ownerIds, viewersIds: viewersCollection } = updatedList;
     const members = responseWithListMembers(
@@ -1699,18 +1663,16 @@ const deleteItem = async (req, resp) => {
       itemData: { itemId: sanitizedItemId },
       listId
     };
+    const activity = {
+      activityType: ActivityType.ITEM_DELETE,
+      cohortId: savedList.cohortId,
+      editedValue: name,
+      itemId: sanitizedItemId,
+      listId: sanitizedListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_DELETE,
-        userId,
-        sanitizedItemId,
-        sanitizedListId,
-        savedList.cohortId,
-        null,
-        name
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     resp.send();
     const socketInstance = io.getInstance();
@@ -1784,7 +1746,7 @@ const leaveList = (req, resp) => {
     });
 };
 
-const getAvailableLists = (req, resp) => {
+const getAvailableLists = async (req, resp) => {
   const {
     user: { _id: userId }
   } = req;
@@ -1794,11 +1756,22 @@ const getAvailableLists = (req, resp) => {
     isArchived: false
   };
 
-  List.find(query, 'name')
-    .lean()
-    .exec()
-    .then(docs => (docs ? resp.send(docs) : resp.sendStatus(400)))
-    .catch(() => resp.sendStatus(400));
+  try {
+    const lists = await List.find(query, 'name')
+      .lean()
+      .populate('cohortId', 'isArchived')
+      .exec();
+
+    const listToSend = lists
+      .filter(
+        list => !list.cohortId || (list.cohortId && !list.cohortId.isArchived)
+      )
+      .map(({ _id, name }) => ({ _id, name }));
+
+    resp.send(listToSend);
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const moveItem = async (req, resp) => {
@@ -1876,18 +1849,16 @@ const moveItem = async (req, resp) => {
     // prepare data to save activity and for socket
     const { cohortId, items: targetListItems } = targetList;
     const itemData = targetListItems.id(targetItemId)._doc;
+    const activity = {
+      activityType: ActivityType.ITEM_MOVE,
+      cohortId,
+      editedValue: sourceListName,
+      itemId: targetItemId,
+      listId: sanitizedTargetListId,
+      performerId: userId
+    };
 
-    fireAndForget(
-      saveActivity(
-        ActivityType.ITEM_MOVE,
-        userId,
-        targetItemId,
-        sanitizedTargetListId,
-        cohortId,
-        null,
-        sourceListName
-      )
-    );
+    fireAndForget(saveActivity(activity));
 
     // send response and emit data via socket
     resp.send();

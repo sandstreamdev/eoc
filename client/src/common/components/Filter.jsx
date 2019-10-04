@@ -18,7 +18,11 @@ class Filter extends PureComponent {
   }
 
   componentDidMount() {
-    this.input.current.focus();
+    const { autofocus } = this.props;
+
+    if (autofocus) {
+      this.input.current.focus();
+    }
   }
 
   componentWillUnmount() {
@@ -71,6 +75,7 @@ class Filter extends PureComponent {
   render() {
     const { query } = this.state;
     const { buttonContent, clearFilterButton, placeholder } = this.props;
+    const isClearButtonVisible = clearFilterButton && buttonContent && query;
 
     return (
       <div className="filter">
@@ -83,7 +88,7 @@ class Filter extends PureComponent {
           type="text"
           value={query}
         />
-        {clearFilterButton && buttonContent && (
+        {isClearButtonVisible && (
           <button onClick={this.resetFilter} title="reset filter" type="button">
             {buttonContent}
           </button>
@@ -98,6 +103,7 @@ Filter.defaultProps = {
 };
 
 Filter.propTypes = {
+  autofocus: PropTypes.bool,
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   clearFilterButton: PropTypes.bool,
   fields: PropTypes.arrayOf(PropTypes.string).isRequired,
