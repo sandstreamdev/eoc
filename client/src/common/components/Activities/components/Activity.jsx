@@ -1,10 +1,12 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedRelative } from 'react-intl';
+import { injectIntl, FormattedMessage, FormattedRelative } from 'react-intl';
 
 import Avatar from 'common/components/Avatar';
 import './Activity.scss';
+import { formatName } from 'common/utils/helpers';
+import { IntlPropType } from 'common/constants/propTypes';
 
 class Activity extends PureComponent {
   renderCohortLink = () => {
@@ -37,8 +39,10 @@ class Activity extends PureComponent {
 
   renderItemActivity = () => {
     const {
-      activity: { activityType, cohort, editedValue, item, list, performer }
+      activity: { activityType, cohort, editedValue, item, list, performer },
+      intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(performer.name, formatMessage);
 
     return (
       <Fragment>
@@ -47,7 +51,7 @@ class Activity extends PureComponent {
           values={{
             item: item ? <em className="activity__item">{item.name}</em> : null,
             list: list ? <em className="activity__item">{list.name}</em> : null,
-            performer: <em>{performer.name}</em>,
+            performer: <em>{formattedName}</em>,
             value: <em>{editedValue}</em>
           }}
         />
@@ -69,8 +73,13 @@ class Activity extends PureComponent {
 
   renderListActivity = () => {
     const {
-      activity: { activityType, cohort, editedUser, editedValue, performer }
+      activity: { activityType, cohort, editedUser, editedValue, performer },
+      intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(performer.name, formatMessage);
+    const formattedNameEditedUser = editedUser
+      ? formatName(editedUser.name, formatMessage)
+      : null;
 
     return (
       <Fragment>
@@ -78,8 +87,8 @@ class Activity extends PureComponent {
           id={activityType}
           values={{
             list: <em>{this.renderListLink()}</em>,
-            performer: <em>{performer.name}</em>,
-            user: editedUser ? editedUser.name : null,
+            performer: <em>{formattedName}</em>,
+            user: formattedNameEditedUser,
             value: editedValue
           }}
         />
@@ -95,16 +104,21 @@ class Activity extends PureComponent {
 
   renderCohortActivity = () => {
     const {
-      activity: { activityType, editedUser, editedValue, performer }
+      activity: { activityType, editedUser, editedValue, performer },
+      intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(performer.name, formatMessage);
+    const formattedNameEditedUser = editedUser
+      ? formatName(editedUser.name, formatMessage)
+      : null;
 
     return (
       <FormattedMessage
         id={activityType}
         values={{
           cohort: <em>{this.renderCohortLink()}</em>,
-          performer: <em>{performer.name}</em>,
-          user: editedUser ? editedUser.name : null,
+          performer: <em>{formattedName}</em>,
+          user: formattedNameEditedUser,
           value: editedValue
         }}
       />
@@ -119,8 +133,10 @@ class Activity extends PureComponent {
         item,
         list,
         performer: { avatarUrl, name }
-      }
+      },
+      intl: { formatMessage }
     } = this.props;
+    const formattedName = formatName(name, formatMessage);
 
     return (
       <div className="activity">
@@ -128,7 +144,7 @@ class Activity extends PureComponent {
           <Avatar
             avatarUrl={avatarUrl}
             className="activity__image"
-            name={name}
+            name={formattedName}
           />
         </div>
         <div className="activity__message">
@@ -156,7 +172,8 @@ Activity.propTypes = {
     item: PropTypes.objectOf(PropTypes.string),
     list: PropTypes.objectOf(PropTypes.string),
     performer: PropTypes.objectOf(PropTypes.string)
-  })
+  }),
+  intl: IntlPropType.isRequired
 };
 
-export default Activity;
+export default injectIntl(Activity);

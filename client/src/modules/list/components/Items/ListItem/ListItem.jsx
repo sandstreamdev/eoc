@@ -3,11 +3,15 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
 import VotingBox from 'modules/list/components/Items/VotingBox';
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  RouterMatchPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import {
   archiveItem,
   clearVote,
@@ -27,6 +31,7 @@ import ListItemDescription from '../ListItemDescription';
 import { DefaultLocks } from 'common/constants/enums';
 import MoveToListPanel from '../MoveToListPanel';
 import './ListItem.scss';
+import { formatName } from 'common/utils/helpers';
 
 class ListItem extends PureComponent {
   constructor(props) {
@@ -407,10 +412,13 @@ class ListItem extends PureComponent {
         locks: { name: nameLock, description: descriptionLock } = DefaultLocks,
         name
       },
+      intl: { formatMessage },
       isMember
     } = this.props;
     const { areDetailsVisible, isNameEdited } = this.state;
     const isEdited = nameLock || descriptionLock;
+    const formattedName = formatName(authorName, formatMessage);
+    const formatEditedBy = formatName(editedBy, formatMessage);
 
     return (
       <li
@@ -447,14 +455,14 @@ class ListItem extends PureComponent {
               <span className="list-item__author">
                 <FormattedMessage
                   id="list.list-item.author"
-                  values={{ authorName }}
+                  values={{ authorName: formattedName }}
                 />
               </span>
               {editedBy && (
                 <span className="list-item__edited-by">
                   <FormattedMessage
                     id="list.list-item.edited-by"
-                    values={{ editedBy }}
+                    values={{ editedBy: formatEditedBy }}
                   />
                 </span>
               )}
@@ -491,6 +499,7 @@ ListItem.propTypes = {
       PropTypes.object
     ])
   ),
+  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
 
@@ -507,6 +516,7 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
+  injectIntl,
   withRouter,
   connect(
     mapStateToProps,
