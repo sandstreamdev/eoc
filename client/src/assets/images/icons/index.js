@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { IconPropType } from 'common/constants/propTypes';
+
 const Icon = props => (
   <svg
     className="svg-inline--fa fa-w-20"
@@ -15,8 +17,8 @@ Icon.propTypes = {
   children: PropTypes.any
 };
 
-export const CohortIcon = () => (
-  <Icon aria-label="cohort" viewBox="0 0 640 512">
+export const CohortIcon = ({ label = 'Cohort', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 640 512">
     <path
       d="M96 224c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm448 0c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm32 32h-64c-17.6 0-33.5 7.1-45.1 18.6 40.3 22.1 68.9 62 75.1 109.4h66c17.7 0 32-14.3 32-32v-32c0-35.3-28.7-64-64-64zm-256 0c61.9 0 112-50.1 112-112S381.9 32 320 32 208 82.1 208 144s50.1 112 112 112zm76.8 32h-8.3c-20.8 10-43.9 16-68.5 16s-47.6-6-68.5-16h-8.3C179.6 288 128 339.6 128 403.2V432c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48v-28.8c0-63.6-51.6-115.2-115.2-115.2zm-223.7-13.4C161.5 263.1 145.6 256 128 256H64c-35.3 0-64 28.7-64 64v32c0 17.7 14.3 32 32 32h65.9c6.3-47.4 34.9-87.3 75.2-109.4z"
       fill="#fff"
@@ -24,8 +26,10 @@ export const CohortIcon = () => (
   </Icon>
 );
 
-export const ListIcon = () => (
-  <Icon aria-label="sack" viewBox="0 0 384 512">
+CohortIcon.propTypes = IconPropType;
+
+export const ListIcon = ({ label = 'Sack', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 384 512">
     <path
       d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM96 424c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm0-96c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm0-96c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm96-192c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm128 368c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16z"
       fill="#fff"
@@ -33,8 +37,10 @@ export const ListIcon = () => (
   </Icon>
 );
 
-export const InfoIcon = () => (
-  <Icon aria-label="information" viewBox="0 0 192 512">
+ListIcon.propTypes = IconPropType;
+
+export const InfoIcon = ({ label = 'Information', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 192 512">
     <path
       d="M20 424.229h20V279.771H20c-11.046 0-20-8.954-20-20V212c0-11.046 8.954-20 20-20h112c11.046 0 20 8.954 20 20v212.229h20c11.046 0 20 8.954 20 20V492c0 11.046-8.954 20-20 20H20c-11.046 0-20-8.954-20-20v-47.771c0-11.046 8.954-20 20-20zM96 0C56.235 0 24 32.235 24 72s32.235 72 72 72 72-32.235 72-72S135.764 0 96 0z"
       fill="#fff"
@@ -42,8 +48,10 @@ export const InfoIcon = () => (
   </Icon>
 );
 
-export const PlusIcon = () => (
-  <Icon aria-label="add" viewBox="0 0 448 512">
+InfoIcon.propTypes = IconPropType;
+
+export const PlusIcon = ({ label = 'Add', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 448 512">
     <path
       d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
       fill="#a5a7aa"
@@ -51,8 +59,13 @@ export const PlusIcon = () => (
   </Icon>
 );
 
-export const RegularStarIcon = () => (
-  <Icon aria-label="remove from favourite" viewBox="0 0 576 512">
+PlusIcon.propTypes = IconPropType;
+
+export const RegularStarIcon = ({
+  label = 'Remove from favourite',
+  title = label
+}) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 576 512">
     <path
       d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
       fill="currentColor"
@@ -60,8 +73,13 @@ export const RegularStarIcon = () => (
   </Icon>
 );
 
-export const SolidStarIcon = () => (
-  <Icon aria-label="mark as favourite" viewBox="0 0 576 512">
+RegularStarIcon.propTypes = IconPropType;
+
+export const SolidStarIcon = ({
+  label = 'Add to favourite',
+  title = label
+}) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 576 512">
     <path
       d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"
       fill="currentColor"
@@ -69,8 +87,10 @@ export const SolidStarIcon = () => (
   </Icon>
 );
 
-export const BellIcon = () => (
-  <Icon aria-label="notifications" viewBox="0 0 448 512">
+SolidStarIcon.propTypes = IconPropType;
+
+export const BellIcon = ({ label = 'Notifications', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 448 512">
     <path
       d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"
       fill="#fff"
@@ -78,8 +98,10 @@ export const BellIcon = () => (
   </Icon>
 );
 
-export const LockIcon = () => (
-  <Icon aria-label="limited sack" viewBox="0 0 448 512">
+BellIcon.propTypes = IconPropType;
+
+export const LockIcon = ({ label = 'Lock', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 448 512">
     <path
       d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zm-104 0H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z"
       fill="currentColor"
@@ -87,8 +109,10 @@ export const LockIcon = () => (
   </Icon>
 );
 
-export const UserIcon = () => (
-  <Icon aria-label="user's avatar" viewBox="0 0 448 512">
+LockIcon.propTypes = IconPropType;
+
+export const UserIcon = ({ label = "User's avatar", title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 448 512">
     <path
       d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
       fill="currentColor"
@@ -96,8 +120,10 @@ export const UserIcon = () => (
   </Icon>
 );
 
-export const DotsIcon = () => (
-  <Icon aria-label="ellipsis" viewBox="0 0 512 512">
+UserIcon.propTypes = IconPropType;
+
+export const DotsIcon = ({ label = 'Show more', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 512 512">
     <path
       d="M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z"
       fill="currentColor"
@@ -105,8 +131,10 @@ export const DotsIcon = () => (
   </Icon>
 );
 
-export const CloseIcon = () => (
-  <Icon aria-label="close" viewBox="0 0 352 512">
+DotsIcon.propTypes = IconPropType;
+
+export const CloseIcon = ({ label = 'Close', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 352 512">
     <path
       d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
       fill="currentColor"
@@ -114,8 +142,10 @@ export const CloseIcon = () => (
   </Icon>
 );
 
-export const LogoutIcon = () => (
-  <Icon aria-label="logout" viewBox="0 0 512 512">
+CloseIcon.propTypes = IconPropType;
+
+export const LogoutIcon = ({ label = 'Logout', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 512 512">
     <path
       d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"
       fill="currentColor"
@@ -123,8 +153,10 @@ export const LogoutIcon = () => (
   </Icon>
 );
 
-export const ChevronRight = () => (
-  <Icon aria-label="breadcrumbs" viewBox="0 0 320 512">
+LogoutIcon.propTypes = IconPropType;
+
+export const ChevronRight = ({ label = 'Breadcrumbs', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 320 512">
     <path
       d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"
       fill="currentColor"
@@ -132,8 +164,10 @@ export const ChevronRight = () => (
   </Icon>
 );
 
-export const ChevronDown = () => (
-  <Icon aria-label="expand content" viewBox="0 0 448 512">
+ChevronRight.propTypes = IconPropType;
+
+export const ChevronDown = ({ label = 'Expand content', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 448 512">
     <path
       d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
       fill="currentColor"
@@ -141,8 +175,10 @@ export const ChevronDown = () => (
   </Icon>
 );
 
-export const ChevronUp = () => (
-  <Icon aria-label="fold content" viewBox="0 0 448 512">
+ChevronDown.propTypes = IconPropType;
+
+export const ChevronUp = ({ label = 'Fold content', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 448 512">
     <path
       d="M240.971 130.524l194.343 194.343c9.373 9.373 9.373 24.569 0 33.941l-22.667 22.667c-9.357 9.357-24.522 9.375-33.901.04L224 227.495 69.255 381.516c-9.379 9.335-24.544 9.317-33.901-.04l-22.667-22.667c-9.373-9.373-9.373-24.569 0-33.941L207.03 130.525c9.372-9.373 24.568-9.373 33.941-.001z"
       fill="currentColor"
@@ -150,8 +186,10 @@ export const ChevronUp = () => (
   </Icon>
 );
 
-export const ThumbIcon = () => (
-  <Icon aria-label="vote" viewBox="0 0 512 512">
+ChevronUp.propTypes = IconPropType;
+
+export const ThumbIcon = ({ label = 'Vote', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 512 512">
     <path
       d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"
       fill="currentColor"
@@ -159,8 +197,10 @@ export const ThumbIcon = () => (
   </Icon>
 );
 
-export const TilesViewIcon = () => (
-  <Icon aria-label="tiles view" viewBox="0 0 512 512">
+ThumbIcon.propTypes = IconPropType;
+
+export const TilesViewIcon = ({ label = 'Tiles view', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 512 512">
     <path
       d="M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z"
       fill="currentColor"
@@ -168,8 +208,10 @@ export const TilesViewIcon = () => (
   </Icon>
 );
 
-export const ListViewIcon = () => (
-  <Icon aria-label="list view" viewBox="0 0 512 512">
+TilesViewIcon.propTypes = IconPropType;
+
+export const ListViewIcon = ({ label = 'List view', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 512 512">
     <path
       d="M128 116V76c0-8.837 7.163-16 16-16h352c8.837 0 16 7.163 16 16v40c0 8.837-7.163 16-16 16H144c-8.837 0-16-7.163-16-16zm16 176h352c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H144c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h352c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H144c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zM16 144h64c8.837 0 16-7.163 16-16V64c0-8.837-7.163-16-16-16H16C7.163 48 0 55.163 0 64v64c0 8.837 7.163 16 16 16zm0 160h64c8.837 0 16-7.163 16-16v-64c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v64c0 8.837 7.163 16 16 16zm0 160h64c8.837 0 16-7.163 16-16v-64c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v64c0 8.837 7.163 16 16 16z"
       fill="currentColor"
@@ -177,9 +219,12 @@ export const ListViewIcon = () => (
   </Icon>
 );
 
-export const ActivitiesIcon = () => (
+ListViewIcon.propTypes = IconPropType;
+
+export const ActivitiesIcon = ({ label = 'Activities', title = label }) => (
   <Icon
-    aria-label="activities"
+    aria-label={label}
+    title={title}
     className="svg-activities"
     data-prefix="eoc"
     viewBox="0 0 640 512"
@@ -191,8 +236,10 @@ export const ActivitiesIcon = () => (
   </Icon>
 );
 
-export const CheckIcon = () => (
-  <Icon aria-label="ok" viewBox="0 0 512 512">
+ActivitiesIcon.propTypes = IconPropType;
+
+export const CheckIcon = ({ label = 'Valid value', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 512 512">
     <path
       d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"
       fill="currentColor"
@@ -200,8 +247,10 @@ export const CheckIcon = () => (
   </Icon>
 );
 
-export const ErrorIcon = () => (
-  <Icon aria-label="error" viewBox="0 0 352 512">
+CheckIcon.propTypes = IconPropType;
+
+export const ErrorIcon = ({ label = 'Invalid value', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 352 512">
     <path
       d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
       fill="currentColor"
@@ -209,8 +258,10 @@ export const ErrorIcon = () => (
   </Icon>
 );
 
-export const AppIcon = () => (
-  <Icon aria-label="eoc logo" viewBox="0 0 640 512">
+ErrorIcon.propTypes = IconPropType;
+
+export const AppIcon = ({ label = 'EOC logo', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 640 512">
     <path
       d="M192 384h192c53 0 96-43 96-96h32c70.6 0 128-57.4 128-128S582.6 32 512 32H120c-13.3 0-24 10.7-24 24v232c0 53 43 96 96 96zM512 96c35.3 0 64 28.7 64 64s-28.7 64-64 64h-32V96h32zm47.7 384H48.3c-47.6 0-61-64-36-64h583.3c25 0 11.8 64-35.9 64z"
       fill="#ef9b1f"
@@ -218,11 +269,15 @@ export const AppIcon = () => (
   </Icon>
 );
 
-export const SearchIcon = () => (
-  <Icon aria-label="search" viewBox="0 0 512 512">
+AppIcon.propTypes = IconPropType;
+
+export const SearchIcon = ({ label = 'Search', title = label }) => (
+  <Icon aria-label={label} title={title} viewBox="0 0 512 512">
     <path
       d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
       fill="currentColor"
     />
   </Icon>
 );
+
+SearchIcon.propTypes = IconPropType;
