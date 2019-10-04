@@ -25,10 +25,18 @@ class DeleteAccount extends Component {
 
   handleDeleteAccount = async () => {
     try {
-      const result = await deleteAccount();
+      /**
+       * Result variable is faked only for
+       * front end flow test purposes, after
+       * the task https://jira2.sanddev.com/secure/RapidBoard.jspa?rapidView=1&view=planning&selectedIssue=EOC-521&issueLimit=100
+       * will be completed, we will await deleteAccount
+       * function here
+       */
+      const result = SessionInfo.UPDATED_LONG_TIME_AGO; // await deleteAccount();
 
       if (result === SessionInfo.UPDATED_LONG_TIME_AGO) {
         this.showLoginDialog();
+        console.log('SHOW');
       } else {
         deleteAccount();
       }
@@ -45,7 +53,8 @@ class DeleteAccount extends Component {
 
   hideDeleteDialog = () => this.setState({ isDeleteDialogVisible: false });
 
-  showLoginDialog = () => this.setState({ isLoginDialogVisible: true });
+  showLoginDialog = () =>
+    this.setState({ isLoginDialogVisible: true }, this.hideDeleteDialog);
 
   hideLoginDialog = () => this.setState({ isLoginDialogVisible: false });
 
