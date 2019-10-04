@@ -25,7 +25,7 @@ export const IntlPropType = PropTypes.objectOf(
   PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object])
 );
 
-export const IconPropType = PropTypes.shape({
+export const IconPropType = {
   label: PropTypes.string,
   title: PropTypes.string
-});
+};
