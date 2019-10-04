@@ -8,6 +8,7 @@ import { IntlPropType } from 'common/constants/propTypes';
 import './DeleteAccount.scss';
 import { deleteAccount, logoutCurrentUser } from '../model/actions';
 import Dialog from 'common/components/Dialog';
+import { SessionInfo } from 'common/constants/enums';
 
 class DeleteAccount extends Component {
   constructor(props) {
@@ -22,9 +23,9 @@ class DeleteAccount extends Component {
 
   handleDeleteAccount = async () => {
     try {
-      const result = 'LOGGED_LONG_TIME_AGO'; // await deleteAccount();
+      const result = await deleteAccount();
 
-      if (result === 'LOGGED_LONG_TIME_AGO') {
+      if (result === SessionInfo.UPDATED_LONG_TIME_AGO) {
         this.showLoginDialog();
       } else {
         deleteAccount();

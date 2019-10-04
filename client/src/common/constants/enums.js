@@ -1,3 +1,5 @@
+import { enumerable } from 'common/utils/helpers';
+
 export const MessageType = Object.freeze({
   ERROR: 'error',
   ERROR_NO_RETRY: 'no_retry',
@@ -65,3 +67,5 @@ export const PasswordValidationValues = Object.freeze({
   MIN: 4,
   MAX: 32
 });
+
+export const SessionInfo = enumerable('session')('UPDATED_LONG_TIME_AGO');

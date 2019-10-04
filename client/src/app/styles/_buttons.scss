@@ -68,8 +68,8 @@
 }
 
 .danger-button {
-  background-color: $gray-bg2;
-  border: 1px solid $button-disabled;
+  background-color: transparent;
+  border: 2px solid $danger;
   box-sizing: border-box;
   color: $danger;
   cursor: pointer;
@@ -87,7 +87,6 @@
 
   &:hover {
     background-color: $danger;
-    border-color: $shadow-color-light;
     color: $bg-color;
   }
 }
