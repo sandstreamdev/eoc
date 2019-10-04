@@ -428,10 +428,30 @@ const checkToken = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+/**
+ * This code below will be implemented in
+ * https://jira2.sanddev.com/secure/RapidBoard.jspa?rapidView=1&view=planning&selectedIssue=EOC-521&issueLimit=100
+ * */
+const deleteAccount = async (req, resp) => {
+  // console.log('DELETE ACCOUNT');
+  // const { _id: userId } = req.user;
+  // const { sessionID } = req;
+  // const regexp = new RegExp(userId);
+  // try {
+  //   const session = await Session.find({
+  //     _id: sessionID,
+  //     session: regexp
+  //   }).exec();
+  // } catch (error) {
+  //   //
+  // }
+};
+
 module.exports = {
   changePassword,
   checkToken,
   confirmEmail,
+  deleteAccount,
   getAccountDetails,
   getLoggedUser,
   getUserDetails,
