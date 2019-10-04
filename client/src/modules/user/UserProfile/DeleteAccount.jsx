@@ -84,7 +84,7 @@ class DeleteAccount extends Component {
       <Fragment>
         {isDeleteDialogVisible && (
           <Dialog
-            confirmLabel={formatMessage({ id: 'user.delete-account' })}
+            confirmLabel="user.delete-account"
             hasPermissions
             onConfirm={this.handleDeleteAccount}
             onCancel={this.hideDeleteDialog}
