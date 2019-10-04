@@ -66,3 +66,28 @@
     }
   }
 }
+
+.danger-button {
+  background-color: $gray-bg2;
+  border: 1px solid $button-disabled;
+  box-sizing: border-box;
+  color: $danger;
+  cursor: pointer;
+  display: block;
+  font-family: $font-family;
+  font-size: $m-font;
+  font-weight: 500;
+  line-height: 1.2;
+  min-height: 40px;
+  padding: four-by(2) four-by(4);
+  position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+  width: auto;
+
+  &:hover {
+    background-color: $danger;
+    border-color: $shadow-color-light;
+    color: $bg-color;
+  }
+}
