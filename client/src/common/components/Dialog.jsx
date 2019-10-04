@@ -46,7 +46,7 @@ const Dialog = ({
               </button>
             )}
             <button
-              className="dialog__button primary-button"
+              className="dialog__button outline-button"
               disabled={pending}
               onClick={onCancel}
               type="button"

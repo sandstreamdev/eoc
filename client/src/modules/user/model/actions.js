@@ -147,11 +147,4 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
 export const getAccountDetails = token =>
   getJson(`/auth/account-details/${token}`);
 
-export const deleteAccount = didLoggedRecently => {
-  if (didLoggedRecently) {
-    // delete request
-    // return
-  }
-
-  getData('/auth/delete-account');
-};
+export const deleteAccount = async () => getData('/auth/delete-account');
