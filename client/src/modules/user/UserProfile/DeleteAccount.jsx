@@ -32,14 +32,20 @@ class DeleteAccount extends Component {
        * will be completed, we will await deleteAccount
        * function here
        */
+
+      this.setState({ pending: true });
+
       const result = SessionInfo.UPDATED_LONG_TIME_AGO; // await deleteAccount();
 
       if (result === SessionInfo.UPDATED_LONG_TIME_AGO) {
         this.showLoginDialog();
+        this.setState({ pending: false });
       } else {
         deleteAccount();
       }
-    } catch (error) {}
+    } catch {
+      this.setState({ isErrorVisible: true });
+    }
   };
 
   handleSignIn = () => {
@@ -85,11 +91,12 @@ class DeleteAccount extends Component {
             pending={pending}
             title={formatMessage({ id: 'user.delete-account' })}
           >
-            <FormattedMessage id="user.delete-account-dialog" />
-            {isErrorVisible && (
+            {isErrorVisible ? (
               <ErrorMessage
                 message={formatMessage({ id: 'user.delete-account-error' })}
               />
+            ) : (
+              <FormattedMessage id="user.delete-account-dialog" />
             )}
           </Dialog>
         )}
