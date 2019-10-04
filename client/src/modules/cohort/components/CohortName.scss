@@ -1,21 +1,19 @@
 @import 'partials';
 
 .cohort-name {
-  border-bottom: 1px solid $border-light;
-  margin-bottom: four-by(2);
-  svg {
-    height: 20px;
-    margin-right: four-by(4);
-
-    path {
-      fill: $text-dark;
-    }
-  }
-
   &__top {
     position: relative;
     display: flex;
     align-items: center;
+
+    svg {
+      height: 20px;
+      margin-right: four-by(4);
+
+      path {
+        fill: $text-dark;
+      }
+    }
 
     &--disabled {
       svg path {
