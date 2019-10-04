@@ -9,6 +9,7 @@ import './DeleteAccount.scss';
 import { deleteAccount, logoutCurrentUser } from '../model/actions';
 import Dialog from 'common/components/Dialog';
 import { SessionInfo } from 'common/constants/enums';
+import ErrorMessage from 'common/components/Forms/ErrorMessage';
 
 class DeleteAccount extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class DeleteAccount extends Component {
 
     this.state = {
       isDeleteDialogVisible: false,
+      isErrorVisible: false,
       isLoginDialogVisible: false,
       pending: false
     };
@@ -57,7 +59,12 @@ class DeleteAccount extends Component {
     const {
       intl: { formatMessage }
     } = this.props;
-    const { isLoginDialogVisible, isDeleteDialogVisible, pending } = this.state;
+    const {
+      isDeleteDialogVisible,
+      isErrorVisible,
+      isLoginDialogVisible,
+      pending
+    } = this.state;
 
     return (
       <Fragment>
@@ -71,6 +78,11 @@ class DeleteAccount extends Component {
             title={formatMessage({ id: 'user.delete-account' })}
           >
             <FormattedMessage id="user.delete-account-dialog" />
+            {isErrorVisible && (
+              <ErrorMessage
+                message={formatMessage({ id: 'user.delete-account-error' })}
+              />
+            )}
           </Dialog>
         )}
         {isLoginDialogVisible && (

@@ -83,6 +83,7 @@
   "user.authorize-identity-message": "Sign in one more time to authorize your identity",
   "user.delete-account": "Delete account",
   "user.delete-account-dialog": "Once you delete your account, there is no going back. Please be certain.",
+  "user.delete-account-error": "An error occured while deleting account. Please try again",
   "user.name": "Name",
   "user.email": "Email",
   "user.password": "Password",
