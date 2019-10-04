@@ -27,8 +27,8 @@ class DeleteAccount extends Component {
             <FormattedMessage id="user.delete-account" />
             <button
               className="danger-button"
-              type="button"
               title={formatMessage({ id: 'user.delete-account' })}
+              type="button"
             >
               <FormattedMessage id="user.delete-account" />
             </button>
