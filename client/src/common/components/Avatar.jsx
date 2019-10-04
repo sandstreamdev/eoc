@@ -20,7 +20,7 @@ class Avatar extends PureComponent {
       <span className="avatar">
         {avatarUrl && !isAvatarError ? (
           <img
-            alt={`${name || 'user'} avatar`}
+            alt={name}
             className={classNames(`${className} avatar__image`, {
               avatar__placeholder: isAvatarError
             })}
@@ -29,7 +29,7 @@ class Avatar extends PureComponent {
             title={name}
           />
         ) : (
-          <UserIcon />
+          <UserIcon label={name} />
         )}
       </span>
     );

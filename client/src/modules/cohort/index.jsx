@@ -432,6 +432,9 @@ class Cohort extends PureComponent {
                   color={ColorType.ORANGE}
                   icon={<ListIcon />}
                   items={lists}
+                  label={formatMessage({
+                    id: 'list.label'
+                  })}
                   name="Sacks"
                   onAddNew={this.handleDialogContext(DialogContext.CREATE)}
                   placeholder={formatMessage(

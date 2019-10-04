@@ -2,9 +2,14 @@ import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import _flowRight from 'lodash/flowRight';
 
-import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  RouterMatchPropType,
+  UserPropType
+} from 'common/constants/propTypes';
 import { CloseIcon, InfoIcon } from 'assets/images/icons';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import {
@@ -247,12 +252,21 @@ class MemberDetails extends PureComponent {
 
   renderChangeRoleOption = (role, isInfoVisible, checked) => {
     const { pending } = this.state;
-    const { route } = this.props;
+    const {
+      intl: { formatMessage },
+      route
+    } = this.props;
     const disabled = route === Routes.COHORT && role === UserRoles.MEMBER;
     const label =
       role === UserRoles.OWNER
         ? UserRolesToDisplay.OWNER
         : UserRolesToDisplay.MEMBER;
+    const roleContext = formatMessage({
+      id:
+        role === UserRoles.MEMBER
+          ? 'common.member-details.role-member'
+          : 'common.member-details.role-owner'
+    });
 
     return (
       <Fragment>
@@ -265,6 +279,10 @@ class MemberDetails extends PureComponent {
                 ? this.handleOwnerInfoVisibility
                 : this.handleMemberInfoVisibility
             }
+            title={formatMessage(
+              { id: 'common.member-detail.role-info' },
+              { context: roleContext }
+            )}
             type="button"
           >
             <span>
@@ -421,6 +439,7 @@ class MemberDetails extends PureComponent {
     const {
       avatarUrl,
       displayName,
+      intl: { formatMessage },
       isCohortList,
       isCurrentUserAnOwner,
       isGuest,
@@ -449,6 +468,7 @@ class MemberDetails extends PureComponent {
           <button
             className="member-details__close"
             onClick={onClose}
+            title={formatMessage({ id: 'common.member-details-close' })}
             type="button"
           >
             <CloseIcon />
@@ -476,6 +496,7 @@ MemberDetails.propTypes = {
   avatarUrl: PropTypes.string,
   currentUser: UserPropType.isRequired,
   displayName: PropTypes.string.isRequired,
+  intl: IntlPropType,
   isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool,
@@ -503,7 +524,9 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default withRouter(
+export default _flowRight(
+  injectIntl,
+  withRouter,
   connect(
     mapStateToProps,
     {
@@ -516,5 +539,5 @@ export default withRouter(
       removeOwnerRoleInCohort,
       removeOwnerRoleInList
     }
-  )(MemberDetails)
-);
+  )
+)(MemberDetails);

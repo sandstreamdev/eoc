@@ -128,6 +128,9 @@ class Dashboard extends Component {
               color={ColorType.ORANGE}
               icon={<ListIcon />}
               items={privateLists}
+              label={formatMessage({
+                id: 'list.label'
+              })}
               name="Private Sacks"
               onAddNew={this.handleDialogVisibility}
               pending={pendingForLists}

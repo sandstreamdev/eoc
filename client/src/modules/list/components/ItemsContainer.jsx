@@ -84,6 +84,9 @@ class ItemsContainer extends Component {
           <div className="items__header-controls">
             <Filter
               buttonContent={<CloseIcon />}
+              clearButtonLabel={formatMessage({
+                id: 'common.button.reset-filter'
+              })}
               fields={filterByFields}
               onFilter={this.handleFilterLists}
               options={itemsToSearch}

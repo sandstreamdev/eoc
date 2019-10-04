@@ -14,23 +14,25 @@ const VotingBox = ({
   isVoted,
   onVote,
   votesCount
-}) => (
-  <PendingButton
-    className={classNames('voting-box', {
-      'voting-box__voted': isVoted
-    })}
-    disabled={!isMember}
-    onClick={onVote}
-    title={
-      isVoted
-        ? formatMessage({ id: 'list.voting-box.remove' })
-        : formatMessage({ id: 'list.voting-box.vote' })
-    }
-  >
-    <ThumbIcon />
-    {votesCount}
-  </PendingButton>
-);
+}) => {
+  const buttonLabel = formatMessage({
+    id: isVoted ? 'list.voting-box.remove' : 'list.voting-box.vote'
+  });
+
+  return (
+    <PendingButton
+      className={classNames('voting-box', {
+        'voting-box__voted': isVoted
+      })}
+      disabled={!isMember}
+      onClick={onVote}
+      title={buttonLabel}
+    >
+      <ThumbIcon label={buttonLabel} />
+      {votesCount}
+    </PendingButton>
+  );
+};
 
 VotingBox.propTypes = {
   intl: IntlPropType.isRequired,
