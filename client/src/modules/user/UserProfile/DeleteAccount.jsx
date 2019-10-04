@@ -36,7 +36,6 @@ class DeleteAccount extends Component {
 
       if (result === SessionInfo.UPDATED_LONG_TIME_AGO) {
         this.showLoginDialog();
-        console.log('SHOW');
       } else {
         deleteAccount();
       }
