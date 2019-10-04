@@ -53,7 +53,6 @@ class ListItem extends PureComponent {
     const {
       currentUser: { name: editedBy },
       data: { _id: itemId, name: itemName, done },
-      intl: { formatMessage },
       isMember,
       markAsDone,
       markAsUnhandled,
@@ -65,10 +64,10 @@ class ListItem extends PureComponent {
     if (!isMember) {
       return;
     }
-    const formattedName = formatName(editedBy, formatMessage);
+
     const action = done ? markAsUnhandled : markAsDone;
 
-    return action(listId, itemId, itemName, formattedName).finally(
+    return action(listId, itemId, itemName, editedBy).finally(
       this.handleItemUnlock
     );
   };
@@ -139,16 +138,14 @@ class ListItem extends PureComponent {
       archiveItem,
       currentUser: { name: editedBy },
       data: { _id: itemId, name },
-      intl: { formatMessage },
       match: {
         params: { id: listId }
       }
     } = this.props;
-    const formattedName = formatName(editedBy, formatMessage);
 
     this.handleItemLock();
 
-    return archiveItem(listId, itemId, name, formattedName).finally(
+    return archiveItem(listId, itemId, name, editedBy).finally(
       this.handleItemUnlock
     );
   };

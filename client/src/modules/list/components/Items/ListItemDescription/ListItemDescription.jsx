@@ -8,21 +8,17 @@ import _flowRight from 'lodash/flowRight';
 import Linkify from 'react-linkify';
 import Textarea from 'react-textarea-autosize';
 import classNames from 'classnames';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import Preloader, {
   PreloaderSize,
   PreloaderTheme
 } from 'common/components/Preloader';
-import {
-  IntlPropType,
-  RouterMatchPropType,
-  UserPropType
-} from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { updateListItem } from '../model/actions';
 import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { formatName, makeAbortablePromise } from 'common/utils/helpers';
+import { makeAbortablePromise } from 'common/utils/helpers';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import './ListItemDescription.scss';
 
@@ -127,7 +123,6 @@ class ListItemDescription extends PureComponent {
     const {
       currentUser: { id: userId, name: userName },
       disabled,
-      intl: { formatMessage },
       itemId,
       match: {
         params: { id: listId }
@@ -135,7 +130,6 @@ class ListItemDescription extends PureComponent {
       name,
       updateListItem
     } = this.props;
-    const formattedName = formatName(userName, formatMessage);
 
     if (disabled) {
       return;
@@ -144,7 +138,7 @@ class ListItemDescription extends PureComponent {
     if (isDescriptionUpdated) {
       this.setState({ pending: true });
 
-      const userData = { userId, editedBy: formattedName };
+      const userData = { userId, editedBy: userName };
 
       this.pendingPromise = makeAbortablePromise(
         updateListItem(name, listId, itemId, userData, { description })
@@ -307,7 +301,6 @@ ListItemDescription.propTypes = {
   currentUser: UserPropType.isRequired,
   description: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
-  intl: IntlPropType.isRequired,
   itemId: PropTypes.string.isRequired,
   locked: PropTypes.bool,
   match: RouterMatchPropType.isRequired,
@@ -323,7 +316,6 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
-  injectIntl,
   withRouter,
   connect(
     mapStateToProps,

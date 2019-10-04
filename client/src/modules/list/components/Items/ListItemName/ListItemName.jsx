@@ -4,19 +4,13 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
-import { injectIntl } from 'react-intl';
 
 import { updateListItem } from '../model/actions';
-import {
-  IntlPropType,
-  RouterMatchPropType,
-  UserPropType
-} from 'common/constants/propTypes';
+import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
 import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import './ListItemName.scss';
-import { formatName } from 'common/utils/helpers';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -62,7 +56,6 @@ class ListItemName extends PureComponent {
     const { name: updatedName } = this.state;
     const {
       currentUser: { id: userId, name: userName },
-      intl: { formatMessage },
       itemId,
       match: {
         params: { id: listId }
@@ -74,12 +67,11 @@ class ListItemName extends PureComponent {
     } = this.props;
     const isNameUpdated = updatedName !== name;
     const canBeUpdated = updatedName.trim().length > 1;
-    const formattedName = formatName(userName, formatMessage);
 
     if (canBeUpdated && isNameUpdated) {
       this.setState({ pending: true });
 
-      const userData = { userId, editedBy: formattedName };
+      const userData = { userId, editedBy: userName };
 
       onPending();
       updateListItem(name, listId, itemId, userData, {
@@ -182,7 +174,6 @@ class ListItemName extends PureComponent {
 
 ListItemName.propTypes = {
   currentUser: UserPropType.isRequired,
-  intl: IntlPropType.isRequired,
   isMember: PropTypes.bool.isRequired,
   itemId: PropTypes.string.isRequired,
   locked: PropTypes.bool,
@@ -200,7 +191,6 @@ const mapStateToProps = state => ({
 });
 
 export default _flowRight(
-  injectIntl,
   withRouter,
   connect(
     mapStateToProps,

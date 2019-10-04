@@ -33,15 +33,14 @@ class ListArchivedItem extends PureComponent {
     const {
       currentUser: { name: userName },
       data: { _id: itemId, done, name },
-      intl: { formatMessage },
+
       match: {
         params: { id: listId }
       },
       restoreItem
     } = this.props;
-    const formattedName = formatName(userName, formatMessage);
 
-    return restoreItem(listId, itemId, name, formattedName, done);
+    return restoreItem(listId, itemId, name, userName, done);
   };
 
   showConfirmation = () => this.setState({ isConfirmationVisible: true });
