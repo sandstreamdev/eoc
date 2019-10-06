@@ -50,6 +50,6 @@ router.post('/update-password/:token?', updatePassword);
 router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/account-details/:token?', getAccountDetails);
-router.delete('/delete-account', authorize, deleteAccount);
+router.delete('', authorize, deleteAccount);
 
 module.exports = router;

@@ -12,16 +12,12 @@ import { SessionInfo } from 'common/constants/enums';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 
 class DeleteAccount extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isDeleteDialogVisible: false,
-      isErrorVisible: false,
-      isLoginDialogVisible: false,
-      pending: false
-    };
-  }
+  state = {
+    isDeleteDialogVisible: false,
+    isErrorVisible: false,
+    isLoginDialogVisible: false,
+    pending: false
+  };
 
   handleDeleteAccount = async () => {
     try {
@@ -86,8 +82,8 @@ class DeleteAccount extends Component {
           <Dialog
             confirmLabel="user.delete-account"
             hasPermissions
-            onConfirm={this.handleDeleteAccount}
             onCancel={this.hideDeleteDialog}
+            onConfirm={this.handleDeleteAccount}
             pending={pending}
             title={formatMessage({ id: 'user.delete-account' })}
           >
@@ -104,8 +100,8 @@ class DeleteAccount extends Component {
           <Dialog
             confirmLabel="user.auth.sign-in"
             hasPermissions
-            onConfirm={this.handleSignIn}
             onCancel={this.hideAllDialogs}
+            onConfirm={this.handleSignIn}
             pending={pending}
             title={formatMessage({ id: 'user.authorize-identity' })}
           >
