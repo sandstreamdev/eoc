@@ -102,7 +102,7 @@ class DeleteAccount extends Component {
         )}
         {isLoginDialogVisible && (
           <Dialog
-            confirmLabel={formatMessage({ id: 'user.auth.sign-in' })}
+            confirmLabel="user.auth.sign-in"
             hasPermissions
             onConfirm={this.handleSignIn}
             onCancel={this.hideAllDialogs}
