@@ -11,6 +11,7 @@ import Dialog from 'common/components/Dialog';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import MessageBox from 'common/components/MessageBox';
 import { MessageType } from 'common/constants/enums';
+import DeleteForm from './DeleteForm';
 
 class DeleteAccount extends Component {
   state = {
@@ -71,7 +72,7 @@ class DeleteAccount extends Component {
                 <MessageBox type={MessageType.ERROR}>
                   <FormattedMessage id="user.delete-account-warning" />
                 </MessageBox>
-                Form here
+                <DeleteForm />
               </Fragment>
             )}
           </Dialog>
