@@ -2,11 +2,13 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import FocusLock from 'react-focus-lock';
+import classNames from 'classnames';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import Preloader from 'common/components/Preloader';
 import { enumerable } from 'common/utils/helpers';
 import './Dialog.scss';
+import { MessageType } from 'common/constants/enums';
 
 export const DialogContext = enumerable('dialog')(
   'ARCHIVE',
@@ -16,6 +18,7 @@ export const DialogContext = enumerable('dialog')(
 );
 
 const Dialog = ({
+  buttonStyleType,
   cancelLabel,
   children,
   confirmLabel,
@@ -37,7 +40,9 @@ const Dialog = ({
           <div className="dialog__footer">
             {hasPermissions && onConfirm && (
               <button
-                className="dialog__button primary-button"
+                className={classNames('dialog__button primary-button', {
+                  'danger-button': buttonStyleType === MessageType.ERROR
+                })}
                 disabled={pending}
                 onClick={onConfirm}
                 type="button"
@@ -68,6 +73,7 @@ Dialog.defaultProps = {
 };
 
 Dialog.propTypes = {
+  buttonStyleType: PropTypes.string,
   cancelLabel: PropTypes.string,
   children: PropTypes.node,
   confirmLabel: PropTypes.string,

@@ -68,7 +68,7 @@
 }
 
 .danger-button {
-  background-color: transparent;
+  background-color: rgba($danger, 0.1);
   border: 2px solid $danger;
   box-sizing: border-box;
   color: $danger;
