@@ -17,6 +17,7 @@ const DeleteDialog = ({
   onConfirm,
   onEmailChange,
   onPasswordChange,
+  onSubmit,
   onVerificationTextChange,
   pending
 }) => (
@@ -41,6 +42,7 @@ const DeleteDialog = ({
         error={error}
         onEmailChange={onEmailChange}
         onPasswordChange={onPasswordChange}
+        onSubmit={onSubmit}
         onVerificationTextChange={onVerificationTextChange}
       />
     </Dialog>
@@ -56,6 +58,7 @@ DeleteDialog.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   onEmailChange: PropTypes.func.isRequired,
   onPasswordChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   onVerificationTextChange: PropTypes.func.isRequired
 };
 

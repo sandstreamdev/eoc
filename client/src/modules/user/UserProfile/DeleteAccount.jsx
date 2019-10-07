@@ -22,7 +22,9 @@ class DeleteAccount extends Component {
     verificationText: ''
   };
 
-  handleDeleteAccount = async () => {
+  handleDeleteAccount = async event => {
+    event.preventDefault();
+
     const { email, password, verificationText } = this.state;
     const {
       intl: { formatMessage }
@@ -115,6 +117,7 @@ class DeleteAccount extends Component {
             onConfirm={this.handleDeleteAccount}
             onEmailChange={this.handleEmailChange}
             onPasswordChange={this.handlePasswordChange}
+            onSubmit={this.handleDeleteAccount}
             onVerificationTextChange={this.handleVerificationText}
             pending={pending}
           />
