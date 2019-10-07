@@ -25,7 +25,7 @@ class ArchivedCohorts extends PureComponent {
       ({ areArchivedCohortsVisible }) => ({
         areArchivedCohortsVisible: !areArchivedCohortsVisible
       }),
-      () => this.handleArchivedCohortsData()
+      this.handleArchivedCohortsData
     );
 
   handleArchivedCohortsData = () => {
