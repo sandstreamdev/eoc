@@ -1,4 +1,4 @@
-import uniqueId from 'lodash/uniqueId';
+import _uniqueId from 'lodash/uniqueId';
 
 import { NotificationActionTypes } from './actionsTypes';
 import {
@@ -25,7 +25,7 @@ export const createNotificationWithTimeout = (
   timeout = NOTIFICATION_TIMEOUT
 ) => {
   const forbiddenError = err instanceof ForbiddenException;
-  const id = uniqueId('notification_');
+  const id = _uniqueId('notification_');
   const delay = forbiddenError ? REDIRECT_TIMEOUT : timeout;
   const notification = forbiddenError
     ? { notificationId: 'user.auth.session-ended' }
