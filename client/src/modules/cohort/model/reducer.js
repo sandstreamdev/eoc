@@ -112,12 +112,12 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.REMOVE_ARCHIVED_META_DATA:
       return _keyBy(_filter(state, cohort => !cohort.isArchived), '_id');
     case CohortActionTypes.RESTORE_SUCCESS: {
-      const {
-        payload,
-        payload: { _id }
-      } = action;
+      const { cohortId, data } = action.payload;
 
-      return { ...state, [_id]: { ...(state[_id] || {}), ...payload } };
+      return {
+        ...state,
+        [cohortId]: { ...(state[cohortId] || {}), ...data }
+      };
     }
     case CohortActionTypes.FETCH_DETAILS_SUCCESS: {
       const {
@@ -135,13 +135,16 @@ const cohorts = (state = {}, action) => {
 
       if (state[cohortId]) {
         const { members } = state[cohortId];
-        const cohort = {
-          ...state[cohortId],
-          members: membersReducer(members, action),
-          externalAction
-        };
 
-        return { ...state, [cohortId]: cohort };
+        if (members) {
+          const cohort = {
+            ...state[cohortId],
+            members: membersReducer(members, action),
+            externalAction
+          };
+
+          return { ...state, [cohortId]: cohort };
+        }
       }
 
       return state;

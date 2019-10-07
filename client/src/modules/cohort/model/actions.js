@@ -263,12 +263,10 @@ export const archiveCohort = (cohortId, name) => dispatch =>
     });
 
 export const restoreCohort = (cohortId, name) => dispatch =>
-  patchData(`/api/cohorts/${cohortId}/update`, {
-    isArchived: false
-  })
+  patchData(`/api/cohorts/${cohortId}/restore`)
     .then(() => getJson(`/api/cohorts/${cohortId}/data`))
-    .then(json => {
-      dispatch(restoreCohortSuccess(json));
+    .then(data => {
+      dispatch(restoreCohortSuccess({ cohortId, data }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'cohort.actions.restore-cohort',
         data: { name }
@@ -419,7 +417,7 @@ export const removeOwnerRole = (
     });
 
 export const leaveCohort = (cohortId, userId, userName) => dispatch =>
-  patchData(`/api/cohorts/${cohortId}/leave-cohort`, { userId })
+  patchData(`/api/cohorts/${cohortId}/leave-cohort`)
     .then(() => {
       dispatch(leaveCohortSuccess({ userId, cohortId }));
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {

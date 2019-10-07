@@ -10,60 +10,16 @@ const {
 } = require('../eventTypes');
 const {
   countItems,
+  isViewer,
   responseWithItem,
-  responseWithListMetaData,
-  responseWithCohort
+  responseWithListMetaData
 } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
-const { ItemStatusType, LOCK_TIMEOUT } = require('../../common/variables');
-
-const emitCohortMetaData = (cohortId, clients, io) =>
-  Cohort.findById(cohortId)
-    .select('_id isArchived createdAt name description memberIds ownerIds')
-    .lean()
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { memberIds } = doc;
-
-        memberIds.forEach(id => {
-          const memberId = id.toString();
-
-          if (clients.has(memberId)) {
-            const { socketId } = clients.get(memberId);
-
-            io.sockets
-              .to(socketId)
-              .emit(CohortActionTypes.FETCH_META_DATA_SUCCESS, {
-                [cohortId]: responseWithCohort(doc, memberId)
-              });
-          }
-        });
-      }
-    });
-
-const getListIdsByViewers = lists => {
-  const listsByViewers = {};
-
-  lists.forEach(list => {
-    const { _id, viewersIds } = list;
-    const listId = _id.toString();
-
-    viewersIds.forEach(id => {
-      const viewerId = id.toString();
-
-      if (!listsByViewers[viewerId]) {
-        listsByViewers[viewerId] = [];
-      }
-
-      if (!listsByViewers[viewerId].includes(listId)) {
-        listsByViewers[viewerId].push(listId);
-      }
-    });
-  });
-
-  return listsByViewers;
-};
+const {
+  ItemStatusType,
+  ListType,
+  LOCK_TIMEOUT
+} = require('../../common/variables');
 
 const getListsDataByViewers = lists => {
   const listsByViewers = {};
@@ -337,19 +293,86 @@ const emitRemoveListViewer = (io, event) => async data => {
   }
 };
 
+const emitRemoveCohortMember = (io, event) => async data => {
+  const { cohortId, membersCount, performer, userId } = data;
+
+  io.sockets.to(cohortChannel(cohortId)).emit(event, {
+    cohortId,
+    performer,
+    userId
+  });
+
+  io.sockets
+    .to(cohortMetaDataChannel(cohortId))
+    .emit(CohortActionTypes.REMOVE_MEMBER_SUCCESS, { cohortId, userId });
+
+  io.sockets
+    .to(cohortMetaDataChannel(cohortId))
+    .emit(CohortActionTypes.UPDATE_SUCCESS, { cohortId, membersCount });
+
+  try {
+    const socketIds = await getUserSockets(userId);
+
+    socketIds.forEach(socketId => {
+      io.sockets
+        .to(socketId)
+        .emit(AppEvents.LEAVE_ROOM, cohortMetaDataChannel(cohortId));
+    });
+
+    const listIdsUserRemained = [];
+    const listIdsUserWasRemovedFrom = [];
+    const lists = await List.find({ cohortId })
+      .lean()
+      .exec();
+
+    lists.forEach(list => {
+      const { type } = list;
+      const listId = list._id.toString();
+
+      if (isViewer(list, userId)) {
+        listIdsUserRemained.push(listId);
+      } else if (type === ListType.SHARED) {
+        listIdsUserWasRemovedFrom.push(listId);
+      }
+    });
+
+    await Promise.all(
+      listIdsUserWasRemovedFrom.map(async listId => {
+        const data = { listId, performer, userId };
+        try {
+          await emitRemoveListViewer(io, event)(data);
+        } catch {
+          // Ignore errors
+        }
+      })
+    );
+
+    listIdsUserRemained.foreach(listId => {
+      io.sockets
+        .to(listChannel(listId))
+        .emit(ListActionTypes.MEMBER_UPDATE_SUCCESS, {
+          isGuest: true,
+          listId,
+          userId
+        });
+    });
+  } catch {
+    // Ignore error
+  }
+};
+
 module.exports = {
   associateSocketWithSession,
   cohortChannel,
   cohortMetaDataChannel,
   delayedUnlock,
   descriptionLockId,
-  emitCohortMetaData,
   emitItemPerUser,
   emitItemUpdate,
+  emitRemoveCohortMember,
   emitRemoveListViewer,
   emitRoleChange,
   emitVoteChange,
-  getListIdsByViewers,
   getListsDataByViewers,
   getUserSockets,
   handleItemLocks,

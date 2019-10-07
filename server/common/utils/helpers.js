@@ -345,6 +345,7 @@ const responseWithCohortDetails = (doc, userId) => {
     responseWithCohortMembers(membersCollection, ownerIds),
     '_id'
   );
+  const membersCount = membersCollection.length;
 
   const cohortToReturn = {
     _id,
@@ -353,6 +354,7 @@ const responseWithCohortDetails = (doc, userId) => {
     isArchived,
     isMember: true,
     locks,
+    membersCount,
     members,
     name
   };

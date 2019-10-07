@@ -340,9 +340,11 @@ const removeOwnerRoleInList = io => async data => {
 const leaveList = io => async data => {
   const { listId, userId } = data;
 
+  io.sockets.to(listChannel(listId)).emit(ListActionTypes.LEAVE_SUCCESS, data);
+
   io.sockets
-    .to(listChannel(listId))
-    .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, data);
+    .to(listMetaDataChannel(listId))
+    .emit(ListActionTypes.REMOVE_MEMBER_SUCCESS, { listId, userId });
 
   try {
     const socketIds = await getUserSockets(userId);
@@ -352,15 +354,9 @@ const leaveList = io => async data => {
         .to(socketId)
         .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId))
     );
-
-    socketIds.forEach(socketId =>
-      io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, data)
-    );
   } catch {
     // Ignore error
   }
-
-  return Promise.resolve();
 };
 
 const changeListType = io => async data => {

@@ -41,7 +41,7 @@ import Breadcrumbs from 'common/components/Breadcrumbs';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { cohortsRoute, makeAbortablePromise } from 'common/utils/helpers';
-import { joinRoom, leaveRoom } from 'common/model/actions';
+import { joinRoom, leaveRoom } from 'sockets';
 import history from 'common/utils/history';
 
 import './Cohort.scss';
@@ -55,6 +55,7 @@ const initialState = {
   pendingForCohortArchivization: false,
   pendingForCohortRestoration: false,
   pendingForDetails: false,
+  pendingForLeaving: false,
   pendingForListCreation: false,
   type: ListType.LIMITED
 };
@@ -66,7 +67,6 @@ class Cohort extends PureComponent {
 
   componentDidMount() {
     const {
-      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       }
@@ -78,8 +78,7 @@ class Cohort extends PureComponent {
     const roomConfig = {
       subscribeMetaData: !isUnavailable,
       resourceId: cohortId,
-      roomPrefix: Routes.COHORT,
-      userId
+      roomPrefix: Routes.COHORT
     };
 
     joinRoom(roomConfig);
@@ -107,8 +106,7 @@ class Cohort extends PureComponent {
     const roomConfig = {
       subscribeMetaData: !isUnavailable,
       resourceId: previousCohortId,
-      roomPrefix: Routes.COHORT,
-      userId
+      roomPrefix: Routes.COHORT
     };
 
     if (hasCohortChanged) {
@@ -141,7 +139,6 @@ class Cohort extends PureComponent {
 
   componentWillUnmount() {
     const {
-      currentUser: { id: userId },
       match: {
         params: { id: cohortId }
       }
@@ -150,8 +147,7 @@ class Cohort extends PureComponent {
     const roomConfig = {
       subscribeMetaData: !isUnavailable,
       resourceId: cohortId,
-      roomPrefix: Routes.COHORT,
-      userId
+      roomPrefix: Routes.COHORT
     };
 
     leaveRoom(roomConfig);
@@ -301,7 +297,11 @@ class Cohort extends PureComponent {
       }
     } = this.props;
 
-    return leaveCohort(id, currentUserId, name);
+    this.setState({ pendingForLeaving: true });
+
+    return leaveCohort(id, currentUserId, name).catch(() =>
+      this.setState({ pendingForLeaving: false })
+    );
   };
 
   renderBreadcrumbs = () => {
@@ -366,10 +366,14 @@ class Cohort extends PureComponent {
       pendingForCohortArchivization,
       pendingForCohortRestoration,
       pendingForDetails,
+      pendingForLeaving,
       pendingForListCreation
     } = this.state;
     const isDialogForRemovedListVisible =
-      isUnavailable && externalAction && !pendingForCohortArchivization;
+      isUnavailable &&
+      externalAction &&
+      !pendingForCohortArchivization &&
+      !pendingForLeaving;
     const archivedCohortView = (isArchived && !isUnavailable) || isDeleted;
     const dialogContextMessage = formatMessage({
       id: 'cohort.label'

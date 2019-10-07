@@ -1685,7 +1685,7 @@ const deleteItem = async (req, resp) => {
 
 const leaveList = (req, resp) => {
   const { id: listId } = req.params;
-  const { _id: userId } = req.user;
+  const { _id: userId, displayName } = req.user;
   const sanitizedListId = sanitize(listId);
 
   List.findOne({
@@ -1729,7 +1729,7 @@ const leaveList = (req, resp) => {
       return list.save();
     })
     .then(() => {
-      const data = { listId, userId };
+      const data = { listId, performer: displayName, userId };
       const socketInstance = io.getInstance();
 
       return socketActions.leaveList(socketInstance)(data);

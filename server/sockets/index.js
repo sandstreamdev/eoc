@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const { updateItemState, updateListHeaderState } = require('./list');
 const { updateCohortHeaderStatus } = require('./cohort');
 const { SOCKET_TIMEOUT } = require('../common/variables');
-const { Routes } = require('../common/variables');
 const { associateSocketWithSession, joinMetaDataRooms } = require('./helpers');
 const { AppEvents } = require('./eventTypes');
 
@@ -18,18 +17,9 @@ const sessionStore = new MongoStore({
 });
 
 let socketInstance;
-const cohortViewClients = new Map();
-const allCohortsViewClients = new Map();
-const dashboardViewClients = new Map();
-const listViewClients = new Map();
 const cohortClientLocks = new Map();
 const itemClientLocks = new Map();
 const listClientLocks = new Map();
-
-const getCohortViewClients = () => cohortViewClients;
-const getAllCohortsViewClients = () => allCohortsViewClients;
-const getDashboardViewClients = () => dashboardViewClients;
-const getListViewClients = () => listViewClients;
 
 const getInstance = () => {
   if (!socketInstance) {
@@ -53,90 +43,9 @@ const socketListeners = socketInstance => {
     await associateSocketWithSession(socket);
     await joinMetaDataRooms(socket);
 
-    socket.on(AppEvents.JOIN_ROOM, emittedData => {
-      /**
-       * This check is for the old functionality to work.
-       * After refactoring this handler will be simplified to:
-       * socket.on('joinRoom', room => socket.join(room));
-       * https://jira2.sanddev.com/browse/EOC-469
-       */
-      if (typeof emittedData === 'object') {
-        const { data, room } = emittedData;
-        const { userId, viewId, viewName } = data;
+    socket.on(AppEvents.JOIN_ROOM, room => socket.join(room));
 
-        switch (viewName) {
-          case Routes.LIST: {
-            socket.join(room);
-
-            return listViewClients.set(userId, {
-              socketId: socket.id,
-              viewId
-            });
-          }
-          case Routes.COHORT: {
-            socket.join(room);
-
-            return cohortViewClients.set(userId, {
-              socketId: socket.id,
-              viewId
-            });
-          }
-          default:
-            return;
-        }
-      }
-      socket.join(emittedData);
-    });
-
-    socket.on(AppEvents.LEAVE_ROOM, emittedData => {
-      if (typeof emittedData === 'object') {
-        const { data, room } = emittedData;
-        const { userId, viewName } = data;
-
-        switch (viewName) {
-          case Routes.LIST: {
-            socket.leave(room);
-
-            return listViewClients.delete(userId);
-          }
-          case Routes.COHORT: {
-            socket.leave(room);
-
-            return cohortViewClients.delete(userId);
-          }
-          default:
-            return;
-        }
-      }
-
-      socket.leave(emittedData);
-    });
-
-    socket.on('enterView', ({ userId, view }) => {
-      switch (view) {
-        case Routes.COHORTS:
-          allCohortsViewClients.set(userId, { socketId: socket.id });
-          break;
-        case Routes.DASHBOARD:
-          dashboardViewClients.set(userId, { socketId: socket.id });
-          break;
-        default:
-          break;
-      }
-    });
-
-    socket.on('leaveView', ({ userId, view }) => {
-      switch (view) {
-        case Routes.DASHBOARD:
-          dashboardViewClients.delete(userId);
-          break;
-        case Routes.COHORTS:
-          allCohortsViewClients.delete(userId);
-          break;
-        default:
-          break;
-      }
-    });
+    socket.on(AppEvents.LEAVE_ROOM, room => socket.leave(room));
 
     socket.on('error', () => {
       /* Ignore error.
@@ -175,10 +84,6 @@ const initSocket = server => {
 };
 
 module.exports = {
-  getAllCohortsViewClients,
-  getCohortViewClients,
-  getDashboardViewClients,
-  getListViewClients,
   getInstance,
   init: initSocket
 };
