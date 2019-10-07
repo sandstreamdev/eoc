@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import _debounce from 'lodash/debounce';
-import _trimStart from 'lodash/trimStart';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import { CheckIcon, ErrorIcon } from 'assets/images/icons';
@@ -83,7 +82,7 @@ class AuthInput extends PureComponent {
   handleInputChange = event => {
     const { value } = event.target;
 
-    this.setState({ value: _trimStart(value) }, this.debouncedChange);
+    this.setState({ value: value.trimStart() }, this.debouncedChange);
   };
 
   renderFeedback = () => {
