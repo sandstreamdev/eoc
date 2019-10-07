@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import ItemsContainer from 'modules/list/components/ItemsContainer';
 import { getArchivedItems } from 'modules/list/model/selectors';
@@ -113,7 +113,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

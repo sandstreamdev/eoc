@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import { ColorType, Routes, ViewType } from 'common/constants/enums';
 import CollectionView from 'common/components/CollectionView';
@@ -97,7 +97,7 @@ const mapStateToProps = state => ({
   archivedCohorts: getArchivedCohorts(state)
 });
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   connect(
     mapStateToProps,

@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import { injectIntl } from 'react-intl';
 
 import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
@@ -258,7 +258,7 @@ MembersBox.propTypes = {
   onListLeave: PropTypes.func
 };
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

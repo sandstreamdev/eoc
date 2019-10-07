@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import { updateListItem } from '../model/actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
@@ -190,7 +190,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(
+export default pipe(
   withRouter,
   connect(
     mapStateToProps,

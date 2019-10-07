@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _trim from 'lodash/trim';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import _isEmpty from 'lodash/isEmpty';
 
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
@@ -227,7 +227,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

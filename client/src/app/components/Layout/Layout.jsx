@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import _isEmpty from 'lodash/isEmpty';
 
 import List from 'modules/list';
@@ -224,7 +224,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

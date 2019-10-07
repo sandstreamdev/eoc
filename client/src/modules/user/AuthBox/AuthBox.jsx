@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
@@ -217,7 +217,7 @@ AuthBox.propTypes = {
   loginDemoUser: PropTypes.func.isRequired
 };
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   connect(
     null,

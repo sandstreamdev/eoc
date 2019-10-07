@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import { BellIcon } from 'assets/images/icons';
 import UserBar from './components/UserBar';
@@ -51,4 +51,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(injectIntl, connect(mapStateToProps))(Toolbar);
+export default pipe(injectIntl, connect(mapStateToProps))(Toolbar);

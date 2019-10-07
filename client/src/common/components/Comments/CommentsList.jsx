@@ -5,7 +5,7 @@ import _isEmpty from 'lodash/isEmpty';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import Comment from 'common/components/Comments/Comment';
 import MessageBox from 'common/components/MessageBox';
@@ -133,7 +133,7 @@ CommentsList.propTypes = {
   fetchComments: PropTypes.func.isRequired
 };
 
-export default _flowRight(
+export default pipe(
   withRouter,
   connect(
     null,

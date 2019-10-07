@@ -13,9 +13,8 @@ export const getCohorts = state =>
   );
 
 export const getCohortDetails = (state, cohortId) => {
-  const cohort = _head(
-    _filter(getCohorts(state), (_, key) => key === cohortId)
-  );
+  const cohorts = getCohorts(state);
+  const cohort = cohorts[cohortId];
 
   if (cohort) {
     const {

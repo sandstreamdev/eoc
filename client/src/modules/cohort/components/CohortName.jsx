@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import validator from 'validator';
 import _trim from 'lodash/trim';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import { injectIntl } from 'react-intl';
 
 import { CohortIcon } from 'assets/images/icons';
@@ -243,7 +243,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

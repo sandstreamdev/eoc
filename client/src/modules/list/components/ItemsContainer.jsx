@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import _isEqual from 'lodash/isEqual';
 
 import ItemsList from 'modules/list/components/Items';
@@ -131,4 +131,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(injectIntl, connect(mapStateToProps))(ItemsContainer);
+export default pipe(injectIntl, connect(mapStateToProps))(ItemsContainer);

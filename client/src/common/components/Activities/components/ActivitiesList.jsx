@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _map from 'lodash/map';
 import _isEmpty from 'lodash/isEmpty';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Activity from './Activity';
@@ -118,7 +118,7 @@ const mapStateToProps = state => ({
   nextPage: getNextPage(state)
 });
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   connect(
     mapStateToProps,

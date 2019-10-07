@@ -1,5 +1,5 @@
+const difference = require('@sandstreamdev/array/difference');
 const sanitize = require('mongo-sanitize');
-const _difference = require('lodash/difference');
 const validator = require('validator');
 
 const List = require('../models/list.model');
@@ -1560,7 +1560,7 @@ const changeType = async (req, resp) => {
         : [...viewersIds, ...newViewers];
     const removedViewers =
       type === ListType.LIMITED
-        ? _difference(viewersIds, updatedViewersIds)
+        ? difference(viewersIds, updatedViewersIds)
         : null;
 
     const updatedList = await List.findOneAndUpdate(

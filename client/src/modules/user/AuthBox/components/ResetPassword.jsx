@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import { resetPassword } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
@@ -126,7 +126,7 @@ ResetPassword.propTypes = {
   resetPassword: PropTypes.func
 };
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

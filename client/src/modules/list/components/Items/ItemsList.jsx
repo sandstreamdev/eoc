@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import ListItem from 'modules/list/components/Items/ListItem';
 import ListArchivedItem from 'modules/list/components/Items/ListArchivedItem';
@@ -202,7 +202,7 @@ ItemsList.propTypes = {
   updateLimit: PropTypes.func.isRequired
 };
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

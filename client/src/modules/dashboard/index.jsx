@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import { ListIcon } from 'assets/images/icons';
 import {
@@ -194,7 +194,7 @@ const mapStateToProps = state => ({
   privateLists: getPrivateLists(state)
 });
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   connect(
     mapStateToProps,

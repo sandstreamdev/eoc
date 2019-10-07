@@ -6,7 +6,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import validator from 'validator';
 
 import { ListIcon } from 'assets/images/icons';
@@ -545,7 +545,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

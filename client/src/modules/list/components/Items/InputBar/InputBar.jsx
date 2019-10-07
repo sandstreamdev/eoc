@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import { getCurrentUser } from 'modules/user/model/selectors';
 import {
@@ -224,7 +224,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

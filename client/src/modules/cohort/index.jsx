@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 
 import {
   getCohortActiveLists,
@@ -581,7 +581,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

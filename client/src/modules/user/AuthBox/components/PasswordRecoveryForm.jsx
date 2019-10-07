@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import _debounce from 'lodash/debounce';
 import validator from 'validator';
 
@@ -240,4 +240,4 @@ PasswordRecoveryForm.propTypes = {
   match: RouterMatchPropType.isRequired
 };
 
-export default _flowRight(injectIntl, withRouter)(PasswordRecoveryForm);
+export default pipe(injectIntl, withRouter)(PasswordRecoveryForm);

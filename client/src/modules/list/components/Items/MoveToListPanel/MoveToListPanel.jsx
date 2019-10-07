@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import Filter from 'common/components/Filter';
@@ -204,7 +204,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default _flowRight(
+export default pipe(
   injectIntl,
   withRouter,
   connect(

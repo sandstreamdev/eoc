@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _trim from 'lodash/trim';
 import _isEqual from 'lodash/isEqual';
-import _flowRight from 'lodash/flowRight';
+import { pipe } from '@sandstreamdev/std/function';
 import Linkify from 'react-linkify';
 import Textarea from 'react-textarea-autosize';
 import classNames from 'classnames';
@@ -315,7 +315,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default _flowRight(
+export default pipe(
   withRouter,
   connect(
     mapStateToProps,
