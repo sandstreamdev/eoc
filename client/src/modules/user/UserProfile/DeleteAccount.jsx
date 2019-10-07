@@ -8,6 +8,7 @@ import { IntlPropType } from 'common/constants/propTypes';
 import { deleteAccount, logoutCurrentUser } from '../model/actions';
 import './DeleteAccount.scss';
 import DeleteDialog from './DeleteDialog';
+import Dialog from 'common/components/Dialog';
 
 class DeleteAccount extends Component {
   state = {
@@ -86,6 +87,12 @@ class DeleteAccount extends Component {
 
   hideDeleteDialog = () => this.setState({ isDeleteDialogVisible: false });
 
+  onCancel = () => {
+    const { logoutCurrentUser } = this.props;
+
+    logoutCurrentUser();
+  };
+
   render() {
     const {
       intl: { formatMessage }
@@ -110,7 +117,15 @@ class DeleteAccount extends Component {
             pending={pending}
           />
         )}
-        {isAccountDeletedDialogVisible && <span> Account is deleted.</span>}
+        {isAccountDeletedDialogVisible && (
+          <Dialog
+            cancelLabel="common.ok"
+            onCancel={this.onCancel}
+            title={formatMessage({ id: 'user.account-deleted' })}
+          >
+            <FormattedMessage id="user.account-deleted-message" />
+          </Dialog>
+        )}
         <section className="delete-account">
           <h2 className="delete-account__heading">
             <FormattedMessage id="user.delete-account" />
