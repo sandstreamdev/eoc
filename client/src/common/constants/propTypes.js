@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import _values from 'lodash/values';
 
 import { MessageType, SortOrderType, StatusType } from './enums';
 
@@ -18,9 +17,11 @@ export const UserPropType = PropTypes.shape({
   name: PropTypes.string.isRequired
 });
 
-export const MessagePropType = PropTypes.oneOf(_values(MessageType));
-export const SortOrderPropType = PropTypes.oneOf(_values(SortOrderType));
-export const StatusPropType = PropTypes.oneOf(_values(StatusType));
+const oneOfValues = xs => PropTypes.oneOf(Object.values(xs));
+
+export const MessagePropType = oneOfValues(MessageType);
+export const SortOrderPropType = oneOfValues(SortOrderType);
+export const StatusPropType = oneOfValues(StatusType);
 export const IntlPropType = PropTypes.objectOf(
   PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object])
 );
