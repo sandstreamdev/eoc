@@ -116,6 +116,9 @@ class Cohorts extends Component {
               color={ColorType.BROWN}
               icon={<CohortIcon />}
               items={cohorts}
+              label={formatMessage({
+                id: 'cohort.label'
+              })}
               name="Cohorts"
               onAddNew={this.handleDialogVisibility}
               pending={pendingForCohorts}

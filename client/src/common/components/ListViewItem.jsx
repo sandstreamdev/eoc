@@ -49,7 +49,13 @@ class ListViewItem extends PureComponent {
             'list-view-item__lock--gray': color === ColorType.GRAY
           })}
         >
-          {isLimitedList && <LockIcon />}
+          {isLimitedList && (
+            <LockIcon
+              label={formatMessage({
+                id: 'list.type.limited'
+              })}
+            />
+          )}
         </div>
         <div className="list-view-item__details">
           <header

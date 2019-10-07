@@ -33,12 +33,12 @@ class CollectionView extends PureComponent {
   };
 
   renderAddNew = () => {
-    const { onAddNew } = this.props;
+    const { label, onAddNew } = this.props;
 
     return (
       <li className="collection__item">
         <button className="collection__button" onClick={onAddNew} type="button">
-          <CardPlus />
+          <CardPlus label={label} />
         </button>
       </li>
     );
@@ -131,6 +131,7 @@ CollectionView.propTypes = {
   }),
   icon: PropTypes.node.isRequired,
   items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  label: PropTypes.string,
   name: PropTypes.string.isRequired,
   pending: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,

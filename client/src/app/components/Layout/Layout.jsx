@@ -162,8 +162,8 @@ export class Layout extends PureComponent {
               title={formatMessage({
                 id:
                   viewType === ViewType.LIST
-                    ? 'app.layout.list-view'
-                    : 'app.layout.tile-view'
+                    ? 'app.layout.switch-to-tile-view'
+                    : 'app.layout.switch-to-list-view'
               })}
             />
           )}
