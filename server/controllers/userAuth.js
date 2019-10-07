@@ -445,6 +445,7 @@ const deleteAccount = async (req, resp) => {
   // } catch (error) {
   //   //
   // }
+  return resp.send();
 };
 
 module.exports = {

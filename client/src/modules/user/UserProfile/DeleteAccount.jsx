@@ -35,16 +35,9 @@ class DeleteAccount extends Component {
 
     try {
       if (verificationText === verificationString) {
-        /**
-         * const result variable is faked only for
-         * front end flow test purposes, after
-         * the task https://jira2.sanddev.com/secure/RapidBoard.jspa?rapidView=1&view=planning&selectedIssue=EOC-521&issueLimit=100
-         * will be completed, we will await deleteAccount(email, password)
-         * function here
-         */
         const { email, password } = this.state;
         const trimmedEmail = _trim(email);
-        const result = true; // await deleteAccount(trimmedEmail, password);
+        const result = await deleteAccount(trimmedEmail, password);
 
         this.setState({ isErrorVisible: false });
 
