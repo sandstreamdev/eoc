@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import _map from 'lodash/map';
-import _isEmpty from 'lodash/isEmpty';
+import { none } from '@sandstreamdev/std/object';
 import { connect } from 'react-redux';
 
 import TilesViewItem from 'common/components/TilesViewItem';
@@ -115,7 +115,7 @@ class CollectionView extends PureComponent {
               : this.renderAsTiles()}
           </ul>
           {pending && <Preloader />}
-          {_isEmpty(items) && !pending && (
+          {none(items) && !pending && (
             <MessageBox type={MessageType.INFO}>{placeholder}</MessageBox>
           )}
         </div>

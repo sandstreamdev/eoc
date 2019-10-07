@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _trim from 'lodash/trim';
 import { pipe } from '@sandstreamdev/std/function';
-import _isEmpty from 'lodash/isEmpty';
 
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
 import { DefaultLocks, KeyCodes } from 'common/constants/enums';
@@ -112,9 +111,7 @@ class CohortDescription extends PureComponent {
       return;
     }
 
-    const updatedDescription = _isEmpty(descriptionToUpdate)
-      ? ''
-      : descriptionToUpdate;
+    const updatedDescription = descriptionToUpdate || '';
 
     this.setState({ pendingForDescription: true });
     this.handleDescriptionLock();

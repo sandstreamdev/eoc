@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _map from 'lodash/map';
-import _isEmpty from 'lodash/isEmpty';
+import { none } from '@sandstreamdev/std/object';
 import { pipe } from '@sandstreamdev/std/function';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
@@ -69,7 +69,7 @@ class ActivitiesList extends PureComponent {
           })}
         </h2>
         <div className="activities-list__content">
-          {_isEmpty(activities) ? (
+          {none(activities) ? (
             <MessageBox type={MessageType.INFO}>
               <FormattedMessage id="activity.no-activities" />
             </MessageBox>

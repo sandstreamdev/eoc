@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import _isEmpty from 'lodash/isEmpty';
+import { any } from '@sandstreamdev/std/object';
 import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
@@ -49,7 +49,7 @@ class NewComment extends PureComponent {
     const { comment } = this.state;
     const commentToSave = _trim(comment);
 
-    if (!_isEmpty(commentToSave)) {
+    if (any(commentToSave)) {
       this.setState({ pending: true });
 
       this.pendingPromise = makeAbortablePromise(onAddComment(commentToSave));

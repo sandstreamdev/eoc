@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 
 import Preloader, {
@@ -54,7 +53,7 @@ class MembersForm extends PureComponent {
     const { onAddNew } = this.props;
     const { inputValue } = this.state;
 
-    if (!_isEmpty(_trim(inputValue))) {
+    if (inputValue.trim()) {
       onAddNew(inputValue);
     }
   };
@@ -72,7 +71,7 @@ class MembersForm extends PureComponent {
       intl: { formatMessage },
       pending
     } = this.props;
-    const isEmpty = _isEmpty(_trim(inputValue));
+    const isEmpty = inputValue.trim() === '';
     const isButtonDisabled = disabled || pending || isEmpty;
 
     return (

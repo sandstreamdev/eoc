@@ -2,7 +2,6 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -247,9 +246,7 @@ class ListHeader extends PureComponent {
       return;
     }
 
-    const updatedDescription = _isEmpty(descriptionToUpdate)
-      ? ''
-      : descriptionToUpdate;
+    const updatedDescription = descriptionToUpdate || '';
 
     this.setState({ pendingForDescription: true });
 

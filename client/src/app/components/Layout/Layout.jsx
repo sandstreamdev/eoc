@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { pipe } from '@sandstreamdev/std/function';
-import _isEmpty from 'lodash/isEmpty';
+import { none } from '@sandstreamdev/std/object';
 
 import List from 'modules/list';
 import Dashboard from 'modules/dashboard';
@@ -54,7 +54,7 @@ export class Layout extends PureComponent {
       location: { pathname }
     } = this.props;
 
-    if (_isEmpty(currentUser)) {
+    if (none(currentUser)) {
       this.setState({ pending: true });
       getLoggedUser()
         .then(() => {

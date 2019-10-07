@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _map from 'lodash/map';
-import _isEmpty from 'lodash/isEmpty';
+import { any } from '@sandstreamdev/std/object';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -104,7 +104,7 @@ class CommentsList extends PureComponent {
           />
         )}
         <div className="comments__container">
-          {!_isEmpty(comments) ? (
+          {any(comments) ? (
             <ul className="comments__list">
               {_map(comments, comment => (
                 <Comment comment={comment} key={comment._id} />
