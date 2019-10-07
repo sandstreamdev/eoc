@@ -15,4 +15,16 @@
   &__input {
     margin-top: four-by(1);
   }
+
+  &--error {
+    margin-top: four-by(2);
+
+    .delete-form__label {
+      color: $danger;
+    }
+
+    .delete-form__input {
+      border-color: $danger;
+    }
+  }
 }

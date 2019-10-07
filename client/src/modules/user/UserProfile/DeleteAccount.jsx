@@ -5,41 +5,81 @@ import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
 
 import { IntlPropType } from 'common/constants/propTypes';
-import './DeleteAccount.scss';
 import { deleteAccount, logoutCurrentUser } from '../model/actions';
-import Dialog from 'common/components/Dialog';
-import ErrorMessage from 'common/components/Forms/ErrorMessage';
-import MessageBox from 'common/components/MessageBox';
-import { MessageType } from 'common/constants/enums';
-import DeleteForm from './DeleteForm';
+import './DeleteAccount.scss';
+import DeleteDialog from './DeleteDialog';
 
 class DeleteAccount extends Component {
   state = {
+    email: '',
     isDeleteDialogVisible: false,
     isErrorVisible: false,
-    pending: false
+    password: '',
+    pending: false,
+    verificationText: ''
   };
 
   handleDeleteAccount = async () => {
+    const { email, password, verificationText } = this.state;
+    const {
+      intl: { formatMessage }
+    } = this.props;
+    const verificationString = formatMessage({ id: 'delete-form.verify-text' });
+
+    this.setState({ pending: true });
+
     try {
-      /**
-       * Result variable is faked only for
-       * front end flow test purposes, after
-       * the task https://jira2.sanddev.com/secure/RapidBoard.jspa?rapidView=1&view=planning&selectedIssue=EOC-521&issueLimit=100
-       * will be completed, we will await deleteAccount
-       * function here
-       */
+      if (verificationText === verificationString) {
+        /**
+         * const result variable is faked only for
+         * front end flow test purposes, after
+         * the task https://jira2.sanddev.com/secure/RapidBoard.jspa?rapidView=1&view=planning&selectedIssue=EOC-521&issueLimit=100
+         * will be completed, we will await deleteAccount(email, password)
+         * function here
+         */
+        this.setState({ isErrorVisible: false });
 
-      this.setState({ pending: true });
+        const result = true; // await deleteAccount(email, password);
 
-      const result = await deleteAccount();
-
-      if (result) {
+        if (result) {
+          this.setState({
+            isAccountDeletedDialogVisible: true,
+            isDeleteDialogVisible: false,
+            pending: false
+          });
+        }
+      } else {
         this.setState({ pending: false });
+
+        throw new Error();
       }
     } catch {
-      this.setState({ isErrorVisible: true });
+      this.setState({ isErrorVisible: true, pending: false });
     }
+  };
+
+  handleEmailChange = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState({ email: value });
+  };
+
+  handlePasswordChange = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState({ password: value });
+  };
+
+  handleVerificationText = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState({ verificationText: value });
   };
 
   showDeleteDialog = () => this.setState({ isDeleteDialogVisible: true });
@@ -50,33 +90,27 @@ class DeleteAccount extends Component {
     const {
       intl: { formatMessage }
     } = this.props;
-    const { isDeleteDialogVisible, isErrorVisible, pending } = this.state;
+    const {
+      isAccountDeletedDialogVisible,
+      isDeleteDialogVisible,
+      isErrorVisible,
+      pending
+    } = this.state;
 
     return (
       <Fragment>
         {isDeleteDialogVisible && (
-          <Dialog
-            confirmLabel="user.delete-account"
-            hasPermissions
+          <DeleteDialog
+            error={isErrorVisible}
             onCancel={this.hideDeleteDialog}
             onConfirm={this.handleDeleteAccount}
+            onEmailChange={this.handleEmailChange}
+            onPasswordChange={this.handlePasswordChange}
+            onVerificationTextChange={this.handleVerificationText}
             pending={pending}
-            title={formatMessage({ id: 'user.delete-account-question' })}
-          >
-            {isErrorVisible ? (
-              <ErrorMessage
-                message={formatMessage({ id: 'user.delete-account-error' })}
-              />
-            ) : (
-              <Fragment>
-                <MessageBox type={MessageType.ERROR}>
-                  <FormattedMessage id="user.delete-account-warning" />
-                </MessageBox>
-                <DeleteForm />
-              </Fragment>
-            )}
-          </Dialog>
+          />
         )}
+        {isAccountDeletedDialogVisible && <span> Account is deleted.</span>}
         <section className="delete-account">
           <h2 className="delete-account__heading">
             <FormattedMessage id="user.delete-account" />
