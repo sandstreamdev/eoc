@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
+import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import { deleteAccount, logoutCurrentUser } from '../model/actions';
@@ -23,15 +24,14 @@ class DeleteAccount extends Component {
   };
 
   handleDeleteAccount = async event => {
+    this.setState({ pending: true });
     event.preventDefault();
 
-    const { email, password, verificationText } = this.state;
     const {
       intl: { formatMessage }
     } = this.props;
+    const { verificationText } = this.state;
     const verificationString = formatMessage({ id: 'delete-form.verify-text' });
-
-    this.setState({ pending: true });
 
     try {
       if (verificationText === verificationString) {
@@ -42,9 +42,11 @@ class DeleteAccount extends Component {
          * will be completed, we will await deleteAccount(email, password)
          * function here
          */
-        this.setState({ isErrorVisible: false });
+        const { email, password } = this.state;
+        const trimmedEmail = _trim(email);
+        const result = true; // await deleteAccount(trimmedEmail, password);
 
-        const result = true; // await deleteAccount(email, password);
+        this.setState({ isErrorVisible: false });
 
         if (result) {
           this.setState({
@@ -53,11 +55,9 @@ class DeleteAccount extends Component {
             pending: false
           });
         }
-      } else {
-        this.setState({ pending: false });
-
-        throw new Error();
       }
+
+      throw new Error();
     } catch {
       this.setState({ isErrorVisible: true, pending: false });
     }
@@ -91,7 +91,7 @@ class DeleteAccount extends Component {
 
   hideDeleteDialog = () => this.setState({ isDeleteDialogVisible: false });
 
-  onCancel = () => {
+  handleCancel = () => {
     const { logoutCurrentUser } = this.props;
 
     logoutCurrentUser();
@@ -125,7 +125,7 @@ class DeleteAccount extends Component {
         {isAccountDeletedDialogVisible && (
           <Dialog
             cancelLabel="common.ok"
-            onCancel={this.onCancel}
+            onCancel={this.handleCancel}
             title={formatMessage({ id: 'user.account-deleted' })}
           >
             <AlertBox type={MessageType.SUCCESS}>
