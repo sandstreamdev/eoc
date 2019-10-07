@@ -365,6 +365,7 @@ const voteForItem = async (req, resp) => {
     const data = {
       itemId,
       listId,
+      performerId: userId,
       sessionId: sessionID,
       viewersIds
     };
@@ -418,6 +419,7 @@ const clearVote = async (req, resp) => {
     const data = {
       itemId,
       listId,
+      performerId: userId,
       sessionId: sessionID,
       viewersIds
     };
