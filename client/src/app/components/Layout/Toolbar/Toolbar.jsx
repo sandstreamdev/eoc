@@ -51,4 +51,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default pipe(injectIntl, connect(mapStateToProps))(Toolbar);
+export default pipe(
+  injectIntl,
+  connect(mapStateToProps)
+)(Toolbar);

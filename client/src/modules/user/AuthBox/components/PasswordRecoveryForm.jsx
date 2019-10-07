@@ -240,4 +240,7 @@ PasswordRecoveryForm.propTypes = {
   match: RouterMatchPropType.isRequired
 };
 
-export default pipe(injectIntl, withRouter)(PasswordRecoveryForm);
+export default pipe(
+  injectIntl,
+  withRouter
+)(PasswordRecoveryForm);

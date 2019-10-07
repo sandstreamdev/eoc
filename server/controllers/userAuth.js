@@ -3,7 +3,6 @@ const sanitize = require('mongo-sanitize');
 const validator = require('validator');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const _trim = require('lodash/trim');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const ValidationException = require('../common/exceptions/ValidationException');

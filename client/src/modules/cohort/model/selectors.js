@@ -1,5 +1,4 @@
 import _filter from 'lodash/filter';
-import _head from 'lodash/head';
 import _keyBy from 'lodash/keyBy';
 import { createSelector } from 'reselect';
 import _orderBy from 'lodash/orderBy';
