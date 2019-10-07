@@ -1,6 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 import { injectIntl } from 'react-intl';
 
 import { RegularStarIcon, SolidStarIcon, LockIcon } from 'assets/images/icons';

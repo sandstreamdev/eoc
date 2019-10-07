@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { pipe } from '@sandstreamdev/std/function';
 import validator from 'validator';

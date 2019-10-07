@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 import { injectIntl } from 'react-intl';
 
 import { ChevronRight } from 'assets/images/icons';

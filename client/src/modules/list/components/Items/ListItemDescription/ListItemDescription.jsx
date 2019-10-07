@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { pipe } from '@sandstreamdev/std/function';
 import Linkify from 'react-linkify';
 import Textarea from 'react-textarea-autosize';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 import { FormattedMessage } from 'react-intl';
 
 import Preloader, {

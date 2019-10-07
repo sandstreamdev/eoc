@@ -1,6 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { pipe } from '@sandstreamdev/std/function';

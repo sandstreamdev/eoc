@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 
 import Avatar from 'common/components/Avatar';
 import { getCurrentUser } from 'modules/user/model/selectors';

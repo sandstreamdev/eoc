@@ -1,7 +1,7 @@
 /* eslint-disable react/button-has-type */
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 import _debounce from 'lodash/debounce';
 
 import { IntlPropType } from 'common/constants/propTypes';

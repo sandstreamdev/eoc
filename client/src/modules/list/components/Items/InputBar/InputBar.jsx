@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import classNames from 'classnames';
+import { classNames } from '@sandstreamdev/std/web';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { pipe } from '@sandstreamdev/std/function';
 

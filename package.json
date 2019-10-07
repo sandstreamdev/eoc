@@ -28,11 +28,11 @@
   "license": "MIT",
   "repository": "github:sandstreamdev/eoc",
   "dependencies": {
+    "@sandstreamdev/std": "github:sandstreamdev/std#19aac261b79c14ee68abb1bc7b813fbf10dddb03",
     "@sendgrid/mail": "6.4.0",
     "babel-polyfill": "6.26.0",
     "bcryptjs": "2.4.3",
     "body-parser": "1.19.0",
-    "classnames": "2.2.6",
     "connect-mongo": "2.0.3",
     "cookie-parser": "1.4.4",
     "cors": "2.8.5",
