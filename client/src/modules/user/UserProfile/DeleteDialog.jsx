@@ -5,9 +5,9 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import Dialog from 'common/components/Dialog';
 import { IntlPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
-import MessageBox from 'common/components/MessageBox';
-import { MessageType } from 'common/constants/enums';
 import DeleteForm from './DeleteForm';
+import './DeleteDialog.scss';
+import { InfoIcon } from 'assets/images/icons';
 
 const DeleteDialog = ({
   error,
@@ -27,9 +27,10 @@ const DeleteDialog = ({
     pending={pending}
     title={formatMessage({ id: 'user.delete-account-question' })}
   >
-    <MessageBox type={MessageType.ERROR}>
+    <div className="delete-dialog__warning">
+      <InfoIcon />
       <FormattedMessage id="user.delete-account-warning" />
-    </MessageBox>
+    </div>
     {error && (
       <ErrorMessage
         message={formatMessage({ id: 'user.delete-account-error' })}
