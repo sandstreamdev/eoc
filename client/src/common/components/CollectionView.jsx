@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import _map from 'lodash/map';
 import { none } from '@sandstreamdev/std/object';
 import { connect } from 'react-redux';
 
@@ -47,7 +46,7 @@ class CollectionView extends PureComponent {
   renderAsList = () => {
     const { color, items, route } = this.props;
 
-    return _map(items, item => {
+    return items.map(item => {
       const { _id, isFavourite, name } = item;
 
       return (
@@ -67,7 +66,7 @@ class CollectionView extends PureComponent {
   renderAsTiles = () => {
     const { color, items, route } = this.props;
 
-    return _map(items, item => {
+    return items.map(item => {
       const { _id, isFavourite } = item;
 
       return (

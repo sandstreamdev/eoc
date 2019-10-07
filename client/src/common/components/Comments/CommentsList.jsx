@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import _map from 'lodash/map';
-import { any } from '@sandstreamdev/std/object';
+import { any } from '@sandstreamdev/std/array';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -106,7 +105,7 @@ class CommentsList extends PureComponent {
         <div className="comments__container">
           {any(comments) ? (
             <ul className="comments__list">
-              {_map(comments, comment => (
+              {comments.map(comment => (
                 <Comment comment={comment} key={comment._id} />
               ))}
             </ul>

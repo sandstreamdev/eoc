@@ -3,7 +3,6 @@ import _filter from 'lodash/filter';
 import _keyBy from 'lodash/keyBy';
 import { createSelector } from 'reselect';
 import _sortBy from 'lodash/sortBy';
-import _map from 'lodash/map';
 import _orderBy from 'lodash/orderBy';
 
 export const getList = (state, listId) => _pick(state.lists, listId)[listId];

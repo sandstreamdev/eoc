@@ -1,6 +1,6 @@
+const any = require('@sandstreamdev/std/object/any');
 const sanitize = require('mongo-sanitize');
 const validator = require('validator');
-const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
@@ -49,7 +49,7 @@ const signUp = (req, resp, next) => {
     errors.isConfirmPasswordError = true;
   }
 
-  if (_some(errors, error => error !== undefined)) {
+  if (any(errors)) {
     return resp
       .status(400)
       .send({ reason: BadRequestReason.VALIDATION, errors });
@@ -343,7 +343,7 @@ const changePassword = (req, res) => {
   errors.isNewPasswordError = !validatePassword(newPassword);
   errors.isNewConfirmPasswordError = newPassword !== newPasswordConfirm;
 
-  if (_some(errors, error => error)) {
+  if (Object.values(errors).some(Boolean)) {
     return res
       .status(400)
       .send({ reason: BadRequestReason.VALIDATION, errors });

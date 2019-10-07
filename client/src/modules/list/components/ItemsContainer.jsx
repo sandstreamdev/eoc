@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { differs } from '@sandstreamdev/std/object';
 import { pipe } from '@sandstreamdev/std/function';
-import _isEqual from 'lodash/isEqual';
 
 import ItemsList from 'modules/list/components/Items';
 import { getCurrentUser } from 'modules/user/model/selectors';
@@ -31,7 +31,7 @@ class ItemsContainer extends Component {
     const { items } = this.props;
     const { items: previousItems } = previousProps;
 
-    if (!_isEqual(items, previousItems)) {
+    if (differs(items, previousItems)) {
       this.updateItems();
     }
   }
@@ -131,4 +131,7 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default pipe(injectIntl, connect(mapStateToProps))(ItemsContainer);
+export default pipe(
+  injectIntl,
+  connect(mapStateToProps)
+)(ItemsContainer);

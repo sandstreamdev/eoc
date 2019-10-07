@@ -1,7 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import _some from 'lodash/some';
 
 import { changePassword } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
@@ -135,8 +134,9 @@ class PasswordChangeForm extends PureComponent {
       isPasswordConfirmValid,
       isPasswordValid
     } = this.state;
+
     const isError =
-      _some(higherLevelErrors, error => error !== '') ||
+      Object.values(higherLevelErrors).some(Boolean) ||
       changePasswordErrorId !== '';
 
     this.setState({

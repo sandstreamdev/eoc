@@ -2,8 +2,6 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import _trim from 'lodash/trim';
-import _isEqual from 'lodash/isEqual';
 import { pipe } from '@sandstreamdev/std/function';
 import Linkify from 'react-linkify';
 import Textarea from 'react-textarea-autosize';
@@ -162,10 +160,8 @@ class ListItemDescription extends PureComponent {
     const { description: previousDescription } = this.props;
     const { descriptionTextareaValue } = this.state;
 
-    const isDescriptionUpdated = !_isEqual(
-      _trim(previousDescription),
-      _trim(descriptionTextareaValue)
-    );
+    const isDescriptionUpdated =
+      previousDescription.trim() !== descriptionTextareaValue.trim();
 
     this.setState({ isDescriptionUpdated });
   };

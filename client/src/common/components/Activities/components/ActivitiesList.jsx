@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _map from 'lodash/map';
 import { none } from '@sandstreamdev/std/object';
 import { pipe } from '@sandstreamdev/std/function';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -75,7 +74,7 @@ class ActivitiesList extends PureComponent {
             </MessageBox>
           ) : (
             <ul className="activities-list__list">
-              {_map(activities, activity => (
+              {activities.map(activity => (
                 <li key={activity._id}>
                   <Activity activity={activity} />
                 </li>
