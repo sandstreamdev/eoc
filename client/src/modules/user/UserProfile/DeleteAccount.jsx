@@ -9,6 +9,8 @@ import { deleteAccount, logoutCurrentUser } from '../model/actions';
 import './DeleteAccount.scss';
 import DeleteDialog from './DeleteDialog';
 import Dialog from 'common/components/Dialog';
+import AlertBox from 'common/components/AlertBox';
+import { MessageType } from 'common/constants/enums';
 
 class DeleteAccount extends Component {
   state = {
@@ -123,7 +125,9 @@ class DeleteAccount extends Component {
             onCancel={this.onCancel}
             title={formatMessage({ id: 'user.account-deleted' })}
           >
-            <FormattedMessage id="user.account-deleted-message" />
+            <AlertBox type={MessageType.SUCCESS}>
+              <FormattedMessage id="user.account-deleted-message" />
+            </AlertBox>
           </Dialog>
         )}
         <section className="delete-account">

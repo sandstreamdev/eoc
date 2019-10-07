@@ -7,7 +7,8 @@ import { IntlPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import DeleteForm from './DeleteForm';
 import './DeleteDialog.scss';
-import { InfoIcon } from 'assets/images/icons';
+import AlertBox from 'common/components/AlertBox';
+import { MessageType } from 'common/constants/enums';
 
 const DeleteDialog = ({
   error,
@@ -19,30 +20,31 @@ const DeleteDialog = ({
   onVerificationTextChange,
   pending
 }) => (
-  <Dialog
-    confirmLabel="user.delete-account"
-    hasPermissions
-    onCancel={onCancel}
-    onConfirm={onConfirm}
-    pending={pending}
-    title={formatMessage({ id: 'user.delete-account-question' })}
-  >
-    <div className="delete-dialog__warning">
-      <InfoIcon />
-      <FormattedMessage id="user.delete-account-warning" />
-    </div>
-    {error && (
-      <ErrorMessage
-        message={formatMessage({ id: 'user.delete-account-error' })}
+  <div className="delete-dialog">
+    <Dialog
+      confirmLabel="user.delete-account"
+      hasPermissions
+      onCancel={onCancel}
+      onConfirm={onConfirm}
+      pending={pending}
+      title={formatMessage({ id: 'user.delete-account-question' })}
+    >
+      <AlertBox type={MessageType.ERROR}>
+        <FormattedMessage id="user.delete-account-warning" />
+      </AlertBox>
+      {error && (
+        <ErrorMessage
+          message={formatMessage({ id: 'user.delete-account-error' })}
+        />
+      )}
+      <DeleteForm
+        error={error}
+        onEmailChange={onEmailChange}
+        onPasswordChange={onPasswordChange}
+        onVerificationTextChange={onVerificationTextChange}
       />
-    )}
-    <DeleteForm
-      error={error}
-      onEmailChange={onEmailChange}
-      onPasswordChange={onPasswordChange}
-      onVerificationTextChange={onVerificationTextChange}
-    />
-  </Dialog>
+    </Dialog>
+  </div>
 );
 
 DeleteDialog.propTypes = {

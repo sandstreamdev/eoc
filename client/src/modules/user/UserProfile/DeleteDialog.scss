@@ -1,27 +1,7 @@
 @import 'partials';
 
 .delete-dialog {
-  &__warning {
-    display: flex;
-    align-items: center;
-    background: rgba($red, 0.1);
-    padding: four-by(4);
-    color: $red;
-    font-size: $m-font;
-    margin-bottom: four-by(5);
-
-    svg {
-      border: 1px solid $red;
-      padding: four-by(1);
-      border-radius: 100%;
-      height: 10px;
-      width: 10px;
-      display: inline-block;
-      margin-right: four-by(2);
-
-      path {
-        fill: $red;
-      }
-    }
+  .alert-box {
+    margin-bottom: four-by(4);
   }
 }
