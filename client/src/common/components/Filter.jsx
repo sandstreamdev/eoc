@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _debounce from 'lodash/debounce';
-import _trim from 'lodash/trim';
 
 import { SearchIcon } from 'assets/images/icons';
 import './Filter.scss';
@@ -48,7 +47,7 @@ class Filter extends PureComponent {
 
   handleFilterChange = query => {
     const { onFilter, options } = this.props;
-    const trimmedQuery = _trim(query);
+    const trimmedQuery = query.trim();
     let filteredOptions;
 
     if (query) {

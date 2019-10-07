@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import _debounce from 'lodash/debounce';
-import _trim from 'lodash/trim';
 import _trimStart from 'lodash/trimStart';
 
 import { IntlPropType } from 'common/constants/propTypes';
@@ -73,7 +72,7 @@ class AuthInput extends PureComponent {
   handleChange = () => {
     const { value } = this.state;
     const { onChange, validator } = this.props;
-    const trimmedValue = _trim(value);
+    const trimmedValue = value.trim();
     const errorMessageId = validator ? validator(trimmedValue) : '';
 
     this.setValidationTheme(errorMessageId);

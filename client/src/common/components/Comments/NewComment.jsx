@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { any } from '@sandstreamdev/std/object';
-import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Textarea from 'common/components/Forms/Textarea';
@@ -47,9 +45,10 @@ class NewComment extends PureComponent {
   handleAddComment = () => {
     const { onAddComment, onClose } = this.props;
     const { comment } = this.state;
-    const commentToSave = _trim(comment);
 
-    if (any(commentToSave)) {
+    const commentToSave = comment.trim();
+
+    if (commentToSave) {
       this.setState({ pending: true });
 
       this.pendingPromise = makeAbortablePromise(onAddComment(commentToSave));

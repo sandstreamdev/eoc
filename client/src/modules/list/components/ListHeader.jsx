@@ -2,7 +2,6 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import _trim from 'lodash/trim';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { pipe } from '@sandstreamdev/std/function';
@@ -167,7 +166,7 @@ class ListHeader extends PureComponent {
       value => !validator.isEmpty(value, { ignore_whitespace: true })
     )('common.form.required-warning')(nameInputValue);
 
-    if (_trim(nameInputValue)) {
+    if (nameInputValue.trim()) {
       errorMessageId = validateWith(value =>
         validator.isLength(value, { min: 1, max: 32 })
       )('common.form.field-min-max')(nameInputValue);
@@ -204,10 +203,10 @@ class ListHeader extends PureComponent {
       updateList
     } = this.props;
     const { errorMessageId, nameInputValue } = this.state;
-    const nameToUpdate = _trim(nameInputValue);
+    const nameToUpdate = nameInputValue.trim();
     const { name: previousName } = details;
 
-    if (!errorMessageId && _trim(previousName) === nameToUpdate) {
+    if (!errorMessageId && previousName.trim() === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
 
       return;
@@ -237,10 +236,10 @@ class ListHeader extends PureComponent {
       updateList
     } = this.props;
     const { descriptionInputValue } = this.state;
-    const descriptionToUpdate = _trim(descriptionInputValue);
+    const descriptionToUpdate = descriptionInputValue.trim();
     const { description: previousDescription, name } = details;
 
-    if (_trim(previousDescription) === descriptionToUpdate) {
+    if (previousDescription.trim() === descriptionToUpdate) {
       this.setState({ isDescriptionTextareaVisible: false });
 
       return;

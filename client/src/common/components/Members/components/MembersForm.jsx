@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import _trim from 'lodash/trim';
 
 import Preloader, {
   PreloaderSize,

@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _trim from 'lodash/trim';
 import { pipe } from '@sandstreamdev/std/function';
 
 import DescriptionTextarea from 'common/components/DescriptionTextarea';
@@ -102,10 +101,10 @@ class CohortDescription extends PureComponent {
       }
     } = this.props;
     const { descriptionInputValue } = this.state;
-    const descriptionToUpdate = _trim(descriptionInputValue);
+    const descriptionToUpdate = descriptionInputValue.trim();
     const { description: previousDescription, name: previousName } = details;
 
-    if (_trim(previousDescription) === descriptionToUpdate) {
+    if (previousDescription.trim() === descriptionToUpdate) {
       this.setState({ isDescriptionTextareaVisible: false });
 
       return;

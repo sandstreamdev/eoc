@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import validator from 'validator';
-import _trim from 'lodash/trim';
 import { pipe } from '@sandstreamdev/std/function';
 import { injectIntl } from 'react-intl';
 
@@ -75,7 +74,7 @@ class CohortName extends PureComponent {
       value => !validator.isEmpty(value, { ignore_whitespace: true })
     )('common.form.required-warning')(nameInputValue);
 
-    if (_trim(nameInputValue)) {
+    if (nameInputValue.trim()) {
       errorMessageId = validateWith(value =>
         validator.isLength(value, { min: 1, max: 32 })
       )('common.form.field-min-max')(nameInputValue);
@@ -129,10 +128,10 @@ class CohortName extends PureComponent {
       updateCohort
     } = this.props;
     const { errorMessageId, nameInputValue } = this.state;
-    const nameToUpdate = _trim(nameInputValue);
+    const nameToUpdate = nameInputValue.trim();
     const { name: previousName } = details;
 
-    if (!errorMessageId && _trim(previousName) === nameToUpdate) {
+    if (!errorMessageId && previousName.trim() === nameToUpdate) {
       this.setState({ isNameInputVisible: false });
 
       return;

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import validator from 'validator';
-import _trim from 'lodash/trim';
 
 import Form from 'common/components/Form';
 import Dialog from 'common/components/Dialog';
@@ -42,7 +41,7 @@ class FormDialog extends Component {
   };
 
   handleDescriptionChange = value => {
-    const description = _trim(value) === '' ? '' : value;
+    const description = value.trim() === '' ? '' : value;
 
     this.setState({ description });
   };
@@ -57,7 +56,7 @@ class FormDialog extends Component {
       value => !validator.isEmpty(value, { ignore_whitespace: true })
     )('common.form.required-warning')(name);
 
-    if (_trim(name)) {
+    if (name.trim()) {
       errorMessageId = validateWith(value =>
         validator.isLength(value, { min: 1, max: 32 })
       )('common.form.field-min-max')(name);

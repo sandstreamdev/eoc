@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
-import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { pipe } from '@sandstreamdev/std/function';
 
@@ -49,7 +48,7 @@ class InputBar extends Component {
   handleEscapePress = event => {
     const { code } = event;
     const { itemName } = this.state;
-    const isInputEmpty = _trim(itemName).length === 0;
+    const isInputEmpty = !itemName.trim();
 
     if (code === KeyCodes.ESCAPE && isInputEmpty) {
       this.hideForm();
@@ -82,7 +81,7 @@ class InputBar extends Component {
 
   handleTipVisibility = () => {
     const { itemName } = this.state;
-    const isItemNameEmpty = !_trim(itemName);
+    const isItemNameEmpty = !itemName.trim();
 
     if (isItemNameEmpty) {
       this.setState({ isTipVisible: true });
@@ -108,7 +107,7 @@ class InputBar extends Component {
       name: itemName
     };
 
-    if (_trim(itemName)) {
+    if (itemName.trim()) {
       this.setState({ pending: true });
 
       return addItem(newItem, id).finally(() => {
@@ -130,9 +129,9 @@ class InputBar extends Component {
 
   handleBlur = () => {
     const { itemName } = this.state;
-    const isInputEmpty = _trim(itemName).length === 0;
+    const isInputEmpty = !itemName.trim();
 
-    if (isInputEmpty) {
+    if (!isInputEmpty) {
       this.hideForm();
     }
 

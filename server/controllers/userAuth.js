@@ -261,8 +261,8 @@ const updatePassword = (req, resp) => {
   const { token } = req.params;
 
   const sanitizedToken = sanitize(token);
-  const trimmedPassword = _trim(updatedPassword);
-  const trimmedPasswordConfirmation = _trim(passwordConfirmation);
+  const trimmedPassword = updatedPassword.trim();
+  const trimmedPasswordConfirmation = passwordConfirmation.trim();
 
   if (
     !validatePassword(updatedPassword) ||
