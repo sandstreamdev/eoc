@@ -82,7 +82,8 @@ class DeleteAccount extends Component {
 
   showDeleteDialog = () => this.setState({ isDeleteDialogVisible: true });
 
-  hideDeleteDialog = () => this.setState({ isDeleteDialogVisible: false });
+  hideDeleteDialog = () =>
+    this.setState({ isDeleteDialogVisible: false, isErrorVisible: false });
 
   handleCancel = () => {
     const { logoutCurrentUser } = this.props;
