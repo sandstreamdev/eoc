@@ -1,4 +1,5 @@
 import {
+  deleteData,
   getData,
   getJson,
   postData,
@@ -145,3 +146,5 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
 
 export const getAccountDetails = token =>
   getJson(`/auth/account-details/${token}`);
+
+export const deleteAccount = () => deleteData('/auth');
