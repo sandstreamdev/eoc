@@ -16,7 +16,7 @@
   }
 
   svg {
-    @include constant-size(16px);
+    @include constant-size(24px);
 
     path {
       fill: $text-normal;
