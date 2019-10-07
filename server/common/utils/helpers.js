@@ -3,7 +3,6 @@ const _map = require('lodash/map');
 const _pickBy = require('lodash/pickBy');
 const _compact = require('lodash/compact');
 const _keyBy = require('lodash/keyBy');
-const _forEach = require('lodash/forEach');
 const sanitize = require('mongo-sanitize');
 
 const fromEntries = convertedArray =>
@@ -396,14 +395,6 @@ const mapObject = callback => object =>
 
 const sanitizeObject = mapObject(sanitize);
 
-const updateProperties = (object, updates) => {
-  _forEach(updates, (value, key) => {
-    if (object[key]) {
-      // eslint-disable-next-line no-param-reassign
-      object[key] = value;
-    }
-  });
-};
 const runAsyncTasks = async (...tasks) => {
   tasks.forEach(task => task());
 
@@ -483,6 +474,5 @@ module.exports = {
   returnPayload,
   runAsyncTasks,
   sanitizeObject,
-  updateProperties,
   updateSubdocumentFields
 };

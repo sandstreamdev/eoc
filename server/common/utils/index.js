@@ -31,7 +31,6 @@ const {
   returnPayload,
   runAsyncTasks,
   sanitizeObject,
-  updateProperties,
   updateSubdocumentFields
 } = require('./helpers');
 
@@ -68,6 +67,5 @@ module.exports = {
   returnPayload,
   runAsyncTasks,
   sanitizeObject,
-  updateProperties,
   updateSubdocumentFields
 };
