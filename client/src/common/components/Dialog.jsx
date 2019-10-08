@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
 import FocusLock from 'react-focus-lock';
 import classNames from 'classnames';
 
