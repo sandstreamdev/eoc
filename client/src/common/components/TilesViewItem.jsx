@@ -56,7 +56,13 @@ class TilesViewItem extends PureComponent {
         role="figure"
       >
         <header className="tiles-view-item__header">
-          {isLimitedList && <LockIcon />}
+          {isLimitedList && (
+            <LockIcon
+              label={formatMessage({
+                id: 'list.type.limited'
+              })}
+            />
+          )}
           <h3 className="tiles-view-item__heading">{name}</h3>
         </header>
         <p className="tiles-view-item__description">{description}</p>

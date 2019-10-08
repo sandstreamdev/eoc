@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
+import { injectIntl } from 'react-intl';
 
-import { RouterMatchPropType } from 'common/constants/propTypes';
+import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import { PlusIcon, DotsIcon } from 'assets/images/icons';
 import MembersForm from './components/MembersForm';
 import MemberDetails from './components/MemberDetails';
@@ -149,7 +150,10 @@ class MembersBox extends PureComponent {
   };
 
   renderShowMoreUsers = () => {
-    const { members } = this.props;
+    const {
+      intl: { formatMessage },
+      members
+    } = this.props;
     const { membersDisplayLimit } = this.state;
     const membersLength = Object.keys(members).length;
 
@@ -160,6 +164,7 @@ class MembersBox extends PureComponent {
             <button
               className="members-box__member"
               onClick={this.handleShowMoreMembers}
+              title={formatMessage({ id: 'common.members-show-more' })}
               type="button"
             >
               <DotsIcon />
@@ -171,7 +176,12 @@ class MembersBox extends PureComponent {
   };
 
   renderAddNewUserForm = () => {
-    const { isCurrentUserAnOwner, isMember, route } = this.props;
+    const {
+      intl: { formatMessage },
+      isCurrentUserAnOwner,
+      isMember,
+      route
+    } = this.props;
     const { isInvitationBoxVisible, isFormVisible, pending } = this.state;
     const isAddMemberVisible =
       isCurrentUserAnOwner || (isMember && route === Routes.LIST);
@@ -190,6 +200,7 @@ class MembersBox extends PureComponent {
               <button
                 className="members-box__member"
                 onClick={this.showForm}
+                title={formatMessage({ id: 'common.members-button-add' })}
                 type="button"
               >
                 <PlusIcon />
@@ -230,6 +241,7 @@ class MembersBox extends PureComponent {
 }
 
 MembersBox.propTypes = {
+  intl: IntlPropType.isRequired,
   isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool,
   isMember: PropTypes.bool,
@@ -247,6 +259,7 @@ MembersBox.propTypes = {
 };
 
 export default _flowRight(
+  injectIntl,
   withRouter,
   connect(
     null,

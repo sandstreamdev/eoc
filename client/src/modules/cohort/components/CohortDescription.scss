@@ -1,0 +1,26 @@
+@import 'partials';
+
+.cohort-description {
+  &__bottom {
+    position: relative;
+  }
+
+  &__heading {
+    font-size: $m-font;
+    line-height: 1.2;
+    color: $text-normal;
+    padding: four-by(2) 0 four-by(4);
+
+    &--disabled {
+      color: $gray-bg2;
+    }
+  }
+
+  &__button {
+    margin-bottom: four-by(2);
+  }
+
+  &--clickable {
+    cursor: pointer;
+  }
+}

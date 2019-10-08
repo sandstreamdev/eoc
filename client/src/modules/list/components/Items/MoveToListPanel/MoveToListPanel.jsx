@@ -140,6 +140,9 @@ class MoveToListPanel extends PureComponent {
               <Filter
                 autofocus
                 buttonContent={<CloseIcon />}
+                clearButtonLabel={formatMessage({
+                  id: 'common.button.reset-filter'
+                })}
                 fields={filterByFields}
                 onFilter={this.handleFilterLists}
                 options={lists}

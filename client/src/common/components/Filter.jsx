@@ -74,12 +74,17 @@ class Filter extends PureComponent {
 
   render() {
     const { query } = this.state;
-    const { buttonContent, clearFilterButton, placeholder } = this.props;
+    const {
+      buttonContent,
+      clearButtonLabel,
+      clearFilterButton,
+      placeholder
+    } = this.props;
     const isClearButtonVisible = clearFilterButton && buttonContent && query;
 
     return (
       <div className="filter">
-        <SearchIcon />
+        <SearchIcon label={placeholder} />
         <input
           name="filter"
           onChange={this.handleInputChange}
@@ -89,7 +94,11 @@ class Filter extends PureComponent {
           value={query}
         />
         {isClearButtonVisible && (
-          <button onClick={this.resetFilter} title="reset filter" type="button">
+          <button
+            onClick={this.resetFilter}
+            title={clearButtonLabel}
+            type="button"
+          >
             {buttonContent}
           </button>
         )}
@@ -105,6 +114,7 @@ Filter.defaultProps = {
 Filter.propTypes = {
   autofocus: PropTypes.bool,
   buttonContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  clearButtonLabel: PropTypes.string,
   clearFilterButton: PropTypes.bool,
   fields: PropTypes.arrayOf(PropTypes.string).isRequired,
   options: PropTypes.arrayOf(

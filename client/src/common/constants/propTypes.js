@@ -24,3 +24,8 @@ export const StatusPropType = PropTypes.oneOf(_values(StatusType));
 export const IntlPropType = PropTypes.objectOf(
   PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object])
 );
+
+export const IconPropType = {
+  label: PropTypes.string,
+  title: PropTypes.string
+};

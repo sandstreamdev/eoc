@@ -1,34 +1,28 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
 import { CohortIcon } from 'assets/images/icons';
 import {
   createCohort,
-  fetchArchivedCohortsMetaData,
-  fetchCohortsMetaData,
-  removeArchivedCohortsMetaData
+  fetchCohortsMetaData
 } from 'modules/cohort/model/actions';
-import {
-  getActiveCohorts,
-  getArchivedCohorts
-} from 'modules/cohort/model/selectors';
+import { getActiveCohorts } from 'modules/cohort/model/selectors';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import CollectionView from 'common/components/CollectionView';
 import FormDialog from 'common/components/FormDialog';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { ColorType, Routes, ViewType } from 'common/constants/enums';
+import ArchivedCohorts from './ArchivedCohorts';
 
 class Cohorts extends Component {
   state = {
-    areArchivedCohortsVisible: false,
     isDialogVisible: false,
     pendingForCohortCreation: false,
-    pendingForCohorts: false,
-    pendingForArchivedCohorts: false
+    pendingForCohorts: false
   };
 
   componentDidMount() {
@@ -61,32 +55,6 @@ class Cohorts extends Component {
     });
   };
 
-  handleArchivedCohortsVisibility = () =>
-    this.setState(
-      ({ areArchivedCohortsVisible }) => ({
-        areArchivedCohortsVisible: !areArchivedCohortsVisible
-      }),
-      () => this.handleArchivedCohortsData()
-    );
-
-  handleArchivedCohortsData = () => {
-    const { areArchivedCohortsVisible } = this.state;
-    const {
-      fetchArchivedCohortsMetaData,
-      removeArchivedCohortsMetaData
-    } = this.props;
-
-    if (areArchivedCohortsVisible) {
-      this.setState({ pendingForArchivedCohorts: true });
-
-      fetchArchivedCohortsMetaData().finally(() =>
-        this.setState({ pendingForArchivedCohorts: false })
-      );
-    } else {
-      removeArchivedCohortsMetaData();
-    }
-  };
-
   renderBreadcrumbs = () => {
     const breadcrumbs = [{ name: Routes.COHORTS, path: `/${Routes.COHORTS}` }];
 
@@ -95,14 +63,11 @@ class Cohorts extends Component {
 
   render() {
     const {
-      archivedCohorts,
       cohorts,
       intl: { formatMessage }
     } = this.props;
     const {
-      areArchivedCohortsVisible,
       isDialogVisible,
-      pendingForArchivedCohorts,
       pendingForCohortCreation,
       pendingForCohorts
     } = this.state;
@@ -116,6 +81,9 @@ class Cohorts extends Component {
               color={ColorType.BROWN}
               icon={<CohortIcon />}
               items={cohorts}
+              label={formatMessage({
+                id: 'cohort.label'
+              })}
               name="Cohorts"
               onAddNew={this.handleDialogVisibility}
               pending={pendingForCohorts}
@@ -125,31 +93,7 @@ class Cohorts extends Component {
               route={Routes.COHORT}
               viewType={ViewType.TILES}
             />
-            <button
-              className="link-button"
-              onClick={this.handleArchivedCohortsVisibility}
-              type="button"
-            >
-              {areArchivedCohortsVisible ? (
-                <FormattedMessage id="cohort.cohorts.hide-archived" />
-              ) : (
-                <FormattedMessage id="cohort.cohorts.show-archived" />
-              )}
-            </button>
-            {areArchivedCohortsVisible && (
-              <CollectionView
-                color={ColorType.GRAY}
-                icon={<CohortIcon />}
-                items={archivedCohorts}
-                name="Archived cohorts"
-                pending={pendingForArchivedCohorts}
-                placeholder={formatMessage({
-                  id: 'cohort.cohorts.no-arch-cohorts'
-                })}
-                route={Routes.COHORT}
-                viewType={ViewType.TILES}
-              />
-            )}
+            <ArchivedCohorts />
           </div>
         </div>
         {isDialogVisible && (
@@ -170,19 +114,15 @@ class Cohorts extends Component {
 }
 
 Cohorts.propTypes = {
-  archivedCohorts: PropTypes.objectOf(PropTypes.object),
   cohorts: PropTypes.objectOf(PropTypes.object),
   currentUser: UserPropType.isRequired,
   intl: IntlPropType.isRequired,
 
   createCohort: PropTypes.func.isRequired,
-  fetchArchivedCohortsMetaData: PropTypes.func.isRequired,
-  fetchCohortsMetaData: PropTypes.func.isRequired,
-  removeArchivedCohortsMetaData: PropTypes.func.isRequired
+  fetchCohortsMetaData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  archivedCohorts: getArchivedCohorts(state),
   cohorts: getActiveCohorts(state),
   currentUser: getCurrentUser(state)
 });
@@ -193,9 +133,7 @@ export default _flowRight(
     mapStateToProps,
     {
       createCohort,
-      fetchArchivedCohortsMetaData,
-      fetchCohortsMetaData,
-      removeArchivedCohortsMetaData
+      fetchCohortsMetaData
     }
   )
 )(Cohorts);
