@@ -33,24 +33,24 @@ class DeleteAccount extends Component {
     const { verificationText } = this.state;
     const verificationString = formatMessage({ id: 'delete-form.verify-text' });
 
+    if (verificationText !== verificationString) {
+      this.setState({ isErrorVisible: true, pending: false });
+
+      return;
+    }
+
     try {
-      if (verificationText === verificationString) {
-        const { email, password } = this.state;
-        const trimmedEmail = _trim(email);
-        const result = await deleteAccount(trimmedEmail, password);
+      const { email, password } = this.state;
+      const trimmedEmail = _trim(email);
+      const result = await deleteAccount(trimmedEmail, password);
 
-        if (result) {
-          this.setState({
-            isAccountDeletedDialogVisible: true,
-            isDeleteDialogVisible: false,
-            pending: false
-          });
-        }
-
-        return;
+      if (result) {
+        this.setState({
+          isAccountDeletedDialogVisible: true,
+          isDeleteDialogVisible: false,
+          pending: false
+        });
       }
-
-      throw new Error();
     } catch {
       this.setState({ isErrorVisible: true, pending: false });
     }
@@ -101,6 +101,7 @@ class DeleteAccount extends Component {
       isErrorVisible,
       pending
     } = this.state;
+    const label = formatMessage({ id: 'common.ok' });
 
     return (
       <Fragment>
@@ -125,7 +126,11 @@ class DeleteAccount extends Component {
             <AlertBox type={MessageType.SUCCESS}>
               <div>
                 <FormattedMessage id="user.account-deleted" />
-                <FormattedMessage id="user.account-deleted-message" />
+                <span> </span>
+                <FormattedMessage
+                  id="user.account-deleted-message"
+                  values={{ label }}
+                />
               </div>
             </AlertBox>
           </Dialog>
