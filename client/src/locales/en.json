@@ -87,7 +87,7 @@
   "user.anonymous": "Anonymous",
   "user.account-deleted": "Your account has been successfully deleted.",
   "user.account-deleted-message": "Click {label} to continue.",
-  "user.delete-account-error": "Wrong data. Please try again.",
+  "user.delete-account-error": "Entered data is incorrect. Please try again.",
   "user.delete-account-question": "Are you sure you want to do this?",
   "user.delete-account-warning": "This is extremely important.",
   "user.delete-account": "Delete account",
