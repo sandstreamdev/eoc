@@ -47,7 +47,7 @@ const Dialog = ({
                 onClick={onConfirm}
                 type="button"
               >
-                <FormattedMessage id={confirmLabel} />
+                {confirmLabel}
               </button>
             )}
             <button
@@ -56,7 +56,7 @@ const Dialog = ({
               onClick={onCancel}
               type="button"
             >
-              <FormattedMessage id={cancelLabel} />
+              {cancelLabel}
             </button>
           </div>
           {pending && <Preloader />}
@@ -67,8 +67,8 @@ const Dialog = ({
 );
 
 Dialog.defaultProps = {
-  cancelLabel: 'common.button.cancel',
-  confirmLabel: 'common.button.confirm',
+  cancelLabel: 'cancel',
+  confirmLabel: 'confirm',
   hasPermissions: true
 };
 

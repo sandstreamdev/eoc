@@ -410,8 +410,8 @@ class List extends Component {
         )}
         {isDialogForRemovedListVisible && (
           <Dialog
-            cancelLabel="common.button.dashboard"
-            confirmLabel="common.button.restore"
+            cancelLabel={formatMessage({ id: 'common.button.dashboard' })}
+            confirmLabel={formatMessage({ id: 'common.button.restore' })}
             hasPermissions={isOwner}
             onCancel={this.handleRedirect}
             onConfirm={
