@@ -39,8 +39,6 @@ class DeleteAccount extends Component {
         const trimmedEmail = _trim(email);
         const result = await deleteAccount(trimmedEmail, password);
 
-        this.setState({ isErrorVisible: false });
-
         if (result) {
           this.setState({
             isAccountDeletedDialogVisible: true,
@@ -48,6 +46,8 @@ class DeleteAccount extends Component {
             pending: false
           });
         }
+
+        return;
       }
 
       throw new Error();
@@ -123,7 +123,10 @@ class DeleteAccount extends Component {
             title={formatMessage({ id: 'user.account-deleted' })}
           >
             <AlertBox type={MessageType.SUCCESS}>
-              <FormattedMessage id="user.account-deleted-message" />
+              <div>
+                <FormattedMessage id="user.account-deleted" />
+                <FormattedMessage id="user.account-deleted-message" />
+              </div>
             </AlertBox>
           </Dialog>
         )}

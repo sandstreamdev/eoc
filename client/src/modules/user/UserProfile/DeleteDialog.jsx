@@ -6,9 +6,9 @@ import Dialog from 'common/components/Dialog';
 import { IntlPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import DeleteForm from './DeleteForm';
-import './DeleteDialog.scss';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
+import './DeleteDialog.scss';
 
 const DeleteDialog = ({
   error,

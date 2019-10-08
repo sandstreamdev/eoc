@@ -7,8 +7,8 @@ import classNames from 'classnames';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import Preloader from 'common/components/Preloader';
 import { enumerable } from 'common/utils/helpers';
-import './Dialog.scss';
 import { MessageType } from 'common/constants/enums';
+import './Dialog.scss';
 
 export const DialogContext = enumerable('dialog')(
   'ARCHIVE',
