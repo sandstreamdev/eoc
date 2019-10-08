@@ -29,10 +29,6 @@
     border: 0;
   }
 
-  &__menu-icon {
-    height: 16px;
-  }
-
   &__menu-wrapper {
     width: 250px;
     padding: four-by(1) four-by(4);
@@ -54,86 +50,5 @@
       border-right: 15px solid transparent;
       border-bottom: 15px solid $bg-color;
     }
-  }
-
-  &__menu-item {
-    cursor: initial;
-    height: 44px;
-    padding: four-by(1) 0;
-    color: $text-normal;
-    font-size: $s-font;
-    line-height: 1.2;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid $border-color;
-
-    &:last-child {
-      border-bottom: 0;
-    }
-
-    span {
-      margin-left: four-by(1);
-    }
-
-    a {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      height: 100%;
-      text-decoration: none;
-    }
-
-    a:active,
-    a:link,
-    a:visited,
-    a:hover {
-      color: $text-normal;
-    }
-
-    svg {
-      width: 20px;
-      path {
-        fill: $gray2;
-      }
-    }
-  }
-
-  &__menu-logout {
-    font-family: inherit;
-    cursor: pointer;
-    background: transparent;
-    border: 0;
-    padding: 0;
-    color: $text-normal;
-    font-size: $s-font;
-    line-height: 1.2;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &__user-data {
-    font-size: 12px;
-    line-height: 1.2;
-    color: $text-normal;
-    margin-right: four-by(2);
-    margin-bottom: four-by(1);
-
-    &:nth-child(2) {
-      margin-bottom: 0;
-    }
-  }
-
-  &__icon {
-    height: 20px;
-  }
-
-  &__logged {
-    display: flex;
-    flex-direction: column;
   }
 }
