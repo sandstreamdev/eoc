@@ -2,7 +2,6 @@
 
 .user-bar-menu {
   &__item {
-    cursor: initial;
     height: 44px;
     padding: four-by(1) 0;
     color: $text-normal;
@@ -38,7 +37,8 @@
     }
 
     svg {
-      width: 20px;
+      @include constant-size(20px);
+
       path {
         fill: $gray2;
       }

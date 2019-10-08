@@ -11,8 +11,9 @@ import UserBarMenu from './UserBarMenu';
 import './UserBar.scss';
 
 class UserBar extends Component {
-  handleLogOut = () => {
+  handleLogout = () => {
     const { logoutCurrentUser } = this.props;
+
     logoutCurrentUser();
   };
 
@@ -31,7 +32,7 @@ class UserBar extends Component {
         dropdownClassName="user-bar__menu-wrapper"
         dropdownName="user bar"
       >
-        <UserBarMenu avatar={avatar} name={name} onLogout={this.handleLogOut} />
+        <UserBarMenu avatar={avatar} name={name} onLogout={this.handleLogout} />
       </Dropdown>
     );
   }

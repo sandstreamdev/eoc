@@ -38,7 +38,7 @@ const UserBarMenu = ({ avatar, name, onLogout }) => (
 );
 
 UserBarMenu.propTypes = {
-  avatar: PropTypes.node.isRequired,
+  avatar: PropTypes.any.isRequired,
   name: PropTypes.string.isRequired,
 
   onLogout: PropTypes.func.isRequired
