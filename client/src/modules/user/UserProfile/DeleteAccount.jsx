@@ -101,6 +101,7 @@ class DeleteAccount extends Component {
       isErrorVisible,
       pending
     } = this.state;
+    const label = formatMessage({ id: 'common.ok' });
 
     return (
       <Fragment>
@@ -125,7 +126,11 @@ class DeleteAccount extends Component {
             <AlertBox type={MessageType.SUCCESS}>
               <div>
                 <FormattedMessage id="user.account-deleted" />
-                <FormattedMessage id="user.account-deleted-message" />
+                <span> </span>
+                <FormattedMessage
+                  id="user.account-deleted-message"
+                  values={{ label }}
+                />
               </div>
             </AlertBox>
           </Dialog>

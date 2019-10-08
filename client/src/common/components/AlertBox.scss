@@ -18,41 +18,41 @@
   }
 
   &--warning {
-    background: rgba($red, 0.1);
+    background: rgba($danger, 0.1);
     padding: four-by(4);
-    color: $red;
+    color: $danger;
 
     svg {
-      border-color: $red;
+      border-color: $danger;
 
       path {
-        fill: $red;
+        fill: $danger;
       }
     }
   }
 
   &--info {
-    background: rgba($blue, 0.1);
-    color: $blue;
+    background: rgba($info, 0.1);
+    color: $info;
 
     svg {
-      border-color: $blue;
+      border-color: $info;
 
       path {
-        fill: $blue;
+        fill: $info;
       }
     }
   }
 
   &--success {
-    background: rgba($green, 0.1);
-    color: $green;
+    background: rgba($success, 0.1);
+    color: $success;
 
     svg {
-      border-color: $green;
+      border-color: $success;
 
       path {
-        fill: $green;
+        fill: $success;
       }
     }
   }

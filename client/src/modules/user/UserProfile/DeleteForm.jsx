@@ -56,8 +56,8 @@ const DeleteForm = ({
 
 DeleteForm.propTypes = {
   error: PropTypes.bool,
-
   intl: IntlPropType.isRequired,
+
   onEmailChange: PropTypes.func.isRequired,
   onPasswordChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
