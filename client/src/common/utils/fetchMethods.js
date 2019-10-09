@@ -97,9 +97,11 @@ export const postRequest = url =>
     mode: 'no-cors'
   });
 
-export const deleteData = url =>
+export const deleteData = (url, data) =>
   fetch(url, {
+    body: JSON.stringify(data),
     credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
     method: 'DELETE'
   }).then(handleFetchErrors);
 

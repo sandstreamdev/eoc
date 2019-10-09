@@ -14,6 +14,7 @@ import { fetchUserDetails } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
 import UserProfileHeader from './UserProfileHeader';
 import './UserProfile.scss';
+import DeleteAccount from './DeleteAccount';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;
@@ -196,6 +197,7 @@ class UserProfile extends PureComponent {
           {this.renderPersonalInfo()}
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
+          <DeleteAccount />
           {pending && <Preloader />}
         </article>
       </div>

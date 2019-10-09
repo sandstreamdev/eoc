@@ -1,0 +1,30 @@
+@import 'partials';
+
+.delete-form {
+  &__label {
+    display: block;
+    font-size: $s-font;
+    font-weight: 600;
+    margin-bottom: four-by(4);
+
+    em {
+      font-weight: 300;
+    }
+  }
+
+  &__input {
+    margin-top: four-by(1);
+  }
+
+  &--error {
+    margin-top: four-by(2);
+
+    .delete-form__label {
+      color: $danger;
+    }
+
+    .delete-form__input {
+      border-color: $danger;
+    }
+  }
+}

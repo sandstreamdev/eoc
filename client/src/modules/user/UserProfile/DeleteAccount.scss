@@ -1,0 +1,27 @@
+@import 'partials';
+
+.delete-account {
+  &__heading {
+    font-size: 20px;
+    font-weight: 500;
+    color: $text-dark;
+    margin-bottom: four-by(2);
+  }
+
+  &__list {
+    overflow: hidden;
+  }
+
+  &__list-item {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $bg-color;
+    border-bottom: 1px solid $border-color;
+    padding: four-by(2);
+    height: 50px;
+    overflow: hidden;
+  }
+}
