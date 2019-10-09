@@ -7,12 +7,20 @@ import './EmailNotification.scss';
 import { IntlPropType } from 'common/constants/propTypes';
 
 class EmailNotifications extends Component {
-  test = () => {};
+  state = {
+    weekly: true,
+    never: false
+  };
+
+  setWeekly = () => this.setState({ weekly: true, never: false });
+
+  setNever = () => this.setState({ never: true, weekly: false });
 
   render() {
     const {
       intl: { formatMessage }
     } = this.props;
+    const { weekly, never } = this.state;
 
     return (
       <section className="email-notifications">
@@ -22,15 +30,17 @@ class EmailNotifications extends Component {
         <ul className="email-notifications__list">
           <li className="email-notifications__list-item">
             <SwitchButton
-              checked
+              checked={weekly}
               label="Weekly"
+              onChange={weekly ? this.setNever : this.setWeekly}
               value={formatMessage({ id: 'email.notification.weekly' })}
             />
           </li>
           <li className="email-notifications__list-item">
             <SwitchButton
-              checked={false}
+              checked={never}
               label="Never"
+              onChange={never ? this.setWeekly : this.setNever}
               value={formatMessage({ id: 'email.notification.never' })}
             />
           </li>
