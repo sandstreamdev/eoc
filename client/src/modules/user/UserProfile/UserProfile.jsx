@@ -15,6 +15,7 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import './UserProfile.scss';
 import DeleteAccount from './DeleteAccount';
+import EmailNotifications from './EmailNotifications';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;
@@ -198,6 +199,7 @@ class UserProfile extends PureComponent {
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
           <DeleteAccount />
+          <EmailNotifications />
           {pending && <Preloader />}
         </article>
       </div>
