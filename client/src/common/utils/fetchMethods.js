@@ -2,13 +2,14 @@ import { REDIRECT_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 import {
   ForbiddenException,
+  RequirementsException,
   ResourceNotFoundException,
   UnauthorizedException,
   ValidationException
 } from 'common/exceptions';
 import { enumerable } from './helpers';
 
-const BadRequestReason = enumerable('reason')('VALIDATION');
+const BadRequestReason = enumerable('reason')('REQUIREMENTS', 'VALIDATION');
 
 export const ResponseStatusCode = Object.freeze({
   BAD_REQUEST: 400,
@@ -37,6 +38,9 @@ const handleFetchErrors = response => {
       return response.json().then(json => {
         if (json.reason === BadRequestReason.VALIDATION) {
           throw new ValidationException('', json.errors);
+        }
+        if (json.reason === BadRequestReason.REQUIREMENTS) {
+          throw new RequirementsException('', json.data);
         }
         throw new Error(json.message || '');
       });

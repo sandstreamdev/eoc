@@ -7,15 +7,17 @@ import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import { deleteAccount, logoutCurrentUser } from '../model/actions';
-import './DeleteAccount.scss';
 import DeleteDialog from './DeleteDialog';
 import Dialog from 'common/components/Dialog';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
+import { RequirementsException } from 'common/exceptions';
+import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
   state = {
     email: '',
+    errorData: null,
     isDeleteDialogVisible: false,
     isErrorVisible: false,
     password: '',
@@ -51,8 +53,16 @@ class DeleteAccount extends Component {
           pending: false
         });
       }
-    } catch {
-      this.setState({ isErrorVisible: true, pending: false });
+    } catch (err) {
+      let errorData;
+
+      if (err instanceof RequirementsException) {
+        const { data } = err;
+
+        errorData = data;
+      }
+
+      this.setState({ errorData, isErrorVisible: true, pending: false });
     }
   };
 
@@ -96,6 +106,7 @@ class DeleteAccount extends Component {
       intl: { formatMessage }
     } = this.props;
     const {
+      errorData,
       isAccountDeletedDialogVisible,
       isDeleteDialogVisible,
       isErrorVisible,
@@ -108,6 +119,7 @@ class DeleteAccount extends Component {
         {isDeleteDialogVisible && (
           <DeleteDialog
             error={isErrorVisible}
+            errorData={errorData}
             onCancel={this.hideDeleteDialog}
             onConfirm={this.handleDeleteAccount}
             onEmailChange={this.handleEmailChange}

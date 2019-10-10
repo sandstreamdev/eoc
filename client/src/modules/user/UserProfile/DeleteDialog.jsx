@@ -8,10 +8,12 @@ import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import DeleteForm from './DeleteForm';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
+import ResourcePanel from './ResourcePanel';
 import './DeleteDialog.scss';
 
 const DeleteDialog = ({
   error,
+  errorData,
   intl: { formatMessage },
   onCancel,
   onConfirm,
@@ -34,13 +36,15 @@ const DeleteDialog = ({
       <AlertBox type={MessageType.ERROR}>
         <FormattedMessage id="user.delete-account-warning" />
       </AlertBox>
-      {error && (
+      {error && !errorData && (
         <ErrorMessage
           message={formatMessage({ id: 'user.delete-account-error' })}
         />
       )}
+      {errorData && <ResourcePanel errorData={errorData} />}
       <DeleteForm
         error={error}
+        errorData={errorData}
         onEmailChange={onEmailChange}
         onPasswordChange={onPasswordChange}
         onSubmit={onSubmit}
@@ -52,6 +56,20 @@ const DeleteDialog = ({
 
 DeleteDialog.propTypes = {
   error: PropTypes.bool,
+  errorData: PropTypes.shape({
+    cohorts: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
+      })
+    ),
+    lists: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
+      })
+    )
+  }),
   intl: IntlPropType.isRequired,
   pending: PropTypes.bool,
 
