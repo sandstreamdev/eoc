@@ -449,7 +449,24 @@ const deleteAccount = async (req, resp) => {
 };
 
 const updateEmailNotificationSettings = async (req, resp) => {
-  // logic here
+  const { never, weekly } = req.body;
+  const { _id } = req.user;
+
+  try {
+    await User.findOneAndUpdate(
+      { _id },
+      {
+        emailNotificationSettings: {
+          never,
+          weekly
+        }
+      }
+    ).exec();
+
+    resp.send();
+  } catch {
+    resp.send(400);
+  }
 };
 
 module.exports = {
@@ -466,5 +483,6 @@ module.exports = {
   resetPassword,
   sendUser,
   signUp,
+  updateEmailNotificationSettings,
   updatePassword
 };
