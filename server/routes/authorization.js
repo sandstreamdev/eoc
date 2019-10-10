@@ -15,7 +15,7 @@ const {
   getLoggedUser,
   getUserDetails,
   logout,
-  prepareItems,
+  prepareItemsRequestedByMe,
   recoveryPassword,
   resendSignUpConfirmationLink,
   resetPassword,
@@ -52,6 +52,6 @@ router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
-router.get('/prepare-items', authorize, prepareItems);
+router.get('/prepare-items-req-by-me', authorize, prepareItemsRequestedByMe);
 
 module.exports = router;

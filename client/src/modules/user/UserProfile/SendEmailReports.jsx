@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import './SendEmailReports.scss';
-import { sendEmailReports } from '../model/actions';
+import { prepareItemsRequestedByMe } from '../model/actions';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
 
@@ -11,12 +11,21 @@ class SendEmailReports extends PureComponent {
     error: false
   };
 
-  handleOnClick = async () => {
+  handleItemsRequestedByMe = async () => {
     try {
       this.setState({ error: false });
 
-      await sendEmailReports();
+      await prepareItemsRequestedByMe();
     } catch {
+      this.setState({ error: true });
+    }
+  };
+
+  handleItemsOwnedByMe = async () => {
+    try {
+      this.setState({ error: false });
+      // await
+    } catch (error) {
       this.setState({ error: true });
     }
   };
@@ -38,10 +47,20 @@ class SendEmailReports extends PureComponent {
         </h2>
         <ul className="email-reports__list">
           <li className="email-reports__list-item">
-            <FormattedMessage id="email-reports.text" />
+            <FormattedMessage id="email-reports.items-requested" />
             <button
               className="primary-button"
-              onClick={this.handleOnClick}
+              onClick={this.handleItemsRequestedByMe}
+              type="submit"
+            >
+              <FormattedMessage id="email-reports.submit-button" />
+            </button>
+          </li>
+          <li className="email-reports__list-item">
+            <FormattedMessage id="email-reports.items-owned" />
+            <button
+              className="primary-button"
+              onClick={this.handleItemsRequestedByMe}
               type="submit"
             >
               <FormattedMessage id="email-reports.submit-button" />

@@ -22,9 +22,13 @@
     justify-content: space-between;
     align-items: center;
     background-color: $bg-color;
-    padding: four-by(2) four-by(2) four-by(6);
+    padding: four-by(2);
     height: 50px;
     overflow: hidden;
+
+    &:last-child {
+      padding-bottom: four-by(6);
+    }
   }
 
   .alert-box {

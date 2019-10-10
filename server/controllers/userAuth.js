@@ -455,7 +455,7 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
-const prepareItems = async (req, resp) => {
+const prepareItemsRequestedByMe = async (req, resp) => {
   // do something
   const { _id: userId } = req.user;
 
@@ -469,12 +469,8 @@ const prepareItems = async (req, resp) => {
     // Prepare unhandled items where I'm an author/requester
     const unhandledItems = getUnhandledItems(authorItems);
 
-    console.log('UNHANDLED ITEMS', unhandledItems);
-
     // Prepare done items where I'm an author/requester
     const doneItems = getDoneItems(authorItems);
-
-    console.log('DONE ITEMS', doneItems);
   } catch (error) {}
 };
 
@@ -487,7 +483,7 @@ module.exports = {
   getLoggedUser,
   getUserDetails,
   logout,
-  prepareItems,
+  prepareItemsRequestedByMe,
   recoveryPassword,
   resendSignUpConfirmationLink,
   resetPassword,
