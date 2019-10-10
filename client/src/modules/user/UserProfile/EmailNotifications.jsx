@@ -5,25 +5,56 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import SwitchButton from 'common/components/SwitchButton';
 import './EmailNotification.scss';
 import { IntlPropType } from 'common/constants/propTypes';
+import { saveEmailNotificationSettings } from '../model/actions';
+import AlertBox from 'common/components/AlertBox';
+import { MessageType } from 'common/constants/enums';
 
 class EmailNotifications extends Component {
   state = {
-    weekly: true,
-    never: false
+    error: false,
+    never: false,
+    weekly: true
   };
 
-  setWeekly = () => this.setState({ weekly: true, never: false });
+  setWeekly = () =>
+    this.setState(
+      { weekly: true, never: false, error: false },
+      this.updateNotificationSettings
+    );
 
-  setNever = () => this.setState({ never: true, weekly: false });
+  setNever = () =>
+    this.setState(
+      { never: true, weekly: false, error: false },
+      this.updateNotificationSettings
+    );
+
+  updateNotificationSettings = () => {
+    const { weekly, never } = this.state;
+    const settings = {
+      never,
+      weekly
+    };
+
+    try {
+      saveEmailNotificationSettings(settings);
+    } catch {
+      this.setState({ error: true });
+    }
+  };
 
   render() {
     const {
       intl: { formatMessage }
     } = this.props;
-    const { weekly, never } = this.state;
+    const { error, weekly, never } = this.state;
 
     return (
       <section className="email-notifications">
+        {error && (
+          <AlertBox type={MessageType.ERROR}>
+            <FormattedMessage id="email-notifications.save-settings-failure" />
+          </AlertBox>
+        )}
         <h2 className="email-notifications__heading">
           <FormattedMessage id="email.notification.heading" />
         </h2>
