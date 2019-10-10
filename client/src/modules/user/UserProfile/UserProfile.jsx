@@ -198,8 +198,8 @@ class UserProfile extends PureComponent {
           {this.renderPersonalInfo()}
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
-          <DeleteAccount />
           <EmailNotifications />
+          <DeleteAccount />
           {pending && <Preloader />}
         </article>
       </div>

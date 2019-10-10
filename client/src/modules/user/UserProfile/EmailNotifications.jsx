@@ -36,7 +36,6 @@ class EmailNotifications extends Component {
     };
 
     try {
-      console.log(settings);
       saveEmailNotificationSettings(settings);
     } catch {
       this.setState({ error: true });
