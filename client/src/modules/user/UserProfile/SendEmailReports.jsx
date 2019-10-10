@@ -2,7 +2,10 @@ import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import './SendEmailReports.scss';
-import { prepareItemsRequestedByMe } from '../model/actions';
+import {
+  prepareItemsRequestedByMe,
+  prepareItemsOwnedByMe
+} from '../model/actions';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
 
@@ -24,7 +27,8 @@ class SendEmailReports extends PureComponent {
   handleItemsOwnedByMe = async () => {
     try {
       this.setState({ error: false });
-      // await
+
+      await prepareItemsOwnedByMe();
     } catch (error) {
       this.setState({ error: true });
     }
@@ -60,7 +64,7 @@ class SendEmailReports extends PureComponent {
             <FormattedMessage id="email-reports.items-owned" />
             <button
               className="primary-button"
-              onClick={this.handleItemsRequestedByMe}
+              onClick={this.handleItemsOwnedByMe}
               type="submit"
             >
               <FormattedMessage id="email-reports.submit-button" />

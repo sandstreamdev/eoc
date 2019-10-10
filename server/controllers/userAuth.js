@@ -474,6 +474,23 @@ const prepareItemsRequestedByMe = async (req, resp) => {
   } catch (error) {}
 };
 
+const prepareItemsOwnedByMe = async (req, resp) => {
+  const { _id: userId } = req.user;
+
+  try {
+    const ownerLists = await List.find({ ownerIds: { $in: [userId] } })
+      .lean()
+      .exec();
+
+    const allItems = mergeArrays(ownerLists)('items');
+    const unhandledItems = getUnhandledItems(allItems);
+    const doneItems = getDoneItems(allItems);
+
+    console.log('UNHANDLED ITEMS', unhandledItems);
+    console.log('DONE ITEMS', doneItems);
+  } catch {}
+};
+
 module.exports = {
   changePassword,
   checkToken,
@@ -483,6 +500,7 @@ module.exports = {
   getLoggedUser,
   getUserDetails,
   logout,
+  prepareItemsOwnedByMe,
   prepareItemsRequestedByMe,
   recoveryPassword,
   resendSignUpConfirmationLink,

@@ -152,3 +152,6 @@ export const deleteAccount = (email, password) =>
 
 export const prepareItemsRequestedByMe = () =>
   getData('/auth/prepare-items-req-by-me');
+
+export const prepareItemsOwnedByMe = () =>
+  getData('/auth/prepare-items-owned-by-me');
