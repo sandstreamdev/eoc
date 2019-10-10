@@ -150,4 +150,4 @@ export const getAccountDetails = token =>
 export const deleteAccount = (email, password) =>
   deleteData('/auth', { email, password });
 
-export const sendEmailReports = () => getData('/auth/send-email-reports');
+export const sendEmailReports = () => getData('/auth/prepare-items');

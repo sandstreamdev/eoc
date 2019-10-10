@@ -452,6 +452,37 @@ const getHours = milliseconds => Math.floor(milliseconds / 3600000);
 
 const formatHours = hours => (hours === 1 ? `${hours} hour` : `${hours} hours`);
 
+/**
+ *
+ * @param {lists} array of objects eg. array of lists
+ * @param {namespace} name of object property to merge eg. 'items'
+ * @return {Array} new array of merged objects
+ */
+const mergeArrays = lists => namespace => {
+  const mergedArray = [];
+
+  lists.forEach(list => {
+    if (list[namespace].length > 0) {
+      mergedArray.push(...list.items);
+    }
+  });
+
+  return mergedArray;
+};
+
+const getUnhandledItems = items => items.filter(item => !item.done);
+
+const getDoneItems = items => items.filter(item => item.done);
+
+/**
+ *
+ * @param {items} array of items
+ * @param {userId} user id
+ * @return {Array} return array of items where passed userId was an author
+ */
+const getAuthorItems = items => userId =>
+  items.filter(item => item.authorId.toString() === userId.toString());
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -460,12 +491,16 @@ module.exports = {
   filter,
   fireAndForget,
   formatHours,
+  getAuthorItems,
+  getDoneItems,
   getHours,
+  getUnhandledItems,
   isDefined,
   isMember,
   isOwner,
   isValidMongoId,
   isViewer,
+  mergeArrays,
   responseWithCohort,
   responseWithCohortDetails,
   responseWithCohortMember,

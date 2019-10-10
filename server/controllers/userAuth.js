@@ -8,12 +8,19 @@ const _trim = require('lodash/trim');
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
+const List = require('../models/list.model');
 const {
   responseWithUserData,
   validatePassword
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
 const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
+const {
+  getAuthorItems,
+  getDoneItems,
+  getUnhandledItems,
+  mergeArrays
+} = require('../common/utils/helpers');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -448,6 +455,29 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
+const prepareItems = async (req, resp) => {
+  // do something
+  const { _id: userId } = req.user;
+
+  try {
+    const viewerLists = await List.find({ viewersIds: { $in: [userId] } })
+      .lean()
+      .exec();
+    const allItems = mergeArrays(viewerLists)('items');
+    const authorItems = getAuthorItems(allItems)(userId);
+
+    // Prepare unhandled items where I'm an author/requester
+    const unhandledItems = getUnhandledItems(authorItems);
+
+    console.log('UNHANDLED ITEMS', unhandledItems);
+
+    // Prepare done items where I'm an author/requester
+    const doneItems = getDoneItems(authorItems);
+
+    console.log('DONE ITEMS', doneItems);
+  } catch (error) {}
+};
+
 module.exports = {
   changePassword,
   checkToken,
@@ -457,6 +487,7 @@ module.exports = {
   getLoggedUser,
   getUserDetails,
   logout,
+  prepareItems,
   recoveryPassword,
   resendSignUpConfirmationLink,
   resetPassword,
