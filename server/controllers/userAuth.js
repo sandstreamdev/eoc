@@ -448,6 +448,10 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
+const updateEmailNotificationSettings = async (req, resp) => {
+  // logic here
+};
+
 module.exports = {
   changePassword,
   checkToken,

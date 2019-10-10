@@ -18,7 +18,11 @@ const UserSchema = new Schema(
     resetTokenExpirationDate: { type: Date },
     signUpHash: { type: String },
     signUpHashExpirationDate: { type: Date },
-    surname: { type: String }
+    surname: { type: String },
+    emailNotificationSettings: {
+      weekly: { type: Boolean, default: true },
+      never: { type: Boolean, default: false }
+    }
   },
   { timestamps: true }
 );

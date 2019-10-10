@@ -20,6 +20,7 @@ const {
   resetPassword,
   sendUser,
   signUp,
+  updateEmailNotificationSettings,
   updatePassword
 } = require('../controllers/userAuth');
 const {
@@ -51,5 +52,10 @@ router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
+router.post(
+  '/email-notification-settings',
+  authorize,
+  updateEmailNotificationSettings
+);
 
 module.exports = router;
