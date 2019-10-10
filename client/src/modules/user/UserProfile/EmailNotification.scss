@@ -2,6 +2,7 @@
 
 .email-notifications {
   margin-bottom: four-by(12);
+  border-bottom: 1px solid #d1d3d4;
 
   &__heading {
     font-size: 20px;
@@ -12,6 +13,7 @@
 
   &__list {
     overflow: hidden;
+    padding-bottom: four-by(3);
   }
 
   &__list-item {

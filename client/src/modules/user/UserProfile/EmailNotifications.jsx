@@ -53,6 +53,8 @@ class EmailNotifications extends Component {
         {error && (
           <AlertBox type={MessageType.ERROR}>
             <FormattedMessage id="email-notifications.save-settings-failure" />
+            <span>&nbsp;</span>
+            <FormattedMessage id="common.try-again" />
           </AlertBox>
         )}
         <h2 className="email-notifications__heading">
