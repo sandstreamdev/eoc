@@ -102,8 +102,13 @@ const sendResetPasswordLink = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const sendReport = (req, resp) => {
+  const { unhandledItems, doneItems } = resp.locales;
+};
+
 module.exports = {
   sendInvitation,
+  sendReport,
   sendResetPasswordLink,
   sendSignUpConfirmationLink
 };

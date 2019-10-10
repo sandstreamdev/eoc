@@ -29,7 +29,8 @@ const {
 } = require('../middleware/removeDemoUserChanges');
 const {
   sendResetPasswordLink,
-  sendSignUpConfirmationLink
+  sendSignUpConfirmationLink,
+  sendReport
 } = require('../mailer');
 const { authorize } = require('../middleware/authorize');
 
@@ -53,7 +54,17 @@ router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
-router.get('/prepare-items-req-by-me', authorize, prepareItemsRequestedByMe);
-router.get('/prepare-items-owned-by-me', authorize, prepareItemsOwnedByMe);
+router.get(
+  '/prepare-items-req-by-me',
+  authorize,
+  prepareItemsRequestedByMe,
+  sendReport
+);
+router.get(
+  '/prepare-items-owned-by-me',
+  authorize,
+  prepareItemsOwnedByMe,
+  sendReport
+);
 
 module.exports = router;

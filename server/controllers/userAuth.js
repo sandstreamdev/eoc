@@ -455,8 +455,7 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
-const prepareItemsRequestedByMe = async (req, resp) => {
-  // do something
+const prepareItemsRequestedByMe = async (req, resp, next) => {
   const { _id: userId } = req.user;
 
   try {
@@ -465,16 +464,25 @@ const prepareItemsRequestedByMe = async (req, resp) => {
       .exec();
     const allItems = mergeArrays(viewerLists)('items');
     const authorItems = getAuthorItems(allItems)(userId);
-
-    // Prepare unhandled items where I'm an author/requester
     const unhandledItems = getUnhandledItems(authorItems);
-
-    // Prepare done items where I'm an author/requester
     const doneItems = getDoneItems(authorItems);
-  } catch (error) {}
+
+    // eslint-disable-next-line no-param-reassign
+    resp.locales = {
+      unhandledItems,
+      doneItems
+    };
+
+    resp.send();
+    next();
+  } catch (error) {
+    console.log(err);
+
+    resp.send(400);
+  }
 };
 
-const prepareItemsOwnedByMe = async (req, resp) => {
+const prepareItemsOwnedByMe = async (req, resp, next) => {
   const { _id: userId } = req.user;
 
   try {
@@ -486,9 +494,17 @@ const prepareItemsOwnedByMe = async (req, resp) => {
     const unhandledItems = getUnhandledItems(allItems);
     const doneItems = getDoneItems(allItems);
 
-    console.log('UNHANDLED ITEMS', unhandledItems);
-    console.log('DONE ITEMS', doneItems);
-  } catch {}
+    // eslint-disable-next-line no-param-reassign
+    resp.locales = {
+      unhandledItems,
+      doneItems
+    };
+
+    resp.send();
+    next();
+  } catch {
+    resp.send(400);
+  }
 };
 
 module.exports = {
