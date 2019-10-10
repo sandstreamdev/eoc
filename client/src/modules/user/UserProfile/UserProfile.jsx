@@ -13,9 +13,9 @@ import Preloader from 'common/components/Preloader';
 import { fetchUserDetails } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
 import UserProfileHeader from './UserProfileHeader';
-import './UserProfile.scss';
 import DeleteAccount from './DeleteAccount';
 import EmailNotifications from './EmailNotifications';
+import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;

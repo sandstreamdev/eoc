@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-// import PropTypes from 'prop-types';
 
+import AlertBox from 'common/components/AlertBox';
 import SwitchButton from 'common/components/SwitchButton';
-import './EmailNotification.scss';
 import { IntlPropType } from 'common/constants/propTypes';
 import { saveEmailNotificationSettings } from '../model/actions';
-import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
+import './EmailNotification.scss';
 
-class EmailNotifications extends Component {
+class EmailNotifications extends PureComponent {
   state = {
     error: false,
     never: false,
@@ -46,7 +45,7 @@ class EmailNotifications extends Component {
     const {
       intl: { formatMessage }
     } = this.props;
-    const { error, weekly, never } = this.state;
+    const { error, never, weekly } = this.state;
 
     return (
       <section className="email-notifications">

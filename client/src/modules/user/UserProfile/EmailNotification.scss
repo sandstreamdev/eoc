@@ -2,10 +2,10 @@
 
 .email-notifications {
   margin-bottom: four-by(12);
-  border-bottom: 1px solid #d1d3d4;
+  border-bottom: 1px solid $gray-bg;
 
   &__heading {
-    font-size: 20px;
+    font-size: $xl-font;
     font-weight: 500;
     color: $text-dark;
     margin-bottom: four-by(4);
@@ -22,8 +22,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: #fff;
-    padding: 8px;
+    background-color: $bg-color;
+    padding: four-by(2);
     height: 30px;
     overflow: hidden;
   }
