@@ -7,7 +7,7 @@ const UserSchema = new Schema(
     accessToken: { type: String },
     activatedAt: { type: Date },
     avatarUrl: { type: String },
-    displayName: { type: String, required: true },
+    displayName: { type: String },
     email: { type: String, required: true },
     idFromProvider: { type: String },
     isActive: { type: Boolean },

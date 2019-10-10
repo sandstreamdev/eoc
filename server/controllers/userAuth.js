@@ -14,6 +14,9 @@ const {
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
 const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
+const Cohort = require('../models/cohort.model');
+const List = require('../models/list.model');
+const { isMember, isOwner } = require('../common/utils');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -433,19 +436,138 @@ const checkToken = (req, resp) => {
  * https://jira2.sanddev.com/secure/RapidBoard.jspa?rapidView=1&view=planning&selectedIssue=EOC-521&issueLimit=100
  * */
 const deleteAccount = async (req, resp) => {
-  // console.log('DELETE ACCOUNT');
-  // const { _id: userId } = req.user;
-  // const { sessionID } = req;
-  // const regexp = new RegExp(userId);
-  // try {
-  //   const session = await Session.find({
-  //     _id: sessionID,
-  //     session: regexp
-  //   }).exec();
-  // } catch (error) {
-  //   //
-  // }
-  return resp.send();
+  const { email, password } = req.body;
+  const sanitizedEmail = sanitize(email);
+
+  try {
+    const user = await User.findOne({ email: sanitizedEmail, isActive: true });
+    const { _id: userId, password: dbPassword, createdAt } = user;
+
+    if (bcrypt.compareSync(password + email, dbPassword)) {
+      // check if he is the only owner and send error
+      const listsOnlyOwner = await List.find(
+        {
+          $and: [{ ownerIds: userId }, { ownerIds: { $size: 1 } }],
+          'viewersIds.1': { $exists: true }
+        },
+        'name'
+      )
+        .lean()
+        .exec();
+
+      const cohortsOnlyOwner = await Cohort.find(
+        {
+          $and: [{ ownerIds: userId }, { ownerIds: { $size: 1 } }],
+          'memberIds.1': { $exists: true }
+        },
+        'name'
+      )
+        .lean()
+        .exec();
+
+      if (cohortsOnlyOwner.length >= 1 || listsOnlyOwner.length >= 1) {
+        const data = { cohorts: cohortsOnlyOwner, lists: listsOnlyOwner };
+
+        return resp
+          .status(400)
+          .send({ reason: BadRequestReason.REQUIREMENTS, data });
+      }
+
+      // delete account details
+      const hashedEmail = bcrypt.hashSync(email, 12);
+      const removedUser = new User({
+        _id: userId,
+        createdAt,
+        email: hashedEmail,
+        updatedAt: new Date()
+      });
+
+      await User.deleteOne({ email: sanitizedEmail });
+      await removedUser.save();
+
+      // destroy user's sessions
+      const {
+        sessionStore: store,
+        sessionStore: { db }
+      } = req;
+      const regexp = new RegExp(userId);
+
+      await db
+        .collection('sessions')
+        .find({
+          session: regexp
+        })
+        .forEach(({ _id }) => store.destroy(_id));
+
+      // delete user's lists
+      await List.updateMany(
+        { viewersIds: userId, 'viewersIds.1': { $exists: false } },
+        {
+          isArchived: true,
+          isDeleted: true
+        }
+      ).exec();
+
+      // remove user from other lists
+      const lists = await List.find({ viewersIds: userId });
+      const listIds = [];
+
+      await Promise.all(
+        lists.map(async list => {
+          const { memberIds, ownerIds, viewersIds } = list;
+
+          viewersIds.splice(viewersIds.indexOf(userId), 1);
+
+          if (isMember(list, userId)) {
+            memberIds.splice(memberIds.indexOf(userId), 1);
+          }
+
+          if (isOwner(list, userId)) {
+            ownerIds.splice(ownerIds.indexOf(userId), 1);
+          }
+
+          listIds.push(list._id.toString());
+
+          return list.save();
+        })
+      );
+
+      // delete user's own cohorts
+      await Cohort.updateMany(
+        { memberIds: userId, 'memberIds.1': { $exists: false } },
+        {
+          isArchived: true,
+          isDeleted: true
+        }
+      ).exec();
+
+      // remove user form other cohorts
+      const cohorts = await Cohort.find({ memberIds: userId });
+      const cohortIds = [];
+
+      await Promise.all(
+        cohorts.map(async cohort => {
+          const { memberIds, ownerIds } = cohort;
+
+          memberIds.splice(memberIds.indexOf(userId), 1);
+
+          if (isOwner(cohort, userId)) {
+            ownerIds.splice(ownerIds.indexOf(userId), 1);
+          }
+
+          cohortIds.push(cohort._id.toString());
+
+          return cohort.save();
+        })
+      );
+
+      return resp.send();
+    }
+    throw new Error();
+  } catch (err) {
+    console.log(err);
+    resp.sendStatus(400);
+  }
 };
 
 module.exports = {
