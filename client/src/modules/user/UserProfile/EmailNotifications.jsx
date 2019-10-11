@@ -9,6 +9,7 @@ import './EmailNotification.scss';
 
 class EmailNotifications extends PureComponent {
   state = {
+    success: false,
     error: false,
     notificationFrequency: NotificationFrequency.MONDAY,
     areDaysVisible: true
@@ -19,6 +20,13 @@ class EmailNotifications extends PureComponent {
       areDaysVisible: true,
       notificationFrequency: NotificationFrequency.MONDAY
     });
+
+  showSuccessMessage = () => {
+    this.setState({ success: true }, this.hideSuccessMessageAfterTimeout);
+  };
+
+  hideSuccessMessageAfterTimeout = () =>
+    setTimeout(() => this.setState({ success: false }), 4000);
 
   handleSetNever = () =>
     this.setState(
@@ -40,13 +48,17 @@ class EmailNotifications extends PureComponent {
     );
   };
 
-  updateNotificationSettings = () => {
+  updateNotificationSettings = async () => {
     const { notificationFrequency } = this.state;
 
     this.setState({ error: false });
 
     try {
-      saveEmailNotificationSettings(notificationFrequency);
+      const result = await saveEmailNotificationSettings(notificationFrequency);
+
+      if (result) {
+        this.showSuccessMessage();
+      }
     } catch {
       this.setState({ error: true });
     }
@@ -56,7 +68,12 @@ class EmailNotifications extends PureComponent {
     const {
       intl: { formatMessage }
     } = this.props;
-    const { areDaysVisible, error, notificationFrequency } = this.state;
+    const {
+      areDaysVisible,
+      error,
+      notificationFrequency,
+      success
+    } = this.state;
 
     return (
       <section className="email-notifications">
@@ -65,6 +82,11 @@ class EmailNotifications extends PureComponent {
             <FormattedMessage id="email-notifications.save-settings-failure" />
             <span>&nbsp;</span>
             <FormattedMessage id="common.try-again" />
+          </AlertBox>
+        )}
+        {success && (
+          <AlertBox type={MessageType.SUCCESS}>
+            <FormattedMessage id="email-notifications.save-settings-success" />
           </AlertBox>
         )}
         <h2 className="email-notifications__heading">

@@ -90,6 +90,7 @@
   "delete-form.verify-message": "To verify, type {text} below",
   "delete-form.verify-text": "delete my account",
   "email-notifications.save-settings-failure": "Changing notification frequency failed.",
+  "email-notifications.save-settings-success": "Email notification frequency saved.",
   "email.notification.heading": "Email notifications frequency",
   "email.notification.never": "never",
   "email.notification.weekly": "weekly",
