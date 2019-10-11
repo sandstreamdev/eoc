@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import AlertBox from 'common/components/AlertBox';
-import { IntlPropType } from 'common/constants/propTypes';
 import { saveEmailNotificationSettings } from '../model/actions';
 import { NotificationFrequency, MessageType } from 'common/constants/enums';
+import SelectDays from './SelectDays';
 import './EmailNotification.scss';
 
 class EmailNotifications extends PureComponent {
@@ -66,9 +66,6 @@ class EmailNotifications extends PureComponent {
 
   render() {
     const {
-      intl: { formatMessage }
-    } = this.props;
-    const {
       areDaysVisible,
       error,
       notificationFrequency,
@@ -113,44 +110,11 @@ class EmailNotifications extends PureComponent {
               onChange={this.showDays}
             />
           </label>
-          {areDaysVisible && (
-            <div className="email-notifications__days">
-              <select
-                className="email-notifications__select"
-                onChange={this.handleSelect}
-              >
-                <option value={NotificationFrequency.MONDAY}>
-                  {formatMessage({ id: 'common.monday' })}
-                </option>
-                <option value={NotificationFrequency.TUESDAY}>
-                  {formatMessage({ id: 'common.tuesday' })}
-                </option>
-                <option value={NotificationFrequency.WEDNESDAY}>
-                  {formatMessage({ id: 'common.wednesday' })}
-                </option>
-                <option value={NotificationFrequency.THURSDAY}>
-                  {formatMessage({ id: 'common.thursday' })}
-                </option>
-                <option value={NotificationFrequency.FRIDAY}>
-                  {formatMessage({ id: 'common.friday' })}
-                </option>
-                <option value={NotificationFrequency.SATURDAY}>
-                  {formatMessage({ id: 'common.saturday' })}
-                </option>
-                <option value={NotificationFrequency.SUNDAY}>
-                  {formatMessage({ id: 'common.sunday' })}
-                </option>
-              </select>
-            </div>
-          )}
+          {areDaysVisible && <SelectDays onChange={this.handleSelect} />}
         </div>
       </section>
     );
   }
 }
 
-EmailNotifications.propTypes = {
-  intl: IntlPropType.isRequired
-};
-
-export default injectIntl(EmailNotifications);
+export default EmailNotifications;
