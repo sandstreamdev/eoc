@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
 import AlertBox from 'common/components/AlertBox';
-import SwitchButton from 'common/components/SwitchButton';
 import { IntlPropType } from 'common/constants/propTypes';
 import { saveEmailNotificationSettings } from '../model/actions';
 import { MessageType } from 'common/constants/enums';
@@ -59,24 +58,28 @@ class EmailNotifications extends PureComponent {
         <h2 className="email-notifications__heading">
           <FormattedMessage id="email.notification.heading" />
         </h2>
-        <ul className="email-notifications__list">
-          <li className="email-notifications__list-item">
-            <SwitchButton
-              checked={weekly}
-              label="Weekly"
-              onChange={weekly ? this.setNever : this.setWeekly}
-              value={formatMessage({ id: 'email.notification.weekly' })}
-            />
-          </li>
-          <li className="email-notifications__list-item">
-            <SwitchButton
+        <div className="email-notifications__body">
+          <label className="email-notifications__label">
+            <FormattedMessage id="email.notification.never" />
+            <input
               checked={never}
-              label="Never"
-              onChange={never ? this.setWeekly : this.setNever}
+              name="group1"
+              type="radio"
               value={formatMessage({ id: 'email.notification.never' })}
+              onChange={never ? this.setWeekly : this.setNever}
             />
-          </li>
-        </ul>
+          </label>
+          <label className="email-notifications__label">
+            <FormattedMessage id="email.notification.weekly" />
+            <input
+              checked={weekly}
+              name="group1"
+              type="radio"
+              value={formatMessage({ id: 'email.notification.weekly' })}
+              onChange={weekly ? this.setNever : this.setWeekly}
+            />
+          </label>
+        </div>
       </section>
     );
   }

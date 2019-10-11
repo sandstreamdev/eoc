@@ -11,21 +11,11 @@
     margin-bottom: four-by(4);
   }
 
-  &__list {
-    overflow: hidden;
-    padding-bottom: four-by(3);
-  }
-
-  &__list-item {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    background-color: $bg-color;
+  &__label {
     padding: four-by(2);
-    height: 30px;
-    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: four-by(3);
   }
 
   .alert-box {
