@@ -4,27 +4,27 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import AlertBox from 'common/components/AlertBox';
 import { IntlPropType } from 'common/constants/propTypes';
 import { saveEmailNotificationSettings } from '../model/actions';
-import { MessageType } from 'common/constants/enums';
+import { NotificationFrequency, MessageType } from 'common/constants/enums';
 import './EmailNotification.scss';
 
 class EmailNotifications extends PureComponent {
   state = {
     error: false,
-    never: false,
-    weekly: true
+    notificationFrequency: NotificationFrequency.MONDAY,
+    areDaysVisible: false
   };
 
-  setWeekly = () =>
-    this.setState(
-      { weekly: true, never: false, error: false },
-      this.updateNotificationSettings
-    );
+  handleDaysVisibility = () => this.setState({ areDaysVisible: true });
+
+  setWeekly = event => {
+    this.setState({ notificationFrequency: NotificationFrequency.MONDAY });
+  };
 
   setNever = () =>
-    this.setState(
-      { never: true, weekly: false, error: false },
-      this.updateNotificationSettings
-    );
+    this.setState({
+      areDaysVisible: false,
+      notificationFrequency: NotificationFrequency.NEVER
+    });
 
   updateNotificationSettings = () => {
     const { weekly, never } = this.state;
@@ -44,7 +44,9 @@ class EmailNotifications extends PureComponent {
     const {
       intl: { formatMessage }
     } = this.props;
-    const { error, never, weekly } = this.state;
+    const { areDaysVisible, error, notificationFrequency } = this.state;
+
+    console.log(notificationFrequency, NotificationFrequency.NEVER);
 
     return (
       <section className="email-notifications">
@@ -62,81 +64,50 @@ class EmailNotifications extends PureComponent {
           <label className="email-notifications__label">
             <FormattedMessage id="email.notification.never" />
             <input
-              checked={never}
+              // checked={notificationFrequency === NotificationFrequency.NEVER}
               name="group1"
               type="radio"
               value={formatMessage({ id: 'email.notification.never' })}
-              onChange={never ? this.setWeekly : this.setNever}
+              // onInput={this.handleChange}
+              onChange={this.setNever}
             />
           </label>
           <label className="email-notifications__label">
             <FormattedMessage id="email.notification.weekly" />
             <input
-              checked={weekly}
+              //  checked={notificationFrequency !== NotificationFrequency.NEVER}
               name="group1"
               type="radio"
               value={formatMessage({ id: 'email.notification.weekly' })}
-              onChange={weekly ? this.setNever : this.setWeekly}
+              // onInput={this.handleChange}
+              onChange={this.handleDaysVisibility}
             />
           </label>
-          {weekly && (
+          {areDaysVisible && (
             <div className="email-notifications__days">
-              <label className="email-notifications__label">
-                <FormattedMessage id="common.monday" />
-                <input
-                  name="group2"
-                  type="radio"
-                  value={formatMessage({ id: 'common.monday' })}
-                />
-              </label>
-              <label className="email-notifications__label">
-                <FormattedMessage id="common.tuesday" />
-                <input
-                  name="group2"
-                  type="radio"
-                  value={formatMessage({ id: 'common.tuesday' })}
-                />
-              </label>
-              <label className="email-notifications__label">
-                <FormattedMessage id="common.wednesday" />
-                <input
-                  name="group2"
-                  type="radio"
-                  value={formatMessage({ id: 'common.wednesday' })}
-                />
-              </label>
-              <label className="email-notifications__label">
-                <FormattedMessage id="common.thursday" />
-                <input
-                  name="group2"
-                  type="radio"
-                  value={formatMessage({ id: 'common.thursday' })}
-                />
-              </label>
-              <label className="email-notifications__label">
-                <FormattedMessage id="common.friday" />
-                <input
-                  name="group2"
-                  type="radio"
-                  value={formatMessage({ id: 'common.friday' })}
-                />
-              </label>
-              <label className="email-notifications__label">
-                <FormattedMessage id="common.saturday" />
-                <input
-                  name="group2"
-                  type="radio"
-                  value={formatMessage({ id: 'common.saturday' })}
-                />
-              </label>
-              <label className="email-notifications__label">
-                <FormattedMessage id="common.sunday" />
-                <input
-                  name="group2"
-                  type="radio"
-                  value={formatMessage({ id: 'common.sunday' })}
-                />
-              </label>
+              <select>
+                <option value={formatMessage({ id: 'common.monday' })}>
+                  {formatMessage({ id: 'common.monday' })}
+                </option>
+                <option value={formatMessage({ id: 'common.tuesday' })}>
+                  {formatMessage({ id: 'common.tuesday' })}
+                </option>
+                <option value={formatMessage({ id: 'common.wednesday' })}>
+                  {formatMessage({ id: 'common.wednesday' })}
+                </option>
+                <option value={formatMessage({ id: 'common.thursday' })}>
+                  {formatMessage({ id: 'common.thursday' })}
+                </option>
+                <option value={formatMessage({ id: 'common.friday' })}>
+                  {formatMessage({ id: 'common.friday' })}
+                </option>
+                <option value={formatMessage({ id: 'common.saturday' })}>
+                  {formatMessage({ id: 'common.saturday' })}
+                </option>
+                <option value={formatMessage({ id: 'common.sunday' })}>
+                  {formatMessage({ id: 'common.sunday' })}
+                </option>
+              </select>
             </div>
           )}
         </div>

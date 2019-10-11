@@ -12,6 +12,7 @@
   }
 
   &__label {
+    cursor: pointer;
     padding: four-by(2);
     display: flex;
     justify-content: space-between;
@@ -25,6 +26,6 @@
   &__days {
     display: flex;
     flex-direction: column;
-    margin-left: four-by(5);
+    margin-bottom: four-by(5);
   }
 }

@@ -74,6 +74,5 @@ export const NotificationFrequency = Object.freeze({
   SUNDAY: 'notification/SUNDAY',
   THURSDAY: 'notification/THURSDAY',
   TUESDAY: 'notification/TUESDAY',
-  WEDNESDAY: 'notification/WEDNESDAY',
-  WEEKLY: 'notification/WEEKLY'
+  WEDNESDAY: 'notification/WEDNESDAY'
 });
