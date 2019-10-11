@@ -449,24 +449,25 @@ const deleteAccount = async (req, resp) => {
 };
 
 const updateEmailNotificationSettings = async (req, resp) => {
-  const { never, weekly } = req.body;
   const { _id } = req.user;
+  const { notificationFrequency } = req.body;
+  console.log(notificationFrequency);
 
-  try {
-    await User.findOneAndUpdate(
-      { _id },
-      {
-        emailNotificationSettings: {
-          never,
-          weekly
-        }
-      }
-    ).exec();
+  // try {
+  //   await User.findOneAndUpdate(
+  //     { _id },
+  //     {
+  //       emailNotificationSettings: {
+  //         never,
+  //         weekly
+  //       }
+  //     }
+  //   ).exec();
 
-    resp.send();
-  } catch {
-    resp.send(400);
-  }
+  //   resp.send();
+  // } catch {
+  //   resp.send(400);
+  // }
 };
 
 module.exports = {

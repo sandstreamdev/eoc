@@ -19,10 +19,8 @@ const UserSchema = new Schema(
     signUpHash: { type: String },
     signUpHashExpirationDate: { type: Date },
     surname: { type: String },
-    emailNotificationSettings: {
-      weekly: { type: Boolean, default: true },
-      never: { type: Boolean, default: false }
-    }
+    emailNotificationsFrequency: { type: String, default: '' },
+    emailReportSentAt: { type: Date, default: '' }
   },
   { timestamps: true }
 );
