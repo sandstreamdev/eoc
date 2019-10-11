@@ -19,7 +19,7 @@ const {
   getAuthorItems,
   getDoneItems,
   getUnhandledItems,
-  mergeArrays
+  prepareItemsByDoneUnhandled
 } = require('../common/utils/helpers');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
@@ -459,13 +459,16 @@ const prepareItemsRequestedByMe = async (req, resp, next) => {
   const { _id: userId } = req.user;
 
   try {
-    const viewerLists = await List.find({ viewersIds: { $in: [userId] } })
+    const viewerLists = await List.find({
+      viewersIds: { $in: [userId] },
+      'items.0': { $exists: true }
+    })
       .lean()
       .exec();
-    const allItems = mergeArrays(viewerLists)('items');
-    const authorItems = getAuthorItems(allItems)(userId);
-    const unhandledItems = getUnhandledItems(authorItems);
-    const doneItems = getDoneItems(authorItems);
+
+    const allItems = prepareItemsByDoneUnhandled(viewerLists)(userId);
+
+    console.log(allItems);
 
     // eslint-disable-next-line no-param-reassign
     resp.locales = {
@@ -476,7 +479,7 @@ const prepareItemsRequestedByMe = async (req, resp, next) => {
     resp.send();
     next();
   } catch (error) {
-    console.log(err);
+    console.log(error);
 
     resp.send(400);
   }
@@ -490,7 +493,7 @@ const prepareItemsOwnedByMe = async (req, resp, next) => {
       .lean()
       .exec();
 
-    const allItems = mergeArrays(ownerLists)('items');
+    const allItems = prepareItemsByDoneUnhandled(ownerLists)(userId);
     const unhandledItems = getUnhandledItems(allItems);
     const doneItems = getDoneItems(allItems);
 
