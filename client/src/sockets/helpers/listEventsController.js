@@ -11,17 +11,14 @@ const listEventsController = (event, data, { dispatch, getState }) => {
 
   switch (event) {
     case ListEvents.ADD_OWNER_ROLE_SUCCESS: {
-      const {
-        notificationData: { listName, performer },
-        userId,
-        ...rest
-      } = data;
+      const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId;
+      const displayNotification = userId === currentUserId && notificationData;
 
       if (displayNotification) {
+        const { listName, performer } = notificationData;
         const notificationId = 'list.actions.current-user-add-to-owners';
-        const notificationData = {
+        const notification = {
           data: {
             listName,
             performer
@@ -32,24 +29,21 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          notificationData
+          notification
         );
       }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
     case ListEvents.REMOVE_OWNER_ROLE_SUCCESS: {
-      const {
-        notificationData: { listName, performer },
-        userId,
-        ...rest
-      } = data;
+      const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId;
+      const displayNotification = userId === currentUserId && notificationData;
 
       if (displayNotification) {
+        const { listName, performer } = notificationData;
         const notificationId = 'list.actions.current-user-removed-from-owners';
-        const notificationData = {
+        const notification = {
           data: {
             listName,
             performer
@@ -60,24 +54,21 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          notificationData
+          notification
         );
       }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
     case ListEvents.ADD_MEMBER_ROLE_SUCCESS: {
-      const {
-        notificationData: { listName, performer },
-        userId,
-        ...rest
-      } = data;
+      const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId;
+      const displayNotification = userId === currentUserId && notificationData;
 
       if (displayNotification) {
+        const { listName, performer } = notificationData;
         const notificationId = 'list.actions.current-user-add-to-members';
-        const notificationData = {
+        const notification = {
           data: {
             listName,
             performer
@@ -88,24 +79,21 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          notificationData
+          notification
         );
       }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
     case ListEvents.REMOVE_MEMBER_ROLE_SUCCESS: {
-      const {
-        notificationData: { listName, performer },
-        userId,
-        ...rest
-      } = data;
+      const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId;
+      const displayNotification = userId === currentUserId && notificationData;
 
       if (displayNotification) {
+        const { listName, performer } = notificationData;
         const notificationId = 'list.actions.current-user-removed-from-members';
-        const notificationData = {
+        const notification = {
           data: {
             listName,
             performer
@@ -116,7 +104,7 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          notificationData
+          notification
         );
       }
 

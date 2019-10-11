@@ -17,7 +17,7 @@ import {
   SuccessMessage,
   UserProfile
 } from 'modules/user';
-import { getLoggedUser } from 'modules/user/model/actions';
+import { removeUserData, getLoggedUser } from 'modules/user/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import Footer from '../Footer';
@@ -30,7 +30,7 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import { loadSettings, saveSettings } from 'common/utils/localStorage';
+import { loadData, saveData, storageKeys } from 'common/utils/localStorage';
 import { clearMetaDataSuccess } from 'common/model/actions';
 import './Layout.scss';
 
@@ -46,7 +46,7 @@ export class Layout extends PureComponent {
   }
 
   componentDidMount() {
-    const settings = loadSettings();
+    const settings = loadData(storageKeys.settings);
     const {
       currentUser,
       getLoggedUser,
@@ -67,6 +67,8 @@ export class Layout extends PureComponent {
       const { viewType } = settings;
       this.setState({ viewType });
     }
+
+    this.listenForAccountDeletion();
   }
 
   componentDidUpdate(previousProps) {
@@ -83,6 +85,16 @@ export class Layout extends PureComponent {
       window.scrollTo(0, 0);
     }
   }
+
+  listenForAccountDeletion = () => {
+    const { removeUserData } = this.props;
+
+    window.addEventListener('storage', ({ key }) => {
+      if (key === storageKeys.account) {
+        removeUserData();
+      }
+    });
+  };
 
   isListsView = () => {
     const {
@@ -107,7 +119,7 @@ export class Layout extends PureComponent {
     const { viewType } = this.state;
     const settings = { viewType };
 
-    saveSettings(settings);
+    saveData(storageKeys.settings, settings);
   };
 
   render() {
@@ -141,6 +153,7 @@ export class Layout extends PureComponent {
             path="/password-recovery/:token?"
           />
           <Route component={SuccessMessage} path="/password-recovery-success" />
+          <Route component={SuccessMessage} path="/account-deleted" />
           <Redirect to="/" />
         </Switch>
       </Fragment>
@@ -216,6 +229,7 @@ Layout.propTypes = {
     pathname: PropTypes.string.isRequired
   }),
 
+  removeUserData: PropTypes.func.isRequired,
   clearMetaDataSuccess: PropTypes.func.isRequired,
   getLoggedUser: PropTypes.func.isRequired
 };
@@ -229,6 +243,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { clearMetaDataSuccess, getLoggedUser }
+    { removeUserData, clearMetaDataSuccess, getLoggedUser }
   )
 )(Layout);

@@ -1,6 +1,10 @@
-export const loadSettings = () => {
+import { enumerable } from 'common/utils/helpers';
+
+export const storageKeys = enumerable()('account', 'settings');
+
+export const loadData = key => {
   try {
-    const serializedState = localStorage.getItem('settings');
+    const serializedState = localStorage.getItem(key);
 
     return serializedState === null ? undefined : JSON.parse(serializedState);
   } catch {
@@ -8,11 +12,11 @@ export const loadSettings = () => {
   }
 };
 
-export const saveSettings = state => {
+export const saveData = (key, value) => {
   try {
-    const serializedState = JSON.stringify(state);
+    const serializedState = JSON.stringify(value);
 
-    localStorage.setItem('settings', serializedState);
+    localStorage.setItem(key, serializedState);
   } catch {
     // Ignore write errors
   }

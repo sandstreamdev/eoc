@@ -6,12 +6,17 @@ import _flowRight from 'lodash/flowRight';
 import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
-import { deleteAccount, logoutCurrentUser } from '../model/actions';
+import {
+  removeUserData,
+  deleteAccount,
+  logoutCurrentUser
+} from '../model/actions';
 import DeleteDialog from './DeleteDialog';
 import Dialog from 'common/components/Dialog';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
 import { RequirementsException } from 'common/exceptions';
+import { saveData, storageKeys } from 'common/utils/localStorage';
 import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
@@ -30,7 +35,8 @@ class DeleteAccount extends Component {
     event.preventDefault();
 
     const {
-      intl: { formatMessage }
+      intl: { formatMessage },
+      removeUserData
     } = this.props;
     const { verificationText } = this.state;
     const verificationString = formatMessage({ id: 'delete-form.verify-text' });
@@ -47,11 +53,8 @@ class DeleteAccount extends Component {
       const result = await deleteAccount(trimmedEmail, password);
 
       if (result) {
-        this.setState({
-          isAccountDeletedDialogVisible: true,
-          isDeleteDialogVisible: false,
-          pending: false
-        });
+        saveData(storageKeys.account, 'deleted');
+        removeUserData();
       }
     } catch (err) {
       let errorData;
@@ -177,13 +180,14 @@ class DeleteAccount extends Component {
 DeleteAccount.propTypes = {
   intl: IntlPropType.isRequired,
 
-  logoutCurrentUser: PropTypes.func.isRequired
+  logoutCurrentUser: PropTypes.func.isRequired,
+  removeUserData: PropTypes.func.isRequired
 };
 
 export default _flowRight(
   injectIntl,
   connect(
     null,
-    { logoutCurrentUser }
+    { logoutCurrentUser, removeUserData }
   )
 )(DeleteAccount);

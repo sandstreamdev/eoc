@@ -41,6 +41,8 @@ export const cohortsRoute = () => routeGenerator(Routes.COHORTS);
 
 export const dashboardRoute = () => routeGenerator(Routes.DASHBOARD);
 
+export const accountDeletedRoute = () => routeGenerator(Routes.ACCOUNT_DELETED);
+
 const fromEntries = convertedArray =>
   convertedArray.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 

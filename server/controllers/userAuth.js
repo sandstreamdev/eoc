@@ -17,6 +17,10 @@ const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const List = require('../models/list.model');
 const { isMember, isOwner } = require('../common/utils');
+const io = require('../sockets/index');
+const { leaveList } = require('../sockets/list');
+const { leaveCohort } = require('../sockets/cohort');
+const { logout: logoutOtherSessions } = require('../sockets/user');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -431,17 +435,14 @@ const checkToken = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-/**
- * This code below will be implemented in
- * https://jira2.sanddev.com/secure/RapidBoard.jspa?rapidView=1&view=planning&selectedIssue=EOC-521&issueLimit=100
- * */
 const deleteAccount = async (req, resp) => {
   const { email, password } = req.body;
   const sanitizedEmail = sanitize(email);
+  const socketInstance = io.getInstance();
 
   try {
     const user = await User.findOne({ email: sanitizedEmail, isActive: true });
-    const { _id: userId, password: dbPassword, createdAt } = user;
+    const { _id: userId, displayName, password: dbPassword, createdAt } = user;
 
     if (bcrypt.compareSync(password + email, dbPassword)) {
       // check if he is the only owner and send error
@@ -485,21 +486,7 @@ const deleteAccount = async (req, resp) => {
       await User.deleteOne({ email: sanitizedEmail });
       await removedUser.save();
 
-      // destroy user's sessions
-      const {
-        sessionStore: store,
-        sessionStore: { db }
-      } = req;
-      const regexp = new RegExp(userId);
-
-      await db
-        .collection('sessions')
-        .find({
-          session: regexp
-        })
-        .forEach(({ _id }) => store.destroy(_id));
-
-      // delete user's lists
+      // delete user's lists where he is the only viewer
       await List.updateMany(
         { viewersIds: userId, 'viewersIds.1': { $exists: false } },
         {
@@ -510,29 +497,28 @@ const deleteAccount = async (req, resp) => {
 
       // remove user from other lists
       const lists = await List.find({ viewersIds: userId });
-      const listIds = [];
+      const listPromises = [];
 
-      await Promise.all(
-        lists.map(async list => {
-          const { memberIds, ownerIds, viewersIds } = list;
+      lists.forEach(async list => {
+        const { _id, memberIds, ownerIds, viewersIds } = list;
+        const data = { listId: _id, performer: displayName, userId };
 
-          viewersIds.splice(viewersIds.indexOf(userId), 1);
+        viewersIds.splice(viewersIds.indexOf(userId), 1);
 
-          if (isMember(list, userId)) {
-            memberIds.splice(memberIds.indexOf(userId), 1);
-          }
+        if (isMember(list, userId)) {
+          memberIds.splice(memberIds.indexOf(userId), 1);
+        }
 
-          if (isOwner(list, userId)) {
-            ownerIds.splice(ownerIds.indexOf(userId), 1);
-          }
+        if (isOwner(list, userId)) {
+          ownerIds.splice(ownerIds.indexOf(userId), 1);
+        }
 
-          listIds.push(list._id.toString());
+        listPromises.push(list.save(), leaveList(socketInstance)(data));
+      });
 
-          return list.save();
-        })
-      );
+      await Promise.all(listPromises);
 
-      // delete user's own cohorts
+      // delete user's own cohorts where he is the only member
       await Cohort.updateMany(
         { memberIds: userId, 'memberIds.1': { $exists: false } },
         {
@@ -543,29 +529,51 @@ const deleteAccount = async (req, resp) => {
 
       // remove user form other cohorts
       const cohorts = await Cohort.find({ memberIds: userId });
-      const cohortIds = [];
+      const cohortPromises = [];
 
-      await Promise.all(
-        cohorts.map(async cohort => {
-          const { memberIds, ownerIds } = cohort;
+      cohorts.forEach(async cohort => {
+        const { _id: cohortId, memberIds, ownerIds } = cohort;
 
-          memberIds.splice(memberIds.indexOf(userId), 1);
+        memberIds.splice(memberIds.indexOf(userId), 1);
 
-          if (isOwner(cohort, userId)) {
-            ownerIds.splice(ownerIds.indexOf(userId), 1);
-          }
+        if (isOwner(cohort, userId)) {
+          ownerIds.splice(ownerIds.indexOf(userId), 1);
+        }
 
-          cohortIds.push(cohort._id.toString());
+        const data = {
+          cohortId,
+          membersCount: memberIds.length,
+          performer: displayName,
+          userId
+        };
 
-          return cohort.save();
-        })
-      );
+        cohortPromises.push(cohort.save(), leaveCohort(socketInstance)(data));
+      });
+
+      await Promise.all(cohortPromises);
+
+      // destroy user's sessions
+      const {
+        sessionStore: store,
+        sessionStore: { db }
+      } = req;
+      const regexp = new RegExp(userId);
+
+      // logout from other sessions/devices
+      await logoutOtherSessions(socketInstance)(userId);
+
+      await db
+        .collection('sessions')
+        .find({ session: regexp })
+        .forEach(({ _id }) => store.destroy(_id));
+
+      req.logout();
+      resp.clearCookie('connect.sid');
 
       return resp.send();
     }
     throw new Error();
-  } catch (err) {
-    console.log(err);
+  } catch {
     resp.sendStatus(400);
   }
 };
