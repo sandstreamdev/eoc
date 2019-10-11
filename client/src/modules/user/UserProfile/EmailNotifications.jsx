@@ -79,6 +79,66 @@ class EmailNotifications extends PureComponent {
               onChange={weekly ? this.setNever : this.setWeekly}
             />
           </label>
+          {weekly && (
+            <div className="email-notifications__days">
+              <label className="email-notifications__label">
+                <FormattedMessage id="common.monday" />
+                <input
+                  name="group2"
+                  type="radio"
+                  value={formatMessage({ id: 'common.monday' })}
+                />
+              </label>
+              <label className="email-notifications__label">
+                <FormattedMessage id="common.tuesday" />
+                <input
+                  name="group2"
+                  type="radio"
+                  value={formatMessage({ id: 'common.tuesday' })}
+                />
+              </label>
+              <label className="email-notifications__label">
+                <FormattedMessage id="common.wednesday" />
+                <input
+                  name="group2"
+                  type="radio"
+                  value={formatMessage({ id: 'common.wednesday' })}
+                />
+              </label>
+              <label className="email-notifications__label">
+                <FormattedMessage id="common.thursday" />
+                <input
+                  name="group2"
+                  type="radio"
+                  value={formatMessage({ id: 'common.thursday' })}
+                />
+              </label>
+              <label className="email-notifications__label">
+                <FormattedMessage id="common.friday" />
+                <input
+                  name="group2"
+                  type="radio"
+                  value={formatMessage({ id: 'common.friday' })}
+                />
+              </label>
+              <label className="email-notifications__label">
+                <FormattedMessage id="common.saturday" />
+                <input
+                  name="group2"
+                  type="radio"
+                  value={formatMessage({ id: 'common.saturday' })}
+                />
+              </label>
+              <label className="email-notifications__label">
+                <FormattedMessage id="common.sunday" />
+                <input
+                  name="group2"
+                  type="radio"
+                  value={formatMessage({ id: 'common.sunday' })}
+                />
+              </label>
+            </div>
+          )}
         </div>
       </section>
     );

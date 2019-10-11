@@ -21,4 +21,10 @@
   .alert-box {
     margin-bottom: four-by(4);
   }
+
+  &__days {
+    display: flex;
+    flex-direction: column;
+    margin-left: four-by(5);
+  }
 }
