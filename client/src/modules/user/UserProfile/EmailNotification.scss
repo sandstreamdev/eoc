@@ -24,8 +24,13 @@
   }
 
   &__days {
+    padding: four-by(2);
     display: flex;
     flex-direction: column;
     margin-bottom: four-by(5);
+  }
+
+  &__select {
+    font-size: $l-font;
   }
 }

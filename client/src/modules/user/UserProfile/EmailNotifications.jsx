@@ -11,30 +11,40 @@ class EmailNotifications extends PureComponent {
   state = {
     error: false,
     notificationFrequency: NotificationFrequency.MONDAY,
-    areDaysVisible: false
+    areDaysVisible: true
   };
 
-  handleDaysVisibility = () => this.setState({ areDaysVisible: true });
-
-  setWeekly = event => {
-    this.setState({ notificationFrequency: NotificationFrequency.MONDAY });
-  };
-
-  setNever = () =>
+  showDays = () =>
     this.setState({
-      areDaysVisible: false,
-      notificationFrequency: NotificationFrequency.NEVER
+      areDaysVisible: true,
+      notificationFrequency: NotificationFrequency.MONDAY
     });
 
+  handleSetNever = () =>
+    this.setState(
+      {
+        areDaysVisible: false,
+        notificationFrequency: NotificationFrequency.NEVER
+      },
+      this.updateNotificationSettings
+    );
+
+  handleSelect = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState(
+      { notificationFrequency: value },
+      this.updateNotificationSettings
+    );
+  };
+
   updateNotificationSettings = () => {
-    const { weekly, never } = this.state;
-    const settings = {
-      never,
-      weekly
-    };
+    const { notificationFrequency } = this.state;
 
     try {
-      saveEmailNotificationSettings(settings);
+      saveEmailNotificationSettings(notificationFrequency);
     } catch {
       this.setState({ error: true });
     }
@@ -45,8 +55,6 @@ class EmailNotifications extends PureComponent {
       intl: { formatMessage }
     } = this.props;
     const { areDaysVisible, error, notificationFrequency } = this.state;
-
-    console.log(notificationFrequency, NotificationFrequency.NEVER);
 
     return (
       <section className="email-notifications">
@@ -64,47 +72,48 @@ class EmailNotifications extends PureComponent {
           <label className="email-notifications__label">
             <FormattedMessage id="email.notification.never" />
             <input
-              // checked={notificationFrequency === NotificationFrequency.NEVER}
+              checked={notificationFrequency === NotificationFrequency.NEVER}
               name="group1"
               type="radio"
-              value={formatMessage({ id: 'email.notification.never' })}
-              // onInput={this.handleChange}
-              onChange={this.setNever}
+              value={NotificationFrequency.NEVER}
+              onChange={this.handleSetNever}
             />
           </label>
           <label className="email-notifications__label">
             <FormattedMessage id="email.notification.weekly" />
             <input
-              //  checked={notificationFrequency !== NotificationFrequency.NEVER}
+              checked={notificationFrequency !== NotificationFrequency.NEVER}
               name="group1"
               type="radio"
-              value={formatMessage({ id: 'email.notification.weekly' })}
-              // onInput={this.handleChange}
-              onChange={this.handleDaysVisibility}
+              value={NotificationFrequency.WEEKLY}
+              onChange={this.showDays}
             />
           </label>
           {areDaysVisible && (
             <div className="email-notifications__days">
-              <select>
-                <option value={formatMessage({ id: 'common.monday' })}>
+              <select
+                className="email-notifications__select"
+                onChange={this.handleSelect}
+              >
+                <option value={NotificationFrequency.MONDAY}>
                   {formatMessage({ id: 'common.monday' })}
                 </option>
-                <option value={formatMessage({ id: 'common.tuesday' })}>
+                <option value={NotificationFrequency.TUESDAY}>
                   {formatMessage({ id: 'common.tuesday' })}
                 </option>
-                <option value={formatMessage({ id: 'common.wednesday' })}>
+                <option value={NotificationFrequency.WEDNESDAY}>
                   {formatMessage({ id: 'common.wednesday' })}
                 </option>
-                <option value={formatMessage({ id: 'common.thursday' })}>
+                <option value={NotificationFrequency.THURSDAY}>
                   {formatMessage({ id: 'common.thursday' })}
                 </option>
-                <option value={formatMessage({ id: 'common.friday' })}>
+                <option value={NotificationFrequency.FRIDAY}>
                   {formatMessage({ id: 'common.friday' })}
                 </option>
-                <option value={formatMessage({ id: 'common.saturday' })}>
+                <option value={NotificationFrequency.SATURDAY}>
                   {formatMessage({ id: 'common.saturday' })}
                 </option>
-                <option value={formatMessage({ id: 'common.sunday' })}>
+                <option value={NotificationFrequency.SUNDAY}>
                   {formatMessage({ id: 'common.sunday' })}
                 </option>
               </select>

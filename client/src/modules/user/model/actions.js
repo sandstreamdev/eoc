@@ -150,5 +150,5 @@ export const getAccountDetails = token =>
 export const deleteAccount = (email, password) =>
   deleteData('/auth', { email, password });
 
-export const saveEmailNotificationSettings = settings =>
-  postData('/auth/email-notification-settings', settings);
+export const saveEmailNotificationSettings = notificationFrequency =>
+  postData('/auth/email-notification-settings', notificationFrequency);
