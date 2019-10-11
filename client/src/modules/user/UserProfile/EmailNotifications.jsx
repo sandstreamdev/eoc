@@ -7,6 +7,8 @@ import { NotificationFrequency, MessageType } from 'common/constants/enums';
 import SelectDays from './SelectDays';
 import './EmailNotification.scss';
 
+// TODO: Fetch settings when profile view is displayed
+
 class EmailNotifications extends PureComponent {
   state = {
     success: false,
