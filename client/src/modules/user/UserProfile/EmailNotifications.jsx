@@ -43,6 +43,8 @@ class EmailNotifications extends PureComponent {
   updateNotificationSettings = () => {
     const { notificationFrequency } = this.state;
 
+    this.setState({ error: false });
+
     try {
       saveEmailNotificationSettings(notificationFrequency);
     } catch {
