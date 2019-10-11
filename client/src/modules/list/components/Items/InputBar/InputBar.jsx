@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import validator from 'validator';
 
 import { getCurrentUser } from 'modules/user/model/selectors';
 import {
@@ -17,6 +18,7 @@ import { addItem } from '../model/actions';
 import { PlusIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
+import { validateWith } from 'common/utils/helpers';
 import './InputBar.scss';
 
 class InputBar extends Component {
@@ -24,9 +26,9 @@ class InputBar extends Component {
     super(props);
 
     this.state = {
+      errorMessageId: '',
       isButtonDisabled: true,
       isFormVisible: false,
-      isTipVisible: false,
       itemName: '',
       pending: false
     };
@@ -35,14 +37,10 @@ class InputBar extends Component {
   }
 
   componentDidUpdate() {
-    const { isFormVisible, pending, isTipVisible } = this.state;
+    const { isFormVisible, pending } = this.state;
 
     if (isFormVisible && !pending) {
       this.input.current.focus();
-    }
-
-    if (isTipVisible) {
-      this.hideTipAfterTimeout();
     }
   }
 
@@ -67,34 +65,17 @@ class InputBar extends Component {
       {
         itemName: value
       },
-      () => {
-        this.handleAddButtonStatus();
-        this.handleTipVisibility();
-      }
+      () => this.validateName(this.handleAddButtonStatus)
     );
   };
 
   handleAddButtonStatus = () => {
-    const { itemName } = this.state;
+    const { errorMessageId, itemName } = this.state;
 
-    this.setState({ isButtonDisabled: !itemName });
+    this.setState({ isButtonDisabled: !itemName || errorMessageId });
   };
 
-  handleTipVisibility = () => {
-    const { itemName } = this.state;
-    const isItemNameEmpty = !_trim(itemName);
-
-    if (isItemNameEmpty) {
-      this.setState({ isTipVisible: true });
-    }
-  };
-
-  hideTipAfterTimeout = () =>
-    setTimeout(() => this.setState({ isTipVisible: false }), 5000);
-
-  handleFormSubmit = event => {
-    event.preventDefault();
-
+  handleAddItem = () => {
     const {
       addItem,
       currentUser,
@@ -102,13 +83,13 @@ class InputBar extends Component {
         params: { id }
       }
     } = this.props;
-    const { itemName } = this.state;
+    const { errorMessageId, itemName } = this.state;
     const newItem = {
       authorId: currentUser.id,
       name: itemName
     };
 
-    if (_trim(itemName)) {
+    if (!errorMessageId) {
       this.setState({ pending: true });
 
       return addItem(newItem, id).finally(() => {
@@ -116,8 +97,11 @@ class InputBar extends Component {
         this.hideForm();
       });
     }
+  };
 
-    this.handleTipVisibility();
+  handleFormSubmit = event => {
+    event.preventDefault();
+    this.validateName(this.handleAddItem);
   };
 
   showForm = event => {
@@ -126,7 +110,24 @@ class InputBar extends Component {
     this.setState({ isFormVisible: true });
   };
 
-  hideForm = () => this.setState({ isFormVisible: false });
+  validateName = callback => {
+    const { itemName } = this.state;
+    let errorMessageId;
+
+    errorMessageId = validateWith(
+      value => !validator.isEmpty(value, { ignore_whitespace: true })
+    )('common.form.required-warning')(itemName);
+
+    if (_trim(itemName)) {
+      errorMessageId = validateWith(value =>
+        validator.isLength(value, { min: 1, max: 32 })
+      )('common.form.field-min-max')(itemName);
+    }
+
+    this.setState({ errorMessageId }, callback);
+  };
+
+  hideForm = () => this.setState({ errorMessageId: '', isFormVisible: false });
 
   handleBlur = () => {
     const { itemName } = this.state;
@@ -145,9 +146,9 @@ class InputBar extends Component {
 
   renderInputBar = () => {
     const {
+      errorMessageId,
       isButtonDisabled,
       isFormVisible,
-      isTipVisible,
       itemName,
       pending
     } = this.state;
@@ -182,9 +183,9 @@ class InputBar extends Component {
             value={formatMessage({ id: 'list.input-bar.button' })}
           />
         </form>
-        {isTipVisible && (
+        {errorMessageId && (
           <p className="error-message">
-            <FormattedMessage id="list.input-bar.tip" />
+            <FormattedMessage id={errorMessageId} />
           </p>
         )}
       </Fragment>
