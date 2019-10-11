@@ -103,7 +103,9 @@ const sendResetPasswordLink = (req, resp) => {
 };
 
 const sendReport = (req, resp) => {
-  const { unhandledItems, doneItems } = resp.locales;
+  const { items } = resp.locales;
+
+  console.log(items);
 };
 
 module.exports = {

@@ -466,14 +466,11 @@ const prepareItemsRequestedByMe = async (req, resp, next) => {
       .lean()
       .exec();
 
-    const allItems = prepareItemsByDoneUnhandled(viewerLists)(userId);
-
-    console.log(allItems);
+    const items = prepareItemsByDoneUnhandled(viewerLists)(userId);
 
     // eslint-disable-next-line no-param-reassign
     resp.locales = {
-      unhandledItems,
-      doneItems
+      items
     };
 
     resp.send();
