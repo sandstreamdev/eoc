@@ -19,7 +19,7 @@ const DeleteForm = ({
     onSubmit={onSubmit}
   >
     <label className="delete-form__label">
-      <FormattedMessage id="delete-form.email" />
+      <FormattedMessage id="user.delete-form.email" />
       <input
         autoComplete="off"
         className="delete-form__input primary-input"
@@ -29,9 +29,9 @@ const DeleteForm = ({
     </label>
     <label className="delete-form__label">
       <FormattedMessage
-        id="delete-form.verify-message"
+        id="user.delete-form.verify-message"
         values={{
-          text: <em>{formatMessage({ id: 'delete-form.verify-text' })}</em>
+          text: <em>{formatMessage({ id: 'user.delete-form.verify-text' })}</em>
         }}
       />
       <input

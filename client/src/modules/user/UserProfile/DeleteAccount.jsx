@@ -36,7 +36,9 @@ class DeleteAccount extends Component {
       removeUserData
     } = this.props;
     const { verificationText } = this.state;
-    const verificationString = formatMessage({ id: 'delete-form.verify-text' });
+    const verificationString = formatMessage({
+      id: 'user.delete-form.verify-text'
+    });
 
     if (verificationText !== verificationString) {
       this.setState({ isErrorVisible: true, pending: false });

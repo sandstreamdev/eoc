@@ -171,6 +171,10 @@ const addItemToList = async (req, resp) => {
   } = req;
   const sanitizedListId = sanitize(listId);
 
+  if (name && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
+  }
+
   const item = new Item({
     authorId,
     name
