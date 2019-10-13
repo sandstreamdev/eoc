@@ -260,7 +260,7 @@ const listEventsController = (event, data, { dispatch, getState }) => {
 
       const listsToSave = _keyBy(
         _filter(data, list => !pathname.includes(list._id)),
-        'id'
+        '_id'
       );
 
       return dispatch({ type: event, payload: listsToSave });

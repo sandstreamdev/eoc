@@ -32,6 +32,7 @@ import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import { loadData, saveData, storageKeys } from 'common/utils/localStorage';
 import { clearMetaDataSuccess } from 'common/model/actions';
+import AccountDeleted from 'modules/user/UserProfile/AccountDeleted';
 import './Layout.scss';
 
 export class Layout extends PureComponent {
@@ -140,6 +141,7 @@ export class Layout extends PureComponent {
           <Route component={AuthBox} exact path="/" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={SuccessMessage} path="/account-created" />
+          <Route component={AccountDeleted} path="/account-deleted" />
           <Route
             component={LinkExpired}
             path="/confirmation-link-expired/:token?"
@@ -153,7 +155,6 @@ export class Layout extends PureComponent {
             path="/password-recovery/:token?"
           />
           <Route component={SuccessMessage} path="/password-recovery-success" />
-          <Route component={SuccessMessage} path="/account-deleted" />
           <Redirect to="/" />
         </Switch>
       </Fragment>
@@ -183,7 +184,6 @@ export class Layout extends PureComponent {
         </Toolbar>
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
-          <Route component={SuccessMessage} path="/account-created" />
           <Route
             component={LinkExpired}
             path="/confirmation-link-expired/:token?"

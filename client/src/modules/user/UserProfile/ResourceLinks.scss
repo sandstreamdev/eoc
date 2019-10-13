@@ -26,7 +26,7 @@
   }
 
   &__link {
-    color: $danger-light;
+    color: $danger;
     font-style: italic;
     text-decoration: underline;
 
@@ -35,7 +35,7 @@
     }
 
     &:visited {
-      color: $link-color;
+      color: $danger;
 
       &:hover {
         color: $text-black;

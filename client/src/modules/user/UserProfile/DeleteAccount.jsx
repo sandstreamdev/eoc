@@ -12,9 +12,6 @@ import {
   logoutCurrentUser
 } from '../model/actions';
 import DeleteDialog from './DeleteDialog';
-import Dialog from 'common/components/Dialog';
-import AlertBox from 'common/components/AlertBox';
-import { MessageType } from 'common/constants/enums';
 import { RequirementsException } from 'common/exceptions';
 import { saveData, storageKeys } from 'common/utils/localStorage';
 import './DeleteAccount.scss';
@@ -110,12 +107,10 @@ class DeleteAccount extends Component {
     } = this.props;
     const {
       errorData,
-      isAccountDeletedDialogVisible,
       isDeleteDialogVisible,
       isErrorVisible,
       pending
     } = this.state;
-    const label = formatMessage({ id: 'common.ok' });
 
     return (
       <Fragment>
@@ -131,24 +126,6 @@ class DeleteAccount extends Component {
             onVerificationTextChange={this.handleVerificationText}
             pending={pending}
           />
-        )}
-        {isAccountDeletedDialogVisible && (
-          <Dialog
-            cancelLabel="common.ok"
-            onCancel={this.handleCancel}
-            title={formatMessage({ id: 'user.account-deleted' })}
-          >
-            <AlertBox type={MessageType.SUCCESS}>
-              <div>
-                <FormattedMessage id="user.account-deleted" />
-                <span> </span>
-                <FormattedMessage
-                  id="user.account-deleted-message"
-                  values={{ label }}
-                />
-              </div>
-            </AlertBox>
-          </Dialog>
         )}
         <section className="delete-account">
           <h2 className="delete-account__heading">
