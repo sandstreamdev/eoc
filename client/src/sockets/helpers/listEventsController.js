@@ -4,26 +4,31 @@ import _keyBy from 'lodash/keyBy';
 import { ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
-import { MessageType as NotificationType } from 'common/constants/enums';
+import {
+  MessageType as NotificationType,
+  Routes
+} from 'common/constants/enums';
 
 const listEventsController = (event, data, { dispatch, getState }) => {
   const { currentUser } = getState();
 
   switch (event) {
     case ListEvents.ADD_OWNER_ROLE_SUCCESS: {
-      const {
-        notificationData: { listName, performer },
-        userId,
-        ...rest
-      } = data;
+      const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
-        const notificationId = 'list.actions.current-user-add-to-owners';
-        const notificationData = {
+        const { listName, performer } = notificationData;
+        const notificationId = 'common.actions.current-user-add-to-owners';
+        const notification = {
           data: {
-            listName,
+            context: Routes.LIST,
+            name: listName,
             performer
           },
           notificationId
@@ -32,26 +37,29 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          notificationData
+          notification
         );
       }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
     case ListEvents.REMOVE_OWNER_ROLE_SUCCESS: {
-      const {
-        notificationData: { listName, performer },
-        userId,
-        ...rest
-      } = data;
+      const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
-        const notificationId = 'list.actions.current-user-removed-from-owners';
-        const notificationData = {
+        const { listName, performer } = notificationData;
+        const notificationId =
+          'common.actions.current-user-removed-from-owners';
+        const notification = {
           data: {
-            listName,
+            context: Routes.LIST,
+            name: listName,
             performer
           },
           notificationId
@@ -60,24 +68,25 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          notificationData
+          notification
         );
       }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
     case ListEvents.ADD_MEMBER_ROLE_SUCCESS: {
-      const {
-        notificationData: { listName, performer },
-        userId,
-        ...rest
-      } = data;
+      const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
+        const { listName, performer } = notificationData;
         const notificationId = 'list.actions.current-user-add-to-members';
-        const notificationData = {
+        const notification = {
           data: {
             listName,
             performer
@@ -88,24 +97,25 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          notificationData
+          notification
         );
       }
 
       return dispatch({ type: event, payload: { ...rest, userId } });
     }
     case ListEvents.REMOVE_MEMBER_ROLE_SUCCESS: {
-      const {
-        notificationData: { listName, performer },
-        userId,
-        ...rest
-      } = data;
+      const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
+        const { listName, performer } = notificationData;
         const notificationId = 'list.actions.current-user-removed-from-members';
-        const notificationData = {
+        const notification = {
           data: {
             listName,
             performer
@@ -116,7 +126,7 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         createNotificationWithTimeout(
           dispatch,
           NotificationType.SUCCESS,
-          notificationData
+          notification
         );
       }
 

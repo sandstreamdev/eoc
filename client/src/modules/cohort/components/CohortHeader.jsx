@@ -5,10 +5,14 @@ import CohortName from './CohortName';
 import CohortDescription from './CohortDescription';
 import './CohortHeader.scss';
 
-const CohortHeader = ({ details, updateBreadcrumbs }) => (
+const CohortHeader = ({
+  details,
+  details: { description, isOwner },
+  updateBreadcrumbs
+}) => (
   <header className="cohort-header">
     <CohortName details={details} onNameChange={updateBreadcrumbs} />
-    <CohortDescription details={details} />
+    {(isOwner || description) && <CohortDescription details={details} />}
   </header>
 );
 
