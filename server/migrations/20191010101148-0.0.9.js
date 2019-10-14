@@ -7,12 +7,12 @@ const up = async db => {
     db.collection('users').updateMany(
       {
         emailNotificationsFrequency: { $exists: false },
-        emailReportSentAt: { $exists: false }
+        lastEmailNotificationSentAt: { $exists: false }
       },
       {
         $set: {
           emailNotificationsFrequency: NotificationFrequency.NEVER,
-          emailReportSentAt: ''
+          lastEmailNotificationSentAt: ''
         }
       }
     );
@@ -25,9 +25,14 @@ const down = async db => {
     db.collection('users').updateMany(
       {
         emailNotificationsFrequency: { $exists: true },
-        emailReportSentAt: { $exists: true }
+        lastEmailNotificationSentAt: { $exists: true }
       },
-      { $unset: { emailNotificationsFrequency: '', emailReportSentAt: '' } }
+      {
+        $unset: {
+          emailNotificationsFrequency: '',
+          lastEmailNotificationSentAt: ''
+        }
+      }
     );
 
   await runAsyncTasks(removeEmailNotificationSettings);

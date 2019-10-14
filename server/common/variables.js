@@ -76,8 +76,18 @@ const ViewType = enumerable('viewType')('LIST', 'TILES');
 const BadRequestReason = enumerable('reason')('VALIDATION');
 
 const NotificationFrequency = enumerable('notification')(
-  'FRIDAY, MONDAY, NEVER, SATURDAY, SUNDAY, THURSDAY, TUESDAY, WEDNESDAY, WEEKLY'
+  'FRIDAY',
+  'MONDAY',
+  'NEVER',
+  'SATURDAY',
+  'SUNDAY',
+  'THURSDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'WEEKLY'
 );
+
+console.log(NotificationFrequency);
 
 module.exports = {
   ActivityType,
