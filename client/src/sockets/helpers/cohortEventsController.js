@@ -3,6 +3,11 @@ import _keyBy from 'lodash/keyBy';
 
 import { CohortEvents } from 'sockets/enums';
 import history from 'common/utils/history';
+import { createNotificationWithTimeout } from 'modules/notification/model/actions';
+import {
+  MessageType as NotificationType,
+  Routes
+} from 'common/constants/enums';
 
 const cohortEventsController = (event, data, { dispatch, getState }) => {
   switch (event) {
@@ -122,6 +127,61 @@ const cohortEventsController = (event, data, { dispatch, getState }) => {
       );
 
       return dispatch({ type: event, payload: cohortsToSave });
+    }
+    case CohortEvents.ADD_OWNER_ROLE_SUCCESS: {
+      const { currentUser } = getState();
+      const { notificationData, userId, ...rest } = data;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId && notificationData;
+
+      if (displayNotification) {
+        const { cohortName, performer } = notificationData;
+        const notificationId = 'common.actions.current-user-add-to-owners';
+        const notification = {
+          data: {
+            context: Routes.COHORT,
+            name: cohortName,
+            performer
+          },
+          notificationId
+        };
+
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notification
+        );
+      }
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
+    }
+    case CohortEvents.REMOVE_OWNER_ROLE_SUCCESS: {
+      const { currentUser } = getState();
+      const { notificationData, userId, ...rest } = data;
+      const { id: currentUserId } = currentUser;
+      const displayNotification = userId === currentUserId && notificationData;
+
+      if (displayNotification) {
+        const { cohortName, performer } = notificationData;
+        const notificationId =
+          'common.actions.current-user-removed-from-owners';
+        const notification = {
+          data: {
+            context: Routes.COHORT,
+            name: cohortName,
+            performer
+          },
+          notificationId
+        };
+
+        createNotificationWithTimeout(
+          dispatch,
+          NotificationType.SUCCESS,
+          notification
+        );
+      }
+
+      return dispatch({ type: event, payload: { ...rest, userId } });
     }
     default:
       return dispatch({ type: event, payload: data });

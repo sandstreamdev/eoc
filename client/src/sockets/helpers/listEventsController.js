@@ -4,7 +4,10 @@ import _keyBy from 'lodash/keyBy';
 import { ListEvents } from 'sockets/enums';
 import history from 'common/utils/history';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
-import { MessageType as NotificationType } from 'common/constants/enums';
+import {
+  MessageType as NotificationType,
+  Routes
+} from 'common/constants/enums';
 
 const listEventsController = (event, data, { dispatch, getState }) => {
   const { currentUser } = getState();
@@ -17,10 +20,11 @@ const listEventsController = (event, data, { dispatch, getState }) => {
 
       if (displayNotification) {
         const { listName, performer } = notificationData;
-        const notificationId = 'list.actions.current-user-add-to-owners';
+        const notificationId = 'common.actions.current-user-add-to-owners';
         const notification = {
           data: {
-            listName,
+            context: Routes.LIST,
+            name: listName,
             performer
           },
           notificationId
@@ -42,10 +46,12 @@ const listEventsController = (event, data, { dispatch, getState }) => {
 
       if (displayNotification) {
         const { listName, performer } = notificationData;
-        const notificationId = 'list.actions.current-user-removed-from-owners';
+        const notificationId =
+          'common.actions.current-user-removed-from-owners';
         const notification = {
           data: {
-            listName,
+            context: Routes.LIST,
+            name: listName,
             performer
           },
           notificationId

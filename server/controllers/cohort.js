@@ -411,7 +411,7 @@ const addOwnerRole = (req, resp) => {
   const { userId } = req.body;
   const sanitizedUserId = sanitize(userId);
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedCohortId = sanitize(cohortId);
 
@@ -432,12 +432,16 @@ const addOwnerRole = (req, resp) => {
 
       const socketInstance = io.getInstance();
 
-      fireAndForget(
-        socketActions.addOwnerRole(socketInstance)({
-          cohortId: sanitizedCohortId,
-          userId: sanitizedUserId
-        })
-      );
+      const data = {
+        cohortId: sanitizedCohortId,
+        notificationData: {
+          cohortName: doc.name,
+          performer: displayName
+        },
+        userId: sanitizedUserId
+      };
+
+      fireAndForget(socketActions.addOwnerRole(socketInstance)(data));
 
       const activity = {
         activityType: ActivityType.COHORT_SET_AS_OWNER,
@@ -458,7 +462,7 @@ const removeOwnerRole = (req, resp) => {
   const { userId } = req.body;
   const sanitizedUserId = sanitize(userId);
   const {
-    user: { _id: currentUserId }
+    user: { _id: currentUserId, displayName }
   } = req;
   const sanitizedCohortId = sanitize(cohortId);
 
@@ -483,15 +487,19 @@ const removeOwnerRole = (req, resp) => {
 
       return doc.save();
     })
-    .then(() => {
+    .then(doc => {
       const socketInstance = io.getInstance();
 
-      fireAndForget(
-        socketActions.removeOwnerRole(socketInstance)({
-          cohortId: sanitizedCohortId,
-          userId: sanitizedUserId
-        })
-      );
+      const data = {
+        cohortId: sanitizedCohortId,
+        notificationData: {
+          cohortName: doc.name,
+          performer: displayName
+        },
+        userId: sanitizedUserId
+      };
+
+      fireAndForget(socketActions.removeOwnerRole(socketInstance)(data));
 
       const activity = {
         activityType: ActivityType.COHORT_SET_AS_MEMBER,
