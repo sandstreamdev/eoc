@@ -30,7 +30,7 @@ const emailNotificationsOptions = [
 
 class EmailNotifications extends PureComponent {
   state = {
-    emailNotificationsFrequency: ''
+    emailNotificationsFrequency: null
   };
 
   componentDidMount() {
