@@ -1,20 +1,16 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { saveEmailNotificationSettings } from '../model/actions';
 import DaySelector from './DaySelector';
 import './EmailNotification.scss';
-import AlertBox from 'common/components/AlertBox';
-import {
-  EmailNotificationFrequency,
-  MessageType
-} from 'common/constants/enums';
+import { EmailNotificationFrequency } from 'common/constants/enums';
 import { UserPropType } from 'common/constants/propTypes';
 
 class EmailNotifications extends PureComponent {
   state = {
-    success: false,
-    error: false,
     emailNotificationsFrequency: ''
   };
 
@@ -48,13 +44,6 @@ class EmailNotifications extends PureComponent {
       emailNotificationsFrequency: EmailNotificationFrequency.WEEKLY
     });
 
-  showSuccessMessage = () => {
-    this.setState({ success: true }, this.hideSuccessMessageAfterTimeout);
-  };
-
-  hideSuccessMessageAfterTimeout = () =>
-    setTimeout(() => this.setState({ success: false }), 4000);
-
   handleSetNever = () =>
     this.setState(
       {
@@ -74,41 +63,18 @@ class EmailNotifications extends PureComponent {
     );
   };
 
-  updateNotificationSettings = async () => {
+  updateNotificationSettings = () => {
     const { emailNotificationsFrequency } = this.state;
+    const { saveEmailNotificationSettings } = this.props;
 
-    this.setState({ error: false });
-
-    try {
-      const result = await saveEmailNotificationSettings(
-        emailNotificationsFrequency
-      );
-
-      if (result) {
-        this.showSuccessMessage();
-      }
-    } catch {
-      this.setState({ error: true });
-    }
+    saveEmailNotificationSettings(emailNotificationsFrequency);
   };
 
   render() {
-    const { error, emailNotificationsFrequency, success } = this.state;
+    const { emailNotificationsFrequency } = this.state;
 
     return (
       <section className="email-notifications">
-        {error && (
-          <AlertBox type={MessageType.ERROR}>
-            <FormattedMessage id="email-notifications.save-settings-failure" />
-            <span>&nbsp;</span>
-            <FormattedMessage id="common.try-again" />
-          </AlertBox>
-        )}
-        {success && (
-          <AlertBox type={MessageType.SUCCESS}>
-            <FormattedMessage id="email-notifications.save-settings-success" />
-          </AlertBox>
-        )}
         <h2 className="email-notifications__heading">
           <FormattedMessage id="email.notification.heading" />
         </h2>
@@ -150,7 +116,12 @@ class EmailNotifications extends PureComponent {
 }
 
 EmailNotifications.propTypes = {
-  user: UserPropType.isRequired
+  user: UserPropType.isRequired,
+
+  saveEmailNotificationSettings: PropTypes.func.isRequired
 };
 
-export default EmailNotifications;
+export default connect(
+  null,
+  { saveEmailNotificationSettings }
+)(EmailNotifications);
