@@ -4,11 +4,19 @@ const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
+const _isEmpty = require('lodash/isEmpty');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
 const {
+  checkIfUserIsTheOnlyOwner,
+  deleteAccountDetails,
+  deleteUserCohorts,
+  deleteUserLists,
+  destroyUserSessions,
+  removeUserFromCohorts,
+  removeUserFromLists,
   responseWithUserData,
   validatePassword
 } = require('../common/utils/userUtils');
@@ -16,10 +24,7 @@ const Settings = require('../models/settings.model');
 const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const List = require('../models/list.model');
-const { isMember, isOwner } = require('../common/utils');
 const io = require('../sockets/index');
-const { leaveList } = require('../sockets/list');
-const { leaveCohort } = require('../sockets/cohort');
 const { logout: logoutOtherSessions } = require('../sockets/user');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
@@ -442,130 +447,30 @@ const deleteAccount = async (req, resp) => {
 
   try {
     const user = await User.findOne({ email: sanitizedEmail, isActive: true });
-    const { _id: userId, displayName, password: dbPassword, createdAt } = user;
+    const { _id: userId, displayName, password: dbPassword } = user;
 
     if (bcrypt.compareSync(password + email, dbPassword)) {
-      // check if he is the only owner and send error
-      const listsOnlyOwner = await List.find(
-        {
-          $and: [{ ownerIds: userId }, { ownerIds: { $size: 1 } }],
-          'viewersIds.1': { $exists: true }
-        },
-        'name'
-      )
-        .lean()
-        .exec();
+      const errors = await checkIfUserIsTheOnlyOwner(List, Cohort, userId);
 
-      const cohortsOnlyOwner = await Cohort.find(
-        {
-          $and: [{ ownerIds: userId }, { ownerIds: { $size: 1 } }],
-          'memberIds.1': { $exists: true }
-        },
-        'name'
-      )
-        .lean()
-        .exec();
-
-      if (cohortsOnlyOwner.length >= 1 || listsOnlyOwner.length >= 1) {
-        const errors = { cohorts: cohortsOnlyOwner, lists: listsOnlyOwner };
-
+      if (!_isEmpty(errors)) {
         return resp
           .status(400)
           .send({ reason: BadRequestReason.VALIDATION, errors });
       }
 
-      // delete account details
-      const hashedEmail = bcrypt.hashSync(email, 12);
-      const removedUser = new User({
-        _id: userId,
-        createdAt,
-        email: hashedEmail,
-        updatedAt: new Date()
-      });
+      await deleteAccountDetails(User, user);
 
-      await User.deleteOne({ email: sanitizedEmail });
-      await removedUser.save();
+      await deleteUserLists(List, userId);
 
-      // delete user's lists where he is the only viewer
-      await List.updateMany(
-        { viewersIds: userId, 'viewersIds.1': { $exists: false } },
-        {
-          isArchived: true,
-          isDeleted: true
-        }
-      ).exec();
+      await removeUserFromLists(socketInstance)(List, displayName, userId);
 
-      // remove user from other lists
-      const lists = await List.find({ viewersIds: userId });
-      const listPromises = [];
+      await deleteUserCohorts(Cohort, userId);
 
-      lists.forEach(async list => {
-        const { _id, memberIds, ownerIds, viewersIds } = list;
-        const data = { listId: _id, performer: displayName, userId };
+      await removeUserFromCohorts(socketInstance)(Cohort, displayName, userId);
 
-        viewersIds.splice(viewersIds.indexOf(userId), 1);
-
-        if (isMember(list, userId)) {
-          memberIds.splice(memberIds.indexOf(userId), 1);
-        }
-
-        if (isOwner(list, userId)) {
-          ownerIds.splice(ownerIds.indexOf(userId), 1);
-        }
-
-        listPromises.push(list.save(), leaveList(socketInstance)(data));
-      });
-
-      await Promise.all(listPromises);
-
-      // delete user's own cohorts where he is the only member
-      await Cohort.updateMany(
-        { memberIds: userId, 'memberIds.1': { $exists: false } },
-        {
-          isArchived: true,
-          isDeleted: true
-        }
-      ).exec();
-
-      // remove user form other cohorts
-      const cohorts = await Cohort.find({ memberIds: userId });
-      const cohortPromises = [];
-
-      cohorts.forEach(async cohort => {
-        const { _id: cohortId, memberIds, ownerIds } = cohort;
-
-        memberIds.splice(memberIds.indexOf(userId), 1);
-
-        if (isOwner(cohort, userId)) {
-          ownerIds.splice(ownerIds.indexOf(userId), 1);
-        }
-
-        const data = {
-          cohortId,
-          membersCount: memberIds.length,
-          performer: displayName,
-          userId
-        };
-
-        cohortPromises.push(cohort.save(), leaveCohort(socketInstance)(data));
-      });
-
-      await Promise.all(cohortPromises);
-
-      // destroy user's sessions
-      const {
-        sessionStore: store,
-        sessionStore: { db }
-      } = req;
-      const regexp = new RegExp(userId);
-
-      // logout from other sessions/devices
       await logoutOtherSessions(socketInstance)(userId);
 
-      await db
-        .collection('sessions')
-        .find({ session: regexp })
-        .forEach(({ _id }) => store.destroy(_id));
+      await destroyUserSessions(req.sessionStore, userId);
 
       req.logout();
       resp.clearCookie('connect.sid');
