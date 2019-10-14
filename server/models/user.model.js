@@ -15,7 +15,7 @@ const UserSchema = new Schema(
       type: String,
       default: EmailNotificationFrequency.NEVER
     },
-    lastEmailNotificationSentAt: { type: Date, default: '' },
+    lastEmailNotificationSentAt: { type: Date },
     idFromProvider: { type: String },
     isActive: { type: Boolean },
     name: { type: String },
