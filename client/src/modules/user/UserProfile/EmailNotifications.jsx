@@ -5,14 +5,17 @@ import { saveEmailNotificationSettings } from '../model/actions';
 import DaySelector from './DaySelector';
 import './EmailNotification.scss';
 import AlertBox from 'common/components/AlertBox';
-import { NotificationFrequency, MessageType } from 'common/constants/enums';
+import {
+  EmailNotificationFrequency,
+  MessageType
+} from 'common/constants/enums';
 import { UserPropType } from 'common/constants/propTypes';
 
 class EmailNotifications extends PureComponent {
   state = {
     success: false,
     error: false,
-    notificationFrequency: ''
+    emailNotificationsFrequency: ''
   };
 
   componentDidMount() {
@@ -37,12 +40,12 @@ class EmailNotifications extends PureComponent {
       user: { emailNotificationsFrequency }
     } = this.props;
 
-    this.setState({ notificationFrequency: emailNotificationsFrequency });
+    this.setState({ emailNotificationsFrequency });
   };
 
   setWeekly = () =>
     this.setState({
-      notificationFrequency: NotificationFrequency.WEEKLY
+      emailNotificationsFrequency: EmailNotificationFrequency.WEEKLY
     });
 
   showSuccessMessage = () => {
@@ -55,7 +58,7 @@ class EmailNotifications extends PureComponent {
   handleSetNever = () =>
     this.setState(
       {
-        notificationFrequency: NotificationFrequency.NEVER
+        emailNotificationsFrequency: EmailNotificationFrequency.NEVER
       },
       this.updateNotificationSettings
     );
@@ -66,18 +69,20 @@ class EmailNotifications extends PureComponent {
     } = event;
 
     this.setState(
-      { notificationFrequency: value },
+      { emailNotificationsFrequency: value },
       this.updateNotificationSettings
     );
   };
 
   updateNotificationSettings = async () => {
-    const { notificationFrequency } = this.state;
+    const { emailNotificationsFrequency } = this.state;
 
     this.setState({ error: false });
 
     try {
-      const result = await saveEmailNotificationSettings(notificationFrequency);
+      const result = await saveEmailNotificationSettings(
+        emailNotificationsFrequency
+      );
 
       if (result) {
         this.showSuccessMessage();
@@ -88,7 +93,7 @@ class EmailNotifications extends PureComponent {
   };
 
   render() {
-    const { error, notificationFrequency, success } = this.state;
+    const { error, emailNotificationsFrequency, success } = this.state;
 
     return (
       <section className="email-notifications">
@@ -111,27 +116,31 @@ class EmailNotifications extends PureComponent {
           <label className="email-notifications__label">
             <FormattedMessage id="email.notification.never" />
             <input
-              checked={notificationFrequency === NotificationFrequency.NEVER}
+              checked={
+                emailNotificationsFrequency === EmailNotificationFrequency.NEVER
+              }
               name="group1"
               type="radio"
-              value={NotificationFrequency.NEVER}
+              value={EmailNotificationFrequency.NEVER}
               onChange={this.handleSetNever}
             />
           </label>
           <label className="email-notifications__label">
             <FormattedMessage id="email.notification.weekly" />
             <input
-              checked={notificationFrequency !== NotificationFrequency.NEVER}
+              checked={
+                emailNotificationsFrequency !== EmailNotificationFrequency.NEVER
+              }
               name="group1"
               type="radio"
-              value={NotificationFrequency.WEEKLY}
+              value={EmailNotificationFrequency.WEEKLY}
               onChange={this.setWeekly}
             />
           </label>
-          {notificationFrequency !== NotificationFrequency.NEVER && (
+          {emailNotificationsFrequency !== EmailNotificationFrequency.NEVER && (
             <DaySelector
               onChange={this.handleSelect}
-              selected={notificationFrequency}
+              selected={emailNotificationsFrequency}
             />
           )}
         </div>

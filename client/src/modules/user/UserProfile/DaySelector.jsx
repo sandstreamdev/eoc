@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
-import { NotificationFrequency } from 'common/constants/enums';
+import { EmailNotificationFrequency } from 'common/constants/enums';
 import { IntlPropType } from 'common/constants/propTypes';
 import './DaySelector.scss';
 
@@ -16,25 +16,25 @@ const DaySelector = ({ intl: { formatMessage }, onChange, selected }) => {
         onChange={onChange}
         value={selected}
       >
-        <option value={NotificationFrequency.MONDAY}>
+        <option value={EmailNotificationFrequency.MONDAY}>
           {formatMessage({ id: 'common.monday' })}
         </option>
-        <option value={NotificationFrequency.TUESDAY}>
+        <option value={EmailNotificationFrequency.TUESDAY}>
           {formatMessage({ id: 'common.tuesday' })}
         </option>
-        <option value={NotificationFrequency.WEDNESDAY}>
+        <option value={EmailNotificationFrequency.WEDNESDAY}>
           {formatMessage({ id: 'common.wednesday' })}
         </option>
-        <option value={NotificationFrequency.THURSDAY}>
+        <option value={EmailNotificationFrequency.THURSDAY}>
           {formatMessage({ id: 'common.thursday' })}
         </option>
-        <option value={NotificationFrequency.FRIDAY}>
+        <option value={EmailNotificationFrequency.FRIDAY}>
           {formatMessage({ id: 'common.friday' })}
         </option>
-        <option value={NotificationFrequency.SATURDAY}>
+        <option value={EmailNotificationFrequency.SATURDAY}>
           {formatMessage({ id: 'common.saturday' })}
         </option>
-        <option value={NotificationFrequency.SUNDAY}>
+        <option value={EmailNotificationFrequency.SUNDAY}>
           {formatMessage({ id: 'common.sunday' })}
         </option>
       </select>

@@ -66,7 +66,7 @@ export const PasswordValidationValues = Object.freeze({
   MAX: 32
 });
 
-export const NotificationFrequency = Object.freeze({
+export const EmailNotificationFrequency = Object.freeze({
   FRIDAY: 'notification/FRIDAY',
   MONDAY: 'notification/MONDAY',
   NEVER: 'notification/NEVER',

@@ -461,13 +461,13 @@ const deleteAccount = async (req, resp) => {
 
 const updateEmailNotificationSettings = async (req, resp) => {
   const { _id } = req.user;
-  const { notificationFrequency } = req.body;
+  const { emailNotificationsFrequency } = req.body;
 
   try {
     await User.findOneAndUpdate(
       { _id },
       {
-        emailNotificationsFrequency: notificationFrequency
+        emailNotificationsFrequency
       }
     ).exec();
 
