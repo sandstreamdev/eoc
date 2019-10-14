@@ -87,8 +87,6 @@ const EmailNotificationFrequency = enumerable('notification')(
   'WEEKLY'
 );
 
-console.log(EmailNotificationFrequency);
-
 module.exports = {
   ActivityType,
   BadRequestReason,

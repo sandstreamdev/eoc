@@ -7,8 +7,6 @@ import { IntlPropType } from 'common/constants/propTypes';
 import './DaySelector.scss';
 
 const DaySelector = ({ intl: { formatMessage }, onChange, selected }) => {
-  console.log(selected);
-
   return (
     <div className="select-days">
       <select

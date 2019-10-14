@@ -472,10 +472,8 @@ const updateEmailNotificationSettings = async (req, resp) => {
     ).exec();
 
     resp.send();
-  } catch (error) {
+  } catch {
     resp.send(400);
-
-    console.error(error);
   }
 };
 
