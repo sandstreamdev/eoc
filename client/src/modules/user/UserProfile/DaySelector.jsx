@@ -10,23 +10,21 @@ const DaySelector = ({
   onChange,
   options,
   selected
-}) => {
-  return (
-    <div className="select-days">
-      <select
-        className="select-days__select"
-        onChange={onChange}
-        value={selected}
-      >
-        {options.map(option => (
-          <option key={option.value} value={option.value}>
-            {formatMessage({ id: option.message })}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
+}) => (
+  <div className="select-days">
+    <select
+      className="select-days__select"
+      onChange={onChange}
+      value={selected}
+    >
+      {options.map(option => (
+        <option key={option.value} value={option.value}>
+          {formatMessage({ id: option.message })}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
 DaySelector.propTypes = {
   intl: IntlPropType.isRequired,

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const { runAsyncTasks } = require('../common/utils');
-const { EmailNotificationFrequency } = require('../common/variables.js');
+const { EmailNotificationsFrequency } = require('../common/variables.js');
 
 const up = async db => {
   const addEmailNotificationSettings = async () =>
@@ -11,7 +11,7 @@ const up = async db => {
       },
       {
         $set: {
-          emailNotificationsFrequency: EmailNotificationFrequency.NEVER,
+          emailNotificationsFrequency: EmailNotificationsFrequency.NEVER,
           lastEmailNotificationSentAt: ''
         }
       }
