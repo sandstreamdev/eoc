@@ -454,7 +454,7 @@ const formatHours = hours => (hours === 1 ? `${hours} hour` : `${hours} hours`);
 
 const getUnhandledItems = items => items.filter(item => !item.done);
 
-const getDoneItems = items => items.filter(item => item.done);
+// const getDoneItems = items => items.filter(item => item.done);
 
 /**
  *
@@ -473,9 +473,13 @@ const getAuthorItems = items => userId =>
  */
 const formatItems = items => list =>
   items.map(item => ({
-    listName: list.name,
+    author: item.authorId,
+    cohortName: list.cohortId,
+    done: item.done,
     listId: list._id,
-    ...item
+    listName: list.name,
+    name: item.name,
+    requestedAt: item.createdAt
   }));
 
 /**
@@ -484,24 +488,32 @@ const formatItems = items => list =>
  * @param {namespace} name of object property to merge eg. 'items'
  * @return {Array} new array of merged objects
  */
-const prepareItemsByDoneUnhandled = lists => userId => {
-  const dataToReturn = {
-    unhandled: [],
-    done: []
-  };
+const prepareTodosItems = lists => {
+  const data = [];
+
+  lists.forEach(list => {
+    const { items } = list;
+    const unhandled = getUnhandledItems(items);
+    const formattedItems = formatItems(unhandled)(list);
+
+    data.push(...formattedItems);
+  });
+
+  return data;
+};
+
+const prepareRequestedItems = lists => userId => {
+  const data = [];
 
   lists.forEach(list => {
     const { items } = list;
     const authorItems = getAuthorItems(items)(userId);
     const formattedItems = formatItems(authorItems)(list);
-    const unhandled = getUnhandledItems(formattedItems);
-    const done = getDoneItems(formattedItems);
 
-    dataToReturn.unhandled.push(...unhandled);
-    dataToReturn.done.push(...done);
+    data.push(...formattedItems);
   });
 
-  return dataToReturn;
+  return data;
 };
 
 module.exports = {
@@ -513,15 +525,14 @@ module.exports = {
   fireAndForget,
   formatHours,
   getAuthorItems,
-  getDoneItems,
   getHours,
-  getUnhandledItems,
   isDefined,
   isMember,
   isOwner,
   isValidMongoId,
   isViewer,
-  prepareItemsByDoneUnhandled,
+  prepareRequestedItems,
+  prepareTodosItems,
   responseWithCohort,
   responseWithCohortDetails,
   responseWithCohortMember,

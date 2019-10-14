@@ -152,7 +152,7 @@ export const deleteAccount = (email, password) =>
 
 export const prepareReport = () => dispatch => {
   try {
-    const result = getData('/auth/prepare-items-req-by-me');
+    const result = getData('/auth/prepare-items');
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {

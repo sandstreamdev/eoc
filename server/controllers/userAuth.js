@@ -16,10 +16,8 @@ const {
 const Settings = require('../models/settings.model');
 const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
 const {
-  getAuthorItems,
-  getDoneItems,
-  getUnhandledItems,
-  prepareItemsByDoneUnhandled
+  prepareRequestedItems,
+  prepareTodosItems
 } = require('../common/utils/helpers');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
@@ -455,10 +453,43 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
-const prepareItemsRequestedByMe = async (req, resp, next) => {
-  const { _id: userId } = req.user;
+// const prepareItemsRequestedByMe = async (req, resp, next) => {
+//   const { _id: userId } = req.user;
 
+//   try {
+//     const viewerLists = await List.find({
+//       viewersIds: { $in: [userId] },
+//       'items.0': { $exists: true }
+//     })
+//       .lean()
+//       .exec();
+
+//     const items = prepareItems(viewerLists)(userId);
+
+//     // eslint-disable-next-line no-param-reassign
+//     resp.locales = {
+//       items
+//     };
+
+//     resp.send();
+//     next();
+//   } catch (error) {
+//     console.log(error);
+
+//     resp.send(400);
+//   }
+// };
+
+const prepareItems = async (req, resp, next) => {
+  const { _id: userId } = req.user;
+  const data = { requests: [], todos: [] };
+
+  console.log('Jestemsy na backendzie');
   try {
+    const ownerLists = await List.find({ ownerIds: { $in: [userId] } })
+      .lean()
+      .exec();
+
     const viewerLists = await List.find({
       viewersIds: { $in: [userId] },
       'items.0': { $exists: true }
@@ -466,39 +497,19 @@ const prepareItemsRequestedByMe = async (req, resp, next) => {
       .lean()
       .exec();
 
-    const items = prepareItemsByDoneUnhandled(viewerLists)(userId);
+    const allOwnersItems = prepareTodosItems(ownerLists);
+    const allRequestedItems = prepareRequestedItems(viewerLists)(userId);
+
+    console.log(allRequestedItems);
+
+    // const unhandledItems = getUnhandledItems(allItems);
+    // const doneItems = getDoneItems(allItems);
 
     // eslint-disable-next-line no-param-reassign
-    resp.locales = {
-      items
-    };
-
-    resp.send();
-    next();
-  } catch (error) {
-    console.log(error);
-
-    resp.send(400);
-  }
-};
-
-const prepareItemsOwnedByMe = async (req, resp, next) => {
-  const { _id: userId } = req.user;
-
-  try {
-    const ownerLists = await List.find({ ownerIds: { $in: [userId] } })
-      .lean()
-      .exec();
-
-    const allItems = prepareItemsByDoneUnhandled(ownerLists)(userId);
-    const unhandledItems = getUnhandledItems(allItems);
-    const doneItems = getDoneItems(allItems);
-
-    // eslint-disable-next-line no-param-reassign
-    resp.locales = {
-      unhandledItems,
-      doneItems
-    };
+    // resp.locales = {
+    //   unhandledItems,
+    //   doneItems
+    // };
 
     resp.send();
     next();
@@ -516,8 +527,7 @@ module.exports = {
   getLoggedUser,
   getUserDetails,
   logout,
-  prepareItemsOwnedByMe,
-  prepareItemsRequestedByMe,
+  prepareItems,
   recoveryPassword,
   resendSignUpConfirmationLink,
   resetPassword,
