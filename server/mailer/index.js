@@ -102,10 +102,36 @@ const sendResetPasswordLink = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const sendReport = (req, resp) => {
-  const { items } = resp.locales;
+const sendReport = async (req, resp) => {
+  const { data } = resp.locales;
+  const { email: receiver, displayName } = req.user;
 
-  console.log(items);
+  const subject = `${PROJECT_NAME} - your report`;
+  const dataToSend = JSON.stringify(data);
+
+  const message = {
+    to: receiver,
+    from: 'no.reply@app.eoc.com',
+    subject,
+    html: `
+      <h2>Hey ${displayName}, here is your report of items you requested and items you have to order.</h2>
+      <pre>
+        <code>
+          ${dataToSend}
+        </code>
+      </pre>
+    `
+  };
+
+  try {
+    const result = await SendGridMail.send(message);
+
+    if (result) {
+      resp.sendStatus(200);
+    }
+  } catch (error) {
+    resp.sendStatus(400);
+  }
 };
 
 module.exports = {

@@ -458,12 +458,12 @@ const getUnhandledItems = items => items.filter(item => !item.done);
 
 /**
  *
- * @param {items} array of items
+ * @param {items} array of populated items
  * @param {userId} user id
  * @return {Array} return array of items where passed userId was an author
  */
 const getAuthorItems = items => userId =>
-  items.filter(item => item.authorId.toString() === userId.toString());
+  items.filter(item => item.authorId._id.toString() === userId.toString());
 
 /**
  *
@@ -473,8 +473,8 @@ const getAuthorItems = items => userId =>
  */
 const formatItems = items => list =>
   items.map(item => ({
-    author: item.authorId,
-    cohortName: list.cohortId,
+    author: item.authorId.displayName,
+    cohortName: list.cohortId ? list.cohortId.name : null,
     done: item.done,
     listId: list._id,
     listName: list.name,
@@ -515,6 +515,8 @@ const prepareRequestedItems = lists => userId => {
 
   return data;
 };
+
+// TODO: check prepare Requested items if they return correct data
 
 module.exports = {
   checkIfArrayContainsUserId,

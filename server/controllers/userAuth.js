@@ -453,41 +453,20 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
-// const prepareItemsRequestedByMe = async (req, resp, next) => {
-//   const { _id: userId } = req.user;
-
-//   try {
-//     const viewerLists = await List.find({
-//       viewersIds: { $in: [userId] },
-//       'items.0': { $exists: true }
-//     })
-//       .lean()
-//       .exec();
-
-//     const items = prepareItems(viewerLists)(userId);
-
-//     // eslint-disable-next-line no-param-reassign
-//     resp.locales = {
-//       items
-//     };
-
-//     resp.send();
-//     next();
-//   } catch (error) {
-//     console.log(error);
-
-//     resp.send(400);
-//   }
-// };
-
 const prepareItems = async (req, resp, next) => {
   const { _id: userId } = req.user;
   const data = { requests: [], todos: [] };
+  let todos = [];
+  let requests = [];
 
-  console.log('Jestemsy na backendzie');
   try {
-    const ownerLists = await List.find({ ownerIds: { $in: [userId] } })
+    const ownerLists = await List.find({
+      ownerIds: { $in: [userId] },
+      'items.0': { $exists: true }
+    })
       .lean()
+      .populate('cohortId', 'name')
+      .populate('items.authorId', 'displayName')
       .exec();
 
     const viewerLists = await List.find({
@@ -495,26 +474,29 @@ const prepareItems = async (req, resp, next) => {
       'items.0': { $exists: true }
     })
       .lean()
+      .populate('cohortId', 'name')
+      .populate('items.authorId', 'displayName')
       .exec();
 
-    const allOwnersItems = prepareTodosItems(ownerLists);
-    const allRequestedItems = prepareRequestedItems(viewerLists)(userId);
+    if (ownerLists) {
+      todos = prepareTodosItems(ownerLists);
+    }
 
-    console.log(allRequestedItems);
+    if (viewerLists) {
+      requests = prepareRequestedItems(viewerLists)(userId);
+    }
 
-    // const unhandledItems = getUnhandledItems(allItems);
-    // const doneItems = getDoneItems(allItems);
+    data.requests = requests;
+    data.todos = todos;
 
-    // eslint-disable-next-line no-param-reassign
-    // resp.locales = {
-    //   unhandledItems,
-    //   doneItems
-    // };
+    /* eslint-disable-next-line no-param-reassign */
+    resp.locales = {
+      data
+    };
 
-    resp.send();
     next();
   } catch {
-    resp.send(400);
+    resp.sendStatus(400);
   }
 };
 
