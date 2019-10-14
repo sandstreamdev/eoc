@@ -9,6 +9,25 @@ import './EmailNotification.scss';
 import { EmailNotificationFrequency } from 'common/constants/enums';
 import { UserPropType } from 'common/constants/propTypes';
 
+const emailNotificationsOptions = [
+  { message: 'common.monday', value: EmailNotificationFrequency.MONDAY },
+  { message: 'common.tuesday', value: EmailNotificationFrequency.TUESDAY },
+  {
+    message: 'common.wednesday',
+    value: EmailNotificationFrequency.WEDNESDAY
+  },
+  {
+    message: 'common.thursday',
+    value: EmailNotificationFrequency.THURSDAY
+  },
+  { message: 'common.friday', value: EmailNotificationFrequency.FRIDAY },
+  {
+    message: 'common.saturday',
+    value: EmailNotificationFrequency.SATURDAY
+  },
+  { message: 'common.sunday', value: EmailNotificationFrequency.SUNDAY }
+];
+
 class EmailNotifications extends PureComponent {
   state = {
     emailNotificationsFrequency: ''
@@ -106,6 +125,7 @@ class EmailNotifications extends PureComponent {
           {emailNotificationsFrequency !== EmailNotificationFrequency.NEVER && (
             <DaySelector
               onChange={this.handleSelect}
+              options={emailNotificationsOptions}
               selected={emailNotificationsFrequency}
             />
           )}
