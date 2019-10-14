@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
-import { IntlPropType } from 'common/constants/propTypes';
+import { ErrorDataPropType, IntlPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import { Routes } from 'common/constants/enums';
 import ResourceLinks from './ResourceLinks';
@@ -59,20 +58,7 @@ const ResourcePanel = ({
 };
 
 ResourcePanel.propTypes = {
-  errorData: PropTypes.shape({
-    cohorts: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    ),
-    lists: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    )
-  }).isRequired,
+  errorData: ErrorDataPropType.isRequired,
   intl: IntlPropType.isRequired
 };
 

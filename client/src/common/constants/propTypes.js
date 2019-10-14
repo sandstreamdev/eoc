@@ -29,3 +29,18 @@ export const IconPropType = {
   label: PropTypes.string,
   title: PropTypes.string
 };
+
+export const ErrorDataPropType = PropTypes.shape({
+  cohorts: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ),
+  lists: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  )
+});

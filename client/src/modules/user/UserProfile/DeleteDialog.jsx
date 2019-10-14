@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Dialog from 'common/components/Dialog';
-import { IntlPropType } from 'common/constants/propTypes';
+import { ErrorDataPropType, IntlPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import DeleteForm from './DeleteForm';
 import AlertBox from 'common/components/AlertBox';
@@ -56,20 +56,7 @@ const DeleteDialog = ({
 
 DeleteDialog.propTypes = {
   error: PropTypes.bool,
-  errorData: PropTypes.shape({
-    cohorts: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    ),
-    lists: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    )
-  }),
+  errorData: ErrorDataPropType,
   intl: IntlPropType.isRequired,
   pending: PropTypes.bool,
 
