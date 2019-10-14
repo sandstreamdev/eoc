@@ -121,7 +121,7 @@ class DeleteAccount extends Component {
         )}
         {isAccountDeletedDialogVisible && (
           <Dialog
-            cancelLabel="common.ok"
+            cancelLabel={formatMessage({ id: 'common.ok' })}
             onCancel={this.handleCancel}
             title={formatMessage({ id: 'user.account-deleted' })}
           >

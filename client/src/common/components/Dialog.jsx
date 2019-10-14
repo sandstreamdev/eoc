@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
 import FocusLock from 'react-focus-lock';
 import classNames from 'classnames';
 
@@ -47,7 +46,7 @@ const Dialog = ({
                 onClick={onConfirm}
                 type="button"
               >
-                <FormattedMessage id={confirmLabel} />
+                {confirmLabel}
               </button>
             )}
             <button
@@ -56,7 +55,7 @@ const Dialog = ({
               onClick={onCancel}
               type="button"
             >
-              <FormattedMessage id={cancelLabel} />
+              {cancelLabel}
             </button>
           </div>
           {pending && <Preloader />}
@@ -67,16 +66,14 @@ const Dialog = ({
 );
 
 Dialog.defaultProps = {
-  cancelLabel: 'common.button.cancel',
-  confirmLabel: 'common.button.confirm',
   hasPermissions: true
 };
 
 Dialog.propTypes = {
   buttonStyleType: PropTypes.string,
-  cancelLabel: PropTypes.string,
+  cancelLabel: PropTypes.string.isRequired,
   children: PropTypes.node,
-  confirmLabel: PropTypes.string,
+  confirmLabel: PropTypes.string.isRequired,
   hasPermissions: PropTypes.bool,
   pending: PropTypes.bool,
   title: PropTypes.string,
