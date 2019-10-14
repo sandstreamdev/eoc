@@ -24,6 +24,7 @@ const DeleteDialog = ({
   <div className="delete-dialog">
     <Dialog
       buttonStyleType={MessageType.ERROR}
+      cancelLabel={formatMessage({ id: 'common.button.cancel' })}
       confirmLabel={formatMessage({ id: 'user.delete-account' })}
       hasPermissions
       onCancel={onCancel}

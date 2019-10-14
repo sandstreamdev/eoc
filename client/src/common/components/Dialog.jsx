@@ -66,16 +66,14 @@ const Dialog = ({
 );
 
 Dialog.defaultProps = {
-  cancelLabel: 'cancel',
-  confirmLabel: 'confirm',
   hasPermissions: true
 };
 
 Dialog.propTypes = {
   buttonStyleType: PropTypes.string,
-  cancelLabel: PropTypes.string,
+  cancelLabel: PropTypes.string.isRequired,
   children: PropTypes.node,
-  confirmLabel: PropTypes.string,
+  confirmLabel: PropTypes.string.isRequired,
   hasPermissions: PropTypes.bool,
   pending: PropTypes.bool,
   title: PropTypes.string,

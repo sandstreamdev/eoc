@@ -390,6 +390,8 @@ class Cohort extends PureComponent {
         {this.renderBreadcrumbs()}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
+            cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+            confirmLabel={formatMessage({ id: 'common.button.confirm' })}
             onCancel={this.handleDialogContext(null)}
             onConfirm={this.handleCohortArchivization()}
             pending={pendingForCohortArchivization}

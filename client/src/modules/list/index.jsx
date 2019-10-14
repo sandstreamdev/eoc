@@ -395,6 +395,8 @@ class List extends Component {
         )}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
+            cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+            confirmLabel={formatMessage({ id: 'common.button.confirm' })}
             onCancel={this.hideDialog}
             onConfirm={this.handleListArchivization(listId)}
             pending={pendingForListArchivization}
