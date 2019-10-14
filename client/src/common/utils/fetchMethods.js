@@ -2,7 +2,6 @@ import { REDIRECT_TIMEOUT } from 'common/constants/variables/';
 import history from 'common/utils/history';
 import {
   ForbiddenException,
-  RequirementsException,
   ResourceNotFoundException,
   UnauthorizedException,
   ValidationException
@@ -38,9 +37,6 @@ const handleFetchErrors = response => {
       return response.json().then(json => {
         if (json.reason === BadRequestReason.VALIDATION) {
           throw new ValidationException('', json.errors);
-        }
-        if (json.reason === BadRequestReason.REQUIREMENTS) {
-          throw new RequirementsException('', json.data);
         }
         throw new Error(json.message || '');
       });

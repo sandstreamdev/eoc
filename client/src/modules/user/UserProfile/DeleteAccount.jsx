@@ -12,7 +12,7 @@ import {
   logoutCurrentUser
 } from '../model/actions';
 import DeleteDialog from './DeleteDialog';
-import { RequirementsException } from 'common/exceptions';
+import { ValidationException } from 'common/exceptions';
 import { saveData, storageKeys } from 'common/utils/localStorage';
 import './DeleteAccount.scss';
 
@@ -58,10 +58,10 @@ class DeleteAccount extends Component {
     } catch (err) {
       let errorData;
 
-      if (err instanceof RequirementsException) {
-        const { data } = err;
+      if (err instanceof ValidationException) {
+        const { errors } = err;
 
-        errorData = data;
+        errorData = errors;
       }
 
       this.setState({ errorData, isErrorVisible: true, pending: false });

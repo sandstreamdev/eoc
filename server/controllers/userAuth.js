@@ -467,11 +467,11 @@ const deleteAccount = async (req, resp) => {
         .exec();
 
       if (cohortsOnlyOwner.length >= 1 || listsOnlyOwner.length >= 1) {
-        const data = { cohorts: cohortsOnlyOwner, lists: listsOnlyOwner };
+        const errors = { cohorts: cohortsOnlyOwner, lists: listsOnlyOwner };
 
         return resp
           .status(400)
-          .send({ reason: BadRequestReason.REQUIREMENTS, data });
+          .send({ reason: BadRequestReason.VALIDATION, errors });
       }
 
       // delete account details
