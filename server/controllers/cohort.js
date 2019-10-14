@@ -436,7 +436,8 @@ const addOwnerRole = (req, resp) => {
         cohortId: sanitizedCohortId,
         notificationData: {
           cohortName: doc.name,
-          performer: displayName
+          performer: displayName,
+          performerId: currentUserId
         },
         userId: sanitizedUserId
       };
@@ -494,7 +495,8 @@ const removeOwnerRole = (req, resp) => {
         cohortId: sanitizedCohortId,
         notificationData: {
           cohortName: doc.name,
-          performer: displayName
+          performer: displayName,
+          performerId: currentUserId
         },
         userId: sanitizedUserId
       };

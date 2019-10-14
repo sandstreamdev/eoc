@@ -132,7 +132,11 @@ const cohortEventsController = (event, data, { dispatch, getState }) => {
       const { currentUser } = getState();
       const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId && notificationData;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
         const { cohortName, performer } = notificationData;
@@ -159,7 +163,11 @@ const cohortEventsController = (event, data, { dispatch, getState }) => {
       const { currentUser } = getState();
       const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId && notificationData;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
         const { cohortName, performer } = notificationData;

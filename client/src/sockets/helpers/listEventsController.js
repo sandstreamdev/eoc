@@ -16,7 +16,11 @@ const listEventsController = (event, data, { dispatch, getState }) => {
     case ListEvents.ADD_OWNER_ROLE_SUCCESS: {
       const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId && notificationData;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
         const { listName, performer } = notificationData;
@@ -42,7 +46,11 @@ const listEventsController = (event, data, { dispatch, getState }) => {
     case ListEvents.REMOVE_OWNER_ROLE_SUCCESS: {
       const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId && notificationData;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
         const { listName, performer } = notificationData;
@@ -69,7 +77,11 @@ const listEventsController = (event, data, { dispatch, getState }) => {
     case ListEvents.ADD_MEMBER_ROLE_SUCCESS: {
       const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId && notificationData;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
         const { listName, performer } = notificationData;
@@ -94,7 +106,11 @@ const listEventsController = (event, data, { dispatch, getState }) => {
     case ListEvents.REMOVE_MEMBER_ROLE_SUCCESS: {
       const { notificationData, userId, ...rest } = data;
       const { id: currentUserId } = currentUser;
-      const displayNotification = userId === currentUserId && notificationData;
+      const currentUserRoleChanged = userId === currentUserId;
+      const currentUserIsNotPerformer =
+        notificationData && notificationData.performerId !== currentUserId;
+      const displayNotification =
+        currentUserRoleChanged && currentUserIsNotPerformer;
 
       if (displayNotification) {
         const { listName, performer } = notificationData;
