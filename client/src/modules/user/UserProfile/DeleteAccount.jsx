@@ -13,7 +13,7 @@ import {
 } from '../model/actions';
 import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
-import { saveData, storageKeys } from 'common/utils/localStorage';
+import { saveAccountData } from 'common/utils/localStorage';
 import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
@@ -52,7 +52,7 @@ class DeleteAccount extends Component {
       const result = await deleteAccount(trimmedEmail, password);
 
       if (result) {
-        saveData(storageKeys.account, 'deleted');
+        saveAccountData('deleted');
         removeUserData();
       }
     } catch (err) {

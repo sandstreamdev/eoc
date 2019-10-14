@@ -255,7 +255,9 @@ const removeUserFromCohorts = io => async (
 };
 
 const destroyUserSessions = async (store, userId) => {
-  const regexp = new RegExp(userId);
+  const regexp = new RegExp(
+    userId.toString().replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
+  );
   const { db } = store;
 
   await db

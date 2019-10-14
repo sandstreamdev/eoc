@@ -21,7 +21,11 @@ const {
   validatePassword
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
-const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
+const {
+  BadRequestReason,
+  BCRYPT_SALT_ROUNDS,
+  EXPIRATION_TIME
+} = require('../common/variables');
 const Cohort = require('../models/cohort.model');
 const List = require('../models/list.model');
 const io = require('../sockets/index');
@@ -74,7 +78,10 @@ const signUp = (req, resp, next) => {
         const { _id, displayName, email, idFromProvider, isActive } = user;
 
         if (!idFromProvider && !isActive) {
-          const hashedPassword = bcrypt.hashSync(password + email, 12);
+          const hashedPassword = bcrypt.hashSync(
+            password + email,
+            BCRYPT_SALT_ROUNDS
+          );
           const signUpHash = crypto.randomBytes(32).toString('hex');
           const expirationDate = new Date().getTime() + EXPIRATION_TIME;
 
@@ -102,7 +109,10 @@ const signUp = (req, resp, next) => {
         );
       }
 
-      const hashedPassword = bcrypt.hashSync(password + email, 12);
+      const hashedPassword = bcrypt.hashSync(
+        password + email,
+        BCRYPT_SALT_ROUNDS
+      );
       const signUpHash = crypto.randomBytes(32).toString('hex');
       const expirationDate = new Date().getTime() + EXPIRATION_TIME;
       const newUser = new User({
@@ -306,7 +316,7 @@ const updatePassword = (req, resp) => {
       }
 
       const dataUpdate = {
-        password: bcrypt.hashSync(updatedPassword + email, 12),
+        password: bcrypt.hashSync(updatedPassword + email, BCRYPT_SALT_ROUNDS),
         resetToken: null,
         resetTokenExpirationDate: null
       };
@@ -361,7 +371,7 @@ const changePassword = (req, res) => {
       .send({ reason: BadRequestReason.VALIDATION, errors });
   }
 
-  User.findOne({ email }, 'password')
+  User.findOne({ _id: userId, email }, 'password')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -374,7 +384,10 @@ const changePassword = (req, res) => {
         throw new ValidationException();
       }
 
-      const newHashedPassword = bcrypt.hashSync(newPassword + email, 12);
+      const newHashedPassword = bcrypt.hashSync(
+        newPassword + email,
+        BCRYPT_SALT_ROUNDS
+      );
 
       // eslint-disable-next-line no-param-reassign
       doc.password = newHashedPassword;
@@ -442,11 +455,16 @@ const checkToken = (req, resp) => {
 
 const deleteAccount = async (req, resp) => {
   const { email, password } = req.body;
+  const { _id } = req.user;
   const sanitizedEmail = sanitize(email);
   const socketInstance = io.getInstance();
 
   try {
-    const user = await User.findOne({ email: sanitizedEmail, isActive: true });
+    const user = await User.findOne({
+      _id,
+      email: sanitizedEmail,
+      isActive: true
+    });
     const { _id: userId, displayName, password: dbPassword } = user;
 
     if (bcrypt.compareSync(password + email, dbPassword)) {

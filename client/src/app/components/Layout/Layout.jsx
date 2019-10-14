@@ -30,7 +30,11 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import { loadData, saveData, storageKeys } from 'common/utils/localStorage';
+import {
+  loadSettingsData,
+  saveSettingsData,
+  storageKeys
+} from 'common/utils/localStorage';
 import { clearMetaDataSuccess } from 'common/model/actions';
 import AccountDeleted from 'modules/user/UserProfile/AccountDeleted';
 import './Layout.scss';
@@ -47,7 +51,7 @@ export class Layout extends PureComponent {
   }
 
   componentDidMount() {
-    const settings = loadData(storageKeys.settings);
+    const settings = loadSettingsData();
     const {
       currentUser,
       getLoggedUser,
@@ -94,7 +98,7 @@ export class Layout extends PureComponent {
   handleStorageChanges = ({ key }) => {
     const { removeUserData } = this.props;
 
-    if (key === storageKeys.account) {
+    if (key === storageKeys.ACCOUNT) {
       removeUserData();
     }
   };
@@ -122,7 +126,7 @@ export class Layout extends PureComponent {
     const { viewType } = this.state;
     const settings = { viewType };
 
-    saveData(storageKeys.settings, settings);
+    saveSettingsData(settings);
   };
 
   render() {
@@ -186,6 +190,7 @@ export class Layout extends PureComponent {
         </Toolbar>
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
+          <Route component={SuccessMessage} path="/account-created" />
           <Route
             component={LinkExpired}
             path="/confirmation-link-expired/:token?"
@@ -245,6 +250,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { removeUserData, clearMetaDataSuccess, getLoggedUser }
+    { clearMetaDataSuccess, getLoggedUser, removeUserData }
   )
 )(Layout);

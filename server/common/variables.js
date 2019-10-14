@@ -11,6 +11,7 @@ const DEMO_MODE_ID = '5ce2e16d7d8999071560c9ae';
 const DEMO_USER_ID = '5ce283fee76a2e02c79d8f55';
 const PROJECT_NAME = 'EOC';
 const NUMBER_OF_ACTIVITIES_TO_SEND = 20;
+const BCRYPT_SALT_ROUNDS = 12;
 
 const ActivityType = Object.freeze({
   COHORT_ADD_DESCRIPTION: 'activity.cohort.add-description',
@@ -78,6 +79,7 @@ const BadRequestReason = enumerable('reason')('REQUIREMENTS', 'VALIDATION');
 module.exports = {
   ActivityType,
   BadRequestReason,
+  BCRYPT_SALT_ROUNDS,
   DB_NAME,
   DB_SERVER_URL,
   DB_URL,
