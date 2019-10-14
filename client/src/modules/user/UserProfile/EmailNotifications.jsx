@@ -1,26 +1,48 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import AlertBox from 'common/components/AlertBox';
 import { saveEmailNotificationSettings } from '../model/actions';
-import { NotificationFrequency, MessageType } from 'common/constants/enums';
-import SelectDays from './SelectDays';
+import DaySelector from './DaySelector';
 import './EmailNotification.scss';
-
-// TODO: Fetch settings when profile view is displayed
+import AlertBox from 'common/components/AlertBox';
+import { NotificationFrequency, MessageType } from 'common/constants/enums';
+import { UserPropType } from 'common/constants/propTypes';
 
 class EmailNotifications extends PureComponent {
   state = {
     success: false,
     error: false,
-    notificationFrequency: NotificationFrequency.MONDAY,
-    areDaysVisible: true
+    notificationFrequency: ''
   };
 
-  showDays = () =>
+  componentDidMount() {
+    this.getUserSettings();
+  }
+
+  componentDidUpdate(previousProps) {
+    const {
+      user: { emailNotificationsFrequency: currentSettings }
+    } = this.props;
+    const {
+      user: { emailNotificationsFrequency: previousSettings }
+    } = previousProps;
+
+    if (currentSettings !== previousSettings) {
+      this.getUserSettings();
+    }
+  }
+
+  getUserSettings = () => {
+    const {
+      user: { emailNotificationsFrequency }
+    } = this.props;
+
+    this.setState({ notificationFrequency: emailNotificationsFrequency });
+  };
+
+  setWeekly = () =>
     this.setState({
-      areDaysVisible: true,
-      notificationFrequency: NotificationFrequency.MONDAY
+      notificationFrequency: NotificationFrequency.WEEKLY
     });
 
   showSuccessMessage = () => {
@@ -33,7 +55,6 @@ class EmailNotifications extends PureComponent {
   handleSetNever = () =>
     this.setState(
       {
-        areDaysVisible: false,
         notificationFrequency: NotificationFrequency.NEVER
       },
       this.updateNotificationSettings
@@ -67,12 +88,7 @@ class EmailNotifications extends PureComponent {
   };
 
   render() {
-    const {
-      areDaysVisible,
-      error,
-      notificationFrequency,
-      success
-    } = this.state;
+    const { error, notificationFrequency, success } = this.state;
 
     return (
       <section className="email-notifications">
@@ -109,14 +125,23 @@ class EmailNotifications extends PureComponent {
               name="group1"
               type="radio"
               value={NotificationFrequency.WEEKLY}
-              onChange={this.showDays}
+              onChange={this.setWeekly}
             />
           </label>
-          {areDaysVisible && <SelectDays onChange={this.handleSelect} />}
+          {notificationFrequency !== NotificationFrequency.NEVER && (
+            <DaySelector
+              onChange={this.handleSelect}
+              selected={notificationFrequency}
+            />
+          )}
         </div>
       </section>
     );
   }
 }
+
+EmailNotifications.propTypes = {
+  user: UserPropType.isRequired
+};
 
 export default EmailNotifications;

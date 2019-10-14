@@ -188,6 +188,7 @@ class UserProfile extends PureComponent {
   render() {
     const { pending } = this.state;
     const {
+      currentUser,
       currentUser: { avatarUrl, name }
     } = this.props;
 
@@ -198,7 +199,7 @@ class UserProfile extends PureComponent {
           {this.renderPersonalInfo()}
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
-          <EmailNotifications />
+          <EmailNotifications user={currentUser} />
           <DeleteAccount />
           {pending && <Preloader />}
         </article>

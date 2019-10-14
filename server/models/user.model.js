@@ -9,6 +9,8 @@ const UserSchema = new Schema(
     avatarUrl: { type: String },
     displayName: { type: String, required: true },
     email: { type: String, required: true },
+    emailNotificationsFrequency: { type: String, default: '' },
+    emailReportSentAt: { type: Date, default: '' },
     idFromProvider: { type: String },
     isActive: { type: Boolean },
     name: { type: String },
@@ -18,9 +20,7 @@ const UserSchema = new Schema(
     resetTokenExpirationDate: { type: Date },
     signUpHash: { type: String },
     signUpHashExpirationDate: { type: Date },
-    surname: { type: String },
-    emailNotificationsFrequency: { type: String, default: '' },
-    emailReportSentAt: { type: Date, default: '' }
+    surname: { type: String }
   },
   { timestamps: true }
 );
