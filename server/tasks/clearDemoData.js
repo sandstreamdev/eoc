@@ -55,3 +55,5 @@ const clearDemoData = () => {
 };
 
 clearDemoData();
+
+module.exports = { clearDemoData };
