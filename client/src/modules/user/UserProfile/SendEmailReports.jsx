@@ -10,28 +10,8 @@ import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
 
 class SendEmailReports extends PureComponent {
-  state = {
-    error: false
-  };
-
-  handleItemsRequestedByMe = async () => {
-    try {
-      this.setState({ error: false });
-
-      await prepareItemsRequestedByMe();
-    } catch {
-      this.setState({ error: true });
-    }
-  };
-
-  handleItemsOwnedByMe = async () => {
-    try {
-      this.setState({ error: false });
-
-      await prepareItemsOwnedByMe();
-    } catch (error) {
-      this.setState({ error: true });
-    }
+  handleReports = async () => {
+    // do smoent
   };
 
   render() {
@@ -51,20 +31,10 @@ class SendEmailReports extends PureComponent {
         </h2>
         <ul className="email-reports__list">
           <li className="email-reports__list-item">
-            <FormattedMessage id="email-reports.items-requested" />
+            <FormattedMessage id="email-reports.items" />
             <button
               className="primary-button"
-              onClick={this.handleItemsRequestedByMe}
-              type="submit"
-            >
-              <FormattedMessage id="email-reports.submit-button" />
-            </button>
-          </li>
-          <li className="email-reports__list-item">
-            <FormattedMessage id="email-reports.items-owned" />
-            <button
-              className="primary-button"
-              onClick={this.handleItemsOwnedByMe}
+              onClick={this.handleReports}
               type="submit"
             >
               <FormattedMessage id="email-reports.submit-button" />
