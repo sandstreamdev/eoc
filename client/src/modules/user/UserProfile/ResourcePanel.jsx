@@ -12,31 +12,45 @@ const ResourcePanel = ({
   errorData: { cohorts, lists },
   intl: { formatMessage }
 }) => {
-  const getMessage = (contextId, total) =>
+  const listContext = formatMessage(
+    { id: 'list.label-plural' },
+    { total: lists.length }
+  );
+  const cohortContext = formatMessage(
+    { id: 'cohort.label-plural' },
+    { total: cohorts.length }
+  );
+  const headerContext = `${cohorts.length > 0 ? cohortContext : ''}${
+    lists.length > 0 && cohorts.length > 0 ? '/' : ''
+  }${lists.length > 0 ? listContext : ''}`;
+  const getMessage = context =>
     formatMessage(
       { id: 'user.delete-account-make-someone-else-an-owner' },
-      { context: formatMessage({ id: contextId }, { total }) }
+      { context }
     );
 
   return (
     <div className="resource-panel">
       <h3 className="resource-panel__header">
         <ErrorMessage
-          message={formatMessage({
-            id: 'user.delete-account-make-someone-else-an-owner-header'
-          })}
+          message={formatMessage(
+            {
+              id: 'user.delete-account-make-someone-else-an-owner-header'
+            },
+            { context: headerContext }
+          )}
         />
       </h3>
       {cohorts.length > 0 && (
         <ResourceLinks
-          message={getMessage('cohort.label-plural', cohorts.length)}
+          message={getMessage(cohortContext)}
           resources={cohorts}
           route={Routes.COHORT}
         />
       )}
       {lists.length > 0 && (
         <ResourceLinks
-          message={getMessage('list.label-plural', lists.length)}
+          message={getMessage(listContext)}
           resources={lists}
           route={Routes.LIST}
         />
