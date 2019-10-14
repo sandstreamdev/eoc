@@ -150,8 +150,23 @@ export const getAccountDetails = token =>
 export const deleteAccount = (email, password) =>
   deleteData('/auth', { email, password });
 
-export const prepareItemsRequestedByMe = () =>
-  getData('/auth/prepare-items-req-by-me');
+export const prepareReport = () => dispatch => {
+  try {
+    const result = getData('/auth/prepare-items-req-by-me');
 
-export const prepareItemsOwnedByMe = () =>
-  getData('/auth/prepare-items-owned-by-me');
+    if (result) {
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'email-reports.sending-success'
+      });
+    }
+  } catch (error) {
+    createNotificationWithTimeout(
+      dispatch,
+      NotificationType.ERROR,
+      {
+        notificationId: 'email-reports.sending-failure'
+      },
+      error
+    );
+  }
+};

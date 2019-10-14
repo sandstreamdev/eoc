@@ -85,6 +85,7 @@
   "email-reports.heading": "Email reports",
   "email-reports.items": "Send email report now.",
   "email-reports.sending-failure": "Sending email report failed.",
+  "email-reports.sending-success": "Email report sent successfully.",
   "email-reports.submit-button": "Send report",
   "about.heading": "App history",
   "about.content-1": "Inspiration to create the {appName} application was born out of the need to manage our office equipment. In the initial phase, it was to be only an internal training project for new employees. By participating in the project, developers were free to choose technology and tools. The {appName} application can also be an interesting point in the portfolio of every employee who participated in the process of creating this product.",

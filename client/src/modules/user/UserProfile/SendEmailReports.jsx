@@ -1,31 +1,22 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import './SendEmailReports.scss';
-import {
-  prepareItemsRequestedByMe,
-  prepareItemsOwnedByMe
-} from '../model/actions';
-import AlertBox from 'common/components/AlertBox';
-import { MessageType } from 'common/constants/enums';
+import { prepareReport } from '../model/actions';
 
 class SendEmailReports extends PureComponent {
   handleReports = async () => {
     // do smoent
+    const { prepareReport } = this.props;
+
+    prepareReport();
   };
 
   render() {
-    const { error } = this.state;
-
     return (
       <section className="email-reports">
-        {error && (
-          <AlertBox type={MessageType.ERROR}>
-            <FormattedMessage id="email-reports.sending-failure" />
-            <span> </span>
-            <FormattedMessage id="common.try-again" />
-          </AlertBox>
-        )}
         <h2 className="email-reports__heading">
           <FormattedMessage id="email-reports.heading" />
         </h2>
@@ -46,4 +37,11 @@ class SendEmailReports extends PureComponent {
   }
 }
 
-export default SendEmailReports;
+SendEmailReports.propTypes = {
+  prepareReport: PropTypes.func.isRequired
+};
+
+export default connect(
+  null,
+  { prepareReport }
+)(SendEmailReports);
