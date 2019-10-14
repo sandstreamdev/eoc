@@ -20,9 +20,8 @@ const ResourcePanel = ({
     { id: 'cohort.label-plural' },
     { total: cohorts.length }
   );
-  const headerContext = `${cohorts.length > 0 ? cohortContext : ''}${
-    lists.length > 0 && cohorts.length > 0 ? '/' : ''
-  }${lists.length > 0 ? listContext : ''}`;
+  const separator = cohortContext && listContext ? '/' : '';
+  const headerContext = `${cohortContext}${separator}${listContext}`;
   const getMessage = context =>
     formatMessage(
       { id: 'user.delete-account-make-someone-else-an-owner' },

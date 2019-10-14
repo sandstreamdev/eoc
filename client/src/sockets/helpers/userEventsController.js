@@ -10,9 +10,9 @@ const userEventsController = (event, data, { dispatch }) => {
       dispatch({
         type: UserEvents.LOGOUT_SUCCESS
       });
-      history.replace(accountDeletedRoute());
+      localStorage.clear();
 
-      return localStorage.clear();
+      return history.replace(accountDeletedRoute());
     }
     default:
       return dispatch({ type: event, payload: data });

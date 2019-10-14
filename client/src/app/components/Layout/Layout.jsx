@@ -69,7 +69,7 @@ export class Layout extends PureComponent {
       this.setState({ viewType });
     }
 
-    this.listenForAccountDeletion();
+    window.addEventListener('storage', this.handleStorageChanges);
   }
 
   componentDidUpdate(previousProps) {
@@ -87,14 +87,16 @@ export class Layout extends PureComponent {
     }
   }
 
-  listenForAccountDeletion = () => {
+  componentWillUnmount() {
+    window.removeEventListener('storage', this.handleStorageChanges);
+  }
+
+  handleStorageChanges = ({ key }) => {
     const { removeUserData } = this.props;
 
-    window.addEventListener('storage', ({ key }) => {
-      if (key === storageKeys.account) {
-        removeUserData();
-      }
-    });
+    if (key === storageKeys.account) {
+      removeUserData();
+    }
   };
 
   isListsView = () => {
@@ -229,9 +231,9 @@ Layout.propTypes = {
     pathname: PropTypes.string.isRequired
   }),
 
-  removeUserData: PropTypes.func.isRequired,
   clearMetaDataSuccess: PropTypes.func.isRequired,
-  getLoggedUser: PropTypes.func.isRequired
+  getLoggedUser: PropTypes.func.isRequired,
+  removeUserData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
