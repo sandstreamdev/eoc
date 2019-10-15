@@ -158,7 +158,7 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'email-reports.save-settings-success'
+        notificationId: 'common.settings-saved'
       });
     }
   } catch (error) {
@@ -166,7 +166,7 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
       dispatch,
       NotificationType.ERROR,
       {
-        notificationId: 'email-reports.save-settings-failure'
+        notificationId: 'common.something-went-wrong'
       },
       error
     );

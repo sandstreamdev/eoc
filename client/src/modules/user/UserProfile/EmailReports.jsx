@@ -94,7 +94,7 @@ class EmailReports extends PureComponent {
     return (
       <section className="email-reports">
         <h2 className="email-reports__heading">
-          <FormattedMessage id="email.reports.heading" />
+          <FormattedMessage id="email.report.heading" />
         </h2>
         <div className="email-reports__body">
           <label className="email-reports__label">
