@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { saveEmailNotificationSettings } from '../model/actions';
 import DaySelector from './DaySelector';
-import './EmailNotification.scss';
+import './EmailReports.scss';
 import { EmailNotificationsFrequency } from 'common/constants/enums';
 import { UserPropType } from 'common/constants/propTypes';
 
