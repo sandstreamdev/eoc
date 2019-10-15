@@ -75,7 +75,7 @@ const ViewType = enumerable('viewType')('LIST', 'TILES');
 
 const BadRequestReason = enumerable('reason')('VALIDATION');
 
-const EmailReportsFrequency = enumerable('notification')(
+const EmailReportsFrequency = enumerable('report')(
   'FRIDAY',
   'MONDAY',
   'NEVER',
