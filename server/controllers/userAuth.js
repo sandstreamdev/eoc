@@ -477,17 +477,11 @@ const deleteAccount = async (req, resp) => {
       }
 
       await deleteAccountDetails(User, user);
-
       await deleteUserLists(List, userId);
-
       await removeUserFromLists(socketInstance)(List, displayName, userId);
-
       await deleteUserCohorts(Cohort, userId);
-
       await removeUserFromCohorts(socketInstance)(Cohort, displayName, userId);
-
       await logoutOtherSessions(socketInstance)(userId);
-
       await destroyUserSessions(req.sessionStore, userId);
 
       req.logout();

@@ -1,5 +1,7 @@
 import { enumerable } from 'common/utils/helpers';
 
+export const accountStatus = enumerable()('DELETED');
+
 export const storageKeys = enumerable()('ACCOUNT', 'SETTINGS');
 
 const load = storageKey => () => {

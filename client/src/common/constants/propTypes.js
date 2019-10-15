@@ -37,7 +37,7 @@ export const ResourcePropType = PropTypes.arrayOf(
   })
 );
 
-export const ErrorDataPropType = PropTypes.shape({
+export const ResourcesDataPropType = PropTypes.shape({
   cohorts: ResourcePropType,
   lists: ResourcePropType
 });

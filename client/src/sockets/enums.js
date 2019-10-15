@@ -11,7 +11,7 @@ import {
   ItemStatusType,
   CommentActionTypes
 } from 'modules/list/components/Items/model/actionTypes';
-import { AuthorizationActionTypes } from 'modules/user//model/actions';
+import { AuthorizationActionTypes } from 'modules/user/model/actions';
 import { enumerable } from 'common/utils/helpers';
 
 export const ItemsEvents = Object.freeze({

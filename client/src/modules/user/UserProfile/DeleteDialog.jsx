@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Dialog from 'common/components/Dialog';
-import { ErrorDataPropType, IntlPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  ResourcesDataPropType
+} from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import DeleteForm from './DeleteForm';
 import AlertBox from 'common/components/AlertBox';
@@ -13,7 +16,7 @@ import './DeleteDialog.scss';
 
 const DeleteDialog = ({
   error,
-  errorData: onlyOwnerResources,
+  onlyOwnerResources,
   intl: { formatMessage },
   onCancel,
   onConfirm,
@@ -59,7 +62,7 @@ const DeleteDialog = ({
 
 DeleteDialog.propTypes = {
   error: PropTypes.bool,
-  errorData: ErrorDataPropType,
+  onlyOwnerResources: ResourcesDataPropType,
   intl: IntlPropType.isRequired,
   pending: PropTypes.bool,
 

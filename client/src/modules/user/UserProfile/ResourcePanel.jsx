@@ -1,14 +1,17 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 
-import { ErrorDataPropType, IntlPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  ResourcesDataPropType
+} from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import { Routes } from 'common/constants/enums';
 import ResourceLinks from './ResourceLinks';
 import './ResourcePanel.scss';
 
 const ResourcePanel = ({
-  errorData: { cohorts, lists },
+  resources: { cohorts, lists },
   intl: { formatMessage }
 }) => {
   const listContext = formatMessage(
@@ -58,7 +61,7 @@ const ResourcePanel = ({
 };
 
 ResourcePanel.propTypes = {
-  errorData: ErrorDataPropType.isRequired,
+  resources: ResourcesDataPropType.isRequired,
   intl: IntlPropType.isRequired
 };
 

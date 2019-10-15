@@ -13,15 +13,15 @@ import {
 } from '../model/actions';
 import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
-import { saveAccountData } from 'common/utils/localStorage';
+import { accountStatus, saveAccountData } from 'common/utils/localStorage';
 import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
   state = {
     email: '',
-    errorData: null,
     isDeleteDialogVisible: false,
     isErrorVisible: false,
+    onlyOwnerResources: null,
     password: '',
     pending: false,
     verificationText: ''
@@ -52,19 +52,23 @@ class DeleteAccount extends Component {
       const result = await deleteAccount(trimmedEmail, password);
 
       if (result) {
-        saveAccountData('deleted');
+        saveAccountData(accountStatus.DELETED);
         removeUserData();
       }
     } catch (err) {
-      let errorData;
+      let onlyOwnerResources;
 
       if (err instanceof ValidationException) {
-        const { errors } = err;
+        const { errors: resourcesData } = err;
 
-        errorData = errors;
+        onlyOwnerResources = resourcesData;
       }
 
-      this.setState({ errorData, isErrorVisible: true, pending: false });
+      this.setState({
+        isErrorVisible: true,
+        onlyOwnerResources,
+        pending: false
+      });
     }
   };
 
@@ -96,9 +100,9 @@ class DeleteAccount extends Component {
 
   hideDeleteDialog = () =>
     this.setState({
-      errorData: null,
       isDeleteDialogVisible: false,
-      isErrorVisible: false
+      isErrorVisible: false,
+      onlyOwnerResources: null
     });
 
   handleCancel = () => {
@@ -112,9 +116,9 @@ class DeleteAccount extends Component {
       intl: { formatMessage }
     } = this.props;
     const {
-      errorData,
       isDeleteDialogVisible,
       isErrorVisible,
+      onlyOwnerResources,
       pending
     } = this.state;
 
@@ -123,10 +127,10 @@ class DeleteAccount extends Component {
         {isDeleteDialogVisible && (
           <DeleteDialog
             error={isErrorVisible}
-            errorData={errorData}
             onCancel={this.hideDeleteDialog}
             onConfirm={this.handleDeleteAccount}
             onEmailChange={this.handleEmailChange}
+            onlyOwnerResources={onlyOwnerResources}
             onPasswordChange={this.handlePasswordChange}
             onSubmit={this.handleDeleteAccount}
             onVerificationTextChange={this.handleVerificationText}

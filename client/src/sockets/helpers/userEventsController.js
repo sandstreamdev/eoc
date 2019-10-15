@@ -1,12 +1,12 @@
 import { UserEvents } from 'sockets/enums';
 import history from 'common/utils/history';
-import { saveAccountData } from 'common/utils/localStorage';
+import { accountStatus, saveAccountData } from 'common/utils/localStorage';
 import { accountDeletedRoute } from 'common/utils/helpers';
 
 const userEventsController = (event, data, { dispatch }) => {
   switch (event) {
     case UserEvents.LOGOUT_SUCCESS: {
-      saveAccountData('deleted');
+      saveAccountData(accountStatus.DELETED);
       dispatch({
         type: UserEvents.LOGOUT_SUCCESS
       });
