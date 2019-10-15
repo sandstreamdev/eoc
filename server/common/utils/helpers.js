@@ -495,7 +495,7 @@ const prepareTodosItems = lists => {
 
   lists.forEach(list => {
     const { items } = list;
-    const unhandled = getUnhandledItems(items);
+    const unhandled = getUnhandledItems(items).filter(item => !item.isArchived);
     const formattedItems = formatItems(unhandled)(list);
 
     data.push(...formattedItems);
@@ -509,7 +509,9 @@ const prepareRequestedItems = lists => userId => {
 
   lists.forEach(list => {
     const { items } = list;
-    const authorItems = getAuthorItems(items)(userId);
+    const authorItems = getAuthorItems(items)(userId).filter(
+      item => !item.isArchived
+    );
     const formattedItems = formatItems(authorItems)(list);
 
     data.push(...formattedItems);
