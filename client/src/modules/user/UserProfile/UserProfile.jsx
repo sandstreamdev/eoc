@@ -14,7 +14,7 @@ import { fetchUserDetails } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
-import SendEmailReports from './SendEmailReports';
+import EmailReports from './EmailReports';
 import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
@@ -198,7 +198,7 @@ class UserProfile extends PureComponent {
           {this.renderPersonalInfo()}
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
-          <SendEmailReports />
+          <EmailReports />
           <DeleteAccount />
           {pending && <Preloader />}
         </article>

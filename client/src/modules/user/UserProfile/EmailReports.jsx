@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import './SendEmailReports.scss';
+import './EmailReports.scss';
 import { prepareReport } from '../model/actions';
 
 class SendEmailReports extends PureComponent {
