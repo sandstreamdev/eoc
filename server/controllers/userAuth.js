@@ -329,7 +329,7 @@ const getUserDetails = (req, resp) => {
       activatedAt,
       createdAt,
       email,
-      emailNotificationsFrequency,
+      emailReportsFrequency,
       password
     } = user;
     const activationDate = activatedAt || createdAt;
@@ -338,7 +338,7 @@ const getUserDetails = (req, resp) => {
     return resp.send({
       activationDate,
       email,
-      emailNotificationsFrequency,
+      emailReportsFrequency,
       isPasswordSet
     });
   }
@@ -467,7 +467,7 @@ const updateEmailNotificationSettings = async (req, resp) => {
     await User.findOneAndUpdate(
       { _id },
       {
-        emailNotificationsFrequency: emailReportsFrequency
+        emailReportsFrequency
       }
     ).exec();
 

@@ -6,31 +6,31 @@ import PropTypes from 'prop-types';
 import { saveEmailReportsSettings } from '../model/actions';
 import DaySelector from './DaySelector';
 import './EmailReports.scss';
-import { EmailNotificationsFrequency } from 'common/constants/enums';
+import { EmailReportsFrequency } from 'common/constants/enums';
 import { UserPropType } from 'common/constants/propTypes';
 
 const emailNotificationsOptions = [
-  { message: 'common.monday', value: EmailNotificationsFrequency.MONDAY },
-  { message: 'common.tuesday', value: EmailNotificationsFrequency.TUESDAY },
+  { message: 'common.monday', value: EmailReportsFrequency.MONDAY },
+  { message: 'common.tuesday', value: EmailReportsFrequency.TUESDAY },
   {
     message: 'common.wednesday',
-    value: EmailNotificationsFrequency.WEDNESDAY
+    value: EmailReportsFrequency.WEDNESDAY
   },
   {
     message: 'common.thursday',
-    value: EmailNotificationsFrequency.THURSDAY
+    value: EmailReportsFrequency.THURSDAY
   },
-  { message: 'common.friday', value: EmailNotificationsFrequency.FRIDAY },
+  { message: 'common.friday', value: EmailReportsFrequency.FRIDAY },
   {
     message: 'common.saturday',
-    value: EmailNotificationsFrequency.SATURDAY
+    value: EmailReportsFrequency.SATURDAY
   },
-  { message: 'common.sunday', value: EmailNotificationsFrequency.SUNDAY }
+  { message: 'common.sunday', value: EmailReportsFrequency.SUNDAY }
 ];
 
 class EmailNotifications extends PureComponent {
   state = {
-    emailNotificationsFrequency: null
+    emailReportsFrequency: EmailReportsFrequency.NEVER
   };
 
   componentDidMount() {
@@ -39,10 +39,10 @@ class EmailNotifications extends PureComponent {
 
   componentDidUpdate(previousProps) {
     const {
-      user: { emailNotificationsFrequency: currentSettings }
+      user: { emailReportsFrequency: currentSettings }
     } = this.props;
     const {
-      user: { emailNotificationsFrequency: previousSettings }
+      user: { emailReportsFrequency: previousSettings }
     } = previousProps;
 
     if (currentSettings !== previousSettings) {
@@ -52,21 +52,21 @@ class EmailNotifications extends PureComponent {
 
   getUserSettings = () => {
     const {
-      user: { emailNotificationsFrequency }
+      user: { emailReportsFrequency }
     } = this.props;
 
-    this.setState({ emailNotificationsFrequency });
+    this.setState({ emailReportsFrequency });
   };
 
   handleSetWeekly = () =>
     this.setState({
-      emailNotificationsFrequency: EmailNotificationsFrequency.WEEKLY
+      emailReportsFrequency: EmailReportsFrequency.WEEKLY
     });
 
   handleSetNever = () =>
     this.setState(
       {
-        emailNotificationsFrequency: EmailNotificationsFrequency.NEVER
+        emailReportsFrequency: EmailReportsFrequency.NEVER
       },
       this.updateNotificationSettings
     );
@@ -77,24 +77,23 @@ class EmailNotifications extends PureComponent {
     } = event;
 
     this.setState(
-      { emailNotificationsFrequency: value },
+      { emailReportsFrequency: value },
       this.updateNotificationSettings
     );
   };
 
   updateNotificationSettings = () => {
-    const { emailNotificationsFrequency } = this.state;
+    const { emailReportsFrequency } = this.state;
     const { saveEmailReportsSettings } = this.props;
 
-    saveEmailReportsSettings(emailNotificationsFrequency);
+    console.log(emailReportsFrequency);
+    saveEmailReportsSettings(emailReportsFrequency);
   };
 
   render() {
-    const { emailNotificationsFrequency } = this.state;
-    const sendNever =
-      emailNotificationsFrequency === EmailNotificationsFrequency.NEVER;
-    const sendWeekly =
-      emailNotificationsFrequency !== EmailNotificationsFrequency.NEVER;
+    const { emailReportsFrequency } = this.state;
+    const sendNever = emailReportsFrequency === EmailReportsFrequency.NEVER;
+    const sendWeekly = emailReportsFrequency !== EmailReportsFrequency.NEVER;
 
     return (
       <section className="email-notifications">
@@ -109,7 +108,7 @@ class EmailNotifications extends PureComponent {
               name="group1"
               onChange={this.handleSetNever}
               type="radio"
-              value={EmailNotificationsFrequency.NEVER}
+              value={EmailReportsFrequency.NEVER}
             />
           </label>
           <label className="email-notifications__label">
@@ -119,15 +118,14 @@ class EmailNotifications extends PureComponent {
               name="group1"
               onChange={this.handleSetWeekly}
               type="radio"
-              value={EmailNotificationsFrequency.WEEKLY}
+              value={EmailReportsFrequency.WEEKLY}
             />
           </label>
-          {emailNotificationsFrequency !==
-            EmailNotificationsFrequency.NEVER && (
+          {sendWeekly && (
             <DaySelector
               onChange={this.handleSelect}
               options={emailNotificationsOptions}
-              selected={emailNotificationsFrequency}
+              selected={emailReportsFrequency}
             />
           )}
         </div>
