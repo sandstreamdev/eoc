@@ -14,7 +14,6 @@ import { fetchUserDetails } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
-import EmailReports from './EmailReports';
 import EmailNotifications from './EmailNotifications';
 import './UserProfile.scss';
 
@@ -200,7 +199,6 @@ class UserProfile extends PureComponent {
           {this.renderPersonalInfo()}
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
-          <EmailReports />
           <EmailNotifications user={currentUser} />
           <DeleteAccount />
           {pending && <Preloader />}
