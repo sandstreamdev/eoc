@@ -4,6 +4,7 @@ const mailTemplate = require('./mail-template');
 const { PROJECT_NAME } = require('../common/variables');
 const { formatHours, getHours } = require('../common/utils');
 const { EXPIRATION_TIME } = require('../common/variables');
+const mail = require('./mail');
 
 const { SENDGRID_API_KEY } = process.env;
 
@@ -102,8 +103,26 @@ const sendResetPasswordLink = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const sendReport = async () => {
+  const receiver = 'aleksander.fret@sandstream.pl';
+
+  const message = {
+    to: receiver,
+    from: 'no.reply@app.eoc.com',
+    subject: 'Send reports via email',
+    html: mailTemplate(receiver)
+  };
+
+  try {
+    await SendGridMail.send(message);
+  } catch {
+    console.error('sending email failed');
+  }
+};
+
 module.exports = {
   sendInvitation,
+  sendReport,
   sendResetPasswordLink,
   sendSignUpConfirmationLink
 };
