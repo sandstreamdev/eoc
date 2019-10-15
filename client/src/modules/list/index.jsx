@@ -395,6 +395,8 @@ class List extends Component {
         )}
         {dialogContext === DialogContext.ARCHIVE && (
           <Dialog
+            cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+            confirmLabel={formatMessage({ id: 'common.button.confirm' })}
             onCancel={this.hideDialog}
             onConfirm={this.handleListArchivization(listId)}
             pending={pendingForListArchivization}
@@ -410,8 +412,8 @@ class List extends Component {
         )}
         {isDialogForRemovedListVisible && (
           <Dialog
-            cancelLabel="common.button.dashboard"
-            confirmLabel="common.button.restore"
+            cancelLabel={formatMessage({ id: 'common.button.dashboard' })}
+            confirmLabel={formatMessage({ id: 'common.button.restore' })}
             hasPermissions={isOwner}
             onCancel={this.handleRedirect}
             onConfirm={

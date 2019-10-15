@@ -31,7 +31,9 @@ class DeleteAccount extends Component {
       intl: { formatMessage }
     } = this.props;
     const { verificationText } = this.state;
-    const verificationString = formatMessage({ id: 'delete-form.verify-text' });
+    const verificationString = formatMessage({
+      id: 'user.delete-form.verify-text'
+    });
 
     if (verificationText !== verificationString) {
       this.setState({ isErrorVisible: true, pending: false });
@@ -119,7 +121,7 @@ class DeleteAccount extends Component {
         )}
         {isAccountDeletedDialogVisible && (
           <Dialog
-            cancelLabel="common.ok"
+            cancelLabel={formatMessage({ id: 'common.ok' })}
             onCancel={this.handleCancel}
             title={formatMessage({ id: 'user.account-deleted' })}
           >

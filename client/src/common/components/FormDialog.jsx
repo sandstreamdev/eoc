@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import validator from 'validator';
 import _trim from 'lodash/trim';
+import { injectIntl } from 'react-intl';
 
 import Form from 'common/components/Form';
 import Dialog from 'common/components/Dialog';
 import { KeyCodes } from 'common/constants/enums';
 import { validateWith } from 'common/utils/helpers';
+import { IntlPropType } from 'common/constants/propTypes';
 
 export const FormDialogContext = Object.freeze({
   CREATE_COHORT: 'formDialog/CREATE_COHORT',
@@ -85,6 +87,7 @@ class FormDialog extends Component {
     const {
       defaultDescription,
       defaultName,
+      intl: { formatMessage },
       onCancel,
       onSelect,
       pending,
@@ -94,6 +97,8 @@ class FormDialog extends Component {
 
     return (
       <Dialog
+        confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+        cancelLabel={formatMessage({ id: 'common.button.cancel' })}
         onConfirm={this.handleConfirmClick}
         onCancel={onCancel}
         pending={pending}
@@ -116,6 +121,7 @@ class FormDialog extends Component {
 FormDialog.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
+  intl: IntlPropType.isRequired,
   pending: PropTypes.bool.isRequired,
   title: PropTypes.string,
 
@@ -124,4 +130,4 @@ FormDialog.propTypes = {
   onSelect: PropTypes.func
 };
 
-export default FormDialog;
+export default injectIntl(FormDialog);

@@ -171,6 +171,10 @@ const addItemToList = async (req, resp) => {
   } = req;
   const sanitizedListId = sanitize(listId);
 
+  if (name && !validator.isLength(name, { min: 1, max: 32 })) {
+    return resp.sendStatus(400);
+  }
+
   const item = new Item({
     authorId,
     name
@@ -868,7 +872,8 @@ const addOwnerRole = async (req, resp) => {
       listId,
       notificationData: {
         listName: list.name,
-        performer: displayName
+        performer: displayName,
+        performerId: currentUserId
       },
       userId: sanitizedUserId
     };
@@ -925,7 +930,8 @@ const removeOwnerRole = async (req, resp) => {
       listId,
       notificationData: {
         listName: list.name,
-        performer: displayName
+        performer: displayName,
+        performerId: currentUserId
       },
       userId: sanitizedUserId
     };
@@ -987,7 +993,8 @@ const addMemberRole = async (req, resp) => {
       listId,
       notificationData: {
         listName: list.name,
-        performer: displayName
+        performer: displayName,
+        performerId: currentUserId
       },
       userId: sanitizedUserId
     };
@@ -1002,7 +1009,7 @@ const addMemberRole = async (req, resp) => {
 
 const removeMemberRole = async (req, resp) => {
   const { id: listId } = req.params;
-  const { userId, userName } = req.body;
+  const { userId } = req.body;
   const {
     user: { _id: currentUserId, displayName }
   } = req;
@@ -1052,8 +1059,7 @@ const removeMemberRole = async (req, resp) => {
       notificationData: {
         listName: list.name,
         performer: displayName,
-        performerId: currentUserId,
-        userName
+        performerId: currentUserId
       },
       userId: sanitizedUserId
     };
