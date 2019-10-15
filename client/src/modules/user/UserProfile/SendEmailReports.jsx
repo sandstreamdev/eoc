@@ -8,7 +8,6 @@ import { prepareReport } from '../model/actions';
 
 class SendEmailReports extends PureComponent {
   handleReports = async () => {
-    // do smoent
     const { prepareReport } = this.props;
 
     prepareReport();

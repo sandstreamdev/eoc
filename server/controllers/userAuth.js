@@ -456,8 +456,6 @@ const deleteAccount = async (req, resp) => {
 const prepareItems = async (req, resp, next) => {
   const { _id: userId } = req.user;
   const data = { requests: [], todos: [] };
-  let todos = [];
-  let requests = [];
 
   try {
     const ownerLists = await List.find({
@@ -479,15 +477,12 @@ const prepareItems = async (req, resp, next) => {
       .exec();
 
     if (ownerLists) {
-      todos = prepareTodosItems(ownerLists);
+      data.todos = prepareTodosItems(ownerLists);
     }
 
     if (viewerLists) {
-      requests = prepareRequestedItems(viewerLists)(userId);
+      data.requests = prepareRequestedItems(viewerLists)(userId);
     }
-
-    data.requests = requests;
-    data.todos = todos;
 
     /* eslint-disable-next-line no-param-reassign */
     resp.locales = {

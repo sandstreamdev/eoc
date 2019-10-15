@@ -105,10 +105,8 @@ const sendResetPasswordLink = (req, resp) => {
 const sendReport = async (req, resp) => {
   const { data } = resp.locales;
   const { email: receiver, displayName } = req.user;
-
   const subject = `${PROJECT_NAME} - your report`;
   const dataToSend = JSON.stringify(data);
-
   const message = {
     to: receiver,
     from: 'no.reply@app.eoc.com',
