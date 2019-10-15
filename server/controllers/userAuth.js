@@ -4,21 +4,36 @@ const _some = require('lodash/some');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
+const _isEmpty = require('lodash/isEmpty');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
 const List = require('../models/list.model');
 const {
+  checkIfUserIsTheOnlyOwner,
+  deleteAccountDetails,
+  deleteUserCohorts,
+  deleteUserLists,
+  destroyUserSessions,
+  removeUserFromCohorts,
+  removeUserFromLists,
   responseWithUserData,
   validatePassword
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
-const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
+const {
+  BadRequestReason,
+  BCRYPT_SALT_ROUNDS,
+  EXPIRATION_TIME
+} = require('../common/variables');
 const {
   prepareRequestedItems,
   prepareTodosItems
 } = require('../common/utils/helpers');
+const Cohort = require('../models/cohort.model');
+const io = require('../sockets/index');
+const { logout: logoutOtherSessions } = require('../sockets/user');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -67,7 +82,10 @@ const signUp = (req, resp, next) => {
         const { _id, displayName, email, idFromProvider, isActive } = user;
 
         if (!idFromProvider && !isActive) {
-          const hashedPassword = bcrypt.hashSync(password + email, 12);
+          const hashedPassword = bcrypt.hashSync(
+            password + email,
+            BCRYPT_SALT_ROUNDS
+          );
           const signUpHash = crypto.randomBytes(32).toString('hex');
           const expirationDate = new Date().getTime() + EXPIRATION_TIME;
 
@@ -95,7 +113,10 @@ const signUp = (req, resp, next) => {
         );
       }
 
-      const hashedPassword = bcrypt.hashSync(password + email, 12);
+      const hashedPassword = bcrypt.hashSync(
+        password + email,
+        BCRYPT_SALT_ROUNDS
+      );
       const signUpHash = crypto.randomBytes(32).toString('hex');
       const expirationDate = new Date().getTime() + EXPIRATION_TIME;
       const newUser = new User({
@@ -299,7 +320,7 @@ const updatePassword = (req, resp) => {
       }
 
       const dataUpdate = {
-        password: bcrypt.hashSync(updatedPassword + email, 12),
+        password: bcrypt.hashSync(updatedPassword + email, BCRYPT_SALT_ROUNDS),
         resetToken: null,
         resetTokenExpirationDate: null
       };
@@ -365,7 +386,7 @@ const changePassword = (req, res) => {
       .send({ reason: BadRequestReason.VALIDATION, errors });
   }
 
-  User.findOne({ email }, 'password')
+  User.findOne({ _id: userId, email }, 'password')
     .exec()
     .then(doc => {
       if (!doc) {
@@ -378,7 +399,10 @@ const changePassword = (req, res) => {
         throw new ValidationException();
       }
 
-      const newHashedPassword = bcrypt.hashSync(newPassword + email, 12);
+      const newHashedPassword = bcrypt.hashSync(
+        newPassword + email,
+        BCRYPT_SALT_ROUNDS
+      );
 
       // eslint-disable-next-line no-param-reassign
       doc.password = newHashedPassword;
@@ -444,24 +468,46 @@ const checkToken = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-/**
- * This code below will be implemented in
- * https://jira2.sanddev.com/secure/RapidBoard.jspa?rapidView=1&view=planning&selectedIssue=EOC-521&issueLimit=100
- * */
 const deleteAccount = async (req, resp) => {
-  // console.log('DELETE ACCOUNT');
-  // const { _id: userId } = req.user;
-  // const { sessionID } = req;
-  // const regexp = new RegExp(userId);
-  // try {
-  //   const session = await Session.find({
-  //     _id: sessionID,
-  //     session: regexp
-  //   }).exec();
-  // } catch (error) {
-  //   //
-  // }
-  return resp.send();
+  const { email, password } = req.body;
+  const { _id } = req.user;
+  const sanitizedEmail = sanitize(email);
+  const socketInstance = io.getInstance();
+
+  try {
+    const user = await User.findOne({
+      _id,
+      email: sanitizedEmail,
+      isActive: true
+    });
+    const { _id: userId, displayName, password: dbPassword } = user;
+
+    if (bcrypt.compareSync(password + email, dbPassword)) {
+      const errors = await checkIfUserIsTheOnlyOwner(List, Cohort, userId);
+
+      if (!_isEmpty(errors)) {
+        return resp
+          .status(400)
+          .send({ reason: BadRequestReason.VALIDATION, errors });
+      }
+
+      await deleteAccountDetails(User, user);
+      await deleteUserLists(List, userId);
+      await removeUserFromLists(socketInstance)(List, displayName, userId);
+      await deleteUserCohorts(Cohort, userId);
+      await removeUserFromCohorts(socketInstance)(Cohort, displayName, userId);
+      await logoutOtherSessions(socketInstance)(userId);
+      await destroyUserSessions(req.sessionStore, userId);
+
+      req.logout();
+      resp.clearCookie('connect.sid');
+
+      return resp.send();
+    }
+    throw new Error();
+  } catch {
+    resp.sendStatus(400);
+  }
 };
 
 const prepareItems = async (req, resp, next) => {

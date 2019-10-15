@@ -203,7 +203,11 @@ const listEventsController = (event, data, { dispatch, getState }) => {
         performer
       };
 
-      if (currentUser.id === userId && !pathname.includes(listId)) {
+      if (
+        currentUser &&
+        currentUser.id === userId &&
+        !pathname.includes(listId)
+      ) {
         return dispatch({
           type: ListEvents.DELETE_SUCCESS,
           payload: { listId }
@@ -282,7 +286,7 @@ const listEventsController = (event, data, { dispatch, getState }) => {
 
       const listsToSave = _keyBy(
         _filter(data, list => !pathname.includes(list._id)),
-        'id'
+        '_id'
       );
 
       return dispatch({ type: event, payload: listsToSave });

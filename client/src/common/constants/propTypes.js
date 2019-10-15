@@ -29,3 +29,15 @@ export const IconPropType = {
   label: PropTypes.string,
   title: PropTypes.string
 };
+
+export const ResourcePropType = PropTypes.arrayOf(
+  PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  })
+);
+
+export const ResourcesDataPropType = PropTypes.shape({
+  cohorts: ResourcePropType,
+  lists: ResourcePropType
+});

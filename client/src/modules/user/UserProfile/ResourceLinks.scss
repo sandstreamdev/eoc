@@ -1,0 +1,45 @@
+@import 'partials';
+
+.resource-links {
+  &:not(:last-child) {
+    margin-bottom: four-by(2);
+  }
+
+  &__header {
+    margin-bottom: four-by(2);
+
+    &:first-letter {
+      text-transform: capitalize;
+    }
+  }
+
+  &__link-wrapper {
+    display: inline;
+
+    &:not(:last-child):after {
+      content: ', ';
+    }
+
+    &:last-child:after {
+      content: '.';
+    }
+  }
+
+  &__link {
+    color: $danger;
+    font-style: italic;
+    text-decoration: underline;
+
+    &:hover {
+      color: $text-black;
+    }
+
+    &:visited {
+      color: $danger;
+
+      &:hover {
+        color: $text-black;
+      }
+    }
+  }
+}

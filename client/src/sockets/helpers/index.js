@@ -1,4 +1,5 @@
 import cohortEventsController from 'sockets/helpers/cohortEventsController';
 import listEventsController from 'sockets/helpers/listEventsController';
+import userEventsController from 'sockets/helpers/userEventsController';
 
-export { cohortEventsController, listEventsController };
+export { cohortEventsController, listEventsController, userEventsController };

@@ -9,7 +9,11 @@ import { MessageType as NotificationType } from 'common/constants/enums';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { ValidationException } from 'common/exceptions/ValidationException';
 import history from 'common/utils/history';
-import { asyncTypes, enumerable } from 'common/utils/helpers';
+import {
+  accountDeletedRoute,
+  asyncTypes,
+  enumerable
+} from 'common/utils/helpers';
 
 export const AuthorizationActionTypes = enumerable('user')(
   ...asyncTypes('FETCH'),
@@ -17,6 +21,10 @@ export const AuthorizationActionTypes = enumerable('user')(
   ...asyncTypes('LOGOUT'),
   ...asyncTypes('UPDATE_SETTINGS')
 );
+
+const logoutSuccess = () => ({
+  type: AuthorizationActionTypes.LOGOUT_SUCCESS
+});
 
 const logoutFailure = () => ({
   type: AuthorizationActionTypes.LOGOUT_FAILURE
@@ -35,6 +43,12 @@ const fetchUserDetailsSuccess = payload => ({
 const fetchUserDetailsFailure = () => ({
   type: AuthorizationActionTypes.FETCH_FAILURE
 });
+
+export const removeUserData = () => dispatch => {
+  dispatch(logoutSuccess());
+  localStorage.clear();
+  history.replace(accountDeletedRoute());
+};
 
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
