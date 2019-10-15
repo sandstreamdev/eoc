@@ -44,12 +44,12 @@ const itemsMock = [
   {
     _id: { $oid: '5ccd611e4663533f995b175c' },
     authorId: {
-      _id: '5c9dc5a619ae7924074940f5',
+      _id: '5c9dc5a619ae7924074940f4',
       displayName: 'Brad Doe'
     },
     createdAt: { $date: { $numberLong: '1556963614753' } },
     description: '',
-    done: true,
+    done: false,
     isArchived: false,
     name: 'A4 Sheets',
     updatedAt: { $date: { $numberLong: '1556963614753' } },

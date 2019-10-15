@@ -480,12 +480,6 @@ const formatItems = items => list =>
     requestedAt: item.createdAt
   }));
 
-/**
- *
- * @param {lists} array of objects eg. array of lists
- * @param {namespace} name of object property to merge eg. 'items'
- * @return {Array} new array of merged objects
- */
 const prepareTodosItems = lists => {
   const data = [];
 
