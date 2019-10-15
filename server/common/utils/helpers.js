@@ -454,8 +454,6 @@ const formatHours = hours => (hours === 1 ? `${hours} hour` : `${hours} hours`);
 
 const getUnhandledItems = items => items.filter(item => !item.done);
 
-// const getDoneItems = items => items.filter(item => item.done);
-
 /**
  *
  * @param {items} array of populated items
@@ -526,6 +524,7 @@ module.exports = {
   formatHours,
   getAuthorItems,
   getHours,
+  getUnhandledItems,
   isDefined,
   isMember,
   isOwner,

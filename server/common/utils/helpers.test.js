@@ -3,7 +3,9 @@ const { ObjectId } = require('mongoose').Types;
 const {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
+  getAuthorItems,
   getHours,
+  getUnhandledItems,
   isMember,
   isOwner,
   isValidMongoId,
