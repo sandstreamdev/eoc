@@ -149,3 +149,26 @@ export const getAccountDetails = token =>
 
 export const deleteAccount = (email, password) =>
   deleteData('/auth', { email, password });
+
+export const saveEmailReportsSettings = emailReportsFrequency => async dispatch => {
+  try {
+    const result = await postData('/auth/email-reports-settings', {
+      emailReportsFrequency
+    });
+
+    if (result) {
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'common.settings-saved'
+      });
+    }
+  } catch (error) {
+    createNotificationWithTimeout(
+      dispatch,
+      NotificationType.ERROR,
+      {
+        notificationId: 'common.something-went-wrong'
+      },
+      error
+    );
+  }
+};

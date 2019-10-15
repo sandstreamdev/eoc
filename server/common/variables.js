@@ -75,6 +75,18 @@ const ViewType = enumerable('viewType')('LIST', 'TILES');
 
 const BadRequestReason = enumerable('reason')('VALIDATION');
 
+const EmailReportsFrequency = enumerable('report')(
+  'FRIDAY',
+  'MONDAY',
+  'NEVER',
+  'SATURDAY',
+  'SUNDAY',
+  'THURSDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'WEEKLY'
+);
+
 module.exports = {
   ActivityType,
   BadRequestReason,
@@ -83,6 +95,7 @@ module.exports = {
   DB_URL,
   DEMO_MODE_ID,
   DEMO_USER_ID,
+  EmailReportsFrequency,
   EXPIRATION_TIME,
   ListType,
   LOCK_TIMEOUT,

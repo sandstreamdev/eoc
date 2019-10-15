@@ -1,0 +1,21 @@
+@import '_partials';
+
+.email-reports {
+  margin-bottom: four-by(12);
+  border-bottom: 1px solid $gray-bg;
+
+  &__heading {
+    font-size: $xl-font;
+    font-weight: 500;
+    color: $text-dark;
+    margin-bottom: four-by(4);
+  }
+
+  &__label {
+    cursor: pointer;
+    padding: four-by(2);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: four-by(3);
+  }
+}

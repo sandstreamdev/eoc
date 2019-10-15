@@ -325,11 +325,22 @@ const getUserDetails = (req, resp) => {
   const { user } = req;
 
   if (user) {
-    const { activatedAt, createdAt, email, password } = user;
+    const {
+      activatedAt,
+      createdAt,
+      email,
+      emailReportsFrequency,
+      password
+    } = user;
     const activationDate = activatedAt || createdAt;
     const isPasswordSet = password !== undefined;
 
-    return resp.send({ activationDate, email, isPasswordSet });
+    return resp.send({
+      activationDate,
+      email,
+      emailReportsFrequency,
+      isPasswordSet
+    });
   }
 
   return resp.sendStatus(400);
@@ -448,6 +459,24 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
+const updateEmailReportSettings = async (req, resp) => {
+  const { _id } = req.user;
+  const { emailReportsFrequency } = req.body;
+
+  try {
+    await User.findOneAndUpdate(
+      { _id },
+      {
+        emailReportsFrequency
+      }
+    ).exec();
+
+    resp.send();
+  } catch {
+    resp.send(400);
+  }
+};
+
 module.exports = {
   changePassword,
   checkToken,
@@ -462,5 +491,6 @@ module.exports = {
   resetPassword,
   sendUser,
   signUp,
+  updateEmailReportSettings,
   updatePassword
 };
