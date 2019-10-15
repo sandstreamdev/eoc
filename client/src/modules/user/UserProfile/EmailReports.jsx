@@ -9,7 +9,7 @@ import './EmailReports.scss';
 import { EmailReportsFrequency } from 'common/constants/enums';
 import { UserPropType } from 'common/constants/propTypes';
 
-const emailNotificationsOptions = [
+const emailReportsOptions = [
   { message: 'common.monday', value: EmailReportsFrequency.MONDAY },
   { message: 'common.tuesday', value: EmailReportsFrequency.TUESDAY },
   {
@@ -28,7 +28,7 @@ const emailNotificationsOptions = [
   { message: 'common.sunday', value: EmailReportsFrequency.SUNDAY }
 ];
 
-class EmailNotifications extends PureComponent {
+class EmailReports extends PureComponent {
   state = {
     emailReportsFrequency: EmailReportsFrequency.NEVER
   };
@@ -124,7 +124,7 @@ class EmailNotifications extends PureComponent {
           {sendWeekly && (
             <DaySelector
               onChange={this.handleSelect}
-              options={emailNotificationsOptions}
+              options={emailReportsOptions}
               selected={emailReportsFrequency}
             />
           )}
@@ -134,7 +134,7 @@ class EmailNotifications extends PureComponent {
   }
 }
 
-EmailNotifications.propTypes = {
+EmailReports.propTypes = {
   user: UserPropType.isRequired,
 
   saveEmailReportsSettings: PropTypes.func.isRequired
@@ -143,4 +143,4 @@ EmailNotifications.propTypes = {
 export default connect(
   null,
   { saveEmailReportsSettings }
-)(EmailNotifications);
+)(EmailReports);
