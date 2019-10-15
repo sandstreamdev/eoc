@@ -516,8 +516,6 @@ const prepareRequestedItems = lists => userId => {
   return data;
 };
 
-// TODO: check prepare Requested items if they return correct data
-
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
