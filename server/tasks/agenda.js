@@ -11,9 +11,6 @@ const connectionOpts = {
 const runAgenda = async () => {
   const agenda = new Agenda(connectionOpts);
 
-  // sendReportsJob(agenda, 'sendReport');
-  sendReportsGmailJob(agenda, 'sendReportGmail');
-
   agenda.define('agendaJob', { priority: 'low', concurrency: 10 }, job => {
     console.log('agenda job');
   });
@@ -22,10 +19,13 @@ const runAgenda = async () => {
     console.log('clear demo data');
   });
 
+  // sendReportsJob(agenda, 'sendReport');
+  sendReportsGmailJob(agenda, 'sendReportGmail');
+
   await agenda.start();
-  await agenda.every('15 seconds', 'agendaJob');
-  await agenda.every('30 seconds', 'clearDemoData');
-  await agenda.every('45 seconds', 'sendReportGmail');
+  await agenda.every('20 seconds', 'agendaJob');
+  await agenda.every('40 seconds', 'clearDemoData');
+  await agenda.every('60 seconds', 'sendReportGmail');
   // await agenda.every('1 minute', 'sendReport');
 };
 

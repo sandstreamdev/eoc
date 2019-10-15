@@ -5,7 +5,7 @@ const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REFRESH_TOKEN,
-  FROM
+  USER
 } = process.env;
 const {
   auth: { OAuth2 }
@@ -24,11 +24,11 @@ const mailer = () => {
 
   const accessToken = oauth2Client.getAccessToken();
 
-  const smtpTransport = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       type: 'OAuth2',
-      user: FROM,
+      user: USER,
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       refreshToken: GOOGLE_REFRESH_TOKEN,
@@ -36,7 +36,7 @@ const mailer = () => {
     }
   });
 
-  return smtpTransport;
+  return transporter;
 };
 
 module.exports = { mailer };
