@@ -472,17 +472,21 @@ const getAuthorItems = items => userId =>
 const formatItems = items => list =>
   items.map(item => {
     const {
-      authorId: { displayName }
+      authorId: { displayName },
+      done,
+      name,
+      createdAt
     } = item;
+    const { _id: listId, name: listName } = list;
 
     return {
       author: displayName,
       cohortName: list.cohortId ? list.cohortId.name : null,
-      done: item.done,
-      listId: list._id,
-      listName: list.name,
-      name: item.name,
-      requestedAt: item.createdAt
+      done,
+      listId,
+      listName,
+      name,
+      requestedAt: createdAt
     };
   });
 
