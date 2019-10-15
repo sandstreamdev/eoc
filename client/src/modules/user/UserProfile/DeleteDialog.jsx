@@ -13,7 +13,7 @@ import './DeleteDialog.scss';
 
 const DeleteDialog = ({
   error,
-  errorData,
+  errorData: onlyOwnerResources,
   intl: { formatMessage },
   onCancel,
   onConfirm,
@@ -22,37 +22,40 @@ const DeleteDialog = ({
   onSubmit,
   onVerificationTextChange,
   pending
-}) => (
-  <div className="delete-dialog">
-    <Dialog
-      buttonStyleType={MessageType.ERROR}
-      confirmLabel="user.delete-account"
-      hasPermissions
-      onCancel={onCancel}
-      onConfirm={onConfirm}
-      pending={pending}
-      title={formatMessage({ id: 'user.delete-account-question' })}
-    >
-      <AlertBox type={MessageType.ERROR}>
-        <FormattedMessage id="user.delete-account-warning" />
-      </AlertBox>
-      {error && !errorData && (
-        <ErrorMessage
-          message={formatMessage({ id: 'user.delete-account-error' })}
+}) => {
+  const authorizationError = error && !onlyOwnerResources;
+
+  return (
+    <div className="delete-dialog">
+      <Dialog
+        buttonStyleType={MessageType.ERROR}
+        confirmLabel="user.delete-account"
+        hasPermissions
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+        pending={pending}
+        title={formatMessage({ id: 'user.delete-account-question' })}
+      >
+        <AlertBox type={MessageType.ERROR}>
+          <FormattedMessage id="user.delete-account-warning" />
+        </AlertBox>
+        {authorizationError && (
+          <ErrorMessage
+            message={formatMessage({ id: 'user.delete-account-error' })}
+          />
+        )}
+        {onlyOwnerResources && <ResourcePanel resources={onlyOwnerResources} />}
+        <DeleteForm
+          error={error}
+          onEmailChange={onEmailChange}
+          onPasswordChange={onPasswordChange}
+          onSubmit={onSubmit}
+          onVerificationTextChange={onVerificationTextChange}
         />
-      )}
-      {errorData && <ResourcePanel errorData={errorData} />}
-      <DeleteForm
-        error={error}
-        errorData={errorData}
-        onEmailChange={onEmailChange}
-        onPasswordChange={onPasswordChange}
-        onSubmit={onSubmit}
-        onVerificationTextChange={onVerificationTextChange}
-      />
-    </Dialog>
-  </div>
-);
+      </Dialog>
+    </div>
+  );
+};
 
 DeleteDialog.propTypes = {
   error: PropTypes.bool,

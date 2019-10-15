@@ -46,8 +46,8 @@ const fetchUserDetailsFailure = () => ({
 
 export const removeUserData = () => dispatch => {
   dispatch(logoutSuccess());
-  history.replace(accountDeletedRoute());
   localStorage.clear();
+  history.replace(accountDeletedRoute());
 };
 
 export const logoutCurrentUser = () => dispatch =>

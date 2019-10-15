@@ -17,7 +17,7 @@ import {
   SuccessMessage,
   UserProfile
 } from 'modules/user';
-import { removeUserData, getLoggedUser } from 'modules/user/model/actions';
+import { getLoggedUser, removeUserData } from 'modules/user/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import Footer from '../Footer';

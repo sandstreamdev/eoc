@@ -30,17 +30,14 @@ export const IconPropType = {
   title: PropTypes.string
 };
 
+export const ResourcePropType = PropTypes.arrayOf(
+  PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  })
+);
+
 export const ErrorDataPropType = PropTypes.shape({
-  cohorts: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
-  lists: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  )
+  cohorts: ResourcePropType,
+  lists: ResourcePropType
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import { ResourcePropType } from 'common/constants/propTypes';
 import './ResourceLinks.scss';
 
 const ResourceLinks = ({ message, resources, route }) => (
@@ -25,12 +26,7 @@ const ResourceLinks = ({ message, resources, route }) => (
 
 ResourceLinks.propTypes = {
   message: PropTypes.string.isRequired,
-  resources: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ).isRequired,
+  resources: ResourcePropType.isRequired,
   route: PropTypes.string.isRequired
 };
 
