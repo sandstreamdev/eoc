@@ -86,7 +86,6 @@ class EmailReports extends PureComponent {
     const { emailReportsFrequency } = this.state;
     const { saveEmailReportsSettings } = this.props;
 
-    console.log(emailReportsFrequency);
     saveEmailReportsSettings(emailReportsFrequency);
   };
 
