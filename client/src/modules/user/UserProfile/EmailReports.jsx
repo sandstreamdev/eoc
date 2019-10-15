@@ -104,7 +104,7 @@ class EmailReports extends PureComponent {
         </h2>
         <div className="email-reports__body">
           <label className="email-reports__label">
-            <FormattedMessage id="email.reports.never" />
+            <FormattedMessage id="email.report.never" />
             <input
               checked={sendNever}
               name="group1"
@@ -114,7 +114,7 @@ class EmailReports extends PureComponent {
             />
           </label>
           <label className="email-reports__label">
-            <FormattedMessage id="email.reports.weekly" />
+            <FormattedMessage id="email.report.weekly" />
             <input
               checked={sendWeekly}
               name="group1"
@@ -131,13 +131,13 @@ class EmailReports extends PureComponent {
             />
           )}
           <label className="email-reports__label">
-            <FormattedMessage id="email.reports.items" />
+            <FormattedMessage id="email.report.items" />
             <button
               className="primary-button"
               onClick={this.handleReports}
               type="submit"
             >
-              <FormattedMessage id="email.reports.submit-button" />
+              <FormattedMessage id="email.report.submit-button" />
             </button>
           </label>
         </div>
