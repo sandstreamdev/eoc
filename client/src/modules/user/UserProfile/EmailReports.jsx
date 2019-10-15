@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { saveEmailNotificationSettings } from '../model/actions';
+import { saveEmailReportsSettings } from '../model/actions';
 import DaySelector from './DaySelector';
 import './EmailReports.scss';
 import { EmailNotificationsFrequency } from 'common/constants/enums';
@@ -84,13 +84,17 @@ class EmailNotifications extends PureComponent {
 
   updateNotificationSettings = () => {
     const { emailNotificationsFrequency } = this.state;
-    const { saveEmailNotificationSettings } = this.props;
+    const { saveEmailReportsSettings } = this.props;
 
-    saveEmailNotificationSettings(emailNotificationsFrequency);
+    saveEmailReportsSettings(emailNotificationsFrequency);
   };
 
   render() {
     const { emailNotificationsFrequency } = this.state;
+    const sendNever =
+      emailNotificationsFrequency === EmailNotificationsFrequency.NEVER;
+    const sendWeekly =
+      emailNotificationsFrequency !== EmailNotificationsFrequency.NEVER;
 
     return (
       <section className="email-notifications">
@@ -101,10 +105,7 @@ class EmailNotifications extends PureComponent {
           <label className="email-notifications__label">
             <FormattedMessage id="email.reports.never" />
             <input
-              checked={
-                emailNotificationsFrequency ===
-                EmailNotificationsFrequency.NEVER
-              }
+              checked={sendNever}
               name="group1"
               onChange={this.handleSetNever}
               type="radio"
@@ -114,10 +115,7 @@ class EmailNotifications extends PureComponent {
           <label className="email-notifications__label">
             <FormattedMessage id="email.reports.weekly" />
             <input
-              checked={
-                emailNotificationsFrequency !==
-                EmailNotificationsFrequency.NEVER
-              }
+              checked={sendWeekly}
               name="group1"
               onChange={this.handleSetWeekly}
               type="radio"
@@ -141,10 +139,10 @@ class EmailNotifications extends PureComponent {
 EmailNotifications.propTypes = {
   user: UserPropType.isRequired,
 
-  saveEmailNotificationSettings: PropTypes.func.isRequired
+  saveEmailReportsSettings: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { saveEmailNotificationSettings }
+  { saveEmailReportsSettings }
 )(EmailNotifications);

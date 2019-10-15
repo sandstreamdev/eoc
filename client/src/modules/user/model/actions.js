@@ -150,10 +150,10 @@ export const getAccountDetails = token =>
 export const deleteAccount = (email, password) =>
   deleteData('/auth', { email, password });
 
-export const saveEmailNotificationSettings = emailNotificationsFrequency => async dispatch => {
+export const saveEmailReportsSettings = emailReportsFrequency => async dispatch => {
   try {
     const result = await postData('/auth/email-notification-settings', {
-      emailNotificationsFrequency
+      emailReportsFrequency
     });
 
     if (result) {
