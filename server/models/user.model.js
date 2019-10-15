@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { EmailNotificationsFrequency } = require('../common/variables');
+const { EmailReportsFrequency } = require('../common/variables');
 
 const { Schema } = mongoose;
 
@@ -11,11 +11,11 @@ const UserSchema = new Schema(
     avatarUrl: { type: String },
     displayName: { type: String, required: true },
     email: { type: String, required: true },
-    emailNotificationsFrequency: {
+    emailReportsFrequency: {
       type: String,
-      default: EmailNotificationsFrequency.NEVER
+      default: EmailReportsFrequency.NEVER
     },
-    lastEmailNotificationSentAt: { type: Date },
+    lastEmailReportSentAt: { type: Date },
     idFromProvider: { type: String },
     isActive: { type: Boolean },
     name: { type: String },
