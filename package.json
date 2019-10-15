@@ -28,7 +28,7 @@
   "license": "MIT",
   "repository": "github:sandstreamdev/eoc",
   "dependencies": {
-    "@sandstreamdev/std": "^0.1.2",
+    "@sandstreamdev/std": "0.1.2",
     "@sendgrid/mail": "6.4.0",
     "babel-polyfill": "6.26.0",
     "bcryptjs": "2.4.3",

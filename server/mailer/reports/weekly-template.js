@@ -1,8 +1,8 @@
 const footer = require('../common/footer');
 const header = require('../common/header');
 
-const mailTemplate = ({ receiver, content, host, styles, projectName }) => {
-  return `<!DOCTYPE html>
+const mailTemplate = ({ receiver, content, host, styles, projectName }) =>
+  `<!DOCTYPE html>
     <html>
       <head>
         <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
@@ -52,6 +52,5 @@ const mailTemplate = ({ receiver, content, host, styles, projectName }) => {
       </body>
     </html>
   `;
-};
 
 module.exports = mailTemplate;

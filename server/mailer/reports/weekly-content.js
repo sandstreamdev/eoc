@@ -11,32 +11,38 @@ const mailTemplate = require('./weekly-template');
 const styles = templateStyles({ maxWidth: 1024 });
 
 const tableRow = data => `<tr><td>${data}</td></tr>`;
+
 const tableHeaderCell = data => `<th style="${styles.thData}">${data}</th>`;
+
 const tableCell = data => `<td style="${styles.tdData}">${data}</td>`;
 
 const generateDataTable = ({ header, items, showAuthor, host }) => {
   let content = '';
+
   if (header) {
     content = tableRow(`<h5 style="${styles.h5}">${header}</h5>`);
   }
+
   content += `<tr><td><table style="${styles.tableData}">`;
   content += '<thead>';
   content += '<tr>';
   content += tableHeaderCell('Name');
   content += tableHeaderCell('Sack (Cohort)');
+
   if (showAuthor) {
     content += tableHeaderCell('Author');
   }
+
   content += tableHeaderCell('Requested at');
   content += '</tr>';
   content += '</thead>';
-
   content += '<tbody>';
 
   for (let i = 0; i < items.length; i++) {
     const { author, name, listName, listId, cohortName, requestedAt } = items[
       i
     ];
+
     content += `<tr style="${i % 2 ? styles.trOdd : ''}">`;
     content += tableCell(name);
     content += tableCell(
@@ -46,14 +52,17 @@ const generateDataTable = ({ header, items, showAuthor, host }) => {
         cohortName ? ` (${cohortName})` : ''
       }`
     );
+
     if (showAuthor) {
       content += tableCell(author);
     }
+
     content += tableCell(
       requestedAt ? formatDateTime(new Date(requestedAt)) : ''
     );
     content += '</tr>';
   }
+
   content += '</tbody>';
   content += '</table></td></tr>';
 
@@ -95,20 +104,21 @@ const generateTodosTable = ({ todos, host }) => {
   let content = tableRow(
     `<h4 style="${styles.h4} margin-bottom: 0;">Your Todos</h4>`
   );
+
   content += generateDataTable({ items: todos, showAuthor: true, host });
 
   return content;
 };
 
 const mailContent = ({ data, receiver, host, projectName }) => {
-  let content = '<p style="margin-bottom:0;">Here is your weekly report.</p>';
-
   const { requests, todos } = data;
+  let content = '<p style="margin-bottom:0;">Here is your weekly report.</p>';
 
   content += `<table style="${styles.tableContent}">`;
 
   if (todos) {
     const result = generateTodosTable({ todos, host });
+
     if (result) {
       content += result;
     }
@@ -116,6 +126,7 @@ const mailContent = ({ data, receiver, host, projectName }) => {
 
   if (requests) {
     const result = generateRequestsContent({ requests, host });
+
     if (result) {
       content += result;
     }
