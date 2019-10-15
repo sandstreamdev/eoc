@@ -156,7 +156,7 @@ export const prepareReport = () => dispatch => {
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'email-reports.sending-success'
+        notificationId: 'email.reports.sending-success'
       });
     }
   } catch (error) {
@@ -164,7 +164,7 @@ export const prepareReport = () => dispatch => {
       dispatch,
       NotificationType.ERROR,
       {
-        notificationId: 'email-reports.sending-failure'
+        notificationId: 'email.reports.sending-failure'
       },
       error
     );
@@ -179,7 +179,7 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'email-reports.save-settings-success'
+        notificationId: 'common.settings-saved'
       });
     }
   } catch (error) {
@@ -187,7 +187,7 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
       dispatch,
       NotificationType.ERROR,
       {
-        notificationId: 'email-reports.save-settings-failure'
+        notificationId: 'common.something-went-wrong'
       },
       error
     );

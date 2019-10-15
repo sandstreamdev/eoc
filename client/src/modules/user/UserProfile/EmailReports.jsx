@@ -100,7 +100,7 @@ class EmailReports extends PureComponent {
     return (
       <section className="email-reports">
         <h2 className="email-reports__heading">
-          <FormattedMessage id="email.reports.heading" />
+          <FormattedMessage id="email.report.heading" />
         </h2>
         <div className="email-reports__body">
           <label className="email-reports__label">
@@ -131,13 +131,13 @@ class EmailReports extends PureComponent {
             />
           )}
           <label className="email-reports__label">
-            <FormattedMessage id="email-reports.items" />
+            <FormattedMessage id="email.reports.items" />
             <button
               className="primary-button"
               onClick={this.handleReports}
               type="submit"
             >
-              <FormattedMessage id="email-reports.submit-button" />
+              <FormattedMessage id="email.reports.submit-button" />
             </button>
           </label>
         </div>
