@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { saveEmailReportsSettings, prepareReport } from '../model/actions';
+import { saveEmailReportsSettings, sendReport } from '../model/actions';
 import DaySelector from './DaySelector';
 import './EmailReports.scss';
 import { EmailReportsFrequency } from 'common/constants/enums';
@@ -80,9 +80,9 @@ class EmailReports extends PureComponent {
   };
 
   handleReports = () => {
-    const { prepareReport } = this.props;
+    const { sendReport } = this.props;
 
-    prepareReport();
+    sendReport();
   };
 
   updateReportSettings = () => {
@@ -131,7 +131,6 @@ class EmailReports extends PureComponent {
             />
           )}
           <label className="email-reports__label">
-            <FormattedMessage id="email.report.items" />
             <button
               className="primary-button"
               onClick={this.handleReports}
@@ -149,11 +148,11 @@ class EmailReports extends PureComponent {
 EmailReports.propTypes = {
   user: UserPropType.isRequired,
 
-  prepareReport: PropTypes.func.isRequired,
+  sendReport: PropTypes.func.isRequired,
   saveEmailReportsSettings: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { prepareReport, saveEmailReportsSettings }
+  { sendReport, saveEmailReportsSettings }
 )(EmailReports);

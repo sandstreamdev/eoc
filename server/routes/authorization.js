@@ -54,7 +54,7 @@ router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
-router.get('/prepare-items', authorize, prepareItems, sendReport);
+router.get('/send-report', authorize, prepareItems, sendReport);
 router.post('/email-reports-settings', authorize, updateEmailReportSettings);
 
 module.exports = router;

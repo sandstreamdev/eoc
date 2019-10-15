@@ -150,9 +150,9 @@ export const getAccountDetails = token =>
 export const deleteAccount = (email, password) =>
   deleteData('/auth', { email, password });
 
-export const prepareReport = () => dispatch => {
+export const sendReport = () => dispatch => {
   try {
-    const result = getData('/auth/prepare-items');
+    const result = getData('/auth/send-report');
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {

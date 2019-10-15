@@ -470,15 +470,21 @@ const getAuthorItems = items => userId =>
  * @return {array} array of objects
  */
 const formatItems = items => list =>
-  items.map(item => ({
-    author: item.authorId.displayName,
-    cohortName: list.cohortId ? list.cohortId.name : null,
-    done: item.done,
-    listId: list._id,
-    listName: list.name,
-    name: item.name,
-    requestedAt: item.createdAt
-  }));
+  items.map(item => {
+    const {
+      authorId: { displayName }
+    } = item;
+
+    return {
+      author: displayName,
+      cohortName: list.cohortId ? list.cohortId.name : null,
+      done: item.done,
+      listId: list._id,
+      listName: list.name,
+      name: item.name,
+      requestedAt: item.createdAt
+    };
+  });
 
 const prepareTodosItems = lists => {
   const data = [];

@@ -18,5 +18,9 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: four-by(3);
+
+    &:last-child {
+      justify-content: flex-end;
+    }
   }
 }
