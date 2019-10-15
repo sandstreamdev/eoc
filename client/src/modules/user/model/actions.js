@@ -152,7 +152,7 @@ export const deleteAccount = (email, password) =>
 
 export const saveEmailReportsSettings = emailReportsFrequency => async dispatch => {
   try {
-    const result = await postData('/auth/email-notification-settings', {
+    const result = await postData('/auth/email-reports-settings', {
       emailReportsFrequency
     });
 
