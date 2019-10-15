@@ -8,7 +8,7 @@ import {
 } from 'common/exceptions';
 import { enumerable } from './helpers';
 
-const BadRequestReason = enumerable('reason')('REQUIREMENTS', 'VALIDATION');
+const BadRequestReason = enumerable('reason')('VALIDATION');
 
 export const ResponseStatusCode = Object.freeze({
   BAD_REQUEST: 400,
