@@ -68,7 +68,7 @@ class EmailReports extends PureComponent {
       {
         emailReportsFrequency: EmailReportsFrequency.NEVER
       },
-      this.updateNotificationSettings
+      this.updateReportSettings
     );
 
   handleSelect = event => {
@@ -76,13 +76,10 @@ class EmailReports extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState(
-      { emailReportsFrequency: value },
-      this.updateNotificationSettings
-    );
+    this.setState({ emailReportsFrequency: value }, this.updateReportSettings);
   };
 
-  updateNotificationSettings = () => {
+  updateReportSettings = () => {
     const { emailReportsFrequency } = this.state;
     const { saveEmailReportsSettings } = this.props;
 
@@ -95,12 +92,12 @@ class EmailReports extends PureComponent {
     const sendWeekly = emailReportsFrequency !== EmailReportsFrequency.NEVER;
 
     return (
-      <section className="email-notifications">
-        <h2 className="email-notifications__heading">
+      <section className="email-reports">
+        <h2 className="email-reports__heading">
           <FormattedMessage id="email.reports.heading" />
         </h2>
-        <div className="email-notifications__body">
-          <label className="email-notifications__label">
+        <div className="email-reports__body">
+          <label className="email-reports__label">
             <FormattedMessage id="email.reports.never" />
             <input
               checked={sendNever}
@@ -110,7 +107,7 @@ class EmailReports extends PureComponent {
               value={EmailReportsFrequency.NEVER}
             />
           </label>
-          <label className="email-notifications__label">
+          <label className="email-reports__label">
             <FormattedMessage id="email.reports.weekly" />
             <input
               checked={sendWeekly}
