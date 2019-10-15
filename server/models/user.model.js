@@ -15,9 +15,9 @@ const UserSchema = new Schema(
       type: String,
       default: EmailReportsFrequency.NEVER
     },
-    lastEmailReportSentAt: { type: Date },
     idFromProvider: { type: String },
     isActive: { type: Boolean },
+    lastEmailReportSentAt: { type: Date },
     name: { type: String },
     password: { type: String },
     provider: { type: String },
