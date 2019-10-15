@@ -1,41 +1,41 @@
 /* eslint-disable no-param-reassign */
 const { runAsyncTasks } = require('../common/utils');
-const { EmailNotificationsFrequency } = require('../common/variables.js');
+const { EmailReportsFrequency } = require('../common/variables.js');
 
 const up = async db => {
-  const addEmailNotificationSettings = async () =>
+  const addEmailReportsSettings = async () =>
     db.collection('users').updateMany(
       {
-        emailNotificationsFrequency: { $exists: false },
-        lastEmailNotificationSentAt: { $exists: false }
+        emailReportsFrequency: { $exists: false },
+        lastEmailReportSentAt: { $exists: false }
       },
       {
         $set: {
-          emailNotificationsFrequency: EmailNotificationsFrequency.NEVER,
-          lastEmailNotificationSentAt: ''
+          emailReportsFrequency: EmailReportsFrequency.NEVER,
+          lastEmailReportSentAt: ''
         }
       }
     );
 
-  await runAsyncTasks(addEmailNotificationSettings);
+  await runAsyncTasks(addEmailReportsSettings);
 };
 
 const down = async db => {
-  const removeEmailNotificationSettings = async () =>
+  const removeEmailReportsSettings = async () =>
     db.collection('users').updateMany(
       {
-        emailNotificationsFrequency: { $exists: true },
-        lastEmailNotificationSentAt: { $exists: true }
+        emailReportsFrequency: { $exists: true },
+        lastEmailReportSentAt: { $exists: true }
       },
       {
         $unset: {
-          emailNotificationsFrequency: '',
-          lastEmailNotificationSentAt: ''
+          emailReportsFrequency: '',
+          lastEmailReportSentAt: ''
         }
       }
     );
 
-  await runAsyncTasks(removeEmailNotificationSettings);
+  await runAsyncTasks(removeEmailReportsSettings);
 };
 
 module.exports = {

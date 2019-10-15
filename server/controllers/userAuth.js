@@ -334,7 +334,7 @@ const getUserDetails = (req, resp) => {
       activatedAt,
       createdAt,
       email,
-      emailNotificationsFrequency,
+      emailReportsFrequency,
       password
     } = user;
     const activationDate = activatedAt || createdAt;
@@ -343,7 +343,7 @@ const getUserDetails = (req, resp) => {
     return resp.send({
       activationDate,
       email,
-      emailNotificationsFrequency,
+      emailReportsFrequency,
       isPasswordSet
     });
   }
@@ -506,15 +506,15 @@ const prepareItems = async (req, resp, next) => {
   }
 };
 
-const updateEmailNotificationSettings = async (req, resp) => {
+const updateEmailReportSettings = async (req, resp) => {
   const { _id } = req.user;
-  const { emailNotificationsFrequency } = req.body;
+  const { emailReportsFrequency } = req.body;
 
   try {
     await User.findOneAndUpdate(
       { _id },
       {
-        emailNotificationsFrequency
+        emailReportsFrequency
       }
     ).exec();
 
@@ -539,6 +539,6 @@ module.exports = {
   resetPassword,
   sendUser,
   signUp,
-  updateEmailNotificationSettings,
+  updateEmailReportSettings,
   updatePassword
 };

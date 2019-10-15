@@ -171,15 +171,15 @@ export const prepareReport = () => dispatch => {
   }
 };
 
-export const saveEmailNotificationSettings = emailNotificationsFrequency => async dispatch => {
+export const saveEmailReportsSettings = emailReportsFrequency => async dispatch => {
   try {
-    const result = await postData('/auth/email-notification-settings', {
-      emailNotificationsFrequency
+    const result = await postData('/auth/email-reports-settings', {
+      emailReportsFrequency
     });
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'email-notifications.save-settings-success'
+        notificationId: 'email-reports.save-settings-success'
       });
     }
   } catch (error) {
@@ -187,7 +187,7 @@ export const saveEmailNotificationSettings = emailNotificationsFrequency => asyn
       dispatch,
       NotificationType.ERROR,
       {
-        notificationId: 'email-notifications.save-settings-failure'
+        notificationId: 'email-reports.save-settings-failure'
       },
       error
     );

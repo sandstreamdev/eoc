@@ -21,7 +21,7 @@ const {
   resetPassword,
   sendUser,
   signUp,
-  updateEmailNotificationSettings,
+  updateEmailReportSettings,
   updatePassword
 } = require('../controllers/userAuth');
 const {
@@ -55,10 +55,6 @@ router.post('/change-password', authorize, changePassword);
 router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
 router.get('/prepare-items', authorize, prepareItems, sendReport);
-router.post(
-  '/email-notification-settings',
-  authorize,
-  updateEmailNotificationSettings
-);
+router.post('/email-reports-settings', authorize, updateEmailReportSettings);
 
 module.exports = router;

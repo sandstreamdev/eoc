@@ -13,7 +13,7 @@ const DaySelector = ({
 }) => (
   <div className="select-days">
     <select
-      className="select-days__select"
+      className="select-days__select primary-select"
       onChange={onChange}
       value={selected}
     >
