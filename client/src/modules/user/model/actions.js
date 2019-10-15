@@ -158,7 +158,7 @@ export const saveEmailNotificationSettings = emailNotificationsFrequency => asyn
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'email-notifications.save-settings-success'
+        notificationId: 'email-reports.save-settings-success'
       });
     }
   } catch (error) {
@@ -166,7 +166,7 @@ export const saveEmailNotificationSettings = emailNotificationsFrequency => asyn
       dispatch,
       NotificationType.ERROR,
       {
-        notificationId: 'email-notifications.save-settings-failure'
+        notificationId: 'email-reports.save-settings-failure'
       },
       error
     );

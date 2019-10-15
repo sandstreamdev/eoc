@@ -95,11 +95,11 @@ class EmailNotifications extends PureComponent {
     return (
       <section className="email-notifications">
         <h2 className="email-notifications__heading">
-          <FormattedMessage id="email.notification.heading" />
+          <FormattedMessage id="email.reports.heading" />
         </h2>
         <div className="email-notifications__body">
           <label className="email-notifications__label">
-            <FormattedMessage id="email.notification.never" />
+            <FormattedMessage id="email.reports.never" />
             <input
               checked={
                 emailNotificationsFrequency ===
@@ -112,7 +112,7 @@ class EmailNotifications extends PureComponent {
             />
           </label>
           <label className="email-notifications__label">
-            <FormattedMessage id="email.notification.weekly" />
+            <FormattedMessage id="email.reports.weekly" />
             <input
               checked={
                 emailNotificationsFrequency !==
