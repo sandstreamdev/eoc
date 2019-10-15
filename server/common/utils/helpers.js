@@ -452,6 +452,72 @@ const getHours = milliseconds => Math.floor(milliseconds / 3600000);
 
 const formatHours = hours => (hours === 1 ? `${hours} hour` : `${hours} hours`);
 
+const getUnhandledItems = items => items.filter(item => !item.done);
+
+/**
+ *
+ * @param {items} array of populated items
+ * @param {userId} user id
+ * @return {Array} return array of items where passed userId was an author
+ */
+const getAuthorItems = items => userId =>
+  items.filter(item => item.authorId._id.toString() === userId.toString());
+
+/**
+ *
+ * @param {items} array of items
+ * @param {list} list object
+ * @return {array} array of objects
+ */
+const formatItems = items => list =>
+  items.map(item => {
+    const {
+      authorId: { displayName },
+      done,
+      name,
+      createdAt
+    } = item;
+    const { _id: listId, name: listName } = list;
+
+    return {
+      author: displayName,
+      cohortName: list.cohortId ? list.cohortId.name : null,
+      done,
+      listId,
+      listName,
+      name,
+      requestedAt: createdAt
+    };
+  });
+
+const prepareTodosItems = lists => {
+  const data = [];
+
+  lists.forEach(list => {
+    const { items } = list;
+    const unhandled = getUnhandledItems(items);
+    const formattedItems = formatItems(unhandled)(list);
+
+    data.push(...formattedItems);
+  });
+
+  return data;
+};
+
+const prepareRequestedItems = lists => userId => {
+  const data = [];
+
+  lists.forEach(list => {
+    const { items } = list;
+    const authorItems = getAuthorItems(items)(userId);
+    const formattedItems = formatItems(authorItems)(list);
+
+    data.push(...formattedItems);
+  });
+
+  return data;
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -460,12 +526,16 @@ module.exports = {
   filter,
   fireAndForget,
   formatHours,
+  getAuthorItems,
   getHours,
+  getUnhandledItems,
   isDefined,
   isMember,
   isOwner,
   isValidMongoId,
   isViewer,
+  prepareRequestedItems,
+  prepareTodosItems,
   responseWithCohort,
   responseWithCohortDetails,
   responseWithCohortMember,

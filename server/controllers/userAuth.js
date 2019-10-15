@@ -8,12 +8,17 @@ const _trim = require('lodash/trim');
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
+const List = require('../models/list.model');
 const {
   responseWithUserData,
   validatePassword
 } = require('../common/utils/userUtils');
 const Settings = require('../models/settings.model');
 const { BadRequestReason, EXPIRATION_TIME } = require('../common/variables');
+const {
+  prepareRequestedItems,
+  prepareTodosItems
+} = require('../common/utils/helpers');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -459,6 +464,48 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
+const prepareItems = async (req, resp, next) => {
+  const { _id: userId } = req.user;
+  const data = { requests: [], todos: [] };
+
+  try {
+    const ownerLists = await List.find({
+      ownerIds: { $in: [userId] },
+      'items.0': { $exists: true }
+    })
+      .lean()
+      .populate('cohortId', 'name')
+      .populate('items.authorId', 'displayName')
+      .exec();
+
+    const viewerLists = await List.find({
+      viewersIds: { $in: [userId] },
+      'items.0': { $exists: true }
+    })
+      .lean()
+      .populate('cohortId', 'name')
+      .populate('items.authorId', 'displayName')
+      .exec();
+
+    if (ownerLists) {
+      data.todos = prepareTodosItems(ownerLists);
+    }
+
+    if (viewerLists) {
+      data.requests = prepareRequestedItems(viewerLists)(userId);
+    }
+
+    /* eslint-disable-next-line no-param-reassign */
+    resp.locales = {
+      data
+    };
+
+    next();
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
 const updateEmailReportSettings = async (req, resp) => {
   const { _id } = req.user;
   const { emailReportsFrequency } = req.body;
@@ -486,6 +533,7 @@ module.exports = {
   getLoggedUser,
   getUserDetails,
   logout,
+  prepareItems,
   recoveryPassword,
   resendSignUpConfirmationLink,
   resetPassword,

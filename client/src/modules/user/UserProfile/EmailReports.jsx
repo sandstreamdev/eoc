@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { saveEmailReportsSettings } from '../model/actions';
+import { saveEmailReportsSettings, sendReport } from '../model/actions';
 import DaySelector from './DaySelector';
 import './EmailReports.scss';
 import { EmailReportsFrequency } from 'common/constants/enums';
@@ -79,6 +79,12 @@ class EmailReports extends PureComponent {
     this.setState({ emailReportsFrequency: value }, this.updateReportSettings);
   };
 
+  handleReports = () => {
+    const { sendReport } = this.props;
+
+    sendReport();
+  };
+
   updateReportSettings = () => {
     const { emailReportsFrequency } = this.state;
     const { saveEmailReportsSettings } = this.props;
@@ -98,7 +104,7 @@ class EmailReports extends PureComponent {
         </h2>
         <div className="email-reports__body">
           <label className="email-reports__label">
-            <FormattedMessage id="email.reports.never" />
+            <FormattedMessage id="email.report.never" />
             <input
               checked={sendNever}
               name="group1"
@@ -108,7 +114,7 @@ class EmailReports extends PureComponent {
             />
           </label>
           <label className="email-reports__label">
-            <FormattedMessage id="email.reports.weekly" />
+            <FormattedMessage id="email.report.weekly" />
             <input
               checked={sendWeekly}
               name="group1"
@@ -124,6 +130,15 @@ class EmailReports extends PureComponent {
               selected={emailReportsFrequency}
             />
           )}
+          <label className="email-reports__label">
+            <button
+              className="primary-button"
+              onClick={this.handleReports}
+              type="submit"
+            >
+              <FormattedMessage id="email.report.submit-button" />
+            </button>
+          </label>
         </div>
       </section>
     );
@@ -133,10 +148,11 @@ class EmailReports extends PureComponent {
 EmailReports.propTypes = {
   user: UserPropType.isRequired,
 
+  sendReport: PropTypes.func.isRequired,
   saveEmailReportsSettings: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { saveEmailReportsSettings }
+  { sendReport, saveEmailReportsSettings }
 )(EmailReports);
