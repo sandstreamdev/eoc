@@ -3,7 +3,7 @@ const { runAsyncTasks } = require('../common/utils');
 const { EmailReportsFrequency } = require('../common/variables.js');
 
 const up = async db => {
-  const addEmailNotificationSettings = async () =>
+  const addEmailReportsSettings = async () =>
     db.collection('users').updateMany(
       {
         emailReportsFrequency: { $exists: false },
@@ -17,11 +17,11 @@ const up = async db => {
       }
     );
 
-  await runAsyncTasks(addEmailNotificationSettings);
+  await runAsyncTasks(addEmailReportsSettings);
 };
 
 const down = async db => {
-  const removeEmailNotificationSettings = async () =>
+  const removeEmailReportsSettings = async () =>
     db.collection('users').updateMany(
       {
         emailReportsFrequency: { $exists: true },
@@ -35,7 +35,7 @@ const down = async db => {
       }
     );
 
-  await runAsyncTasks(removeEmailNotificationSettings);
+  await runAsyncTasks(removeEmailReportsSettings);
 };
 
 module.exports = {

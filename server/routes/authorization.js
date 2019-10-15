@@ -20,7 +20,7 @@ const {
   resetPassword,
   sendUser,
   signUp,
-  updateEmailNotificationSettings,
+  updateEmailReportSettings,
   updatePassword
 } = require('../controllers/userAuth');
 const {
@@ -55,7 +55,7 @@ router.delete('', authorize, deleteAccount);
 router.post(
   '/email-notification-settings',
   authorize,
-  updateEmailNotificationSettings
+  updateEmailReportSettings
 );
 
 module.exports = router;

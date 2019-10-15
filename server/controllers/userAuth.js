@@ -459,7 +459,7 @@ const deleteAccount = async (req, resp) => {
   return resp.send();
 };
 
-const updateEmailNotificationSettings = async (req, resp) => {
+const updateEmailReportSettings = async (req, resp) => {
   const { _id } = req.user;
   const { emailReportsFrequency } = req.body;
 
@@ -491,6 +491,6 @@ module.exports = {
   resetPassword,
   sendUser,
   signUp,
-  updateEmailNotificationSettings,
+  updateEmailReportSettings,
   updatePassword
 };
