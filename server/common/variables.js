@@ -74,7 +74,7 @@ const Routes = Object.freeze({
 
 const ViewType = enumerable('viewType')('LIST', 'TILES');
 
-const BadRequestReason = enumerable('reason')('REQUIREMENTS', 'VALIDATION');
+const BadRequestReason = enumerable('reason')('VALIDATION');
 
 module.exports = {
   ActivityType,
