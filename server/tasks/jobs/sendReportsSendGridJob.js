@@ -1,14 +1,13 @@
 const { sendReport } = require('../../mailer');
 
-const sendReportsJob = (agenda, jobName) => {
+const sendReportsSendGridJob = (agenda, jobName) => {
   agenda.define(jobName, async job => {
     try {
       await sendReport();
-      console.log('sending report');
     } catch (err) {
-      console.error(err);
+      // Ignore errors
     }
   });
 };
 
-module.exports = { sendReportsJob };
+module.exports = { sendReportsSendGridJob };

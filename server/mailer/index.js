@@ -110,13 +110,13 @@ const sendReport = async () => {
     to: receiver,
     from: 'no.reply@app.eoc.com',
     subject: 'Send reports via email',
-    html: mailTemplate(receiver)
+    html: mail(receiver)
   };
 
   try {
     await SendGridMail.send(message);
   } catch {
-    console.error('sending email failed');
+    // Ignore errors
   }
 };
 

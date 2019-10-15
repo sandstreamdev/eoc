@@ -5,7 +5,7 @@ const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REFRESH_TOKEN,
-  USER
+  GOOGLE_API_USER
 } = process.env;
 const {
   auth: { OAuth2 }
@@ -17,7 +17,7 @@ const oauth2Client = new OAuth2(
   'https://developers.google.com/oauthplayground'
 );
 
-const mailer = () => {
+const transport = () => {
   oauth2Client.setCredentials({
     refresh_token: GOOGLE_REFRESH_TOKEN
   });
@@ -28,7 +28,7 @@ const mailer = () => {
     service: 'gmail',
     auth: {
       type: 'OAuth2',
-      user: USER,
+      user: GOOGLE_API_USER,
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       refreshToken: GOOGLE_REFRESH_TOKEN,
@@ -39,4 +39,4 @@ const mailer = () => {
   return transporter;
 };
 
-module.exports = { mailer };
+module.exports = { transport };
