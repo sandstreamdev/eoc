@@ -170,3 +170,26 @@ export const prepareReport = () => dispatch => {
     );
   }
 };
+
+export const saveEmailNotificationSettings = emailNotificationsFrequency => async dispatch => {
+  try {
+    const result = await postData('/auth/email-notification-settings', {
+      emailNotificationsFrequency
+    });
+
+    if (result) {
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'email-notifications.save-settings-success'
+      });
+    }
+  } catch (error) {
+    createNotificationWithTimeout(
+      dispatch,
+      NotificationType.ERROR,
+      {
+        notificationId: 'email-notifications.save-settings-failure'
+      },
+      error
+    );
+  }
+};

@@ -330,11 +330,22 @@ const getUserDetails = (req, resp) => {
   const { user } = req;
 
   if (user) {
-    const { activatedAt, createdAt, email, password } = user;
+    const {
+      activatedAt,
+      createdAt,
+      email,
+      emailNotificationsFrequency,
+      password
+    } = user;
     const activationDate = activatedAt || createdAt;
     const isPasswordSet = password !== undefined;
 
-    return resp.send({ activationDate, email, isPasswordSet });
+    return resp.send({
+      activationDate,
+      email,
+      emailNotificationsFrequency,
+      isPasswordSet
+    });
   }
 
   return resp.sendStatus(400);
@@ -495,6 +506,24 @@ const prepareItems = async (req, resp, next) => {
   }
 };
 
+const updateEmailNotificationSettings = async (req, resp) => {
+  const { _id } = req.user;
+  const { emailNotificationsFrequency } = req.body;
+
+  try {
+    await User.findOneAndUpdate(
+      { _id },
+      {
+        emailNotificationsFrequency
+      }
+    ).exec();
+
+    resp.send();
+  } catch {
+    resp.send(400);
+  }
+};
+
 module.exports = {
   changePassword,
   checkToken,
@@ -510,5 +539,6 @@ module.exports = {
   resetPassword,
   sendUser,
   signUp,
+  updateEmailNotificationSettings,
   updatePassword
 };

@@ -15,6 +15,7 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
+import EmailNotifications from './EmailNotifications';
 import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
@@ -188,6 +189,7 @@ class UserProfile extends PureComponent {
   render() {
     const { pending } = this.state;
     const {
+      currentUser,
       currentUser: { avatarUrl, name }
     } = this.props;
 
@@ -199,6 +201,7 @@ class UserProfile extends PureComponent {
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
           <EmailReports />
+          <EmailNotifications user={currentUser} />
           <DeleteAccount />
           {pending && <Preloader />}
         </article>
