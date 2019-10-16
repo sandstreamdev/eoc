@@ -517,6 +517,7 @@ const prepareItems = async (req, resp, next) => {
   try {
     const ownerLists = await List.find({
       ownerIds: { $in: [userId] },
+      isArchived: false,
       'items.0': { $exists: true }
     })
       .lean()
@@ -526,6 +527,7 @@ const prepareItems = async (req, resp, next) => {
 
     const viewerLists = await List.find({
       viewersIds: { $in: [userId] },
+      isArchived: false,
       'items.0': { $exists: true }
     })
       .lean()
