@@ -41,8 +41,7 @@ class ListViewItem extends PureComponent {
     } = this.props;
     const { pending } = this.state;
     const isLimitedList = type === ListType.LIMITED;
-    const isItemArchived = isArchived || null;
-    const isFavouriteButtonVisible = route !== Routes.COHORT && !isItemArchived;
+    const isFavouriteButtonVisible = route !== Routes.COHORT && !isArchived;
 
     return (
       <div className="list-view-item" onClick={onCardClick} role="figure">
