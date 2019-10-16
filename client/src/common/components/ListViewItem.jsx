@@ -27,7 +27,6 @@ class ListViewItem extends PureComponent {
     const {
       color,
       intl: { formatMessage },
-      item,
       item: {
         description,
         doneItemsCount,
