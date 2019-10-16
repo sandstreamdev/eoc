@@ -18,6 +18,7 @@ export const StatusType = Object.freeze({
 
 export const Routes = Object.freeze({
   ACCOUNT_CREATED: 'account-created',
+  ACCOUNT_DELETED: 'account-deleted',
   COHORT: 'cohort',
   COHORTS: 'cohorts',
   CONFIRMATION_LINK_EXPIRED: 'confirmation-link-expired',

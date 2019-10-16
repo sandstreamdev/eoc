@@ -3,15 +3,20 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Dialog from 'common/components/Dialog';
-import { IntlPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  ResourcesDataPropType
+} from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import DeleteForm from './DeleteForm';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
+import ResourcePanel from './ResourcePanel';
 import './DeleteDialog.scss';
 
 const DeleteDialog = ({
   error,
+  onlyOwnerResources,
   intl: { formatMessage },
   onCancel,
   onConfirm,
@@ -20,39 +25,45 @@ const DeleteDialog = ({
   onSubmit,
   onVerificationTextChange,
   pending
-}) => (
-  <div className="delete-dialog">
-    <Dialog
-      buttonStyleType={MessageType.ERROR}
-      cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-      confirmLabel={formatMessage({ id: 'user.delete-account' })}
-      hasPermissions
-      onCancel={onCancel}
-      onConfirm={onConfirm}
-      pending={pending}
-      title={formatMessage({ id: 'user.delete-account-question' })}
-    >
-      <AlertBox type={MessageType.ERROR}>
-        <FormattedMessage id="user.delete-account-warning" />
-      </AlertBox>
-      {error && (
-        <ErrorMessage
-          message={formatMessage({ id: 'user.delete-account-error' })}
+}) => {
+  const authorizationError = error && !onlyOwnerResources;
+
+  return (
+    <div className="delete-dialog">
+      <Dialog
+        buttonStyleType={MessageType.ERROR}
+        cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+        confirmLabel={formatMessage({ id: 'user.delete-account' })}
+        hasPermissions
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+        pending={pending}
+        title={formatMessage({ id: 'user.delete-account-question' })}
+      >
+        <AlertBox type={MessageType.ERROR}>
+          <FormattedMessage id="user.delete-account-warning" />
+        </AlertBox>
+        {authorizationError && (
+          <ErrorMessage
+            message={formatMessage({ id: 'user.delete-account-error' })}
+          />
+        )}
+        {onlyOwnerResources && <ResourcePanel resources={onlyOwnerResources} />}
+        <DeleteForm
+          error={error}
+          onEmailChange={onEmailChange}
+          onPasswordChange={onPasswordChange}
+          onSubmit={onSubmit}
+          onVerificationTextChange={onVerificationTextChange}
         />
-      )}
-      <DeleteForm
-        error={error}
-        onEmailChange={onEmailChange}
-        onPasswordChange={onPasswordChange}
-        onSubmit={onSubmit}
-        onVerificationTextChange={onVerificationTextChange}
-      />
-    </Dialog>
-  </div>
-);
+      </Dialog>
+    </div>
+  );
+};
 
 DeleteDialog.propTypes = {
   error: PropTypes.bool,
+  onlyOwnerResources: ResourcesDataPropType,
   intl: IntlPropType.isRequired,
   pending: PropTypes.bool,
 

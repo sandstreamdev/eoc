@@ -6,18 +6,22 @@ import _flowRight from 'lodash/flowRight';
 import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
-import { deleteAccount, logoutCurrentUser } from '../model/actions';
-import './DeleteAccount.scss';
+import {
+  removeUserData,
+  deleteAccount,
+  logoutCurrentUser
+} from '../model/actions';
 import DeleteDialog from './DeleteDialog';
-import Dialog from 'common/components/Dialog';
-import AlertBox from 'common/components/AlertBox';
-import { MessageType } from 'common/constants/enums';
+import { ValidationException } from 'common/exceptions';
+import { accountStatus, saveAccountData } from 'common/utils/localStorage';
+import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
   state = {
     email: '',
     isDeleteDialogVisible: false,
     isErrorVisible: false,
+    onlyOwnerResources: null,
     password: '',
     pending: false,
     verificationText: ''
@@ -28,7 +32,8 @@ class DeleteAccount extends Component {
     event.preventDefault();
 
     const {
-      intl: { formatMessage }
+      intl: { formatMessage },
+      removeUserData
     } = this.props;
     const { verificationText } = this.state;
     const verificationString = formatMessage({
@@ -47,14 +52,23 @@ class DeleteAccount extends Component {
       const result = await deleteAccount(trimmedEmail, password);
 
       if (result) {
-        this.setState({
-          isAccountDeletedDialogVisible: true,
-          isDeleteDialogVisible: false,
-          pending: false
-        });
+        saveAccountData(accountStatus.DELETED);
+        removeUserData();
       }
-    } catch {
-      this.setState({ isErrorVisible: true, pending: false });
+    } catch (err) {
+      let onlyOwnerResources;
+
+      if (err instanceof ValidationException) {
+        const { errors: resourcesData } = err;
+
+        onlyOwnerResources = resourcesData;
+      }
+
+      this.setState({
+        isErrorVisible: true,
+        onlyOwnerResources,
+        pending: false
+      });
     }
   };
 
@@ -85,7 +99,11 @@ class DeleteAccount extends Component {
   showDeleteDialog = () => this.setState({ isDeleteDialogVisible: true });
 
   hideDeleteDialog = () =>
-    this.setState({ isDeleteDialogVisible: false, isErrorVisible: false });
+    this.setState({
+      isDeleteDialogVisible: false,
+      isErrorVisible: false,
+      onlyOwnerResources: null
+    });
 
   handleCancel = () => {
     const { logoutCurrentUser } = this.props;
@@ -98,12 +116,11 @@ class DeleteAccount extends Component {
       intl: { formatMessage }
     } = this.props;
     const {
-      isAccountDeletedDialogVisible,
       isDeleteDialogVisible,
       isErrorVisible,
+      onlyOwnerResources,
       pending
     } = this.state;
-    const label = formatMessage({ id: 'common.ok' });
 
     return (
       <Fragment>
@@ -113,29 +130,12 @@ class DeleteAccount extends Component {
             onCancel={this.hideDeleteDialog}
             onConfirm={this.handleDeleteAccount}
             onEmailChange={this.handleEmailChange}
+            onlyOwnerResources={onlyOwnerResources}
             onPasswordChange={this.handlePasswordChange}
             onSubmit={this.handleDeleteAccount}
             onVerificationTextChange={this.handleVerificationText}
             pending={pending}
           />
-        )}
-        {isAccountDeletedDialogVisible && (
-          <Dialog
-            cancelLabel={formatMessage({ id: 'common.ok' })}
-            onCancel={this.handleCancel}
-            title={formatMessage({ id: 'user.account-deleted' })}
-          >
-            <AlertBox type={MessageType.SUCCESS}>
-              <div>
-                <FormattedMessage id="user.account-deleted" />
-                <span> </span>
-                <FormattedMessage
-                  id="user.account-deleted-message"
-                  values={{ label }}
-                />
-              </div>
-            </AlertBox>
-          </Dialog>
         )}
         <section className="delete-account">
           <h2 className="delete-account__heading">
@@ -167,13 +167,14 @@ class DeleteAccount extends Component {
 DeleteAccount.propTypes = {
   intl: IntlPropType.isRequired,
 
-  logoutCurrentUser: PropTypes.func.isRequired
+  logoutCurrentUser: PropTypes.func.isRequired,
+  removeUserData: PropTypes.func.isRequired
 };
 
 export default _flowRight(
   injectIntl,
   connect(
     null,
-    { logoutCurrentUser }
+    { logoutCurrentUser, removeUserData }
   )
 )(DeleteAccount);

@@ -454,6 +454,8 @@ const formatHours = hours => (hours === 1 ? `${hours} hour` : `${hours} hours`);
 
 const getUnhandledItems = items => items.filter(item => !item.done);
 
+const getActiveItems = items => items.filter(item => !item.isArchived);
+
 /**
  *
  * @param {items} array of populated items
@@ -495,8 +497,9 @@ const prepareTodosItems = lists => {
 
   lists.forEach(list => {
     const { items } = list;
-    const unhandled = getUnhandledItems(items);
-    const formattedItems = formatItems(unhandled)(list);
+    const unhandledItems = getUnhandledItems(items);
+    const activeItems = getActiveItems(unhandledItems);
+    const formattedItems = formatItems(activeItems)(list);
 
     data.push(...formattedItems);
   });
@@ -510,7 +513,8 @@ const prepareRequestedItems = lists => userId => {
   lists.forEach(list => {
     const { items } = list;
     const authorItems = getAuthorItems(items)(userId);
-    const formattedItems = formatItems(authorItems)(list);
+    const activeItems = getActiveItems(authorItems);
+    const formattedItems = formatItems(activeItems)(list);
 
     data.push(...formattedItems);
   });

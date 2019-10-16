@@ -11,6 +11,7 @@ import {
   ItemStatusType,
   CommentActionTypes
 } from 'modules/list/components/Items/model/actionTypes';
+import { AuthorizationActionTypes } from 'modules/user/model/actions';
 import { enumerable } from 'common/utils/helpers';
 
 export const ItemsEvents = Object.freeze({
@@ -78,5 +79,9 @@ export const CommentEvents = Object.freeze({
 });
 
 export const AppEvents = enumerable()('JOIN_ROOM', 'LEAVE_ROOM');
+
+export const UserEvents = Object.freeze({
+  LOGOUT_SUCCESS: AuthorizationActionTypes.LOGOUT_SUCCESS
+});
 
 export { ItemStatusType };

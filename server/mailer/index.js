@@ -1,6 +1,7 @@
 const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
+const weeklyReportContent = require('./reports/weekly-content');
 const { PROJECT_NAME } = require('../common/variables');
 const { formatHours, getHours } = require('../common/utils');
 const { EXPIRATION_TIME } = require('../common/variables');
@@ -104,21 +105,18 @@ const sendResetPasswordLink = (req, resp) => {
 
 const sendReport = async (req, resp) => {
   const { data } = resp.locales;
+  const host = req.get('host');
   const { email: receiver, displayName } = req.user;
-  const subject = `${PROJECT_NAME} - your report`;
-  const dataToSend = JSON.stringify(data);
   const message = {
     to: receiver,
     from: 'no.reply@app.eoc.com',
-    subject,
-    html: `
-      <h2>Hey ${displayName}, here is your report of items you requested and items you have to order.</h2>
-      <pre>
-        <code>
-          ${dataToSend}
-        </code>
-      </pre>
-    `
+    subject: `${PROJECT_NAME} - Your weekly report`,
+    html: weeklyReportContent({
+      host,
+      data,
+      receiver: displayName,
+      projectName: PROJECT_NAME
+    })
   };
 
   try {

@@ -58,6 +58,8 @@ const ListHeaderStatusTypes = enumerable('list-header')('LOCK', 'UNLOCK');
 
 const AppEvents = enumerable()('JOIN_ROOM', 'LEAVE_ROOM');
 
+const UserEvents = enumerable('user')('LOGOUT_SUCCESS');
+
 module.exports = {
   AppEvents,
   CohortActionTypes,
@@ -66,5 +68,6 @@ module.exports = {
   ItemActionTypes,
   ItemStatusType,
   ListActionTypes,
-  ListHeaderStatusTypes
+  ListHeaderStatusTypes,
+  UserEvents
 };

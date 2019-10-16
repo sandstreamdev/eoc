@@ -71,6 +71,7 @@
     line-height: 1.2;
     color: $text-normal;
     padding: four-by(2) 0 four-by(4);
+    overflow-wrap: break-word;
 
     &--disabled {
       color: $gray-bg2;

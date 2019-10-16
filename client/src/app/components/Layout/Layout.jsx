@@ -17,7 +17,7 @@ import {
   SuccessMessage,
   UserProfile
 } from 'modules/user';
-import { getLoggedUser } from 'modules/user/model/actions';
+import { getLoggedUser, removeUserData } from 'modules/user/model/actions';
 import { UserPropType, IntlPropType } from 'common/constants/propTypes';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import Footer from '../Footer';
@@ -30,8 +30,13 @@ import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
 import { Routes, ViewType } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
-import { loadSettings, saveSettings } from 'common/utils/localStorage';
+import {
+  loadSettingsData,
+  saveSettingsData,
+  storageKeys
+} from 'common/utils/localStorage';
 import { clearMetaDataSuccess } from 'common/model/actions';
+import AccountDeleted from 'modules/user/UserProfile/AccountDeleted';
 import './Layout.scss';
 
 export class Layout extends PureComponent {
@@ -46,7 +51,7 @@ export class Layout extends PureComponent {
   }
 
   componentDidMount() {
-    const settings = loadSettings();
+    const settings = loadSettingsData();
     const {
       currentUser,
       getLoggedUser,
@@ -67,6 +72,8 @@ export class Layout extends PureComponent {
       const { viewType } = settings;
       this.setState({ viewType });
     }
+
+    window.addEventListener('storage', this.handleStorageChanges);
   }
 
   componentDidUpdate(previousProps) {
@@ -83,6 +90,18 @@ export class Layout extends PureComponent {
       window.scrollTo(0, 0);
     }
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('storage', this.handleStorageChanges);
+  }
+
+  handleStorageChanges = ({ key }) => {
+    const { removeUserData } = this.props;
+
+    if (key === storageKeys.ACCOUNT) {
+      removeUserData();
+    }
+  };
 
   isListsView = () => {
     const {
@@ -107,7 +126,7 @@ export class Layout extends PureComponent {
     const { viewType } = this.state;
     const settings = { viewType };
 
-    saveSettings(settings);
+    saveSettingsData(settings);
   };
 
   render() {
@@ -128,6 +147,7 @@ export class Layout extends PureComponent {
           <Route component={AuthBox} exact path="/" />
           <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={SuccessMessage} path="/account-created" />
+          <Route component={AccountDeleted} path="/account-deleted" />
           <Route
             component={LinkExpired}
             path="/confirmation-link-expired/:token?"
@@ -217,7 +237,8 @@ Layout.propTypes = {
   }),
 
   clearMetaDataSuccess: PropTypes.func.isRequired,
-  getLoggedUser: PropTypes.func.isRequired
+  getLoggedUser: PropTypes.func.isRequired,
+  removeUserData: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -229,6 +250,6 @@ export default _flowRight(
   withRouter,
   connect(
     mapStateToProps,
-    { clearMetaDataSuccess, getLoggedUser }
+    { clearMetaDataSuccess, getLoggedUser, removeUserData }
   )
 )(Layout);

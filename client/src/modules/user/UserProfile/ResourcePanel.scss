@@ -1,0 +1,9 @@
+@import 'partials';
+
+.resource-panel {
+  margin: four-by(4);
+
+  &__header {
+    margin-bottom: four-by(4);
+  }
+}
