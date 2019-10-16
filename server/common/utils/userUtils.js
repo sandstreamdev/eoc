@@ -135,6 +135,7 @@ const checkIfUserIsTheOnlyOwner = async (listModel, cohortModel, userId) => {
     .find(
       {
         $and: [{ ownerIds: userId }, { ownerIds: { $size: 1 } }],
+        isDeleted: false,
         'viewersIds.1': { $exists: true }
       },
       'name'
@@ -146,6 +147,7 @@ const checkIfUserIsTheOnlyOwner = async (listModel, cohortModel, userId) => {
     .find(
       {
         $and: [{ ownerIds: userId }, { ownerIds: { $size: 1 } }],
+        isDeleted: false,
         'memberIds.1': { $exists: true }
       },
       'name'
