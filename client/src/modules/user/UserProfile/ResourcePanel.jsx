@@ -14,14 +14,12 @@ const ResourcePanel = ({
   resources: { cohorts, lists },
   intl: { formatMessage }
 }) => {
-  const listContext = formatMessage(
-    { id: 'list.label-plural' },
-    { total: lists.length }
-  );
-  const cohortContext = formatMessage(
-    { id: 'cohort.label-plural' },
-    { total: cohorts.length }
-  );
+  const listContext = lists
+    ? formatMessage({ id: 'list.label-plural' }, { total: lists.length })
+    : '';
+  const cohortContext = cohorts
+    ? formatMessage({ id: 'cohort.label-plural' }, { total: cohorts.length })
+    : '';
   const separator = cohortContext && listContext ? '/' : '';
   const headerContext = `${cohortContext}${separator}${listContext}`;
   const getMessage = context =>
@@ -42,14 +40,14 @@ const ResourcePanel = ({
           )}
         />
       </h3>
-      {cohorts.length > 0 && (
+      {cohorts && cohorts.length > 0 && (
         <ResourceLinks
           message={getMessage(cohortContext)}
           resources={cohorts}
           route={Routes.COHORT}
         />
       )}
-      {lists.length > 0 && (
+      {lists && lists.length > 0 && (
         <ResourceLinks
           message={getMessage(listContext)}
           resources={lists}
