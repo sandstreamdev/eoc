@@ -8,7 +8,8 @@ const styles = ({ maxWidth }) => ({
     color: #627085;`,
   boxMain: `background-color: #fff;
     max-width: ${maxWidth}px;
-    padding: 40px;`,
+    padding: 40px;
+    width: 100%`,
   boxBottom: `background-color: #fff;
     max-width: ${maxWidth}px;
     padding: 16px;

@@ -71,41 +71,40 @@ const generateDataTable = ({ header, items, showAuthor, host }) => {
 
 const generateRequestsContent = ({ requests, host }) => {
   const [stillWaiting, completed] = partition(item => item.done)(requests);
-
-  if (completed.length === 0 && stillWaiting.length === 0) {
-    return null;
-  }
-
   let content = tableRow(
     `<h4 style="${styles.h4} margin-bottom: 0;">Your Requests</h4>`
   );
 
-  if (completed.length > 0) {
-    content += generateDataTable({ header: 'Completed', items: completed });
-  }
+  if (completed.length === 0 && stillWaiting.length === 0) {
+    content += '<p>No active requests.</p>';
+  } else {
+    if (completed.length > 0) {
+      content += generateDataTable({ header: 'Completed', items: completed });
+    }
 
-  if (stillWaiting.length > 0) {
-    content += '<tr><td style="padding: 4px;"></td></tr>';
-    content += generateDataTable({
-      header: 'Still waiting',
-      items: stillWaiting,
-      host
-    });
+    if (stillWaiting.length > 0) {
+      content += '<tr><td style="padding: 4px;"></td></tr>';
+      content += generateDataTable({
+        header: 'Still waiting',
+        items: stillWaiting,
+        host
+      });
+    }
   }
 
   return content;
 };
 
 const generateTodosTable = ({ todos, host }) => {
-  if (todos.length === 0) {
-    return null;
-  }
-
   let content = tableRow(
     `<h4 style="${styles.h4} margin-bottom: 0;">Your Todos</h4>`
   );
 
-  content += generateDataTable({ items: todos, showAuthor: true, host });
+  if (todos.length === 0) {
+    content += '<p>All is done 🙂.</p>';
+  } else {
+    content += generateDataTable({ items: todos, showAuthor: true, host });
+  }
 
   return content;
 };
@@ -115,14 +114,7 @@ const mailContent = ({ data, receiver, host, projectName }) => {
   let content = '<p style="margin-bottom:0;">Here is your weekly report.</p>';
 
   content += `<table style="${styles.tableContent}">`;
-
-  if (todos) {
-    const result = generateTodosTable({ todos, host });
-
-    if (result) {
-      content += result;
-    }
-  }
+  content += generateTodosTable({ todos, host });
 
   if (requests) {
     const result = generateRequestsContent({ requests, host });
