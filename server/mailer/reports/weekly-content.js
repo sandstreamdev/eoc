@@ -101,7 +101,7 @@ const generateTodosTable = ({ todos, host }) => {
   );
 
   if (todos.length === 0) {
-    content += '<p>All is done 🙂.</p>';
+    content += '<p>Everything is done 🙂.</p>';
   } else {
     content += generateDataTable({ items: todos, showAuthor: true, host });
   }

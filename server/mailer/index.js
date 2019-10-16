@@ -8,7 +8,7 @@ const { EXPIRATION_TIME } = require('../common/variables');
 
 const { SENDGRID_API_KEY } = process.env;
 
-const fromField = 'EOC <no.reply@app.eoc.com>';
+const fromField = `${PROJECT_NAME} <no.reply@app.eoc.com>`;
 const subjectTemplate = subject => `☕ ${PROJECT_NAME} - ${subject}`;
 
 SendGridMail.setApiKey(SENDGRID_API_KEY);
