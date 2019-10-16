@@ -14,12 +14,14 @@ const { DEMO_MODE_ID } = require('../common/variables');
 
 const StrategyType = Object.freeze({
   DEMO: 'demo',
+  GOOGLE_REAUTHENTICATE: 'google-reauthenticate',
   GOOGLE: 'google',
   LOCAL: 'local'
 });
 
 // Use GoogleStrategy to authenticate user
 passport.use(
+  StrategyType.GOOGLE,
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
@@ -28,6 +30,23 @@ passport.use(
       userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
     },
     (accessToken, refreshToken, profile, done) => {
+      findOrCreateUser(extractUserProfile(profile, accessToken), done);
+    }
+  )
+);
+
+passport.use(
+  StrategyType.GOOGLE_REAUTHENTICATE,
+  new GoogleStrategy(
+    {
+      callbackURL: '/auth/google/reauthenticated',
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
+    },
+    (accessToken, refreshToken, profile, done) => {
+      console.log(accessToken, refreshToken, profile, done);
+
       findOrCreateUser(extractUserProfile(profile, accessToken), done);
     }
   )
@@ -143,14 +162,27 @@ const authenticateCallback = passport.authenticate(StrategyType.GOOGLE, {
   successRedirect: '/'
 });
 
-const reauthenticate = () => {
-  console.log('test');
+const reauthenticateCallback = () => {
+  console.log('dupa');
+
+  return passport.authenticate(StrategyType.GOOGLE_REAUTHENTICATE, {
+    failureRedirect: '/user-profile',
+    successRedirect: '/user-profile'
+  });
 };
+
+const reauthenticate = passport.authenticate(
+  StrategyType.GOOGLE_REAUTHENTICATE,
+  {
+    scope: ['email', 'profile']
+  }
+);
 
 module.exports = {
   authenticateCallback,
   authenticateWithGoogle,
   reauthenticate,
+  reauthenticateCallback,
   setDemoUser,
   setUser
 };
