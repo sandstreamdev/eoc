@@ -6,7 +6,7 @@ const sendReportsGmailJob = (agenda, jobName) => {
       const mailer = transport();
       const mailOptions = {
         from: 'no.reply@app.eoc.com',
-        to: 'aleksander.fret@sandstream.pl',
+        to: 'email@example.com',
         subject: 'Node.js Email with Secure OAuth',
         generateTextFromHTML: true,
         html: '<b>test sending email via gmail and agenda</b>'
