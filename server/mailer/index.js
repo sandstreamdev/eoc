@@ -1,4 +1,6 @@
 const SendGridMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 
 const mailTemplate = require('./mail-template');
 const weeklyReportContent = require('./reports/weekly-content');
@@ -6,7 +8,44 @@ const { PROJECT_NAME } = require('../common/variables');
 const { formatHours, getHours } = require('../common/utils');
 const { EXPIRATION_TIME } = require('../common/variables');
 
-const { SENDGRID_API_KEY } = process.env;
+const {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_REFRESH_TOKEN,
+  GOOGLE_API_USER,
+  SENDGRID_API_KEY
+} = process.env;
+const {
+  auth: { OAuth2 }
+} = google;
+
+const oauth2Client = new OAuth2(
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  'https://developers.google.com/oauthplayground'
+);
+
+const getMailer = () => {
+  oauth2Client.setCredentials({
+    refresh_token: GOOGLE_REFRESH_TOKEN
+  });
+
+  const accessToken = oauth2Client.getAccessToken();
+
+  const transport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      type: 'OAuth2',
+      user: GOOGLE_API_USER,
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      refreshToken: GOOGLE_REFRESH_TOKEN,
+      accessToken
+    }
+  });
+
+  return transport;
+};
 
 SendGridMail.setApiKey(SENDGRID_API_KEY);
 
