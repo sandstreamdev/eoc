@@ -495,18 +495,14 @@ const formatItems = items => list =>
 const timestampFromDateString = date =>
   Math.round(new Date(date).getTime() / 1000);
 
-const reportDataSortFunction = (a, b) => {
+const reportDataSortComparator = (a, b) => {
   const aTimestamp = timestampFromDateString(a.requestedAt);
   const bTimestamp = timestampFromDateString(b.requestedAt);
   if (aTimestamp === bTimestamp) {
     return 0;
   }
 
-  if (aTimestamp < bTimestamp) {
-    return 1;
-  }
-
-  return -1;
+  return aTimestamp < bTimestamp ? 1 : -1;
 };
 
 const prepareTodosItems = lists => {
@@ -521,7 +517,7 @@ const prepareTodosItems = lists => {
     data.push(...formattedItems);
   });
 
-  return data.sort(reportDataSortFunction);
+  return data.sort(reportDataSortComparator);
 };
 
 const prepareRequestedItems = lists => userId => {
@@ -536,7 +532,7 @@ const prepareRequestedItems = lists => userId => {
     data.push(...formattedItems);
   });
 
-  return data.sort(reportDataSortFunction);
+  return data.sort(reportDataSortComparator);
 };
 
 module.exports = {
