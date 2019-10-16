@@ -492,6 +492,20 @@ const formatItems = items => list =>
     };
   });
 
+const timestampFromDateString = date =>
+  Math.round(new Date(date).getTime() / 1000);
+
+const reportDateComparator = (a, b) => {
+  const aTimestamp = timestampFromDateString(a.requestedAt);
+  const bTimestamp = timestampFromDateString(b.requestedAt);
+
+  if (aTimestamp === bTimestamp) {
+    return 0;
+  }
+
+  return aTimestamp < bTimestamp ? 1 : -1;
+};
+
 const prepareTodosItems = lists => {
   const data = [];
 
@@ -504,7 +518,7 @@ const prepareTodosItems = lists => {
     data.push(...formattedItems);
   });
 
-  return data;
+  return data.sort(reportDateComparator);
 };
 
 const prepareRequestedItems = lists => userId => {
@@ -519,7 +533,7 @@ const prepareRequestedItems = lists => userId => {
     data.push(...formattedItems);
   });
 
-  return data;
+  return data.sort(reportDateComparator);
 };
 
 module.exports = {

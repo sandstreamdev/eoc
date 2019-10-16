@@ -47,6 +47,9 @@ const getMailer = () => {
   return transport;
 };
 
+const fromField = `${PROJECT_NAME} <no.reply@app.eoc.com>`;
+const subjectTemplate = subject => `☕ ${PROJECT_NAME} - ${subject}`;
+
 SendGridMail.setApiKey(SENDGRID_API_KEY);
 
 const sendInvitation = (req, resp) => {
@@ -148,8 +151,8 @@ const sendReport = async (req, resp) => {
   const { email: receiver, displayName } = req.user;
   const message = {
     to: receiver,
-    from: 'no.reply@app.eoc.com',
-    subject: `${PROJECT_NAME} - Your weekly report`,
+    from: fromField,
+    subject: subjectTemplate('Your weekly report'),
     html: weeklyReportContent({
       host,
       data,
