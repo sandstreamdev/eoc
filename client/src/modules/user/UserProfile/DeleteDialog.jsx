@@ -16,11 +16,11 @@ import './DeleteDialog.scss';
 
 const DeleteDialog = ({
   error,
-  onlyOwnerResources,
   intl: { formatMessage },
   onCancel,
   onConfirm,
   onEmailChange,
+  onlyOwnerResources,
   onPasswordChange,
   onSubmit,
   onVerificationTextChange,

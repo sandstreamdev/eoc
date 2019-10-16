@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
 import _trim from 'lodash/trim';
 
-import { IntlPropType } from 'common/constants/propTypes';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import {
   removeUserData,
   deleteAccount,
@@ -15,6 +15,7 @@ import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
 import { accountStatus, saveAccountData } from 'common/utils/localStorage';
 import './DeleteAccount.scss';
+import { getCurrentUser } from 'modules/user/model/selectors';
 
 class DeleteAccount extends Component {
   state = {
@@ -27,34 +28,46 @@ class DeleteAccount extends Component {
     verificationText: ''
   };
 
-  handleDeleteAccount = async event => {
-    this.setState({ pending: true });
+  validateForm = event => {
     event.preventDefault();
 
     const {
-      intl: { formatMessage },
-      removeUserData
+      currentUser: { isPasswordSet },
+      intl: { formatMessage }
     } = this.props;
     const { verificationText } = this.state;
     const verificationString = formatMessage({
       id: 'user.delete-form.verify-text'
     });
+    const handler = isPasswordSet
+      ? this.handleDeleteAccount
+      : this.handleDeleteGoogleAccount;
 
-    if (verificationText !== verificationString) {
-      this.setState({ isErrorVisible: true, pending: false });
+    if (verificationText === verificationString) {
+      handler();
 
       return;
     }
 
+    this.setState({ isErrorVisible: true, pending: false });
+  };
+
+  handleDeleteAccount = async () => {
+    this.setState({ pending: true });
+
+    const { removeUserData } = this.props;
+
     try {
       const { email, password } = this.state;
       const trimmedEmail = _trim(email);
-      const result = await deleteAccount(trimmedEmail, password);
+      // const result = await deleteAccount(trimmedEmail, password);
 
-      if (result) {
-        saveAccountData(accountStatus.DELETED);
-        removeUserData();
-      }
+      // if (result) {
+      //   saveAccountData(accountStatus.DELETED);
+      //   removeUserData();
+      // }
+
+      console.log('usuwam konto z haslem');
     } catch (err) {
       let onlyOwnerResources;
 
@@ -70,6 +83,10 @@ class DeleteAccount extends Component {
         pending: false
       });
     }
+  };
+
+  handleDeleteGoogleAccount = () => {
+    console.log('usuwam konto z googla');
   };
 
   handleEmailChange = event => {
@@ -128,11 +145,11 @@ class DeleteAccount extends Component {
           <DeleteDialog
             error={isErrorVisible}
             onCancel={this.hideDeleteDialog}
-            onConfirm={this.handleDeleteAccount}
+            onConfirm={this.validateForm}
             onEmailChange={this.handleEmailChange}
             onlyOwnerResources={onlyOwnerResources}
             onPasswordChange={this.handlePasswordChange}
-            onSubmit={this.handleDeleteAccount}
+            onSubmit={this.validateForm}
             onVerificationTextChange={this.handleVerificationText}
             pending={pending}
           />
@@ -165,16 +182,21 @@ class DeleteAccount extends Component {
 }
 
 DeleteAccount.propTypes = {
+  currentUser: UserPropType,
   intl: IntlPropType.isRequired,
 
   logoutCurrentUser: PropTypes.func.isRequired,
   removeUserData: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+});
+
 export default _flowRight(
   injectIntl,
   connect(
-    null,
+    mapStateToProps,
     { logoutCurrentUser, removeUserData }
   )
 )(DeleteAccount);
