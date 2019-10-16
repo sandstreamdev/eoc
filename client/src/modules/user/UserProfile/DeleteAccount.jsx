@@ -34,7 +34,7 @@ class DeleteAccount extends Component {
     event.preventDefault();
 
     const {
-      currentUser: { isPasswordSet },
+      currentUser: { email: userEmail, isPasswordSet },
       intl: { formatMessage }
     } = this.props;
     const { email, verificationText } = this.state;
@@ -44,8 +44,10 @@ class DeleteAccount extends Component {
     const handler = isPasswordSet
       ? this.handleDeleteAccount
       : this.handleDeleteGoogleAccount;
+    const isEmailValid = isEmail(email) && email === userEmail;
+    const isVerificationStringValid = verificationText === verificationString;
 
-    if (isEmail(email) && verificationText === verificationString) {
+    if (isEmailValid && isVerificationStringValid) {
       handler();
 
       return;
