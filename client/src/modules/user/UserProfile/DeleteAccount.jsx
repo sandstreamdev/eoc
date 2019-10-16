@@ -4,6 +4,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
 import _trim from 'lodash/trim';
+import isEmail from 'validator/lib/isEmail';
 
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import {
@@ -35,7 +36,7 @@ class DeleteAccount extends Component {
       currentUser: { isPasswordSet },
       intl: { formatMessage }
     } = this.props;
-    const { verificationText } = this.state;
+    const { email, verificationText } = this.state;
     const verificationString = formatMessage({
       id: 'user.delete-form.verify-text'
     });
@@ -43,7 +44,7 @@ class DeleteAccount extends Component {
       ? this.handleDeleteAccount
       : this.handleDeleteGoogleAccount;
 
-    if (verificationText === verificationString) {
+    if (isEmail(email) && verificationText === verificationString) {
       handler();
 
       return;
