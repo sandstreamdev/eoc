@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   authenticateCallback,
   authenticateWithGoogle,
+  reauthenticate,
   setDemoUser,
   setUser
 } = require('../config/auth');
@@ -56,5 +57,5 @@ router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
 router.get('/send-report', authorize, prepareItems, sendReport);
 router.post('/email-reports-settings', authorize, updateEmailReportSettings);
-
+router.get('/reauthenticate', authorize, reauthenticate);
 module.exports = router;

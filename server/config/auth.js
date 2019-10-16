@@ -143,9 +143,14 @@ const authenticateCallback = passport.authenticate(StrategyType.GOOGLE, {
   successRedirect: '/'
 });
 
+const reauthenticate = () => {
+  console.log('test');
+};
+
 module.exports = {
   authenticateCallback,
   authenticateWithGoogle,
+  reauthenticate,
   setDemoUser,
   setUser
 };

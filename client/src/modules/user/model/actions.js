@@ -208,4 +208,7 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
   }
 };
 
-export const reauthenticate = () => getData('/auth/reauthenticate');
+export const reauthenticate = () => {
+  console.log('reauth');
+  return getData('/auth/reauthenticate');
+};

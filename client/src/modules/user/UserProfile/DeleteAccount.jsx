@@ -93,7 +93,6 @@ class DeleteAccount extends Component {
     } catch (error) {
       this.handleAccountDeleteError(error);
     }
-    // Wywolaj okno reautentykacji tutaj
   };
 
   handleAccountDeleteError = error => {
