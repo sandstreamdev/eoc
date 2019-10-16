@@ -207,3 +207,5 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
     );
   }
 };
+
+export const reauthenticate = () => getData('/auth/reauthenticate');

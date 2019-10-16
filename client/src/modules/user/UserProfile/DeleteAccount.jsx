@@ -8,9 +8,10 @@ import isEmail from 'validator/lib/isEmail';
 
 import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import {
-  removeUserData,
   deleteAccount,
-  logoutCurrentUser
+  logoutCurrentUser,
+  reauthenticate,
+  removeUserData
 } from '../model/actions';
 import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
@@ -68,26 +69,47 @@ class DeleteAccount extends Component {
       //   removeUserData();
       // }
 
-      console.log('usuwam konto z haslem');
-    } catch (err) {
-      let onlyOwnerResources;
-
-      if (err instanceof ValidationException) {
-        const { errors: resourcesData } = err;
-
-        onlyOwnerResources = resourcesData;
-      }
-
-      this.setState({
-        isErrorVisible: true,
-        onlyOwnerResources,
-        pending: false
-      });
+      console.log('Usuwam konto z hasłem');
+    } catch (error) {
+      this.handleAccountDeleteError(error);
     }
   };
 
-  handleDeleteGoogleAccount = () => {
-    console.log('usuwam konto z googla');
+  handleDeleteGoogleAccount = async () => {
+    const { email } = this.state;
+    const trimmedEmail = _trim(email);
+
+    try {
+      const reauthenticated = await reauthenticate();
+
+      if (reauthenticated) {
+        const result = await deleteAccount(trimmedEmail);
+
+        if (result) {
+          //  saveAccountData(accountStatus.DELETED);
+          //  removeUserData();
+        }
+      }
+    } catch (error) {
+      this.handleAccountDeleteError(error);
+    }
+    // Wywolaj okno reautentykacji tutaj
+  };
+
+  handleAccountDeleteError = error => {
+    let onlyOwnerResources;
+
+    if (error instanceof ValidationException) {
+      const { errors: resourcesData } = error;
+
+      onlyOwnerResources = resourcesData;
+    }
+
+    this.setState({
+      isErrorVisible: true,
+      onlyOwnerResources,
+      pending: false
+    });
   };
 
   handleEmailChange = event => {
