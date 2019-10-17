@@ -1,9 +1,9 @@
-const styles = ({ maxWidth }) => ({
+const styles = ({ maxWidth = 512 } = {}) => ({
   a: `color: #15c;
     text-decoration: none;`,
   body: `background-color: #E9ECF2; 
     padding: 16px;
-    font-family: 'ProximaNova-Regular', Helvetica, Arial, sans-serif;
+    font-family: Roboto, 'ProximaNova-Regular', Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: #627085;`,
   boxMain: `background-color: #fff;
@@ -12,7 +12,7 @@ const styles = ({ maxWidth }) => ({
     width: 100%`,
   boxBottom: `background-color: #fff;
     max-width: ${maxWidth}px;
-    padding: 16px;
+    padding: 16px 40px;
     margin-top: 8px;
     width: 100%`,
   footer: `margin-top: 8px;
@@ -30,6 +30,14 @@ const styles = ({ maxWidth }) => ({
     color: #ef9b1f;
     letter-spacing: 1px;
     margin-bottom: 8px;`,
+  inputButton: `background: #ef9b1f;
+    border: 0;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 8px 16px;
+    cursor: pointer;`,
   receiver: 'margin: 0;',
   tableContent: 'border-spacing: 0;',
   tableData: `

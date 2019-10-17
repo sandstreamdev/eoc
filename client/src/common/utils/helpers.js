@@ -39,6 +39,8 @@ export const cohortRoute = id => routeGenerator(Routes.COHORT, id);
 
 export const cohortsRoute = () => routeGenerator(Routes.COHORTS);
 
+export const listRoute = id => routeGenerator(Routes.LIST, id);
+
 export const dashboardRoute = () => routeGenerator(Routes.DASHBOARD);
 
 export const accountDeletedRoute = () => routeGenerator(Routes.ACCOUNT_DELETED);

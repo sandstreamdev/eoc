@@ -40,7 +40,11 @@ import Preloader from 'common/components/Preloader';
 import Breadcrumbs from 'common/components/Breadcrumbs';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { cohortsRoute, makeAbortablePromise } from 'common/utils/helpers';
+import {
+  cohortRoute,
+  cohortsRoute,
+  makeAbortablePromise
+} from 'common/utils/helpers';
 import { joinRoom, leaveRoom } from 'sockets';
 import history from 'common/utils/history';
 
@@ -429,6 +433,10 @@ class Cohort extends PureComponent {
               />
               <div className="cohort__details">
                 <MembersBox
+                  inviteData={{
+                    name,
+                    url: cohortRoute(cohortId)
+                  }}
                   isCurrentUserAnOwner={isOwner}
                   members={members}
                   onCohortLeave={this.handleLeave}
