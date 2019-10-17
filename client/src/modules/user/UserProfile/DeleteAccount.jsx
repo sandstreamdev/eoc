@@ -17,6 +17,7 @@ import { ValidationException } from 'common/exceptions';
 import { accountStatus, saveAccountData } from 'common/utils/localStorage';
 import './DeleteAccount.scss';
 import { getCurrentUser } from 'modules/user/model/selectors';
+import { validatePassword } from 'common/utils/helpers';
 
 class DeleteAccount extends Component {
   state = {
@@ -31,21 +32,20 @@ class DeleteAccount extends Component {
 
   validateForm = event => {
     event.preventDefault();
-    // TODO: validate password if is passwordSet
 
     const {
-      currentUser: { email: userEmail },
-      // currentUser: { email: userEmail, isPasswordSet },
+      currentUser: { email: userEmail, isPasswordSet },
       intl: { formatMessage }
     } = this.props;
-    const { email, verificationText } = this.state;
+    const { email, password, verificationText } = this.state;
     const verificationString = formatMessage({
       id: 'user.delete-form.verify-text'
     });
     const isEmailValid = isEmail(email) && email === userEmail;
     const isVerificationStringValid = verificationText === verificationString;
+    const isPasswordCorrect = isPasswordSet ? validatePassword(password) : true;
 
-    if (isEmailValid && isVerificationStringValid) {
+    if (isEmailValid && isVerificationStringValid && isPasswordCorrect) {
       this.handleDeleteAccount();
 
       return;
