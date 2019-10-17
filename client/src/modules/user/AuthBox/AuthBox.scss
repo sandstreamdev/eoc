@@ -144,6 +144,13 @@
     font-size: 16px;
     text-transform: capitalize;
   }
+
+  &__reset-button {
+    background: 0;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+  }
 }
 
 .google-button {

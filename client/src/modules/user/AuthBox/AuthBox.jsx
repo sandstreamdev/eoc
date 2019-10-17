@@ -54,6 +54,9 @@ class AuthBox extends PureComponent {
       isSignInFormVisible: !isSignInFormVisible
     }));
 
+  handleResetAuthBox = () =>
+    this.setState({ isSignInFormVisible: false, isSignUpFormVisible: false });
+
   renderSignInButtons = () => {
     const { isCookieSet, pending } = this.state;
     const {
@@ -181,7 +184,13 @@ class AuthBox extends PureComponent {
           </div>
           <div className="authbox__right">
             <div className="authbox__intro">
-              <AppLogo />
+              <button
+                className="authbox__reset-button"
+                type="button"
+                onClick={this.handleResetAuthBox}
+              >
+                <AppLogo />
+              </button>
             </div>
             {areFormsVisible ? (
               this.renderForms()
