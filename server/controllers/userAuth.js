@@ -483,8 +483,8 @@ const deleteAccount = async (req, resp) => {
     const {
       _id: userId,
       displayName,
-      password: dbPassword,
-      idFromProvider
+      idFromProvider,
+      password: dbPassword
     } = user;
     const isGoogleUser = !password && idFromProvider;
     const isLocalUser =

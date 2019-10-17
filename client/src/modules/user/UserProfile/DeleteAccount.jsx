@@ -43,9 +43,9 @@ class DeleteAccount extends Component {
     });
     const isEmailValid = isEmail(email) && email === userEmail;
     const isVerificationStringValid = verificationText === verificationString;
-    const isPasswordCorrect = isPasswordSet ? validatePassword(password) : true;
+    const isPasswordValid = isPasswordSet ? validatePassword(password) : true;
 
-    if (isEmailValid && isVerificationStringValid && isPasswordCorrect) {
+    if (isEmailValid && isVerificationStringValid && isPasswordValid) {
       this.handleDeleteAccount();
 
       return;

@@ -74,7 +74,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(injectIntl(DeleteForm));
+export default connect(mapStateToProps)(injectIntl(DeleteForm));
