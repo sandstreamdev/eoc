@@ -37,7 +37,7 @@ import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
 import { joinRoom, leaveRoom } from 'sockets';
 import history from 'common/utils/history';
-import { dashboardRoute } from 'common/utils/helpers';
+import { dashboardRoute, listRoute } from 'common/utils/helpers';
 import './List.scss';
 
 class List extends Component {
@@ -379,7 +379,7 @@ class List extends Component {
                     <MembersBox
                       inviteData={{
                         name,
-                        url: `sack/${listId}`
+                        url: listRoute(listId)
                       }}
                       isCohortList={isCohortList}
                       isCurrentUserAnOwner={isOwner}

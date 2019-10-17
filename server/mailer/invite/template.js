@@ -10,7 +10,7 @@ const mailTemplate = ({
   inviteeEmail,
   inviterName,
   inviterEmail,
-  projectNameLong,
+  fullProjectName,
   resourceName,
   resourceUrl
 }) =>
@@ -41,7 +41,7 @@ const mailTemplate = ({
                             <p>
                               <a href="${host}" style="${
     styles.a
-  }">${projectName} (${projectNameLong})</a> is an office inventory tracking app for teams. Add requests for missing things and see what other team members think about it in real time.
+  }">${projectName} (${fullProjectName})</a> is an office inventory tracking app for teams. Add requests for missing things and see what other team members think about it in real time.
                             </p>
                             <p>You can also use it for planning other things - all depends on your creativity and needs.</p>
                           </td>

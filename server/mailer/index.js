@@ -3,7 +3,7 @@ const SendGridMail = require('@sendgrid/mail');
 const mailTemplate = require('./mail-template');
 const inviteTemplate = require('./invite/template');
 const weeklyReportContent = require('./reports/weekly-content');
-const { PROJECT_NAME, PROJECT_NAME_LONG } = require('../common/variables');
+const { FULL_PROJECT_NAME, PROJECT_NAME } = require('../common/variables');
 const { formatHours, getHours } = require('../common/utils');
 const { EXPIRATION_TIME } = require('../common/variables');
 
@@ -31,10 +31,10 @@ const sendInvitation = (req, resp) => {
     html: inviteTemplate({
       host,
       projectName: PROJECT_NAME,
+      fullProjectName: FULL_PROJECT_NAME,
       inviteeEmail,
       inviterName,
       inviterEmail,
-      projectNameLong: PROJECT_NAME_LONG,
       resourceName,
       resourceUrl: `${host}/${resourceUrl}`
     })
