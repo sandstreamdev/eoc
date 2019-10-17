@@ -30,6 +30,7 @@ class ListViewItem extends PureComponent {
       item: {
         description,
         doneItemsCount,
+        isArchived,
         isFavourite,
         name,
         type,
@@ -40,6 +41,7 @@ class ListViewItem extends PureComponent {
     } = this.props;
     const { pending } = this.state;
     const isLimitedList = type === ListType.LIMITED;
+    const isFavouriteButtonVisible = route !== Routes.COHORT && !isArchived;
 
     return (
       <div className="list-view-item" onClick={onCardClick} role="figure">
@@ -79,7 +81,7 @@ class ListViewItem extends PureComponent {
             />
           </div>
         </div>
-        {route !== Routes.COHORT && (
+        {isFavouriteButtonVisible && (
           <button
             className={classNames('list-view-item__star', {
               'list-view-item__star--orange': color === ColorType.ORANGE,
