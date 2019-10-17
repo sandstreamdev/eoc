@@ -10,7 +10,6 @@ import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import {
   deleteAccount,
   logoutCurrentUser,
-  reauthenticate,
   removeUserData
 } from '../model/actions';
 import DeleteDialog from './DeleteDialog';
@@ -25,7 +24,7 @@ class DeleteAccount extends Component {
     isDeleteDialogVisible: false,
     isErrorVisible: false,
     onlyOwnerResources: null,
-    password: '',
+    password: null,
     pending: false,
     verificationText: ''
   };
@@ -41,14 +40,11 @@ class DeleteAccount extends Component {
     const verificationString = formatMessage({
       id: 'user.delete-form.verify-text'
     });
-    const handler = isPasswordSet
-      ? this.handleDeleteAccount
-      : this.handleDeleteGoogleAccount;
     const isEmailValid = isEmail(email) && email === userEmail;
     const isVerificationStringValid = verificationText === verificationString;
 
     if (isEmailValid && isVerificationStringValid) {
-      handler();
+      this.handleDeleteAccount();
 
       return;
     }
@@ -64,33 +60,11 @@ class DeleteAccount extends Component {
     try {
       const { email, password } = this.state;
       const trimmedEmail = _trim(email);
-      // const result = await deleteAccount(trimmedEmail, password);
+      const result = await deleteAccount(trimmedEmail, password);
 
-      // if (result) {
-      //   saveAccountData(accountStatus.DELETED);
-      //   removeUserData();
-      // }
-
-      console.log('Usuwam konto z hasłem');
-    } catch (error) {
-      this.handleAccountDeleteError(error);
-    }
-  };
-
-  handleDeleteGoogleAccount = async () => {
-    const { email } = this.state;
-    const trimmedEmail = _trim(email);
-
-    try {
-      const reauthenticated = await reauthenticate();
-
-      if (reauthenticated) {
-        const result = await deleteAccount(trimmedEmail);
-
-        if (result) {
-          //  saveAccountData(accountStatus.DELETED);
-          //  removeUserData();
-        }
+      if (result) {
+        saveAccountData(accountStatus.DELETED);
+        removeUserData();
       }
     } catch (error) {
       this.handleAccountDeleteError(error);

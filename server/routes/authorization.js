@@ -58,7 +58,5 @@ router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
 router.get('/send-report', authorize, prepareItems, sendReport);
 router.post('/email-reports-settings', authorize, updateEmailReportSettings);
-router.get('/reauthenticate', authorize, reauthenticate);
-router.get('/google/reauthenticated', reauthenticateCallback);
 
 module.exports = router;

@@ -477,12 +477,20 @@ const deleteAccount = async (req, resp) => {
   try {
     const user = await User.findOne({
       _id,
-      email: sanitizedEmail,
-      isActive: true
+      email: sanitizedEmail
     });
-    const { _id: userId, displayName, password: dbPassword } = user;
 
-    if (bcrypt.compareSync(password + email, dbPassword)) {
+    const {
+      _id: userId,
+      displayName,
+      password: dbPassword,
+      idFromProvider
+    } = user;
+    const isGoogleUser = !password && idFromProvider;
+    const isLocalUser =
+      password && bcrypt.compareSync(password + email, dbPassword);
+
+    if (isGoogleUser || isLocalUser) {
       const errors = await checkIfUserIsTheOnlyOwner(List, Cohort, userId);
 
       if (!_isEmpty(errors)) {
