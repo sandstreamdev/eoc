@@ -80,7 +80,6 @@
   "app.layout.switch-to-list-view": "Change to list view",
   "app.layout.switch-to-tile-view": "Change to tile view",
   "app.toolbar.go-to-dashboard": "Go back to dashboard",
-  "app.toolbar.notification-tooltip": "See notifications",
   "app.user-bar.logout": "Logout",
   "app.user-bar.my-cohorts": "My cohorts",
   "cohort.actions.add-member-already-member": "User is already a member.",
