@@ -28,19 +28,17 @@ const sendReports = (agenda, jobName) => {
         .lean()
         .exec();
 
-      await Promise.all(
-        users.map(async user => {
-          try {
-            const report = await getItemsForReport(List, user);
+      users.forEach(async user => {
+        try {
+          const report = await getItemsForReport(List, user);
 
-            if (report) {
-              await sendReport(HOST, report);
-            }
-          } catch {
-            // Ignore errors
+          if (report) {
+            await sendReport(HOST, report);
           }
-        })
-      );
+        } catch {
+          // Ignore errors
+        }
+      });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error(err);
