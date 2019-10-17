@@ -18,6 +18,7 @@ const styles = ({ maxWidth = 512 } = {}) => ({
   footer: `margin-top: 8px;
     line-height: 18px;
     font-size: 12px;`,
+  h2: 'margin-top: 0',
   h4: `font-size: 16px;
     margin-bottom: 4px;
     margin-top: 16px;`,
@@ -39,7 +40,8 @@ const styles = ({ maxWidth = 512 } = {}) => ({
     padding: 8px 16px;
     cursor: pointer;`,
   receiver: 'margin: 0;',
-  tableContent: 'border-spacing: 0;',
+  tableContent: `border-spacing: 0;
+    width: 100%`,
   tableData: `
     border-spacing: 0;
     width: 100%;
