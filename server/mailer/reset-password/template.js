@@ -4,7 +4,7 @@ const templateStyles = require('../common/styles');
 
 const styles = templateStyles({ maxWidth: 640 });
 
-const mailTemplate = ({ confirmUrl, host, projectName }) =>
+const mailTemplate = ({ resetUrl, host, projectName }) =>
   `<!DOCTYPE html>
     <html>
       <head>
@@ -24,32 +24,30 @@ const mailTemplate = ({ confirmUrl, host, projectName }) =>
                           <td>
                             <center><h2 style="${
                               styles.h2
-                            }">Welcome aboard! 🎉</h2></center>
+                            }">Forgot your password? 😟</h2></center>
                           </td>
                         </tr>
                         <tr>
                           <td style="padding: 8px 0;">
-                            <span>
-                              Thank you for creating an <a href="${host}" style="${
+                            <span>We received your request to reset your <a href="${host}" style="${
     styles.a
-  }">${projectName}</a> account.
-                            </span>
+  }">${projectName}</a> password.</span>
                           </td>
                         </tr>
                         <tr>
                           <td style="padding: 8px 0;">
-                            <span>Activate you account now and check how <a href="${host}" style="${
+                            <span>To reset your <a href="${host}" style="${
     styles.a
-  }">${projectName}</a> can help you achieve your goals.</span>
+  }">${projectName}</a> password, please click the following button.</span>
                           </td>
                         </tr>
                         <tr>
                           <td style="padding-top: 16px;">
                             <center>
-                              <a href="${confirmUrl}">
+                              <a href="${resetUrl}">
                                 <input style="${
                                   styles.inputButton
-                                }" value="Activate My Account" type="button" />
+                                }" value="Choose a new password" type="button" />
                               </a>
                             </center>
                           </td>
@@ -74,7 +72,7 @@ const mailTemplate = ({ confirmUrl, host, projectName }) =>
                   <tr>
                     <td>
                       <center>
-                        <b>Note:</b> If you didn't sign up for an account on our site, please simply ignore this email.<br />The request will expire shortly.
+                        <b>Note:</b> If you did not initiate this request, you may safely ignore this message.<br />The request will expire shortly.
                       </center>
                     </td>
                   </tr>
