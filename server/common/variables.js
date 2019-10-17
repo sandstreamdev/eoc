@@ -10,6 +10,7 @@ const ListType = Object.freeze({
 const DEMO_MODE_ID = '5ce2e16d7d8999071560c9ae';
 const DEMO_USER_ID = '5ce283fee76a2e02c79d8f55';
 const PROJECT_NAME = 'EOC';
+const PROJECT_NAME_LONG = 'End of Coffee';
 const NUMBER_OF_ACTIVITIES_TO_SEND = 20;
 const BCRYPT_SALT_ROUNDS = 12;
 
@@ -103,6 +104,7 @@ module.exports = {
   LOCK_TIMEOUT,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME,
+  PROJECT_NAME_LONG,
   Routes,
   SOCKET_TIMEOUT,
   ViewType

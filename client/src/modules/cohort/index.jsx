@@ -429,6 +429,10 @@ class Cohort extends PureComponent {
               />
               <div className="cohort__details">
                 <MembersBox
+                  inviteData={{
+                    name,
+                    url: `cohort/${cohortId}`
+                  }}
                   isCurrentUserAnOwner={isOwner}
                   members={members}
                   onCohortLeave={this.handleLeave}

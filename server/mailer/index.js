@@ -1,8 +1,9 @@
 const SendGridMail = require('@sendgrid/mail');
 
 const mailTemplate = require('./mail-template');
+const inviteTemplate = require('./invite/template');
 const weeklyReportContent = require('./reports/weekly-content');
-const { PROJECT_NAME } = require('../common/variables');
+const { PROJECT_NAME, PROJECT_NAME_LONG } = require('../common/variables');
 const { formatHours, getHours } = require('../common/utils');
 const { EXPIRATION_TIME } = require('../common/variables');
 
@@ -14,26 +15,35 @@ const subjectTemplate = subject => `☕ ${PROJECT_NAME} - ${subject}`;
 SendGridMail.setApiKey(SENDGRID_API_KEY);
 
 const sendInvitation = (req, resp) => {
-  const { email: receiver } = req.body;
   const {
-    user: { email: sender }
+    email: inviteeEmail,
+    resource: { name: resourceName, url: resourceUrl }
+  } = req.body;
+  const {
+    user: { email: inviterEmail, displayName: inviterName }
   } = req;
   const host = req.get('host');
-  const title = `Join ${PROJECT_NAME} today!`;
-  const info = `Would you like to join me in amazing ${PROJECT_NAME} app?`;
-  const value = `JOIN ${PROJECT_NAME}`;
 
   const message = {
-    to: receiver,
-    from: sender,
-    subject: `Join ${PROJECT_NAME}!`,
-    html: mailTemplate(receiver, sender, host, title, info, value)
+    from: `${inviterName} (via ${PROJECT_NAME}) <${inviterEmail}>`,
+    to: inviteeEmail,
+    subject: `${inviterName} has invited you to join ${PROJECT_NAME} ✨`,
+    html: inviteTemplate({
+      host,
+      projectName: PROJECT_NAME,
+      inviteeEmail,
+      inviterName,
+      inviterEmail,
+      projectNameLong: PROJECT_NAME_LONG,
+      resourceName,
+      resourceUrl: `${host}/${resourceUrl}`
+    })
   };
 
   SendGridMail.send(message)
     .then(() =>
       resp.send({
-        message: `Invitation to ${receiver} has been sent.`
+        message: `Invitation to ${inviteeEmail} has been sent.`
       })
     )
     .catch(() => {

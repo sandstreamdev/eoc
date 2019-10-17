@@ -88,9 +88,9 @@ class MembersBox extends PureComponent {
 
   handleInvite = () => {
     const { email } = this.state;
-    const { inviteUser } = this.props;
+    const { inviteUser, inviteData } = this.props;
 
-    return inviteUser(email).then(() => {
+    return inviteUser(email, inviteData).then(() => {
       this.hideForm();
       this.hideInvitationBox();
     });
@@ -242,6 +242,7 @@ class MembersBox extends PureComponent {
 
 MembersBox.propTypes = {
   intl: IntlPropType.isRequired,
+  inviteData: PropTypes.object,
   isCohortList: PropTypes.bool,
   isCurrentUserAnOwner: PropTypes.bool,
   isMember: PropTypes.bool,

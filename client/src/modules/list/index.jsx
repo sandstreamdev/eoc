@@ -377,6 +377,10 @@ class List extends Component {
                   </button>
                   {isMembersBoxVisible && (
                     <MembersBox
+                      inviteData={{
+                        name,
+                        url: `sack/${listId}`
+                      }}
                       isCohortList={isCohortList}
                       isCurrentUserAnOwner={isOwner}
                       isMember={isMember}
