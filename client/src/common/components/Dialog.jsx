@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import FocusLock from 'react-focus-lock';
 import classNames from 'classnames';
+import { CSSTransition } from 'react-transition-group';
 
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import Preloader from 'common/components/Preloader';
@@ -21,49 +22,59 @@ const Dialog = ({
   cancelLabel,
   children,
   confirmLabel,
+  isVisible,
   hasPermissions,
   onCancel,
   onConfirm,
   pending,
   title
-}) => (
-  <Fragment>
-    <Overlay type={OverlayStyleType.MEDIUM} />
-    <div className="dialog">
-      <FocusLock returnFocus>
-        <header className="dialog__header">
-          <h2 className="dialog__heading">{title && title}</h2>
-        </header>
-        <div className="dialog__body">
-          {children && <div className="dialog__children">{children}</div>}
-          <div className="dialog__footer">
-            {hasPermissions && onConfirm && (
-              <button
-                className={classNames('dialog__button primary-button', {
-                  'danger-button': buttonStyleType === MessageType.ERROR
-                })}
-                disabled={pending}
-                onClick={onConfirm}
-                type="button"
-              >
-                {confirmLabel}
-              </button>
-            )}
-            <button
-              className="dialog__button outline-button"
-              disabled={pending}
-              onClick={onCancel}
-              type="button"
-            >
-              {cancelLabel}
-            </button>
-          </div>
-          {pending && <Preloader />}
+}) => {
+  return (
+    <CSSTransition
+      in={isVisible}
+      timeout={250}
+      classNames="dialog-fade"
+      unmountOnExit
+    >
+      <div className="dialog-wrapper">
+        <Overlay type={OverlayStyleType.MEDIUM} />
+        <div className="dialog">
+          <FocusLock returnFocus>
+            <header className="dialog__header">
+              <h2 className="dialog__heading">{title && title}</h2>
+            </header>
+            <div className="dialog__body">
+              {children && <div className="dialog__children">{children}</div>}
+              <div className="dialog__footer">
+                {hasPermissions && onConfirm && (
+                  <button
+                    className={classNames('dialog__button primary-button', {
+                      'danger-button': buttonStyleType === MessageType.ERROR
+                    })}
+                    disabled={pending}
+                    onClick={onConfirm}
+                    type="button"
+                  >
+                    {confirmLabel}
+                  </button>
+                )}
+                <button
+                  className="dialog__button outline-button"
+                  disabled={pending}
+                  onClick={onCancel}
+                  type="button"
+                >
+                  {cancelLabel}
+                </button>
+              </div>
+              {pending && <Preloader />}
+            </div>
+          </FocusLock>
         </div>
-      </FocusLock>
-    </div>
-  </Fragment>
-);
+      </div>
+    </CSSTransition>
+  );
+};
 
 Dialog.defaultProps = {
   hasPermissions: true
@@ -75,6 +86,7 @@ Dialog.propTypes = {
   children: PropTypes.node,
   confirmLabel: PropTypes.string.isRequired,
   hasPermissions: PropTypes.bool,
+  isVisible: PropTypes.bool,
   pending: PropTypes.bool,
   title: PropTypes.string,
 

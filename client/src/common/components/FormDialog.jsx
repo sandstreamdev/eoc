@@ -85,6 +85,7 @@ class FormDialog extends Component {
 
   render() {
     const {
+      isVisible,
       defaultDescription,
       defaultName,
       intl: { formatMessage },
@@ -97,6 +98,7 @@ class FormDialog extends Component {
 
     return (
       <Dialog
+        isVisible={isVisible}
         confirmLabel={formatMessage({ id: 'common.button.confirm' })}
         cancelLabel={formatMessage({ id: 'common.button.cancel' })}
         onConfirm={this.handleConfirmClick}
@@ -122,6 +124,7 @@ FormDialog.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
   intl: IntlPropType.isRequired,
+  isVisible: PropTypes.bool,
   pending: PropTypes.bool.isRequired,
   title: PropTypes.string,
 
