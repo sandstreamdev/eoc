@@ -46,6 +46,7 @@ pipeline {
         GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
         EXPRESS_SESSION_KEY = credentials('EXPRESS_SESSION_KEY')
         SENDGRID_API_KEY = credentials('SENDGRID_API_KEY')
+        HOST = credentials('HOST')
       }
       steps {
         echo 'Deploying....'
