@@ -19,6 +19,7 @@ const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
 const unlockLocks = require('./common/utils/unlockLocks');
+const runAgenda = require('./tasks/agenda');
 
 const app = express();
 const dbUrl = DB_URL;
@@ -58,6 +59,8 @@ app.use('*', (_, res) => res.sendFile(path.resolve('dist/index.html')));
 socket.init(server);
 
 const PORT = 8080;
+
+runAgenda();
 
 // eslint-disable-next-line no-console
 server.listen(PORT, () => console.info(`EOC server running on port ${PORT}`));

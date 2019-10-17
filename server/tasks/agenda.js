@@ -15,7 +15,7 @@ const runAgenda = async () => {
   sendReports(agenda, jobs.SEND_REPORTS);
 
   await agenda.start();
-  // await agenda.every('30 seconds', jobs.SEND_REPORTS);
+  await agenda.every('0 14 * * *', jobs.SEND_REPORTS);
 };
 
-module.exports = { runAgenda };
+module.exports = runAgenda;

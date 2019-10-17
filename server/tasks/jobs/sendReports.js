@@ -1,6 +1,6 @@
 const { EmailReportsFrequency } = require('../../common/variables');
 const { getItemsForReport } = require('../../common/utils');
-const { getMailer } = require('../../mailer/index');
+const { sendReport } = require('../../mailer');
 const User = require('../../models/user.model');
 const List = require('../../models/list.model');
 
@@ -18,6 +18,7 @@ const sendReports = (agenda, jobName) => {
   agenda.define(jobName, async job => {
     const day = new Date().getDay();
     const reportDay = days[day];
+    const { HOST } = process.env;
 
     try {
       const users = await User.find(
@@ -26,23 +27,15 @@ const sendReports = (agenda, jobName) => {
       )
         .lean()
         .exec();
-
       const reportsData = await Promise.all(
         users.map(async user => getItemsForReport(List, user))
       );
-      console.log(reportsData);
 
-      // const mailer = getMailer();
-      // const mailOptions = {
-      //   from: 'no.reply@app.eoc.com',
-      //   to: 'aleksander.fret@sandstream.pl',
-      //   subject: 'Node.js Email with Secure OAuth',
-      //   generateTextFromHTML: true,
-      //   html: '<b>test sending email via gmail and agenda</b>'
-      // };
-
-      // await mailer.sendMail(mailOptions, (error, response) => mailer.close());
+      await Promise.all(
+        reportsData.map(async report => sendReport(HOST, report))
+      );
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
     }
   });

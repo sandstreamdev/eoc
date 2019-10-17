@@ -145,14 +145,13 @@ const sendResetPasswordLink = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const sendReport = async (req, resp) => {
-  const { data } = resp.locales;
-  const host = req.get('host');
-  const { email: receiver, displayName } = req.user;
+const sendReport = async (host, reportData) => {
+  const { data, receiver, displayName } = reportData;
   const message = {
     to: receiver,
     from: fromField,
     subject: subjectTemplate('Your weekly report'),
+    generateTextFromHTML: true,
     html: weeklyReportContent({
       host,
       data,
@@ -160,9 +159,22 @@ const sendReport = async (req, resp) => {
       projectName: PROJECT_NAME
     })
   };
+  try {
+    const mailer = getMailer();
+
+    await mailer.sendMail(message);
+    mailer.close();
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log(err);
+  }
+};
+
+const sendReportOnDemand = async (req, resp) => {
+  const host = req.get('host');
 
   try {
-    const result = await SendGridMail.send(message);
+    const result = await sendReport(host, resp.locales);
 
     if (result) {
       resp.sendStatus(200);
@@ -175,6 +187,7 @@ const sendReport = async (req, resp) => {
 module.exports = {
   sendInvitation,
   sendReport,
+  sendReportOnDemand,
   sendResetPasswordLink,
   sendSignUpConfirmationLink
 };

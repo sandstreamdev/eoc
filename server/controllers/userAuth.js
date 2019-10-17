@@ -27,10 +27,7 @@ const {
   BCRYPT_SALT_ROUNDS,
   EXPIRATION_TIME
 } = require('../common/variables');
-const {
-  prepareRequestedItems,
-  prepareTodosItems
-} = require('../common/utils/helpers');
+const { getItemsForReport } = require('../common/utils/helpers');
 const Cohort = require('../models/cohort.model');
 const io = require('../sockets/index');
 const { logout: logoutOtherSessions } = require('../sockets/user');
@@ -511,42 +508,13 @@ const deleteAccount = async (req, resp) => {
 };
 
 const prepareItems = async (req, resp, next) => {
-  const { _id: userId } = req.user;
-  const data = { requests: [], todos: [] };
+  const { user } = req;
 
   try {
-    const ownerLists = await List.find({
-      ownerIds: { $in: [userId] },
-      isArchived: false,
-      'items.0': { $exists: true }
-    })
-      .lean()
-      .populate('cohortId', 'name')
-      .populate('items.authorId', 'displayName')
-      .exec();
-
-    const viewerLists = await List.find({
-      viewersIds: { $in: [userId] },
-      isArchived: false,
-      'items.0': { $exists: true }
-    })
-      .lean()
-      .populate('cohortId', 'name')
-      .populate('items.authorId', 'displayName')
-      .exec();
-
-    if (ownerLists) {
-      data.todos = prepareTodosItems(ownerLists);
-    }
-
-    if (viewerLists) {
-      data.requests = prepareRequestedItems(viewerLists)(userId);
-    }
+    const reportData = await getItemsForReport(List, user);
 
     /* eslint-disable-next-line no-param-reassign */
-    resp.locales = {
-      data
-    };
+    resp.locales = reportData;
 
     next();
   } catch {
