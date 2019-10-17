@@ -34,7 +34,6 @@ const sendReports = (agenda, jobName) => {
           const report = await getItemsForReport(List, user);
 
           if (report) {
-            // await sendReport(HOST, report);
             fireAndForget(sendReport(HOST, report));
           }
         } catch {
