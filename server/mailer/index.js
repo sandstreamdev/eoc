@@ -107,14 +107,14 @@ const sendResetPasswordLink = (req, resp) => {
 };
 
 const sendReport = async (host, reportData) => {
-  const { data, receiver, displayName } = reportData;
+  const { displayName, receiver, requests, todos } = reportData;
   const message = {
     to: receiver,
     from: fromField,
     subject: subjectTemplate('Your weekly report'),
     html: weeklyReportContent({
       host,
-      data,
+      data: { requests, todos },
       receiver: displayName,
       projectName: PROJECT_NAME
     })

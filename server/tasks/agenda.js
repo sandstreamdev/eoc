@@ -4,18 +4,24 @@ const { DB_URL } = require('../common/variables');
 const sendReports = require('./jobs/sendReports');
 const { enumerable } = require('../common/utils/helpers');
 
-const connectionOpts = {
+const connectionOptions = {
   db: { address: DB_URL, collection: 'jobs' }
 };
 const jobs = enumerable('jobs')('SEND_REPORTS');
 
 const runAgenda = async () => {
-  const agenda = new Agenda(connectionOpts);
+  try {
+    const agenda = new Agenda(connectionOptions);
 
-  sendReports(agenda, jobs.SEND_REPORTS);
+    sendReports(agenda, jobs.SEND_REPORTS);
 
-  await agenda.start();
-  await agenda.every('0 0 * * *', jobs.SEND_REPORTS);
+    await agenda.start();
+    // await agenda.every('0 0 * * *', jobs.SEND_REPORTS);
+    await agenda.every('30 seconds', jobs.SEND_REPORTS);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  }
 };
 
 module.exports = runAgenda;

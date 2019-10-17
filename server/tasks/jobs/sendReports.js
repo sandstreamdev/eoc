@@ -3,6 +3,7 @@ const { getItemsForReport } = require('../../common/utils');
 const { sendReport } = require('../../mailer');
 const User = require('../../models/user.model');
 const List = require('../../models/list.model');
+const { fireAndForget } = require('../../common/utils');
 
 const days = {
   0: EmailReportsFrequency.SUNDAY,
@@ -33,7 +34,8 @@ const sendReports = (agenda, jobName) => {
           const report = await getItemsForReport(List, user);
 
           if (report) {
-            await sendReport(HOST, report);
+            // await sendReport(HOST, report);
+            fireAndForget(sendReport(HOST, report));
           }
         } catch {
           // Ignore errors
