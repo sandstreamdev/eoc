@@ -384,6 +384,7 @@ class Cohort extends PureComponent {
       },
       { context: dialogContextMessage, name }
     );
+    const isDialogVisible = dialogContext === DialogContext.CREATE;
 
     return (
       <Fragment>
@@ -405,19 +406,18 @@ class Cohort extends PureComponent {
             )}
           />
         )}
-        {dialogContext === DialogContext.CREATE && (
-          <FormDialog
-            onCancel={this.handleDialogContext(null)}
-            onConfirm={this.handleListCreation}
-            pending={pendingForListCreation}
-            title={formatMessage({
-              id: pendingForListCreation
-                ? 'cohort.index.adding-sack'
-                : 'cohort.index.add-sack'
-            })}
-            onSelect={this.handleListType}
-          />
-        )}
+        <FormDialog
+          isVisible={isDialogVisible}
+          onCancel={this.handleDialogContext(null)}
+          onConfirm={this.handleListCreation}
+          pending={pendingForListCreation}
+          title={formatMessage({
+            id: pendingForListCreation
+              ? 'cohort.index.adding-sack'
+              : 'cohort.index.add-sack'
+          })}
+          onSelect={this.handleListType}
+        />
         {archivedCohortView ? (
           <ArchivedCohort cohortId={cohortId} isOwner={isOwner} name={name} />
         ) : (

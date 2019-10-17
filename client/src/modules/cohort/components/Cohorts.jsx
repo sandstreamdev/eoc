@@ -72,6 +72,8 @@ class Cohorts extends Component {
       pendingForCohorts
     } = this.state;
 
+    console.log(isDialogVisible);
+
     return (
       <Fragment>
         {this.renderBreadcrumbs()}
@@ -96,18 +98,17 @@ class Cohorts extends Component {
             <ArchivedCohorts />
           </div>
         </div>
-        {isDialogVisible && (
-          <FormDialog
-            onCancel={this.handleDialogVisibility}
-            onConfirm={this.handleConfirm}
-            pending={pendingForCohortCreation}
-            title={
-              pendingForCohortCreation
-                ? formatMessage({ id: 'cohort.cohorts.adding' })
-                : formatMessage({ id: 'cohort.cohorts.add' })
-            }
-          />
-        )}
+        <FormDialog
+          isVisible={isDialogVisible}
+          onCancel={this.handleDialogVisibility}
+          onConfirm={this.handleConfirm}
+          pending={pendingForCohortCreation}
+          title={
+            pendingForCohortCreation
+              ? formatMessage({ id: 'cohort.cohorts.adding' })
+              : formatMessage({ id: 'cohort.cohorts.add' })
+          }
+        />
       </Fragment>
     );
   }

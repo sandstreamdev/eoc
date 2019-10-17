@@ -158,7 +158,6 @@ class Dashboard extends Component {
             )}
           </div>
         </div>
-
         <FormDialog
           isVisible={isDialogVisible}
           onCancel={this.handleDialogVisibility}
