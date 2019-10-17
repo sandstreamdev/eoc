@@ -27,12 +27,19 @@ const sendReports = (agenda, jobName) => {
       )
         .lean()
         .exec();
-      const reportsData = await Promise.all(
-        users.map(async user => getItemsForReport(List, user))
-      );
 
       await Promise.all(
-        reportsData.map(async report => sendReport(HOST, report))
+        users.map(async user => {
+          try {
+            const report = await getItemsForReport(List, user);
+
+            if (report) {
+              await sendReport(HOST, report);
+            }
+          } catch {
+            // Ignore errors
+          }
+        })
       );
     } catch (err) {
       // eslint-disable-next-line no-console
