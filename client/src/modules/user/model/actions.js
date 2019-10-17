@@ -164,9 +164,9 @@ export const getAccountDetails = token =>
 export const deleteAccount = (email, password) =>
   deleteData('/auth', { email, password });
 
-export const sendReport = () => dispatch => {
+export const sendReport = () => async dispatch => {
   try {
-    const result = getData('/auth/send-report');
+    const result = await getData('/auth/send-report');
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {

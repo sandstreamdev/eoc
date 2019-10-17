@@ -120,12 +120,8 @@ const sendReport = async (host, reportData) => {
       projectName: PROJECT_NAME
     })
   };
-  try {
-    await SendGridMail.send(message);
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+
+  await SendGridMail.send(message);
 };
 
 const sendReportOnDemand = async (req, resp) => {
