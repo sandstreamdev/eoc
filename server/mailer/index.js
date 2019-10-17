@@ -112,7 +112,6 @@ const sendReport = async (host, reportData) => {
     to: receiver,
     from: fromField,
     subject: subjectTemplate('Your weekly report'),
-    generateTextFromHTML: true,
     html: weeklyReportContent({
       host,
       data,
