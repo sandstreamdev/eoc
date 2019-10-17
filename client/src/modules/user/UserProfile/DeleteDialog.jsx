@@ -32,11 +32,11 @@ const DeleteDialog = ({
   return (
     <div className="delete-dialog">
       <Dialog
-        isVisible={isVisible}
         buttonStyleType={MessageType.ERROR}
         cancelLabel={formatMessage({ id: 'common.button.cancel' })}
         confirmLabel={formatMessage({ id: 'user.delete-account' })}
         hasPermissions
+        isVisible={isVisible}
         onCancel={onCancel}
         onConfirm={onConfirm}
         pending={pending}

@@ -395,9 +395,9 @@ class List extends Component {
           </div>
         )}
         <Dialog
-          isVisible={isArchiveDialogVisible}
           cancelLabel={formatMessage({ id: 'common.button.cancel' })}
           confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+          isVisible={isArchiveDialogVisible}
           onCancel={this.hideDialog}
           onConfirm={this.handleListArchivization(listId)}
           pending={pendingForListArchivization}
@@ -412,10 +412,10 @@ class List extends Component {
         />
         {externalAction && (
           <Dialog
-            isVisible={isDialogForRemovedListVisible}
             cancelLabel={formatMessage({ id: 'common.button.dashboard' })}
             confirmLabel={formatMessage({ id: 'common.button.restore' })}
             hasPermissions={isOwner}
+            isVisible={isDialogForRemovedListVisible}
             onCancel={this.handleRedirect}
             onConfirm={
               isArchived && !isDeleted ? this.handleRestoreList : undefined

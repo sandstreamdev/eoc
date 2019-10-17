@@ -92,9 +92,9 @@ class ArchivedMessage extends PureComponent {
           )}
         </div>
         <Dialog
-          isVisible={isDialogVisible}
           cancelLabel={formatMessage({ id: 'common.button.cancel' })}
           confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+          isVisible={isDialogVisible}
           onCancel={this.hideDialog}
           onConfirm={this.handleDeletion}
           pending={pending}

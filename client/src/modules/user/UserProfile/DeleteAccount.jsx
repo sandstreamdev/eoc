@@ -125,8 +125,8 @@ class DeleteAccount extends Component {
     return (
       <Fragment>
         <DeleteDialog
-          isVisible={isDeleteDialogVisible}
           error={isErrorVisible}
+          isVisible={isDeleteDialogVisible}
           onCancel={this.hideDeleteDialog}
           onConfirm={this.handleDeleteAccount}
           onEmailChange={this.handleEmailChange}

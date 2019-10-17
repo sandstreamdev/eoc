@@ -391,9 +391,9 @@ class Cohort extends PureComponent {
       <Fragment>
         {this.renderBreadcrumbs()}
         <Dialog
-          isVisible={isArchiveDialogVisible}
           cancelLabel={formatMessage({ id: 'common.button.cancel' })}
           confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+          isVisible={isArchiveDialogVisible}
           onCancel={this.handleDialogContext(null)}
           onConfirm={this.handleCohortArchivization()}
           pending={pendingForCohortArchivization}
@@ -502,10 +502,10 @@ class Cohort extends PureComponent {
         )}
         {externalAction && (
           <Dialog
-            isVisible={isDialogForRemovedListVisible}
             cancelLabel={formatMessage({ id: 'common.button.cohorts' })}
             confirmLabel={formatMessage({ id: 'common.button.restore' })}
             hasPermissions={isOwner}
+            isVisible={isDialogForRemovedListVisible}
             onCancel={this.handleRedirect}
             onConfirm={
               isArchived && !isDeleted ? this.handleRestoreCohort : undefined

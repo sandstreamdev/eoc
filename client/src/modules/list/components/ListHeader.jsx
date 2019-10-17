@@ -476,9 +476,9 @@ class ListHeader extends PureComponent {
 
     return (
       <Dialog
-        isVisible={isDialogVisible}
         cancelLabel={formatMessage({ id: 'common.button.cancel' })}
         confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+        isVisible={isDialogVisible}
         onCancel={this.hideDialog}
         onConfirm={this.handleChangingType}
         pending={pendingForTypeUpdate}
