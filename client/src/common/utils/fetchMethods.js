@@ -69,8 +69,7 @@ const handleFetchErrors = response => {
 
 export const getData = url =>
   fetch(url, {
-    credentials: 'include',
-    mode: 'no-cors'
+    credentials: 'include'
   }).then(handleFetchErrors);
 
 export const postData = (url, data) =>

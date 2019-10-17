@@ -16,52 +16,48 @@ const DeleteForm = ({
   onPasswordChange,
   onSubmit,
   onVerificationTextChange
-}) => {
-  return (
-    <form
-      className={classNames('delete-form', { 'delete-form--error': error })}
-      onSubmit={onSubmit}
-    >
+}) => (
+  <form
+    className={classNames('delete-form', { 'delete-form--error': error })}
+    onSubmit={onSubmit}
+  >
+    <label className="delete-form__label">
+      <FormattedMessage id="user.delete-form.email" />
+      <input
+        autoComplete="off"
+        className="delete-form__input primary-input"
+        onChange={onEmailChange}
+        type="email"
+      />
+    </label>
+    <label className="delete-form__label">
+      <FormattedMessage
+        id="user.delete-form.verify-message"
+        values={{
+          text: <em>{formatMessage({ id: 'user.delete-form.verify-text' })}</em>
+        }}
+      />
+      <input
+        autoComplete="off"
+        className="delete-form__input primary-input"
+        onChange={onVerificationTextChange}
+        type="text"
+      />
+    </label>
+    {isPasswordSet && (
       <label className="delete-form__label">
-        <FormattedMessage id="user.delete-form.email" />
+        <FormattedMessage id="user.auth.input.password.confirm" />
         <input
           autoComplete="off"
           className="delete-form__input primary-input"
-          onChange={onEmailChange}
-          type="email"
+          onChange={onPasswordChange}
+          type="password"
         />
       </label>
-      <label className="delete-form__label">
-        <FormattedMessage
-          id="user.delete-form.verify-message"
-          values={{
-            text: (
-              <em>{formatMessage({ id: 'user.delete-form.verify-text' })}</em>
-            )
-          }}
-        />
-        <input
-          autoComplete="off"
-          className="delete-form__input primary-input"
-          onChange={onVerificationTextChange}
-          type="text"
-        />
-      </label>
-      {isPasswordSet && (
-        <label className="delete-form__label">
-          <FormattedMessage id="user.auth.input.password.confirm" />
-          <input
-            autoComplete="off"
-            className="delete-form__input primary-input"
-            onChange={onPasswordChange}
-            type="password"
-          />
-        </label>
-      )}
-      <input className="hidden" type="submit" />
-    </form>
-  );
-};
+    )}
+    <input className="hidden" type="submit" />
+  </form>
+);
 
 DeleteForm.propTypes = {
   currentUser: UserPropType,
