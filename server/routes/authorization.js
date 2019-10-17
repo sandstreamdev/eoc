@@ -4,8 +4,6 @@ const router = express.Router();
 const {
   authenticateCallback,
   authenticateWithGoogle,
-  reauthenticate,
-  reauthenticateCallback,
   setDemoUser,
   setUser
 } = require('../config/auth');

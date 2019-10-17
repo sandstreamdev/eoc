@@ -31,9 +31,11 @@ class DeleteAccount extends Component {
 
   validateForm = event => {
     event.preventDefault();
+    // TODO: validate password if is passwordSet
 
     const {
-      currentUser: { email: userEmail, isPasswordSet },
+      currentUser: { email: userEmail },
+      // currentUser: { email: userEmail, isPasswordSet },
       intl: { formatMessage }
     } = this.props;
     const { email, verificationText } = this.state;
