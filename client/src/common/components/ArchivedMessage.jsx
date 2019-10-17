@@ -91,23 +91,22 @@ class ArchivedMessage extends PureComponent {
             </div>
           )}
         </div>
-        {isDialogVisible && (
-          <Dialog
-            cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-            confirmLabel={formatMessage({ id: 'common.button.confirm' })}
-            onCancel={this.hideDialog}
-            onConfirm={this.handleDeletion}
-            pending={pending}
-            title={formatMessage(
-              {
-                id: pending
-                  ? 'common.archived-message.deleting'
-                  : 'common.archived-message.perm-delete'
-              },
-              { name, item }
-            )}
-          />
-        )}
+        <Dialog
+          isVisible={isDialogVisible}
+          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+          confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+          onCancel={this.hideDialog}
+          onConfirm={this.handleDeletion}
+          pending={pending}
+          title={formatMessage(
+            {
+              id: pending
+                ? 'common.archived-message.deleting'
+                : 'common.archived-message.perm-delete'
+            },
+            { name, item }
+          )}
+        />
       </Fragment>
     );
   }

@@ -72,8 +72,6 @@ class Cohorts extends Component {
       pendingForCohorts
     } = this.state;
 
-    console.log(isDialogVisible);
-
     return (
       <Fragment>
         {this.renderBreadcrumbs()}

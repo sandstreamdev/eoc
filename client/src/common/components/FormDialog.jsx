@@ -124,7 +124,7 @@ FormDialog.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
   intl: IntlPropType.isRequired,
-  isVisible: PropTypes.bool,
+  isVisible: PropTypes.bool.isRequired,
   pending: PropTypes.bool.isRequired,
   title: PropTypes.string,
 

@@ -384,30 +384,30 @@ class Cohort extends PureComponent {
       },
       { context: dialogContextMessage, name }
     );
-    const isDialogVisible = dialogContext === DialogContext.CREATE;
+    const isAddSackDialogVisible = dialogContext === DialogContext.CREATE;
+    const isArchiveDialogVisible = dialogContext === DialogContext.ARCHIVE;
 
     return (
       <Fragment>
         {this.renderBreadcrumbs()}
-        {dialogContext === DialogContext.ARCHIVE && (
-          <Dialog
-            cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-            confirmLabel={formatMessage({ id: 'common.button.confirm' })}
-            onCancel={this.handleDialogContext(null)}
-            onConfirm={this.handleCohortArchivization()}
-            pending={pendingForCohortArchivization}
-            title={formatMessage(
-              {
-                id: pendingForCohortArchivization
-                  ? 'cohort.index.archivization'
-                  : 'cohort.index.archive'
-              },
-              { name }
-            )}
-          />
-        )}
+        <Dialog
+          isVisible={isArchiveDialogVisible}
+          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+          confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+          onCancel={this.handleDialogContext(null)}
+          onConfirm={this.handleCohortArchivization()}
+          pending={pendingForCohortArchivization}
+          title={formatMessage(
+            {
+              id: pendingForCohortArchivization
+                ? 'cohort.index.archivization'
+                : 'cohort.index.archive'
+            },
+            { name }
+          )}
+        />
         <FormDialog
-          isVisible={isDialogVisible}
+          isVisible={isAddSackDialogVisible}
           onCancel={this.handleDialogContext(null)}
           onConfirm={this.handleListCreation}
           pending={pendingForListCreation}
@@ -500,8 +500,9 @@ class Cohort extends PureComponent {
             </div>
           </div>
         )}
-        {isDialogForRemovedListVisible && (
+        {externalAction && (
           <Dialog
+            isVisible={isDialogForRemovedListVisible}
             cancelLabel={formatMessage({ id: 'common.button.cohorts' })}
             confirmLabel={formatMessage({ id: 'common.button.restore' })}
             hasPermissions={isOwner}

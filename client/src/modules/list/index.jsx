@@ -311,6 +311,7 @@ class List extends Component {
       !pendingForListArchivization &&
       !pendingForLeaving;
     const archivedListView = (isArchived && !isUnavailable) || isDeleted;
+    const isArchiveDialogVisible = dialogContext === DialogContext.ARCHIVE;
     const dialogContextMessage = formatMessage({
       id: 'list.label'
     });
@@ -393,25 +394,25 @@ class List extends Component {
             </div>
           </div>
         )}
-        {dialogContext === DialogContext.ARCHIVE && (
+        <Dialog
+          isVisible={isArchiveDialogVisible}
+          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+          confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+          onCancel={this.hideDialog}
+          onConfirm={this.handleListArchivization(listId)}
+          pending={pendingForListArchivization}
+          title={formatMessage(
+            {
+              id: pendingForListArchivization
+                ? 'list.index.archivization'
+                : 'list.index.question'
+            },
+            { name }
+          )}
+        />
+        {externalAction && (
           <Dialog
-            cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-            confirmLabel={formatMessage({ id: 'common.button.confirm' })}
-            onCancel={this.hideDialog}
-            onConfirm={this.handleListArchivization(listId)}
-            pending={pendingForListArchivization}
-            title={formatMessage(
-              {
-                id: pendingForListArchivization
-                  ? 'list.index.archivization'
-                  : 'list.index.question'
-              },
-              { name }
-            )}
-          />
-        )}
-        {isDialogForRemovedListVisible && (
-          <Dialog
+            isVisible={isDialogForRemovedListVisible}
             cancelLabel={formatMessage({ id: 'common.button.dashboard' })}
             confirmLabel={formatMessage({ id: 'common.button.restore' })}
             hasPermissions={isOwner}
