@@ -541,44 +541,39 @@ const getItemsForReport = async (listModel, user) => {
   const reportData = { displayName, receiver };
   const data = { requests: [], todos: [] };
 
-  try {
-    const ownerLists = await listModel
-      .find({
-        ownerIds: { $in: [userId] },
-        isArchived: false,
-        'items.0': { $exists: true }
-      })
-      .lean()
-      .populate('cohortId', 'name')
-      .populate('items.authorId', 'displayName')
-      .exec();
+  const ownerLists = await listModel
+    .find({
+      ownerIds: { $in: [userId] },
+      isArchived: false,
+      'items.0': { $exists: true }
+    })
+    .lean()
+    .populate('cohortId', 'name')
+    .populate('items.authorId', 'displayName')
+    .exec();
 
-    const viewerLists = await listModel
-      .find({
-        viewersIds: { $in: [userId] },
-        isArchived: false,
-        'items.0': { $exists: true }
-      })
-      .lean()
-      .populate('cohortId', 'name')
-      .populate('items.authorId', 'displayName')
-      .exec();
+  const viewerLists = await listModel
+    .find({
+      viewersIds: { $in: [userId] },
+      isArchived: false,
+      'items.0': { $exists: true }
+    })
+    .lean()
+    .populate('cohortId', 'name')
+    .populate('items.authorId', 'displayName')
+    .exec();
 
-    if (ownerLists) {
-      data.todos = prepareTodosItems(ownerLists);
-    }
-
-    if (viewerLists) {
-      data.requests = prepareRequestedItems(viewerLists)(userId);
-    }
-
-    reportData.data = data;
-
-    return reportData;
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err);
+  if (ownerLists) {
+    data.todos = prepareTodosItems(ownerLists);
   }
+
+  if (viewerLists) {
+    data.requests = prepareRequestedItems(viewerLists)(userId);
+  }
+
+  reportData.data = data;
+
+  return reportData;
 };
 
 module.exports = {

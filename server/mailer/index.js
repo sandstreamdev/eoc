@@ -159,15 +159,11 @@ const sendReport = async (host, reportData) => {
       projectName: PROJECT_NAME
     })
   };
-  try {
-    const mailer = getMailer();
 
-    await mailer.sendMail(message);
-    mailer.close();
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const mailer = getMailer();
+
+  await mailer.sendMail(message);
+  mailer.close();
 };
 
 const sendReportOnDemand = async (req, resp) => {
