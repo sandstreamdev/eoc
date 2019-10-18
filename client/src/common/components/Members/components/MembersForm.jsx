@@ -53,7 +53,7 @@ class MembersForm extends PureComponent {
     const { isFocused } = this.state;
 
     if (code === KeyCodes.ENTER && isFocused) {
-      this.handleAddNew();
+      this.validateEmail();
     }
   };
 
@@ -91,8 +91,6 @@ class MembersForm extends PureComponent {
   handleClickOutside = event => {
     const isClickedOutside = !this.form.current.contains(event.target);
     const { onClickOutside } = this.props;
-
-    console.log(this.form.current.contains(event.target));
 
     if (isClickedOutside) {
       onClickOutside();
@@ -136,16 +134,16 @@ class MembersForm extends PureComponent {
               type={formatMessage({ id: 'common.members-form.email' })}
               value={inputValue}
             />
-            {isClearButtonVisible && (
-              <button
-                className="members-form__clear-button"
-                onClick={this.resetInput}
-                title="Reset input"
-                type="button"
-              >
-                <CloseIcon />
-              </button>
-            )}
+            <button
+              className={classNames('members-form__clear-button', {
+                'members-form__clear-button--hide': !isClearButtonVisible
+              })}
+              onClick={this.resetInput}
+              title="Reset input"
+              type="button"
+            >
+              <CloseIcon />
+            </button>
           </label>
           <button
             className={classNames('primary-button', {

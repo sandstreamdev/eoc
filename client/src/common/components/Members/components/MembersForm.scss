@@ -49,6 +49,10 @@
     transform: translateY(-50%);
     width: 40px;
 
+    &--hide {
+      display: none;
+    }
+
     svg {
       display: block;
       @include constant-size(16px);
