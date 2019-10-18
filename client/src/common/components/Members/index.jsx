@@ -194,6 +194,7 @@ class MembersBox extends PureComponent {
               <MembersForm
                 disabled={isInvitationBoxVisible || pending}
                 onAddNew={this.handleAddMember()}
+                onClickOutside={this.hideForm}
                 pending={pending}
               />
             ) : (

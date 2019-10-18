@@ -152,6 +152,7 @@
   "common.button.confirm": "Confirm",
   "common.button.dashboard": "Go to dashboard",
   "common.button.reset-filter": "Reset filter",
+  "common.button.reset-input": "Clear",
   "common.button.restore": "Restore",
   "common.card-plus.add": "Add new",
   "common.comments-list.no-comments": "There are no comments.",
