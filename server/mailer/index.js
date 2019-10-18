@@ -120,7 +120,7 @@ const sendReport = async (host, reportData) => {
     })
   };
 
-  await SendGridMail.send(message);
+  return SendGridMail.send(message);
 };
 
 const sendReportOnDemand = async (req, resp) => {
