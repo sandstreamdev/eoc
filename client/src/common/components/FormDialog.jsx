@@ -27,10 +27,19 @@ class FormDialog extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidUpdate(previousProps) {
     const { isVisible } = this.props;
-    if (isVisible) {
+    const { isVisible: previousIsVisible } = previousProps;
+
+    const dialogAppeared = !previousIsVisible && isVisible;
+    const dialogDisappeared = previousIsVisible && !isVisible;
+
+    if (dialogAppeared) {
       document.addEventListener('keypress', this.handleEnterKeypress);
+    }
+
+    if (dialogDisappeared) {
+      document.removeEventListener('keypress', this.handleEnterKeypress);
     }
   }
 
