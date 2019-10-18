@@ -60,7 +60,7 @@ const mailTemplate = ({
                         <tr>
                           <td style="padding-top: 16px;">
                             <center>
-                              <a href="http://${host}">
+                              <a href="${host}">
                                 <input style="${
                                   styles.inputButton
                                 }" value="Join now" type="button" />
