@@ -27,8 +27,14 @@ class FormDialog extends Component {
     };
   }
 
-  componentDidMount() {
-    document.addEventListener('keypress', this.handleEnterKeypress);
+  componentDidUpdate() {
+    const { isVisible } = this.props;
+
+    if (isVisible) {
+      document.addEventListener('keypress', this.handleEnterKeypress);
+    } else {
+      document.removeEventListener('keypress', this.handleEnterKeypress);
+    }
   }
 
   componentWillUnmount() {
@@ -39,7 +45,7 @@ class FormDialog extends Component {
     const { code } = event;
 
     if (code === KeyCodes.ENTER) {
-      this.handleConfirm();
+      this.handleConfirmAction();
     }
   };
 
@@ -81,7 +87,7 @@ class FormDialog extends Component {
     }
   };
 
-  handleConfirmClick = () => this.validateName(this.handleConfirm);
+  handleConfirmAction = () => this.validateName(this.handleConfirm);
 
   render() {
     const {
@@ -102,7 +108,7 @@ class FormDialog extends Component {
         confirmLabel={formatMessage({ id: 'common.button.confirm' })}
         isVisible={isVisible}
         onCancel={onCancel}
-        onConfirm={this.handleConfirmClick}
+        onConfirm={this.handleConfirmAction}
         pending={pending}
         title={title}
       >
