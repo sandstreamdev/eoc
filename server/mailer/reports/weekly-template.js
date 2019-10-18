@@ -1,7 +1,7 @@
 const footer = require('../common/footer');
 const header = require('../common/header');
 
-const mailTemplate = ({ receiver, content, host, styles, projectName }) =>
+const mailTemplate = ({ content, host, styles, projectName }) =>
   `<!DOCTYPE html>
     <html>
       <head>
@@ -15,8 +15,12 @@ const mailTemplate = ({ receiver, content, host, styles, projectName }) =>
               <td>
                 <table style="${styles.boxMain}">
                   <tr>
-                    <td><h3 style="${styles.receiver}">Hi ${receiver},</h3></td>
-                  </tr>
+                    <td>
+                      <center><h2 style="${
+                        styles.h2
+                      }">Here is your weekly report 📝</h2></center>
+                          </td>
+                        </tr>
                   <tr>
                     <td style="${styles.tdContent}">${content}</td>
                   </tr>

@@ -4,16 +4,7 @@ const templateStyles = require('../common/styles');
 
 const styles = templateStyles({ maxWidth: 640 });
 
-const mailTemplate = ({
-  host,
-  projectName,
-  inviteeEmail,
-  inviterName,
-  inviterEmail,
-  fullProjectName,
-  resourceName,
-  resourceUrl
-}) =>
+const mailTemplate = ({ confirmUrl, host, projectName }) =>
   `<!DOCTYPE html>
     <html>
       <head>
@@ -33,37 +24,32 @@ const mailTemplate = ({
                           <td>
                             <center><h2 style="${
                               styles.h2
-                            }">You're invited to join <a href="${resourceUrl}" style="${
-    styles.a
-  }">${resourceName}</a> on ${projectName} ✨</h2></center>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <p>
-                              <a href="${host}" style="${
-    styles.a
-  }">${projectName} (${fullProjectName})</a> is an office inventory tracking app for teams. Add requests for missing things and see what other team members think about it in real time.
-                            </p>
-                            <p>You can also use it for planning other things - all depends on your creativity and needs.</p>
+                            }">Welcome aboard! 🎉</h2></center>
                           </td>
                         </tr>
                         <tr>
                           <td style="padding: 8px 0;">
-                            <p>
-                              ${inviterName} (<a href="mailto:${inviterEmail}" style="${
+                            <span>
+                              Thank you for creating an <a href="${host}" style="${
     styles.a
-  }">${inviterEmail}</a>) sent you this invitation.
-                            </p>
+  }">${projectName}</a> account.
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0;">
+                            <span>Activate you account now and check how <a href="${host}" style="${
+    styles.a
+  }">${projectName}</a> can help you achieve your goals.</span>
                           </td>
                         </tr>
                         <tr>
                           <td style="padding-top: 16px;">
                             <center>
-                              <a href="http://${host}">
+                              <a href="${confirmUrl}">
                                 <input style="${
                                   styles.inputButton
-                                }" value="Join now" type="button" />
+                                }" value="Activate my account" type="button" />
                               </a>
                             </center>
                           </td>
@@ -88,9 +74,7 @@ const mailTemplate = ({
                   <tr>
                     <td>
                       <center>
-                        <b>Note:</b> This invitation was intended for <a href="mailto:${inviteeEmail}" style="${
-    styles.a
-  }">${inviteeEmail}</a>. If you were not expecting this invitation, you may safely ignore this email.
+                        <b>Note:</b> If you didn't sign up for an account on our site, you may safely ignore this email.<br />The request will expire shortly.
                       </center>
                     </td>
                   </tr>
