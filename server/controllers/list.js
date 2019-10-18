@@ -1356,7 +1356,7 @@ const restoreItem = async (req, resp) => {
       isArchived: false,
       memberIds: userId,
       'items._id': sanitizedItemId,
-      'items.isArchived': false
+      'items.isArchived': true
     })
       .populate('items.authorId', 'displayName')
       .exec();
