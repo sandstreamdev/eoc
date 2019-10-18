@@ -59,27 +59,25 @@ class MembersForm extends PureComponent {
 
   validateEmail = () => {
     const { inputValue } = this.state;
-    const isEmailValid = validateWith(isEmail)('user.auth.input.email.invalid')(
+    const error = validateWith(isEmail)('user.auth.input.email.invalid')(
       inputValue
     );
 
-    if (!isEmailValid.length) {
+    if (!error.length) {
       this.handleAddNew();
       this.setState({ error: false });
 
       return;
     }
 
-    this.setState({ error: isEmailValid });
+    this.setState({ error });
   };
 
   handleAddNew = () => {
     const { onAddNew } = this.props;
     const { inputValue } = this.state;
 
-    if (inputValue) {
-      onAddNew(inputValue);
-    }
+    onAddNew(inputValue);
   };
 
   handleSubmit = event => event.preventDefault();
@@ -100,7 +98,7 @@ class MembersForm extends PureComponent {
   resetInput = () => this.setState({ inputValue: '' });
 
   render() {
-    const { inputValue, error } = this.state;
+    const { error, inputValue } = this.state;
     const {
       disabled,
       intl: { formatMessage },
@@ -139,7 +137,7 @@ class MembersForm extends PureComponent {
                 'members-form__clear-button--hide': !isClearButtonVisible
               })}
               onClick={this.resetInput}
-              title="Reset input"
+              title={formatMessage({ id: 'common.button.reset-input' })}
               type="button"
             >
               <CloseIcon />
