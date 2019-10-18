@@ -186,8 +186,8 @@ class AuthBox extends PureComponent {
             <div className="authbox__intro">
               <button
                 className="authbox__reset-button"
-                type="button"
                 onClick={this.handleResetAuthBox}
+                type="button"
               >
                 <AppLogo />
               </button>
