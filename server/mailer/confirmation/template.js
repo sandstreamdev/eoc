@@ -49,7 +49,7 @@ const mailTemplate = ({ confirmUrl, host, projectName }) =>
                               <a href="${confirmUrl}">
                                 <input style="${
                                   styles.inputButton
-                                }" value="Activate My Account" type="button" />
+                                }" value="Activate my account" type="button" />
                               </a>
                             </center>
                           </td>
@@ -74,7 +74,7 @@ const mailTemplate = ({ confirmUrl, host, projectName }) =>
                   <tr>
                     <td>
                       <center>
-                        <b>Note:</b> If you didn't sign up for an account on our site, please simply ignore this email.<br />The request will expire shortly.
+                        <b>Note:</b> If you didn't sign up for an account on our site, you may safely ignore this email.<br />The request will expire shortly.
                       </center>
                     </td>
                   </tr>

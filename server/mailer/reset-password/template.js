@@ -72,7 +72,7 @@ const mailTemplate = ({ resetUrl, host, projectName }) =>
                   <tr>
                     <td>
                       <center>
-                        <b>Note:</b> If you did not initiate this request, you may safely ignore this message.<br />The request will expire shortly.
+                        <b>Note:</b> If you did not initiate this request, you may safely ignore this email.<br />The request will expire shortly.
                       </center>
                     </td>
                   </tr>

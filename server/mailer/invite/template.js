@@ -61,7 +61,7 @@ const mailTemplate = ({
                               <a href="http://${host}">
                                 <input style="${
                                   styles.inputButton
-                                }" value="Join Now" type="button" />
+                                }" value="Join now" type="button" />
                               </a>
                             </center>
                           </td>
@@ -88,7 +88,7 @@ const mailTemplate = ({
                       <center>
                         <b>Note:</b> This invitation was intended for <a href="mailto:${inviteeEmail}" style="${
     styles.a
-  }">${inviteeEmail}</a>. If you were not expecting this invitation, you can ignore this email.
+  }">${inviteeEmail}</a>. If you were not expecting this invitation, you may safely ignore this email.
                       </center>
                     </td>
                   </tr>
