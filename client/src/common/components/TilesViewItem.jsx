@@ -33,6 +33,7 @@ class TilesViewItem extends PureComponent {
       item: {
         description,
         doneItemsCount,
+        isArchived,
         isFavourite,
         membersCount,
         name,
@@ -44,6 +45,7 @@ class TilesViewItem extends PureComponent {
     } = this.props;
     const { pending } = this.state;
     const isLimitedList = type === ListType.LIMITED;
+    const isFavouriteButtonVisible = route !== Routes.COHORT && !isArchived;
 
     return (
       <div
@@ -66,7 +68,7 @@ class TilesViewItem extends PureComponent {
           <h3 className="tiles-view-item__heading">{name}</h3>
         </header>
         <p className="tiles-view-item__description">{description}</p>
-        {route !== Routes.COHORT && (
+        {isFavouriteButtonVisible && (
           <button
             className="tiles-view-item__star"
             disabled={pending}
