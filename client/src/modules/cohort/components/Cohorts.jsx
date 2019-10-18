@@ -96,18 +96,17 @@ class Cohorts extends Component {
             <ArchivedCohorts />
           </div>
         </div>
-        {isDialogVisible && (
-          <FormDialog
-            onCancel={this.handleDialogVisibility}
-            onConfirm={this.handleConfirm}
-            pending={pendingForCohortCreation}
-            title={
-              pendingForCohortCreation
-                ? formatMessage({ id: 'cohort.cohorts.adding' })
-                : formatMessage({ id: 'cohort.cohorts.add' })
-            }
-          />
-        )}
+        <FormDialog
+          isVisible={isDialogVisible}
+          onCancel={this.handleDialogVisibility}
+          onConfirm={this.handleConfirm}
+          pending={pendingForCohortCreation}
+          title={
+            pendingForCohortCreation
+              ? formatMessage({ id: 'cohort.cohorts.adding' })
+              : formatMessage({ id: 'cohort.cohorts.add' })
+          }
+        />
       </Fragment>
     );
   }

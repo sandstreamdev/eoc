@@ -1,5 +1,14 @@
 @import 'partials';
 
+.dialog-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 9;
+}
+
 .dialog {
   position: fixed;
   top: 50%;
@@ -70,5 +79,25 @@
         margin-right: four-by(4);
       }
     }
+  }
+}
+
+.dialog-fade {
+  &-enter {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    opacity: 1;
+    transition: opacity 250ms ease-out;
+  }
+
+  &-exit {
+    opacity: 1;
+  }
+
+  &-exit-active {
+    opacity: 0;
+    transition: opacity 250ms ease-out;
   }
 }

@@ -388,40 +388,40 @@ class Cohort extends PureComponent {
       },
       { context: dialogContextMessage, name }
     );
+    const isAddSackDialogVisible = dialogContext === DialogContext.CREATE;
+    const isArchiveDialogVisible = dialogContext === DialogContext.ARCHIVE;
 
     return (
       <Fragment>
         {this.renderBreadcrumbs()}
-        {dialogContext === DialogContext.ARCHIVE && (
-          <Dialog
-            cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-            confirmLabel={formatMessage({ id: 'common.button.confirm' })}
-            onCancel={this.handleDialogContext(null)}
-            onConfirm={this.handleCohortArchivization()}
-            pending={pendingForCohortArchivization}
-            title={formatMessage(
-              {
-                id: pendingForCohortArchivization
-                  ? 'cohort.index.archivization'
-                  : 'cohort.index.archive'
-              },
-              { name }
-            )}
-          />
-        )}
-        {dialogContext === DialogContext.CREATE && (
-          <FormDialog
-            onCancel={this.handleDialogContext(null)}
-            onConfirm={this.handleListCreation}
-            pending={pendingForListCreation}
-            title={formatMessage({
-              id: pendingForListCreation
-                ? 'cohort.index.adding-sack'
-                : 'cohort.index.add-sack'
-            })}
-            onSelect={this.handleListType}
-          />
-        )}
+        <Dialog
+          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+          confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+          isVisible={isArchiveDialogVisible}
+          onCancel={this.handleDialogContext(null)}
+          onConfirm={this.handleCohortArchivization()}
+          pending={pendingForCohortArchivization}
+          title={formatMessage(
+            {
+              id: pendingForCohortArchivization
+                ? 'cohort.index.archivization'
+                : 'cohort.index.archive'
+            },
+            { name }
+          )}
+        />
+        <FormDialog
+          isVisible={isAddSackDialogVisible}
+          onCancel={this.handleDialogContext(null)}
+          onConfirm={this.handleListCreation}
+          pending={pendingForListCreation}
+          title={formatMessage({
+            id: pendingForListCreation
+              ? 'cohort.index.adding-sack'
+              : 'cohort.index.add-sack'
+          })}
+          onSelect={this.handleListType}
+        />
         {archivedCohortView ? (
           <ArchivedCohort cohortId={cohortId} isOwner={isOwner} name={name} />
         ) : (
@@ -508,11 +508,12 @@ class Cohort extends PureComponent {
             </div>
           </div>
         )}
-        {isDialogForRemovedListVisible && (
+        {externalAction && (
           <Dialog
             cancelLabel={formatMessage({ id: 'common.button.cohorts' })}
             confirmLabel={formatMessage({ id: 'common.button.restore' })}
             hasPermissions={isOwner}
+            isVisible={isDialogForRemovedListVisible}
             onCancel={this.handleRedirect}
             onConfirm={
               isArchived && !isDeleted ? this.handleRestoreCohort : undefined

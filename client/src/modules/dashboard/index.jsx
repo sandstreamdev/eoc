@@ -158,18 +158,17 @@ class Dashboard extends Component {
             )}
           </div>
         </div>
-        {isDialogVisible && (
-          <FormDialog
-            onCancel={this.handleDialogVisibility}
-            onConfirm={this.handleConfirm}
-            pending={pendingForListCreation}
-            title={
-              pendingForListCreation
-                ? formatMessage({ id: 'dashboard.index.adding' })
-                : formatMessage({ id: 'dashboard.index.add' })
-            }
-          />
-        )}
+        <FormDialog
+          isVisible={isDialogVisible}
+          onCancel={this.handleDialogVisibility}
+          onConfirm={this.handleConfirm}
+          pending={pendingForListCreation}
+          title={
+            pendingForListCreation
+              ? formatMessage({ id: 'dashboard.index.adding' })
+              : formatMessage({ id: 'dashboard.index.add' })
+          }
+        />
       </Fragment>
     );
   }
