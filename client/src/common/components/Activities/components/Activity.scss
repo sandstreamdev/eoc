@@ -46,6 +46,7 @@
   &__link {
     text-decoration: underline;
     color: $text-normal;
+    outline: 0;
 
     &:hover {
       color: $link-color;

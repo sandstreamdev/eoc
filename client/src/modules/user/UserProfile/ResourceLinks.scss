@@ -29,6 +29,7 @@
     color: $danger;
     font-style: italic;
     text-decoration: underline;
+    outline: 0;
 
     &:hover {
       color: $text-black;
