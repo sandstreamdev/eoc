@@ -31,6 +31,11 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { validateWith } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import './ListHeader.scss';
+import {
+  attachBeforeUnloadEvent,
+  handleWindowBeforeUnload,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -85,30 +90,17 @@ class ListHeader extends PureComponent {
     }
 
     if (dataHasChanged) {
-      this.attachBeforeUnloadEvent();
+      attachBeforeUnloadEvent(handleWindowBeforeUnload);
     }
 
     if (!dataHasChanged) {
-      this.removeBeforeUnloadEvent();
+      removeBeforeUnloadEvent(handleWindowBeforeUnload);
     }
   }
 
   componentWillUnmount() {
-    this.removeBeforeUnloadEvent();
+    removeBeforeUnloadEvent(handleWindowBeforeUnload);
   }
-
-  attachBeforeUnloadEvent = () =>
-    window.addEventListener('beforeunload', this.handleWindowBeforeUnload);
-
-  removeBeforeUnloadEvent = () =>
-    window.removeEventListener('beforeunload', this.handleWindowBeforeUnload);
-
-  handleWindowBeforeUnload = event => {
-    event.preventDefault();
-    // Chrome requires returnValue to be set
-    // eslint-disable-next-line no-param-reassign
-    event.returnValue = '';
-  };
 
   updateName = () => {
     const {

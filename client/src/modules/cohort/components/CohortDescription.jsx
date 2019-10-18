@@ -19,6 +19,11 @@ import {
   updateCohort
 } from '../model/actions';
 import './CohortDescription.scss';
+import {
+  attachBeforeUnloadEvent,
+  handleWindowBeforeUnload,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 
 class CohortDescription extends PureComponent {
   constructor(props) {
@@ -43,10 +48,24 @@ class CohortDescription extends PureComponent {
     const {
       details: { description: previousDescription }
     } = previousProps;
+    const { descriptionInputValue } = this.state;
+    const dataHasChanged = previousDescription !== descriptionInputValue;
 
     if (description !== previousDescription) {
       this.updateDescription();
     }
+
+    if (dataHasChanged) {
+      attachBeforeUnloadEvent(handleWindowBeforeUnload);
+    }
+
+    if (!dataHasChanged) {
+      removeBeforeUnloadEvent(handleWindowBeforeUnload);
+    }
+  }
+
+  componentWillUnmount() {
+    removeBeforeUnloadEvent(handleWindowBeforeUnload);
   }
 
   updateDescription = () => {

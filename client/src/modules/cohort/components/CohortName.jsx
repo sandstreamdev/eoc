@@ -26,6 +26,11 @@ import {
   updateCohort
 } from '../model/actions';
 import './CohortName.scss';
+import {
+  attachBeforeUnloadEvent,
+  handleWindowBeforeUnload,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 
 class CohortName extends PureComponent {
   constructor(props) {
@@ -50,11 +55,25 @@ class CohortName extends PureComponent {
     const {
       details: { name: previousName }
     } = previousProps;
-    const hasNameBeenChanged = name !== previousName;
+    const { nameInputValue } = this.state;
+    const nameHasChanged = name !== previousName;
+    const dataHasChanged = previousName !== nameInputValue;
 
-    if (hasNameBeenChanged) {
+    if (nameHasChanged) {
       this.updateName();
     }
+
+    if (dataHasChanged) {
+      attachBeforeUnloadEvent(handleWindowBeforeUnload);
+    }
+
+    if (!dataHasChanged) {
+      removeBeforeUnloadEvent(handleWindowBeforeUnload);
+    }
+  }
+
+  componentWillUnmount() {
+    removeBeforeUnloadEvent(handleWindowBeforeUnload);
   }
 
   updateName = () => {
