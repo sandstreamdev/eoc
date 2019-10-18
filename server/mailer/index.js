@@ -127,7 +127,7 @@ const sendReportOnDemand = async (req, resp) => {
   const host = req.get('host');
 
   try {
-    const result = await sendReport(host, resp.locales);
+    const result = await sendReport(host, resp.locals);
 
     if (result) {
       resp.sendStatus(200);
