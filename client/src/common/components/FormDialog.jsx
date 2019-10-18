@@ -28,7 +28,10 @@ class FormDialog extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keypress', this.handleEnterKeypress);
+    const { isVisible } = this.props;
+    if (isVisible) {
+      document.addEventListener('keypress', this.handleEnterKeypress);
+    }
   }
 
   componentWillUnmount() {
