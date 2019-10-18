@@ -67,6 +67,10 @@ class ListHeader extends PureComponent {
         type: previousType
       }
     } = previousProps;
+    const { descriptionInputValue, nameInputValue } = this.state;
+    const dataHasChanged =
+      previousName !== nameInputValue ||
+      previousDescription !== descriptionInputValue;
 
     if (name !== previousName) {
       this.updateName();
@@ -79,7 +83,31 @@ class ListHeader extends PureComponent {
     if (type !== previousType) {
       this.updateType();
     }
+
+    if (dataHasChanged) {
+      this.attachBeforeUnloadEvent();
+    }
+
+    if (!dataHasChanged) {
+      this.removeBeforeUnloadEvent();
+    }
   }
+
+  componentWillUnmount() {
+    this.removeBeforeUnloadEvent();
+  }
+
+  attachBeforeUnloadEvent = () =>
+    window.addEventListener('beforeunload', this.handleWindowBeforeUnload);
+
+  removeBeforeUnloadEvent = () =>
+    window.removeEventListener('beforeunload', this.handleWindowBeforeUnload);
+
+  handleWindowBeforeUnload = event => {
+    event.preventDefault();
+    // eslint-disable-next-line no-param-reassign
+    event.returnValue = '';
+  };
 
   updateName = () => {
     const {
