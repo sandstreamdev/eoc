@@ -4,16 +4,7 @@ const templateStyles = require('../common/styles');
 
 const styles = templateStyles({ maxWidth: 640 });
 
-const mailTemplate = ({
-  host,
-  projectName,
-  inviteeEmail,
-  inviterName,
-  inviterEmail,
-  fullProjectName,
-  resourceName,
-  resourceUrl
-}) =>
+const mailTemplate = ({ resetUrl, host, projectName }) =>
   `<!DOCTYPE html>
     <html>
       <head>
@@ -33,37 +24,30 @@ const mailTemplate = ({
                           <td>
                             <center><h2 style="${
                               styles.h2
-                            }">You're invited to join <a href="${resourceUrl}" style="${
-    styles.a
-  }">${resourceName}</a> on ${projectName} ✨</h2></center>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <p>
-                              <a href="${host}" style="${
-    styles.a
-  }">${projectName} (${fullProjectName})</a> is an office inventory tracking app for teams. Add requests for missing things and see what other team members think about it in real time.
-                            </p>
-                            <p>You can also use it for planning other things - all depends on your creativity and needs.</p>
+                            }">Forgot your password? 😟</h2></center>
                           </td>
                         </tr>
                         <tr>
                           <td style="padding: 8px 0;">
-                            <p>
-                              ${inviterName} (<a href="mailto:${inviterEmail}" style="${
+                            <span>We received your request to reset your <a href="${host}" style="${
     styles.a
-  }">${inviterEmail}</a>) sent you this invitation.
-                            </p>
+  }">${projectName}</a> password.</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0;">
+                            <span>To reset your <a href="${host}" style="${
+    styles.a
+  }">${projectName}</a> password, please click the following button.</span>
                           </td>
                         </tr>
                         <tr>
                           <td style="padding-top: 16px;">
                             <center>
-                              <a href="http://${host}">
+                              <a href="${resetUrl}">
                                 <input style="${
                                   styles.inputButton
-                                }" value="Join now" type="button" />
+                                }" value="Choose a new password" type="button" />
                               </a>
                             </center>
                           </td>
@@ -88,9 +72,7 @@ const mailTemplate = ({
                   <tr>
                     <td>
                       <center>
-                        <b>Note:</b> This invitation was intended for <a href="mailto:${inviteeEmail}" style="${
-    styles.a
-  }">${inviteeEmail}</a>. If you were not expecting this invitation, you may safely ignore this email.
+                        <b>Note:</b> If you did not initiate this request, you may safely ignore this email.<br />The request will expire shortly.
                       </center>
                     </td>
                   </tr>

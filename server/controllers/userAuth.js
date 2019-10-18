@@ -252,7 +252,7 @@ const resetPassword = (req, resp, next) => {
         .exec()
         .then(() => {
           // eslint-disable-next-line no-param-reassign
-          resp.locales = {
+          resp.locals = {
             displayName,
             email,
             resetToken
@@ -544,7 +544,7 @@ const prepareItems = async (req, resp, next) => {
     }
 
     /* eslint-disable-next-line no-param-reassign */
-    resp.locales = {
+    resp.locals = {
       data
     };
 
