@@ -13,8 +13,8 @@ import Preloader, {
 import { KeyCodes } from 'common/constants/enums';
 import { IntlPropType } from 'common/constants/propTypes';
 import { CloseIcon } from 'assets/images/icons';
-import './MembersForm.scss';
 import { validateWith } from 'common/utils/helpers';
+import './MembersForm.scss';
 
 class MembersForm extends PureComponent {
   constructor(props) {
