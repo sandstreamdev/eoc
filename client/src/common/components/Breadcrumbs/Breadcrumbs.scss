@@ -35,6 +35,7 @@
     a {
       text-decoration: none;
       color: $text-normal;
+      outline: 0;
 
       &:hover {
         text-decoration: underline;

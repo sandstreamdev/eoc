@@ -47,6 +47,8 @@
   &__link {
     font-style: italic;
     color: $text-normal;
+    outline: 0;
+
     &:hover {
       color: $dark-orange;
     }

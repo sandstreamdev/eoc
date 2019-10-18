@@ -43,6 +43,8 @@
   }
 
   &__link {
+    outline: 0;
+
     &:hover {
       color: $text-orange;
     }
