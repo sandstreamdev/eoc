@@ -24,15 +24,18 @@ class MembersForm extends PureComponent {
     };
 
     this.input = React.createRef();
+    this.form = React.createRef();
   }
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleEnterPress);
+    document.addEventListener('click', this.handleClickOutside);
     this.input.current.focus();
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleEnterPress);
+    document.removeEventListener('click', this.handleClickOutside);
   }
 
   handleInputChange = event => {
@@ -66,6 +69,15 @@ class MembersForm extends PureComponent {
 
   handleBlur = () => this.setState({ isFocused: false });
 
+  handleClickOutside = event => {
+    const isClickedOutside = !this.form.current.contains(event.target);
+    const { onClickOutside } = this.props;
+
+    if (isClickedOutside) {
+      onClickOutside();
+    }
+  };
+
   resetInput = () => this.setState({ inputValue: '' });
 
   render() {
@@ -80,7 +92,11 @@ class MembersForm extends PureComponent {
     const isClearButtonVisible = inputValue.length > 0;
 
     return (
-      <form className="members-form" onSubmit={this.handleSubmit}>
+      <form
+        className="members-form"
+        onSubmit={this.handleSubmit}
+        ref={this.form}
+      >
         <label className="members-form__label">
           <input
             className={classNames('members-form__input primary-input', {
@@ -132,7 +148,8 @@ MembersForm.propTypes = {
   intl: IntlPropType.isRequired,
   pending: PropTypes.bool.isRequired,
 
-  onAddNew: PropTypes.func.isRequired
+  onAddNew: PropTypes.func.isRequired,
+  onClickOutside: PropTypes.func.isRequired
 };
 
 export default injectIntl(MembersForm);
