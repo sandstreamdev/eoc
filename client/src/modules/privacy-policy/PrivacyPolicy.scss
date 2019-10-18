@@ -49,6 +49,8 @@
     a {
       color: $white;
       font-style: italic;
+      outline: 0;
+
       &:hover {
         color: $text-normal;
       }
