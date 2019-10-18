@@ -4,13 +4,25 @@
   display: flex;
   align-items: center;
 
+  &--error {
+    margin-bottom: four-by(1);
+  }
+
   &__input {
-    padding: 8px four-by(10) four-by(2) four-by(2);
+    padding: four-by(2) four-by(10) four-by(2) four-by(2);
     line-height: 1.4;
 
     &--disabled {
       cursor: not-allowed;
       color: $button-disabled;
+    }
+
+    &--error {
+      border: 1px solid $danger;
+
+      &:focus {
+        border: 1px solid $danger;
+      }
     }
   }
 

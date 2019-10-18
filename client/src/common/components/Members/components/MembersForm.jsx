@@ -1,9 +1,10 @@
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _isEmpty from 'lodash/isEmpty';
 import _trim from 'lodash/trim';
+import isEmail from 'validator/lib/isEmail';
 
 import Preloader, {
   PreloaderSize,
@@ -13,12 +14,14 @@ import { KeyCodes } from 'common/constants/enums';
 import { IntlPropType } from 'common/constants/propTypes';
 import { CloseIcon } from 'assets/images/icons';
 import './MembersForm.scss';
+import { validateWith } from 'common/utils/helpers';
 
 class MembersForm extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
+      error: false,
       inputValue: '',
       isFocused: false
     };
@@ -54,11 +57,27 @@ class MembersForm extends PureComponent {
     }
   };
 
+  validateEmail = () => {
+    const { inputValue } = this.state;
+    const isEmailValid = validateWith(isEmail)('user.auth.input.email.invalid')(
+      inputValue
+    );
+
+    if (!isEmailValid.length) {
+      this.handleAddNew();
+      this.setState({ error: false });
+
+      return;
+    }
+
+    this.setState({ error: isEmailValid });
+  };
+
   handleAddNew = () => {
     const { onAddNew } = this.props;
     const { inputValue } = this.state;
 
-    if (!_isEmpty(_trim(inputValue))) {
+    if (inputValue) {
       onAddNew(inputValue);
     }
   };
@@ -73,6 +92,8 @@ class MembersForm extends PureComponent {
     const isClickedOutside = !this.form.current.contains(event.target);
     const { onClickOutside } = this.props;
 
+    console.log(this.form.current.contains(event.target));
+
     if (isClickedOutside) {
       onClickOutside();
     }
@@ -81,7 +102,7 @@ class MembersForm extends PureComponent {
   resetInput = () => this.setState({ inputValue: '' });
 
   render() {
-    const { inputValue } = this.state;
+    const { inputValue, error } = this.state;
     const {
       disabled,
       intl: { formatMessage },
@@ -92,53 +113,63 @@ class MembersForm extends PureComponent {
     const isClearButtonVisible = inputValue.length > 0;
 
     return (
-      <form
-        className="members-form"
-        onSubmit={this.handleSubmit}
-        ref={this.form}
-      >
-        <label className="members-form__label">
-          <input
-            className={classNames('members-form__input primary-input', {
-              'members-form__input--disabled': disabled
-            })}
-            disabled={disabled || pending}
-            onBlur={this.handleBlur}
-            onChange={this.handleInputChange}
-            onFocus={this.handleFocus}
-            placeholder="Enter email"
-            ref={this.input}
-            type={formatMessage({ id: 'common.members-form.email' })}
-            value={inputValue}
-          />
-          {isClearButtonVisible && (
-            <button
-              className="members-form__clear-button"
-              onClick={this.resetInput}
-              title="Reset input"
-              type="button"
-            >
-              <CloseIcon />
-            </button>
-          )}
-        </label>
-        <button
-          className={classNames('primary-button', {
-            'primary-button--disabled': disabled
+      <Fragment>
+        <form
+          className={classNames('members-form', {
+            'members-form--error': error
           })}
-          disabled={isButtonDisabled}
-          onClick={this.handleAddNew}
-          type="button"
+          onSubmit={this.handleSubmit}
+          ref={this.form}
         >
-          <FormattedMessage id="common.members-form.add" />
-          {pending && (
-            <Preloader
-              size={PreloaderSize.SMALL}
-              theme={PreloaderTheme.LIGHT}
+          <label className="members-form__label">
+            <input
+              className={classNames('members-form__input primary-input', {
+                'members-form__input--disabled': disabled,
+                'members-form__input--error': error
+              })}
+              disabled={disabled || pending}
+              onBlur={this.handleBlur}
+              onChange={this.handleInputChange}
+              onFocus={this.handleFocus}
+              placeholder="Enter email"
+              ref={this.input}
+              type={formatMessage({ id: 'common.members-form.email' })}
+              value={inputValue}
             />
-          )}
-        </button>
-      </form>
+            {isClearButtonVisible && (
+              <button
+                className="members-form__clear-button"
+                onClick={this.resetInput}
+                title="Reset input"
+                type="button"
+              >
+                <CloseIcon />
+              </button>
+            )}
+          </label>
+          <button
+            className={classNames('primary-button', {
+              'primary-button--disabled': disabled
+            })}
+            disabled={isButtonDisabled}
+            onClick={this.validateEmail}
+            type="button"
+          >
+            <FormattedMessage id="common.members-form.add" />
+            {pending && (
+              <Preloader
+                size={PreloaderSize.SMALL}
+                theme={PreloaderTheme.LIGHT}
+              />
+            )}
+          </button>
+        </form>
+        {error && (
+          <div className="error-message">
+            <FormattedMessage id={error} />
+          </div>
+        )}
+      </Fragment>
     );
   }
 }
