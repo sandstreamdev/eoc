@@ -31,9 +31,11 @@ const mailTemplate = ({
                       <table style="${styles.tableContent}">
                         <tr>
                           <td>
-                            <p style="font-size: 18px; margin-top: 8px;">You're invited to join <a href="${resourceUrl}" style="${
+                            <center><h2 style="${
+                              styles.h2
+                            }">You're invited to join <a href="${resourceUrl}" style="${
     styles.a
-  }">${resourceName}</a> on ${projectName} ✨</p>
+  }">${resourceName}</a> on ${projectName} ✨</h2></center>
                           </td>
                         </tr>
                         <tr>

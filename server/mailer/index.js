@@ -9,7 +9,6 @@ const { FULL_PROJECT_NAME, PROJECT_NAME } = require('../common/variables');
 const { SENDGRID_API_KEY } = process.env;
 
 const fromField = `${PROJECT_NAME} <no.reply@app.eoc.com>`;
-const subjectTemplate = subject => `☕ ${PROJECT_NAME} - ${subject}`;
 const fullUrl = req => `${req.protocol}://${req.get('host')}`;
 
 SendGridMail.setApiKey(SENDGRID_API_KEY);
@@ -94,15 +93,14 @@ const sendResetPasswordLink = (req, resp) => {
 
 const sendReport = async (req, resp) => {
   const { data } = resp.locals;
-  const { email: receiver, displayName } = req.user;
+  const { email: receiver } = req.user;
   const message = {
     to: receiver,
     from: fromField,
-    subject: subjectTemplate('Your weekly report'),
+    subject: '📝 Your weekly report',
     html: weeklyReportContent({
       host: fullUrl(req),
       data,
-      receiver: displayName,
       projectName: PROJECT_NAME
     })
   };

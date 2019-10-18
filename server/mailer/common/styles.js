@@ -25,7 +25,8 @@ const styles = ({ maxWidth = 512 } = {}) => ({
   h5: `font-size: 16px;
     font-weight: normal;
     margin-top: 4px;
-    margin-bottom: 4px;`,
+    margin-bottom: 4px;
+    padding-top: 4px;`,
   header: `font-size: 18px;
     font-weight: 700;
     color: #ef9b1f;
@@ -44,8 +45,7 @@ const styles = ({ maxWidth = 512 } = {}) => ({
     width: 100%`,
   tableData: `
     border-spacing: 0;
-    width: 100%;
-    border: 1px solid lightgray;`,
+    width: 100%;`,
   tdContent: 'border-spacing: 0;',
   tdData: `text-align: left;
     padding: 8px;`,
@@ -53,7 +53,8 @@ const styles = ({ maxWidth = 512 } = {}) => ({
     padding: 8px;
     background: #ef9b1f;
     color: white;`,
-  trOdd: 'background-color: #f2f2f2;'
+  trEven: 'background-color: #f8f8f8;',
+  trOdd: 'background-color: #efefef'
 });
 
 module.exports = styles;

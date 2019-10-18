@@ -43,7 +43,7 @@ const generateDataTable = ({ header, items, showAuthor, host }) => {
       i
     ];
 
-    content += `<tr style="${i % 2 ? styles.trOdd : ''}">`;
+    content += `<tr style="${i % 2 ? styles.trOdd : styles.trEven}">`;
     content += tableCell(name);
     content += tableCell(
       `<a style="${
@@ -70,20 +70,26 @@ const generateDataTable = ({ header, items, showAuthor, host }) => {
 };
 
 const generateRequestsContent = ({ requests, host }) => {
-  const [stillWaiting, completed] = partition(item => item.done)(requests);
   let content = tableRow(
     `<h4 style="${styles.h4} margin-bottom: 0;">Your Requests</h4>`
   );
 
+  if (!requests) {
+    content += tableRow('<p>No active requests.</p>');
+
+    return content;
+  }
+
+  const [stillWaiting, completed] = partition(item => item.done)(requests);
+
   if (completed.length === 0 && stillWaiting.length === 0) {
-    content += '<p>No active requests.</p>';
+    content += tableRow('<p>No active requests.</p>');
   } else {
     if (completed.length > 0) {
       content += generateDataTable({ header: 'Completed', items: completed });
     }
 
     if (stillWaiting.length > 0) {
-      content += '<tr><td style="padding: 4px;"></td></tr>';
       content += generateDataTable({
         header: 'Still waiting',
         items: stillWaiting,
@@ -100,8 +106,8 @@ const generateTodosTable = ({ todos, host }) => {
     `<h4 style="${styles.h4} margin-bottom: 0;">Your Todos</h4>`
   );
 
-  if (todos.length === 0) {
-    content += '<p>Everything is done 🙂.</p>';
+  if (!todos || todos.length === 0) {
+    content += tableRow('<p>Everything is done 🙂.</p>');
   } else {
     content += generateDataTable({ items: todos, showAuthor: true, host });
   }
@@ -109,25 +115,14 @@ const generateTodosTable = ({ todos, host }) => {
   return content;
 };
 
-const mailContent = ({ data, receiver, host, projectName }) => {
+const mailContent = ({ data, host, projectName }) => {
   const { requests, todos } = data;
-  let content = '<p style="margin-bottom:0;">Here is your weekly report.</p>';
-
-  content += `<table style="${styles.tableContent}">`;
+  let content = `<table style="${styles.tableContent}">`;
   content += generateTodosTable({ todos, host });
-
-  if (requests) {
-    const result = generateRequestsContent({ requests, host });
-
-    if (result) {
-      content += result;
-    }
-  }
-
+  content += generateRequestsContent({ requests, host });
   content += '</table>';
 
   return mailTemplate({
-    receiver,
     content,
     host,
     styles,
