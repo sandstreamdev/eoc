@@ -11,6 +11,7 @@ import Preloader, {
 } from 'common/components/Preloader';
 import { KeyCodes } from 'common/constants/enums';
 import { IntlPropType } from 'common/constants/propTypes';
+import { CloseIcon } from 'assets/images/icons';
 import './MembersForm.scss';
 
 class MembersForm extends PureComponent {
@@ -65,6 +66,8 @@ class MembersForm extends PureComponent {
 
   handleBlur = () => this.setState({ isFocused: false });
 
+  resetInput = () => this.setState({ inputValue: '' });
+
   render() {
     const { inputValue } = this.state;
     const {
@@ -74,22 +77,35 @@ class MembersForm extends PureComponent {
     } = this.props;
     const isEmpty = _isEmpty(_trim(inputValue));
     const isButtonDisabled = disabled || pending || isEmpty;
+    const isClearButtonVisible = inputValue.length > 0;
 
     return (
       <form className="members-form" onSubmit={this.handleSubmit}>
-        <input
-          className={classNames('members-form__input primary-input', {
-            'members-form__input--disabled': disabled
-          })}
-          disabled={disabled || pending}
-          onBlur={this.handleBlur}
-          onChange={this.handleInputChange}
-          onFocus={this.handleFocus}
-          placeholder="Enter email"
-          ref={this.input}
-          type={formatMessage({ id: 'common.members-form.email' })}
-          value={inputValue}
-        />
+        <label className="members-form__label">
+          <input
+            className={classNames('members-form__input primary-input', {
+              'members-form__input--disabled': disabled
+            })}
+            disabled={disabled || pending}
+            onBlur={this.handleBlur}
+            onChange={this.handleInputChange}
+            onFocus={this.handleFocus}
+            placeholder="Enter email"
+            ref={this.input}
+            type={formatMessage({ id: 'common.members-form.email' })}
+            value={inputValue}
+          />
+          {isClearButtonVisible && (
+            <button
+              className="members-form__clear-button"
+              onClick={this.resetInput}
+              title="Reset input"
+              type="button"
+            >
+              <CloseIcon />
+            </button>
+          )}
+        </label>
         <button
           className={classNames('primary-button', {
             'primary-button--disabled': disabled
