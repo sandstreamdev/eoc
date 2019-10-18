@@ -49,9 +49,8 @@ class FormDialog extends Component {
 
   handleEnterKeypress = event => {
     const { code } = event;
-
     if (code === KeyCodes.ENTER) {
-      this.handleConfirm();
+      this.handleConfirmAction();
     }
   };
 
@@ -93,7 +92,7 @@ class FormDialog extends Component {
     }
   };
 
-  handleConfirmClick = () => this.validateName(this.handleConfirm);
+  handleConfirmAction = () => this.validateName(this.handleConfirm);
 
   render() {
     const {
@@ -114,7 +113,7 @@ class FormDialog extends Component {
         confirmLabel={formatMessage({ id: 'common.button.confirm' })}
         isVisible={isVisible}
         onCancel={onCancel}
-        onConfirm={this.handleConfirmClick}
+        onConfirm={this.handleConfirmAction}
         pending={pending}
         title={title}
       >
