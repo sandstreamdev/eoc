@@ -192,9 +192,9 @@ class MembersBox extends PureComponent {
           <li className="members-box__list-item">
             {isFormVisible ? (
               <MembersForm
-                onClickOutside={this.hideForm}
                 disabled={isInvitationBoxVisible || pending}
                 onAddNew={this.handleAddMember()}
+                onClickOutside={this.hideForm}
                 pending={pending}
               />
             ) : (
