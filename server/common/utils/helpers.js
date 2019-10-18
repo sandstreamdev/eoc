@@ -463,7 +463,9 @@ const getActiveItems = items => items.filter(item => !item.isArchived);
  * @return {Array} return array of items where passed userId was an author
  */
 const getAuthorItems = items => userId =>
-  items.filter(item => item.authorId._id.toString() === userId.toString());
+  items.filter(
+    item => item.authorId && item.authorId._id.toString() === userId.toString()
+  );
 
 /**
  *
@@ -473,16 +475,11 @@ const getAuthorItems = items => userId =>
  */
 const formatItems = items => list =>
   items.map(item => {
-    const {
-      authorId: { displayName },
-      done,
-      name,
-      createdAt
-    } = item;
+    const { authorId, done, name, createdAt } = item;
     const { _id: listId, name: listName } = list;
 
     return {
-      author: displayName,
+      author: authorId ? authorId.displayName : 'Anonymous',
       cohortName: list.cohortId ? list.cohortId.name : null,
       done,
       listId,
@@ -538,8 +535,7 @@ const prepareRequestedItems = lists => userId => {
 
 const getItemsForReport = async (listModel, user) => {
   const { _id: userId, displayName, email: receiver } = user;
-  const reportData = { displayName, receiver };
-  const data = { requests: [], todos: [] };
+  const data = { displayName, receiver, requests: [], todos: [] };
 
   const ownerLists = await listModel
     .find({
@@ -571,9 +567,7 @@ const getItemsForReport = async (listModel, user) => {
     data.requests = prepareRequestedItems(viewerLists)(userId);
   }
 
-  reportData.data = data;
-
-  return reportData;
+  return data;
 };
 
 module.exports = {

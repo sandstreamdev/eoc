@@ -28,9 +28,9 @@ const {
   removeDemoUserChanges
 } = require('../middleware/removeDemoUserChanges');
 const {
+  sendReportOnDemand,
   sendResetPasswordLink,
-  sendSignUpConfirmationLink,
-  sendReportOnDemand
+  sendSignUpConfirmationLink
 } = require('../mailer');
 const { authorize } = require('../middleware/authorize');
 

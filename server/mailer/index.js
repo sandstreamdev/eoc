@@ -145,16 +145,15 @@ const sendResetPasswordLink = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const sendReport = async (host, reportData) => {
-  const { data, receiver, displayName } = reportData;
+const sendReport = async (host, data) => {
+  const { displayName, receiver, requests, todos } = data;
   const message = {
     to: receiver,
     from: fromField,
     subject: subjectTemplate('Your weekly report'),
-    generateTextFromHTML: true,
     html: weeklyReportContent({
       host,
-      data,
+      data: { requests, todos },
       receiver: displayName,
       projectName: PROJECT_NAME
     })
@@ -170,7 +169,7 @@ const sendReportOnDemand = async (req, resp) => {
   const host = req.get('host');
 
   try {
-    const result = await sendReport(host, resp.locales);
+    const result = await sendReport(host, resp.locals);
 
     if (result) {
       resp.sendStatus(200);

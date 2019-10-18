@@ -514,7 +514,7 @@ const prepareItems = async (req, resp, next) => {
     const reportData = await getItemsForReport(List, user);
 
     /* eslint-disable-next-line no-param-reassign */
-    resp.locales = reportData;
+    resp.locals = reportData;
 
     next();
   } catch {
