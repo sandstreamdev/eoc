@@ -463,7 +463,9 @@ const getActiveItems = items => items.filter(item => !item.isArchived);
  * @return {Array} return array of items where passed userId was an author
  */
 const getAuthorItems = items => userId =>
-  items.filter(item => item.authorId._id.toString() === userId.toString());
+  items.filter(
+    item => item.authorId && item.authorId._id.toString() === userId.toString()
+  );
 
 /**
  *
@@ -473,16 +475,11 @@ const getAuthorItems = items => userId =>
  */
 const formatItems = items => list =>
   items.map(item => {
-    const {
-      authorId: { displayName },
-      done,
-      name,
-      createdAt
-    } = item;
+    const { authorId, done, name, createdAt } = item;
     const { _id: listId, name: listName } = list;
 
     return {
-      author: displayName,
+      author: authorId ? authorId.displayName : 'Anonymous',
       cohortName: list.cohortId ? list.cohortId.name : null,
       done,
       listId,
@@ -536,6 +533,43 @@ const prepareRequestedItems = lists => userId => {
   return data.sort(reportDateComparator);
 };
 
+const getItemsForReport = async (listModel, user) => {
+  const { _id: userId, displayName, email: receiver } = user;
+  const data = { displayName, receiver, requests: [], todos: [] };
+
+  const ownerLists = await listModel
+    .find({
+      ownerIds: { $in: [userId] },
+      isArchived: false,
+      'items.0': { $exists: true }
+    })
+    .lean()
+    .populate('cohortId', 'name')
+    .populate('items.authorId', 'displayName')
+    .exec();
+
+  const viewerLists = await listModel
+    .find({
+      viewersIds: { $in: [userId] },
+      isArchived: false,
+      'items.0': { $exists: true }
+    })
+    .lean()
+    .populate('cohortId', 'name')
+    .populate('items.authorId', 'displayName')
+    .exec();
+
+  if (ownerLists) {
+    data.todos = prepareTodosItems(ownerLists);
+  }
+
+  if (viewerLists) {
+    data.requests = prepareRequestedItems(viewerLists)(userId);
+  }
+
+  return data;
+};
+
 module.exports = {
   checkIfArrayContainsUserId,
   checkIfCohortMember,
@@ -546,6 +580,7 @@ module.exports = {
   formatHours,
   getAuthorItems,
   getHours,
+  getItemsForReport,
   getUnhandledItems,
   isDefined,
   isMember,

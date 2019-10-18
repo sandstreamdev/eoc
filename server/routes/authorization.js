@@ -28,9 +28,9 @@ const {
   removeDemoUserChanges
 } = require('../middleware/removeDemoUserChanges');
 const {
+  sendReportOnDemand,
   sendResetPasswordLink,
-  sendSignUpConfirmationLink,
-  sendReport
+  sendSignUpConfirmationLink
 } = require('../mailer');
 const { authorize } = require('../middleware/authorize');
 
@@ -54,7 +54,7 @@ router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
-router.get('/send-report', authorize, prepareItems, sendReport);
+router.get('/send-report', authorize, prepareItems, sendReportOnDemand);
 router.post('/email-reports-settings', authorize, updateEmailReportSettings);
 
 module.exports = router;

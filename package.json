@@ -30,6 +30,7 @@
   "dependencies": {
     "@sandstreamdev/std": "0.1.2",
     "@sendgrid/mail": "6.4.0",
+    "agenda": "2.1.0",
     "babel-polyfill": "6.26.0",
     "bcryptjs": "2.4.3",
     "body-parser": "1.19.0",

@@ -42,9 +42,10 @@ pipeline {
     stage('Deploy') {
       when { branch 'master' }
       environment {
+        EXPRESS_SESSION_KEY = credentials('EXPRESS_SESSION_KEY')
         GOOGLE_CLIENT_ID = credentials('GOOGLE_CLIENT_ID')
         GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
-        EXPRESS_SESSION_KEY = credentials('EXPRESS_SESSION_KEY')
+        HOST = credentials('HOST')
         SENDGRID_API_KEY = credentials('SENDGRID_API_KEY')
       }
       steps {
