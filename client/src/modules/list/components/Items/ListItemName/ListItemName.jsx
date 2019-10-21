@@ -13,7 +13,6 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import './ListItemName.scss';
 import {
   attachBeforeUnloadEvent,
-  handleWindowBeforeUnload,
   removeBeforeUnloadEvent
 } from 'common/utils/events';
 
