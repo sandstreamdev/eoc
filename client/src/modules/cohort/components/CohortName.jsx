@@ -26,6 +26,10 @@ import {
   updateCohort
 } from '../model/actions';
 import './CohortName.scss';
+import {
+  attachBeforeUnloadEvent,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 
 class CohortName extends PureComponent {
   constructor(props) {
@@ -37,10 +41,15 @@ class CohortName extends PureComponent {
 
     this.state = {
       errorMessageId: '',
+      isDirty: false,
       isNameInputVisible: false,
       nameInputValue: name,
       pendingForName: false
     };
+  }
+
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
 
   componentDidUpdate(previousProps) {
@@ -50,11 +59,19 @@ class CohortName extends PureComponent {
     const {
       details: { name: previousName }
     } = previousProps;
-    const hasNameBeenChanged = name !== previousName;
+    const { nameInputValue } = this.state;
+    const nameHasChanged = name !== previousName;
+    const dataHasChanged = previousName !== nameInputValue;
 
-    if (hasNameBeenChanged) {
+    if (nameHasChanged) {
       this.updateName();
     }
+
+    this.handleDataChange(dataHasChanged);
+  }
+
+  componentWillUnmount() {
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
 
   updateName = () => {
@@ -66,6 +83,20 @@ class CohortName extends PureComponent {
       nameInputValue: name
     });
   };
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   validateName = () => {
     const { nameInputValue } = this.state;

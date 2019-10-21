@@ -31,6 +31,10 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { validateWith } from 'common/utils/helpers';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import './ListHeader.scss';
+import {
+  attachBeforeUnloadEvent,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 
 class ListHeader extends PureComponent {
   constructor(props) {
@@ -56,6 +60,10 @@ class ListHeader extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
+  }
+
   componentDidUpdate(previousProps) {
     const {
       details: { name, description, type }
@@ -67,6 +75,10 @@ class ListHeader extends PureComponent {
         type: previousType
       }
     } = previousProps;
+    const { descriptionInputValue, nameInputValue } = this.state;
+    const dataHasChanged =
+      previousName !== nameInputValue ||
+      previousDescription !== descriptionInputValue;
 
     if (name !== previousName) {
       this.updateName();
@@ -79,7 +91,27 @@ class ListHeader extends PureComponent {
     if (type !== previousType) {
       this.updateType();
     }
+
+    this.handleDataChange(dataHasChanged);
   }
+
+  componentWillUnmount() {
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
+  }
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   updateName = () => {
     const {

@@ -11,6 +11,10 @@ import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import './ListItemName.scss';
+import {
+  attachBeforeUnloadEvent,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -19,6 +23,7 @@ class ListItemName extends PureComponent {
     const { name } = this.props;
 
     this.state = {
+      isDirty: false,
       isNameInputFocused: false,
       isTipVisible: false,
       name,
@@ -29,18 +34,44 @@ class ListItemName extends PureComponent {
     this.listItemName = React.createRef();
   }
 
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
+  }
+
   componentDidUpdate(prevProps) {
-    const { name: prevName } = prevProps;
+    const { name: previousName } = prevProps;
     const { name } = this.props;
+    const { name: nameInputValue } = this.state;
+    const dataHasChanged = previousName !== nameInputValue;
 
     if (name.length === 0) {
       this.nameInput.current.focus();
     }
 
-    if (prevName !== name) {
+    if (previousName !== name) {
       this.updateNameWS(name);
     }
+
+    this.handleDataChange(dataHasChanged);
   }
+
+  componentWillUnmount() {
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
+  }
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   updateNameWS = updatedName => this.setState({ name: updatedName });
 

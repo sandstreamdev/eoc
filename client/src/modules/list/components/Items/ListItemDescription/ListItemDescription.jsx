@@ -20,6 +20,10 @@ import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { getCurrentUser } from 'modules/user/model/selectors';
+import {
+  attachBeforeUnloadEvent,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 import './ListItemDescription.scss';
 
 class ListItemDescription extends PureComponent {
@@ -34,6 +38,7 @@ class ListItemDescription extends PureComponent {
     this.state = {
       descriptionTextareaValue: trimmedDescription,
       isDescriptionUpdated: false,
+      isDirty: false,
       isFocused: false,
       isTextareaVisible: false,
       pending: false
@@ -42,27 +47,50 @@ class ListItemDescription extends PureComponent {
     this.descriptionTextarea = React.createRef();
   }
 
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     this.isDescriptionUpdated();
     const { isTextareaVisible: isPreviousIsTextareaVisible } = prevState;
-    const { description: prevDescription } = prevProps;
-    const { isTextareaVisible } = this.state;
+    const { description: previousDescription } = prevProps;
+    const { descriptionTextareaValue, isTextareaVisible } = this.state;
     const { description } = this.props;
+    const dataHasChanged = previousDescription !== descriptionTextareaValue;
 
     if (!isPreviousIsTextareaVisible && isTextareaVisible) {
       this.descriptionTextarea.current.focus();
     }
 
-    if (prevDescription !== description) {
+    if (previousDescription !== description) {
       this.updateDescription();
     }
+
+    this.handleDataChange(dataHasChanged);
   }
 
   componentWillUnmount() {
     if (this.pendingPromise) {
       this.pendingPromise.abort();
     }
+
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   updateDescription = () => {
     const { description } = this.props;
