@@ -124,19 +124,18 @@ class DeleteAccount extends Component {
 
     return (
       <Fragment>
-        {isDeleteDialogVisible && (
-          <DeleteDialog
-            error={isErrorVisible}
-            onCancel={this.hideDeleteDialog}
-            onConfirm={this.handleDeleteAccount}
-            onEmailChange={this.handleEmailChange}
-            onlyOwnerResources={onlyOwnerResources}
-            onPasswordChange={this.handlePasswordChange}
-            onSubmit={this.handleDeleteAccount}
-            onVerificationTextChange={this.handleVerificationText}
-            pending={pending}
-          />
-        )}
+        <DeleteDialog
+          error={isErrorVisible}
+          isVisible={isDeleteDialogVisible}
+          onCancel={this.hideDeleteDialog}
+          onConfirm={this.handleDeleteAccount}
+          onEmailChange={this.handleEmailChange}
+          onlyOwnerResources={onlyOwnerResources}
+          onPasswordChange={this.handlePasswordChange}
+          onSubmit={this.handleDeleteAccount}
+          onVerificationTextChange={this.handleVerificationText}
+          pending={pending}
+        />
         <section className="delete-account">
           <h2 className="delete-account__heading">
             <FormattedMessage id="user.delete-account" />

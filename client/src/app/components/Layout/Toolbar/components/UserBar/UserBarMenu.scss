@@ -27,6 +27,7 @@
       width: 100%;
       height: 100%;
       text-decoration: none;
+      outline: 0;
     }
 
     a:active,
@@ -59,5 +60,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    outline: 0;
   }
 }

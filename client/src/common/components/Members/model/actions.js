@@ -2,8 +2,8 @@ import { postData } from 'common/utils/fetchMethods';
 import { createNotificationWithTimeout } from 'modules/notification/model/actions';
 import { MessageType as NotificationType } from 'common/constants/enums';
 
-export const inviteUser = email => dispatch =>
-  postData('/api/send-invitation', { email })
+export const inviteUser = (email, resource) => dispatch =>
+  postData('/api/send-invitation', { email, resource })
     .then(() =>
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'common.members.actions.invitation',

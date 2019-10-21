@@ -2,11 +2,11 @@ const SendGridMail = require('@sendgrid/mail');
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 
-const mailTemplate = require('./mail-template');
+const inviteTemplate = require('./invite/template');
+const confirmationTemplate = require('./confirmation/template');
+const resetPasswordTemplate = require('./reset-password/template');
 const weeklyReportContent = require('./reports/weekly-content');
-const { PROJECT_NAME } = require('../common/variables');
-const { formatHours, getHours } = require('../common/utils');
-const { EXPIRATION_TIME } = require('../common/variables');
+const { FULL_PROJECT_NAME, PROJECT_NAME } = require('../common/variables');
 
 const {
   GOOGLE_CLIENT_ID,
@@ -48,31 +48,39 @@ const getMailer = () => {
 };
 
 const fromField = `${PROJECT_NAME} <no.reply@app.eoc.com>`;
-const subjectTemplate = subject => `☕ ${PROJECT_NAME} - ${subject}`;
+const fullUrl = req => `${req.protocol}://${req.get('host')}`;
 
 SendGridMail.setApiKey(SENDGRID_API_KEY);
 
 const sendInvitation = (req, resp) => {
-  const { email: receiver } = req.body;
   const {
-    user: { email: sender }
+    email: inviteeEmail,
+    resource: { name: resourceName, url: resourceUrl }
+  } = req.body;
+  const {
+    user: { email: inviterEmail, displayName: inviterName }
   } = req;
-  const host = req.get('host');
-  const title = `Join ${PROJECT_NAME} today!`;
-  const info = `Would you like to join me in amazing ${PROJECT_NAME} app?`;
-  const value = `JOIN ${PROJECT_NAME}`;
 
   const message = {
-    to: receiver,
-    from: sender,
-    subject: `Join ${PROJECT_NAME}!`,
-    html: mailTemplate(receiver, sender, host, title, info, value)
+    from: `${inviterName} (via ${PROJECT_NAME}) <${inviterEmail}>`,
+    to: inviteeEmail,
+    subject: `${inviterName} has invited you to join ${PROJECT_NAME} ✨`,
+    html: inviteTemplate({
+      host: fullUrl(req),
+      projectName: PROJECT_NAME,
+      fullProjectName: FULL_PROJECT_NAME,
+      inviteeEmail,
+      inviterName,
+      inviterEmail,
+      resourceName,
+      resourceUrl: `${fullUrl(req)}${resourceUrl}`
+    })
   };
 
   SendGridMail.send(message)
     .then(() =>
       resp.send({
-        message: `Invitation to ${receiver} has been sent.`
+        message: `Invitation to ${inviteeEmail} has been sent.`
       })
     )
     .catch(() => {
@@ -83,29 +91,18 @@ const sendInvitation = (req, resp) => {
 };
 
 const sendSignUpConfirmationLink = (req, resp) => {
-  const { displayName: name, email: receiver, signUpHash } = resp.locals;
-  const host = req.get('host');
-  const confirmUrl = `${host}/auth/confirm-email/${signUpHash}`;
-  const hours = getHours(EXPIRATION_TIME);
-  const title = `Welcome to ${PROJECT_NAME}!`;
-  const formattedHours = formatHours(hours);
-  const info1 = `<p>It is nice to have you on board! Please just click the button below to confirm your account in ${PROJECT_NAME}!</p>`;
-  const info2 = `<p>Remember that confirmation button will be active only for ${formattedHours}.</p>`;
-  const infoToSend = info1 + info2;
-  const value = 'Confirm your account';
+  const { email: receiver, signUpHash } = resp.locals;
+  const confirmUrl = `${fullUrl(req)}/auth/confirm-email/${signUpHash}`;
 
   const message = {
     to: receiver,
-    from: 'no.reply@app.eoc.com',
-    subject: `Confirm your account in ${PROJECT_NAME}!`,
-    html: mailTemplate(
-      name,
-      `${PROJECT_NAME} team`,
-      confirmUrl,
-      title,
-      infoToSend,
-      value
-    )
+    from: fromField,
+    subject: '🎉 Welcome to EOC! Activate your account.',
+    html: confirmationTemplate({
+      host: fullUrl(req),
+      projectName: PROJECT_NAME,
+      confirmUrl
+    })
   };
 
   SendGridMail.send(message)
@@ -114,30 +111,18 @@ const sendSignUpConfirmationLink = (req, resp) => {
 };
 
 const sendResetPasswordLink = (req, resp) => {
-  const { email: receiver, displayName, resetToken } = resp.locales;
-  const host = req.get('host');
-  const hours = getHours(EXPIRATION_TIME);
-  const resetUrl = `${host}/auth/recovery-password/${resetToken}`;
-  const title = `${PROJECT_NAME} - Reset your password`;
-  const formattedHours = formatHours(hours);
-  const info1 =
-    '<p>Reset your password by clicking reset button. If you have not requested password reset to your account, just ignore this message.</p>';
-  const info2 = `<p>Remember that reset button will be active only for ${formattedHours}.</p>`;
-  const infoToSend = info1 + info2;
-  const value = 'Reset password';
+  const { email: receiver, resetToken } = resp.locals;
+  const resetUrl = `${fullUrl(req)}/auth/recovery-password/${resetToken}`;
 
   const message = {
     to: receiver,
-    from: 'no.reply@app.eoc.com',
-    subject: title,
-    html: mailTemplate(
-      displayName,
-      `${PROJECT_NAME} team`,
-      resetUrl,
-      title,
-      infoToSend,
-      value
-    )
+    from: fromField,
+    subject: '🔑 Reset password.',
+    html: resetPasswordTemplate({
+      host: fullUrl(req),
+      projectName: PROJECT_NAME,
+      resetUrl
+    })
   };
 
   SendGridMail.send(message)
@@ -150,7 +135,7 @@ const sendReport = async (host, data) => {
   const message = {
     to: receiver,
     from: fromField,
-    subject: subjectTemplate('Your weekly report'),
+    subject: '📝 Your weekly report',
     html: weeklyReportContent({
       host,
       data: { requests, todos },
@@ -166,7 +151,7 @@ const sendReport = async (host, data) => {
 };
 
 const sendReportOnDemand = async (req, resp) => {
-  const host = req.get('host');
+  const host = fullUrl(req);
 
   try {
     const result = await sendReport(host, resp.locals);

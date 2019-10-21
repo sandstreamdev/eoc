@@ -249,7 +249,7 @@ const resetPassword = (req, resp, next) => {
         .exec()
         .then(() => {
           // eslint-disable-next-line no-param-reassign
-          resp.locales = {
+          resp.locals = {
             displayName,
             email,
             resetToken
@@ -511,10 +511,10 @@ const prepareItems = async (req, resp, next) => {
   const { user } = req;
 
   try {
-    const reportData = await getItemsForReport(List, user);
+    const data = await getItemsForReport(List, user);
 
     /* eslint-disable-next-line no-param-reassign */
-    resp.locals = reportData;
+    resp.locals = data;
 
     next();
   } catch {

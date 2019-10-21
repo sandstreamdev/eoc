@@ -49,6 +49,8 @@
     a {
       color: $white;
       font-style: italic;
+      outline: 0;
+
       &:hover {
         color: $text-normal;
       }
@@ -60,6 +62,7 @@
     margin: 0 auto 100px;
     text-align: center;
     height: 40px;
+    outline: 0;
 
     @include breakpoint($small) {
       margin: 0 auto 70px;

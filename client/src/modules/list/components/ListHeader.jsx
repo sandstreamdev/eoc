@@ -464,7 +464,11 @@ class ListHeader extends PureComponent {
   };
 
   renderDialog = () => {
-    const { updatedType: value, pendingForTypeUpdate } = this.state;
+    const {
+      isDialogVisible,
+      pendingForTypeUpdate,
+      updatedType: value
+    } = this.state;
     const {
       details: { name },
       intl: { formatMessage }
@@ -474,6 +478,7 @@ class ListHeader extends PureComponent {
       <Dialog
         cancelLabel={formatMessage({ id: 'common.button.cancel' })}
         confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+        isVisible={isDialogVisible}
         onCancel={this.hideDialog}
         onConfirm={this.handleChangingType}
         pending={pendingForTypeUpdate}
@@ -495,7 +500,6 @@ class ListHeader extends PureComponent {
       isCohortList
     } = this.props;
     const {
-      isDialogVisible,
       pendingForDescription,
       pendingForName,
       pendingForTypeUpdate
@@ -525,7 +529,7 @@ class ListHeader extends PureComponent {
           {this.renderDescription()}
           {pendingForDescription && <Preloader size={PreloaderSize.SMALL} />}
         </div>
-        {isDialogVisible && this.renderDialog()}
+        {this.renderDialog()}
       </div>
     );
   }

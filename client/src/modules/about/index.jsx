@@ -50,7 +50,7 @@ const About = ({ intl: { formatMessage } }) => (
           values={{ appName: formatMessage({ id: 'common.app-name' }) }}
         />
       </h2>
-      <Link to="/dashboard">
+      <Link className="about__button-link" to="/dashboard">
         <button className="about__cta-button primary-button" type="button">
           <FormattedMessage id="about.cta-button" />
         </button>

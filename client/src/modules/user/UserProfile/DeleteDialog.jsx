@@ -16,11 +16,12 @@ import './DeleteDialog.scss';
 
 const DeleteDialog = ({
   error,
-  onlyOwnerResources,
   intl: { formatMessage },
+  isVisible,
   onCancel,
   onConfirm,
   onEmailChange,
+  onlyOwnerResources,
   onPasswordChange,
   onSubmit,
   onVerificationTextChange,
@@ -35,6 +36,7 @@ const DeleteDialog = ({
         cancelLabel={formatMessage({ id: 'common.button.cancel' })}
         confirmLabel={formatMessage({ id: 'user.delete-account' })}
         hasPermissions
+        isVisible={isVisible}
         onCancel={onCancel}
         onConfirm={onConfirm}
         pending={pending}
@@ -63,8 +65,9 @@ const DeleteDialog = ({
 
 DeleteDialog.propTypes = {
   error: PropTypes.bool,
-  onlyOwnerResources: ResourcesDataPropType,
   intl: IntlPropType.isRequired,
+  isVisible: PropTypes.bool.isRequired,
+  onlyOwnerResources: ResourcesDataPropType,
   pending: PropTypes.bool,
 
   onCancel: PropTypes.func.isRequired,

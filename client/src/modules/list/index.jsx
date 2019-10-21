@@ -37,7 +37,7 @@ import { ListType } from './consts';
 import { ResourceNotFoundException } from 'common/exceptions';
 import { joinRoom, leaveRoom } from 'sockets';
 import history from 'common/utils/history';
-import { dashboardRoute } from 'common/utils/helpers';
+import { dashboardRoute, listRoute } from 'common/utils/helpers';
 import './List.scss';
 
 class List extends Component {
@@ -311,6 +311,7 @@ class List extends Component {
       !pendingForListArchivization &&
       !pendingForLeaving;
     const archivedListView = (isArchived && !isUnavailable) || isDeleted;
+    const isArchiveDialogVisible = dialogContext === DialogContext.ARCHIVE;
     const dialogContextMessage = formatMessage({
       id: 'list.label'
     });
@@ -377,6 +378,10 @@ class List extends Component {
                   </button>
                   {isMembersBoxVisible && (
                     <MembersBox
+                      inviteData={{
+                        name,
+                        url: listRoute(listId)
+                      }}
                       isCohortList={isCohortList}
                       isCurrentUserAnOwner={isOwner}
                       isMember={isMember}
@@ -393,28 +398,28 @@ class List extends Component {
             </div>
           </div>
         )}
-        {dialogContext === DialogContext.ARCHIVE && (
-          <Dialog
-            cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-            confirmLabel={formatMessage({ id: 'common.button.confirm' })}
-            onCancel={this.hideDialog}
-            onConfirm={this.handleListArchivization(listId)}
-            pending={pendingForListArchivization}
-            title={formatMessage(
-              {
-                id: pendingForListArchivization
-                  ? 'list.index.archivization'
-                  : 'list.index.question'
-              },
-              { name }
-            )}
-          />
-        )}
-        {isDialogForRemovedListVisible && (
+        <Dialog
+          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+          confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+          isVisible={isArchiveDialogVisible}
+          onCancel={this.hideDialog}
+          onConfirm={this.handleListArchivization(listId)}
+          pending={pendingForListArchivization}
+          title={formatMessage(
+            {
+              id: pendingForListArchivization
+                ? 'list.index.archivization'
+                : 'list.index.question'
+            },
+            { name }
+          )}
+        />
+        {externalAction && (
           <Dialog
             cancelLabel={formatMessage({ id: 'common.button.dashboard' })}
             confirmLabel={formatMessage({ id: 'common.button.restore' })}
             hasPermissions={isOwner}
+            isVisible={isDialogForRemovedListVisible}
             onCancel={this.handleRedirect}
             onConfirm={
               isArchived && !isDeleted ? this.handleRestoreList : undefined

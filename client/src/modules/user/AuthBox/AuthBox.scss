@@ -99,6 +99,7 @@
     color: $link-color;
     font-style: italic;
     text-decoration: none;
+    outline: 0;
 
     &:hover {
       text-decoration: underline;
@@ -144,9 +145,18 @@
     font-size: 16px;
     text-transform: capitalize;
   }
+
+  &__reset-button {
+    background: 0;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+  }
 }
 
 .google-button {
+  outline: 0;
+
   &__img {
     height: 40px;
   }

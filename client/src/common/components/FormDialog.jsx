@@ -27,8 +27,14 @@ class FormDialog extends Component {
     };
   }
 
-  componentDidMount() {
-    document.addEventListener('keypress', this.handleEnterKeypress);
+  componentDidUpdate() {
+    const { isVisible } = this.props;
+
+    if (isVisible) {
+      document.addEventListener('keypress', this.handleEnterKeypress);
+    } else {
+      document.removeEventListener('keypress', this.handleEnterKeypress);
+    }
   }
 
   componentWillUnmount() {
@@ -39,7 +45,7 @@ class FormDialog extends Component {
     const { code } = event;
 
     if (code === KeyCodes.ENTER) {
-      this.handleConfirm();
+      this.handleConfirmAction();
     }
   };
 
@@ -81,13 +87,14 @@ class FormDialog extends Component {
     }
   };
 
-  handleConfirmClick = () => this.validateName(this.handleConfirm);
+  handleConfirmAction = () => this.validateName(this.handleConfirm);
 
   render() {
     const {
       defaultDescription,
       defaultName,
       intl: { formatMessage },
+      isVisible,
       onCancel,
       onSelect,
       pending,
@@ -97,10 +104,11 @@ class FormDialog extends Component {
 
     return (
       <Dialog
-        confirmLabel={formatMessage({ id: 'common.button.confirm' })}
         cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-        onConfirm={this.handleConfirmClick}
+        confirmLabel={formatMessage({ id: 'common.button.confirm' })}
+        isVisible={isVisible}
         onCancel={onCancel}
+        onConfirm={this.handleConfirmAction}
         pending={pending}
         title={title}
       >
@@ -122,6 +130,7 @@ FormDialog.propTypes = {
   defaultDescription: PropTypes.string,
   defaultName: PropTypes.string,
   intl: IntlPropType.isRequired,
+  isVisible: PropTypes.bool.isRequired,
   pending: PropTypes.bool.isRequired,
   title: PropTypes.string,
 

@@ -39,6 +39,7 @@
     font-style: italic;
     text-decoration: underline;
     color: $link-color;
+    outline: 0;
 
     &:visited {
       color: $text-normal;
