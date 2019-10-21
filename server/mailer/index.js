@@ -19,11 +19,7 @@ const {
   auth: { OAuth2 }
 } = google;
 
-const oauth2Client = new OAuth2(
-  GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
-  'https://developers.google.com/oauthplayground'
-);
+const oauth2Client = new OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, '/');
 
 const getMailer = () => {
   oauth2Client.setCredentials({
@@ -145,9 +141,11 @@ const sendReport = async (host, data) => {
   };
 
   const mailer = getMailer();
+  const result = mailer.sendMail(message);
 
-  await mailer.sendMail(message);
   mailer.close();
+
+  return result;
 };
 
 const sendReportOnDemand = async (req, resp) => {
