@@ -505,6 +505,7 @@ const restoreList = async (req, resp) => {
       .populate('viewersIds', 'avatarUrl displayName _id')
       .populate('items.authorId', 'displayName')
       .populate('items.editedBy', 'displayName')
+      .populate('cohortId', 'name memberIds ownerIds')
       .exec();
 
     const { cohortId } = list;
