@@ -21,7 +21,6 @@ import {
 import './CohortDescription.scss';
 import {
   attachBeforeUnloadEvent,
-  handleWindowBeforeUnload,
   removeBeforeUnloadEvent
 } from 'common/utils/events';
 
@@ -37,8 +36,13 @@ class CohortDescription extends PureComponent {
     this.state = {
       descriptionInputValue: trimmedDescription,
       isDescriptionTextareaVisible: false,
+      isDirty: false,
       pendingForDescription: false
     };
+  }
+
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
 
   componentDidUpdate(previousProps) {
@@ -55,18 +59,26 @@ class CohortDescription extends PureComponent {
       this.updateDescription();
     }
 
-    if (dataHasChanged) {
-      attachBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
-
-    if (!dataHasChanged) {
-      removeBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
+    this.handleDataChange(dataHasChanged);
   }
 
   componentWillUnmount() {
-    removeBeforeUnloadEvent(handleWindowBeforeUnload);
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   updateDescription = () => {
     const {
