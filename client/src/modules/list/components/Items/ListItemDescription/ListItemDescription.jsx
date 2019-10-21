@@ -76,6 +76,8 @@ class ListItemDescription extends PureComponent {
     if (this.pendingPromise) {
       this.pendingPromise.abort();
     }
+
+    removeBeforeUnloadEvent(handleWindowBeforeUnload);
   }
 
   updateDescription = () => {

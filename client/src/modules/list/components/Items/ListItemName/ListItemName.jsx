@@ -57,6 +57,10 @@ class ListItemName extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    removeBeforeUnloadEvent(handleWindowBeforeUnload);
+  }
+
   updateNameWS = updatedName => this.setState({ name: updatedName });
 
   handleKeyPress = event => {
