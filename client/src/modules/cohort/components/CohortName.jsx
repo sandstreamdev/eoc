@@ -28,7 +28,6 @@ import {
 import './CohortName.scss';
 import {
   attachBeforeUnloadEvent,
-  handleWindowBeforeUnload,
   removeBeforeUnloadEvent
 } from 'common/utils/events';
 
@@ -42,10 +41,15 @@ class CohortName extends PureComponent {
 
     this.state = {
       errorMessageId: '',
+      isDirty: false,
       isNameInputVisible: false,
       nameInputValue: name,
       pendingForName: false
     };
+  }
+
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
 
   componentDidUpdate(previousProps) {
@@ -63,17 +67,11 @@ class CohortName extends PureComponent {
       this.updateName();
     }
 
-    if (dataHasChanged) {
-      attachBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
-
-    if (!dataHasChanged) {
-      removeBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
+    this.handleDataChange(dataHasChanged);
   }
 
   componentWillUnmount() {
-    removeBeforeUnloadEvent(handleWindowBeforeUnload);
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
 
   updateName = () => {
@@ -85,6 +83,20 @@ class CohortName extends PureComponent {
       nameInputValue: name
     });
   };
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   validateName = () => {
     const { nameInputValue } = this.state;

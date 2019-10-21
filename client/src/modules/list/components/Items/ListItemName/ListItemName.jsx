@@ -24,6 +24,7 @@ class ListItemName extends PureComponent {
     const { name } = this.props;
 
     this.state = {
+      isDirty: false,
       isNameInputFocused: false,
       isTipVisible: false,
       name,
@@ -32,6 +33,10 @@ class ListItemName extends PureComponent {
 
     this.nameInput = React.createRef();
     this.listItemName = React.createRef();
+  }
+
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
 
   componentDidUpdate(prevProps) {
@@ -48,18 +53,26 @@ class ListItemName extends PureComponent {
       this.updateNameWS(name);
     }
 
-    if (dataHasChanged) {
-      attachBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
-
-    if (!dataHasChanged) {
-      removeBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
+    this.handleDataChange(dataHasChanged);
   }
 
   componentWillUnmount() {
-    removeBeforeUnloadEvent(handleWindowBeforeUnload);
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   updateNameWS = updatedName => this.setState({ name: updatedName });
 

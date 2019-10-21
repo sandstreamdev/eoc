@@ -33,7 +33,6 @@ import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import './ListHeader.scss';
 import {
   attachBeforeUnloadEvent,
-  handleWindowBeforeUnload,
   removeBeforeUnloadEvent
 } from 'common/utils/events';
 
@@ -59,6 +58,10 @@ class ListHeader extends PureComponent {
       pendingForTypeUpdate: false,
       updatedType: null
     };
+  }
+
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
 
   componentDidUpdate(previousProps) {
@@ -89,18 +92,26 @@ class ListHeader extends PureComponent {
       this.updateType();
     }
 
-    if (dataHasChanged) {
-      attachBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
-
-    if (!dataHasChanged) {
-      removeBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
+    this.handleDataChange(dataHasChanged);
   }
 
   componentWillUnmount() {
-    removeBeforeUnloadEvent(handleWindowBeforeUnload);
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   updateName = () => {
     const {

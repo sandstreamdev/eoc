@@ -22,7 +22,6 @@ import { makeAbortablePromise } from 'common/utils/helpers';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import {
   attachBeforeUnloadEvent,
-  handleWindowBeforeUnload,
   removeBeforeUnloadEvent
 } from 'common/utils/events';
 import './ListItemDescription.scss';
@@ -39,12 +38,17 @@ class ListItemDescription extends PureComponent {
     this.state = {
       descriptionTextareaValue: trimmedDescription,
       isDescriptionUpdated: false,
+      isDirty: false,
       isFocused: false,
       isTextareaVisible: false,
       pending: false
     };
 
     this.descriptionTextarea = React.createRef();
+  }
+
+  componentDidMount() {
+    attachBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -63,13 +67,7 @@ class ListItemDescription extends PureComponent {
       this.updateDescription();
     }
 
-    if (dataHasChanged) {
-      attachBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
-
-    if (!dataHasChanged) {
-      removeBeforeUnloadEvent(handleWindowBeforeUnload);
-    }
+    this.handleDataChange(dataHasChanged);
   }
 
   componentWillUnmount() {
@@ -77,8 +75,22 @@ class ListItemDescription extends PureComponent {
       this.pendingPromise.abort();
     }
 
-    removeBeforeUnloadEvent(handleWindowBeforeUnload);
+    removeBeforeUnloadEvent(this.handleWindowBeforeUnload);
   }
+
+  handleWindowBeforeUnload = event => {
+    const { isDirty } = this.state;
+
+    if (isDirty) {
+      event.preventDefault();
+      // Chrome requires returnValue to be set
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
+  };
+
+  handleDataChange = dataHasChanged =>
+    this.setState({ isDirty: dataHasChanged });
 
   updateDescription = () => {
     const { description } = this.props;
