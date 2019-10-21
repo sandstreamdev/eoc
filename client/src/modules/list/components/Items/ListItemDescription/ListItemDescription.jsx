@@ -20,6 +20,11 @@ import { KeyCodes, NodeTypes } from 'common/constants/enums';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import { getCurrentUser } from 'modules/user/model/selectors';
+import {
+  attachBeforeUnloadEvent,
+  handleWindowBeforeUnload,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 import './ListItemDescription.scss';
 
 class ListItemDescription extends PureComponent {
@@ -45,16 +50,25 @@ class ListItemDescription extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     this.isDescriptionUpdated();
     const { isTextareaVisible: isPreviousIsTextareaVisible } = prevState;
-    const { description: prevDescription } = prevProps;
-    const { isTextareaVisible } = this.state;
+    const { description: previousDescription } = prevProps;
+    const { descriptionTextareaValue, isTextareaVisible } = this.state;
     const { description } = this.props;
+    const dataHasChanged = previousDescription !== descriptionTextareaValue;
 
     if (!isPreviousIsTextareaVisible && isTextareaVisible) {
       this.descriptionTextarea.current.focus();
     }
 
-    if (prevDescription !== description) {
+    if (previousDescription !== description) {
       this.updateDescription();
+    }
+
+    if (dataHasChanged) {
+      attachBeforeUnloadEvent(handleWindowBeforeUnload);
+    }
+
+    if (!dataHasChanged) {
+      removeBeforeUnloadEvent(handleWindowBeforeUnload);
     }
   }
 

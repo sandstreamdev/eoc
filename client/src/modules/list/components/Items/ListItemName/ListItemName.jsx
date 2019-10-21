@@ -11,6 +11,11 @@ import { KeyCodes } from 'common/constants/enums';
 import Preloader from 'common/components/Preloader';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import './ListItemName.scss';
+import {
+  attachBeforeUnloadEvent,
+  handleWindowBeforeUnload,
+  removeBeforeUnloadEvent
+} from 'common/utils/events';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -30,15 +35,25 @@ class ListItemName extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { name: prevName } = prevProps;
+    const { name: previousName } = prevProps;
     const { name } = this.props;
+    const { name: nameInputValue } = this.state;
+    const dataHasChanged = previousName !== nameInputValue;
 
     if (name.length === 0) {
       this.nameInput.current.focus();
     }
 
-    if (prevName !== name) {
+    if (previousName !== name) {
       this.updateNameWS(name);
+    }
+
+    if (dataHasChanged) {
+      attachBeforeUnloadEvent(handleWindowBeforeUnload);
+    }
+
+    if (!dataHasChanged) {
+      removeBeforeUnloadEvent(handleWindowBeforeUnload);
     }
   }
 
