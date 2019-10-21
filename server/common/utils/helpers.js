@@ -441,7 +441,7 @@ const responseWithListDetails = (list, userId) => cohort => {
 
   return {
     ...responseWithListMetaData(list, userId),
-    cohortId: cohort ? cohort.cohortId : null,
+    cohortId: cohort ? cohort._id : null,
     cohortName: cohort ? cohort.name : null,
     isArchived,
     items: _keyBy(items, '_id'),
