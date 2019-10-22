@@ -471,7 +471,6 @@ const checkIfDataLeft = async (req, resp) => {
   try {
     const errors = await checkIfUserIsTheOnlyOwner(List, Cohort, userId);
 
-    console.log(errors);
     if (!_isEmpty(errors)) {
       return resp
         .status(400)
@@ -479,7 +478,7 @@ const checkIfDataLeft = async (req, resp) => {
     }
 
     resp.sendStatus(200);
-  } catch (error) {
+  } catch {
     resp.sendStatus(400);
   }
 };

@@ -152,9 +152,6 @@ class DeleteAccount extends Component {
       pending
     } = this.state;
 
-    console.log(onlyOwnerResources);
-    // {onlyOwnerResources && <ResourcePanel resources={onlyOwnerResources} />}
-
     return (
       <Fragment>
         <DeleteDialog
