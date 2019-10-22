@@ -5,16 +5,21 @@ import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
 import _trim from 'lodash/trim';
 
-import { IntlPropType } from 'common/constants/propTypes';
+import {
+  IntlPropType,
+  ResourcesDataPropType
+} from 'common/constants/propTypes';
 import {
   checkIfDataLeft,
   deleteAccount,
   logoutCurrentUser,
   removeUserData
 } from '../model/actions';
+import Dialog from 'common/components/Dialog';
 import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
 import { accountStatus, saveAccountData } from 'common/utils/localStorage';
+import ResourcePanel from './ResourcePanel';
 import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
@@ -58,21 +63,7 @@ class DeleteAccount extends Component {
         removeUserData();
       }
     } catch (err) {
-      let onlyOwnerResources;
-
-      if (err instanceof ValidationException) {
-        const { errors: resourcesData } = err;
-
-        onlyOwnerResources = resourcesData;
-      }
-
-      console.log(onlyOwnerResources);
-
-      this.setState({
-        isErrorVisible: true,
-        onlyOwnerResources,
-        pending: false
-      });
+      //
     }
   };
 
@@ -101,12 +92,10 @@ class DeleteAccount extends Component {
   };
 
   handleOnClick = async () => {
-    const { email } = this.state;
-
     this.setState({ pending: true });
 
     try {
-      const result = await checkIfDataLeft(email);
+      const result = await checkIfDataLeft();
 
       if (result) {
         this.setState({
@@ -115,9 +104,18 @@ class DeleteAccount extends Component {
           pending: false
         });
       }
-    } catch {
+    } catch (error) {
+      let onlyOwnerResources;
+
+      if (error instanceof ValidationException) {
+        const { errors: resourcesData } = error;
+
+        onlyOwnerResources = resourcesData;
+      }
+
       this.setState({
         isErrorVisible: true,
+        onlyOwnerResources,
         isSelectionDialogVisible: true,
         pending: false
       });
@@ -125,6 +123,9 @@ class DeleteAccount extends Component {
   };
 
   showDeleteDialog = () => this.setState({ isDeleteDialogVisible: true });
+
+  hideSelectionDialog = () =>
+    this.setState({ isSelectionDialogVisible: false });
 
   hideDeleteDialog = () =>
     this.setState({
@@ -146,9 +147,13 @@ class DeleteAccount extends Component {
     const {
       isDeleteDialogVisible,
       isErrorVisible,
+      isSelectionDialogVisible,
       onlyOwnerResources,
       pending
     } = this.state;
+
+    console.log(onlyOwnerResources);
+    // {onlyOwnerResources && <ResourcePanel resources={onlyOwnerResources} />}
 
     return (
       <Fragment>
@@ -158,12 +163,22 @@ class DeleteAccount extends Component {
           onCancel={this.hideDeleteDialog}
           onConfirm={this.handleDeleteAccount}
           onEmailChange={this.handleEmailChange}
-          onlyOwnerResources={onlyOwnerResources}
           onPasswordChange={this.handlePasswordChange}
           onSubmit={this.handleDeleteAccount}
           onVerificationTextChange={this.handleVerificationText}
           pending={pending}
         />
+        <Dialog
+          isVisible={isSelectionDialogVisible}
+          onCancel={this.hideSelectionDialog}
+          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+          pending={pending}
+          title={formatMessage({
+            id: 'user.delete-account.selection-dialog-header'
+          })}
+        >
+          <ResourcePanel resources={onlyOwnerResources} />
+        </Dialog>
         <section className="delete-account">
           <h2 className="delete-account__heading">
             <FormattedMessage id="user.delete-account" />

@@ -161,8 +161,7 @@ export const changePassword = (password, newPassword, newPasswordConfirm) =>
 export const getAccountDetails = token =>
   getJson(`/auth/account-details/${token}`);
 
-export const checkIfDataLeft = email =>
-  postData('/auth/check-if-data-left', { email });
+export const checkIfDataLeft = () => getData('/auth/check-if-data-left');
 
 export const deleteAccount = (email, password) =>
   deleteData('/auth', { email, password });

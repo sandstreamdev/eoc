@@ -466,7 +466,6 @@ const checkToken = (req, resp) => {
 };
 
 const checkIfDataLeft = async (req, resp) => {
-  console.log(req.user.displayName);
   const { _id: userId } = req.user;
 
   try {
