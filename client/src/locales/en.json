@@ -412,7 +412,7 @@
   "user.delete-account-make-someone-else-an-owner": "Set a new owner in {context}:",
   "user.delete-account-question": "Are you sure you want to do this?",
   "user.delete-account-warning": "This is extremely important.",
-  "user.delete-account.selection-dialog-header": "Before you leave",
+  "user.delete-account.ownership-header": "Before you leave",
   "user.delete-account": "Delete account",
   "user.delete-form.email": "Your email",
   "user.delete-form.verify-message": "To verify, type {text} below",

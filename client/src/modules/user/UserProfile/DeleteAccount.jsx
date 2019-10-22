@@ -24,7 +24,7 @@ class DeleteAccount extends Component {
     email: '',
     isDeleteDialogVisible: false,
     isErrorVisible: false,
-    isSelectionDialogVisible: false,
+    isOwnershipTransferDialogVisible: false,
     onlyOwnerResources: null,
     password: '',
     pending: false,
@@ -95,7 +95,7 @@ class DeleteAccount extends Component {
       const result = await checkIfDataLeft();
 
       if (result) {
-        this.hideSelectionDialog();
+        this.hideOwnershipTransferDialog();
         this.showDeleteDialog();
         this.setState({
           isErrorVisible: false,
@@ -117,7 +117,7 @@ class DeleteAccount extends Component {
           onlyOwnerResources,
           pending: false
         },
-        this.showSelectionDialog
+        this.showOwnershipTransferDialog
       );
     }
   };
@@ -131,10 +131,11 @@ class DeleteAccount extends Component {
       onlyOwnerResources: null
     });
 
-  showSelectionDialog = () => this.setState({ isSelectionDialogVisible: true });
+  showOwnershipTransferDialog = () =>
+    this.setState({ isOwnershipTransferDialogVisible: true });
 
-  hideSelectionDialog = () =>
-    this.setState({ isSelectionDialogVisible: false });
+  hideOwnershipTransferDialog = () =>
+    this.setState({ isOwnershipTransferDialogVisible: false });
 
   handleCancel = () => {
     const { logoutCurrentUser } = this.props;
@@ -149,7 +150,7 @@ class DeleteAccount extends Component {
     const {
       isDeleteDialogVisible,
       isErrorVisible,
-      isSelectionDialogVisible,
+      isOwnershipTransferDialogVisible,
       onlyOwnerResources,
       pending
     } = this.state;
@@ -169,11 +170,11 @@ class DeleteAccount extends Component {
         />
         <Dialog
           cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-          isVisible={isSelectionDialogVisible}
-          onCancel={this.hideSelectionDialog}
+          isVisible={isOwnershipTransferDialogVisible}
+          onCancel={this.hideOwnershipTransferDialog}
           pending={pending}
           title={formatMessage({
-            id: 'user.delete-account.selection-dialog-header'
+            id: 'user.delete-account.ownership-header'
           })}
         >
           <ResourcePanel resources={onlyOwnerResources} />
