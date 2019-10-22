@@ -11,7 +11,7 @@ import { MessageType } from 'common/constants/enums';
 import './DeleteDialog.scss';
 
 const DeleteDialog = ({
-  error,
+  error: authorizationError,
   intl: { formatMessage },
   isVisible,
   onCancel,
@@ -22,8 +22,6 @@ const DeleteDialog = ({
   onVerificationTextChange,
   pending
 }) => {
-  const authorizationError = error;
-
   return (
     <div className="delete-dialog">
       <Dialog
@@ -46,7 +44,7 @@ const DeleteDialog = ({
           />
         )}
         <DeleteForm
-          error={error}
+          error={authorizationError}
           onEmailChange={onEmailChange}
           onPasswordChange={onPasswordChange}
           onSubmit={onSubmit}
