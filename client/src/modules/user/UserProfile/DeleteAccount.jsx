@@ -5,10 +5,7 @@ import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
 import _trim from 'lodash/trim';
 
-import {
-  IntlPropType,
-  ResourcesDataPropType
-} from 'common/constants/propTypes';
+import { IntlPropType } from 'common/constants/propTypes';
 import {
   checkIfDataLeft,
   deleteAccount,
