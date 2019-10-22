@@ -32,6 +32,7 @@ mongoose.connect(dbUrl, { useNewUrlParser: true }, unlockLocks);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
+app.enable('trust proxy');
 app.use(cors());
 app.use(cookieParser());
 app.use(
