@@ -11,7 +11,7 @@ const MongoStore = require('connect-mongo')(session);
 const { Server } = require('http');
 
 const socket = require('./sockets/index');
-const { DB_URL } = require('./common/variables');
+const { AppConfig, DB_URL } = require('./common/variables');
 const authRouter = require('./routes/authorization');
 const commentsRouter = require('./routes/comment');
 const cohortsRouter = require('./routes/cohort');
@@ -32,6 +32,7 @@ mongoose.connect(dbUrl, { useNewUrlParser: true }, unlockLocks);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
+app.enable(AppConfig.PROXY);
 app.use(cors());
 app.use(cookieParser());
 app.use(

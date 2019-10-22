@@ -14,6 +14,10 @@ const FULL_PROJECT_NAME = 'End of Coffee';
 const NUMBER_OF_ACTIVITIES_TO_SEND = 20;
 const BCRYPT_SALT_ROUNDS = 12;
 
+const AppConfig = Object.freeze({
+  PROXY: 'trust proxy'
+});
+
 const ActivityType = Object.freeze({
   COHORT_ADD_DESCRIPTION: 'activity.cohort.add-description',
   COHORT_ADD_USER: 'activity.cohort.add-user',
@@ -91,6 +95,7 @@ const EmailReportsFrequency = enumerable('report')(
 
 module.exports = {
   ActivityType,
+  AppConfig,
   BadRequestReason,
   BCRYPT_SALT_ROUNDS,
   DB_NAME,
