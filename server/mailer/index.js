@@ -1,4 +1,6 @@
 const SendGridMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 
 const inviteTemplate = require('./invite/template');
 const confirmationTemplate = require('./confirmation/template');
@@ -6,7 +8,36 @@ const resetPasswordTemplate = require('./reset-password/template');
 const weeklyReportContent = require('./reports/weekly-content');
 const { FULL_PROJECT_NAME, PROJECT_NAME } = require('../common/variables');
 
-const { SENDGRID_API_KEY } = process.env;
+const {
+  GOOGLE_API_USER,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_REFRESH_TOKEN,
+  SENDGRID_API_KEY
+} = process.env;
+const {
+  auth: { OAuth2 }
+} = google;
+const oauth2Client = new OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, '/');
+const getMailer = () => {
+  oauth2Client.setCredentials({
+    refresh_token: GOOGLE_REFRESH_TOKEN
+  });
+
+  const accessToken = oauth2Client.getAccessToken();
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      accessToken,
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      refreshToken: GOOGLE_REFRESH_TOKEN,
+      type: 'OAuth2',
+      user: GOOGLE_API_USER
+    }
+  });
+};
 
 const fromField = `${PROJECT_NAME} <no.reply@app.eoc.com>`;
 const fullUrl = req => `${req.protocol}://${req.get('host')}`;
@@ -91,8 +122,8 @@ const sendResetPasswordLink = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
-const sendReport = async (host, reportData) => {
-  const { displayName, receiver, requests, todos } = reportData;
+const sendReport = async (host, data) => {
+  const { displayName, receiver, requests, todos } = data;
   const message = {
     to: receiver,
     from: fromField,
@@ -104,8 +135,12 @@ const sendReport = async (host, reportData) => {
       projectName: PROJECT_NAME
     })
   };
+  const mailer = getMailer();
+  const result = mailer.sendMail(message);
 
-  return SendGridMail.send(message);
+  mailer.close();
+
+  return result;
 };
 
 const sendReportOnDemand = async (req, resp) => {

@@ -86,7 +86,11 @@ const generateRequestsContent = ({ requests, host }) => {
     content += tableRow('<p>No active requests.</p>');
   } else {
     if (completed.length > 0) {
-      content += generateDataTable({ header: 'Completed', items: completed });
+      content += generateDataTable({
+        header: 'Completed',
+        items: completed,
+        host
+      });
     }
 
     if (stillWaiting.length > 0) {
