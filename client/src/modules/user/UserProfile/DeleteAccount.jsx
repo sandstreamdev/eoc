@@ -168,9 +168,9 @@ class DeleteAccount extends Component {
           pending={pending}
         />
         <Dialog
+          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
           isVisible={isSelectionDialogVisible}
           onCancel={this.hideSelectionDialog}
-          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
           pending={pending}
           title={formatMessage({
             id: 'user.delete-account.selection-dialog-header'
