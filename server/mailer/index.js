@@ -9,16 +9,15 @@ const weeklyReportContent = require('./reports/weekly-content');
 const { FULL_PROJECT_NAME, PROJECT_NAME } = require('../common/variables');
 
 const {
+  GOOGLE_API_USER,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REFRESH_TOKEN,
-  GOOGLE_API_USER,
   SENDGRID_API_KEY
 } = process.env;
 const {
   auth: { OAuth2 }
 } = google;
-
 const oauth2Client = new OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, '/');
 
 const getMailer = () => {
@@ -28,19 +27,17 @@ const getMailer = () => {
 
   const accessToken = oauth2Client.getAccessToken();
 
-  const transport = nodemailer.createTransport({
+  return nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      type: 'OAuth2',
-      user: GOOGLE_API_USER,
+      accessToken,
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       refreshToken: GOOGLE_REFRESH_TOKEN,
-      accessToken
+      type: 'OAuth2',
+      user: GOOGLE_API_USER
     }
   });
-
-  return transport;
 };
 
 const fromField = `${PROJECT_NAME} <no.reply@app.eoc.com>`;
@@ -139,7 +136,6 @@ const sendReport = async (host, data) => {
       projectName: PROJECT_NAME
     })
   };
-
   const mailer = getMailer();
   const result = mailer.sendMail(message);
 
