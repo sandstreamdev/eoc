@@ -15,13 +15,15 @@ const DeleteForm = ({
   onVerificationTextChange
 }) => (
   <form
+    autoComplete="off"
     className={classNames('delete-form', { 'delete-form--error': error })}
     onSubmit={onSubmit}
   >
+    <input type="hidden" value="noOp" />
     <label className="delete-form__label">
       <FormattedMessage id="user.delete-form.email" />
       <input
-        autoComplete="off"
+        autoComplete="current-email"
         className="delete-form__input primary-input"
         onChange={onEmailChange}
         type="email"
@@ -35,7 +37,7 @@ const DeleteForm = ({
         }}
       />
       <input
-        autoComplete="off"
+        autoComplete="verification-string"
         className="delete-form__input primary-input"
         onChange={onVerificationTextChange}
         type="text"
@@ -44,7 +46,7 @@ const DeleteForm = ({
     <label className="delete-form__label">
       <FormattedMessage id="user.auth.input.password.confirm" />
       <input
-        autoComplete="off"
+        autoComplete="new-password"
         className="delete-form__input primary-input"
         onChange={onPasswordChange}
         type="password"

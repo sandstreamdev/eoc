@@ -60,8 +60,7 @@ class DeleteAccount extends Component {
         removeUserData();
       }
     } catch (err) {
-      // This error will be handled in the coming task
-      // https://jira2.sanddev.com/browse/EOC-552
+      this.setState({ isErrorVisible: true, pending: false });
     }
   };
 
@@ -99,6 +98,7 @@ class DeleteAccount extends Component {
         this.hideSelectionDialog();
         this.showDeleteDialog();
         this.setState({
+          isErrorVisible: false,
           pending: false
         });
       }
@@ -111,12 +111,14 @@ class DeleteAccount extends Component {
         onlyOwnerResources = resourcesData;
       }
 
-      this.hideSelectionDialog();
-      this.setState({
-        isErrorVisible: true,
-        onlyOwnerResources,
-        pending: false
-      });
+      this.setState(
+        {
+          isErrorVisible: true,
+          onlyOwnerResources,
+          pending: false
+        },
+        this.showSelectionDialog
+      );
     }
   };
 
