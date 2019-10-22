@@ -44,6 +44,7 @@ pipeline {
       environment {
         EXPRESS_SESSION_KEY = credentials('EXPRESS_SESSION_KEY')
         GOOGLE_API_USER = credentials('GOOGLE_API_USER')
+        GOOGLE_CALLBACK_URL = credentials('GOOGLE_CALLBACK_URL')
         GOOGLE_CLIENT_ID = credentials('GOOGLE_CLIENT_ID')
         GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
         GOOGLE_REFRESH_TOKEN = credentials('GOOGLE_REFRESH_TOKEN')

@@ -18,13 +18,19 @@ const StrategyType = Object.freeze({
   LOCAL: 'local'
 });
 
+const {
+  GOOGLE_CALLBACK_URL,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET
+} = process.env;
+
 // Use GoogleStrategy to authenticate user
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: '/auth/google/callback',
+      callbackURL: GOOGLE_CALLBACK_URL,
+      clientID: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
       proxy: true,
       userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
     },
