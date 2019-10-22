@@ -100,13 +100,13 @@ class DeleteAccount extends Component {
     this.setState({ verificationText: value });
   };
 
-  handleOnClick = () => {
+  handleOnClick = async () => {
     const { email } = this.state;
 
     this.setState({ pending: true });
 
     try {
-      const result = checkIfDataLeft(email);
+      const result = await checkIfDataLeft(email);
 
       if (result) {
         this.setState({
@@ -173,11 +173,7 @@ class DeleteAccount extends Component {
               <FormattedMessage id="user.delete-account" />
               <button
                 className="danger-button"
-                onClick={
-                  isDeleteDialogVisible
-                    ? this.hideDeleteDialog
-                    : this.showDeleteDialog
-                }
+                onClick={this.handleOnClick}
                 title={formatMessage({ id: 'user.delete-account' })}
                 type="button"
               >

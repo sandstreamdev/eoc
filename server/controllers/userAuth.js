@@ -465,6 +465,26 @@ const checkToken = (req, resp) => {
     .catch(() => resp.sendStatus(400));
 };
 
+const checkIfDataLeft = async (req, resp) => {
+  console.log(req.user.displayName);
+  const { _id: userId } = req.user;
+
+  try {
+    const errors = await checkIfUserIsTheOnlyOwner(List, Cohort, userId);
+
+    console.log(errors);
+    if (!_isEmpty(errors)) {
+      return resp
+        .status(400)
+        .send({ reason: BadRequestReason.VALIDATION, errors });
+    }
+
+    resp.sendStatus(200);
+  } catch (error) {
+    resp.sendStatus(400);
+  }
+};
+
 const deleteAccount = async (req, resp) => {
   const { email, password } = req.body;
   const { _id } = req.user;
@@ -480,14 +500,6 @@ const deleteAccount = async (req, resp) => {
     const { _id: userId, displayName, password: dbPassword } = user;
 
     if (bcrypt.compareSync(password + email, dbPassword)) {
-      const errors = await checkIfUserIsTheOnlyOwner(List, Cohort, userId);
-
-      if (!_isEmpty(errors)) {
-        return resp
-          .status(400)
-          .send({ reason: BadRequestReason.VALIDATION, errors });
-      }
-
       await deleteAccountDetails(User, user);
       await deleteUserLists(List, userId);
       await removeUserFromLists(socketInstance)(List, displayName, userId);
@@ -542,6 +554,7 @@ const updateEmailReportSettings = async (req, resp) => {
 
 module.exports = {
   changePassword,
+  checkIfDataLeft,
   checkToken,
   confirmEmail,
   deleteAccount,
