@@ -7,9 +7,10 @@ import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import {
-  removeUserData,
+  checkIfDataLeft,
   deleteAccount,
-  logoutCurrentUser
+  logoutCurrentUser,
+  removeUserData
 } from '../model/actions';
 import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
@@ -21,6 +22,7 @@ class DeleteAccount extends Component {
     email: '',
     isDeleteDialogVisible: false,
     isErrorVisible: false,
+    isSelectionDialogVisible: false,
     onlyOwnerResources: null,
     password: '',
     pending: false,
@@ -64,6 +66,8 @@ class DeleteAccount extends Component {
         onlyOwnerResources = resourcesData;
       }
 
+      console.log(onlyOwnerResources);
+
       this.setState({
         isErrorVisible: true,
         onlyOwnerResources,
@@ -94,6 +98,30 @@ class DeleteAccount extends Component {
     } = event;
 
     this.setState({ verificationText: value });
+  };
+
+  handleOnClick = () => {
+    const { email } = this.state;
+
+    this.setState({ pending: true });
+
+    try {
+      const result = checkIfDataLeft(email);
+
+      if (result) {
+        this.setState({
+          isDeleteDialogVisible: true,
+          isSelectionDialogVisible: false,
+          pending: false
+        });
+      }
+    } catch {
+      this.setState({
+        isErrorVisible: true,
+        isSelectionDialogVisible: true,
+        pending: false
+      });
+    }
   };
 
   showDeleteDialog = () => this.setState({ isDeleteDialogVisible: true });
