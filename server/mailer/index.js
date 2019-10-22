@@ -19,7 +19,6 @@ const {
   auth: { OAuth2 }
 } = google;
 const oauth2Client = new OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, '/');
-
 const getMailer = () => {
   oauth2Client.setCredentials({
     refresh_token: GOOGLE_REFRESH_TOKEN
