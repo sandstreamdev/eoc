@@ -60,7 +60,8 @@ class DeleteAccount extends Component {
         removeUserData();
       }
     } catch (err) {
-      //
+      // This error will be handled in the coming task
+      // https://jira2.sanddev.com/browse/EOC-552
     }
   };
 
@@ -88,16 +89,16 @@ class DeleteAccount extends Component {
     this.setState({ verificationText: value });
   };
 
-  handleOnClick = async () => {
+  handleOnDeleteClick = async () => {
     this.setState({ pending: true });
 
     try {
       const result = await checkIfDataLeft();
 
       if (result) {
+        this.hideSelectionDialog();
+        this.showDeleteDialog();
         this.setState({
-          isDeleteDialogVisible: true,
-          isSelectionDialogVisible: false,
           pending: false
         });
       }
@@ -110,10 +111,10 @@ class DeleteAccount extends Component {
         onlyOwnerResources = resourcesData;
       }
 
+      this.hideSelectionDialog();
       this.setState({
         isErrorVisible: true,
         onlyOwnerResources,
-        isSelectionDialogVisible: true,
         pending: false
       });
     }
@@ -121,15 +122,17 @@ class DeleteAccount extends Component {
 
   showDeleteDialog = () => this.setState({ isDeleteDialogVisible: true });
 
-  hideSelectionDialog = () =>
-    this.setState({ isSelectionDialogVisible: false });
-
   hideDeleteDialog = () =>
     this.setState({
       isDeleteDialogVisible: false,
       isErrorVisible: false,
       onlyOwnerResources: null
     });
+
+  showSelectionDialog = () => this.setState({ isSelectionDialogVisible: true });
+
+  hideSelectionDialog = () =>
+    this.setState({ isSelectionDialogVisible: false });
 
   handleCancel = () => {
     const { logoutCurrentUser } = this.props;
@@ -182,7 +185,7 @@ class DeleteAccount extends Component {
               <FormattedMessage id="user.delete-account" />
               <button
                 className="danger-button"
-                onClick={this.handleOnClick}
+                onClick={this.handleOnDeleteClick}
                 title={formatMessage({ id: 'user.delete-account' })}
                 type="button"
               >
