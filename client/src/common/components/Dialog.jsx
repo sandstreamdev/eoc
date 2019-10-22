@@ -83,7 +83,7 @@ Dialog.propTypes = {
   buttonStyleType: PropTypes.string,
   cancelLabel: PropTypes.string.isRequired,
   children: PropTypes.node,
-  confirmLabel: PropTypes.string.isRequired,
+  confirmLabel: PropTypes.string,
   hasPermissions: PropTypes.bool,
   isVisible: PropTypes.bool,
   pending: PropTypes.bool,

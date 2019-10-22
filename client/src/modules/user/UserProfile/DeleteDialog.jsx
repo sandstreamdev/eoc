@@ -3,32 +3,25 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Dialog from 'common/components/Dialog';
-import {
-  IntlPropType,
-  ResourcesDataPropType
-} from 'common/constants/propTypes';
+import { IntlPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
 import DeleteForm from './DeleteForm';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
-import ResourcePanel from './ResourcePanel';
 import './DeleteDialog.scss';
 
 const DeleteDialog = ({
-  error,
+  error: authorizationError,
   intl: { formatMessage },
   isVisible,
   onCancel,
   onConfirm,
   onEmailChange,
-  onlyOwnerResources,
   onPasswordChange,
   onSubmit,
   onVerificationTextChange,
   pending
 }) => {
-  const authorizationError = error && !onlyOwnerResources;
-
   return (
     <div className="delete-dialog">
       <Dialog
@@ -50,9 +43,8 @@ const DeleteDialog = ({
             message={formatMessage({ id: 'user.delete-account-error' })}
           />
         )}
-        {onlyOwnerResources && <ResourcePanel resources={onlyOwnerResources} />}
         <DeleteForm
-          error={error}
+          error={authorizationError}
           onEmailChange={onEmailChange}
           onPasswordChange={onPasswordChange}
           onSubmit={onSubmit}
@@ -67,7 +59,6 @@ DeleteDialog.propTypes = {
   error: PropTypes.bool,
   intl: IntlPropType.isRequired,
   isVisible: PropTypes.bool.isRequired,
-  onlyOwnerResources: ResourcesDataPropType,
   pending: PropTypes.bool,
 
   onCancel: PropTypes.func.isRequired,

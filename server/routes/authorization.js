@@ -9,6 +9,7 @@ const {
 } = require('../config/auth');
 const {
   changePassword,
+  checkIfDataLeft,
   confirmEmail,
   deleteAccount,
   getAccountDetails,
@@ -56,5 +57,6 @@ router.get('/account-details/:token?', getAccountDetails);
 router.delete('', authorize, deleteAccount);
 router.get('/send-report', authorize, prepareItems, sendReportOnDemand);
 router.post('/email-reports-settings', authorize, updateEmailReportSettings);
+router.get('/check-if-data-left', authorize, checkIfDataLeft);
 
 module.exports = router;
