@@ -537,27 +537,35 @@ const getItemsForReport = async (listModel, user) => {
   const { _id: userId, displayName, email: receiver } = user;
   const data = { displayName, receiver, requests: [], todos: [] };
 
-  const ownerLists = await listModel
+  const listsForOwner = await listModel
     .find({
       ownerIds: { $in: [userId] },
       isArchived: false,
       'items.0': { $exists: true }
     })
     .lean()
-    .populate('cohortId', 'name')
+    .populate('cohortId', 'isArchived name')
     .populate('items.authorId', 'displayName')
     .exec();
 
-  const viewerLists = await listModel
+  const ownerLists = listsForOwner.filter(
+    list => !list.cohortId || !list.cohortId.isArchived
+  );
+
+  const listsForViewer = await listModel
     .find({
       viewersIds: { $in: [userId] },
       isArchived: false,
       'items.0': { $exists: true }
     })
     .lean()
-    .populate('cohortId', 'name')
+    .populate('cohortId', 'isArchived name')
     .populate('items.authorId', 'displayName')
     .exec();
+
+  const viewerLists = listsForViewer.filter(
+    list => !list.cohortId || !list.cohortId.isArchived
+  );
 
   if (ownerLists) {
     data.todos = prepareTodosItems(ownerLists);
