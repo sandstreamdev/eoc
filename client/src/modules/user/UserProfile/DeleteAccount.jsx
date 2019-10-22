@@ -7,13 +7,16 @@ import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import {
-  removeUserData,
+  checkIfDataLeft,
   deleteAccount,
-  logoutCurrentUser
+  logoutCurrentUser,
+  removeUserData
 } from '../model/actions';
+import Dialog from 'common/components/Dialog';
 import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
 import { accountStatus, saveAccountData } from 'common/utils/localStorage';
+import ResourcePanel from './ResourcePanel';
 import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
@@ -21,6 +24,7 @@ class DeleteAccount extends Component {
     email: '',
     isDeleteDialogVisible: false,
     isErrorVisible: false,
+    isOwnershipTransferDialogVisible: false,
     onlyOwnerResources: null,
     password: '',
     pending: false,
@@ -56,19 +60,7 @@ class DeleteAccount extends Component {
         removeUserData();
       }
     } catch (err) {
-      let onlyOwnerResources;
-
-      if (err instanceof ValidationException) {
-        const { errors: resourcesData } = err;
-
-        onlyOwnerResources = resourcesData;
-      }
-
-      this.setState({
-        isErrorVisible: true,
-        onlyOwnerResources,
-        pending: false
-      });
+      this.setState({ isErrorVisible: true, pending: false });
     }
   };
 
@@ -96,6 +88,40 @@ class DeleteAccount extends Component {
     this.setState({ verificationText: value });
   };
 
+  handleOnDeleteClick = async () => {
+    this.setState({ pending: true });
+
+    try {
+      const result = await checkIfDataLeft();
+
+      if (result) {
+        this.hideOwnershipTransferDialog();
+        this.showDeleteDialog();
+        this.setState({
+          isErrorVisible: false,
+          pending: false
+        });
+      }
+    } catch (error) {
+      let onlyOwnerResources;
+
+      if (error instanceof ValidationException) {
+        const { errors: resourcesData } = error;
+
+        onlyOwnerResources = resourcesData;
+      }
+
+      this.setState(
+        {
+          isErrorVisible: true,
+          onlyOwnerResources,
+          pending: false
+        },
+        this.showOwnershipTransferDialog
+      );
+    }
+  };
+
   showDeleteDialog = () => this.setState({ isDeleteDialogVisible: true });
 
   hideDeleteDialog = () =>
@@ -104,6 +130,12 @@ class DeleteAccount extends Component {
       isErrorVisible: false,
       onlyOwnerResources: null
     });
+
+  showOwnershipTransferDialog = () =>
+    this.setState({ isOwnershipTransferDialogVisible: true });
+
+  hideOwnershipTransferDialog = () =>
+    this.setState({ isOwnershipTransferDialogVisible: false });
 
   handleCancel = () => {
     const { logoutCurrentUser } = this.props;
@@ -118,6 +150,7 @@ class DeleteAccount extends Component {
     const {
       isDeleteDialogVisible,
       isErrorVisible,
+      isOwnershipTransferDialogVisible,
       onlyOwnerResources,
       pending
     } = this.state;
@@ -130,12 +163,22 @@ class DeleteAccount extends Component {
           onCancel={this.hideDeleteDialog}
           onConfirm={this.handleDeleteAccount}
           onEmailChange={this.handleEmailChange}
-          onlyOwnerResources={onlyOwnerResources}
           onPasswordChange={this.handlePasswordChange}
           onSubmit={this.handleDeleteAccount}
           onVerificationTextChange={this.handleVerificationText}
           pending={pending}
         />
+        <Dialog
+          cancelLabel={formatMessage({ id: 'common.button.cancel' })}
+          isVisible={isOwnershipTransferDialogVisible}
+          onCancel={this.hideOwnershipTransferDialog}
+          pending={pending}
+          title={formatMessage({
+            id: 'user.delete-account.ownership-header'
+          })}
+        >
+          <ResourcePanel resources={onlyOwnerResources} />
+        </Dialog>
         <section className="delete-account">
           <h2 className="delete-account__heading">
             <FormattedMessage id="user.delete-account" />
@@ -145,11 +188,7 @@ class DeleteAccount extends Component {
               <FormattedMessage id="user.delete-account" />
               <button
                 className="danger-button"
-                onClick={
-                  isDeleteDialogVisible
-                    ? this.hideDeleteDialog
-                    : this.showDeleteDialog
-                }
+                onClick={this.handleOnDeleteClick}
                 title={formatMessage({ id: 'user.delete-account' })}
                 type="button"
               >
