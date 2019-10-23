@@ -31,8 +31,12 @@ services:
       - mongo
     environment:
       DB_URL: mongodb://mongo/eoc
+      GOOGLE_API_USER:
+      GOOGLE_CALLBACK_URL:
       GOOGLE_CLIENT_ID:
       GOOGLE_CLIENT_SECRET:
+      GOOGLE_REFRESH_TOKEN:
+      HOST:
       EXPRESS_SESSION_KEY:
       SENDGRID_API_KEY:
   nginx-production:
@@ -49,7 +53,7 @@ services:
     links:
       - eoc-server
       - eoc-landing
-    command: "/bin/sh -c 'while :; do sleep 24h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    command: '/bin/sh -c ''while :; do sleep 24h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
   mongo:
     container_name: eoc_mongo_container
     image: mongo
