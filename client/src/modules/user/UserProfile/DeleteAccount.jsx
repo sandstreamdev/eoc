@@ -1,21 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
-import _trim from 'lodash/trim';
 
 import { IntlPropType } from 'common/constants/propTypes';
-import {
-  checkIfDataLeft,
-  sendDeleteAccountMail,
-  logoutCurrentUser,
-  removeUserData
-} from '../model/actions';
+import { checkIfDataLeft, sendDeleteAccountMail } from '../model/actions';
 import Dialog from 'common/components/Dialog';
 import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
-import { accountStatus, saveAccountData } from 'common/utils/localStorage';
 import ResourcePanel from './ResourcePanel';
 import './DeleteAccount.scss';
 
@@ -32,15 +23,8 @@ class DeleteAccount extends Component {
     this.setState({ pending: true });
     event.preventDefault();
 
-    const { removeUserData } = this.props;
-
     try {
-      const result = await sendDeleteAccountMail();
-
-      if (result) {
-        saveAccountData(accountStatus.DELETED);
-        removeUserData();
-      }
+      await sendDeleteAccountMail();
     } catch (err) {
       console.log(err);
 
@@ -96,12 +80,6 @@ class DeleteAccount extends Component {
 
   hideOwnershipTransferDialog = () =>
     this.setState({ isOwnershipTransferDialogVisible: false });
-
-  handleCancel = () => {
-    const { logoutCurrentUser } = this.props;
-
-    logoutCurrentUser();
-  };
 
   render() {
     const {
@@ -159,16 +137,7 @@ class DeleteAccount extends Component {
 }
 
 DeleteAccount.propTypes = {
-  intl: IntlPropType.isRequired,
-
-  logoutCurrentUser: PropTypes.func.isRequired,
-  removeUserData: PropTypes.func.isRequired
+  intl: IntlPropType.isRequired
 };
 
-export default _flowRight(
-  injectIntl,
-  connect(
-    null,
-    { logoutCurrentUser, removeUserData }
-  )
-)(DeleteAccount);
+export default _flowRight(injectIntl)(DeleteAccount);
