@@ -9,6 +9,8 @@ const UserSchema = new Schema(
     accessToken: { type: String },
     activatedAt: { type: Date },
     avatarUrl: { type: String },
+    deleteToken: { type: String },
+    deleteTokenExpirationDate: { type: Date },
     displayName: { type: String },
     email: { type: String, required: true },
     emailReportsFrequency: {
