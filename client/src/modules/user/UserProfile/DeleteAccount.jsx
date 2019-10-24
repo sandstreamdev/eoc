@@ -24,6 +24,7 @@ class DeleteAccount extends Component {
     event.preventDefault();
 
     try {
+      // TODO: add notifications about delete email sent
       await sendDeleteAccountMail();
     } catch (err) {
       console.log(err);
