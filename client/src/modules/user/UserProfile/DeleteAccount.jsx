@@ -21,34 +21,18 @@ import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
   state = {
-    email: '',
     isDeleteDialogVisible: false,
     isErrorVisible: false,
     isOwnershipTransferDialogVisible: false,
     onlyOwnerResources: null,
-    password: '',
-    pending: false,
-    verificationText: ''
+    pending: false
   };
 
   handleDeleteAccount = async event => {
     this.setState({ pending: true });
     event.preventDefault();
 
-    const {
-      intl: { formatMessage },
-      removeUserData
-    } = this.props;
-    const { verificationText } = this.state;
-    const verificationString = formatMessage({
-      id: 'user.delete-form.verify-text'
-    });
-
-    if (verificationText !== verificationString) {
-      this.setState({ isErrorVisible: true, pending: false });
-
-      return;
-    }
+    const { removeUserData } = this.props;
 
     try {
       const { email, password } = this.state;
@@ -60,32 +44,10 @@ class DeleteAccount extends Component {
         removeUserData();
       }
     } catch (err) {
+      console.log(err);
+
       this.setState({ isErrorVisible: true, pending: false });
     }
-  };
-
-  handleEmailChange = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ email: value });
-  };
-
-  handlePasswordChange = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ password: value });
-  };
-
-  handleVerificationText = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ verificationText: value });
   };
 
   handleOnDeleteClick = async () => {
@@ -162,10 +124,6 @@ class DeleteAccount extends Component {
           isVisible={isDeleteDialogVisible}
           onCancel={this.hideDeleteDialog}
           onConfirm={this.handleDeleteAccount}
-          onEmailChange={this.handleEmailChange}
-          onPasswordChange={this.handlePasswordChange}
-          onSubmit={this.handleDeleteAccount}
-          onVerificationTextChange={this.handleVerificationText}
           pending={pending}
         />
         <Dialog

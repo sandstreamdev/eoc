@@ -43,15 +43,6 @@ const DeleteForm = ({
         type="text"
       />
     </label>
-    <label className="delete-form__label">
-      <FormattedMessage id="user.auth.input.password.confirm" />
-      <input
-        autoComplete="new-password"
-        className="delete-form__input primary-input"
-        onChange={onPasswordChange}
-        type="password"
-      />
-    </label>
     <input className="hidden" type="submit" />
   </form>
 );

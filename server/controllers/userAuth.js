@@ -484,35 +484,31 @@ const checkIfDataLeft = async (req, resp) => {
 };
 
 const deleteAccount = async (req, resp) => {
-  const { email, password } = req.body;
   const { _id } = req.user;
-  const sanitizedEmail = sanitize(email);
   const socketInstance = io.getInstance();
 
   try {
     const user = await User.findOne({
-      _id,
-      email: sanitizedEmail,
-      isActive: true
+      _id
     });
-    const { _id: userId, displayName, password: dbPassword } = user;
 
-    if (bcrypt.compareSync(password + email, dbPassword)) {
-      await deleteAccountDetails(User, user);
-      await deleteUserLists(List, userId);
-      await removeUserFromLists(socketInstance)(List, displayName, userId);
-      await deleteUserCohorts(Cohort, userId);
-      await removeUserFromCohorts(socketInstance)(Cohort, displayName, userId);
-      await logoutOtherSessions(socketInstance)(userId);
-      await destroyUserSessions(req.sessionStore, userId);
+    const { _id: userId, displayName } = user;
 
-      req.logout();
-      resp.clearCookie('connect.sid');
+    await deleteAccountDetails(User, user);
+    await deleteUserLists(List, userId);
+    await removeUserFromLists(socketInstance)(List, displayName, userId);
+    await deleteUserCohorts(Cohort, userId);
+    await removeUserFromCohorts(socketInstance)(Cohort, displayName, userId);
+    await logoutOtherSessions(socketInstance)(userId);
+    await destroyUserSessions(req.sessionStore, userId);
 
-      return resp.send();
-    }
-    throw new Error();
-  } catch {
+    req.logout();
+    resp.clearCookie('connect.sid');
+
+    return resp.send();
+  } catch (error) {
+    console.log(error);
+
     resp.sendStatus(400);
   }
 };

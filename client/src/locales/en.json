@@ -415,8 +415,6 @@
   "user.delete-account.ownership-header": "Before you leave",
   "user.delete-account": "Delete account",
   "user.delete-form.email": "Your email",
-  "user.delete-form.verify-message": "To verify, type {text} below",
-  "user.delete-form.verify-text": "delete my account",
   "user.email": "Email",
   "user.name": "Name",
   "user.password": "Password",
