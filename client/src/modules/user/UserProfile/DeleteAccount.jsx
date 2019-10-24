@@ -8,7 +8,7 @@ import _trim from 'lodash/trim';
 import { IntlPropType } from 'common/constants/propTypes';
 import {
   checkIfDataLeft,
-  deleteAccount,
+  sendDeleteAccountMail,
   logoutCurrentUser,
   removeUserData
 } from '../model/actions';
@@ -35,9 +35,7 @@ class DeleteAccount extends Component {
     const { removeUserData } = this.props;
 
     try {
-      const { email, password } = this.state;
-      const trimmedEmail = _trim(email);
-      const result = await deleteAccount(trimmedEmail, password);
+      const result = await sendDeleteAccountMail();
 
       if (result) {
         saveAccountData(accountStatus.DELETED);

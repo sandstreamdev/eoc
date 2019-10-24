@@ -163,8 +163,8 @@ export const getAccountDetails = token =>
 
 export const checkIfDataLeft = () => getData('/auth/check-if-data-left');
 
-export const deleteAccount = (email, password) =>
-  deleteData('/auth', { email, password });
+export const sendDeleteAccountMail = () =>
+  getData('/auth/send-delete-account-mail');
 
 export const sendReport = () => async dispatch => {
   try {

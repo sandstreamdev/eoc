@@ -513,6 +513,24 @@ const deleteAccount = async (req, resp) => {
   }
 };
 
+const sendDeleteAccountMail = async (req, resp) => {
+  console.log('send delete account mail');
+
+  resp.sendStatus(200);
+  const { _id } = req.user;
+
+  try {
+    const deleteToken = crypto.randomBytes(32).toString('hex');
+    const deleteTokenExpirationDate = new Date().getTime() + EXPIRATION_TIME;
+
+    const user = User.findOneAndUpdate({ _id });
+
+    console.log('test');
+  } catch (error) {
+    resp.sendStatus(400);
+  }
+};
+
 const prepareItems = async (req, resp, next) => {
   const { user } = req;
 
@@ -560,6 +578,7 @@ module.exports = {
   recoveryPassword,
   resendSignUpConfirmationLink,
   resetPassword,
+  sendDeleteAccountMail,
   sendUser,
   signUp,
   updateEmailReportSettings,
