@@ -11,6 +11,7 @@ const {
   changePassword,
   checkIfDataLeft,
   confirmEmail,
+  deleteAccount,
   getAccountDetails,
   getLoggedUser,
   getUserDetails,
@@ -55,6 +56,7 @@ router.get('/user-details', authorize, getUserDetails);
 router.post('/change-password', authorize, changePassword);
 router.get('/account-details/:token?', getAccountDetails);
 router.get('/send-delete-account-mail', authorize, sendDeleteAccountMail);
+router.get('/delete-account/:deleteToken?', deleteAccount);
 router.get('/send-report', authorize, prepareItems, sendReportOnDemand);
 router.post('/email-reports-settings', authorize, updateEmailReportSettings);
 router.get('/check-if-data-left', authorize, checkIfDataLeft);

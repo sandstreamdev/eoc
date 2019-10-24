@@ -487,27 +487,35 @@ const checkIfDataLeft = async (req, resp) => {
 
 const deleteAccount = async (req, resp) => {
   const { _id } = req.user;
+  const { deleteToken } = req.params;
   const socketInstance = io.getInstance();
 
   try {
     const user = await User.findOne({
-      _id
+      _id,
+      deleteToken
     });
 
-    const { _id: userId, displayName } = user;
+    console.log(user);
 
-    await deleteAccountDetails(User, user);
-    await deleteUserLists(List, userId);
-    await removeUserFromLists(socketInstance)(List, displayName, userId);
-    await deleteUserCohorts(Cohort, userId);
-    await removeUserFromCohorts(socketInstance)(Cohort, displayName, userId);
-    await logoutOtherSessions(socketInstance)(userId);
-    await destroyUserSessions(req.sessionStore, userId);
+    if (user) {
+      const { _id: userId, displayName } = user;
 
-    req.logout();
-    resp.clearCookie('connect.sid');
+      await deleteAccountDetails(User, user);
+      await deleteUserLists(List, userId);
+      await removeUserFromLists(socketInstance)(List, displayName, userId);
+      await deleteUserCohorts(Cohort, userId);
+      await removeUserFromCohorts(socketInstance)(Cohort, displayName, userId);
+      await logoutOtherSessions(socketInstance)(userId);
+      await destroyUserSessions(req.sessionStore, userId);
 
-    return resp.send();
+      req.logout();
+      resp.clearCookie('connect.sid');
+
+      return resp.redirect('/account-deleted');
+    }
+
+    throw new Error();
   } catch (error) {
     console.log(error);
 
@@ -541,9 +549,7 @@ const sendDeleteAccountMail = async (req, resp) => {
     }
 
     throw new Error();
-  } catch (error) {
-    console.error(error);
-
+  } catch {
     resp.sendStatus(400);
   }
 };
