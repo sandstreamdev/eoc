@@ -5,6 +5,7 @@ const { google } = require('googleapis');
 const inviteTemplate = require('./invite/template');
 const confirmationTemplate = require('./confirmation/template');
 const resetPasswordTemplate = require('./reset-password/template');
+const deleteAccountTemplate = require('./delete-account/template');
 const weeklyReportContent = require('./reports/weekly-content');
 const { FULL_PROJECT_NAME, PROJECT_NAME } = require('../common/variables');
 
@@ -158,7 +159,33 @@ const sendReportOnDemand = async (req, resp) => {
   }
 };
 
+const sendDeleteAccountMailer = async data => {
+  const { email: receiver, deleteToken, req } = data;
+  const deleteUrl = `${fullUrl(req)}/auth/delete-account/${deleteToken}`;
+  const host = fullUrl(req);
+
+  const message = {
+    to: receiver,
+    from: fromField,
+    subject: '❌ Delete account.',
+    html: deleteAccountTemplate({
+      host,
+      projectName: PROJECT_NAME,
+      deleteUrl
+    })
+  };
+
+  const mailer = await getMailer();
+
+  try {
+    return await mailer.sendMail(message);
+  } finally {
+    mailer.close();
+  }
+};
+
 module.exports = {
+  sendDeleteAccountMailer,
   sendInvitation,
   sendReport,
   sendReportOnDemand,

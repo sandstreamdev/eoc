@@ -11,8 +11,8 @@ const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
 const List = require('../models/list.model');
 const {
-  checkIfUserIsTheOnlyOwner,
   deleteAccountDetails,
+  checkIfUserIsTheOnlyOwner,
   deleteUserCohorts,
   deleteUserLists,
   destroyUserSessions,
@@ -25,12 +25,14 @@ const Settings = require('../models/settings.model');
 const {
   BadRequestReason,
   BCRYPT_SALT_ROUNDS,
+  DELETE_MAIL_EXPIRATION_TIME,
   EXPIRATION_TIME
 } = require('../common/variables');
 const { getItemsForReport } = require('../common/utils/helpers');
 const Cohort = require('../models/cohort.model');
 const io = require('../sockets/index');
 const { logout: logoutOtherSessions } = require('../sockets/user');
+const { sendDeleteAccountMailer } = require('../mailer/index');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -514,19 +516,34 @@ const deleteAccount = async (req, resp) => {
 };
 
 const sendDeleteAccountMail = async (req, resp) => {
-  console.log('send delete account mail');
-
-  resp.sendStatus(200);
-  const { _id } = req.user;
+  const { _id, email } = req.user;
 
   try {
     const deleteToken = crypto.randomBytes(32).toString('hex');
-    const deleteTokenExpirationDate = new Date().getTime() + EXPIRATION_TIME;
+    const deleteTokenExpirationDate =
+      new Date().getTime() + DELETE_MAIL_EXPIRATION_TIME;
+    const user = await User.findOneAndUpdate(
+      { _id },
+      { deleteToken, deleteTokenExpirationDate }
+    );
 
-    const user = User.findOneAndUpdate({ _id });
+    if (user) {
+      // eslint-disable-next-line no-param-reassign
+      const data = {
+        deleteToken,
+        email,
+        req
+      };
 
-    console.log('test');
+      sendDeleteAccountMailer(data);
+
+      return resp.sendStatus(200);
+    }
+
+    throw new Error();
   } catch (error) {
+    console.error(error);
+
     resp.sendStatus(400);
   }
 };
