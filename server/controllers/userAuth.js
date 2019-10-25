@@ -496,8 +496,6 @@ const deleteAccount = async (req, resp) => {
       deleteToken
     });
 
-    console.log(user);
-
     if (user) {
       const { _id: userId, displayName } = user;
 
@@ -516,9 +514,7 @@ const deleteAccount = async (req, resp) => {
     }
 
     throw new Error();
-  } catch (error) {
-    console.log(error);
-
+  } catch {
     resp.sendStatus(400);
   }
 };

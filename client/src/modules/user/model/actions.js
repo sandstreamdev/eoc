@@ -1,5 +1,4 @@
 import {
-  deleteData,
   getData,
   getJson,
   postData,

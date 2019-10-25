@@ -30,9 +30,7 @@ class DeleteAccount extends Component {
 
       sendDeleteAccountMail();
       this.setState({ isDeleteDialogVisible: false, pending: false });
-    } catch (err) {
-      console.log(err);
-
+    } catch {
       this.setState({ isErrorVisible: true, pending: false });
     }
   };
