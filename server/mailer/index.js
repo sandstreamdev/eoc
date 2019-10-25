@@ -159,7 +159,7 @@ const sendReportOnDemand = async (req, resp) => {
   }
 };
 
-const sendDeleteAccountMailer = async data => {
+const sendDeleteAccountMail = async data => {
   const { email: receiver, deleteToken, req } = data;
   const deleteUrl = `${fullUrl(req)}/auth/delete-account/${deleteToken}`;
   const host = fullUrl(req);
@@ -185,7 +185,7 @@ const sendDeleteAccountMailer = async data => {
 };
 
 module.exports = {
-  sendDeleteAccountMailer,
+  sendDeleteAccountMail,
   sendInvitation,
   sendReport,
   sendReportOnDemand,

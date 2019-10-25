@@ -1,38 +1,34 @@
 import React, { Component, Fragment } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
 import { connect } from 'react-redux';
+import _flowRight from 'lodash/flowRight';
 import PropTypes from 'prop-types';
 
-import { IntlPropType } from 'common/constants/propTypes';
 import { checkIfDataLeft, sendDeleteAccountMail } from '../model/actions';
-import Dialog from 'common/components/Dialog';
-import DeleteDialog from './DeleteDialog';
 import { ValidationException } from 'common/exceptions';
+import { IntlPropType } from 'common/constants/propTypes';
 import ResourcePanel from './ResourcePanel';
+import DeleteDialog from './DeleteDialog';
+import Dialog from 'common/components/Dialog';
 import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
   state = {
     isDeleteDialogVisible: false,
-    isErrorVisible: false,
+    isErrorVisible: true,
     isOwnershipTransferDialogVisible: false,
     onlyOwnerResources: null,
     pending: false
   };
 
-  handleDeleteAccount = async event => {
+  handleConfirm = async event => {
     this.setState({ pending: true });
     event.preventDefault();
 
-    try {
-      const { sendDeleteAccountMail } = this.props;
+    const { sendDeleteAccountMail } = this.props;
 
-      sendDeleteAccountMail();
-      this.setState({ isDeleteDialogVisible: false, pending: false });
-    } catch {
-      this.setState({ isErrorVisible: true, pending: false });
-    }
+    sendDeleteAccountMail();
+    this.setState({ isDeleteDialogVisible: false, pending: false });
   };
 
   handleOnDeleteClick = async () => {
@@ -102,7 +98,7 @@ class DeleteAccount extends Component {
           error={isErrorVisible}
           isVisible={isDeleteDialogVisible}
           onCancel={this.hideDeleteDialog}
-          onConfirm={this.handleDeleteAccount}
+          onConfirm={this.handleConfirm}
           pending={pending}
         />
         <Dialog

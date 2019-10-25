@@ -1,15 +1,17 @@
 import AuthBox from './AuthBox/AuthBox';
-import UserProfile from './UserProfile/UserProfile';
-import SuccessMessage from './AuthBox/components/SuccessMessage';
+import DeleteLinkExpired from './AuthBox/components/DeleteLinkExpired';
 import LinkExpired from './AuthBox/components/LinkExpired';
-import ResetPassword from './AuthBox/components/ResetPassword';
 import PasswordRecoveryForm from './AuthBox/components/PasswordRecoveryForm';
+import ResetPassword from './AuthBox/components/ResetPassword';
+import SuccessMessage from './AuthBox/components/SuccessMessage';
+import UserProfile from './UserProfile/UserProfile';
 
 export {
   AuthBox,
+  DeleteLinkExpired,
   LinkExpired,
-  ResetPassword,
   PasswordRecoveryForm,
+  ResetPassword,
   SuccessMessage,
   UserProfile
 };

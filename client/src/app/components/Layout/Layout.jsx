@@ -11,6 +11,7 @@ import Dashboard from 'modules/dashboard';
 import Cohort from 'modules/cohort';
 import {
   AuthBox,
+  DeleteLinkExpired,
   LinkExpired,
   PasswordRecoveryForm,
   ResetPassword,
@@ -160,6 +161,10 @@ export class Layout extends PureComponent {
             component={PasswordRecoveryForm}
             path="/password-recovery/:token?"
           />
+          <Route
+            component={DeleteLinkExpired}
+            path="/delete-link-expired/:token?"
+          />
           <Route component={SuccessMessage} path="/password-recovery-success" />
           <Redirect to="/" />
         </Switch>
@@ -199,6 +204,10 @@ export class Layout extends PureComponent {
           <Route
             component={LinkExpired}
             path="/recovery-link-expired/:token?"
+          />
+          <Route
+            component={DeleteLinkExpired}
+            path="/delete-link-expired/:token?"
           />
           <Route
             component={PasswordRecoveryForm}

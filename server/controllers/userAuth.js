@@ -32,7 +32,7 @@ const { getItemsForReport } = require('../common/utils/helpers');
 const Cohort = require('../models/cohort.model');
 const io = require('../sockets/index');
 const { logout: logoutOtherSessions } = require('../sockets/user');
-const { sendDeleteAccountMailer } = require('../mailer/index');
+const mailer = require('../mailer/index');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -486,14 +486,13 @@ const checkIfDataLeft = async (req, resp) => {
 };
 
 const deleteAccount = async (req, resp) => {
-  const { _id } = req.user;
   const { deleteToken } = req.params;
   const socketInstance = io.getInstance();
 
   try {
     const user = await User.findOne({
-      _id,
-      deleteToken
+      deleteToken,
+      deleteTokenExpirationDate: { $gte: new Date() }
     });
 
     if (user) {
@@ -513,8 +512,10 @@ const deleteAccount = async (req, resp) => {
       return resp.redirect('/account-deleted');
     }
 
-    throw new Error();
-  } catch {
+    resp.redirect(`/delete-link-expired/${deleteToken}`);
+  } catch (error) {
+    console.log(error);
+
     resp.sendStatus(400);
   }
 };
@@ -526,6 +527,7 @@ const sendDeleteAccountMail = async (req, resp) => {
     const deleteToken = crypto.randomBytes(32).toString('hex');
     const deleteTokenExpirationDate =
       new Date().getTime() + DELETE_MAIL_EXPIRATION_TIME;
+
     const user = await User.findOneAndUpdate(
       { _id },
       { deleteToken, deleteTokenExpirationDate }
@@ -539,7 +541,7 @@ const sendDeleteAccountMail = async (req, resp) => {
         req
       };
 
-      sendDeleteAccountMailer(data);
+      mailer.sendDeleteAccountMail(data);
 
       return resp.sendStatus(200);
     }
