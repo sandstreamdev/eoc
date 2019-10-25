@@ -73,7 +73,8 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin({ verbose: true }),
     new HtmlWebpackPlugin({
-      template: './client/public/index.html'
+      template: './client/public/index.html',
+      favicon: './client/public/favicon.ico'
     })
   ]
 };

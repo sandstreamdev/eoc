@@ -72,7 +72,8 @@ module.exports = {
       filename: 'style.[hash].css'
     }),
     new HtmlWebpackPlugin({
-      template: './client/public/index.html'
+      template: './client/public/index.html',
+      favicon: './client/public/favicon.ico'
     })
   ]
 };
