@@ -1,25 +1,33 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import HomeLink from 'common/components/HomeLink';
+import { IntlPropType } from 'common/constants/propTypes';
 import './DeleteLinkExpired.scss';
 
-const DeleteLinkExpired = () => (
+const DeleteLinkExpired = ({ intl: { formatMessage } }) => (
   <div className="delete-link-expired">
     <h1 className="delete-link-expired__heading">
       <HomeLink />
     </h1>
     <p>
-      <FormattedMessage id="delete-link.has-expired-part1" />
-      <span> </span>
-      <Link className="delete-link-expired__link" to="/user-profile">
-        <FormattedMessage id="delete-link.has-expired-link" />
-      </Link>
-      <span> </span>
-      <FormattedMessage id="delete-link.has-expired-part2" />
+      <FormattedMessage
+        id="delete-link.has-expired"
+        values={{
+          link: (
+            <Link className="delete-link-expired__link" to="/user-profile">
+              {formatMessage({ id: 'delete-link.has-expired-link' })}
+            </Link>
+          )
+        }}
+      />
     </p>
   </div>
 );
 
-export default DeleteLinkExpired;
+DeleteLinkExpired.propTypes = {
+  intl: IntlPropType
+};
+
+export default injectIntl(DeleteLinkExpired);

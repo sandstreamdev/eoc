@@ -69,7 +69,6 @@ const ActivityType = Object.freeze({
 const LOCK_TIMEOUT = 300000;
 const SOCKET_TIMEOUT = 60000;
 const EXPIRATION_TIME = 3600000;
-const DELETE_MAIL_EXPIRATION_TIME = 3600000;
 
 const Routes = Object.freeze({
   COHORT: 'cohort',
@@ -102,7 +101,7 @@ module.exports = {
   DB_NAME,
   DB_SERVER_URL,
   DB_URL,
-  DELETE_MAIL_EXPIRATION_TIME,
+  EXPIRATION_TIME,
   DEMO_MODE_ID,
   DEMO_USER_ID,
   EmailReportsFrequency,

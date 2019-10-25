@@ -25,7 +25,7 @@ const Settings = require('../models/settings.model');
 const {
   BadRequestReason,
   BCRYPT_SALT_ROUNDS,
-  DELETE_MAIL_EXPIRATION_TIME,
+  EXPIRATION_TIME,
   EXPIRATION_TIME
 } = require('../common/variables');
 const { getItemsForReport } = require('../common/utils/helpers');
@@ -512,7 +512,7 @@ const deleteAccount = async (req, resp) => {
       return resp.redirect('/account-deleted');
     }
 
-    resp.redirect(`/delete-link-expired/${deleteToken}`);
+    resp.redirect('/delete-link-expired');
   } catch {
     resp.sendStatus(400);
   }
@@ -523,8 +523,7 @@ const sendDeleteAccountMail = async (req, resp) => {
 
   try {
     const deleteToken = crypto.randomBytes(32).toString('hex');
-    const deleteTokenExpirationDate =
-      new Date().getTime() + DELETE_MAIL_EXPIRATION_TIME;
+    const deleteTokenExpirationDate = new Date().getTime() + EXPIRATION_TIME;
 
     const user = await User.findOneAndUpdate(
       { _id },
