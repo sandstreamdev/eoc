@@ -11,8 +11,8 @@ const ValidationException = require('../common/exceptions/ValidationException');
 const User = require('../models/user.model');
 const List = require('../models/list.model');
 const {
-  deleteAccountDetails,
   checkIfUserIsTheOnlyOwner,
+  deleteAccountDetails,
   deleteUserCohorts,
   deleteUserLists,
   destroyUserSessions,
@@ -530,7 +530,6 @@ const sendDeleteAccountMail = async (req, resp) => {
     );
 
     if (user) {
-      // eslint-disable-next-line no-param-reassign
       const data = {
         deleteToken,
         email,
