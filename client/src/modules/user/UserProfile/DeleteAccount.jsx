@@ -15,7 +15,7 @@ import './DeleteAccount.scss';
 class DeleteAccount extends Component {
   state = {
     isDeleteDialogVisible: false,
-    isErrorVisible: true,
+    isErrorVisible: false,
     isOwnershipTransferDialogVisible: false,
     onlyOwnerResources: null,
     pending: false
