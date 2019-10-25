@@ -105,7 +105,6 @@ module.exports = {
   DEMO_MODE_ID,
   DEMO_USER_ID,
   EmailReportsFrequency,
-  EXPIRATION_TIME,
   FULL_PROJECT_NAME,
   ListType,
   LOCK_TIMEOUT,

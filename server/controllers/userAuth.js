@@ -25,7 +25,6 @@ const Settings = require('../models/settings.model');
 const {
   BadRequestReason,
   BCRYPT_SALT_ROUNDS,
-  EXPIRATION_TIME,
   EXPIRATION_TIME
 } = require('../common/variables');
 const { getItemsForReport } = require('../common/utils/helpers');
