@@ -69,7 +69,7 @@ const ActivityType = Object.freeze({
 const LOCK_TIMEOUT = 300000;
 const SOCKET_TIMEOUT = 60000;
 const EXPIRATION_TIME = 3600000;
-const DELETE_MAIL_EXPIRATION_TIME = 500;
+const DELETE_MAIL_EXPIRATION_TIME = 3600000;
 
 const Routes = Object.freeze({
   COHORT: 'cohort',

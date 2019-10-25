@@ -40,6 +40,14 @@ const styles = ({ maxWidth = 512 } = {}) => ({
     line-height: 1.2;
     padding: 8px 16px;
     cursor: pointer;`,
+  deleteButton: `background: #fc4a1a;
+    border: 0;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 8px 16px;
+    cursor: pointer;`,
   receiver: 'margin: 0;',
   tableContent: `border-spacing: 0;
     width: 100%`,

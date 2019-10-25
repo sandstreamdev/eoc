@@ -38,7 +38,8 @@ const mailTemplate = ({ deleteUrl, host, projectName }) =>
                           <td style="padding: 8px 0;">
                             <span>To delete your <a href="${host}" style="${
     styles.a
-  }">${projectName}</a> account, please click the following button.</span>
+  }">${projectName}</a> account, please click the following button.</span><br/>
+  <span><b>Please remember that this action cannot be undone.</b></span>
                           </td>
                         </tr>
                         <tr>
@@ -46,7 +47,7 @@ const mailTemplate = ({ deleteUrl, host, projectName }) =>
                             <center>
                               <a href="${deleteUrl}">
                                 <input style="${
-                                  styles.inputButton
+                                  styles.deleteButton
                                 }" value="Delete my account" type="button" />
                               </a>
                             </center>
