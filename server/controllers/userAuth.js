@@ -513,9 +513,7 @@ const deleteAccount = async (req, resp) => {
     }
 
     resp.redirect(`/delete-link-expired/${deleteToken}`);
-  } catch (error) {
-    console.log(error);
-
+  } catch {
     resp.sendStatus(400);
   }
 };
