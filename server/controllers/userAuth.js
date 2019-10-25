@@ -537,7 +537,7 @@ const sendDeleteAccountMail = async (req, resp) => {
         req
       };
 
-      mailer.sendDeleteAccountMail(data);
+      await mailer.sendDeleteAccountMail(data);
 
       return resp.sendStatus(200);
     }
