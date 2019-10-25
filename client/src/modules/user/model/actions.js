@@ -163,8 +163,26 @@ export const getAccountDetails = token =>
 
 export const checkIfDataLeft = () => getData('/auth/check-if-data-left');
 
-export const sendDeleteAccountMail = () =>
-  getData('/auth/send-delete-account-mail');
+export const sendDeleteAccountMail = () => async dispatch => {
+  try {
+    const result = await getData('/auth/send-delete-account-mail');
+
+    if (result) {
+      createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+        notificationId: 'email.delete-account.success'
+      });
+    }
+  } catch (error) {
+    createNotificationWithTimeout(
+      dispatch,
+      NotificationType.ERROR,
+      {
+        notificationId: 'email.delete-account.failure'
+      },
+      error
+    );
+  }
+};
 
 export const sendReport = () => async dispatch => {
   try {

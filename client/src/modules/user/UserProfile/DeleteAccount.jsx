@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { IntlPropType } from 'common/constants/propTypes';
 import { checkIfDataLeft, sendDeleteAccountMail } from '../model/actions';
@@ -24,8 +26,10 @@ class DeleteAccount extends Component {
     event.preventDefault();
 
     try {
-      // TODO: add notifications about delete email sent
-      await sendDeleteAccountMail();
+      const { sendDeleteAccountMail } = this.props;
+
+      sendDeleteAccountMail();
+      this.setState({ isDeleteDialogVisible: false, pending: false });
     } catch (err) {
       console.log(err);
 
@@ -138,7 +142,15 @@ class DeleteAccount extends Component {
 }
 
 DeleteAccount.propTypes = {
-  intl: IntlPropType.isRequired
+  intl: IntlPropType.isRequired,
+
+  sendDeleteAccountMail: PropTypes.func.isRequired
 };
 
-export default _flowRight(injectIntl)(DeleteAccount);
+export default _flowRight(
+  injectIntl,
+  connect(
+    null,
+    { sendDeleteAccountMail }
+  )
+)(DeleteAccount);
