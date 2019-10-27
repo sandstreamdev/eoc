@@ -1,7 +1,6 @@
 # Libraries
 
 
-
 * @babel/code-frame@7<i></i>.5<i></i>.5
   - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-code-frame/raw/master/LICENSE)
   - repository: https://github.com/babel/babel/tree/master/packages/babel-code-frame
