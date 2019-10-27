@@ -3,8 +3,8 @@ const os = require('os');
 const crawler = require('npm-license-crawler');
 const checker = require('license-checker');
 
-const newLine = os.EOL;
-const doubleLines = `${os.EOL}${os.EOL}`;
+const line = os.EOL;
+const doubleLine = `${os.EOL}${os.EOL}`;
 const librariesPath = './client/src/modules/libraries/libraries.json';
 const crawlerOptions = {
   json: 'libraries.json',
@@ -22,11 +22,11 @@ const prepareDependenciesList = dependencies => {
   let content = '';
 
   names.forEach(name => {
-    content += `* ${disableLink(name)}${newLine}`;
+    content += `* ${disableLink(name)}${line}`;
     content += `  - license: [${dependencies[name].licenses}](${
       dependencies[name].licenseUrl
-    })${newLine}`;
-    content += `  - repository: ${dependencies[name].repository}${doubleLines}`;
+    })${line}`;
+    content += `  - repository: ${dependencies[name].repository}${doubleLine}`;
   });
 
   return content;
@@ -37,7 +37,7 @@ crawler.dumpLicenses(crawlerOptions, (error, res) => {
     // eslint-disable-next-line no-console
     console.error(error);
   } else {
-    let content = `# Libraries${doubleLines}${doubleLines}`;
+    let content = `# Libraries${line}${doubleLine}`;
 
     content += prepareDependenciesList(res);
     checker.init(checkerOption, (err, packages) => {

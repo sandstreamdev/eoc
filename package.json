@@ -8,7 +8,6 @@
     "build:prod": "webpack --config webpack.config.production.js",
     "check": "npm-run-all lint format stylelint",
     "clear-demo": "node server/tasks/clearDemoData.js",
-    "dependencies": "node scripts/list-dependencies.js",
     "dev": "npm-run-all -p start:server:dev start:client:dev",
     "format": "prettier --check \"{client,server}/**/*.{js,jsx}\"",
     "format:fix": "prettier --write \"{client,server}/**/*.{js,jsx}\"",
