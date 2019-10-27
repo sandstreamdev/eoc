@@ -1,0 +1,25 @@
+@import 'partials';
+
+.library {
+  overflow: hidden;
+
+  &__header {
+    cursor: pointer;
+    color: $text-orange;
+    box-sizing: border-box;
+    line-height: 1.2;
+    font-weight: 500;
+    font-size: $m-font;
+    padding: four-by(2) 0;
+
+    &:hover {
+      text-decoration: underline;
+      color: $text-black;
+    }
+
+    @include breakpoint($large) {
+      padding: four-by(1) 0;
+      font-size: $l-font;
+    }
+  }
+}

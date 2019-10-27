@@ -41,3 +41,12 @@ export const ResourcesDataPropType = PropTypes.shape({
   cohorts: ResourcePropType,
   lists: ResourcePropType
 });
+
+export const licensePropType = PropTypes.shape({
+  licenses: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string)
+  ]),
+  licenseText: PropTypes.string,
+  licenseUrl: PropTypes.string
+});
