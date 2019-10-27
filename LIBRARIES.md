@@ -822,7 +822,7 @@
   - license: [MIT](https://github.com/caolan/async/raw/master/LICENSE)
   - repository: https://github.com/caolan/async
 
-* async@2<i></i>.6<i></i>.2
+* async@2<i></i>.6<i></i>.3
   - license: [MIT](https://github.com/caolan/async/raw/master/LICENSE)
   - repository: https://github.com/caolan/async
 
@@ -1049,10 +1049,6 @@
 * bser@2<i></i>.1<i></i>.0
   - license: [Apache-2.0](https://github.com/facebook/watchman)
   - repository: https://github.com/facebook/watchman
-
-* bson@1<i></i>.0<i></i>.9
-  - license: [Apache-2.0](https://github.com/mongodb/js-bson/raw/master/LICENSE.md)
-  - repository: https://github.com/mongodb/js-bson
 
 * bson@1<i></i>.1<i></i>.1
   - license: [Apache-2.0](https://github.com/mongodb/js-bson/raw/master/LICENSE.md)
@@ -1402,7 +1398,7 @@
   - license: [MIT](http://github.com/bripkens/connect-history-api-fallback/raw/master/LICENSE)
   - repository: http://github.com/bripkens/connect-history-api-fallback
 
-* connect-mongo@2<i></i>.0<i></i>.3
+* connect-mongo@3<i></i>.1<i></i>.0
   - license: [MIT](https://github.com/jdesboeufs/connect-mongo/raw/master/LICENSE)
   - repository: https://github.com/jdesboeufs/connect-mongo
 
@@ -1981,10 +1977,6 @@
 * es-to-primitive@1<i></i>.2<i></i>.0
   - license: [MIT](https://github.com/ljharb/es-to-primitive/raw/master/LICENSE)
   - repository: https://github.com/ljharb/es-to-primitive
-
-* es6-promise@3<i></i>.2<i></i>.1
-  - license: [MIT](https://github.com/jakearchibald/ES6-Promises/raw/master/LICENSE)
-  - repository: https://github.com/jakearchibald/ES6-Promises
 
 * es6-promise@4<i></i>.2<i></i>.8
   - license: [MIT](https://github.com/stefanpenner/es6-promise/raw/master/LICENSE)
@@ -2754,7 +2746,7 @@
   - license: [MIT](https://github.com/substack/https-browserify/raw/master/LICENSE)
   - repository: https://github.com/substack/https-browserify
 
-* https-proxy-agent@2<i></i>.2<i></i>.2
+* https-proxy-agent@2<i></i>.2<i></i>.3
   - license: [MIT](https://github.com/TooTallNate/node-https-proxy-agent)
   - repository: https://github.com/TooTallNate/node-https-proxy-agent
 
@@ -3482,7 +3474,7 @@
   - license: [MIT](https://github.com/brianloveswords/node-jws/raw/master/LICENSE)
   - repository: https://github.com/brianloveswords/node-jws
 
-* kareem@2<i></i>.3<i></i>.0
+* kareem@2<i></i>.3<i></i>.1
   - license: [Apache-2.0](https://github.com/vkarpov15/kareem/raw/master/LICENSE)
   - repository: https://github.com/vkarpov15/kareem
 
@@ -3966,10 +3958,6 @@
   - license: [MIT](https://github.com/vkarpov15/mongo-sanitize/raw/master/LICENSE)
   - repository: https://github.com/vkarpov15/mongo-sanitize
 
-* mongodb-core@2<i></i>.1<i></i>.20
-  - license: [Apache-2.0](https://github.com/christkv/mongodb-core/raw/master/LICENSE)
-  - repository: https://github.com/christkv/mongodb-core
-
 * mongodb-core@3<i></i>.2<i></i>.5
   - license: [Apache-2.0](https://github.com/mongodb-js/mongodb-core/raw/master/LICENSE)
   - repository: https://github.com/mongodb-js/mongodb-core
@@ -3977,10 +3965,6 @@
 * mongodb-core@3<i></i>.2<i></i>.7
   - license: [Apache-2.0](https://github.com/mongodb-js/mongodb-core/raw/master/LICENSE)
   - repository: https://github.com/mongodb-js/mongodb-core
-
-* mongodb@2<i></i>.2<i></i>.36
-  - license: [Apache-2.0](https://github.com/mongodb/node-mongodb-native/raw/master/LICENSE)
-  - repository: https://github.com/mongodb/node-mongodb-native
 
 * mongodb@3<i></i>.2<i></i>.5
   - license: [Apache-2.0](https://github.com/mongodb/node-mongodb-native/raw/master/LICENSE.md)
@@ -3990,12 +3974,16 @@
   - license: [Apache-2.0](https://github.com/mongodb/node-mongodb-native/raw/master/LICENSE.md)
   - repository: https://github.com/mongodb/node-mongodb-native
 
+* mongodb@3<i></i>.3<i></i>.3
+  - license: [Apache-2.0](https://github.com/mongodb/node-mongodb-native/raw/master/LICENSE.md)
+  - repository: https://github.com/mongodb/node-mongodb-native
+
 * mongoose-legacy-pluralize@1<i></i>.0<i></i>.2
   - license: [Apache-2.0](https://github.com/vkarpov15/mongoose-legacy-pluralize/raw/master/LICENSE)
   - repository: https://github.com/vkarpov15/mongoose-legacy-pluralize
 
-* mongoose@5<i></i>.5<i></i>.10
-  - license: [MIT](https://github.com/Automattic/mongoose)
+* mongoose@5<i></i>.7<i></i>.7
+  - license: [MIT](https://github.com/Automattic/mongoose/raw/master/LICENSE.md)
   - repository: https://github.com/Automattic/mongoose
 
 * moo@0<i></i>.4<i></i>.3
@@ -4010,7 +3998,7 @@
   - license: [MIT](https://github.com/aheckmann/mpath/raw/master/LICENSE)
   - repository: https://github.com/aheckmann/mpath
 
-* mquery@3<i></i>.2<i></i>.0
+* mquery@3<i></i>.2<i></i>.2
   - license: [MIT](https://github.com/aheckmann/mquery/raw/master/LICENSE)
   - repository: https://github.com/aheckmann/mquery
 
@@ -5234,7 +5222,7 @@
   - license: [MIT](https://github.com/jonschlinkert/regex-not/raw/master/LICENSE)
   - repository: https://github.com/jonschlinkert/regex-not
 
-* regexp-clone@0<i></i>.0<i></i>.1
+* regexp-clone@1<i></i>.0<i></i>.0
   - license: [MIT](https://github.com/aheckmann/regexp-clone/raw/master/LICENSE)
   - repository: https://github.com/aheckmann/regexp-clone
 
