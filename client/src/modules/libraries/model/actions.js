@@ -22,7 +22,6 @@ const fetchLicenseFailure = () => ({
 });
 
 export const fetchLibraries = () => async dispatch => {
-  console.log('fetch libraries');
   try {
     const data = await getJson('/api/libraries/names');
 
@@ -39,7 +38,6 @@ export const fetchLibraries = () => async dispatch => {
 };
 
 export const fetchLicense = library => async dispatch => {
-  console.log('fetch license');
   try {
     const data = await getJson(`/api/libraries/${encodeURIComponent(library)}`);
 
