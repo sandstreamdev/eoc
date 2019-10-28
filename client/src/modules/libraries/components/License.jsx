@@ -1,43 +1,93 @@
-import React from 'react';
+import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { CSSTransition } from 'react-transition-group';
-import { isURL } from 'validator';
+import _isEmpty from 'lodash/isEmpty';
 
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { makeAbortablePromise } from 'common/utils/helpers';
 import { licensePropType } from 'common/constants/propTypes';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { fetchLicense } from '../model/actions';
+import { getLicense } from '../model/selectors';
+import LicenseDetails from './LicenseDetails';
 import './License.scss';
 
-const prepareLicenseType = licenseType =>
-  typeof licenseType === 'string' ? licenseType : licenseType.join(', ');
+class License extends PureComponent {
+  pendingPromise = null;
 
-const License = ({
-  isVisible,
-  license: { licenseText, licenses: licenseType, licenseUrl }
-}) => {
-  const displayLicenseUrl = !licenseText && licenseUrl && isURL(licenseUrl);
+  state = { pending: false };
 
-  return (
-    <CSSTransition
-      classNames="license-expand"
-      in={isVisible}
-      mountOnEnter
-      timeout={200}
-      unmountOnExit
-    >
-      <div className="license">
-        {licenseText && <pre>{licenseText}</pre>}
-        {displayLicenseUrl && (
-          <a className="license__link" href={licenseUrl}>
-            {prepareLicenseType(licenseType)}
-          </a>
-        )}
-      </div>
-    </CSSTransition>
-  );
-};
+  componentDidUpdate() {
+    const { isVisible, license } = this.props;
+    const { pending } = this.state;
+    const shouldFetchLicense = isVisible && !license && !pending;
+
+    if (shouldFetchLicense) {
+      this.getLicense();
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.pendingPromise) {
+      this.pendingPromise.abort();
+    }
+  }
+
+  getLicense = () => {
+    const { fetchLicense, libraryName } = this.props;
+
+    this.setState({ pending: true });
+    this.pendingPromise = makeAbortablePromise(fetchLicense(libraryName));
+    this.pendingPromise.promise
+      .then(() => this.setState({ pending: false }))
+      .catch(error => {
+        if (!(error instanceof AbortPromiseException)) {
+          this.setState({ pending: false });
+        }
+      });
+  };
+
+  render() {
+    const { pending } = this.state;
+    const { isVisible, license } = this.props;
+    const displayLicense = isVisible && !_isEmpty(license);
+
+    return (
+      <Fragment>
+        {pending && <Preloader size={PreloaderSize.SMALL} />}
+        <CSSTransition
+          classNames="license-expand"
+          in={displayLicense}
+          mountOnEnter
+          timeout={300}
+          unmountOnExit
+        >
+          <div className="license">
+            <LicenseDetails license={license} />
+          </div>
+        </CSSTransition>
+      </Fragment>
+    );
+  }
+}
 
 License.propTypes = {
   isVisible: PropTypes.bool,
-  license: licensePropType
+  libraryName: PropTypes.string.isRequired,
+  license: licensePropType,
+
+  fetchLicense: PropTypes.func.isRequired
 };
 
-export default License;
+const mapStateToProps = (state, ownProps) => {
+  const { libraryName } = ownProps;
+
+  return {
+    license: getLicense(state, libraryName)
+  };
+};
+export default connect(
+  mapStateToProps,
+  { fetchLicense }
+)(License);

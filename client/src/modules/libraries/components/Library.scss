@@ -2,6 +2,7 @@
 
 .library {
   overflow: hidden;
+  position: relative;
 
   &__header {
     cursor: pointer;

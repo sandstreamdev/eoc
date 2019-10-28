@@ -1,0 +1,43 @@
+@import 'partials';
+
+.license-details {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: $hover-gray-bg;
+  border-radius: 2px;
+  border: 1px solid $border-light;
+  margin: four-by(2) 0;
+  max-height: 500px;
+  overflow: scroll;
+  padding: four-by(2);
+  font-size: $s-font;
+  color: $text-dark;
+
+  &__content {
+    &:not(:last-of-type) {
+      padding-bottom: four-by(4);
+    }
+  }
+
+  &__heading {
+    padding-bottom: four-by(2);
+  }
+
+  &__link {
+    color: $text-orange;
+    font-style: italic;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      color: $text-black;
+    }
+
+    &:visited {
+      color: $text-orange;
+      &:hover {
+        color: $text-black;
+      }
+    }
+  }
+}

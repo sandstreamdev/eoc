@@ -1,8 +1,15 @@
 @import 'partials';
 
 .libraries {
+  margin: 0 auto;
+
   @include breakpoint($large) {
     width: 60%;
+  }
+
+  &__content {
+    position: relative;
+    min-height: 400px;
   }
 
   &__header {

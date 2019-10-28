@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import { licensePropType } from 'common/constants/propTypes';
 import License from './License';
 import './Library.scss';
 
@@ -16,7 +15,7 @@ class Library extends PureComponent {
     }));
 
   render() {
-    const { data, name } = this.props;
+    const { name } = this.props;
     const { isLicenseVisible } = this.state;
 
     return (
@@ -24,14 +23,13 @@ class Library extends PureComponent {
         <h3 className="library__header" onClick={this.toggleLicenseVisibility}>
           {name}
         </h3>
-        <License isVisible={isLicenseVisible} license={data} />
+        <License isVisible={isLicenseVisible} libraryName={name} />
       </div>
     );
   }
 }
 
 Library.propTypes = {
-  data: licensePropType,
   name: PropTypes.string.isRequired
 };
 

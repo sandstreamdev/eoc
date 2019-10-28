@@ -1,27 +1,84 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
+import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
+import { makeAbortablePromise } from 'common/utils/helpers';
+import Preloader from 'common/components/Preloader';
+import { fetchLibraries } from './model/actions';
+import { getLibraries } from './model/selectors';
 import Library from './components/Library';
-import data from './libraries.json';
 import './Libraries.scss';
 
-const libraries = JSON.parse(JSON.stringify(data));
+class Libraries extends PureComponent {
+  pendingPromise = null;
 
-const Libraries = () => (
-  <div className="libraries wrapper">
-    <h2 className="libraries__header">
-      <FormattedMessage id="libraries.title" />
-    </h2>
-    <ul className="libraries__list">
-      {Object.keys(libraries)
-        .sort()
-        .map(name => (
-          <li className="libraries__item" key={name}>
-            <Library name={name} data={libraries[name]} />
-          </li>
-        ))}
-    </ul>
-  </div>
-);
+  state = {
+    pending: false
+  };
 
-export default Libraries;
+  componentDidMount() {
+    this.handleGetLibraries();
+  }
+
+  componentWillUnmount() {
+    if (this.pendingPromise) {
+      this.pendingPromise.abort();
+    }
+  }
+
+  handleGetLibraries = () => {
+    const { fetchLibraries } = this.props;
+
+    this.setState({ pending: true });
+    this.pendingPromise = makeAbortablePromise(fetchLibraries());
+    this.pendingPromise.promise
+      .then(() => this.setState({ pending: false }))
+      .catch(error => {
+        if (!(error instanceof AbortPromiseException)) {
+          this.setState({ pending: false });
+        }
+      });
+  };
+
+  render() {
+    const { libraries } = this.props;
+    const { pending } = this.state;
+
+    return (
+      <div className="wrapper">
+        <div className="libraries">
+          <h2 className="libraries__header">
+            <FormattedMessage id="libraries.title" />
+          </h2>
+          <div className="libraries__content">
+            <ul className="libraries__list">
+              {libraries.map(name => (
+                <li className="libraries__item" key={name}>
+                  <Library name={name} />
+                </li>
+              ))}
+            </ul>
+            {pending && <Preloader />}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+Libraries.propTypes = {
+  libraries: PropTypes.arrayOf(PropTypes.string),
+
+  fetchLibraries: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  libraries: getLibraries(state)
+});
+
+export default connect(
+  mapStateToProps,
+  { fetchLibraries }
+)(Libraries);
