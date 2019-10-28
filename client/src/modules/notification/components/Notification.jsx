@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
@@ -15,7 +15,10 @@ const Notification = ({ data, id, redirect, type }) => {
     <MessageBox type={type}>
       <FormattedMessage id={id} values={values} />
       {type === NotificationType.ERROR && !redirect && (
-        <FormattedMessage id="common.try-again" />
+        <Fragment>
+          <span> </span>
+          <FormattedMessage id="common.try-again" />
+        </Fragment>
       )}
     </MessageBox>
   );
