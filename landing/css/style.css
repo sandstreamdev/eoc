@@ -76,6 +76,7 @@ body {
   --gray-dark: #b1b3b6;
   --text-black: #000;
   --text-normal: #b6b6b6;
+  --text-gray: #8490a4;
   --text-white: #fff;
   --white-bg: #fff;
 }
@@ -1364,6 +1365,20 @@ Footer Social
   width: 100%;
   padding: 20px 40px 40px 40px;
   text-align: left;
+}
+
+.footer-box-content address a {
+  margin: 0;
+  cursor: pointer !important;
+  color: var(--text-gray);
+  text-decoration: none;
+}
+
+.footer-box-content__navigate {
+  display: block;
+  background: var(--dark-orange);
+  color: var(--white-bg) !important;
+  margin-top: 10px !important;
 }
 
 .fool-box h4 {
