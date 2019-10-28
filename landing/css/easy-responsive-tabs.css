@@ -15,8 +15,9 @@ p {
   float: left;
   text-transform: capitalize;
   /*background:#e5e8eb;*/
-  border: 1px solid #fff;
+  border: 1px solid #fff !important;
   color: #fff;
+  font-weight: 500;
 }
 
 .resp-tabs-container {
@@ -41,7 +42,8 @@ h2.resp-accordion {
   background: #fff !important;
   color: #fff !important;
   border: 1px !important;
-  /*border: 1px solid #5AB1D0 !important;
+  border: 1px solid #fff !important;
+  /*
 	border-bottom: none;
 	margin-bottom: -1px !important;
 	padding: 12px 14px 14px 14px !important;
@@ -51,7 +53,7 @@ h2.resp-accordion {
 
 .resp-tab-active {
   background: #ffffff !important;
-  color: #b6b6b6 !important;
+  color: rgba(0, 0, 0, 0.6) !important;
 
   -webkit-box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
   -moz-box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
