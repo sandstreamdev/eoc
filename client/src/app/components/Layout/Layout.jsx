@@ -193,6 +193,7 @@ export class Layout extends PureComponent {
         <Switch>
           <Redirect from="/" exact to="/dashboard" />
           <Route component={SuccessMessage} path="/account-created" />
+          <Route component={AccountDeleted} path="/account-deleted" />
           <Route
             component={LinkExpired}
             path="/confirmation-link-expired/:token?"

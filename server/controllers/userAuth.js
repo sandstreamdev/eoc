@@ -529,19 +529,19 @@ const sendDeleteAccountMail = async (req, resp) => {
       { deleteToken, deleteTokenExpirationDate }
     );
 
-    if (user) {
-      const data = {
-        deleteToken,
-        email,
-        req
-      };
-
-      await mailer.sendDeleteAccountMail(data);
-
-      return resp.sendStatus(200);
+    if (!user) {
+      return resp.sendStatus(400);
     }
 
-    throw new Error();
+    const data = {
+      deleteToken,
+      email,
+      req
+    };
+
+    await mailer.sendDeleteAccountMail(data);
+
+    resp.sendStatus(200);
   } catch {
     resp.sendStatus(400);
   }
