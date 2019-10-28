@@ -23,6 +23,7 @@ p {
 .resp-tabs-container {
   /*padding: 0px;*/
   padding-top: 60px;
+  padding-bottom: 60px;
   /*background-color: #fff;*/
   clear: left;
 }
