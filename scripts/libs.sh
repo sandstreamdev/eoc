@@ -2,8 +2,8 @@
 
 echo Extracting packages\' data...
 
-license-checker --json --out packages-checker.json
-npm-license-crawler --json packages-crawler.json
+license-checker --json --out licensesChecker.json
+npm-license-crawler --json licensesCrawler.json
 
-echo Preapring files with package licenses...
+echo 'Preapring files with licenses...'
 node scripts/libs.js

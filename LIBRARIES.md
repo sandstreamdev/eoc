@@ -1,4 +1,4 @@
-# Libraries
+# Third-party licenses
 
 
 * @babel/code-frame@7<i></i>.5<i></i>.5
@@ -649,10 +649,6 @@
   - license: [Apache-2.0](https://github.com/Tjatse/ansi-html/raw/master/LICENSE)
   - repository: https://github.com/Tjatse/ansi-html
 
-* ansi-regex@0<i></i>.2<i></i>.1
-  - license: [MIT](https://github.com/sindresorhus/ansi-regex)
-  - repository: https://github.com/sindresorhus/ansi-regex
-
 * ansi-regex@2<i></i>.1<i></i>.1
   - license: [MIT](https://github.com/chalk/ansi-regex/raw/master/license)
   - repository: https://github.com/chalk/ansi-regex
@@ -664,10 +660,6 @@
 * ansi-regex@4<i></i>.1<i></i>.0
   - license: [MIT](https://github.com/chalk/ansi-regex/raw/master/license)
   - repository: https://github.com/chalk/ansi-regex
-
-* ansi-styles@1<i></i>.1<i></i>.0
-  - license: [MIT](https://github.com/sindresorhus/ansi-styles)
-  - repository: https://github.com/sindresorhus/ansi-styles
 
 * ansi-styles@2<i></i>.2<i></i>.1
   - license: [MIT](https://github.com/chalk/ansi-styles/raw/master/license)
@@ -818,10 +810,6 @@
   - repository: https://github.com/strml/async-limiter
 
 * async@1<i></i>.5<i></i>.2
-  - license: [MIT](https://github.com/caolan/async/raw/master/LICENSE)
-  - repository: https://github.com/caolan/async
-
-* async@2<i></i>.6<i></i>.3
   - license: [MIT](https://github.com/caolan/async/raw/master/LICENSE)
   - repository: https://github.com/caolan/async
 
@@ -1172,10 +1160,6 @@
 * ccount@1<i></i>.0<i></i>.4
   - license: [MIT](https://github.com/wooorm/ccount/raw/master/license)
   - repository: https://github.com/wooorm/ccount
-
-* chalk@0<i></i>.5<i></i>.1
-  - license: [MIT](https://github.com/sindresorhus/chalk)
-  - repository: https://github.com/sindresorhus/chalk
 
 * chalk@1<i></i>.1<i></i>.3
   - license: [MIT](https://github.com/chalk/chalk/raw/master/license)
@@ -1661,10 +1645,6 @@
   - license: [MIT](https://github.com/visionmedia/debug/raw/master/LICENSE)
   - repository: https://github.com/visionmedia/debug
 
-* debuglog@1<i></i>.0<i></i>.1
-  - license: [MIT](https://github.com/sam-github/node-debuglog/raw/master/LICENSE)
-  - repository: https://github.com/sam-github/node-debuglog
-
 * decamelize-keys@1<i></i>.1<i></i>.0
   - license: [MIT](https://github.com/dsblv/decamelize-keys/raw/master/license)
   - repository: https://github.com/dsblv/decamelize-keys
@@ -1768,10 +1748,6 @@
 * detect-node@2<i></i>.0<i></i>.4
   - license: [ISC](https://github.com/iliakan/detect-node/raw/master/LICENSE)
   - repository: https://github.com/iliakan/detect-node
-
-* dezalgo@1<i></i>.0<i></i>.3
-  - license: [ISC](https://github.com/npm/dezalgo/raw/master/LICENSE)
-  - repository: https://github.com/npm/dezalgo
 
 * diff-sequences@24<i></i>.9<i></i>.0
   - license: [MIT](https://github.com/facebook/jest/raw/master/LICENSE)
@@ -2453,14 +2429,6 @@
   - license: [MIT](https://github.com/arekinath/node-getpass/raw/master/LICENSE)
   - repository: https://github.com/arekinath/node-getpass
 
-* github-url-from-git@1<i></i>.5<i></i>.0
-  - license: [MIT](https://github.com/visionmedia/node-github-url-from-git/raw/master/LICENSE)
-  - repository: https://github.com/visionmedia/node-github-url-from-git
-
-* github-url-from-username-repo@1<i></i>.0<i></i>.2
-  - license: [BSD-2-Clause](https://github.com/robertkowalski/github-url-from-username-repo/raw/master/LICENSE)
-  - repository: https://github.com/robertkowalski/github-url-from-username-repo
-
 * glob-parent@3<i></i>.1<i></i>.0
   - license: [ISC](https://github.com/es128/glob-parent/raw/master/LICENSE)
   - repository: https://github.com/es128/glob-parent
@@ -2468,10 +2436,6 @@
 * glob-to-regexp@0<i></i>.3<i></i>.0
   - license: [BSD](https://github.com/fitzgen/glob-to-regexp)
   - repository: https://github.com/fitzgen/glob-to-regexp
-
-* glob@5<i></i>.0<i></i>.15
-  - license: [ISC](https://github.com/isaacs/node-glob/raw/master/LICENSE)
-  - repository: https://github.com/isaacs/node-glob
 
 * glob@7<i></i>.1<i></i>.3
   - license: [ISC](https://github.com/isaacs/node-glob/raw/master/LICENSE)
@@ -2545,10 +2509,6 @@
   - license: [MIT](https://github.com/sindresorhus/got/raw/master/license)
   - repository: https://github.com/sindresorhus/got
 
-* graceful-fs@3<i></i>.0<i></i>.12
-  - license: [ISC](https://github.com/isaacs/node-graceful-fs/raw/master/LICENSE)
-  - repository: https://github.com/isaacs/node-graceful-fs
-
 * graceful-fs@4<i></i>.2<i></i>.2
   - license: [ISC](https://github.com/isaacs/node-graceful-fs/raw/master/LICENSE)
   - repository: https://github.com/isaacs/node-graceful-fs
@@ -2584,10 +2544,6 @@
 * harmony-reflect@1<i></i>.6<i></i>.1
   - license: [(Apache-2.0 OR MPL-1.1)](https://tvcutsem@github.com/tvcutsem/harmony-reflect)
   - repository: https://tvcutsem@github.com/tvcutsem/harmony-reflect
-
-* has-ansi@0<i></i>.1<i></i>.0
-  - license: [MIT](https://github.com/sindresorhus/has-ansi)
-  - repository: https://github.com/sindresorhus/has-ansi
 
 * has-ansi@2<i></i>.0<i></i>.0
   - license: [MIT](https://github.com/sindresorhus/has-ansi/raw/master/license)
@@ -3365,14 +3321,6 @@
   - license: [MIT](https://github.com/facebook/jest/raw/master/LICENSE)
   - repository: https://github.com/facebook/jest
 
-* jju@1<i></i>.4<i></i>.0
-  - license: [MIT](https://github.com/rlidwka/jju/raw/master/LICENSE)
-  - repository: https://github.com/rlidwka/jju
-
-* jquery-extend@2<i></i>.0<i></i>.3
-  - license: [MIT](https://github.com/dnukem/node-jquery-extend/raw/master/LICENSE)
-  - repository: https://github.com/dnukem/node-jquery-extend
-
 * js-base64@2<i></i>.5<i></i>.1
   - license: [BSD-3-Clause](https://github.com/dankogai/js-base64/raw/master/LICENSE.md)
   - repository: https://github.com/dankogai/js-base64
@@ -3416,10 +3364,6 @@
 * json-parse-better-errors@1<i></i>.0<i></i>.2
   - license: [MIT](https://github.com/zkat/json-parse-better-errors/raw/master/LICENSE.md)
   - repository: https://github.com/zkat/json-parse-better-errors
-
-* json-parse-helpfulerror@1<i></i>.0<i></i>.3
-  - license: [MIT](https://github.com/smikes/json-parse-helpfulerror/raw/master/LICENSE)
-  - repository: https://github.com/smikes/json-parse-helpfulerror
 
 * json-schema-traverse@0<i></i>.4<i></i>.1
   - license: [MIT](https://github.com/epoberezkin/json-schema-traverse/raw/master/LICENSE)
@@ -3532,14 +3476,6 @@
 * levn@0<i></i>.3<i></i>.0
   - license: [MIT](https://github.com/gkz/levn/raw/master/LICENSE)
   - repository: https://github.com/gkz/levn
-
-* license-checker@1<i></i>.0<i></i>.0
-  - license: [BSD-3-Clause](https://github.com/davglass/license-checker/raw/master/LICENSE)
-  - repository: https://github.com/davglass/license-checker
-
-* license-checker@25<i></i>.0<i></i>.1
-  - license: [BSD-3-Clause](https://github.com/davglass/license-checker/raw/master/LICENSE)
-  - repository: https://github.com/davglass/license-checker
 
 * lines-and-columns@1<i></i>.1<i></i>.6
   - license: [MIT](https://github.com/eventualbuddha/lines-and-columns/raw/master/LICENSE)
@@ -3937,10 +3873,6 @@
   - license: [MIT](https://github.com/jonschlinkert/mixin-object/raw/master/LICENSE)
   - repository: https://github.com/jonschlinkert/mixin-object
 
-* mkdirp@0<i></i>.3<i></i>.5
-  - license: [MIT](https://github.com/substack/node-mkdirp/raw/master/LICENSE)
-  - repository: https://github.com/substack/node-mkdirp
-
 * mkdirp@0<i></i>.5<i></i>.1
   - license: [MIT](https://github.com/substack/node-mkdirp/raw/master/LICENSE)
   - repository: https://github.com/substack/node-mkdirp
@@ -4033,10 +3965,6 @@
   - license: [MIT](https://github.com/micromatch/nanomatch/raw/master/LICENSE)
   - repository: https://github.com/micromatch/nanomatch
 
-* natives@1<i></i>.1<i></i>.6
-  - license: [ISC](https://github.com/addaleax/natives/raw/master/LICENSE.md)
-  - repository: https://github.com/addaleax/natives
-
 * natural-compare@1<i></i>.4<i></i>.0
   - license: [MIT](https://github.com/litejs/natural-compare-lite)
   - repository: https://github.com/litejs/natural-compare-lite
@@ -4121,21 +4049,9 @@
   - license: [MIT](https://github.com/remy/nodemon)
   - repository: https://github.com/remy/nodemon
 
-* nopt-defaults@0<i></i>.0<i></i>.1
-  - license: [BSD-3-Clause](https://github.com/btmills/nopt-defaults/raw/master/LICENSE)
-  - repository: https://github.com/btmills/nopt-defaults
-
-* nopt-usage@0<i></i>.1<i></i>.0
-  - license: [MIT](undefined)
-  - repository: undefined
-
 * nopt@1<i></i>.0<i></i>.10
   - license: [MIT](https://github.com/isaacs/nopt/raw/master/LICENSE)
   - repository: http://github.com/isaacs/nopt
-
-* nopt@2<i></i>.2<i></i>.1
-  - license: [MIT](https://github.com/isaacs/nopt/raw/master/LICENSE)
-  - repository: https://github.com/isaacs/nopt
 
 * nopt@3<i></i>.0<i></i>.6
   - license: [ISC](https://github.com/npm/nopt/raw/master/LICENSE)
@@ -4144,10 +4060,6 @@
 * nopt@4<i></i>.0<i></i>.1
   - license: [ISC](https://github.com/npm/nopt/raw/master/LICENSE)
   - repository: https://github.com/npm/nopt
-
-* normalize-package-data@1<i></i>.0<i></i>.3
-  - license: [MIT*](https://github.com/meryn/normalize-package-data/raw/master/LICENSE)
-  - repository: https://github.com/meryn/normalize-package-data
 
 * normalize-package-data@2<i></i>.5<i></i>.0
   - license: [BSD-2-Clause](https://github.com/npm/normalize-package-data/raw/master/LICENSE)
@@ -4180,10 +4092,6 @@
 * npm-bundled@1<i></i>.0<i></i>.6
   - license: [ISC](https://github.com/npm/npm-bundled/raw/master/LICENSE)
   - repository: https://github.com/npm/npm-bundled
-
-* npm-license-crawler@0<i></i>.2<i></i>.1
-  - license: [BSD-3-Clause](https://github.com/mwittig/npm-license-crawler/raw/master/LICENSE)
-  - repository: https://github.com/mwittig/npm-license-crawler
 
 * npm-packlist@1<i></i>.4<i></i>.1
   - license: [ISC](https://github.com/npm/npm-packlist/raw/master/LICENSE)
@@ -5093,22 +5001,6 @@
   - license: [MIT](https://github.com/facebook/react/raw/master/LICENSE)
   - repository: https://github.com/facebook/react
 
-* read-installed@3<i></i>.1<i></i>.5
-  - license: [ISC](https://github.com/isaacs/read-installed/raw/master/LICENSE)
-  - repository: https://github.com/isaacs/read-installed
-
-* read-installed@4<i></i>.0<i></i>.3
-  - license: [ISC](https://github.com/isaacs/read-installed/raw/master/LICENSE)
-  - repository: https://github.com/isaacs/read-installed
-
-* read-package-json@1<i></i>.3<i></i>.3
-  - license: [ISC](https://github.com/isaacs/read-package-json/raw/master/LICENSE)
-  - repository: https://github.com/isaacs/read-package-json
-
-* read-package-json@2<i></i>.1<i></i>.0
-  - license: [ISC](https://github.com/npm/read-package-json/raw/master/LICENSE)
-  - repository: https://github.com/npm/read-package-json
-
 * read-pkg-up@1<i></i>.0<i></i>.1
   - license: [MIT](https://github.com/sindresorhus/read-pkg-up/raw/master/license)
   - repository: https://github.com/sindresorhus/read-pkg-up
@@ -5152,10 +5044,6 @@
 * readable-stream@3<i></i>.4<i></i>.0
   - license: [MIT](https://github.com/nodejs/readable-stream/raw/master/LICENSE)
   - repository: https://github.com/nodejs/readable-stream
-
-* readdir-scoped-modules@1<i></i>.1<i></i>.0
-  - license: [ISC](https://github.com/npm/readdir-scoped-modules/raw/master/LICENSE)
-  - repository: https://github.com/npm/readdir-scoped-modules
 
 * readdirp@2<i></i>.2<i></i>.1
   - license: [MIT](https://github.com/paulmillr/readdirp/raw/master/LICENSE)
@@ -5489,10 +5377,6 @@
   - license: [MIT](https://github.com/sindresorhus/semver-diff/raw/master/license)
   - repository: https://github.com/sindresorhus/semver-diff
 
-* semver@4<i></i>.3<i></i>.6
-  - license: [ISC](https://github.com/npm/node-semver/raw/master/LICENSE)
-  - repository: https://github.com/npm/node-semver
-
 * semver@5<i></i>.3<i></i>.0
   - license: [ISC](https://github.com/npm/node-semver/raw/master/LICENSE)
   - repository: https://github.com/npm/node-semver
@@ -5589,10 +5473,6 @@
   - license: [MIT](https://github.com/terkelg/sisteransi/raw/master/license)
   - repository: https://github.com/terkelg/sisteransi
 
-* slash@1<i></i>.0<i></i>.0
-  - license: [MIT](https://github.com/sindresorhus/slash)
-  - repository: https://github.com/sindresorhus/slash
-
 * slash@2<i></i>.0<i></i>.0
   - license: [MIT](https://github.com/sindresorhus/slash/raw/master/license)
   - repository: https://github.com/sindresorhus/slash
@@ -5612,10 +5492,6 @@
 * sliced@1<i></i>.0<i></i>.1
   - license: [MIT](https://github.com/aheckmann/sliced/raw/master/LICENSE)
   - repository: https://github.com/aheckmann/sliced
-
-* slide@1<i></i>.1<i></i>.6
-  - license: [ISC](https://github.com/isaacs/slide-flow-control/raw/master/LICENSE)
-  - repository: https://github.com/isaacs/slide-flow-control
 
 * snapdragon-node@2<i></i>.1<i></i>.1
   - license: [MIT](https://github.com/jonschlinkert/snapdragon-node/raw/master/LICENSE)
@@ -5689,10 +5565,6 @@
   - license: [MIT](https://github.com/mafintosh/sparse-bitfield/raw/master/LICENSE)
   - repository: https://github.com/mafintosh/sparse-bitfield
 
-* spdx-compare@1<i></i>.0<i></i>.0
-  - license: [MIT](https://github.com/kemitchell/spdx-compare.js/raw/master/LICENSE.md)
-  - repository: https://github.com/kemitchell/spdx-compare.js
-
 * spdx-correct@3<i></i>.1<i></i>.0
   - license: [Apache-2.0](https://github.com/jslicense/spdx-correct.js/raw/master/LICENSE)
   - repository: https://github.com/jslicense/spdx-correct.js
@@ -5708,14 +5580,6 @@
 * spdx-license-ids@3<i></i>.0<i></i>.5
   - license: [CC0-1.0](https://github.com/shinnn/spdx-license-ids)
   - repository: https://github.com/shinnn/spdx-license-ids
-
-* spdx-ranges@2<i></i>.1<i></i>.1
-  - license: [(MIT AND CC-BY-3.0)](https://github.com/kemitchell/spdx-ranges.js/raw/master/LICENSE.md)
-  - repository: https://github.com/kemitchell/spdx-ranges.js
-
-* spdx-satisfies@4<i></i>.0<i></i>.1
-  - license: [MIT](https://github.com/kemitchell/spdx-satisfies.js/raw/master/LICENSE)
-  - repository: https://github.com/kemitchell/spdx-satisfies.js
 
 * spdy-transport@3<i></i>.0<i></i>.0
   - license: [MIT](https://github.com/spdy-http2/spdy-transport)
@@ -5857,10 +5721,6 @@
   - license: [BSD-2-Clause](https://github.com/yeoman/stringify-object/raw/master/LICENSE)
   - repository: https://github.com/yeoman/stringify-object
 
-* strip-ansi@0<i></i>.3<i></i>.0
-  - license: [MIT](https://github.com/sindresorhus/strip-ansi)
-  - repository: https://github.com/sindresorhus/strip-ansi
-
 * strip-ansi@3<i></i>.0<i></i>.1
   - license: [MIT](https://github.com/chalk/strip-ansi/raw/master/license)
   - repository: https://github.com/chalk/strip-ansi
@@ -5932,10 +5792,6 @@
 * supertest@4<i></i>.0<i></i>.2
   - license: [MIT](https://github.com/visionmedia/supertest/raw/master/LICENSE)
   - repository: https://github.com/visionmedia/supertest
-
-* supports-color@0<i></i>.2<i></i>.0
-  - license: [MIT](https://github.com/sindresorhus/supports-color)
-  - repository: https://github.com/sindresorhus/supports-color
 
 * supports-color@2<i></i>.0<i></i>.0
   - license: [MIT](https://github.com/chalk/supports-color/raw/master/license)
@@ -6108,10 +5964,6 @@
 * tr46@1<i></i>.0<i></i>.1
   - license: [MIT](https://github.com/Sebmaster/tr46.js/raw/master/LICENSE.md)
   - repository: https://github.com/Sebmaster/tr46.js
-
-* treeify@1<i></i>.1<i></i>.0
-  - license: [MIT](https://github.com/notatestuser/treeify/raw/master/LICENSE)
-  - repository: https://github.com/notatestuser/treeify
 
 * trim-newlines@1<i></i>.0<i></i>.0
   - license: [MIT](https://github.com/sindresorhus/trim-newlines/raw/master/license)
@@ -6336,10 +6188,6 @@
 * util-deprecate@1<i></i>.0<i></i>.2
   - license: [MIT](https://github.com/TooTallNate/util-deprecate/raw/master/LICENSE)
   - repository: https://github.com/TooTallNate/util-deprecate
-
-* util-extend@1<i></i>.0<i></i>.3
-  - license: [MIT](https://github.com/isaacs/util-extend/raw/master/LICENSE)
-  - repository: https://github.com/isaacs/util-extend
 
 * util<i></i>.promisify@1<i></i>.0<i></i>.0
   - license: [MIT](https://github.com/ljharb/util.promisify/raw/master/LICENSE)
