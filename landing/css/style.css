@@ -708,6 +708,29 @@ screens - tab style gallery
 
 .screen-section {
   padding: 90px 0 0 0;
+
+  /* padding: 100px 0; */
+
+  /* The image used */
+  background: #1080f2 url('../images/parallaxbg.jpg') no-repeat;
+
+  /* Set a specific height */
+  height: auto;
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.screen-section p {
+  text-align: center;
+  color: var(--text-white);
+}
+
+.screen-section__cta-section {
+  margin-bottom: 50px;
 }
 
 .tab-screen-image {
