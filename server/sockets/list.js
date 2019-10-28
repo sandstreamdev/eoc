@@ -360,7 +360,7 @@ const leaveList = io => async data => {
 };
 
 const changeListType = io => async data => {
-  const { list, members, newViewers, removedViewers, type } = data;
+  const { list, members, newViewers, performer, removedViewers, type } = data;
   const { _id: listId } = list;
 
   io.sockets.to(listChannel(listId)).emit(ListActionTypes.CHANGE_TYPE_SUCCESS, {
@@ -385,6 +385,13 @@ const changeListType = io => async data => {
           io.sockets
             .to(socketId)
             .emit(AppEvents.LEAVE_ROOM, listMetaDataChannel(listId));
+        });
+
+        socketIds.forEach(socketId => {
+          io.sockets.to(socketId).emit(ListActionTypes.DELETE_SUCCESS, {
+            listId,
+            performer
+          });
         });
       } catch {
         // Ignore errors
