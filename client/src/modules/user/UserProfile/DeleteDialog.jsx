@@ -5,7 +5,6 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import Dialog from 'common/components/Dialog';
 import { IntlPropType } from 'common/constants/propTypes';
 import ErrorMessage from 'common/components/Forms/ErrorMessage';
-import DeleteForm from './DeleteForm';
 import AlertBox from 'common/components/AlertBox';
 import { MessageType } from 'common/constants/enums';
 import './DeleteDialog.scss';
@@ -16,10 +15,6 @@ const DeleteDialog = ({
   isVisible,
   onCancel,
   onConfirm,
-  onEmailChange,
-  onPasswordChange,
-  onSubmit,
-  onVerificationTextChange,
   pending
 }) => {
   return (
@@ -43,13 +38,6 @@ const DeleteDialog = ({
             message={formatMessage({ id: 'user.delete-account-error' })}
           />
         )}
-        <DeleteForm
-          error={authorizationError}
-          onEmailChange={onEmailChange}
-          onPasswordChange={onPasswordChange}
-          onSubmit={onSubmit}
-          onVerificationTextChange={onVerificationTextChange}
-        />
       </Dialog>
     </div>
   );
@@ -62,11 +50,7 @@ DeleteDialog.propTypes = {
   pending: PropTypes.bool,
 
   onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  onEmailChange: PropTypes.func.isRequired,
-  onPasswordChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  onVerificationTextChange: PropTypes.func.isRequired
+  onConfirm: PropTypes.func.isRequired
 };
 
 export default injectIntl(DeleteDialog);

@@ -1,91 +1,34 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
-import _trim from 'lodash/trim';
+import PropTypes from 'prop-types';
 
-import { IntlPropType } from 'common/constants/propTypes';
-import {
-  checkIfDataLeft,
-  deleteAccount,
-  logoutCurrentUser,
-  removeUserData
-} from '../model/actions';
-import Dialog from 'common/components/Dialog';
-import DeleteDialog from './DeleteDialog';
+import { checkIfDataLeft, sendDeleteAccountMail } from '../model/actions';
 import { ValidationException } from 'common/exceptions';
-import { accountStatus, saveAccountData } from 'common/utils/localStorage';
+import { IntlPropType } from 'common/constants/propTypes';
 import ResourcePanel from './ResourcePanel';
+import DeleteDialog from './DeleteDialog';
+import Dialog from 'common/components/Dialog';
 import './DeleteAccount.scss';
 
 class DeleteAccount extends Component {
   state = {
-    email: '',
     isDeleteDialogVisible: false,
     isErrorVisible: false,
     isOwnershipTransferDialogVisible: false,
     onlyOwnerResources: null,
-    password: '',
-    pending: false,
-    verificationText: ''
+    pending: false
   };
 
-  handleDeleteAccount = async event => {
+  handleConfirm = async event => {
     this.setState({ pending: true });
     event.preventDefault();
 
-    const {
-      intl: { formatMessage },
-      removeUserData
-    } = this.props;
-    const { verificationText } = this.state;
-    const verificationString = formatMessage({
-      id: 'user.delete-form.verify-text'
-    });
+    const { sendDeleteAccountMail } = this.props;
 
-    if (verificationText !== verificationString) {
-      this.setState({ isErrorVisible: true, pending: false });
-
-      return;
-    }
-
-    try {
-      const { email, password } = this.state;
-      const trimmedEmail = _trim(email);
-      const result = await deleteAccount(trimmedEmail, password);
-
-      if (result) {
-        saveAccountData(accountStatus.DELETED);
-        removeUserData();
-      }
-    } catch (err) {
-      this.setState({ isErrorVisible: true, pending: false });
-    }
-  };
-
-  handleEmailChange = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ email: value });
-  };
-
-  handlePasswordChange = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ password: value });
-  };
-
-  handleVerificationText = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ verificationText: value });
+    sendDeleteAccountMail();
+    this.setState({ isDeleteDialogVisible: false, pending: false });
   };
 
   handleOnDeleteClick = async () => {
@@ -137,12 +80,6 @@ class DeleteAccount extends Component {
   hideOwnershipTransferDialog = () =>
     this.setState({ isOwnershipTransferDialogVisible: false });
 
-  handleCancel = () => {
-    const { logoutCurrentUser } = this.props;
-
-    logoutCurrentUser();
-  };
-
   render() {
     const {
       intl: { formatMessage }
@@ -161,11 +98,7 @@ class DeleteAccount extends Component {
           error={isErrorVisible}
           isVisible={isDeleteDialogVisible}
           onCancel={this.hideDeleteDialog}
-          onConfirm={this.handleDeleteAccount}
-          onEmailChange={this.handleEmailChange}
-          onPasswordChange={this.handlePasswordChange}
-          onSubmit={this.handleDeleteAccount}
-          onVerificationTextChange={this.handleVerificationText}
+          onConfirm={this.handleConfirm}
           pending={pending}
         />
         <Dialog
@@ -205,14 +138,13 @@ class DeleteAccount extends Component {
 DeleteAccount.propTypes = {
   intl: IntlPropType.isRequired,
 
-  logoutCurrentUser: PropTypes.func.isRequired,
-  removeUserData: PropTypes.func.isRequired
+  sendDeleteAccountMail: PropTypes.func.isRequired
 };
 
 export default _flowRight(
   injectIntl,
   connect(
     null,
-    { logoutCurrentUser, removeUserData }
+    { sendDeleteAccountMail }
   )
 )(DeleteAccount);

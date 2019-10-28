@@ -31,6 +31,7 @@ const { getItemsForReport } = require('../common/utils/helpers');
 const Cohort = require('../models/cohort.model');
 const io = require('../sockets/index');
 const { logout: logoutOtherSessions } = require('../sockets/user');
+const mailer = require('../mailer/index');
 
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
@@ -484,20 +485,18 @@ const checkIfDataLeft = async (req, resp) => {
 };
 
 const deleteAccount = async (req, resp) => {
-  const { email, password } = req.body;
-  const { _id } = req.user;
-  const sanitizedEmail = sanitize(email);
+  const { deleteToken } = req.params;
   const socketInstance = io.getInstance();
 
   try {
     const user = await User.findOne({
-      _id,
-      email: sanitizedEmail,
-      isActive: true
+      deleteToken,
+      deleteTokenExpirationDate: { $gte: new Date() }
     });
-    const { _id: userId, displayName, password: dbPassword } = user;
 
-    if (bcrypt.compareSync(password + email, dbPassword)) {
+    if (user) {
+      const { _id: userId, displayName } = user;
+
       await deleteAccountDetails(User, user);
       await deleteUserLists(List, userId);
       await removeUserFromLists(socketInstance)(List, displayName, userId);
@@ -509,9 +508,40 @@ const deleteAccount = async (req, resp) => {
       req.logout();
       resp.clearCookie('connect.sid');
 
-      return resp.send();
+      return resp.redirect('/account-deleted');
     }
-    throw new Error();
+
+    resp.redirect('/delete-link-expired');
+  } catch {
+    resp.sendStatus(400);
+  }
+};
+
+const sendDeleteAccountMail = async (req, resp) => {
+  const { _id, email } = req.user;
+
+  try {
+    const deleteToken = crypto.randomBytes(32).toString('hex');
+    const deleteTokenExpirationDate = new Date().getTime() + EXPIRATION_TIME;
+
+    const user = await User.findOneAndUpdate(
+      { _id },
+      { deleteToken, deleteTokenExpirationDate }
+    );
+
+    if (!user) {
+      return resp.sendStatus(400);
+    }
+
+    const data = {
+      deleteToken,
+      email,
+      req
+    };
+
+    await mailer.sendDeleteAccountMail(data);
+
+    resp.sendStatus(200);
   } catch {
     resp.sendStatus(400);
   }
@@ -564,6 +594,7 @@ module.exports = {
   recoveryPassword,
   resendSignUpConfirmationLink,
   resetPassword,
+  sendDeleteAccountMail,
   sendUser,
   signUp,
   updateEmailReportSettings,
