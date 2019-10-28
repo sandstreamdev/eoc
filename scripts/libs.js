@@ -1,17 +1,22 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/no-dynamic-require */
 /* eslint-disable no-console */
+
 const fs = require('fs');
 const os = require('os');
 
-// eslint-disable-next-line import/no-unresolved
-const licensesChecker = require('../licensesChecker.json');
-// eslint-disable-next-line import/no-unresolved
-const licensesCrawler = require('../licensesCrawler.json');
-
+const args = process.argv.slice(2);
+const targetPath = args[0];
+const licenseCheckerName = args[1];
+const licenseCrawlerName = args[2];
+const pathToLicenseChecker = `${__dirname}/${licenseCheckerName}`;
+const pathToLicenseCrawler = `${__dirname}/${licenseCrawlerName}`;
+const licensesChecker = require(pathToLicenseChecker);
+const licensesCrawler = require(pathToLicenseCrawler);
 const line = os.EOL;
 const doubleLine = `${os.EOL}${os.EOL}`;
 
 const disableLink = text => text.replace(/\./g, '<i></i>.');
-
 const prepareDependenciesList = dependencies => {
   const names = Object.keys(dependencies).sort();
   let content = '';
@@ -58,51 +63,16 @@ try {
     }
   });
 
-  fs.writeFileSync('libraries.json', JSON.stringify(libraries), 'utf8');
+  fs.writeFileSync(
+    `${targetPath}libraries.json`,
+    JSON.stringify(libraries),
+    'utf8'
+  );
   console.info("'libraries.json' created...");
-  fs.unlinkSync('licensesChecker.json');
-  console.info("'licensesChecker.json' removed...");
-  fs.unlinkSync('licensesCrawler.json');
-  console.info("'licensesCrawler.json' removed...");
+  fs.unlinkSync(pathToLicenseChecker);
+  fs.unlinkSync(pathToLicenseCrawler);
+  console.info('Temporary files removed...');
   console.info('Creating license files succeed');
 } catch (error) {
   console.error(error);
 }
-
-// crawler.dumpLicenses(crawlerOptions, (error, res) => {
-//   if (error) {
-//     // eslint-disable-next-line no-console
-//     console.error(error);
-//   } else {
-//     let content = `# Libraries${line}${doubleLine}`;
-
-//     content += prepareDependenciesList(res);
-//     checker.init(checkerOption, (err, packages) => {
-//       if (err) {
-//         // eslint-disable-next-line no-console
-//         console.error(error);
-//       } else {
-//         const libraries = {};
-//         const names = Object.keys(packages).sort();
-
-//         names.forEach(name => {
-//           libraries[name] = { ...res[name], ...packages[name] };
-
-//           if (packages[name].licenseFile) {
-//             const license = fs.readFileSync(packages[name].licenseFile, 'utf8');
-
-//             libraries[name].licenseText = license;
-//           }
-//         });
-
-//         fs.writeFileSync(librariesPath, JSON.stringify(libraries), 'utf8');
-//       }
-//     });
-
-//     fs.writeFileSync('LIBRARIES.md', content, 'utf8');
-//     fs.unlinkSync('libraries.json');
-
-//     // eslint-disable-next-line no-console
-//     console.info('Library list created');
-//   }
-// });
