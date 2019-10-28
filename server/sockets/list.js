@@ -360,7 +360,7 @@ const leaveList = io => async data => {
 };
 
 const changeListType = io => async data => {
-  const { list, members, newViewers, removedViewers, type, performer } = data;
+  const { list, members, newViewers, performer, removedViewers, type } = data;
   const { _id: listId } = list;
 
   io.sockets.to(listChannel(listId)).emit(ListActionTypes.CHANGE_TYPE_SUCCESS, {
