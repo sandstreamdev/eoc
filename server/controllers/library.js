@@ -18,7 +18,7 @@ const getLibraries = (req, resp) => {
 };
 
 const getLicense = (req, resp) => {
-  const { library } = req.params;
+  const { name } = req.params;
 
   try {
     const libraries = JSON.parse(JSON.stringify(data));
@@ -27,7 +27,7 @@ const getLicense = (req, resp) => {
       licenseText: text,
       licenseUrl: url,
       repository
-    } = libraries[decodeURIComponent(library)];
+    } = libraries[decodeURIComponent(name)];
 
     resp.send({ text, type, repository, url });
   } catch (error) {

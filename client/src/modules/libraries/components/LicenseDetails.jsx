@@ -7,9 +7,6 @@ import { MessageType } from 'common/constants/enums';
 import { licensePropType } from 'common/constants/propTypes';
 import './LicenseDetails.scss';
 
-const prepareLicenseType = type =>
-  typeof type === 'string' ? type : type.join(', ');
-
 const LicenseDetails = ({ license }) => {
   if (!license) {
     return (
@@ -19,13 +16,14 @@ const LicenseDetails = ({ license }) => {
     );
   }
 
-  const { text, type, url, repository } = license;
-  const displayLicense = text || (url && isURL(url));
-  const displayRepository = repository && isURL(repository);
+  const { text, type, repository, url } = license;
+  const isLicenseVisible = text || (url && isURL(url));
+  const isRepositoryVisible = repository && isURL(repository);
+  const licenseType = typeof type === 'string' ? type : type.join(', ');
 
   return (
     <div className="license-details">
-      {displayRepository && (
+      {isRepositoryVisible && (
         <div className="license-details__content">
           <h4 className="license-details__heading">
             <FormattedMessage id="libraries.repository" />
@@ -41,7 +39,7 @@ const LicenseDetails = ({ license }) => {
           </a>
         </div>
       )}
-      {displayLicense && (
+      {isLicenseVisible && (
         <div className="license-details__content">
           <h4 className="license-details__heading">
             <FormattedMessage id="libraries.license" />
@@ -56,7 +54,7 @@ const LicenseDetails = ({ license }) => {
               rel="noopener noreferrer"
               target="_blank"
             >
-              {prepareLicenseType(type)}
+              {licenseType}
             </a>
           )}
         </div>

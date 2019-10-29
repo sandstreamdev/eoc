@@ -4,15 +4,15 @@
 const fs = require('fs');
 const os = require('os');
 
-const args = process.argv.slice(2);
-const jsonPath = args[0];
-const mdPath = args[1];
-const licenseCheckerPath = args[2];
-const licenseCrawlerPath = args[3];
+const cliArguments = process.argv.slice(2);
+const jsonPath = cliArguments[0];
+const markdownPath = cliArguments[1];
+const licenseCheckerPath = cliArguments[2];
+const licenseCrawlerPath = cliArguments[3];
 const licensesCheckerData = require(licenseCheckerPath);
 const licensesCrawlerData = require(licenseCrawlerPath);
-const line = os.EOL;
-const doubleLine = `${os.EOL}${os.EOL}`;
+const endOfLineMarker = os.EOL;
+const doubleEndOfLineMarker = `${os.EOL}${os.EOL}`;
 
 const disableLink = text => text.replace(/\./g, '<i></i>.');
 const prepareDependenciesList = dependencies => {
@@ -20,11 +20,13 @@ const prepareDependenciesList = dependencies => {
   let content = '';
 
   names.forEach(name => {
-    content += `* ${disableLink(name)}${line}`;
+    content += `* ${disableLink(name)}${endOfLineMarker}`;
     content += `  - license: [${dependencies[name].licenses}](${
       dependencies[name].licenseUrl
-    })${line}`;
-    content += `  - repository: ${dependencies[name].repository}${doubleLine}`;
+    })${doubleEndOfLineMarker}`;
+    content += `  - repository: ${
+      dependencies[name].repository
+    }${doubleEndOfLineMarker}`;
   });
 
   return content;
@@ -35,10 +37,10 @@ if (!licensesCheckerData || !licensesCrawlerData) {
 }
 
 try {
-  let content = `# Third-party licenses${line}${doubleLine}`;
+  let content = `# Third-party licenses${endOfLineMarker}${doubleEndOfLineMarker}`;
 
   content += prepareDependenciesList(licensesCrawlerData);
-  fs.writeFileSync(mdPath, content, 'utf8');
+  fs.writeFileSync(markdownPath, content, 'utf8');
   console.info("'LIBRARIES.md' created...");
 
   const libraries = {};

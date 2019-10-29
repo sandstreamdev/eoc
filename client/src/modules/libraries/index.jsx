@@ -7,7 +7,7 @@ import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
 import { fetchLibraries } from './model/actions';
-import { getLibraries } from './model/selectors';
+import { getLibrariesNames } from './model/selectors';
 import Library from './components/Library';
 import './Libraries.scss';
 
@@ -28,18 +28,19 @@ class Libraries extends PureComponent {
     }
   }
 
-  getLibraries = () => {
+  getLibraries = async () => {
     const { fetchLibraries } = this.props;
 
-    this.setState({ pending: true });
-    this.pendingPromise = makeAbortablePromise(fetchLibraries());
-    this.pendingPromise.promise
-      .then(() => this.setState({ pending: false }))
-      .catch(error => {
-        if (!(error instanceof AbortPromiseException)) {
-          this.setState({ pending: false });
-        }
-      });
+    try {
+      this.setState({ pending: true });
+      this.pendingPromise = makeAbortablePromise(fetchLibraries());
+      await this.pendingPromise.promise;
+      this.setState({ pending: false });
+    } catch (error) {
+      if (!(error instanceof AbortPromiseException)) {
+        this.setState({ pending: false });
+      }
+    }
   };
 
   render() {
@@ -75,7 +76,7 @@ Libraries.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  libraries: getLibraries(state)
+  libraries: getLibrariesNames(state)
 });
 
 export default connect(

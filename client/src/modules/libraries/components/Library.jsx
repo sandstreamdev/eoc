@@ -9,10 +9,9 @@ class Library extends PureComponent {
     isLicenseVisible: false
   };
 
-  toggleLicenseVisibility = () =>
-    this.setState(({ isLicenseVisible }) => ({
-      isLicenseVisible: !isLicenseVisible
-    }));
+  hideLicense = () => this.setState({ isLicenseVisible: false });
+
+  showLicense = () => this.setState({ isLicenseVisible: true });
 
   render() {
     const { name } = this.props;
@@ -20,7 +19,10 @@ class Library extends PureComponent {
 
     return (
       <div className="library">
-        <h3 className="library__header" onClick={this.toggleLicenseVisibility}>
+        <h3
+          className="library__header"
+          onClick={isLicenseVisible ? this.hideLicense : this.showLicense}
+        >
           {name}
         </h3>
         <License isVisible={isLicenseVisible} libraryName={name} />

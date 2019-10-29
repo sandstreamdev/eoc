@@ -127,9 +127,9 @@ cd eoc
 #### 3. Run libs script
 This script create two files: JSON file and markdown file.
 
-The first one contains data about packages used in the project. It is used by controllers to extract this data and send it to the client to display information about the used package.
+The first one contains data about packages used in the project. It is used by controllers: `getLibraries` and `getLicense` to extract this data and send it to the client to display information about the used package.
 
-The second file contains a list of packages used in the project with links to their repository and license file. It is available on the project repository page.
+The second file contains a list of packages used in the project with links to their repositories and license file. It is available on the project repository page.
 ```
 npm run libs -j path/to/json/file [-m path/to/md/file]
 ```

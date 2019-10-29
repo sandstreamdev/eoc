@@ -34,31 +34,32 @@ class License extends PureComponent {
     }
   }
 
-  getLicense = () => {
+  getLicense = async () => {
     const { fetchLicense, libraryName } = this.props;
 
-    this.setState({ pending: true });
-    this.pendingPromise = makeAbortablePromise(fetchLicense(libraryName));
-    this.pendingPromise.promise
-      .then(() => this.setState({ pending: false }))
-      .catch(error => {
-        if (!(error instanceof AbortPromiseException)) {
-          this.setState({ pending: false });
-        }
-      });
+    try {
+      this.setState({ pending: true });
+      this.pendingPromise = makeAbortablePromise(fetchLicense(libraryName));
+      await this.pendingPromise.promise;
+      this.setState({ pending: false });
+    } catch (error) {
+      if (!(error instanceof AbortPromiseException)) {
+        this.setState({ pending: false });
+      }
+    }
   };
 
   render() {
     const { pending } = this.state;
     const { isVisible, license } = this.props;
-    const displayLicense = isVisible && !_isEmpty(license);
+    const isLicenseVisible = isVisible && !_isEmpty(license);
 
     return (
       <Fragment>
         {pending && <Preloader size={PreloaderSize.SMALL} />}
         <CSSTransition
           classNames="license-expand"
-          in={displayLicense}
+          in={isLicenseVisible}
           mountOnEnter
           timeout={300}
           unmountOnExit
