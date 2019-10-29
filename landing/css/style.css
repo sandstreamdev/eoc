@@ -236,7 +236,7 @@ body {
   fill: var(--menu-color);
 }
 
-.logo  a {
+.logo a {
   color: var(--menu-color);
   font-size: 18px;
   text-decoration: none;
@@ -1401,31 +1401,59 @@ Footer Social
   box-shadow: 0px 20px 51px -1px rgba(144, 155, 165, 0.29);
 }
 
-.footer-box-content {
-  float: left;
-  width: 100%;
-  padding: 20px 40px 40px 40px;
-  text-align: left;
+.footer {
+  padding: 10px 0;
 }
 
-.footer-box-content address a {
-  margin: 0;
-  cursor: pointer !important;
+.footer a,
+.footer p,
+.footer span {
   color: var(--text-gray);
+  font-size: 16px;
   text-decoration: none;
 }
 
-.footer-box-content__link {
-  padding: 5px 0;
-  font-size: 14px;
-  line-height: 1;
+.footer a {
+  cursor: pointer;
 }
 
-.footer-box-content__navigate {
-  display: block;
+.footer a:hover {
+  color: var(--text-black);
+}
+
+.footer__row {
+  display: flex;
+  align-items: center;
+}
+
+.footer__list {
+  list-style-type: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0;
+}
+
+.footer__list li {
+  padding: 5px 10px;
+}
+
+.footer__list li:last-child {
+  padding-right: 0;
+}
+
+.footer__privacy {
   background: var(--dark-orange);
-  color: var(--white-bg) !important;
-  margin-top: 10px !important;
+}
+
+.footer__privacy a,
+.footer__privacy span,
+.footer__privacy p {
+  color: var(--text-white);
+}
+
+.footer__privacy a:hover {
+  color: var(--text-white);
 }
 
 .fool-box h4 {
