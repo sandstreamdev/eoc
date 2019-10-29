@@ -31,8 +31,9 @@ class Libraries extends PureComponent {
   getLibraries = async () => {
     const { fetchLibraries } = this.props;
 
+    this.setState({ pending: true });
+
     try {
-      this.setState({ pending: true });
       this.pendingPromise = makeAbortablePromise(fetchLibraries());
       await this.pendingPromise.promise;
       this.setState({ pending: false });

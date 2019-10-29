@@ -37,8 +37,9 @@ class License extends PureComponent {
   getLicense = async () => {
     const { fetchLicense, libraryName } = this.props;
 
+    this.setState({ pending: true });
+
     try {
-      this.setState({ pending: true });
       this.pendingPromise = makeAbortablePromise(fetchLicense(libraryName));
       await this.pendingPromise.promise;
       this.setState({ pending: false });

@@ -5,8 +5,8 @@ const fs = require('fs');
 const os = require('os');
 
 const cliArguments = process.argv.slice(2);
-const jsonPath = cliArguments[0];
-const markdownPath = cliArguments[1];
+const jsonFilePath = cliArguments[0];
+const markdownFilePath = cliArguments[1];
 const licenseCheckerPath = cliArguments[2];
 const licenseCrawlerPath = cliArguments[3];
 const licensesCheckerData = require(licenseCheckerPath);
@@ -14,6 +14,11 @@ const licensesCrawlerData = require(licenseCrawlerPath);
 const endOfLineMarker = os.EOL;
 const doubleEndOfLineMarker = `${os.EOL}${os.EOL}`;
 
+/**
+ * @param {strung} text
+ * Adds <i></i> before each dots in passed text
+ * to not displaying links automatically
+ */
 const disableLink = text => text.replace(/\./g, '<i></i>.');
 const prepareDependenciesList = dependencies => {
   const names = Object.keys(dependencies).sort();
@@ -40,7 +45,7 @@ try {
   let content = `# Third-party licenses${endOfLineMarker}${doubleEndOfLineMarker}`;
 
   content += prepareDependenciesList(licensesCrawlerData);
-  fs.writeFileSync(markdownPath, content, 'utf8');
+  fs.writeFileSync(markdownFilePath, content, 'utf8');
   console.info("'LIBRARIES.md' created...");
 
   const libraries = {};
@@ -63,7 +68,7 @@ try {
     }
   });
 
-  fs.writeFileSync(jsonPath, JSON.stringify(libraries), 'utf8');
+  fs.writeFileSync(jsonFilePath, JSON.stringify(libraries), 'utf8');
   console.info("'libraries.json' created...");
   fs.unlinkSync(licenseCheckerPath);
   fs.unlinkSync(licenseCrawlerPath);
