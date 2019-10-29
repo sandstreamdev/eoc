@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable no-console */
-
 const fs = require('fs');
 const os = require('os');
 

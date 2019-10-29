@@ -19,7 +19,7 @@ class Libraries extends PureComponent {
   };
 
   componentDidMount() {
-    this.handleGetLibraries();
+    this.getLibraries();
   }
 
   componentWillUnmount() {
@@ -28,7 +28,7 @@ class Libraries extends PureComponent {
     }
   }
 
-  handleGetLibraries = () => {
+  getLibraries = () => {
     const { fetchLibraries } = this.props;
 
     this.setState({ pending: true });
