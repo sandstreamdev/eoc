@@ -112,7 +112,7 @@ To perform DB migrations we use `migrate-mongo` tool. To config `migrate-mongo` 
 To generate json and markdown files containing third-party licenses you need to
  install globally: [license-checker](https://github.com/davglass/license-checker#readme) and [npm-license-crawler](https://github.com/mwittig/npm-license-crawler):
 
- #### 1. Install packages globally
+#### 1. Install packages globally
 
 ```
 npm i license-checker npm-license-crawler -g
