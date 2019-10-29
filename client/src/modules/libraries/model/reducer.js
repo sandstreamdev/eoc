@@ -1,3 +1,5 @@
+import _isEmpty from 'lodash/isEmpty';
+
 import { CommonActionTypes } from 'common/model/actionTypes';
 import { LibrariesActionTypes } from './actionTypes';
 
@@ -8,6 +10,10 @@ const libraries = (state = {}, action) => {
     }
     case LibrariesActionTypes.FETCH_LICENSE_SUCCESS: {
       const { data, library } = action.payload;
+
+      if (_isEmpty(state)) {
+        return state;
+      }
 
       return {
         ...state,
