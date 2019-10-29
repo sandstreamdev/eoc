@@ -88,6 +88,7 @@ When playing with data via MongoDB Compass, always clean all the collections omi
  "dev": - runs development server,
  "format": - formats all the files using Prettier,
  "format:fix": - formats and fix all the files using Prettier,
+ "libs": "scripts/libs.sh -j server/data/libraries.json -m LIBRARIES.md",
  "lint": - lint all the files using eslint,
  "lint:fix": - lint and fix all files using eslint,
  "migrate": - runs migration script,
@@ -124,6 +125,11 @@ cd eoc
 ```
 
 #### 3. Run libs script
+This script create two files: JSON file and markdown file.
+
+The first one contains data about packages used in the project. It is used by controllers to extract this data and send it to the client to display information about the used package.
+
+The second file contains a list of packages used in the project with links to their repository and license file. It is available on the project repository page.
 ```
 npm run libs -j path/to/json/file [-m path/to/md/file]
 ```
