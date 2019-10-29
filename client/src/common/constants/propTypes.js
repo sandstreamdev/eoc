@@ -43,11 +43,11 @@ export const ResourcesDataPropType = PropTypes.shape({
 });
 
 export const licensePropType = PropTypes.shape({
-  licenseText: PropTypes.string,
-  licenseType: PropTypes.oneOfType([
+  text: PropTypes.string,
+  type: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string)
   ]),
-  licenseUrl: PropTypes.string,
-  repository: PropTypes.string
+  repository: PropTypes.string,
+  url: PropTypes.string
 });

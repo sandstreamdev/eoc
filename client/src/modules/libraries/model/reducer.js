@@ -17,7 +17,6 @@ const libraries = (state = {}, action) => {
     case CommonActionTypes.LEAVE_VIEW: {
       return {};
     }
-
     default:
       return state;
   }

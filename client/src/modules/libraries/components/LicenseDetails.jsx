@@ -7,61 +7,61 @@ import { MessageType } from 'common/constants/enums';
 import { licensePropType } from 'common/constants/propTypes';
 import './LicenseDetails.scss';
 
-const prepareLicenseType = licenseType =>
-  typeof licenseType === 'string' ? licenseType : licenseType.join(', ');
+const prepareLicenseType = type =>
+  typeof type === 'string' ? type : type.join(', ');
 
 const LicenseDetails = ({ license }) => {
-  if (license) {
-    const { licenseText, licenseType, licenseUrl, repository } = license;
-    const displayLicense = licenseText || (licenseUrl && isURL(licenseUrl));
-    const displayRepository = repository && isURL(repository);
-
+  if (!license) {
     return (
-      <div className="license-details">
-        {displayRepository && (
-          <div className="license-details__content">
-            <h4 className="license-details__heading">
-              <FormattedMessage id="libraries.repository" />
-              <span> </span>
-            </h4>
-            <a
-              className="license-details__link"
-              href={repository}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {repository}
-            </a>
-          </div>
-        )}
-        {displayLicense && (
-          <div className="license-details__content">
-            <h4 className="license-details__heading">
-              <FormattedMessage id="libraries.license" />
-              <span> </span>
-            </h4>
-            {licenseText ? (
-              <pre>{licenseText}</pre>
-            ) : (
-              <a
-                className="license-details__link"
-                href={licenseUrl}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {prepareLicenseType(licenseType)}
-              </a>
-            )}
-          </div>
-        )}
-      </div>
+      <MessageBox type={MessageType.INFO}>
+        <FormattedMessage id="libraries.no-license" />
+      </MessageBox>
     );
   }
 
+  const { text, type, url, repository } = license;
+  const displayLicense = text || (url && isURL(url));
+  const displayRepository = repository && isURL(repository);
+
   return (
-    <MessageBox type={MessageType.INFO}>
-      <FormattedMessage id="libraries.no-license" />
-    </MessageBox>
+    <div className="license-details">
+      {displayRepository && (
+        <div className="license-details__content">
+          <h4 className="license-details__heading">
+            <FormattedMessage id="libraries.repository" />
+            <span> </span>
+          </h4>
+          <a
+            className="license-details__link"
+            href={repository}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {repository}
+          </a>
+        </div>
+      )}
+      {displayLicense && (
+        <div className="license-details__content">
+          <h4 className="license-details__heading">
+            <FormattedMessage id="libraries.license" />
+            <span> </span>
+          </h4>
+          {text ? (
+            <pre>{text}</pre>
+          ) : (
+            <a
+              className="license-details__link"
+              href={url}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {prepareLicenseType(type)}
+            </a>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

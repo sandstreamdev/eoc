@@ -23,13 +23,13 @@ const getLicense = (req, resp) => {
   try {
     const libraries = JSON.parse(JSON.stringify(data));
     const {
-      licenses: licenseType,
-      licenseText,
-      licenseUrl,
+      licenses: type,
+      licenseText: text,
+      licenseUrl: url,
       repository
     } = libraries[decodeURIComponent(library)];
 
-    resp.send({ licenseText, licenseType, licenseUrl, repository });
+    resp.send({ text, type, repository, url });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
