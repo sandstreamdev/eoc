@@ -79,6 +79,7 @@ body {
   --text-gray: #8490a4;
   --text-white: #fff;
   --white-bg: #fff;
+  --menu-color: #515151;
 }
 
 .heading {
@@ -190,7 +191,7 @@ body {
 
 .menu li a {
   font-weight: 400;
-  color: #515151;
+  color: var(--menu-color);
   text-decoration: none;
   font-size: 14px;
 }
@@ -219,8 +220,26 @@ body {
   margin-right: auto;
 }
 
-.logo img {
-  height: 40px;
+.logo {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 145px;
+}
+
+.logo svg {
+  height: 16px;
+}
+
+.logo svg path {
+  fill: var(--menu-color);
+}
+
+.logo  a {
+  color: var(--menu-color);
+  font-size: 18px;
+  text-decoration: none;
 }
 
 .toping img {
