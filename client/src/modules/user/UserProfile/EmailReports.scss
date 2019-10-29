@@ -11,7 +11,8 @@
     margin-bottom: four-by(4);
   }
 
-  &__label {
+  &__label,
+  &__button {
     cursor: pointer;
     padding: four-by(2);
     display: flex;
@@ -26,5 +27,9 @@
     &:last-child {
       justify-content: flex-end;
     }
+  }
+
+  &__button {
+    cursor: default;
   }
 }
