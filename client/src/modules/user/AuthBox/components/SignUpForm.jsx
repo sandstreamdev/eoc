@@ -2,7 +2,8 @@ import React, { Fragment, PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import _some from 'lodash/some';
-import validator from 'validator';
+import isEmail from 'validator/lib/isEmail';
+import isLength from 'validator/lib/isLength';
 
 import AuthInput from './AuthInput';
 import { signUp } from 'modules/user/model/actions';
@@ -116,14 +117,14 @@ class SignUpForm extends PureComponent {
     );
 
   nameValidator = value =>
-    validateWith(value => validator.isLength(value, { min: 1, max: 32 }))(
+    validateWith(value => isLength(value, { min: 1, max: 32 }))(
       'user.auth.input.email.invalid'
     )(value);
 
   emailValidator = value =>
-    validateWith(value => validator.isEmail(value))(
-      'user.auth.input.email.invalid'
-    )(value);
+    validateWith(value => isEmail(value))('user.auth.input.email.invalid')(
+      value
+    );
 
   passwordValidator = value =>
     validateWith(value => validatePassword(value))(

@@ -6,7 +6,8 @@ import classNames from 'classnames';
 import _trim from 'lodash/trim';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import validator from 'validator';
+import isEmpty from 'validator/lib/isEmpty';
+import isLength from 'validator/lib/isLength';
 
 import { getCurrentUser } from 'modules/user/model/selectors';
 import {
@@ -115,12 +116,12 @@ class InputBar extends Component {
     let errorMessageId;
 
     errorMessageId = validateWith(
-      value => !validator.isEmpty(value, { ignore_whitespace: true })
+      value => !isEmpty(value, { ignore_whitespace: true })
     )('common.form.required-warning')(itemName);
 
     if (_trim(itemName)) {
       errorMessageId = validateWith(value =>
-        validator.isLength(value, { min: 1, max: 32 })
+        isLength(value, { min: 1, max: 32 })
       )('common.form.field-min-max')(itemName);
     }
 

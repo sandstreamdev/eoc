@@ -3,7 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
 import _debounce from 'lodash/debounce';
-import validator from 'validator';
+import equals from 'validator/lib/equals';
 
 import { RouterMatchPropType, IntlPropType } from 'common/constants/propTypes';
 import { getAccountDetails, updatePassword } from 'modules/user/model/actions';
@@ -146,7 +146,7 @@ class PasswordRecoveryForm extends PureComponent {
   comparePasswords = () => {
     const { errors, password, passwordConfirmation } = this.state;
     const errorMessageId = validateWith(() =>
-      validator.equals(password, passwordConfirmation)
+      equals(password, passwordConfirmation)
     )('user.auth.input.password.not-match')();
 
     this.setState({

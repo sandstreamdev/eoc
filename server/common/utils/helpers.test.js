@@ -88,7 +88,7 @@ describe('responseWithListMetaData', () => {
       'viewerIds'
     ];
 
-    notExpected.map(property => expect(result).not.toHaveProperty(notExpected));
+    notExpected.map(property => expect(result).not.toHaveProperty(property));
   });
 
   it('returns object with desired properties for cohort list', () => {
