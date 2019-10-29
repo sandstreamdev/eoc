@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import PendingButton from 'common/components/PendingButton';
 import { saveEmailReportsSettings, sendReport } from '../model/actions';
 import DaySelector from './DaySelector';
 import './EmailReports.scss';
@@ -82,7 +83,7 @@ class EmailReports extends PureComponent {
   handleReports = () => {
     const { sendReport } = this.props;
 
-    sendReport();
+    return sendReport();
   };
 
   updateReportSettings = () => {
@@ -130,15 +131,15 @@ class EmailReports extends PureComponent {
               selected={emailReportsFrequency}
             />
           )}
-          <label className="email-reports__label">
-            <button
+          <span className="email-reports__button">
+            <PendingButton
               className="primary-button"
               onClick={this.handleReports}
               type="submit"
             >
               <FormattedMessage id="email.report.submit-button" />
-            </button>
-          </label>
+            </PendingButton>
+          </span>
         </div>
       </section>
     );
