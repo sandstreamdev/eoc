@@ -4,52 +4,44 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!--
-      The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags
-    -->
     <meta
       name="description"
-      content="End Of Coffee - Track your office inventory"
+      content="End Of Coffee - real-time app for planning and managing your stuff. Use it individually or with friends. Create and edit lists, manage cohorts on any device and regardless where you are."
     />
     <meta name="author" content="Sandstream Development" />
-
-    <!-- Title -->
-    <title>End Of Coffee - Track Your office inventory</title>
-
-    <!-- Necessary CSS Files -->
-    <!--
-      <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">	 Google Font
-    -->
+    <meta
+      name="keywords"
+      content="react app, sandstream, sandstream development, software, inventory tracking tool, groceries, to-do list, list, office inventory"
+    />
+    <title>End of coffee - Helps you track all the stuff you care about</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <!-- bootstrap -->
     <link href="css/style.css" rel="stylesheet" />
-    <!-- Template Main css -->
     <link href="css/jquery.bxslider.css" rel="stylesheet" />
-    <!-- Client Logo Slider -->
     <link rel="stylesheet" type="text/css" href="css/slick.css" />
-    <!-- Testimonial Slider -->
     <link rel="stylesheet" type="text/css" href="css/slick-theme.css" />
-    <!-- Testimonial Slider -->
     <link
       rel="stylesheet"
       type="text/css"
       href="css/jquery.fancybox.css"
       media="screen"
     />
-    <!-- Video Popup -->
-    <link rel="stylesheet" href="css/animate.css" />
-    <!-- Wow Animation CSS -->
-
-    <!-- RESPONSIVE TAB -->
     <link
       rel="stylesheet"
       type="text/css"
       href="css/easy-responsive-tabs.css "
     />
+    <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org/",
+        "@type": "WebSite",
+        "name": "EOC APP",
+        "url": "app.eoc.sanddev.com"
+      }
+    </script>
   </head>
   <body>
     <div class="se-pre-con"></div>
-    <!-- header -->
     <div class="header" id="header">
       <div class="container">
         <div class="row header-top" data-spy="affix" data-offset-top="70">
@@ -57,7 +49,21 @@
             <div class="row">
               <div class="col-lg-3 col-md-3">
                 <div class="logo">
-                  <a href="#"><img src="images/logo.png" alt="logo"/></a>
+                  <a href="#">End Of Coffee</a>
+                  <svg
+                    class="svg-inline--fa fa-w-20"
+                    data-prefix="fas"
+                    role="img"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-label="EOC logo"
+                    title="EOC logo"
+                    viewBox="0 0 640 512"
+                  >
+                    <path
+                      d="M192 384h192c53 0 96-43 96-96h32c70.6 0 128-57.4 128-128S582.6 32 512 32H120c-13.3 0-24 10.7-24 24v232c0 53 43 96 96 96zM512 96c35.3 0 64 28.7 64 64s-28.7 64-64 64h-32V96h32zm47.7 384H48.3c-47.6 0-61-64-36-64h583.3c25 0 11.8 64-35.9 64z"
+                      fill="#ef9b1f"
+                    ></path>
+                  </svg>
                 </div>
                 <div id="menu-icon">
                   <span></span><span></span><span></span>
@@ -69,34 +75,27 @@
                   <ul>
                     <li><a href="#header">Home</a></li>
                     <li><a href="#features">Features</a></li>
-                    <li><a href="#video">Video</a></li>
                     <li><a href="#screens">Screens</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                    <li><a href="#team">Team</a></li>
-                    <li><a href="#newsletter-section">Newsletter</a></li>
                   </ul>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
         <div class="row">
           <div class="col-lg-12">
             <h1 class="wow fadeInDown">
               End Of Coffee<br />
-              Office inventory tracking app
+              No! Coffee has run out!
             </h1>
             <p class="wow fadeInDown">
-              End of coffee helps you track all the office inventory you need!
+              End of coffee helps you track all the stuff you care about!
             </p>
             <div class="bnts wow fadeInUp">
-              <a href="/app" class="btn2">Try Now</a>
+              <a href="https://app.eoc.sanddev.com" class="btn2">Try Now</a>
             </div>
           </div>
         </div>
-
         <div class="row">
           <div class="col-lg-12">
             <div class="toping wow fadeInUp">
@@ -110,16 +109,13 @@
         </div>
       </div>
     </div>
-    <!-- header End -->
-
-    <!-- features -->
     <div class="section2 dark-section dark-color-bg" id="features">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
             <div class="heading">
               <span>features</span>
-              <h2>Best features ever</h2>
+              <h2>Application features</h2>
             </div>
           </div>
         </div>
@@ -127,114 +123,69 @@
           <div class="col-lg-4 col-md-4 col-sm-6 module">
             <div class="f-box wow fadeInUp" data-wow-duration="1s">
               <div class="f-img"><img src="images/icon1.png" alt="f1" /></div>
-              <a href="#">Friendly Interface</a>
+              <span>Friendly Interface</span>
               <p>
-                User interface was created to be intuitive, easy and clean. You
-                will love it!
+                User interface was created to be intuitive, easy and clean. Hope
+                you will love it.
               </p>
             </div>
           </div>
-
           <div class="col-lg-4 col-md-4 col-sm-6 module">
             <div class="f-box wow fadeInUp" data-wow-duration="2s">
               <div class="f-img"><img src="images/icon2.png" alt="f2" /></div>
-              <a href="#">Well Documented</a>
+              <span>All about the sacks</span>
               <p>
-                Using EOC is very easy, but if you feel a bit confused, you can
-                refer to our great documentation.
+                EOC is all about the sacks. Sacks are the place where you can
+                very easily manage all the stuff that you care about.
               </p>
             </div>
           </div>
-
           <div class="col-lg-4 col-md-4 col-sm-6 module">
             <div class="f-box wow fadeInUp" data-wow-duration="3s">
               <div class="f-img"><img src="images/icon3.png" alt="f3" /></div>
-              <a href="#">Easy Management</a>
+              <span>Easy Management</span>
               <p>
-                You can manage your cohort with no excuses. Add members, change
-                user permissions, have fun!
+                You can manage your sacks and cohorts easily. Add friends,
+                change user permissions, work together and have fun!
               </p>
             </div>
           </div>
-
           <div class="col-lg-4 col-md-4 col-sm-6 module">
             <div class="f-box wow fadeInUp" data-wow-duration="3s">
               <div class="f-img"><img src="images/icon4.png" alt="f4" /></div>
-              <a href="#">It's Free</a>
+              <span>It's Free</span>
               <p>
-                Many app's requires a charge. We believe in you and your goals,
-                so just use it for free!
+                We believe in you and your goals, that is why EOC is free of
+                charge. You are not limited by any pricing plan.
               </p>
             </div>
           </div>
-
           <div class="col-lg-4 col-md-4 col-sm-6 module">
             <div class="f-box wow fadeInUp" data-wow-duration="3s">
               <div class="f-img"><img src="images/icon5.png" alt="f5" /></div>
-              <a href="#">Responsive Design</a>
+              <span>Responsive Design</span>
               <p>
-                Lorem Ipsum is simply dummy text the printing and typeseing
-                industry Lorem Ipsum has been standard.
+                EOC is a mobile-friendly app so you can use it on your mobile
+                device as well.<br />
+                Tip: Create a desktop shortcut from your mobile browser.
               </p>
             </div>
           </div>
-
           <div class="col-lg-4 col-md-4 col-sm-6 module">
             <div class="f-box wow fadeInUp" data-wow-duration="3s">
               <div class="f-img"><img src="images/icon6.png" alt="f6" /></div>
-              <a href="#">Secure</a>
+              <span>Open source</span>
               <p>
-                Our developers have years of experience in creating internet
-                solutions. Trust us, we're engineers!
+                EOC app is open-source project. You can find source code at our
+                <a href="https://github.com/sandstreamdev/eoc" target="_blank">
+                  GitHub repository.</a
+                >
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- features End -->
-
-    <!-- Sign Up -->
-    <div class="section1 gray-bg">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="search-sec">
-              <span>Stay updated</span>
-              <h2>Sign up for a newsletter</h2>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="grop">
-              <form class="input-group">
-                <input
-                  type="text"
-                  class="form-control text1"
-                  placeholder="Your Name"
-                />
-                <input
-                  type="text"
-                  class="form-control text2"
-                  placeholder="Your Email"
-                />
-                <button class="btn btn-secondary" type="submit">
-                  sign up for a newsletter
-                </button>
-              </form>
-              <p>
-                Be the first and get the latest news about End Of Coffee
-                project!
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- start End -->
-
-    <!-- Description Two Colom -->
     <div class="section6">
       <div class="container">
         <div class="row">
@@ -250,50 +201,49 @@
                 <h2 class="wow fadeInUp">Intuitive dashboard</h2>
               </div>
               <p class="wow fadeInUp">
-                We designed intuitive and clean dashboard that made our app very
+                We designed intuitive and clean dashboard that made EOC app very
                 accessible to every user.
               </p>
-
               <div class="nomber-text wow fadeInUp">
                 <div class="nomber-text-row">
                   <div class="nomber-text-row-inner">
                     <span>1. Sacks</span>
                     <p>
-                      Create your personal sacks to manage things that you don't
-                      want to forget about.
+                      Create personal, shared or limited sacks. It depends on
+                      your goals and it is all up to you if you want to
+                      collaborate or be one man army.
                     </p>
                     <p></p>
                   </div>
                   <div class="clear"></div>
                 </div>
-
                 <div class="nomber-text-row">
                   <div class="nomber-text-row-inner">
                     <span>2. Cohorts </span>
                     <p>
-                      Create and manage your cohorts. Add members, sacks and set
-                      up permissions. Collaborate with others!
+                      Create and manage your cohorts to easily share sacks and
+                      collaborate with friends. Make your team even more
+                      powerful.
                     </p>
                     <p></p>
                   </div>
                   <div class="clear"></div>
                 </div>
-
                 <div class="nomber-text-row">
                   <div class="nomber-text-row-inner">
-                    <span>3. Managment</span>
+                    <span>3. Management</span>
                     <p>
-                      Archive, restore or delete permanently! You can very
-                      easily manage your cohorts, sacks and members. All the
-                      data is stored very safely.
+                      Create, edit, add comments. Play with your tasks until
+                      they're done. Celebrate your achievements!
                     </p>
                     <p></p>
                   </div>
                   <div class="clear"></div>
                 </div>
               </div>
-
-              <a href="/app" class="acc wow fadeInUp">Sign up to app</a>
+              <a href="https://app.eoc.sanddev.com" class="acc wow fadeInUp"
+                >CHECK THE DASHBOARD</a
+              >
             </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 module">
@@ -308,129 +258,24 @@
         </div>
       </div>
     </div>
-    <!-- Description End -->
-
-    <!-- Why us - Statistics -->
-    <div class="section5 dark-section dark-color-bg">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="heading">
-              <span>why us ?</span>
-              <h2>Our strong numbers</h2>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-3 module">
-            <div class="our-box">
-              <img src="images/download.png" alt="download" />
-              <div class="down-box">
-                <div class="cnt">
-                  <h3 class="count">20</h3>
-                  <h4>K</h4>
-                </div>
-                <span>Downloaded</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-3 col-sm-3 module">
-            <div class="our-box">
-              <img src="images/smile.png" alt="smile" />
-              <div class="down-box">
-                <div class="cnt">
-                  <h3 class="count">50</h3>
-                  <h4>K</h4>
-                </div>
-                <span>Happy customers</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-3 col-sm-3 module">
-            <div class="our-box">
-              <img src="images/users.png" alt="users" />
-              <div class="down-box">
-                <div class="cnt">
-                  <h3 class="count">33</h3>
-                  <h4>K</h4>
-                </div>
-                <span>Return customers</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-3 col-sm-3 module">
-            <div class="our-box">
-              <img src="images/users.png" alt="customer" />
-              <div class="down-box">
-                <div class="cnt">
-                  <h3 class="count">33</h3>
-                  <h4>K</h4>
-                </div>
-                <span>Return customers</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- why us End -->
-
-    <!-- Video -->
-    <div class="section4 gray-bg" id="video">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 module">
-            <div class="heading">
-              <span>video</span>
-              <h2>Watch our video presentation</h2>
-            </div>
-            <p>
-              Check the short video introduction to End Of Coffee dashboard.<br />
-              The best office inventory tracking app.
-            </p>
-
-            <div class="mac">
-              <a
-                href="https://www.youtube.com/embed/7L9U_D49oB4?autoplay=1"
-                class="various fancybox "
-                ><img src="images/play-btn.png" alt="play-btn"
-              /></a>
-            </div>
-            <div class="video-section-image wow fadeInUp">
-              <img
-                class="img-responsive"
-                src="images/video-section-image.png"
-                alt="video-screens"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- video End -->
-
-    <!-- Description Two Column -->
     <div class="section3">
       <div class="container">
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-5 col-md-push-7">
             <div class="left-heading">
               <span> <img src="images/pc.png" alt="secton-image"/></span>
-              <h2>Great features</h2>
+              <h2>Mobile friendly</h2>
               <p class="p">
-                Create your personal lists and cohorts. Add lists to cohorts,
-                manage members and set up permissions for all the members in
-                your cohort. Cooperate with others to achieve your goals!
+                EOC app was created with mobile-first principle. Application is
+                mobile friendly so you can use it on your a favorite device, at
+                any time and any place.
               </p>
               <div class="clear"></div>
-              <a href="/app" class="acc">Go to app</a>
+              <a href="https://app.eoc.sanddev.com" class="acc"
+                >WORK ANYWHERE</a
+              >
             </div>
           </div>
-
           <div class="col-xs-12 col-sm-12 col-md-7 col-md-pull-5">
             <div class="two-colom-imag">
               <img class="img-responsive" src="images/img1.png" alt="img1" />
@@ -439,9 +284,6 @@
         </div>
       </div>
     </div>
-    <!-- Description End -->
-
-    <!-- Description Two Colom -->
     <div class="section-two-colom">
       <div class="container">
         <div class="row">
@@ -454,14 +296,15 @@
                 <h2>Real time cooperation</h2>
               </div>
               <p class="p">
-                Data is synchronized in real time, so cooperation with your
-                buddies is even more productive and fun! All the updates, just
-                right now - on your screen!
+                See what is going on with your items in real time. Work together
+                with your friends to get things done faster and be more
+                productive.
               </p>
-              <a href="/app" class="acc">CHECK IT NOW</a>
+              <a href="https://app.eoc.sanddev.com" class="acc"
+                >WORK TOGETHER</a
+              >
             </div>
           </div>
-
           <div class="col-xs-12 col-sm-12 col-md-7 ">
             <div class="two-colom-image-right wow fadeInRight">
               <img
@@ -474,8 +317,6 @@
         </div>
       </div>
     </div>
-    <!-- Description End -->
-
     <div class="screen-section dark-section dark-color-bg" id="screens">
       <div class="container">
         <div class="row">
@@ -490,7 +331,7 @@
           <div id="parentHorizontalTab">
             <ul class="resp-tabs-list hor_1">
               <li>Dashboard</li>
-              <li>List</li>
+              <li>Sack</li>
               <li>Cohort</li>
             </ul>
             <div class="resp-tabs-container hor_1">
@@ -519,348 +360,7 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Screens -->
-    <div class="section7 dark-section" id="screens" style="display:none;">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="heading">
-              <span>Previews</span>
-              <h2>Screenshot in details</h2>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <div id="dg-container" class="dg-container">
-              <div class="dg-wrapper">
-                <a href="#"
-                  ><img src="images/screen-tab-1.png" alt="image01"
-                /></a>
-                <a href="#"
-                  ><img src="images/screen-tab-2.png" alt="image01"
-                /></a>
-                <a href="#"
-                  ><img src="images/screen-tab-3.png" alt="image01"
-                /></a>
-              </div>
-              <nav>
-                <span class="dg-prev"><img src="images/left.png"/></span>
-                <span class="dg-next"><img src="images/right.png"/></span>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- screens End -->
-
-    <!-- Testimonials -->
-    <div class="section8" id="testimonials">
-      <div class="con">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="heading">
-              <span>Testimonials</span>
-              <h2>Thousands of smiles</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <section class="center slider">
-              <div>
-                <div class="li">
-                  <div class="photo">
-                    <img src="images/u1.png" alt="user-pic" />
-                  </div>
-                  <div class="slide1">
-                    <p>
-                      I wish I would have thought of it first. End of coffee is
-                      the most valuable business resource we have EVER had. End
-                      of coffee has got everything I need. End of coffee is the
-                      most valuable business resource we have EVER had
-                    </p>
-                    <span>- Barth V.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div class="li">
-                  <div class="photo">
-                    <img src="images/u2.png" alt="user-pic" />
-                  </div>
-                  <div class="slide1">
-                    <p>
-                      Not able to tell you how happy I am with End of coffee. I
-                      will let my mum know about this, she could really make use
-                      of End of coffee!
-                    </p>
-                    <span>- Simmy Ilona</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div class="li">
-                  <div class="photo">
-                    <img src="images/u3.png" alt="user-pic" />
-                  </div>
-                  <div class="slide1">
-                    <p>
-                      I will recommend you to my colleagues. I will refer
-                      everyone I know. Nice work on your End of coffee.
-                    </p>
-                    <span>- Sam Tikota</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div class="li">
-                  <div class="photo">
-                    <img src="images/u1.png" alt="user-pic" />
-                  </div>
-                  <div class="slide1">
-                    <p>
-                      I have gotten at least 50 times the value from End of
-                      coffee. End of coffee has really helped our business.
-                    </p>
-                    <span>- Devil Jhon</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div class="li">
-                  <div class="photo">
-                    <img src="images/u2.png" alt="user-pic" />
-                  </div>
-                  <div class="slide1">
-                    <p>
-                      Not able to tell you how happy I am with End of coffee. I
-                      will let my mum know about this, she could really make use
-                      of End of coffee!
-                    </p>
-                    <span>- Simmy Ilona</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div class="li">
-                  <div class="photo">
-                    <img src="images/u3.png" alt="user-pic" />
-                  </div>
-                  <div class="slide1">
-                    <p>
-                      I will recommend you to my colleagues. Dude, your stuff is
-                      the bomb! Since I invested in End of coffee I made over
-                      100,000 dollars profits.
-                    </p>
-                    <span>- John Doe</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- testimonials End -->
-
-    <!-- Pricing -->
-    <div class="section9 dark-section " id="pricing">
-      <div class="pricing-bg dark-color-bg"></div>
-      <div class="container">
-        <div class="pricing-inner-container">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="heading">
-              <span>our pricing</span>
-              <h2>Best plans for you</h2>
-            </div>
-          </div>
-
-          <div class="pricing-boxes">
-            <div class="col-lg-4 col-md-4 col-sm-4 pos module">
-              <div class="plan wow fadeInUp" data-wow-duration="1s">
-                <div class="plan-ttl">
-                  <span>Basic Plan</span>
-                  <h3>
-                    <strong class="currency-sign">$</strong>199<strong
-                      class="plan-time"
-                      >/mo</strong
-                    >
-                  </h3>
-                </div>
-
-                <ul>
-                  <li class="yes"><span>Limited Indtall</span></li>
-                  <li class="yes"><span>Unlimited Downlaod</span></li>
-                  <li class="yes"><span>Free One Year Support</span></li>
-                  <li class="no"><span>Free 15GB Linux Hosing</span></li>
-                  <li class="no"><span>30GB Storage</span></li>
-                </ul>
-                <div class="plan-btn"><a href="#">choose plan</a></div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-4 col-sm-4 pos module">
-              <div class="plan wow fadeInUp" data-wow-duration="2s">
-                <div class="plan-ttl prefered">
-                  <span>Silver Plan</span>
-                  <h3>
-                    <strong class="currency-sign">$</strong>49<strong
-                      class="plan-time"
-                      >/mo</strong
-                    >
-                  </h3>
-                </div>
-
-                <ul>
-                  <li class="yes"><span>Limited Indtall</span></li>
-                  <li class="yes"><span>Unlimited Downlaod</span></li>
-                  <li class="yes"><span>Free One Year Support</span></li>
-                  <li class="no"><span>Free 15GB Linux Hosing</span></li>
-                  <li class="no"><span>30GB Storage</span></li>
-                </ul>
-                <div class="plan-btn sil-btn"><a href="#">choose plan</a></div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-4 col-sm-4 pos module">
-              <div class="plan wow fadeInUp" data-wow-duration="3s">
-                <div class="plan-ttl">
-                  <span>Gold Plan</span>
-                  <h3>
-                    <strong class="currency-sign">$</strong>99<strong
-                      class="plan-time"
-                      >/mo</strong
-                    >
-                  </h3>
-                </div>
-
-                <ul>
-                  <li class="yes"><span>Limited Indtall</span></li>
-                  <li class="yes"><span>Unlimited Downlaod</span></li>
-                  <li class="yes"><span>Free One Year Support</span></li>
-                  <li class="no"><span>Free 15GB Linux Hosing</span></li>
-                  <li class="no"><span>30GB Storage</span></li>
-                </ul>
-                <div class="plan-btn"><a href="#">choose plan</a></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- pricing End -->
-
-    <!-- Team -->
-    <div class="section10" id="team">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="heading">
-              <span>our experts</span>
-              <h2>Innovative team</h2>
-            </div>
-          </div>
-        </div>
-
-        <div class="row pdtop2">
-          <div class="col-lg-4 col-md-4 col-sm-4 module">
-            <div class="team-box wow fadeIn" data-wow-duration="1s">
-              <div class="team-photo">
-                <img src="images/team-1.jpg" alt="team-image" />
-              </div>
-              <div class="team-ttl">
-                <span>Jan Kowalski</span>
-                <p>Founder & CEO</p>
-              </div>
-              <div class="team-con">
-                <p>
-                  Absolwent podyplomowych studiów menedżerskich na WSH we
-                  Wrocławiu, Inżynierii Oprogramowania na Politechnice
-                  Wrocławskiej oraz Informatyki Stosowanej w PWSZ w Nysie.
-                  Aktualnie doktorant Uniwersytetu Ekonomicznego we Wrocławiu
-                  działający w dziedzinie nauk o zarządzaniu.
-                </p>
-              </div>
-
-              <div class="team-info">
-                <a href="#"><i class="icofont icofont-social-facebook"></i></a>
-                <a href="#"><i class="icofont icofont-social-twitter"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-4 module">
-            <div class="team-box wow fadeIn" data-wow-duration="2s">
-              <div class="team-photo">
-                <img src="images/team-2.jpg" alt="team-image" />
-              </div>
-              <div class="team-ttl">
-                <span>Jan Developerski</span>
-                <p>Lead Developer</p>
-              </div>
-              <div class="team-con">
-                <p>
-                  Absolwent podyplomowych studiów menedżerskich na WSH we
-                  Wrocławiu, Inżynierii Oprogramowania na Politechnice
-                  Wrocławskiej oraz Informatyki Stosowanej w PWSZ w Nysie.
-                  Aktualnie doktorant Uniwersytetu Ekonomicznego we Wrocławiu
-                  działający w dziedzinie nauk o zarządzaniu.
-                </p>
-              </div>
-
-              <div class="team-info">
-                <a href="#"><i class="icofont icofont-social-facebook"></i></a>
-                <a href="#"><i class="icofont icofont-social-twitter"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-4 module">
-            <div class="team-box wow fadeIn" data-wow-duration="3s">
-              <div class="team-photo">
-                <img src="images/team-3.jpg" alt="team-image" />
-              </div>
-              <div class="team-ttl">
-                <span>Jan Graficzny</span>
-                <p>UI Designer</p>
-              </div>
-              <div class="team-con">
-                <p>
-                  Absolwent podyplomowych studiów menedżerskich na WSH we
-                  Wrocławiu, Inżynierii Oprogramowania na Politechnice
-                  Wrocławskiej oraz Informatyki Stosowanej w PWSZ w Nysie.
-                  Aktualnie doktorant Uniwersytetu Ekonomicznego we Wrocławiu
-                  działający w dziedzinie nauk o zarządzaniu.
-                </p>
-              </div>
-
-              <div class="team-info">
-                <a href="#"><i class="icofont icofont-social-facebook"></i></a>
-                <a href="#"><i class="icofont icofont-social-twitter"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- team End -->
-
-    <!-- Get Download Link -->
-    <div class="section11 dark-section">
-      <div class="container">
-        <div class="row">
+        <div class="row screen-section__cta-section">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="heading">
               <span>are you ready ?</span>
@@ -869,128 +369,40 @@
             <p>
               If you feel overloaded by the things you need to remember this app
               is perfect for you.<br />
-              You're CEO, Manager or regular person? Perfect! End Of Coffee will
-              fit your needs!<br />
-              You will no more forget about things that matter!
+              Whatever you do End Of Coffee will fit your needs.<br />
+              You won't forget about things that matter!
             </p>
-            <div class="getbtn"><a href="/app" class="get">GO TO APP</a></div>
+            <div class="getbtn">
+              <a href="https://app.eoc.sanddev.com" class="get"
+                >ORGANIZE YOUR STUFF</a
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- Get Download Link End -->
-
-    <!-- Clients Logo -->
-    <div class="section12">
+    <footer class="footer">
       <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="slider1">
-              <div class="slide">
-                <img src="images/lg1.png" alt="brand-logo" />
-              </div>
-              <div class="slide">
-                <img src="images/lg2.png" alt="brand-logo" />
-              </div>
-              <div class="slide">
-                <img src="images/lg3.png" alt="brand-logo" />
-              </div>
-              <div class="slide">
-                <img src="images/lg4.png" alt="brand-logo" />
-              </div>
-              <div class="slide">
-                <img src="images/lg1.png" alt="brand-logo" />
-              </div>
-              <div class="slide">
-                <img src="images/lg2.png" alt="brand-logo" />
-              </div>
-              <div class="slide">
-                <img src="images/lg3.png" alt="brand-logo" />
-              </div>
-              <div class="slide">
-                <img src="images/lg4.png" alt="brand-logo" />
-              </div>
-            </div>
+        <div class="row footer__row">
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <p class="mb-0 f_300">
+              Copyright © 2019
+              <a
+                href="https://sandstream.pl"
+                rel="noopener noreferrer"
+                target="_blank"
+                >Sandstream Development Sp. z o. o.</a
+              >
+            </p>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <ul class="footer__list text-right">
+              <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            </ul>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Clients Logo End -->
-
-    <!-- newsletter-section -->
-    <div class="section13" id="newsletter-section">
-      <div class="container">
-        <div class="row">
-          <div
-            class="col-lg-12 col-md-12 col-sm-12 wow flipInX"
-            data-wow-duration="3s"
-          >
-            <div class="heading">
-              <span>Let’s start</span>
-              <h2>Start your newsletter</h2>
-            </div>
-
-            <div class="form">
-              <form>
-                <input type="text" placeholder="Name" />
-                <input type="text" placeholder="Email" />
-                <button type="submit">start your newsletter now</button>
-              </form>
-              <p>
-                Be the first and get the latest news about End Of Coffee
-                project!
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- newsletter-section End -->
-
-    <!-- footer -->
-    <!-- Contact Details -->
-    <div class="section14 gray-bg">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-4 col-md-4 col-sm-4">
-            <div class="fool-box wow fadeInDown" data-wow-duration="2s">
-              <i class="icofont icofont-phone"></i>
-              <div class="footer-box-content">
-                <h4>Contact us</h4>
-                <address>
-                  Sandstream Development Sp. z o.o. <br />
-                  Address: Ślężna 104, 53-111 Wrocław, Poland<br />
-                  Phone: +48 783 820 610<br />
-                  Email: contact@sandstream.pl <br />
-                  Website: www.sandstream.pl <br />
-                </address>
-              </div>
-            </div>
-          </div>
-
-          <!-- Contact Details End -->
-        </div>
-      </div>
-
-      <div class="last-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-              <div class="footer-copy">
-                <p>© Copyright 2019 Sandstream Development.</p>
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-              <div class="foot-social">
-                <a href="#"><i class="icofont icofont-social-facebook"></i></a>
-                <a href="#"><i class="icofont icofont-social-twitter"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    </footer>
     <div class="cookie-consent" data-id="cookie-bar">
       <div class="container">
         <div class="row">
@@ -1000,9 +412,13 @@
                 We use cookies to ensure you get the best experience. By using
                 this website, you consent to use of these cookies.
                 <br />
-                For more information, please see our <a href="privacy-policy.html">privacy policy</a>.
+                For more information, please see our
+                <a href="privacy-policy.html">privacy policy</a>.
               </span>
-              <button class="cookie-consent__button btn2" data-id="cookie-button">
+              <button
+                class="cookie-consent__button btn2"
+                data-id="cookie-button"
+              >
                 Accept
               </button>
             </div>
@@ -1010,8 +426,6 @@
         </div>
       </div>
     </div>
-
-    <!-- footer End -->
 
     <script src="js/jquery-1.9.1.min.js"></script>
     <!-- For screen gallery tab -->
@@ -1033,7 +447,6 @@
     <!-- For screen gallery tab -->
     <script src="js/wow.min.js"></script>
     <!-- Wow animation js -->
-
     <script src="js/retina.js"></script>
     <!-- Retina js -->
     <script src="js/retina.min.js"></script>
@@ -1041,33 +454,12 @@
     <script src="js/cookie-consent.js"></script>
     <script>
       $(document).ready(function() {
-        //Screenshot in details slider ==============================================
-
+        //Screenshot in details slider
         $(function() {
           $('#dg-container').gallery();
         });
 
-        //Testimonials slider ==============================================
-
-        $('.center').slick({
-          dots: true,
-          infinite: true,
-          centerMode: true,
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          responsive: [
-            {
-              breakpoint: 600,
-              settings: {
-                mobileFirst: true,
-                slidesToShow: 1
-              }
-            }
-          ]
-        });
-
-        // Logo Slider ==============================================
-
+        // Logo Slider
         $('.slider1').bxSlider({
           slideWidth: 260,
           minSlides: 2,
@@ -1075,48 +467,12 @@
           slideMargin: 10
         });
 
-        //Responsive Menu ==============================================
-
+        //Responsive Menu
         $('#menu-icon').click(function() {
           $('#menu').slideToggle('slow');
         });
 
-        // Video popup ==============================================
-
-        $('.various').fancybox({
-          type: 'iframe', //<--added
-          maxWidth: 800,
-          maxHeight: 600,
-          fitToView: false,
-          width: '70%',
-          height: '70%',
-          autoSize: false,
-          closeClick: false,
-          openEffect: 'none',
-          closeEffect: 'none'
-        });
-
-        // Number Count for Our strong numbers ==============================================
-
-        $('.count').each(function() {
-          $(this)
-            .prop('Counter', 0)
-            .animate(
-              {
-                Counter: $(this).text()
-              },
-              {
-                duration: 4000,
-                easing: 'swing',
-                step: function(now) {
-                  $(this).text(Math.ceil(now));
-                }
-              }
-            );
-        });
-
-        // Scroll to Section ==============================================
-
+        // Scroll to Section
         $('a[href^="#"]').on('click', function(event) {
           var target = $(this.getAttribute('href'));
           if (target.length) {
@@ -1133,17 +489,15 @@
         });
       });
 
-      // Animate loader off screen ==============================================
-
+      // Animate loader off screen
       $(window).load(function() {
         $('.se-pre-con').fadeOut('slow');
       });
 
-      // Wow animation ==============================================
+      // Wow animation
       new WOW().init();
 
-      // screen gallery tab ==============================================
-
+      // screen gallery tab
       $(document).ready(function() {
         //Horizontal Tab
         $('#parentHorizontalTab').easyResponsiveTabs({
