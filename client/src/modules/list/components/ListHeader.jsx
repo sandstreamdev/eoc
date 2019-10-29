@@ -7,7 +7,8 @@ import _trim from 'lodash/trim';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
-import validator from 'validator';
+import isEmpty from 'validator/lib/isEmpty';
+import isLength from 'validator/lib/isLength';
 
 import { ListIcon } from 'assets/images/icons';
 import {
@@ -197,12 +198,12 @@ class ListHeader extends PureComponent {
     let errorMessageId;
 
     errorMessageId = validateWith(
-      value => !validator.isEmpty(value, { ignore_whitespace: true })
+      value => !isEmpty(value, { ignore_whitespace: true })
     )('common.form.required-warning')(nameInputValue);
 
     if (_trim(nameInputValue)) {
       errorMessageId = validateWith(value =>
-        validator.isLength(value, { min: 1, max: 32 })
+        isLength(value, { min: 1, max: 32 })
       )('common.form.field-min-max')(nameInputValue);
     }
 

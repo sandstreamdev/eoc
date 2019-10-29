@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   mode: 'production',
@@ -67,6 +68,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new BundleAnalyzerPlugin(),
     new CleanWebpackPlugin({ verbose: true }),
     new MiniCssExtractPlugin({
       filename: 'style.[hash].css'

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import validator from 'validator';
+import isEmpty from 'validator/lib/isEmpty';
+import isLength from 'validator/lib/isLength';
 import _trim from 'lodash/trim';
 import _flowRight from 'lodash/flowRight';
 import { injectIntl } from 'react-intl';
@@ -103,12 +104,12 @@ class CohortName extends PureComponent {
     let errorMessageId;
 
     errorMessageId = validateWith(
-      value => !validator.isEmpty(value, { ignore_whitespace: true })
+      value => !isEmpty(value, { ignore_whitespace: true })
     )('common.form.required-warning')(nameInputValue);
 
     if (_trim(nameInputValue)) {
       errorMessageId = validateWith(value =>
-        validator.isLength(value, { min: 1, max: 32 })
+        isLength(value, { min: 1, max: 32 })
       )('common.form.field-min-max')(nameInputValue);
     }
 

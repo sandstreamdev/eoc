@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import validator from 'validator';
+import isEmail from 'validator/lib/isEmail';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -47,7 +47,7 @@ class ResetPassword extends PureComponent {
   handleSubmit = event => {
     event.preventDefault();
     const { email } = this.state;
-    const isEmailCorrect = validator.isEmail(email);
+    const isEmailCorrect = isEmail(email);
     const { resetPassword } = this.props;
 
     if (!isEmailCorrect) {

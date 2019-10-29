@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import validator from 'validator';
+import isEmail from 'validator/lib/isEmail';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -62,9 +62,9 @@ class SignInForm extends PureComponent {
   };
 
   emailValidator = value =>
-    validateWith(value => validator.isEmail(value))(
-      'user.auth.input.email.invalid'
-    )(value);
+    validateWith(value => isEmail(value))('user.auth.input.email.invalid')(
+      value
+    );
 
   isFormValid = () => {
     const { isEmailValid, isPasswordValid, signInErrorId } = this.state;
