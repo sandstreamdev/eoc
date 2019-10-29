@@ -738,7 +738,7 @@ screens - tab style gallery
   /* padding: 100px 0; */
 
   /* The image used */
-  background: #1080f2 url('../images/parallaxbg.jpg') no-repeat;
+  background: var(--dark-orange);
 
   /* Set a specific height */
   height: auto;
