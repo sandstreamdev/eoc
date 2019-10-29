@@ -352,7 +352,7 @@ class Cohort extends PureComponent {
     } = this.props;
 
     if (!cohortDetails) {
-      return null;
+      return <Preloader />;
     }
 
     const {

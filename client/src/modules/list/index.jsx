@@ -289,7 +289,7 @@ class List extends Component {
     } = this.props;
 
     if (!list) {
-      return null;
+      return <Preloader />;
     }
 
     const {

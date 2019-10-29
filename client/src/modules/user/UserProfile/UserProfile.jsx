@@ -189,8 +189,12 @@ class UserProfile extends PureComponent {
     const { pending } = this.state;
     const {
       currentUser,
-      currentUser: { avatarUrl, name }
+      currentUser: { avatarUrl, name, email }
     } = this.props;
+
+    if (!email) {
+      return <Preloader />;
+    }
 
     return (
       <div className="wrapper">
