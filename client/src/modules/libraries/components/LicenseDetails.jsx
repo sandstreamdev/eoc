@@ -1,5 +1,5 @@
 import React from 'react';
-import { isURL } from 'validator';
+import isURL from 'validator/lib/isURL';
 import { FormattedMessage } from 'react-intl';
 
 import MessageBox from 'common/components/MessageBox';
