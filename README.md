@@ -106,6 +106,28 @@ When playing with data via MongoDB Compass, always clean all the collections omi
 
 To perform DB migrations we use `migrate-mongo` tool. To config `migrate-mongo` edit `migrate-mongo-config.js` file. To create migration file run `npm run migrate create <version>` in your terminal. Migration file will be created at server/migrations directory. To run all new migrations run `npm run migrate:up` or `npm run migrate up` in your terminal. To rollback, last migration run `npm run migrate:down` or `npm run migrate down` in your terminal. To see migrations status run `npm run migrate status` in your terminal.
 
+## Third-party licenses
+
+To generate json and markdown files containing third-party licenses you need to
+ install globally: [license-checker](https://github.com/davglass/license-checker#readme) and [npm-license-crawler](https://github.com/mwittig/npm-license-crawler):
+
+ #### 1. Install global packages
+
+```
+npm i license-checker npm-license-crawler -g
+```
+
+#### 2. Go inside the directory
+
+```
+cd eoc
+```
+
+#### 3. Run libs script
+```
+npm run libs -j path/to/json/file [-m path/to/md/file]
+```
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

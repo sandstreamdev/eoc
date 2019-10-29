@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# pass -j <path/path/to/the/json/file>
-# pass -m [path/path/to/the/markdown/file]
+# pass -j path/path/to/the/json/file
+# pass [-m path/path/to/the/markdown/file]
 echo Extracting packages\' data...
 
 while getopts j:m: option 
