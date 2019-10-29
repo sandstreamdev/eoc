@@ -5,13 +5,12 @@ const fs = require('fs');
 const os = require('os');
 
 const args = process.argv.slice(2);
-const targetPath = args[0];
-const licenseCheckerName = args[1];
-const licenseCrawlerName = args[2];
-const pathToLicenseChecker = `${__dirname}/${licenseCheckerName}`;
-const pathToLicenseCrawler = `${__dirname}/${licenseCrawlerName}`;
-const licensesChecker = require(pathToLicenseChecker);
-const licensesCrawler = require(pathToLicenseCrawler);
+const jsonPath = args[0];
+const mdPath = args[1];
+const licenseCheckerPath = args[2];
+const licenseCrawlerPath = args[3];
+const licensesCheckerData = require(licenseCheckerPath);
+const licensesCrawlerData = require(licenseCrawlerPath);
 const line = os.EOL;
 const doubleLine = `${os.EOL}${os.EOL}`;
 
@@ -31,30 +30,30 @@ const prepareDependenciesList = dependencies => {
   return content;
 };
 
-if (!licensesChecker || !licensesCrawler) {
+if (!licensesCheckerData || !licensesCrawlerData) {
   return console.error('License data files are missing.');
 }
 
 try {
   let content = `# Third-party licenses${line}${doubleLine}`;
 
-  content += prepareDependenciesList(licensesCrawler);
-  fs.writeFileSync('LIBRARIES.md', content, 'utf8');
+  content += prepareDependenciesList(licensesCrawlerData);
+  fs.writeFileSync(mdPath, content, 'utf8');
   console.info("'LIBRARIES.md' created...");
 
   const libraries = {};
-  const names = Object.keys(licensesCrawler).sort();
+  const names = Object.keys(licensesCrawlerData).sort();
 
   names.forEach(name => {
     libraries[name] = {
-      ...licensesCrawler[name],
-      ...licensesChecker[name],
+      ...licensesCrawlerData[name],
+      ...licensesCheckerData[name],
       name
     };
 
-    if (licensesChecker[name].licenseFile) {
+    if (licensesCheckerData[name].licenseFile) {
       const license = fs.readFileSync(
-        licensesChecker[name].licenseFile,
+        licensesCheckerData[name].licenseFile,
         'utf8'
       );
 
@@ -62,14 +61,10 @@ try {
     }
   });
 
-  fs.writeFileSync(
-    `${targetPath}libraries.json`,
-    JSON.stringify(libraries),
-    'utf8'
-  );
+  fs.writeFileSync(jsonPath, JSON.stringify(libraries), 'utf8');
   console.info("'libraries.json' created...");
-  fs.unlinkSync(pathToLicenseChecker);
-  fs.unlinkSync(pathToLicenseCrawler);
+  fs.unlinkSync(licenseCheckerPath);
+  fs.unlinkSync(licenseCrawlerPath);
   console.info('Temporary files removed...');
   console.info('Creating license files succeed');
 } catch (error) {
