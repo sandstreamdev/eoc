@@ -75,7 +75,7 @@ class FormDialog extends Component {
     this.setState({ errorMessageId }, callback);
   };
 
-  handleConfirm = () => {
+  handleConfirm = async () => {
     const { defaultDescription, defaultName, onConfirm } = this.props;
     const { description, name, errorMessageId } = this.state;
 
@@ -84,7 +84,8 @@ class FormDialog extends Component {
     const differs = descriptionDiffers || nameDiffers;
 
     if (!errorMessageId && differs) {
-      onConfirm(name, description);
+      await onConfirm(name, description);
+      this.setState({ name: '', description: '' });
     }
   };
 

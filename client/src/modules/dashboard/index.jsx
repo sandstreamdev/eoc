@@ -53,7 +53,7 @@ class Dashboard extends Component {
 
     this.setState({ pendingForListCreation: true });
 
-    createList(data).finally(() => {
+    return createList(data).finally(() => {
       this.setState({ pendingForListCreation: false });
       this.handleDialogVisibility();
     });

@@ -49,7 +49,7 @@ class Cohorts extends Component {
 
     this.setState({ pendingForCohortCreation: true });
 
-    createCohort(data).finally(() => {
+    return createCohort(data).finally(() => {
       this.setState({ pendingForCohortCreation: false });
       this.handleDialogVisibility();
     });
