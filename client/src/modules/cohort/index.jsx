@@ -227,7 +227,7 @@ class Cohort extends PureComponent {
 
     this.setState({ pendingForListCreation: true });
 
-    createList(data).finally(() => {
+    return createList(data).finally(() => {
       this.setState(initialState);
       this.hideDialog();
     });
