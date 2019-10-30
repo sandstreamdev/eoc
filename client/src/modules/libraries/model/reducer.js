@@ -15,10 +15,11 @@ const libraries = (state = {}, action) => {
         return state;
       }
 
-      return {
-        ...state,
-        [library]: { ...state[library], license: data }
-      };
+      const newState = { ...state };
+
+      newState[library].license = data;
+
+      return newState;
     }
     case CommonActionTypes.LEAVE_VIEW: {
       return {};
