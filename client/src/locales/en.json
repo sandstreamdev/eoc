@@ -412,7 +412,7 @@
   "user.auth.reset-password.button-content": "Reset password",
   "user.auth.reset-password.email-label": "Enter email",
   "user.auth.reset-password.heading": "Reset your password",
-  "user.auth.session-ended": "Your session has ended, you will be redirected to the login page in {data}s.",
+  "user.auth.session-ended": "Your session has ended, you will be redirected to the login page in {timeout}s.",
   "user.auth.sign-in": "Sign in",
   "user.auth.sign-up.button.resend-link": "Resend link",
   "user.auth.sign-up.reset-password": "Reset password form",

@@ -39,7 +39,12 @@ class NotificationWithTimer extends PureComponent {
     const { timeout } = this.state;
 
     return (
-      <Notification data={timeout} id={id} redirect={redirect} type={type} />
+      <Notification
+        data={{ timeout }}
+        id={id}
+        redirect={redirect}
+        type={type}
+      />
     );
   }
 }
