@@ -18,6 +18,7 @@ const cohortsRouter = require('./routes/cohort');
 const listsRouter = require('./routes/list');
 const mailerRouter = require('./routes/mailer');
 const activitiesRouter = require('./routes/activity');
+const librariesRouter = require('./routes/library');
 const unlockLocks = require('./common/utils/unlockLocks');
 const runAgenda = require('./tasks/agenda');
 
@@ -54,6 +55,7 @@ app.use('/auth', authRouter);
 app.use('/api/activities', activitiesRouter);
 app.use('/api/comments', commentsRouter);
 app.use('/api/cohorts', cohortsRouter);
+app.use('/api/libraries', librariesRouter);
 app.use('/api/lists', listsRouter);
 app.use('/api', mailerRouter);
 app.use('*', (_, res) => res.sendFile(path.resolve('dist/index.html')));

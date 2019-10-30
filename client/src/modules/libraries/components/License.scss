@@ -1,0 +1,34 @@
+@import 'partials';
+
+.license {
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  max-height: 500px;
+
+  &--pending {
+    width: 100%;
+    position: relative;
+    min-height: 100px;
+  }
+
+  &-expand {
+    &-enter {
+      max-height: 0;
+    }
+
+    &-enter-active {
+      max-height: 500px;
+      transition: all 300ms ease-out;
+    }
+
+    &-exit {
+      max-height: 500px;
+    }
+
+    &-exit-active {
+      max-height: 0;
+      transition: all 300ms ease-out;
+    }
+  }
+}

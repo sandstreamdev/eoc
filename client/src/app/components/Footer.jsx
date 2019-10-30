@@ -16,6 +16,10 @@ const Footer = () => (
         <Link className="footer__text footer__link" to="/privacy-policy">
           <FormattedMessage id="app.footer.privacy" />
         </Link>
+        <span className="footer__text-divider"> | </span>
+        <Link className="footer__text footer__link" to="/libraries">
+          <FormattedMessage id="app.footer.libraries" />
+        </Link>
       </span>
       <span className="footer__text footer__copyrights">
         <FormattedMessage id="app.footer.copyrights" />

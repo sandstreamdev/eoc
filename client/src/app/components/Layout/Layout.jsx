@@ -38,6 +38,7 @@ import {
 } from 'common/utils/localStorage';
 import { clearMetaDataSuccess } from 'common/model/actions';
 import AccountDeleted from 'modules/user/UserProfile/AccountDeleted';
+import Libraries from 'modules/libraries';
 import './Layout.scss';
 
 export class Layout extends PureComponent {
@@ -222,6 +223,7 @@ export class Layout extends PureComponent {
           <Route component={PrivacyPolicy} path="/privacy-policy" />
           <Route component={Cohorts} path="/cohorts" />
           <Route component={UserProfile} path="/user-profile" />
+          <Route component={Libraries} path="/libraries" />
           <Route component={Page404} />
         </Switch>
         <Footer />

@@ -88,6 +88,7 @@ When playing with data via MongoDB Compass, always clean all the collections omi
  "dev": - runs development server,
  "format": - formats all the files using Prettier,
  "format:fix": - formats and fix all the files using Prettier,
+ "libs": "scripts/libs.sh -j server/data/libraries.json -m LIBRARIES.md",
  "lint": - lint all the files using eslint,
  "lint:fix": - lint and fix all files using eslint,
  "migrate": - runs migration script,
@@ -105,6 +106,33 @@ When playing with data via MongoDB Compass, always clean all the collections omi
 ## Database migrations
 
 To perform DB migrations we use `migrate-mongo` tool. To config `migrate-mongo` edit `migrate-mongo-config.js` file. To create migration file run `npm run migrate create <version>` in your terminal. Migration file will be created at server/migrations directory. To run all new migrations run `npm run migrate:up` or `npm run migrate up` in your terminal. To rollback, last migration run `npm run migrate:down` or `npm run migrate down` in your terminal. To see migrations status run `npm run migrate status` in your terminal.
+
+## Third-party licenses
+
+To generate json and markdown files containing third-party licenses you need to
+ install globally: [license-checker](https://github.com/davglass/license-checker#readme) and [npm-license-crawler](https://github.com/mwittig/npm-license-crawler):
+
+#### 1. Install packages globally
+
+```
+npm i license-checker npm-license-crawler -g
+```
+
+#### 2. Go inside the directory
+
+```
+cd eoc
+```
+
+#### 3. Run libs script
+This script create two files: JSON file and markdown file.
+
+The first one contains data about packages used in the project. It is used by controllers: `getLibraries` and `getLicense` to extract this data and send it to the client to display information about the used package.
+
+The second file contains a list of packages used in the project with links to their repositories and license file. It is available on the project repository page.
+```
+npm run libs -j path/to/json/file [-m path/to/md/file]
+```
 
 ## Contributing
 
