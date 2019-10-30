@@ -12,6 +12,7 @@
   resize: vertical;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   width: 100%;
+  border-radius: 0;
 
   &::placeholder {
     color: $text-normal;
@@ -24,6 +25,7 @@
 }
 
 .primary-textarea {
+  border-radius: 0;
   background-color: $bg-color;
   border: 1px solid $border-color;
   box-sizing: border-box;
@@ -50,6 +52,7 @@
 }
 
 .primary-select {
+  border-radius: 0;
   background: url('../../assets/images/chevron-down-solid.svg') no-repeat right
     10px center/10px $bg-color;
   border: 0;
@@ -63,7 +66,6 @@
   text-transform: capitalize;
   width: auto;
   height: 36px;
-  border-radius: 0;
   -webkit-appearance: none;
   appearance: none;
   padding: four-by(1) four-by(4) four-by(1) four-by(2);

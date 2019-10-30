@@ -16,6 +16,8 @@
   }
 
   &__submit {
+    -webkit-appearance: none;
+
     &--disabled {
       cursor: not-allowed;
       background: $gray2;
