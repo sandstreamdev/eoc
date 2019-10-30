@@ -1,10 +1,15 @@
 @import 'partials';
 
 .libraries {
-  margin: 0 auto;
+  margin: 0 auto four-by(10);
+
+  @include breakpoint($medium) {
+    margin-bottom: four-by(0);
+  }
 
   @include breakpoint($large) {
     width: 60%;
+    margin-bottom: four-by(10);
   }
 
   &__content {
