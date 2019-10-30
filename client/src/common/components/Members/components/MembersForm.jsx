@@ -89,8 +89,10 @@ class MembersForm extends PureComponent {
   handleClickOutside = event => {
     const isClickedOutside = !this.form.current.contains(event.target);
     const { onClickOutside } = this.props;
+    const { inputValue } = this.state;
+    const isDirty = inputValue.length > 0;
 
-    if (isClickedOutside) {
+    if (isClickedOutside && !isDirty) {
       onClickOutside();
     }
   };
