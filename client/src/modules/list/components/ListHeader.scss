@@ -7,7 +7,7 @@
   svg {
     height: 20px;
     margin-right: four-by(4);
-    margin-top: four-by(2);
+
     path {
       fill: $text-dark;
     }
@@ -28,7 +28,7 @@
   &__name {
     position: relative;
     display: flex;
-
+    align-items: center;
     justify-content: flex-start;
     width: 100%;
 
