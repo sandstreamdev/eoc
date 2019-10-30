@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
 import PropTypes from 'prop-types';
 
+import PendingButton from 'common/components/PendingButton';
 import { checkIfDataLeft, sendDeleteAccountMail } from '../model/actions';
 import { ValidationException } from 'common/exceptions';
-import { IntlPropType } from 'common/constants/propTypes';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 import ResourcePanel from './ResourcePanel';
 import DeleteDialog from './DeleteDialog';
 import Dialog from 'common/components/Dialog';
@@ -27,24 +28,19 @@ class DeleteAccount extends Component {
 
     const { sendDeleteAccountMail } = this.props;
 
-    sendDeleteAccountMail();
+    await sendDeleteAccountMail();
     this.setState({ isDeleteDialogVisible: false, pending: false });
   };
 
   handleOnDeleteClick = async () => {
-    this.setState({ pending: true });
-
     try {
-      const result = await checkIfDataLeft();
+      await checkIfDataLeft();
 
-      if (result) {
-        this.hideOwnershipTransferDialog();
-        this.showDeleteDialog();
-        this.setState({
-          isErrorVisible: false,
-          pending: false
-        });
-      }
+      this.hideOwnershipTransferDialog();
+      this.showDeleteDialog();
+      this.setState({
+        isErrorVisible: false
+      });
     } catch (error) {
       let onlyOwnerResources;
 
@@ -57,8 +53,7 @@ class DeleteAccount extends Component {
       this.setState(
         {
           isErrorVisible: true,
-          onlyOwnerResources,
-          pending: false
+          onlyOwnerResources
         },
         this.showOwnershipTransferDialog
       );
@@ -82,7 +77,8 @@ class DeleteAccount extends Component {
 
   render() {
     const {
-      intl: { formatMessage }
+      intl: { formatMessage },
+      user: { email }
     } = this.props;
     const {
       isDeleteDialogVisible,
@@ -96,6 +92,7 @@ class DeleteAccount extends Component {
       <Fragment>
         <DeleteDialog
           error={isErrorVisible}
+          email={email}
           isVisible={isDeleteDialogVisible}
           onCancel={this.hideDeleteDialog}
           onConfirm={this.handleConfirm}
@@ -119,14 +116,14 @@ class DeleteAccount extends Component {
           <ul className="delete-account__list">
             <li className="delete-account__list-item">
               <FormattedMessage id="user.delete-account" />
-              <button
+              <PendingButton
                 className="danger-button"
                 onClick={this.handleOnDeleteClick}
                 title={formatMessage({ id: 'user.delete-account' })}
                 type="button"
               >
                 <FormattedMessage id="user.delete-account" />
-              </button>
+              </PendingButton>
             </li>
           </ul>
         </section>
@@ -137,6 +134,7 @@ class DeleteAccount extends Component {
 
 DeleteAccount.propTypes = {
   intl: IntlPropType.isRequired,
+  user: UserPropType.isRequired,
 
   sendDeleteAccountMail: PropTypes.func.isRequired
 };

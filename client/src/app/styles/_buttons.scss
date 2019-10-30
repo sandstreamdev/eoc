@@ -91,6 +91,13 @@
     background-color: $danger;
     color: $bg-color;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    border: 2px solid $button-disabled;
+    background: $button-disabled;
+    color: $text-white;
+  }
 }
 
 .outline-button {
