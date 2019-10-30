@@ -59,20 +59,6 @@ class List extends Component {
       }
     } = this.props;
     const { isUnavailable } = this.state;
-
-    this.setState({ pendingForDetails: true });
-
-    this.fetchData()
-      .then(() => {
-        this.setState({ pendingForDetails: false });
-        this.handleBreadcrumbs();
-      })
-      .catch(err => {
-        if (!(err instanceof ResourceNotFoundException)) {
-          this.setState({ pendingForDetails: false });
-        }
-      });
-
     const roomConfig = {
       subscribeMetaData: !isUnavailable,
       resourceId: listId,
@@ -80,6 +66,7 @@ class List extends Component {
     };
 
     joinRoom(roomConfig);
+    this.fetchData();
   }
 
   componentDidUpdate(previousProps) {
@@ -181,15 +168,27 @@ class List extends Component {
     });
   };
 
-  fetchData = () => {
+  fetchData = async () => {
     const {
       fetchListData,
       match: {
         params: { id }
       }
     } = this.props;
+    this.setState({ pendingForDetails: true });
 
-    return fetchListData(id);
+    try {
+      const result = await fetchListData(id);
+
+      if (result) {
+        this.setState({ pendingForDetails: false });
+        this.handleBreadcrumbs();
+      }
+    } catch (error) {
+      if (!(error instanceof ResourceNotFoundException)) {
+        this.setState({ pendingForDetails: false });
+      }
+    }
   };
 
   handleListArchivization = listId => () => {
@@ -290,7 +289,7 @@ class List extends Component {
     } = this.props;
 
     if (!list) {
-      return null;
+      return <Preloader />;
     }
 
     const {

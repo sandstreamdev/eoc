@@ -194,6 +194,8 @@ export const fetchListData = listId => dispatch =>
         members: _keyBy(json.members, '_id')
       };
       dispatch(fetchListDataSuccess({ data, listId }));
+
+      return data;
     })
     .catch(err => {
       if (!(err instanceof ResourceNotFoundException)) {
