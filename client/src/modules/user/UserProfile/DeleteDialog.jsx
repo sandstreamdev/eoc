@@ -10,6 +10,7 @@ import { MessageType } from 'common/constants/enums';
 import './DeleteDialog.scss';
 
 const DeleteDialog = ({
+  email,
   error: authorizationError,
   intl: { formatMessage },
   isVisible,
@@ -22,7 +23,7 @@ const DeleteDialog = ({
       <Dialog
         buttonStyleType={MessageType.ERROR}
         cancelLabel={formatMessage({ id: 'common.button.cancel' })}
-        confirmLabel={formatMessage({ id: 'user.delete-account' })}
+        confirmLabel={formatMessage({ id: 'user.send-delete-account-email' })}
         hasPermissions
         isVisible={isVisible}
         onCancel={onCancel}
@@ -38,12 +39,19 @@ const DeleteDialog = ({
             message={formatMessage({ id: 'user.delete-account-error' })}
           />
         )}
+        <div className="delete-dialog__instructions">
+          <FormattedMessage
+            id="user.delete-account.instructions"
+            values={{ email: <em>{email}</em> }}
+          />
+        </div>
       </Dialog>
     </div>
   );
 };
 
 DeleteDialog.propTypes = {
+  email: PropTypes.string,
   error: PropTypes.bool,
   intl: IntlPropType.isRequired,
   isVisible: PropTypes.bool.isRequired,

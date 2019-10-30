@@ -204,7 +204,7 @@ class UserProfile extends PureComponent {
           {this.renderContactInfo()}
           {this.renderAccountInfo()}
           <EmailReports user={currentUser} />
-          <DeleteAccount />
+          <DeleteAccount user={currentUser} />
           {pending && <Preloader />}
         </article>
       </div>

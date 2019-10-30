@@ -4,4 +4,14 @@
   .alert-box {
     margin-bottom: four-by(4);
   }
+
+  &__instructions {
+    font-size: $m-font;
+    padding: four-by(2) 0;
+
+    em {
+      font-style: normal;
+      font-weight: 700;
+    }
+  }
 }
