@@ -7,6 +7,7 @@
   align-items: stretch;
 
   &__textarea {
+    margin: 0;
     resize: none;
     font-size: $m-font;
     line-height: 1.2;
@@ -15,6 +16,7 @@
   }
 
   &__submit {
+    margin: 0;
     &--disabled {
       cursor: not-allowed;
       background: $gray2;

@@ -6,6 +6,7 @@
   min-height: 50px;
 
   &__submit {
+    margin: 0;
     display: block;
     position: absolute;
     right: 0;
@@ -33,6 +34,7 @@
   }
 
   &__button {
+    margin: 0;
     background: transparent;
     font-family: 'Montserrat', sans-serif;
     cursor: pointer;
