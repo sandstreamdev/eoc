@@ -12,7 +12,16 @@ class Textarea extends PureComponent {
     this.state = {
       value: initialValue || ''
     };
+
     this.textarea = React.createRef();
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
   }
 
   handleOnChange = event => {
@@ -24,6 +33,17 @@ class Textarea extends PureComponent {
     this.setState({ value });
     if (onChange) {
       onChange(value);
+    }
+  };
+
+  handleClickOutside = event => {
+    const isClickedOutside = !this.textarea.current.contains(event.target);
+    const { onClickOutside } = this.props;
+    const { value } = this.state;
+    const isDirty = value.length > 0;
+
+    if (isClickedOutside && !isDirty) {
+      onClickOutside();
     }
   };
 
@@ -54,7 +74,8 @@ Textarea.propTypes = {
   initialValue: PropTypes.string,
   placeholder: PropTypes.string.isRequired,
 
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onClickOutside: PropTypes.func
 };
 
 export default Textarea;

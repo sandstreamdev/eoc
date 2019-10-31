@@ -101,6 +101,7 @@ class CommentsList extends PureComponent {
           <NewComment
             onAddComment={this.handleAddComment}
             onClose={this.hideAddComment}
+            onClickOutside={this.hideAddComment}
           />
         )}
         <div className="comments__container">
