@@ -9,6 +9,7 @@
   align-items: stretch;
 
   &__input {
+    margin: 0;
     font-size: $xl-font;
     font-weight: 700;
     line-height: 1;
@@ -17,6 +18,7 @@
 
   &__submit {
     -webkit-appearance: none;
+    margin: 0;
 
     &--disabled {
       cursor: not-allowed;
