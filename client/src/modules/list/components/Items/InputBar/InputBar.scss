@@ -6,14 +6,16 @@
   min-height: 50px;
 
   &__submit {
+    border-radius: 0px !important;
     display: block;
     position: absolute;
-    right: 0;
+    right: -1px;
     top: 50%;
     transform: translateY(-50%);
     width: auto;
     text-transform: uppercase;
     min-height: 36px;
+    -webkit-appearance: none;
 
     &--disabled {
       cursor: not-allowed;
@@ -46,6 +48,7 @@
     line-height: 1.2;
     color: $text-normal;
     justify-content: center;
+
     svg {
       height: 16px;
       margin-right: four-by(2);
@@ -55,6 +58,11 @@
       background: $gray-bg2;
       color: $text-dark;
     }
+  }
+
+  &__input {
+    border-radius: 0;
+    padding-right: 80px;
   }
 
   .error-message {

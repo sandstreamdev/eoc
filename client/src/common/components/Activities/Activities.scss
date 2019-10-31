@@ -15,10 +15,11 @@
     border: 0;
     cursor: pointer;
     outline: none;
+    padding: 0 four-by(2) 2px;
 
     svg {
-      height: 16px;
       margin-top: 2px;
+      height: 16px;
 
       path {
         fill: $text-normal;
