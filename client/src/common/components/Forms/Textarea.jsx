@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 
+import { IntlPropType } from 'common/constants/propTypes';
 import './Textarea.scss';
 
 class Textarea extends PureComponent {
@@ -11,10 +12,18 @@ class Textarea extends PureComponent {
     const { initialValue } = this.props;
 
     this.state = {
-      isEnlarged: initialValue && initialValue.length > 0,
       value: initialValue || ''
     };
+
     this.textarea = React.createRef();
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
   }
 
   handleOnChange = event => {
@@ -29,44 +38,35 @@ class Textarea extends PureComponent {
     }
   };
 
-  focusTextarea = () => this.textarea.current.focus();
-
-  handleFocus = () => this.setState({ isEnlarged: true });
-
-  handleBlur = () => {
+  handleClickOutside = event => {
+    const isClickedOutside = !this.textarea.current.contains(event.target);
+    const { onClickOutside } = this.props;
     const { value } = this.state;
+    const isDirty = value.length > 0;
 
-    if (value.length === 0) {
-      this.setState({ isEnlarged: false });
+    if (isClickedOutside && !isDirty) {
+      onClickOutside();
     }
   };
 
+  focusTextarea = () => this.textarea.current.focus();
+
   render() {
-    const { disabled, placeholder } = this.props;
-    const { isEnlarged, value } = this.state;
+    const {
+      disabled,
+      intl: { formatMessage },
+      placeholder
+    } = this.props;
+    const { value } = this.state;
 
     return (
       <div className="ss-textarea">
-        {placeholder && (
-          <button
-            className={classNames('ss-textarea__placeholder', {
-              'ss-textarea__placeholder--is-focused': isEnlarged
-            })}
-            disabled={isEnlarged}
-            onClick={this.focusTextarea}
-            type="button"
-          >
-            {placeholder}
-          </button>
-        )}
         <textarea
           className="ss-textarea__textarea"
           disabled={disabled}
           name={placeholder}
-          onBlur={this.handleBlur}
           onChange={this.handleOnChange}
-          onFocus={this.handleFocus}
-          placeholder={placeholder}
+          placeholder={formatMessage({ id: 'common.add-comment' })}
           ref={this.textarea}
           value={value}
         />
@@ -78,9 +78,11 @@ class Textarea extends PureComponent {
 Textarea.propTypes = {
   disabled: PropTypes.bool,
   initialValue: PropTypes.string,
+  intl: IntlPropType.isRequired,
   placeholder: PropTypes.string.isRequired,
 
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onClickOutside: PropTypes.func
 };
 
-export default Textarea;
+export default injectIntl(Textarea);
