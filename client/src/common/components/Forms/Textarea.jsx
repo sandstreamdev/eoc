@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
+import { IntlPropType } from 'common/constants/propTypes';
 import './Textarea.scss';
 
 class Textarea extends PureComponent {
@@ -50,7 +52,11 @@ class Textarea extends PureComponent {
   focusTextarea = () => this.textarea.current.focus();
 
   render() {
-    const { disabled, placeholder } = this.props;
+    const {
+      disabled,
+      intl: { formatMessage },
+      placeholder
+    } = this.props;
     const { value } = this.state;
 
     return (
@@ -60,7 +66,7 @@ class Textarea extends PureComponent {
           disabled={disabled}
           name={placeholder}
           onChange={this.handleOnChange}
-          placeholder="Add comment"
+          placeholder={formatMessage({ id: 'common.add-comment' })}
           ref={this.textarea}
           value={value}
         />
@@ -72,10 +78,11 @@ class Textarea extends PureComponent {
 Textarea.propTypes = {
   disabled: PropTypes.bool,
   initialValue: PropTypes.string,
+  intl: IntlPropType.isRequired,
   placeholder: PropTypes.string.isRequired,
 
   onChange: PropTypes.func,
   onClickOutside: PropTypes.func
 };
 
-export default Textarea;
+export default injectIntl(Textarea);
