@@ -314,6 +314,7 @@
   "list.items.actions.delete-item": "Item '{name}' successfully deleted.",
   "list.items.actions.fetch-archived": "Failed to fetch archived items of sack: '{name}'.",
   "list.items.actions.fetch-comments-fails": "Failed to fetch comments for '{name}' item.",
+  "list.items.actions.mark-item-as-done-fail": "Failed to mark item '{name}' as done.",
   "list.items.actions.mark-item-as-done": "Item '{name}' was marked as 'done'.",
   "list.items.actions.mark-item-as-unhandled": "Item '{name}' was marked as 'unhandled'.",
   "list.items.actions.move-item": "Item '{item}' successfully moved to '{list}' list.",

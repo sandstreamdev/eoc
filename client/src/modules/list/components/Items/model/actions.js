@@ -326,6 +326,8 @@ export const markAsDone = (listId, itemId, name, editedBy) => dispatch =>
         notificationId: 'list.items.actions.mark-item-as-done',
         data: { name }
       });
+
+      throw new Error();
     })
     .catch(err => {
       dispatch(markAsDoneFailure());
