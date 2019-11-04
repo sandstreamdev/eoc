@@ -146,9 +146,10 @@ export class Layout extends PureComponent {
       location: { pathname }
     } = this.props;
     const { isCookieSet, pending, pendingForViewType, viewType } = this.state;
-    const isOverlayVisible = !pathname.includes('privacy-policy');
+    const isNotPrivacyPolicyPage = !pathname.includes('privacy-policy');
     const isDemoMode = currentUser && currentUser.name === 'Demo';
-    const isBarVisible = isCookieSet || !(isDemoMode && !isOverlayVisible);
+    const isBarVisible =
+      isCookieSet || !(isDemoMode && !isNotPrivacyPolicyPage);
 
     if (pending) {
       return <Preloader />;
@@ -158,7 +159,7 @@ export class Layout extends PureComponent {
       <Fragment>
         {!isCookieSet && (
           <CookieConsentBox
-            isOverlayVisible={isOverlayVisible}
+            isNotPrivacyPolicyPage={isNotPrivacyPolicyPage}
             onAccept={this.handleCookieAccept}
           />
         )}
