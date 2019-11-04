@@ -100,9 +100,20 @@ class EmailReports extends PureComponent {
 
     return (
       <section className="email-reports">
-        <h2 className="email-reports__heading">
-          <FormattedMessage id="email.report.heading" />
-        </h2>
+        <header className="email-reports__header">
+          <h2 className="email-reports__heading">
+            <FormattedMessage id="email.report.heading" />
+          </h2>
+          <span className="email-reports__button">
+            <PendingButton
+              className="primary-button"
+              onClick={this.handleReports}
+              type="submit"
+            >
+              <FormattedMessage id="email.report.submit-button" />
+            </PendingButton>
+          </span>
+        </header>
         <div className="email-reports__body">
           <label className="email-reports__label">
             <FormattedMessage id="email.report.never" />
@@ -131,15 +142,6 @@ class EmailReports extends PureComponent {
               selected={emailReportsFrequency}
             />
           )}
-          <span className="email-reports__button">
-            <PendingButton
-              className="primary-button"
-              onClick={this.handleReports}
-              type="submit"
-            >
-              <FormattedMessage id="email.report.submit-button" />
-            </PendingButton>
-          </span>
         </div>
       </section>
     );

@@ -4,11 +4,17 @@
   margin-bottom: four-by(12);
   border-bottom: 1px solid $gray-bg;
 
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: four-by(2);
+  }
+
   &__heading {
     font-size: $xl-font;
     font-weight: 500;
     color: $text-dark;
-    margin-bottom: four-by(4);
   }
 
   &__label,
@@ -23,13 +29,24 @@
     input {
       outline: 0;
     }
+  }
 
-    &:last-child {
-      justify-content: flex-end;
+  .primary-button {
+    cursor: default;
+    font-size: $s-font;
+    white-space: nowrap;
+
+    @include breakpoint($medium) {
+      font-size: $m-font;
     }
   }
 
   &__button {
-    cursor: default;
+    padding: 0;
+    margin: 0 0 0 four-by(3);
+
+    @include breakpoint($medium) {
+      margin: 0;
+    }
   }
 }
