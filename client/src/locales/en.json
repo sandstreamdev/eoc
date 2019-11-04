@@ -422,7 +422,7 @@
   "user.auth.sign-up": "Sign up",
   "user.delete-account-error": "Entered data is incorrect. Please try again.",
   "user.delete-account-make-someone-else-an-owner-header": "You cannot delete your account because you are the only owner of {context}:",
-  "user.delete-account-make-someone-else-an-owner": "Set a new owner in {context}:",
+  "user.delete-account-make-someone-else-an-owner": "Delete {context} or set there a new owner:",
   "user.delete-account-question": "Are you sure you want to do this?",
   "user.delete-account-warning": "This is extremely important.",
   "user.delete-account.instructions": "Deleting your account will be permanent. Would you like us to send an email to {email} that contains a link you can use to delete your account?",
