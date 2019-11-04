@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import _some from 'lodash/some';
@@ -254,7 +254,7 @@ class SignUpForm extends PureComponent {
     const { onCancel } = this.props;
 
     return (
-      <Fragment>
+      <>
         <h1 className="sign-up-form__heading">
           <FormattedMessage id="user.auth-box.create-account" />
         </h1>
@@ -319,7 +319,7 @@ class SignUpForm extends PureComponent {
             </PendingButton>
           </div>
         </form>
-      </Fragment>
+      </>
     );
   };
 

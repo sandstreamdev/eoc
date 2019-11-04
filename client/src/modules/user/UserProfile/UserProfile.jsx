@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
@@ -128,7 +128,7 @@ class UserProfile extends PureComponent {
         </h2>
         <ul className="user-profile__data-list">
           {isPasswordSet && (
-            <Fragment>
+            <>
               <li
                 className={classNames(
                   'user-profile__data-item user-profile__data-item--clickable',
@@ -155,7 +155,7 @@ class UserProfile extends PureComponent {
                   />
                 </li>
               )}
-            </Fragment>
+            </>
           )}
           <li className="user-profile__data-item">
             <span className="user-profile__data-name">

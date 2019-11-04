@@ -1,5 +1,5 @@
 /* eslint-disable react/button-has-type */
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -53,7 +53,7 @@ class PendingButton extends PureComponent {
     } = this.props;
 
     return (
-      <Fragment>
+      <>
         <button
           className={classNames(className, {
             [`${className}--pending`]: pending
@@ -67,7 +67,7 @@ class PendingButton extends PureComponent {
           {children}
           {pending && <Preloader size={preloaderSize} theme={preloaderTheme} />}
         </button>
-      </Fragment>
+      </>
     );
   }
 }

@@ -29,6 +29,7 @@
   "license": "MIT",
   "repository": "github:sandstreamdev/eoc",
   "dependencies": {
+    "@formatjs/intl-utils": "1.4.0",
     "@sandstreamdev/std": "0.2.1",
     "@sendgrid/mail": "6.4.0",
     "agenda": "2.1.0",
@@ -90,7 +91,6 @@
     "eslint-config-airbnb": "18.0.1",
     "eslint-config-prettier": "6.5.0",
     "eslint-import-resolver-webpack": "0.11.1",
-    "eslint-plugin-dependencies": "2.4.0",
     "eslint-plugin-import": "2.18.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-prettier": "3.1.1",
@@ -132,21 +132,19 @@
     }
   },
   "lint-staged": {
-    "linters": {
-      "*.{js,jsx,json,scss,css,md}, !*.min.js": [
-        "prettier --write",
-        "git add"
-      ],
-      "*.{js,jsx}, !*.min.js": [
-        "eslint -c .eslintrc --fix",
-        "echo test",
-        "git add"
-      ],
-      "**/*.scss": [
-        "stylelint --syntax scss",
-        "git add"
-      ]
-    }
+    "*.{js,jsx,json,scss,css,md}, !*.min.js": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{js,jsx}, !*.min.js": [
+      "eslint -c .eslintrc --fix",
+      "echo test",
+      "git add"
+    ],
+    "**/*.scss": [
+      "stylelint --syntax scss",
+      "git add"
+    ]
   },
   "jest": {
     "projects": [

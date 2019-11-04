@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
@@ -46,7 +46,7 @@ class ArchivedMessage extends PureComponent {
     } = this.props;
 
     return (
-      <Fragment>
+      <>
         <div className="archived-message">
           <h1 className="archived-message__header">
             {pending && !isDialogVisible ? (
@@ -55,7 +55,7 @@ class ArchivedMessage extends PureComponent {
                 values={{ name, item }}
               />
             ) : (
-              <Fragment>
+              <>
                 <FormattedMessage
                   id="common.archived-message.was-archived"
                   values={{ name, item }}
@@ -66,7 +66,7 @@ class ArchivedMessage extends PureComponent {
                     values={{ name, item }}
                   />
                 )}
-              </Fragment>
+              </>
             )}
           </h1>
           {isOwner && (
@@ -107,7 +107,7 @@ class ArchivedMessage extends PureComponent {
             { name, item }
           )}
         />
-      </Fragment>
+      </>
     );
   }
 }

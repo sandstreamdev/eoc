@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -269,7 +269,7 @@ class MemberDetails extends PureComponent {
     });
 
     return (
-      <Fragment>
+      <>
         <div className="member-details__option-header">
           <button
             className="member-details__info-button"
@@ -302,7 +302,7 @@ class MemberDetails extends PureComponent {
             <FormattedMessage id={infoText[route][role]} />
           </p>
         )}
-      </Fragment>
+      </>
     );
   };
 
@@ -463,7 +463,7 @@ class MemberDetails extends PureComponent {
     );
 
     return (
-      <Fragment>
+      <>
         <div className="member-details">
           <button
             className="member-details__close"
@@ -486,7 +486,7 @@ class MemberDetails extends PureComponent {
             {isLeaveButtonDisplayed && this.renderLeaveOption()}
           </div>
         </div>
-      </Fragment>
+      </>
     );
   }
 }

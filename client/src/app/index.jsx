@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import { IntlProvider, addLocaleData } from 'react-intl';
-import en from 'react-intl/locale-data/en';
+import { IntlProvider /* addLocaleData */ } from 'react-intl';
+// import en from 'react-intl/locale-data/en';
 
 import enData from '../locales/en.json';
 import './styles/index.scss';
@@ -13,14 +13,14 @@ import history from 'common/utils/history';
 import { receiveEvents } from 'sockets/receiveEvents';
 import socket from 'sockets';
 
-addLocaleData([...en]);
+// addLocaleData([...en]);
 const store = configureStore();
 
 receiveEvents(store, socket);
 
 ReactDOM.render(
   <Provider store={store}>
-    <IntlProvider locale="en" messages={enData}>
+    <IntlProvider textComponent="span" locale="en" messages={enData}>
       <Router history={history}>
         <Layout />
       </Router>

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -27,7 +27,7 @@ class PrivacyPolicy extends PureComponent {
     const { currentUser } = this.props;
 
     return (
-      <Fragment>
+      <>
         <div className="privacy-policy">
           <h1 className="privacy-policy__intro-heading">
             <FormattedMessage id="privacy-policy.index.heading" />
@@ -125,7 +125,7 @@ class PrivacyPolicy extends PureComponent {
         {!isCookieSet && !currentUser && (
           <CookieConsentBox onAccept={this.handleCookieAccept} />
         )}
-      </Fragment>
+      </>
     );
   }
 }

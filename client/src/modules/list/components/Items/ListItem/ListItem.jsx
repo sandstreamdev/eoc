@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -279,7 +279,7 @@ class ListItem extends PureComponent {
           <FormattedMessage id="list.list-item.archive" />
         </button>
         {!done && (
-          <Fragment>
+          <>
             <PendingButton
               className="link-button"
               disabled={disabled}
@@ -295,7 +295,7 @@ class ListItem extends PureComponent {
             >
               <FormattedMessage id="list.list-item.move" />
             </button>
-          </Fragment>
+          </>
         )}
       </div>
     );
@@ -385,7 +385,7 @@ class ListItem extends PureComponent {
     } = this.props;
 
     return (
-      <Fragment>
+      <>
         {this.renderDescription()}
         <div className="list-item__features">
           {isMember && this.renderItemFeatures()}
@@ -398,7 +398,7 @@ class ListItem extends PureComponent {
             itemName={name}
           />
         </div>
-      </Fragment>
+      </>
     );
   };
 
