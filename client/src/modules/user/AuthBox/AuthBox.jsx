@@ -7,8 +7,6 @@ import _flowRight from 'lodash/flowRight';
 
 import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
-import { checkIfCookieSet } from 'common/utils/cookie';
-import CookieConsentBox from 'common/components/CookieConsentBox';
 import { loginDemoUser } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import Preloader, {
@@ -29,18 +27,11 @@ class AuthBox extends PureComponent {
     pending: false
   };
 
-  componentDidMount() {
-    const isCookieSet = checkIfCookieSet('eoc_cookie-consent');
-    this.setState({ isCookieSet });
-  }
-
   handleLaunchingDemo = () => {
     const { loginDemoUser } = this.props;
 
     return loginDemoUser();
   };
-
-  handleCookieAccept = () => this.setState({ isCookieSet: true });
 
   handleLogin = () => this.setState({ pending: true });
 
@@ -163,11 +154,7 @@ class AuthBox extends PureComponent {
   };
 
   render() {
-    const {
-      isCookieSet,
-      isSignInFormVisible,
-      isSignUpFormVisible
-    } = this.state;
+    const { isSignInFormVisible, isSignUpFormVisible } = this.state;
 
     const areFormsVisible = isSignUpFormVisible || isSignInFormVisible;
 
@@ -213,9 +200,6 @@ class AuthBox extends PureComponent {
             </footer>
           </div>
         </div>
-        {!isCookieSet && (
-          <CookieConsentBox isAuthPage onAccept={this.handleCookieAccept} />
-        )}
       </Fragment>
     );
   }
