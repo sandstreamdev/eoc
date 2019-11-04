@@ -1,5 +1,7 @@
 # EOC - End Of Coffee App
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/sandstreamdev/eoc.svg)](https://greenkeeper.io/)
+
 An app made by Sandstream Development team, to track office inventory, groceries, and even your daily tasks!
 
 ![Eoc custom badge](https://img.shields.io/badge/EOC-App-orange)
