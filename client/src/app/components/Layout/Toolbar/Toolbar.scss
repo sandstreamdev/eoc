@@ -37,4 +37,10 @@
     top: 50%;
     transform: translate(-50%, -50%);
   }
+
+  &__demo-title {
+    color: $text-orange;
+    font-size: $l-font;
+    letter-spacing: 1px;
+  }
 }
