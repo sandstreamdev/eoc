@@ -142,7 +142,6 @@ class Activity extends PureComponent {
       intl: { formatMessage }
     } = this.props;
     const formattedName = formatName(name, formatMessage);
-    // const { value, unit } = selectUnit(Date.parse(createdAt), Date.now());
     const { value, unit } = selectUnit(Date.parse(createdAt));
 
     return (

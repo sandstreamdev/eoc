@@ -1,9 +1,9 @@
+/* eslint-disable global-require */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import { IntlProvider /* addLocaleData */ } from 'react-intl';
-// import en from 'react-intl/locale-data/en';
+import { IntlProvider } from 'react-intl';
 
 import enData from '../locales/en.json';
 import './styles/index.scss';
@@ -13,7 +13,16 @@ import history from 'common/utils/history';
 import { receiveEvents } from 'sockets/receiveEvents';
 import socket from 'sockets';
 
-// addLocaleData([...en]);
+if (!Intl.PluralRules) {
+  require('@formatjs/intl-pluralrules/polyfill');
+  require('@formatjs/intl-pluralrules/dist/locale-data/en');
+}
+
+if (!Intl.RelativeTimeFormat) {
+  require('@formatjs/intl-relativetimeformat/polyfill');
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/en');
+}
+
 const store = configureStore();
 
 receiveEvents(store, socket);
