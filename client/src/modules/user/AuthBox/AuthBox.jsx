@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -159,48 +159,46 @@ class AuthBox extends PureComponent {
     const areFormsVisible = isSignUpFormVisible || isSignInFormVisible;
 
     return (
-      <Fragment>
-        <div className="authbox">
-          <div className="authbox__left">
-            <h2 className="authbox__heading">
-              <FormattedMessage id="common.app-name" />
-            </h2>
-            <p className="authbox__description">
-              <FormattedMessage id="user.auth-box.description" />
-            </p>
-          </div>
-          <div className="authbox__right">
-            <div className="authbox__intro">
-              <button
-                className="authbox__reset-button"
-                onClick={this.handleResetAuthBox}
-                type="button"
-              >
-                <AppLogo />
-              </button>
-            </div>
-            {areFormsVisible ? (
-              this.renderForms()
-            ) : (
-              <Fragment>
-                {this.renderSignInButtons()}
-                {this.renderSignUpButton()}
-                {this.renderDemoButton()}
-              </Fragment>
-            )}
-            <footer className="authbox__footer">
-              <a
-                className="authbox__link"
-                href={COMPANY_PAGE_URL}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                www.sandstream.pl
-              </a>
-            </footer>
-          </div>
+      <div className="authbox">
+        <div className="authbox__left">
+          <h2 className="authbox__heading">
+            <FormattedMessage id="common.app-name" />
+          </h2>
+          <p className="authbox__description">
+            <FormattedMessage id="user.auth-box.description" />
+          </p>
         </div>
-      </Fragment>
+        <div className="authbox__right">
+          <div className="authbox__intro">
+            <button
+              className="authbox__reset-button"
+              onClick={this.handleResetAuthBox}
+              type="button"
+            >
+              <AppLogo />
+            </button>
+          </div>
+          {areFormsVisible ? (
+            this.renderForms()
+          ) : (
+            <>
+              {this.renderSignInButtons()}
+              {this.renderSignUpButton()}
+              {this.renderDemoButton()}
+            </>
+          )}
+          <footer className="authbox__footer">
+            <a
+              className="authbox__link"
+              href={COMPANY_PAGE_URL}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              www.sandstream.pl
+            </a>
+          </footer>
+        </div>
+      </div>
     );
   }
 }

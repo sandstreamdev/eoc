@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
@@ -155,7 +155,7 @@ export class Layout extends PureComponent {
     }
 
     return (
-      <Fragment>
+      <>
         {!isCookieSet && (
           <CookieConsentBox
             isPrivacyPolicyPage={isPrivacyPolicyPage}
@@ -163,7 +163,7 @@ export class Layout extends PureComponent {
           />
         )}
         {!currentUser ? (
-          <Fragment>
+          <>
             <Notifications />
             <Switch>
               <Route component={AuthBox} exact path="/" />
@@ -192,9 +192,9 @@ export class Layout extends PureComponent {
               />
               <Redirect to="/" />
             </Switch>
-          </Fragment>
+          </>
         ) : (
-          <Fragment>
+          <>
             <Notifications />
             {isBarVisible && (
               <Toolbar isDemoMode={isDemoMode}>
@@ -261,9 +261,9 @@ export class Layout extends PureComponent {
               <Route component={Page404} />
             </Switch>
             {isBarVisible && <Footer />}
-          </Fragment>
+          </>
         )}
-      </Fragment>
+      </>
     );
   }
 }
