@@ -26,9 +26,7 @@ export const dateFromString = string => new Date(string).toLocaleString();
 export const validatePassword = value =>
   value.match(
     new RegExp(
-      `^[^\\s]{${PasswordValidationValues.MIN},${
-        PasswordValidationValues.MAX
-      }}$`
+      `^[^\\s]{${PasswordValidationValues.MIN},${PasswordValidationValues.MAX}}$`
     )
   );
 

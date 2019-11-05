@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -172,7 +172,7 @@ class AuthBox extends PureComponent {
     const areFormsVisible = isSignUpFormVisible || isSignInFormVisible;
 
     return (
-      <Fragment>
+      <>
         <div className="authbox">
           <div className="authbox__left">
             <h2 className="authbox__heading">
@@ -195,11 +195,11 @@ class AuthBox extends PureComponent {
             {areFormsVisible ? (
               this.renderForms()
             ) : (
-              <Fragment>
+              <>
                 {this.renderSignInButtons()}
                 {this.renderSignUpButton()}
                 {this.renderDemoButton()}
-              </Fragment>
+              </>
             )}
             <footer className="authbox__footer">
               <a
@@ -216,7 +216,7 @@ class AuthBox extends PureComponent {
         {!isCookieSet && (
           <CookieConsentBox isAuthPage onAccept={this.handleCookieAccept} />
         )}
-      </Fragment>
+      </>
     );
   }
 }

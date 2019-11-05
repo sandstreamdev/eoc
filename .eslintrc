@@ -4,10 +4,10 @@
     "jest": true
   },
   "extends": ["airbnb", "plugin:prettier/recommended"],
-  "plugins": ["dependencies"],
   "parser": "babel-eslint",
   "settings": {
     "import/resolver": {
+      "node": {},
       "webpack": {
         "config": "webpack.config.js"
       }
@@ -23,17 +23,17 @@
     "comma-spacing": ["warn"],
     "computed-property-spacing": ["error", "never"],
     "consistent-return": ["off"],
-    "dependencies/case-sensitive": "error",
-    "dependencies/no-cycles": "error",
-    "dependencies/require-json-ext": "error",
     "eqeqeq": ["error", "smart"],
     "func-call-spacing": ["error", "never"],
     "func-names": ["error", "never"],
+    "import/extensions": "error",
     "import/first": "error",
     "import/newline-after-import": "error",
+    "import/no-cycle": "error",
     "import/no-duplicates": "error",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "import/no-named-default": "error",
+    "import/no-unresolved": "error",
     "import/prefer-default-export": "off",
     "jsx-a11y/click-events-have-key-events": "off",
     "jsx-a11y/label-has-associated-control": 0,
@@ -91,9 +91,11 @@
       }
     ],
     "import/no-useless-path-segments": "error",
-    "react/forbid-prop-types": false,
-    "react/jsx-filename-extension": false,
-    "react/require-default-props": false
+    "react/forbid-prop-types": 0,
+    "react/jsx-filename-extension": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/require-default-props": 0,
+    "react/state-in-constructor": 0
   },
   "globals": {
     "_": false,
