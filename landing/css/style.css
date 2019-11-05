@@ -225,7 +225,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 145px;
+  max-width: 66px;
 }
 
 .logo svg {
