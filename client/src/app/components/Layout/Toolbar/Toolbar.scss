@@ -18,8 +18,10 @@
 
   &__left,
   &__right {
+    position: relative;
     display: flex;
     align-items: center;
+    z-index: 1;
   }
 
   &__company-logo {
@@ -39,9 +41,11 @@
   }
 
   &__demo-title {
+    position: relative;
     text-align: center;
     color: $text-orange;
     font-size: $m-font;
+    z-index: 0;
 
     @include breakpoint($xsmall) {
       position: absolute;

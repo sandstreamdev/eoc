@@ -63,8 +63,8 @@ export class Layout extends PureComponent {
       history,
       location: { pathname }
     } = this.props;
-
     const isCookieSet = checkIfCookieSet('eoc_cookie-consent');
+
     this.setState({ isCookieSet });
 
     if (_isEmpty(currentUser)) {
@@ -146,10 +146,9 @@ export class Layout extends PureComponent {
       location: { pathname }
     } = this.props;
     const { isCookieSet, pending, pendingForViewType, viewType } = this.state;
-    const isNotPrivacyPolicyPage = !pathname.includes('privacy-policy');
+    const isPrivacyPolicyPage = pathname.includes('privacy-policy');
     const isDemoMode = currentUser && currentUser.name === 'Demo';
-    const isBarVisible =
-      isCookieSet || !(isDemoMode && !isNotPrivacyPolicyPage);
+    const isBarVisible = isCookieSet || !(isDemoMode && isPrivacyPolicyPage);
 
     if (pending) {
       return <Preloader />;
@@ -159,7 +158,7 @@ export class Layout extends PureComponent {
       <Fragment>
         {!isCookieSet && (
           <CookieConsentBox
-            isNotPrivacyPolicyPage={isNotPrivacyPolicyPage}
+            isPrivacyPolicyPage={isPrivacyPolicyPage}
             onAccept={this.handleCookieAccept}
           />
         )}

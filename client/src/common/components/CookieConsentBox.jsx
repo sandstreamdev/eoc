@@ -8,9 +8,9 @@ import FocusLock from 'react-focus-lock';
 import Overlay, { OverlayStyleType } from 'common/components/Overlay';
 import './CookieConsentBox.scss';
 
-const CookieConsentBox = ({ isNotPrivacyPolicyPage, onAccept }) => (
+const CookieConsentBox = ({ isPrivacyPolicyPage, onAccept }) => (
   <Fragment>
-    {isNotPrivacyPolicyPage && <Overlay type={OverlayStyleType.MEDIUM} />}
+    {!isPrivacyPolicyPage && <Overlay type={OverlayStyleType.MEDIUM} />}
     <FocusLock>
       <CookieConsent
         buttonClasses="primary-button"
@@ -24,7 +24,7 @@ const CookieConsentBox = ({ isNotPrivacyPolicyPage, onAccept }) => (
         onAccept={onAccept}
       >
         <FormattedMessage id="common.cookie-consent.message" />
-        {isNotPrivacyPolicyPage && (
+        {!isPrivacyPolicyPage && (
           <Fragment>
             <br />
             <FormattedMessage id="common.cookie-consent.privacy-1" />
@@ -39,7 +39,7 @@ const CookieConsentBox = ({ isNotPrivacyPolicyPage, onAccept }) => (
 );
 
 CookieConsentBox.propTypes = {
-  isNotPrivacyPolicyPage: PropTypes.bool,
+  isPrivacyPolicyPage: PropTypes.bool,
 
   onAccept: PropTypes.func.isRequired
 };
