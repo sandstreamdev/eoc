@@ -134,11 +134,11 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,json,scss,css,md}, !*.min.js": [
+    "**/{**/!(*.min).js,*.jsx,*.json,*.scss,*.css,*.md}": [
       "prettier --write",
       "git add"
     ],
-    "*.{js,jsx}, !*.min.js": [
+    "**/{**/!(*.min).js,*.jsx}": [
       "eslint -c .eslintrc --fix",
       "echo test",
       "git add"
