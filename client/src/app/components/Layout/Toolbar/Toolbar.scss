@@ -39,8 +39,19 @@
   }
 
   &__demo-title {
+    text-align: center;
     color: $text-orange;
-    font-size: $l-font;
-    letter-spacing: 1px;
+    font-size: $m-font;
+
+    @include breakpoint($xsmall) {
+      position: absolute;
+      left: 0;
+      right: 0;
+    }
+
+    @include breakpoint($small) {
+      font-size: $l-font;
+      letter-spacing: 1px;
+    }
   }
 }
