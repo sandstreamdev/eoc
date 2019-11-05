@@ -16,13 +16,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [demoUserId],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🍅 Tomato',
+      '🥓 Bacon',
+      '🧅 Onion',
+      '🧀 Cheese'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId],
-    name: '🍵 Grocery list',
+    name: '🍕 Pizza',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, ...userIds]
@@ -35,13 +40,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: true,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '⛺ Tent',
+      '🧗‍ Equipment',
+      '🗺️ Map',
+      '🎒 Backpack'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId],
-    name: 'Archive sack example',
+    name: '🏕 Trip',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId]
@@ -54,7 +64,12 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🛒 Shopping',
+      '🧹 Tidy',
+      '📧 Send emails',
+      '🎪 Buy tickets to circus'
+    ]),
     locks: {
       description: false,
       name: false
@@ -73,7 +88,12 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🧸 Teddy Bear',
+      '🎸 Guitar',
+      '🛹 Skateboard',
+      '🍫 Chocolate'
+    ]),
     locks: {
       description: false,
       name: false
@@ -92,7 +112,12 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [demoUserId],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '👥 People management',
+      '📱 Flutter',
+      '💡 Elm language',
+      '📈 SEO'
+    ]),
     locks: {
       description: false,
       name: false
@@ -111,7 +136,12 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '☕ Coffee',
+      '🥛 Milk',
+      '🍇 Fruits',
+      '🧂 Salt'
+    ]),
     locks: {
       description: false,
       name: false
@@ -130,7 +160,12 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '📎 Paperclips',
+      '📃 Printer paper',
+      '🖊️ Pens',
+      '📓 Notebooks'
+    ]),
     locks: {
       description: false,
       name: false
@@ -149,13 +184,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '📗 Functional Programming',
+      '📙 The Linux Command Line',
+      '📘 Algorithms & Data Structures',
+      '📕 MySQL'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [userIds[2]],
-    name: '📕 Books',
+    name: '📚 Books',
     ownerIds: [userIds[2]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[2]]
@@ -168,13 +208,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🎱 Snooker',
+      '🎮 FIFA tournament',
+      '🎤 Karaoke',
+      '♟️ Chess'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [userIds[0]],
-    name: '🎲 🎮 Games',
+    name: '🎲 🎮 Entertainment',
     ownerIds: [userIds[0]],
     type: ListType.SHARED,
     viewersIds: [demoUserId, ...userIds]
@@ -187,13 +232,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🎂 Birthday cake',
+      '🍾 Champagne',
+      '🎈 Balloons',
+      '🎁 Gift'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId],
-    name: '🔨 Renovation',
+    name: '🎉 Birthday party',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[0], userIds[1]]
