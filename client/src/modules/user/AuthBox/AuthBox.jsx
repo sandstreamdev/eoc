@@ -7,8 +7,6 @@ import _flowRight from 'lodash/flowRight';
 
 import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
-import { checkIfCookieSet } from 'common/utils/cookie';
-import CookieConsentBox from 'common/components/CookieConsentBox';
 import { loginDemoUser } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import Preloader, {
@@ -29,18 +27,11 @@ class AuthBox extends PureComponent {
     pending: false
   };
 
-  componentDidMount() {
-    const isCookieSet = checkIfCookieSet('eoc_cookie-consent');
-    this.setState({ isCookieSet });
-  }
-
   handleLaunchingDemo = () => {
     const { loginDemoUser } = this.props;
 
     return loginDemoUser();
   };
-
-  handleCookieAccept = () => this.setState({ isCookieSet: true });
 
   handleLogin = () => this.setState({ pending: true });
 
@@ -163,60 +154,51 @@ class AuthBox extends PureComponent {
   };
 
   render() {
-    const {
-      isCookieSet,
-      isSignInFormVisible,
-      isSignUpFormVisible
-    } = this.state;
+    const { isSignInFormVisible, isSignUpFormVisible } = this.state;
 
     const areFormsVisible = isSignUpFormVisible || isSignInFormVisible;
 
     return (
-      <>
-        <div className="authbox">
-          <div className="authbox__left">
-            <h2 className="authbox__heading">
-              <FormattedMessage id="common.app-name" />
-            </h2>
-            <p className="authbox__description">
-              <FormattedMessage id="user.auth-box.description" />
-            </p>
-          </div>
-          <div className="authbox__right">
-            <div className="authbox__intro">
-              <button
-                className="authbox__reset-button"
-                onClick={this.handleResetAuthBox}
-                type="button"
-              >
-                <AppLogo />
-              </button>
-            </div>
-            {areFormsVisible ? (
-              this.renderForms()
-            ) : (
-              <>
-                {this.renderSignInButtons()}
-                {this.renderSignUpButton()}
-                {this.renderDemoButton()}
-              </>
-            )}
-            <footer className="authbox__footer">
-              <a
-                className="authbox__link"
-                href={COMPANY_PAGE_URL}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                www.sandstream.pl
-              </a>
-            </footer>
-          </div>
+      <div className="authbox">
+        <div className="authbox__left">
+          <h2 className="authbox__heading">
+            <FormattedMessage id="common.app-name" />
+          </h2>
+          <p className="authbox__description">
+            <FormattedMessage id="user.auth-box.description" />
+          </p>
         </div>
-        {!isCookieSet && (
-          <CookieConsentBox isAuthPage onAccept={this.handleCookieAccept} />
-        )}
-      </>
+        <div className="authbox__right">
+          <div className="authbox__intro">
+            <button
+              className="authbox__reset-button"
+              onClick={this.handleResetAuthBox}
+              type="button"
+            >
+              <AppLogo />
+            </button>
+          </div>
+          {areFormsVisible ? (
+            this.renderForms()
+          ) : (
+            <>
+              {this.renderSignInButtons()}
+              {this.renderSignUpButton()}
+              {this.renderDemoButton()}
+            </>
+          )}
+          <footer className="authbox__footer">
+            <a
+              className="authbox__link"
+              href={COMPANY_PAGE_URL}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              www.sandstream.pl
+            </a>
+          </footer>
+        </div>
+      </div>
     );
   }
 }

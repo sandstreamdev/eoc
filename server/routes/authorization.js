@@ -12,6 +12,7 @@ const {
   checkIfDataLeft,
   confirmEmail,
   deleteAccount,
+  demoRedirect,
   getAccountDetails,
   getLoggedUser,
   getUserDetails,
@@ -37,6 +38,7 @@ const {
 const { authorize } = require('../middleware/authorize');
 
 router.post('/demo', setDemoUser, sendUser);
+router.get('/demo', setDemoUser, demoRedirect);
 router.get('/google', authenticateWithGoogle);
 router.get('/google/callback', authenticateCallback);
 router.post('/logout', removeDemoUserChanges, logout);
