@@ -2758,10 +2758,6 @@ Responsive CSS for all sections
     margin: 10px 0;
   }
 
-  .left-heading h2 {
-    font-size: 28px;
-  }
-
   .con1 h2,
   .ttl2 h2,
   .ttl h2,
@@ -2883,6 +2879,10 @@ Responsive CSS for all sections
   }
   .bx-wrapper .bx-prev {
     left: 35% !important;
+  }
+
+  .left-heading h2 {
+    font-size: 28px;
   }
 }
 @media (max-width: 400px) {
