@@ -22,7 +22,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [demoUserId],
-    name: 'Private sack example - owner',
+    name: '🍵 Grocery list',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, ...userIds]
@@ -60,7 +60,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [demoUserId, ...userIds],
-    name: 'Private sack example - member',
+    name: '✅ To Do',
     ownerIds: [userIds[2]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, ...userIds]
@@ -79,7 +79,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [userIds[1]],
-    name: 'Private sack example - viewer',
+    name: '🎁 Gifts',
     ownerIds: [userIds[1]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[1]]
@@ -98,7 +98,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [demoUserId, userIds[1]],
-    name: 'Cohort sack example - owner',
+    name: '💡📖 Courses',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[1], userIds[2]]
@@ -117,7 +117,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [demoUserId, userIds[1]],
-    name: 'Cohort sack example - owner',
+    name: '🍵 Grocery list',
     ownerIds: [demoUserId],
     type: ListType.SHARED,
     viewersIds: [demoUserId, ...userIds]
@@ -136,7 +136,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [demoUserId, userIds[3]],
-    name: 'Cohort sack example - member',
+    name: '🖨️ Office stuff',
     ownerIds: [userIds[3]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[3], userIds[1]]
@@ -155,7 +155,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [userIds[2]],
-    name: 'Cohort sack example - viewer',
+    name: '📕 Books',
     ownerIds: [userIds[2]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[2]]
@@ -174,7 +174,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [userIds[0]],
-    name: 'Cohort sack example - viewer',
+    name: '🎲 🎮 Games',
     ownerIds: [userIds[0]],
     type: ListType.SHARED,
     viewersIds: [demoUserId, ...userIds]
@@ -193,7 +193,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
       name: false
     },
     memberIds: [demoUserId],
-    name: 'Cohort sack example - owner',
+    name: '🔨 Renovation',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[0], userIds[1]]
