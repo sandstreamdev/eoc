@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import _some from 'lodash/some';
 import isEmail from 'validator/lib/isEmail';
 import isLength from 'validator/lib/isLength';
+import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
 import { signUp } from 'modules/user/model/actions';
@@ -252,6 +253,11 @@ class SignUpForm extends PureComponent {
       signUpErrorId
     } = this.state;
     const { onCancel } = this.props;
+    const link = (
+      <Link className="sign-up-form__link" to="/privacy-policy">
+        <FormattedMessage id="app.footer.privacy" />
+      </Link>
+    );
 
     return (
       <>
@@ -300,6 +306,12 @@ class SignUpForm extends PureComponent {
             onChange={this.onPasswordConfirmChange}
             type="password"
           />
+          <div className="sign-up-form__privacy-policy-agreement">
+            <FormattedMessage
+              id="user.auth.privacy-policy-agreement"
+              values={{ link }}
+            />
+          </div>
           <div className="sign-up-form__buttons">
             <button
               className="primary-button"
