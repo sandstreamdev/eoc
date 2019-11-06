@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -73,7 +73,7 @@ class Cohorts extends Component {
     } = this.state;
 
     return (
-      <Fragment>
+      <>
         {this.renderBreadcrumbs()}
         <div className="wrapper">
           <div className="dashboard">
@@ -107,7 +107,7 @@ class Cohorts extends Component {
               : formatMessage({ id: 'cohort.cohorts.add' })
           }
         />
-      </Fragment>
+      </>
     );
   }
 }

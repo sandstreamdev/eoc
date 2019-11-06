@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import _flowRight from 'lodash/flowRight';
@@ -89,7 +89,7 @@ class DeleteAccount extends Component {
     } = this.state;
 
     return (
-      <Fragment>
+      <>
         <DeleteDialog
           error={isErrorVisible}
           email={email}
@@ -127,7 +127,7 @@ class DeleteAccount extends Component {
             </li>
           </ul>
         </section>
-      </Fragment>
+      </>
     );
   }
 }

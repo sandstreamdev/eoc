@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -111,7 +111,7 @@ class MembersForm extends PureComponent {
     const isClearButtonVisible = inputValue.length > 0;
 
     return (
-      <Fragment>
+      <>
         <form
           className={classNames('members-form', {
             'members-form--error': error
@@ -167,7 +167,7 @@ class MembersForm extends PureComponent {
             <FormattedMessage id={error} />
           </div>
         )}
-      </Fragment>
+      </>
     );
   }
 }

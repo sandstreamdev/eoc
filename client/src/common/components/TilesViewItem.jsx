@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
@@ -93,10 +93,10 @@ class TilesViewItem extends PureComponent {
         )}
         <div className="tiles-view-item__data">
           {route === Routes.LIST ? (
-            <Fragment>
+            <>
               <span>{`Done: ${doneItemsCount}`}</span>
               <span>{`Unhandled: ${unhandledItemsCount}`}</span>
-            </Fragment>
+            </>
           ) : (
             <span>{`Members: ${membersCount}`}</span>
           )}

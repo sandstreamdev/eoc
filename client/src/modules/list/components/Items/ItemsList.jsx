@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -155,7 +155,7 @@ class ItemsList extends PureComponent {
       : 'list.items-list.message-no-items';
 
     return (
-      <Fragment>
+      <>
         {!items.length && (
           <MessageBox type={MessageType.INFO}>
             <FormattedMessage id={messageId} />
@@ -184,7 +184,7 @@ class ItemsList extends PureComponent {
             <ChevronUp />
           </button>
         )}
-      </Fragment>
+      </>
     );
   }
 }

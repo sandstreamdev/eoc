@@ -26,12 +26,8 @@ const prepareDependenciesList = dependencies => {
 
   names.forEach(name => {
     content += `* ${disableLink(name)}${endOfLineMarker}`;
-    content += `  - license: [${dependencies[name].licenses}](${
-      dependencies[name].licenseUrl
-    })${doubleEndOfLineMarker}`;
-    content += `  - repository: ${
-      dependencies[name].repository
-    }${doubleEndOfLineMarker}`;
+    content += `  - license: [${dependencies[name].licenses}](${dependencies[name].licenseUrl})${doubleEndOfLineMarker}`;
+    content += `  - repository: ${dependencies[name].repository}${doubleEndOfLineMarker}`;
   });
 
   return content;
