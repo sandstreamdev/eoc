@@ -25,7 +25,11 @@ import Footer from '../Footer';
 import Notifications from 'modules/notification';
 import Page404 from 'common/components/Page404';
 import About from 'modules/about';
-import PrivacyPolicy from 'modules/privacy-policy';
+import {
+  CookiePolicy,
+  PrivacyPolicy,
+  TermsOfUse
+} from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
 import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
@@ -168,6 +172,8 @@ export class Layout extends PureComponent {
             <Switch>
               <Route component={AuthBox} exact path="/" />
               <Route component={PrivacyPolicy} path="/privacy-policy" />
+              <Route component={TermsOfUse} path="/terms-of-use" />
+              <Route component={CookiePolicy} path="/cookie-policy" />
               <Route component={SuccessMessage} path="/account-created" />
               <Route component={AccountDeleted} path="/account-deleted" />
               <Route
@@ -255,6 +261,8 @@ export class Layout extends PureComponent {
               <Route component={List} path="/sack/:id(\w+)" />
               <Route component={About} path="/about" />
               <Route component={PrivacyPolicy} path="/privacy-policy" />
+              <Route component={TermsOfUse} path="/terms-of-use" />
+              <Route component={CookiePolicy} path="/cookie-policy" />
               <Route component={Cohorts} path="/cohorts" />
               <Route component={UserProfile} path="/user-profile" />
               <Route component={Libraries} path="/libraries" />
