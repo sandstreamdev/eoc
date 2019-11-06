@@ -33,6 +33,8 @@ const io = require('../sockets/index');
 const { logout: logoutOtherSessions } = require('../sockets/user');
 const mailer = require('../mailer/index');
 
+const demoRedirect = (req, resp) => resp.redirect('/');
+
 const sendUser = (req, resp) => resp.send(responseWithUserData(req.user));
 
 const logout = (req, resp) => {
@@ -586,6 +588,7 @@ module.exports = {
   checkToken,
   confirmEmail,
   deleteAccount,
+  demoRedirect,
   getAccountDetails,
   getLoggedUser,
   getUserDetails,

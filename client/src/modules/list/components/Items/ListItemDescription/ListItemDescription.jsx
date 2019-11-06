@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -298,7 +298,7 @@ class ListItemDescription extends PureComponent {
     const isTitleVisible = description || isTextareaVisible;
 
     return (
-      <Fragment>
+      <>
         {locked && this.renderOverlay()}
         <div
           className={classNames('list-item-description', {
@@ -314,13 +314,13 @@ class ListItemDescription extends PureComponent {
           {isTextareaVisible ? (
             this.renderTextarea()
           ) : (
-            <Fragment>
+            <>
               {description ? this.renderDescription() : this.renderAddButton()}
-            </Fragment>
+            </>
           )}
         </div>
         {isSaveButtonVisible && this.renderSaveButton()}
-      </Fragment>
+      </>
     );
   }
 }

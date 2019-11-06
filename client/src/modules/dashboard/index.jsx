@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -105,7 +105,7 @@ class Dashboard extends Component {
     ];
 
     return (
-      <Fragment>
+      <>
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <div className="wrapper">
           <div className="dashboard">
@@ -169,7 +169,7 @@ class Dashboard extends Component {
               : formatMessage({ id: 'dashboard.index.add' })
           }
         />
-      </Fragment>
+      </>
     );
   }
 }

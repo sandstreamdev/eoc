@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import _some from 'lodash/some';
@@ -212,7 +212,7 @@ class PasswordChangeForm extends PureComponent {
     const hasChangePasswordFailed = changePasswordErrorId.length > 0;
 
     return (
-      <Fragment>
+      <>
         {changePasswordErrorId && this.renderChangePasswordError()}
         <form
           className="password-change-form__form"
@@ -266,7 +266,7 @@ class PasswordChangeForm extends PureComponent {
             </PendingButton>
           </div>
         </form>
-      </Fragment>
+      </>
     );
   };
 

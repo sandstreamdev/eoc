@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _flowRight from 'lodash/flowRight';
 
 import UserBar from './components/UserBar';
@@ -12,7 +12,7 @@ import { IntlPropType } from 'common/constants/propTypes';
 import Activities from 'common/components/Activities';
 import './Toolbar.scss';
 
-const Toolbar = ({ children, intl: { formatMessage } }) => (
+const Toolbar = ({ children, intl: { formatMessage }, isDemoMode }) => (
   <div className="toolbar">
     <div className="wrapper toolbar__wrapper">
       <div className="toolbar__left">
@@ -24,6 +24,11 @@ const Toolbar = ({ children, intl: { formatMessage } }) => (
           })}
         />
       </div>
+      {isDemoMode && (
+        <h2 className="toolbar__demo-title">
+          <FormattedMessage id="user.auth-box.demo-button" />
+        </h2>
+      )}
       <div className="toolbar__right">
         {children}
         <Activities />
@@ -35,7 +40,8 @@ const Toolbar = ({ children, intl: { formatMessage } }) => (
 
 Toolbar.propTypes = {
   children: PropTypes.node,
-  intl: IntlPropType
+  intl: IntlPropType,
+  isDemoMode: PropTypes.bool
 };
 
 const mapStateToProps = state => ({

@@ -1,5 +1,5 @@
 const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 
@@ -40,7 +40,9 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
-              includePaths: ['./client/src/app/styles']
+              sassOptions: {
+                includePaths: ['./client/src/app/styles']
+              }
             }
           }
         ]
