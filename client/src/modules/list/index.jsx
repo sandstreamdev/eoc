@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -322,7 +322,7 @@ class List extends Component {
     );
 
     return (
-      <Fragment>
+      <>
         {this.renderBreadcrumbs()}
         {archivedListView ? (
           <ArchivedList
@@ -437,18 +437,18 @@ class List extends Component {
                 }}
               />
               {!isOwner && (
-                <Fragment>
+                <>
                   {' '}
                   <FormattedMessage
                     id="common.actions.not-available-contact-owner"
                     values={{ context: dialogContextMessage, name }}
                   />
-                </Fragment>
+                </>
               )}
             </p>
           </Dialog>
         )}
-      </Fragment>
+      </>
     );
   }
 }

@@ -148,6 +148,12 @@ body {
   padding-bottom: 20px;
 }
 
+.left-heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
 .left-heading span {
   font-weight: 400;
   color: #b6b6b6;
@@ -155,6 +161,7 @@ body {
   text-transform: uppercase;
   padding-bottom: 5px;
   display: block;
+  margin-right: 10px;
 }
 
 .left-heading h2 {
@@ -162,10 +169,8 @@ body {
   color: #000000;
   font-size: 40px;
   line-height: 40px;
-  margin: 0;
+  margin: 0 0 4px 0;
   background: url(../images/line.png) no-repeat left bottom;
-  padding-bottom: 20px;
-  margin-bottom: 25px;
 }
 
 /*-----------------------------------------------------------------------------------
@@ -293,6 +298,10 @@ body {
   -webkit-box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
   -moz-box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
   box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
+}
+
+.btn2:last-of-type {
+  margin-left: 16px;
 }
 
 .btn2:hover {
@@ -2879,6 +2888,10 @@ Responsive CSS for all sections
   }
   .bx-wrapper .bx-prev {
     left: 35% !important;
+  }
+
+  .left-heading h2 {
+    font-size: 28px;
   }
 }
 @media (max-width: 400px) {

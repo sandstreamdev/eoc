@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -135,7 +135,7 @@ class MoveToListPanel extends PureComponent {
             />
           </Confirmation>
         ) : (
-          <Fragment>
+          <>
             <div className="move-to-list-panel__filter-box">
               <Filter
                 autofocus
@@ -163,7 +163,7 @@ class MoveToListPanel extends PureComponent {
               onClick={this.handleShowConfirmation}
               pending={pending}
             />
-          </Fragment>
+          </>
         )}
       </div>
     );

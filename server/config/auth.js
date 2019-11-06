@@ -1,6 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const LocalStrategy = require('passport-local').Strategy;
+const _isEmpty = require('lodash/isEmpty');
 
 const { createDemoUser } = require('../seed/demoSeed/generateUsers');
 const { seedDemoData } = require('../seed/demoSeed/seedDemoData');
@@ -116,8 +117,15 @@ passport.deserializeUser((id, done) => {
     .catch(err => done(null, false, { message: err.message }));
 });
 
-const authenticate = (req, resp, next, type) =>
-  passport.authenticate(type, (err, user) => {
+const authenticate = (req, resp, next, type) => {
+  if (type === StrategyType.DEMO && _isEmpty(req.body)) {
+    req.body = {
+      email: 'demo@example.com',
+      password: 'demo'
+    };
+  }
+
+  return passport.authenticate(type, (err, user) => {
     if (err) {
       return next(err);
     }
@@ -134,6 +142,7 @@ const authenticate = (req, resp, next, type) =>
       next();
     });
   })(req, resp, next);
+};
 
 const setUser = (req, resp, next) =>
   authenticate(req, resp, next, StrategyType.LOCAL);

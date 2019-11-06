@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -211,7 +211,7 @@ class CohortDescription extends PureComponent {
             onUnmount={this.handleDescriptionUnmount}
           />
         ) : (
-          <Fragment>
+          <>
             {description && (
               <p
                 className={classNames('cohort-description__heading', {
@@ -238,7 +238,7 @@ class CohortDescription extends PureComponent {
                 <FormattedMessage id="cohort.cohort-header.add-description" />
               </button>
             )}
-          </Fragment>
+          </>
         )}
         {pendingForDescription && <Preloader size={PreloaderSize.SMALL} />}
       </div>

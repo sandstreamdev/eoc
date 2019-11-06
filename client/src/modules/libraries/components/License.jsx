@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { CSSTransition } from 'react-transition-group';
@@ -56,7 +56,7 @@ class License extends PureComponent {
     const isLicenseVisible = isVisible && !_isEmpty(license);
 
     return (
-      <Fragment>
+      <>
         {pending && <Preloader size={PreloaderSize.SMALL} />}
         <CSSTransition
           classNames="license-expand"
@@ -69,7 +69,7 @@ class License extends PureComponent {
             <LicenseDetails license={license} />
           </div>
         </CSSTransition>
-      </Fragment>
+      </>
     );
   }
 }
