@@ -2,11 +2,11 @@
 
 _Last updated July 25, 2019_
 
-Thank you for choosing to be part of our community at **Sandstream Development Sp. z o.o.** ("company", "we", "us", or "our"). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us at [PRIVACY_EMAIL](mailto:PRIVACY_EMAIL).
+Thank you for choosing to be part of our community at **Sandstream Development Sp. z o.o.** ("company", "we", "us", or "our"). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us at [eoc.sandstream@gmail.com](mailto:eoc.sandstream@gmail.com).
 
-When you visit our website [HOST](APP_URL), mobile application, and use our services, you trust us with your personal information. We take your privacy very seriously. In this privacy notice, we describe our privacy policy. We seek to explain to you in the clearest way possible what information we collect, how we use it and what rights you have in relation to it. We hope you take some time to read through it carefully, as it is important. If there are any terms in this privacy policy that you do not agree with, please discontinue use of our Sites or Apps and our services.
+When you visit our website [app.eoc.sanddev.com](https://app.eoc.sanddev.com), mobile application, and use our services, you trust us with your personal information. We take your privacy very seriously. In this privacy notice, we describe our privacy policy. We seek to explain to you in the clearest way possible what information we collect, how we use it and what rights you have in relation to it. We hope you take some time to read through it carefully, as it is important. If there are any terms in this privacy policy that you do not agree with, please discontinue use of our Sites or Apps and our services.
 
-This privacy policy applies to all information collected through our website (such as [HOST](APP_URL)), mobile application, ("**Apps**"), and/or any related services, sales, marketing or events (we refer to them collectively in this privacy policy as the "**Sites**").
+This privacy policy applies to all information collected through our website (such as [app.eoc.sanddev.com](https://app.eoc.sanddev.com)), mobile application, ("**Apps**"), and/or any related services, sales, marketing or events (we refer to them collectively in this privacy policy as the "**Sites**").
 
 **Please read this privacy policy carefully as it will help you make informed decisions about sharing your personal information with us.**
 
@@ -116,7 +116,7 @@ We may process or share data based on the following legal basis:
 
 More specifically, we may need to process your data or share your personal information in the following situations:
 
-- **Vendors, Consultants and Other Third-Party Service Providers.** We may share your data with third party vendors, service providers, contractors or agents who perform services for us or on our behalf and require access to such information to do that work. Examples include: payment processing, data analysis, email delivery, hosting services, customer service and marketing efforts. We may allow selected third parties to use tracking technology on the Sites or Apps, which will enable them to collect data about how you interact with the Sites or Apps over time. This information may be used to, among other things, analyze and track data, determine the popularity of certain content and better understand online activity. Unless described in this Policy, we do not share, sell, rent or trade any of your information with third parties for their promotional purposes.
+- **Vendors, Consultants and Other Third-Party Service Providers.** We may share your data with third party vendors, service providers, contractors or agents who perform services for us or on our behalf and require access to such information to do that work. Examples include: payment processing, data analysis, email delivery, app.eoc.sanddev.coming services, customer service and marketing efforts. We may allow selected third parties to use tracking technology on the Sites or Apps, which will enable them to collect data about how you interact with the Sites or Apps over time. This information may be used to, among other things, analyze and track data, determine the popularity of certain content and better understand online activity. Unless described in this Policy, we do not share, sell, rent or trade any of your information with third parties for their promotional purposes.
 
 - **Business Transfers.** We may share or transfer your information in connection with, or during negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion of our business to another company.
 
@@ -141,7 +141,7 @@ We only share and disclose your information with the following third parties. We
 
 **_In Short:_** We may use cookies and other tracking technologies to collect and store your information.
 
-We may use cookies and similar tracking technologies (like web beacons and pixels) to access or store information. Specific information about how we use such technologies and how you can refuse certain cookies is set out in our [Cookie Policy](www.app.eoc.sanddev.com).
+We may use cookies and similar tracking technologies (like web beacons and pixels) to access or store information. Specific information about how we use such technologies and how you can refuse certain cookies is set out in our [Cookie Policy](www.app.eoc.sanddev.com/cookie-policy).
 
 ### [6. HOW DO WE HANDLE YOUR SOCIAL LOGINS?](#6-how-do-we-handle-your-social-logins)
 
@@ -177,7 +177,7 @@ We have implemented appropriate technical and organisational security measures d
 
 **_In Short:_** We do not knowingly collect data from or market to children under 13 years of age.
 
-We do not knowingly solicit data from or market to children under 13 years of age. By using the Sites or Apps, you represent that you are at least 13 or that you are the parent or guardian of such a minor and consent to such minor dependent's use of the Sites or Apps. If we learn that personal information from users less than 18 years of age has been collected, we will deactivate the account and take reasonable measures to promptly delete such data from our records. If you become aware of any data we have collected from children under age 13, please contact us at [PRIVACY_EMAIL](mailto:PRIVACY_EMAIL).
+We do not knowingly solicit data from or market to children under 13 years of age. By using the Sites or Apps, you represent that you are at least 13 or that you are the parent or guardian of such a minor and consent to such minor dependent's use of the Sites or Apps. If we learn that personal information from users less than 18 years of age has been collected, we will deactivate the account and take reasonable measures to promptly delete such data from our records. If you become aware of any data we have collected from children under age 13, please contact us at [eoc.sandstream@gmail.com](mailto:eoc.sandstream@gmail.com).
 
 ### [11. WHAT ARE YOUR PRIVACY RIGHTS?](#11-what-are-your-privacy-rights)
 
@@ -225,7 +225,7 @@ We may update this privacy policy from time to time. The updated version will be
 
 ### [15. HOW CAN YOU CONTACT US ABOUT THIS POLICY?](#15-how-can-you-contact-us-about-this-policy)
 
-If you have questions or comments about this policy, you may email us at [PRIVACY_EMAIL](mailto:PRIVACY_EMAIL) or by post to:
+If you have questions or comments about this policy, you may email us at [eoc.sandstream@gmail.com](mailto:eoc.sandstream@gmail.com) or by post to:
 
 > **Sandstream Development Sp. z o.o.**
 > Ślężna 104
