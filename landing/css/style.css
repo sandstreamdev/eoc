@@ -226,11 +226,11 @@ body {
 }
 
 .logo {
-  height: 42px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 145px;
+  max-width: 66px;
 }
 
 .logo svg {
@@ -238,13 +238,18 @@ body {
 }
 
 .logo svg path {
-  fill: var(--menu-color);
+  fill: var(--dark-orange);
 }
 
 .logo a {
-  color: var(--menu-color);
-  font-size: 18px;
+  color: var(--dark-orange);
   text-decoration: none;
+  font-size: 18px;
+  line-height: 1;
+  display: block;
+  font-weight: 700;
+  margin-right: 4px;
+  letter-spacing: 1px;
 }
 
 .toping img {
