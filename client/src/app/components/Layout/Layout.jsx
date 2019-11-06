@@ -150,9 +150,12 @@ export class Layout extends PureComponent {
       location: { pathname }
     } = this.props;
     const { isCookieSet, pending, pendingForViewType, viewType } = this.state;
-    const isPrivacyPolicyPage = pathname.includes('privacy-policy');
+    const isPolicyPage =
+      pathname.includes('cookie-policy') ||
+      pathname.includes('privacy-policy') ||
+      pathname.includes('terms-of-use');
     const isDemoMode = currentUser && currentUser.name === 'Demo';
-    const isBarVisible = isCookieSet || !(isDemoMode && isPrivacyPolicyPage);
+    const isBarVisible = isCookieSet || !(isDemoMode && isPolicyPage);
 
     if (pending) {
       return <Preloader />;
@@ -162,7 +165,7 @@ export class Layout extends PureComponent {
       <>
         {!isCookieSet && (
           <CookieConsentBox
-            isPrivacyPolicyPage={isPrivacyPolicyPage}
+            isPolicyPage={isPolicyPage}
             onAccept={this.handleCookieAccept}
           />
         )}

@@ -13,7 +13,7 @@ const Policy = ({ currentUser, dangerouslySetInnerHTML }) => (
   <>
     <div className="policy" dangerouslySetInnerHTML={dangerouslySetInnerHTML} />
     {!currentUser && (
-      <div className="privacy-policy__links">
+      <div className="policy__login-link">
         <Link to="/">
           <button className="primary-button" type="button">
             <FormattedMessage id="privacy-policy.index.login-btn" />
