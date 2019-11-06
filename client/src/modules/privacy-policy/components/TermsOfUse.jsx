@@ -1,5 +1,10 @@
 import React from 'react';
 
-const TermsOfUse = () => <div>Terms Of Use</div>;
+import Policy from './Policy';
+import TermsOfUseEn from './TermsOfUse.en.md';
+
+const TermsOfUse = () => (
+  <Policy dangerouslySetInnerHTML={{ __html: TermsOfUseEn }} />
+);
 
 export default TermsOfUse;
