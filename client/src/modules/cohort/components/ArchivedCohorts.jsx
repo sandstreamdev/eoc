@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -54,7 +54,7 @@ class ArchivedCohorts extends PureComponent {
     const { areArchivedCohortsVisible, pendingForArchivedCohorts } = this.state;
 
     return (
-      <Fragment>
+      <>
         <button
           className="link-button"
           onClick={this.handleArchivedCohortsVisibility}
@@ -80,7 +80,7 @@ class ArchivedCohorts extends PureComponent {
             viewType={ViewType.TILES}
           />
         )}
-      </Fragment>
+      </>
     );
   }
 }

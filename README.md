@@ -1,5 +1,7 @@
 # EOC - End Of Coffee App
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/sandstreamdev/eoc.svg)](https://greenkeeper.io/)
+
 An app made by Sandstream Development team, to track office inventory, groceries, and even your daily tasks!
 
 ![Eoc custom badge](https://img.shields.io/badge/EOC-App-orange)
@@ -110,7 +112,7 @@ To perform DB migrations we use `migrate-mongo` tool. To config `migrate-mongo` 
 ## Third-party licenses
 
 To generate json and markdown files containing third-party licenses you need to
- install globally: [license-checker](https://github.com/davglass/license-checker#readme) and [npm-license-crawler](https://github.com/mwittig/npm-license-crawler):
+install globally: [license-checker](https://github.com/davglass/license-checker#readme) and [npm-license-crawler](https://github.com/mwittig/npm-license-crawler):
 
 #### 1. Install packages globally
 
@@ -125,11 +127,13 @@ cd eoc
 ```
 
 #### 3. Run libs script
+
 This script create two files: JSON file and markdown file.
 
 The first one contains data about packages used in the project. It is used by controllers: `getLibraries` and `getLicense` to extract this data and send it to the client to display information about the used package.
 
 The second file contains a list of packages used in the project with links to their repositories and license file. It is available on the project repository page.
+
 ```
 npm run libs -j path/to/json/file [-m path/to/md/file]
 ```

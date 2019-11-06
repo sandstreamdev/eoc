@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _map from 'lodash/map';
@@ -9,7 +9,7 @@ import NotificationWithTimer from './components/NotificationWithTimer';
 import './Notification.scss';
 
 const Notifications = ({ notifications }) => (
-  <Fragment>
+  <>
     {Object.entries(notifications).length > 0 && (
       <div className="notification">
         <div className="notification__wrapper">
@@ -39,7 +39,7 @@ const Notifications = ({ notifications }) => (
         </div>
       </div>
     )}
-  </Fragment>
+  </>
 );
 
 Notifications.propTypes = {
