@@ -2,11 +2,11 @@
 
 ## 1\. Terms
 
-By accessing the website at [eoc.app.sanddev.com](https://eoc.app.sanddev.com), you are agreeing to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this website are protected by applicable copyright and trademark law.
+By accessing the website at [eoc.app.sanddev.com](https://eoc.app.sanddev.com), you are agreeing to be bound by these terms of service, all applicable laws, and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this website are protected by applicable copyright and trademark law.
 
 ## 2\. Use License
 
-1.  Permission is granted to temporarily download one copy of the materials (information or software) on Sandstream’s website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
+1.  Permission is granted to temporarily download one copy of the materials (information or software) on Sandstream’s website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license, you may not:
     1.  modify or copy the materials;
     2.  use the materials for any commercial purpose, or for any public display (commercial or non-commercial);
     3.  attempt to decompile or reverse engineer any software contained on Sandstream’s website;
@@ -25,7 +25,7 @@ In no event shall Sandstream or its suppliers be liable for any damages (includi
 
 ## 5\. Accuracy of materials
 
-The materials appearing on Sandstream’s website could include technical, typographical, or photographic errors. Sandstream does not warrant that any of the materials on its website are accurate, complete or current. Sandstream may make changes to the materials contained on its website at any time without notice. However Sandstream does not make any commitment to update the materials.
+The materials appearing on Sandstream’s website could include technical, typographical, or photographic errors. Sandstream does not warrant that any of the materials on its website are accurate, complete or current. Sandstream may make changes to the materials contained on its website at any time without notice. However, Sandstream does not make any commitment to update the materials.
 
 ## 6\. Links
 
