@@ -22,17 +22,17 @@ const generateCohorts = (demoUserId, userIds) => [
   Cohort(demoUserId, userIds)(
     false,
     'You are the owner of this cohort. You can create sacks, add members and manage their permissions, modify and archive cohort.',
-    'Cohort example - owner'
+    '🏢 Office'
   ),
   Cohort(demoUserId, userIds)(
     false,
     'You are a member of this cohort. You can add sacks, add and invite members.',
-    'Cohort example - member'
+    '👨‍👩‍👧‍👦 Family'
   ),
   Cohort(demoUserId, userIds)(
     true,
     'You are a member of this cohort. You can add sacks, add and invite members.',
-    'Archived cohort example'
+    '🧗 Climbing team'
   )
 ];
 
