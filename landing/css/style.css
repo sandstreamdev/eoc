@@ -1447,20 +1447,22 @@ Footer Social
   align-items: center;
 }
 
-.footer__list {
-  list-style-type: none;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.footer__links {
+  text-align: left;
   margin: 0;
 }
 
-.footer__list li {
-  padding: 5px 10px;
+.footer__links a {
+  white-space: nowrap;
 }
 
-.footer__list li:last-child {
-  padding-right: 0;
+.footer__copyrights {
+  text-align: right;
+}
+
+.footer__copyrights span,
+.footer__copyrights a {
+  white-space: nowrap;
 }
 
 .footer__privacy {
@@ -1701,6 +1703,69 @@ Privacy-policy
 
 .dark-color-bg .info a:hover {
   color: var(--text-black);
+}
+
+.rodo-header a {
+  color: var(--dark-orange);
+}
+
+.dark-color-bg .rodo-header a {
+  color: var(--text-white);
+}
+
+.rodo-header a:hover {
+  text-decoration: underline;
+  color: var(--text-normal);
+}
+
+.dark-color-bg .rodo-header a:hover {
+  color: var(--text-gray);
+}
+
+h1.rodo-title {
+  font-size: 52px;
+}
+
+.heading h2.rodo-header {
+  font-size: 40px;
+}
+
+.rodo-content h4 {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 20px 0 0;
+  padding: 0;
+}
+
+.rodo-content > p {
+  margin: 28px 0 8px;
+}
+
+.rodo-content p > a {
+  color: var(--dark-orange);
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.rodo-content p > a:hover {
+  color: var(--text-black);
+}
+
+ol.rodo-content p {
+  margin: 0 0 4px;
+}
+
+.rodo-content blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 15px;
+}
+
+.rodo-content blockquote p {
+  padding: 0;
+  margin: 0;
+  white-space: pre-line;
 }
 
 /* Privacy-policy */
@@ -2636,6 +2701,15 @@ Responsive CSS for all sections
   #header .col-md-4 {
     width: 100%;
   }
+  .footer__row {
+    flex-direction: column;
+  }
+  .footer__links {
+    text-align: center;
+  }
+  .footer__copyrights {
+    text-align: center;
+  }
 }
 
 @media (max-width: 980px) {
@@ -2658,6 +2732,14 @@ Responsive CSS for all sections
 
   .h-blog-box {
     margin-bottom: 50px;
+  }
+
+  h1.rodo-title {
+    font-size: 40px;
+  }
+
+  .heading h2.rodo-header {
+    font-size: 32px;
   }
 }
 
@@ -2784,6 +2866,12 @@ Responsive CSS for all sections
   .blog-post-content-area {
     padding: 30px;
   }
+
+  .footer p,
+  .footer a,
+  .footer span {
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -2880,6 +2968,14 @@ Responsive CSS for all sections
   }
   .section12 .slide {
     text-align: center;
+  }
+
+  .heading h2.rodo-header {
+    font-size: 24px;
+  }
+
+  h1.rodo-title {
+    font-size: 32px;
   }
 }
 @media (max-width: 550px) {
