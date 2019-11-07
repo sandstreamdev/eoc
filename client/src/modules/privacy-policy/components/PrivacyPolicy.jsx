@@ -1,10 +1,11 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 
 import Policy from './Policy';
 import PrivacyPolicyEn from './PrivacyPolicy.en.md';
 
 const PrivacyPolicy = () => (
-  <Policy dangerouslySetInnerHTML={{ __html: PrivacyPolicyEn }} />
+  <Policy policy={{ __html: DOMPurify.sanitize(PrivacyPolicyEn) }} />
 );
 
 export default PrivacyPolicy;

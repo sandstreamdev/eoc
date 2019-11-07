@@ -9,9 +9,9 @@ import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import './Policy.scss';
 
-const Policy = ({ currentUser, dangerouslySetInnerHTML }) => (
+const Policy = ({ currentUser, policy }) => (
   <>
-    <div className="policy" dangerouslySetInnerHTML={dangerouslySetInnerHTML} />
+    <div className="policy" dangerouslySetInnerHTML={policy} />
     {!currentUser && (
       <div className="policy__login-link">
         <Link to="/">
@@ -26,7 +26,7 @@ const Policy = ({ currentUser, dangerouslySetInnerHTML }) => (
 
 Policy.propTypes = {
   currentUser: UserPropType,
-  dangerouslySetInnerHTML: PropTypes.any
+  policy: PropTypes.any
 };
 
 const mapStateToProps = state => ({
