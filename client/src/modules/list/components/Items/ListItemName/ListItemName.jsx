@@ -4,6 +4,10 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import _flowRight from 'lodash/flowRight';
+import _trim from 'lodash/trim';
+import isEmpty from 'validator/lib/isEmpty';
+import isLength from 'validator/lib/isLength';
+import { FormattedMessage } from 'react-intl';
 
 import { updateListItem } from '../model/actions';
 import { RouterMatchPropType, UserPropType } from 'common/constants/propTypes';
@@ -15,6 +19,7 @@ import {
   attachBeforeUnloadEvent,
   removeBeforeUnloadEvent
 } from 'common/utils/events';
+import { validateWith } from 'common/utils/helpers';
 
 class ListItemName extends PureComponent {
   constructor(props) {
@@ -23,9 +28,9 @@ class ListItemName extends PureComponent {
     const { name } = this.props;
 
     this.state = {
+      errorMessageId: '',
       isDirty: false,
       isNameInputFocused: false,
-      isTipVisible: false,
       name,
       pending: false
     };
@@ -79,12 +84,12 @@ class ListItemName extends PureComponent {
     const { code } = event;
 
     if (code === KeyCodes.ENTER || code === KeyCodes.ESCAPE) {
-      this.handleNameUpdate();
+      this.validateName(this.handleNameUpdate);
     }
   };
 
   handleNameUpdate = () => {
-    const { name: updatedName } = this.state;
+    const { name: updatedName, errorMessageId } = this.state;
     const {
       currentUser: { id: userId, name: userName },
       itemId,
@@ -97,9 +102,8 @@ class ListItemName extends PureComponent {
       updateListItem
     } = this.props;
     const isNameUpdated = updatedName !== name;
-    const canBeUpdated = updatedName.trim().length > 1;
 
-    if (canBeUpdated && isNameUpdated) {
+    if (isNameUpdated && !errorMessageId) {
       this.setState({ pending: true });
 
       const userData = { userId, editedBy: userName };
@@ -109,17 +113,12 @@ class ListItemName extends PureComponent {
         name: updatedName
       }).finally(() => {
         this.setState({
-          isTipVisible: false,
           pending: false
         });
 
         this.handleNameInputBlur();
         onBlur();
       });
-    }
-
-    if (!canBeUpdated) {
-      this.setState({ isTipVisible: true });
     }
   };
 
@@ -131,9 +130,15 @@ class ListItemName extends PureComponent {
     this.setState({ name: value });
   };
 
-  renderTip = () => (
-    <span className="error-message">Name can not be empty.</span>
-  );
+  renderError = () => {
+    const { errorMessageId } = this.state;
+
+    return (
+      <span className="error-message">
+        <FormattedMessage id={errorMessageId} />
+      </span>
+    );
+  };
 
   handleNameInputFocus = () => {
     const { onFocus } = this.props;
@@ -170,12 +175,29 @@ class ListItemName extends PureComponent {
     const { target } = event;
 
     if (this.listItemName && !this.listItemName.current.contains(target)) {
-      this.handleNameUpdate();
+      this.validateName(this.handleNameUpdate);
     }
   };
 
+  validateName = callback => {
+    const { name } = this.state;
+    let errorMessageId;
+
+    errorMessageId = validateWith(
+      value => !isEmpty(value, { ignore_whitespace: true })
+    )('common.form.required-warning')(name);
+
+    if (_trim(name)) {
+      errorMessageId = validateWith(value =>
+        isLength(value, { min: 1, max: 32 })
+      )('common.form.field-min-max')(name);
+    }
+
+    this.setState({ errorMessageId }, callback);
+  };
+
   render() {
-    const { isNameInputFocused, isTipVisible, name, pending } = this.state;
+    const { isNameInputFocused, errorMessageId, name, pending } = this.state;
     const { isMember, locked } = this.props;
 
     return (
@@ -197,7 +219,7 @@ class ListItemName extends PureComponent {
           />
           {pending && <Preloader />}
         </div>
-        {isTipVisible && this.renderTip()}
+        {errorMessageId && this.renderError()}
       </div>
     );
   }
