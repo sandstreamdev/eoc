@@ -19,7 +19,7 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     items: generateItems(demoUserId, userIds, [
       '🍅 Tomato',
       '🥓 Bacon',
-      '🧅 Onion',
+      '🌶️ Pepper',
       '🧀 Cheese'
     ]),
     locks: {
