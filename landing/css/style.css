@@ -1705,6 +1705,7 @@ Privacy-policy
   color: var(--text-black);
 }
 
+h2.rodo-header,
 .rodo-header a {
   color: var(--dark-orange);
 }
@@ -1766,6 +1767,16 @@ ol.rodo-content p {
   padding: 0;
   margin: 0;
   white-space: pre-line;
+}
+
+.rodo-contact a {
+  color: var(--main-bg-color);
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.rodo-contact a:hover {
+  color: var(--text-black);
 }
 
 /* Privacy-policy */
