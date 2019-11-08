@@ -1,6 +1,6 @@
 # PRIVACY POLICY
 
-_Last updated July 25, 2019_
+_Last updated November 8, 2019_
 
 Thank you for choosing to be part of our community at **Sandstream Development Sp. z o.o.** ("company", "we", "us", or "our"). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy or our practices with regards to your personal information, please contact us at [eoc.sandstream@gmail.com](mailto:eoc.sandstream@gmail.com).
 
