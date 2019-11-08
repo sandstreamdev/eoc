@@ -1,6 +1,6 @@
 # EOC - End Of Coffee App
 
-[![Build status](http://eoc.sanddev.com:8080/buildStatus/icon)](http://eoc.sanddev.com:8080/buildStatus/icon)
+[![Build status](http://eoc.sanddev.com:8080/buildStatus/icon)](http://eoc.sanddev.com:8080/job/EOC%20MBP/job/master/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/sandstreamdev/eoc.svg)](https://greenkeeper.io/)
 ![last commit](https://img.shields.io/github/last-commit/sandstreamdev/eoc)
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
