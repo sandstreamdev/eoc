@@ -28,6 +28,19 @@
         "ideas",
         "review"
       ]
+    },
+    {
+      "login": "alemikolo",
+      "name": "Aleksander Fret",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/25374390?v=4",
+      "profile": "http://www.aleksander.fret.com.pl",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
