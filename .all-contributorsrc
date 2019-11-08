@@ -52,7 +52,9 @@
         "code",
         "doc",
         "design",
-        "ideas"
+        "ideas",
+        "infra",
+        "projectManagement"
       ]
     },
     {
