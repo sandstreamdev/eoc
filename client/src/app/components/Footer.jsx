@@ -13,8 +13,16 @@ const Footer = () => (
           <FormattedMessage id="app.footer.about" />
         </Link>
         <span className="footer__text-divider"> | </span>
+        <Link className="footer__text footer__link" to="/cookie-policy">
+          <FormattedMessage id="app.footer.cookie-policy" />
+        </Link>
+        <span className="footer__text-divider"> | </span>
         <Link className="footer__text footer__link" to="/privacy-policy">
           <FormattedMessage id="app.footer.privacy" />
+        </Link>
+        <span className="footer__text-divider"> | </span>
+        <Link className="footer__text footer__link" to="/terms-of-use">
+          <FormattedMessage id="app.footer.terms-of-use" />
         </Link>
         <span className="footer__text-divider"> | </span>
         <Link className="footer__text footer__link" to="/libraries">

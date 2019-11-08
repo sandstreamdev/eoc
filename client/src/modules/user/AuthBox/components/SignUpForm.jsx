@@ -253,9 +253,19 @@ class SignUpForm extends PureComponent {
       signUpErrorId
     } = this.state;
     const { onCancel } = this.props;
-    const link = (
+    const cookieLink = (
+      <Link className="sign-up-form__link" to="/cookie-policy">
+        <FormattedMessage id="app.footer.cookie-policy" />
+      </Link>
+    );
+    const privacyLink = (
       <Link className="sign-up-form__link" to="/privacy-policy">
         <FormattedMessage id="app.footer.privacy" />
+      </Link>
+    );
+    const termsLink = (
+      <Link className="sign-up-form__link" to="/terms-of-use">
+        <FormattedMessage id="app.footer.terms-of-use" />
       </Link>
     );
 
@@ -309,7 +319,7 @@ class SignUpForm extends PureComponent {
           <div className="sign-up-form__privacy-policy-agreement">
             <FormattedMessage
               id="user.auth.privacy-policy-agreement"
-              values={{ link }}
+              values={{ cookieLink, privacyLink, termsLink }}
             />
           </div>
           <div className="sign-up-form__buttons">

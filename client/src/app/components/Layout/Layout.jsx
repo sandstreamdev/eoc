@@ -25,7 +25,11 @@ import Footer from '../Footer';
 import Notifications from 'modules/notification';
 import Page404 from 'common/components/Page404';
 import About from 'modules/about';
-import PrivacyPolicy from 'modules/privacy-policy';
+import {
+  CookiePolicy,
+  PrivacyPolicy,
+  TermsOfUse
+} from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
 import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
@@ -146,9 +150,12 @@ export class Layout extends PureComponent {
       location: { pathname }
     } = this.props;
     const { isCookieSet, pending, pendingForViewType, viewType } = this.state;
-    const isPrivacyPolicyPage = pathname.includes('privacy-policy');
+    const isPolicyPage =
+      pathname.includes('cookie-policy') ||
+      pathname.includes('privacy-policy') ||
+      pathname.includes('terms-of-use');
     const isDemoMode = currentUser && currentUser.name === 'Demo';
-    const isBarVisible = isCookieSet || !(isDemoMode && isPrivacyPolicyPage);
+    const isBarVisible = isCookieSet || !(isDemoMode && isPolicyPage);
 
     if (pending) {
       return <Preloader />;
@@ -158,7 +165,7 @@ export class Layout extends PureComponent {
       <>
         {!isCookieSet && (
           <CookieConsentBox
-            isPrivacyPolicyPage={isPrivacyPolicyPage}
+            isPolicyPage={isPolicyPage}
             onAccept={this.handleCookieAccept}
           />
         )}
@@ -168,6 +175,8 @@ export class Layout extends PureComponent {
             <Switch>
               <Route component={AuthBox} exact path="/" />
               <Route component={PrivacyPolicy} path="/privacy-policy" />
+              <Route component={TermsOfUse} path="/terms-of-use" />
+              <Route component={CookiePolicy} path="/cookie-policy" />
               <Route component={SuccessMessage} path="/account-created" />
               <Route component={AccountDeleted} path="/account-deleted" />
               <Route
@@ -255,6 +264,8 @@ export class Layout extends PureComponent {
               <Route component={List} path="/sack/:id(\w+)" />
               <Route component={About} path="/about" />
               <Route component={PrivacyPolicy} path="/privacy-policy" />
+              <Route component={TermsOfUse} path="/terms-of-use" />
+              <Route component={CookiePolicy} path="/cookie-policy" />
               <Route component={Cohorts} path="/cohorts" />
               <Route component={UserProfile} path="/user-profile" />
               <Route component={Libraries} path="/libraries" />
