@@ -1,18 +1,29 @@
-# Sandstream Terms of Service
+# Sandstream Terms of Use of the app.eoc.sanddev.com
+
+Welcome to the EOC website (the "EOC").
 
 ## 1\. Terms
 
-By accessing the website at [eoc.app.sanddev.com](https://eoc.app.sanddev.com), you are agreeing to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this website are protected by applicable copyright and trademark law.
+By accessing the website at [eoc.app.sanddev.com](https://eoc.app.sanddev.com), you are agreeing to be bound by these Terms of Use. In addition, when you use any of our Services, you will be subject to the rules, guidelines, policies, terms, and conditions applicable to such service, and they are incorporated into this Terms of Use by this reference.
 
-## 2\. Use License
+These Terms of Use are effective as of November 8, 2019
 
-1.  Permission is granted to temporarily download one copy of the materials (information or software) on Sandstream’s website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
-    1.  modify or copy the materials;
-    2.  use the materials for any commercial purpose, or for any public display (commercial or non-commercial);
-    3.  attempt to decompile or reverse engineer any software contained on Sandstream’s website;
-    4.  remove any copyright or other proprietary notations from the materials; or
-    5.  transfer the materials to another person or "mirror" the materials on any other server.
-2.  This license shall automatically terminate if you violate any of these restrictions and may be terminated by Sandstream at any time. Upon terminating your viewing of these materials or upon the termination of this license, you must destroy any downloaded materials in your possession whether in electronic or printed format.
+Your eligibility for use of the EOC is contingent upon meeting the following conditions:
+
+- You are at least 18 years of age
+- You use the EOC and Services according to these Terms of Use and all applicable laws and regulations determined by the state and country of residence
+- You provide complete and accurate registration information and maintain accurate registration information on the EOC
+- You agree and understand that <span class="website_name">EOC</span> may, at any time, and without prior notice, revoke and/or cancel your access if you fail to meet these criteria or violate any portion of these Terms of Use
+
+## 2\. Use of the EOC
+
+In connection with your use of EOC, you must act responsibly and exercise good judgment. Without limiting the foregoing, you will not:
+
+- Violate any local, state, provincial, national, or other law or regulation, or any order of a court
+- Infringe the rights of any person or entity, including without limitation, their intellectual property, privacy, publicity or contractual rights
+- Interfere with or damage our Services, including, without limitation, through the use of viruses, cancel bots, Trojan horses, harmful code, flood pings, denial-of-service attacks, packet or IP spoofing, forged routing or electronic mail address information or similar methods or technology
+- Use automated scripts to collect information or otherwise interact with the Services or the EOC
+- Enter into this agreement on behalf of another person or entity without consent or the legal capacity to make such agreements as a representative of an organization or entity
 
 ## 3\. Disclaimer
 
@@ -25,7 +36,7 @@ In no event shall Sandstream or its suppliers be liable for any damages (includi
 
 ## 5\. Accuracy of materials
 
-The materials appearing on Sandstream’s website could include technical, typographical, or photographic errors. Sandstream does not warrant that any of the materials on its website are accurate, complete or current. Sandstream may make changes to the materials contained on its website at any time without notice. However Sandstream does not make any commitment to update the materials.
+The materials appearing on Sandstream’s website could include technical, typographical, or photographic errors. Sandstream does not warrant that any of the materials on its website are accurate, complete or current. Sandstream may make changes to the materials contained on its website at any time without notice. However, Sandstream does not make any commitment to update the materials.
 
 ## 6\. Links
 
