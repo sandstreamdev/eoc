@@ -15,6 +15,19 @@
         "financial",
         "ideas"
       ]
+    },
+    {
+      "login": "adamklepacz",
+      "name": "Adam Klepacz",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/27632432?v=4",
+      "profile": "https://github.com/adamklepacz",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
