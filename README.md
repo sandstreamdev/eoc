@@ -1,7 +1,7 @@
 # EOC - End Of Coffee App
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/sandstreamdev/eoc.svg)](https://greenkeeper.io/)
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 
 An app made by Sandstream Development team, to track office inventory, groceries, and even your daily tasks!
 
@@ -162,6 +162,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/sandstreamdevelopment"><img src="https://avatars2.githubusercontent.com/u/44231396?v=4" width="100px;" alt="sandstreamdevelopment"/><br /><sub><b>sandstreamdevelopment</b></sub></a><br /><a href="#business-sandstreamdevelopment" title="Business development">💼</a> <a href="#financial-sandstreamdevelopment" title="Financial">💵</a> <a href="#ideas-sandstreamdevelopment" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/adamklepacz"><img src="https://avatars2.githubusercontent.com/u/27632432?v=4" width="100px;" alt="Adam Klepacz"/><br /><sub><b>Adam Klepacz</b></sub></a><br /><a href="https://github.com/sandstreamdev/eoc/commits?author=adamklepacz" title="Code">💻</a> <a href="https://github.com/sandstreamdev/eoc/commits?author=adamklepacz" title="Documentation">📖</a> <a href="#design-adamklepacz" title="Design">🎨</a> <a href="#ideas-adamklepacz" title="Ideas, Planning, & Feedback">🤔</a> <a href="#review-adamklepacz" title="Reviewed Pull Requests">👀</a></td>
     <td align="center"><a href="http://www.aleksander.fret.com.pl"><img src="https://avatars0.githubusercontent.com/u/25374390?v=4" width="100px;" alt="Aleksander Fret"/><br /><sub><b>Aleksander Fret</b></sub></a><br /><a href="https://github.com/sandstreamdev/eoc/commits?author=alemikolo" title="Code">💻</a> <a href="https://github.com/sandstreamdev/eoc/commits?author=alemikolo" title="Documentation">📖</a> <a href="#design-alemikolo" title="Design">🎨</a> <a href="#ideas-alemikolo" title="Ideas, Planning, & Feedback">🤔</a> <a href="#review-alemikolo" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/marekrozmus"><img src="https://avatars3.githubusercontent.com/u/26272040?v=4" width="100px;" alt="Marek Rozmus"/><br /><sub><b>Marek Rozmus</b></sub></a><br /><a href="#review-marekrozmus" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/sandstreamdev/eoc/commits?author=marekrozmus" title="Code">💻</a> <a href="https://github.com/sandstreamdev/eoc/commits?author=marekrozmus" title="Documentation">📖</a> <a href="#design-marekrozmus" title="Design">🎨</a> <a href="#ideas-marekrozmus" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
