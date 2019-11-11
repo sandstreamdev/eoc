@@ -40,4 +40,32 @@
     padding: four-by(2) 0;
     color: $danger;
   }
+
+  &__privacy-policy-agreement {
+    text-align: left;
+    font-size: $s-font;
+    padding: four-by(2) 0;
+    line-height: 1.2;
+  }
+
+  &__link {
+    text-transform: capitalize;
+    color: $link-color;
+    font-style: italic;
+    text-decoration: none;
+    outline: 0;
+
+    &:hover {
+      color: $text-black;
+      text-decoration: underline;
+    }
+
+    &:visited {
+      color: $link-color;
+
+      &:hover {
+        color: $text-black;
+      }
+    }
+  }
 }

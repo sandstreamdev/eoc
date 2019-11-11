@@ -51,7 +51,9 @@ export const removeUserData = () => dispatch => {
 
 export const logoutCurrentUser = () => dispatch =>
   postRequest('/auth/logout')
-    .then(() => window.location.reload())
+    .then(() => {
+      window.location = '/';
+    })
     .catch(err => dispatch(logoutFailure(err.message)));
 
 export const loginDemoUser = () => dispatch =>

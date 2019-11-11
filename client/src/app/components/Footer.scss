@@ -15,7 +15,7 @@
     position: relative;
     flex-direction: column;
 
-    @include breakpoint($medium) {
+    @include breakpoint($large) {
       flex-direction: row;
     }
   }
@@ -33,17 +33,16 @@
       border-bottom: 0;
     }
 
-    @include breakpoint($medium) {
+    @include breakpoint($large) {
       font-size: $s-font;
-    }
-
-    @include breakpoint($medium) {
       border-bottom: 0;
     }
   }
 
   &__link {
     outline: 0;
+    border: 0;
+    white-space: nowrap;
 
     &:hover {
       color: $text-orange;
@@ -51,7 +50,7 @@
   }
 
   &__copyrights {
-    @include breakpoint($medium) {
+    @include breakpoint($large) {
       position: absolute;
       left: 50%;
       top: 50%;

@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -158,7 +158,7 @@ class InputBar extends Component {
     } = this.props;
 
     return isFormVisible ? (
-      <Fragment>
+      <>
         <form className="input-bar__form" onSubmit={this.handleFormSubmit}>
           <input
             autoComplete="off"
@@ -189,7 +189,7 @@ class InputBar extends Component {
             <FormattedMessage id={errorMessageId} />
           </p>
         )}
-      </Fragment>
+      </>
     ) : (
       <button
         className="input-bar__button"

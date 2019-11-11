@@ -1,0 +1,173 @@
+@import 'partials';
+
+.policy {
+  width: 100%;
+  margin: 0 auto four-by(12);
+  color: $text-normal;
+
+  @include breakpoint($small) {
+    margin-bottom: four-by(4);
+  }
+
+  @include breakpoint($large) {
+    margin-bottom: four-by(10);
+  }
+
+  h1 {
+    font-weight: 700;
+    text-align: center;
+    font-size: $xxxl-font;
+    padding-top: four-by(8);
+  }
+
+  h2 {
+    font-weight: 600;
+    font-size: $xxl-font;
+    margin: four-by(10) four-by(4) four-by(2);
+
+    @include breakpoint($medium) {
+      margin: four-by(8) auto four-by(2);
+      max-width: 70%;
+    }
+  }
+
+  h3 {
+    font-weight: 600;
+    font-size: $xl-font;
+    margin: four-by(8) four-by(4) four-by(1);
+
+    @include breakpoint($medium) {
+      margin: four-by(8) auto four-by(2);
+      max-width: 70%;
+    }
+
+    a {
+      text-decoration: none;
+      font-style: normal;
+      color: $text-normal;
+
+      &:hover {
+        color: $text-orange;
+      }
+    }
+  }
+
+  h4 {
+    font-weight: 600;
+    font-size: $l-font;
+    margin: four-by(6) four-by(4) 0;
+
+    @include breakpoint($medium) {
+      margin: four-by(6) auto four-by(2);
+      max-width: 70%;
+    }
+  }
+
+  em {
+    font-weight: 400;
+    color: $text-normal;
+    text-align: center;
+    font-size: $s-font;
+    line-height: 1.5;
+    margin: four-by(4) 0;
+  }
+
+  strong em {
+    font-weight: 700;
+  }
+
+  &__info-wrapper {
+    padding: 0 four-by(4);
+    &:nth-child(even) {
+      background-color: $dark-orange;
+      color: $white;
+    }
+  }
+
+  & > p {
+    font-size: $m-font;
+    margin: four-by(6) four-by(4) four-by(2);
+
+    @include breakpoint($medium) {
+      margin: four-by(6) auto four-by(2);
+      max-width: 70%;
+    }
+  }
+
+  ol,
+  ul {
+    margin: four-by(6) four-by(4) four-by(2) four-by(8);
+    list-style-type: decimal;
+
+    @include breakpoint($medium) {
+      margin: four-by(6) auto four-by(2);
+      max-width: 70%;
+      padding-left: four-by(10);
+    }
+
+    li {
+      padding-bottom: four-by(2);
+    }
+  }
+
+  li > ol {
+    @include breakpoint($medium) {
+      margin: four-by(6) auto four-by(2);
+      max-width: 100%;
+      padding-left: four-by(10);
+    }
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  blockquote p {
+    white-space: pre;
+    margin: four-by(8) four-by(4) four-by(1);
+
+    @include breakpoint($medium) {
+      margin: four-by(8) auto four-by(2);
+      max-width: 70%;
+    }
+  }
+
+  p > a,
+  li > a {
+    color: $text-orange;
+    font-style: italic;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      color: $text-black;
+    }
+
+    &:visited {
+      color: $text-orange;
+      &:hover {
+        color: $text-black;
+      }
+    }
+  }
+
+  &__login-link {
+    max-width: 150px;
+    margin: 0 auto four-by(20);
+    display: flex;
+    justify-content: center;
+    height: 40px;
+
+    @include breakpoint($small) {
+      margin: 0 auto 70px;
+    }
+
+    @include breakpoint($large) {
+      margin: 0 auto 50px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+}

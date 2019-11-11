@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -395,7 +395,7 @@ class ListHeader extends PureComponent {
         onUnmount={this.handleDescriptionUnmount}
       />
     ) : (
-      <Fragment>
+      <>
         {description && (
           <p
             className={classNames('list-header__description', {
@@ -420,7 +420,7 @@ class ListHeader extends PureComponent {
             <FormattedMessage id="list.list-description.add-button" />
           </button>
         )}
-      </Fragment>
+      </>
     );
   };
 
@@ -546,12 +546,12 @@ class ListHeader extends PureComponent {
           {isCohortList && (
             <div className="list-header__type">
               {isOwner ? (
-                <Fragment>
+                <>
                   {this.renderListType()}
                   {pendingForTypeUpdate && (
                     <Preloader size={PreloaderSize.SMALL} />
                   )}
-                </Fragment>
+                </>
               ) : (
                 type
               )}

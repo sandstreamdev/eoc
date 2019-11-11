@@ -16,13 +16,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [demoUserId],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🍅 Tomato',
+      '🥓 Bacon',
+      '🌶️ Pepper',
+      '🧀 Cheese'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId],
-    name: 'Private sack example - owner',
+    name: '🍕 Pizza',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, ...userIds]
@@ -35,13 +40,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: true,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '⛺ Tent',
+      '🧗‍ Equipment',
+      '🗺️ Map',
+      '🎒 Backpack'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId],
-    name: 'Archive sack example',
+    name: '🏕 Trip',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId]
@@ -54,13 +64,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🛒 Shopping',
+      '🧹 Tidy',
+      '📧 Send emails',
+      '🎪 Buy tickets to circus'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId, ...userIds],
-    name: 'Private sack example - member',
+    name: '✅ To Do',
     ownerIds: [userIds[2]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, ...userIds]
@@ -73,13 +88,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🧸 Teddy Bear',
+      '🎸 Guitar',
+      '🛹 Skateboard',
+      '🍫 Chocolate'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [userIds[1]],
-    name: 'Private sack example - viewer',
+    name: '🎁 Gifts',
     ownerIds: [userIds[1]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[1]]
@@ -92,13 +112,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [demoUserId],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '👥 People management',
+      '📱 Flutter',
+      '💡 Elm language',
+      '📈 SEO'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId, userIds[1]],
-    name: 'Cohort sack example - owner',
+    name: '💡📖 Courses',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[1], userIds[2]]
@@ -111,13 +136,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '☕ Coffee',
+      '🥛 Milk',
+      '🍇 Fruits',
+      '🧂 Salt'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId, userIds[1]],
-    name: 'Cohort sack example - owner',
+    name: '🍵 Grocery list',
     ownerIds: [demoUserId],
     type: ListType.SHARED,
     viewersIds: [demoUserId, ...userIds]
@@ -130,13 +160,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '📎 Paperclips',
+      '📃 Printer paper',
+      '🖊️ Pens',
+      '📓 Notebooks'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId, userIds[3]],
-    name: 'Cohort sack example - member',
+    name: '🖨️ Office stuff',
     ownerIds: [userIds[3]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[3], userIds[1]]
@@ -149,13 +184,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '📗 Functional Programming',
+      '📙 The Linux Command Line',
+      '📘 Algorithms & Data Structures',
+      '📕 MySQL'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [userIds[2]],
-    name: 'Cohort sack example - viewer',
+    name: '📚 Books',
     ownerIds: [userIds[2]],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[2]]
@@ -168,13 +208,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🎱 Snooker',
+      '🎮 FIFA tournament',
+      '🎤 Karaoke',
+      '♟️ Chess'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [userIds[0]],
-    name: 'Cohort sack example - viewer',
+    name: '🎲 🎮 Entertainment',
     ownerIds: [userIds[0]],
     type: ListType.SHARED,
     viewersIds: [demoUserId, ...userIds]
@@ -187,13 +232,18 @@ const generateLists = (demoUserId, userIds, cohortIds, items) => [
     favIds: [],
     isArchived: false,
     isDeleted: false,
-    items: generateItems(demoUserId, userIds),
+    items: generateItems(demoUserId, userIds, [
+      '🎂 Birthday cake',
+      '🍾 Champagne',
+      '🎈 Balloons',
+      '🎁 Gift'
+    ]),
     locks: {
       description: false,
       name: false
     },
     memberIds: [demoUserId],
-    name: 'Cohort sack example - owner',
+    name: '🎉 Birthday party',
     ownerIds: [demoUserId],
     type: ListType.LIMITED,
     viewersIds: [demoUserId, userIds[0], userIds[1]]

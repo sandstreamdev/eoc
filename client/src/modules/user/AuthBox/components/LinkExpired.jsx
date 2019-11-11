@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -49,7 +49,7 @@ class LinkExpired extends PureComponent {
   );
 
   renderResendButton = () => (
-    <Fragment>
+    <>
       <p className="link-expired__message">
         <FormattedMessage id="user.actions.sign-up.result-failed" />
       </p>
@@ -63,7 +63,7 @@ class LinkExpired extends PureComponent {
           <FormattedMessage id="user.auth.sign-up.button.resend-link" />
         </PendingButton>
       </div>
-    </Fragment>
+    </>
   );
 
   render() {

@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -392,7 +392,7 @@ class Cohort extends PureComponent {
     const isArchiveDialogVisible = dialogContext === DialogContext.ARCHIVE;
 
     return (
-      <Fragment>
+      <>
         {this.renderBreadcrumbs()}
         <Dialog
           cancelLabel={formatMessage({ id: 'common.button.cancel' })}
@@ -531,18 +531,18 @@ class Cohort extends PureComponent {
                 }}
               />
               {!isOwner && (
-                <Fragment>
+                <>
                   {' '}
                   <FormattedMessage
                     id="common.actions.not-available-contact-owner"
                     values={{ context: dialogContextMessage, name }}
                   />
-                </Fragment>
+                </>
               )}
             </p>
           </Dialog>
         )}
-      </Fragment>
+      </>
     );
   }
 }
@@ -557,6 +557,7 @@ Cohort.propTypes = {
     }),
     isDeleted: PropTypes.bool,
     isArchived: PropTypes.bool,
+    isOwner: PropTypes.bool,
     name: PropTypes.string
   }),
   currentUser: UserPropType.isRequired,

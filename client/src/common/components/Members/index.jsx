@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -158,7 +158,7 @@ class MembersBox extends PureComponent {
     const membersLength = Object.keys(members).length;
 
     return (
-      <Fragment>
+      <>
         {membersDisplayLimit < membersLength && (
           <li className="members-box__list-item">
             <button
@@ -171,7 +171,7 @@ class MembersBox extends PureComponent {
             </button>
           </li>
         )}
-      </Fragment>
+      </>
     );
   };
 
@@ -187,7 +187,7 @@ class MembersBox extends PureComponent {
       isCurrentUserAnOwner || (isMember && route === Routes.LIST);
 
     return (
-      <Fragment>
+      <>
         {isAddMemberVisible && (
           <li className="members-box__list-item">
             {isFormVisible ? (
@@ -209,7 +209,7 @@ class MembersBox extends PureComponent {
             )}
           </li>
         )}
-      </Fragment>
+      </>
     );
   };
 

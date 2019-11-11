@@ -1,12 +1,11 @@
 # EOC - End Of Coffee App
 
-An app made by Sandstream Development team, to track office inventory, groceries, and even your daily tasks!
-
-![Eoc custom badge](https://img.shields.io/badge/EOC-App-orange)
-![main language](https://img.shields.io/github/languages/top/sandstreamdev/eoc)
-![dependencies status](https://img.shields.io/david/sandstreamdev/eoc)
-![repository size](https://img.shields.io/github/repo-size/sandstreamdev/eoc)
+[![Build status](http://eoc.sanddev.com:8080/buildStatus/icon)](http://eoc.sanddev.com:8080/job/EOC%20MBP/job/master/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/sandstreamdev/eoc.svg)](https://greenkeeper.io/)
 ![last commit](https://img.shields.io/github/last-commit/sandstreamdev/eoc)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+
+An app made by Sandstream Development team, to track office inventory, groceries, and even your daily tasks!
 
 ## Main application tech stack
 
@@ -110,7 +109,7 @@ To perform DB migrations we use `migrate-mongo` tool. To config `migrate-mongo` 
 ## Third-party licenses
 
 To generate json and markdown files containing third-party licenses you need to
- install globally: [license-checker](https://github.com/davglass/license-checker#readme) and [npm-license-crawler](https://github.com/mwittig/npm-license-crawler):
+install globally: [license-checker](https://github.com/davglass/license-checker#readme) and [npm-license-crawler](https://github.com/mwittig/npm-license-crawler):
 
 #### 1. Install packages globally
 
@@ -125,11 +124,13 @@ cd eoc
 ```
 
 #### 3. Run libs script
+
 This script create two files: JSON file and markdown file.
 
 The first one contains data about packages used in the project. It is used by controllers: `getLibraries` and `getLicense` to extract this data and send it to the client to display information about the used package.
 
 The second file contains a list of packages used in the project with links to their repositories and license file. It is available on the project repository page.
+
 ```
 npm run libs -j path/to/json/file [-m path/to/md/file]
 ```
@@ -145,3 +146,23 @@ Please make sure to update tests as appropriate.
 - FontAwesome Free. Check [Font Awesome license](https://fontawesome.com/license) ,
 - Google [Trademark Logo](https://www.google.com/permissions/logos-trademarks) : ©2018 Google LLC All rights reserved. Google and the Google logo are registered trademarks of Google LLC.
 - [Pravatar API](https://pravatar.cc/). It is published under [CC0 license](https://creativecommons.org/share-your-work/public-domain/cc0/). Pravatar uses photos from [Pexels](https://www.pexels.com/).
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/sandstreamdevelopment"><img src="https://avatars2.githubusercontent.com/u/44231396?v=4" width="100px;" alt="sandstreamdevelopment"/><br /><sub><b>sandstreamdevelopment</b></sub></a><br /><a href="#business-sandstreamdevelopment" title="Business development">💼</a> <a href="#financial-sandstreamdevelopment" title="Financial">💵</a> <a href="#ideas-sandstreamdevelopment" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/adamklepacz"><img src="https://avatars2.githubusercontent.com/u/27632432?v=4" width="100px;" alt="Adam Klepacz"/><br /><sub><b>Adam Klepacz</b></sub></a><br /><a href="https://github.com/sandstreamdev/eoc/commits?author=adamklepacz" title="Code">💻</a> <a href="https://github.com/sandstreamdev/eoc/commits?author=adamklepacz" title="Documentation">📖</a> <a href="#design-adamklepacz" title="Design">🎨</a> <a href="#ideas-adamklepacz" title="Ideas, Planning, & Feedback">🤔</a> <a href="#review-adamklepacz" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="http://www.aleksander.fret.com.pl"><img src="https://avatars0.githubusercontent.com/u/25374390?v=4" width="100px;" alt="Aleksander Fret"/><br /><sub><b>Aleksander Fret</b></sub></a><br /><a href="https://github.com/sandstreamdev/eoc/commits?author=alemikolo" title="Code">💻</a> <a href="https://github.com/sandstreamdev/eoc/commits?author=alemikolo" title="Documentation">📖</a> <a href="#design-alemikolo" title="Design">🎨</a> <a href="#ideas-alemikolo" title="Ideas, Planning, & Feedback">🤔</a> <a href="#review-alemikolo" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/marekrozmus"><img src="https://avatars3.githubusercontent.com/u/26272040?v=4" width="100px;" alt="Marek Rozmus"/><br /><sub><b>Marek Rozmus</b></sub></a><br /><a href="#review-marekrozmus" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/sandstreamdev/eoc/commits?author=marekrozmus" title="Code">💻</a> <a href="https://github.com/sandstreamdev/eoc/commits?author=marekrozmus" title="Documentation">📖</a> <a href="#design-marekrozmus" title="Design">🎨</a> <a href="#ideas-marekrozmus" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-marekrozmus" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#projectManagement-marekrozmus" title="Project Management">📆</a></td>
+    <td align="center"><a href="https://github.com/przemyslawzalewski"><img src="https://avatars0.githubusercontent.com/u/30114244?v=4" width="100px;" alt="Przemysław Zalewski"/><br /><sub><b>Przemysław Zalewski</b></sub></a><br /><a href="#review-przemyslawzalewski" title="Reviewed Pull Requests">👀</a> <a href="#ideas-przemyslawzalewski" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+</table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

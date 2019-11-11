@@ -4,7 +4,7 @@ const {
   Types: { ObjectId }
 } = mongoose;
 
-const generateItems = (demoUserId, userIds) => [
+const generateItems = (demoUserId, userIds, names) => [
   {
     _id: ObjectId(),
     authorId: demoUserId,
@@ -17,7 +17,7 @@ const generateItems = (demoUserId, userIds) => [
       description: false,
       name: false
     },
-    name: 'Task 1',
+    name: names[0],
     purchaserId: '',
     voterIds: [demoUserId, ...userIds]
   },
@@ -33,7 +33,7 @@ const generateItems = (demoUserId, userIds) => [
       description: false,
       name: false
     },
-    name: 'Task 2',
+    name: names[1],
     voterIds: [userIds[0], userIds[1], userIds[2]]
   },
   {
@@ -48,7 +48,7 @@ const generateItems = (demoUserId, userIds) => [
       description: false,
       name: false
     },
-    name: 'Task 3',
+    name: names[2],
     voterIds: [demoUserId, userIds[2]]
   },
   {
@@ -63,7 +63,7 @@ const generateItems = (demoUserId, userIds) => [
       description: false,
       name: false
     },
-    name: 'Task 4',
+    name: names[3],
     voterIds: [...userIds]
   }
 ];

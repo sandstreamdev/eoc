@@ -30,7 +30,6 @@
       type="text/css"
       href="css/easy-responsive-tabs.css "
     />
-    <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org/",
@@ -39,6 +38,35 @@
         "url": "app.eoc.sanddev.com"
       }
     </script>
+    <link
+      href="./images/favicon/apple-touch-icon.png"
+      rel="apple-touch-icon"
+      sizes="72x72"
+    />
+    <link
+      href="./images/favicon/favicon-32x32.png"
+      rel="icon"
+      sizes="32x32"
+      type="image/png"
+    />
+    <link
+      href="./images/favicon/favicon-16x16.png"
+      rel="icon"
+      sizes="16x16"
+      type="image/png"
+    />
+    <link
+      color="#5bbad5"
+      href="./images/favicon/safari-pinned-tab.svg"
+      rel="mask-icon"
+    />
+    <link
+      crossorigin="use-credentials"
+      href="./webmanifest.json"
+      rel="manifest"
+    />
+    <meta content="#00aba9" name="msapplication-TileColor" />
+    <meta content="#ffffff" name="theme-color" />
   </head>
   <body>
     <div class="se-pre-con"></div>
@@ -49,7 +77,7 @@
             <div class="row">
               <div class="col-lg-3 col-md-3">
                 <div class="logo">
-                  <a href="#">End Of Coffee</a>
+                  <a href="#">EOC</a>
                   <svg
                     class="svg-inline--fa fa-w-20"
                     data-prefix="fas"
@@ -93,6 +121,14 @@
             </p>
             <div class="bnts wow fadeInUp">
               <a href="https://app.eoc.sanddev.com" class="btn2">Try Now</a>
+              <a
+                class="btn2"
+                href="https://app.eoc.sanddev.com/auth/demo"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Live demo
+              </a>
             </div>
           </div>
         </div>
@@ -265,16 +301,14 @@
             <div class="left-heading">
               <span> <img src="images/pc.png" alt="secton-image"/></span>
               <h2>Mobile friendly</h2>
-              <p class="p">
-                EOC app was created with mobile-first principle. Application is
-                mobile friendly so you can use it on your a favorite device, at
-                any time and any place.
-              </p>
-              <div class="clear"></div>
-              <a href="https://app.eoc.sanddev.com" class="acc"
-                >WORK ANYWHERE</a
-              >
             </div>
+            <p class="p">
+              EOC app was created with mobile-first principle. Application is
+              mobile friendly so you can use it on your a favorite device, at
+              any time and any place.
+            </p>
+            <div class="clear"></div>
+            <a href="https://app.eoc.sanddev.com" class="acc">WORK ANYWHERE</a>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-7 col-md-pull-5">
             <div class="two-colom-imag">
@@ -385,20 +419,24 @@
       <div class="container">
         <div class="row footer__row">
           <div class="col-lg-6 col-md-6 col-sm-12">
-            <p class="mb-0 f_300">
-              Copyright © 2019
+            <div class="footer__links">
+              <a href="cookie-policy.html">Cookie Policy</a>
+              <span className="footer__list__separator"> | </span>
+              <a href="privacy-policy.html">Privacy Policy</a>
+              <span className="footer__list__separator"> | </span>
+              <a href="terms-of-use.html">Terms Of Use</a>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <p class="footer__copyrights">
+              <span>Copyright © 2019</span>
               <a
                 href="https://sandstream.pl"
                 rel="noopener noreferrer"
                 target="_blank"
-                >Sandstream Development Sp. z o. o.</a
+                >Sandstream Development Sp.&nbsp;z&nbsp;o.o.</a
               >
             </p>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <ul class="footer__list text-right">
-              <li><a href="privacy-policy.html">Privacy Policy</a></li>
-            </ul>
           </div>
         </div>
       </div>
@@ -410,9 +448,10 @@
             <div class="cookie-consent__content">
               <span>
                 We use cookies to ensure you get the best experience. By using
-                this website, you consent to use of these cookies.
-                <br />
-                For more information, please see our
+                this website, you consent to use of these cookies. For more
+                information, please see our
+                <a href="cookie-policy.html">cookie policy</a>
+                and
                 <a href="privacy-policy.html">privacy policy</a>.
               </span>
               <button
@@ -485,6 +524,8 @@
                 },
                 1000
               );
+
+            $('#menu').slideToggle('fast');
           }
         });
       });

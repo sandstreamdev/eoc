@@ -1,0 +1,76 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "sandstreamdevelopment",
+      "name": "sandstreamdevelopment",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/44231396?v=4",
+      "profile": "https://github.com/sandstreamdevelopment",
+      "contributions": [
+        "business",
+        "financial",
+        "ideas"
+      ]
+    },
+    {
+      "login": "adamklepacz",
+      "name": "Adam Klepacz",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/27632432?v=4",
+      "profile": "https://github.com/adamklepacz",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "review"
+      ]
+    },
+    {
+      "login": "alemikolo",
+      "name": "Aleksander Fret",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/25374390?v=4",
+      "profile": "http://www.aleksander.fret.com.pl",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "review"
+      ]
+    },
+    {
+      "login": "marekrozmus",
+      "name": "Marek Rozmus",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/26272040?v=4",
+      "profile": "https://github.com/marekrozmus",
+      "contributions": [
+        "review",
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "infra",
+        "projectManagement"
+      ]
+    },
+    {
+      "login": "przemyslawzalewski",
+      "name": "Przemysław Zalewski",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/30114244?v=4",
+      "profile": "https://github.com/przemyslawzalewski",
+      "contributions": [
+        "review",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "eoc",
+  "projectOwner": "sandstreamdev",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}

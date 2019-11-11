@@ -148,6 +148,12 @@ body {
   padding-bottom: 20px;
 }
 
+.left-heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
 .left-heading span {
   font-weight: 400;
   color: #b6b6b6;
@@ -155,6 +161,7 @@ body {
   text-transform: uppercase;
   padding-bottom: 5px;
   display: block;
+  margin-right: 10px;
 }
 
 .left-heading h2 {
@@ -162,10 +169,8 @@ body {
   color: #000000;
   font-size: 40px;
   line-height: 40px;
-  margin: 0;
+  margin: 0 0 4px 0;
   background: url(../images/line.png) no-repeat left bottom;
-  padding-bottom: 20px;
-  margin-bottom: 25px;
 }
 
 /*-----------------------------------------------------------------------------------
@@ -221,11 +226,11 @@ body {
 }
 
 .logo {
-  height: 42px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 145px;
+  max-width: 66px;
 }
 
 .logo svg {
@@ -233,13 +238,18 @@ body {
 }
 
 .logo svg path {
-  fill: var(--menu-color);
+  fill: var(--dark-orange);
 }
 
 .logo a {
-  color: var(--menu-color);
-  font-size: 18px;
+  color: var(--dark-orange);
   text-decoration: none;
+  font-size: 18px;
+  line-height: 1;
+  display: block;
+  font-weight: 700;
+  margin-right: 4px;
+  letter-spacing: 1px;
 }
 
 .toping img {
@@ -288,6 +298,10 @@ body {
   -webkit-box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
   -moz-box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
   box-shadow: 0px 15px 32px 1px rgba(0, 0, 0, 0.23);
+}
+
+.btn2:last-of-type {
+  margin-left: 16px;
 }
 
 .btn2:hover {
@@ -1433,20 +1447,22 @@ Footer Social
   align-items: center;
 }
 
-.footer__list {
-  list-style-type: none;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.footer__links {
+  text-align: left;
   margin: 0;
 }
 
-.footer__list li {
-  padding: 5px 10px;
+.footer__links a {
+  white-space: nowrap;
 }
 
-.footer__list li:last-child {
-  padding-right: 0;
+.footer__copyrights {
+  text-align: right;
+}
+
+.footer__copyrights span,
+.footer__copyrights a {
+  white-space: nowrap;
 }
 
 .footer__privacy {
@@ -1686,6 +1702,80 @@ Privacy-policy
 }
 
 .dark-color-bg .info a:hover {
+  color: var(--text-black);
+}
+
+h2.rodo-header,
+.rodo-header a {
+  color: var(--dark-orange);
+}
+
+.dark-color-bg .rodo-header a {
+  color: var(--text-white);
+}
+
+.rodo-header a:hover {
+  text-decoration: underline;
+  color: var(--text-normal);
+}
+
+.dark-color-bg .rodo-header a:hover {
+  color: var(--text-gray);
+}
+
+h1.rodo-title {
+  font-size: 52px;
+}
+
+.heading h2.rodo-header {
+  font-size: 40px;
+}
+
+.rodo-content h4 {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 20px 0 0;
+  padding: 0;
+}
+
+.rodo-content > p {
+  margin: 28px 0 8px;
+}
+
+.rodo-content p > a {
+  color: var(--dark-orange);
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.rodo-content p > a:hover {
+  color: var(--text-black);
+}
+
+ol.rodo-content p {
+  margin: 0 0 4px;
+}
+
+.rodo-content blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 15px;
+}
+
+.rodo-content blockquote p {
+  padding: 0;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.rodo-contact a {
+  color: var(--main-bg-color);
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.rodo-contact a:hover {
   color: var(--text-black);
 }
 
@@ -2622,6 +2712,15 @@ Responsive CSS for all sections
   #header .col-md-4 {
     width: 100%;
   }
+  .footer__row {
+    flex-direction: column;
+  }
+  .footer__links {
+    text-align: center;
+  }
+  .footer__copyrights {
+    text-align: center;
+  }
 }
 
 @media (max-width: 980px) {
@@ -2644,6 +2743,14 @@ Responsive CSS for all sections
 
   .h-blog-box {
     margin-bottom: 50px;
+  }
+
+  h1.rodo-title {
+    font-size: 40px;
+  }
+
+  .heading h2.rodo-header {
+    font-size: 32px;
   }
 }
 
@@ -2770,6 +2877,12 @@ Responsive CSS for all sections
   .blog-post-content-area {
     padding: 30px;
   }
+
+  .footer p,
+  .footer a,
+  .footer span {
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -2867,6 +2980,14 @@ Responsive CSS for all sections
   .section12 .slide {
     text-align: center;
   }
+
+  .heading h2.rodo-header {
+    font-size: 24px;
+  }
+
+  h1.rodo-title {
+    font-size: 32px;
+  }
 }
 @media (max-width: 550px) {
   .bx-wrapper .bx-next {
@@ -2874,6 +2995,10 @@ Responsive CSS for all sections
   }
   .bx-wrapper .bx-prev {
     left: 35% !important;
+  }
+
+  .left-heading h2 {
+    font-size: 28px;
   }
 }
 @media (max-width: 400px) {

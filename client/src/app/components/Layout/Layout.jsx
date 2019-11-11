@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
@@ -25,7 +25,11 @@ import Footer from '../Footer';
 import Notifications from 'modules/notification';
 import Page404 from 'common/components/Page404';
 import About from 'modules/about';
-import PrivacyPolicy from 'modules/privacy-policy';
+import {
+  CookiePolicy,
+  PrivacyPolicy,
+  TermsOfUse
+} from 'modules/privacy-policy';
 import Cohorts from 'modules/cohort/components/Cohorts';
 import Toolbar, { ToolbarItem } from './Toolbar';
 import { ListViewIcon, TilesViewIcon } from 'assets/images/icons';
@@ -39,6 +43,8 @@ import {
 import { clearMetaDataSuccess } from 'common/model/actions';
 import AccountDeleted from 'modules/user/UserProfile/AccountDeleted';
 import Libraries from 'modules/libraries';
+import CookieConsentBox from 'common/components/CookieConsentBox';
+import { checkIfCookieSet } from 'common/utils/cookie';
 import './Layout.scss';
 
 export class Layout extends PureComponent {
@@ -46,6 +52,7 @@ export class Layout extends PureComponent {
     super(props);
 
     this.state = {
+      isCookieSet: true,
       pending: false,
       pendingForViewType: false,
       viewType: ViewType.LIST
@@ -60,6 +67,9 @@ export class Layout extends PureComponent {
       history,
       location: { pathname }
     } = this.props;
+    const isCookieSet = checkIfCookieSet('eoc_cookie-consent');
+
+    this.setState({ isCookieSet });
 
     if (_isEmpty(currentUser)) {
       this.setState({ pending: true });
@@ -131,103 +141,140 @@ export class Layout extends PureComponent {
     saveSettingsData(settings);
   };
 
+  handleCookieAccept = () => this.setState({ isCookieSet: true });
+
   render() {
     const {
       currentUser,
-      intl: { formatMessage }
+      intl: { formatMessage },
+      location: { pathname }
     } = this.props;
-    const { pending, pendingForViewType, viewType } = this.state;
+    const { isCookieSet, pending, pendingForViewType, viewType } = this.state;
+    const isPolicyPage =
+      pathname.includes('cookie-policy') ||
+      pathname.includes('privacy-policy') ||
+      pathname.includes('terms-of-use');
+    const isDemoMode = currentUser && currentUser.name === 'Demo';
+    const isBarVisible = isCookieSet || !(isDemoMode && isPolicyPage);
 
     if (pending) {
       return <Preloader />;
     }
 
-    return !currentUser ? (
-      <Fragment>
-        <Notifications />
-        <Switch>
-          <Route component={AuthBox} exact path="/" />
-          <Route component={PrivacyPolicy} path="/privacy-policy" />
-          <Route component={SuccessMessage} path="/account-created" />
-          <Route component={AccountDeleted} path="/account-deleted" />
-          <Route
-            component={LinkExpired}
-            path="/confirmation-link-expired/:token?"
+    return (
+      <>
+        {!isCookieSet && (
+          <CookieConsentBox
+            isPolicyPage={isPolicyPage}
+            onAccept={this.handleCookieAccept}
           />
-          <Route
-            component={ResetPassword}
-            path="/reset-password/:tokenExpired?"
-          />
-          <Route
-            component={PasswordRecoveryForm}
-            path="/password-recovery/:token?"
-          />
-          <Route component={DeleteLinkExpired} path="/delete-link-expired" />
-          <Route component={SuccessMessage} path="/password-recovery-success" />
-          <Redirect to="/" />
-        </Switch>
-      </Fragment>
-    ) : (
-      <Fragment>
-        <Notifications />
-        <Toolbar>
-          {this.isListsView() && (
-            <ToolbarItem
-              disabled={pendingForViewType}
-              mainIcon={
-                viewType === ViewType.LIST ? (
-                  <TilesViewIcon />
-                ) : (
-                  <ListViewIcon />
-                )
-              }
-              onClick={this.handleViewTypeChange}
-              title={formatMessage({
-                id:
-                  viewType === ViewType.LIST
-                    ? 'app.layout.switch-to-tile-view'
-                    : 'app.layout.switch-to-list-view'
-              })}
-            />
-          )}
-        </Toolbar>
-        <Switch>
-          <Redirect from="/" exact to="/dashboard" />
-          <Route component={SuccessMessage} path="/account-created" />
-          <Route component={AccountDeleted} path="/account-deleted" />
-          <Route
-            component={LinkExpired}
-            path="/confirmation-link-expired/:token?"
-          />
-          <Route component={ResetPassword} path="/reset-password" />
-          <Route
-            component={LinkExpired}
-            path="/recovery-link-expired/:token?"
-          />
-          <Route component={DeleteLinkExpired} path="/delete-link-expired" />
-          <Route
-            component={PasswordRecoveryForm}
-            path="/password-recovery/:token?"
-          />
-          <Route component={SuccessMessage} path="/password-recovery-success" />
-          <Route
-            path="/dashboard"
-            render={props => <Dashboard {...props} viewType={viewType} />}
-          />
-          <Route
-            path="/cohort/:id(\w+)"
-            render={props => <Cohort {...props} viewType={viewType} />}
-          />
-          <Route component={List} path="/sack/:id(\w+)" />
-          <Route component={About} path="/about" />
-          <Route component={PrivacyPolicy} path="/privacy-policy" />
-          <Route component={Cohorts} path="/cohorts" />
-          <Route component={UserProfile} path="/user-profile" />
-          <Route component={Libraries} path="/libraries" />
-          <Route component={Page404} />
-        </Switch>
-        <Footer />
-      </Fragment>
+        )}
+        {!currentUser ? (
+          <>
+            <Notifications />
+            <Switch>
+              <Route component={AuthBox} exact path="/" />
+              <Route component={PrivacyPolicy} path="/privacy-policy" />
+              <Route component={TermsOfUse} path="/terms-of-use" />
+              <Route component={CookiePolicy} path="/cookie-policy" />
+              <Route component={SuccessMessage} path="/account-created" />
+              <Route component={AccountDeleted} path="/account-deleted" />
+              <Route
+                component={LinkExpired}
+                path="/confirmation-link-expired/:token?"
+              />
+              <Route
+                component={ResetPassword}
+                path="/reset-password/:tokenExpired?"
+              />
+              <Route
+                component={PasswordRecoveryForm}
+                path="/password-recovery/:token?"
+              />
+              <Route
+                component={DeleteLinkExpired}
+                path="/delete-link-expired"
+              />
+              <Route
+                component={SuccessMessage}
+                path="/password-recovery-success"
+              />
+              <Redirect to="/" />
+            </Switch>
+          </>
+        ) : (
+          <>
+            <Notifications />
+            {isBarVisible && (
+              <Toolbar isDemoMode={isDemoMode}>
+                {this.isListsView() && (
+                  <ToolbarItem
+                    disabled={pendingForViewType}
+                    mainIcon={
+                      viewType === ViewType.LIST ? (
+                        <TilesViewIcon />
+                      ) : (
+                        <ListViewIcon />
+                      )
+                    }
+                    onClick={this.handleViewTypeChange}
+                    title={formatMessage({
+                      id:
+                        viewType === ViewType.LIST
+                          ? 'app.layout.switch-to-tile-view'
+                          : 'app.layout.switch-to-list-view'
+                    })}
+                  />
+                )}
+              </Toolbar>
+            )}
+            <Switch>
+              <Redirect from="/" exact to="/dashboard" />
+              <Route component={SuccessMessage} path="/account-created" />
+              <Route component={AccountDeleted} path="/account-deleted" />
+              <Route
+                component={LinkExpired}
+                path="/confirmation-link-expired/:token?"
+              />
+              <Route component={ResetPassword} path="/reset-password" />
+              <Route
+                component={LinkExpired}
+                path="/recovery-link-expired/:token?"
+              />
+              <Route
+                component={DeleteLinkExpired}
+                path="/delete-link-expired"
+              />
+              <Route
+                component={PasswordRecoveryForm}
+                path="/password-recovery/:token?"
+              />
+              <Route
+                component={SuccessMessage}
+                path="/password-recovery-success"
+              />
+              <Route
+                path="/dashboard"
+                render={props => <Dashboard {...props} viewType={viewType} />}
+              />
+              <Route
+                path="/cohort/:id(\w+)"
+                render={props => <Cohort {...props} viewType={viewType} />}
+              />
+              <Route component={List} path="/sack/:id(\w+)" />
+              <Route component={About} path="/about" />
+              <Route component={PrivacyPolicy} path="/privacy-policy" />
+              <Route component={TermsOfUse} path="/terms-of-use" />
+              <Route component={CookiePolicy} path="/cookie-policy" />
+              <Route component={Cohorts} path="/cohorts" />
+              <Route component={UserProfile} path="/user-profile" />
+              <Route component={Libraries} path="/libraries" />
+              <Route component={Page404} />
+            </Switch>
+            {isBarVisible && <Footer />}
+          </>
+        )}
+      </>
     );
   }
 }
