@@ -16,6 +16,7 @@ import {
 
 export const AuthorizationActionTypes = enumerable('user')(
   ...asyncTypes('FETCH'),
+  ...asyncTypes('LEAVE_PROFILE_VIEW'),
   ...asyncTypes('LOGIN'),
   ...asyncTypes('LOGOUT'),
   ...asyncTypes('UPDATE_SETTINGS')
@@ -41,6 +42,10 @@ const fetchUserDetailsSuccess = payload => ({
 
 const fetchUserDetailsFailure = () => ({
   type: AuthorizationActionTypes.FETCH_FAILURE
+});
+
+const leaveProfileViewSuccess = () => ({
+  type: AuthorizationActionTypes.LEAVE_PROFILE_VIEW_SUCCESS
 });
 
 export const removeUserData = () => dispatch => {
@@ -228,3 +233,6 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
     );
   }
 };
+
+export const leaveProfile = () => dispatch =>
+  dispatch(leaveProfileViewSuccess());

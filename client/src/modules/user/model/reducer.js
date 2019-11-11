@@ -21,6 +21,15 @@ const currentUser = (state = null, action) => {
 
       return state;
     }
+    case AuthorizationActionTypes.LEAVE_PROFILE_VIEW_SUCCESS: {
+      return {
+        ...state,
+        activationDate: undefined,
+        email: undefined,
+        emailReportsFrequency: undefined,
+        isPasswordSet: undefined
+      };
+    }
     default:
       return state;
   }
