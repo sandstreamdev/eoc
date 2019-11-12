@@ -34,7 +34,4 @@ AccountDeleted.propTypes = {
   removeUserData: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { removeUserData }
-)(AccountDeleted);
+export default connect(null, { removeUserData })(AccountDeleted);

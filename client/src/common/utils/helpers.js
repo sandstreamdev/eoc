@@ -10,7 +10,10 @@ export const makeAbortablePromise = promise => {
 
   const wrappedPromise = new Promise((resolve, reject) => {
     _reject = reject;
-    promise.then(val => resolve(val), error => reject(error));
+    promise.then(
+      val => resolve(val),
+      error => reject(error)
+    );
   });
 
   return {

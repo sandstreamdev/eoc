@@ -223,7 +223,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchUserDetails }
-)(UserProfile);
+export default connect(mapStateToProps, { fetchUserDetails })(UserProfile);

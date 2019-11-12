@@ -110,7 +110,10 @@ const cohorts = (state = {}, action) => {
     case CohortActionTypes.FETCH_META_DATA_SUCCESS:
       return { ...state, ...action.payload };
     case CohortActionTypes.REMOVE_ARCHIVED_META_DATA:
-      return _keyBy(_filter(state, cohort => !cohort.isArchived), '_id');
+      return _keyBy(
+        _filter(state, cohort => !cohort.isArchived),
+        '_id'
+      );
     case CohortActionTypes.RESTORE_SUCCESS: {
       const { cohortId, data } = action.payload;
 
