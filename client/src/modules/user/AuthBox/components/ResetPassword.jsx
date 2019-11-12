@@ -129,8 +129,5 @@ ResetPassword.propTypes = {
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    null,
-    { resetPassword }
-  )
+  connect(null, { resetPassword })
 )(ResetPassword);

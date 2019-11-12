@@ -191,6 +191,7 @@ class UserProfile extends PureComponent {
       currentUser,
       currentUser: { avatarUrl, name, email }
     } = this.props;
+    const isPendingPreloaderVisible = pending && !email;
 
     if (!email) {
       return <Preloader />;
@@ -205,7 +206,7 @@ class UserProfile extends PureComponent {
           {this.renderAccountInfo()}
           <EmailReports user={currentUser} />
           <DeleteAccount user={currentUser} />
-          {pending && <Preloader />}
+          {isPendingPreloaderVisible && <Preloader />}
         </article>
       </div>
     );
@@ -222,7 +223,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchUserDetails }
-)(UserProfile);
+export default connect(mapStateToProps, { fetchUserDetails })(UserProfile);

@@ -46,7 +46,8 @@ ArchivedCohort.propTypes = {
   restoreCohort: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { deleteCohort, fetchListsMetaData, restoreCohort }
-)(ArchivedCohort);
+export default connect(null, {
+  deleteCohort,
+  fetchListsMetaData,
+  restoreCohort
+})(ArchivedCohort);

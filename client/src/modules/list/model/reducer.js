@@ -183,7 +183,10 @@ const lists = (state = {}, action) => {
       };
     }
     case ListActionTypes.REMOVE_ARCHIVED_META_DATA:
-      return _keyBy(_filter(state, list => !list.isArchived), '_id');
+      return _keyBy(
+        _filter(state, list => !list.isArchived),
+        '_id'
+      );
     case ListActionTypes.REMOVE_BY_IDS: {
       const { payload } = action;
       const listsToRemove = new Set(payload);

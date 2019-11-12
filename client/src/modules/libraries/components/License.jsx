@@ -89,7 +89,4 @@ const mapStateToProps = (state, ownProps) => {
     license: getLicense(state, libraryName)
   };
 };
-export default connect(
-  mapStateToProps,
-  { fetchLicense }
-)(License);
+export default connect(mapStateToProps, { fetchLicense })(License);

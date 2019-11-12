@@ -301,8 +301,9 @@ const mapStateToProps = state => ({
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    { clearMetaDataSuccess, getLoggedUser, removeUserData }
-  )
+  connect(mapStateToProps, {
+    clearMetaDataSuccess,
+    getLoggedUser,
+    removeUserData
+  })
 )(Layout);
