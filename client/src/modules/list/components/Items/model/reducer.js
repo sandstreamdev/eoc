@@ -156,7 +156,10 @@ const items = (state = {}, action) => {
       return { ...state, ...data };
     }
     case ItemActionTypes.REMOVE_ARCHIVED:
-      return _keyBy(_filter(state, item => !item.isArchived), '_id');
+      return _keyBy(
+        _filter(state, item => !item.isArchived),
+        '_id'
+      );
     case ItemActionTypes.MOVE_SUCCESS:
     case ItemActionTypes.DELETE_SUCCESS: {
       const {

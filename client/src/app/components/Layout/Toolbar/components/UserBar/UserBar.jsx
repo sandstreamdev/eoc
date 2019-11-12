@@ -48,7 +48,4 @@ const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { logoutCurrentUser }
-)(UserBar);
+export default connect(mapStateToProps, { logoutCurrentUser })(UserBar);

@@ -587,8 +587,5 @@ const mapStateToProps = state => ({
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    { changeType, updateList }
-  )
+  connect(mapStateToProps, { changeType, updateList })
 )(ListHeader);

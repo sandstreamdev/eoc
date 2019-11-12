@@ -195,13 +195,10 @@ const mapStateToProps = state => ({
 
 export default _flowRight(
   injectIntl,
-  connect(
-    mapStateToProps,
-    {
-      createList,
-      fetchArchivedListsMetaData,
-      fetchListsMetaData,
-      removeArchivedListsMetaData
-    }
-  )
+  connect(mapStateToProps, {
+    createList,
+    fetchArchivedListsMetaData,
+    fetchListsMetaData,
+    removeArchivedListsMetaData
+  })
 )(Dashboard);

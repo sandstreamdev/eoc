@@ -191,7 +191,4 @@ SignInForm.propTypes = {
   signIn: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { signIn }
-)(SignInForm);
+export default connect(null, { signIn })(SignInForm);

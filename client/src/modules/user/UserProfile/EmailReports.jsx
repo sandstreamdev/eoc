@@ -155,7 +155,6 @@ EmailReports.propTypes = {
   saveEmailReportsSettings: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { sendReport, saveEmailReportsSettings }
-)(EmailReports);
+export default connect(null, { sendReport, saveEmailReportsSettings })(
+  EmailReports
+);

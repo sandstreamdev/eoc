@@ -207,8 +207,5 @@ const mapStateToProps = (state, ownProps) => {
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    { fetchAvailableLists, moveItemToList }
-  )
+  connect(mapStateToProps, { fetchAvailableLists, moveItemToList })
 )(MoveToListPanel);
