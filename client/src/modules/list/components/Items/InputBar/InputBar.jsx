@@ -229,8 +229,5 @@ const mapStateToProps = state => ({
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    { addItem }
-  )
+  connect(mapStateToProps, { addItem })
 )(InputBar);

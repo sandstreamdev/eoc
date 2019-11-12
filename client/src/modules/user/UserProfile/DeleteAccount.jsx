@@ -141,8 +141,5 @@ DeleteAccount.propTypes = {
 
 export default _flowRight(
   injectIntl,
-  connect(
-    null,
-    { sendDeleteAccountMail }
-  )
+  connect(null, { sendDeleteAccountMail })
 )(DeleteAccount);

@@ -527,17 +527,14 @@ const mapStateToProps = state => ({
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    {
-      addMemberRoleInList,
-      addOwnerRoleInCohort,
-      addOwnerRoleInList,
-      removeCohortMember,
-      removeListMember,
-      removeMemberRoleInList,
-      removeOwnerRoleInCohort,
-      removeOwnerRoleInList
-    }
-  )
+  connect(mapStateToProps, {
+    addMemberRoleInList,
+    addOwnerRoleInCohort,
+    addOwnerRoleInList,
+    removeCohortMember,
+    removeListMember,
+    removeMemberRoleInList,
+    removeOwnerRoleInCohort,
+    removeOwnerRoleInList
+  })
 )(MemberDetails);

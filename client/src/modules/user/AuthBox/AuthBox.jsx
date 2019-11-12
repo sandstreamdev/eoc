@@ -210,8 +210,5 @@ AuthBox.propTypes = {
 
 export default _flowRight(
   injectIntl,
-  connect(
-    null,
-    { loginDemoUser }
-  )
+  connect(null, { loginDemoUser })
 )(AuthBox);

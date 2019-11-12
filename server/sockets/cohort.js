@@ -270,9 +270,10 @@ const archiveCohort = io => async data => {
 
 const removeMember = io => async data => {
   try {
-    await emitRemoveCohortMember(io, CohortActionTypes.REMOVE_MEMBER_SUCCESS)(
-      data
-    );
+    await emitRemoveCohortMember(
+      io,
+      CohortActionTypes.REMOVE_MEMBER_SUCCESS
+    )(data);
   } catch {
     // Ignore errors
   }
