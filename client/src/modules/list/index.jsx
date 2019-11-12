@@ -487,13 +487,10 @@ const mapStateToProps = (state, ownProps) => {
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    {
-      archiveList,
-      fetchListData,
-      leaveList,
-      restoreList
-    }
-  )
+  connect(mapStateToProps, {
+    archiveList,
+    fetchListData,
+    leaveList,
+    restoreList
+  })
 )(List);

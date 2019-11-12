@@ -518,15 +518,12 @@ const mapStateToProps = state => ({
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    {
-      archiveItem,
-      clearVote,
-      cloneItem,
-      markAsDone,
-      markAsUnhandled,
-      setVote
-    }
-  )
+  connect(mapStateToProps, {
+    archiveItem,
+    clearVote,
+    cloneItem,
+    markAsDone,
+    markAsUnhandled,
+    setVote
+  })
 )(ListItem);

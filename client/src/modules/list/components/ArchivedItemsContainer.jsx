@@ -116,11 +116,8 @@ const mapStateToProps = (state, ownProps) => {
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    {
-      fetchArchivedItems,
-      removeArchivedItems
-    }
-  )
+  connect(mapStateToProps, {
+    fetchArchivedItems,
+    removeArchivedItems
+  })
 )(ArchivedItemsContainer);

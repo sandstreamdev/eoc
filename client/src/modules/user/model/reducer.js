@@ -1,4 +1,5 @@
 import { AuthorizationActionTypes } from './actions';
+import { CommonActionTypes } from 'common/model/actionTypes';
 
 const currentUser = (state = null, action) => {
   switch (action.type) {
@@ -20,6 +21,15 @@ const currentUser = (state = null, action) => {
       }
 
       return state;
+    }
+    case CommonActionTypes.LEAVE_VIEW: {
+      return {
+        ...state,
+        activationDate: undefined,
+        email: undefined,
+        emailReportsFrequency: undefined,
+        isPasswordSet: undefined
+      };
     }
     default:
       return state;
