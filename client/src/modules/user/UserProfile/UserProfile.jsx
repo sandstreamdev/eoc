@@ -15,7 +15,6 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
-import { clearMetaDataSuccess } from 'common/model/actions';
 import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
@@ -34,8 +33,6 @@ class UserProfile extends PureComponent {
     if (this.pendingPromise) {
       this.pendingPromise.abort();
     }
-
-    clearMetaDataSuccess();
   }
 
   handleFetchUserDetails = () => {
