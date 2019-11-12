@@ -15,8 +15,8 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
-import './UserProfile.scss';
 import { clearMetaDataSuccess } from 'common/model/actions';
+import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;
