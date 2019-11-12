@@ -43,7 +43,4 @@ ArchivedList.propTypes = {
   restoreList: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { deleteList, restoreList }
-)(ArchivedList);
+export default connect(null, { deleteList, restoreList })(ArchivedList);

@@ -6,7 +6,7 @@ pipeline {
   options { disableConcurrentBuilds() }
 
   environment {
-    TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase()
+    TAG = "${BRANCH_NAME}-${BUILD_NUMBER}".toLowerCase().replace("@", "")
     TAG_INIT = "${TAG}-init"
     TAG_BUILD = "${TAG}-build"
     TAG_TEST = "${TAG}-test"

@@ -245,8 +245,5 @@ const mapStateToProps = state => ({
 
 export default _flowRight(
   withRouter,
-  connect(
-    mapStateToProps,
-    { updateListItem }
-  )
+  connect(mapStateToProps, { updateListItem })
 )(ListItemName);

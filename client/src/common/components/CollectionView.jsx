@@ -144,11 +144,8 @@ CollectionView.propTypes = {
 };
 
 export default withRouter(
-  connect(
-    null,
-    {
-      addListToFavourites,
-      removeListFromFavourites
-    }
-  )(CollectionView)
+  connect(null, {
+    addListToFavourites,
+    removeListFromFavourites
+  })(CollectionView)
 );

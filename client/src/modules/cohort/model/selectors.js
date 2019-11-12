@@ -44,14 +44,18 @@ export const getCohortDetails = (state, cohortId) => {
   }
 };
 
-export const getActiveCohorts = createSelector(
-  getCohorts,
-  cohorts => _keyBy(_filter(cohorts, cohort => !cohort.isArchived), '_id')
+export const getActiveCohorts = createSelector(getCohorts, cohorts =>
+  _keyBy(
+    _filter(cohorts, cohort => !cohort.isArchived),
+    '_id'
+  )
 );
 
-export const getArchivedCohorts = createSelector(
-  getCohorts,
-  cohorts => _keyBy(_filter(cohorts, cohort => cohort.isArchived), '_id')
+export const getArchivedCohorts = createSelector(getCohorts, cohorts =>
+  _keyBy(
+    _filter(cohorts, cohort => cohort.isArchived),
+    '_id'
+  )
 );
 
 export const getMembers = createSelector(

@@ -80,7 +80,4 @@ const mapStateToProps = state => ({
   libraries: getLibrariesNames(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchLibraries }
-)(Libraries);
+export default connect(mapStateToProps, { fetchLibraries })(Libraries);

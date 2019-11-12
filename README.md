@@ -1,15 +1,11 @@
 # EOC - End Of Coffee App
 
+[![Build status](http://eoc.sanddev.com:8080/buildStatus/icon)](http://eoc.sanddev.com:8080/job/EOC%20MBP/job/master/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/sandstreamdev/eoc.svg)](https://greenkeeper.io/)
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+![last commit](https://img.shields.io/github/last-commit/sandstreamdev/eoc)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 
 An app made by Sandstream Development team, to track office inventory, groceries, and even your daily tasks!
-
-![Eoc custom badge](https://img.shields.io/badge/EOC-App-orange)
-![main language](https://img.shields.io/github/languages/top/sandstreamdev/eoc)
-![dependencies status](https://img.shields.io/david/sandstreamdev/eoc)
-![repository size](https://img.shields.io/github/repo-size/sandstreamdev/eoc)
-![last commit](https://img.shields.io/github/last-commit/sandstreamdev/eoc)
 
 ## Main application tech stack
 

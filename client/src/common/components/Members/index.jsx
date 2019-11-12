@@ -263,8 +263,5 @@ MembersBox.propTypes = {
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    null,
-    { addCohortMember, addListViewer, inviteUser }
-  )
+  connect(null, { addCohortMember, addListViewer, inviteUser })
 )(MembersBox);

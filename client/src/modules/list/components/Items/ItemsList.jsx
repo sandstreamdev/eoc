@@ -205,8 +205,5 @@ ItemsList.propTypes = {
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    null,
-    { disableItemAnimations, updateLimit }
-  )
+  connect(null, { disableItemAnimations, updateLimit })
 )(ItemsList);

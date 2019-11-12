@@ -261,10 +261,7 @@ const mapStateToProps = state => ({
 export default _flowRight(
   injectIntl,
   withRouter,
-  connect(
-    mapStateToProps,
-    {
-      updateCohort
-    }
-  )
+  connect(mapStateToProps, {
+    updateCohort
+  })
 )(CohortDescription);

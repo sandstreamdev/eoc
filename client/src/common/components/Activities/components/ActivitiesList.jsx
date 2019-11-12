@@ -120,8 +120,5 @@ const mapStateToProps = state => ({
 
 export default _flowRight(
   injectIntl,
-  connect(
-    mapStateToProps,
-    { fetchActivities, removeActivities }
-  )
+  connect(mapStateToProps, { fetchActivities, removeActivities })
 )(ActivitiesList);

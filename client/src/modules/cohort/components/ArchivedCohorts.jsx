@@ -99,11 +99,8 @@ const mapStateToProps = state => ({
 
 export default _flowRight(
   injectIntl,
-  connect(
-    mapStateToProps,
-    {
-      fetchArchivedCohortsMetaData,
-      removeArchivedCohortsMetaData
-    }
-  )
+  connect(mapStateToProps, {
+    fetchArchivedCohortsMetaData,
+    removeArchivedCohortsMetaData
+  })
 )(ArchivedCohorts);

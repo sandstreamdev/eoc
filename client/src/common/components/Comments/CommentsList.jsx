@@ -136,8 +136,5 @@ CommentsList.propTypes = {
 
 export default _flowRight(
   withRouter,
-  connect(
-    null,
-    { addComment, fetchComments }
-  )
+  connect(null, { addComment, fetchComments })
 )(CommentsList);
