@@ -304,10 +304,14 @@ body {
   margin-left: 16px;
 }
 
-.btn2:hover {
+.btn2:hover,
+.btn2:visited {
   color: #ffffff;
-  opacity: 0.8;
   transition: all ease 0.7s;
+}
+
+.btn2:hover {
+  opacity: 0.8;
 }
 
 .border-btn {
