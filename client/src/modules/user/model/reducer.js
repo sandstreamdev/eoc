@@ -1,4 +1,5 @@
 import { AuthorizationActionTypes } from './actions';
+import { CommonActionTypes } from 'common/model/actionTypes';
 
 const currentUser = (state = null, action) => {
   switch (action.type) {
@@ -21,7 +22,7 @@ const currentUser = (state = null, action) => {
 
       return state;
     }
-    case AuthorizationActionTypes.LEAVE_PROFILE_VIEW_SUCCESS: {
+    case CommonActionTypes.LEAVE_VIEW: {
       return {
         ...state,
         activationDate: undefined,

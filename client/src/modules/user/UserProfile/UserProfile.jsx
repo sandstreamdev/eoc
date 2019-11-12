@@ -10,12 +10,13 @@ import { UserPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
-import { fetchUserDetails, leaveProfile } from 'modules/user/model/actions';
+import { fetchUserDetails } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
 import './UserProfile.scss';
+import { clearMetaDataSuccess } from 'common/model/actions';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;
@@ -30,13 +31,11 @@ class UserProfile extends PureComponent {
   }
 
   componentWillUnmount() {
-    const { leaveProfile } = this.props;
-
     if (this.pendingPromise) {
       this.pendingPromise.abort();
     }
 
-    leaveProfile();
+    clearMetaDataSuccess();
   }
 
   handleFetchUserDetails = () => {
@@ -220,8 +219,7 @@ class UserProfile extends PureComponent {
 UserProfile.propTypes = {
   currentUser: UserPropType.isRequired,
 
-  fetchUserDetails: PropTypes.func.isRequired,
-  leaveProfile: PropTypes.func.isRequired
+  fetchUserDetails: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -230,5 +228,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { fetchUserDetails, leaveProfile }
+  { fetchUserDetails }
 )(UserProfile);
