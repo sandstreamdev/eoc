@@ -5,8 +5,9 @@ const List = require('../../models/list.model');
 const Session = require('../../models/session.model');
 const {
   AppEvents,
-  ListActionTypes,
-  CohortActionTypes
+  CohortActionTypes,
+  ItemStatusType,
+  ListActionTypes
 } = require('../eventTypes');
 const {
   countItems,
@@ -15,11 +16,7 @@ const {
   responseWithListMetaData
 } = require('../../common/utils');
 const { isDefined } = require('../../common/utils/helpers');
-const {
-  ItemStatusType,
-  ListType,
-  LOCK_TIMEOUT
-} = require('../../common/variables');
+const { ListType, LOCK_TIMEOUT } = require('../../common/variables');
 
 const getListsDataByViewers = lists => {
   const listsByViewers = {};
