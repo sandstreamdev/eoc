@@ -5,9 +5,9 @@ const List = require('../../models/list.model');
 const Session = require('../../models/session.model');
 const {
   AppEvents,
+  CohortActionTypes,
   ItemStatusType,
-  ListActionTypes,
-  CohortActionTypes
+  ListActionTypes
 } = require('../eventTypes');
 const {
   countItems,
