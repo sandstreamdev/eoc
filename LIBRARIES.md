@@ -12,18 +12,6 @@
 
   - repository: https://github.com/babel/babel/tree/master/packages/babel-core
 
-- @babel/generator@7<i></i>.6<i></i>.4
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-generator/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-generator
-
-- @babel/generator@7<i></i>.7<i></i>.0
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-generator/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-generator
-
 - @babel/generator@7<i></i>.7<i></i>.2
 
   - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-generator/raw/master/LICENSE)
@@ -78,23 +66,11 @@
 
   - repository: https://github.com/babel/babel/tree/master/packages/babel-helper-explode-assignable-expression
 
-- @babel/helper-function-name@7<i></i>.1<i></i>.0
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-helper-function-name/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-helper-function-name
-
 - @babel/helper-function-name@7<i></i>.7<i></i>.0
 
   - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-helper-function-name/raw/master/LICENSE)
 
   - repository: https://github.com/babel/babel/tree/master/packages/babel-helper-function-name
-
-- @babel/helper-get-function-arity@7<i></i>.0<i></i>.0
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity
 
 - @babel/helper-get-function-arity@7<i></i>.7<i></i>.0
 
@@ -162,12 +138,6 @@
 
   - repository: https://github.com/babel/babel/tree/master/packages/babel-helper-simple-access
 
-- @babel/helper-split-export-declaration@7<i></i>.4<i></i>.4
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration
-
 - @babel/helper-split-export-declaration@7<i></i>.7<i></i>.0
 
   - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration/raw/master/LICENSE)
@@ -192,19 +162,7 @@
 
   - repository: https://github.com/babel/babel/tree/master/packages/babel-highlight
 
-- @babel/parser@7<i></i>.6<i></i>.4
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-parser/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-parser
-
-- @babel/parser@7<i></i>.7<i></i>.0
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-parser/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-parser
-
-- @babel/parser@7<i></i>.7<i></i>.2
+- @babel/parser@7<i></i>.7<i></i>.3
 
   - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-parser/raw/master/LICENSE)
 
@@ -516,17 +474,11 @@
 
   - repository: https://github.com/babel/babel/tree/master/packages/babel-preset-react
 
-- @babel/runtime@7<i></i>.6<i></i>.3
+- @babel/runtime@7<i></i>.7<i></i>.2
 
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-runtime/raw/master/LICENSE)
+  - license: [MIT](https://github.com/babel/babel/raw/master/LICENSE)
 
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-runtime
-
-- @babel/template@7<i></i>.6<i></i>.0
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-template/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-template
+  - repository: https://github.com/babel/babel
 
 - @babel/template@7<i></i>.7<i></i>.0
 
@@ -534,35 +486,11 @@
 
   - repository: https://github.com/babel/babel/tree/master/packages/babel-template
 
-- @babel/traverse@7<i></i>.6<i></i>.3
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-traverse/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-traverse
-
-- @babel/traverse@7<i></i>.7<i></i>.0
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-traverse/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-traverse
-
 - @babel/traverse@7<i></i>.7<i></i>.2
 
   - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-traverse/raw/master/LICENSE)
 
   - repository: https://github.com/babel/babel/tree/master/packages/babel-traverse
-
-- @babel/types@7<i></i>.6<i></i>.3
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-types/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-types
-
-- @babel/types@7<i></i>.7<i></i>.0
-
-  - license: [MIT](https://github.com/babel/babel/tree/master/packages/babel-types/raw/master/LICENSE)
-
-  - repository: https://github.com/babel/babel/tree/master/packages/babel-types
 
 - @babel/types@7<i></i>.7<i></i>.2
 
@@ -576,19 +504,25 @@
 
   - repository: https://github.com/mikeal/watch
 
-- @formatjs/intl-pluralrules@1<i></i>.3<i></i>.1
+- @formatjs/intl-listformat@1<i></i>.2<i></i>.2
+
+  - license: [MIT](https://github.com/formatjs/formatjs)
+
+  - repository: https://github.com/formatjs/formatjs
+
+- @formatjs/intl-pluralrules@1<i></i>.3<i></i>.2
 
   - license: [MIT](https://github.com/formatjs/formatjs/raw/master/LICENSE.md)
 
   - repository: https://github.com/formatjs/formatjs
 
-- @formatjs/intl-relativetimeformat@4<i></i>.4<i></i>.0
+- @formatjs/intl-relativetimeformat@4<i></i>.4<i></i>.1
 
   - license: [MIT](https://github.com/formatjs/formatjs/raw/master/LICENSE.md)
 
   - repository: https://github.com/formatjs/formatjs
 
-- @formatjs/intl-unified-numberformat@2<i></i>.1<i></i>.0
+- @formatjs/intl-unified-numberformat@2<i></i>.1<i></i>.2
 
   - license: [MIT](https://github.com/formatjs/formatjs/raw/master/LICENSE.md)
 
@@ -597,6 +531,12 @@
 - @formatjs/intl-utils@1<i></i>.4<i></i>.0
 
   - license: [MIT](https://github.com/formatjs/formatjs/raw/master/LICENSE.md)
+
+  - repository: https://github.com/formatjs/formatjs
+
+- @formatjs/macro@0<i></i>.2<i></i>.2
+
+  - license: [MIT](https://github.com/formatjs/formatjs)
 
   - repository: https://github.com/formatjs/formatjs
 
@@ -966,7 +906,7 @@
 
   - repository: https://wwwhub.com/DefinitelyTyped/DefinitelyTyped
 
-- @types/node@12<i></i>.12<i></i>.5
+- @types/node@12<i></i>.12<i></i>.7
 
   - license: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -1038,11 +978,11 @@
 
   - repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-- @types/vfile-message@1<i></i>.0<i></i>.1
+- @types/vfile-message@2<i></i>.0<i></i>.0
 
-  - license: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+  - license: [MIT](https://github.com/vfile/vfile-message#readme/raw/master/LICENSE)
 
-  - repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+  - repository: https://github.com/vfile/vfile-message#readme
 
 - @types/vfile@3<i></i>.0<i></i>.2
 
@@ -1357,6 +1297,12 @@
   - repository: https://github.com/chalk/ansi-regex
 
 - ansi-regex@4<i></i>.1<i></i>.0
+
+  - license: [MIT](https://github.com/chalk/ansi-regex/raw/master/license)
+
+  - repository: https://github.com/chalk/ansi-regex
+
+- ansi-regex@5<i></i>.0<i></i>.0
 
   - license: [MIT](https://github.com/chalk/ansi-regex/raw/master/license)
 
@@ -1938,7 +1884,7 @@
 
   - repository: https://github.com/facebook/watchman
 
-- bson@1<i></i>.1<i></i>.1
+- bson@1<i></i>.1<i></i>.3
 
   - license: [Apache-2.0](https://github.com/mongodb/js-bson/raw/master/LICENSE.md)
 
@@ -1974,7 +1920,7 @@
 
   - repository: https://github.com/crypto-browserify/buffer-xor
 
-- buffer@4<i></i>.9<i></i>.1
+- buffer@4<i></i>.9<i></i>.2
 
   - license: [MIT](https://github.com/feross/buffer/raw/master/LICENSE)
 
@@ -2526,12 +2472,6 @@
 
   - repository: https://github.com/jshttp/content-type
 
-- convert-source-map@1<i></i>.6<i></i>.0
-
-  - license: [MIT](https://github.com/thlorenz/convert-source-map/raw/master/LICENSE)
-
-  - repository: https://github.com/thlorenz/convert-source-map
-
 - convert-source-map@1<i></i>.7<i></i>.0
 
   - license: [MIT](https://github.com/thlorenz/convert-source-map/raw/master/LICENSE)
@@ -2580,7 +2520,7 @@
 
   - repository: https://github.com/jonschlinkert/copy-descriptor
 
-- core-js-compat@3<i></i>.4<i></i>.0
+- core-js-compat@3<i></i>.4<i></i>.1
 
   - license: [MIT](https://github.com/zloirock/core-js/raw/master/LICENSE)
 
@@ -2718,7 +2658,7 @@
 
   - repository: https://github.com/fb55/css-select
 
-- css-select@2<i></i>.0<i></i>.2
+- css-select@2<i></i>.1<i></i>.0
 
   - license: [BSD-2-Clause](https://github.com/fb55/css-select/raw/master/LICENSE)
 
@@ -2737,6 +2677,12 @@
   - repository: https://github.com/andyjansson/css-unit-converter
 
 - css-what@2<i></i>.1<i></i>.3
+
+  - license: [BSD-2-Clause](https://github.com/fb55/css-what/raw/master/LICENSE)
+
+  - repository: https://github.com/fb55/css-what
+
+- css-what@3<i></i>.2<i></i>.1
 
   - license: [BSD-2-Clause](https://github.com/fb55/css-what/raw/master/LICENSE)
 
@@ -3216,7 +3162,7 @@
 
   - repository: https://github.com/jonathanong/ee-first
 
-- electron-to-chromium@1<i></i>.3<i></i>.302
+- electron-to-chromium@1<i></i>.3<i></i>.306
 
   - license: [ISC](https://github.com/kilian/electron-to-chromium//raw/master/LICENSE)
 
@@ -3366,7 +3312,7 @@
 
   - repository: https://github.com/ljharb/es-abstract
 
-- es-to-primitive@1<i></i>.2<i></i>.0
+- es-to-primitive@1<i></i>.2<i></i>.1
 
   - license: [MIT](https://github.com/ljharb/es-to-primitive/raw/master/LICENSE)
 
@@ -3576,7 +3522,7 @@
 
   - repository: https://github.com/crypto-browserify/EVP_BytesToKey
 
-- exec-sh@0<i></i>.3<i></i>.2
+- exec-sh@0<i></i>.3<i></i>.4
 
   - license: [MIT](https://github.com/tsertkov/exec-sh/raw/master/LICENSE)
 
@@ -3822,7 +3768,7 @@
 
   - repository: https://github.com/avajs/find-cache-dir
 
-- find-cache-dir@3<i></i>.0<i></i>.0
+- find-cache-dir@3<i></i>.1<i></i>.0
 
   - license: [MIT](https://github.com/avajs/find-cache-dir/raw/master/license)
 
@@ -4044,7 +3990,7 @@
 
   - repository: https://github.com/shama/gaze
 
-- gcp-metadata@3<i></i>.2<i></i>.0
+- gcp-metadata@3<i></i>.2<i></i>.1
 
   - license: [Apache-2.0](https://github.com/googleapis/gcp-metadata/raw/master/LICENSE)
 
@@ -4140,7 +4086,7 @@
 
   - repository: https://github.com/isaacs/node-glob
 
-- glob@7<i></i>.1<i></i>.5
+- glob@7<i></i>.1<i></i>.6
 
   - license: [ISC](https://github.com/isaacs/node-glob/raw/master/LICENSE)
 
@@ -4752,7 +4698,7 @@
 
   - repository: https://github.com/gulpjs/interpret
 
-- intl-format-cache@4<i></i>.2<i></i>.5
+- intl-format-cache@4<i></i>.2<i></i>.6
 
   - license: [BSD-3-Clause](https://github.com/formatjs/formatjs/raw/master/LICENSE)
 
@@ -4770,7 +4716,7 @@
 
   - repository: https://github.com/formatjs/formatjs
 
-- intl-messageformat@7<i></i>.5<i></i>.0
+- intl-messageformat@7<i></i>.5<i></i>.2
 
   - license: [BSD-3-Clause](https://github.com/formatjs/formatjs/raw/master/LICENSE)
 
@@ -5958,7 +5904,7 @@
 
   - repository: https://github.com/sindresorhus/log-update
 
-- loglevel@1<i></i>.6<i></i>.4
+- loglevel@1<i></i>.6<i></i>.6
 
   - license: [MIT](https://github.com/pimterry/loglevel/raw/master/LICENSE-MIT)
 
@@ -6102,7 +6048,7 @@
 
   - repository: https://github.com/crypto-browserify/md5.js
 
-- mdast-util-compact@1<i></i>.0<i></i>.3
+- mdast-util-compact@1<i></i>.0<i></i>.4
 
   - license: [MIT](https://github.com/syntax-tree/mdast-util-compact/raw/master/license)
 
@@ -6408,13 +6354,19 @@
 
   - repository: https://github.com/mongodb/node-mongodb-native
 
+- mongodb@3<i></i>.3<i></i>.4
+
+  - license: [Apache-2.0](https://github.com/mongodb/node-mongodb-native/raw/master/LICENSE.md)
+
+  - repository: https://github.com/mongodb/node-mongodb-native
+
 - mongoose-legacy-pluralize@1<i></i>.0<i></i>.2
 
   - license: [Apache-2.0](https://github.com/vkarpov15/mongoose-legacy-pluralize/raw/master/LICENSE)
 
   - repository: https://github.com/vkarpov15/mongoose-legacy-pluralize
 
-- mongoose@5<i></i>.7<i></i>.8
+- mongoose@5<i></i>.7<i></i>.10
 
   - license: [MIT](https://github.com/Automattic/mongoose/raw/master/LICENSE.md)
 
@@ -6678,6 +6630,12 @@
 
   - repository: https://github.com/sindresorhus/normalize-url
 
+- normalize<i></i>.css@8<i></i>.0<i></i>.1
+
+  - license: [MIT](https://github.com/necolas/normalize.css/raw/master/LICENSE.md)
+
+  - repository: https://github.com/necolas/normalize.css
+
 - npm-bundled@1<i></i>.0<i></i>.6
 
   - license: [ISC](https://github.com/npm/npm-bundled/raw/master/LICENSE)
@@ -6768,7 +6726,7 @@
 
   - repository: https://github.com/jonschlinkert/object-copy
 
-- object-inspect@1<i></i>.6<i></i>.0
+- object-inspect@1<i></i>.7<i></i>.0
 
   - license: [MIT](https://github.com/substack/object-inspect/raw/master/LICENSE)
 
@@ -6894,7 +6852,7 @@
 
   - repository: http://github.com/NMFR/optimize-css-assets-webpack-plugin
 
-- optionator@0<i></i>.8<i></i>.2
+- optionator@0<i></i>.8<i></i>.3
 
   - license: [MIT](https://github.com/gkz/optionator/raw/master/LICENSE)
 
@@ -7290,7 +7248,7 @@
 
   - repository: https://github.com/component/path-to-regexp
 
-- path-to-regexp@1<i></i>.7<i></i>.0
+- path-to-regexp@1<i></i>.8<i></i>.0
 
   - license: [MIT](https://github.com/pillarjs/path-to-regexp/raw/master/LICENSE)
 
@@ -7344,7 +7302,7 @@
 
   - repository: https://github.com/ethanent/phin
 
-- picomatch@2<i></i>.1<i></i>.0
+- picomatch@2<i></i>.1<i></i>.1
 
   - license: [MIT](https://github.com/micromatch/picomatch/raw/master/LICENSE)
 
@@ -7680,7 +7638,7 @@
 
   - repository: https://github.com/postcss/postcss-safe-parser
 
-- postcss-sass@0<i></i>.4<i></i>.1
+- postcss-sass@0<i></i>.4<i></i>.2
 
   - license: [MIT](https://github.com/AleshaOleg/postcss-sass/raw/master/LICENSE)
 
@@ -7764,7 +7722,7 @@
 
   - repository: https://github.com/prettier/prettier-linter-helpers
 
-- prettier@1<i></i>.18<i></i>.2
+- prettier@1<i></i>.19<i></i>.1
 
   - license: [MIT](https://github.com/prettier/prettier/raw/master/LICENSE)
 
@@ -7830,7 +7788,7 @@
 
   - repository: https://github.com/taylorhakes/promise-polyfill
 
-- prompts@2<i></i>.2<i></i>.1
+- prompts@2<i></i>.3<i></i>.0
 
   - license: [MIT](https://github.com/terkelg/prompts/raw/master/license)
 
@@ -7938,7 +7896,7 @@
 
   - repository: https://github.com/ljharb/qs
 
-- qs@6<i></i>.9<i></i>.0
+- qs@6<i></i>.9<i></i>.1
 
   - license: [BSD-3-Clause](https://github.com/ljharb/qs/raw/master/LICENSE.md)
 
@@ -8052,7 +8010,7 @@
 
   - repository: https://github.com/theKashey/react-focus-lock
 
-- react-intl@3<i></i>.4<i></i>.0
+- react-intl@3<i></i>.5<i></i>.0
 
   - license: [BSD-3-Clause](https://github.com/formatjs/react-intl/raw/master/LICENSE.md)
 
@@ -8070,7 +8028,7 @@
 
   - repository: https://github.com/tasti/react-linkify
 
-- react-redux@7<i></i>.1<i></i>.2
+- react-redux@7<i></i>.1<i></i>.3
 
   - license: [MIT](github:reduxjs/react-redux)
 
@@ -8862,7 +8820,7 @@
 
   - repository: https://github.com/qix-/node-simple-swizzle
 
-- sisteransi@1<i></i>.0<i></i>.3
+- sisteransi@1<i></i>.0<i></i>.4
 
   - license: [MIT](https://github.com/terkelg/sisteransi/raw/master/license)
 
@@ -9186,7 +9144,7 @@
 
   - repository: https://github.com/sindresorhus/string-width
 
-- string-width@4<i></i>.1<i></i>.0
+- string-width@4<i></i>.2<i></i>.0
 
   - license: [MIT](https://github.com/sindresorhus/string-width/raw/master/license)
 
@@ -9253,6 +9211,12 @@
   - repository: https://github.com/chalk/strip-ansi
 
 - strip-ansi@5<i></i>.2<i></i>.0
+
+  - license: [MIT](https://github.com/chalk/strip-ansi/raw/master/license)
+
+  - repository: https://github.com/chalk/strip-ansi
+
+- strip-ansi@6<i></i>.0<i></i>.0
 
   - license: [MIT](https://github.com/chalk/strip-ansi/raw/master/license)
 
@@ -9450,7 +9414,7 @@
 
   - repository: https://github.com/webpack-contrib/terser-webpack-plugin
 
-- terser@4<i></i>.3<i></i>.9
+- terser@4<i></i>.4<i></i>.0
 
   - license: [BSD-2-Clause](https://github.com/terser/terser/raw/master/LICENSE)
 
@@ -9816,7 +9780,7 @@
 
   - repository: https://github.com/sindresorhus/unique-string
 
-- unist-util-find-all-after@1<i></i>.0<i></i>.4
+- unist-util-find-all-after@1<i></i>.0<i></i>.5
 
   - license: [MIT](https://github.com/syntax-tree/unist-util-find-all-after/raw/master/license)
 
@@ -9828,7 +9792,7 @@
 
   - repository: https://github.com/syntax-tree/unist-util-is
 
-- unist-util-remove-position@1<i></i>.1<i></i>.3
+- unist-util-remove-position@1<i></i>.1<i></i>.4
 
   - license: [MIT](https://github.com/syntax-tree/unist-util-remove-position/raw/master/license)
 
@@ -9837,6 +9801,12 @@
 - unist-util-stringify-position@1<i></i>.1<i></i>.2
 
   - license: [MIT](https://github.com/syntax-tree/unist-util-stringify-position/raw/master/LICENSE)
+
+  - repository: https://github.com/syntax-tree/unist-util-stringify-position
+
+- unist-util-stringify-position@2<i></i>.0<i></i>.2
+
+  - license: [MIT](https://github.com/syntax-tree/unist-util-stringify-position/raw/master/license)
 
   - repository: https://github.com/syntax-tree/unist-util-stringify-position
 
@@ -10056,13 +10026,19 @@
 
   - repository: https://github.com/davepacheco/node-verror
 
-- vfile-location@2<i></i>.0<i></i>.5
+- vfile-location@2<i></i>.0<i></i>.6
 
   - license: [MIT](https://github.com/vfile/vfile-location/raw/master/license)
 
   - repository: https://github.com/vfile/vfile-location
 
 - vfile-message@1<i></i>.1<i></i>.1
+
+  - license: [MIT](https://github.com/vfile/vfile-message/raw/master/license)
+
+  - repository: https://github.com/vfile/vfile-message
+
+- vfile-message@2<i></i>.0<i></i>.2
 
   - license: [MIT](https://github.com/vfile/vfile-message/raw/master/license)
 
@@ -10230,13 +10206,13 @@
 
   - repository: https://github.com/sindresorhus/widest-line
 
+- word-wrap@1<i></i>.2<i></i>.3
+
+  - license: [MIT](https://github.com/jonschlinkert/word-wrap/raw/master/LICENSE)
+
+  - repository: https://github.com/jonschlinkert/word-wrap
+
 - wordwrap@0<i></i>.0<i></i>.3
-
-  - license: [MIT](https://github.com/substack/node-wordwrap/raw/master/LICENSE)
-
-  - repository: https://github.com/substack/node-wordwrap
-
-- wordwrap@1<i></i>.0<i></i>.0
 
   - license: [MIT](https://github.com/substack/node-wordwrap/raw/master/LICENSE)
 
