@@ -29,7 +29,11 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection
 });
 
-mongoose.connect(dbUrl, { useNewUrlParser: true }, unlockLocks);
+mongoose.connect(
+  dbUrl,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  unlockLocks
+);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
