@@ -484,7 +484,7 @@ features
 
 .content-area {
   float: left;
-  width: 95%;
+  width: 100%;
 }
 
 .content-area p {
@@ -565,7 +565,7 @@ features
   height: auto;
   position: absolute;
   top: 0;
-  right: -430px;
+  right: -1030px;
 }
 
 .img3 img {
@@ -2633,14 +2633,6 @@ Responsive CSS for all sections
   .f-img img {
   }
   .f-img img {
-  }
-
-  .img3 {
-    width: 1000px;
-    height: auto;
-    position: absolute;
-    top: 0;
-    right: -500px;
   }
 
   .two-colom-image img {
