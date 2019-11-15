@@ -586,6 +586,10 @@ features
   text-align: left;
 }
 
+.two-colom-imag {
+  margin: 20px 0;
+}
+
 /* End two colom */
 
 /*-----------------------------------------------------------------------------------
@@ -2756,8 +2760,18 @@ Responsive CSS for all sections
     text-align: left;
     margin-top: 30px;
   }
+}
+
+@media screen and (min-width: 991px) {
   .two-colom-imag {
-    margin-top: 20px;
+    margin: 20px 0;
+    position: absolute;
+    left: -1055px;
+    top: 0;
+  }
+
+  .section3 {
+    min-height: 900px;
   }
 }
 
