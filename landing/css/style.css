@@ -578,6 +578,8 @@ features
 
 .section3 {
   padding: 180px 0;
+  display: flex;
+  align-items: center;
 }
 
 .two-colom-image {
@@ -599,7 +601,6 @@ features
 -----------------------------------------------------------------------------------*/
 
 .section-two-colom {
-  padding: 0 0 135px 0;
 }
 
 .content-area-second {
@@ -613,6 +614,10 @@ features
   float: right;
   width: 100%;
   text-align: right;
+}
+
+.two-colom-image-right img {
+  margin: auto;
 }
 
 .highlited-text {
@@ -2767,7 +2772,7 @@ Responsive CSS for all sections
     margin: 20px 0;
     position: absolute;
     left: -1055px;
-    top: 0;
+    top: -214px;
   }
 
   .section3 {
@@ -2778,6 +2783,10 @@ Responsive CSS for all sections
     position: absolute;
     right: -485px;
     top: 0;
+  }
+
+  .section-two-colom {
+    padding-bottom: 100px;
   }
 }
 
@@ -2944,7 +2953,7 @@ Responsive CSS for all sections
 @media (min-width: 1199px) {
   .two-colom-image-right {
     position: absolute;
-    right: -595px;
+    right: -600px;
     top: 0;
   }
 }
