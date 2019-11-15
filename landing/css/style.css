@@ -493,7 +493,7 @@ features
 }
 
 .nomber-text {
-  padding-top: 50px;
+  margin-top: 20px;
 }
 
 .nomber-text-row {
@@ -2763,7 +2763,7 @@ Responsive CSS for all sections
     top: 0;
     right: 0;
     text-align: left;
-    margin-top: 30px;
+    margin-top: 15px;
   }
 }
 
