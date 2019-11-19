@@ -488,7 +488,7 @@ features
 
 .content-area {
   float: left;
-  width: 95%;
+  width: 100%;
 }
 
 .content-area p {
@@ -497,7 +497,7 @@ features
 }
 
 .nomber-text {
-  padding-top: 50px;
+  margin-top: 20px;
 }
 
 .nomber-text-row {
@@ -569,7 +569,7 @@ features
   height: auto;
   position: absolute;
   top: 0;
-  right: -430px;
+  right: -1030px;
 }
 
 .img3 img {
@@ -582,12 +582,18 @@ features
 
 .section3 {
   padding: 180px 0;
+  display: flex;
+  align-items: center;
 }
 
 .two-colom-image {
   float: left;
   width: 100%;
   text-align: left;
+}
+
+.two-colom-imag {
+  margin: 20px 0;
 }
 
 /* End two colom */
@@ -599,7 +605,6 @@ features
 -----------------------------------------------------------------------------------*/
 
 .section-two-colom {
-  padding: 0 0 80px 0;
 }
 
 .content-area-second {
@@ -613,6 +618,10 @@ features
   float: right;
   width: 100%;
   text-align: right;
+}
+
+.two-colom-image-right img {
+  margin: auto;
 }
 
 .highlited-text {
@@ -2639,14 +2648,6 @@ Responsive CSS for all sections
   .f-img img {
   }
 
-  .img3 {
-    width: 1000px;
-    height: auto;
-    position: absolute;
-    top: 0;
-    right: -500px;
-  }
-
   .two-colom-image img {
     margin-top: 40px;
   }
@@ -2656,7 +2657,7 @@ Responsive CSS for all sections
   }
 
   .content-area-second {
-    padding: 0 0 60px 0;
+    padding: 60px 0 60px 0;
   }
 }
 
@@ -2766,10 +2767,30 @@ Responsive CSS for all sections
     top: 0;
     right: 0;
     text-align: left;
-    margin-top: 30px;
+    margin-top: 15px;
   }
+}
+
+@media screen and (min-width: 991px) {
   .two-colom-imag {
-    margin-top: 20px;
+    margin: 20px 0;
+    position: absolute;
+    left: -1055px;
+    top: -214px;
+  }
+
+  .section3 {
+    min-height: 900px;
+  }
+
+  .two-colom-image-right {
+    position: absolute;
+    right: -485px;
+    top: 0;
+  }
+
+  .section-two-colom {
+    padding-bottom: 100px;
   }
 }
 
@@ -2930,6 +2951,14 @@ Responsive CSS for all sections
   }
   .bx-wrapper .bx-prev {
     left: 0 !important;
+  }
+}
+
+@media (min-width: 1199px) {
+  .two-colom-image-right {
+    position: absolute;
+    right: -600px;
+    top: 0;
   }
 }
 
