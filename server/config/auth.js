@@ -77,9 +77,7 @@ passport.use(
             displayName,
             email,
             idFromProvider,
-            name,
-            provider,
-            surname
+            provider
           } = user;
 
           return new User({
@@ -88,9 +86,7 @@ passport.use(
             displayName,
             email,
             idFromProvider,
-            name,
-            provider,
-            surname
+            provider
           }).save();
         })
         .then(user => {

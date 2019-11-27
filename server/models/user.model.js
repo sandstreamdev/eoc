@@ -20,14 +20,12 @@ const UserSchema = new Schema(
     idFromProvider: { type: String },
     isActive: { type: Boolean },
     lastEmailReportSentAt: { type: Date },
-    name: { type: String },
     password: { type: String },
     provider: { type: String },
     resetToken: { type: String },
     resetTokenExpirationDate: { type: Date },
     signUpHash: { type: String },
-    signUpHashExpirationDate: { type: Date },
-    surname: { type: String }
+    signUpHashExpirationDate: { type: Date }
   },
   { timestamps: true }
 );

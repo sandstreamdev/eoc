@@ -22,15 +22,13 @@ const findOrCreateUser = (user, done) => {
         const { email, idFromProvider: existingIdFromProvider, isActive } = doc;
 
         if (email && !existingIdFromProvider) {
-          const { accessToken, avatarUrl, name, provider, surname } = user;
+          const { accessToken, avatarUrl, provider } = user;
 
           /* eslint-disable no-param-reassign */
           doc.accessToken = accessToken;
           doc.avatarUrl = avatarUrl;
           doc.idFromProvider = idFromProvider;
-          doc.name = name;
           doc.provider = provider;
-          doc.surname = surname;
 
           if (!isActive) {
             doc.activatedAt = new Date();
@@ -58,7 +56,7 @@ const findOrCreateUser = (user, done) => {
 
 /* eslint camelcase: "off" */
 const extractUserProfile = (profile, accessToken) => {
-  const { email, family_name, given_name, name, picture } = profile._json;
+  const { email, name, picture } = profile._json;
   const { id } = profile;
 
   return {
@@ -67,9 +65,7 @@ const extractUserProfile = (profile, accessToken) => {
     displayName: name,
     email,
     idFromProvider: id,
-    name: given_name,
-    provider: 'google',
-    surname: family_name
+    provider: 'google'
   };
 };
 

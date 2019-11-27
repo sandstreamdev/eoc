@@ -16,9 +16,7 @@ const createDemoUser = () => ({
   displayName: 'Demo',
   email: 'demo@example.com',
   idFromProvider,
-  name: 'Demo',
-  provider: `demo-${userId}`,
-  surname: 'User'
+  provider: `demo-${userId}`
 });
 
 const generateUsers = demoUserId => [
@@ -29,9 +27,7 @@ const generateUsers = demoUserId => [
     displayName: 'John Doe',
     email: 'john@doe.com',
     idFromProvider,
-    name: 'John',
-    provider: `demo-${demoUserId}`,
-    surname: 'Doe'
+    provider: `demo-${demoUserId}`
   },
   {
     _id: ObjectId(),
@@ -40,9 +36,7 @@ const generateUsers = demoUserId => [
     displayName: 'Amanda Smith',
     email: 'amanda.smith@example.com',
     idFromProvider,
-    name: 'Amanda',
-    provider: `demo-${demoUserId}`,
-    surname: 'Smith'
+    provider: `demo-${demoUserId}`
   },
   {
     _id: ObjectId(),
@@ -51,9 +45,7 @@ const generateUsers = demoUserId => [
     displayName: 'William Logan',
     email: 'wlogan@test.pl',
     idFromProvider,
-    name: 'William',
-    provider: `demo-${demoUserId}`,
-    surname: 'Logan'
+    provider: `demo-${demoUserId}`
   },
   {
     _id: ObjectId(),
@@ -62,9 +54,7 @@ const generateUsers = demoUserId => [
     displayName: 'Joan Wood',
     email: 'joan.wood@example.uk',
     idFromProvider,
-    name: 'Joan',
-    provider: `demo-${demoUserId}`,
-    surname: 'Wood'
+    provider: `demo-${demoUserId}`
   }
 ];
 
