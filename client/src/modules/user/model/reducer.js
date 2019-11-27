@@ -31,6 +31,12 @@ const currentUser = (state = null, action) => {
         isPasswordSet: undefined
       };
     }
+    case AuthorizationActionTypes.UPDATE_NAME_SUCCESS: {
+      const { updatedName } = action.payload;
+
+      return { ...state, name: updatedName };
+    }
+
     default:
       return state;
   }

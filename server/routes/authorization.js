@@ -25,6 +25,7 @@ const {
   sendUser,
   signUp,
   updateEmailReportSettings,
+  updateName,
   updatePassword
 } = require('../controllers/userAuth');
 const {
@@ -62,5 +63,6 @@ router.get('/delete-account/:deleteToken?', deleteAccount);
 router.get('/send-report', authorize, prepareItems, sendReportOnDemand);
 router.post('/email-reports-settings', authorize, updateEmailReportSettings);
 router.get('/check-if-data-left', authorize, checkIfDataLeft);
+router.post('/change-name', authorize, updateName);
 
 module.exports = router;

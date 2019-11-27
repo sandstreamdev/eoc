@@ -347,6 +347,26 @@ const updatePassword = (req, resp) => {
     });
 };
 
+const updateName = async (req, resp) => {
+  const { userId, updatedName } = req.body;
+  const { _id } = req.user;
+
+  if (userId !== _id.toString()) {
+    return resp.sendStatus(400);
+  }
+
+  try {
+    await User.findOneAndUpdate({ _id }, { displayName: updatedName }).exec();
+
+    resp.sendStatus(200);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    return resp.sendStatus(400);
+  }
+};
+
 const getUserDetails = (req, resp) => {
   const { user } = req;
 
@@ -601,5 +621,6 @@ module.exports = {
   sendUser,
   signUp,
   updateEmailReportSettings,
+  updateName,
   updatePassword
 };

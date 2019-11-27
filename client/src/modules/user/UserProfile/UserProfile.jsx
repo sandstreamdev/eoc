@@ -10,7 +10,7 @@ import { UserPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
-import { fetchUserDetails } from 'modules/user/model/actions';
+import { fetchUserDetails, updateName } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
@@ -105,12 +105,16 @@ class UserProfile extends PureComponent {
   };
 
   handleNameUpdate = () => {
-    const { isNameUpdated } = this.state;
-
-    // call api
+    const { isNameUpdated, userName } = this.state;
+    const {
+      updateName,
+      currentUser: { id: userId }
+    } = this.props;
+    // call API
 
     if (isNameUpdated) {
       // call API to update the name here
+      updateName(userName, userId);
     }
   };
 
@@ -299,11 +303,14 @@ class UserProfile extends PureComponent {
 UserProfile.propTypes = {
   currentUser: UserPropType.isRequired,
 
-  fetchUserDetails: PropTypes.func.isRequired
+  fetchUserDetails: PropTypes.func.isRequired,
+  updateName: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(mapStateToProps, { fetchUserDetails })(UserProfile);
+export default connect(mapStateToProps, { fetchUserDetails, updateName })(
+  UserProfile
+);
