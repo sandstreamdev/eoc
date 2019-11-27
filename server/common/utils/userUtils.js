@@ -28,7 +28,6 @@ const findOrCreateUser = (user, done) => {
           doc.accessToken = accessToken;
           doc.avatarUrl = avatarUrl;
           doc.idFromProvider = idFromProvider;
-
           doc.provider = provider;
 
           if (!isActive) {

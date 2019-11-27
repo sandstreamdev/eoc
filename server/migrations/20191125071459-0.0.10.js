@@ -19,7 +19,6 @@ const down = async db => {
       .find({ idFromProvider: { $exists: true } })
       .forEach(async user => {
         const { _id, displayName } = user;
-
         const words = displayName.split(' ');
         const surname = words.pop();
         const name = words.join(' ');
