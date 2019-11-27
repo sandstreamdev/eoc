@@ -134,12 +134,13 @@
   }
 
   &__name-field {
+    cursor: pointer;
     border: 0;
     text-align: right;
     width: auto;
 
-    &--focused {
-      text-align: left;
+    &:focus {
+      cursor: text;
     }
   }
 }
