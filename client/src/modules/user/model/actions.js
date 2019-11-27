@@ -49,10 +49,6 @@ const updateNameSuccess = payload => ({
   payload
 });
 
-const updateNameFailure = () => ({
-  type: AuthorizationActionTypes.UPDATE_NAME_FAILURE
-});
-
 export const removeUserData = () => dispatch => {
   dispatch(logoutSuccess());
   localStorage.clear();
