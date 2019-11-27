@@ -15,20 +15,25 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
-import { EditIcon } from 'assets/images/icons';
 import { KeyCodes } from 'common/constants/enums';
 import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    const {
+      currentUser: { name }
+    } = this.props;
 
     this.state = {
       isNameInputVisible: false,
+      isNameUpdated: false,
       isPasswordUpdateFormVisible: false,
-      pending: false
+      pending: false,
+      userName: name
     };
 
     this.nameInput = createRef();
@@ -38,11 +43,29 @@ class UserProfile extends PureComponent {
     this.handleFetchUserDetails();
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      currentUser: { name }
+    } = prevProps;
+
+    this.isNameUpdated(name);
+  }
+
   componentWillUnmount() {
     if (this.pendingPromise) {
       this.pendingPromise.abort();
     }
   }
+
+  isNameUpdated = previousName => {
+    const { userName } = this.state;
+
+    if (userName !== previousName) {
+      return this.setState({ isNameUpdated: true });
+    }
+
+    this.setState({ isNameUpdated: false });
+  };
 
   handleFetchUserDetails = () => {
     const { fetchUserDetails } = this.props;
@@ -58,31 +81,11 @@ class UserProfile extends PureComponent {
       });
   };
 
-  showNameInput = () => {
-    this.setState({ isNameInputVisible: true });
-    document.addEventListener('keydown', this.handleEscapePress);
-    document.addEventListener('click', this.handleClickOutside);
-  };
-
-  hideNameInput = () => {
-    this.setState({ isNameInputVisible: false });
-    document.removeEventListener('keydown', this.handleEscapePress);
-    document.removeEventListener('click', this.handleClickOutside);
-  };
-
   handleEscapePress = event => {
     const { code } = event;
 
     if (code === KeyCodes.ESCAPE) {
-      this.hideNameInput();
-    }
-  };
-
-  handleClickOutside = event => {
-    const isClickedOutside = !this.nameInput.current.contains(event.target);
-
-    if (isClickedOutside) {
-      this.hideNameInput();
+      this.nameInput.current.blur();
     }
   };
 
@@ -93,11 +96,38 @@ class UserProfile extends PureComponent {
     }));
   };
 
+  handleNameChange = event => {
+    const {
+      target: { value }
+    } = event;
+
+    this.setState({ userName: value });
+  };
+
+  handleNameUpdate = () => {
+    const { isNameUpdated } = this.state;
+
+    // call api
+
+    if (isNameUpdated) {
+      // call API to update the name here
+    }
+  };
+
+  handleFocus = () =>
+    document.addEventListener('keydown', this.handleEscapePress);
+
+  handleBlur = () => {
+    document.removeEventListener('keydown', this.handleEscapePress);
+
+    this.handleNameUpdate();
+  };
+
   renderPersonalInfo = () => {
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
-    const { isNameInputVisible } = this.state;
+    const { isNameInputVisible, userName } = this.state;
 
     return (
       <section className="user-profile__data-container">
@@ -122,24 +152,20 @@ class UserProfile extends PureComponent {
               <FormattedMessage id="user.name" />
             </span>
             <span className="user-profile__data-name-wrapper">
-              <span className="user-profile__data-value user-profile__name-field">
-                {isNameInputVisible ? (
-                  <input
-                    className="primary-input"
-                    ref={this.nameInput}
-                    type="text"
-                  />
-                ) : (
-                  name
-                )}
+              <span className="user-profile__data-value">
+                <input
+                  className={classNames('primary-input', {
+                    'user-profile__name-field--focused': isNameInputVisible,
+                    'user-profile__name-field': !isNameInputVisible
+                  })}
+                  onBlur={this.handleBlur}
+                  onChange={this.handleNameChange}
+                  onFocus={this.handleFocus}
+                  ref={this.nameInput}
+                  type="text"
+                  value={userName}
+                />
               </span>
-              <button
-                className="user-profile__edit-name"
-                onClick={this.showNameInput}
-                type="button"
-              >
-                <EditIcon />
-              </button>
             </span>
           </li>
         </ul>
