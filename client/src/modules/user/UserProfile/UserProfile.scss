@@ -118,4 +118,35 @@
     margin: 0;
     border-bottom: 1px solid $border-color;
   }
+
+  &__data-name-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    svg {
+      height: 16px;
+
+      path {
+        fill: $text-normal;
+      }
+    }
+  }
+
+  &__name-field {
+    padding-right: 30px;
+  }
+
+  &__edit-name {
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 12px;
+    outline: 0;
+
+    position: absolute;
+    right: -13px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 }

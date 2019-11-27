@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
@@ -15,15 +15,24 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
+import { EditIcon } from 'assets/images/icons';
+import { KeyCodes } from 'common/constants/enums';
 import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
   pendingPromise = null;
 
-  state = {
-    isPasswordUpdateFormVisible: false,
-    pending: false
-  };
+  constructor() {
+    super();
+
+    this.state = {
+      isNameInputVisible: false,
+      isPasswordUpdateFormVisible: false,
+      pending: false
+    };
+
+    this.nameInput = createRef();
+  }
 
   componentDidMount() {
     this.handleFetchUserDetails();
@@ -49,6 +58,34 @@ class UserProfile extends PureComponent {
       });
   };
 
+  showNameInput = () => {
+    this.setState({ isNameInputVisible: true });
+    document.addEventListener('keydown', this.handleEscapePress);
+    document.addEventListener('click', this.handleClickOutside);
+  };
+
+  hideNameInput = () => {
+    this.setState({ isNameInputVisible: false });
+    document.removeEventListener('keydown', this.handleEscapePress);
+    document.removeEventListener('click', this.handleClickOutside);
+  };
+
+  handleEscapePress = event => {
+    const { code } = event;
+
+    if (code === KeyCodes.ESCAPE) {
+      this.hideNameInput();
+    }
+  };
+
+  handleClickOutside = event => {
+    const isClickedOutside = !this.nameInput.current.contains(event.target);
+
+    if (isClickedOutside) {
+      this.hideNameInput();
+    }
+  };
+
   handlePasswordChangeVisibility = event => {
     event.preventDefault();
     this.setState(({ isPasswordUpdateFormVisible }) => ({
@@ -60,6 +97,7 @@ class UserProfile extends PureComponent {
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
+    const { isNameInputVisible } = this.state;
 
     return (
       <section className="user-profile__data-container">
@@ -83,7 +121,26 @@ class UserProfile extends PureComponent {
             <span className="user-profile__data-name">
               <FormattedMessage id="user.name" />
             </span>
-            <span className="user-profile__data-value">{name}</span>
+            <span className="user-profile__data-name-wrapper">
+              <span className="user-profile__data-value user-profile__name-field">
+                {isNameInputVisible ? (
+                  <input
+                    className="primary-input"
+                    ref={this.nameInput}
+                    type="text"
+                  />
+                ) : (
+                  name
+                )}
+              </span>
+              <button
+                className="user-profile__edit-name"
+                onClick={this.showNameInput}
+                type="button"
+              >
+                <EditIcon />
+              </button>
+            </span>
           </li>
         </ul>
       </section>
