@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
 import classNames from 'classnames';
+import isEmpty from 'validator/lib/isEmpty';
+import isLength from 'validator/lib/isLength';
+import _trim from 'lodash/trim';
 
 import Avatar from 'common/components/Avatar';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise } from 'common/utils/helpers';
+import { makeAbortablePromise, validateWith } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
 import { fetchUserDetails, updateName } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
@@ -29,6 +32,7 @@ class UserProfile extends PureComponent {
     } = this.props;
 
     this.state = {
+      errorMessageId: '',
       isNameInputVisible: false,
       isNameUpdated: false,
       isPasswordUpdateFormVisible: false,
@@ -83,8 +87,9 @@ class UserProfile extends PureComponent {
 
   handleEscapePress = event => {
     const { code } = event;
+    const { errorMessageId } = this.state;
 
-    if (code === KeyCodes.ESCAPE) {
+    if (code === KeyCodes.ESCAPE && !errorMessageId) {
       this.nameInput.current.blur();
     }
   };
@@ -101,20 +106,45 @@ class UserProfile extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ userName: value });
+    this.setState({ userName: value }, this.validateName);
+  };
+
+  validateName = () => {
+    const { userName } = this.state;
+    let errorMessageId;
+
+    errorMessageId = validateWith(
+      value => !isEmpty(value, { ignore_whitespace: true })
+    )('common.form.required-warning')(userName);
+
+    if (_trim(userName)) {
+      errorMessageId = validateWith(value =>
+        isLength(value, { min: 1, max: 32 })
+      )('common.form.field-min-max')(userName);
+    }
+
+    this.setState({ errorMessageId });
   };
 
   handleNameUpdate = () => {
-    const { isNameUpdated, userName } = this.state;
+    const { isNameUpdated, userName, errorMessageId } = this.state;
     const {
       updateName,
       currentUser: { id: userId }
     } = this.props;
-    // call API
 
-    if (isNameUpdated) {
-      // call API to update the name here
+    if (isNameUpdated && !errorMessageId) {
       updateName(userName, userId);
+    }
+  };
+
+  handleSubmit = event => {
+    const { errorMessageId } = this.state;
+    event.preventDefault();
+
+    if (!errorMessageId) {
+      this.handleNameUpdate();
+      this.nameInput.current.blur();
     }
   };
 
@@ -131,7 +161,7 @@ class UserProfile extends PureComponent {
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
-    const { isNameInputVisible, userName } = this.state;
+    const { isNameInputVisible, userName, errorMessageId } = this.state;
 
     return (
       <section className="user-profile__data-container">
@@ -157,18 +187,26 @@ class UserProfile extends PureComponent {
             </span>
             <span className="user-profile__data-name-wrapper">
               <span className="user-profile__data-value">
-                <input
-                  className={classNames('primary-input', {
-                    'user-profile__name-field--focused': isNameInputVisible,
-                    'user-profile__name-field': !isNameInputVisible
-                  })}
-                  onBlur={this.handleBlur}
-                  onChange={this.handleNameChange}
-                  onFocus={this.handleFocus}
-                  ref={this.nameInput}
-                  type="text"
-                  value={userName}
-                />
+                <form onSubmit={this.handleSubmit}>
+                  <input
+                    className={classNames('primary-input', {
+                      'user-profile__name-field--focused': isNameInputVisible,
+                      'user-profile__name-field': !isNameInputVisible
+                    })}
+                    onBlur={this.handleBlur}
+                    onChange={this.handleNameChange}
+                    onFocus={this.handleFocus}
+                    ref={this.nameInput}
+                    type="text"
+                    value={userName}
+                  />
+                  <input type="submit" className="hidden" />
+                </form>
+                {errorMessageId && (
+                  <span className="error-message">
+                    <FormattedMessage id={errorMessageId} />
+                  </span>
+                )}
               </span>
             </span>
           </li>
