@@ -119,10 +119,32 @@
     border-bottom: 1px solid $border-color;
   }
 
+  &__name-item {
+    padding: 24px 8px;
+
+    @include breakpoint($medium) {
+      padding: 20px 8px;
+    }
+  }
+
   &__data-name-wrapper {
     display: flex;
     align-items: center;
     position: relative;
+    width: 100%;
+
+    @include breakpoint($small) {
+      width: auto;
+    }
+
+    span,
+    form {
+      width: 100%;
+
+      @include breakpoint($small) {
+        width: auto;
+      }
+    }
 
     svg {
       height: 16px;
@@ -135,7 +157,7 @@
 
   &__name-field {
     cursor: pointer;
-    width: auto;
+    width: 100%;
 
     &:focus {
       cursor: text;
@@ -187,5 +209,10 @@
   &__name-form {
     display: flex;
     align-items: stretch;
+  }
+
+  .error-message {
+    display: block;
+    margin-top: 5px;
   }
 }

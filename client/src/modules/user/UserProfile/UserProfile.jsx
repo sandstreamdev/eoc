@@ -152,7 +152,7 @@ class UserProfile extends PureComponent {
               />
             </span>
           </li>
-          <li className="user-profile__data-item">
+          <li className="user-profile__data-item user-profile__name-item">
             <span className="user-profile__data-name">
               <FormattedMessage id="user.name" />
             </span>
