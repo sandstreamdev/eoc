@@ -155,11 +155,14 @@ export class Layout extends PureComponent {
       pathname.includes('privacy-policy') ||
       pathname.includes('terms-of-use');
     const isDemoMode = currentUser && currentUser.name === 'Demo';
-    const isBarVisible = isCookieSet || !(isDemoMode && isPolicyPage);
+    // console.log(currentUser, isCookieSet, isDemoMode, isPolicyPage);
+    // const isBarVisible = isCookieSet || !(isDemoMode && isPolicyPage);
+    const isBarVisible = currentUser && isCookieSet;
 
     if (pending) {
       return <Preloader />;
     }
+    console.log(currentUser, isBarVisible);
 
     return (
       <>
