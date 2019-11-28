@@ -135,12 +135,57 @@
 
   &__name-field {
     cursor: pointer;
-    border: 0;
-    text-align: right;
     width: auto;
 
     &:focus {
       cursor: text;
     }
+  }
+
+  &__save-button {
+    -webkit-appearance: none;
+    background: $button-bg;
+    border-radius: 0;
+    border: 0;
+    color: $text-white;
+    cursor: pointer;
+    display: block;
+    font-family: $font-family;
+    font-size: $m-font;
+    font-weight: 500;
+    line-height: 1.2;
+    margin: 0;
+    min-height: 40px;
+    outline: 0;
+    padding: four-by(2) four-by(4);
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: auto;
+
+    svg {
+      path {
+        fill: $text-white;
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background: $button-disabled;
+    }
+
+    @include breakpoint($medium) {
+      font-size: $s-font;
+    }
+
+    &--disabled {
+      cursor: not-allowed;
+      background: $button-disabled;
+    }
+  }
+
+  &__name-form {
+    display: flex;
+    align-items: stretch;
   }
 }

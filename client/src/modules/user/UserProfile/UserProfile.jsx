@@ -18,7 +18,7 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
-import { KeyCodes } from 'common/constants/enums';
+import { CheckIcon } from 'assets/images/icons';
 import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
@@ -47,29 +47,11 @@ class UserProfile extends PureComponent {
     this.handleFetchUserDetails();
   }
 
-  componentDidUpdate(prevProps) {
-    const {
-      currentUser: { name }
-    } = prevProps;
-
-    this.isNameUpdated(name);
-  }
-
   componentWillUnmount() {
     if (this.pendingPromise) {
       this.pendingPromise.abort();
     }
   }
-
-  isNameUpdated = previousName => {
-    const { userName } = this.state;
-
-    if (userName !== previousName) {
-      return this.setState({ isNameUpdated: true });
-    }
-
-    this.setState({ isNameUpdated: false });
-  };
 
   handleFetchUserDetails = () => {
     const { fetchUserDetails } = this.props;
@@ -85,15 +67,6 @@ class UserProfile extends PureComponent {
       });
   };
 
-  handleEscapePress = event => {
-    const { code } = event;
-    const { errorMessageId } = this.state;
-
-    if (code === KeyCodes.ESCAPE && !errorMessageId) {
-      this.nameInput.current.blur();
-    }
-  };
-
   handlePasswordChangeVisibility = event => {
     event.preventDefault();
     this.setState(({ isPasswordUpdateFormVisible }) => ({
@@ -106,7 +79,7 @@ class UserProfile extends PureComponent {
       target: { value }
     } = event;
 
-    this.setState({ userName: value }, this.validateName);
+    this.setState({ userName: value, isNameUpdated: true }, this.validateName);
   };
 
   validateName = () => {
@@ -135,6 +108,8 @@ class UserProfile extends PureComponent {
 
     if (isNameUpdated && !errorMessageId) {
       updateName(userName, userId);
+
+      this.setState({ errorMessageId: '', isNameUpdated: false });
     }
   };
 
@@ -148,20 +123,16 @@ class UserProfile extends PureComponent {
     }
   };
 
-  handleFocus = () =>
-    document.addEventListener('keydown', this.handleEscapePress);
-
-  handleBlur = () => {
-    document.removeEventListener('keydown', this.handleEscapePress);
-
-    this.handleNameUpdate();
-  };
-
   renderPersonalInfo = () => {
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
-    const { isNameInputVisible, userName, errorMessageId } = this.state;
+    const {
+      isNameInputVisible,
+      userName,
+      errorMessageId,
+      isNameUpdated
+    } = this.state;
 
     return (
       <section className="user-profile__data-container">
@@ -187,20 +158,28 @@ class UserProfile extends PureComponent {
             </span>
             <span className="user-profile__data-name-wrapper">
               <span className="user-profile__data-value">
-                <form onSubmit={this.handleSubmit}>
+                <form
+                  className="user-profile__name-form"
+                  onSubmit={this.handleSubmit}
+                >
                   <input
                     className={classNames('primary-input', {
                       'user-profile__name-field--focused': isNameInputVisible,
                       'user-profile__name-field': !isNameInputVisible
                     })}
-                    onBlur={this.handleBlur}
                     onChange={this.handleNameChange}
-                    onFocus={this.handleFocus}
                     ref={this.nameInput}
                     type="text"
                     value={userName}
                   />
-                  <input type="submit" className="hidden" />
+                  <button
+                    className={classNames('user-profile__save-button', {
+                      'user-profile__save-button--disabled': !isNameUpdated
+                    })}
+                    type="submit"
+                  >
+                    <CheckIcon />
+                  </button>
                 </form>
                 {errorMessageId && (
                   <span className="error-message">
