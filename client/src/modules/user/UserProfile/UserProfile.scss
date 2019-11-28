@@ -155,15 +155,6 @@
     }
   }
 
-  &__name-field {
-    cursor: pointer;
-    width: 100%;
-
-    &:focus {
-      cursor: text;
-    }
-  }
-
   &__save-button {
     -webkit-appearance: none;
     background: $button-bg;

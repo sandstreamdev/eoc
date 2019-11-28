@@ -240,7 +240,6 @@ export const updateName = (updatedName, userId) => async dispatch => {
     await postData('/auth/change-name', { updatedName, userId });
 
     dispatch(updateNameSuccess({ updatedName }));
-
     createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
       notificationId: 'user.actions.name-update-success'
     });

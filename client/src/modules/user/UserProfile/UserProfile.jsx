@@ -33,7 +33,6 @@ class UserProfile extends PureComponent {
 
     this.state = {
       errorMessageId: '',
-      isNameInputVisible: false,
       isNameUpdated: false,
       isPasswordUpdateFormVisible: false,
       pending: false,
@@ -100,10 +99,10 @@ class UserProfile extends PureComponent {
   };
 
   handleNameUpdate = () => {
-    const { isNameUpdated, userName, errorMessageId } = this.state;
+    const { errorMessageId, isNameUpdated, userName } = this.state;
     const {
-      updateName,
-      currentUser: { id: userId }
+      currentUser: { id: userId },
+      updateName
     } = this.props;
 
     if (isNameUpdated && !errorMessageId) {
@@ -114,8 +113,9 @@ class UserProfile extends PureComponent {
   };
 
   handleSubmit = event => {
-    const { errorMessageId } = this.state;
     event.preventDefault();
+
+    const { errorMessageId } = this.state;
 
     if (!errorMessageId) {
       this.handleNameUpdate();
@@ -127,12 +127,7 @@ class UserProfile extends PureComponent {
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
-    const {
-      isNameInputVisible,
-      userName,
-      errorMessageId,
-      isNameUpdated
-    } = this.state;
+    const { errorMessageId, isNameUpdated, userName } = this.state;
 
     return (
       <section className="user-profile__data-container">
@@ -163,10 +158,7 @@ class UserProfile extends PureComponent {
                   onSubmit={this.handleSubmit}
                 >
                   <input
-                    className={classNames('primary-input', {
-                      'user-profile__name-field--focused': isNameInputVisible,
-                      'user-profile__name-field': !isNameInputVisible
-                    })}
+                    className="primary-input"
                     onChange={this.handleNameChange}
                     ref={this.nameInput}
                     type="text"
