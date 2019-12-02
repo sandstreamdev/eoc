@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -17,6 +17,7 @@ const UserProfileName = props => {
   const [isFormVisible, setFormVisibility] = useState(false);
   const [currentName, setName] = useState(name);
   const [isNameUpdated, setIsNameUpdated] = useState(false);
+  const inputRef = useRef();
 
   const showForm = () => setFormVisibility(true);
 
@@ -51,6 +52,14 @@ const UserProfileName = props => {
     }
   };
 
+  const handleBlur = event => {
+    if (!isNameUpdated) {
+      return setFormVisibility(false);
+    }
+
+    handleNameUpdate(event);
+  };
+
   const handleNameChange = event => {
     const {
       target: { value }
@@ -63,6 +72,22 @@ const UserProfileName = props => {
   useEffect(() => {
     validateName();
   }, [currentName]);
+
+  useEffect(() => {
+    const handleClickOutside = event => {
+      const isClickedOutside = !inputRef.current.contains(event.target);
+
+      if (isClickedOutside) {
+        handleNameUpdate(event);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [inputRef]);
 
   return (
     <>
@@ -82,7 +107,9 @@ const UserProfileName = props => {
                   autoFocus
                   className="primary-input"
                   onChange={handleNameChange}
+                  onBlur={handleBlur}
                   type="text"
+                  ref={inputRef}
                   value={currentName}
                 />
                 <button
