@@ -18,7 +18,6 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
-import { CheckIcon } from 'assets/images/icons';
 import UserProfileName from './UserProfileName';
 import './UserProfile.scss';
 
@@ -128,7 +127,6 @@ class UserProfile extends PureComponent {
     const {
       currentUser: { avatarUrl, name }
     } = this.props;
-    const { errorMessageId, isNameUpdated, userName } = this.state;
 
     return (
       <section className="user-profile__data-container">
@@ -149,7 +147,7 @@ class UserProfile extends PureComponent {
             </span>
           </li>
           <li className="user-profile__data-item user-profile__name-item">
-            <UserProfileName />
+            <UserProfileName name={name} />
           </li>
         </ul>
       </section>
