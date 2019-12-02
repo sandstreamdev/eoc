@@ -19,6 +19,7 @@ import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
 import { CheckIcon } from 'assets/images/icons';
+import UserProfileName from './UserProfileName';
 import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
@@ -148,38 +149,7 @@ class UserProfile extends PureComponent {
             </span>
           </li>
           <li className="user-profile__data-item user-profile__name-item">
-            <span className="user-profile__data-name">
-              <FormattedMessage id="user.name" />
-            </span>
-            <span className="user-profile__data-name-wrapper">
-              <span className="user-profile__data-value">
-                <form
-                  className="user-profile__name-form"
-                  onSubmit={this.handleSubmit}
-                >
-                  <input
-                    className="primary-input"
-                    onChange={this.handleNameChange}
-                    ref={this.nameInput}
-                    type="text"
-                    value={userName}
-                  />
-                  <button
-                    className={classNames('user-profile__save-button', {
-                      'user-profile__save-button--disabled': !isNameUpdated
-                    })}
-                    type="submit"
-                  >
-                    <CheckIcon />
-                  </button>
-                </form>
-                {errorMessageId && (
-                  <span className="error-message">
-                    <FormattedMessage id={errorMessageId} />
-                  </span>
-                )}
-              </span>
-            </span>
+            <UserProfileName />
           </li>
         </ul>
       </section>
