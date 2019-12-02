@@ -1,6 +1,10 @@
 @import 'partials';
 
 .user-profile-name {
+  &__name {
+    cursor: pointer;
+  }
+
   &__data-name {
     text-transform: uppercase;
     font-size: $s-font;
@@ -83,7 +87,7 @@
     }
 
     @include breakpoint($medium) {
-      font-size: $s-font;
+      display: none;
     }
 
     &--disabled {
