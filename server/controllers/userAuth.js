@@ -47,7 +47,13 @@ const logout = (req, resp) => {
 };
 
 const signUp = (req, resp, next) => {
-  const { email, password, passwordConfirm, username } = req.body;
+  const {
+    email,
+    password,
+    passwordConfirm,
+    policyAccepted,
+    username
+  } = req.body;
   const sanitizedEmail = sanitize(email);
   const sanitizedUsername = sanitize(username);
   const errors = {};
@@ -67,6 +73,10 @@ const signUp = (req, resp, next) => {
 
   if (password !== passwordConfirm) {
     errors.isConfirmPasswordError = true;
+  }
+
+  if (!policyAccepted) {
+    errors.isPolicyError = true;
   }
 
   if (_some(errors, error => error !== undefined)) {
@@ -124,6 +134,7 @@ const signUp = (req, resp, next) => {
         email: sanitizedEmail,
         isActive: false,
         password: hashedPassword,
+        policyAccepted,
         settings: new Settings(),
         signUpHash,
         signUpHashExpirationDate: expirationDate
