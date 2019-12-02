@@ -23,7 +23,7 @@ class AuthBox extends PureComponent {
   state = {
     isCookieSet: true,
     isSignInFormVisible: false,
-    isSignUpFormVisible: false,
+    isSignUpFormVisible: true,
     pending: false
   };
 

@@ -69,11 +69,18 @@ export const loginDemoUser = () => dispatch =>
       });
     });
 
-export const signUp = (email, username, password, passwordConfirm) =>
+export const signUp = (
+  email,
+  username,
+  password,
+  passwordConfirm,
+  policyAccepted
+) =>
   postData('/auth/sign-up', {
     email,
     password,
     passwordConfirm,
+    policyAccepted,
     username
   });
 
