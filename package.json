@@ -54,7 +54,7 @@
     "migrate-mongo": "7.0.1",
     "mongo-sanitize": "1.0.1",
     "mongodb": "3.3.4",
-    "mongoose": "5.7.10",
+    "mongoose": "5.7.13",
     "nodemailer": "6.3.1",
     "normalize.css": "8.0.1",
     "passport": "0.4.0",
