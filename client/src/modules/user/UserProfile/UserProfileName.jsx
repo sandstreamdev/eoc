@@ -43,14 +43,17 @@ const UserProfileName = props => {
     event.preventDefault();
     const { userId, updateName } = props;
 
-    console.log('Nie update');
-    if (isNameUpdated && !errorMessageId) {
+    if (isNameUpdated && !errorMessageId && isFormVisible) {
       updateName(currentName, userId);
 
       setErrorMessageId('');
       setIsNameUpdated(false);
-      setFormVisibility(false);
+      hideForm();
     }
+
+    // if (isFormVisible && !isNameUpdated && !errorMessageId) {
+    //   setFormVisibility(false);
+    // }
 
     // if (!errorMessageId) {
     //   setFormVisibility(false);
@@ -82,6 +85,7 @@ const UserProfileName = props => {
     const handleClickOutside = event => {
       const isClickedOutside = !inputRef.current.contains(event.target);
 
+      console.log('isClickedOutside', isClickedOutside);
       if (isClickedOutside) {
         handleNameUpdate(event);
       }
@@ -93,6 +97,12 @@ const UserProfileName = props => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, [inputRef]);
+
+  useEffect(() => {
+    if (isFormVisible) {
+      inputRef.current.focus();
+    }
+  }, [isFormVisible, inputRef]);
 
   return (
     <>
