@@ -1,0 +1,59 @@
+@import 'partials';
+
+.auth-checkbox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: four-by(2);
+
+  &__label {
+    width: 100%;
+    padding: four-by(1) 0;
+    display: flex;
+    justify-content: flex-start;
+    text-align: left;
+
+    &--invalid {
+      color: $danger;
+    }
+  }
+
+  &__input {
+    display: block;
+    width: 24px;
+    margin: 0 four-by(2) 0 0;
+    &--invalid,
+    &--invalid:focus {
+      border-color: $danger;
+    }
+
+    @include breakpoint($xsmall) {
+      min-width: 250px;
+    }
+  }
+
+  &__feedback {
+    width: 100%;
+    text-align: left;
+    padding: four-by(1) 0;
+    overflow-wrap: break-word;
+    color: $danger;
+    font-size: $m-font;
+
+    a {
+      color: $danger;
+    }
+  }
+
+  &__icon {
+    display: inline-block;
+    padding-right: four-by(2);
+    svg {
+      width: 12px;
+      path {
+        fill: $danger;
+      }
+    }
+  }
+}

@@ -7,6 +7,7 @@ import isLength from 'validator/lib/isLength';
 import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
+import AuthCheckbox from './AuthCheckbox';
 import { signUp } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import {
@@ -289,8 +290,8 @@ class SignUpForm extends PureComponent {
         passwordError,
         policyError
       },
-      isFormValid,
       isPolicyAccepted,
+      isFormValid,
       pending,
       signUpErrorId
     } = this.state;
@@ -310,6 +311,26 @@ class SignUpForm extends PureComponent {
         <FormattedMessage id="app.footer.terms-of-use" />
       </Link>
     );
+    const policyLabel = (
+      <FormattedMessage
+        id="user.auth.privacy-policy-agreement"
+        values={{
+          cookieLink,
+          privacyLink,
+          termsLink
+        }}
+      />
+    );
+    const policyErrorMessage = policyError ? (
+      <FormattedMessage
+        id="user.auth.input.policy-agreement-required"
+        values={{
+          cookieLink,
+          privacyLink,
+          termsLink
+        }}
+      />
+    ) : null;
 
     return (
       <>
@@ -358,28 +379,15 @@ class SignUpForm extends PureComponent {
             onChange={this.onPasswordConfirmChange}
             type="password"
           />
-          <div className="sign-up-form__privacy-policy-agreement">
-            <label>
-              <input
-                checked={isPolicyAccepted}
-                name="policy"
-                onChange={this.onPolicyChange}
-                type="checkbox"
-              />
-              <FormattedMessage
-                id="user.auth.privacy-policy-agreement"
-                values={{ cookieLink, privacyLink, termsLink }}
-              />
-            </label>
-            {policyError && (
-              <div>
-                <FormattedMessage
-                  id={policyError}
-                  values={{ cookieLink, privacyLink, termsLink }}
-                />
-              </div>
-            )}
-          </div>
+          <AuthCheckbox
+            checked={isPolicyAccepted}
+            disabled={pending}
+            errorMessage={policyErrorMessage}
+            label={policyLabel}
+            name="policy-acceptation"
+            onChange={this.onPolicyChange}
+            value="accepted"
+          />
           <div className="sign-up-form__buttons">
             <button
               className="primary-button"
