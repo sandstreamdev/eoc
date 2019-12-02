@@ -43,6 +43,7 @@ const UserProfileName = props => {
     event.preventDefault();
     const { userId, updateName } = props;
 
+    console.log('Nie update');
     if (isNameUpdated && !errorMessageId) {
       updateName(currentName, userId);
 
@@ -50,6 +51,10 @@ const UserProfileName = props => {
       setIsNameUpdated(false);
       setFormVisibility(false);
     }
+
+    // if (!errorMessageId) {
+    //   setFormVisibility(false);
+    // }
   };
 
   const handleBlur = event => {
@@ -96,45 +101,44 @@ const UserProfileName = props => {
       </span>
       <span className="user-profile-name__data-name-wrapper">
         <span className="user-profile-name__data-value">
-          {isFormVisible ? (
-            <>
-              <form
-                className="user-profile-name__name-form"
-                onSubmit={handleNameUpdate}
-              >
-                <input
-                  // eslint-disable-next-line jsx-a11y/no-autofocus
-                  autoFocus
-                  className="primary-input"
-                  onChange={handleNameChange}
-                  onBlur={handleBlur}
-                  type="text"
-                  ref={inputRef}
-                  value={currentName}
-                />
-                <button
-                  className={classNames('user-profile-name__save-button', {
-                    'user-profile-name__save-button--disabled': !true
-                  })}
-                  type="submit"
-                >
-                  <FormattedMessage id="common.new-comment.save" />
-                </button>
-              </form>
-              {errorMessageId && (
-                <span className="error-message">
-                  <FormattedMessage id={errorMessageId} />
-                </span>
-              )}
-            </>
-          ) : (
-            <span
-              className="user-profile-name__name"
-              onClick={isFormVisible ? hideForm : showForm}
+          <form
+            className={classNames('user-profile-name__name-form', {
+              'user-profile-name__name-form--hidden': !isFormVisible
+            })}
+            onSubmit={handleNameUpdate}
+          >
+            <input
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
+              className="primary-input"
+              onChange={handleNameChange}
+              onBlur={handleBlur}
+              type="text"
+              ref={inputRef}
+              value={currentName}
+            />
+            <button
+              className={classNames('user-profile-name__save-button', {
+                'user-profile-name__save-button--disabled': !true
+              })}
+              type="submit"
             >
-              {currentName}
+              <FormattedMessage id="common.new-comment.save" />
+            </button>
+          </form>
+          {errorMessageId && (
+            <span className="error-message">
+              <FormattedMessage id={errorMessageId} />
             </span>
           )}
+          <span
+            className={classNames('user-profile-name__name', {
+              'user-profile-name__name--hidden': isFormVisible
+            })}
+            onClick={isFormVisible ? hideForm : showForm}
+          >
+            {currentName}
+          </span>
         </span>
       </span>
     </>

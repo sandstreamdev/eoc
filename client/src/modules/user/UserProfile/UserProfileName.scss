@@ -3,6 +3,10 @@
 .user-profile-name {
   &__name {
     cursor: pointer;
+
+    &--hidden {
+      display: none;
+    }
   }
 
   &__data-name {
@@ -52,6 +56,10 @@
   &__name-form {
     display: flex;
     align-items: stretch;
+
+    &--hidden {
+      display: none;
+    }
   }
 
   &__save-button {
