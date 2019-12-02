@@ -125,7 +125,7 @@ class UserProfile extends PureComponent {
 
   renderPersonalInfo = () => {
     const {
-      currentUser: { avatarUrl, name }
+      currentUser: { avatarUrl, name, id }
     } = this.props;
 
     return (
@@ -147,7 +147,7 @@ class UserProfile extends PureComponent {
             </span>
           </li>
           <li className="user-profile__data-item user-profile__name-item">
-            <UserProfileName name={name} />
+            <UserProfileName name={name} userId={id} />
           </li>
         </ul>
       </section>
