@@ -194,12 +194,12 @@ class SignUpForm extends PureComponent {
     const isError = _some(higherLevelErrors, error => error !== '');
 
     return this.setState({
-      isFormValid: true
-      // isNameValid &&
-      // isEmailValid &&
-      // isPasswordValid &&
-      // isPasswordConfirmValid &&
-      // !isError
+      isFormValid:
+        isNameValid &&
+        isEmailValid &&
+        isPasswordValid &&
+        isPasswordConfirmValid &&
+        !isError
     });
   };
 
@@ -214,14 +214,14 @@ class SignUpForm extends PureComponent {
       confirmPasswordValue
     } = this.state;
 
-    // if (!isPolicyAccepted) {
-    //   return this.setState({
-    //     higherLevelErrors: {
-    //       ...higherLevelErrors,
-    //       policyError: 'user.auth.input.policy-agreement-required'
-    //     }
-    //   });
-    // }
+    if (!isPolicyAccepted) {
+      return this.setState({
+        higherLevelErrors: {
+          ...higherLevelErrors,
+          policyError: 'user.auth.input.policy-agreement-required'
+        }
+      });
+    }
 
     this.setState({ pending: true });
 
