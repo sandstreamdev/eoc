@@ -40,10 +40,17 @@ const UserProfileName = props => {
     setErrorMessageId(errorMessageId);
   };
 
-  const handleNameUpdate = () => {
+  const handleNameUpdate = async () => {
     const { userId, updateName } = props;
 
-    updateName(currentName, userId);
+    try {
+      await updateName(currentName, userId);
+    } catch (error) {
+      /**
+       * Ignore error here as we handle error
+       * via error notification
+       */
+    }
   };
 
   const handleSubmit = event => {
