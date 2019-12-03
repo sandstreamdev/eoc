@@ -406,7 +406,7 @@
   "user.auth.sign-up.reset-password": "Reset password form",
   "user.auth.sign-up.result-link": "Sign in/Sign up page",
   "user.auth.sign-up": "Sign up",
-  "user.auth.privacy-policy-agreement": "I accept to the {cookieLink}, {privacyLink} and {termsLink}.",
+  "user.auth.privacy-policy-agreement": "I agree to the {cookieLink}, {privacyLink} and {termsLink}.",
   "user.delete-account-error": "Entered data is incorrect. Please try again.",
   "user.delete-account-make-someone-else-an-owner-header": "You cannot delete your account because you are the only owner of {context}:",
   "user.delete-account-make-someone-else-an-owner": "Delete {context} or set there a new owner:",

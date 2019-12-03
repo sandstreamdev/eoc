@@ -1,9 +1,11 @@
 import React, { PureComponent } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import isEmail from 'validator/lib/isEmail';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import classNames from 'classnames';
+import _flowRight from 'lodash/flowRight';
 
 import AuthInput from './AuthInput';
 import { signIn } from 'modules/user/model/actions';
@@ -11,6 +13,12 @@ import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise, validateWith } from 'common/utils/helpers';
 import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
+import GoogleButtonImg from 'assets/images/google-btn.png';
+import { IntlPropType } from 'common/constants/propTypes';
+import Preloader, {
+  PreloaderSize,
+  PreloaderTheme
+} from 'common/components/Preloader';
 import './SignInForm.scss';
 
 class SignInForm extends PureComponent {
@@ -65,6 +73,8 @@ class SignInForm extends PureComponent {
     validateWith(value => isEmail(value))('user.auth.input.email.invalid')(
       value
     );
+
+  handleLogin = () => this.setState({ pending: true });
 
   isFormValid = () => {
     const { isEmailValid, isPasswordValid, signInErrorId } = this.state;
@@ -128,7 +138,11 @@ class SignInForm extends PureComponent {
 
   render() {
     const { isFormValid, pending, signInErrorId } = this.state;
-    const { onCancel } = this.props;
+    const {
+      intl: { formatMessage },
+      isCookieSet,
+      onCancel
+    } = this.props;
     const hasSignUpFailed = signInErrorId.length > 0;
 
     return (
@@ -179,6 +193,30 @@ class SignInForm extends PureComponent {
               <FormattedMessage id="user.auth.sign-in" />
             </PendingButton>
           </div>
+          <div className="authbox__button-wrapper">
+            <a
+              className={classNames('google-button', {
+                'disabled-google-button': !isCookieSet || pending
+              })}
+              href="/auth/google"
+              onClick={this.handleLogin}
+              tabIndex={!isCookieSet ? '-1' : '1'}
+            >
+              <img
+                alt={formatMessage({
+                  id: 'user.auth-box.sign-in-google'
+                })}
+                className="google-button__img"
+                src={GoogleButtonImg}
+              />
+            </a>
+            {pending && (
+              <Preloader
+                size={PreloaderSize.SMALL}
+                theme={PreloaderTheme.GOOGLE}
+              />
+            )}
+          </div>
         </form>
         {this.renderForgotPassword()}
       </div>
@@ -187,8 +225,11 @@ class SignInForm extends PureComponent {
 }
 
 SignInForm.propTypes = {
+  intl: IntlPropType.isRequired,
+  isCookieSet: PropTypes.bool,
+
   onCancel: PropTypes.func.isRequired,
   signIn: PropTypes.func.isRequired
 };
 
-export default connect(null, { signIn })(SignInForm);
+export default _flowRight(injectIntl, connect(null, { signIn }))(SignInForm);

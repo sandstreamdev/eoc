@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
 import AuthCheckbox from './AuthCheckbox';
-import { signUp } from 'modules/user/model/actions';
+import { signUp, signUpWithGoogle } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import {
   makeAbortablePromise,
@@ -406,9 +406,61 @@ class SignUpForm extends PureComponent {
               <FormattedMessage id="user.auth.sign-up" />
             </PendingButton>
           </div>
+          <div className="sign-up-form__buttons">
+            <PendingButton
+              className="primary-button sign-up-form__confirm"
+              // disabled={!isFormValid}
+              onClick={this.signUpWithGoogle}
+              type="submit"
+            >
+              <FormattedMessage id="user.auth.sign-up" />
+              with Google
+            </PendingButton>
+          </div>
         </form>
       </>
     );
+  };
+
+  signUpWithGoogle = event => {
+    event.preventDefault();
+
+    const { higherLevelErrors, isPolicyAccepted } = this.state;
+
+    if (!isPolicyAccepted) {
+      return this.setState({
+        higherLevelErrors: {
+          ...higherLevelErrors,
+          policyError: 'user.auth.input.policy-agreement-required'
+        }
+      });
+    }
+
+    this.setState({ pending: true });
+
+    this.pendingPromise = makeAbortablePromise(
+      signUpWithGoogle(isPolicyAccepted)
+    );
+
+    return this.pendingPromise.promise.catch(err => {
+      if (!(err instanceof AbortPromiseException)) {
+        const newState = { pending: false };
+
+        if (err instanceof ValidationException) {
+          const { isPolicyError } = err.errors;
+
+          newState.higherLevelErrors = {
+            policyError: isPolicyError
+              ? 'user.auth.input.policy-agreement-required'
+              : ''
+          };
+        } else {
+          newState.signUpErrorId = err.message || 'common.something-went-wrong';
+        }
+
+        this.setState(newState);
+      }
+    });
   };
 
   renderConfirmationMessage = () => {

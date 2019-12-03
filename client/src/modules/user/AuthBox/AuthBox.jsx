@@ -1,22 +1,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import _flowRight from 'lodash/flowRight';
+import { FormattedMessage } from 'react-intl';
 
 import AppLogo from 'common/components/AppLogo';
 import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import { loginDemoUser } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
-import Preloader, {
-  PreloaderSize,
-  PreloaderTheme
-} from 'common/components/Preloader';
-import GoogleButtonImg from 'assets/images/google-btn.png';
+import { PreloaderTheme } from 'common/components/Preloader';
 import SignUpForm from './components/SignUpForm';
 import SignInForm from './components/SignInForm';
-import { IntlPropType } from 'common/constants/propTypes';
 import './AuthBox.scss';
 
 class AuthBox extends PureComponent {
@@ -50,39 +43,12 @@ class AuthBox extends PureComponent {
 
   renderSignInButtons = () => {
     const { isCookieSet, pending } = this.state;
-    const {
-      intl: { formatMessage }
-    } = this.props;
 
     return (
       <div className="authbox__button-container">
         <h1 className="authbox__button-header">
           <FormattedMessage id="user.auth-box.sign-in" />
         </h1>
-        <div className="authbox__button-wrapper">
-          <a
-            className={classNames('google-button', {
-              'disabled-google-button': !isCookieSet || pending
-            })}
-            href="/auth/google"
-            onClick={this.handleLogin}
-            tabIndex={!isCookieSet ? '-1' : '1'}
-          >
-            <img
-              alt={formatMessage({
-                id: 'user.auth-box.sign-in-google'
-              })}
-              className="google-button__img"
-              src={GoogleButtonImg}
-            />
-          </a>
-          {pending && (
-            <Preloader
-              size={PreloaderSize.SMALL}
-              theme={PreloaderTheme.GOOGLE}
-            />
-          )}
-        </div>
         <div className="authbox__button-wrapper">
           <button
             className="primary-button authbox__button"
@@ -142,10 +108,19 @@ class AuthBox extends PureComponent {
   };
 
   renderForms = () => {
-    const { isSignInFormVisible, isSignUpFormVisible } = this.state;
+    const {
+      isCookieSet,
+      isSignInFormVisible,
+      isSignUpFormVisible
+    } = this.state;
 
     if (isSignInFormVisible) {
-      return <SignInForm onCancel={this.handleSignInFormVisibility} />;
+      return (
+        <SignInForm
+          isCookieSet={isCookieSet}
+          onCancel={this.handleSignInFormVisibility}
+        />
+      );
     }
 
     if (isSignUpFormVisible) {
@@ -204,11 +179,7 @@ class AuthBox extends PureComponent {
 }
 
 AuthBox.propTypes = {
-  intl: IntlPropType.isRequired,
   loginDemoUser: PropTypes.func.isRequired
 };
 
-export default _flowRight(
-  injectIntl,
-  connect(null, { loginDemoUser })
-)(AuthBox);
+export default connect(null, { loginDemoUser })(AuthBox);
