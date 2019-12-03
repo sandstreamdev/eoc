@@ -56,14 +56,14 @@ const UserProfileName = props => {
   const handleSubmit = event => {
     event.preventDefault();
 
-    if (isDirty && !errorMessageId) {
+    if (isDirty && !errorMessageId && isFormVisible) {
       handleNameUpdate();
       setErrorMessageId('');
       setIsDirty(false);
       hideForm();
     }
 
-    if (!isDirty && !errorMessageId) {
+    if (!isDirty && !errorMessageId && isFormVisible) {
       hideForm();
     }
   };
@@ -97,9 +97,7 @@ const UserProfileName = props => {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-
-    // check if isFormVisible dependency works
-  }, [inputRef, nameRef, handleSubmit]);
+  }, [inputRef, nameRef, handleSubmit, isFormVisible]);
 
   useEffect(() => {
     if (isFormVisible) {
