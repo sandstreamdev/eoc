@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import PropTypes from 'prop-types';
-import _trim from 'lodash/trim';
-import isLength from 'validator/lib/isLength';
-import isEmpty from 'validator/lib/isEmpty';
 import { connect } from 'react-redux';
+import _trim from 'lodash/trim';
+import classNames from 'classnames';
+import isEmpty from 'validator/lib/isEmpty';
+import isLength from 'validator/lib/isLength';
+import PropTypes from 'prop-types';
 
 import './UserProfileName.scss';
 import { validateWith } from 'common/utils/helpers';
@@ -16,14 +16,13 @@ const UserProfileName = props => {
   const [errorMessageId, setErrorMessageId] = useState('');
   const [isFormVisible, setFormVisibility] = useState(false);
   const [currentName, setName] = useState(name);
-  const [isNameUpdated, setIsNameUpdated] = useState(false);
-
+  const [isDirty, setIsDirty] = useState(false);
   const nameRef = useRef();
   const inputRef = useRef();
 
-  const showForm = () => setFormVisibility(() => true);
+  const showForm = () => setFormVisibility(true);
 
-  const hideForm = () => setFormVisibility(() => false);
+  const hideForm = () => setFormVisibility(false);
 
   const validateName = () => {
     let errorMessageId;
@@ -38,7 +37,7 @@ const UserProfileName = props => {
       )('common.form.field-min-max')(currentName);
     }
 
-    setErrorMessageId(() => errorMessageId);
+    setErrorMessageId(errorMessageId);
   };
 
   const handleNameUpdate = () => {
@@ -50,34 +49,25 @@ const UserProfileName = props => {
   const handleSubmit = event => {
     event.preventDefault();
 
-    // debugger;
-    if (isNameUpdated && !errorMessageId) {
+    if (isDirty && !errorMessageId) {
       handleNameUpdate();
       setErrorMessageId('');
-      setIsNameUpdated(() => false);
+      setIsDirty(false);
       hideForm();
     }
 
-    if (!isNameUpdated && !errorMessageId) {
+    if (!isDirty && !errorMessageId) {
       hideForm();
     }
   };
-
-  // const handleBlur = event => {
-  //   if (!isNameUpdated) {
-  //     return setFormVisibility(false);
-  //   }
-
-  //   handleNameUpdate(event);
-  // };
 
   const handleNameChange = event => {
     const {
       target: { value }
     } = event;
 
-    setName(() => value);
-    setIsNameUpdated(() => true);
+    setName(value);
+    setIsDirty(true);
   };
 
   useEffect(() => {
@@ -100,6 +90,8 @@ const UserProfileName = props => {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
+
+    // check if isFormVisible dependency works
   }, [inputRef, nameRef, handleSubmit]);
 
   useEffect(() => {
@@ -122,13 +114,10 @@ const UserProfileName = props => {
             onSubmit={handleSubmit}
           >
             <input
-              // eslint-disable-next-line jsx-a11y/no-autofocus
-              autoFocus
               className="primary-input"
               onChange={handleNameChange}
-              onBlur={() => {}}
-              type="text"
               ref={inputRef}
+              type="text"
               value={currentName}
             />
             <button
