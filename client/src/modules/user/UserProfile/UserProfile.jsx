@@ -1,19 +1,16 @@
-import React, { PureComponent, createRef } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
 import classNames from 'classnames';
-import isEmpty from 'validator/lib/isEmpty';
-import isLength from 'validator/lib/isLength';
-import _trim from 'lodash/trim';
 
 import Avatar from 'common/components/Avatar';
 import { getCurrentUser } from 'modules/user/model/selectors';
 import { UserPropType } from 'common/constants/propTypes';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
-import { makeAbortablePromise, validateWith } from 'common/utils/helpers';
+import { makeAbortablePromise } from 'common/utils/helpers';
 import Preloader from 'common/components/Preloader';
-import { fetchUserDetails, updateName } from 'modules/user/model/actions';
+import { fetchUserDetails } from 'modules/user/model/actions';
 import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeForm';
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
@@ -24,23 +21,10 @@ import './UserProfile.scss';
 class UserProfile extends PureComponent {
   pendingPromise = null;
 
-  constructor(props) {
-    super(props);
-
-    const {
-      currentUser: { name }
-    } = this.props;
-
-    this.state = {
-      errorMessageId: '',
-      isNameUpdated: false,
-      isPasswordUpdateFormVisible: false,
-      pending: false,
-      userName: name
-    };
-
-    this.nameInput = createRef();
-  }
+  state = {
+    isPasswordUpdateFormVisible: false,
+    pending: false
+  };
 
   componentDidMount() {
     this.handleFetchUserDetails();
@@ -71,56 +55,6 @@ class UserProfile extends PureComponent {
     this.setState(({ isPasswordUpdateFormVisible }) => ({
       isPasswordUpdateFormVisible: !isPasswordUpdateFormVisible
     }));
-  };
-
-  handleNameChange = event => {
-    const {
-      target: { value }
-    } = event;
-
-    this.setState({ userName: value, isNameUpdated: true }, this.validateName);
-  };
-
-  validateName = () => {
-    const { userName } = this.state;
-    let errorMessageId;
-
-    errorMessageId = validateWith(
-      value => !isEmpty(value, { ignore_whitespace: true })
-    )('common.form.required-warning')(userName);
-
-    if (_trim(userName)) {
-      errorMessageId = validateWith(value =>
-        isLength(value, { min: 1, max: 32 })
-      )('common.form.field-min-max')(userName);
-    }
-
-    this.setState({ errorMessageId });
-  };
-
-  handleNameUpdate = () => {
-    const { errorMessageId, isNameUpdated, userName } = this.state;
-    const {
-      currentUser: { id: userId },
-      updateName
-    } = this.props;
-
-    if (isNameUpdated && !errorMessageId) {
-      updateName(userName, userId);
-
-      this.setState({ errorMessageId: '', isNameUpdated: false });
-    }
-  };
-
-  handleSubmit = event => {
-    event.preventDefault();
-
-    const { errorMessageId } = this.state;
-
-    if (!errorMessageId) {
-      this.handleNameUpdate();
-      this.nameInput.current.blur();
-    }
   };
 
   renderPersonalInfo = () => {
@@ -280,14 +214,11 @@ class UserProfile extends PureComponent {
 UserProfile.propTypes = {
   currentUser: UserPropType.isRequired,
 
-  fetchUserDetails: PropTypes.func.isRequired,
-  updateName: PropTypes.func.isRequired
+  fetchUserDetails: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   currentUser: getCurrentUser(state)
 });
 
-export default connect(mapStateToProps, { fetchUserDetails, updateName })(
-  UserProfile
-);
+export default connect(mapStateToProps, { fetchUserDetails })(UserProfile);
