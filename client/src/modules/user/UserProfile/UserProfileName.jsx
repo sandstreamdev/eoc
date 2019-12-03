@@ -17,11 +17,13 @@ const UserProfileName = props => {
   const [isFormVisible, setFormVisibility] = useState(false);
   const [currentName, setName] = useState(name);
   const [isNameUpdated, setIsNameUpdated] = useState(false);
+
+  const nameRef = useRef();
   const inputRef = useRef();
 
-  const showForm = () => setFormVisibility(true);
+  const showForm = () => setFormVisibility(() => true);
 
-  const hideForm = () => setFormVisibility(false);
+  const hideForm = () => setFormVisibility(() => false);
 
   const validateName = () => {
     let errorMessageId;
@@ -36,45 +38,46 @@ const UserProfileName = props => {
       )('common.form.field-min-max')(currentName);
     }
 
-    setErrorMessageId(errorMessageId);
+    setErrorMessageId(() => errorMessageId);
   };
 
-  const handleNameUpdate = event => {
-    event.preventDefault();
+  const handleNameUpdate = () => {
     const { userId, updateName } = props;
 
-    if (isNameUpdated && !errorMessageId && isFormVisible) {
-      updateName(currentName, userId);
+    updateName(currentName, userId);
+  };
 
+  const handleSubmit = event => {
+    event.preventDefault();
+
+    // debugger;
+    if (isNameUpdated && !errorMessageId) {
+      handleNameUpdate();
       setErrorMessageId('');
-      setIsNameUpdated(false);
+      setIsNameUpdated(() => false);
       hideForm();
     }
 
-    // if (isFormVisible && !isNameUpdated && !errorMessageId) {
-    //   setFormVisibility(false);
-    // }
-
-    // if (!errorMessageId) {
-    //   setFormVisibility(false);
-    // }
-  };
-
-  const handleBlur = event => {
-    if (!isNameUpdated) {
-      return setFormVisibility(false);
+    if (!isNameUpdated && !errorMessageId) {
+      hideForm();
     }
-
-    handleNameUpdate(event);
   };
+
+  // const handleBlur = event => {
+  //   if (!isNameUpdated) {
+  //     return setFormVisibility(false);
+  //   }
+
+  //   handleNameUpdate(event);
+  // };
 
   const handleNameChange = event => {
     const {
       target: { value }
     } = event;
 
-    setName(value);
-    setIsNameUpdated(true);
+    setName(() => value);
+    setIsNameUpdated(() => true);
   };
 
   useEffect(() => {
@@ -83,11 +86,12 @@ const UserProfileName = props => {
 
   useEffect(() => {
     const handleClickOutside = event => {
-      const isClickedOutside = !inputRef.current.contains(event.target);
+      const { target } = event;
+      const clickedOutsideSpan = !nameRef.current.contains(target);
+      const clickedOutsideInput = !inputRef.current.contains(target);
 
-      console.log('isClickedOutside', isClickedOutside);
-      if (isClickedOutside) {
-        handleNameUpdate(event);
+      if (clickedOutsideInput && clickedOutsideSpan) {
+        handleSubmit(event);
       }
     };
 
@@ -96,7 +100,7 @@ const UserProfileName = props => {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, [inputRef]);
+  }, [inputRef, nameRef, handleSubmit]);
 
   useEffect(() => {
     if (isFormVisible) {
@@ -115,14 +119,14 @@ const UserProfileName = props => {
             className={classNames('user-profile-name__name-form', {
               'user-profile-name__name-form--hidden': !isFormVisible
             })}
-            onSubmit={handleNameUpdate}
+            onSubmit={handleSubmit}
           >
             <input
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
               className="primary-input"
               onChange={handleNameChange}
-              onBlur={handleBlur}
+              onBlur={() => {}}
               type="text"
               ref={inputRef}
               value={currentName}
@@ -146,6 +150,7 @@ const UserProfileName = props => {
               'user-profile-name__name--hidden': isFormVisible
             })}
             onClick={isFormVisible ? hideForm : showForm}
+            ref={nameRef}
           >
             {currentName}
           </span>
