@@ -12,7 +12,7 @@
   &__data-name {
     text-transform: uppercase;
     font-size: $s-font;
-    margin-bottom: 4px;
+    margin-bottom: four-by(1);
   }
 
   &__data-name-wrapper {
@@ -35,7 +35,7 @@
     }
 
     svg {
-      height: 16px;
+      height: four-by(4);
 
       path {
         fill: $text-normal;
@@ -75,7 +75,7 @@
     font-weight: 500;
     line-height: 1.2;
     margin: 0;
-    min-height: 40px;
+    min-height: four-by(10);
     outline: 0;
     padding: four-by(2) four-by(4);
     position: relative;
@@ -106,6 +106,6 @@
 
   .error-message {
     display: block;
-    margin-top: 5px;
+    margin-top: four-by(1);
   }
 }

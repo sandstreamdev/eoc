@@ -114,10 +114,10 @@
   }
 
   &__name-item {
-    padding: 24px 8px;
+    padding: four-by(6) four-by(2);
 
     @include breakpoint($medium) {
-      padding: 20px 8px;
+      padding: four-by(4) four-by(2);
     }
   }
 }

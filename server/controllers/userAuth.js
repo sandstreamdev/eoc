@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const _trim = require('lodash/trim');
 const _isEmpty = require('lodash/isEmpty');
+const isLength = require('validator/lib/isLength');
 
 const BadRequestException = require('../common/exceptions/BadRequestException');
 const ValidationException = require('../common/exceptions/ValidationException');
@@ -350,8 +351,9 @@ const updatePassword = (req, resp) => {
 const updateName = async (req, resp) => {
   const { userId, updatedName } = req.body;
   const { _id } = req.user;
+  const isInvalid = !isLength(updatedName, { min: 1, max: 32 });
 
-  if (userId !== _id.toString()) {
+  if (userId !== _id.toString() || isInvalid) {
     return resp.sendStatus(400);
   }
 
