@@ -3,6 +3,7 @@
 .user-profile-name {
   &__name {
     cursor: pointer;
+    padding: four-by(4) 0 four-by(4) four-by(4);
 
     &--hidden {
       display: none;
