@@ -23,13 +23,19 @@ const currentUser = (state = null, action) => {
       return state;
     }
     case CommonActionTypes.LEAVE_VIEW: {
-      return {
-        ...state,
-        activationDate: undefined,
-        email: undefined,
-        emailReportsFrequency: undefined,
-        isPasswordSet: undefined
-      };
+      if (state) {
+        const {
+          activationDate,
+          email,
+          emailReportsFrequency,
+          isPasswordSet,
+          ...rest
+        } = state;
+
+        return { ...rest };
+      }
+
+      return null;
     }
     default:
       return state;
