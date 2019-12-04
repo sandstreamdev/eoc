@@ -236,17 +236,10 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
 };
 
 export const updateName = (updatedName, userId) => async dispatch => {
-  try {
-    await postData('/auth/change-name', { updatedName, userId });
+  await postData('/auth/change-name', { updatedName, userId });
 
-    dispatch(updateNameSuccess({ updatedName }));
-    createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-      notificationId: 'user.actions.name-update-success'
-    });
-  } catch (error) {
-    /**
-     * Ignore error here as we handle it
-     * within a component
-     */
-  }
+  dispatch(updateNameSuccess({ updatedName }));
+  createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+    notificationId: 'user.actions.name-update-success'
+  });
 };

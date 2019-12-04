@@ -40,35 +40,30 @@ const UserProfileName = props => {
     setErrorMessageId(errorMessageId);
   }, [currentName]);
 
-  const handleNameUpdate = useCallback(async () => {
-    const { userId, updateName } = props;
-
-    try {
-      await updateName(currentName, userId);
-    } catch (error) {
-      setErrorMessageId('common.something-went-wrong');
-    }
-  }, [currentName, props]);
-
-  const handleSubmit = useCallback(
-    event => {
+  const handleNameUpdate = useCallback(
+    async event => {
       event.preventDefault();
 
+      const { userId, updateName } = props;
       const canBeUpdated = isDirty && !errorMessageId && isFormVisible;
       const canBeHidden = !isDirty && !errorMessageId && isFormVisible;
 
-      if (canBeUpdated) {
-        handleNameUpdate();
-        setErrorMessageId('');
-        setIsDirty(false);
-        hideForm();
-      }
+      try {
+        if (canBeUpdated) {
+          await updateName(currentName, userId);
+          setErrorMessageId('');
+          setIsDirty(false);
+          hideForm();
+        }
 
-      if (canBeHidden) {
-        hideForm();
+        if (canBeHidden) {
+          hideForm();
+        }
+      } catch (error) {
+        setErrorMessageId('common.something-went-wrong');
       }
     },
-    [isDirty, errorMessageId, isFormVisible, handleNameUpdate]
+    [currentName, errorMessageId, isDirty, isFormVisible, props]
   );
 
   const handleNameChange = event => {
@@ -91,7 +86,7 @@ const UserProfileName = props => {
       const clickedOutsideInput = !inputRef.current.contains(target);
 
       if (clickedOutsideInput && clickedOutsideSpan) {
-        handleSubmit(event);
+        handleNameUpdate(event);
       }
     };
 
@@ -102,13 +97,13 @@ const UserProfileName = props => {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, [inputRef, nameRef, handleSubmit, isFormVisible]);
+  }, [inputRef, isFormVisible, handleNameUpdate, nameRef]);
 
   useEffect(() => {
     if (isFormVisible) {
       inputRef.current.focus();
     }
-  }, [isFormVisible, inputRef]);
+  }, [inputRef, isFormVisible]);
 
   return (
     <>
@@ -121,7 +116,7 @@ const UserProfileName = props => {
             className={classNames('user-profile-name__name-form', {
               'user-profile-name__name-form--hidden': !isFormVisible
             })}
-            onSubmit={handleSubmit}
+            onSubmit={handleNameUpdate}
           >
             <input
               className="primary-input"
