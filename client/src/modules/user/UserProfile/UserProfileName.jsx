@@ -46,10 +46,7 @@ const UserProfileName = props => {
     try {
       await updateName(currentName, userId);
     } catch (error) {
-      /**
-       * Ignore error here as we handle error
-       * via error notification
-       */
+      setErrorMessageId('common.something-went-wrong');
     }
   }, [currentName, props]);
 
@@ -57,14 +54,17 @@ const UserProfileName = props => {
     event => {
       event.preventDefault();
 
-      if (isDirty && !errorMessageId && isFormVisible) {
+      const canBeUpdated = isDirty && !errorMessageId && isFormVisible;
+      const canBeHidden = !isDirty && !errorMessageId && isFormVisible;
+
+      if (canBeUpdated) {
         handleNameUpdate();
         setErrorMessageId('');
         setIsDirty(false);
         hideForm();
       }
 
-      if (!isDirty && !errorMessageId && isFormVisible) {
+      if (canBeHidden) {
         hideForm();
       }
     },

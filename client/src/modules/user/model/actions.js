@@ -244,13 +244,9 @@ export const updateName = (updatedName, userId) => async dispatch => {
       notificationId: 'user.actions.name-update-success'
     });
   } catch (error) {
-    createNotificationWithTimeout(
-      dispatch,
-      NotificationType.ERROR,
-      {
-        notificationId: 'user.actions.name-update-failure'
-      },
-      error
-    );
+    /**
+     * Ignore error here as we handle it
+     * within a component
+     */
   }
 };
