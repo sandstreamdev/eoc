@@ -16,6 +16,8 @@ import { makeAbortablePromise, validateWith } from 'common/utils/helpers';
 import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
 import { GoogleIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { RouterMatchPropType } from 'common/constants/propTypes';
+
 import './SignInForm.scss';
 
 class SignInForm extends PureComponent {
@@ -30,6 +32,20 @@ class SignInForm extends PureComponent {
     pending: false,
     signInErrorId: ''
   };
+
+  componentDidMount() {
+    const {
+      match: {
+        params: { feedback }
+      }
+    } = this.props;
+
+    if (feedback === 'error') {
+      this.setState({
+        signInErrorId: 'common.something-went-wrong'
+      });
+    }
+  }
 
   componentDidUpdate() {
     this.isFormValid();
@@ -182,6 +198,9 @@ class SignInForm extends PureComponent {
                 <FormattedMessage id="user.auth.sign-in" />
               </PendingButton>
             </div>
+            <h2>
+              <FormattedMessage id="user.auth.or" />
+            </h2>
             <div className="sign-in__buttons">
               <a
                 className={classNames('google-button', {
@@ -205,6 +224,7 @@ class SignInForm extends PureComponent {
 
 SignInForm.propTypes = {
   isCookieSet: PropTypes.bool,
+  match: RouterMatchPropType.isRequired,
 
   signIn: PropTypes.func.isRequired
 };

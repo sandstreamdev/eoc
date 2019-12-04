@@ -70,6 +70,10 @@ class SignUpForm extends PureComponent {
           policyError: policyErrorMessageId
         }
       });
+    } else if (feedback === 'error') {
+      this.setState({
+        signUpErrorId: 'common.something-went-wrong'
+      });
     }
   }
 
@@ -424,6 +428,9 @@ class SignUpForm extends PureComponent {
               <FormattedMessage id="user.auth.sign-up" />
             </PendingButton>
           </div>
+          <h2>
+            <FormattedMessage id="user.auth.or" />
+          </h2>
           <div className="sign-up-form__google">
             <button
               className="primary-button sign-up-form__confirm google-button"

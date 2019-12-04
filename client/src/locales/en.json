@@ -396,6 +396,7 @@
   "user.auth.input.privacy-policy-agreement": "I agree to the {cookieLink}, {privacyLink} and {termsLink}.",
   "user.auth.input.privacy-policy-agreement-required": "You must accept our {cookieLink}, {privacyLink} and {termsLink}.",
   "user.auth.input.username.empty": "Please enter your name.",
+  "user.auth.or": "Or",
   "user.auth.pass-recovery-form.heading-user-name": "Set new password for {name} ({email})",
   "user.auth.pass-recovery-form.heading": "Set new password",
   "user.auth.reset-password.button-content": "Reset password",

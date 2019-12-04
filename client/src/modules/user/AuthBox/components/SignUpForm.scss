@@ -10,6 +10,10 @@
   &__form {
     font-size: $m-font;
     color: $text-normal;
+
+    h2 {
+      margin-top: four-by(2);
+    }
   }
 
   &__buttons,
@@ -17,7 +21,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: four-by(4);
+    margin-top: four-by(2);
 
     .primary-button {
       text-transform: capitalize;
