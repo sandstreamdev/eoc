@@ -92,11 +92,11 @@ const UserProfileName = props => {
 
     if (isFormVisible) {
       document.addEventListener('click', handleClickOutside);
-    }
 
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
   }, [inputRef, isFormVisible, handleNameUpdate, nameRef]);
 
   useEffect(() => {
