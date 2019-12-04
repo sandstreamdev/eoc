@@ -42,7 +42,7 @@ class SignInForm extends PureComponent {
 
     if (feedback === 'error') {
       this.setState({
-        signInErrorId: 'common.something-went-wrong'
+        signInErrorId: 'user.actions.sign-in.failed'
       });
     }
   }

@@ -52,11 +52,7 @@ passport.use(
           done
         );
       } else {
-        findOrUpdateUser(
-          extractUserProfile(profile, accessToken),
-          policyAcceptedAt,
-          done
-        );
+        findOrUpdateUser(extractUserProfile(profile, accessToken), done);
       }
     }
   )
@@ -204,7 +200,7 @@ const authenticateCallback = (req, resp, next) => {
         return next(error);
       }
 
-      next();
+      return resp.redirect('/');
     });
   })(req, resp, next);
 };

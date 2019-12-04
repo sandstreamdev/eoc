@@ -10,49 +10,99 @@ const { isMember, isOwner } = require('../../common/utils');
 const { leaveCohort } = require('../../sockets/cohort');
 const { leaveList } = require('../../sockets/list');
 
-const findOrCreateUser = (user, policyAcceptedAt, done) => {
+const findOrCreateUser = async (user, policyAcceptedAt, done) => {
   const { idFromProvider, email } = user;
 
-  User.findOne({
-    $or: [{ idFromProvider }, { email }]
-  })
-    .exec()
-    .then(doc => {
-      if (doc) {
-        const { email, idFromProvider: existingIdFromProvider, isActive } = doc;
+  try {
+    const doc = await User.findOne({
+      $or: [{ idFromProvider }, { email }]
+    }).exec();
 
-        if (email && !existingIdFromProvider) {
-          const { accessToken, avatarUrl, provider } = user;
+    if (doc) {
+      const {
+        email: existingEmail,
+        idFromProvider: existingIdFromProvider,
+        isActive
+      } = doc;
 
-          /* eslint-disable no-param-reassign */
-          doc.accessToken = accessToken;
-          doc.avatarUrl = avatarUrl;
-          doc.idFromProvider = idFromProvider;
-          doc.provider = provider;
+      if (existingEmail && !existingIdFromProvider) {
+        const { accessToken, avatarUrl, provider } = user;
 
-          if (!isActive) {
-            doc.activatedAt = new Date();
-            doc.isActive = true;
-            doc.signUpHash = null;
-            doc.signUpHashExpirationDate = null;
-          }
-          /* eslint-enable no-param-reassign */
+        /* eslint-disable no-param-reassign */
+        doc.accessToken = accessToken;
+        doc.avatarUrl = avatarUrl;
+        doc.idFromProvider = idFromProvider;
+        doc.provider = provider;
 
-          return doc.save();
+        if (!isActive) {
+          doc.activatedAt = new Date();
+          doc.isActive = true;
+          doc.signUpHash = null;
+          doc.signUpHashExpirationDate = null;
         }
+        /* eslint-enable no-param-reassign */
 
-        return doc;
+        const updatedUser = await doc.save();
+
+        return done(null, updatedUser);
       }
 
-      return new User({
-        ...user,
-        policyAcceptedAt,
-        activatedAt: new Date(),
-        settings: new Settings()
-      }).save();
-    })
-    .then(user => done(null, user))
-    .catch(err => done(null, false, { message: err.message }));
+      return done(null, doc);
+    }
+
+    const newUser = await new User({
+      ...user,
+      policyAcceptedAt,
+      activatedAt: new Date(),
+      settings: new Settings()
+    }).save();
+
+    return done(null, newUser);
+  } catch (error) {
+    done(null, false, { message: error.message });
+  }
+};
+
+const findOrUpdateUser = async (user, done) => {
+  const { idFromProvider, email } = user;
+
+  try {
+    const doc = await User.findOne({
+      $or: [{ idFromProvider }, { email }]
+    }).exec();
+
+    const {
+      email: existingEmail,
+      idFromProvider: existingIdFromProvider,
+      isActive
+    } = doc;
+
+    if (existingEmail && !existingIdFromProvider) {
+      const { accessToken, avatarUrl, provider } = user;
+
+      /* eslint-disable no-param-reassign */
+      doc.accessToken = accessToken;
+      doc.avatarUrl = avatarUrl;
+      doc.idFromProvider = idFromProvider;
+      doc.provider = provider;
+
+      if (!isActive) {
+        doc.activatedAt = new Date();
+        doc.isActive = true;
+        doc.signUpHash = null;
+        doc.signUpHashExpirationDate = null;
+      }
+      /* eslint-enable no-param-reassign */
+
+      const updatedUser = await doc.save();
+
+      return done(null, updatedUser);
+    }
+
+    return done(null, doc);
+  } catch (error) {
+    done(null, false, { message: error.message });
+  }
 };
 
 /* eslint camelcase: "off" */
@@ -274,6 +324,7 @@ module.exports = {
   extractUserProfile,
   findAndAuthenticateUser,
   findOrCreateUser,
+  findOrUpdateUser,
   removeDemoUserData,
   removeUserFromCohorts,
   removeUserFromLists,
