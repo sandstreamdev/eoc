@@ -229,12 +229,12 @@ class SignUpForm extends PureComponent {
   handleSignUp = event => {
     event.preventDefault();
     const {
+      confirmPasswordValue,
       email,
       higherLevelErrors,
       isPolicyAccepted,
       name,
-      password,
-      confirmPasswordValue
+      password
     } = this.state;
 
     if (!isPolicyAccepted) {
@@ -248,8 +248,10 @@ class SignUpForm extends PureComponent {
 
     this.setState({ pending: true });
 
+    const policyAcceptedAt = Date.now();
+
     this.pendingPromise = makeAbortablePromise(
-      signUp(email, name, password, confirmPasswordValue, isPolicyAccepted)
+      signUp(email, name, password, confirmPasswordValue, policyAcceptedAt)
     );
 
     return this.pendingPromise.promise

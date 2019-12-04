@@ -51,7 +51,7 @@ const signUp = (req, resp, next) => {
     email,
     password,
     passwordConfirm,
-    policyAccepted,
+    policyAcceptedAt,
     username
   } = req.body;
   const sanitizedEmail = sanitize(email);
@@ -75,7 +75,7 @@ const signUp = (req, resp, next) => {
     errors.isConfirmPasswordError = true;
   }
 
-  if (!policyAccepted) {
+  if (typeof policyAcceptedAt !== 'number') {
     errors.isPolicyError = true;
   }
 
@@ -134,7 +134,7 @@ const signUp = (req, resp, next) => {
         email: sanitizedEmail,
         isActive: false,
         password: hashedPassword,
-        policyAccepted,
+        policyAcceptedAt,
         settings: new Settings(),
         signUpHash,
         signUpHashExpirationDate: expirationDate

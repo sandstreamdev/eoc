@@ -74,13 +74,13 @@ export const signUp = (
   username,
   password,
   passwordConfirm,
-  policyAccepted
+  policyAcceptedAt
 ) =>
   postData('/auth/sign-up', {
     email,
     password,
     passwordConfirm,
-    policyAccepted,
+    policyAcceptedAt,
     username
   });
 
