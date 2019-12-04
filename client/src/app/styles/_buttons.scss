@@ -44,11 +44,35 @@
 
 .primary-link-button {
   @extend .primary-button;
+
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 40px;
-  padding: 0 16px;
+  padding: 0 four-by(4);
   text-transform: capitalize;
+}
+
+.google-button {
+  @extend .primary-link-button;
+
+  background-color: $bg-color;
+  box-sizing: border-box;
+  border: 1px solid $border-color;
+  color: $text-normal;
+  font-size: $s-font;
+  padding: 0;
+
+  @include breakpoint($xsmall) {
+    font-size: $m-font;
+    padding: 0 four-by(4);
+  }
+
+  svg {
+    width: four-by(6);
+    height: four-by(6);
+    margin-right: four-by(3);
+  }
 }
 
 .link-button {

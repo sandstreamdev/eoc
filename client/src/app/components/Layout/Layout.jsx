@@ -208,7 +208,12 @@ export class Layout extends PureComponent {
                 path="/password-recovery-success"
               />
               <Route component={SignUpForm} path="/sign-up/:feedback?" />
-              <Route component={SignInForm} path="/sign-in/:feedback?" />
+              <Route
+                path="/sign-in/:feedback?"
+                render={props => (
+                  <SignInForm {...props} isCookieSet={isCookieSet} />
+                )}
+              />
               <Redirect to="/" />
             </Switch>
           </>

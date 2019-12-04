@@ -19,6 +19,8 @@ import {
 import PendingButton from 'common/components/PendingButton';
 import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
+import { GoogleIcon } from 'assets/images/icons';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import './SignUpForm.scss';
 
 const policyErrorMessageId =
@@ -423,13 +425,15 @@ class SignUpForm extends PureComponent {
             </PendingButton>
           </div>
           <div className="sign-up-form__google">
-            <PendingButton
-              className="primary-button sign-up-form__confirm"
+            <button
+              className="primary-button sign-up-form__confirm google-button"
               onClick={this.signUpWithGoogle}
               type="submit"
             >
+              <GoogleIcon />
               <FormattedMessage id="user.auth.sign-up-with-google" />
-            </PendingButton>
+              {pending && <Preloader size={PreloaderSize.SMALL} />}
+            </button>
           </div>
         </form>
       </>
@@ -452,6 +456,8 @@ class SignUpForm extends PureComponent {
 
     const data = {};
     data.policyAcceptedAt = isPolicyAccepted ? Date.now() : null;
+
+    this.setState({ pending: true });
 
     window.location = `/auth/google/sign-up/${JSON.stringify(data)}`;
   };

@@ -28,10 +28,6 @@
     &--invalid:focus {
       border-color: $danger;
     }
-
-    @include breakpoint($xsmall) {
-      min-width: 250px;
-    }
   }
 
   &__feedback {

@@ -14,12 +14,8 @@ import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import { makeAbortablePromise, validateWith } from 'common/utils/helpers';
 import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
-import GoogleButtonImg from 'assets/images/google-btn.png';
-import { IntlPropType } from 'common/constants/propTypes';
-import Preloader, {
-  PreloaderSize,
-  PreloaderTheme
-} from 'common/components/Preloader';
+import { GoogleIcon } from 'assets/images/icons';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import './SignInForm.scss';
 
 class SignInForm extends PureComponent {
@@ -139,10 +135,7 @@ class SignInForm extends PureComponent {
 
   render() {
     const { isFormValid, pending, signInErrorId } = this.state;
-    const {
-      intl: { formatMessage },
-      isCookieSet
-    } = this.props;
+    const { isCookieSet } = this.props;
     const hasSignUpFailed = signInErrorId.length > 0;
 
     return (
@@ -189,29 +182,18 @@ class SignInForm extends PureComponent {
                 <FormattedMessage id="user.auth.sign-in" />
               </PendingButton>
             </div>
-            <div className="authbox__button-wrapper">
+            <div className="sign-in__buttons">
               <a
                 className={classNames('google-button', {
                   'disabled-google-button': !isCookieSet || pending
                 })}
-                href="/auth/google"
+                href="/auth/google/sign-in"
                 onClick={this.handleLogin}
-                tabIndex={!isCookieSet ? '-1' : '1'}
               >
-                <img
-                  alt={formatMessage({
-                    id: 'user.auth-box.sign-in-google'
-                  })}
-                  className="google-button__img"
-                  src={GoogleButtonImg}
-                />
+                <GoogleIcon />
+                <FormattedMessage id="user.auth.sign-in-with-google" />
+                {pending && <Preloader size={PreloaderSize.SMALL} />}
               </a>
-              {pending && (
-                <Preloader
-                  size={PreloaderSize.SMALL}
-                  theme={PreloaderTheme.GOOGLE}
-                />
-              )}
             </div>
           </form>
           {this.renderForgotPassword()}
@@ -222,7 +204,6 @@ class SignInForm extends PureComponent {
 }
 
 SignInForm.propTypes = {
-  intl: IntlPropType.isRequired,
   isCookieSet: PropTypes.bool,
 
   signIn: PropTypes.func.isRequired
