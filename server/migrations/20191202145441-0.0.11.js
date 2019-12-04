@@ -1,32 +1,39 @@
-/* eslint-disable no-param-reassign */
 const { runAsyncTasks } = require('../common/utils');
 
 const up = async db => {
-  const addPolicyAccepted = async () =>
-    db.collection('users').updateMany(
-      {
-        policyAccepted: { $exists: false }
-      },
-      {
-        $set: { policyAccepted: true }
-      }
-    );
+  const promises = [];
 
-  await runAsyncTasks(addPolicyAccepted);
+  await db
+    .collection('users')
+    .find({
+      policyAcceptedAt: { $exists: false }
+    })
+    .forEach(user => {
+      const { _id, createdAt } = user;
+      const policyAcceptedAt = createdAt;
+
+      promises.push(async () =>
+        db
+          .collection('users')
+          .updateOne({ _id }, { $set: { policyAcceptedAt } })
+      );
+    });
+
+  await runAsyncTasks(...promises);
 };
 
 const down = async db => {
-  const removePolicyAccepted = async () =>
+  const removePolicyAcceptedAt = async () =>
     db.collection('users').updateMany(
       {
-        policyAccepted: { $exists: true }
+        policyAcceptedAt: { $exists: true }
       },
       {
-        $unset: { policyAccepted: false }
+        $unset: { policyAcceptedAt: '' }
       }
     );
 
-  await runAsyncTasks(removePolicyAccepted);
+  await runAsyncTasks(removePolicyAcceptedAt);
 };
 
 module.exports = {

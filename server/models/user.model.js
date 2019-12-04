@@ -21,7 +21,7 @@ const UserSchema = new Schema(
     isActive: { type: Boolean },
     lastEmailReportSentAt: { type: Date },
     password: { type: String },
-    policyAccepted: { type: Boolean },
+    policyAcceptedAt: { type: Date },
     provider: { type: String },
     resetToken: { type: String },
     resetTokenExpirationDate: { type: Date },

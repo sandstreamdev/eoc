@@ -226,8 +226,10 @@ class SignUpForm extends PureComponent {
 
     this.setState({ pending: true });
 
+    const policyAcceptedAt = Date.now();
+
     this.pendingPromise = makeAbortablePromise(
-      signUp(email, name, password, confirmPasswordValue, isPolicyAccepted)
+      signUp(email, name, password, confirmPasswordValue, policyAcceptedAt)
     );
 
     return this.pendingPromise.promise
