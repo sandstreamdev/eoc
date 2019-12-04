@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import _trim from 'lodash/trim';
@@ -24,7 +24,7 @@ const UserProfileName = props => {
 
   const hideForm = () => setFormVisibility(false);
 
-  const validateName = () => {
+  const validateName = useCallback(() => {
     let errorMessageId;
 
     errorMessageId = validateWith(
@@ -38,9 +38,9 @@ const UserProfileName = props => {
     }
 
     setErrorMessageId(errorMessageId);
-  };
+  }, [currentName]);
 
-  const handleNameUpdate = async () => {
+  const handleNameUpdate = useCallback(async () => {
     const { userId, updateName } = props;
 
     try {
@@ -51,22 +51,25 @@ const UserProfileName = props => {
        * via error notification
        */
     }
-  };
+  }, [currentName, props]);
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    event => {
+      event.preventDefault();
 
-    if (isDirty && !errorMessageId && isFormVisible) {
-      handleNameUpdate();
-      setErrorMessageId('');
-      setIsDirty(false);
-      hideForm();
-    }
+      if (isDirty && !errorMessageId && isFormVisible) {
+        handleNameUpdate();
+        setErrorMessageId('');
+        setIsDirty(false);
+        hideForm();
+      }
 
-    if (!isDirty && !errorMessageId && isFormVisible) {
-      hideForm();
-    }
-  };
+      if (!isDirty && !errorMessageId && isFormVisible) {
+        hideForm();
+      }
+    },
+    [isDirty, errorMessageId, isFormVisible, handleNameUpdate]
+  );
 
   const handleNameChange = event => {
     const {
@@ -79,7 +82,7 @@ const UserProfileName = props => {
 
   useEffect(() => {
     validateName();
-  }, [currentName]);
+  }, [currentName, validateName]);
 
   useEffect(() => {
     const handleClickOutside = event => {

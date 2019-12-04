@@ -5,6 +5,7 @@
   },
   "extends": ["airbnb", "plugin:prettier/recommended"],
   "parser": "babel-eslint",
+  "plugins": ["react-hooks"],
   "settings": {
     "import/resolver": {
       "node": {},
@@ -91,6 +92,8 @@
       }
     ],
     "import/no-useless-path-segments": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "error",
     "react/forbid-prop-types": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-props-no-spreading": 0,
