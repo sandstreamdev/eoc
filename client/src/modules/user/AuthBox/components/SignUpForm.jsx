@@ -207,19 +207,19 @@ class SignUpForm extends PureComponent {
   handleSignUp = event => {
     event.preventDefault();
     const {
+      confirmPasswordValue,
       email,
       higherLevelErrors,
       isPolicyAccepted,
       name,
-      password,
-      confirmPasswordValue
+      password
     } = this.state;
 
     if (!isPolicyAccepted) {
       return this.setState({
         higherLevelErrors: {
           ...higherLevelErrors,
-          policyError: 'user.auth.input.policy-agreement-required'
+          policyError: 'user.auth.input.privacy-policy-agreement-required'
         }
       });
     }
@@ -251,7 +251,7 @@ class SignUpForm extends PureComponent {
                 : '',
               emailError: isEmailError ? 'user.auth.input.email.invalid' : '',
               policyError: isPolicyError
-                ? 'user.auth.input.policy-agreement-required'
+                ? 'user.auth.input.privacy-policy-agreement-required'
                 : '',
               nameError: isNameError ? 'common.form.field-min-max' : '',
               passwordError: isPasswordError
@@ -290,8 +290,8 @@ class SignUpForm extends PureComponent {
         passwordError,
         policyError
       },
-      isPolicyAccepted,
       isFormValid,
+      isPolicyAccepted,
       pending,
       signUpErrorId
     } = this.state;
@@ -313,7 +313,7 @@ class SignUpForm extends PureComponent {
     );
     const policyLabel = (
       <FormattedMessage
-        id="user.auth.privacy-policy-agreement"
+        id="user.auth.input.privacy-policy-agreement"
         values={{
           cookieLink,
           privacyLink,
@@ -323,7 +323,7 @@ class SignUpForm extends PureComponent {
     );
     const policyErrorMessage = policyError ? (
       <FormattedMessage
-        id="user.auth.input.policy-agreement-required"
+        id="user.auth.input.privacy-policy-agreement-required"
         values={{
           cookieLink,
           privacyLink,

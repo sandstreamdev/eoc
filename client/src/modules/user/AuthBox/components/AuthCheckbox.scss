@@ -21,8 +21,9 @@
 
   &__input {
     display: block;
-    width: 24px;
+    width: four-by(6);
     margin: 0 four-by(2) 0 0;
+
     &--invalid,
     &--invalid:focus {
       border-color: $danger;
@@ -49,8 +50,10 @@
   &__icon {
     display: inline-block;
     padding-right: four-by(2);
+
     svg {
-      width: 12px;
+      width: four-by(3);
+
       path {
         fill: $danger;
       }
