@@ -10,7 +10,7 @@ const { isMember, isOwner } = require('../../common/utils');
 const { leaveCohort } = require('../../sockets/cohort');
 const { leaveList } = require('../../sockets/list');
 
-const findOrCreateUser = (user, done) => {
+const findOrCreateUser = (user, policyAcceptedAt, done) => {
   const { idFromProvider, email } = user;
 
   User.findOne({
@@ -46,6 +46,7 @@ const findOrCreateUser = (user, done) => {
 
       return new User({
         ...user,
+        policyAcceptedAt,
         activatedAt: new Date(),
         settings: new Settings()
       }).save();

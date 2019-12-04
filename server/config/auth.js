@@ -32,11 +32,17 @@ passport.use(
       callbackURL: GOOGLE_CALLBACK_URL,
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
+      passReqToCallback: true,
       proxy: true,
       userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
     },
-    (accessToken, refreshToken, profile, done) => {
-      findOrCreateUser(extractUserProfile(profile, accessToken), done);
+    (request, accessToken, refreshToken, profile, done) => {
+      const { policyAcceptedAt } = JSON.parse(request.query.state);
+      findOrCreateUser(
+        extractUserProfile(profile, accessToken),
+        policyAcceptedAt,
+        done
+      );
     }
   )
 );
@@ -146,18 +152,37 @@ const setUser = (req, resp, next) =>
 const setDemoUser = (req, resp, next) =>
   authenticate(req, resp, next, StrategyType.DEMO);
 
-const authenticateWithGoogle = passport.authenticate(StrategyType.GOOGLE, {
+const signInWithGoogle = passport.authenticate(StrategyType.GOOGLE, {
   scope: ['email', 'profile']
 });
+
+const signUpWithGoogle = (req, resp, next) =>
+  passport.authenticate(StrategyType.GOOGLE, {
+    scope: ['email', 'profile'],
+    state: req.params.data
+  })(req, resp, next);
 
 const authenticateCallback = passport.authenticate(StrategyType.GOOGLE, {
   failureRedirect: '/',
   successRedirect: '/'
 });
 
+const checkPolicyAgreement = (req, resp, next) => {
+  const { data } = req.params;
+  const params = JSON.parse(data);
+
+  if (!params || !params.policyAcceptedAt) {
+    return resp.redirect('/sign-up/agreement-required');
+  }
+
+  return next();
+};
+
 module.exports = {
   authenticateCallback,
-  authenticateWithGoogle,
+  checkPolicyAgreement,
   setDemoUser,
-  setUser
+  setUser,
+  signInWithGoogle,
+  signUpWithGoogle
 };
