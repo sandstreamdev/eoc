@@ -3,10 +3,12 @@ const checkIfCookieSet = name => {
   const parts = value.split(`; ${name}=`);
 
   return parts.length === 2
-    ? parts
-        .pop()
-        .split(';')
-        .shift()
+    ? Boolean(
+        parts
+          .pop()
+          .split(';')
+          .shift()
+      )
     : false;
 };
 
