@@ -310,8 +310,8 @@ class SignUpForm extends PureComponent {
         passwordError,
         policyError
       },
-      isPolicyAccepted,
       isFormValid,
+      isPolicyAccepted,
       pending,
       signUpErrorId
     } = this.state;

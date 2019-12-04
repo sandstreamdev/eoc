@@ -53,7 +53,7 @@
   }
 
   &__heading {
-    font-size: 16px;
+    font-size: $m-font;
     line-height: 1.2;
     font-weight: 700;
     color: $text-normal;
@@ -62,7 +62,7 @@
   }
 
   &__description {
-    font-size: 12px;
+    font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
     text-align: left;
