@@ -12,7 +12,8 @@
     color: $text-normal;
   }
 
-  &__buttons {
+  &__buttons,
+  &__google {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -20,6 +21,12 @@
 
     .primary-button {
       text-transform: capitalize;
+    }
+  }
+
+  &__google {
+    button {
+      width: 100%;
     }
   }
 

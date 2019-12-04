@@ -7,8 +7,9 @@ import isLength from 'validator/lib/isLength';
 import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
+import AuthLayout from './AuthLayout';
 import AuthCheckbox from './AuthCheckbox';
-import { signUp, signUpWithGoogle } from 'modules/user/model/actions';
+import { signUp } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import {
   makeAbortablePromise,
@@ -16,10 +17,12 @@ import {
   validateWith
 } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
-import { IntlPropType } from 'common/constants/propTypes';
+import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
 import './SignUpForm.scss';
 
+const policyErrorMessageId =
+  'user.auth.input.privacy-policy-agreement-required';
 class SignUpForm extends PureComponent {
   pendingPromise = null;
 
@@ -48,6 +51,24 @@ class SignUpForm extends PureComponent {
       pending: false,
       signUpErrorId: ''
     };
+  }
+
+  componentDidMount() {
+    const {
+      match: {
+        params: { feedback }
+      }
+    } = this.props;
+    const { higherLevelErrors } = this.state;
+
+    if (feedback === 'agreement-required') {
+      this.setState({
+        higherLevelErrors: {
+          ...higherLevelErrors,
+          policyError: policyErrorMessageId
+        }
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -127,14 +148,15 @@ class SignUpForm extends PureComponent {
       isPolicyAccepted
     } = this.state;
 
-    const error = isPolicyAccepted ? '' : policyError;
+    const newPolicyState = !isPolicyAccepted;
+    const error = newPolicyState ? '' : policyError;
 
     this.setState({
       higherLevelErrors: {
         ...higherLevelErrors,
         policyError: error
       },
-      isPolicyAccepted: !isPolicyAccepted
+      isPolicyAccepted: newPolicyState
     });
   };
 
@@ -219,7 +241,7 @@ class SignUpForm extends PureComponent {
       return this.setState({
         higherLevelErrors: {
           ...higherLevelErrors,
-          policyError: 'user.auth.input.policy-agreement-required'
+          policyError: policyErrorMessageId
         }
       });
     }
@@ -250,9 +272,7 @@ class SignUpForm extends PureComponent {
                 ? 'user.auth.input.password.not-match'
                 : '',
               emailError: isEmailError ? 'user.auth.input.email.invalid' : '',
-              policyError: isPolicyError
-                ? 'user.auth.input.policy-agreement-required'
-                : '',
+              policyError: isPolicyError ? policyErrorMessageId : '',
               nameError: isNameError ? 'common.form.field-min-max' : '',
               passwordError: isPasswordError
                 ? 'user.auth.input.password.invalid'
@@ -295,7 +315,6 @@ class SignUpForm extends PureComponent {
       pending,
       signUpErrorId
     } = this.state;
-    const { onCancel } = this.props;
     const cookieLink = (
       <Link className="sign-up-form__link" to="/cookie-policy">
         <FormattedMessage id="app.footer.cookie-policy" />
@@ -313,7 +332,7 @@ class SignUpForm extends PureComponent {
     );
     const policyLabel = (
       <FormattedMessage
-        id="user.auth.privacy-policy-agreement"
+        id="user.auth.input.privacy-policy-agreement"
         values={{
           cookieLink,
           privacyLink,
@@ -323,7 +342,7 @@ class SignUpForm extends PureComponent {
     );
     const policyErrorMessage = policyError ? (
       <FormattedMessage
-        id="user.auth.input.policy-agreement-required"
+        id={policyErrorMessageId}
         values={{
           cookieLink,
           privacyLink,
@@ -389,14 +408,9 @@ class SignUpForm extends PureComponent {
             value="accepted"
           />
           <div className="sign-up-form__buttons">
-            <button
-              className="primary-button"
-              disabled={pending}
-              onClick={onCancel}
-              type="button"
-            >
+            <Link className="primary-link-button" to="/">
               <FormattedMessage id="common.button.cancel" />
-            </button>
+            </Link>
             <PendingButton
               className="primary-button sign-up-form__confirm"
               disabled={!isFormValid}
@@ -406,15 +420,13 @@ class SignUpForm extends PureComponent {
               <FormattedMessage id="user.auth.sign-up" />
             </PendingButton>
           </div>
-          <div className="sign-up-form__buttons">
+          <div className="sign-up-form__google">
             <PendingButton
               className="primary-button sign-up-form__confirm"
-              // disabled={!isFormValid}
               onClick={this.signUpWithGoogle}
               type="submit"
             >
-              <FormattedMessage id="user.auth.sign-up" />
-              with Google
+              <FormattedMessage id="user.auth.sign-up-with-google" />
             </PendingButton>
           </div>
         </form>
@@ -431,36 +443,15 @@ class SignUpForm extends PureComponent {
       return this.setState({
         higherLevelErrors: {
           ...higherLevelErrors,
-          policyError: 'user.auth.input.policy-agreement-required'
+          policyError: policyErrorMessageId
         }
       });
     }
 
-    this.setState({ pending: true });
+    const data = {};
+    data.policyAcceptedAt = isPolicyAccepted ? Date.now() : null;
 
-    this.pendingPromise = makeAbortablePromise(
-      signUpWithGoogle(isPolicyAccepted)
-    );
-
-    return this.pendingPromise.promise.catch(err => {
-      if (!(err instanceof AbortPromiseException)) {
-        const newState = { pending: false };
-
-        if (err instanceof ValidationException) {
-          const { isPolicyError } = err.errors;
-
-          newState.higherLevelErrors = {
-            policyError: isPolicyError
-              ? 'user.auth.input.policy-agreement-required'
-              : ''
-          };
-        } else {
-          newState.signUpErrorId = err.message || 'common.something-went-wrong';
-        }
-
-        this.setState(newState);
-      }
-    });
+    window.location = `/auth/google/sign-up/${JSON.stringify(data)}`;
   };
 
   renderConfirmationMessage = () => {
@@ -480,19 +471,23 @@ class SignUpForm extends PureComponent {
     const { confirmationSend } = this.state;
 
     return (
-      <div className="sign-up">
-        {confirmationSend
-          ? this.renderConfirmationMessage()
-          : this.renderSignUpForm()}
-      </div>
+      <AuthLayout>
+        <div className="sign-up">
+          {confirmationSend
+            ? this.renderConfirmationMessage()
+            : this.renderSignUpForm()}
+        </div>
+      </AuthLayout>
     );
   }
 }
 
 SignUpForm.propTypes = {
   intl: IntlPropType.isRequired,
-
-  onCancel: PropTypes.func.isRequired
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
+  }),
+  match: RouterMatchPropType.isRequired
 };
 
 export default injectIntl(SignUpForm);

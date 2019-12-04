@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import _flowRight from 'lodash/flowRight';
 
 import AuthInput from './AuthInput';
+import AuthLayout from './AuthLayout';
 import { signIn } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
@@ -140,86 +141,82 @@ class SignInForm extends PureComponent {
     const { isFormValid, pending, signInErrorId } = this.state;
     const {
       intl: { formatMessage },
-      isCookieSet,
-      onCancel
+      isCookieSet
     } = this.props;
     const hasSignUpFailed = signInErrorId.length > 0;
 
     return (
-      <div className="sign-in">
-        <h1 className="sign-in__heading">
-          <FormattedMessage id="user.auth.sign-in" />
-        </h1>
-        {signInErrorId && this.renderSignInError()}
-        <form
-          className="sign-in__form"
-          noValidate
-          onSubmit={isFormValid && !pending ? this.handleSignIn : null}
-        >
-          <AuthInput
-            disabled={pending}
-            focus
-            formError={hasSignUpFailed}
-            labelId="user.email"
-            name="email"
-            onChange={this.onEmailChange}
-            type="text"
-            validator={this.emailValidator}
-          />
-          <AuthInput
-            disabled={pending}
-            formError={hasSignUpFailed}
-            labelId="user.password"
-            name="password"
-            noSuccessTheme
-            onChange={this.onPasswordChange}
-            type="password"
-          />
-          <div className="sign-in__buttons">
-            <button
-              className="primary-button"
+      <AuthLayout>
+        <div className="sign-in">
+          <h1 className="sign-in__heading">
+            <FormattedMessage id="user.auth.sign-in" />
+          </h1>
+          {signInErrorId && this.renderSignInError()}
+          <form
+            className="sign-in__form"
+            noValidate
+            onSubmit={isFormValid && !pending ? this.handleSignIn : null}
+          >
+            <AuthInput
               disabled={pending}
-              onClick={onCancel}
-              type="button"
-            >
-              <FormattedMessage id="common.button.cancel" />
-            </button>
-            <PendingButton
-              className="primary-button sign-in__confirm"
-              disabled={!isFormValid}
-              onClick={this.handleSignIn}
-              type="submit"
-            >
-              <FormattedMessage id="user.auth.sign-in" />
-            </PendingButton>
-          </div>
-          <div className="authbox__button-wrapper">
-            <a
-              className={classNames('google-button', {
-                'disabled-google-button': !isCookieSet || pending
-              })}
-              href="/auth/google"
-              onClick={this.handleLogin}
-              tabIndex={!isCookieSet ? '-1' : '1'}
-            >
-              <img
-                alt={formatMessage({
-                  id: 'user.auth-box.sign-in-google'
+              focus
+              formError={hasSignUpFailed}
+              labelId="user.email"
+              name="email"
+              onChange={this.onEmailChange}
+              type="text"
+              validator={this.emailValidator}
+            />
+            <AuthInput
+              disabled={pending}
+              formError={hasSignUpFailed}
+              labelId="user.password"
+              name="password"
+              noSuccessTheme
+              onChange={this.onPasswordChange}
+              type="password"
+            />
+            <div className="sign-in__buttons">
+              <Link className="primary-link-button" to="/">
+                <FormattedMessage id="common.button.cancel" />
+              </Link>
+              <PendingButton
+                className="primary-button sign-in__confirm"
+                disabled={!isFormValid}
+                onClick={this.handleSignIn}
+                type="submit"
+              >
+                <FormattedMessage id="user.auth.sign-in" />
+              </PendingButton>
+            </div>
+            <div className="authbox__button-wrapper">
+              <a
+                className={classNames('google-button', {
+                  'disabled-google-button': !isCookieSet || pending
                 })}
-                className="google-button__img"
-                src={GoogleButtonImg}
-              />
-            </a>
-            {pending && (
-              <Preloader
-                size={PreloaderSize.SMALL}
-                theme={PreloaderTheme.GOOGLE}
-              />
-            )}
-          </div>
-        </form>
-        {this.renderForgotPassword()}
-      </div>
+                href="/auth/google"
+                onClick={this.handleLogin}
+                tabIndex={!isCookieSet ? '-1' : '1'}
+              >
+                <img
+                  alt={formatMessage({
+                    id: 'user.auth-box.sign-in-google'
+                  })}
+                  className="google-button__img"
+                  src={GoogleButtonImg}
+                />
+              </a>
+              {pending && (
+                <Preloader
+                  size={PreloaderSize.SMALL}
+                  theme={PreloaderTheme.GOOGLE}
+                />
+              )}
+            </div>
+          </form>
+          {this.renderForgotPassword()}
+        </div>
+      </AuthLayout>
     );
   }
 }
@@ -228,7 +225,6 @@ SignInForm.propTypes = {
   intl: IntlPropType.isRequired,
   isCookieSet: PropTypes.bool,
 
-  onCancel: PropTypes.func.isRequired,
   signIn: PropTypes.func.isRequired
 };
 

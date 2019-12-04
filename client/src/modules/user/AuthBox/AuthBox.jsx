@@ -2,183 +2,87 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
-import AppLogo from 'common/components/AppLogo';
-import { COMPANY_PAGE_URL } from 'common/constants/variables';
 import { loginDemoUser } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { PreloaderTheme } from 'common/components/Preloader';
-import SignUpForm from './components/SignUpForm';
-import SignInForm from './components/SignInForm';
+import AuthLayout from './components/AuthLayout';
 import './AuthBox.scss';
 
 class AuthBox extends PureComponent {
   state = {
-    isCookieSet: true,
-    isSignInFormVisible: false,
-    isSignUpFormVisible: false,
     pending: false
   };
 
   handleLaunchingDemo = () => {
     const { loginDemoUser } = this.props;
 
-    return loginDemoUser();
-  };
+    this.setState({ pending: true });
 
-  handleLogin = () => this.setState({ pending: true });
-
-  handleSignUpFormVisibility = () =>
-    this.setState(({ isSignUpFormVisible }) => ({
-      isSignUpFormVisible: !isSignUpFormVisible
-    }));
-
-  handleSignInFormVisibility = () =>
-    this.setState(({ isSignInFormVisible }) => ({
-      isSignInFormVisible: !isSignInFormVisible
-    }));
-
-  handleResetAuthBox = () =>
-    this.setState({ isSignInFormVisible: false, isSignUpFormVisible: false });
-
-  renderSignInButtons = () => {
-    const { isCookieSet, pending } = this.state;
-
-    return (
-      <div className="authbox__button-container">
-        <h1 className="authbox__button-header">
-          <FormattedMessage id="user.auth-box.sign-in" />
-        </h1>
-        <div className="authbox__button-wrapper">
-          <button
-            className="primary-button authbox__button"
-            disabled={!isCookieSet || pending}
-            onClick={this.handleSignInFormVisibility}
-            type="button"
-          >
-            <FormattedMessage id="user.auth.sign-in" />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  renderSignUpButton = () => {
-    const { isCookieSet, pending } = this.state;
-
-    return (
-      <div className="authbox__button-container">
-        <h1 className="authbox__button-header">
-          <FormattedMessage id="user.auth-box.sign-up" />
-        </h1>
-        <div className="authbox__button-wrapper">
-          <button
-            className="primary-button authbox__button"
-            disabled={!isCookieSet || pending}
-            onClick={this.handleSignUpFormVisibility}
-            type="button"
-          >
-            <FormattedMessage id="user.auth-box.create-account" />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  renderDemoButton = () => {
-    const { isCookieSet, pending } = this.state;
-
-    return (
-      <div className="authbox__button-container">
-        <h1 className="authbox__button-header">
-          <FormattedMessage id="user.auth-box.cta" />
-        </h1>
-        <div className="authbox__button-wrapper">
-          <PendingButton
-            className="primary-button authbox__button"
-            disabled={!isCookieSet || pending}
-            onClick={this.handleLaunchingDemo}
-            preloaderTheme={PreloaderTheme.LIGHT}
-          >
-            <FormattedMessage id="user.auth-box.demo-button" />
-          </PendingButton>
-        </div>
-      </div>
-    );
-  };
-
-  renderForms = () => {
-    const {
-      isCookieSet,
-      isSignInFormVisible,
-      isSignUpFormVisible
-    } = this.state;
-
-    if (isSignInFormVisible) {
-      return (
-        <SignInForm
-          isCookieSet={isCookieSet}
-          onCancel={this.handleSignInFormVisibility}
-        />
-      );
-    }
-
-    if (isSignUpFormVisible) {
-      return <SignUpForm onCancel={this.handleSignUpFormVisibility} />;
+    try {
+      return loginDemoUser();
+    } finally {
+      this.setState({ pending: false });
     }
   };
 
   render() {
-    const { isSignInFormVisible, isSignUpFormVisible } = this.state;
-
-    const areFormsVisible = isSignUpFormVisible || isSignInFormVisible;
+    const { pending } = this.state;
+    const { isCookieSet } = this.props;
+    const signUpRoute = !isCookieSet || pending ? '#' : '/sign-up';
+    const signInRoute = !isCookieSet || pending ? '#' : '/sign-in';
 
     return (
-      <div className="authbox">
-        <div className="authbox__left">
-          <h2 className="authbox__heading">
-            <FormattedMessage id="common.app-name" />
-          </h2>
-          <p className="authbox__description">
-            <FormattedMessage id="user.auth-box.description" />
-          </p>
-        </div>
-        <div className="authbox__right">
-          <div className="authbox__intro">
-            <button
-              className="authbox__reset-button"
-              onClick={this.handleResetAuthBox}
-              type="button"
+      <AuthLayout>
+        <div className="authbox__container">
+          <h1 className="authbox__header">
+            <FormattedMessage id="user.auth-box.sign-in" />
+          </h1>
+          <div className="authbox__wrapper">
+            <Link
+              className="primary-link-button authbox__button"
+              to={signInRoute}
             >
-              <AppLogo />
-            </button>
+              <FormattedMessage id="user.auth.sign-in" />
+            </Link>
           </div>
-          {areFormsVisible ? (
-            this.renderForms()
-          ) : (
-            <>
-              {this.renderSignInButtons()}
-              {this.renderSignUpButton()}
-              {this.renderDemoButton()}
-            </>
-          )}
-          <footer className="authbox__footer">
-            <a
-              className="authbox__link"
-              href={COMPANY_PAGE_URL}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              www.sandstream.pl
-            </a>
-          </footer>
         </div>
-      </div>
+        <div className="authbox__container">
+          <h1 className="authbox__header">
+            <FormattedMessage id="user.auth-box.sign-up" />
+          </h1>
+          <div className="authbox__wrapper">
+            <Link
+              className="primary-link-button authbox__button"
+              to={signUpRoute}
+            >
+              <FormattedMessage id="user.auth-box.create-account" />
+            </Link>
+          </div>
+        </div>
+        <div className="authbox__container">
+          <h1 className="authbox__header">
+            <FormattedMessage id="user.auth-box.cta" />
+          </h1>
+          <div className="authbox__wrapper">
+            <PendingButton
+              className="primary-button authbox__button"
+              disabled={!isCookieSet || pending}
+              onClick={this.handleLaunchingDemo}
+              preloaderTheme={PreloaderTheme.LIGHT}
+            >
+              <FormattedMessage id="user.auth-box.demo-button" />
+            </PendingButton>
+          </div>
+        </div>
+      </AuthLayout>
     );
   }
 }
 
 AuthBox.propTypes = {
+  isCookieSet: PropTypes.bool,
   loginDemoUser: PropTypes.func.isRequired
 };
 

@@ -235,6 +235,3 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
     );
   }
 };
-
-export const signUpWithGoogle = async policyAccepted =>
-  postData('/auth/sign-up/google', { policyAccepted });
