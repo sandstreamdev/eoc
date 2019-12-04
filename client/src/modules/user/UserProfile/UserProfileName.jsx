@@ -95,7 +95,9 @@ const UserProfileName = props => {
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
+    if (isFormVisible) {
+      document.addEventListener('click', handleClickOutside);
+    }
 
     return () => {
       document.removeEventListener('click', handleClickOutside);
