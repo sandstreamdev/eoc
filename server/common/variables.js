@@ -93,6 +93,11 @@ const EmailReportsFrequency = enumerable('report')(
   'WEEKLY'
 );
 
+const RouteParams = Object.freeze({
+  AGREEMENT_REQUIRED: 'agreement-required',
+  ERROR: 'error'
+});
+
 module.exports = {
   ActivityType,
   AppConfig,
@@ -110,6 +115,7 @@ module.exports = {
   LOCK_TIMEOUT,
   NUMBER_OF_ACTIVITIES_TO_SEND,
   PROJECT_NAME,
+  RouteParams,
   Routes,
   SOCKET_TIMEOUT,
   ViewType

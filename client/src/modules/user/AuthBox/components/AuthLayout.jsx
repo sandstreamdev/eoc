@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import HomeLink from 'common/components/HomeLink';
-import { COMPANY_PAGE_URL } from 'common/constants/variables';
+import { COMPANY_PAGE_URL, COMPANY_WEBSITE } from 'common/constants/variables';
 import './AuthLayout.scss';
 
 const AuthLayout = ({ children }) => (
@@ -28,7 +28,7 @@ const AuthLayout = ({ children }) => (
           rel="noopener noreferrer"
           target="_blank"
         >
-          www.sandstream.pl
+          {COMPANY_WEBSITE}
         </a>
       </footer>
     </div>

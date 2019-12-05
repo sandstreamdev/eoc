@@ -21,10 +21,9 @@ import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
 import { GoogleIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { RouteParams } from 'common/constants/enums';
 import './SignUpForm.scss';
 
-const policyErrorMessageId =
-  'user.auth.input.privacy-policy-agreement-required';
 class SignUpForm extends PureComponent {
   pendingPromise = null;
 
@@ -63,14 +62,14 @@ class SignUpForm extends PureComponent {
     } = this.props;
     const { higherLevelErrors } = this.state;
 
-    if (feedback === 'agreement-required') {
+    if (feedback === RouteParams.AGREEMENT_REQUIRED) {
       this.setState({
         higherLevelErrors: {
           ...higherLevelErrors,
-          policyError: policyErrorMessageId
+          policyError: 'user.auth.input.privacy-policy-agreement-required'
         }
       });
-    } else if (feedback === 'error') {
+    } else if (feedback === RouteParams.ERROR) {
       this.setState({
         signUpErrorId: 'common.something-went-wrong'
       });
@@ -247,7 +246,7 @@ class SignUpForm extends PureComponent {
       return this.setState({
         higherLevelErrors: {
           ...higherLevelErrors,
-          policyError: policyErrorMessageId
+          policyError: 'user.auth.input.privacy-policy-agreement-required'
         }
       });
     }
@@ -280,7 +279,9 @@ class SignUpForm extends PureComponent {
                 ? 'user.auth.input.password.not-match'
                 : '',
               emailError: isEmailError ? 'user.auth.input.email.invalid' : '',
-              policyError: isPolicyError ? policyErrorMessageId : '',
+              policyError: isPolicyError
+                ? 'user.auth.input.privacy-policy-agreement-required'
+                : '',
               nameError: isNameError ? 'common.form.field-min-max' : '',
               passwordError: isPasswordError
                 ? 'user.auth.input.password.invalid'
@@ -350,7 +351,7 @@ class SignUpForm extends PureComponent {
     );
     const policyErrorMessage = policyError ? (
       <FormattedMessage
-        id={policyErrorMessageId}
+        id="user.auth.input.privacy-policy-agreement-required"
         values={{
           cookieLink,
           privacyLink,
@@ -456,7 +457,7 @@ class SignUpForm extends PureComponent {
       return this.setState({
         higherLevelErrors: {
           ...higherLevelErrors,
-          policyError: policyErrorMessageId
+          policyError: 'user.auth.input.privacy-policy-agreement-required'
         }
       });
     }

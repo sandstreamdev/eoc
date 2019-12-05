@@ -11,7 +11,7 @@ const {
   findOrCreateUser
 } = require('../common/utils/userUtils');
 const User = require('../models/user.model');
-const { DEMO_MODE_ID } = require('../common/variables');
+const { DEMO_MODE_ID, RouteParams } = require('../common/variables');
 
 const StrategyType = Object.freeze({
   DEMO: 'demo',
@@ -187,7 +187,7 @@ const authenticateCallback = (req, resp, next) => {
     }
 
     if (!user) {
-      return resp.redirect(`${sourceRoute}/error`);
+      return resp.redirect(`${sourceRoute}/${RouteParams.ERROR}`);
     }
 
     req.login(user, error => {
@@ -205,7 +205,7 @@ const checkPolicyAgreement = (req, resp, next) => {
   const params = JSON.parse(data);
 
   if (!params || !params.policyAcceptedAt) {
-    return resp.redirect(`${Routes.SIGN_UP}/agreement-required`);
+    return resp.redirect(`${Routes.SIGN_UP}/${RouteParams.AGREEMENT_REQUIRED}`);
   }
 
   return next();

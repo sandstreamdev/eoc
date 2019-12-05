@@ -18,7 +18,7 @@ import { UnauthorizedException } from 'common/exceptions/UnauthorizedException';
 import { GoogleIcon } from 'assets/images/icons';
 import Preloader, { PreloaderSize } from 'common/components/Preloader';
 import { RouterMatchPropType } from 'common/constants/propTypes';
-
+import { RouteParams } from 'common/constants/enums';
 import './SignInForm.scss';
 
 class SignInForm extends PureComponent {
@@ -43,7 +43,7 @@ class SignInForm extends PureComponent {
       }
     } = this.props;
 
-    if (feedback === 'error') {
+    if (feedback === RouteParams.ERROR) {
       this.setState({ noAccount: true });
     }
   }
@@ -83,17 +83,14 @@ class SignInForm extends PureComponent {
     );
   };
 
-  onPolicyChange = () =>
-    this.setState(({ isPolicyAccepted }) => ({
-      isPolicyAccepted: !isPolicyAccepted
-    }));
+  acceptPolicy = () => this.setState({ isPolicyAccepted: true });
+
+  dismissPolicy = () => this.setState({ isPolicyAccepted: false });
 
   emailValidator = value =>
     validateWith(value => isEmail(value))('user.auth.input.email.invalid')(
       value
     );
-
-  handleLogin = () => this.setState({ pending: true });
 
   isFormValid = () => {
     const { isEmailValid, isPasswordValid, signInErrorId } = this.state;
@@ -279,7 +276,9 @@ class SignInForm extends PureComponent {
                 errorMessage={policyErrorMessage}
                 label={policyLabel}
                 name="policy-acceptation"
-                onChange={this.onPolicyChange}
+                onChange={
+                  isPolicyAccepted ? this.dismissPolicy : this.acceptPolicy
+                }
                 value="accepted"
               />
             )}

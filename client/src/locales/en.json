@@ -372,7 +372,6 @@
   "user.actions.recovery-password-default-error": "Account does not exist or is not activated.",
   "user.actions.reset-token-expired": "Your reset link has expired. Please reset your password using below form.",
   "user.actions.reset": "An email with instructions to reset password has been sent to {email} if it is associated with an EOC account. Your existing password has not been changed.",
-  "user.actions.sign-in.failed": "Sign in with google failed. Try again or create account",
   "user.actions.sign-in.invalid-credentials": "Wrong email or password. Try again or click {link} to reset password.",
   "user.actions.sign-up.confirmation-link-resent": "Confirmation link has been resent to email address you entered during sign up process.",
   "user.actions.sign-up.confirmation-link-sent": "In order to complete sign up process please click the link that we have just sent to {data}.",
