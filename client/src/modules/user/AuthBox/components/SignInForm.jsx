@@ -187,6 +187,7 @@ class SignInForm extends PureComponent {
     } = this.state;
     const { isCookieSet } = this.props;
     const hasSignUpFailed = signInErrorId.length > 0;
+    const isDisabled = !isCookieSet || pending;
     const cookieLink = (
       <Link className="sign-up-form__link" to="/cookie-policy">
         <FormattedMessage id="app.footer.cookie-policy" />
@@ -283,20 +284,9 @@ class SignInForm extends PureComponent {
               />
             )}
             <div className="sign-in__buttons">
-              {/* <a
-                className={classNames('google-button', {
-                  'disabled-google-button': !isCookieSet || pending
-                })}
-                href="/auth/google/sign-in"
-                onClick={this.handleLogin}
-              >
-                <GoogleIcon />
-                <FormattedMessage id="user.auth.sign-in-with-google" />
-                {pending && <Preloader size={PreloaderSize.SMALL} />}
-              </a> */}
               <button
                 className={classNames('primary-button google-button', {
-                  'disabled-google-button': !isCookieSet || pending
+                  'disabled-google-button': isDisabled
                 })}
                 onClick={this.handleSignInWithGoogle}
                 type="submit"

@@ -30,8 +30,9 @@ class AuthBox extends PureComponent {
   render() {
     const { pending } = this.state;
     const { isCookieSet } = this.props;
-    const signUpRoute = !isCookieSet || pending ? '#' : '/sign-up';
-    const signInRoute = !isCookieSet || pending ? '#' : '/sign-in';
+    const isDisabled = !isCookieSet || pending;
+    const signUpRoute = isDisabled ? '#' : '/sign-up';
+    const signInRoute = isDisabled ? '#' : '/sign-in';
 
     return (
       <AuthLayout>
