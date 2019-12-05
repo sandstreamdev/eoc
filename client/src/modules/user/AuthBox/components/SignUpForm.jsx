@@ -7,6 +7,7 @@ import isLength from 'validator/lib/isLength';
 import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
+import AuthCheckbox from './AuthCheckbox';
 import { signUp } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
 import {
@@ -33,13 +34,15 @@ class SignUpForm extends PureComponent {
         confirmPasswordValueError: '',
         emailError: '',
         nameError: '',
-        passwordError: ''
+        passwordError: '',
+        policyError: ''
       },
       isEmailValid: false,
       isFormValid: false,
       isNameValid: false,
       isPasswordConfirmValid: false,
       isPasswordValid: false,
+      isPolicyAccepted: false,
       name: '',
       password: '',
       pending: false,
@@ -117,6 +120,25 @@ class SignUpForm extends PureComponent {
       this.comparePasswords
     );
 
+  onPolicyChange = () => {
+    const {
+      higherLevelErrors,
+      higherLevelErrors: { policyError },
+      isPolicyAccepted
+    } = this.state;
+
+    const newPolicyState = !isPolicyAccepted;
+    const error = newPolicyState ? '' : policyError;
+
+    this.setState({
+      higherLevelErrors: {
+        ...higherLevelErrors,
+        policyError: error
+      },
+      isPolicyAccepted: newPolicyState
+    });
+  };
+
   nameValidator = value =>
     validateWith(value => isLength(value, { min: 1, max: 32 }))(
       'user.auth.input.email.invalid'
@@ -185,12 +207,30 @@ class SignUpForm extends PureComponent {
 
   handleSignUp = event => {
     event.preventDefault();
-    const { email, name, password, confirmPasswordValue } = this.state;
+    const {
+      confirmPasswordValue,
+      email,
+      higherLevelErrors,
+      isPolicyAccepted,
+      name,
+      password
+    } = this.state;
+
+    if (!isPolicyAccepted) {
+      return this.setState({
+        higherLevelErrors: {
+          ...higherLevelErrors,
+          policyError: 'user.auth.input.privacy-policy-agreement-required'
+        }
+      });
+    }
 
     this.setState({ pending: true });
 
+    const policyAcceptedAt = Date.now();
+
     this.pendingPromise = makeAbortablePromise(
-      signUp(email, name, password, confirmPasswordValue)
+      signUp(email, name, password, confirmPasswordValue, policyAcceptedAt)
     );
 
     return this.pendingPromise.promise
@@ -204,7 +244,8 @@ class SignUpForm extends PureComponent {
               isConfirmPasswordError,
               isEmailError,
               isNameError,
-              isPasswordError
+              isPasswordError,
+              isPolicyError
             } = err.errors;
 
             newState.higherLevelErrors = {
@@ -212,6 +253,9 @@ class SignUpForm extends PureComponent {
                 ? 'user.auth.input.password.not-match'
                 : '',
               emailError: isEmailError ? 'user.auth.input.email.invalid' : '',
+              policyError: isPolicyError
+                ? 'user.auth.input.privacy-policy-agreement-required'
+                : '',
               nameError: isNameError ? 'common.form.field-min-max' : '',
               passwordError: isPasswordError
                 ? 'user.auth.input.password.invalid'
@@ -246,9 +290,11 @@ class SignUpForm extends PureComponent {
         confirmPasswordValueError,
         emailError,
         nameError,
-        passwordError
+        passwordError,
+        policyError
       },
       isFormValid,
+      isPolicyAccepted,
       pending,
       signUpErrorId
     } = this.state;
@@ -268,6 +314,26 @@ class SignUpForm extends PureComponent {
         <FormattedMessage id="app.footer.terms-of-use" />
       </Link>
     );
+    const policyLabel = (
+      <FormattedMessage
+        id="user.auth.input.privacy-policy-agreement"
+        values={{
+          cookieLink,
+          privacyLink,
+          termsLink
+        }}
+      />
+    );
+    const policyErrorMessage = policyError ? (
+      <FormattedMessage
+        id="user.auth.input.privacy-policy-agreement-required"
+        values={{
+          cookieLink,
+          privacyLink,
+          termsLink
+        }}
+      />
+    ) : null;
 
     return (
       <>
@@ -316,12 +382,15 @@ class SignUpForm extends PureComponent {
             onChange={this.onPasswordConfirmChange}
             type="password"
           />
-          <div className="sign-up-form__privacy-policy-agreement">
-            <FormattedMessage
-              id="user.auth.privacy-policy-agreement"
-              values={{ cookieLink, privacyLink, termsLink }}
-            />
-          </div>
+          <AuthCheckbox
+            checked={isPolicyAccepted}
+            disabled={pending}
+            errorMessage={policyErrorMessage}
+            label={policyLabel}
+            name="policy-acceptation"
+            onChange={this.onPolicyChange}
+            value="accepted"
+          />
           <div className="sign-up-form__buttons">
             <button
               className="primary-button"
