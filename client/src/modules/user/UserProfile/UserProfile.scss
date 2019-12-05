@@ -91,12 +91,6 @@
     justify-content: space-between;
   }
 
-  &__data-name {
-    text-transform: uppercase;
-    font-size: $s-font;
-    margin-bottom: 4px;
-  }
-
   &__data-value {
     color: $text-dark;
     font-weight: 500;
@@ -117,5 +111,13 @@
     width: 100%;
     margin: 0;
     border-bottom: 1px solid $border-color;
+  }
+
+  &__name-item {
+    padding: four-by(6) four-by(2);
+
+    @include breakpoint($medium) {
+      padding: four-by(4) four-by(2);
+    }
   }
 }

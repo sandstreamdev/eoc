@@ -18,6 +18,7 @@ export const AuthorizationActionTypes = enumerable('user')(
   ...asyncTypes('FETCH'),
   ...asyncTypes('LOGIN'),
   ...asyncTypes('LOGOUT'),
+  ...asyncTypes('UPDATE_NAME'),
   ...asyncTypes('UPDATE_SETTINGS')
 );
 
@@ -41,6 +42,11 @@ const fetchUserDetailsSuccess = payload => ({
 
 const fetchUserDetailsFailure = () => ({
   type: AuthorizationActionTypes.FETCH_FAILURE
+});
+
+const updateNameSuccess = payload => ({
+  type: AuthorizationActionTypes.UPDATE_NAME_SUCCESS,
+  payload
 });
 
 export const removeUserData = () => dispatch => {
@@ -227,4 +233,13 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
       error
     );
   }
+};
+
+export const updateName = (updatedName, userId) => async dispatch => {
+  await postData('/auth/change-name', { updatedName, userId });
+
+  dispatch(updateNameSuccess({ updatedName }));
+  createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
+    notificationId: 'user.actions.name-update-success'
+  });
 };

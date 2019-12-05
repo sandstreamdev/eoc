@@ -366,6 +366,8 @@
   "user.actions.fetch-user-details-error": "Failed to fetch your profile data.",
   "user.actions.login": "Login success.",
   "user.actions.logout-fail": "Logout failed.",
+  "user.actions.name-update-failure": "Name update failure.",
+  "user.actions.name-update-success": "Name updated successfully.",
   "user.actions.password-recovery-success": "Password successfully updated. Please go to the {link} and sign in to app.",
   "user.actions.recovery-password-default-error": "Account does not exist or is not activated.",
   "user.actions.reset-token-expired": "Your reset link has expired. Please reset your password using below form.",

@@ -15,6 +15,7 @@ import PasswordChangeForm from 'modules/user/AuthBox/components/PasswordChangeFo
 import UserProfileHeader from './UserProfileHeader';
 import DeleteAccount from './DeleteAccount';
 import EmailReports from './EmailReports';
+import UserProfileName from './UserProfileName';
 import './UserProfile.scss';
 
 class UserProfile extends PureComponent {
@@ -58,7 +59,7 @@ class UserProfile extends PureComponent {
 
   renderPersonalInfo = () => {
     const {
-      currentUser: { avatarUrl, name }
+      currentUser: { avatarUrl, name, id }
     } = this.props;
 
     return (
@@ -79,11 +80,8 @@ class UserProfile extends PureComponent {
               />
             </span>
           </li>
-          <li className="user-profile__data-item">
-            <span className="user-profile__data-name">
-              <FormattedMessage id="user.name" />
-            </span>
-            <span className="user-profile__data-value">{name}</span>
+          <li className="user-profile__data-item user-profile__name-item">
+            <UserProfileName name={name} userId={id} />
           </li>
         </ul>
       </section>
