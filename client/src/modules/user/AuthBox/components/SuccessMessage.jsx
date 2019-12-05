@@ -21,7 +21,7 @@ const SuccessMessage = ({ match: { path } }) => (
         }
         values={{
           link: (
-            <Link className="success-message__link" to="/">
+            <Link className="success-message__link" to="/sign-in">
               <FormattedMessage id="user.auth.sign-up.result-link" />
             </Link>
           )

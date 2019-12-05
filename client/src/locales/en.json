@@ -408,7 +408,7 @@
   "user.auth.sign-in-with-google": "Sign in with Google",
   "user.auth.sign-up.button.resend-link": "Resend link",
   "user.auth.sign-up.reset-password": "Reset password form",
-  "user.auth.sign-up.result-link": "Sign in/Sign up page",
+  "user.auth.sign-up.result-link": "Sign in page",
   "user.auth.sign-up": "Sign up",
   "user.auth.sign-up-with-google": "Sign up with Google",
   "user.delete-account-error": "Entered data is incorrect. Please try again.",

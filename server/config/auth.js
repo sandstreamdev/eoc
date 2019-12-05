@@ -8,8 +8,7 @@ const { seedDemoData } = require('../seed/demoSeed/seedDemoData');
 const {
   extractUserProfile,
   findAndAuthenticateUser,
-  findOrCreateUser,
-  findOrUpdateUser
+  findOrCreateUser
 } = require('../common/utils/userUtils');
 const User = require('../models/user.model');
 const { DEMO_MODE_ID } = require('../common/variables');
@@ -43,17 +42,13 @@ passport.use(
       userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
     },
     (request, accessToken, refreshToken, profile, done) => {
-      const { policyAcceptedAt, sourceRoute } = JSON.parse(request.query.state);
+      const { policyAcceptedAt } = JSON.parse(request.query.state);
 
-      if (sourceRoute === Routes.SIGN_UP) {
-        findOrCreateUser(
-          extractUserProfile(profile, accessToken),
-          policyAcceptedAt,
-          done
-        );
-      } else {
-        findOrUpdateUser(extractUserProfile(profile, accessToken), done);
-      }
+      findOrCreateUser(
+        extractUserProfile(profile, accessToken),
+        done,
+        policyAcceptedAt
+      );
     }
   )
 );

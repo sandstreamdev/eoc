@@ -9,6 +9,7 @@ import _flowRight from 'lodash/flowRight';
 
 import AuthInput from './AuthInput';
 import AuthLayout from './AuthLayout';
+import AuthCheckbox from './AuthCheckbox';
 import { signIn } from 'modules/user/model/actions';
 import PendingButton from 'common/components/PendingButton';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
@@ -28,6 +29,8 @@ class SignInForm extends PureComponent {
     isEmailValid: false,
     isFormValid: false,
     isPasswordValid: false,
+    isPolicyAccepted: false,
+    noAccount: false,
     password: '',
     pending: false,
     signInErrorId: ''
@@ -41,9 +44,7 @@ class SignInForm extends PureComponent {
     } = this.props;
 
     if (feedback === 'error') {
-      this.setState({
-        signInErrorId: 'user.actions.sign-in.failed'
-      });
+      this.setState({ noAccount: true });
     }
   }
 
@@ -82,6 +83,11 @@ class SignInForm extends PureComponent {
     );
   };
 
+  onPolicyChange = () =>
+    this.setState(({ isPolicyAccepted }) => ({
+      isPolicyAccepted: !isPolicyAccepted
+    }));
+
   emailValidator = value =>
     validateWith(value => isEmail(value))('user.auth.input.email.invalid')(
       value
@@ -95,6 +101,28 @@ class SignInForm extends PureComponent {
     return this.setState({
       isFormValid: isEmailValid && isPasswordValid && !signInErrorId
     });
+  };
+
+  handleSignInWithGoogle = event => {
+    event.preventDefault();
+
+    const { noAccount, isPolicyAccepted } = this.state;
+    let url = '/auth/google/sign-in';
+
+    if (noAccount) {
+      if (!isPolicyAccepted) {
+        return;
+      }
+
+      const data = {};
+      data.policyAcceptedAt = Date.now();
+
+      url = `/auth/google/sign-up/${JSON.stringify(data)}`;
+    }
+
+    this.setState({ pending: true });
+
+    window.location = url;
   };
 
   handleSignIn = event => {
@@ -150,9 +178,51 @@ class SignInForm extends PureComponent {
   );
 
   render() {
-    const { isFormValid, pending, signInErrorId } = this.state;
+    const {
+      isFormValid,
+      isPolicyAccepted,
+      noAccount,
+      pending,
+      signInErrorId
+    } = this.state;
     const { isCookieSet } = this.props;
     const hasSignUpFailed = signInErrorId.length > 0;
+    const cookieLink = (
+      <Link className="sign-up-form__link" to="/cookie-policy">
+        <FormattedMessage id="app.footer.cookie-policy" />
+      </Link>
+    );
+    const privacyLink = (
+      <Link className="sign-up-form__link" to="/privacy-policy">
+        <FormattedMessage id="app.footer.privacy" />
+      </Link>
+    );
+    const termsLink = (
+      <Link className="sign-up-form__link" to="/terms-of-use">
+        <FormattedMessage id="app.footer.terms-of-use" />
+      </Link>
+    );
+    const policyLabel = (
+      <FormattedMessage
+        id="user.auth.input.privacy-policy-agreement"
+        values={{
+          cookieLink,
+          privacyLink,
+          termsLink
+        }}
+      />
+    );
+    const policyErrorMessage =
+      noAccount && !isPolicyAccepted ? (
+        <FormattedMessage
+          id="user.auth.input.privacy-policy-agreement-required"
+          values={{
+            cookieLink,
+            privacyLink,
+            termsLink
+          }}
+        />
+      ) : null;
 
     return (
       <AuthLayout>
@@ -201,8 +271,19 @@ class SignInForm extends PureComponent {
             <h2>
               <FormattedMessage id="user.auth.or" />
             </h2>
+            {noAccount && (
+              <AuthCheckbox
+                checked={isPolicyAccepted}
+                disabled={pending}
+                errorMessage={policyErrorMessage}
+                label={policyLabel}
+                name="policy-acceptation"
+                onChange={this.onPolicyChange}
+                value="accepted"
+              />
+            )}
             <div className="sign-in__buttons">
-              <a
+              {/* <a
                 className={classNames('google-button', {
                   'disabled-google-button': !isCookieSet || pending
                 })}
@@ -212,7 +293,22 @@ class SignInForm extends PureComponent {
                 <GoogleIcon />
                 <FormattedMessage id="user.auth.sign-in-with-google" />
                 {pending && <Preloader size={PreloaderSize.SMALL} />}
-              </a>
+              </a> */}
+              <button
+                className={classNames('primary-button google-button', {
+                  'disabled-google-button': !isCookieSet || pending
+                })}
+                onClick={this.handleSignInWithGoogle}
+                type="submit"
+              >
+                <GoogleIcon />
+                {noAccount ? (
+                  <FormattedMessage id="user.auth.sign-up-with-google" />
+                ) : (
+                  <FormattedMessage id="user.auth.sign-in-with-google" />
+                )}
+                {pending && <Preloader size={PreloaderSize.SMALL} />}
+              </button>
             </div>
           </form>
           {this.renderForgotPassword()}
