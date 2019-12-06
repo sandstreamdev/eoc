@@ -1,121 +1,14 @@
 @import 'partials';
 
 .authbox {
-  display: flex;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background-color: $container-bg;
-  box-shadow: 0 1px 3px rgba($shadow-color, 0.15);
-  margin-bottom: four-by(4);
-  text-align: center;
-  min-height: 300px;
-  flex-direction: column;
-  width: 250px;
-
-  @include breakpoint($xsmall) {
-    width: 300px;
-  }
-
-  @include breakpoint($large) {
-    width: 55%;
-    flex-direction: row;
-  }
-
-  &__left {
-    width: auto;
-    box-sizing: border-box;
-    height: 50%;
-    padding: four-by(4);
-    background: url('../../../assets/images/auth-intro.jpg') center;
-    position: relative;
-
-    @include breakpoint($large) {
-      background-size: auto 100%;
-      width: 50%;
-      height: auto;
-    }
-  }
-
-  &__right {
-    width: auto;
-    box-sizing: border-box;
-    min-width: 240px;
-    padding: four-by(4);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    @include breakpoint($large) {
-      width: 50%;
-    }
-  }
-
-  &__heading {
-    font-size: 16px;
-    line-height: 1.2;
-    font-weight: 700;
-    color: $text-normal;
-    margin-bottom: four-by(4);
-    text-align: left;
-  }
-
-  &__description {
-    font-size: 12px;
-    line-height: 1.2;
-    color: $text-normal;
-    text-align: left;
-  }
-
-  &__intro {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .app-logo {
-      @include breakpoint($large) {
-        margin-bottom: four-by(2);
-      }
-    }
-  }
-
-  &__button-header {
+  &__header {
     font-size: $s-font;
     line-height: 1.2;
     color: $text-normal;
     margin-bottom: four-by(1);
   }
 
-  &__footer {
-    margin-top: four-by(4);
-    font-size: $s-font;
-    line-height: 1.2;
-    color: $text-normal;
-  }
-
-  &__link {
-    color: $link-color;
-    font-style: italic;
-    text-decoration: none;
-    outline: 0;
-
-    &:hover {
-      text-decoration: underline;
-      color: $text-black;
-    }
-
-    &:visited {
-      color: $link-color;
-
-      &:hover {
-        color: $text-black;
-      }
-    }
-  }
-
-  &__button-wrapper {
+  &__wrapper {
     position: relative;
     display: flex;
     margin: 0 auto;
@@ -124,10 +17,14 @@
 
     a {
       margin-bottom: four-by(2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 four-by(4);
     }
   }
 
-  &__button-container {
+  &__container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -142,22 +39,7 @@
     width: 100%;
     width: 166px;
     font-weight: 400;
-    font-size: 16px;
+    font-size: $m-font;
     text-transform: capitalize;
-  }
-
-  &__reset-button {
-    background: 0;
-    border: 0;
-    outline: 0;
-    cursor: pointer;
-  }
-}
-
-.google-button {
-  outline: 0;
-
-  &__img {
-    height: 40px;
   }
 }

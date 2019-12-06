@@ -78,3 +78,8 @@ export const EmailReportsFrequency = Object.freeze({
   WEDNESDAY: 'report/WEDNESDAY',
   WEEKLY: 'reports/WEEKLY'
 });
+
+export const RouteParams = Object.freeze({
+  AGREEMENT_REQUIRED: 'agreement-required',
+  ERROR: 'error'
+});

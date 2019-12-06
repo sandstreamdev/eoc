@@ -3,9 +3,11 @@ const express = require('express');
 const router = express.Router();
 const {
   authenticateCallback,
-  authenticateWithGoogle,
+  checkPolicyAgreement,
   setDemoUser,
-  setUser
+  setUser,
+  signInWithGoogle,
+  signUpWithGoogle
 } = require('../config/auth');
 const {
   changePassword,
@@ -40,10 +42,11 @@ const { authorize } = require('../middleware/authorize');
 
 router.post('/demo', setDemoUser, sendUser);
 router.get('/demo', setDemoUser, demoRedirect);
-router.get('/google', authenticateWithGoogle);
+router.get('/google/sign-in', signInWithGoogle);
 router.get('/google/callback', authenticateCallback);
 router.post('/logout', removeDemoUserChanges, logout);
 router.post('/sign-up', signUp, sendSignUpConfirmationLink);
+router.get('/google/sign-up/:data', checkPolicyAgreement, signUpWithGoogle);
 router.get('/confirm-email/:hash', confirmEmail);
 router.post('/sign-in', setUser, sendUser);
 router.post(

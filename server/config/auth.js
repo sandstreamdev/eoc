@@ -11,12 +11,17 @@ const {
   findOrCreateUser
 } = require('../common/utils/userUtils');
 const User = require('../models/user.model');
-const { DEMO_MODE_ID } = require('../common/variables');
+const { DEMO_MODE_ID, RouteParams } = require('../common/variables');
 
 const StrategyType = Object.freeze({
   DEMO: 'demo',
   GOOGLE: 'google',
   LOCAL: 'local'
+});
+
+const Routes = Object.freeze({
+  SIGN_IN: '/sign-in',
+  SIGN_UP: '/sign-up'
 });
 
 const {
@@ -32,11 +37,18 @@ passport.use(
       callbackURL: GOOGLE_CALLBACK_URL,
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
+      passReqToCallback: true,
       proxy: true,
       userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
     },
-    (accessToken, refreshToken, profile, done) => {
-      findOrCreateUser(extractUserProfile(profile, accessToken), done);
+    (request, accessToken, refreshToken, profile, done) => {
+      const { policyAcceptedAt } = JSON.parse(request.query.state);
+
+      findOrCreateUser(
+        extractUserProfile(profile, accessToken),
+        done,
+        policyAcceptedAt
+      );
     }
   )
 );
@@ -130,13 +142,7 @@ const authenticate = (req, resp, next, type) => {
       return resp.sendStatus(401);
     }
 
-    req.login(user, err => {
-      if (err) {
-        return next(err);
-      }
-
-      next();
-    });
+    req.login(user, error => (error ? next(error) : next()));
   })(req, resp, next);
 };
 
@@ -146,18 +152,58 @@ const setUser = (req, resp, next) =>
 const setDemoUser = (req, resp, next) =>
   authenticate(req, resp, next, StrategyType.DEMO);
 
-const authenticateWithGoogle = passport.authenticate(StrategyType.GOOGLE, {
-  scope: ['email', 'profile']
+const signInWithGoogle = passport.authenticate(StrategyType.GOOGLE, {
+  scope: ['email', 'profile'],
+  state: JSON.stringify({
+    sourceRoute: Routes.SIGN_IN
+  })
 });
 
-const authenticateCallback = passport.authenticate(StrategyType.GOOGLE, {
-  failureRedirect: '/',
-  successRedirect: '/'
-});
+const signUpWithGoogle = (req, resp, next) => {
+  const { data } = req.params;
+  const { policyAcceptedAt } = JSON.parse(data);
+
+  return passport.authenticate(StrategyType.GOOGLE, {
+    scope: ['email', 'profile'],
+    state: JSON.stringify({
+      policyAcceptedAt,
+      sourceRoute: Routes.SIGN_UP
+    })
+  })(req, resp, next);
+};
+
+const authenticateCallback = (req, resp, next) => {
+  const { sourceRoute } = JSON.parse(req.query.state);
+
+  return passport.authenticate(StrategyType.GOOGLE, (error, user) => {
+    if (error) {
+      return next(error);
+    }
+
+    if (!user) {
+      return resp.redirect(`${sourceRoute}/${RouteParams.ERROR}`);
+    }
+
+    req.login(user, error => (error ? next(error) : resp.redirect('/')));
+  })(req, resp, next);
+};
+
+const checkPolicyAgreement = (req, resp, next) => {
+  const { data } = req.params;
+  const params = JSON.parse(data);
+
+  if (!params || !params.policyAcceptedAt) {
+    return resp.redirect(`${Routes.SIGN_UP}/${RouteParams.AGREEMENT_REQUIRED}`);
+  }
+
+  return next();
+};
 
 module.exports = {
   authenticateCallback,
-  authenticateWithGoogle,
+  checkPolicyAgreement,
   setDemoUser,
-  setUser
+  setUser,
+  signInWithGoogle,
+  signUpWithGoogle
 };

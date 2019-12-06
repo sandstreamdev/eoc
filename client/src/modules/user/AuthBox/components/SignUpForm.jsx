@@ -7,6 +7,7 @@ import isLength from 'validator/lib/isLength';
 import { Link } from 'react-router-dom';
 
 import AuthInput from './AuthInput';
+import AuthLayout from './AuthLayout';
 import AuthCheckbox from './AuthCheckbox';
 import { signUp } from 'modules/user/model/actions';
 import { AbortPromiseException } from 'common/exceptions/AbortPromiseException';
@@ -16,8 +17,11 @@ import {
   validateWith
 } from 'common/utils/helpers';
 import PendingButton from 'common/components/PendingButton';
-import { IntlPropType } from 'common/constants/propTypes';
+import { IntlPropType, RouterMatchPropType } from 'common/constants/propTypes';
 import { ValidationException } from 'common/exceptions/ValidationException';
+import { GoogleIcon } from 'assets/images/icons';
+import Preloader, { PreloaderSize } from 'common/components/Preloader';
+import { RouteParams } from 'common/constants/enums';
 import './SignUpForm.scss';
 
 class SignUpForm extends PureComponent {
@@ -48,6 +52,28 @@ class SignUpForm extends PureComponent {
       pending: false,
       signUpErrorId: ''
     };
+  }
+
+  componentDidMount() {
+    const {
+      match: {
+        params: { feedback }
+      }
+    } = this.props;
+    const { higherLevelErrors } = this.state;
+
+    if (feedback === RouteParams.AGREEMENT_REQUIRED) {
+      this.setState({
+        higherLevelErrors: {
+          ...higherLevelErrors,
+          policyError: 'user.auth.input.privacy-policy-agreement-required'
+        }
+      });
+    } else if (feedback === RouteParams.ERROR) {
+      this.setState({
+        signUpErrorId: 'common.something-went-wrong'
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -298,7 +324,6 @@ class SignUpForm extends PureComponent {
       pending,
       signUpErrorId
     } = this.state;
-    const { onCancel } = this.props;
     const cookieLink = (
       <Link className="sign-up-form__link" to="/cookie-policy">
         <FormattedMessage id="app.footer.cookie-policy" />
@@ -392,14 +417,9 @@ class SignUpForm extends PureComponent {
             value="accepted"
           />
           <div className="sign-up-form__buttons">
-            <button
-              className="primary-button"
-              disabled={pending}
-              onClick={onCancel}
-              type="button"
-            >
+            <Link className="primary-link-button" to="/">
               <FormattedMessage id="common.button.cancel" />
-            </button>
+            </Link>
             <PendingButton
               className="primary-button sign-up-form__confirm"
               disabled={!isFormValid}
@@ -409,9 +429,45 @@ class SignUpForm extends PureComponent {
               <FormattedMessage id="user.auth.sign-up" />
             </PendingButton>
           </div>
+          <h2>
+            <FormattedMessage id="user.auth.or" />
+          </h2>
+          <div className="sign-up-form__google">
+            <button
+              className="primary-button sign-up-form__confirm google-button"
+              onClick={this.signUpWithGoogle}
+              type="submit"
+            >
+              <GoogleIcon />
+              <FormattedMessage id="user.auth.sign-up-with-google" />
+              {pending && <Preloader size={PreloaderSize.SMALL} />}
+            </button>
+          </div>
         </form>
       </>
     );
+  };
+
+  signUpWithGoogle = event => {
+    event.preventDefault();
+
+    const { higherLevelErrors, isPolicyAccepted } = this.state;
+
+    if (!isPolicyAccepted) {
+      return this.setState({
+        higherLevelErrors: {
+          ...higherLevelErrors,
+          policyError: 'user.auth.input.privacy-policy-agreement-required'
+        }
+      });
+    }
+
+    const data = {};
+    data.policyAcceptedAt = isPolicyAccepted ? Date.now() : null;
+
+    this.setState({ pending: true });
+
+    window.location = `/auth/google/sign-up/${JSON.stringify(data)}`;
   };
 
   renderConfirmationMessage = () => {
@@ -431,19 +487,23 @@ class SignUpForm extends PureComponent {
     const { confirmationSend } = this.state;
 
     return (
-      <div className="sign-up">
-        {confirmationSend
-          ? this.renderConfirmationMessage()
-          : this.renderSignUpForm()}
-      </div>
+      <AuthLayout>
+        <div className="sign-up">
+          {confirmationSend
+            ? this.renderConfirmationMessage()
+            : this.renderSignUpForm()}
+        </div>
+      </AuthLayout>
     );
   }
 }
 
 SignUpForm.propTypes = {
   intl: IntlPropType.isRequired,
-
-  onCancel: PropTypes.func.isRequired
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
+  }),
+  match: RouterMatchPropType.isRequired
 };
 
 export default injectIntl(SignUpForm);

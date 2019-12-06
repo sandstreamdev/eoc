@@ -15,6 +15,8 @@ import {
   LinkExpired,
   PasswordRecoveryForm,
   ResetPassword,
+  SignInForm,
+  SignUpForm,
   SuccessMessage,
   UserProfile
 } from 'modules/user';
@@ -173,7 +175,13 @@ export class Layout extends PureComponent {
           <>
             <Notifications />
             <Switch>
-              <Route component={AuthBox} exact path="/" />
+              <Route
+                exact
+                path="/"
+                render={props => (
+                  <AuthBox {...props} isCookieSet={isCookieSet} />
+                )}
+              />
               <Route component={PrivacyPolicy} path="/privacy-policy" />
               <Route component={TermsOfUse} path="/terms-of-use" />
               <Route component={CookiePolicy} path="/cookie-policy" />
@@ -198,6 +206,13 @@ export class Layout extends PureComponent {
               <Route
                 component={SuccessMessage}
                 path="/password-recovery-success"
+              />
+              <Route component={SignUpForm} path="/sign-up/:feedback?" />
+              <Route
+                path="/sign-in/:feedback?"
+                render={props => (
+                  <SignInForm {...props} isCookieSet={isCookieSet} />
+                )}
               />
               <Redirect to="/" />
             </Switch>
