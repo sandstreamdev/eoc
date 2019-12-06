@@ -12,7 +12,7 @@
   text-align: center;
   min-height: 300px;
   flex-direction: column;
-  width: 250px;
+  width: 280px;
 
   @include breakpoint($xsmall) {
     width: 300px;

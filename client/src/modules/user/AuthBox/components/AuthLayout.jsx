@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import HomeLink from 'common/components/HomeLink';
-import { COMPANY_PAGE_URL, COMPANY_WEBSITE } from 'common/constants/variables';
+import { COMPANY_PAGE_URL, COMPANY_NAME } from 'common/constants/variables';
 import './AuthLayout.scss';
 
 const AuthLayout = ({ children }) => (
@@ -28,7 +28,7 @@ const AuthLayout = ({ children }) => (
           rel="noopener noreferrer"
           target="_blank"
         >
-          {COMPANY_WEBSITE}
+          {COMPANY_NAME}
         </a>
       </footer>
     </div>
