@@ -1,14 +1,15 @@
 import React, { PureComponent } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import _flowRight from 'lodash/flowRight';
 
 import PendingButton from 'common/components/PendingButton';
 import { saveEmailReportsSettings, sendReport } from '../model/actions';
 import DaySelector from './DaySelector';
 import './EmailReports.scss';
 import { EmailReportsFrequency } from 'common/constants/enums';
-import { UserPropType } from 'common/constants/propTypes';
+import { IntlPropType, UserPropType } from 'common/constants/propTypes';
 
 const emailReportsOptions = [
   { message: 'common.monday', value: EmailReportsFrequency.MONDAY },
@@ -60,9 +61,12 @@ class EmailReports extends PureComponent {
   };
 
   handleSetWeekly = () =>
-    this.setState({
-      emailReportsFrequency: EmailReportsFrequency.WEEKLY
-    });
+    this.setState(
+      {
+        emailReportsFrequency: EmailReportsFrequency.MONDAY
+      },
+      this.updateReportSettings
+    );
 
   handleSetNever = () =>
     this.setState(
@@ -88,9 +92,16 @@ class EmailReports extends PureComponent {
 
   updateReportSettings = () => {
     const { emailReportsFrequency } = this.state;
-    const { saveEmailReportsSettings } = this.props;
+    const {
+      intl: { formatMessage },
+      saveEmailReportsSettings
+    } = this.props;
+    const data = emailReportsOptions.filter(
+      option => option.value === emailReportsFrequency
+    )[0];
+    const notificationData = data ? formatMessage({ id: data.message }) : null;
 
-    saveEmailReportsSettings(emailReportsFrequency);
+    saveEmailReportsSettings(emailReportsFrequency, notificationData);
   };
 
   render() {
@@ -149,12 +160,14 @@ class EmailReports extends PureComponent {
 }
 
 EmailReports.propTypes = {
+  intl: IntlPropType.isRequired,
   user: UserPropType.isRequired,
 
   sendReport: PropTypes.func.isRequired,
   saveEmailReportsSettings: PropTypes.func.isRequired
 };
 
-export default connect(null, { sendReport, saveEmailReportsSettings })(
-  EmailReports
-);
+export default _flowRight(
+  injectIntl,
+  connect(null, { sendReport, saveEmailReportsSettings })
+)(EmailReports);
