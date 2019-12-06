@@ -142,13 +142,7 @@ const authenticate = (req, resp, next, type) => {
       return resp.sendStatus(401);
     }
 
-    req.login(user, err => {
-      if (err) {
-        return next(err);
-      }
-
-      next();
-    });
+    req.login(user, error => (error ? next(error) : next()));
   })(req, resp, next);
 };
 
@@ -190,13 +184,7 @@ const authenticateCallback = (req, resp, next) => {
       return resp.redirect(`${sourceRoute}/${RouteParams.ERROR}`);
     }
 
-    req.login(user, error => {
-      if (error) {
-        return next(error);
-      }
-
-      return resp.redirect('/');
-    });
+    req.login(user, error => (error ? next(error) : resp.redirect('/')));
   })(req, resp, next);
 };
 
