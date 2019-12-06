@@ -219,7 +219,10 @@ export const sendReport = () => async dispatch => {
   }
 };
 
-export const saveEmailReportsSettings = emailReportsFrequency => async dispatch => {
+export const saveEmailReportsSettings = (
+  emailReportsFrequency,
+  day
+) => async dispatch => {
   try {
     const result = await postData('/auth/email-reports-settings', {
       emailReportsFrequency
@@ -227,7 +230,10 @@ export const saveEmailReportsSettings = emailReportsFrequency => async dispatch 
 
     if (result) {
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
-        notificationId: 'common.settings-saved'
+        notificationId: day
+          ? 'user.action.weekly-reports-enabled'
+          : 'user.action.weekly-reports-disabled',
+        data: { day }
       });
     }
   } catch (error) {
