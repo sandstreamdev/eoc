@@ -99,7 +99,6 @@ class EmailReports extends PureComponent {
     const data = emailReportsOptions.filter(
       option => option.value === emailReportsFrequency
     )[0];
-
     const notificationData = data ? formatMessage({ id: data.message }) : null;
 
     saveEmailReportsSettings(emailReportsFrequency, notificationData);
