@@ -50,6 +50,7 @@ class SignUpForm extends PureComponent {
       name: '',
       password: '',
       pending: false,
+      pendingForGoogle: false,
       signUpErrorId: ''
     };
   }
@@ -322,8 +323,11 @@ class SignUpForm extends PureComponent {
       isFormValid,
       isPolicyAccepted,
       pending,
+      pendingForGoogle,
       signUpErrorId
     } = this.state;
+    const isGoogleSignUpDisabled = pending || pendingForGoogle;
+    const isSignUpDisabled = isGoogleSignUpDisabled || !isFormValid;
     const cookieLink = (
       <Link className="sign-up-form__link" to="/cookie-policy">
         <FormattedMessage id="app.footer.cookie-policy" />
@@ -369,7 +373,7 @@ class SignUpForm extends PureComponent {
         <form
           className="sign-up-form__form"
           noValidate
-          onSubmit={isFormValid && !pending ? this.handleSignUp : null}
+          onSubmit={isSignUpDisabled ? null : this.handleSignUp}
         >
           <AuthInput
             disabled={pending}
@@ -422,7 +426,7 @@ class SignUpForm extends PureComponent {
             </Link>
             <PendingButton
               className="primary-button sign-up-form__confirm"
-              disabled={!isFormValid}
+              disabled={isSignUpDisabled}
               onClick={this.handleSignUp}
               type="submit"
             >
@@ -435,12 +439,13 @@ class SignUpForm extends PureComponent {
           <div className="sign-up-form__google">
             <button
               className="primary-button sign-up-form__confirm google-button"
+              disabled={isGoogleSignUpDisabled}
               onClick={this.signUpWithGoogle}
               type="submit"
             >
               <GoogleIcon />
               <FormattedMessage id="user.auth.sign-up-with-google" />
-              {pending && <Preloader size={PreloaderSize.SMALL} />}
+              {pendingForGoogle && <Preloader size={PreloaderSize.SMALL} />}
             </button>
           </div>
         </form>
@@ -465,7 +470,7 @@ class SignUpForm extends PureComponent {
     const data = {};
     data.policyAcceptedAt = isPolicyAccepted ? Date.now() : null;
 
-    this.setState({ pending: true });
+    this.setState({ pendingForGoogle: true });
 
     window.location = `/auth/google/sign-up/${JSON.stringify(data)}`;
   };

@@ -100,6 +100,7 @@ export const signIn = (email, password) => dispatch =>
     .then(response => response.json())
     .then(json => {
       dispatch(loginSuccess(json));
+      history.push('/');
       createNotificationWithTimeout(dispatch, NotificationType.SUCCESS, {
         notificationId: 'user.actions.login'
       });
