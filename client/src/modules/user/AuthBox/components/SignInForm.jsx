@@ -137,9 +137,9 @@ class SignInForm extends PureComponent {
 
         if (err instanceof UnauthorizedException) {
           newState.signInErrorId = 'user.actions.sign-in.invalid-credentials';
+        } else {
+          newState.signInErrorId = 'common.something-went-wrong';
         }
-
-        newState.signInErrorId = 'common.something-went-wrong';
 
         this.setState(newState);
       }
