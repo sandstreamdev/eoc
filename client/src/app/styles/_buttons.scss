@@ -73,6 +73,11 @@
     height: four-by(6);
     margin-right: four-by(3);
   }
+
+  &:disabled {
+    background-color: $bg-color;
+    opacity: 0.4;
+  }
 }
 
 .link-button {

@@ -33,6 +33,7 @@ class SignInForm extends PureComponent {
     noAccount: false,
     password: '',
     pending: false,
+    pendingForGoogle: false,
     signInErrorId: ''
   };
 
@@ -117,7 +118,7 @@ class SignInForm extends PureComponent {
       url = `/auth/google/sign-up/${JSON.stringify(data)}`;
     }
 
-    this.setState({ pending: true });
+    this.setState({ pendingForGoogle: true });
 
     window.location = url;
   };
@@ -130,21 +131,19 @@ class SignInForm extends PureComponent {
     this.setState({ pending: true });
     this.pendingPromise = makeAbortablePromise(signIn(email, password));
 
-    return this.pendingPromise.promise
-      .then(() => this.setState({ pending: false }))
-      .catch(err => {
-        if (!(err instanceof AbortPromiseException)) {
-          const newState = { pending: false };
+    return this.pendingPromise.promise.catch(err => {
+      if (!(err instanceof AbortPromiseException)) {
+        const newState = { pending: false };
 
-          if (err instanceof UnauthorizedException) {
-            newState.signInErrorId = 'user.actions.sign-in.invalid-credentials';
-          } else {
-            newState.signInErrorId = 'common.something-went-wrong';
-          }
-
-          this.setState(newState);
+        if (err instanceof UnauthorizedException) {
+          newState.signInErrorId = 'user.actions.sign-in.invalid-credentials';
+        } else {
+          newState.signInErrorId = 'common.something-went-wrong';
         }
-      });
+
+        this.setState(newState);
+      }
+    });
   };
 
   renderSignInError = () => {
@@ -180,11 +179,13 @@ class SignInForm extends PureComponent {
       isPolicyAccepted,
       noAccount,
       pending,
+      pendingForGoogle,
       signInErrorId
     } = this.state;
     const { isCookieSet } = this.props;
     const hasSignUpFailed = signInErrorId.length > 0;
-    const isDisabled = !isCookieSet || pending;
+    const isGoogleSignInDisabled = !isCookieSet || pending || pendingForGoogle;
+    const isSignInDisabled = isGoogleSignInDisabled || !isFormValid;
     const cookieLink = (
       <Link className="sign-up-form__link" to="/cookie-policy">
         <FormattedMessage id="app.footer.cookie-policy" />
@@ -232,7 +233,7 @@ class SignInForm extends PureComponent {
           <form
             className="sign-in__form"
             noValidate
-            onSubmit={isFormValid && !pending ? this.handleSignIn : null}
+            onSubmit={isSignInDisabled ? null : this.handleSignIn}
           >
             <AuthInput
               disabled={pending}
@@ -259,7 +260,7 @@ class SignInForm extends PureComponent {
               </Link>
               <PendingButton
                 className="primary-button sign-in__confirm"
-                disabled={!isFormValid}
+                disabled={isSignInDisabled}
                 onClick={this.handleSignIn}
                 type="submit"
               >
@@ -285,8 +286,9 @@ class SignInForm extends PureComponent {
             <div className="sign-in__buttons">
               <button
                 className={classNames('primary-button google-button', {
-                  'disabled-google-button': isDisabled
+                  'disabled-google-button': isGoogleSignInDisabled
                 })}
+                disabled={isGoogleSignInDisabled}
                 onClick={this.handleSignInWithGoogle}
                 type="submit"
               >
@@ -296,7 +298,7 @@ class SignInForm extends PureComponent {
                 ) : (
                   <FormattedMessage id="user.auth.sign-in-with-google" />
                 )}
-                {pending && <Preloader size={PreloaderSize.SMALL} />}
+                {pendingForGoogle && <Preloader size={PreloaderSize.SMALL} />}
               </button>
             </div>
           </form>
