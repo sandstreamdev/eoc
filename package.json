@@ -53,7 +53,7 @@
     "markdown-loader": "^5.1.0",
     "migrate-mongo": "7.0.1",
     "mongo-sanitize": "1.0.1",
-    "mongodb": "3.4.1",
+    "mongodb": "3.5.3",
     "mongoose": "5.8.3",
     "nodemailer": "6.4.2",
     "normalize.css": "8.0.1",
