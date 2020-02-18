@@ -1,10 +1,10 @@
-# Sandstream Terms of Use of the app.eoc.sanddev.com
+# Sandstream Terms of Use of the app.eoc.sandstreamdev.com
 
 Welcome to the EOC website (the "EOC").
 
 ## 1\. Terms
 
-By accessing the website at [eoc.app.sanddev.com](https://eoc.app.sanddev.com), you are agreeing to be bound by these Terms of Use. In addition, when you use any of our Services, you will be subject to the rules, guidelines, policies, terms, and conditions applicable to such service, and they are incorporated into this Terms of Use by this reference.
+By accessing the website at [eoc.app.sandstreamdev.com](https://eoc.app.sandstreamdev.com), you are agreeing to be bound by these Terms of Use. In addition, when you use any of our Services, you will be subject to the rules, guidelines, policies, terms, and conditions applicable to such service, and they are incorporated into this Terms of Use by this reference.
 
 These Terms of Use are effective as of November 8, 2019
 

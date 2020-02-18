@@ -1,6 +1,6 @@
 # Cookie Policy
 
-This is the Cookie Policy for EOC, accessible from [app.eoc.sanddev.com](https://app.eoc.sanddev.com)
+This is the Cookie Policy for EOC, accessible from [app.eoc.sandstreamdev.com](https://app.eoc.sandstreamdev.com)
 
 ## What Are Cookies
 
