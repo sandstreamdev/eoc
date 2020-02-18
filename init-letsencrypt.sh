@@ -1,6 +1,6 @@
 #!/bin/bash
 
-domains=(eoc.sanddev.com app.eoc.sanddev.com)
+domains=(eoc.sandstreamdev.com app.eoc.sandstreamdev.com)
 data_path="/data/certbot"
 staging=0
 
