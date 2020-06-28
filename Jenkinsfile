@@ -56,8 +56,6 @@ pipeline {
         sh 'docker-compose build'
         sh 'docker-compose stop'
         sh 'docker-compose up -d'
-        sh 'chmod +x init-letsencrypt.sh'
-        sh './init-letsencrypt.sh'
       }
     }
   }
