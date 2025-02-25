@@ -78,7 +78,7 @@
     "socket.io": "2.3.0",
     "socket.io-client": "2.3.0",
     "validator": "12.1.0",
-    "webpack-pwa-manifest": "4.1.1"
+    "webpack-pwa-manifest": "4.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.7.7",
